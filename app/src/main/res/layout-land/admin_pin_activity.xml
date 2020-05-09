@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:profile="http://schemas.android.com/tools">
+
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.profile.AdminPinViewModel" />
+  </data>
+
+  <FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+      android:id="@+id/scrollViewAdminPin"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/oppiaBackgroundYellowIvory"
+      android:overScrollMode="never"
+      android:scrollbars="none">
+
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/admin_auth_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/oppiaBackgroundYellowIvory"
+        android:paddingBottom="108dp">
+
+        <TextView
+          android:id="@+id/admin_pin_main_text"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="72dp"
+          android:layout_marginTop="32dp"
+          android:layout_marginEnd="72dp"
+          android:text="@string/admin_pin_requirement_description"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="16sp"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+          android:id="@+id/admin_pin_warning_text"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="72dp"
+          android:layout_marginTop="16dp"
+          android:layout_marginEnd="72dp"
+          android:text="@string/admin_pin_pin_description"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="16sp"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/admin_pin_main_text" />
+
+        <org.oppia.app.profile.ProfileInputView
+          android:id="@+id/input_pin"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="140dp"
+          android:layout_marginTop="16dp"
+          android:layout_marginEnd="140dp"
+          app:inputLength="5"
+          app:isPasswordInput="true"
+          app:label="@string/admin_pin_new_pin"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/admin_pin_warning_text"
+          profile:error="@{viewModel.pinErrorMsg}" />
+
+        <org.oppia.app.profile.ProfileInputView
+          android:id="@+id/input_confirm_pin"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="140dp"
+          android:layout_marginEnd="140dp"
+          app:inputLength="5"
+          app:isPasswordInput="true"
+          app:label="@string/admin_pin_new_confirm"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintHorizontal_bias="0.0"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/input_pin"
+          profile:error="@{viewModel.confirmPinErrorMsg}" />
+
+        <Button
+          android:id="@+id/submit_button"
+          style="@style/StateButtonActive"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="48dp"
+          android:layout_marginEnd="28dp"
+          android:background="@{viewModel.isButtonActive() ? @drawable/state_button_primary_background : @drawable/start_button_transparent_background}"
+          android:clickable="@{viewModel.isButtonActive()}"
+          android:minHeight="48dp"
+          android:text="@string/save"
+          android:textColor="@{viewModel.isButtonActive() ? @color/white : @color/submitButtonInactiveText }"
+          app:layout_constraintEnd_toEndOf="@id/input_confirm_pin"
+          app:layout_constraintTop_toBottomOf="@+id/input_confirm_pin" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="6dp"
+      android:background="@drawable/toolbar_drop_shadow" />
+  </FrameLayout>
+</layout>

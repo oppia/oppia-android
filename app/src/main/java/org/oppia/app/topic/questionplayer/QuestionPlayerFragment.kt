@@ -21,8 +21,7 @@ class QuestionPlayerFragment: InjectableFragment(), InteractionAnswerReceiver,
   ContinueNavigationButtonListener, NextNavigationButtonListener, ReplayButtonListener,
   ReturnToTopicNavigationButtonListener, SubmitNavigationButtonListener, PreviousResponsesHeaderClickListener {
 
-  @Inject
-  lateinit var questionPlayerFragmentPresenter: QuestionPlayerFragmentPresenter
+  @Inject lateinit var questionPlayerFragmentPresenter: QuestionPlayerFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)

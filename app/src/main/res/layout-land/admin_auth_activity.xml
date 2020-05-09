@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:profile="http://schemas.android.com/tools">
+
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.profile.AdminAuthViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/admin_auth_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/addProfileBackground">
+
+    <com.google.android.material.appbar.AppBarLayout
+      android:id="@+id/admin_auth_app_bar_layout"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+
+      <androidx.appcompat.widget.Toolbar
+        android:id="@+id/admin_auth_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:fontFamily="sans-serif"
+        android:minHeight="?attr/actionBarSize"
+        app:navigationContentDescription="@string/admin_auth_close"
+        app:navigationIcon="@drawable/ic_close_white_24dp"
+        app:title="@string/admin_auth_toolbar"
+        app:titleTextAppearance="@style/ToolbarTextAppearance"
+        app:titleTextColor="@color/white" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <FrameLayout
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/admin_auth_app_bar_layout">
+
+      <ScrollView
+        android:id="@+id/admin_auth_landscape_scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        android:scrollbars="none">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:paddingBottom="92dp">
+
+          <TextView
+            android:id="@+id/admin_auth_heading_textview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="72dp"
+            android:layout_marginTop="44dp"
+            android:layout_marginEnd="72dp"
+            android:fontFamily="sans-serif-medium"
+            android:maxLines="2"
+            android:text="@string/admin_auth_heading"
+            android:textColor="@color/oppiaPrimaryText"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+          <TextView
+            android:id="@+id/admin_auth_sub_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:fontFamily="sans-serif"
+            android:text="@string/admin_auth_sub"
+            android:textColor="@color/black_54"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@+id/admin_auth_heading_textview"
+            app:layout_constraintStart_toStartOf="@+id/admin_auth_heading_textview"
+            app:layout_constraintTop_toBottomOf="@id/admin_auth_heading_textview" />
+
+          <org.oppia.app.profile.ProfileInputView
+            android:id="@+id/admin_auth_input_pin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="140dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="140dp"
+            android:addTextChangedListener="@{viewModel.inputPinTextWatcher}"
+            android:imeOptions="actionDone"
+            app:inputLength="5"
+            app:isPasswordInput="true"
+            app:label="@string/admin_auth_pin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/admin_auth_sub_text"
+            profile:error="@{viewModel.errorMessage}"
+            profile:labelMargin="@{@dimen/margin_8}" />
+
+          <Button
+            android:id="@+id/admin_auth_submit_button"
+            style="@style/StateButtonActive"
+            android:layout_marginTop="44dp"
+            android:layout_marginEnd="28dp"
+            android:background="@{viewModel.isSubmitButtonActive ? @drawable/state_button_primary_background :@drawable/start_button_transparent_background}"
+            android:clickable="@{viewModel.isSubmitButtonActive}"
+            android:minHeight="48dp"
+            android:text="@string/admin_auth_submit"
+            android:textColor="@{viewModel.isSubmitButtonActive ? @color/white : @color/submitButtonInactiveText }"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/admin_auth_input_pin"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@id/admin_auth_input_pin"
+            app:layout_constraintTop_toBottomOf="@id/admin_auth_input_pin" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+      </ScrollView>
+
+      <View
+        android:id="@+id/admin_auth_toolbar_shadow_view"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:background="@drawable/toolbar_drop_shadow" />
+    </FrameLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

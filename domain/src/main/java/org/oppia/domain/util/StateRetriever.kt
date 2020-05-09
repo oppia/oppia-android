@@ -149,6 +149,7 @@ class StateRetriever @Inject constructor(
       for (key in it.keys()) {
         val voiceoverMapping = VoiceoverMapping.newBuilder()
         val voiceoverJson = it.getJSONObject(key)
+        if (voiceoverJson.length() == 0) continue
         for (lang in voiceoverJson.keys()) {
           voiceoverMapping.putVoiceoverMapping(lang, createVoiceOverFromJson(voiceoverJson.getJSONObject(lang)))
         }

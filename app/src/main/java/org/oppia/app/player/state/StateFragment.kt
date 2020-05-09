@@ -7,7 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.model.UserAnswer
-import org.oppia.app.player.audio.CellularDataInterface
+import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
+import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.player.state.listener.ContinueNavigationButtonListener
 import org.oppia.app.player.state.listener.NextNavigationButtonListener
@@ -18,27 +19,32 @@ import org.oppia.app.player.state.listener.SubmitNavigationButtonListener
 import javax.inject.Inject
 
 /** Fragment that represents the current state of an exploration. */
-class StateFragment : InjectableFragment(), CellularDataInterface, InteractionAnswerReceiver,
-  ContinueNavigationButtonListener, NextNavigationButtonListener, PreviousNavigationButtonListener,
-  ReturnToTopicNavigationButtonListener, SubmitNavigationButtonListener, PreviousResponsesHeaderClickListener {
-
+class StateFragment : InjectableFragment(), InteractionAnswerReceiver, InteractionAnswerHandler,
+  InteractionAnswerErrorReceiver, ContinueNavigationButtonListener, NextNavigationButtonListener,
+  PreviousNavigationButtonListener, ReturnToTopicNavigationButtonListener, SubmitNavigationButtonListener,
+  PreviousResponsesHeaderClickListener {
   companion object {
     /**
      * Creates a new instance of a StateFragment.
-     * @param explorationId used by StateFragment.
+     * @param internalProfileId used by StateFragment to mark progress.
+     * @param topicId used by StateFragment to mark progress.
+     * @param storyId used by StateFragment to mark progress.
+     * @param explorationId used by StateFragment to mark progress and manage exploration.
      * @return a new instance of [StateFragment].
      */
-    fun newInstance(explorationId: String): StateFragment {
+    fun newInstance(internalProfileId: Int, topicId: String, storyId: String, explorationId: String): StateFragment {
       val stateFragment = StateFragment()
       val args = Bundle()
+      args.putInt(STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+      args.putString(STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY, topicId)
+      args.putString(STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY, storyId)
       args.putString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
       stateFragment.arguments = args
       return stateFragment
     }
   }
 
-  @Inject
-  lateinit var stateFragmentPresenter: StateFragmentPresenter
+  @Inject lateinit var stateFragmentPresenter: StateFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -47,14 +53,6 @@ class StateFragment : InjectableFragment(), CellularDataInterface, InteractionAn
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     return stateFragmentPresenter.handleCreateView(inflater, container)
-  }
-
-  override fun enableAudioWhileOnCellular(saveUserChoice: Boolean) {
-    stateFragmentPresenter.handleEnableAudio(saveUserChoice)
-  }
-
-  override fun disableAudioWhileOnCellular(saveUserChoice: Boolean) {
-    stateFragmentPresenter.handleDisableAudio(saveUserChoice)
   }
 
   override fun onAnswerReadyForSubmission(answer: UserAnswer) {
@@ -76,4 +74,12 @@ class StateFragment : InjectableFragment(), CellularDataInterface, InteractionAn
   fun handlePlayAudio() = stateFragmentPresenter.handleAudioClick()
 
   fun handleKeyboardAction() = stateFragmentPresenter.handleKeyboardAction()
+
+  override fun onPendingAnswerError(pendingAnswerError: String?) {
+    stateFragmentPresenter.updateSubmitButton(pendingAnswerError)
+  }
+
+  fun setAudioBarVisibility(visibility: Boolean) = stateFragmentPresenter.setAudioBarVisibility(visibility)
+
+  fun scrollToTop() = stateFragmentPresenter.scrollToTop()
 }

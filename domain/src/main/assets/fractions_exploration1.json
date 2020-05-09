@@ -399,7 +399,7 @@
               "param_changes": [],
               "feedback": {
                 "content_id": "feedback_3",
-                "html": "<p>No, that's not right. Start by drawing a picture of a cake divided into 8 equal pieces. Then cross out <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{3}{8}&amp;quot;\"></oppia-noninteractive-math> of the cake. What fraction of the cake is left?</p>"
+                "html": "<p>No, that's not right. Start by drawing a picture of a cake divided into 8 equal pieces. Then cross out 3/8 of the cake. What fraction of the cake is left?</p>"
               },
               "dest": "Thinking in fractions Q3",
               "refresher_exploration_id": null,
@@ -577,7 +577,7 @@
       "classifier_model_id": null,
       "content": {
         "content_id": "content",
-        "html": "<p>“You’re starting to solve problems using fractions!” said Mr. Baker. “That’s a great skill to have!</p><p>“Now, Matthew,” he said, “see if you can figure this out without the cake in front of you. Let’s say I have a cake, and <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{3}{8}&amp;quot;\"></oppia-noninteractive-math> of it gets eaten. What fraction of the cake remains?”<br></p>"
+        "html": "<p>“You’re starting to solve problems using fractions!” said Mr. Baker. “That’s a great skill to have!</p><p>“Now, Matthew,” he said, “see if you can figure this out without the cake in front of you. Let’s say I have a cake, and 3/8 of it gets eaten. What fraction of the cake remains?”<br></p>"
       },
       "written_translations": {
         "translations_mapping": {
@@ -1481,7 +1481,7 @@
           },
           "explanation": {
             "content_id": "solution",
-            "html": "<p>We can draw a square and colour <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{2}&amp;quot;\"></oppia-noninteractive-math> and <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{4}&amp;quot;\"></oppia-noninteractive-math> of it, like this:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Square with 1/2 + 1/4 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_003734_d0p3w9pl9j_height_108_width_110.png&amp;quot;\"></oppia-noninteractive-image><p>To find the resulting fraction, we divide the square into equal parts:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Square divided into 4 equal parts, with 3 coloured red.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_003831_i9pje0cg68_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image><p>There are 4 equal parts, and 3 of them are red, so the correct answer is <strong>3/4</strong>.</p><p>                                           ----------------------------------------------------- </p><p>Note: You may think that you could just add the numerators and denominators of the fractions to get 2/6, but that is the <strong>wrong answer</strong>! The important thing is the<strong> amount</strong> represented by the fraction, not the actual numbers (like 1 and 2) that are used to write the fraction.</p><p><strong>Drawing a clear picture</strong> is a good strategy to help you \"see\" that amount.</p>"
+            "html": "<p>We can draw a square and colour 1/2 and 1/4 of it, like this:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Square with 1/2 + 1/4 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_003734_d0p3w9pl9j_height_108_width_110.png&amp;quot;\"></oppia-noninteractive-image><p>To find the resulting fraction, we divide the square into equal parts:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Square divided into 4 equal parts, with 3 coloured red.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_003831_i9pje0cg68_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image><p>There are 4 equal parts, and 3 of them are red, so the correct answer is <strong>3/4</strong>.</p><p>                                           ----------------------------------------------------- </p><p>Note: You may think that you could just add the numerators and denominators of the fractions to get 2/6, but that is the <strong>wrong answer</strong>! The important thing is the<strong> amount</strong> represented by the fraction, not the actual numbers (like 1 and 2) that are used to write the fraction.</p><p><strong>Drawing a clear picture</strong> is a good strategy to help you \"see\" that amount.</p>"
           },
           "answer_is_exclusive": true
         },
@@ -1520,7 +1520,7 @@
               "param_changes": [],
               "feedback": {
                 "content_id": "feedback_2",
-                "html": "<p>No, that's not right. As Mr. Baker says, don't just look at the numbers.</p><p>Instead, <strong>draw a picture</strong>, and colour in the parts corresponding to <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{2}&amp;quot;\"></oppia-noninteractive-math> and <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{4}&amp;quot;\"></oppia-noninteractive-math>. That will help you figure out what's going on. Feel free to take a hint if you get stuck.</p>"
+                "html": "<p>No, that's not right. As Mr. Baker says, don't just look at the numbers.</p><p>Instead, <strong>draw a picture</strong>, and colour in the parts corresponding to 1/2 and 1/4. That will help you figure out what's going on. Feel free to take a hint if you get stuck.</p>"
               },
               "dest": "Thinking in fractions Q4",
               "refresher_exploration_id": null,
@@ -1625,25 +1625,25 @@
           {
             "hint_content": {
               "content_id": "hint_1",
-              "html": "<p>As Mr. Baker says, draw a picture! You can start with a square -- divide that square into half, and shade one of the halves. That represents <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{2}&amp;quot;\"></oppia-noninteractive-math>.</p><p>Now, how can you represent <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{4}&amp;quot;\"></oppia-noninteractive-math> in a similar way?</p>"
+              "html": "<p>As Mr. Baker says, draw a picture! You can start with a square -- divide that square into half, and shade one of the halves. That represents 1/2.</p><p>Now, how can you represent 1/4 in a similar way?</p>"
             }
           },
           {
             "hint_content": {
               "content_id": "hint_2",
-              "html": "<p>Here's what a square with <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{2}&amp;quot;\"></oppia-noninteractive-math> coloured red might look like:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Square with 1/2 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_003204_qvwvnfjibv_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image><p>Now, can you draw the part corresponding to <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{4}&amp;quot;\"></oppia-noninteractive-math>?</p>"
+              "html": "<p>Here's what a square with 1/2 coloured red might look like:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Square with 1/2 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_003204_qvwvnfjibv_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image><p>Now, can you draw the part corresponding to 1/4?</p>"
             }
           },
           {
             "hint_content": {
               "content_id": "hint_3",
-              "html": "<p>Here's what the same square with <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{4}&amp;quot;\"></oppia-noninteractive-math> coloured red might look like:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Square with 1/4 coloured red&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_003322_cjl0w37lgt_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image><p>Now, what fraction of the square do you get when you <strong>add</strong> <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{4}&amp;quot;\"></oppia-noninteractive-math> and <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{4}&amp;quot;\"></oppia-noninteractive-math> together?</p>"
+              "html": "<p>Here's what the same square with 1/4 coloured red might look like:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Square with 1/4 coloured red&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_003322_cjl0w37lgt_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image><p>Now, what fraction of the square do you get when you <strong>add</strong> 1/4 and 1/4 together?</p>"
             }
           },
           {
             "hint_content": {
               "content_id": "hint_4",
-              "html": "<p>Here's what combining <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{2}&amp;quot;\"></oppia-noninteractive-math> and <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{4}&amp;quot;\"></oppia-noninteractive-math> looks like:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Square with 1/2 + 1/4 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_003528_7w8ckvaj3r_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image><p>What fraction does this represent?</p>"
+              "html": "<p>Here's what combining 1/2 and 1/4 looks like:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Square with 1/2 + 1/4 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180111_003528_7w8ckvaj3r_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image><p>What fraction does this represent?</p>"
             }
           },
           {
@@ -1781,7 +1781,7 @@
       "classifier_model_id": null,
       "content": {
         "content_id": "content",
-        "html": "<p>Mr. Baker chuckled. “OK, Matthew,” he said. “Two more questions, and if you answer them correctly, you can have my piece of cake as well!”</p><p>Matthew smiled. He liked cake!</p><p>\"OK,\" Mr. Baker said. \"Let’s say I wanted to add <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{2}&amp;quot;\"></oppia-noninteractive-math> and <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{4}&amp;quot;\"></oppia-noninteractive-math>. What fraction does that give me?\"</p><p>“Oh, that’s easy!” said Matthew. “1 + 1 is 2, and ...”</p><p>“Are you sure?” said Mr. Baker. “Don’t just look at the numbers -- that would be misleading. You’ll need to think about how much cake the fractions represent. It's a good idea to <strong>draw a picture</strong>.”</p><p>“What is <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{2} + \\\\frac{1}{4}&amp;quot;\"></oppia-noninteractive-math>?”<br></p>"
+        "html": "<p>Mr. Baker chuckled. “OK, Matthew,” he said. “Two more questions, and if you answer them correctly, you can have my piece of cake as well!”</p><p>Matthew smiled. He liked cake!</p><p>\"OK,\" Mr. Baker said. \"Let’s say I wanted to add 1/2 and 1/4. What fraction does that give me?\"</p><p>“Oh, that’s easy!” said Matthew. “1 + 1 is 2, and ...”</p><p>“Are you sure?” said Mr. Baker. “Don’t just look at the numbers -- that would be misleading. You’ll need to think about how much cake the fractions represent. It's a good idea to <strong>draw a picture</strong>.”</p><p>“What is 1/2 + 1/4?”<br></p>"
       },
       "written_translations": {
         "translations_mapping": {
@@ -2621,7 +2621,7 @@
               "param_changes": [],
               "feedback": {
                 "content_id": "feedback_2",
-                "html": "<p>Actually, that's not right. The word \"half\" means exactly the same thing as <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{2}&amp;quot;\"></oppia-noninteractive-math>. Try again!</p>"
+                "html": "<p>Actually, that's not right. The word \"half\" means exactly the same thing as 1/2. Try again!</p>"
               },
               "dest": "Into the Bakery",
               "refresher_exploration_id": null,
@@ -2643,7 +2643,7 @@
           "param_changes": [],
           "feedback": {
             "content_id": "default_outcome",
-            "html": "<p>Are you sure? Matthew asked Crumb for 1/2 a cake. What does the fraction <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac{1}{2}&amp;quot;\"></oppia-noninteractive-math> mean? Think back to the previous lesson.</p><p>Try again!</p>"
+            "html": "<p>Are you sure? Matthew asked Crumb for 1/2 a cake. What does the fraction 1/2 mean? Think back to the previous lesson.</p><p>Try again!</p>"
           },
           "dest": "Into the Bakery",
           "refresher_exploration_id": null,

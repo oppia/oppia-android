@@ -17,23 +17,28 @@ import org.oppia.app.R
 import org.oppia.app.databinding.StateFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.AnswerOutcome
-import org.oppia.app.model.CellularDataPreference
 import org.oppia.app.model.EphemeralState
+import org.oppia.app.model.ProfileId
+import org.oppia.app.model.State
 import org.oppia.app.model.UserAnswer
+import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.audio.AudioFragment
-import org.oppia.app.player.audio.CellularDataDialogFragment
+import org.oppia.app.player.audio.AudioUiManager
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.audio.CellularDialogController
 import org.oppia.domain.exploration.ExplorationProgressController
+import org.oppia.domain.topic.StoryProgressController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.Logger
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
+import java.util.*
 import javax.inject.Inject
 
+const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY = "STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY"
+const val STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY = "STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY"
+const val STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY = "STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY"
 const val STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY = "STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY"
-private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
 private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
 
 /** The presenter for [StateFragment]. */
@@ -42,34 +47,35 @@ class StateFragmentPresenter @Inject constructor(
   @ExplorationHtmlParserEntityType private val entityType: String,
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val cellularDialogController: CellularDialogController,
   private val viewModelProvider: ViewModelProvider<StateViewModel>,
   private val explorationProgressController: ExplorationProgressController,
+  private val storyProgressController: StoryProgressController,
   private val logger: Logger,
   @DefaultResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory
 ) {
-  private var showCellularDataDialog = true
-  private var useCellularData = false
+
+  private var feedbackId: String? = null
+  private lateinit var profileId: ProfileId
+  private lateinit var topicId: String
+  private lateinit var storyId: String
   private lateinit var explorationId: String
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
-  private lateinit var viewModel: StateViewModel
+  private val viewModel: StateViewModel by lazy {
+    getStateViewModel()
+  }
   private lateinit var recyclerViewAssembler: StatePlayerRecyclerViewAssembler
   private val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
     explorationProgressController.getCurrentState()
   }
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    cellularDialogController.getCellularDataPreference()
-      .observe(fragment, Observer<AsyncResult<CellularDataPreference>> {
-        if (it.isSuccess()) {
-          val prefs = it.getOrDefault(CellularDataPreference.getDefaultInstance())
-          showCellularDataDialog = !(prefs.hideDialog)
-          useCellularData = prefs.useCellularData
-        }
-      })
+    val internalProfileId = fragment.arguments!!.getInt(STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, -1)
+    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    topicId = fragment.arguments!!.getString(STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY)!!
+    storyId = fragment.arguments!!.getString(STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY)!!
     explorationId = fragment.arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
 
     binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -83,10 +89,14 @@ class StateFragmentPresenter @Inject constructor(
       adapter = stateRecyclerViewAdapter
     }
     recyclerViewAdapter = stateRecyclerViewAdapter
-    viewModel = getStateViewModel()
     binding.let {
       it.lifecycleOwner = fragment
       it.viewModel = this.viewModel
+    }
+
+    if (getAudioFragment() == null) {
+      fragment.childFragmentManager.beginTransaction()
+        .add(R.id.audio_fragment_placeholder, AudioFragment(), TAG_AUDIO_FRAGMENT).commitNow()
     }
 
     binding.stateRecyclerView.addOnLayoutChangeListener { _, _, _, _, bottom, _, _, _, oldBottom ->
@@ -96,22 +106,10 @@ class StateFragmentPresenter @Inject constructor(
         }, 100)
       }
     }
+
     subscribeToCurrentState()
-
+    markExplorationAsRecentlyPlayed()
     return binding.root
-  }
-
-  fun handleEnableAudio(saveUserChoice: Boolean) {
-    showHideAudioFragment(true)
-    if (saveUserChoice) {
-      cellularDialogController.setAlwaysUseCellularDataPreference()
-    }
-  }
-
-  fun handleDisableAudio(saveUserChoice: Boolean) {
-    if (saveUserChoice) {
-      cellularDialogController.setNeverUseCellularDataPreference()
-    }
   }
 
   fun handleAnswerReadyForSubmission(answer: UserAnswer) {
@@ -132,7 +130,16 @@ class StateFragmentPresenter @Inject constructor(
 
   fun onReturnToTopicButtonClicked() {
     hideKeyboard()
+    markExplorationCompleted()
     (activity as StopStatePlayingSessionListener).stopSession()
+  }
+
+  private fun showOrHideAudioByState(state: State) {
+    if (state.recordedVoiceoversCount == 0) {
+      (activity as AudioButtonListener).hideAudioButton()
+    } else {
+      (activity as AudioButtonListener).showAudioButton()
+    }
   }
 
   fun onSubmitButtonClicked() {
@@ -146,19 +153,16 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun handleAudioClick() {
-    if (showCellularDataDialog) {
-      showHideAudioFragment(false)
-      showCellularDataDialogFragment()
-    } else {
-      if (useCellularData) {
-        showHideAudioFragment(getAudioFragment() == null)
-      } else {
-        showHideAudioFragment(false)
-      }
-    }
+    (getAudioFragment() as AudioFragment).handleAudioClick(isAudioShowing(), feedbackId)
   }
 
-  fun handleKeyboardAction() = onSubmitButtonClicked()
+  fun handleKeyboardAction() {
+    hideKeyboard()
+    // TODO(BenHenning): Fix the interaction button not being active.
+//    if (stateNavigationButtonViewModel.isInteractionButtonActive.get()!!) {
+    handleSubmitAnswer(viewModel.getPendingAnswer(recyclerViewAssembler))
+//    }
+  }
 
   private fun createRecyclerViewAssembler(
     builder: StatePlayerRecyclerViewAssembler.Builder,
@@ -176,43 +180,12 @@ class StateFragmentPresenter @Inject constructor(
       .build()
   }
 
-  private fun showCellularDataDialogFragment() {
-    val previousFragment = fragment.childFragmentManager.findFragmentByTag(TAG_CELLULAR_DATA_DIALOG)
-    if (previousFragment != null) {
-      fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
-    }
-    val dialogFragment = CellularDataDialogFragment.newInstance()
-    dialogFragment.showNow(fragment.childFragmentManager, TAG_CELLULAR_DATA_DIALOG)
-  }
-
   private fun getStateViewModel(): StateViewModel {
     return viewModelProvider.getForFragment(fragment, StateViewModel::class.java)
   }
 
   private fun getAudioFragment(): Fragment? {
     return fragment.childFragmentManager.findFragmentByTag(TAG_AUDIO_FRAGMENT)
-  }
-
-  private fun showHideAudioFragment(isVisible: Boolean) {
-    getStateViewModel().setAudioBarVisibility(isVisible)
-    if (isVisible) {
-      if (getAudioFragment() == null) {
-        val audioFragment = AudioFragment.newInstance(explorationId, currentStateName)
-        fragment.childFragmentManager.beginTransaction().add(
-          R.id.audio_fragment_placeholder, audioFragment,
-          TAG_AUDIO_FRAGMENT
-        ).commitNow()
-      }
-
-      val currentYOffset = binding.stateRecyclerView.computeVerticalScrollOffset()
-      if (currentYOffset == 0) {
-        binding.stateRecyclerView.smoothScrollToPosition(0)
-      }
-    } else {
-      if (getAudioFragment() != null) {
-        fragment.childFragmentManager.beginTransaction().remove(getAudioFragment()!!).commitNow()
-      }
-    }
   }
 
   private fun subscribeToCurrentState() {
@@ -233,12 +206,27 @@ class StateFragmentPresenter @Inject constructor(
     val ephemeralState = result.getOrThrow()
     val scrollToTop = ::currentStateName.isInitialized && currentStateName != ephemeralState.state.name
     currentStateName = ephemeralState.state.name
+    showOrHideAudioByState(ephemeralState.state)
+
+    val audioManager = getAudioFragment() as AudioUiManager
+    audioManager.setStateAndExplorationId(ephemeralState.state, explorationId)
+    if (viewModel.currentStateName == null || viewModel.currentStateName != currentStateName) {
+      feedbackId = null
+      viewModel.currentStateName = currentStateName
+      if (isAudioShowing()) {
+        // TODO(BenHenning): Fix auto audio loading.
+//        audioManager.loadMainContentAudio(!canContinueToNextState)
+      }
+    }
 
     viewModel.itemList.clear()
     viewModel.itemList += recyclerViewAssembler.compute(ephemeralState, explorationId)
 
     if (scrollToTop) {
-      (binding.stateRecyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(0, 200)
+      (binding.stateRecyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
+        0,
+        200
+      )
     }
   }
 
@@ -255,6 +243,10 @@ class StateFragmentPresenter @Inject constructor(
          moveToNextState()
       } else if (result.labelledAsCorrectAnswer) {
         recyclerViewAssembler.showCongratulationMessageOnCorrectAnswer()
+        feedbackId = result.feedback.contentId
+        if (isAudioShowing()) {
+          (getAudioFragment() as AudioUiManager).loadFeedbackAudio(feedbackId!!, true)
+        }
       }
     })
   }
@@ -267,7 +259,11 @@ class StateFragmentPresenter @Inject constructor(
   /** Helper for subscribeToAnswerOutcome. */
   private fun processAnswerOutcome(ephemeralStateResult: AsyncResult<AnswerOutcome>): AnswerOutcome {
     if (ephemeralStateResult.isFailure()) {
-      logger.e("StateFragment", "Failed to retrieve answer outcome", ephemeralStateResult.getErrorOrNull()!!)
+      logger.e(
+        "StateFragment",
+        "Failed to retrieve answer outcome",
+        ephemeralStateResult.getErrorOrNull()!!
+      )
     }
     return ephemeralStateResult.getOrDefault(AnswerOutcome.getDefaultInstance())
   }
@@ -283,7 +279,37 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun hideKeyboard() {
-    val inputManager: InputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    inputManager.hideSoftInputFromWindow(fragment.view!!.windowToken, InputMethodManager.SHOW_FORCED)
+    val inputManager: InputMethodManager =
+      activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputManager.hideSoftInputFromWindow(
+      fragment.view!!.windowToken,
+      InputMethodManager.SHOW_FORCED
+    )
+  }
+
+  fun setAudioBarVisibility(visibility: Boolean) = getStateViewModel().setAudioBarVisibility(visibility)
+
+  fun scrollToTop() {
+    binding.stateRecyclerView.smoothScrollToPosition(0)
+  }
+
+  private fun isAudioShowing(): Boolean = viewModel.isAudioBarVisible.get()!!
+
+  /** Updates submit button UI as active if pendingAnswerError null else inactive. */
+  fun updateSubmitButton(pendingAnswerError: String?) {
+    // TODO(BenHenning): Fix the interaction button not being active, including styling.
+//    if (pendingAnswerError != null) {
+//      stateNavigationButtonViewModel.isInteractionButtonActive.set(false)
+//    } else {
+//      stateNavigationButtonViewModel.isInteractionButtonActive.set(true)
+//    }
+  }
+
+  private fun markExplorationAsRecentlyPlayed() {
+    storyProgressController.recordRecentlyPlayedChapter(profileId,topicId, storyId, explorationId, Date().time)
+  }
+
+  private fun markExplorationCompleted() {
+    storyProgressController.recordCompletedChapter(profileId,topicId, storyId, explorationId, Date().time)
   }
 }

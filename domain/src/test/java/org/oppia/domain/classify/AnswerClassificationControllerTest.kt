@@ -104,8 +104,7 @@ class AnswerClassificationControllerTest {
       .build()
   }
 
-  @Inject
-  lateinit var answerClassificationController: AnswerClassificationController
+  @Inject lateinit var answerClassificationController: AnswerClassificationController
 
   @Before
   fun setUp() {

@@ -4,41 +4,64 @@ import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
+import org.oppia.app.databinding.ExplorationActivityBinding
 import org.oppia.app.model.Exploration
+import org.oppia.app.topic.TopicActivity
+import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
-private const val TAG_EXPLORATION_FRAGMENT = "TAG_EXPLORATION_FRAGMENT"
+const val TAG_EXPLORATION_FRAGMENT = "TAG_EXPLORATION_FRAGMENT"
 
 /** The Presenter for [ExplorationActivity]. */
 @ActivityScope
 class ExplorationActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val explorationDataController: ExplorationDataController,
+  private val viewModelProvider: ViewModelProvider<ExplorationViewModel>,
   private val logger: Logger
 ) {
+  private lateinit var explorationToolbar: Toolbar
+  private var internalProfileId: Int = -1
+  private lateinit var topicId: String
 
-  private lateinit var toolbar: Toolbar
+  private val exploreViewModel by lazy {
+    getExplorationViewModel()
+  }
 
-  fun handleOnCreate(explorationId: String) {
-    activity.setContentView(R.layout.exploration_activity)
+  fun handleOnCreate(internalProfileId: Int, topicId: String, storyId: String, explorationId: String) {
+    val binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(activity, R.layout.exploration_activity)
+    binding.apply {
+      viewModel = exploreViewModel
+      lifecycleOwner = activity
+    }
 
-    toolbar = activity.findViewById(R.id.exploration_toolbar)
-    activity.setSupportActionBar(toolbar)
+    explorationToolbar = binding.explorationToolbar
+    activity.setSupportActionBar(explorationToolbar)
+
+    binding.actionAudioPlayer.setOnClickListener {
+      getExplorationFragment()?.handlePlayAudio()
+    }
 
     updateToolbarTitle(explorationId)
+    this.internalProfileId = internalProfileId
+    this.topicId = topicId
 
     if (getExplorationFragment() == null) {
       val explorationFragment = ExplorationFragment()
       val args = Bundle()
-      args.putString(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, explorationId)
+      args.putInt(ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+      args.putString(ExplorationActivity.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
+      args.putString(ExplorationActivity.EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
+      args.putString(ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
       explorationFragment.arguments = args
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_fragment_placeholder,
@@ -47,6 +70,18 @@ class ExplorationActivityPresenter @Inject constructor(
       ).commitNow()
     }
   }
+
+  fun showAudioButton() = exploreViewModel.showAudioButton.set(true)
+
+  fun hideAudioButton() = exploreViewModel.showAudioButton.set(false)
+
+  fun showAudioStreamingOn() = exploreViewModel.isAudioStreamingOn.set(true)
+
+  fun showAudioStreamingOff() = exploreViewModel.isAudioStreamingOn.set(false)
+
+  fun setAudioBarVisibility(isVisible: Boolean) = getExplorationFragment()?.setAudioBarVisibility(isVisible)
+
+  fun scrollToTop() = getExplorationFragment()?.scrollToTop()
 
   private fun getExplorationFragment(): ExplorationFragment? {
     return activity.supportFragmentManager.findFragmentById(
@@ -61,14 +96,11 @@ class ExplorationActivityPresenter @Inject constructor(
         it.isFailure() -> logger.e("ExplorationActivity", "Failed to stop exploration", it.getErrorOrNull()!!)
         else -> {
           logger.d("ExplorationActivity", "Successfully stopped exploration")
+          activity.startActivity(TopicActivity.createTopicActivityIntent(activity, internalProfileId, topicId))
           (activity as ExplorationActivity).finish()
         }
       }
     })
-  }
-
-  fun audioPlayerIconClicked() {
-    getExplorationFragment()?.handlePlayAudio()
   }
 
   fun onKeyboardAction(actionCode: Int) {
@@ -87,8 +119,12 @@ class ExplorationActivityPresenter @Inject constructor(
   private fun subscribeToExploration(explorationResultLiveData: LiveData<AsyncResult<Exploration>>) {
     val explorationLiveData = getExploration(explorationResultLiveData)
     explorationLiveData.observe(activity, Observer<Exploration> {
-      toolbar.title = it.title
+      explorationToolbar.title = it.title
     })
+  }
+
+  private fun getExplorationViewModel(): ExplorationViewModel {
+    return viewModelProvider.getForActivity(activity, ExplorationViewModel::class.java)
   }
 
   /** Helper for subscribeToExploration. */

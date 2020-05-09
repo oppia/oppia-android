@@ -39,6 +39,7 @@ import org.oppia.app.model.Interaction
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.StatePlayerRecyclerViewAssembler.Builder.Factory
+import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
@@ -176,7 +177,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   ) {
     val interactionViewModelFactory = interactionViewModelFactoryMap.getValue(interaction.id)
     pendingItemList += interactionViewModelFactory(
-      gcsEntityId, interaction, fragment as InteractionAnswerReceiver, hasPreviousButton
+      gcsEntityId, interaction, fragment as InteractionAnswerReceiver, fragment as InteractionAnswerErrorReceiver, hasPreviousButton
     )
   }
 

@@ -77,14 +77,11 @@ class ExplorationProgressControllerTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Inject
-  lateinit var explorationDataController: ExplorationDataController
+  @Inject lateinit var explorationDataController: ExplorationDataController
 
-  @Inject
-  lateinit var explorationProgressController: ExplorationProgressController
+  @Inject lateinit var explorationProgressController: ExplorationProgressController
 
-  @Inject
-  lateinit var explorationRetriever: ExplorationRetriever
+  @Inject lateinit var explorationRetriever: ExplorationRetriever
 
   @ExperimentalCoroutinesApi
   @Inject

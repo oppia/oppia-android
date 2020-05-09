@@ -14,7 +14,6 @@ import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -26,7 +25,6 @@ import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
@@ -47,145 +45,6 @@ class StateFragmentTest {
   @After
   fun tearDown() {
     Intents.release()
-  }
-
-  @Test
-  @Ignore("Changes to exploration fragment broke audio tests") // TODO(#388): Fix this test.
-  fun testStateFragmentTestActivity_loadStateFragment_hasDummyButton() {
-    launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.action_audio_player)).check(matches(withText("Dummy Audio Button")))
-    }
-  }
-
-  @Test
-  @Ignore("Changes to exploration fragment broke audio tests") // TODO(#388): Fix this test.
-  fun testStateFragment_clickDummyButton_showsCellularDialog() {
-    launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.action_audio_player)).perform(click())
-      onView(withId(R.id.cellular_data_dialog_checkbox)).check(matches(withText("Don\'t show this message again")))
-    }
-  }
-
-  @Test
-  @Ignore("Changes to exploration fragment broke audio tests") // TODO(#388): Fix this test.
-  fun testStateFragment_clickDummyButton_clickPositive_showsAudioFragment() {
-    launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.action_audio_player)).perform(click())
-      onView(withText("OK")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click())
-      onView(withId(R.id.ivPlayPauseAudio)).check(matches((isDisplayed())))
-    }
-  }
-
-  @Test
-  @Ignore("Changes to exploration fragment broke audio tests") // TODO(#388): Fix this test.
-  fun testStateFragment_clickDummyButton_clickNegative_doesNotShowAudioFragment() {
-    launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.action_audio_player)).perform(click())
-      onView(withText("CANCEL")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click())
-      onView(withId(R.id.ivPlayPauseAudio)).check(doesNotExist())
-    }
-  }
-
-  @Test
-  @Ignore("Changes to exploration fragment broke audio tests") // TODO(#388): Fix this test.
-  fun testStateFragment_clickPositive_clickDummyButton_showsCellularDialog() {
-    launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.action_audio_player)).perform(click())
-      onView(withText("OK")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click())
-      onView(withId(R.id.action_audio_player)).perform(click())
-      onView(withId(R.id.cellular_data_dialog_checkbox)).check(matches(withText("Don\'t show this message again")))
-    }
-  }
-
-  @Test
-  @Ignore("Changes to exploration fragment broke audio tests") // TODO(#388): Fix this test.
-  fun testStateFragment_clickNegative_clickDummyButton_showsCellularDialog() {
-    launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.action_audio_player)).perform(click())
-      onView(withText("CANCEL")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click())
-      onView(withId(R.id.action_audio_player)).perform(click())
-      onView(withId(R.id.cellular_data_dialog_checkbox)).check(matches(withText("Don\'t show this message again")))
-    }
-  }
-
-  @Test
-  @Ignore("Changes to exploration fragment broke audio tests") // TODO(#388): Fix this test.
-  fun testStateFragment_clickCheckBoxAndPositive_clickDummyButton_doesNotShowCellularDialog() {
-    launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.action_audio_player)).perform(click())
-      onView(withId(R.id.cellular_data_dialog_checkbox)).perform(click())
-      onView(withText("OK")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click())
-      onView(withId(R.id.action_audio_player)).perform(click())
-      onView(withId(R.id.cellular_data_dialog_checkbox)).check(doesNotExist())
-    }
-  }
-
-  @Test
-  @Ignore("Changes to exploration fragment broke audio tests") // TODO(#388): Fix this test.
-  fun testStateFragment_clickCheckBoxAndNegative_clickDummyButton_doesNotShowCellularDialog() {
-    launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.action_audio_player)).perform(click())
-      onView(withId(R.id.cellular_data_dialog_checkbox)).perform(click())
-      onView(withText("CANCEL")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click())
-      onView(withId(R.id.action_audio_player)).perform(click())
-      onView(withId(R.id.cellular_data_dialog_checkbox)).check(doesNotExist())
-    }
-  }
-
-  @Test
-  @Ignore("Changes to exploration fragment broke audio tests") // TODO(#388): Fix this test.
-  fun testStateFragment_clickPositive_restartActivity_clickDummyButton_showsCellularDialog() {
-    launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.action_audio_player)).perform(click())
-      onView(withText("OK")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click())
-    }
-    launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.action_audio_player)).perform(click())
-      onView(withId(R.id.cellular_data_dialog_checkbox)).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  @Ignore("Changes to exploration fragment broke audio tests") // TODO(#388): Fix this test.
-  fun testStateFragment_clickNegative_restartActivity_clickDummyButton_showsCellularDialog() {
-    launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.action_audio_player)).perform(click())
-      onView(withText("CANCEL")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click())
-    }
-    launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.action_audio_player)).perform(click())
-      onView(withId(R.id.cellular_data_dialog_checkbox)).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  @Ignore("Changes to exploration fragment broke audio tests") // TODO(#388): Fix this test.
-  fun testStateFragment_clickCheckBoxAndPositive_restartActivity_clickDummyButton_doesNotShowCellularDialogAndShowsAudioFragment() {
-    launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.action_audio_player)).perform(click())
-      onView(withId(R.id.cellular_data_dialog_checkbox)).perform(click())
-      onView(withText("OK")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click())
-    }
-    launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.action_audio_player)).perform(click())
-      onView(withId(R.id.cellular_data_dialog_checkbox)).check(doesNotExist())
-      onView(withId(R.id.ivPlayPauseAudio)).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  @Ignore("Changes to exploration fragment broke audio tests") // TODO(#388): Fix this test.
-  fun testStateFragment_clickCheckBoxAndNegative_restartActivity_clickDummyButton_doesNotShowCellularDialogAndAudioFragment() {
-    launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.action_audio_player)).perform(click())
-      onView(withId(R.id.cellular_data_dialog_checkbox)).perform(click())
-      onView(withText("CANCEL")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click())
-    }
-    launch(StateFragmentTestActivity::class.java).use {
-      onView(withId(R.id.action_audio_player)).perform(click())
-      onView(withId(R.id.cellular_data_dialog_checkbox)).check(doesNotExist())
-      onView(withId(R.id.ivPlayPauseAudio)).check(doesNotExist())
-    }
   }
 
   // TODO(#388): Add more test-cases

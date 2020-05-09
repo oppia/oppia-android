@@ -32,7 +32,7 @@ internal class StateGraph internal constructor(
         answerOutcomeBuilder.refresherExplorationId = outcome.refresherExplorationId
       outcome.missingPrerequisiteSkillId.isNotEmpty() ->
         answerOutcomeBuilder.missingPrerequisiteSkillId = outcome.missingPrerequisiteSkillId
-      outcome.destStateName == currentState.name -> answerOutcomeBuilder.setSameState(true)
+      outcome.destStateName == currentState.name -> answerOutcomeBuilder.sameState = true
       else -> answerOutcomeBuilder.stateName = outcome.destStateName
     }
     return answerOutcomeBuilder.build()

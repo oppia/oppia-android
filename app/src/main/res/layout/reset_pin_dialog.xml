@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+  <data>
+    <variable
+      name="viewModel"
+      type="org.oppia.app.profile.ResetPinViewModel" />
+  </data>
+  <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:profile="http://schemas.android.com/tools">
+    <org.oppia.app.profile.ProfileInputView
+      android:id="@+id/input_pin"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      profile:error="@{viewModel.errorMessage}"
+      app:label="Administrator's PIN"
+      app:inputLength="3"
+      app:isPasswordInput="true"/>
+  </RelativeLayout>
+</layout>

@@ -76,5 +76,6 @@ dependencies {
   )
 
   implementation project(":utility")
+  implementation project(":model")
   testImplementation project(":model")
 }

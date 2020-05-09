@@ -8,7 +8,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.home.continueplaying.OngoingStoryViewModel" />
+      type="org.oppia.app.home.recentlyplayed.OngoingStoryViewModel" />
   </data>
 
   <com.google.android.material.card.MaterialCardView
@@ -24,20 +24,19 @@
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:background="@drawable/grey_card_rounded_border"
       android:onClick="@{viewModel::clickOnOngoingStoryTile}">
 
       <ImageView
         android:id="@+id/lesson_thumbnail"
         android:layout_width="80dp"
-        android:layout_height="44dp"
+        android:layout_height="0dp"
         android:layout_marginStart="8dp"
-        android:importantForAccessibility="no"
-        android:paddingStart="40dp"
-        android:paddingTop="4dp"
-        android:paddingEnd="40dp"
-        android:scaleType="centerCrop"
+        android:contentDescription="@{@string/lesson_thumbnail_content_description(viewModel.ongoingStory.nextChapterName)}"
+        android:scaleType="centerInside"
         android:src="@{viewModel.ongoingStory.lessonThumbnail.thumbnailGraphic}"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:roundedRectDrawableWithColor="@{viewModel.ongoingStory.lessonThumbnail.backgroundColorRgb}" />
