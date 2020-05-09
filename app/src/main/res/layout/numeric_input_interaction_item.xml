@@ -53,9 +53,9 @@
       android:layout_marginEnd="8dp"
       android:fontFamily="sans-serif"
       android:minHeight="32dp"
-      android:text="@{viewModel.errorMessage.get()}"
+      android:text="@{viewModel.errorMessage}"
       android:textColor="@color/editTextError"
       android:textSize="12sp"
-      android:visibility="@{viewModel.errorMessage.get().length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
+      android:visibility="@{viewModel.errorMessage.length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
   </LinearLayout>
 </layout>

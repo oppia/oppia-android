@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
@@ -18,20 +17,22 @@
     <ImageView
       android:id="@+id/slide_image_view"
       android:layout_width="0dp"
-      android:adjustViewBounds="true"
-      android:scaleType="fitXY"
       android:layout_height="0dp"
+      android:adjustViewBounds="true"
       android:contentDescription="@{viewModel.contentDescription}"
+      android:scaleType="fitXY"
       android:src="@{viewModel.slideImage}"
       app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintDimensionRatio="H,4:4.5"
+      app:layout_constraintDimensionRatio="H, 10:9"
+      app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
       android:id="@+id/slide_title_text_view"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginTop="140dp"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="80dp"
       android:layout_marginEnd="28dp"
       android:fontFamily="sans-serif-medium"
       android:gravity="center_horizontal"
@@ -47,9 +48,9 @@
       android:id="@+id/slide_description_text_view"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginTop="8dp"
+      android:layout_marginStart="20dp"
+      android:layout_marginTop="16dp"
       android:layout_marginEnd="40dp"
-      android:layout_marginStart="10dp"
       android:fontFamily="sans-serif"
       android:gravity="center_horizontal"
       android:text="@{viewModel.description}"

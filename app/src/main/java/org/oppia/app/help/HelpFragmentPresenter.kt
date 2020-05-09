@@ -6,42 +6,48 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import org.oppia.app.R
 import org.oppia.app.databinding.HelpFragmentBinding
+import org.oppia.app.databinding.HelpItemBinding
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.recyclerview.BindableAdapter
+import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
 /** The presenter for [HelpFragment]. */
 @FragmentScope
 class HelpFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val fragment: Fragment
+  private val fragment: Fragment,
+  private val viewModelProvider: ViewModelProvider<HelpListViewModel>
 ) {
-  private val arrayList = ArrayList<HelpViewModel>()
+  private lateinit var binding: HelpFragmentBinding
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val binding: HelpFragmentBinding =
-      HelpFragmentBinding.inflate(
-        inflater,
-        container,
-        /* attachToRoot= */ false
-      )
-    binding.lifecycleOwner = fragment
+    val viewModel = getHelpListViewModel()
+
+    binding = HelpFragmentBinding.inflate(inflater, container, /* attachToRoot = */ false)
     binding.helpFragmentRecyclerView.apply {
-      adapter = HelpCategoryAdapter(activity, getRecyclerViewItemList())
-      layoutManager = LinearLayoutManager(activity)
+      layoutManager = LinearLayoutManager(activity.applicationContext)
+      adapter = createRecyclerViewAdapter()
+    }
+
+    binding.let {
+      it.lifecycleOwner = fragment
+      it.viewModel = viewModel
     }
     return binding.root
   }
 
-  private fun getRecyclerViewItemList(): ArrayList<HelpViewModel> {
-    for (item in HelpItems.values()) {
-      if (item == HelpItems.FAQ) {
-        val category1 = fragment.getString(R.string.frequently_asked_questions_FAQ)
-        val helpViewModel = HelpViewModel(category1)
-        arrayList.add(helpViewModel)
-      }
-    }
-    return arrayList
+  private fun createRecyclerViewAdapter(): BindableAdapter<HelpItemViewModel> {
+    return BindableAdapter.SingleTypeBuilder
+      .newBuilder<HelpItemViewModel>()
+      .registerViewDataBinderWithSameModelType(
+        inflateDataBinding = HelpItemBinding::inflate,
+        setViewModel = HelpItemBinding::setViewModel
+      ).build()
+  }
+
+  private fun getHelpListViewModel(): HelpListViewModel {
+    return viewModelProvider.getForFragment(fragment, HelpListViewModel::class.java)
   }
 }

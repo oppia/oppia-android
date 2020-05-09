@@ -30,10 +30,10 @@
         android:background="?attr/colorPrimary"
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
-        android:textSize="20sp"
         app:navigationContentDescription="@string/go_to_previous_page"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:title="@{viewModel.storyNameLiveData}"
+        app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -49,6 +49,7 @@
         android:id="@+id/story_chapter_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/white"
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingBottom="@dimen/bottom_white_space"

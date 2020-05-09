@@ -106,64 +106,86 @@ class ProfileTestHelperTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testInitializeProfiles_initializeProfiles_checkProfilesAreAddedAndCurrentIsSet() = runBlockingTest(coroutineContext) {
-    profileTestHelper.initializeProfiles().observeForever(mockUpdateResultObserver)
-    profileManagementController.getProfiles().observeForever(mockProfilesObserver)
-    advanceUntilIdle()
+  fun testInitializeProfiles_initializeProfiles_checkProfilesAreAddedAndCurrentIsSet() =
+    runBlockingTest(coroutineContext) {
+      profileTestHelper.initializeProfiles().observeForever(mockUpdateResultObserver)
+      profileManagementController.getProfiles().observeForever(mockProfilesObserver)
+      advanceUntilIdle()
 
-    verify(mockProfilesObserver, atLeastOnce()).onChanged(profilesResultCaptor.capture())
-    verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
-    assertThat(profilesResultCaptor.value.isSuccess()).isTrue()
-    assertThat(updateResultCaptor.value.isSuccess()).isTrue()
-    val profiles = profilesResultCaptor.value.getOrThrow()
-    assertThat(profiles[0].name).isEqualTo("Sean")
-    assertThat(profiles[0].isAdmin).isTrue()
-    assertThat(profiles[1].name).isEqualTo("Ben")
-    assertThat(profiles[1].isAdmin).isFalse()
-    assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(0)
-  }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testAddMoreProfiles_addMoreProfiles_checkProfilesAreAdded() = runBlockingTest(coroutineContext) {
-    profileTestHelper.addMoreProfiles(10)
-    advanceUntilIdle()
-    profileManagementController.getProfiles().observeForever(mockProfilesObserver)
-    advanceUntilIdle()
-
-    verify(mockProfilesObserver, atLeastOnce()).onChanged(profilesResultCaptor.capture())
-    assertThat(profilesResultCaptor.value.isSuccess()).isTrue()
-    assertThat(profilesResultCaptor.value.getOrThrow().size).isEqualTo(10)
-  }
+      verify(mockProfilesObserver, atLeastOnce()).onChanged(profilesResultCaptor.capture())
+      verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
+      assertThat(profilesResultCaptor.value.isSuccess()).isTrue()
+      assertThat(updateResultCaptor.value.isSuccess()).isTrue()
+      val profiles = profilesResultCaptor.value.getOrThrow()
+      assertThat(profiles[0].name).isEqualTo("Sean")
+      assertThat(profiles[0].isAdmin).isTrue()
+      assertThat(profiles[1].name).isEqualTo("Ben")
+      assertThat(profiles[1].isAdmin).isFalse()
+      assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(0)
+    }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testLoginToAdmin_initializeProfiles_loginToAdmin_checkIsSuccessful() = runBlockingTest(coroutineContext) {
-    profileTestHelper.initializeProfiles()
+  fun testInitializeProfiles_addOnlyAdminProfile_checkProfileIsAddedAndCurrentIsSet() =
+    runBlockingTest(coroutineContext) {
+      profileTestHelper.addOnlyAdminProfile().observeForever(mockUpdateResultObserver)
+      profileManagementController.getProfiles().observeForever(mockProfilesObserver)
+      advanceUntilIdle()
 
-    profileTestHelper.loginToAdmin().observeForever(mockUpdateResultObserver)
-    advanceUntilIdle()
-
-    verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
-    assertThat(updateResultCaptor.value.isSuccess()).isTrue()
-    assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(0)
-  }
+      verify(mockProfilesObserver, atLeastOnce()).onChanged(profilesResultCaptor.capture())
+      verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
+      assertThat(profilesResultCaptor.value.isSuccess()).isTrue()
+      assertThat(updateResultCaptor.value.isSuccess()).isTrue()
+      val profiles = profilesResultCaptor.value.getOrThrow()
+      assertThat(profiles.size).isEqualTo(1)
+      assertThat(profiles[0].name).isEqualTo("Sean")
+      assertThat(profiles[0].isAdmin).isTrue()
+      assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(0)
+    }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testLoginToUser_initializeProfiles_loginToUser_checkIsSuccessful() = runBlockingTest(coroutineContext) {
-    profileTestHelper.initializeProfiles()
+  fun testAddMoreProfiles_addMoreProfiles_checkProfilesAreAdded() =
+    runBlockingTest(coroutineContext) {
+      profileTestHelper.addMoreProfiles(10)
+      advanceUntilIdle()
+      profileManagementController.getProfiles().observeForever(mockProfilesObserver)
+      advanceUntilIdle()
 
-    profileTestHelper.loginToUser().observeForever(mockUpdateResultObserver)
-    advanceUntilIdle()
+      verify(mockProfilesObserver, atLeastOnce()).onChanged(profilesResultCaptor.capture())
+      assertThat(profilesResultCaptor.value.isSuccess()).isTrue()
+      assertThat(profilesResultCaptor.value.getOrThrow().size).isEqualTo(10)
+    }
 
-    verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
-    assertThat(updateResultCaptor.value.isSuccess()).isTrue()
-    assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(1)
-  }
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testLoginToAdmin_initializeProfiles_loginToAdmin_checkIsSuccessful() =
+    runBlockingTest(coroutineContext) {
+      profileTestHelper.initializeProfiles()
 
-  @Qualifier
-  annotation class TestDispatcher
+      profileTestHelper.loginToAdmin().observeForever(mockUpdateResultObserver)
+      advanceUntilIdle()
+
+      verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
+      assertThat(updateResultCaptor.value.isSuccess()).isTrue()
+      assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(0)
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testLoginToUser_initializeProfiles_loginToUser_checkIsSuccessful() =
+    runBlockingTest(coroutineContext) {
+      profileTestHelper.initializeProfiles()
+
+      profileTestHelper.loginToUser().observeForever(mockUpdateResultObserver)
+      advanceUntilIdle()
+
+      verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
+      assertThat(updateResultCaptor.value.isSuccess()).isTrue()
+      assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(1)
+    }
+
+  @Qualifier annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module

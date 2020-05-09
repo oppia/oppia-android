@@ -19,6 +19,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.CoroutineDispatcher
 import org.oppia.app.R
 import org.oppia.app.databinding.ContentItemBinding
 import org.oppia.app.databinding.ContinueInteractionItemBinding
@@ -39,8 +40,10 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.AnswerAndResponse
 import org.oppia.app.model.AnswerOutcome
 import org.oppia.app.model.EphemeralState
+import org.oppia.app.model.Hint
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.ProfileId
+import org.oppia.app.model.Solution
 import org.oppia.app.model.State
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.UserAnswer
@@ -72,7 +75,10 @@ import org.oppia.app.player.state.listener.PreviousResponsesHeaderClickListener
 import org.oppia.app.player.state.listener.ReturnToTopicNavigationButtonListener
 import org.oppia.app.player.state.listener.SubmitNavigationButtonListener
 import org.oppia.app.player.stopexploration.StopExplorationInterface
+import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
+import org.oppia.app.player.state.listener.StateNavigationButtonListener
 import org.oppia.app.recyclerview.BindableAdapter
+import org.oppia.app.utility.LifecycleSafeTimerFactory
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.ExplorationProgressController
@@ -81,7 +87,8 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.util.parser.HtmlParser
-import java.util.Date
+import org.oppia.util.threading.BackgroundDispatcher
+import java.util.*
 import javax.inject.Inject
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY = "STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY"
@@ -102,9 +109,15 @@ class StateFragmentPresenter @Inject constructor(
   private val storyProgressController: StoryProgressController,
   private val logger: Logger,
   private val htmlParserFactory: HtmlParser.Factory,
-  private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>
+  private val context: Context,
+  private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>,
+  private var lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
+  @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
 ) : PreviousResponsesHeaderClickListener {
 
+  private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
+
+  private lateinit var currentState: State
   private var feedbackId: String? = null
   private lateinit var profileId: ProfileId
   private lateinit var topicId: String
@@ -113,6 +126,11 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
+  private var newAvailableHintIndex: Int = -1
+  private var numberOfWrongAnswers: Int = -1
+  private var isNewWrongAnswerSubmitted: Boolean = false
+  private var allHintsExhausted: Boolean = false
+
   private val viewModel: StateViewModel by lazy {
     getStateViewModel()
   }
@@ -160,6 +178,14 @@ class StateFragmentPresenter @Inject constructor(
           binding.stateRecyclerView.scrollToPosition(stateRecyclerViewAdapter.itemCount - 1)
         }, 100)
       }
+    }
+
+    binding.hintsAndSolutionFragmentContainer.setOnClickListener {
+      routeToHintsAndSolutionListener.routeToHintsAndSolution(
+        explorationId,
+        newAvailableHintIndex,
+        allHintsExhausted
+      )
     }
 
     subscribeToCurrentState()
@@ -305,6 +331,14 @@ class StateFragmentPresenter @Inject constructor(
     handleSubmitAnswer(answer)
   }
 
+  fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
+    subscribeToHint(explorationProgressController.submitHintIsRevealed(currentState, saveUserChoice, hintIndex))
+  }
+
+  fun revealSolution(saveUserChoice: Boolean) {
+    subscribeToSolution(explorationProgressController.submitSolutionIsRevealed(currentState, saveUserChoice))
+  }
+
   private fun getStateViewModel(): StateViewModel {
     return viewModelProvider.getForFragment(fragment, StateViewModel::class.java)
   }
@@ -331,6 +365,9 @@ class StateFragmentPresenter @Inject constructor(
     val ephemeralState = result.getOrThrow()
     val hasPreviousState = ephemeralState.hasPreviousState
 
+
+    currentState = ephemeralState.state
+
     val scrollToTop =
       ::currentStateName.isInitialized && currentStateName != ephemeralState.state.name
 
@@ -344,6 +381,46 @@ class StateFragmentPresenter @Inject constructor(
     val interaction = ephemeralState.state.interaction
     if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE) {
       addPreviousAnswers(pendingItemList, ephemeralState.pendingState.wrongAnswerList)
+      numberOfWrongAnswers = ephemeralState.pendingState.wrongAnswerList.size
+      // Check if hints are available for this state.
+      if (ephemeralState.state.interaction.hintList.size != 0) {
+        // Check if user submits 1st wrong answer. The first hint is unlocked after 60s on submission of wrong answer.
+        if (ephemeralState.pendingState.wrongAnswerList.size == 1) {
+          lifecycleSafeTimerFactory.cancel()
+          lifecycleSafeTimerFactory = LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
+          if (!ephemeralState.state.interaction.hintList[0].hintIsRevealed) {
+            lifecycleSafeTimerFactory.createTimer(60000).observe(activity, Observer {
+              newAvailableHintIndex = 0
+              viewModel.setHintOpenedAndUnRevealedVisibility(true)
+              viewModel.setHintBulbVisibility(true)
+            })
+          }
+        } else if (!isNewWrongAnswerSubmitted) {
+          // Subsequent hints are unlocked at 30s intervals when no answer is submitted by the user.
+          for (index in 0 until ephemeralState.state.interaction.hintList.size) {
+            lifecycleSafeTimerFactory.cancel()
+            lifecycleSafeTimerFactory = LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
+
+            if (index != 0 && !ephemeralState.state.interaction.hintList[index].hintIsRevealed) {
+              lifecycleSafeTimerFactory.createTimer(30000).observe(activity, Observer {
+                newAvailableHintIndex = index
+                viewModel.setHintOpenedAndUnRevealedVisibility(true)
+                viewModel.setHintBulbVisibility(true)
+              })
+              break
+            } else if (index == (ephemeralState.state.interaction.hintList.size - 1) && !ephemeralState.state.interaction.solution.solutionIsRevealed) {
+              if (ephemeralState.state.interaction.solution.hasCorrectAnswer()) {
+                lifecycleSafeTimerFactory.createTimer(30000).observe(activity, Observer {
+                  allHintsExhausted = true
+                  viewModel.setHintOpenedAndUnRevealedVisibility(true)
+                  viewModel.setHintBulbVisibility(true)
+                })
+              }
+              break
+            }
+          }
+        }
+      }
       addInteractionForPendingState(pendingItemList, interaction, hasPreviousState)
     } else if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE) {
       addPreviousAnswers(pendingItemList, ephemeralState.completedState.answerList)
@@ -391,6 +468,36 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   /**
+   * This function listens to the result of RevealHint.
+   * Whenever a hint is revealed using ExplorationProgressController.submitHintIsRevealed function,
+   * this function will wait for the response from that function and based on which we can move to next state.
+   */
+  private fun subscribeToHint(hintResultLiveData: LiveData<AsyncResult<Hint>>) {
+    val hintLiveData = getHintIsRevealed(hintResultLiveData)
+    hintLiveData.observe(fragment, Observer<Hint> { result ->
+      // If the hint was revealed remove dot and radar.
+      if (result.hintIsRevealed) {
+        viewModel.setHintOpenedAndUnRevealedVisibility(false)
+      }
+    })
+  }
+
+  /**
+   * This function listens to the result of RevealSolution.
+   * Whenever a hint is revealed using ExplorationProgressController.submitHintIsRevealed function,
+   * this function will wait for the response from that function and based on which we can move to next state.
+   */
+  private fun subscribeToSolution(solutionResultLiveData: LiveData<AsyncResult<Solution>>) {
+    val solutionLiveData = getSolutionIsRevealed(solutionResultLiveData)
+    solutionLiveData.observe(fragment, Observer<Solution> { result ->
+      // If the hint was revealed remove dot and radar.
+      if (result.solutionIsRevealed) {
+        viewModel.setHintOpenedAndUnRevealedVisibility(false)
+      }
+    })
+  }
+
+  /**
    * This function listens to the result of submitAnswer.
    * Whenever an answer is submitted using ExplorationProgressController.submitAnswer function,
    * this function will wait for the response from that function and based on which we can move to next state.
@@ -400,9 +507,55 @@ class StateFragmentPresenter @Inject constructor(
     answerOutcomeLiveData.observe(fragment, Observer<AnswerOutcome> { result ->
       // If the answer was submitted on behalf of the Continue interaction, automatically continue to the next state.
       if (result.state.interaction.id == "Continue") {
-         moveToNextState()
-      } else if (result.labelledAsCorrectAnswer) {
-        showCongratulationMessageOnCorrectAnswer()
+        lifecycleSafeTimerFactory.cancel()
+        viewModel.setHintBulbVisibility(false)
+        moveToNextState()
+      } else {
+        if (result.labelledAsCorrectAnswer) {
+          lifecycleSafeTimerFactory.cancel()
+          viewModel.setHintBulbVisibility(false)
+          showCongratulationMessageOnCorrectAnswer()
+        } else {
+          numberOfWrongAnswers += 1
+          // Show new hint in 10sec on submitting new wrong answer. Cancel and Reinitialize timer.
+          if (numberOfWrongAnswers > 1) {
+            isNewWrongAnswerSubmitted = true
+            lifecycleSafeTimerFactory.cancel()
+            lifecycleSafeTimerFactory = LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
+            if (currentState.interaction.hintList.size != 0) {
+              for (index in 0 until currentState.interaction.hintList.size) {
+                if (index == 0 && !currentState.interaction.hintList[0].hintIsRevealed) {
+                  lifecycleSafeTimerFactory.createTimer(10000).observe(activity, Observer {
+                    newAvailableHintIndex = 0
+                    viewModel.setHintOpenedAndUnRevealedVisibility(true)
+                    viewModel.setHintBulbVisibility(true)
+                    isNewWrongAnswerSubmitted = false
+                  })
+                  break
+                }
+                if (index != 0 && !currentState.interaction.hintList[index].hintIsRevealed) {
+                  lifecycleSafeTimerFactory.createTimer(10000).observe(activity, Observer {
+                    newAvailableHintIndex = index
+                    viewModel.setHintOpenedAndUnRevealedVisibility(true)
+                    viewModel.setHintBulbVisibility(true)
+                    isNewWrongAnswerSubmitted = false
+                  })
+                  break
+                } else if (index == (currentState.interaction.hintList.size - 1) && !currentState.interaction.solution.solutionIsRevealed) {
+                  if (currentState.interaction.solution.hasCorrectAnswer()) {
+                    lifecycleSafeTimerFactory.createTimer(10000).observe(activity, Observer {
+                      allHintsExhausted = true
+                      viewModel.setHintOpenedAndUnRevealedVisibility(true)
+                      viewModel.setHintBulbVisibility(true)
+                      isNewWrongAnswerSubmitted = false
+                    })
+                  }
+                  break
+                }
+              }
+            }
+          }
+        }
         feedbackId = result.feedback.contentId
         if (isAudioShowing()) {
           (getAudioFragment() as AudioUiManager).loadFeedbackAudio(feedbackId!!, true)
@@ -432,14 +585,27 @@ class StateFragmentPresenter @Inject constructor(
       binding.congratulationTextView.clearAnimation()
       binding.congratulationTextView.visibility = View.INVISIBLE
     }, 2000)
+
+    lifecycleSafeTimerFactory.cancel()
+    viewModel.setHintBulbVisibility(false)
   }
 
-  /** Helper for subscribeToAnswerOutcome. */
+  /** Helper for [subscribeToSolution]. */
+  private fun getSolutionIsRevealed(hint: LiveData<AsyncResult<Solution>>): LiveData<Solution> {
+    return Transformations.map(hint, ::processSolution)
+  }
+
+  /** Helper for [subscribeToHint]. */
+  private fun getHintIsRevealed(hint: LiveData<AsyncResult<Hint>>): LiveData<Hint> {
+    return Transformations.map(hint, ::processHint)
+  }
+
+  /** Helper for [subscribeToAnswerOutcome]. */
   private fun getAnswerOutcome(answerOutcome: LiveData<AsyncResult<AnswerOutcome>>): LiveData<AnswerOutcome> {
     return Transformations.map(answerOutcome, ::processAnswerOutcome)
   }
 
-  /** Helper for subscribeToAnswerOutcome. */
+  /** Helper for [subscribeToAnswerOutcome]. */
   private fun processAnswerOutcome(ephemeralStateResult: AsyncResult<AnswerOutcome>): AnswerOutcome {
     if (ephemeralStateResult.isFailure()) {
       logger.e(
@@ -455,6 +621,30 @@ class StateFragmentPresenter @Inject constructor(
     hideKeyboard()
     markExplorationCompleted()
     (activity as StopExplorationInterface).stopExploration()
+  }
+
+  /** Helper for [subscribeToHint]. */
+  private fun processHint(hintResult: AsyncResult<Hint>): Hint {
+    if (hintResult.isFailure()) {
+      logger.e(
+        "StateFragment",
+        "Failed to retrieve Hint",
+        hintResult.getErrorOrNull()!!
+      )
+    }
+    return hintResult.getOrDefault(Hint.getDefaultInstance())
+  }
+
+  /** Helper for [subscribeToSolution]. */
+  private fun processSolution(solutionResult: AsyncResult<Solution>): Solution {
+    if (solutionResult.isFailure()) {
+      logger.e(
+        "StateFragment",
+        "Failed to retrieve Solution",
+        solutionResult.getErrorOrNull()!!
+      )
+    }
+    return solutionResult.getOrDefault(Solution.getDefaultInstance())
   }
 
   private fun showOrHideAudioByState(state: State) {
@@ -479,6 +669,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun onContinueButtonClicked() {
+    viewModel.setHintBulbVisibility(false)
     hideKeyboard()
     moveToNextState()
   }
@@ -644,11 +835,11 @@ class StateFragmentPresenter @Inject constructor(
 //    }
   }
 
-  private fun markExplorationAsRecentlyPlayed(){
-    storyProgressController.recordRecentlyPlayedChapter(profileId,topicId, storyId, explorationId, Date().time)
+  private fun markExplorationAsRecentlyPlayed() {
+    storyProgressController.recordRecentlyPlayedChapter(profileId, topicId, storyId, explorationId, Date().time)
   }
 
-  private fun markExplorationCompleted(){
-    storyProgressController.recordCompletedChapter(profileId,topicId, storyId, explorationId, Date().time)
+  private fun markExplorationCompleted() {
+    storyProgressController.recordCompletedChapter(profileId, topicId, storyId, explorationId, Date().time)
   }
 }

@@ -16,6 +16,11 @@ android {
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     // https://developer.android.com/training/testing/junit-runner#ato-gradle
     testInstrumentationRunnerArguments clearPackageData: 'true'
+    javaCompileOptions {
+      annotationProcessorOptions {
+        includeCompileClasspath true
+      }
+    }
   }
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_8
@@ -78,6 +83,7 @@ dependencies {
       'com.google.android.material:material:1.2.0-alpha02',
       'com.google.dagger:dagger:2.24',
       'com.google.guava:guava:28.1-android',
+      'com.jackandphantom.android:circularimageview:1.2.0',
       'de.hdodenhof:circleimageview:3.0.1',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
       'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1',
@@ -125,4 +131,10 @@ dependencies {
   androidTestImplementation project(":model")
   implementation project(":domain")
   implementation project(":utility")
+}
+// The GeneratedMessageLite implementations of protobufs are depending on protobuf-java
+// instead of protobuf-lite after Android Studio 3.5,
+// The below command stops that from happening: https://github.com/google/tink/issues/282
+configurations {
+  all*.exclude module: 'protobuf-java'
 }

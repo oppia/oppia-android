@@ -55,8 +55,9 @@ class StateFragmentTest {
   //  5. Configuration change after submitting the wrong answer to show that the old answer & re-ask of the question stay the same.
   //  6. Backward/forward navigation along with configuration changes to verify that you stay on the navigated state.
   //  7. Verifying that old answers were present when navigation backward/forward.
-  //  8. Testing all possible invalid/error input cases for each interaction.
-  //  9. Testing interactions with custom Oppia tags (including images) render correctly (when manually inspected) and are correctly functional.
+  //  8. Testing providing the wrong answer and showing hints.
+  //  9. Testing all possible invalid/error input cases for each interaction.
+  //  10. Testing interactions with custom Oppia tags (including images) render correctly (when manually inspected) and are correctly functional.
   // TODO(#56): Add support for testing that previous/next button states are properly retained on config changes.
 
   @Test

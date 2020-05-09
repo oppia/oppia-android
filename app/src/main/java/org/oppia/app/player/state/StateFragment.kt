@@ -78,4 +78,12 @@ class StateFragment : InjectableFragment(), InteractionAnswerReceiver, Interacti
   fun setAudioBarVisibility(visibility: Boolean) = stateFragmentPresenter.setAudioBarVisibility(visibility)
 
   fun scrollToTop() = stateFragmentPresenter.scrollToTop()
+
+  fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
+    stateFragmentPresenter.revealHint(saveUserChoice, hintIndex)
+  }
+
+  fun revealSolution(saveUserChoice: Boolean) {
+    stateFragmentPresenter.revealSolution(saveUserChoice)
+  }
 }
