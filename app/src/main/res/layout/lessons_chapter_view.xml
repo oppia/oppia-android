@@ -24,16 +24,15 @@
     android:minHeight="48dp"
     android:orientation="horizontal"
     android:paddingStart="4dp"
-    android:paddingTop="8dp"
-    android:paddingEnd="4dp"
-    android:paddingBottom="8dp">
+    android:paddingTop="4dp"
+    android:paddingEnd="4dp">
 
     <ImageView
       android:id="@+id/chapter_completed"
       android:layout_width="16dp"
       android:layout_height="16dp"
-      android:layout_marginStart="4dp"
-      android:layout_marginEnd="4dp"
+      android:layout_marginStart="16dp"
+      android:layout_marginEnd="8dp"
       android:contentDescription="@{String.format(@string/chapter_completed, (index + 1), chapterSummary.name)}"
       android:src="@drawable/ic_check_24dp"
       android:visibility="@{(chapterSummary.chapterPlayState != ChapterPlayState.COMPLETED)?View.INVISIBLE : View.VISIBLE}" />
@@ -46,7 +45,7 @@
       android:fontFamily="sans-serif"
       android:text="@{String.format(@string/topic_play_chapter_index, (index + 1))}"
       android:textColor="@{chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/oppiaPrimaryText : @color/oppiaPrimaryText30}"
-      android:textSize="12sp" />
+      android:textSize="14sp" />
 
     <TextView
       android:id="@+id/chapter_name"
@@ -55,8 +54,9 @@
       android:layout_marginEnd="4dp"
       android:layout_marginStart="4dp"
       android:fontFamily="sans-serif"
+      android:layout_marginBottom="28dp"
       android:text="@{chapterSummary.name}"
       android:textColor="@{chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/oppiaPrimaryText : @color/oppiaPrimaryText30}"
-      android:textSize="12sp" />
+      android:textSize="14sp" />
   </LinearLayout>
 </layout>

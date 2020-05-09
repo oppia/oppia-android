@@ -26,6 +26,11 @@ class ProfileEditActivity : InjectableAppCompatActivity() {
     profileEditActivityPresenter.handleOnCreate()
   }
 
+  override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+    super.onRestoreInstanceState(savedInstanceState)
+    profileEditActivityPresenter.handleOnRestoreSavedInstanceState()
+  }
+
   override fun onSupportNavigateUp(): Boolean {
     val intent = Intent(this, ProfileListActivity::class.java)
     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)

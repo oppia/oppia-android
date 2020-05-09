@@ -1,12 +1,12 @@
 package org.oppia.data.backends.gae
 
+import java.io.IOException
+import javax.inject.Inject
+import javax.inject.Singleton
 import okhttp3.Interceptor
 import okhttp3.Response
 import okhttp3.ResponseBody
 import org.oppia.data.Constants
-import java.io.IOException
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Interceptor on top of Retrofit to modify requests and response.

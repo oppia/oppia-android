@@ -11,6 +11,12 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import javax.inject.Inject
+import javax.inject.Qualifier
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -34,12 +40,6 @@ import org.oppia.util.data.DataProviders
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import javax.inject.Inject
-import javax.inject.Qualifier
-import javax.inject.Singleton
 
 private const val CACHE_NAME_1 = "test_cache_1"
 private const val CACHE_NAME_2 = "test_cache_2"
@@ -506,7 +506,7 @@ class PersistentCacheStoreTest {
   }
 
   @ExperimentalCoroutinesApi
-  private fun <T: MessageLite> observeCache(cacheStore: PersistentCacheStore<T>, observer: Observer<AsyncResult<T>>) {
+  private fun <T : MessageLite> observeCache(cacheStore: PersistentCacheStore<T>, observer: Observer<AsyncResult<T>>) {
     dataProviders.convertToLiveData(cacheStore).observeForever(observer)
     testDispatcher.advanceUntilIdle()
   }

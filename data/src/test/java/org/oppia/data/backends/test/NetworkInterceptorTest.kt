@@ -8,6 +8,9 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Qualifier
+import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -16,9 +19,6 @@ import org.oppia.data.backends.api.MockTopicService
 import org.oppia.data.backends.gae.NetworkInterceptor
 import org.oppia.data.backends.gae.NetworkModule
 import retrofit2.Retrofit
-import javax.inject.Inject
-import javax.inject.Qualifier
-import javax.inject.Singleton
 
 /** Tests for [NetworkInterceptor] */
 @RunWith(AndroidJUnit4::class)

@@ -10,6 +10,7 @@ import javax.inject.Inject
 class WalkthroughActivity : InjectableAppCompatActivity(), WalkthroughFragmentChangeListener {
   @Inject lateinit var walkthroughActivityPresenter: WalkthroughActivityPresenter
 
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
