@@ -657,10 +657,9 @@ class StateFragmentPresenter @Inject constructor(
 
   fun handleKeyboardAction() {
     hideKeyboard()
-    // TODO(BenHenning): Fix the interaction button not being active.
-//    if (stateNavigationButtonViewModel.isInteractionButtonActive.get()!!) {
+    if (viewModel.getCanSubmitAnswer().get() == true) {
       handleSubmitAnswer(viewModel.getPendingAnswer())
-//    }
+    }
   }
 
   fun onContinueButtonClicked() {
@@ -792,7 +791,10 @@ class StateFragmentPresenter @Inject constructor(
         fragment as ReturnToTopicNavigationButtonListener
       )
       viewModel.doesMostRecentInteractionRequireExplicitSubmission(pendingItemList) -> SubmitButtonViewModel(
-        hasPreviousState, fragment as PreviousNavigationButtonListener, fragment as SubmitNavigationButtonListener
+        viewModel.getCanSubmitAnswer(),
+        hasPreviousState,
+        fragment as PreviousNavigationButtonListener,
+        fragment as SubmitNavigationButtonListener
       )
       // Otherwise, just show the previous button since the interaction itself will push the answer submission.
       hasPreviousState && !viewModel.isMostRecentInteractionAutoNavigating(pendingItemList) -> PreviousButtonViewModel(
@@ -822,12 +824,7 @@ class StateFragmentPresenter @Inject constructor(
 
   /** Updates submit button UI as active if pendingAnswerError null else inactive. */
   fun updateSubmitButton(pendingAnswerError: String?) {
-    // TODO(BenHenning): Fix the interaction button not being active, including styling.
-//    if (pendingAnswerError != null) {
-//      stateNavigationButtonViewModel.isInteractionButtonActive.set(false)
-//    } else {
-//      stateNavigationButtonViewModel.isInteractionButtonActive.set(true)
-//    }
+    viewModel.setCanSubmitAnswer(pendingAnswerError == null)
   }
 
   private fun markExplorationAsRecentlyPlayed() {

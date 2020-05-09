@@ -20,6 +20,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -131,6 +132,38 @@ class StateFragmentTest {
       onView(withId(R.id.submit_answer_button)).perform(click())
 
       onView(withId(R.id.continue_navigation_button)).check(matches(withText(R.string.state_continue_button)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_secondState_submitInvalidAnswer_disablesSubmitAndShowsError() {
+    launchForExploration(TEST_EXPLORATION_ID_30).use {
+      startPlayingExploration()
+      onView(withId(R.id.continue_button)).perform(click())
+
+      // Attempt to submit an invalid answer.
+      onView(withId(R.id.fraction_input_interaction_view)).perform(typeText("1/"))
+      onView(withId(R.id.submit_answer_button)).perform(click())
+
+      // The submission button should now be disabled and there should be an error.
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())));
+      onView(withId(R.id.fraction_input_error)).check(matches(isDisplayed()));
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_secondState_invalidAnswer_updated_reenabledSubmitButton() {
+    launchForExploration(TEST_EXPLORATION_ID_30).use {
+      startPlayingExploration()
+      onView(withId(R.id.continue_button)).perform(click())
+      onView(withId(R.id.fraction_input_interaction_view)).perform(typeText("1/"))
+      onView(withId(R.id.submit_answer_button)).perform(click())
+
+      // Add another '2' to change the pending input text.
+      onView(withId(R.id.fraction_input_interaction_view)).perform(typeText("2"))
+
+      // The submit button should be re-enabled since the text view changed.
+      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()));
     }
   }
 
