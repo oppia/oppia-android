@@ -18,7 +18,8 @@ private const val TEST_ACTIVITY_TAG = "TestActivity"
 /** The presenter for [StateFragmentTestActivity] */
 @ActivityScope
 class StateFragmentTestActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity, private val explorationDataController: ExplorationDataController,
+  private val activity: AppCompatActivity,
+  private val explorationDataController: ExplorationDataController,
   private val logger: Logger
 ) {
   fun handleOnCreate() {

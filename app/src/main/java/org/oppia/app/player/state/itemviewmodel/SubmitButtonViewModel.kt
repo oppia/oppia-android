@@ -4,7 +4,7 @@ import androidx.databinding.ObservableField
 import org.oppia.app.player.state.listener.PreviousNavigationButtonListener
 import org.oppia.app.player.state.listener.SubmitNavigationButtonListener
 
-/** [StateItemViewModel] for navigation to previous cards and submitting new answers. */
+/** [StateItemViewModel] for navigation to previous states and submitting new answers. */
 class SubmitButtonViewModel(
   val canSubmitAnswer: ObservableField<Boolean>,
   val hasPreviousButton: Boolean,
