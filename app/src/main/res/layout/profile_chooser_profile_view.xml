@@ -4,7 +4,13 @@
   xmlns:profile="http://schemas.android.com/tools">
 
   <data>
+
     <import type="android.view.View" />
+
+    <variable
+      name="presenter"
+      type="org.oppia.app.profile.ProfileChooserFragmentPresenter" />
+
     <variable
       name="viewModel"
       type="org.oppia.app.model.ProfileChooserUiModel" />
@@ -13,8 +19,8 @@
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="24dp"
     android:gravity="center_horizontal"
+    android:layout_marginBottom="24dp"
     android:orientation="vertical">
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -30,10 +36,28 @@
       android:id="@+id/profile_name_text"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:ellipsize="end"
       android:fontFamily="sans-serif-medium"
+      android:gravity="center"
+      android:maxLines="2"
+      android:paddingStart="8dp"
+      android:paddingEnd="8dp"
+      android:singleLine="false"
       android:text="@{viewModel.profile.name}"
       android:textColor="@color/white"
       android:textSize="14sp" />
+
+    <TextView
+      android:id="@+id/profile_last_visited"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="2dp"
+      android:fontFamily="sans-serif-light"
+      android:textColor="@color/white"
+      android:textSize="12sp"
+      android:textStyle="italic"
+      android:visibility="@{viewModel.profile.lastLoggedInTimestampMs > 0 ? View.VISIBLE : View.GONE}"
+      profile:lastVisited="@{viewModel.profile.lastLoggedInTimestampMs}" />
 
     <TextView
       android:id="@+id/profile_is_admin_text"
@@ -41,10 +65,21 @@
       android:layout_height="wrap_content"
       android:layout_marginTop="2dp"
       android:fontFamily="sans-serif-light"
+      android:gravity="center"
+      android:paddingStart="8dp"
+      android:paddingEnd="8dp"
       android:text="@string/profile_chooser_admin"
       android:textColor="@color/white"
       android:textSize="12sp"
       android:textStyle="italic"
       android:visibility="@{viewModel.profile.isAdmin ? View.VISIBLE : View.GONE}" />
+
+    <View
+      android:id="@+id/add_profile_divider_view"
+      android:layout_width="match_parent"
+      android:layout_height="0.5dp"
+      android:layout_marginTop="24dp"
+      android:visibility="@{presenter.wasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}"
+      android:background="@color/oppiaProfileChooserDivider" />
   </LinearLayout>
 </layout>

@@ -10,5 +10,4 @@ interface SubtopicService {
 
   @GET("subtopic_data_handler/{topic_name}/{subtopic_id}")
   fun getSubtopic(@Path("topic_name") topicName: String, @Path("subtopic_id") subtopicId: String): Call<GaeSubtopic>
-
 }

@@ -32,7 +32,9 @@ import org.oppia.app.model.EphemeralState.StateTypeCase.COMPLETED_STATE
 import org.oppia.app.model.EphemeralState.StateTypeCase.PENDING_STATE
 import org.oppia.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
 import org.oppia.app.model.Exploration
+import org.oppia.app.model.Hint
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.Solution
 import org.oppia.app.model.UserAnswer
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
@@ -88,26 +90,23 @@ class ExplorationProgressControllerTest {
   @field:TestDispatcher
   lateinit var testDispatcher: TestCoroutineDispatcher
 
-  @Mock
-  lateinit var mockCurrentStateLiveDataObserver: Observer<AsyncResult<EphemeralState>>
+  @Mock lateinit var mockCurrentStateLiveDataObserver: Observer<AsyncResult<EphemeralState>>
 
-  @Mock
-  lateinit var mockCurrentStateLiveDataObserver2: Observer<AsyncResult<EphemeralState>>
+  @Mock lateinit var mockCurrentStateLiveDataObserver2: Observer<AsyncResult<EphemeralState>>
 
-  @Mock
-  lateinit var mockAsyncResultLiveDataObserver: Observer<AsyncResult<Any?>>
+  @Mock lateinit var mockAsyncResultLiveDataObserver: Observer<AsyncResult<Any?>>
 
-  @Mock
-  lateinit var mockAsyncAnswerOutcomeObserver: Observer<AsyncResult<AnswerOutcome>>
+  @Mock lateinit var mockAsyncAnswerOutcomeObserver: Observer<AsyncResult<AnswerOutcome>>
 
-  @Captor
-  lateinit var currentStateResultCaptor: ArgumentCaptor<AsyncResult<EphemeralState>>
+  @Mock lateinit var mockAsyncHintObserver: Observer<AsyncResult<Hint>>
 
-  @Captor
-  lateinit var asyncResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
+  @Mock lateinit var mockAsyncSolutionObserver: Observer<AsyncResult<Solution>>
 
-  @Captor
-  lateinit var asyncAnswerOutcomeCaptor: ArgumentCaptor<AsyncResult<AnswerOutcome>>
+  @Captor lateinit var currentStateResultCaptor: ArgumentCaptor<AsyncResult<EphemeralState>>
+
+  @Captor lateinit var asyncResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
+
+  @Captor lateinit var asyncAnswerOutcomeCaptor: ArgumentCaptor<AsyncResult<AnswerOutcome>>
 
   @ExperimentalCoroutinesApi
   private val coroutineContext by lazy {
@@ -722,6 +721,123 @@ class ExplorationProgressControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
+  fun testSubmitAnswer_forTextInput_wrongAnswer_returnsDefaultOutcome_showHint() = runBlockingTest(
+    coroutineContext
+  ) {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(TEST_EXPLORATION_ID_5)
+    submitMultipleChoiceAnswerAndMoveToNextState(0)
+
+    val result = explorationProgressController.submitAnswer(createTextInputAnswer("Klingon"))
+    result.observeForever(mockAsyncAnswerOutcomeObserver)
+    advanceUntilIdle()
+
+    // Verify that the current state updates. It should stay pending, and the wrong answer should be appended.
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
+    assertThat(currentState.pendingState.wrongAnswerCount).isEqualTo(1)
+    val answerAndFeedback = currentState.pendingState.getWrongAnswer(0)
+    assertThat(answerAndFeedback.userAnswer.answer.normalizedString).isEqualTo("Klingon")
+    assertThat(answerAndFeedback.feedback.html).contains("Sorry, nope")
+    val hintAndSolution = currentState.state.interaction.getHint(0)
+    assertThat(hintAndSolution.hintContent.html).contains("Start by finding the denominator")
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testRevealHint_forWrongAnswer_showHint_returnHintIsRevealed() = runBlockingTest(
+    coroutineContext
+  ) {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(TEST_EXPLORATION_ID_5)
+    submitMultipleChoiceAnswerAndMoveToNextState(0)
+
+    // Verify that the current state updates. It should stay pending, on submission of wrong answer.
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+
+    val result = explorationProgressController.submitHintIsRevealed(currentState.state, true, 0)
+    result.observeForever(mockAsyncHintObserver)
+    advanceUntilIdle()
+
+    assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
+
+    val hintAndSolution = currentState.state.interaction.getHint(0)
+    assertThat(hintAndSolution.hintContent.html).contains("Start by finding the denominator")
+
+    // Verify that the current state updates. Hint revealed is true.
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val updatedState = currentStateResultCaptor.value.getOrThrow()
+
+    assertThat(updatedState.state.interaction.getHint(0).hintIsRevealed).isTrue()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testRevealSolution_forWrongAnswer_showSolution_returnSolutionIsRevealed() = runBlockingTest(
+    coroutineContext
+  ) {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(TEST_EXPLORATION_ID_5)
+    submitMultipleChoiceAnswerAndMoveToNextState(0)
+
+    // Verify that the current state updates. It should stay pending, on submission of wrong answer.
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+
+    val result = explorationProgressController.submitSolutionIsRevealed(currentState.state, true)
+    result.observeForever(mockAsyncSolutionObserver)
+    advanceUntilIdle()
+
+    assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
+
+    // Verify that the current state updates. Solution revealed is true.
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val updatedState = currentStateResultCaptor.value.getOrThrow()
+
+    assertThat(updatedState.state.interaction.solution.solutionIsRevealed).isTrue()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testSubmitAnswer_forTextInput_wrongAnswer_afterAllHintsAreExhausted_showSolution() = runBlockingTest(
+    coroutineContext
+  ) {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(TEST_EXPLORATION_ID_5)
+    submitMultipleChoiceAnswerAndMoveToNextState(0)
+
+    val result = explorationProgressController.submitAnswer(createTextInputAnswer("Klingon"))
+    result.observeForever(mockAsyncAnswerOutcomeObserver)
+    advanceUntilIdle()
+
+    // Verify that the current state updates. It should stay pending, and the wrong answer should be appended.
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
+    assertThat(currentState.pendingState.wrongAnswerCount).isEqualTo(1)
+
+    val hint1 = currentState.state.interaction.getHint(0)
+    assertThat(hint1.hintContent.html).contains("Start by finding the denominator")
+    val hint2 = currentState.state.interaction.getHint(1)
+    assertThat(hint2.hintContent.html).contains("Next, find the numerator by counting the number of selected parts.")
+    val hint3 = currentState.state.interaction.getHint(2)
+    assertThat(hint3.hintContent.html).contains("Always be careful about what you're counting. The question will have clues!")
+
+    val solution = currentState.state.interaction.solution
+    assertThat(solution.correctAnswer.correctAnswer).isEqualTo("3")
+    assertThat(solution.explanation.html).contains("The denominator of a fraction is the second number in the fraction.")
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
   fun testGetCurrentState_secondState_submitRightAnswer_pendingStateBecomesCompleted() = runBlockingTest(
     coroutineContext
   ) {
@@ -1247,7 +1363,8 @@ class ExplorationProgressControllerTest {
 
   private fun createContinueButtonAnswer() = createTextInputAnswer(DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER)
 
-  @Qualifier annotation class TestDispatcher
+  @Qualifier
+  annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module
@@ -1297,11 +1414,13 @@ class ExplorationProgressControllerTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [
-    TestModule::class, ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
-    MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
-    TextInputRuleModule::class, InteractionsModule::class
-  ])
+  @Component(
+    modules = [
+      TestModule::class, ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
+      MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
+      TextInputRuleModule::class, InteractionsModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
