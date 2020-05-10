@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.text.Spannable
 import android.widget.TextView
@@ -40,6 +41,7 @@ import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
+import org.oppia.util.parser.CustomBulletSpan
 import org.oppia.util.parser.DefaultGcsPrefix
 import org.oppia.util.parser.GlideImageLoader
 import org.oppia.util.parser.HtmlParser
@@ -57,8 +59,7 @@ import javax.inject.Singleton
 class HtmlParserTest {
 
   private lateinit var launchedActivity: Activity
-  @Inject
-  lateinit var htmlParserFactory: HtmlParser.Factory
+  @Inject lateinit var htmlParserFactory: HtmlParser.Factory
   @Inject
   @field:DefaultResourceBucketName
   lateinit var resourceBucketName: String
@@ -88,7 +89,7 @@ class HtmlParserTest {
   fun tearDown() {
     Intents.release()
   }
-  
+
   private fun setUpTestApplicationComponent() {
     DaggerHtmlParserTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
@@ -135,14 +136,41 @@ class HtmlParserTest {
     onView(withId(R.id.test_html_content_text_view)).check(matches(not(textView.text.toString())))
   }
 
+  @Test
+  fun testHtmlContent_customSpan_isAdded() {
+    val textView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName, /* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true
+    )
+    val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+      "<p>You should know the following before going on:<br></p>" +
+          "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +
+          "<li>How to tell whether one counting number is bigger or smaller than another<br></li></ul>",
+      textView
+    )
+
+    /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
+    val bulletSpans = htmlResult.getSpans<CustomBulletSpan>(0, htmlResult.length, CustomBulletSpan::class.java)
+    assertThat(bulletSpans.size.toLong()).isEqualTo(2)
+
+    val bulletSpan0 = bulletSpans[0] as CustomBulletSpan
+    assertThat(bulletSpan0).isNotNull()
+
+    val bulletSpan1 = bulletSpans[1] as CustomBulletSpan
+    assertThat(bulletSpan1).isNotNull()
+  }
+
   class FakeImageLoader : ImageLoader {
     override fun load(imageUrl: String, target: CustomTarget<Bitmap>) {
 
     }
   }
 
-  @Qualifier
-  annotation class TestDispatcher
+  private fun getResources(): Resources {
+    return ApplicationProvider.getApplicationContext<Context>().resources
+  }
+
+  @Qualifier annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module

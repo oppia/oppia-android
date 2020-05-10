@@ -9,3 +9,7 @@ annotation class ExplorationHtmlParserEntityType
 /** Qualifier for injecting the entity type for concept card. */
 @Qualifier
 annotation class ConceptCardHtmlParserEntityType
+
+/** Qualifier for injecting the entity type for review card. */
+@Qualifier
+annotation class RevisionCardHtmlParserEntityType

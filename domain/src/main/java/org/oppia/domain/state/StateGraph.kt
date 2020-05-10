@@ -1,7 +1,9 @@
 package org.oppia.domain.state
 
 import org.oppia.app.model.AnswerOutcome
+import org.oppia.app.model.Hint
 import org.oppia.app.model.Outcome
+import org.oppia.app.model.Solution
 import org.oppia.app.model.State
 
 /**
@@ -32,9 +34,27 @@ internal class StateGraph internal constructor(
         answerOutcomeBuilder.refresherExplorationId = outcome.refresherExplorationId
       outcome.missingPrerequisiteSkillId.isNotEmpty() ->
         answerOutcomeBuilder.missingPrerequisiteSkillId = outcome.missingPrerequisiteSkillId
-      outcome.destStateName == currentState.name -> answerOutcomeBuilder.setSameState(true)
+      outcome.destStateName == currentState.name -> answerOutcomeBuilder.sameState = true
       else -> answerOutcomeBuilder.stateName = outcome.destStateName
     }
     return answerOutcomeBuilder.build()
+  }
+
+  /** Returns an [Hint] based on the current state and revealed [Hint] from the learner's answer. */
+  internal fun computeHintForResult(currentState: State, hintIsRevealed: Boolean, hintIndex: Int): Hint {
+    return Hint.newBuilder()
+      .setHintIsRevealed(hintIsRevealed)
+      .setHintContent(currentState.interaction.getHint(hintIndex).hintContent)
+      .setState(currentState)
+      .build()
+  }
+
+  /** Returns an [Solution] based on the current state and revealed [Solution] from the learner's answer. */
+  internal fun computeSolutionForResult(currentState: State, solutionIsRevealed: Boolean): Solution {
+    return Solution.newBuilder()
+      .setSolutionIsRevealed(solutionIsRevealed)
+      .setAnswerIsExclusive(currentState.interaction.solution.answerIsExclusive)
+      .setCorrectAnswer(currentState.interaction.solution.correctAnswer)
+      .setExplanation(currentState.interaction.solution.explanation).build()
   }
 }

@@ -1,0 +1,50 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+  compileSdkVersion 28
+  buildToolsVersion "29.0.1"
+
+  defaultConfig {
+    minSdkVersion 19
+    targetSdkVersion 28
+    versionCode 1
+    versionName "1.0"
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+
+  kotlinOptions {
+    jvmTarget = JavaVersion.VERSION_1_8
+  }
+}
+
+dependencies {
+  implementation fileTree(dir: 'libs', include: ['*.jar'])
+  implementation(
+      'androidx.annotation:annotation:1.1.0',
+      'com.google.dagger:dagger:2.24',
+      'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
+      'org.robolectric:robolectric:4.3',
+      project(":utility"),
+  )
+  testImplementation(
+      'androidx.test.ext:junit:1.1.1',
+      'com.google.truth:truth:0.43',
+      'junit:junit:4.12',
+  )
+  kapt(
+      'com.google.dagger:dagger-compiler:2.24',
+  )
+  kaptTest(
+      'com.google.dagger:dagger-compiler:2.24',
+  )
+  annotationProcessor(
+      'com.google.auto.service:auto-service:1.0-rc4',
+  )
+}

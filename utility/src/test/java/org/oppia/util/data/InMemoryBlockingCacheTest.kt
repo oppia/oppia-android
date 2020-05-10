@@ -9,6 +9,12 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Qualifier
+import javax.inject.Singleton
+import kotlin.reflect.KClass
+import kotlin.reflect.full.cast
+import kotlin.test.fail
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -21,12 +27,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
-import javax.inject.Inject
-import javax.inject.Qualifier
-import javax.inject.Singleton
-import kotlin.reflect.KClass
-import kotlin.reflect.full.cast
-import kotlin.test.fail
 
 private const val INITIALIZED_CACHE_VALUE = "inited cache value"
 private const val CREATED_CACHE_VALUE = "created cache value"
@@ -38,8 +38,7 @@ private const val UPDATED_ASYNC_VALUE = "updated async value"
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
 class InMemoryBlockingCacheTest {
-  @Inject
-  lateinit var cacheFactory: InMemoryBlockingCache.Factory
+  @Inject lateinit var cacheFactory: InMemoryBlockingCache.Factory
 
   @ExperimentalCoroutinesApi
   @Inject
@@ -732,7 +731,7 @@ class InMemoryBlockingCacheTest {
 
   // TODO(#89): Move to a common test library.
   /** A replacement to JUnit5's assertThrows() with Kotlin suspend coroutine support. */
-  private suspend fun <T: Throwable> assertThrowsAsync(type: KClass<T>, operation: suspend () -> Unit): T {
+  private suspend fun <T : Throwable> assertThrowsAsync(type: KClass<T>, operation: suspend () -> Unit): T {
     try {
       operation()
       fail("Expected to encounter exception of $type")

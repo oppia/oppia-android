@@ -12,6 +12,11 @@ android {
     targetSdkVersion 28
     versionCode 1
     versionName "1.0"
+    javaCompileOptions {
+      annotationProcessorOptions {
+        includeCompileClasspath true
+      }
+    }
   }
 
   compileOptions {
@@ -43,7 +48,8 @@ dependencies {
       'androidx.appcompat:appcompat:1.0.2',
       'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03',
       'com.google.dagger:dagger:2.24',
-      "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+      "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
+      'androidx.exifinterface:exifinterface:1.0.0-rc01'
   )
   testImplementation(
       'android.arch.core:core-testing:1.1.1',
@@ -58,12 +64,13 @@ dependencies {
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
       'org.mockito:mockito-core:2.19.0',
       'org.robolectric:robolectric:4.3',
+      project(":testing"),
   )
   kapt(
-      'com.google.dagger:dagger-compiler:2.24'
+      'com.google.dagger:dagger-compiler:2.24',
   )
   kaptTest(
-      'com.google.dagger:dagger-compiler:2.24'
+      'com.google.dagger:dagger-compiler:2.24',
   )
   // TODO(#59): Avoid needing to expose data implementations to other modules in order to make Oppia symbols
   // sufficiently visible for generated Dagger code. This can be done more cleanly via Bazel since dependencies can be
@@ -74,4 +81,10 @@ dependencies {
 }
 repositories {
   mavenCentral()
+}
+// The GeneratedMessageLite implementations of protobufs are depending on protobuf-java
+// instead of protobuf-lite after Android Studio 3.5,
+// The below command stops that from happening: https://github.com/google/tink/issues/282
+configurations {
+  all*.exclude module: 'protobuf-java'
 }

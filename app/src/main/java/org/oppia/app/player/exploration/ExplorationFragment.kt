@@ -24,4 +24,16 @@ class ExplorationFragment : InjectableFragment() {
   fun handlePlayAudio() = explorationFragmentPresenter.handlePlayAudio()
 
   fun onKeyboardAction() = explorationFragmentPresenter.onKeyboardAction()
+
+  fun setAudioBarVisibility(isVisible: Boolean) = explorationFragmentPresenter.setAudioBarVisibility(isVisible)
+
+  fun scrollToTop() = explorationFragmentPresenter.scrollToTop()
+
+  fun revealHint(saveUserChoice: Boolean, hintIndex: Int){
+    explorationFragmentPresenter.revealHint(saveUserChoice, hintIndex)
+  }
+
+  fun revealSolution(saveUserChoice: Boolean){
+    explorationFragmentPresenter.revealSolution(saveUserChoice)
+  }
 }
