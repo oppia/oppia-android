@@ -3,13 +3,11 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
-
     <import type="org.oppia.app.player.audio.AudioViewModel.UiAudioPlayStatus" />
-
+    <import type="android.view.View" />
     <variable
       name="audioFragment"
       type="org.oppia.app.player.audio.AudioFragment" />
-
     <variable
       name="viewModel"
       type="org.oppia.app.player.audio.AudioViewModel" />
@@ -56,6 +54,8 @@
       android:progressDrawable="@drawable/audio_seekbar_background"
       android:splitTrack="false"
       android:thumb="@drawable/seekbar_thumb"
+      android:layout_marginStart="16dp"
+      android:thumbOffset="16dp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toStartOf="@+id/tvAudioLanguage"
       app:layout_constraintStart_toEndOf="@+id/ivPlayPauseAudio"
@@ -65,7 +65,6 @@
       android:id="@+id/tvAudioLanguage"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:clickable="@{viewModel.playStatusLiveData != UiAudioPlayStatus.LOADING}"
       android:fontFamily="sans-serif-medium"
       android:gravity="center"
       android:minWidth="48dp"

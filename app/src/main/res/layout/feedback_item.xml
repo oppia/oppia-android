@@ -10,24 +10,24 @@
   <FrameLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/content_blue_background"
     android:layout_marginStart="20dp"
-    android:layout_marginEnd="28dp"
     android:layout_marginTop="@dimen/divider_margin_top"
-    android:layout_marginBottom="@dimen/divider_margin_bottom">
+    android:layout_marginEnd="28dp"
+    android:layout_marginBottom="@dimen/divider_margin_bottom"
+    android:background="@drawable/content_blue_background">
 
     <TextView
       android:id="@+id/feedback_text_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:breakStrategy="simple"
+      android:fontFamily="sans-serif"
       android:paddingStart="12dp"
       android:paddingTop="16dp"
       android:paddingEnd="12dp"
       android:paddingBottom="16dp"
-      android:fontFamily="sans-serif"
       android:text="@{htmlContent}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp" />
   </FrameLayout>
-
 </layout>

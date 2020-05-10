@@ -1,48 +1,64 @@
 package org.oppia.app.player.audio
 
-import android.os.Bundle
+import android.app.AlertDialog
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.SeekBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
+import org.oppia.app.R
 import org.oppia.app.databinding.AudioFragmentBinding
 import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.Exploration
+import org.oppia.app.model.CellularDataPreference
 import org.oppia.app.model.State
-import org.oppia.app.model.VoiceoverMapping
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.exploration.ExplorationDataController
+import org.oppia.domain.audio.CellularAudioDialogController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.networking.NetworkConnectionUtil
 import javax.inject.Inject
 
-private const val TAG_LANGUAGE_DIALOG = "LANGUAGE_DIALOG"
-private const val KEY_SELECTED_LANGUAGE = "SELECTED_LANGUAGE"
-private const val KEY_LANGUAGE_LIST = "LANGUAGE_LIST"
+const val TAG_LANGUAGE_DIALOG = "LANGUAGE_DIALOG"
+private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
 
 /** The presenter for [AudioFragment]. */
 @FragmentScope
 class AudioFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<AudioViewModel>,
-  private val logger: Logger,
-  private val explorationDataController: ExplorationDataController
+  private val activity: AppCompatActivity,
+  private val context: Context,
+  private val cellularAudioDialogController: CellularAudioDialogController,
+  private val networkConnectionUtil: NetworkConnectionUtil,
+  private val viewModelProvider: ViewModelProvider<AudioViewModel>
 ) {
   var userIsSeeking = false
   var userProgress = 0
 
+  private var feedbackId: String? = null
+  private var showCellularDataDialog = true
+  private var useCellularData = false
   private var prepared = false
-  private var selectedLanguageCode: String = ""
-  private var languages = listOf<String>()
+  private val viewModel by lazy {
+    getAudioViewModel()
+  }
 
   /** Sets up SeekBar listener, ViewModel, and gets VoiceoverMappings or restores saved state */
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?, explorationId: String, stateId: String): View? {
+  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+    cellularAudioDialogController.getCellularDataPreference()
+      .observe(fragment, Observer<AsyncResult<CellularDataPreference>> {
+        if (it.isSuccess()) {
+          val prefs = it.getOrDefault(CellularDataPreference.getDefaultInstance())
+          showCellularDataDialog = !(prefs.hideDialog)
+          useCellularData = prefs.useCellularData
+        }
+      })
+
     val binding = AudioFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
-    binding.sbAudioProgress.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
+    binding.sbAudioProgress.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
       override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
         if (fromUser) {
           userProgress = progress
@@ -54,13 +70,10 @@ class AudioFragmentPresenter @Inject constructor(
       }
 
       override fun onStopTrackingTouch(seekBar: SeekBar?) {
-        getAudioViewModel().handleSeekTo(userProgress)
+        viewModel.handleSeekTo(userProgress)
         userIsSeeking = false
       }
     })
-
-    val viewModel = getAudioViewModel()
-    viewModel.setExplorationId(explorationId)
     viewModel.playStatusLiveData.observe(fragment, Observer {
       prepared = it != AudioViewModel.UiAudioPlayStatus.LOADING
       binding.sbAudioProgress.isEnabled = prepared
@@ -72,20 +85,13 @@ class AudioFragmentPresenter @Inject constructor(
       it.lifecycleOwner = fragment
     }
 
-    if (savedInstanceState != null) {
-      selectedLanguageCode = savedInstanceState.getString(KEY_SELECTED_LANGUAGE) ?: ""
-      languages = savedInstanceState.getStringArrayList(KEY_LANGUAGE_LIST) ?: ArrayList()
-    } else {
-      retrieveVoiceoverMappings(explorationId, stateId)
-    }
     return binding.root
   }
 
   /** Sets selected language code in presenter and ViewModel */
   fun languageSelected(language: String) {
-    if (language != selectedLanguageCode) {
-      selectedLanguageCode = language
-      getAudioViewModel().setAudioLanguageCode(language)
+    if (viewModel.selectedLanguageCode != language) {
+      viewModel.setAudioLanguageCode(language)
     }
   }
 
@@ -96,63 +102,132 @@ class AudioFragmentPresenter @Inject constructor(
       fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
     val dialogFragment = LanguageDialogFragment.newInstance(
-      languages as ArrayList<String>,
-      selectedLanguageCode
+      ArrayList(viewModel.languages),
+      viewModel.selectedLanguageCode
     )
     dialogFragment.showNow(fragment.childFragmentManager, TAG_LANGUAGE_DIALOG)
   }
 
-  /** Save selected language and language list to bundle */
-  fun handleSaveInstanceState(outstate: Bundle) {
-    outstate.putString(KEY_SELECTED_LANGUAGE, selectedLanguageCode)
-    outstate.putStringArrayList(KEY_LANGUAGE_LIST, ArrayList(languages))
-  }
-
   /** Pauses audio if in prepared state */
   fun handleOnStop() {
-    if (!fragment.requireActivity().isChangingConfigurations && prepared) {
-      getAudioViewModel().pauseAudio()
+    if (!activity.isChangingConfigurations && prepared) {
+      viewModel.pauseAudio()
     }
   }
 
   /** Releases audio player resources */
   fun handleOnDestroy() {
-    if (!fragment.requireActivity().isChangingConfigurations) {
-      getAudioViewModel().handleRelease()
+    if (!activity.isChangingConfigurations) {
+      viewModel.handleRelease()
     }
   }
 
-  /**
-   * Retrieves VoiceoverMapping from the ExplorationDataController
-   * Sets languages in Presenter and ViewModel, selected language code is defaulted to first
-   */
-  private fun retrieveVoiceoverMappings(explorationId: String, stateId: String) {
-    val explorationResultLiveData = explorationDataController.getExplorationById(explorationId)
-    processExplorationLiveData(explorationResultLiveData).observe(fragment, Observer {
-      val state = it.statesMap[stateId] ?: State.getDefaultInstance()
-      val contentId = state.content.contentId
-      val voiceoverMapping = (state.recordedVoiceoversMap[contentId] ?: VoiceoverMapping.getDefaultInstance()).voiceoverMappingMap
-      languages = voiceoverMapping.keys.toList()
-      selectedLanguageCode = languages.firstOrNull() ?: ""
-      val viewModel = getAudioViewModel()
-      viewModel.setVoiceoverMappings(voiceoverMapping)
-      viewModel.setAudioLanguageCode(selectedLanguageCode)
+  fun setStateAndExplorationId(newState: State, explorationId: String) = viewModel.setStateAndExplorationId(newState, explorationId)
+
+  fun loadMainContentAudio(allowAutoPlay: Boolean) = viewModel.loadMainContentAudio(allowAutoPlay)
+
+  fun loadFeedbackAudio(contentId: String, allowAutoPlay: Boolean) = viewModel.loadFeedbackAudio(contentId, allowAutoPlay)
+
+  fun pauseAudio() {
+    if (prepared)
+      viewModel.pauseAudio()
+  }
+
+  fun handleEnableAudio(saveUserChoice: Boolean) {
+    setAudioFragmentVisible(true)
+    if (saveUserChoice) {
+      cellularAudioDialogController.setAlwaysUseCellularDataPreference()
+    }
+  }
+
+  fun handleDisableAudio(saveUserChoice: Boolean) {
+    setAudioFragmentVisible(false)
+    if (saveUserChoice) {
+      cellularAudioDialogController.setNeverUseCellularDataPreference()
+    }
+  }
+
+  fun handleAudioClick(shouldEnableAudioPlayback: Boolean, feedbackId: String?) {
+    this.feedbackId = feedbackId
+    if (shouldEnableAudioPlayback) {
+      when (networkConnectionUtil.getCurrentConnectionStatus()) {
+        NetworkConnectionUtil.ConnectionStatus.LOCAL -> setAudioFragmentVisible(true)
+        NetworkConnectionUtil.ConnectionStatus.CELLULAR -> {
+          if (showCellularDataDialog) {
+            setAudioFragmentVisible(false)
+            showCellularDataDialogFragment()
+          } else {
+            if (useCellularData) {
+              setAudioFragmentVisible(true)
+            } else {
+              setAudioFragmentVisible(false)
+            }
+          }
+        }
+        NetworkConnectionUtil.ConnectionStatus.NONE -> {
+          showOfflineDialog()
+          setAudioFragmentVisible(false)
+        }
+      }
+    } else {
+      setAudioFragmentVisible(false)
+    }
+  }
+
+  private fun setAudioFragmentVisible(isVisible: Boolean) {
+    if (isVisible) {
+      showAudioFragment()
+    } else {
+      hideAudioFragment()
+    }
+  }
+
+  private fun showAudioFragment() {
+    val audioButtonListener = activity as AudioButtonListener
+    audioButtonListener.setAudioBarVisibility(true)
+    audioButtonListener.showAudioStreamingOn()
+    audioButtonListener.scrollToTop()
+    if (feedbackId == null) {
+      loadMainContentAudio(true)
+    } else {
+      loadFeedbackAudio(feedbackId!!, true)
+    }
+    fragment.view?.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_down_audio))
+  }
+
+  private fun hideAudioFragment() {
+    (activity as AudioButtonListener).showAudioStreamingOff()
+    (fragment as AudioUiManager).pauseAudio()
+    val animation = AnimationUtils.loadAnimation(context, R.anim.slide_up_audio)
+    animation.setAnimationListener(object : Animation.AnimationListener {
+      override fun onAnimationEnd(p0: Animation?) {
+        (activity as AudioButtonListener).setAudioBarVisibility(false)
+      }
+      override fun onAnimationStart(p0: Animation?) {}
+      override fun onAnimationRepeat(p0: Animation?) {}
     })
+    fragment.view?.startAnimation(animation)
+  }
+
+  private fun showCellularDataDialogFragment() {
+    val previousFragment = fragment.childFragmentManager.findFragmentByTag(TAG_CELLULAR_DATA_DIALOG)
+    if (previousFragment != null) {
+      fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
+    }
+    val dialogFragment = CellularAudioDialogFragment.newInstance()
+    dialogFragment.showNow(fragment.childFragmentManager, TAG_CELLULAR_DATA_DIALOG)
+  }
+
+  private fun showOfflineDialog() {
+    AlertDialog.Builder(activity, R.style.AlertDialogTheme)
+      .setTitle(context.getString(R.string.audio_dialog_offline_title))
+      .setMessage(context.getString(R.string.audio_dialog_offline_message))
+      .setPositiveButton(context.getString(R.string.audio_dialog_offline_positive)) { dialog, _ ->
+        dialog.dismiss()
+      }.create().show()
   }
 
   private fun getAudioViewModel(): AudioViewModel {
     return viewModelProvider.getForFragment(fragment, AudioViewModel::class.java)
   }
-
-  private fun processExplorationLiveData(explorationResultLiveData: LiveData<AsyncResult<Exploration>>): LiveData<Exploration> {
-    return Transformations.map(explorationResultLiveData, ::processExplorationResult)
-  }
-
-  private fun processExplorationResult(explorationResult: AsyncResult<Exploration>): Exploration {
-    if (explorationResult.isFailure()) {
-      logger.e("AudioFragment", "Failed to retrieve Exploration", explorationResult.getErrorOrNull()!!)
-    }
-    return explorationResult.getOrDefault(Exploration.getDefaultInstance())
-  }
 }
-

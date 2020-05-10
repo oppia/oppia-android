@@ -3,10 +3,10 @@
   <!-- Default screen margins, per the Android Design guidelines. -->
   <dimen name="activity_horizontal_margin">16dp</dimen>
   <dimen name="activity_vertical_margin">16dp</dimen>
-  <dimen name="nav_header_vertical_spacing">8dp</dimen>
 
   <integer name="fade_in_duration_ms">1000</integer>
   <integer name="fade_out_duration_ms">1000</integer>
+  <integer name="profile_chooser_span_count">4</integer>
   <dimen name="audio_fragment_corner_radius">8dp</dimen>
   <dimen name="audio_fragment_margin">28dp</dimen>
   <dimen name="cellular_data_dialog_padding">24dp</dimen>
@@ -19,4 +19,20 @@
   <dimen name="divider_margin_top">8dp</dimen>
   <dimen name="divider_margin_bottom">8dp</dimen>
   <dimen name="bottom_white_space">160dp</dimen>
+  <dimen name="padding_48">48dp</dimen>
+  <dimen name="padding_20">20dp</dimen>
+  <dimen name="padding_44">44dp</dimen>
+  <dimen name="padding_72">72dp</dimen>
+  <dimen name="margin_72">72dp</dimen>
+  <dimen name="margin_36">36dp</dimen>
+  <dimen name="margin_32">32dp</dimen>
+  <dimen name="margin_28">28dp</dimen>
+  <dimen name="margin_16">16dp</dimen>
+  <dimen name="margin_12">12dp</dimen>
+  <dimen name="margin_8">8dp</dimen>
+  <dimen name="dot_width_height">12dp</dimen>
+  <dimen name="dot_gap">12dp</dimen>
+  <dimen name="enter_text_view_padding_start">60dp</dimen>
+  <dimen name="enter_text_view_padding_end">60dp</dimen>
+  <dimen name="promoted_story_card_width">280dp</dimen>
 </resources>

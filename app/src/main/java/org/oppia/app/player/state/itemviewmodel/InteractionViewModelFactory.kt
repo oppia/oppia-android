@@ -1,7 +1,7 @@
 package org.oppia.app.player.state.itemviewmodel
 
 import org.oppia.app.model.Interaction
-import org.oppia.app.model.InteractionObject
+import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 
 /**
@@ -11,5 +11,5 @@ import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
  */
 typealias InteractionViewModelFactory = (
   entityId: String, interaction: Interaction, interactionAnswerReceiver: InteractionAnswerReceiver,
-  hasPreviousButton: Boolean
+  interactionAnswerErrorReceiver: InteractionAnswerErrorReceiver, hasPreviousButton: Boolean
 ) -> StateItemViewModel

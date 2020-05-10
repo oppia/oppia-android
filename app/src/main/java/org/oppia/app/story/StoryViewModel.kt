@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterSummary
+import org.oppia.app.model.ProfileId
 import org.oppia.app.model.StorySummary
 import org.oppia.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
 import org.oppia.app.story.storyitemviewmodel.StoryHeaderViewModel
@@ -26,12 +27,14 @@ class StoryViewModel @Inject constructor(
   private val explorationDataController: ExplorationDataController,
   private val logger: Logger
 ) : ViewModel() {
+  private var internalProfileId: Int = -1
+  private lateinit var topicId: String
   /** [storyId] needs to be set before any of the live data members can be accessed. */
   private lateinit var storyId: String
   private val explorationSelectionListener = fragment as ExplorationSelectionListener
 
   private val storyResultLiveData: LiveData<AsyncResult<StorySummary>> by lazy {
-    topicController.getStory(storyId)
+    topicController.getStory(ProfileId.newBuilder().setInternalId(internalProfileId).build(), topicId, storyId)
   }
 
   private val storyLiveData: LiveData<StorySummary> by lazy {
@@ -44,6 +47,14 @@ class StoryViewModel @Inject constructor(
 
   val storyChapterLiveData: LiveData<List<StoryItemViewModel>> by lazy {
     Transformations.map(storyLiveData, ::processStoryChapterList)
+  }
+
+  fun setInternalProfileId(internalProfileId: Int) {
+    this.internalProfileId = internalProfileId
+  }
+
+  fun setTopicId(topicId: String) {
+    this.topicId = topicId
   }
 
   fun setStoryId(storyId: String) {
@@ -80,7 +91,15 @@ class StoryViewModel @Inject constructor(
     // Add the rest of the list
     itemViewModelList.addAll(chapterList.mapIndexed { index, chapter ->
       StoryChapterSummaryViewModel(
-        index, fragment, explorationSelectionListener, explorationDataController, logger, chapter
+        index,
+        fragment,
+        explorationSelectionListener,
+        explorationDataController,
+        logger,
+        internalProfileId,
+        topicId,
+        storyId,
+        chapter
       )
     })
 

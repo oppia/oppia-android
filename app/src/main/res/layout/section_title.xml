@@ -7,7 +7,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.home.continueplaying.SectionTitleViewModel" />
+      type="org.oppia.app.home.recentlyplayed.SectionTitleViewModel" />
   </data>
 
   <LinearLayout

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+    <variable
+      name="viewModel"
+      type="org.oppia.app.topic.revision.TopicRevisionViewModel" />
+  </data>
+
+  <FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/oppiaBackground">
+
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/revision_recycler_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:clipToPadding="false"
+      android:overScrollMode="never"
+      android:paddingStart="20dp"
+      android:paddingTop="20dp"
+      android:paddingEnd="20dp"
+      android:paddingBottom="144dp"
+      android:scrollbars="none"
+      app:data="@{viewModel.subtopicLiveData}"/>
+  </FrameLayout>
+</layout>

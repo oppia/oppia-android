@@ -30,6 +30,7 @@ class ConceptCardFragmentPresenter @Inject constructor(
     viewModel.setSkillIdAndBinding(skillId, binding)
 
     binding.conceptCardToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
+    binding.conceptCardToolbar.setNavigationContentDescription(R.string.concept_card_close_icon_description)
     binding.conceptCardToolbar.setNavigationOnClickListener {
       (fragment.requireActivity() as? ConceptCardListener)?.dismiss()
     }

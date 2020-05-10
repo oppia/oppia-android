@@ -544,9 +544,35 @@
           "param_changes": [],
           "labelled_as_correct": false
         },
-        "hints": [],
+        "hints": [
+          {
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>Start by finding the denominator. The denominator is the total number of equal parts that the whole cake is divided into.</p>"
+            }
+          },
+          {
+            "hint_content": {
+              "content_id": "hint_2",
+              "html": "<p>Next, find the numerator by counting the number of selected parts.</p><p>In this case, it's the number of parts that have mangoes (the orange pieces) on them. Make sure to count carefully!</p>"
+            }
+          },
+          {
+            "hint_content": {
+              "content_id": "hint_3",
+              "html": "<p>Always be careful about what you're counting. The question will have clues!</p><p>Here, we're looking at a fraction of the <strong>cake</strong>.<strong> </strong>So, we should be counting pieces of the cake, not the individual fruits.<br></p>"
+            }
+          }
+        ],
         "id": "TextInput",
-        "solution": null
+        "solution": {
+          "correct_answer": 3,
+          "explanation": {
+            "content_id": "solution",
+            "html": "<p>The denominator of a fraction is the second number in the fraction. (It counts the total number of pieces in the whole.)</p>\n\n<p>So, for 2/3, the denominator is <strong>3</strong>.</p>"
+          },
+          "answer_is_exclusive": true
+        }
       },
       "param_changes": []
     }

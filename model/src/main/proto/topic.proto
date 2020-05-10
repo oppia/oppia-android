@@ -32,6 +32,9 @@ message Topic {
 
   // The number of on-disk bytes this topic consumes.
   int64 disk_size_bytes = 7;
+
+  // A list of subtopic contained within this topic.
+  repeated Subtopic subtopic = 8;
 }
 
 // Corresponds to a concept card that can be displayed for a specific skill.
@@ -65,8 +68,11 @@ message StorySummary {
   // The name of the story.
   string story_name = 2;
 
+  // The thumbnail corresponding to this story.
+  LessonThumbnail story_thumbnail = 3;
+
   // A list of summarized chapters/explorations that can be played within the story.
-  repeated ChapterSummary chapter = 3;
+  repeated ChapterSummary chapter = 4;
 }
 
 // A summary of a chapter/exploration that can be played.
@@ -79,20 +85,6 @@ message ChapterSummary {
 
   // Summary of this chapter.
   string summary = 3;
-
-  enum Playability {
-    // The completion status is unknown.
-    COMPLETION_STATUS_UNSPECIFIED = 0;
-
-    // The chapter has not yet been started, but can be started by the player.
-    NOT_STARTED = 1;
-
-    // The chapter has not yet been started, and can't since the player is missing prerequisites.
-    MISSING_PREREQUISITES = 2;
-
-    // The chapter has been completed by the player.
-    COMPLETED = 3;
-  }
 
   // Indicates the playable state of the current chapter, including whether it's already been completed.
   ChapterPlayState chapter_play_state = 4;
@@ -114,7 +106,7 @@ message SkillSummary {
   string thumbnail_url = 3;
 
   // The thumbnail corresponding to this skill.
-  SkillThumbnail skill_thumbnail = 4;
+  LessonThumbnail skill_thumbnail = 4;
 }
 
 // Corresponds to the on-disk storage representing all available topics for play.
@@ -126,17 +118,41 @@ message Classroom {
   int64 last_update_time_ms = 2;
 }
 
+// Corresponds to the list of topics that are currently being played and are not fully finished.
+message OngoingTopicList {
+  // All topics that are currently being played and have not finished.
+  repeated Topic topic = 1;
+}
+
 // Corresponds to the list of topics that can be shown on the homescreen.
 message TopicList {
-  // Corresponds to the story promoted at the top of the homescreen. Either the story is in-progress, or it's a
-  // recommended story if no other stories are in progress.
-  PromotedStory promoted_story = 1;
 
   // All topics that are available to the player.
   repeated TopicSummary topic_summary = 2;
 }
 
-// Corresponds to the list of stories the player is currently playing.
+// Corresponds to the list of stories that have been completed across all topics.
+message CompletedStoryList {
+  // List of completed stories
+  repeated CompletedStory completed_story = 1;
+}
+
+// The summary of a story that has been completed for a profile.
+message CompletedStory {
+  // The ID of the story being completed.
+  string story_id = 1;
+
+  // The name of the story being completed.
+  string story_name = 2;
+
+  // The name of the topic this story is part of.
+  string topic_name = 3;
+
+  // The thumbnail that should be displayed for this completed story.
+  LessonThumbnail lesson_thumbnail = 4;
+}
+
+// Corresponds to the list of stories the player is currently playing across all topics.
 message OngoingStoryList {
   // Ongoing stories from within the last 7 days.
   repeated PromotedStory recent_story = 1;
@@ -163,15 +179,18 @@ message PromotedStory {
   // The name of the next chapter (exploration title) to complete.
   string next_chapter_name = 5;
 
+  // The exploration id next chapter to complete.
+  string exploration_id = 6;
+
   // The number of lessons the player has completed in this story. This may be 0 if the promoted story is promoted for
   // reasons other than to complete it (e.g. it's recommended).
-  int32 completed_chapter_count = 6;
+  int32 completed_chapter_count = 7;
 
   // The total number of lessons this story contains.
-  int32 total_chapter_count = 7;
+  int32 total_chapter_count = 8;
 
   // The thumbnail that should be displayed for this promoted story.
-  LessonThumbnail lesson_thumbnail = 8;
+  LessonThumbnail lesson_thumbnail = 9;
 }
 
 // A homescreen summary of a topic.
@@ -218,24 +237,47 @@ enum ChapterPlayState {
   // The chapter has not yet been started, and cannot be started since the player is missing prerequisites.
   NOT_PLAYABLE_MISSING_PREREQUISITES = 2;
 
+  // The chapter has been started but not completed by the player.
+  STARTED_NOT_COMPLETED = 3;
+
   // The chapter has been completed by the player.
-  COMPLETED = 3;
+  COMPLETED = 4;
 }
 
-// Represents the progress a player has made for a story.
+// Top level proto used to store topic progress per-profile.
+message TopicProgressDatabase {
+  // Map from topic ID to TopicProgress.
+  map<string, TopicProgress> topic_progress = 1;
+}
+
+// Represents the topic progress.
+message TopicProgress {
+  // The ID corresponding to the topic.
+  string topic_id = 1;
+
+  // Map from story ID to StoryProgress.
+  map<string, StoryProgress> story_progress = 2;
+}
+
+// Represents the story progress.
 message StoryProgress {
-  // Represents the progress a learner has made on a single chapter. These chapters are kept in the same order they
-  // should be completed within the story.
-  repeated ChapterProgress chapter_progress = 1;
+  // The ID corresponding to the story.
+  string story_id = 1;
+
+  // Map from exploration ID to ChapterPlayState.
+  map<string, ChapterProgress> chapter_progress = 2;
 }
 
-// Represents the progress a player has made on a single chapter.
+// Represents the chapter progress.
 message ChapterProgress {
-  // The exploration ID of the chapter with possible progress made.
+  // The ID corresponding to the exploration.
   string exploration_id = 1;
 
-  // Corresponds to whether this chapter is playable or has been started.
-  ChapterPlayState play_state = 2;
+  // The playability state of chapter.
+  ChapterPlayState chapter_play_state = 2;
+
+  // Timestamp to record last time the exploration was played in ms.
+  int64 last_played_timestamp = 3;
 }
 
 // Represents user's preference for using cellular data
@@ -245,4 +287,40 @@ message CellularDataPreference {
 
   // Preference on whether to use cellular data
   bool use_cellular_data = 2;
+}
+
+// Corresponds to a single subtopic.
+message Subtopic {
+  // The ID of the subtopic.
+  string subtopic_id = 1;
+
+  // The title of the subtopic.
+  string title = 2;
+
+  // The list of skill ids associated with the subtopic.
+  repeated string skill_ids = 3;
+
+  // A URL corresponding to a thumbnail associated with this subtopic. If this is absent, the UI should show a reasonable
+  // alternative.
+  string thumbnail_url = 4;
+
+  // The thumbnail corresponding to this subtopic.
+  LessonThumbnail subtopic_thumbnail = 5;
+}
+
+// Corresponds to a revision card that can be displayed for a specific subtopic.
+message RevisionCard {
+  // The title corresponding to the subtopic.
+  string subtopic_title = 1;
+
+  // The core explanation of the subtopic being revised.
+  SubtitledHtml page_contents = 3;
+
+  // Mapping from content_id to a VoiceoverMapping for each SubtitledHtml in this revision card that has corresponding
+  // recorded audio to play.
+  map<string, VoiceoverMapping> recorded_voiceover = 5;
+
+  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this revision card that has corresponding
+  // translations.
+  map<string, TranslationMapping> written_translation = 6;
 }
