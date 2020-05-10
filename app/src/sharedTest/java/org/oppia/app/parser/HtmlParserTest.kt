@@ -139,7 +139,9 @@ class HtmlParserTest {
   @Test
   fun testHtmlContent_customSpan_isAdded() {
     val textView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
-    val htmlParser = htmlParserFactory.create(/* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true)
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName, /* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true
+    )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
       "<p>You should know the following before going on:<br></p>" +
           "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +

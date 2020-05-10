@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.model.UserAnswer
+import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.player.state.listener.ContinueNavigationButtonListener
 import org.oppia.app.player.state.listener.NextNavigationButtonListener
@@ -18,8 +19,9 @@ import javax.inject.Inject
 
 /** Fragment that contains all questions in Question Player. */
 class QuestionPlayerFragment: InjectableFragment(), InteractionAnswerReceiver,
-  ContinueNavigationButtonListener, NextNavigationButtonListener, ReplayButtonListener,
-  ReturnToTopicNavigationButtonListener, SubmitNavigationButtonListener, PreviousResponsesHeaderClickListener {
+  InteractionAnswerErrorReceiver, ContinueNavigationButtonListener, NextNavigationButtonListener,
+  ReplayButtonListener, ReturnToTopicNavigationButtonListener, SubmitNavigationButtonListener,
+  PreviousResponsesHeaderClickListener {
 
   @Inject lateinit var questionPlayerFragmentPresenter: QuestionPlayerFragmentPresenter
 
@@ -47,6 +49,9 @@ class QuestionPlayerFragment: InjectableFragment(), InteractionAnswerReceiver,
   override fun onSubmitButtonClicked() = questionPlayerFragmentPresenter.onSubmitButtonClicked()
 
   override fun onResponsesHeaderClicked() = questionPlayerFragmentPresenter.onResponsesHeaderClicked()
+
+  override fun onPendingAnswerError(pendingAnswerError: String?) =
+    questionPlayerFragmentPresenter.updateSubmitButton(pendingAnswerError)
 
   fun handleKeyboardAction() = questionPlayerFragmentPresenter.handleKeyboardAction()
 }
