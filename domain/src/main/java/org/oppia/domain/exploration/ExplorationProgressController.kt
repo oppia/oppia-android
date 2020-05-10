@@ -129,7 +129,10 @@ class ExplorationProgressController @Inject constructor(
           explorationProgress.stateDeck.submitAnswer(userAnswer, answerOutcome.feedback)
           // Follow the answer's outcome to another part of the graph if it's different.
           if (answerOutcome.destinationCase == AnswerOutcome.DestinationCase.STATE_NAME) {
-            explorationProgress.stateDeck.pushState(explorationProgress.stateGraph.getState(answerOutcome.stateName))
+            explorationProgress.stateDeck.pushState(
+              explorationProgress.stateGraph.getState(answerOutcome.stateName),
+              prohibitSameStateName = true
+            )
           }
         } finally {
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always
@@ -149,13 +152,13 @@ class ExplorationProgressController @Inject constructor(
   fun submitHintIsRevealed(state: State, hintIsRevealed: Boolean, hintIndex: Int): LiveData<AsyncResult<Hint>> {
     try {
       explorationProgressLock.withLock {
-        check(explorationProgress.playStage != PlayStage.NOT_PLAYING) {
+        check(explorationProgress.playStage != ExplorationProgress.PlayStage.NOT_PLAYING) {
           "Cannot submit an answer if an exploration is not being played."
         }
-        check(explorationProgress.playStage != PlayStage.LOADING_EXPLORATION) {
+        check(explorationProgress.playStage != ExplorationProgress.PlayStage.LOADING_EXPLORATION) {
           "Cannot submit an answer while the exploration is being loaded."
         }
-        check(explorationProgress.playStage != PlayStage.SUBMITTING_ANSWER) {
+        check(explorationProgress.playStage != ExplorationProgress.PlayStage.SUBMITTING_ANSWER) {
           "Cannot submit an answer while another answer is pending."
         }
         lateinit var hint: Hint
@@ -171,7 +174,7 @@ class ExplorationProgressController @Inject constructor(
         } finally {
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always
           // showing hint' situation. This can specifically happen if hint throws an exception.
-          explorationProgress.advancePlayStageTo(PlayStage.VIEWING_STATE)
+          explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.VIEWING_STATE)
         }
         asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
         return MutableLiveData(AsyncResult.success(hint))
@@ -184,13 +187,13 @@ class ExplorationProgressController @Inject constructor(
   fun submitSolutionIsRevealed(state: State, solutionIsRevealed: Boolean): LiveData<AsyncResult<Solution>> {
     try {
       explorationProgressLock.withLock {
-        check(explorationProgress.playStage != PlayStage.NOT_PLAYING) {
+        check(explorationProgress.playStage != ExplorationProgress.PlayStage.NOT_PLAYING) {
           "Cannot submit an answer if an exploration is not being played."
         }
-        check(explorationProgress.playStage != PlayStage.LOADING_EXPLORATION) {
+        check(explorationProgress.playStage != ExplorationProgress.PlayStage.LOADING_EXPLORATION) {
           "Cannot submit an answer while the exploration is being loaded."
         }
-        check(explorationProgress.playStage != PlayStage.SUBMITTING_ANSWER) {
+        check(explorationProgress.playStage != ExplorationProgress.PlayStage.SUBMITTING_ANSWER) {
           "Cannot submit an answer while another answer is pending."
         }
         lateinit var solution: Solution
@@ -206,7 +209,7 @@ class ExplorationProgressController @Inject constructor(
         } finally {
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always
           // showing solution' situation. This can specifically happen if solution throws an exception.
-          explorationProgress.advancePlayStageTo(PlayStage.VIEWING_STATE)
+          explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.VIEWING_STATE)
         }
 
         asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)

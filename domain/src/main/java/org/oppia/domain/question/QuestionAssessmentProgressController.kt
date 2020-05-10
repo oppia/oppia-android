@@ -4,7 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.oppia.app.model.AnsweredQuestionOutcome
 import org.oppia.app.model.EphemeralQuestion
+import org.oppia.app.model.Interaction
 import org.oppia.app.model.Question
+import org.oppia.app.model.State
 import org.oppia.app.model.UserAnswer
 import org.oppia.domain.classify.AnswerClassificationController
 import org.oppia.domain.question.QuestionAssessmentProgress.TrainStage
@@ -12,6 +14,7 @@ import org.oppia.util.data.AsyncDataSubscriptionManager
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
+import org.oppia.util.data.DataProviders.NestedTransformedDataProvider
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -40,7 +43,7 @@ class QuestionAssessmentProgressController @Inject constructor(
 
   private val progress = QuestionAssessmentProgress()
   private val progressLock = ReentrantLock()
-  private var currentQuestionDataProvider: DataProvider<EphemeralQuestion> =
+  private val currentQuestionDataProvider: NestedTransformedDataProvider<EphemeralQuestion> =
     createCurrentQuestionDataProvider(createEmptyQuestionsListDataProvider())
 
   internal fun beginQuestionTrainingSession(questionsListDataProvider: DataProvider<List<Question>>) {
@@ -50,7 +53,7 @@ class QuestionAssessmentProgressController @Inject constructor(
       }
 
       progress.advancePlayStageTo(TrainStage.LOADING_TRAINING_SESSION)
-      currentQuestionDataProvider = createCurrentQuestionDataProvider(questionsListDataProvider)
+      currentQuestionDataProvider.setBaseDataProvider(questionsListDataProvider, this::retrieveCurrentQuestionAsync)
       asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_DATA_PROVIDER_ID)
     }
   }
@@ -61,7 +64,9 @@ class QuestionAssessmentProgressController @Inject constructor(
         "Cannot stop a new training session which wasn't started."
       }
       progress.advancePlayStageTo(TrainStage.NOT_IN_TRAINING_SESSION)
-      currentQuestionDataProvider = createCurrentQuestionDataProvider(createEmptyQuestionsListDataProvider())
+      currentQuestionDataProvider.setBaseDataProvider(
+        createEmptyQuestionsListDataProvider(), this::retrieveCurrentQuestionAsync
+      )
     }
   }
 
@@ -117,9 +122,12 @@ class QuestionAssessmentProgressController @Inject constructor(
           // Do not proceed unless the user submitted the correct answer.
           if (answeredQuestionOutcome.isCorrectAnswer) {
             progress.completeCurrentCard()
-            // Only push a new state if the assessment isn't completed.
             if (!progress.isAssessmentCompleted()) {
-              progress.stateDeck.pushState(progress.getNextState())
+              // Only push the next state if the assessment isn't completed.
+              progress.stateDeck.pushState(progress.getNextState(), prohibitSameStateName = false)
+            } else {
+              // Otherwise, push a synthetic state for the end of the session.
+              progress.stateDeck.pushState(State.getDefaultInstance(), prohibitSameStateName = false)
             }
           }
         } finally {
@@ -132,34 +140,6 @@ class QuestionAssessmentProgressController @Inject constructor(
 
         return MutableLiveData(AsyncResult.success(answeredQuestionOutcome))
       }
-    } catch (e: Exception) {
-      return MutableLiveData(AsyncResult.failed(e))
-    }
-  }
-
-  /**
-   * Navigates to the previous question already answered. If the learner is currently on the first question, this method
-   * will throw an exception. Calling code is responsible for ensuring this method is only called when it's possible to
-   * navigate backward.
-   *
-   * @return a one-time [LiveData] indicating whether the movement to the previous question was successful, or a failure
-   *     if question navigation was attempted at an invalid time (such as when viewing the first question). It's
-   *     recommended that calling code only listen to this result for failures, and instead rely on [getCurrentQuestion]
-   *     for observing a successful transition to another state.
-   */
-  fun moveToPreviousQuestion(): LiveData<AsyncResult<Any?>> {
-    try {
-      progressLock.withLock {
-        check(progress.trainStage != TrainStage.NOT_IN_TRAINING_SESSION) {
-          "Cannot navigate to a previous question if a training session has not begun."
-        }
-        check(progress.trainStage != TrainStage.SUBMITTING_ANSWER) {
-          "Cannot navigate to a previous question if an answer submission is pending."
-        }
-        progress.stateDeck.navigateToPreviousState()
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_DATA_PROVIDER_ID)
-      }
-      return MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
       return MutableLiveData(AsyncResult.failed(e))
     }
@@ -182,7 +162,7 @@ class QuestionAssessmentProgressController @Inject constructor(
     try {
       progressLock.withLock {
         check(progress.trainStage != TrainStage.NOT_IN_TRAINING_SESSION) {
-          "Cannot navigate to a next question if a training session has not beegun."
+          "Cannot navigate to a next question if a training session has not begun."
         }
         check(progress.trainStage != TrainStage.SUBMITTING_ANSWER) {
           "Cannot navigate to a next question if an answer submission is pending."
@@ -203,8 +183,7 @@ class QuestionAssessmentProgressController @Inject constructor(
   /**
    * Returns a [LiveData] monitoring the current [EphemeralQuestion] the learner is currently viewing. If this state
    * corresponds to a a terminal state, then the learner has completed the training session. Note that
-   * [moveToPreviousQuestion] and [moveToNextQuestion] will automatically update observers of this live data when the
-   * next question is navigated to.
+   * [moveToNextQuestion] will automatically update observers of this live data when the next question is navigated to.
    *
    * This [LiveData] may switch from a completed to a pending result during transient operations like submitting an
    * answer via [submitAnswer]. Calling code should be made resilient to this by caching the current question object to
@@ -212,13 +191,12 @@ class QuestionAssessmentProgressController @Inject constructor(
    * across configuration changes if needed since it cannot rely on this [LiveData] for immediate UI reconstitution
    * after configuration changes.
    *
-   * The underlying question returned by this function can only be changed by calls to [moveToNextQuestion] and
-   * [moveToPreviousQuestion], or the question training controller if another question session begins. UI code can be
-   * confident only calls from the UI layer will trigger changes here to ensure atomicity between receiving and making
-   * question state changes.
+   * The underlying question returned by this function can only be changed by calls to [moveToNextQuestion], or the
+   * question training controller if another question session begins. UI code can be confident only calls from the UI
+   * layer will trigger changes here to ensure atomicity between receiving and making question state changes.
    *
    * This method is safe to be called before a training session has started. If there is no ongoing session, it should
-   * return a pending state.
+   * return a pending state, which means the returned value can switch from a success or failure state back to pending.
    */
   fun getCurrentQuestion(): LiveData<AsyncResult<EphemeralQuestion>> {
     return progressLock.withLock {
@@ -228,14 +206,14 @@ class QuestionAssessmentProgressController @Inject constructor(
 
   private fun createCurrentQuestionDataProvider(
     questionsListDataProvider: DataProvider<List<Question>>
-  ): DataProvider<EphemeralQuestion> {
-    return dataProviders.transformAsync(
-      CURRENT_QUESTION_DATA_PROVIDER_ID, questionsListDataProvider, this::retrieveCurrentQuestionStateAsync
+  ): NestedTransformedDataProvider<EphemeralQuestion> {
+    return dataProviders.createNestedTransformedDataProvider(
+      CURRENT_QUESTION_DATA_PROVIDER_ID, questionsListDataProvider, this::retrieveCurrentQuestionAsync
     )
   }
 
   @Suppress("RedundantSuspendModifier") // 'suspend' expected by DataProviders.
-  private suspend fun retrieveCurrentQuestionStateAsync(questionsList: List<Question>): AsyncResult<EphemeralQuestion> {
+  private suspend fun retrieveCurrentQuestionAsync(questionsList: List<Question>): AsyncResult<EphemeralQuestion> {
     progressLock.withLock {
       return try {
         when (progress.trainStage) {
@@ -243,9 +221,10 @@ class QuestionAssessmentProgressController @Inject constructor(
           TrainStage.LOADING_TRAINING_SESSION -> {
             // If the assessment hasn't yet been initialized, initialize it now that a list of questions is available.
             initializeAssessment(questionsList)
-            AsyncResult.success(retrieveEphemeralQuestionState())
+            progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
+            AsyncResult.success(retrieveEphemeralQuestionState(questionsList))
           }
-          TrainStage.VIEWING_STATE -> AsyncResult.success(retrieveEphemeralQuestionState())
+          TrainStage.VIEWING_STATE -> AsyncResult.success(retrieveEphemeralQuestionState(questionsList))
           TrainStage.SUBMITTING_ANSWER -> AsyncResult.pending()
         }
       } catch (e: Exception) {
@@ -254,14 +233,18 @@ class QuestionAssessmentProgressController @Inject constructor(
     }
   }
 
-  private fun retrieveEphemeralQuestionState(): EphemeralQuestion {
+  private fun retrieveEphemeralQuestionState(questionsList: List<Question>): EphemeralQuestion {
     val ephemeralState = progress.stateDeck.getCurrentEphemeralState()
-    return EphemeralQuestion.newBuilder()
+    val currentQuestionIndex = progress.getCurrentQuestionIndex()
+    val ephemeralQuestionBuilder = EphemeralQuestion.newBuilder()
       .setEphemeralState(ephemeralState)
-      .setCurrentQuestionIndex(progress.getCurrentQuestionIndex())
+      .setCurrentQuestionIndex(currentQuestionIndex)
       .setTotalQuestionCount(progress.getTotalQuestionCount())
       .setInitialTotalQuestionCount(progress.getTotalQuestionCount())
-      .build()
+    if (currentQuestionIndex < questionsList.size) {
+      ephemeralQuestionBuilder.question = questionsList[currentQuestionIndex]
+    }
+    return ephemeralQuestionBuilder.build()
   }
 
   private fun initializeAssessment(questionsList: List<Question>) {

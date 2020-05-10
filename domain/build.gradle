@@ -64,12 +64,13 @@ dependencies {
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
       'org.mockito:mockito-core:2.19.0',
       'org.robolectric:robolectric:4.3',
+      project(":testing"),
   )
   kapt(
-      'com.google.dagger:dagger-compiler:2.24'
+      'com.google.dagger:dagger-compiler:2.24',
   )
   kaptTest(
-      'com.google.dagger:dagger-compiler:2.24'
+      'com.google.dagger:dagger-compiler:2.24',
   )
   // TODO(#59): Avoid needing to expose data implementations to other modules in order to make Oppia symbols
   // sufficiently visible for generated Dagger code. This can be done more cleanly via Bazel since dependencies can be
