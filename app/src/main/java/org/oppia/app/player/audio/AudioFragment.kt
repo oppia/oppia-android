@@ -6,33 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
+import org.oppia.app.model.State
 import javax.inject.Inject
 
-private const val KEY_EXPLORATION_ID = "EXPLORATION_ID"
-private const val KEY_STATE_ID = "STATE_ID"
-
 /** Fragment that controls audio for a content-card. */
-class AudioFragment : InjectableFragment(), LanguageInterface {
-
-  companion object {
-    /**
-     * Creates a new instance of a AudioFragment
-     * @param explorationId: Used for ExplorationDataController to get correct exploration
-     * @param stateId: Used to get correct VoiceoverMapping
-     * @return [AudioFragment]: Fragment
-     */
-    fun newInstance(explorationId: String, stateId: String): AudioFragment {
-      val audioFragment = AudioFragment()
-      val args = Bundle()
-      args.putString(KEY_EXPLORATION_ID, explorationId)
-      args.putString(KEY_STATE_ID, stateId)
-      audioFragment.arguments = args
-      return audioFragment
-    }
-  }
-
-  @Inject
-  lateinit var audioFragmentPresenter: AudioFragmentPresenter
+class AudioFragment : InjectableFragment(), LanguageInterface, AudioUiManager, CellularDataInterface {
+  @Inject lateinit var audioFragmentPresenter: AudioFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -41,19 +20,15 @@ class AudioFragment : InjectableFragment(), LanguageInterface {
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     super.onCreateView(inflater, container, savedInstanceState)
-    val args = checkNotNull(arguments) { "Expected arguments to be passed to AudioFragment" }
-    val explorationId = checkNotNull(args.getString(KEY_EXPLORATION_ID)) { "Expected explorationId to be passed to AudioFragment" }
-    val stateId = checkNotNull(args.getString(KEY_STATE_ID)) { "Expected stateId to be passed to AudioFragment" }
-    return audioFragmentPresenter.handleCreateView(inflater, container, savedInstanceState, explorationId, stateId)
+    return audioFragmentPresenter.handleCreateView(inflater, container)
   }
 
-  override fun onSaveInstanceState(outState: Bundle) {
-    super.onSaveInstanceState(outState)
-    audioFragmentPresenter.handleSaveInstanceState(outState)
-  }
-
-  fun languageSelectionClicked() {
+  override fun languageSelectionClicked() {
     audioFragmentPresenter.showLanguageDialogFragment()
+  }
+
+  override fun onLanguageSelected(currentLanguageCode: String) {
+    audioFragmentPresenter.languageSelected(currentLanguageCode)
   }
 
   override fun onStop() {
@@ -66,13 +41,38 @@ class AudioFragment : InjectableFragment(), LanguageInterface {
     audioFragmentPresenter.handleOnDestroy()
   }
 
+  override fun enableAudioPlayback(contentId: String?) {
+    audioFragmentPresenter.handleAudioClick(
+      shouldEnableAudioPlayback = true, feedbackId = contentId
+    )
+  }
+
+  override fun disableAudioPlayback() {
+    audioFragmentPresenter.handleAudioClick(shouldEnableAudioPlayback = false, feedbackId = null)
+  }
+
+  override fun setStateAndExplorationId(newState: State, explorationId: String) =
+    audioFragmentPresenter.setStateAndExplorationId(newState, explorationId)
+
+  override fun loadMainContentAudio(allowAutoPlay: Boolean) =
+    audioFragmentPresenter.loadMainContentAudio(allowAutoPlay)
+
+  override fun loadFeedbackAudio(contentId: String, allowAutoPlay: Boolean) =
+    audioFragmentPresenter.loadFeedbackAudio(contentId, allowAutoPlay)
+
+  override fun pauseAudio() {
+    audioFragmentPresenter.pauseAudio()
+  }
+
+  override fun enableAudioWhileOnCellular(saveUserChoice: Boolean) =
+    audioFragmentPresenter.handleEnableAudio(saveUserChoice)
+
+  override fun disableAudioWhileOnCellular(saveUserChoice: Boolean) =
+    audioFragmentPresenter.handleDisableAudio(saveUserChoice)
+
   /** Used in data binding to know if user is touching SeekBar */
   fun getUserIsSeeking() = audioFragmentPresenter.userIsSeeking
 
   /** Used in data binding to know position of user's touch */
   fun getUserPosition() = audioFragmentPresenter.userProgress
-
-  override fun onLanguageSelected(currentLanguageCode: String) {
-    audioFragmentPresenter.languageSelected(currentLanguageCode)
-  }
 }

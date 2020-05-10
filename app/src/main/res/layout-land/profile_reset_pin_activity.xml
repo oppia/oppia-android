@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:profile="http://schemas.android.com/tools">
+
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.settings.profile.ProfileResetPinViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <com.google.android.material.appbar.AppBarLayout
+      android:id="@+id/profile_reset_pin_app_bar_layout"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+
+      <androidx.appcompat.widget.Toolbar
+        android:id="@+id/profile_reset_pin_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:fontFamily="sans-serif"
+        android:minHeight="?attr/actionBarSize"
+        android:textSize="20sp"
+        app:navigationContentDescription="@string/go_to_previous_page"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:title="@string/profile_reset_pin_title"
+        app:titleTextAppearance="@style/ToolbarTextAppearance"
+        app:titleTextColor="@color/white" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <FrameLayout
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:background="@color/generalNavigationBackground"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/profile_reset_pin_app_bar_layout">
+
+      <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="@color/white"
+          android:paddingBottom="108dp">
+
+          <TextView
+            android:id="@+id/profile_reset_pin_main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:paddingStart="72dp"
+            android:paddingEnd="72dp"
+            android:text="@string/profile_reset_pin_main"
+            android:textColor="@color/oppiaPrimaryText"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+          <org.oppia.app.profile.ProfileInputView
+            android:id="@+id/input_pin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="168dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="168dp"
+            app:isPasswordInput="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profile_reset_pin_main"
+            profile:error="@{viewModel.pinErrorMsg}"
+            profile:inputLength="@{viewModel.isAdmin ? 5 : 3}"
+            profile:label="@{viewModel.isAdmin ? @string/profile_reset_pin_admin_pin_label : @string/profile_reset_pin_user_pin_label}" />
+
+          <org.oppia.app.profile.ProfileInputView
+            android:id="@+id/input_confirm_pin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="168dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="168dp"
+            app:isPasswordInput="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/input_pin"
+            profile:error="@{viewModel.confirmErrorMsg}"
+            profile:inputLength="@{viewModel.isAdmin ? 5 : 3}"
+            profile:label="@{viewModel.isAdmin ? @string/profile_reset_pin_admin_confirm_label : @string/profile_reset_pin_user_confirm_label}" />
+
+          <Button
+            android:id="@+id/profile_reset_save_button"
+            style="@style/StateButtonActive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="168dp"
+            android:background="@{viewModel.isButtonActive() ? @drawable/state_button_primary_background : @drawable/start_button_transparent_background}"
+            android:clickable="@{viewModel.isButtonActive()}"
+            android:text="@string/profile_rename_save"
+            android:textAllCaps="true"
+            android:textColor="@{viewModel.isButtonActive() ? @color/white : @color/submitButtonInactiveText }"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/input_confirm_pin" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+      </ScrollView>
+
+      <View
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:background="@drawable/toolbar_drop_shadow" />
+    </FrameLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

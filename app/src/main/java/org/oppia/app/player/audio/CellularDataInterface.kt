@@ -1,6 +1,6 @@
 package org.oppia.app.player.audio
 
-/** Interface to check the preference regarding alert for [CellularDataDialogFragment]. */
+/** Interface to check the preference regarding alert for [CellularAudioDialogFragment]. */
 interface CellularDataInterface {
   /**
    * If saveUserChoice is true, show audio-player and save preference do not show dialog again.

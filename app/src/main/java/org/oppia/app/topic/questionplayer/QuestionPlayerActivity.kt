@@ -17,8 +17,7 @@ private const val TAG_STOP_TRAINING_SESSION_DIALOG = "STOP_TRAINING_SESSION_DIAL
 class QuestionPlayerActivity : InjectableAppCompatActivity(), StopStatePlayingSessionListener,
   RestartPlayingSessionListener, StateKeyboardButtonListener {
 
-  @Inject
-  lateinit var questionPlayerActivityPresenter: QuestionPlayerActivityPresenter
+  @Inject lateinit var questionPlayerActivityPresenter: QuestionPlayerActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -48,7 +47,6 @@ class QuestionPlayerActivity : InjectableAppCompatActivity(), StopStatePlayingSe
   }
 
   companion object {
-    // TODO(#159): Use this skillList from TopicTrainFragment to fetch questions and start train mode.
     /** Returns a new [Intent] to route to [QuestionPlayerActivity] for a specified skill ID list. */
     fun createQuestionPlayerActivityIntent(context: Context, skillIdList: ArrayList<String>): Intent {
       val intent = Intent(context, QuestionPlayerActivity::class.java)

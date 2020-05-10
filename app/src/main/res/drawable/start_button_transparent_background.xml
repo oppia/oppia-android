@@ -8,12 +8,6 @@
           <solid android:color="@color/oppiaDisabledButtonBackground" />
         </shape>
       </item>
-      <item android:bottom="2dp">
-        <shape>
-          <solid android:color="@color/grey_shade_40" />
-          <corners android:radius="4dp" />
-        </shape>
-      </item>
     </layer-list>
   </item>
 </selector>
