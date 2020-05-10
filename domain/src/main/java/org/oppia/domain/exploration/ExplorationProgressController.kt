@@ -6,11 +6,8 @@ import org.oppia.app.model.AnswerOutcome
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.Exploration
 import org.oppia.app.model.Hint
-import org.oppia.app.model.Outcome
-import org.oppia.app.model.PendingState
 import org.oppia.app.model.Solution
 import org.oppia.app.model.State
-import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.UserAnswer
 import org.oppia.domain.classify.AnswerClassificationController
 import org.oppia.util.data.AsyncDataSubscriptionManager
