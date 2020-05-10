@@ -28,7 +28,9 @@ import org.oppia.app.model.TopicSummary
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.datetime.DateTimeUtil
 import org.oppia.util.logging.Logger
+import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
 /** The presenter for [HomeFragment]. */
@@ -38,6 +40,7 @@ class HomeFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
   private val topicListController: TopicListController,
+  private val oppiaClock: OppiaClock,
   private val logger: Logger
 ) {
   private val routeToTopicListener = activity as RouteToTopicListener
@@ -146,7 +149,8 @@ class HomeFragmentPresenter @Inject constructor(
 
   private fun setProfileName() {
     if (::welcomeViewModel.isInitialized && ::profileName.isInitialized) {
-      welcomeViewModel.profileName = "$profileName!"
+      welcomeViewModel.profileName.set(profileName)
+      welcomeViewModel.greeting.set(DateTimeUtil(fragment.requireContext(), oppiaClock).getGreetingMessage())
     }
   }
 

@@ -6,7 +6,6 @@ import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
@@ -123,7 +122,8 @@ class TopicListAdapter(
     return itemList.size
   }
 
-  private class WelcomeViewHolder(val binding: WelcomeBinding) : RecyclerView.ViewHolder(binding.root) {
+  private class WelcomeViewHolder(val binding: WelcomeBinding) :
+    RecyclerView.ViewHolder(binding.root) {
     internal fun bind(welcomeViewModel: WelcomeViewModel) {
       binding.viewModel = welcomeViewModel
     }
@@ -151,10 +151,11 @@ class TopicListAdapter(
        */
       val snapHelper = StartSnapHelper()
       binding.promotedStoryListRecyclerView.layoutManager = horizontalLayoutManager
+      binding.promotedStoryListRecyclerView.setOnFlingListener(null)
       snapHelper.attachToRecyclerView(binding.promotedStoryListRecyclerView)
 
       val paddingEnd = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-        (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_48)
+        (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_44)
       } else {
         (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_72)
       }
@@ -171,17 +172,21 @@ class TopicListAdapter(
     }
   }
 
-  private class AllTopicsViewHolder(binding: AllTopicsBinding) : RecyclerView.ViewHolder(binding.root) {
+  private class AllTopicsViewHolder(binding: AllTopicsBinding) :
+    RecyclerView.ViewHolder(binding.root) {
     internal fun bind() {
     }
   }
 
-  inner class TopicListViewHolder(val binding: TopicSummaryViewBinding) : RecyclerView.ViewHolder(binding.root) {
+  inner class TopicListViewHolder(val binding: TopicSummaryViewBinding) :
+    RecyclerView.ViewHolder(binding.root) {
     internal fun bind(topicSummaryViewModel: TopicSummaryViewModel, position: Int) {
       binding.viewModel = topicSummaryViewModel
-      val param = binding.topicContainer.layoutParams as GridLayoutManager.LayoutParams
+
+      val marginLayoutParams = binding.topicContainer.layoutParams as ViewGroup.MarginLayoutParams
+
       val marginMax = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-        (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_32)
+        (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
       } else {
         (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_72)
       }
@@ -196,17 +201,42 @@ class TopicListAdapter(
 
       if (orientation == Configuration.ORIENTATION_PORTRAIT) {
         when {
-          position % 2 == 0 -> param.setMargins(marginMin, marginTopBottom, marginMax, marginTopBottom)
-          else -> param.setMargins(marginMax, marginTopBottom, marginMin, marginTopBottom)
+          position % 2 == 0 -> marginLayoutParams.setMargins(
+            marginMin,
+            marginTopBottom,
+            marginMax,
+            marginTopBottom
+          )
+          else -> marginLayoutParams.setMargins(
+            marginMax,
+            marginTopBottom,
+            marginMin,
+            marginTopBottom
+          )
         }
       } else {
         when {
-          position % 3 == 0 -> param.setMargins(marginMax, marginTopBottom, /* right= */ 0, marginTopBottom)
-          position % 3 == 1 -> param.setMargins(marginMin, marginTopBottom, marginMin, marginTopBottom)
-          position % 3 == 2 -> param.setMargins(/* left= */ 0, marginTopBottom, marginMax, marginTopBottom)
+          position % 3 == 0 -> marginLayoutParams.setMargins(
+            marginMax,
+            marginTopBottom,
+            /* right= */ 0,
+            marginTopBottom
+          )
+          position % 3 == 1 -> marginLayoutParams.setMargins(
+            marginMin,
+            marginTopBottom,
+            marginMin,
+            marginTopBottom
+          )
+          position % 3 == 2 -> marginLayoutParams.setMargins(
+            /* left= */ 0,
+            marginTopBottom,
+            marginMax,
+            marginTopBottom
+          )
         }
       }
-      binding.topicContainer.layoutParams = param
+      binding.topicContainer.layoutParams = marginLayoutParams
     }
   }
 }

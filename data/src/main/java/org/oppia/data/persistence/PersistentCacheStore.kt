@@ -3,13 +3,6 @@ package org.oppia.data.persistence
 import android.content.Context
 import androidx.annotation.GuardedBy
 import com.google.protobuf.MessageLite
-import kotlinx.coroutines.Deferred
-import org.oppia.app.model.ProfileId
-import org.oppia.util.data.AsyncDataSubscriptionManager
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.data.DataProvider
-import org.oppia.util.data.InMemoryBlockingCache
-import org.oppia.util.profile.DirectoryManagementUtil
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -18,6 +11,13 @@ import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
+import kotlinx.coroutines.Deferred
+import org.oppia.app.model.ProfileId
+import org.oppia.util.data.AsyncDataSubscriptionManager
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProvider
+import org.oppia.util.data.InMemoryBlockingCache
+import org.oppia.util.profile.DirectoryManagementUtil
 
 /**
  * An on-disk persistent cache for proto messages that ensures reads and writes happen in a well-defined order. Note
@@ -31,9 +31,12 @@ import kotlin.concurrent.withLock
  * immediately until the actual store is retrieved from disk.
  */
 class PersistentCacheStore<T : MessageLite> private constructor(
-  context: Context, cacheFactory: InMemoryBlockingCache.Factory,
-  private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager, cacheName: String,
-  private val initialValue: T, directory: File = context.filesDir
+  context: Context,
+  cacheFactory: InMemoryBlockingCache.Factory,
+  private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
+  cacheName: String,
+  private val initialValue: T,
+  directory: File = context.filesDir
 ) : DataProvider<T> {
   private val cacheFileName = "$cacheName.cache"
   private val providerId = PersistentCacheStoreId(cacheFileName)
@@ -254,7 +257,8 @@ class PersistentCacheStore<T : MessageLite> private constructor(
    */
   @Singleton
   class Factory @Inject constructor(
-    private val context: Context, private val cacheFactory: InMemoryBlockingCache.Factory,
+    private val context: Context,
+    private val cacheFactory: InMemoryBlockingCache.Factory,
     private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
     private val directoryManagementUtil: DirectoryManagementUtil
   ) {

@@ -62,6 +62,7 @@ class StateFragmentTest {
   //  5. Configuration change after submitting the wrong answer to show that the old answer & re-ask of the question stay the same.
   //  6. Backward/forward navigation along with configuration changes to verify that you stay on the navigated state.
   //  7. Verifying that old answers were present when navigation backward/forward.
+  //  8. Testing providing the wrong answer and showing hints.
 
   @Test
   fun testStateFragment_clickPlayExploration_explorationLoadsSuccessfully() {

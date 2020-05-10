@@ -76,6 +76,22 @@
             android:text="@{viewModel.explanationLiveData}"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="16sp" />
+
+          <Button
+            android:id="@+id/revision_card_return_button"
+            style="@style/StateButtonActive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="28dp"
+            android:background="@drawable/state_button_primary_background"
+            android:onClick="@{viewModel::clickReturnToTopic}"
+            android:text="@string/return_to_topic"
+            android:textAllCaps="true"
+            android:layout_gravity="end"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+             />
         </LinearLayout>
         <!--TODO(#352): Show worked examples in Review Card.-->
       </ScrollView>

@@ -15,5 +15,4 @@ interface StoryService {
     @Query("user_id") userId: String?,
     @Query("user") user: String?
   ): Call<GaeStory>
-
 }

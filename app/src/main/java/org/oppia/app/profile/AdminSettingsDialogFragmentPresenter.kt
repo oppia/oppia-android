@@ -27,18 +27,27 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
   fun handleOnCreateDialog(routeDialogInterface: ProfileRouteDialogInterface): Dialog {
     val adminPin = fragment.arguments?.getString(KEY_ADMIN_SETTINGS_PIN)
     checkNotNull(adminPin) { "Admin Pin must not be null" }
-    val binding: AdminSettingsDialogBinding = DataBindingUtil.inflate(activity.layoutInflater, R.layout.admin_settings_dialog, null, false)
+    val binding: AdminSettingsDialogBinding =
+      DataBindingUtil.inflate(
+        activity.layoutInflater,
+        R.layout.admin_settings_dialog,
+        /* parent= */ null,
+        /* attachToParent= */ false
+      )
     binding.apply {
       lifecycleOwner = fragment
       viewModel = adminViewModel
     }
 
-    binding.inputPin.addTextChangedListener(object: TextWatcher {
+    binding.inputPin.setInput(adminViewModel.inputPin.get().toString())
+    binding.inputPin.addTextChangedListener(object : TextWatcher {
       override fun onTextChanged(confirmPin: CharSequence?, start: Int, before: Int, count: Int) {
         confirmPin?.let {
+          adminViewModel.inputPin.set(confirmPin.toString())
           adminViewModel.errorMessage.set("")
         }
       }
+
       override fun afterTextChanged(confirmPin: Editable?) {}
       override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {}
     })

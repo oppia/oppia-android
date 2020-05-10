@@ -36,25 +36,33 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
     checkNotNull(profileId) { "Profile Id must not be null" }
     checkNotNull(name) { "Name must not be null" }
 
-    val binding: ResetPinDialogBinding = DataBindingUtil.inflate(activity.layoutInflater, R.layout.reset_pin_dialog, null, false)
+    val binding: ResetPinDialogBinding = DataBindingUtil.inflate(
+      activity.layoutInflater,
+      R.layout.reset_pin_dialog,
+      /* parent= */ null,
+      /* attachToParent= */ false
+    )
     binding.apply {
       lifecycleOwner = fragment
       viewModel = resetViewModel
     }
 
-    binding.inputPin.addTextChangedListener(object: TextWatcher {
+    binding.inputPin.setInput(resetViewModel.inputPin.get().toString())
+    binding.inputPin.addTextChangedListener(object : TextWatcher {
       override fun onTextChanged(confirmPin: CharSequence?, start: Int, before: Int, count: Int) {
         confirmPin?.let {
+          resetViewModel.inputPin.set(confirmPin.toString())
           resetViewModel.errorMessage.set("")
         }
       }
+
       override fun afterTextChanged(confirmPin: Editable?) {}
       override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {}
     })
 
     binding.inputPin.setLabel("$name's New PIN")
 
-    val dialog =  AlertDialog.Builder(activity, R.style.AlertDialogTheme)
+    val dialog = AlertDialog.Builder(activity, R.style.AlertDialogTheme)
       .setTitle(R.string.reset_pin_enter)
       .setView(binding.root)
       .setMessage("This PIN wil be $name's new PIN and will be required when signing in.")
@@ -71,11 +79,12 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
           return@setOnClickListener
         }
         if (input.length == 3) {
-          profileManagementController.updatePin(ProfileId.newBuilder().setInternalId(profileId).build(), input).observe(fragment, Observer {
-            if (it.isSuccess()) {
-              routeDialogInterface.routeToSuccessDialog()
-            }
-          })
+          profileManagementController.updatePin(ProfileId.newBuilder().setInternalId(profileId).build(), input)
+            .observe(fragment, Observer {
+              if (it.isSuccess()) {
+                routeDialogInterface.routeToSuccessDialog()
+              }
+            })
         } else {
           resetViewModel.errorMessage.set(fragment.resources.getString(R.string.add_profile_error_pin_length))
         }

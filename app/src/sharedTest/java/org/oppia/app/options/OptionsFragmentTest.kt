@@ -14,6 +14,7 @@ import androidx.test.espresso.action.GeneralClickAction
 import androidx.test.espresso.action.Press
 import androidx.test.espresso.action.Tap
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.DrawerMatchers
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
@@ -335,6 +336,7 @@ class OptionsFragmentTest {
         )
       onView(isRoot()).perform(orientationLandscape())
       onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
+      swipeUp()
       onView(atPositionOnView(R.id.options_recyclerview, 2, R.id.audio_language_text_view)).check(
         matches(withText("Chinese"))
       )

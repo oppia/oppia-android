@@ -6,6 +6,7 @@ import org.oppia.app.activity.ActivityScope
 import org.oppia.app.model.AppLanguage
 import org.oppia.app.model.AudioLanguage
 import org.oppia.app.model.StoryTextSize
+import org.oppia.app.testing.ProfileChooserFragmentTestActivity
 import org.oppia.domain.profile.ProfileManagementController
 import javax.inject.Inject
 
@@ -33,7 +34,8 @@ class ProfileActivityPresenter @Inject constructor(
     if (getProfileChooserFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.profile_chooser_fragment_placeholder,
-        ProfileChooserFragment()
+        ProfileChooserFragment(),
+        ProfileChooserFragmentTestActivity.TAG_PROFILE_CHOOSER_FRAGMENT
       ).commitNow()
     }
   }

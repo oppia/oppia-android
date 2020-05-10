@@ -9,87 +9,58 @@
       type="org.oppia.app.home.topiclist.TopicSummaryViewModel" />
   </data>
 
-  <androidx.constraintlayout.widget.ConstraintLayout
+  <com.google.android.material.card.MaterialCardView
     android:id="@+id/topic_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:clickable="true"
-    android:elevation="4dp"
-    android:focusable="true"
-    android:onClick="@{(v) -> viewModel.clickOnSummaryTile()}"
-    app:roundedRectDrawableWithColor="@{viewModel.backgroundColor}">
+    app:cardCornerRadius="4dp">
 
-    <ImageView
-      android:id="@+id/imageView"
+    <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
-      android:layout_height="0dp"
-      android:importantForAccessibility="no"
-      android:scaleType="centerInside"
-      android:src="@{viewModel.topicSummary.topicThumbnail.thumbnailGraphic}"
-      app:layout_constraintDimensionRatio="4:3"
-      app:layout_constraintBottom_toTopOf="@+id/bottom_container"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      android:layout_height="match_parent"
+      android:onClick="@{(v) -> viewModel.clickOnSummaryTile()}"
+      android:clickable="true"
+      android:focusable="true">
 
-    <TextView
-      android:id="@+id/topic_downloaded_indication_text_view"
-      android:layout_width="120dp"
-      android:layout_height="24dp"
-      android:background="@drawable/bottom_left_rounded_rect_primary_background"
-      android:drawableEnd="@drawable/ic_available_offline_icon_white_12dp"
-      android:ellipsize="end"
-      android:fontFamily="sans-serif-medium"
-      android:gravity="center"
-      android:maxLines="1"
-      android:paddingStart="8dp"
-      android:paddingTop="4dp"
-      android:paddingEnd="8dp"
-      android:paddingBottom="4dp"
-      android:text="@string/downloaded"
-      android:textAllCaps="true"
-      android:textColor="@color/white"
-      android:textSize="12sp"
-      android:visibility="gone"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="1.0"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="@+id/imageView" />
-
-    <FrameLayout
-      android:id="@+id/bottom_container"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintStart_toStartOf="parent">
-
-      <FrameLayout
-        android:id="@+id/bottom_topic_bar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:bottomRoundedRectDrawableWithColor="@{viewModel.darkerBackgroundOverlayColor}"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+      <ImageView
+        android:id="@+id/topic_thumbnail_image_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:importantForAccessibility="no"
+        android:scaleType="centerInside"
+        android:background="@color/topicThumbnailBackground"
+        android:src="@{viewModel.topicSummary.topicThumbnail.thumbnailGraphic}"
+        app:layout_constraintDimensionRatio="4:3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
       <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp">
+        android:background="@color/topicTitleBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topic_thumbnail_image_view">
 
         <TextView
           android:id="@+id/topic_name_text_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:ellipsize="end"
-          android:fontFamily="sans-serif-medium"
+          android:fontFamily="sans-serif"
           android:gravity="top"
           android:maxLines="2"
-          android:layout_marginBottom="6dp"
+          android:layout_marginTop="8dp"
+          android:layout_marginStart="8dp"
+          android:layout_marginEnd="8dp"
           android:minLines="2"
           android:text="@{viewModel.name}"
           android:textColor="@color/white"
           android:textSize="14sp"
+          android:textStyle="bold"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
 
@@ -102,9 +73,13 @@
           android:textColor="@color/white_80"
           android:textSize="14sp"
           android:textStyle="italic"
+          android:layout_marginTop="4dp"
+          android:layout_marginStart="8dp"
+          android:layout_marginEnd="8dp"
+          android:paddingBottom="8dp"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/topic_name_text_view" />
       </androidx.constraintlayout.widget.ConstraintLayout>
-    </FrameLayout>
-  </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+  </com.google.android.material.card.MaterialCardView>
 </layout>
