@@ -16,15 +16,33 @@ import javax.inject.Inject
 class StateViewModel @Inject constructor() : ObservableViewModel() {
   val itemList: ObservableList<StateItemViewModel> = ObservableArrayList()
 
-  val isAudioBarVisible = ObservableField<Boolean>(false)
+  val isAudioBarVisible = ObservableField(false)
+
+  var newAvailableHintIndex = -1
+  var allHintsExhausted = false
+  val isHintBulbVisible = ObservableField(false)
+  val isHintOpenedAndUnRevealed = ObservableField(false)
 
   var currentStateName: String? = null
+
+  private val canSubmitAnswer = ObservableField(true)
 
   fun setAudioBarVisibility(audioBarVisible: Boolean) {
     isAudioBarVisible.set(audioBarVisible)
   }
 
-  // TODO(#164): Add a hasPendingAnswer() that binds to the enabled state of the Submit button.
+  fun setHintBulbVisibility(hintBulbVisible: Boolean) {
+    isHintBulbVisible.set(hintBulbVisible)
+  }
+
+  fun setHintOpenedAndUnRevealedVisibility(hintOpenedAndUnRevealedVisible: Boolean) {
+    isHintOpenedAndUnRevealed.set(hintOpenedAndUnRevealedVisible)
+  }
+
+  fun setCanSubmitAnswer(canSubmitAnswer: Boolean) = this.canSubmitAnswer.set(canSubmitAnswer)
+
+  fun getCanSubmitAnswer(): ObservableField<Boolean> = canSubmitAnswer
+
   fun getPendingAnswer(
     statePlayerRecyclerViewAssembler: StatePlayerRecyclerViewAssembler
   ): UserAnswer {

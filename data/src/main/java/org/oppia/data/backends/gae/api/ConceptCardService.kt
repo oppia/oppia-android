@@ -10,5 +10,4 @@ interface ConceptCardService {
 
   @GET("concept_card_handler/{comma_separated_skill_ids}")
   fun getSkillContents(@Query("comma_separated_skill_ids") skillIds: String): Call<GaeConceptCard>
-
 }

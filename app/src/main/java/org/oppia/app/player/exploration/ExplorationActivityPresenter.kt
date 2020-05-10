@@ -139,4 +139,16 @@ class ExplorationActivityPresenter @Inject constructor(
     }
     return ephemeralStateResult.getOrDefault(Exploration.getDefaultInstance())
   }
+
+  fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
+    val explorationFragment =
+      activity.supportFragmentManager.findFragmentByTag(TAG_EXPLORATION_FRAGMENT) as ExplorationFragment
+    explorationFragment.revealHint(saveUserChoice, hintIndex)
+  }
+
+  fun revealSolution(saveUserChoice: Boolean) {
+    val explorationFragment =
+      activity.supportFragmentManager.findFragmentByTag(TAG_EXPLORATION_FRAGMENT) as ExplorationFragment
+    explorationFragment.revealSolution(saveUserChoice)
+  }
 }

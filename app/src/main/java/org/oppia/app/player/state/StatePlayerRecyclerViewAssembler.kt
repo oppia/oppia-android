@@ -9,15 +9,11 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ObservableBoolean
+import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.oppia.app.databinding.ContentItemBinding
 import org.oppia.app.databinding.ContinueInteractionItemBinding
 import org.oppia.app.databinding.ContinueNavigationButtonItemBinding
@@ -36,6 +32,8 @@ import org.oppia.app.databinding.TextInputInteractionItemBinding
 import org.oppia.app.model.AnswerAndResponse
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.Interaction
+import org.oppia.app.model.PendingState
+import org.oppia.app.model.State
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.StatePlayerRecyclerViewAssembler.Builder.Factory
@@ -65,11 +63,16 @@ import org.oppia.app.player.state.listener.PreviousNavigationButtonListener
 import org.oppia.app.player.state.listener.PreviousResponsesHeaderClickListener
 import org.oppia.app.player.state.listener.ReplayButtonListener
 import org.oppia.app.player.state.listener.ReturnToTopicNavigationButtonListener
+import org.oppia.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.app.player.state.listener.SubmitNavigationButtonListener
 import org.oppia.app.recyclerview.BindableAdapter
+import org.oppia.app.utility.LifecycleSafeTimerFactory
 import org.oppia.util.parser.HtmlParser
 import org.oppia.util.threading.BackgroundDispatcher
 import javax.inject.Inject
+
+private const val DELAY_SHOW_HINTS_ONE_WRONG_ANSWER_MS = 60_000L
+private const val DELAY_SHOW_HINTS_MULTIPLE_WRONG_ANSWERS_MS = 10_000L
 
 /**
  * An assembler for generating the list of view models to bind to the state player recycler view. This class also
@@ -95,6 +98,7 @@ import javax.inject.Inject
 class StatePlayerRecyclerViewAssembler private constructor(
   val adapter: BindableAdapter<StateItemViewModel>, private val playerFeatureSet: PlayerFeatureSet,
   private val fragment: Fragment, private val congratulationsTextView: TextView?,
+  private val canSubmitAnswer: ObservableField<Boolean>?,
   private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>,
   backgroundCoroutineDispatcher: CoroutineDispatcher
 ) {
@@ -111,7 +115,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
    */
   private var hasPreviousResponsesExpanded: Boolean = false
 
-  private val backgroundCoroutineScope = CoroutineScope(backgroundCoroutineDispatcher)
+  private val lifecycleSafeTimerFactory = LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
+
+  private val hintHandler = HintHandler(lifecycleSafeTimerFactory, fragment)
 
   /**
    * An ever-present [PreviousNavigationButtonListener] that can exist even if backward navigation is disabled. This
@@ -133,7 +139,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   fun compute(ephemeralState: EphemeralState, gcsEntityId: String): List<StateItemViewModel> {
     val hasPreviousState = ephemeralState.hasPreviousState
 
-    previousAnswerViewModels.clear() // But retain whether the list is currently open.
+    previousAnswerViewModels.clear()
     val pendingItemList = mutableListOf<StateItemViewModel>()
     if (playerFeatureSet.contentSupport) {
       addContentItem(pendingItemList, ephemeralState, gcsEntityId)
@@ -141,6 +147,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val interaction = ephemeralState.state.interaction
     if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE) {
       addPreviousAnswers(pendingItemList, ephemeralState.pendingState.wrongAnswerList, gcsEntityId)
+      if (playerFeatureSet.hintsAndSolutionsSupport) {
+        hintHandler.maybeScheduleShowHint(ephemeralState.state, ephemeralState.pendingState)
+      }
       if (playerFeatureSet.interactionSupport) {
         addInteractionForPendingState(pendingItemList, interaction, hasPreviousState, gcsEntityId)
       }
@@ -292,11 +301,14 @@ class StatePlayerRecyclerViewAssembler private constructor(
     animation.addAnimation(fadeOut)
     textView.animation = animation
 
-    createLifecycleSafeTimer(2000).observe(fragment, Observer {
+    lifecycleSafeTimerFactory.createTimer(2000).observe(fragment, Observer {
       textView.clearAnimation()
       textView.visibility = View.INVISIBLE
     })
   }
+
+  /** Stops any pending hints from showing, e.g. due to the state being completed. */
+  fun stopHintsFromShowing() = hintHandler.cancelAnyPendingHints()
 
   private fun createSubmittedAnswer(userAnswer: UserAnswer, gcsEntityId: String): SubmittedAnswerViewModel {
     return SubmittedAnswerViewModel(userAnswer, gcsEntityId)
@@ -339,9 +351,16 @@ class StatePlayerRecyclerViewAssembler private constructor(
           )
         }
       }
-      doesMostRecentInteractionRequireExplicitSubmission(pendingItemList) && playerFeatureSet.forwardNavigation -> {
+      doesMostRecentInteractionRequireExplicitSubmission(pendingItemList) && playerFeatureSet.interactionSupport -> {
+        val canSubmitAnswer = checkNotNull(this.canSubmitAnswer) {
+          "Expected non-null submit answer observable for submit button when interaction support " +
+            "is enabled"
+        }
         pendingItemList += SubmitButtonViewModel(
-          hasPreviousButton, previousNavigationButtonListener, fragment as SubmitNavigationButtonListener
+          canSubmitAnswer,
+          hasPreviousButton,
+          previousNavigationButtonListener,
+          fragment as SubmitNavigationButtonListener
         )
       }
       // Otherwise, just show the previous button since the interaction itself will push the answer submission.
@@ -354,20 +373,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
       // Otherwise, there's no navigation button that should be shown since the current interaction handles this or
       // navigation in this context is disabled.
     }
-  }
-
-  /**
-   * Returns a new [LiveData] that will be triggered exactly once after the specified timeout in milliseconds. This
-   * should be used instead of Android's Handler class because this guarantees that observers will not be triggered if
-   * its lifecycle is no longer valid, but will trigger upon the lifecycle becoming active again.
-   */
-  private fun createLifecycleSafeTimer(timeoutMs: Long): LiveData<Any?> {
-    val liveData = MutableLiveData<Any?>()
-    backgroundCoroutineScope.launch {
-      delay(timeoutMs)
-      liveData.postValue(null)
-    }
-    return liveData
   }
 
   /**
@@ -404,6 +409,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     /** Tracks features individually enabled for the assembler. No features are enabled by default. */
     private val featureSets = mutableSetOf(PlayerFeatureSet())
     private var congratulationsTextView: TextView? = null
+    private var canSubmitAnswer: ObservableField<Boolean>? = null
 
     /** Adds support for displaying state content to the learner. */
     fun addContentSupport(): Builder {
@@ -450,10 +456,14 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
 
     /**
-     * Adds support for rendering interactions and submitting answers to them. The 'continue' interaction is not
-     * included since that's considered a navigation interaction.
+     * Adds support for rendering interactions and submitting answers to them. The 'continue'
+     * interaction is not included since that's considered a navigation interaction.
+     *
+     * @param canSubmitAnswer an observable boolean that will control whether the interaction
+     *     'submit' button is enabled (which can be controlled by interactions in the event that
+     *     there's an error which should prevent answer submission).
      */
-    fun addInteractionSupport(): Builder {
+    fun addInteractionSupport(canSubmitAnswer: ObservableField<Boolean>): Builder {
       adapterBuilder.registerViewDataBinder(
         viewType = StateItemViewModel.ViewType.SELECTION_INTERACTION,
         inflateDataBinding = SelectionInteractionItemBinding::inflate,
@@ -480,6 +490,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         setViewModel = SubmitButtonItemBinding::setButtonViewModel,
         transformViewModel = { it as SubmitButtonViewModel }
       )
+      this.canSubmitAnswer = canSubmitAnswer
       featureSets += PlayerFeatureSet(interactionSupport = true)
       return this
     }
@@ -594,12 +605,18 @@ class StatePlayerRecyclerViewAssembler private constructor(
       return this
     }
 
+    /** Adds support for showing hints & possibly a solution when the learner gets stuck. */
+    fun addHintsAndSolutionsSupport(): Builder {
+      featureSets += PlayerFeatureSet(hintsAndSolutionsSupport = true)
+      return this
+    }
+
     /** Returns a new [StatePlayerRecyclerViewAssembler] based on the builder-specified configuration. */
     fun build(): StatePlayerRecyclerViewAssembler {
       val playerFeatureSet = featureSets.reduce(PlayerFeatureSet::union)
       return StatePlayerRecyclerViewAssembler(
-        adapterBuilder.build(), playerFeatureSet, fragment, congratulationsTextView, interactionViewModelFactoryMap,
-        backgroundCoroutineDispatcher
+        adapterBuilder.build(), playerFeatureSet, fragment, congratulationsTextView,
+        canSubmitAnswer, interactionViewModelFactoryMap, backgroundCoroutineDispatcher
       )
     }
 
@@ -630,7 +647,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val forwardNavigation: Boolean = false,
     val replaySupport: Boolean = false,
     val returnToTopicNavigation: Boolean = false,
-    val showCongratulationsOnCorrectAnswer: Boolean = false
+    val showCongratulationsOnCorrectAnswer: Boolean = false,
+    val hintsAndSolutionsSupport: Boolean = false
   ) {
     /** Returns a union of this feature set with other one. Loosely based on https://stackoverflow.com/a/49605849. */
     fun union(other: PlayerFeatureSet): PlayerFeatureSet {
@@ -645,8 +663,81 @@ class StatePlayerRecyclerViewAssembler private constructor(
         replaySupport = replaySupport || other.replaySupport,
         returnToTopicNavigation = returnToTopicNavigation || other.returnToTopicNavigation,
         showCongratulationsOnCorrectAnswer = showCongratulationsOnCorrectAnswer
-            || other.showCongratulationsOnCorrectAnswer
+            || other.showCongratulationsOnCorrectAnswer,
+        hintsAndSolutionsSupport = hintsAndSolutionsSupport || other.hintsAndSolutionsSupport
       )
+    }
+  }
+
+  /**
+   * Handler for showing hints to the learner after a period of time in the event they submit a
+   * wrong answer.
+   */
+  private class HintHandler(
+    private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory, private val fragment: Fragment
+  ) {
+    private var trackedWrongAnswerCount = 0
+    private var hintSequenceNumber = 0
+
+    /**
+     * Cancels any pending hints that were previously scheduled using [handleSubmitNewWrongAnswer].
+     */
+    fun cancelAnyPendingHints() {
+      // Cancel any potential pending hints by advancing the sequence number.
+      hintSequenceNumber++
+    }
+
+    /**
+     * Handles potentially new wrong answers that were submnitted, and if so schedules a hint to be
+     * shown to the user if hints are available.
+     */
+    fun maybeScheduleShowHint(state: State, pendingState: PendingState) {
+      if (state.interaction.hintList.isEmpty()) {
+        // If this state has no hints to show, do nothing.
+        return
+      }
+
+      val wrongAnswerCount = pendingState.wrongAnswerList.size
+      if (wrongAnswerCount == 0 || wrongAnswerCount == trackedWrongAnswerCount) {
+        // If no new wrong answers were submitted, do nothing.
+        return
+      }
+
+      // Start showing hints after a wrong answer is submitted. Note that if there's already a timer
+      // to show a hint, it will be reset for each subsequent answer.
+      val nextUnrevealedHintIndex = getNextUnrevealedHintIndex(state)
+      if (wrongAnswerCount == 1) {
+        scheduleShowHint(DELAY_SHOW_HINTS_ONE_WRONG_ANSWER_MS, nextUnrevealedHintIndex)
+      } else {
+        scheduleShowHint(DELAY_SHOW_HINTS_MULTIPLE_WRONG_ANSWERS_MS, nextUnrevealedHintIndex)
+      }
+
+      trackedWrongAnswerCount = wrongAnswerCount
+    }
+
+    /**
+     * Returns the index of the next hint that hasn't yet been revealed, or null if the solution can
+     * now be revealed due to all hints being shown.
+     */
+    private fun getNextUnrevealedHintIndex(state: State): Int? {
+      // Return the index of the first unrevealed hint, or the length of the list if all have been
+      // revealed.
+      val hintList = state.interaction.hintList
+      return hintList.indices.filterNot { idx -> hintList[idx].hintIsRevealed }.firstOrNull()
+    }
+
+    /**
+     * Schedules to allow the hint of the specified index to be shown after the specified delay,
+     * cancelling any potentially previous pending hints initiated by calls to this method.
+     */
+    private fun scheduleShowHint(delayMs: Long, hintIndexToShow: Int?) {
+      val targetSequenceNumber = ++hintSequenceNumber
+      lifecycleSafeTimerFactory.createTimer(delayMs).observe(fragment, Observer {
+        // Only finish this timer if no other hints were scheduled and no cancellations occurred.
+        if (targetSequenceNumber == hintSequenceNumber) {
+          (fragment as ShowHintAvailabilityListener).onHintAvailable(hintIndexToShow)
+        }
+      })
     }
   }
 }

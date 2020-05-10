@@ -15,6 +15,7 @@ import org.oppia.app.player.state.listener.NextNavigationButtonListener
 import org.oppia.app.player.state.listener.PreviousNavigationButtonListener
 import org.oppia.app.player.state.listener.PreviousResponsesHeaderClickListener
 import org.oppia.app.player.state.listener.ReturnToTopicNavigationButtonListener
+import org.oppia.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.app.player.state.listener.SubmitNavigationButtonListener
 import javax.inject.Inject
 
@@ -22,7 +23,7 @@ import javax.inject.Inject
 class StateFragment : InjectableFragment(), InteractionAnswerReceiver, InteractionAnswerHandler,
   InteractionAnswerErrorReceiver, ContinueNavigationButtonListener, NextNavigationButtonListener,
   PreviousNavigationButtonListener, ReturnToTopicNavigationButtonListener, SubmitNavigationButtonListener,
-  PreviousResponsesHeaderClickListener {
+  PreviousResponsesHeaderClickListener, ShowHintAvailabilityListener {
   companion object {
     /**
      * Creates a new instance of a StateFragment.
@@ -71,6 +72,8 @@ class StateFragment : InjectableFragment(), InteractionAnswerReceiver, Interacti
 
   override fun onResponsesHeaderClicked() = stateFragmentPresenter.onResponsesHeaderClicked()
 
+  override fun onHintAvailable(hintIndex: Int?) = stateFragmentPresenter.onHintAvailable(hintIndex)
+
   fun handlePlayAudio() = stateFragmentPresenter.handleAudioClick()
 
   fun handleKeyboardAction() = stateFragmentPresenter.handleKeyboardAction()
@@ -82,4 +85,12 @@ class StateFragment : InjectableFragment(), InteractionAnswerReceiver, Interacti
   fun setAudioBarVisibility(visibility: Boolean) = stateFragmentPresenter.setAudioBarVisibility(visibility)
 
   fun scrollToTop() = stateFragmentPresenter.scrollToTop()
+
+  fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
+    stateFragmentPresenter.revealHint(saveUserChoice, hintIndex)
+  }
+
+  fun revealSolution(saveUserChoice: Boolean) {
+    stateFragmentPresenter.revealSolution(saveUserChoice)
+  }
 }

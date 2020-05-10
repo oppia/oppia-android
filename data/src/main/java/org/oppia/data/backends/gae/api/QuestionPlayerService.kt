@@ -13,5 +13,4 @@ interface QuestionPlayerService {
     @Query("skill_ids") skillIds: String,
     @Query("question_count") questionCount: Int
   ): Call<GaeQuestionPlayer>
-
 }

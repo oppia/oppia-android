@@ -25,14 +25,20 @@ class InMemoryBlockingCache<T : Any> private constructor(blockingDispatcher: Cor
    */
   private var value: T? = initialValue
 
+  private var changeObserver: suspend () -> Unit = {}
+
+  /** Registers an observer that is called synchronously whenever this cache's contents are changed. */
+  fun observeChanges(changeObserver: suspend () -> Unit) {
+    this.changeObserver = changeObserver
+  }
+
   /**
    * Returns a [Deferred] that, upon completion, guarantees that the cache has been recreated and initialized to the
    * specified value. The [Deferred] will be passed the most up-to-date state of the cache.
    */
   fun createAsync(newValue: T): Deferred<T> {
     return blockingScope.async {
-      value = newValue
-      newValue
+      setCache(newValue)
     }
   }
 
@@ -43,9 +49,7 @@ class InMemoryBlockingCache<T : Any> private constructor(blockingDispatcher: Cor
    */
   fun createIfAbsentAsync(generate: suspend () -> T): Deferred<T> {
     return blockingScope.async {
-      val initedValue = value ?: generate()
-      value = initedValue
-      initedValue
+      setCache(value ?: generate())
     }
   }
 
@@ -77,9 +81,7 @@ class InMemoryBlockingCache<T : Any> private constructor(blockingDispatcher: Cor
    */
   fun updateAsync(update: suspend (T?) -> T): Deferred<T> {
     return blockingScope.async {
-      val updatedValue = update(value)
-      value = updatedValue
-      updatedValue
+      setCache(update(value))
     }
   }
 
@@ -89,9 +91,7 @@ class InMemoryBlockingCache<T : Any> private constructor(blockingDispatcher: Cor
    */
   fun updateIfPresentAsync(update: suspend (T) -> T): Deferred<T> {
     return blockingScope.async {
-      val updatedValue = update(checkNotNull(value) { "Expected to update the cache only after it's been created" })
-      value = updatedValue
-      updatedValue
+      setCache(update(checkNotNull(value) { "Expected to update the cache only after it's been created" }))
     }
   }
 
@@ -99,7 +99,7 @@ class InMemoryBlockingCache<T : Any> private constructor(blockingDispatcher: Cor
   fun <V> updateWithCustomChannelIfPresentAsync(update: suspend (T) -> Pair<T, V>): Deferred<V> {
     return blockingScope.async {
       val (updatedValue, customResult) = update(checkNotNull(value) { "Expected to update the cache only after it's been created" })
-      value = updatedValue
+      setCache(updatedValue)
       customResult
     }
   }
@@ -120,7 +120,7 @@ class InMemoryBlockingCache<T : Any> private constructor(blockingDispatcher: Cor
    */
   fun deleteAsync(): Deferred<Unit> {
     return blockingScope.async {
-      value = null
+      clearCache()
     }
   }
 
@@ -134,7 +134,7 @@ class InMemoryBlockingCache<T : Any> private constructor(blockingDispatcher: Cor
     return blockingScope.async {
       val valueSnapshot = value
       if (valueSnapshot != null && shouldDelete(valueSnapshot)) {
-        value = null
+        clearCache()
         true
       } else false
     }
@@ -148,10 +148,21 @@ class InMemoryBlockingCache<T : Any> private constructor(blockingDispatcher: Cor
   fun maybeForceDeleteAsync(shouldDelete: suspend (T?) -> Boolean): Deferred<Boolean> {
     return blockingScope.async {
       if (shouldDelete(value)) {
-        value = null
+        clearCache()
         true
       } else false
     }
+  }
+
+  private suspend fun setCache(newValue: T): T {
+    value = newValue
+    changeObserver()
+    return newValue
+  }
+
+  private suspend fun clearCache() {
+    value = null
+    changeObserver()
   }
 
   /** An injectable factory for [InMemoryBlockingCache]es. */

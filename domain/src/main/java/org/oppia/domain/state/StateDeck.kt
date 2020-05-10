@@ -3,8 +3,9 @@ package org.oppia.domain.state
 import org.oppia.app.model.AnswerAndResponse
 import org.oppia.app.model.CompletedState
 import org.oppia.app.model.EphemeralState
-import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.Hint
 import org.oppia.app.model.PendingState
+import org.oppia.app.model.Solution
 import org.oppia.app.model.State
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.UserAnswer
@@ -21,6 +22,8 @@ internal class StateDeck internal constructor(
   private var pendingTopState: State = initialState
   private val previousStates: MutableList<EphemeralState> = ArrayList()
   private val currentDialogInteractions: MutableList<AnswerAndResponse> = ArrayList()
+  private val hintList: MutableList<Hint> = ArrayList()
+  private lateinit var solution: Solution
   private var stateIndex: Int = 0
 
   /** Resets this deck to a new, specified initial [State]. */
@@ -28,6 +31,7 @@ internal class StateDeck internal constructor(
     pendingTopState = initialState
     previousStates.clear()
     currentDialogInteractions.clear()
+    hintList.clear()
     stateIndex = 0
   }
 
@@ -75,13 +79,16 @@ internal class StateDeck internal constructor(
    * current State is not terminal, or if the learner hasn't submitted an answer to the most recent State. This
    * operation implies that the most recently submitted answer was the correct answer to the previously current State.
    * This does NOT change the user's position in the deck, it just marks the current state as completed.
+   *
+   * @param prohibitSameStateName whether to enable a sanity check to ensure the same state isn't routed to twice
    */
-  internal fun pushState(state: State) {
+  internal fun pushState(state: State, prohibitSameStateName: Boolean) {
     check(isCurrentStateTopOfDeck()) { "Cannot push a new state unless the learner is at the most recent state." }
     check(!isCurrentStateTerminal()) { "Cannot push another state after reaching a terminal state." }
     check(currentDialogInteractions.size != 0) { "Cannot push another state without an answer." }
-    // TODO(BenHenning): Reconcile this check.
-//    check(state.name != pendingTopState.name) { "Cannot route from the same state to itself as a new card." }
+    if (prohibitSameStateName) {
+      check(state.name != pendingTopState.name) { "Cannot route from the same state to itself as a new card." }
+    }
     // NB: This technically has a 'next' state, but it's not marked until it's first navigated away since the new state
     // doesn't become fully realized until navigated to.
     previousStates += EphemeralState.newBuilder()
@@ -90,7 +97,33 @@ internal class StateDeck internal constructor(
       .setCompletedState(CompletedState.newBuilder().addAllAnswer(currentDialogInteractions))
       .build()
     currentDialogInteractions.clear()
+    hintList.clear()
     pendingTopState = state
+  }
+
+  internal fun pushStateForHint(state: State, hintIndex: Int): EphemeralState {
+    val interactionBuilder = state.interaction.toBuilder().setHint(hintIndex, hintList.get(0))
+    val newState = state.toBuilder().setInteraction(interactionBuilder).build()
+    val ephemeralState = EphemeralState.newBuilder()
+      .setState(newState)
+      .setHasPreviousState(!isCurrentStateInitial())
+      .setPendingState(PendingState.newBuilder().addAllWrongAnswer(currentDialogInteractions).addAllHint(hintList))
+      .build()
+    pendingTopState = newState
+    hintList.clear()
+    return ephemeralState
+  }
+
+  internal fun pushStateForSolution(state: State): EphemeralState {
+    val interactionBuilder = state.interaction.toBuilder().setSolution(solution)
+    val newState = state.toBuilder().setInteraction(interactionBuilder).build()
+    val ephemeralState = EphemeralState.newBuilder()
+      .setState(newState)
+      .setHasPreviousState(!isCurrentStateInitial())
+      .setPendingState(PendingState.newBuilder().addAllWrongAnswer(currentDialogInteractions).addAllHint(hintList))
+      .build()
+    pendingTopState = newState
+    return ephemeralState
   }
 
   /**
@@ -107,11 +140,27 @@ internal class StateDeck internal constructor(
       .build()
   }
 
+  internal fun submitHintRevealed(state: State, hintIsRevealed: Boolean, hintIndex: Int) {
+    hintList += Hint.newBuilder()
+      .setHintIsRevealed(hintIsRevealed)
+      .setHintContent(state.interaction.getHint(hintIndex).hintContent)
+      .build()
+  }
+
+  internal fun submitSolutionRevealed(state: State, solutionIsRevealed: Boolean) {
+    solution = Solution.newBuilder()
+      .setSolutionIsRevealed(solutionIsRevealed)
+      .setAnswerIsExclusive(state.interaction.solution.answerIsExclusive)
+      .setCorrectAnswer(state.interaction.solution.correctAnswer)
+      .setExplanation(state.interaction.solution.explanation)
+      .build()
+  }
+
   private fun getCurrentPendingState(): EphemeralState {
     return EphemeralState.newBuilder()
       .setState(pendingTopState)
       .setHasPreviousState(!isCurrentStateInitial())
-      .setPendingState(PendingState.newBuilder().addAllWrongAnswer(currentDialogInteractions))
+      .setPendingState(PendingState.newBuilder().addAllWrongAnswer(currentDialogInteractions).addAllHint(hintList))
       .build()
   }
 

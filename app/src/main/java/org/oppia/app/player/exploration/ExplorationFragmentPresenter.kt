@@ -48,6 +48,14 @@ class ExplorationFragmentPresenter @Inject constructor(
     getStateFragment()?.handleKeyboardAction()
   }
 
+  fun revealHint(saveUserChoice: Boolean, hintIndex: Int){
+    getStateFragment()?.revealHint(saveUserChoice, hintIndex)
+  }
+
+  fun revealSolution(saveUserChoice: Boolean){
+    getStateFragment()?.revealSolution(saveUserChoice)
+  }
+
   private fun getStateFragment(): StateFragment? {
     return fragment.childFragmentManager.findFragmentById(R.id.state_fragment_placeholder) as StateFragment?
   }

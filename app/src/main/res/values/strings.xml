@@ -27,6 +27,7 @@
   <string name="cellular_data_alert_dialog_description">Streaming audio may use a lot of cellular data.</string>
   <string name="cellular_data_alert_dialog_checkbox">Don\'t show this message again</string>
   <string name="concept_card_toolbar_title">Concept Card</string>
+  <string name="concept_card_close_icon_description">Clicking on this will close the concept card.</string>
   <string name="revision_card_toolbar_title">Revision Card</string>
   <string name="stop_exploration_dialog_title">Leave to Topic Page?</string>
   <string name="stop_exploration_dialog_description">Your progress will not be saved.</string>
@@ -34,7 +35,7 @@
   <string name="stop_exploration_dialog_leave_button">Leave</string>
   <string name="topic_practice_master_these_skills">Master These Skills</string>
   <string name="topic_name_text_view">Ratios and Proportional Reasoning</string>
-  <string name="topic_practice_skills_description">Select or unselect skills that you want to practice</string>
+  <string name="topic_practice_skills_description">Select skills that you would like to practice.</string>
   <string name="topic_practice_start">Start</string>
   <string name="state_continue_button">Continue</string>
   <string name="state_continue_submit">Submit</string>
@@ -104,6 +105,7 @@
   <string name="size_gb">%d GB</string>
   <string name="correct">Correct!</string>
   <string name="topic_prefix">Topic: %s</string>
+  <string name="welcome_profile_name">%s!</string>
   <plurals name="chapter_count">
     <item quantity="one">
       1 Chapter
@@ -139,6 +141,9 @@
     <item quantity="other">
       %d Stories Completed
     </item>
+    <item quantity="zero">
+      %d Stories Completed
+    </item>
   </plurals>
   <plurals name="ongoing_topic_count">
     <item quantity="one">
@@ -147,12 +152,19 @@
     <item quantity="other">
       %d Topics in Progress
     </item>
+    <item quantity="zero">
+      %d Topics in Progress
+    </item>
   </plurals>
   <string name="bar_separator">\u0020|\u0020</string>
   <!-- ProfileChooserFragment -->
   <string name="profile_chooser_admin">Administrator</string>
   <string name="profile_chooser_select">Select your profile</string>
   <string name="profile_chooser_add">Add Profile</string>
+  <string name="set_up_multiple_profiles">Set up Multiple Profiles</string>
+  <string name="set_up_multiple_profiles_description">Add up to 10 users to your account.Perfect for families and classrooms.</string>
+  <string name="profile_chooser_administrator_controls">Administrator Controls</string>
+  <string name="profile_chooser_language">Language</string>
   <!-- AdminAuthActivity -->
   <string name="admin_auth_toolbar">Administrator Controls</string>
   <string name="admin_auth_heading">Administrator Authorization Required</string>
@@ -176,7 +188,7 @@
   <string name="add_profile_input_pin">3-Digit PIN*</string>
   <string name="add_profile_input_confirm_pin">Confirm 3-Digit PIN*</string>
   <string name="add_profile_allow_download_heading">Allow Download Access</string>
-  <string name="add_profile_allow_download_sub">User is able to download and delete content without Administrator password. Only available with PIN.</string>
+  <string name="add_profile_allow_download_sub">User is able to download and delete content without Administrator PIN.</string>
   <string name="add_profile_create_btn">Create</string>
   <string name="add_profile_close">Close</string>
   <string name="add_profile_pin_info">With a PIN, nobody else can access a profile besides this assigned user.</string>
@@ -232,6 +244,7 @@
   <string name="profile_list_activity_title">Profiles</string>
   <!-- ProfileEditActivity. -->
   <string name="profile_edit_created">Created on %s</string>
+  <string name="profile_last_used">Last used </string>
   <string name="profile_edit_rename">Rename</string>
   <string name="profile_edit_reset">Reset PIN</string>
   <string name="profile_edit_delete">Profile Deletion</string>
@@ -304,4 +317,38 @@
   <string name="welcome">"Welcome %s!"</string>
   <!-- WalkthroughTopicListFragment -->
   <string name="what_do_you_want_to_learn">What do you want to learn?</string>
+  <!-- WalkthroughEndFragment -->
+  <string name="great">Great</string>
+  <string name="lets_get_started">Let’s get \nstarted.</string>
+  <string name="yes">Yes</string>
+  <string name="no">No…</string>
+  <string name="pick_a_different_topic">Pick a \ndifferent topic.</string>
+  <string name="are_you_interested">Are you interested in:\n%s?</string>
+  <!-- HintsAndSolutionFragment -->
+  <string name="hints_toolbar_title">Hints</string>
+  <string name="reveal_solution">Reveal Solution</string>
+  <string name="reveal_hint">Reveal Hint</string>
+  <string name="show_hide_hint_list">Show/Hide hint list of %s</string>
+  <string name="show_hide_solution_list">Show/Hide solution</string>
+  <string name="the_only_solution_is">The only solution is :  </string>
+  <string name="this_will_reveal_the_solution">This will reveal the solution. Are you Sure</string>
+  <string name="reveal">Reveal</string>
+  <!-- TextViewBindingAdapters -->
+  <string name="just_now">just now</string>
+  <string name="time_ago">%s ago</string>
+  <string name="yesterday">yesterday</string>
+  <string name="return_to_topic">Return to topic</string>
+  <string name="explanation">Explanation:</string>
+  <plurals name="minutes">
+    <item quantity="one">a minute</item>
+    <item quantity="other">%d minutes</item>
+  </plurals>
+  <plurals name="hours">
+    <item quantity="one">an hour</item>
+    <item quantity="other">%d hours</item>
+  </plurals>
+  <plurals name="days">
+    <item quantity="one">a day</item>
+    <item quantity="other">%d days</item>
+  </plurals>
 </resources>

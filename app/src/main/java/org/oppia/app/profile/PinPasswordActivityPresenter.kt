@@ -19,9 +19,10 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.utility.LifecycleSafeTimerFactory
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
-private const val TAG_ADMIN_SETTINGS_DIALOG = "ADMIN_SETTNIGS_DIALOG"
+private const val TAG_ADMIN_SETTINGS_DIALOG = "ADMIN_SETTINGS_DIALOG"
 private const val TAG_RESET_PIN_DIALOG = "RESET_PIN_DIALOG"
 
 /** The presenter for [PinPasswordActivity]. */
@@ -35,9 +36,11 @@ class PinPasswordActivityPresenter @Inject constructor(
     getPinPasswordViewModel()
   }
   private var profileId = -1
+  private lateinit var alertDialog: AlertDialog
 
   @ExperimentalCoroutinesApi
   fun handleOnCreate() {
+    StatusBarColor.statusBarColorUpdate(R.color.pinInputStatusBar, activity, true)
     val adminPin = activity.intent.getStringExtra(KEY_PIN_PASSWORD_ADMIN_PIN)
     profileId = activity.intent.getIntExtra(KEY_PIN_PASSWORD_PROFILE_ID, -1)
     val binding = DataBindingUtil.setContentView<PinPasswordActivityBinding>(activity, R.layout.pin_password_activity)
@@ -50,28 +53,24 @@ class PinPasswordActivityPresenter @Inject constructor(
     binding.showPin.setOnClickListener {
       pinViewModel.showPassword.set(!pinViewModel.showPassword.get()!!)
     }
-
     binding.inputPin.requestFocus()
-    binding.inputPin.addTextChangedListener(object: TextWatcher {
-      var wrong = false
+    binding.inputPin.addTextChangedListener(object : TextWatcher {
       override fun onTextChanged(pin: CharSequence?, start: Int, before: Int, count: Int) {
         pin?.let { inputtedPin ->
-          if (!wrong) {
+          if (inputtedPin.isNotEmpty()) {
             pinViewModel.showError.set(false)
           }
-          wrong = false
-          if (inputtedPin.length == pinViewModel.correctPin.length) {
-            if (inputtedPin.toString() == pinViewModel.correctPin) {
+          if (inputtedPin.length == pinViewModel.correctPin.get()!!.length && inputtedPin.isNotEmpty() && pinViewModel.correctPin.get()!!.isNotEmpty()) {
+            if (inputtedPin.toString() == pinViewModel.correctPin.get()) {
               profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(profileId).build())
                 .observe(activity, Observer {
-                if (it.isSuccess()) {
-                  activity.startActivity((HomeActivity.createHomeActivity(activity, profileId)))
-                }
-              })
+                  if (it.isSuccess()) {
+                    activity.startActivity((HomeActivity.createHomeActivity(activity, profileId)))
+                  }
+                })
             } else {
               binding.inputPin.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.shake))
               lifecycleSafeTimerFactory.createTimer(1000).observe(activity, Observer {
-                wrong = true
                 binding.inputPin.setText("")
               })
               pinViewModel.showError.set(true)
@@ -79,12 +78,13 @@ class PinPasswordActivityPresenter @Inject constructor(
           }
         }
       }
+
       override fun afterTextChanged(confirmPin: Editable?) {}
       override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {}
     })
 
     binding.forgotPin.setOnClickListener {
-      if (pinViewModel.isAdmin) {
+      if (pinViewModel.isAdmin.get()!!) {
         showAdminForgotPin()
       } else {
         val previousFrag = activity.supportFragmentManager.findFragmentByTag(TAG_ADMIN_SETTINGS_DIALOG)
@@ -95,11 +95,15 @@ class PinPasswordActivityPresenter @Inject constructor(
         dialogFragment.showNow(activity.supportFragmentManager, TAG_ADMIN_SETTINGS_DIALOG)
       }
     }
+
+    if (pinViewModel.showAdminPinForgotPasswordPopUp.get()!!) {
+      showAdminForgotPin()
+    }
   }
 
   fun handleRouteToResetPinDialog() {
     (activity.supportFragmentManager.findFragmentByTag(TAG_ADMIN_SETTINGS_DIALOG) as DialogFragment).dismiss()
-    val dialogFragment = ResetPinDialogFragment.newInstance(profileId, pinViewModel.name)
+    val dialogFragment = ResetPinDialogFragment.newInstance(profileId, pinViewModel.name.get()!!)
     dialogFragment.showNow(activity.supportFragmentManager, TAG_RESET_PIN_DIALOG)
   }
 
@@ -113,20 +117,35 @@ class PinPasswordActivityPresenter @Inject constructor(
   }
 
   private fun showAdminForgotPin() {
-    AlertDialog.Builder(activity, R.style.AlertDialogTheme)
+    pinViewModel.showAdminPinForgotPasswordPopUp.set(true)
+    alertDialog = AlertDialog.Builder(activity, R.style.AlertDialogTheme)
       .setTitle(R.string.pin_password_forgot_title)
       .setMessage(R.string.pin_password_forgot_message)
       .setNegativeButton(R.string.admin_settings_cancel) { dialog, _ ->
+        pinViewModel.showAdminPinForgotPasswordPopUp.set(false)
         dialog.dismiss()
       }
       .setPositiveButton(R.string.pin_password_play_store) { dialog, _ ->
+        pinViewModel.showAdminPinForgotPasswordPopUp.set(false)
         try {
           activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + activity.packageName)))
         } catch (e: ActivityNotFoundException) {
-          activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + activity.packageName)))
+          activity.startActivity(
+            Intent(
+              Intent.ACTION_VIEW,
+              Uri.parse("https://play.google.com/store/apps/details?id=" + activity.packageName)
+            )
+          )
         }
         dialog.dismiss()
-      }.create().show()
+      }.create()
+    alertDialog.show()
+  }
+
+  fun dismissAlertDialog() {
+    if (::alertDialog.isInitialized && alertDialog.isShowing) {
+      alertDialog.dismiss()
+    }
   }
 
   private fun showSuccessDialog() {

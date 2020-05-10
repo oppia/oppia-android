@@ -18,13 +18,17 @@ import org.oppia.app.databinding.StateFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.AnswerOutcome
 import org.oppia.app.model.EphemeralState
+import org.oppia.app.model.Hint
 import org.oppia.app.model.ProfileId
+import org.oppia.app.model.Solution
 import org.oppia.app.model.State
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.AudioUiManager
+import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
+import org.oppia.app.utility.LifecycleSafeTimerFactory
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationProgressController
 import org.oppia.domain.topic.StoryProgressController
@@ -52,9 +56,13 @@ class StateFragmentPresenter @Inject constructor(
   private val storyProgressController: StoryProgressController,
   private val logger: Logger,
   @DefaultResourceBucketName private val resourceBucketName: String,
-  private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory
+  private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
+  private var lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
 ) {
 
+  private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
+
+  private lateinit var currentState: State
   private var feedbackId: String? = null
   private lateinit var profileId: ProfileId
   private lateinit var topicId: String
@@ -63,6 +71,7 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
+
   private val viewModel: StateViewModel by lazy {
     getStateViewModel()
   }
@@ -107,6 +116,14 @@ class StateFragmentPresenter @Inject constructor(
       }
     }
 
+    binding.hintsAndSolutionFragmentContainer.setOnClickListener {
+      routeToHintsAndSolutionListener.routeToHintsAndSolution(
+        explorationId,
+        viewModel.newAvailableHintIndex,
+        viewModel.allHintsExhausted
+      )
+    }
+
     subscribeToCurrentState()
     markExplorationAsRecentlyPlayed()
     return binding.root
@@ -118,6 +135,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun onContinueButtonClicked() {
+    viewModel.setHintBulbVisibility(false)
     hideKeyboard()
     moveToNextState()
   }
@@ -152,16 +170,25 @@ class StateFragmentPresenter @Inject constructor(
     recyclerViewAssembler.adapter.notifyDataSetChanged()
   }
 
+  fun onHintAvailable(hintIndex: Int?) {
+    if (hintIndex != null) {
+      viewModel.newAvailableHintIndex = hintIndex
+    } else {
+      viewModel.allHintsExhausted = true
+    }
+    viewModel.setHintOpenedAndUnRevealedVisibility(true)
+    viewModel.setHintBulbVisibility(true)
+  }
+
   fun handleAudioClick() {
     (getAudioFragment() as AudioFragment).handleAudioClick(isAudioShowing(), feedbackId)
   }
 
   fun handleKeyboardAction() {
     hideKeyboard()
-    // TODO(BenHenning): Fix the interaction button not being active.
-//    if (stateNavigationButtonViewModel.isInteractionButtonActive.get()!!) {
-    handleSubmitAnswer(viewModel.getPendingAnswer(recyclerViewAssembler))
-//    }
+    if (viewModel.getCanSubmitAnswer().get() == true) {
+      handleSubmitAnswer(viewModel.getPendingAnswer(recyclerViewAssembler))
+    }
   }
 
   private fun createRecyclerViewAssembler(
@@ -170,14 +197,23 @@ class StateFragmentPresenter @Inject constructor(
   ): StatePlayerRecyclerViewAssembler {
     return builder.addContentSupport()
       .addFeedbackSupport()
-      .addInteractionSupport()
+      .addInteractionSupport(viewModel.getCanSubmitAnswer())
       .addPastAnswersSupport()
       .addWrongAnswerCollapsingSupport()
       .addBackwardNavigationSupport()
       .addForwardNavigationSupport()
       .addReturnToTopicSupport()
       .addCongratulationsForCorrectAnswers(congratulationsTextView)
+      .addHintsAndSolutionsSupport()
       .build()
+  }
+
+  fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
+    subscribeToHint(explorationProgressController.submitHintIsRevealed(currentState, saveUserChoice, hintIndex))
+  }
+
+  fun revealSolution(saveUserChoice: Boolean) {
+    subscribeToSolution(explorationProgressController.submitSolutionIsRevealed(currentState, saveUserChoice))
   }
 
   private fun getStateViewModel(): StateViewModel {
@@ -204,7 +240,11 @@ class StateFragmentPresenter @Inject constructor(
     }
 
     val ephemeralState = result.getOrThrow()
-    val scrollToTop = ::currentStateName.isInitialized && currentStateName != ephemeralState.state.name
+
+    val scrollToTop =
+      ::currentStateName.isInitialized && currentStateName != ephemeralState.state.name
+
+    currentState = ephemeralState.state
     currentStateName = ephemeralState.state.name
     showOrHideAudioByState(ephemeralState.state)
 
@@ -231,18 +271,54 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   /**
+   * This function listens to the result of RevealHint.
+   * Whenever a hint is revealed using ExplorationProgressController.submitHintIsRevealed function,
+   * this function will wait for the response from that function and based on which we can move to next state.
+   */
+  private fun subscribeToHint(hintResultLiveData: LiveData<AsyncResult<Hint>>) {
+    val hintLiveData = getHintIsRevealed(hintResultLiveData)
+    hintLiveData.observe(fragment, Observer { result ->
+      // If the hint was revealed remove dot and radar.
+      if (result.hintIsRevealed) {
+        viewModel.setHintOpenedAndUnRevealedVisibility(false)
+      }
+    })
+  }
+
+  /**
+   * This function listens to the result of RevealSolution.
+   * Whenever a hint is revealed using ExplorationProgressController.submitHintIsRevealed function,
+   * this function will wait for the response from that function and based on which we can move to next state.
+   */
+  private fun subscribeToSolution(solutionResultLiveData: LiveData<AsyncResult<Solution>>) {
+    val solutionLiveData = getSolutionIsRevealed(solutionResultLiveData)
+    solutionLiveData.observe(fragment, Observer { result ->
+      // If the hint was revealed remove dot and radar.
+      if (result.solutionIsRevealed) {
+        viewModel.setHintOpenedAndUnRevealedVisibility(false)
+      }
+    })
+  }
+
+  /**
    * This function listens to the result of submitAnswer.
    * Whenever an answer is submitted using ExplorationProgressController.submitAnswer function,
    * this function will wait for the response from that function and based on which we can move to next state.
    */
   private fun subscribeToAnswerOutcome(answerOutcomeResultLiveData: LiveData<AsyncResult<AnswerOutcome>>) {
     val answerOutcomeLiveData = getAnswerOutcome(answerOutcomeResultLiveData)
-    answerOutcomeLiveData.observe(fragment, Observer<AnswerOutcome> { result ->
+    answerOutcomeLiveData.observe(fragment, Observer { result ->
       // If the answer was submitted on behalf of the Continue interaction, automatically continue to the next state.
       if (result.state.interaction.id == "Continue") {
-         moveToNextState()
-      } else if (result.labelledAsCorrectAnswer) {
-        recyclerViewAssembler.showCongratulationMessageOnCorrectAnswer()
+        recyclerViewAssembler.stopHintsFromShowing()
+        viewModel.setHintBulbVisibility(false)
+        moveToNextState()
+      } else {
+        if (result.labelledAsCorrectAnswer) {
+          recyclerViewAssembler.stopHintsFromShowing()
+          viewModel.setHintBulbVisibility(false)
+          recyclerViewAssembler.showCongratulationMessageOnCorrectAnswer()
+        }
         feedbackId = result.feedback.contentId
         if (isAudioShowing()) {
           (getAudioFragment() as AudioUiManager).loadFeedbackAudio(feedbackId!!, true)
@@ -251,12 +327,22 @@ class StateFragmentPresenter @Inject constructor(
     })
   }
 
+  /** Helper for [subscribeToSolution]. */
+  private fun getSolutionIsRevealed(hint: LiveData<AsyncResult<Solution>>): LiveData<Solution> {
+    return Transformations.map(hint, ::processSolution)
+  }
+
+  /** Helper for [subscribeToHint]. */
+  private fun getHintIsRevealed(hint: LiveData<AsyncResult<Hint>>): LiveData<Hint> {
+    return Transformations.map(hint, ::processHint)
+  }
+
   /** Helper for subscribeToAnswerOutcome. */
   private fun getAnswerOutcome(answerOutcome: LiveData<AsyncResult<AnswerOutcome>>): LiveData<AnswerOutcome> {
     return Transformations.map(answerOutcome, ::processAnswerOutcome)
   }
 
-  /** Helper for subscribeToAnswerOutcome. */
+  /** Helper for [subscribeToAnswerOutcome]. */
   private fun processAnswerOutcome(ephemeralStateResult: AsyncResult<AnswerOutcome>): AnswerOutcome {
     if (ephemeralStateResult.isFailure()) {
       logger.e(
@@ -266,6 +352,30 @@ class StateFragmentPresenter @Inject constructor(
       )
     }
     return ephemeralStateResult.getOrDefault(AnswerOutcome.getDefaultInstance())
+  }
+
+  /** Helper for [subscribeToHint]. */
+  private fun processHint(hintResult: AsyncResult<Hint>): Hint {
+    if (hintResult.isFailure()) {
+      logger.e(
+        "StateFragment",
+        "Failed to retrieve Hint",
+        hintResult.getErrorOrNull()!!
+      )
+    }
+    return hintResult.getOrDefault(Hint.getDefaultInstance())
+  }
+
+  /** Helper for [subscribeToSolution]. */
+  private fun processSolution(solutionResult: AsyncResult<Solution>): Solution {
+    if (solutionResult.isFailure()) {
+      logger.e(
+        "StateFragment",
+        "Failed to retrieve Solution",
+        solutionResult.getErrorOrNull()!!
+      )
+    }
+    return solutionResult.getOrDefault(Solution.getDefaultInstance())
   }
 
   private fun handleSubmitAnswer(answer: UserAnswer) {
@@ -297,19 +407,14 @@ class StateFragmentPresenter @Inject constructor(
 
   /** Updates submit button UI as active if pendingAnswerError null else inactive. */
   fun updateSubmitButton(pendingAnswerError: String?) {
-    // TODO(BenHenning): Fix the interaction button not being active, including styling.
-//    if (pendingAnswerError != null) {
-//      stateNavigationButtonViewModel.isInteractionButtonActive.set(false)
-//    } else {
-//      stateNavigationButtonViewModel.isInteractionButtonActive.set(true)
-//    }
+    viewModel.setCanSubmitAnswer(pendingAnswerError == null)
   }
 
   private fun markExplorationAsRecentlyPlayed() {
-    storyProgressController.recordRecentlyPlayedChapter(profileId,topicId, storyId, explorationId, Date().time)
+    storyProgressController.recordRecentlyPlayedChapter(profileId, topicId, storyId, explorationId, Date().time)
   }
 
   private fun markExplorationCompleted() {
-    storyProgressController.recordCompletedChapter(profileId,topicId, storyId, explorationId, Date().time)
+    storyProgressController.recordCompletedChapter(profileId, topicId, storyId, explorationId, Date().time)
   }
 }

@@ -12,36 +12,34 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:clipToPadding="false"
+    android:paddingTop="32dp">
 
-    <FrameLayout
-      android:id="@+id/profile_frame_layout"
-      android:layout_width="96dp"
-      android:layout_height="96dp"
-      android:layout_marginTop="32dp"
+    <com.jackandphantom.circularimageview.CircleImage
+      android:id="@+id/profile_edit_image"
+      android:layout_width="100dp"
+      android:layout_height="100dp"
+      android:clickable="true"
+      android:focusable="true"
+      android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
+      app:add_shadow="true"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent">
+      app:layout_constraintTop_toTopOf="parent"
+      app:shadow_radius="8"
+      profile:src="@{viewModel.profile.avatar}" />
 
-      <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profile_edit_image"
-        android:layout_width="96dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
-        android:layout_height="96dp"
-        profile:src="@{viewModel.profile.avatar}" />
-
-      <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:src="@drawable/ic_edit_18"
-        app:backgroundTint="@color/white"
-        app:fabCustomSize="24dp"
-        android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
-        app:tint="@color/colorPrimary" />
-    </FrameLayout>
+    <ImageView
+      android:layout_width="48dp"
+      android:layout_height="48dp"
+      android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
+      android:paddingStart="8dp"
+      android:paddingTop="8dp"
+      android:src="@drawable/rounded_white_background_with_shadow"
+      app:layout_constraintBottom_toBottomOf="@+id/profile_edit_image"
+      app:layout_constraintEnd_toEndOf="@+id/profile_edit_image"
+      app:layout_constraintRight_toRightOf="@+id/profile_edit_image" />
 
     <TextView
       android:id="@+id/profile_name_text_view"
@@ -51,121 +49,135 @@
       android:fontFamily="sans-serif-medium"
       android:text="@{viewModel.profile.name}"
       android:textColor="@color/oppiaPrimaryText"
-      android:textSize="18sp"
+      android:textSize="20sp"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/profile_frame_layout" />
+      app:layout_constraintTop_toBottomOf="@+id/profile_edit_image" />
 
-    <LinearLayout
-      android:id="@+id/progress_stats_linear_layout"
-      android:layout_width="wrap_content"
+    <com.google.android.material.card.MaterialCardView
+      android:id="@+id/ongoing_topics_container"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginTop="16dp"
-      android:orientation="horizontal"
-      app:layout_constraintEnd_toEndOf="parent"
+      android:layout_marginStart="48dp"
+      android:layout_marginTop="32dp"
+      android:layout_marginEnd="24dp"
+      android:layout_weight="1"
+      android:background="@drawable/grey_card_rounded_border"
+      android:clickable="@{viewModel.ongoingTopicCount > 0}"
+      android:onClick="@{() -> viewModel.clickOnOngoingTopicCount()}"
+      app:cardElevation="2dp"
+      app:contentPadding="8dp"
+      app:layout_constraintEnd_toStartOf="@+id/completed_stories_container"
+      app:layout_constraintHorizontal_weight="1"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/profile_name_text_view">
 
-      <com.google.android.material.card.MaterialCardView
-        android:id="@+id/ongoing_topics_container"
-        android:layout_width="wrap_content"
+      <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:clickable="@{viewModel.ongoingTopicCount > 0}"
-        android:onClick="@{() -> viewModel.clickOnOngoingTopicCount()}"
-        app:contentPadding="8dp">
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="8dp">
 
-        <LinearLayout
+        <TextView
+          android:id="@+id/ongoing_topics_count"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:gravity="center"
-          android:orientation="vertical">
+          android:fontFamily="sans-serif"
+          android:text="@{Integer.toString(viewModel.ongoingTopicCount)}"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="24sp" />
 
-          <TextView
-            android:id="@+id/ongoing_topics_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="@{Integer.toString(viewModel.ongoingTopicCount)}"
-            android:textSize="24sp" />
-
-          <TextView
-            android:id="@+id/ongoing_topics_description_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="@{viewModel.ongoingTopicCount > 1 ? @string/topics_in_progress : @string/topic_in_progress}"
-            android:textSize="14sp" />
-        </LinearLayout>
-      </com.google.android.material.card.MaterialCardView>
-
-      <com.google.android.material.card.MaterialCardView
-        android:id="@+id/completed_stories_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:clickable="@{viewModel.completedStoryCount > 0}"
-        android:onClick="@{() -> viewModel.clickOnCompletedStoryCount()}"
-        app:contentPadding="8dp">
-
-        <LinearLayout
-          android:layout_width="wrap_content"
+        <TextView
+          android:id="@+id/ongoing_topics_description_text_view"
+          android:layout_width="60dp"
           android:layout_height="wrap_content"
+          android:fontFamily="sans-serif"
           android:gravity="center"
-          android:orientation="vertical">
+          android:text="@{viewModel.ongoingTopicCount != 1 ? @string/topics_in_progress : @string/topic_in_progress}"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="12sp" />
+      </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
-          <TextView
-            android:id="@+id/completed_stories_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="@{Integer.toString(viewModel.completedStoryCount)}"
-            android:textSize="24sp" />
-
-          <TextView
-            android:id="@+id/completed_stories_description_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="@{viewModel.completedStoryCount > 1 ? @string/stories_completed : @string/story_completed}"
-            android:textSize="14sp" />
-        </LinearLayout>
-      </com.google.android.material.card.MaterialCardView>
-    </LinearLayout>
-
-    <LinearLayout
-      android:layout_width="match_parent"
+    <com.google.android.material.card.MaterialCardView
+      android:id="@+id/completed_stories_container"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginTop="24dp"
-      android:orientation="horizontal"
+      android:layout_marginEnd="48dp"
+      android:layout_weight="1"
+      android:background="@drawable/grey_card_rounded_border"
+      android:clickable="@{viewModel.completedStoryCount > 0}"
+      android:onClick="@{() -> viewModel.clickOnCompletedStoryCount()}"
+      app:cardElevation="2dp"
+      app:contentPadding="8dp"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/progress_stats_linear_layout">
+      app:layout_constraintHorizontal_weight="1"
+      app:layout_constraintStart_toEndOf="@+id/ongoing_topics_container"
+      app:layout_constraintTop_toTopOf="@+id/ongoing_topics_container">
 
-      <TextView
-        android:id="@+id/recently_played_stories_text_view"
-        android:layout_width="0dp"
+      <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_weight="1"
-        android:fontFamily="sans-serif-medium"
-        android:text="@string/recently_played_stories"
-        android:textColor="@color/oppiaPrimaryText"
-        android:textSize="18sp" />
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="8dp">
 
-      <TextView
-        android:id="@+id/view_all_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="28dp"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center_vertical"
-        android:onClick="@{() -> viewModel.clickOnViewAll()}"
-        android:text="@string/view_all"
-        android:textAllCaps="true"
-        android:textColor="@color/oppiaPrimaryDark"
-        android:textSize="14sp" />
-    </LinearLayout>
+        <TextView
+          android:id="@+id/completed_stories_count"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:fontFamily="sans-serif"
+          android:gravity="center"
+          android:text="@{Integer.toString(viewModel.completedStoryCount)}"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="24sp" />
+
+        <TextView
+          android:id="@+id/completed_stories_description_text_view"
+          android:layout_width="60dp"
+          android:layout_height="wrap_content"
+          android:fontFamily="sans-serif"
+          android:gravity="center"
+          android:text="@{viewModel.completedStoryCount != 1 ? @string/stories_completed : @string/story_completed}"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="12sp" />
+      </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <TextView
+      android:id="@+id/recently_played_stories_text_view"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="24dp"
+      android:layout_marginTop="64dp"
+      android:fontFamily="sans-serif-medium"
+      android:gravity="center_vertical"
+      android:minHeight="48dp"
+      android:text="@string/recently_played_stories"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textSize="18sp"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/ongoing_topics_container" />
+
+    <TextView
+      android:id="@+id/view_all_text_view"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:layout_marginEnd="24dp"
+      android:fontFamily="sans-serif-medium"
+      android:gravity="center_vertical"
+      android:minHeight="48dp"
+      android:onClick="@{() -> viewModel.clickOnViewAll()}"
+      android:text="@string/view_all"
+      android:textAllCaps="true"
+      android:textColor="@color/oppiaPrimaryDark"
+      android:textSize="14sp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/completed_stories_container"
+      app:layout_constraintTop_toTopOf="@+id/recently_played_stories_text_view" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
