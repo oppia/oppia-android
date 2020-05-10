@@ -73,9 +73,9 @@ import org.oppia.util.parser.HtmlParser
 import org.oppia.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 
-private const val DELAY_SHOW_HINTS_NO_ANSWERS_MS = 4_000L //30_000L
-private const val DELAY_SHOW_HINTS_ONE_WRONG_ANSWER_MS = 2_000L //60_000L
-private const val DELAY_SHOW_HINTS_MULTIPLE_WRONG_ANSWERS_MS = 1_000L //10_000L
+private const val DELAY_SHOW_HINTS_NO_ANSWERS_MS = 30_000L
+private const val DELAY_SHOW_HINTS_ONE_WRONG_ANSWER_MS = 60_000L
+private const val DELAY_SHOW_HINTS_MULTIPLE_WRONG_ANSWERS_MS = 10_000L
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 
 /**
