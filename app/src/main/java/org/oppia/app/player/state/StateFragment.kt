@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
+import org.oppia.app.model.HelpIndex
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
@@ -72,7 +73,7 @@ class StateFragment : InjectableFragment(), InteractionAnswerReceiver, Interacti
 
   override fun onResponsesHeaderClicked() = stateFragmentPresenter.onResponsesHeaderClicked()
 
-  override fun onHintAvailable(hintIndex: Int?) = stateFragmentPresenter.onHintAvailable(hintIndex)
+  override fun onHintAvailable(helpIndex: HelpIndex) = stateFragmentPresenter.onHintAvailable(helpIndex)
 
   fun handlePlayAudio() = stateFragmentPresenter.handleAudioClick()
 

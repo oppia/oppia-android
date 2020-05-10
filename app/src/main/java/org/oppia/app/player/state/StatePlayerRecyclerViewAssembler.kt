@@ -31,6 +31,7 @@ import org.oppia.app.databinding.SubmittedAnswerItemBinding
 import org.oppia.app.databinding.TextInputInteractionItemBinding
 import org.oppia.app.model.AnswerAndResponse
 import org.oppia.app.model.EphemeralState
+import org.oppia.app.model.HelpIndex
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.PendingState
 import org.oppia.app.model.State
@@ -72,8 +73,9 @@ import org.oppia.util.parser.HtmlParser
 import org.oppia.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 
-private const val DELAY_SHOW_HINTS_ONE_WRONG_ANSWER_MS = 60_000L
-private const val DELAY_SHOW_HINTS_MULTIPLE_WRONG_ANSWERS_MS = 10_000L
+private const val DELAY_SHOW_HINTS_NO_ANSWERS_MS = 4_000L //30_000L
+private const val DELAY_SHOW_HINTS_ONE_WRONG_ANSWER_MS = 2_000L //60_000L
+private const val DELAY_SHOW_HINTS_MULTIPLE_WRONG_ANSWERS_MS = 1_000L //10_000L
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 
 /**
@@ -337,7 +339,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
    * Stops any pending hints from showing, e.g. due to the state being completed. This should only
    * be called if hints & solutions support has been enabled.
    */
-  fun stopHintsFromShowing() = hintHandler.cancelAnyPendingHints()
+  fun stopHintsFromShowing() = hintHandler.reset()
 
   /**
    * Toggles whether current audio playback is enabled. This should only be called if voiceover
@@ -786,14 +788,21 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private class HintHandler(
     private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory, private val fragment: Fragment
   ) {
-    private var trackedWrongAnswerCount = 0
+    /**
+     * The number of wrong answers that have been processed by this handler. This is initialized to
+     * -1 since '0' is a valid number that will trigger one-time special behavior.
+     */
+    private var trackedWrongAnswerCount = -1
+    private var previousHelpIndex: HelpIndex = HelpIndex.getDefaultInstance()
     private var hintSequenceNumber = 0
 
-    /**
-     * Cancels any pending hints that were previously scheduled using [handleSubmitNewWrongAnswer].
-     */
-    fun cancelAnyPendingHints() {
-      // Cancel any potential pending hints by advancing the sequence number.
+    /** Resets this handler to prepare it for a new state, cancelling any pending hints. */
+    fun reset() {
+      trackedWrongAnswerCount = -1
+      previousHelpIndex = HelpIndex.getDefaultInstance()
+      // Cancel any potential pending hints by advancing the sequence number. Note that this isn't
+      // reset to 0 to ensure that all previous hint tasks are cancelled, and new tasks can be
+      // scheduled without overlapping with past sequence numbers.
       hintSequenceNumber++
     }
 
@@ -807,45 +816,69 @@ class StatePlayerRecyclerViewAssembler private constructor(
         return
       }
 
+      // Start showing hints after a wrong answer is submitted or if the user appears stuck (e.g.
+      // doesn't answer after some duration). Note that if there's already a timer to show a hint,
+      // it will be reset for each subsequent answer.
+      val nextUnrevealedHintIndex = getNextHintIndexToReveal(state)
       val wrongAnswerCount = pendingState.wrongAnswerList.size
-      if (wrongAnswerCount == 0 || wrongAnswerCount == trackedWrongAnswerCount) {
-        // If no new wrong answers were submitted, do nothing.
-        return
-      }
-
-      // Start showing hints after a wrong answer is submitted. Note that if there's already a timer
-      // to show a hint, it will be reset for each subsequent answer.
-      val nextUnrevealedHintIndex = getNextUnrevealedHintIndex(state)
-      if (wrongAnswerCount == 1) {
-        scheduleShowHint(DELAY_SHOW_HINTS_ONE_WRONG_ANSWER_MS, nextUnrevealedHintIndex)
-      } else {
-        scheduleShowHint(DELAY_SHOW_HINTS_MULTIPLE_WRONG_ANSWERS_MS, nextUnrevealedHintIndex)
+      if (wrongAnswerCount == 0) {
+        // If no answers have been submitted, schedule an automatic help after a fixed amount of
+        // time. This will automatically reset if something changes other than answers (e.g.
+        // revealing a hint), which may trigger more help to become available.
+        scheduleShowHint(DELAY_SHOW_HINTS_NO_ANSWERS_MS, nextUnrevealedHintIndex)
+      } else if (wrongAnswerCount != trackedWrongAnswerCount) {
+        // Otherwise, only process wrong answers if the count has changed.
+        if (wrongAnswerCount == 1) {
+          scheduleShowHint(DELAY_SHOW_HINTS_ONE_WRONG_ANSWER_MS, nextUnrevealedHintIndex)
+        } else {
+          scheduleShowHint(DELAY_SHOW_HINTS_MULTIPLE_WRONG_ANSWERS_MS, nextUnrevealedHintIndex)
+        }
       }
 
       trackedWrongAnswerCount = wrongAnswerCount
     }
 
     /**
-     * Returns the index of the next hint that hasn't yet been revealed, or null if the solution can
-     * now be revealed due to all hints being shown.
+     * Returns the [HelpIndex] of the next hint or solution that hasn't yet been revealed, or
+     * default if there is none.
      */
-    private fun getNextUnrevealedHintIndex(state: State): Int? {
+    private fun getNextHintIndexToReveal(state: State): HelpIndex {
       // Return the index of the first unrevealed hint, or the length of the list if all have been
       // revealed.
       val hintList = state.interaction.hintList
-      return hintList.indices.filterNot { idx -> hintList[idx].hintIsRevealed }.firstOrNull()
+      val solution = state.interaction.solution
+
+      val hasHelp = hintList.isNotEmpty() || solution.hasCorrectAnswer()
+      val lastUnrevealedHintIndex = hintList.indices.filterNot { idx ->
+        hintList[idx].hintIsRevealed
+      }.firstOrNull()
+
+      return if (!hasHelp) {
+        HelpIndex.getDefaultInstance()
+      } else if (lastUnrevealedHintIndex != null) {
+        HelpIndex.newBuilder().setHintIndex(lastUnrevealedHintIndex).build()
+      } else if (solution.hasCorrectAnswer() && !solution.solutionIsRevealed) {
+        HelpIndex.newBuilder().setShowSolution(true).build()
+      } else {
+        HelpIndex.newBuilder().setEverythingRevealed(true).build()
+      }
     }
 
     /**
      * Schedules to allow the hint of the specified index to be shown after the specified delay,
      * cancelling any potentially previous pending hints initiated by calls to this method.
      */
-    private fun scheduleShowHint(delayMs: Long, hintIndexToShow: Int?) {
+    private fun scheduleShowHint(delayMs: Long, helpIndexToShow: HelpIndex) {
       val targetSequenceNumber = ++hintSequenceNumber
       lifecycleSafeTimerFactory.createTimer(delayMs).observe(fragment, Observer {
         // Only finish this timer if no other hints were scheduled and no cancellations occurred.
         if (targetSequenceNumber == hintSequenceNumber) {
-          (fragment as ShowHintAvailabilityListener).onHintAvailable(hintIndexToShow)
+          if (previousHelpIndex != helpIndexToShow) {
+            // Only indicate the hint is available if its index is actually new (including if it
+            // becomes null such as in the case of the solution becoming available).
+            (fragment as ShowHintAvailabilityListener).onHintAvailable(helpIndexToShow)
+            previousHelpIndex = helpIndexToShow
+          }
         }
       })
     }

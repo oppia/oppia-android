@@ -18,6 +18,7 @@ import org.oppia.app.databinding.StateFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.AnswerOutcome
 import org.oppia.app.model.EphemeralState
+import org.oppia.app.model.HelpIndex
 import org.oppia.app.model.Hint
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Solution
@@ -169,14 +170,26 @@ class StateFragmentPresenter @Inject constructor(
     recyclerViewAssembler.adapter.notifyDataSetChanged()
   }
 
-  fun onHintAvailable(hintIndex: Int?) {
-    if (hintIndex != null) {
-      viewModel.newAvailableHintIndex = hintIndex
-    } else {
-      viewModel.allHintsExhausted = true
+  fun onHintAvailable(helpIndex: HelpIndex) {
+    when (helpIndex.indexTypeCase) {
+      HelpIndex.IndexTypeCase.HINT_INDEX, HelpIndex.IndexTypeCase.SHOW_SOLUTION -> {
+        if (helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.HINT_INDEX) {
+          viewModel.newAvailableHintIndex = helpIndex.hintIndex
+        }
+        viewModel.allHintsExhausted =
+          helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.SHOW_SOLUTION
+        viewModel.setHintOpenedAndUnRevealedVisibility(true)
+        viewModel.setHintBulbVisibility(true)
+      }
+      HelpIndex.IndexTypeCase.EVERYTHING_REVEALED -> {
+        viewModel.setHintOpenedAndUnRevealedVisibility(false)
+        viewModel.setHintBulbVisibility(true)
+      }
+      else -> {
+        viewModel.setHintOpenedAndUnRevealedVisibility(false)
+        viewModel.setHintBulbVisibility(false)
+      }
     }
-    viewModel.setHintOpenedAndUnRevealedVisibility(true)
-    viewModel.setHintBulbVisibility(true)
   }
 
   fun handleAudioClick() = recyclerViewAssembler.toggleAudioPlaybackState()

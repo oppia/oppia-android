@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.app.model.HelpIndex
 import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionListener
 import org.oppia.app.player.state.hintsandsolution.RevealHintListener
@@ -75,5 +76,5 @@ class StateFragmentTestActivity :
 
   override fun revealSolution(saveUserChoice: Boolean) {}
 
-  override fun onHintAvailable(hintIndex: Int?) {}
+  override fun onHintAvailable(helpIndex: HelpIndex) {}
 }
