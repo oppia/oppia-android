@@ -47,7 +47,6 @@ class QuestionPlayerActivity : InjectableAppCompatActivity(), StopStatePlayingSe
   }
 
   companion object {
-    // TODO(#159): Use this skillList from TopicPracticeFragment to fetch questions and start practice mode.
     /** Returns a new [Intent] to route to [QuestionPlayerActivity] for a specified skill ID list. */
     fun createQuestionPlayerActivityIntent(context: Context, skillIdList: ArrayList<String>): Intent {
       val intent = Intent(context, QuestionPlayerActivity::class.java)
