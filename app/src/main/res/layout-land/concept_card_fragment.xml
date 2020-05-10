@@ -1,0 +1,84 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.topic.conceptcard.ConceptCardViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorConceptCardBackground">
+
+    <androidx.appcompat.widget.Toolbar
+      android:id="@+id/concept_card_toolbar"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/colorConceptToolbarBackground"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:title="@string/concept_card_toolbar_title"
+      app:titleTextAppearance="@style/ToolbarTextAppearance"
+      app:titleTextColor="@color/white" />
+
+    <FrameLayout
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/concept_card_toolbar">
+
+      <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never"
+        android:paddingBottom="108dp"
+        android:scrollbars="none">
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical">
+
+          <TextView
+            android:id="@+id/concept_card_heading_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="52dp"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="52dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="@{viewModel.conceptCardLiveData.skillDescription}"
+            android:textColor="@color/oppiaPrimaryText"
+            android:textSize="20sp" />
+
+          <TextView
+            android:id="@+id/concept_card_explanation_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="64dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="64dp"
+            android:fontFamily="sans-serif"
+            android:text="@{viewModel.explanationLiveData}"
+            android:textColor="@color/oppiaPrimaryText"
+            android:textSize="16sp" />
+        </LinearLayout>
+        <!--TODO(#352): Show worked examples in Concept Card.-->
+      </ScrollView>
+
+      <View
+        android:id="@+id/concept_card_shadow_view"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:background="@drawable/toolbar_drop_shadow" />
+    </FrameLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

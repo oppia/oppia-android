@@ -8,7 +8,7 @@ import com.squareup.moshi.JsonClass
  * https://github.com/oppia/oppia/blob/15516a/core/domain/state_domain.py#L163
  */
 @JsonClass(generateAdapter = true)
-data class GaeHint (
+data class GaeHint(
 
   @Json(name = "hint_content") val hintContent: GaeSubtitledHtml?
 

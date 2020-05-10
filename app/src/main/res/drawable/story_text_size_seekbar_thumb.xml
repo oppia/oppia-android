@@ -1,0 +1,10 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+  <item>
+    <shape android:shape="oval">
+      <size
+        android:width="12dp"
+        android:height="12dp" />
+      <solid android:color="@color/oppiaPrimaryLight"/>
+    </shape>
+  </item>
+</layer-list>

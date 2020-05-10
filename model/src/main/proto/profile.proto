@@ -7,11 +7,26 @@ option java_multiple_files = true;
 
 // Top level proto used to store last used id and all profiles.
 message ProfileDatabase {
-  // Represents the last used unique ID for adding a profile.
-  int32 last_used_id = 1;
+  // Represents the next unique ID for adding a profile.
+  int32 next_profile_id = 1;
+
+  // Determines whether profile was ever added or not.
+  bool was_profile_ever_added = 2;
+
+  // Represents device settings for the app.
+  DeviceSettings device_settings = 3;
 
   // Mapping from unique ID to profile.
-  map<int32, Profile> profiles = 2;
+  map<int32, Profile> profiles = 4;
+}
+
+// Structure for device settings.
+message DeviceSettings{
+  // Determines whether to download and update content only on wifi.
+  bool allow_download_and_update_only_on_wifi = 1;
+
+  // Determines whether app can automatically update topics.
+  bool automatically_update_topics = 2;
 }
 
 // Structure for a single profile.
@@ -28,8 +43,7 @@ message Profile {
   // PIN of the profile.
   string pin = 4;
 
-  // User selected image or gravatar.
-  string avatar_image_uri = 5;
+  ProfileAvatar avatar = 5;
 
   // Determines whether profile is admin.
   bool is_admin = 6;
@@ -42,6 +56,26 @@ message Profile {
 
   // Represents the time the user's profile was created.
   int64 date_created_timestamp_ms = 9;
+
+  // Represents user selected story-text-size.
+  StoryTextSize storyTextSize = 10;
+
+  // Represents user selected audio-language.
+  AudioLanguage audio_language = 11;
+
+  // Represents user selected app-language.
+  AppLanguage app_language = 12;
+}
+
+// Represents a profile avatar image.
+message ProfileAvatar {
+  oneof avatar_type {
+    // User selected image or gravatar.
+    string avatar_image_uri = 5;
+
+    // Tint color to be used with a generic profile image.
+    int32 avatar_color_rgb = 6;
+  }
 }
 
 // Opaque data structure to pass ID.
@@ -51,4 +85,41 @@ message ProfileId {
    * Should not be used directory outside of the profile system.
    */
   int32 internal_id = 1;
+}
+
+// Used in BindableAdapter for ProfileChooserFragment.
+message ProfileChooserUiModel {
+  oneof model_type {
+    // Indicates an individual Profile.
+    Profile profile = 1;
+    //Indicates the add profile button.
+    bool add_profile = 2;
+  }
+}
+
+// Supported Story text sizes for user preference.
+enum StoryTextSize {
+  SMALL_TEXT_SIZE = 0;
+  MEDIUM_TEXT_SIZE = 1;
+  LARGE_TEXT_SIZE = 2;
+  EXTRA_LARGE_TEXT_SIZE =  3;
+}
+
+// TODO(#669): Add translation for language selection and track updating of this list to match the supported translation list.
+// Supported App language for user preference.
+enum AppLanguage {
+  ENGLISH_APP_LANGUAGE = 0;
+  HINDI_APP_LANGUAGE = 1;
+  FRENCH_APP_LANGUAGE = 2;
+  CHINESE_APP_LANGUAGE =  3;
+}
+
+// TODO(#669): Add translation for language selection and track updating of this list to match the supported translation list.
+// Supported Audio language for user preference.
+enum AudioLanguage {
+  NO_AUDIO = 0;
+  ENGLISH_AUDIO_LANGUAGE = 1;
+  HINDI_AUDIO_LANGUAGE = 2;
+  FRENCH_AUDIO_LANGUAGE = 3;
+  CHINESE_AUDIO_LANGUAGE =  4;
 }

@@ -10,8 +10,7 @@ import javax.inject.Inject
 
 /** Fragment that contains all questions in Question Player. */
 class QuestionPlayerFragment: InjectableFragment(){
-  @Inject
-  lateinit var questionPlayerFragmentPresenter: QuestionPlayerFragmentPresenter
+  @Inject lateinit var questionPlayerFragmentPresenter: QuestionPlayerFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)

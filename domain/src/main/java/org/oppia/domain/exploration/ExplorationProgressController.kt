@@ -5,6 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import org.oppia.app.model.AnswerOutcome
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.Exploration
+import org.oppia.app.model.Hint
+import org.oppia.app.model.Outcome
+import org.oppia.app.model.PendingState
+import org.oppia.app.model.Solution
+import org.oppia.app.model.State
+import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.UserAnswer
 import org.oppia.domain.classify.AnswerClassificationController
 import org.oppia.util.data.AsyncDataSubscriptionManager
@@ -140,6 +146,77 @@ class ExplorationProgressController @Inject constructor(
     }
   }
 
+  fun submitHintIsRevealed(state: State, hintIsRevealed: Boolean, hintIndex: Int): LiveData<AsyncResult<Hint>> {
+    try {
+      explorationProgressLock.withLock {
+        check(explorationProgress.playStage != PlayStage.NOT_PLAYING) {
+          "Cannot submit an answer if an exploration is not being played."
+        }
+        check(explorationProgress.playStage != PlayStage.LOADING_EXPLORATION) {
+          "Cannot submit an answer while the exploration is being loaded."
+        }
+        check(explorationProgress.playStage != PlayStage.SUBMITTING_ANSWER) {
+          "Cannot submit an answer while another answer is pending."
+        }
+        lateinit var hint: Hint
+        try {
+          explorationProgress.stateDeck.submitHintRevealed(state, hintIsRevealed, hintIndex)
+          hint = explorationProgress.stateGraph.computeHintForResult(
+            state,
+            hintIsRevealed,
+            hintIndex
+          )
+          explorationProgress.stateDeck.pushStateForHint(state, hintIndex)
+
+        } finally {
+          // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always
+          // showing hint' situation. This can specifically happen if hint throws an exception.
+          explorationProgress.advancePlayStageTo(PlayStage.VIEWING_STATE)
+        }
+        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
+        return MutableLiveData(AsyncResult.success(hint))
+      }
+    } catch (e: Exception) {
+      return MutableLiveData(AsyncResult.failed(e))
+    }
+  }
+
+  fun submitSolutionIsRevealed(state: State, solutionIsRevealed: Boolean): LiveData<AsyncResult<Solution>> {
+    try {
+      explorationProgressLock.withLock {
+        check(explorationProgress.playStage != PlayStage.NOT_PLAYING) {
+          "Cannot submit an answer if an exploration is not being played."
+        }
+        check(explorationProgress.playStage != PlayStage.LOADING_EXPLORATION) {
+          "Cannot submit an answer while the exploration is being loaded."
+        }
+        check(explorationProgress.playStage != PlayStage.SUBMITTING_ANSWER) {
+          "Cannot submit an answer while another answer is pending."
+        }
+        lateinit var solution: Solution
+        try {
+
+          explorationProgress.stateDeck.submitSolutionRevealed(state, solutionIsRevealed)
+          solution = explorationProgress.stateGraph.computeSolutionForResult(
+            state,
+            solutionIsRevealed
+          )
+          explorationProgress.stateDeck.pushStateForSolution(state)
+
+        } finally {
+          // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always
+          // showing solution' situation. This can specifically happen if solution throws an exception.
+          explorationProgress.advancePlayStageTo(PlayStage.VIEWING_STATE)
+        }
+
+        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
+        return MutableLiveData(AsyncResult.success(solution))
+      }
+    } catch (e: Exception) {
+      return MutableLiveData(AsyncResult.failed(e))
+    }
+  }
+
   /**
    * Navigates to the previous state in the graph. If the learner is currently on the initial state, this method will
    * throw an exception. Calling code is responsible for ensuring this method is only called when it's possible to
@@ -253,7 +330,7 @@ class ExplorationProgressController @Inject constructor(
       // being called multiple times and a former call finishing the exploration load.
       check(exploration == null || explorationProgress.currentExplorationId == explorationId) {
         "Encountered race condition when retrieving exploration. ID changed from $explorationId" +
-            " to ${explorationProgress.currentExplorationId}"
+          " to ${explorationProgress.currentExplorationId}"
       }
       return when (explorationProgress.playStage) {
         ExplorationProgress.PlayStage.NOT_PLAYING -> AsyncResult.pending()

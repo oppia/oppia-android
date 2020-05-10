@@ -5,6 +5,7 @@ import androidx.databinding.ObservableList
 import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.UserAnswer
+import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.app.viewmodel.ObservableArrayList
@@ -18,8 +19,28 @@ class StateViewModel @Inject constructor() : ObservableViewModel() {
 
   val isAudioBarVisible = ObservableField<Boolean>(false)
 
+  val isHintBulbVisible = ObservableField<Boolean>(false)
+  val isHintOpenedAndUnRevealed = ObservableField<Boolean>(false)
+  val isHintRevealed = ObservableField<Boolean>(false)
+
+  var currentStateName: String? = null
+
+  private val canSubmitAnswer = ObservableField(true)
+
   fun setAudioBarVisibility(audioBarVisible: Boolean) {
     isAudioBarVisible.set(audioBarVisible)
+  }
+
+  fun setHintBulbVisibility(hintBulbVisible: Boolean) {
+    isHintBulbVisible.set(hintBulbVisible)
+  }
+
+  fun setHintOpenedAndUnRevealedVisibility(hintOpenedAndUnRevealedVisible: Boolean) {
+    isHintOpenedAndUnRevealed.set(hintOpenedAndUnRevealedVisible)
+  }
+
+  fun setHintRevealedVisibility(hintRevealedVisible: Boolean) {
+    isHintRevealed.set(hintRevealedVisible)
   }
 
   /**
@@ -35,9 +56,15 @@ class StateViewModel @Inject constructor() : ObservableViewModel() {
     return getPendingAnswerHandler(itemList)?.isAutoNavigating() ?: false
   }
 
-  // TODO(#164): Add a hasPendingAnswer() that binds to the enabled state of the Submit button.
+  fun setCanSubmitAnswer(canSubmitAnswer: Boolean) = this.canSubmitAnswer.set(canSubmitAnswer)
+
+  fun getCanSubmitAnswer(): ObservableField<Boolean> = canSubmitAnswer
+
   fun getPendingAnswer(): UserAnswer {
-    return getPendingAnswerHandler(itemList)?.getPendingAnswer() ?: UserAnswer.getDefaultInstance()
+    return if (getPendingAnswerHandler(itemList)?.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME) != null) {
+      UserAnswer.getDefaultInstance()
+    } else
+      getPendingAnswerHandler(itemList)?.getPendingAnswer() ?: UserAnswer.getDefaultInstance()
   }
 
   private fun getPendingAnswerHandler(itemList: List<StateItemViewModel>): InteractionAnswerHandler? {

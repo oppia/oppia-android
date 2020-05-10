@@ -80,7 +80,7 @@ message Interaction {
   repeated AnswerGroup answer_groups = 2;
   Solution solution = 3;
   repeated AnswerGroup confirmed_unclassified_answers = 4;
-  Hint hint = 5;
+  repeated Hint hint = 5;
   Outcome default_outcome = 6;
   // Mapping from the name of a customization arg to the default interaction
   // object of the customization arg
@@ -108,14 +108,32 @@ message Solution {
   string interaction_id = 1;
   // Flag that is true if correct_answer is the only correct answer of the question.
   bool answer_is_exclusive = 2;
-  string correct_answer = 3;
+  // correct_answer of the State.
+  CorrectAnswer correct_answer = 3;
+  // Core explanation to the correct answer.
   SubtitledHtml explanation = 4;
+  // To check if the solution was revealed or not by the learner.
+  bool solution_is_revealed = 5;
 }
 
+// Structure for a Correct answer in Solution
+// Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeSolution.kt
+message CorrectAnswer {
+  int32 denominator = 1;
+  int32 numerator = 2;
+  int32 whole_number = 3;
+  bool is_negative = 4;
+  string correct_answer = 5;
+}
 // Structure for a single hint
 // Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeHint.kt
 message Hint {
+  // Hint data.
   SubtitledHtml hint_content = 1;
+  // To check if the hint was revealed or not
+  bool hint_is_revealed = 2;
+  // The current state that is display to the user.
+  State state = 3;
 }
 
 // Structure for a single outcome
@@ -175,6 +193,8 @@ message PendingState {
   // A list of previous wrong answers that led back to this state, and Oppia's responses. These responses are in the
   // order the learner submitted them.
   repeated AnswerAndResponse wrong_answer = 1;
+  // A list of hints.
+  repeated Hint hint = 2;
 }
 
 // Corresponds to an exploration state that the learner has previous completed.

@@ -32,8 +32,8 @@ class SelectionInteractionView @JvmOverloads constructor(
   // Default to checkboxes to ensure that something can render even if it may not be correct.
   private var selectionItemInputType: SelectionItemInputType = SelectionItemInputType.CHECKBOXES
 
-  @Inject
-  lateinit var htmlParserFactory: HtmlParser.Factory
+  @Inject lateinit var htmlParserFactory: HtmlParser.Factory
+
   @Inject
   @field:ExplorationHtmlParserEntityType
   lateinit var entityType: String

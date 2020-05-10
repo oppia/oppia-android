@@ -1,3 +1,4 @@
+// ktlint-disable filename
 package org.oppia.util.gcsresource
 
 import javax.inject.Qualifier
