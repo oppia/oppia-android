@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-private const val KEY_INTERNAL_PROFILE_ID_ARGUMENT = "INTERNAL_PROFILE_ID"
-private const val KEY_TOPIC_ID_ARGUMENT = "TOPIC_ID"
-private const val KEY_STORY_ID_ARGUMENT = "STORY_ID"
+private const val STORY_FRAGMENT_INTERNAL_PROFILE_ID_KEY = "StoryActivity.internal_profile_id"
+private const val STORY_FRAGMENT_TOPIC_ID_KEY = "StoryActivity.topic_id"
+private const val STORY_FRAGMENT_STORY_ID_KEY = "StoryActivity.story_id"
 
 /** Fragment for displaying a story. */
 class StoryFragment : InjectableFragment(), ExplorationSelectionListener {
@@ -19,9 +19,9 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener {
     fun newInstance(internalProfileId: Int, topicId: String, storyId: String): StoryFragment {
       val storyFragment = StoryFragment()
       val args = Bundle()
-      args.putInt(KEY_INTERNAL_PROFILE_ID_ARGUMENT, internalProfileId)
-      args.putString(KEY_TOPIC_ID_ARGUMENT, topicId)
-      args.putString(KEY_STORY_ID_ARGUMENT, storyId)
+      args.putInt(STORY_FRAGMENT_INTERNAL_PROFILE_ID_KEY, internalProfileId)
+      args.putString(STORY_FRAGMENT_TOPIC_ID_KEY, topicId)
+      args.putString(STORY_FRAGMENT_STORY_ID_KEY, storyId)
       storyFragment.arguments = args
       return storyFragment
     }
@@ -40,11 +40,11 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener {
     savedInstanceState: Bundle?
   ): View? {
     val args = checkNotNull(arguments) { "Expected arguments to be passed to StoryFragment" }
-    val internalProfileId = args.getInt(KEY_INTERNAL_PROFILE_ID_ARGUMENT, -1)
+    val internalProfileId = args.getInt(STORY_FRAGMENT_INTERNAL_PROFILE_ID_KEY, -1)
     val topicId =
-      checkNotNull(args.getString(KEY_TOPIC_ID_ARGUMENT)) { "Expected topicId to be passed to StoryFragment" }
+      checkNotNull(args.getString(STORY_FRAGMENT_TOPIC_ID_KEY)) { "Expected topicId to be passed to StoryFragment" }
     val storyId =
-      checkNotNull(args.getString(KEY_STORY_ID_ARGUMENT)) { "Expected storyId to be passed to StoryFragment" }
+      checkNotNull(args.getString(STORY_FRAGMENT_STORY_ID_KEY)) { "Expected storyId to be passed to StoryFragment" }
     return storyFragmentPresenter.handleCreateView(inflater, container, internalProfileId, topicId, storyId)
   }
 

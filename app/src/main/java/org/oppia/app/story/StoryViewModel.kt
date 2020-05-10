@@ -63,7 +63,7 @@ class StoryViewModel @Inject constructor(
 
   private fun processStoryResult(storyResult: AsyncResult<StorySummary>): StorySummary {
     if (storyResult.isFailure()) {
-      logger.e("StoryFragment", "Failed to retrieve Story: ", storyResult.getErrorOrNull()!!)
+      logger.e("storyResult.tag", "Failed to retrieve Story: ", storyResult.getErrorOrNull()!!)
     }
 
     return storyResult.getOrDefault(StorySummary.getDefaultInstance())
@@ -72,7 +72,7 @@ class StoryViewModel @Inject constructor(
   private fun processStoryChapterList(storySummary: StorySummary): List<StoryItemViewModel> {
     val chapterList: List<ChapterSummary> = storySummary.chapterList
 
-    Log.d("TAG", "chapterList: " + chapterList.size)
+    Log.d("chapterList.tag", "chapterList: " + chapterList.size)
     for (position in 0 until chapterList.size) {
       if (storySummary.chapterList[position].chapterPlayState == ChapterPlayState.NOT_STARTED) {
         (fragment as StoryFragment).smoothScrollToPosition(position + 1)

@@ -15,11 +15,11 @@ class StoryActivity : InjectableAppCompatActivity(), RouteToExplorationListener 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    val internalProfileId = intent.getIntExtra(STORY_ACTIVITY_INTENT_EXTRA_INTERNAL_PROFILE_ID, -1)
-    val topicId = checkNotNull(intent.getStringExtra(STORY_ACTIVITY_INTENT_EXTRA_TOPIC_ID)) {
+    val internalProfileId = intent.getIntExtra(STORY_ACTIVITY_INTENT_EXTRA_INTERNAL_PROFILE_ID_KEY, -1)
+    val topicId = checkNotNull(intent.getStringExtra(STORY_ACTIVITY_INTENT_EXTRA_TOPIC_ID_KEY)) {
       "Expected extra topic ID to be included for StoryActivity."
     }
-    val storyId: String = checkNotNull(intent.getStringExtra(STORY_ACTIVITY_INTENT_EXTRA_STORY_ID)) {
+    val storyId: String = checkNotNull(intent.getStringExtra(STORY_ACTIVITY_INTENT_EXTRA_STORY_ID_KEY)) {
       "Expected extra story ID to be included for StoryActivity."
     }
     storyActivityPresenter.handleOnCreate(internalProfileId, topicId, storyId)
@@ -38,16 +38,16 @@ class StoryActivity : InjectableAppCompatActivity(), RouteToExplorationListener 
   }
 
   companion object {
-    const val STORY_ACTIVITY_INTENT_EXTRA_INTERNAL_PROFILE_ID = "StoryActivity.internal_profile_id"
-    const val STORY_ACTIVITY_INTENT_EXTRA_TOPIC_ID = "StoryActivity.topic_id"
-    const val STORY_ACTIVITY_INTENT_EXTRA_STORY_ID = "StoryActivity.story_id"
+    const val STORY_ACTIVITY_INTENT_EXTRA_INTERNAL_PROFILE_ID_KEY = "StoryActivity.internal_profile_id"
+    const val STORY_ACTIVITY_INTENT_EXTRA_TOPIC_ID_KEY = "StoryActivity.topic_id"
+    const val STORY_ACTIVITY_INTENT_EXTRA_STORY_ID_KEY = "StoryActivity.story_id"
 
     /** Returns a new [Intent] to route to [StoryActivity] for a specified story. */
     fun createStoryActivityIntent(context: Context, internalProfileId: Int, topicId: String, storyId: String): Intent {
       val intent = Intent(context, StoryActivity::class.java)
-      intent.putExtra(STORY_ACTIVITY_INTENT_EXTRA_INTERNAL_PROFILE_ID, internalProfileId)
-      intent.putExtra(STORY_ACTIVITY_INTENT_EXTRA_TOPIC_ID, topicId)
-      intent.putExtra(STORY_ACTIVITY_INTENT_EXTRA_STORY_ID, storyId)
+      intent.putExtra(STORY_ACTIVITY_INTENT_EXTRA_INTERNAL_PROFILE_ID_KEY, internalProfileId)
+      intent.putExtra(STORY_ACTIVITY_INTENT_EXTRA_TOPIC_ID_KEY, topicId)
+      intent.putExtra(STORY_ACTIVITY_INTENT_EXTRA_STORY_ID_KEY, storyId)
       return intent
     }
   }
