@@ -10,5 +10,4 @@ interface TopicService {
 
   @GET("topic_data_handler/{topic_name}")
   fun getTopicByName(@Path("topic_name") topicName: String): Call<GaeTopic>
-
 }

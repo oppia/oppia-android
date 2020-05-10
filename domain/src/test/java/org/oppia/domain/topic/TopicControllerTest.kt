@@ -11,6 +11,11 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import java.util.Date
+import javax.inject.Inject
+import javax.inject.Qualifier
+import javax.inject.Singleton
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -39,11 +44,8 @@ import org.oppia.app.model.LessonThumbnailGraphic
 import org.oppia.app.model.OngoingTopicList
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Question
-import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.StorySummary
-import org.oppia.app.model.SubtopicThumbnailGraphic
 import org.oppia.app.model.Topic
-import org.oppia.domain.exploration.TEST_EXPLORATION_ID_30
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
@@ -54,11 +56,6 @@ import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
-import java.util.Date
-import javax.inject.Inject
-import javax.inject.Qualifier
-import javax.inject.Singleton
-import kotlin.coroutines.EmptyCoroutineContext
 
 private const val INVALID_STORY_ID_1 = "INVALID_STORY_ID_1"
 private const val INVALID_TOPIC_ID_1 = "INVALID_TOPIC_ID_1"
@@ -134,298 +131,329 @@ class TopicControllerTest {
   }
 
   @Test
-  fun testRetrieveTopic_validTopic_isSuccessful() {
-    val topicLiveData = topicController.getTopic(TEST_TOPIC_ID_0)
+  @ExperimentalCoroutinesApi
+  fun testRetrieveTopic_validSecondTopic_returnsCorrectTopic() =
+    runBlockingTest(coroutineContext) {
+      topicController.getTopic(profileId1, TEST_TOPIC_ID_1).observeForever(mockTopicObserver)
+      advanceUntilIdle()
 
-    val topicResult = topicLiveData.value
-    assertThat(topicResult).isNotNull()
-    assertThat(topicResult!!.isSuccess()).isTrue()
+      verifyGetTopicSucceeded()
+      val topic = topicResultCaptor.value.getOrThrow()
+      assertThat(topic.topicId).isEqualTo(TEST_TOPIC_ID_1)
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testRetrieveTopic_validSecondTopic_returnsTopicWithThumbnail() =
+    runBlockingTest(coroutineContext) {
+      topicController.getTopic(profileId1, TEST_TOPIC_ID_1).observeForever(mockTopicObserver)
+      advanceUntilIdle()
+
+      verifyGetTopicSucceeded()
+      val topic = topicResultCaptor.value!!.getOrThrow()
+      assertThat(topic.topicThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testRetrieveTopic_fractionsTopic_returnsCorrectTopic() =
+    runBlockingTest(coroutineContext) {
+      topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID).observeForever(mockTopicObserver)
+      advanceUntilIdle()
+
+      verifyGetTopicSucceeded()
+      val topic = topicResultCaptor.value!!.getOrThrow()
+      assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
+      assertThat(topic.storyCount).isEqualTo(1)
+      assertThat(topic.skillCount).isEqualTo(3)
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testRetrieveTopic_fractionsTopic_hasCorrectDescription() =
+    runBlockingTest(coroutineContext) {
+      topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID).observeForever(mockTopicObserver)
+      advanceUntilIdle()
+
+      verifyGetTopicSucceeded()
+      val topic = topicResultCaptor.value!!.getOrThrow()
+      assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
+      assertThat(topic.description).contains("You'll often need to talk about")
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testRetrieveTopic_ratiosTopic_returnsCorrectTopic() =
+    runBlockingTest(coroutineContext) {
+      topicController.getTopic(profileId1, RATIOS_TOPIC_ID).observeForever(mockTopicObserver)
+      advanceUntilIdle()
+
+      verifyGetTopicSucceeded()
+      val topic = topicResultCaptor.value!!.getOrThrow()
+      assertThat(topic.topicId).isEqualTo(RATIOS_TOPIC_ID)
+      assertThat(topic.storyCount).isEqualTo(2)
+      assertThat(topic.skillCount).isEqualTo(1)
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testRetrieveTopic_ratiosTopic_hasCorrectDescription() =
+    runBlockingTest(coroutineContext) {
+      topicController.getTopic(profileId1, RATIOS_TOPIC_ID).observeForever(mockTopicObserver)
+      advanceUntilIdle()
+
+      verifyGetTopicSucceeded()
+      val topic = topicResultCaptor.value!!.getOrThrow()
+      assertThat(topic.topicId).isEqualTo(RATIOS_TOPIC_ID)
+      assertThat(topic.description).contains("Many everyday problems involve thinking about proportions")
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testRetrieveTopic_invalidTopic_returnsFailure() = runBlockingTest(coroutineContext) {
+    topicController.getTopic(profileId1, INVALID_TOPIC_ID_1).observeForever(mockTopicObserver)
+    advanceUntilIdle()
+
+    verifyGetTopicFailed()
+    assertThat(topicResultCaptor.value!!.isFailure()).isTrue()
   }
 
   @Test
-  fun testRetrieveTopic_validTopic_returnsCorrectTopic() {
-    val topicLiveData = topicController.getTopic(TEST_TOPIC_ID_0)
+  @ExperimentalCoroutinesApi
+  fun testRetrieveStory_validStory_isSuccessful() =
+    runBlockingTest(coroutineContext) {
+      topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2)
+        .observeForever(mockStorySummaryObserver)
+      advanceUntilIdle()
 
-    val topic = topicLiveData.value!!.getOrThrow()
-    assertThat(topic.topicId).isEqualTo(TEST_TOPIC_ID_0)
-  }
-
-  @Test
-  fun testRetrieveTopic_validTopic_returnsTopicWithDescription() {
-    val topicLiveData = topicController.getTopic(TEST_TOPIC_ID_0)
-
-    val topic = topicLiveData.value!!.getOrThrow()
-    assertThat(topic.description).isEqualTo("A topic investigating the interesting aspects of the Oppia Android app.")
-  }
+      verifyGetStorySucceeded()
+      val storyResult = storySummaryResultCaptor.value
+      assertThat(storyResult).isNotNull()
+      assertThat(storyResult!!.isSuccess()).isTrue()
+    }
 
   @Test
-  fun testRetrieveTopic_validTopic_returnsTopicWithStories() {
-    val topicLiveData = topicController.getTopic(TEST_TOPIC_ID_0)
+  @ExperimentalCoroutinesApi
+  fun testRetrieveStory_validStory_returnsCorrectStory() =
+    runBlockingTest(coroutineContext) {
+      topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2)
+        .observeForever(mockStorySummaryObserver)
+      advanceUntilIdle()
 
-    val topic = topicLiveData.value!!.getOrThrow()
-    assertThat(getStoryIds(topic)).containsExactly(TEST_STORY_ID_0, TEST_STORY_ID_1).inOrder()
-  }
-
-  @Test
-  fun testRetrieveTopic_validTopic_returnsTopicWithSkills() {
-    val topicLiveData = topicController.getTopic(TEST_TOPIC_ID_0)
-
-    val topic = topicLiveData.value!!.getOrThrow()
-    assertThat(getSkillIds(topic)).containsExactly(
-      TEST_SKILL_ID_0, TEST_SKILL_ID_1,
-      TEST_SKILL_ID_1, TEST_SKILL_ID_1
-    ).inOrder()
-  }
+      verifyGetStorySucceeded()
+      val story = storySummaryResultCaptor.value!!.getOrThrow()
+      assertThat(story.storyId).isEqualTo(TEST_STORY_ID_2)
+    }
 
   @Test
-  fun testRetrieveTopic_validTopicWithSkills_skillsHaveNoThumbnailUrls() {
-    val topicLiveData = topicController.getTopic(TEST_TOPIC_ID_0)
+  @ExperimentalCoroutinesApi
+  fun testRetrieveStory_validStory_returnsStoryWithName() =
+    runBlockingTest(coroutineContext) {
+      topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2)
+        .observeForever(mockStorySummaryObserver)
+      advanceUntilIdle()
 
-    // This test is intentionally verifying that there are no thumbnails for skills, since there are not yet any to
-    // populate.
-    val topic = topicLiveData.value!!.getOrThrow()
-    assertThat(topic.getSkill(0).thumbnailUrl).isEmpty()
-    assertThat(topic.getSkill(1).thumbnailUrl).isEmpty()
-  }
-
-  @Test
-  fun testRetrieveTopic_validTopic_returnsTopicWithProgress() {
-    val topicLiveData = topicController.getTopic(TEST_TOPIC_ID_0)
-
-    val topic = topicLiveData.value!!.getOrThrow()
-    assertThat(topic.getStory(0).chapterCount).isEqualTo(1)
-    assertThat(topic.getStory(0).getChapter(0).explorationId).isEqualTo(TEST_EXPLORATION_ID_30)
-    assertThat(topic.getStory(0).getChapter(0).chapterPlayState).isEqualTo(ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED)
-  }
+      verifyGetStorySucceeded()
+      val story = storySummaryResultCaptor.value!!.getOrThrow()
+      assertThat(story.storyName).isEqualTo("Other Interesting Story")
+    }
 
   @Test
-  fun testRetrieveTopic_validTopic_returnsTopicWithThumbnail() {
-    val topicLiveData = topicController.getTopic(TEST_TOPIC_ID_0)
+  @ExperimentalCoroutinesApi
+  fun testRetrieveStory_fractionsStory_returnsCorrectStory() =
+    runBlockingTest(coroutineContext) {
+      topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0)
+        .observeForever(mockStorySummaryObserver)
+      advanceUntilIdle()
 
-    val topic = topicLiveData.value!!.getOrThrow()
-    assertThat(topic.topicThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
-  }
-
-  @Test
-  fun testRetrieveTopic_validSecondTopic_isSuccessful() {
-    val topicLiveData = topicController.getTopic(TEST_TOPIC_ID_1)
-
-    val topicResult = topicLiveData.value
-    assertThat(topicResult).isNotNull()
-    assertThat(topicResult!!.isSuccess()).isTrue()
-  }
+      verifyGetStorySucceeded()
+      val story = storySummaryResultCaptor.value!!.getOrThrow()
+      assertThat(story.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
+    }
 
   @Test
-  fun testRetrieveTopic_validSecondTopic_returnsCorrectTopic() {
-    val topicLiveData = topicController.getTopic(TEST_TOPIC_ID_1)
+  @ExperimentalCoroutinesApi
+  fun testRetrieveStory_fractionsStory_returnsStoryWithName() =
+    runBlockingTest(coroutineContext) {
+      topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0)
+        .observeForever(mockStorySummaryObserver)
+      advanceUntilIdle()
 
-    val topic = topicLiveData.value!!.getOrThrow()
-    assertThat(topic.topicId).isEqualTo(TEST_TOPIC_ID_1)
-  }
-
-  @Test
-  fun testRetrieveTopic_validSecondTopic_returnsTopicWithThumbnail() {
-    val topicLiveData = topicController.getTopic(TEST_TOPIC_ID_1)
-
-    val topic = topicLiveData.value!!.getOrThrow()
-    assertThat(topic.topicThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
-  }
+      verifyGetStorySucceeded()
+      val story = storySummaryResultCaptor.value!!.getOrThrow()
+      assertThat(story.storyName).isEqualTo("Matthew Goes to the Bakery")
+    }
 
   @Test
-  fun testRetrieveTopic_fractionsTopic_returnsCorrectTopic() {
-    val topicLiveData = topicController.getTopic(FRACTIONS_TOPIC_ID)
+  @ExperimentalCoroutinesApi
+  fun testRetrieveStory_ratiosFirstStory_returnsCorrectStory() =
+    runBlockingTest(coroutineContext) {
+      topicController.getStory(profileId1, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)
+        .observeForever(mockStorySummaryObserver)
+      advanceUntilIdle()
 
-    val topic = topicLiveData.value!!.getOrThrow()
-    assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
-    assertThat(topic.storyCount).isEqualTo(1)
-    assertThat(topic.skillCount).isEqualTo(3)
-  }
-
-  @Test
-  fun testRetrieveTopic_fractionsTopic_hasCorrectDescription() {
-    val topicLiveData = topicController.getTopic(FRACTIONS_TOPIC_ID)
-
-    val topic = topicLiveData.value!!.getOrThrow()
-    assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
-    assertThat(topic.description).contains("You'll often need to talk about")
-  }
+      verifyGetStorySucceeded()
+      val story = storySummaryResultCaptor.value!!.getOrThrow()
+      assertThat(story.storyId).isEqualTo(RATIOS_STORY_ID_0)
+      assertThat(story.storyName).isEqualTo("Ratios: Part 1")
+    }
 
   @Test
-  fun testRetrieveTopic_ratiosTopic_returnsCorrectTopic() {
-    val topicLiveData = topicController.getTopic(RATIOS_TOPIC_ID)
+  @ExperimentalCoroutinesApi
+  fun testRetrieveStory_ratiosFirstStory_returnsStoryWithMultipleChapters() =
+    runBlockingTest(coroutineContext) {
+      topicController.getStory(profileId1, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)
+        .observeForever(mockStorySummaryObserver)
+      advanceUntilIdle()
 
-    val topic = topicLiveData.value!!.getOrThrow()
-    assertThat(topic.topicId).isEqualTo(RATIOS_TOPIC_ID)
-    assertThat(topic.storyCount).isEqualTo(2)
-    assertThat(topic.skillCount).isEqualTo(1)
-  }
-
-  @Test
-  fun testRetrieveTopic_ratiosTopic_hasCorrectDescription() {
-    val topicLiveData = topicController.getTopic(RATIOS_TOPIC_ID)
-
-    val topic = topicLiveData.value!!.getOrThrow()
-    assertThat(topic.topicId).isEqualTo(RATIOS_TOPIC_ID)
-    assertThat(topic.description).contains("Many everyday problems involve thinking about proportions")
-  }
+      verifyGetStorySucceeded()
+      val story = storySummaryResultCaptor.value!!.getOrThrow()
+      assertThat(getExplorationIds(story)).containsExactly(
+        RATIOS_EXPLORATION_ID_0,
+        RATIOS_EXPLORATION_ID_1
+      ).inOrder()
+    }
 
   @Test
-  fun testRetrieveTopic_invalidTopic_returnsFailure() {
-    val topicLiveData = topicController.getTopic("invalid_topic_id")
+  @ExperimentalCoroutinesApi
+  fun testRetrieveStory_ratiosSecondStory_returnsCorrectStory() =
+    runBlockingTest(coroutineContext) {
+      topicController.getStory(profileId1, RATIOS_TOPIC_ID, RATIOS_STORY_ID_1)
+        .observeForever(mockStorySummaryObserver)
+      advanceUntilIdle()
 
-    assertThat(topicLiveData.value!!.isFailure()).isTrue()
-  }
-
-  @Test
-  fun testRetrieveStory_validStory_isSuccessful() {
-    val storyLiveData = topicController.getStory(TEST_STORY_ID_2)
-
-    val storyResult = storyLiveData.value
-    assertThat(storyResult).isNotNull()
-    assertThat(storyResult!!.isSuccess()).isTrue()
-  }
+      verifyGetStorySucceeded()
+      val story = storySummaryResultCaptor.value!!.getOrThrow()
+      assertThat(story.storyId).isEqualTo(RATIOS_STORY_ID_1)
+      assertThat(story.storyName).isEqualTo("Ratios: Part 2")
+    }
 
   @Test
-  fun testRetrieveStory_validStory_returnsCorrectStory() {
-    val storyLiveData = topicController.getStory(TEST_STORY_ID_2)
+  @ExperimentalCoroutinesApi
+  fun testRetrieveStory_ratiosSecondStory_returnsStoryWithMultipleChapters() =
+    runBlockingTest(coroutineContext) {
+      topicController.getStory(profileId1, RATIOS_TOPIC_ID, RATIOS_STORY_ID_1)
+        .observeForever(mockStorySummaryObserver)
+      advanceUntilIdle()
 
-    val story = storyLiveData.value!!.getOrThrow()
-    assertThat(story.storyId).isEqualTo(TEST_STORY_ID_2)
-  }
-
-  @Test
-  fun testRetrieveStory_validStory_returnsStoryWithName() {
-    val storyLiveData = topicController.getStory(TEST_STORY_ID_2)
-
-    val story = storyLiveData.value!!.getOrThrow()
-    assertThat(story.storyName).isEqualTo("Other Interesting Story")
-  }
-
-  @Test
-  fun testRetrieveStory_fractionsStory_returnsCorrectStory() {
-    val storyLiveData = topicController.getStory(FRACTIONS_STORY_ID_0)
-
-    val story = storyLiveData.value!!.getOrThrow()
-    assertThat(story.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
-  }
+      verifyGetStorySucceeded()
+      val story = storySummaryResultCaptor.value!!.getOrThrow()
+      assertThat(getExplorationIds(story)).containsExactly(
+        RATIOS_EXPLORATION_ID_2,
+        RATIOS_EXPLORATION_ID_3
+      ).inOrder()
+    }
 
   @Test
-  fun testRetrieveStory_fractionsStory_returnsStoryWithName() {
-    val storyLiveData = topicController.getStory(FRACTIONS_STORY_ID_0)
+  @ExperimentalCoroutinesApi
+  fun testRetrieveStory_validStory_returnsStoryWithChapter() =
+    runBlockingTest(coroutineContext) {
+      topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2)
+        .observeForever(mockStorySummaryObserver)
+      advanceUntilIdle()
 
-    val story = storyLiveData.value!!.getOrThrow()
-    assertThat(story.storyName).isEqualTo("Matthew Goes to the Bakery")
-  }
-
-  @Test
-  fun testRetrieveStory_ratiosFirstStory_returnsCorrectStory() {
-    val storyLiveData = topicController.getStory(RATIOS_STORY_ID_0)
-
-    val story = storyLiveData.value!!.getOrThrow()
-    assertThat(story.storyId).isEqualTo(RATIOS_STORY_ID_0)
-    assertThat(story.storyName).isEqualTo("Ratios: Part 1")
-  }
+      verifyGetStorySucceeded()
+      val story = storySummaryResultCaptor.value!!.getOrThrow()
+      assertThat(getExplorationIds(story)).containsExactly(TEST_EXPLORATION_ID_4)
+    }
 
   @Test
-  fun testRetrieveStory_ratiosFirstStory_returnsStoryWithMultipleChapters() {
-    val storyLiveData = topicController.getStory(RATIOS_STORY_ID_0)
+  @ExperimentalCoroutinesApi
+  fun testRetrieveStory_validStory_returnsStoryWithChapterName() =
+    runBlockingTest(coroutineContext) {
+      topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2)
+        .observeForever(mockStorySummaryObserver)
+      advanceUntilIdle()
 
-    val story = storyLiveData.value!!.getOrThrow()
-    assertThat(getExplorationIds(story)).containsExactly(
-      RATIOS_EXPLORATION_ID_0,
-      RATIOS_EXPLORATION_ID_1
-    ).inOrder()
-  }
-
-  @Test
-  fun testRetrieveStory_ratiosSecondStory_returnsCorrectStory() {
-    val storyLiveData = topicController.getStory(RATIOS_STORY_ID_1)
-
-    val story = storyLiveData.value!!.getOrThrow()
-    assertThat(story.storyId).isEqualTo(RATIOS_STORY_ID_1)
-    assertThat(story.storyName).isEqualTo("Ratios: Part 2")
-  }
+      verifyGetStorySucceeded()
+      val story = storySummaryResultCaptor.value!!.getOrThrow()
+      assertThat(story.getChapter(0).name).isEqualTo("Fifth Exploration")
+    }
 
   @Test
-  fun testRetrieveStory_ratiosSecondStory_returnsStoryWithMultipleChapters() {
-    val storyLiveData = topicController.getStory(RATIOS_STORY_ID_1)
+  @ExperimentalCoroutinesApi
+  fun testRetrieveStory_validStory_returnsStoryWithChapterThumbnail() =
+    runBlockingTest(coroutineContext) {
+      topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2)
+        .observeForever(mockStorySummaryObserver)
+      advanceUntilIdle()
 
-    val story = storyLiveData.value!!.getOrThrow()
-    assertThat(getExplorationIds(story)).containsExactly(
-      RATIOS_EXPLORATION_ID_2,
-      RATIOS_EXPLORATION_ID_3
-    ).inOrder()
-  }
-
-  @Test
-  fun testRetrieveStory_validStory_returnsStoryWithChapter() {
-    val storyLiveData = topicController.getStory(TEST_STORY_ID_2)
-
-    val story = storyLiveData.value!!.getOrThrow()
-    assertThat(getExplorationIds(story)).containsExactly(TEST_EXPLORATION_ID_4)
-  }
+      verifyGetStorySucceeded()
+      val story = storySummaryResultCaptor.value!!.getOrThrow()
+      val chapter = story.getChapter(0)
+      assertThat(chapter.chapterThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.BAKER)
+    }
 
   @Test
-  fun testRetrieveStory_validStory_returnsStoryWithChapterName() {
-    val storyLiveData = topicController.getStory(TEST_STORY_ID_2)
+  @ExperimentalCoroutinesApi
+  fun testRetrieveStory_validSecondStory_isSuccessful() =
+    runBlockingTest(coroutineContext) {
+      topicController.getStory(profileId1, TEST_TOPIC_ID_0, TEST_STORY_ID_1)
+        .observeForever(mockStorySummaryObserver)
+      advanceUntilIdle()
 
-    val story = storyLiveData.value!!.getOrThrow()
-    assertThat(story.getChapter(0).name).isEqualTo("Fifth Exploration")
-  }
-
-  @Test
-  fun testRetrieveStory_validStory_returnsStoryWithChapterThumbnail() {
-    val storyLiveData = topicController.getStory(TEST_STORY_ID_2)
-
-    val story = storyLiveData.value!!.getOrThrow()
-    val chapter = story.getChapter(0)
-    assertThat(chapter.chapterThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.BAKER)
-  }
+      verifyGetStorySucceeded()
+      val storyResult = storySummaryResultCaptor.value
+      assertThat(storyResult).isNotNull()
+      assertThat(storyResult!!.isSuccess()).isTrue()
+    }
 
   @Test
-  fun testRetrieveStory_validSecondStory_isSuccessful() {
-    val storyLiveData = topicController.getStory(TEST_STORY_ID_1)
+  @ExperimentalCoroutinesApi
+  fun testRetrieveStory_validSecondStory_returnsCorrectStory() =
+    runBlockingTest(coroutineContext) {
+      topicController.getStory(profileId1, TEST_TOPIC_ID_0, TEST_STORY_ID_1)
+        .observeForever(mockStorySummaryObserver)
+      advanceUntilIdle()
 
-    val storyResult = storyLiveData.value
-    assertThat(storyResult).isNotNull()
-    assertThat(storyResult!!.isSuccess()).isTrue()
-  }
-
-  @Test
-  fun testRetrieveStory_validSecondStory_returnsCorrectStory() {
-    val storyLiveData = topicController.getStory(TEST_STORY_ID_1)
-
-    val story = storyLiveData.value!!.getOrThrow()
-    assertThat(story.storyId).isEqualTo(TEST_STORY_ID_1)
-  }
+      verifyGetStorySucceeded()
+      val story = storySummaryResultCaptor.value!!.getOrThrow()
+      assertThat(story.storyId).isEqualTo(TEST_STORY_ID_1)
+    }
 
   @Test
-  fun testRetrieveStory_validSecondStory_returnsStoryWithMultipleChapters() {
-    val storyLiveData = topicController.getStory(TEST_STORY_ID_1)
+  @ExperimentalCoroutinesApi
+  fun testRetrieveStory_validSecondStory_returnsStoryWithMultipleChapters() =
+    runBlockingTest(coroutineContext) {
+      topicController.getStory(profileId1, TEST_TOPIC_ID_0, TEST_STORY_ID_1)
+        .observeForever(mockStorySummaryObserver)
+      advanceUntilIdle()
 
-    val story = storyLiveData.value!!.getOrThrow()
-    assertThat(getExplorationIds(story)).containsExactly(
-      TEST_EXPLORATION_ID_1,
-      TEST_EXPLORATION_ID_2,
-      TEST_EXPLORATION_ID_3
-    ).inOrder()
-  }
-
-  @Test
-  fun testRetrieveStory_validSecondStory_returnsStoryWithProgress() {
-    val storyLiveData = topicController.getStory(TEST_STORY_ID_1)
-
-    val story = storyLiveData.value!!.getOrThrow()
-    assertThat(story.getChapter(0).chapterPlayState).isEqualTo(ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED)
-    assertThat(story.getChapter(1).chapterPlayState).isEqualTo(ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED)
-    assertThat(story.getChapter(2).chapterPlayState).isEqualTo(ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED)
-  }
+      verifyGetStorySucceeded()
+      val story = storySummaryResultCaptor.value!!.getOrThrow()
+      assertThat(getExplorationIds(story)).containsExactly(
+        TEST_EXPLORATION_ID_1,
+        TEST_EXPLORATION_ID_2,
+        TEST_EXPLORATION_ID_3
+      ).inOrder()
+    }
 
   @Test
-  fun testRetrieveStory_invalidStory_returnsFailure() {
-    val storyLiveData = topicController.getStory("invalid_story_id")
-    assertThat(storyLiveData.value!!.isFailure()).isTrue()
-  }
+  @ExperimentalCoroutinesApi
+  fun testRetrieveStory_validSecondStory_returnsStoryWithProgress() =
+    runBlockingTest(coroutineContext) {
+      topicController.getStory(profileId1, TEST_TOPIC_ID_0, TEST_STORY_ID_1)
+        .observeForever(mockStorySummaryObserver)
+      advanceUntilIdle()
+
+      verifyGetStorySucceeded()
+      val story = storySummaryResultCaptor.value!!.getOrThrow()
+      assertThat(story.getChapter(0).chapterPlayState).isEqualTo(ChapterPlayState.NOT_STARTED)
+      assertThat(story.getChapter(1).chapterPlayState).isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+      assertThat(story.getChapter(2).chapterPlayState).isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testRetrieveStory_invalidStory_returnsFailure() =
+    runBlockingTest(coroutineContext) {
+      topicController.getStory(profileId1, INVALID_TOPIC_ID_1, INVALID_STORY_ID_1)
+        .observeForever(mockStorySummaryObserver)
+      advanceUntilIdle()
+
+      verifyGetStoryFailed()
+      assertThat(storySummaryResultCaptor.value!!.isFailure()).isTrue()
+    }
 
   @Test
   fun testGetConceptCard_validSkill_isSuccessful() {
@@ -665,20 +693,31 @@ class TopicControllerTest {
   }
 
   @Test
-  fun testRetrieveSubtopicTopic_validSubtopic_returnsSubtopicWithThumbnail() {
-    val topicLiveData = topicController.getTopic(FRACTIONS_TOPIC_ID)
+  @ExperimentalCoroutinesApi
+  fun testRetrieveSubtopicTopic_validSubtopic_returnsSubtopicWithThumbnail() =
+    runBlockingTest(coroutineContext) {
+      topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID).observeForever(mockTopicObserver)
+      advanceUntilIdle()
 
-    val topic = topicLiveData.value!!.getOrThrow()
-    assertThat(topic.subtopicList.get(0).subtopicThumbnail.thumbnailGraphic).isEqualTo(SubtopicThumbnailGraphic.WHAT_IS_A_FRACTION)
-  }
+      verifyGetTopicSucceeded()
+      val topic = topicResultCaptor.value!!.getOrThrow()
+      assertThat(topic.subtopicList[0].subtopicThumbnail.thumbnailGraphic).isEqualTo(
+        LessonThumbnailGraphic.WHAT_IS_A_FRACTION
+      )
+    }
 
   @Test
-  fun testRetrieveSubtopicTopic_validSubtopic_subtopicsHaveNoThumbnailUrls() {
-    val topicLiveData = topicController.getTopic(FRACTIONS_TOPIC_ID)
-    val topic = topicLiveData.value!!.getOrThrow()
-    assertThat(topic.subtopicList.get(0).thumbnailUrl).isEmpty()
-    assertThat(topic.subtopicList.get(1).thumbnailUrl).isEmpty()
-  }
+  @ExperimentalCoroutinesApi
+  fun testRetrieveSubtopicTopic_validSubtopic_subtopicsHaveNoThumbnailUrls() =
+    runBlockingTest(coroutineContext) {
+      topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID).observeForever(mockTopicObserver)
+      advanceUntilIdle()
+
+      verifyGetTopicSucceeded()
+      val topic = topicResultCaptor.value!!.getOrThrow()
+      assertThat(topic.subtopicList[0].thumbnailUrl).isEmpty()
+      assertThat(topic.subtopicList[1].thumbnailUrl).isEmpty()
+    }
 
   @Test
   @ExperimentalCoroutinesApi
@@ -703,86 +742,94 @@ class TopicControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testRetrieveQuestionsForFractionsSkillId0_returnsAllQuestions() = runBlockingTest(coroutineContext) {
-    val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
-      listOf(FRACTIONS_SKILL_ID_0)
-    )
-    dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
-    verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
-
-    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
-    val questionsList = questionListResultCaptor.value.getOrThrow()
-    assertThat(questionsList.size).isEqualTo(5)
-    val questionIds = questionsList.map { it.questionId }
-    assertThat(questionIds).containsExactlyElementsIn(
-      mutableListOf(
-        FRACTIONS_QUESTION_ID_0, FRACTIONS_QUESTION_ID_1,
-        FRACTIONS_QUESTION_ID_2, FRACTIONS_QUESTION_ID_3, FRACTIONS_QUESTION_ID_4
+  fun testRetrieveQuestionsForFractionsSkillId0_returnsAllQuestions() =
+    runBlockingTest(coroutineContext) {
+      val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
+        listOf(FRACTIONS_SKILL_ID_0)
       )
-    )
-  }
+      dataProviders.convertToLiveData(questionsListProvider)
+        .observeForever(mockQuestionListObserver)
+      verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
+
+      assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+      val questionsList = questionListResultCaptor.value.getOrThrow()
+      assertThat(questionsList.size).isEqualTo(5)
+      val questionIds = questionsList.map { it.questionId }
+      assertThat(questionIds).containsExactlyElementsIn(
+        mutableListOf(
+          FRACTIONS_QUESTION_ID_0, FRACTIONS_QUESTION_ID_1,
+          FRACTIONS_QUESTION_ID_2, FRACTIONS_QUESTION_ID_3, FRACTIONS_QUESTION_ID_4
+        )
+      )
+    }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testRetrieveQuestionsForFractionsSkillId1_returnsAllQuestions() = runBlockingTest(coroutineContext) {
-    val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
-      listOf(FRACTIONS_SKILL_ID_1)
-    )
-    dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
-    verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
-
-    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
-    val questionsList = questionListResultCaptor.value.getOrThrow()
-    assertThat(questionsList.size).isEqualTo(4)
-    val questionIds = questionsList.map { it.questionId }
-    assertThat(questionIds).containsExactlyElementsIn(
-      mutableListOf(
-        FRACTIONS_QUESTION_ID_5, FRACTIONS_QUESTION_ID_6,
-        FRACTIONS_QUESTION_ID_7, FRACTIONS_QUESTION_ID_10
+  fun testRetrieveQuestionsForFractionsSkillId1_returnsAllQuestions() =
+    runBlockingTest(coroutineContext) {
+      val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
+        listOf(FRACTIONS_SKILL_ID_1)
       )
-    )
-  }
+      dataProviders.convertToLiveData(questionsListProvider)
+        .observeForever(mockQuestionListObserver)
+      verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
+
+      assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+      val questionsList = questionListResultCaptor.value.getOrThrow()
+      assertThat(questionsList.size).isEqualTo(4)
+      val questionIds = questionsList.map { it.questionId }
+      assertThat(questionIds).containsExactlyElementsIn(
+        mutableListOf(
+          FRACTIONS_QUESTION_ID_5, FRACTIONS_QUESTION_ID_6,
+          FRACTIONS_QUESTION_ID_7, FRACTIONS_QUESTION_ID_10
+        )
+      )
+    }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testRetrieveQuestionsForFractionsSkillId2_returnsAllQuestions() = runBlockingTest(coroutineContext) {
-    val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
-      listOf(FRACTIONS_SKILL_ID_2)
-    )
-    dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
-    verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
-
-    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
-    val questionsList = questionListResultCaptor.value.getOrThrow()
-    assertThat(questionsList.size).isEqualTo(3)
-    val questionIds = questionsList.map { it.questionId }
-    assertThat(questionIds).containsExactlyElementsIn(
-      mutableListOf(
-        FRACTIONS_QUESTION_ID_8, FRACTIONS_QUESTION_ID_9,
-        FRACTIONS_QUESTION_ID_10
+  fun testRetrieveQuestionsForFractionsSkillId2_returnsAllQuestions() =
+    runBlockingTest(coroutineContext) {
+      val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
+        listOf(FRACTIONS_SKILL_ID_2)
       )
-    )
-  }
+      dataProviders.convertToLiveData(questionsListProvider)
+        .observeForever(mockQuestionListObserver)
+      verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
+
+      assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+      val questionsList = questionListResultCaptor.value.getOrThrow()
+      assertThat(questionsList.size).isEqualTo(3)
+      val questionIds = questionsList.map { it.questionId }
+      assertThat(questionIds).containsExactlyElementsIn(
+        mutableListOf(
+          FRACTIONS_QUESTION_ID_8, FRACTIONS_QUESTION_ID_9,
+          FRACTIONS_QUESTION_ID_10
+        )
+      )
+    }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testRetrieveQuestionsForRatiosSkillId0_returnsAllQuestions() = runBlockingTest(coroutineContext) {
-    val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
-      listOf(RATIOS_SKILL_ID_0)
-    )
-    dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
-    verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
-
-    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
-    val questionsList = questionListResultCaptor.value.getOrThrow()
-    assertThat(questionsList.size).isEqualTo(1)
-    val questionIds = questionsList.map { it.questionId }
-    assertThat(questionIds).containsExactlyElementsIn(
-      mutableListOf(
-        RATIOS_QUESTION_ID_0
+  fun testRetrieveQuestionsForRatiosSkillId0_returnsAllQuestions() =
+    runBlockingTest(coroutineContext) {
+      val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
+        listOf(RATIOS_SKILL_ID_0)
       )
-    )
-  }
+      dataProviders.convertToLiveData(questionsListProvider)
+        .observeForever(mockQuestionListObserver)
+      verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
+
+      assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+      val questionsList = questionListResultCaptor.value.getOrThrow()
+      assertThat(questionsList.size).isEqualTo(1)
+      val questionIds = questionsList.map { it.questionId }
+      assertThat(questionIds).containsExactlyElementsIn(
+        mutableListOf(
+          RATIOS_QUESTION_ID_0
+        )
+      )
+    }
 
   @Test
   @ExperimentalCoroutinesApi
@@ -814,7 +861,6 @@ class TopicControllerTest {
       advanceUntilIdle()
 
       verifyGetTopicSucceeded()
-
       val topic = topicResultCaptor.value.getOrThrow()
       assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
       assertThat(topic.storyList[0].chapterList[0].chapterPlayState).isEqualTo(ChapterPlayState.NOT_STARTED)
@@ -832,7 +878,6 @@ class TopicControllerTest {
       advanceUntilIdle()
 
       verifyGetTopicSucceeded()
-
       val topic = topicResultCaptor.value.getOrThrow()
       assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
       assertThat(topic.storyList[0].chapterList[0].chapterPlayState).isEqualTo(ChapterPlayState.COMPLETED)
@@ -859,7 +904,6 @@ class TopicControllerTest {
       advanceUntilIdle()
 
       verifyGetStorySucceeded()
-
       val storySummary = storySummaryResultCaptor.value.getOrThrow()
       assertThat(storySummary.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
       assertThat(storySummary.chapterList[0].chapterPlayState).isEqualTo(ChapterPlayState.NOT_STARTED)
@@ -878,7 +922,6 @@ class TopicControllerTest {
 
       verifyRecordProgressSucceeded()
       verifyGetTopicSucceeded()
-
       val topic = topicResultCaptor.value.getOrThrow()
       assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
       assertThat(topic.storyList[0].chapterList[0].chapterPlayState).isEqualTo(ChapterPlayState.COMPLETED)
@@ -893,7 +936,6 @@ class TopicControllerTest {
       advanceUntilIdle()
 
       verifyGetOngoingTopicListSucceeded()
-
       val ongoingTopicList = ongoingTopicListResultCaptor.value.getOrThrow()
       assertThat(ongoingTopicList.topicCount).isEqualTo(0)
     }
@@ -909,7 +951,6 @@ class TopicControllerTest {
       advanceUntilIdle()
 
       verifyGetOngoingTopicListSucceeded()
-
       val ongoingTopicList = ongoingTopicListResultCaptor.value.getOrThrow()
       assertThat(ongoingTopicList.topicCount).isEqualTo(1)
       assertThat(ongoingTopicList.topicList[0].topicId).isEqualTo(FRACTIONS_TOPIC_ID)
@@ -929,7 +970,6 @@ class TopicControllerTest {
       advanceUntilIdle()
 
       verifyGetOngoingTopicListSucceeded()
-
       val ongoingTopicList = ongoingTopicListResultCaptor.value.getOrThrow()
       assertThat(ongoingTopicList.topicCount).isEqualTo(0)
     }
@@ -953,7 +993,6 @@ class TopicControllerTest {
       advanceUntilIdle()
 
       verifyGetOngoingTopicListSucceeded()
-
       val ongoingTopicList = ongoingTopicListResultCaptor.value.getOrThrow()
       assertThat(ongoingTopicList.topicCount).isEqualTo(1)
       assertThat(ongoingTopicList.topicList[0].topicId).isEqualTo(RATIOS_TOPIC_ID)
@@ -963,7 +1002,8 @@ class TopicControllerTest {
   @ExperimentalCoroutinesApi
   fun testCompletedStoryList_validData_withoutAnyProgress_completedStoryListIsEmpty() =
     runBlockingTest(coroutineContext) {
-      topicController.getCompletedStoryList(profileId1).observeForever(mockCompletedStoryListObserver)
+      topicController.getCompletedStoryList(profileId1)
+        .observeForever(mockCompletedStoryListObserver)
       advanceUntilIdle()
 
       verifyGetCompletedStoryListSucceeded()
@@ -978,7 +1018,8 @@ class TopicControllerTest {
       markFractionsStory0Chapter0AsCompleted()
       advanceUntilIdle()
 
-      topicController.getCompletedStoryList(profileId1).observeForever(mockCompletedStoryListObserver)
+      topicController.getCompletedStoryList(profileId1)
+        .observeForever(mockCompletedStoryListObserver)
       advanceUntilIdle()
 
       verifyGetCompletedStoryListSucceeded()
@@ -996,11 +1037,11 @@ class TopicControllerTest {
       markFractionsStory0Chapter1AsCompleted()
       advanceUntilIdle()
 
-      topicController.getCompletedStoryList(profileId1).observeForever(mockCompletedStoryListObserver)
+      topicController.getCompletedStoryList(profileId1)
+        .observeForever(mockCompletedStoryListObserver)
       advanceUntilIdle()
 
       verifyGetCompletedStoryListSucceeded()
-
       val completedStoryList = completedStoryListResultCaptor.value.getOrThrow()
       assertThat(completedStoryList.completedStoryCount).isEqualTo(1)
       assertThat(completedStoryList.completedStoryList[0].storyId).isEqualTo(FRACTIONS_STORY_ID_0)
@@ -1021,7 +1062,6 @@ class TopicControllerTest {
       advanceUntilIdle()
 
       verifyGetStorySucceeded()
-
       val storySummary = storySummaryResultCaptor.value.getOrThrow()
       assertThat(storySummary.chapterCount).isEqualTo(2)
       assertThat(storySummary.chapterList[0].chapterPlayState).isEqualTo(ChapterPlayState.COMPLETED)
@@ -1041,11 +1081,11 @@ class TopicControllerTest {
       markRatiosStory0Chapter1AsCompleted()
       advanceUntilIdle()
 
-      topicController.getCompletedStoryList(profileId1).observeForever(mockCompletedStoryListObserver)
+      topicController.getCompletedStoryList(profileId1)
+        .observeForever(mockCompletedStoryListObserver)
       advanceUntilIdle()
 
       verifyGetCompletedStoryListSucceeded()
-
       val completedStoryList = completedStoryListResultCaptor.value.getOrThrow()
       assertThat(completedStoryList.completedStoryCount).isEqualTo(1)
       assertThat(completedStoryList.completedStoryList[0].storyId).isEqualTo(RATIOS_STORY_ID_0)
@@ -1067,11 +1107,11 @@ class TopicControllerTest {
       markRatiosStory0Chapter1AsCompleted()
       advanceUntilIdle()
 
-      topicController.getCompletedStoryList(profileId1).observeForever(mockCompletedStoryListObserver)
+      topicController.getCompletedStoryList(profileId1)
+        .observeForever(mockCompletedStoryListObserver)
       advanceUntilIdle()
 
       verifyGetCompletedStoryListSucceeded()
-
       val completedStoryList = completedStoryListResultCaptor.value.getOrThrow()
       assertThat(completedStoryList.completedStoryCount).isEqualTo(2)
       assertThat(completedStoryList.completedStoryList[0].storyId).isEqualTo(FRACTIONS_STORY_ID_0)
@@ -1126,7 +1166,10 @@ class TopicControllerTest {
   }
 
   private fun verifyRecordProgressSucceeded() {
-    verify(mockRecordProgressObserver, atLeastOnce()).onChanged(recordProgressResultCaptor.capture())
+    verify(
+      mockRecordProgressObserver,
+      atLeastOnce()
+    ).onChanged(recordProgressResultCaptor.capture())
     assertThat(recordProgressResultCaptor.value.isSuccess()).isTrue()
   }
 
@@ -1151,21 +1194,19 @@ class TopicControllerTest {
   }
 
   private fun verifyGetOngoingTopicListSucceeded() {
-    verify(mockOngoingTopicListObserver, atLeastOnce()).onChanged(ongoingTopicListResultCaptor.capture())
+    verify(
+      mockOngoingTopicListObserver,
+      atLeastOnce()
+    ).onChanged(ongoingTopicListResultCaptor.capture())
     assertThat(ongoingTopicListResultCaptor.value.isSuccess()).isTrue()
   }
 
   private fun verifyGetCompletedStoryListSucceeded() {
-    verify(mockCompletedStoryListObserver, atLeastOnce()).onChanged(completedStoryListResultCaptor.capture())
+    verify(
+      mockCompletedStoryListObserver,
+      atLeastOnce()
+    ).onChanged(completedStoryListResultCaptor.capture())
     assertThat(completedStoryListResultCaptor.value.isSuccess()).isTrue()
-  }
-
-  private fun getStoryIds(topic: Topic): List<String> {
-    return topic.storyList.map(StorySummary::getStoryId)
-  }
-
-  private fun getSkillIds(topic: Topic): List<String> {
-    return topic.skillList.map(SkillSummary::getSkillId)
   }
 
   private fun getExplorationIds(story: StorySummary): List<String> {

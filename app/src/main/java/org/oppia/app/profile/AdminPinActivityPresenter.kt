@@ -3,6 +3,8 @@ package org.oppia.app.profile
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -68,6 +70,13 @@ class AdminPinActivityPresenter @Inject constructor(
 
     binding.inputPin.setInput(adminViewModel.savedPin.get().toString())
     binding.inputConfirmPin.setInput(adminViewModel.savedConfirmPin.get().toString())
+
+    binding.inputConfirmPin.addEditorActionListener(TextView.OnEditorActionListener { _, actionId, _ ->
+      if (actionId == EditorInfo.IME_ACTION_DONE) {
+        binding.submitButton.callOnClick()
+      }
+      false
+    })
 
     binding.submitButton.setOnClickListener {
       val inputPin = binding.inputPin.getInput()

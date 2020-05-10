@@ -38,4 +38,9 @@ class PinPasswordActivity : InjectableAppCompatActivity(), ProfileRouteDialogInt
   override fun routeToSuccessDialog() {
     pinPasswordActivityPresenter.handleRouteToSuccessDialog()
   }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    pinPasswordActivityPresenter.dismissAlertDialog()
+  }
 }

@@ -62,6 +62,7 @@ import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.profileprogress.ProfileProgressActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.app.testing.HomeInjectionActivity
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.profile.ProfileManagementController
@@ -73,6 +74,7 @@ import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
+import org.oppia.util.system.OppiaClock
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import java.util.concurrent.AbstractExecutorService
@@ -80,6 +82,13 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
+
+// Time: Tue Apr 23 2019 23:22:00
+private const val EVENING_TIMESTAMP = 1556061720000
+// Time: Wed Apr 24 2019 08:22:00
+private const val MORNING_TIMESTAMP = 1556094120000
+// Time: Tue Apr 23 2019 14:22:00
+private const val AFTERNOON_TIMESTAMP = 1556029320000
 
 /** Tests for [HomeActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -89,6 +98,7 @@ class HomeActivityTest {
   @Inject lateinit var context: Context
 
   private val internalProfileId: Int = 1
+  private lateinit var oppiaClock: OppiaClock
 
   @Before
   @ExperimentalCoroutinesApi
@@ -103,6 +113,14 @@ class HomeActivityTest {
   fun tearDown() {
     IdlingRegistry.getInstance().unregister(MainThreadExecutor.countingResource)
     Intents.release()
+  }
+
+  private fun getApplicationDependencies() {
+    launch(HomeInjectionActivity::class.java).use {
+      it.onActivity { activity ->
+        oppiaClock = activity.oppiaClock
+      }
+    }
   }
 
   private fun setUpTestApplicationComponent() {
@@ -139,29 +157,65 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex0_displaysWelcomeMessageCorrectly() {
-    launch(HomeActivity::class.java).use {
+  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodMorningMessageDisplayedSuccessful() {
+    getApplicationDependencies()
+    oppiaClock.setCurrentTimeMs(MORNING_TIMESTAMP)
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
           0,
           R.id.welcome_text_view
         )
-      ).check(matches(withText(containsString("Welcome"))))
+      ).check(matches(withText("Good morning,")))
+    }
+  }
+
+  @Test
+  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodAfternoonMessageDisplayedSuccessful() {
+    getApplicationDependencies()
+    oppiaClock.setCurrentTimeMs(AFTERNOON_TIMESTAMP)
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.welcome_text_view
+        )
+      ).check(matches(withText("Good afternoon,")))
+    }
+  }
+
+  @Test
+  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodEveningMessageDisplayedSuccessful() {
+    getApplicationDependencies()
+    oppiaClock.setCurrentTimeMs(EVENING_TIMESTAMP)
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.welcome_text_view
+        )
+      ).check(matches(withText("Good evening,")))
     }
   }
 
   @Test
   fun testHomeActivity_recyclerViewIndex0_configurationChange_displaysWelcomeMessageCorrectly() {
-    launch(HomeActivity::class.java).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
           0,
-          R.id.welcome_text_view
+          R.id.profile_name_textview
         )
-      ).check(matches(withText(containsString("Welcome"))))
+      ).check(matches(withText("Sean!")))
     }
   }
 

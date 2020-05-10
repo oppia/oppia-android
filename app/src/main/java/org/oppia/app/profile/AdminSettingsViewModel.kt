@@ -8,5 +8,6 @@ import javax.inject.Inject
 /** The ViewModel for [AdminSettingsDialogFragment]. */
 @FragmentScope
 class AdminSettingsViewModel @Inject constructor() : ObservableViewModel() {
+  val inputPin = ObservableField("")
   val errorMessage = ObservableField("")
 }

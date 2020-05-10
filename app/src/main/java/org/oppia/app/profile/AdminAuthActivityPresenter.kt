@@ -4,6 +4,8 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.app.R
@@ -51,6 +53,13 @@ class AdminAuthActivityPresenter @Inject constructor(
 
       override fun afterTextChanged(confirmPin: Editable?) {}
       override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {}
+    })
+
+    binding.adminAuthInputPin.addEditorActionListener(TextView.OnEditorActionListener { _, actionId, _ ->
+      if (actionId == EditorInfo.IME_ACTION_DONE) {
+        binding.adminAuthSubmitButton.callOnClick()
+      }
+      false
     })
 
     binding.adminAuthSubmitButton.setOnClickListener {
