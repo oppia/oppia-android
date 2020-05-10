@@ -36,6 +36,7 @@ import org.oppia.app.model.PendingState
 import org.oppia.app.model.State
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.UserAnswer
+import org.oppia.app.player.audio.AudioUiManager
 import org.oppia.app.player.state.StatePlayerRecyclerViewAssembler.Builder.Factory
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
@@ -73,6 +74,7 @@ import javax.inject.Inject
 
 private const val DELAY_SHOW_HINTS_ONE_WRONG_ANSWER_MS = 60_000L
 private const val DELAY_SHOW_HINTS_MULTIPLE_WRONG_ANSWERS_MS = 10_000L
+private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 
 /**
  * An assembler for generating the list of view models to bind to the state player recycler view. This class also
@@ -99,6 +101,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
   val adapter: BindableAdapter<StateItemViewModel>, private val playerFeatureSet: PlayerFeatureSet,
   private val fragment: Fragment, private val congratulationsTextView: TextView?,
   private val canSubmitAnswer: ObservableField<Boolean>?,
+  private val audioActivityId: String?,
+  private val currentStateName: ObservableField<String>?,
+  private val isAudioPlaybackEnabled: ObservableField<Boolean>?,
+  private val audioUiManagerRetriever: AudioUiManagerRetriever?,
   private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>,
   backgroundCoroutineDispatcher: CoroutineDispatcher
 ) {
@@ -118,6 +124,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private val lifecycleSafeTimerFactory = LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
 
   private val hintHandler = HintHandler(lifecycleSafeTimerFactory, fragment)
+
+  /** The most recent content ID read by the audio system. */
+  private var audioPlaybackContentId: String? = null
 
   /**
    * An ever-present [PreviousNavigationButtonListener] that can exist even if backward navigation is disabled. This
@@ -166,6 +175,23 @@ class StatePlayerRecyclerViewAssembler private constructor(
         hasGeneralContinueButton = true
       } else if (ephemeralState.completedState.answerList.size > 0 && ephemeralState.hasNextState) {
         canContinueToNextState = true
+      }
+    }
+
+    if (playerFeatureSet.supportAudioVoiceovers) {
+      val processedStateName = ephemeralState.state.name
+      val audioManager = getAudioUiManager()
+      val activityId = checkNotNull(audioActivityId) {
+        "Expected the audio activity ID to be set when voiceovers are enabled"
+      }
+      audioManager?.setStateAndExplorationId(ephemeralState.state, activityId)
+
+      if (currentStateName?.get() != processedStateName) {
+        audioPlaybackContentId = null
+        currentStateName?.set(processedStateName)
+        if (isAudioPlaybackEnabled()) {
+          audioManager?.loadMainContentAudio(!canContinueToNextState)
+        }
       }
     }
 
@@ -307,8 +333,52 @@ class StatePlayerRecyclerViewAssembler private constructor(
     })
   }
 
-  /** Stops any pending hints from showing, e.g. due to the state being completed. */
+  /**
+   * Stops any pending hints from showing, e.g. due to the state being completed. This should only
+   * be called if hints & solutions support has been enabled.
+   */
   fun stopHintsFromShowing() = hintHandler.cancelAnyPendingHints()
+
+  /**
+   * Toggles whether current audio playback is enabled. This should only be called if voiceover
+   * support has been enabled.
+   */
+  fun toggleAudioPlaybackState() {
+    if (playerFeatureSet.supportAudioVoiceovers) {
+      val audioUiManager = getAudioUiManager()
+      if (!isAudioPlaybackEnabled()) {
+        audioUiManager?.enableAudioPlayback(audioPlaybackContentId)
+      } else {
+        audioUiManager?.disableAudioPlayback()
+      }
+    }
+  }
+
+  /**
+   * Possibly reads out the specified feedback, interrupting any existing audio that's playing.
+   * This should only be called if voiceover support has been enabled.
+   */
+  fun readOutAnswerFeedback(feedback: SubtitledHtml) {
+    if (playerFeatureSet.supportAudioVoiceovers && isAudioPlaybackEnabled()) {
+      audioPlaybackContentId = feedback.contentId
+      getAudioUiManager()?.loadFeedbackAudio(feedback.contentId, allowAutoPlay = true)
+    }
+  }
+
+  private fun isAudioPlaybackEnabled(): Boolean {
+    return isAudioPlaybackEnabled?.get() == true
+  }
+
+  /**
+   * Returns the currently [AudioUiManager], if defined. Callers should not cache this value, and
+   * are expected to only call this if audio voiceover support is enabled.
+   */
+  private fun getAudioUiManager(): AudioUiManager? {
+    val audioUiManagerRetriever = checkNotNull(this.audioUiManagerRetriever) {
+      "Expected audio UI manager retriever to be defined when audio voiceover support is enabled"
+    }
+    return audioUiManagerRetriever()
+  }
 
   private fun createSubmittedAnswer(userAnswer: UserAnswer, gcsEntityId: String): SubmittedAnswerViewModel {
     return SubmittedAnswerViewModel(userAnswer, gcsEntityId)
@@ -410,6 +480,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val featureSets = mutableSetOf(PlayerFeatureSet())
     private var congratulationsTextView: TextView? = null
     private var canSubmitAnswer: ObservableField<Boolean>? = null
+    private var audioActivityId: String? = null
+    private var currentStateName: ObservableField<String>? = null
+    private var isAudioPlaybackEnabled: ObservableField<Boolean>? = null
+    private var audioUiManagerRetriever: AudioUiManagerRetriever? = null
 
     /** Adds support for displaying state content to the learner. */
     fun addContentSupport(): Builder {
@@ -611,12 +685,46 @@ class StatePlayerRecyclerViewAssembler private constructor(
       return this
     }
 
-    /** Returns a new [StatePlayerRecyclerViewAssembler] based on the builder-specified configuration. */
+    /**
+     * Adds support for audio voiceovers, when available, which the learner can use to read out both
+     * card contents and feedback responses.
+     *
+     * @param audioActivityId the specified activity (e.g. exploration) ID
+     * @param currentStateName observable field for tracking the name of the currently loaded state.
+     *     The value of this field should be retained across configuration changes.
+     * @param isAudioPlaybackEnabled observable field tracking whether audio playback is enabled.
+     *     The value of this field should be retained across configuration changes.
+     * @param audioUiManagerRetriever a synchronous, UI-thread-only retriever of the current
+     *     [AudioUiManager], if any is present. This assembler guarantees it will never cache the
+     *     manager itself, and will always re-fetch it when performing operations. Callers are
+     *     responsible for ensuring consistency across multiple managers. The retriever itself will
+     *     be cached, so any implicit references held by it will survive for the lifetime of the
+     *     assembler.
+     */
+    fun addAudioVoiceoverSupport(
+      audioActivityId: String,
+      currentStateName: ObservableField<String>,
+      isAudioPlaybackEnabled: ObservableField<Boolean>,
+      audioUiManagerRetriever: () -> AudioUiManager?
+    ): Builder {
+      this.audioActivityId = audioActivityId
+      this.currentStateName = currentStateName
+      this.isAudioPlaybackEnabled = isAudioPlaybackEnabled
+      this.audioUiManagerRetriever = audioUiManagerRetriever
+      featureSets += PlayerFeatureSet(supportAudioVoiceovers = true)
+      return this
+    }
+
+    /**
+     * Returns a new [StatePlayerRecyclerViewAssembler] based on the builder-specified
+     * configuration.
+     */
     fun build(): StatePlayerRecyclerViewAssembler {
       val playerFeatureSet = featureSets.reduce(PlayerFeatureSet::union)
       return StatePlayerRecyclerViewAssembler(
         adapterBuilder.build(), playerFeatureSet, fragment, congratulationsTextView,
-        canSubmitAnswer, interactionViewModelFactoryMap, backgroundCoroutineDispatcher
+        canSubmitAnswer, audioActivityId, currentStateName, isAudioPlaybackEnabled,
+        audioUiManagerRetriever, interactionViewModelFactoryMap, backgroundCoroutineDispatcher
       )
     }
 
@@ -648,7 +756,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val replaySupport: Boolean = false,
     val returnToTopicNavigation: Boolean = false,
     val showCongratulationsOnCorrectAnswer: Boolean = false,
-    val hintsAndSolutionsSupport: Boolean = false
+    val hintsAndSolutionsSupport: Boolean = false,
+    val supportAudioVoiceovers: Boolean = false
   ) {
     /** Returns a union of this feature set with other one. Loosely based on https://stackoverflow.com/a/49605849. */
     fun union(other: PlayerFeatureSet): PlayerFeatureSet {
@@ -664,7 +773,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
         returnToTopicNavigation = returnToTopicNavigation || other.returnToTopicNavigation,
         showCongratulationsOnCorrectAnswer = showCongratulationsOnCorrectAnswer
             || other.showCongratulationsOnCorrectAnswer,
-        hintsAndSolutionsSupport = hintsAndSolutionsSupport || other.hintsAndSolutionsSupport
+        hintsAndSolutionsSupport = hintsAndSolutionsSupport || other.hintsAndSolutionsSupport,
+        supportAudioVoiceovers = supportAudioVoiceovers || other.supportAudioVoiceovers
       )
     }
   }

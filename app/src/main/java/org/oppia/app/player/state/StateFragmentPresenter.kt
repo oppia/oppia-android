@@ -63,7 +63,6 @@ class StateFragmentPresenter @Inject constructor(
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
 
   private lateinit var currentState: State
-  private var feedbackId: String? = null
   private lateinit var profileId: ProfileId
   private lateinit var topicId: String
   private lateinit var storyId: String
@@ -180,9 +179,7 @@ class StateFragmentPresenter @Inject constructor(
     viewModel.setHintBulbVisibility(true)
   }
 
-  fun handleAudioClick() {
-    (getAudioFragment() as AudioFragment).handleAudioClick(isAudioShowing(), feedbackId)
-  }
+  fun handleAudioClick() = recyclerViewAssembler.toggleAudioPlaybackState()
 
   fun handleKeyboardAction() {
     hideKeyboard()
@@ -205,7 +202,10 @@ class StateFragmentPresenter @Inject constructor(
       .addReturnToTopicSupport()
       .addCongratulationsForCorrectAnswers(congratulationsTextView)
       .addHintsAndSolutionsSupport()
-      .build()
+      .addAudioVoiceoverSupport(
+        explorationId, viewModel.currentStateName, viewModel.isAudioBarVisible,
+        this::getAudioUiManager
+      ).build()
   }
 
   fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
@@ -224,8 +224,12 @@ class StateFragmentPresenter @Inject constructor(
     return fragment.childFragmentManager.findFragmentByTag(TAG_AUDIO_FRAGMENT)
   }
 
+  private fun getAudioUiManager(): AudioUiManager? {
+    return getAudioFragment() as? AudioUiManager
+  }
+
   private fun subscribeToCurrentState() {
-    ephemeralStateLiveData.observe(fragment, Observer<AsyncResult<EphemeralState>> { result ->
+    ephemeralStateLiveData.observe(fragment, Observer { result ->
       processEphemeralStateResult(result)
     })
   }
@@ -241,28 +245,17 @@ class StateFragmentPresenter @Inject constructor(
 
     val ephemeralState = result.getOrThrow()
 
-    val scrollToTop =
+    val isInNewState =
       ::currentStateName.isInitialized && currentStateName != ephemeralState.state.name
 
     currentState = ephemeralState.state
     currentStateName = ephemeralState.state.name
     showOrHideAudioByState(ephemeralState.state)
 
-    val audioManager = getAudioFragment() as AudioUiManager
-    audioManager.setStateAndExplorationId(ephemeralState.state, explorationId)
-    if (viewModel.currentStateName == null || viewModel.currentStateName != currentStateName) {
-      feedbackId = null
-      viewModel.currentStateName = currentStateName
-      if (isAudioShowing()) {
-        // TODO(BenHenning): Fix auto audio loading.
-//        audioManager.loadMainContentAudio(!canContinueToNextState)
-      }
-    }
-
     viewModel.itemList.clear()
     viewModel.itemList += recyclerViewAssembler.compute(ephemeralState, explorationId)
 
-    if (scrollToTop) {
+    if (isInNewState) {
       (binding.stateRecyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
         0,
         200
@@ -319,10 +312,7 @@ class StateFragmentPresenter @Inject constructor(
           viewModel.setHintBulbVisibility(false)
           recyclerViewAssembler.showCongratulationMessageOnCorrectAnswer()
         }
-        feedbackId = result.feedback.contentId
-        if (isAudioShowing()) {
-          (getAudioFragment() as AudioUiManager).loadFeedbackAudio(feedbackId!!, true)
-        }
+        recyclerViewAssembler.readOutAnswerFeedback(result.feedback)
       }
     })
   }
@@ -383,7 +373,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun moveToNextState() {
-    explorationProgressController.moveToNextState().observe(fragment, Observer<AsyncResult<Any?>> {
+    explorationProgressController.moveToNextState().observe(fragment, Observer {
       recyclerViewAssembler.collapsePreviousResponses()
     })
   }

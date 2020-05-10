@@ -147,11 +147,9 @@ class AudioFragmentPresenter @Inject constructor(
     }
   }
 
-  fun handleAudioClick(isShowing: Boolean, feedbackId: String?) {
+  fun handleAudioClick(shouldEnableAudioPlayback: Boolean, feedbackId: String?) {
     this.feedbackId = feedbackId
-    if (isShowing) {
-      setAudioFragmentVisible(false)
-    } else {
+    if (shouldEnableAudioPlayback) {
       when (networkConnectionUtil.getCurrentConnectionStatus()) {
         NetworkConnectionUtil.ConnectionStatus.LOCAL -> setAudioFragmentVisible(true)
         NetworkConnectionUtil.ConnectionStatus.CELLULAR -> {
@@ -171,6 +169,8 @@ class AudioFragmentPresenter @Inject constructor(
           setAudioFragmentVisible(false)
         }
       }
+    } else {
+      setAudioFragmentVisible(false)
     }
   }
 

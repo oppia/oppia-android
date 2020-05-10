@@ -23,7 +23,7 @@ class StateViewModel @Inject constructor() : ObservableViewModel() {
   val isHintBulbVisible = ObservableField(false)
   val isHintOpenedAndUnRevealed = ObservableField(false)
 
-  var currentStateName: String? = null
+  var currentStateName = ObservableField<String>(null as? String?)
 
   private val canSubmitAnswer = ObservableField(true)
 
