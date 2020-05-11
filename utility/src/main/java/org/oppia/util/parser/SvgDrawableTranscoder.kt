@@ -1,6 +1,6 @@
 package org.oppia.util.parser
 
-import android.graphics.drawable.PictureDrawable
+import android.graphics.Picture
 import com.bumptech.glide.load.Options
 import com.bumptech.glide.load.engine.Resource
 import com.bumptech.glide.load.resource.SimpleResource
@@ -8,14 +8,13 @@ import com.bumptech.glide.load.resource.transcode.ResourceTranscoder
 import com.caverock.androidsvg.SVG
 
 /** SvgDrawableTranscoder converts SVG to PictureDrawable. */
-class SvgDrawableTranscoder : ResourceTranscoder<SVG?, PictureDrawable?> {
+class SvgDrawableTranscoder : ResourceTranscoder<SVG?, Picture?> {
   override fun transcode(
     toTranscode: Resource<SVG?>,
     options: Options
-  ): Resource<PictureDrawable?>? {
+  ): Resource<Picture?>? {
     val svg: SVG = toTranscode.get()
     val picture = svg.renderToPicture()
-    val drawable = PictureDrawable(picture)
-    return SimpleResource(drawable)
+    return SimpleResource(picture)
   }
 }
