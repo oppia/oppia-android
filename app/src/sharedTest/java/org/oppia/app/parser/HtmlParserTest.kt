@@ -151,16 +151,6 @@ class HtmlParserTest {
     assertThat(bulletSpan1).isNotNull()
   }
 
-  class FakeImageLoader : ImageLoader {
-    override fun load(imageUrl: String, target: CustomTarget<Bitmap>) {
-
-    }
-  }
-
-  private fun getResources(): Resources {
-    return ApplicationProvider.getApplicationContext<Context>().resources
-  }
-
   @Qualifier annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
