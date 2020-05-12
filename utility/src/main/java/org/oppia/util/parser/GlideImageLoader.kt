@@ -7,9 +7,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
+import javax.inject.Inject
 import org.oppia.util.caching.AssetRepository
 import org.oppia.util.caching.CacheAssetsLocally
-import javax.inject.Inject
 
 /** An [ImageLoader] that uses Glide. */
 class GlideImageLoader @Inject constructor(
