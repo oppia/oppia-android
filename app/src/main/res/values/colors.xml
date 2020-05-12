@@ -3,7 +3,7 @@
   <color name="colorPrimary">#00645C</color>
   <color name="colorPrimaryDark">#003933</color>
   <color name="colorAccent">#2D4A9D</color>
-  <color name="progressBackgroundTint">#081661</color>
+  <color name="progressBackgroundTint">#081661 </color>
   <color name="colorConceptCardBackground">#FFFFF0</color>
   <color name="colorConceptToolbarBackground">#BE563C</color>
   <color name="colorConceptToolbarHeading">#A6503A</color>
@@ -49,7 +49,7 @@
   <color name="black_12">#1F000000</color>
   <color name="black_87">#DE000000</color>
   <color name="black_20">#33000000</color>
-  <color name="black_26">#555555</color>
+  <color name="black_26">#42000000</color>
   <color name="black_30">#4D000000</color>
   <color name="black_38">#61000000</color>
   <color name="black_54">#8A000000</color>
