@@ -156,10 +156,10 @@ class HintsAndSolutionAdapter(
       binding.viewModel = solutionViewModel
       binding.root.visibility = View.GONE
       binding.solutionTitle.text = solutionViewModel.title.get()!!.capitalize()
-      if(solutionViewModel.correctAnswer.get().isNullOrEmpty()) {
+      if (solutionViewModel.correctAnswer.get().isNullOrEmpty()) {
         binding.solutionCorrectAnswer.text =
           """${solutionViewModel.numerator.get()}/${solutionViewModel.denominator.get()}"""
-      }else{
+      } else {
         binding.solutionCorrectAnswer.text = solutionViewModel.correctAnswer.get()
       }
       binding.solutionSummary.text = htmlParserFactory.create(entityType, explorationId!!, /* imageCenterAlign= */ true)
