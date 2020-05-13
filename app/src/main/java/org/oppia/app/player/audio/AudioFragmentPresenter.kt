@@ -118,6 +118,7 @@ class AudioFragmentPresenter @Inject constructor(
     })
   }
 
+  /** Gets language code by [AudioLanguage] */
   fun getAudioLanguage(audioLanguage: AudioLanguage): String {
     return when (audioLanguage) {
       AudioLanguage.NO_AUDIO -> "No Audio"
