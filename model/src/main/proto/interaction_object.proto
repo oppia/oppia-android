@@ -52,7 +52,7 @@ message Fraction {
 
 // Structure for a ListOfString object.
 message ListOfSetsOfHtmlStrings {
-  repeated StringList list = 1;
+  repeated StringList set_of_html_strings = 1;
 }
 
 // Structure for a DragAndDropHtmlString object.
