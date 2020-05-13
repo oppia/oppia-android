@@ -47,7 +47,15 @@ class HtmlParser private constructor(
 
     val imageGetter = urlImageParserFactory.create(htmlContentTextView, entityType, entityId, imageCenterAlign)
 
-    val htmlSpannable = HtmlCompat.fromHtml(htmlContent, HtmlCompat.FROM_HTML_MODE_LEGACY, imageGetter, LiTagHandler()) as Spannable
+    val formattedHtml = htmlContent
+      .replace("(?i)<ul[^>]*>".toRegex(), "<${StringUtils.UL_TAG}>")
+      .replace("(?i)</ul>".toRegex(), "</${StringUtils.UL_TAG}>")
+      .replace("(?i)<ol[^>]*>".toRegex(), "<${StringUtils.OL_TAG}>")
+      .replace("(?i)</ol>".toRegex(), "</${StringUtils.OL_TAG}>")
+      .replace("(?i)<li[^>]*>".toRegex(), "<${StringUtils.LI_TAG}>")
+      .replace("(?i)</li>".toRegex(), "</${StringUtils.LI_TAG}>")
+
+    val htmlSpannable = HtmlCompat.fromHtml(formattedHtml, HtmlCompat.FROM_HTML_MODE_LEGACY, imageGetter, LiTagHandler()) as Spannable
 
     val spannableBuilder = SpannableStringBuilder(htmlSpannable)
     val bulletSpans = spannableBuilder.getSpans(0, spannableBuilder.length, BulletSpan::class.java)
