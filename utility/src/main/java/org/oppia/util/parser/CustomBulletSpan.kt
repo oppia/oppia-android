@@ -89,7 +89,6 @@ class CustomBulletSpan(
 
         paint.style = style
       }
-
     }
   }
 
