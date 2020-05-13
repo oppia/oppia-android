@@ -13,6 +13,21 @@ import javax.inject.Inject
 class AudioFragment : InjectableFragment(), LanguageInterface, AudioUiManager, CellularDataInterface {
   @Inject lateinit var audioFragmentPresenter: AudioFragmentPresenter
 
+  companion object {
+    /**
+     * Creates a new instance of a AudioFragment.
+     * @param profileId used by AudioFragment to get Audio Language.
+     * @return a new instance of [AudioFragment].
+     */
+    fun newInstance(profileId: Int): AudioFragment {
+      val audioFragment = AudioFragment()
+      val args = Bundle()
+      args.putInt(AUDIO_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, profileId)
+      audioFragment.arguments = args
+      return audioFragment
+    }
+  }
+
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
