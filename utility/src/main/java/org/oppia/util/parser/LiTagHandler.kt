@@ -1,5 +1,6 @@
 package org.oppia.util.parser
 
+import android.content.Context
 import android.text.Editable
 import android.text.Html
 import android.text.Spannable
@@ -24,7 +25,7 @@ import java.util.*
  *
  * Reference: https://medium.com/swlh/making-nested-lists-with-android-spannables-in-kotlin-4ad00052912ce
  */
-class LiTagHandler : Html.TagHandler {
+class LiTagHandler(private val context: Context) : Html.TagHandler {
 
   private val lists = Stack<ListTag>()
 
@@ -73,7 +74,7 @@ class LiTagHandler : Html.TagHandler {
   /**
    * Subclass of [ListTag] for unordered lists.
    */
-  private class Ul : ListTag {
+  private inner class Ul : ListTag {
 
     override fun openItem(text: Editable) {
       appendNewLine(text)
@@ -84,7 +85,7 @@ class LiTagHandler : Html.TagHandler {
       appendNewLine(text)
 
       getLast<BulletListItem>(text)?.let { mark ->
-        setSpanFromMark(text, mark, TextLeadingMarginSpan(GAP_WIDTH, indentation, "•"))
+        setSpanFromMark(text, mark, TextLeadingMarginSpan(context, GAP_WIDTH, indentation, "•"))
       }
     }
   }
@@ -92,7 +93,7 @@ class LiTagHandler : Html.TagHandler {
   /**
    * Subclass of [ListTag] for ordered lists.
    */
-  private class Ol : ListTag {
+  private inner class Ol : ListTag {
 
     private var index = 1
 
@@ -106,7 +107,7 @@ class LiTagHandler : Html.TagHandler {
       appendNewLine(text)
 
       getLast<NumberListItem>(text)?.let { mark ->
-        setSpanFromMark(text, mark, TextLeadingMarginSpan(GAP_WIDTH, indentation, "${mark.number}."))
+        setSpanFromMark(text, mark, TextLeadingMarginSpan(context, GAP_WIDTH, indentation, "${mark.number}."))
       }
     }
   }

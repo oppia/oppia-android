@@ -2,8 +2,6 @@ package org.oppia.util.parser
 
 import android.text.Spannable
 import android.text.SpannableStringBuilder
-import android.text.Spanned
-import android.text.style.BulletSpan
 import android.widget.TextView
 import androidx.core.text.HtmlCompat
 import javax.inject.Inject
@@ -55,21 +53,21 @@ class HtmlParser private constructor(
       .replace("(?i)<li[^>]*>".toRegex(), "<${StringUtils.LI_TAG}>")
       .replace("(?i)</li>".toRegex(), "</${StringUtils.LI_TAG}>")
 
-    val htmlSpannable = HtmlCompat.fromHtml(formattedHtml, HtmlCompat.FROM_HTML_MODE_LEGACY, imageGetter, LiTagHandler()) as Spannable
+    val htmlSpannable = HtmlCompat.fromHtml(formattedHtml, HtmlCompat.FROM_HTML_MODE_LEGACY, imageGetter, LiTagHandler(htmlContentTextView.context)) as Spannable
 
     val spannableBuilder = SpannableStringBuilder(htmlSpannable)
-    val bulletSpans = spannableBuilder.getSpans(0, spannableBuilder.length, BulletSpan::class.java)
-    bulletSpans.forEach {
-      val start = spannableBuilder.getSpanStart(it)
-      val end = spannableBuilder.getSpanEnd(it)
-      spannableBuilder.removeSpan(it)
-      spannableBuilder.setSpan(
-        CustomBulletSpan(htmlContentTextView.context),
-        start,
-        end,
-        Spanned.SPAN_INCLUSIVE_EXCLUSIVE
-      )
-    }
+//    val bulletSpans = spannableBuilder.getSpans(0, spannableBuilder.length, BulletSpan::class.java)
+//    bulletSpans.forEach {
+//      val start = spannableBuilder.getSpanStart(it)
+//      val end = spannableBuilder.getSpanEnd(it)
+//      spannableBuilder.removeSpan(it)
+//      spannableBuilder.setSpan(
+//        CustomBulletSpan(htmlContentTextView.context),
+//        start,
+//        end,
+//        Spanned.SPAN_INCLUSIVE_EXCLUSIVE
+//      )
+//    }
     return trimSpannable(spannableBuilder)
   }
 
