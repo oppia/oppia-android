@@ -8,12 +8,12 @@ import android.text.Spanned
 import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
 import android.text.Spanned.SPAN_MARK_MARK
 import android.text.style.LeadingMarginSpan
+import java.util.Stack
 import org.oppia.util.parser.LiTagHandler.ListTag
 import org.oppia.util.parser.StringUtils.LI_TAG
 import org.oppia.util.parser.StringUtils.OL_TAG
 import org.oppia.util.parser.StringUtils.UL_TAG
 import org.xml.sax.XMLReader
-import java.util.*
 
 /**
  * Called when the HTML parser reaches an opening or closing tag.
@@ -105,7 +105,6 @@ class LiTagHandler(private val context: Context) : Html.TagHandler {
 
     override fun closeItem(text: Editable, indentation: Int) {
       appendNewLine(text)
-
       getLast<NumberListItem>(text)?.let { mark ->
         setSpanFromMark(text, mark, CustomBulletSpan(context, GAP_WIDTH, indentation, "${mark.number}."))
       }
