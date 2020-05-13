@@ -39,8 +39,7 @@ private fun NumberWithUnits.toAnswerString(): String {
   val suffixedUnits = unitList.filterNot(::isPrefixUnit)
 
   val prefixString = prefixedUnits.joinToString(separator = " ")
-  val suffixedString =
-    suffixedUnits.joinToString(separator = " ", transform = NumberUnit::toAnswerStringPart)
+  val suffixedString = suffixedUnits.joinToString(separator = " ", transform = NumberUnit::toAnswerStringPart)
   val valueString = if (numberTypeCase == NumberWithUnits.NumberTypeCase.REAL) {
     real.toString()
   } else {
@@ -65,7 +64,7 @@ private fun StringList.toAnswerString(): String {
 }
 
 private fun ListOfSetsOfHtmlStrings.toAnswerString(): String {
-  return listList.joinToString { it.toAnswerString() }
+  return setOfHtmlStringsList.joinToString { it.toAnswerString() }
 }
 
 // https://github.com/oppia/oppia/blob/37285a/core/templates/dev/head/domain/objects/FractionObjectFactory.ts#L47
