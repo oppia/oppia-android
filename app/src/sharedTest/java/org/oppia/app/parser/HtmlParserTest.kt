@@ -5,7 +5,6 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
-import android.graphics.Bitmap
 import android.text.Spannable
 import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
@@ -17,7 +16,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import com.bumptech.glide.request.target.CustomTarget
 import com.google.common.truth.Truth.assertThat
 import dagger.Binds
 import dagger.BindsInstance
@@ -113,6 +111,19 @@ class HtmlParserTest {
   }
 
   @Test
+  fun testHtmlContent_handleHtmlListTags_parsedHtmlDisplaysStyledText() {
+    val textView = activityTestRule.activity.findViewById(R.id.test_html_content_with_ordered_list_text_view) as TextView
+    val htmlParser = htmlParserFactory.create(/* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true)
+    val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+      getResources().getString(R.string.faq_answer_1),
+      textView
+    )
+    assertThat(textView.text.toString()).isEqualTo(htmlResult.toString())
+    onView(withId(R.id.test_html_content_with_ordered_list_text_view)).check(matches(isDisplayed()))
+    onView(withId(R.id.test_html_content_with_ordered_list_text_view)).check(matches(withText(textView.text.toString())))
+  }
+
+  @Test
   fun testHtmlContent_nonCustomOppiaTags_notParsed() {
     val textView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
     val htmlParser = htmlParserFactory.create(/* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true)
@@ -149,6 +160,10 @@ class HtmlParserTest {
 
     val bulletSpan1 = bulletSpans[1] as CustomBulletSpan
     assertThat(bulletSpan1).isNotNull()
+  }
+
+  private fun getResources(): Resources {
+    return ApplicationProvider.getApplicationContext<Context>().resources
   }
 
   @Qualifier annotation class TestDispatcher

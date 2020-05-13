@@ -85,7 +85,7 @@ class LiTagHandler(private val context: Context) : Html.TagHandler {
       appendNewLine(text)
 
       getLast<BulletListItem>(text)?.let { mark ->
-        setSpanFromMark(text, mark, TextLeadingMarginSpan(context, GAP_WIDTH, indentation, "•"))
+        setSpanFromMark(text, mark, CustomBulletSpan(context, GAP_WIDTH, indentation, "•"))
       }
     }
   }
@@ -107,7 +107,7 @@ class LiTagHandler(private val context: Context) : Html.TagHandler {
       appendNewLine(text)
 
       getLast<NumberListItem>(text)?.let { mark ->
-        setSpanFromMark(text, mark, TextLeadingMarginSpan(context, GAP_WIDTH, indentation, "${mark.number}."))
+        setSpanFromMark(text, mark, CustomBulletSpan(context, GAP_WIDTH, indentation, "${mark.number}."))
       }
     }
   }
