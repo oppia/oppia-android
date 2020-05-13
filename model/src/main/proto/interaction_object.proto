@@ -18,6 +18,7 @@ message InteractionObject {
     // wrapped into a new message.
     StringList set_of_html_string = 7;
     Fraction fraction = 8;
+    ListOfSetsOfHtmlStrings list_of_sets_of_html_string = 9;
   }
 }
 
@@ -48,4 +49,20 @@ message Fraction {
   int32 numerator = 3;
   int32 denominator = 4;
 }
+
+// Structure for a ListOfString object.
+message ListOfSetsOfHtmlStrings {
+  repeated StringList list = 1;
+}
+
+// Structure for a DragAndDropHtmlString object.
+message DragAndDropHtmlString {
+  string html = 1;
+}
+
+// Structure for a DragAndDropPositiveInt object.
+message DragAndDropPositiveInt {
+  uint32 non_negative_int = 1;
+}
+
 
