@@ -35,7 +35,7 @@
   <string name="stop_exploration_dialog_leave_button">Leave</string>
   <string name="topic_practice_master_these_skills">Master These Skills</string>
   <string name="topic_name_text_view">Ratios and Proportional Reasoning</string>
-  <string name="topic_practice_skills_description">Select or unselect skills that you want to practice</string>
+  <string name="topic_practice_skills_description">Select skills that you would like to practice.</string>
   <string name="topic_practice_start">Start</string>
   <string name="state_continue_button">Continue</string>
   <string name="state_continue_submit">Submit</string>
@@ -135,12 +135,18 @@
     <item quantity="other">
       %d Stories Completed
     </item>
+    <item quantity="zero">
+      %d Stories Completed
+    </item>
   </plurals>
   <plurals name="ongoing_topic_count">
     <item quantity="one">
       1 Topic in Progress
     </item>
     <item quantity="other">
+      %d Topics in Progress
+    </item>
+    <item quantity="zero">
       %d Topics in Progress
     </item>
   </plurals>
@@ -319,7 +325,7 @@
   <string name="show_hide_hint_list">Show/Hide hint list of %s</string>
   <string name="show_hide_solution_list">Show/Hide solution</string>
   <string name="the_only_solution_is">The only solution is :  </string>
-  <string name="this_will_reveal_the_solution">This will reveal the solution. Are you Sure</string>
+  <string name="this_will_reveal_the_solution">This will reveal the solution. Are you sure?</string>
   <string name="reveal">Reveal</string>
   <!-- TextViewBindingAdapters -->
   <string name="just_now">just now</string>

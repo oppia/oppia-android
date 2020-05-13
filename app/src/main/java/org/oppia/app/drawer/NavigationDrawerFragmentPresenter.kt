@@ -29,11 +29,13 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.mydownloads.MyDownloadsActivity
 import org.oppia.app.options.OptionsActivity
 import org.oppia.app.profile.ProfileActivity
+import org.oppia.app.profileprogress.ProfileProgressActivity
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
+import org.oppia.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
 const val KEY_NAVIGATION_PROFILE_ID = "KEY_NAVIGATION_PROFILE_ID"
@@ -211,6 +213,10 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     }
   }
 
+  fun openProfileProgress(profileId: Int) {
+    activity.startActivity(ProfileProgressActivity.createProfileProgressActivityIntent(activity, profileId))
+  }
+
   /**
    * Initializes the navigation drawer for the specified [DrawerLayout] and [Toolbar], which the host activity is
    * expected to provide. The [menuItemId] corresponds to the menu ID of the current activity, for navigation purposes.
@@ -247,11 +253,13 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         override fun onDrawerOpened(drawerView: View) {
           super.onDrawerOpened(drawerView)
           fragment.activity!!.invalidateOptionsMenu()
+          StatusBarColor.statusBarColorUpdate(R.color.slideDrawerOpenStatusBar, activity, false)
         }
 
         override fun onDrawerClosed(drawerView: View) {
           super.onDrawerClosed(drawerView)
           fragment.activity!!.invalidateOptionsMenu()
+          StatusBarColor.statusBarColorUpdate(R.color.colorPrimaryDark, activity, false)
         }
       }
       drawerLayout.setDrawerListener(drawerToggle)
@@ -271,11 +279,13 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         override fun onDrawerOpened(drawerView: View) {
           super.onDrawerOpened(drawerView)
           fragment.activity!!.invalidateOptionsMenu()
+          StatusBarColor.statusBarColorUpdate(R.color.slideDrawerOpenStatusBar, activity, false)
         }
 
         override fun onDrawerClosed(drawerView: View) {
           super.onDrawerClosed(drawerView)
           fragment.activity!!.invalidateOptionsMenu()
+          StatusBarColor.statusBarColorUpdate(R.color.colorPrimaryDark, activity, false)
         }
       }
       drawerLayout.setDrawerListener(drawerToggle)
