@@ -56,10 +56,10 @@ class CustomBulletSpan(
 
     if (isFirstCharacter) {
       // Depending on the phone, x might always be 0. We need to re-calculate it here.
-      val trueX = 28 + marginWidth * indentation
+      val trueX = bulletLeadingMargin + marginWidth * indentation
       if (string != "•") {
         canvas.drawText(string, trueX.toFloat(), baseline.toFloat(), paint)
-      }else {
+      } else {
         val style = paint.style
         paint.style = Paint.Style.FILL
 
