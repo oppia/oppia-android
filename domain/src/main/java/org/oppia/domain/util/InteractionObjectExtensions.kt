@@ -64,7 +64,7 @@ private fun StringList.toAnswerString(): String {
 }
 
 private fun ListOfSetsOfHtmlStrings.toAnswerString(): String {
-  return setOfHtmlStringsList.joinToString { it.toAnswerString() }
+  return setOfHtmlStringsList.joinToString(prefix = "[",postfix = "]") { it.htmlList.joinToString(" ") }
 }
 
 // https://github.com/oppia/oppia/blob/37285a/core/templates/dev/head/domain/objects/FractionObjectFactory.ts#L47
