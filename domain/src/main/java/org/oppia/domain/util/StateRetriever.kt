@@ -8,6 +8,7 @@ import org.oppia.app.model.Fraction
 import org.oppia.app.model.Hint
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.ListOfSetsOfHtmlStrings
 import org.oppia.app.model.NumberUnit
 import org.oppia.app.model.NumberWithUnits
 import org.oppia.app.model.Outcome
@@ -308,8 +309,19 @@ class StateRetriever @Inject constructor(
       "FractionInput" -> InteractionObject.newBuilder()
         .setFraction(parseFraction(inputJson.getJSONObject(keyName)))
         .build()
+      "DragDropAndSort" -> InteractionObject.newBuilder()
+        .setListOfSetsOfHtmlString(parseListOfSetsOfHtmlStrings(inputJson.getJSONArray(keyName)))
+        .build()
       else -> throw IllegalStateException("Encountered unexpected interaction ID: $interactionId")
     }
+  }
+
+  private fun parseListOfSetsOfHtmlStrings(listOfSetsOfHtmlStringsAnswer: JSONArray): ListOfSetsOfHtmlStrings {
+    val listOfSetsOfHtmlStringsBuilder = ListOfSetsOfHtmlStrings.newBuilder()
+    for (i in 0 until listOfSetsOfHtmlStringsAnswer.length()) {
+      listOfSetsOfHtmlStringsBuilder.addSetOfHtmlStrings(parseStringList(listOfSetsOfHtmlStringsAnswer.getJSONArray(i)))
+    }
+    return listOfSetsOfHtmlStringsBuilder.build()
   }
 
   private fun parseStringList(itemSelectionAnswer: JSONArray): StringList {
