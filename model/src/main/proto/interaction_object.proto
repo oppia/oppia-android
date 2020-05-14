@@ -6,6 +6,7 @@ option java_package = "org.oppia.app.model";
 option java_multiple_files = true;
 
 // Structure for any interaction object
+// https://github.com/oppia/oppia/blob/develop/extensions/objects/models/objects.py
 message InteractionObject {
   oneof object_type {
     string normalized_string = 1;
@@ -64,5 +65,3 @@ message DragAndDropHtmlString {
 message DragAndDropPositiveInt {
   uint32 non_negative_int = 1;
 }
-
-
