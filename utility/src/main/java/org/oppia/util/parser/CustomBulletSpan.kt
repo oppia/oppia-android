@@ -18,7 +18,6 @@ import org.oppia.util.R
  */
 class CustomBulletSpan(
   context: Context,
-  private val marginWidth: Int,
   private val indentation: Int,
   private val string: String
 ) : LeadingMarginSpan {
@@ -56,7 +55,7 @@ class CustomBulletSpan(
 
     if (isFirstCharacter) {
       // Depending on the phone, x might always be 0. We need to re-calculate it here.
-      val trueX = 24f + marginWidth * indentation
+      val trueX = 24f + gapWidth * indentation
       if (string != "•") {
         canvas.drawText(string, trueX.toFloat(), baseline.toFloat(), paint)
       } else {

@@ -53,7 +53,12 @@ class HtmlParser private constructor(
       .replace("(?i)<li[^>]*>".toRegex(), "<${StringUtils.LI_TAG}>")
       .replace("(?i)</li>".toRegex(), "</${StringUtils.LI_TAG}>")
 
-    val htmlSpannable = HtmlCompat.fromHtml(formattedHtml, HtmlCompat.FROM_HTML_MODE_LEGACY, imageGetter, LiTagHandler(htmlContentTextView.context)) as Spannable
+    val htmlSpannable = HtmlCompat.fromHtml(
+      formattedHtml,
+      HtmlCompat.FROM_HTML_MODE_LEGACY,
+      imageGetter,
+      LiTagHandler(htmlContentTextView.context)
+    ) as Spannable
 
     val spannableBuilder = SpannableStringBuilder(htmlSpannable)
     return trimSpannable(spannableBuilder)

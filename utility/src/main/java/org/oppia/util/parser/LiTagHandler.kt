@@ -8,12 +8,12 @@ import android.text.Spanned
 import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
 import android.text.Spanned.SPAN_MARK_MARK
 import android.text.style.LeadingMarginSpan
-import java.util.Stack
 import org.oppia.util.parser.LiTagHandler.ListTag
 import org.oppia.util.parser.StringUtils.LI_TAG
 import org.oppia.util.parser.StringUtils.OL_TAG
 import org.oppia.util.parser.StringUtils.UL_TAG
 import org.xml.sax.XMLReader
+import java.util.*
 
 /**
  * Called when the HTML parser reaches an opening or closing tag.
@@ -23,7 +23,7 @@ import org.xml.sax.XMLReader
  *
  * <li> tags are handled by the [ListTag] instance corresponding to the parent tag.
  *
- * Reference: https://medium.com/swlh/making-nested-lists-with-android-spannables-in-kotlin-4ad00052912ce
+ * Reference: https://github.com/daphliu/android-spannable-list-sample/tree/master/app/src/main/java/com/daphneliu/sample/listspansample
  */
 class LiTagHandler(private val context: Context) : Html.TagHandler {
 
@@ -31,19 +31,25 @@ class LiTagHandler(private val context: Context) : Html.TagHandler {
 
   override fun handleTag(opening: Boolean, tag: String, output: Editable, xmlReader: XMLReader) {
     when (tag) {
-      UL_TAG -> if (opening) { // handle <ul>
+      UL_TAG -> if (opening) {
+        // handle <ul>
         lists.push(Ul())
-      } else { // handle </ul>
+      } else {
+        // handle </ul>
         lists.pop()
       }
-      OL_TAG -> if (opening) { // handle <ol>
+      OL_TAG -> if (opening) {
+        // handle <ol>
         lists.push(Ol())
-      } else { // handle </ol>
+      } else {
+        // handle </ol>
         lists.pop()
       }
-      LI_TAG -> if (opening) { // handle <li>
+      LI_TAG -> if (opening) {
+        // handle <li>
         lists.peek().openItem(output)
-      } else { // handle </li>
+      } else {
+        // handle </li>
         lists.peek().closeItem(output, indentation = lists.size - 1)
       }
     }
@@ -85,7 +91,7 @@ class LiTagHandler(private val context: Context) : Html.TagHandler {
       appendNewLine(text)
 
       getLast<BulletListItem>(text)?.let { mark ->
-        setSpanFromMark(text, mark, CustomBulletSpan(context, GAP_WIDTH, indentation, "•"))
+        setSpanFromMark(text, mark, CustomBulletSpan(context, indentation, "•"))
       }
     }
   }
@@ -106,7 +112,7 @@ class LiTagHandler(private val context: Context) : Html.TagHandler {
     override fun closeItem(text: Editable, indentation: Int) {
       appendNewLine(text)
       getLast<NumberListItem>(text)?.let { mark ->
-        setSpanFromMark(text, mark, CustomBulletSpan(context, GAP_WIDTH, indentation, "${mark.number}."))
+        setSpanFromMark(text, mark, CustomBulletSpan(context, indentation, "${mark.number}."))
       }
     }
   }
@@ -116,8 +122,6 @@ class LiTagHandler(private val context: Context) : Html.TagHandler {
    * https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/text/Html.java
    */
   companion object {
-
-    private const val GAP_WIDTH = 80
 
     /**
      * Appends a new line to [text] if it doesn't already end in a new line
