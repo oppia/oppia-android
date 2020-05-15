@@ -12,9 +12,7 @@ import org.oppia.app.databinding.TopicPracticeHeaderViewBinding
 import org.oppia.app.databinding.TopicPracticeSubtopicBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.recyclerview.BindableAdapter
-import org.oppia.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.app.topic.RouteToQuestionPlayerListener
-import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
 import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeFooterViewModel
 import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeHeaderViewModel
 import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeItemViewModel
@@ -42,14 +40,14 @@ class TopicPracticeFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    skillList: ArrayList<String>
+    skillList: ArrayList<String>,
+    internalProfileId: Int,
+    topicId: String
   ): View? {
     val viewModel = getTopicPracticeViewModel()
-    val internalProfileId = fragment.arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)!!
-    topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
-      "Expected topic ID to be included in arguments for TopicPracticeFragment."
-    }
-    viewModel.setTopicId(topicId)
+    val internalProfileId = internalProfileId
+    this.topicId = topicId
+    viewModel.setTopicId(this.topicId)
     viewModel.setInternalProfileId(internalProfileId)
 
     selectedSkillIdList = skillList

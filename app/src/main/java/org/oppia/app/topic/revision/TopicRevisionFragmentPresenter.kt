@@ -12,9 +12,7 @@ import org.oppia.app.databinding.TopicRevisionSummaryViewBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Subtopic
 import org.oppia.app.recyclerview.BindableAdapter
-import org.oppia.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.app.topic.RouteToRevisionCardListener
-import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
 import org.oppia.app.topic.revision.revisionitemviewmodel.TopicRevisionItemViewModel
 import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
@@ -31,18 +29,21 @@ class TopicRevisionFragmentPresenter @Inject constructor(
   private lateinit var topicId: String
   private val routeToReviewListener = activity as RouteToRevisionCardListener
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    internalProfileId: Int,
+    topicId: String
+  ): View? {
 
     val viewModel = getTopicRevisionViewModel()
 
-    internalProfileId = fragment.arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)!!
-    topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
-      "Expected topic ID to be included in arguments for TopicRevisionFragment."
-    }
+    this.internalProfileId = internalProfileId
+    this.topicId = topicId
     binding = TopicRevisionFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
-    viewModel.setTopicId(topicId)
-    viewModel.setInternalProfileId(internalProfileId)
+    viewModel.setTopicId(this.topicId)
+    viewModel.setInternalProfileId(this.internalProfileId)
 
     binding.revisionRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
