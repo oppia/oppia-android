@@ -6,7 +6,7 @@ option java_package = "org.oppia.app.model";
 option java_multiple_files = true;
 
 // Structure for any interaction object
-// https://github.com/oppia/oppia/blob/develop/extensions/objects/models/objects.py
+// https://github.com/oppia/oppia/blob/1d85e6dacf055c9138f7f4d32e6702dfaf2f943c/extensions/objects/models/objects.py#L17
 message InteractionObject {
   oneof object_type {
     string normalized_string = 1;
