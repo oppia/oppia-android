@@ -21,7 +21,7 @@ class StoryFragmentTestActivity : InjectableAppCompatActivity(), RouteToExplorat
     storyFragmentTestActivityPresenter.handleOnCreate()
   }
 
-  override fun routeToExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String) {
+  override fun routeToExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String,backflowId: String?) {
     // Do nothing since routing should be tested at the StoryActivity level.
   }
 

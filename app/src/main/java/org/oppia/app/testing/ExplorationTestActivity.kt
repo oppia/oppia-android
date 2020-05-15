@@ -17,14 +17,15 @@ class ExplorationTestActivity : InjectableAppCompatActivity(), RouteToExploratio
     explorationTestActivityPresenter.handleOnCreate()
   }
 
-  override fun routeToExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String) {
+  override fun routeToExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowId: String? ) {
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
         this,
         internalProfileId,
         topicId,
         storyId,
-        explorationId
+        explorationId,
+        backflowId
       )
     )
   }

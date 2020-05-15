@@ -98,7 +98,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
         )
         else -> {
           logger.d("RecentlyPlayedFragment", "Successfully loaded exploration")
-          routeToExplorationListener.routeToExploration(internalProfileId, topicId, storyId, explorationId)
+          routeToExplorationListener.routeToExploration(internalProfileId, topicId, storyId, explorationId,null)
           activity.finish()
         }
       }

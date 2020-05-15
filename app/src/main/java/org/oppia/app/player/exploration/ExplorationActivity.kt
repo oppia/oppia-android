@@ -30,6 +30,7 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var explorationId: String
+  private var backflowId: String? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -38,7 +39,8 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
     topicId = intent.getStringExtra(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
     storyId = intent.getStringExtra(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY)
     explorationId = intent.getStringExtra(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY)
-    explorationActivityPresenter.handleOnCreate(internalProfileId, topicId, storyId, explorationId)
+    backflowId = intent.getStringExtra(EXPLORATION_ACTIVITY_BACKFLOW_ID)
+    explorationActivityPresenter.handleOnCreate(internalProfileId, topicId, storyId, explorationId, backflowId, this)
   }
 
   companion object {
@@ -48,18 +50,22 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
     internal const val EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "ExplorationActivity.topic_id"
     internal const val EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY = "ExplorationActivity.story_id"
     internal const val EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY = "ExplorationActivity.exploration_id"
+    internal const val EXPLORATION_ACTIVITY_BACKFLOW_ID = "ExplorationActivity.exploration_id"
+
     fun createExplorationActivityIntent(
       context: Context,
       profileId: Int,
       topicId: String,
       storyId: String,
-      explorationId: String
+      explorationId: String,
+      backflowId: String?
     ): Intent {
       val intent = Intent(context, ExplorationActivity::class.java)
       intent.putExtra(EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, profileId)
       intent.putExtra(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
       intent.putExtra(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
       intent.putExtra(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
+      intent.putExtra(EXPLORATION_ACTIVITY_BACKFLOW_ID, backflowId)
       return intent
     }
   }

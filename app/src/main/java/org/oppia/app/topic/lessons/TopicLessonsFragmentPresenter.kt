@@ -15,6 +15,8 @@ import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.Topic
+import org.oppia.app.player.exploration.ExplorationActivity
+import org.oppia.app.player.exploration.ExplorationActivityPresenter
 import org.oppia.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.app.topic.RouteToStoryListener
 import org.oppia.app.topic.STORY_ID_ARGUMENT_KEY
@@ -47,6 +49,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private lateinit var expandedChapterListIndexListener: ExpandedChapterListIndexListener
 
   private val itemList: MutableList<TopicLessonsItemViewModel> = ArrayList()
+  private val BACKFLOW_ID_LESSONS = "LESSONS"
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -120,10 +123,10 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   }
 
   override fun selectChapterSummary(storyId: String, chapterSummary: ChapterSummary) {
-    playExploration(internalProfileId, topicId, storyId, chapterSummary.explorationId)
+    playExploration(internalProfileId, topicId, storyId, chapterSummary.explorationId, ExplorationActivityPresenter.BACKFLOW_ID_LESSONS)
   }
 
-  private fun playExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String) {
+  private fun playExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowId: String?) {
     explorationDataController.startPlayingExploration(
       explorationId
     ).observe(fragment, Observer<AsyncResult<Any?>> { result ->
@@ -132,7 +135,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
         result.isFailure() -> logger.e("TopicLessonsFragment", "Failed to load exploration", result.getErrorOrNull()!!)
         else -> {
           logger.d("TopicLessonsFragment", "Successfully loaded exploration")
-          routeToExplorationListener.routeToExploration(internalProfileId, topicId, storyId, explorationId)
+          routeToExplorationListener.routeToExploration(internalProfileId, topicId, storyId, explorationId, backflowId)
         }
       }
     })

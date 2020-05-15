@@ -1,5 +1,6 @@
 package org.oppia.app.player.exploration
 
+import android.content.Context
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +13,8 @@ import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.databinding.ExplorationActivityBinding
 import org.oppia.app.model.Exploration
+import org.oppia.app.story.StoryActivity
+import org.oppia.app.story.StoryFragment
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationDataController
@@ -32,12 +35,20 @@ class ExplorationActivityPresenter @Inject constructor(
   private lateinit var explorationToolbar: Toolbar
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
+  private lateinit var storyId: String
+  private lateinit var context: Context
+  private var backflowId: String? = null
+
+  companion object {
+    internal const val BACKFLOW_ID_LESSONS = "LESSONS"
+    internal const val BACKFLOW_ID_STORY = "STORY"
+  }
 
   private val exploreViewModel by lazy {
     getExplorationViewModel()
   }
 
-  fun handleOnCreate(internalProfileId: Int, topicId: String, storyId: String, explorationId: String) {
+  fun handleOnCreate(internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowId: String?, context: Context) {
     val binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(activity, R.layout.exploration_activity)
     binding.apply {
       viewModel = exploreViewModel
@@ -54,6 +65,9 @@ class ExplorationActivityPresenter @Inject constructor(
     updateToolbarTitle(explorationId)
     this.internalProfileId = internalProfileId
     this.topicId = topicId
+    this.storyId = storyId
+    this.context = context
+    this.backflowId = backflowId
 
     if (getExplorationFragment() == null) {
       val explorationFragment = ExplorationFragment()
@@ -96,7 +110,7 @@ class ExplorationActivityPresenter @Inject constructor(
         it.isFailure() -> logger.e("ExplorationActivity", "Failed to stop exploration", it.getErrorOrNull()!!)
         else -> {
           logger.d("ExplorationActivity", "Successfully stopped exploration")
-          activity.startActivity(TopicActivity.createTopicActivityIntent(activity, internalProfileId, topicId))
+          backPressActivitySelector()//activity.startActivity(TopicActivity.createTopicActivityIntent(activity, internalProfileId, topicId))
           (activity as ExplorationActivity).finish()
         }
       }
@@ -129,6 +143,15 @@ class ExplorationActivityPresenter @Inject constructor(
       logger.e("StateFragment", "Failed to retrieve answer outcome", ephemeralStateResult.getErrorOrNull()!!)
     }
     return ephemeralStateResult.getOrDefault(Exploration.getDefaultInstance())
+  }
+
+  private fun backPressActivitySelector(){
+    if (backflowId == BACKFLOW_ID_STORY){
+      activity.startActivity(StoryActivity.createStoryActivityIntent(context,internalProfileId,topicId,storyId))//TopicActivity.createTopicActivityIntent(activity, internalProfileId, topicId))
+    }
+    else{
+      activity.startActivity(TopicActivity.createTopicActivityIntent(activity, internalProfileId, topicId))
+    }
   }
 
   fun onKeyboardAction(actionCode: Int) {
