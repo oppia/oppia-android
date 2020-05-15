@@ -57,8 +57,11 @@ class AudioFragmentPresenter @Inject constructor(
   }
 
   /** Sets up SeekBar listener, ViewModel, and gets VoiceoverMappings or restores saved state */
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val internalProfileId = fragment.arguments!!.getInt(AUDIO_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, -1)
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    internalProfileId: Int
+  ): View? {
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     cellularAudioDialogController.getCellularDataPreference()
       .observe(fragment, Observer<AsyncResult<CellularDataPreference>> {
@@ -170,11 +173,13 @@ class AudioFragmentPresenter @Inject constructor(
     }
   }
 
-  fun setStateAndExplorationId(newState: State, explorationId: String) = viewModel.setStateAndExplorationId(newState, explorationId)
+  fun setStateAndExplorationId(newState: State, explorationId: String) =
+    viewModel.setStateAndExplorationId(newState, explorationId)
 
   fun loadMainContentAudio(allowAutoPlay: Boolean) = viewModel.loadMainContentAudio(allowAutoPlay)
 
-  fun loadFeedbackAudio(contentId: String, allowAutoPlay: Boolean) = viewModel.loadFeedbackAudio(contentId, allowAutoPlay)
+  fun loadFeedbackAudio(contentId: String, allowAutoPlay: Boolean) =
+    viewModel.loadFeedbackAudio(contentId, allowAutoPlay)
 
   fun pauseAudio() {
     if (prepared)
@@ -251,6 +256,7 @@ class AudioFragmentPresenter @Inject constructor(
       override fun onAnimationEnd(p0: Animation?) {
         (activity as AudioButtonListener).setAudioBarVisibility(false)
       }
+
       override fun onAnimationStart(p0: Animation?) {}
       override fun onAnimationRepeat(p0: Animation?) {}
     })

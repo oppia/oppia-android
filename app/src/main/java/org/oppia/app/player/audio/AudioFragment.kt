@@ -10,7 +10,8 @@ import org.oppia.app.model.State
 import javax.inject.Inject
 
 /** Fragment that controls audio for a content-card. */
-class AudioFragment : InjectableFragment(), LanguageInterface, AudioUiManager, CellularDataInterface {
+class AudioFragment : InjectableFragment(), LanguageInterface, AudioUiManager,
+  CellularDataInterface {
   @Inject lateinit var audioFragmentPresenter: AudioFragmentPresenter
 
   companion object {
@@ -33,9 +34,14 @@ class AudioFragment : InjectableFragment(), LanguageInterface, AudioUiManager, C
     fragmentComponent.inject(this)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
     super.onCreateView(inflater, container, savedInstanceState)
-    return audioFragmentPresenter.handleCreateView(inflater, container)
+    val internalProfileId = arguments!!.getInt(AUDIO_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, -1)
+    return audioFragmentPresenter.handleCreateView(inflater, container, internalProfileId)
   }
 
   override fun languageSelectionClicked() {
