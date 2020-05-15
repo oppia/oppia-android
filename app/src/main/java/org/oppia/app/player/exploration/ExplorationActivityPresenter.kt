@@ -110,7 +110,7 @@ class ExplorationActivityPresenter @Inject constructor(
         it.isFailure() -> logger.e("ExplorationActivity", "Failed to stop exploration", it.getErrorOrNull()!!)
         else -> {
           logger.d("ExplorationActivity", "Successfully stopped exploration")
-          backPressActivitySelector()//activity.startActivity(TopicActivity.createTopicActivityIntent(activity, internalProfileId, topicId))
+          backPressActivitySelector()
           (activity as ExplorationActivity).finish()
         }
       }
@@ -147,10 +147,10 @@ class ExplorationActivityPresenter @Inject constructor(
 
   private fun backPressActivitySelector(){
     if (backflowId == BACKFLOW_ID_STORY){
-      activity.startActivity(StoryActivity.createStoryActivityIntent(context,internalProfileId,topicId,storyId))//TopicActivity.createTopicActivityIntent(activity, internalProfileId, topicId))
+      activity.startActivity(StoryActivity.createStoryActivityIntent(context,internalProfileId,topicId,storyId))
     }
     else{
-      activity.startActivity(TopicActivity.createTopicActivityIntent(activity, internalProfileId, topicId))
+      activity.startActivity(TopicActivity.createTopicPlayStoryActivityIntent(activity, internalProfileId, topicId,storyId))
     }
   }
 

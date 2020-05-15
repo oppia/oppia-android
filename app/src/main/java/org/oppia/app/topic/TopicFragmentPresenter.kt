@@ -58,7 +58,9 @@ class TopicFragmentPresenter @Inject constructor(
     tabLayout.getTabAt(1)!!.setText(fragment.getString(R.string.lessons)).setIcon(tabIcons[1])
     tabLayout.getTabAt(2)!!.setText(fragment.getString(R.string.practice)).setIcon(tabIcons[2])
     tabLayout.getTabAt(3)!!.setText(fragment.getString(R.string.revision)).setIcon(tabIcons[3])
-    if (topicId.isNotEmpty() || storyId.isNotEmpty())
+    if (topicId.isNotEmpty() && storyId.isNotEmpty())
       setCurrentTab(TopicTab.LESSONS)
+    else if(topicId.isNotEmpty() && storyId.isEmpty() )
+      setCurrentTab(TopicTab.INFO)
   }
 }
