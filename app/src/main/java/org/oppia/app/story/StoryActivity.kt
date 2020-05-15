@@ -6,20 +6,24 @@ import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.app.player.exploration.ExplorationActivity
+import org.oppia.app.topic.TopicActivity
 import javax.inject.Inject
 
 /** Activity for stories. */
 class StoryActivity : InjectableAppCompatActivity(), RouteToExplorationListener {
   @Inject lateinit var storyActivityPresenter: StoryActivityPresenter
+  private var internalProfileId: Int = -1
+  private lateinit var topicId: String
+  private lateinit var storyId: String
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    val internalProfileId = intent.getIntExtra(STORY_ACTIVITY_INTENT_EXTRA_INTERNAL_PROFILE_ID, -1)
-    val topicId = checkNotNull(intent.getStringExtra(STORY_ACTIVITY_INTENT_EXTRA_TOPIC_ID)) {
+    internalProfileId = intent.getIntExtra(STORY_ACTIVITY_INTENT_EXTRA_INTERNAL_PROFILE_ID, -1)
+    topicId = checkNotNull(intent.getStringExtra(STORY_ACTIVITY_INTENT_EXTRA_TOPIC_ID)) {
       "Expected extra topic ID to be included for StoryActivity."
     }
-    val storyId: String = checkNotNull(intent.getStringExtra(STORY_ACTIVITY_INTENT_EXTRA_STORY_ID)) {
+    storyId = checkNotNull(intent.getStringExtra(STORY_ACTIVITY_INTENT_EXTRA_STORY_ID)) {
       "Expected extra story ID to be included for StoryActivity."
     }
     storyActivityPresenter.handleOnCreate(internalProfileId, topicId, storyId)
@@ -36,6 +40,10 @@ class StoryActivity : InjectableAppCompatActivity(), RouteToExplorationListener 
         backflowId
       )
     )
+  }
+
+  override fun onBackPressed() {
+    startActivity(TopicActivity.createTopicPlayStoryActivityIntent(this, internalProfileId, topicId, storyId))
   }
 
   companion object {
