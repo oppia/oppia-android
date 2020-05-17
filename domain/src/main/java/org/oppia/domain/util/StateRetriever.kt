@@ -309,7 +309,7 @@ class StateRetriever @Inject constructor(
       "FractionInput" -> InteractionObject.newBuilder()
         .setFraction(parseFraction(inputJson.getJSONObject(keyName)))
         .build()
-      "DragDropAndSort" -> InteractionObject.newBuilder()
+      "DragAndDropSortInput" -> InteractionObject.newBuilder()
         .setListOfSetsOfHtmlString(parseListOfSetsOfHtmlStrings(inputJson.getJSONArray(keyName)))
         .build()
       else -> throw IllegalStateException("Encountered unexpected interaction ID: $interactionId")
