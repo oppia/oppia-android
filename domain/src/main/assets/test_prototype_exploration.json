@@ -1,0 +1,156 @@
+{
+  "state_classifier_mapping": {},
+  "states": {
+    "End": {
+      "param_changes": [],
+      "classifier_model_id": null,
+      "interaction": {
+        "hints": [],
+        "default_outcome": null,
+        "answer_groups": [],
+        "solution": null,
+        "confirmed_unclassified_answers": [],
+        "customization_args": {
+          "recommendedExplorationIds": {
+            "value": []
+          }
+        },
+        "id": "EndExploration"
+      },
+      "solicit_answer_details": false,
+      "written_translations": {
+        "translations_mapping": {
+          "content": {}
+        }
+      },
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "content": {}
+        }
+      },
+      "content": {
+        "content_id": "content",
+        "html": "Congratulations, you have finished!"
+      }
+    },
+    "Introduction": {
+      "param_changes": [],
+      "classifier_model_id": null,
+      "interaction": {
+        "hints": [],
+        "default_outcome": {
+          "param_changes": [],
+          "dest": "Introduction",
+          "refresher_exploration_id": null,
+          "feedback": {
+            "content_id": "default_outcome",
+            "html": "\u003cp\u003eThis does not seems right\u003c/p\u003e"
+          },
+          "missing_prerequisite_skill_id": null,
+          "labelled_as_correct": false
+        },
+        "answer_groups": [
+          {
+            "rule_specs": [
+              {
+                "inputs": {
+                  "x": "\u003cp\u003eThis is item 1\u003c/p\u003e",
+                  "y": 1
+                },
+                "rule_type": "HasElementXAtPositionY"
+              }
+            ],
+            "training_data": [],
+            "outcome": {
+              "param_changes": [],
+              "dest": "End",
+              "refresher_exploration_id": null,
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "\u003cp\u003eThis is the correct\u003c/p\u003e"
+              },
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "tagged_skill_misconception_id": null
+          }
+        ],
+        "solution": null,
+        "confirmed_unclassified_answers": [],
+        "customization_args": {
+          "allowMultipleItemsInSamePosition": {
+            "value": false
+          },
+          "choices": {
+            "value": [
+              "\u003cp\u003eThis is item 1\u003c/p\u003e",
+              "\u003cp\u003eThis is item 2\u003c/p\u003e",
+              "\u003cp\u003eThis is item 3\u003c/p\u003e"
+            ]
+          }
+        },
+        "id": "DragAndDropSortInput"
+      },
+      "solicit_answer_details": false,
+      "written_translations": {
+        "translations_mapping": {
+          "feedback_1": {},
+          "default_outcome": {},
+          "content": {}
+        }
+      },
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "feedback_1": {},
+          "default_outcome": {},
+          "content": {}
+        }
+      },
+      "content": {
+        "content_id": "content",
+        "html": "\u003cp\u003eThis is test exploration\u003c/p\u003e"
+      }
+    }
+  },
+  "tags": [],
+  "user_email": "test@example.com",
+  "draft_change_list_id": 5,
+  "is_moderator": false,
+  "exploration_is_linked_to_story": false,
+  "is_version_of_draft_valid": null,
+  "username": "aggarwalpulkit596",
+  "version": 2,
+  "param_specs": {},
+  "init_state_name": "Introduction",
+  "show_state_translation_tutorial_on_load": true,
+  "exploration_id": "Pzo3dPa8J6RA",
+  "title": "The Science of Superheroes",
+  "auto_tts_enabled": true,
+  "is_admin": false,
+  "iframed": false,
+  "rights": {
+    "cloned_from": null,
+    "editor_names": [],
+    "viewable_if_private": false,
+    "owner_names": [
+      "aggarwalpulkit596"
+    ],
+    "viewer_names": [],
+    "status": "public",
+    "voice_artist_names": [],
+    "community_owned": false
+  },
+  "correctness_feedback_enabled": false,
+  "param_changes": [],
+  "email_preferences": {
+    "mute_suggestion_notifications": false,
+    "mute_feedback_notifications": false
+  },
+  "show_state_editor_tutorial_on_load": false,
+  "is_topic_manager": false,
+  "language_code": "en",
+  "draft_changes": null,
+  "category": "Algorithms",
+  "is_super_admin": true,
+  "objective": "Dummy Objective"
+}
