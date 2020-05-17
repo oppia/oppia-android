@@ -14,7 +14,6 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.model.State
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -26,7 +25,6 @@ import org.robolectric.annotation.Config
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
-import kotlin.test.assertNotNull
 
 /** Tests for [StateRetriever]. */
 @RunWith(AndroidJUnit4::class)
@@ -45,29 +43,14 @@ class StateRetrieverTest {
   }
 
   @Test
-  fun testForDragDropInt_hasRuleIsEqualToOrdering_notNull() {
-    val state = createStateFromJson("Introduction")
-    val answerGroup= state.interaction.answerGroupsList.find { it.ruleSpecsList.first().ruleType == "IsEqualToOrdering" }
-    assertNotNull(answerGroup)
-  }
-
-  @Test
-  fun testForDragDropInt_hasRuleHasElementXAtPositionY_notNull() {
-    val state = createStateFromJson("Introduction")
-    val answerGroup= state.interaction.answerGroupsList.find { it.ruleSpecsList.first().ruleType == "HasElementXAtPositionY" }
-    assertNotNull(answerGroup)
-  }
-
-  private fun createStateFromJson(stateName: String): State {
+  fun testDragDropSort() {
     val json = jsonAssetRetriever.loadJsonFromAsset("test_prototype_exploration.json")
-    return stateRetriever.createStateFromJson(
-      "question",
-      json?.getJSONObject("states")?.getJSONObject(stateName)
-    )
+    val state = stateRetriever.createStateFromJson("question", json)
+
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerStateRetrieverTest_TestApplicationComponent.builder()
+    DaggerStateRetriverTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
