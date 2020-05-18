@@ -78,7 +78,7 @@
   <color name="submitButtonInactiveText">#61000000</color>
   <color name="grey">#CCCCCC</color>
   <!-- INPUT LAYOUT EDITTEXT -->
-  <color name="editTextError">#AB0517</color>
+  <color name="editTextError">#923026</color>
   <color name="editTextHint">#80333333</color>
   <color name="light_grey">#61000000</color>
   <color name="mid_grey">#ff333333</color>
