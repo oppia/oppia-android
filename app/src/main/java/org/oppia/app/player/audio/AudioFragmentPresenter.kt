@@ -122,14 +122,13 @@ class AudioFragmentPresenter @Inject constructor(
   }
 
   /** Gets language code by [AudioLanguage]. */
-  fun getAudioLanguage(audioLanguage: AudioLanguage): String {
+  private fun getAudioLanguage(audioLanguage: AudioLanguage): String {
     return when (audioLanguage) {
-      AudioLanguage.NO_AUDIO -> "No Audio"
       AudioLanguage.ENGLISH_AUDIO_LANGUAGE -> "en"
       AudioLanguage.HINDI_AUDIO_LANGUAGE -> "hi"
       AudioLanguage.FRENCH_AUDIO_LANGUAGE -> "fr"
       AudioLanguage.CHINESE_AUDIO_LANGUAGE -> "zh"
-      else -> "No Audio"
+      else -> "en"
     }
   }
 
