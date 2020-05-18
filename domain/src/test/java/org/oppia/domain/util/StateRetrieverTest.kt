@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.*
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -45,12 +46,12 @@ class StateRetrieverTest {
   @Test
   fun testDragDropSort() {
     val json = jsonAssetRetriever.loadJsonFromAsset("test_prototype_exploration.json")
-    val state = stateRetriever.createStateFromJson("question", json)
-
+    val state = stateRetriever.createStateFromJson("question", json?.getJSONObject("states")?.getJSONObject("Introduction"))
+    assertThat(state).isEqualTo(state)
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerStateRetriverTest_TestApplicationComponent.builder()
+    DaggerStateRetrieverTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)

@@ -274,6 +274,12 @@ class StateRetriever @Inject constructor(
               .setNonNegativeInt(inputsJson.getInt(inputName))
               .build()
           )
+          "HasElementXAtPositionY" -> ruleSpecBuilder.putInput(
+            inputName,
+            InteractionObject.newBuilder()
+              .setNormalizedString(inputsJson.getString(inputName))
+              .build()
+          )
           else -> ruleSpecBuilder.putInput(inputName, createExactInputFromJson(inputsJson, inputName, interactionId))
         }
 
