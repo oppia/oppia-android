@@ -24,6 +24,11 @@ class TopicInfoFragment : InjectableFragment() {
     val topicId = checkNotNull(arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in arguments for TopicInfoFragment."
     }
-    return topicInfoFragmentPresenter.handleCreateView(inflater, container, internalProfileId, topicId)
+    return topicInfoFragmentPresenter.handleCreateView(
+      inflater,
+      container,
+      internalProfileId,
+      topicId
+    )
   }
 }

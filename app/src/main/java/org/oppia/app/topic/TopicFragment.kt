@@ -23,6 +23,12 @@ class TopicFragment : InjectableFragment() {
     val topicId = arguments?.getString(TOPIC_ID_ARGUMENT_KEY) ?: TEST_TOPIC_ID_0
     val storyId = arguments?.getString(STORY_ID_ARGUMENT_KEY) ?: ""
 
-    return topicFragmentPresenter.handleCreateView(inflater, container, internalProfileId, topicId,storyId)
+    return topicFragmentPresenter.handleCreateView(
+      inflater,
+      container,
+      internalProfileId,
+      topicId,
+      storyId
+    )
   }
 }

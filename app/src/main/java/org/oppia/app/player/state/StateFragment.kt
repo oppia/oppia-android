@@ -48,7 +48,14 @@ class StateFragment : InjectableFragment(), InteractionAnswerReceiver, Interacti
     val topicId = arguments!!.getString(STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY)!!
     val storyId = arguments!!.getString(STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY)!!
     val explorationId = arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
-    return stateFragmentPresenter.handleCreateView(inflater, container, internalProfileId, topicId, storyId, explorationId)
+    return stateFragmentPresenter.handleCreateView(
+      inflater,
+      container,
+      internalProfileId,
+      topicId,
+      storyId,
+      explorationId
+    )
   }
 
   override fun onAnswerReadyForSubmission(answer: UserAnswer) {
