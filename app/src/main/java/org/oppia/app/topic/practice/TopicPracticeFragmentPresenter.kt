@@ -45,7 +45,6 @@ class TopicPracticeFragmentPresenter @Inject constructor(
     topicId: String
   ): View? {
     val viewModel = getTopicPracticeViewModel()
-    val internalProfileId = internalProfileId
     this.topicId = topicId
     viewModel.setTopicId(this.topicId)
     viewModel.setInternalProfileId(internalProfileId)
