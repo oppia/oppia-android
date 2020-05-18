@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
 
   <data>
 
@@ -14,7 +15,6 @@
   <com.google.android.material.navigation.NavigationView
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
     <androidx.core.widget.NestedScrollView
       android:id="@+id/drawer_nested_scroll_view"
       android:layout_width="match_parent"
@@ -26,7 +26,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
+        <View
+          android:id="@+id/statusBarBackground"
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:visibility="invisible"
+          app:layout_constraintTop_toTopOf="parent"
+          />
         <com.google.android.material.navigation.NavigationView
           android:id="@+id/fragment_drawer_nav_view"
           android:layout_width="match_parent"

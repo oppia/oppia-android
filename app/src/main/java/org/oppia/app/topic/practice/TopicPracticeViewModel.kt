@@ -58,7 +58,7 @@ class TopicPracticeViewModel @Inject constructor(
     itemViewModelList.add(TopicPracticeHeaderViewModel() as TopicPracticeItemViewModel)
 
     itemViewModelList.addAll(topic.subtopicList.map { subtopic ->
-      TopicPracticeSubtopicViewModel(subtopic) as TopicPracticeItemViewModel
+      TopicPracticeSubtopicViewModel(subtopic)
     })
 
     itemViewModelList.add(TopicPracticeFooterViewModel() as TopicPracticeItemViewModel)

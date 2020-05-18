@@ -97,7 +97,7 @@ class ProfileProgressViewModel @Inject constructor(
       ongoingStoryList.recentStoryList
     }
     itemViewModelList.addAll(itemList.map { story ->
-      RecentlyPlayedStorySummaryViewModel(story) as ProfileProgressItemViewModel
+      RecentlyPlayedStorySummaryViewModel(story)
     })
     return itemViewModelList
   }

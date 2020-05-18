@@ -60,9 +60,6 @@ class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButto
   override fun onPendingAnswerError(
     pendingAnswerError: String?
   ) {
-    if (pendingAnswerError != null)
-      binding.submitButton.isEnabled = false
-    else
-      binding.submitButton.isEnabled = true
+    binding.submitButton.isEnabled = pendingAnswerError == null
   }
 }

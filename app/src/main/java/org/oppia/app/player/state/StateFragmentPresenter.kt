@@ -184,7 +184,7 @@ class StateFragmentPresenter @Inject constructor(
         if (bottom < oldBottom) {
           binding.stateRecyclerView.postDelayed({
             binding.stateRecyclerView.scrollToPosition(
-              stateRecyclerViewAdapter.getItemCount() - 1
+              stateRecyclerViewAdapter.itemCount - 1
             )
           }, 100)
         }
@@ -545,7 +545,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun showCongratulationMessageOnCorrectAnswer() {
-    binding.congratulationTextview.setVisibility(View.VISIBLE)
+    binding.congratulationTextview.visibility = View.VISIBLE
 
     val fadeIn = AlphaAnimation(0f, 1f)
     fadeIn.interpolator = DecelerateInterpolator() //add this
@@ -559,7 +559,7 @@ class StateFragmentPresenter @Inject constructor(
     val animation = AnimationSet(false) //change to false
     animation.addAnimation(fadeIn)
     animation.addAnimation(fadeOut)
-    binding.congratulationTextview.setAnimation(animation)
+    binding.congratulationTextview.animation = animation
 
     Handler().postDelayed({
       binding.congratulationTextview.clearAnimation()

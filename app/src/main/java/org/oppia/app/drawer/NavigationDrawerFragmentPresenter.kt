@@ -253,13 +253,13 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         override fun onDrawerOpened(drawerView: View) {
           super.onDrawerOpened(drawerView)
           fragment.activity!!.invalidateOptionsMenu()
-          StatusBarColor.statusBarColorUpdate(R.color.slideDrawerOpenStatusBar, activity, false)
+          StatusBarColor.statusBarColorUpdate(R.color.slideDrawerOpenStatusBar, activity,binding.statusBarBackground, false)
         }
 
         override fun onDrawerClosed(drawerView: View) {
           super.onDrawerClosed(drawerView)
           fragment.activity!!.invalidateOptionsMenu()
-          StatusBarColor.statusBarColorUpdate(R.color.colorPrimaryDark, activity, false)
+          StatusBarColor.statusBarColorUpdate(R.color.colorPrimaryDark, activity,binding.statusBarBackground, false)
         }
       }
       drawerLayout.setDrawerListener(drawerToggle)
@@ -279,13 +279,13 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         override fun onDrawerOpened(drawerView: View) {
           super.onDrawerOpened(drawerView)
           fragment.activity!!.invalidateOptionsMenu()
-          StatusBarColor.statusBarColorUpdate(R.color.slideDrawerOpenStatusBar, activity, false)
+          StatusBarColor.statusBarColorUpdate(R.color.slideDrawerOpenStatusBar, activity,binding.statusBarBackground, false)
         }
 
         override fun onDrawerClosed(drawerView: View) {
           super.onDrawerClosed(drawerView)
           fragment.activity!!.invalidateOptionsMenu()
-          StatusBarColor.statusBarColorUpdate(R.color.colorPrimaryDark, activity, false)
+          StatusBarColor.statusBarColorUpdate(R.color.colorPrimaryDark, activity,binding.statusBarBackground, false)
         }
       }
       drawerLayout.setDrawerListener(drawerToggle)

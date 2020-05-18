@@ -33,7 +33,6 @@ class BindableAdapter<T : Any> internal constructor(
   private val dataList: MutableList<T> = ArrayList()
 
   // TODO(#170): Introduce support for stable IDs.
-
   /** Sets the data of this adapter. This is expected to be called by Android via data-binding. */
   private fun setData(newDataList: List<T>) {
     dataList.clear()

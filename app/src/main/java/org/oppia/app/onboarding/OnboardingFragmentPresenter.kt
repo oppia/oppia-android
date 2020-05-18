@@ -68,11 +68,11 @@ class OnboardingFragmentPresenter @Inject constructor(
 
   private fun onboardingStatusBarColorUpdate(position: Int) {
     when (position) {
-      0 -> StatusBarColor.statusBarColorUpdate(R.color.onboarding1StatusBar, activity, false)
-      1 -> StatusBarColor.statusBarColorUpdate(R.color.onboarding2StatusBar, activity, false)
-      2 -> StatusBarColor.statusBarColorUpdate(R.color.onboarding3StatusBar, activity, false)
-      3 -> StatusBarColor.statusBarColorUpdate(R.color.onboarding4StatusBar, activity, false)
-      else -> StatusBarColor.statusBarColorUpdate(R.color.colorPrimaryDark, activity, false)
+      0 -> StatusBarColor.statusBarColorUpdate(R.color.onboarding1StatusBar, activity,binding.statusBarBackground, false)
+      1 -> StatusBarColor.statusBarColorUpdate(R.color.onboarding2StatusBar, activity,binding.statusBarBackground, false)
+      2 -> StatusBarColor.statusBarColorUpdate(R.color.onboarding3StatusBar, activity,binding.statusBarBackground, false)
+      3 -> StatusBarColor.statusBarColorUpdate(R.color.onboarding4StatusBar, activity,binding.statusBarBackground, false)
+      else -> StatusBarColor.statusBarColorUpdate(R.color.colorPrimaryDark, activity,binding.statusBarBackground, false)
     }
   }
 

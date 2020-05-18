@@ -400,7 +400,7 @@ class NavigationDrawerTestActivityTest {
         try
         {
           val nestedScrollView = findFirstParentLayoutOfClass(view, NestedScrollView::class.java) as NestedScrollView
-          nestedScrollView.scrollTo(0, view.getTop())
+          nestedScrollView.scrollTo(0, view.top)
         }
         catch (e:Exception) {
           throw PerformException.Builder()
@@ -415,7 +415,7 @@ class NavigationDrawerTestActivityTest {
   }
 
   private fun findFirstParentLayoutOfClass(view: View, parentClass:Class<out View>): View {
-    var parent : ViewParent = FrameLayout(view.getContext())
+    var parent : ViewParent = FrameLayout(view.context)
     lateinit var incrementView: ViewParent
     var i = 0
     while (!(parent.javaClass === parentClass))
@@ -434,10 +434,10 @@ class NavigationDrawerTestActivityTest {
     return parent as View
   }
   private fun findParent(view: View): ViewParent {
-    return view.getParent()
+    return view.parent
   }
   private fun findParent(view: ViewParent): ViewParent {
-    return view.getParent()
+    return view.parent
   }
 
 

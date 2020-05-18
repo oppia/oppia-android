@@ -3,9 +3,13 @@ package org.oppia.app.profile
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.os.Build
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.ObservableField
@@ -78,12 +82,12 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   /** Binds ViewModel and sets up RecyclerView Adapter. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    StatusBarColor.statusBarColorUpdate(R.color.profileStatusBar, activity, false)
     binding = ProfileChooserFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.apply {
       viewModel = chooserViewModel
       lifecycleOwner = fragment
     }
+    StatusBarColor.statusBarColorUpdate(R.color.profileStatusBar, activity,  binding.statusBarBackground, false)
     binding.profileRecyclerView.isNestedScrollingEnabled = false
     subscribeToWasProfileEverBeenAdded()
     binding.profileRecyclerView.apply {
