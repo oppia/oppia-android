@@ -35,9 +35,6 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
     profileId: Int,
     name: String
   ): Dialog {
-    val profileId = profileId
-    val name = name
-
     val binding: ResetPinDialogBinding = DataBindingUtil.inflate(
       activity.layoutInflater,
       R.layout.reset_pin_dialog,
