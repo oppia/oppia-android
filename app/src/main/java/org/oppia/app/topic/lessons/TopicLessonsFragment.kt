@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.model.StorySummary
+import org.oppia.app.topic.PROFILE_ID_ARGUMENT_KEY
+import org.oppia.app.topic.STORY_ID_ARGUMENT_KEY
+import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
 import javax.inject.Inject
 
 private const val KEY_CURRENT_EXPANDED_LIST_INDEX = "CURRENT_EXPANDED_LIST_INDEX"
@@ -29,11 +32,20 @@ class TopicLessonsFragment : InjectableFragment(), ExpandedChapterListIndexListe
         currentExpandedChapterListIndex = null
       }
     }
+    val internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)!!
+    val topicId = checkNotNull(arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
+      "Expected topic ID to be included in arguments for TopicLessonsFragment."
+    }
+    val storyId = arguments?.getString(STORY_ID_ARGUMENT_KEY) ?: ""
+
     return topicLessonsFragmentPresenter.handleCreateView(
       inflater,
       container,
       currentExpandedChapterListIndex,
-      this as ExpandedChapterListIndexListener
+      this as ExpandedChapterListIndexListener,
+      internalProfileId,
+      topicId,
+      storyId
     )
   }
 
