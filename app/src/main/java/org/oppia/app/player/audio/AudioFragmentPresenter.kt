@@ -46,8 +46,6 @@ class AudioFragmentPresenter @Inject constructor(
   var userIsSeeking = false
   var userProgress = 0
   private lateinit var profileId: ProfileId
-  private var audioLanguage: AudioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
-
   private var feedbackId: String? = null
   private var showCellularDataDialog = true
   private var useCellularData = false
