@@ -46,7 +46,6 @@ class TextLeadingMarginSpan(
   ) {
     val startCharOfSpan = (text as Spanned).getSpanStart(this)
     val isFirstCharacter = startCharOfSpan == start
-
     if (isFirstCharacter) {
       // Depending on the phone, x might always be 0. We need to re-calculate it here.
       val trueX = gapWidth * indentation

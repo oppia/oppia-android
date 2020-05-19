@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
 import android.text.Spannable
 import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
@@ -27,6 +26,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.Matchers.not
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -39,13 +39,13 @@ import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.parser.CustomBulletSpan
-import org.oppia.util.parser.TextLeadingMarginSpan
 import org.oppia.util.parser.DefaultGcsPrefix
 import org.oppia.util.parser.DefaultGcsResource
 import org.oppia.util.parser.GlideImageLoader
 import org.oppia.util.parser.HtmlParser
 import org.oppia.util.parser.ImageDownloadUrlTemplate
 import org.oppia.util.parser.ImageLoader
+import org.oppia.util.parser.TextLeadingMarginSpan
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Inject
@@ -112,47 +112,6 @@ class HtmlParserTest {
   }
 
   @Test
-  fun testHtmlContent_handleHtmlListTags_parsedHtmlDisplaysStyledText() {
-    val textView = activityTestRule.activity.findViewById(R.id.test_html_content_with_ordered_list_text_view) as TextView
-    val htmlParser = htmlParserFactory.create(/* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true)
-    val rawDummyString =  """
-            <ul>
-                <li>Item 1</li>
-                <li>Item 2</li>
-                <li>Item 3
-                    <ol>
-                        <li>Nested item 1</li>
-                        <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                        Nulla et tellus eu magna facilisis eleifend. Vestibulum faucibus pulvinar tincidunt. 
-                        Nullam non mauris nisi.</li>
-                    </ol>
-                </li>
-                <li>Item 4</li>
-                <li>Item 5
-                    <ol>
-                        <li>Nested item 1</li>
-                        <li>Nested item 2
-                            <ol>
-                                <li>Double nested item 1</li>
-                                <li>Double nested item 2</li>
-                            </ol>
-                        </li>
-                        <li>Nested item 3</li>
-                    </ol>
-                </li>
-                <li>Item 6</li>
-            </ul>
-        """
-    val htmlResult: Spannable = htmlParser.parseOppiaHtml(
-      rawDummyString,
-      textView
-    )
-    assertThat(textView.text.toString()).isEqualTo(htmlResult.toString())
-    onView(withId(R.id.test_html_content_with_ordered_list_text_view)).check(matches(isDisplayed()))
-    onView(withId(R.id.test_html_content_with_ordered_list_text_view)).check(matches(withText(textView.text.toString())))
-  }
-
-  @Test
   fun testHtmlContent_nonCustomOppiaTags_notParsed() {
     val textView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
     val htmlParser = htmlParserFactory.create(/* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true)
@@ -191,8 +150,61 @@ class HtmlParserTest {
     assertThat(bulletSpan1).isNotNull()
   }
 
-  private fun getResources(): Resources {
-    return ApplicationProvider.getApplicationContext<Context>().resources
+  @Test
+  fun testHtmlContent_textLeadingMarginSpan_isAdded() {
+    val textView =
+      activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
+    val htmlParser = htmlParserFactory.create(/* entityType= */ "", /* entityId= */
+      "", /* imageCenterAlign= */
+      true
+    )
+    val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+      """
+            <ul>
+                <li>Item 1</li>
+                <li>Item 2</li>
+                <li>Item 3
+                    <ol>
+                        <li>Nested item 1</li>
+                        <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+                        Nulla et tellus eu magna facilisis eleifend. Vestibulum faucibus pulvinar tincidunt. 
+                        Nullam non mauris nisi.</li>
+                    </ol>
+                </li>
+                <li>Item 4</li>
+                <li>Item 5
+                    <ol>
+                        <li>Nested item 1</li>
+                        <li>Nested item 2
+                            <ol>
+                                <li>Double nested item 1</li>
+                                <li>Double nested item 2</li>
+                            </ol>
+                        </li>
+                        <li>Nested item 3</li>
+                    </ol>
+                </li>
+                <li>Item 6</li>
+            </ul>
+        """,
+      textView
+    )
+
+// get all the spans attached to the SpannedString
+    val spans = htmlResult.getSpans<TextLeadingMarginSpan>(
+      0,
+      htmlResult.length,
+      TextLeadingMarginSpan::class.java
+    )
+    assertEquals(7, spans.size.toLong())
+// check that the span is indeed a TextLeadingMarginSpan
+    val bulletSpan = spans[0] as TextLeadingMarginSpan
+// check that the start and end indexes are the expected ones
+    assertEquals(22, htmlResult.getSpanStart(bulletSpan).toLong())
+    assertEquals(36, htmlResult.getSpanEnd(bulletSpan).toLong())
+    val bulletSpan2 = spans[1] as TextLeadingMarginSpan
+    assertEquals(36, htmlResult.getSpanStart(bulletSpan2).toLong())
+    assertEquals(202, htmlResult.getSpanEnd(bulletSpan2).toLong())
   }
 
   @Qualifier annotation class TestDispatcher
