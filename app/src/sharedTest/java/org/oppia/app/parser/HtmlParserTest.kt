@@ -39,6 +39,7 @@ import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.parser.CustomBulletSpan
+import org.oppia.util.parser.TextLeadingMarginSpan
 import org.oppia.util.parser.DefaultGcsPrefix
 import org.oppia.util.parser.DefaultGcsResource
 import org.oppia.util.parser.GlideImageLoader
@@ -114,8 +115,36 @@ class HtmlParserTest {
   fun testHtmlContent_handleHtmlListTags_parsedHtmlDisplaysStyledText() {
     val textView = activityTestRule.activity.findViewById(R.id.test_html_content_with_ordered_list_text_view) as TextView
     val htmlParser = htmlParserFactory.create(/* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true)
+    val rawDummyString =  """
+            <ul>
+                <li>Item 1</li>
+                <li>Item 2</li>
+                <li>Item 3
+                    <ol>
+                        <li>Nested item 1</li>
+                        <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+                        Nulla et tellus eu magna facilisis eleifend. Vestibulum faucibus pulvinar tincidunt. 
+                        Nullam non mauris nisi.</li>
+                    </ol>
+                </li>
+                <li>Item 4</li>
+                <li>Item 5
+                    <ol>
+                        <li>Nested item 1</li>
+                        <li>Nested item 2
+                            <ol>
+                                <li>Double nested item 1</li>
+                                <li>Double nested item 2</li>
+                            </ol>
+                        </li>
+                        <li>Nested item 3</li>
+                    </ol>
+                </li>
+                <li>Item 6</li>
+            </ul>
+        """
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
-      getResources().getString(R.string.faq_answer_1),
+      rawDummyString,
       textView
     )
     assertThat(textView.text.toString()).isEqualTo(htmlResult.toString())

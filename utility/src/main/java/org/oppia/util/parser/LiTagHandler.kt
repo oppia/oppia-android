@@ -8,12 +8,12 @@ import android.text.Spanned
 import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
 import android.text.Spanned.SPAN_MARK_MARK
 import android.text.style.LeadingMarginSpan
-import java.util.Stack
 import org.oppia.util.parser.LiTagHandler.ListTag
 import org.oppia.util.parser.StringUtils.LI_TAG
 import org.oppia.util.parser.StringUtils.OL_TAG
 import org.oppia.util.parser.StringUtils.UL_TAG
 import org.xml.sax.XMLReader
+import java.util.*
 
 /**
  * Called when the HTML parser reaches an opening or closing tag.
@@ -33,14 +33,14 @@ class LiTagHandler(private val context: Context) : Html.TagHandler {
     when (tag) {
       UL_TAG -> if (opening) {
         // handle <ul>
-        lists.push(Ul())
+        lists.push(UnorderedListTag())
       } else {
         // handle </ul>
         lists.pop()
       }
       OL_TAG -> if (opening) {
         // handle <ol>
-        lists.push(Ol())
+        lists.push(OrderedListTag())
       } else {
         // handle </ol>
         lists.pop()
@@ -80,18 +80,18 @@ class LiTagHandler(private val context: Context) : Html.TagHandler {
   /**
    * Subclass of [ListTag] for unordered lists.
    */
-  private inner class Ul : ListTag {
+  private inner class UnorderedListTag : ListTag {
 
     override fun openItem(text: Editable) {
-      appendNewLine(text)
+      ensureEndsWithNewLine(text)
       start(text, BulletListItem())
     }
 
     override fun closeItem(text: Editable, indentation: Int) {
-      appendNewLine(text)
+      ensureEndsWithNewLine(text)
 
       getLast<BulletListItem>(text)?.let { mark ->
-        setSpanFromMark(text, mark, CustomBulletSpan(context, indentation, "•"))
+        setSpanFromMark(text, mark, CustomBulletSpan(context))
       }
     }
   }
@@ -99,20 +99,20 @@ class LiTagHandler(private val context: Context) : Html.TagHandler {
   /**
    * Subclass of [ListTag] for ordered lists.
    */
-  private inner class Ol : ListTag {
+  private inner class OrderedListTag : ListTag {
 
     private var index = 1
 
     override fun openItem(text: Editable) {
-      appendNewLine(text)
+      ensureEndsWithNewLine(text)
       start(text, NumberListItem(index))
       index++
     }
 
     override fun closeItem(text: Editable, indentation: Int) {
-      appendNewLine(text)
+      ensureEndsWithNewLine(text)
       getLast<NumberListItem>(text)?.let { mark ->
-        setSpanFromMark(text, mark, CustomBulletSpan(context, indentation, "${mark.number}."))
+        setSpanFromMark(text, mark, TextLeadingMarginSpan(context, indentation, "${mark.number}."))
       }
     }
   }
@@ -126,7 +126,7 @@ class LiTagHandler(private val context: Context) : Html.TagHandler {
     /**
      * Appends a new line to [text] if it doesn't already end in a new line
      */
-    private fun appendNewLine(text: Editable) {
+    private fun ensureEndsWithNewLine(text: Editable) {
       if (text.isNotEmpty() && text.last() != '\n') {
         text.append("\n")
       }
