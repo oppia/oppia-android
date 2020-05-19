@@ -99,25 +99,20 @@ class AudioFragmentPresenter @Inject constructor(
       it.audioFragment = fragment as AudioFragment
       it.lifecycleOwner = fragment
     }
-    subscribeToProfileLiveData()
+    subscribeToAudioLanguageLiveData()
     return binding.root
   }
 
-  private val profileLiveData: LiveData<Profile> by lazy {
-    getProfileData()
-  }
-
-  private fun getProfileData(): LiveData<Profile> {
+  private fun getProfileData(): LiveData<String> {
     return Transformations.map(
       profileManagementController.getProfile(profileId),
       ::processGetProfileResult
     )
   }
 
-  private fun subscribeToProfileLiveData() {
-    profileLiveData.observe(activity, Observer<Profile> { result ->
-      audioLanguage = result.audioLanguage
-      languageSelected(getAudioLanguage(audioLanguage))
+  private fun subscribeToAudioLanguageLiveData() {
+    getProfileData().observe(activity, Observer<String> { result ->
+      languageSelected(result)
     })
   }
 
@@ -132,10 +127,8 @@ class AudioFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
-    if (profileResult.isFailure()) {
-    }
-    return profileResult.getOrDefault(Profile.getDefaultInstance())
+  private fun processGetProfileResult(profileResult: AsyncResult<Profile>): String {
+    return getAudioLanguage(profileResult.getOrDefault(Profile.getDefaultInstance()).audioLanguage)
   }
 
   /** Sets selected language code in presenter and ViewModel */
