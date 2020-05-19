@@ -22,7 +22,7 @@ class TextLeadingMarginSpan(
   private val string: String
 ) : LeadingMarginSpan {
 
-  private var gapWidth: Int = 0
+  var gapWidth: Int = 0
   private var bulletLeadingMargin: Int = 0
 
   init {

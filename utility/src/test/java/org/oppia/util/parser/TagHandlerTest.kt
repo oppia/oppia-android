@@ -6,14 +6,11 @@ import android.text.Spannable
 import androidx.core.text.HtmlCompat
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
-import javax.inject.Qualifier
-import javax.inject.Singleton
+import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -26,16 +23,17 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.util.R
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
-import org.oppia.util.system.OppiaClock
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
-
-
+import javax.inject.Inject
+import javax.inject.Qualifier
+import javax.inject.Singleton
 
 /** Tests for [DateTimeUtil]. */
 @RunWith(AndroidJUnit4::class)
@@ -70,6 +68,43 @@ class TagHandlerTest {
       .inject(this)
   }
 
+  @Test
+  fun getLeadingMargin() { // Given a span with a certain gap width
+     val GAP_WIDTH = context.resources.getDimensionPixelSize(R.dimen.bullet_gap_width)
+    val htmlContent =  """
+            <ul>
+                <li>Item 1</li>
+                <li>Item 2</li>
+                <li>Item 3
+                    <ol>
+                        <li>Nested item 1</li>
+                        <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+                        Nulla et tellus eu magna facilisis eleifend. Vestibulum faucibus pulvinar tincidunt. 
+                        Nullam non mauris nisi.</li>
+                    </ol>
+                </li>
+                <li>Item 4</li>
+                <li>Item 5
+                    <ol>
+                        <li>Nested item 1</li>
+                        <li>Nested item 2
+                            <ol>
+                                <li>Double nested item 1</li>
+                                <li>Double nested item 2</li>
+                            </ol>
+                        </li>
+                        <li>Nested item 3</li>
+                    </ol>
+                </li>
+                <li>Item 6</li>
+            </ul>
+        """
+
+    val span = TextLeadingMarginSpan(context, 0,htmlContent)
+    // Check that the margin is set correctly
+    val expectedMargin = (GAP_WIDTH + 0 )
+    assertEquals(expectedMargin, span.getLeadingMargin(true))
+  }
   @Test
   fun testGreetingMessageBasedOnTime_goodEveningMessageSucceeded() {
 
