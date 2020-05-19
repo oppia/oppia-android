@@ -8,24 +8,29 @@ import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.ChapterSummaryDatabase
 import org.oppia.app.model.ChapterSummaryDomain
+import org.oppia.app.model.ChapterSummaryView
 import org.oppia.app.model.LessonThumbnail
 import org.oppia.app.model.LessonThumbnailGraphic
 import org.oppia.app.model.RevisionCard
 import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.SkillSummaryDatabase
 import org.oppia.app.model.SkillSummaryDomain
+import org.oppia.app.model.SkillSummaryView
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.StorySummaryDatabase
 import org.oppia.app.model.StorySummaryDomain
+import org.oppia.app.model.StorySummaryView
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.Subtopic
 import org.oppia.app.model.SubtopicDatabase
 import org.oppia.app.model.SubtopicDomain
+import org.oppia.app.model.SubtopicView
 import org.oppia.app.model.TopicBackend
 import org.oppia.app.model.TopicDatabase
 import org.oppia.app.model.TopicDomain
 import org.oppia.app.model.TopicSummaryListView
 import org.oppia.app.model.TopicSummaryView
+import org.oppia.app.model.TopicView
 import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.util.data.AsyncResult
@@ -240,7 +245,7 @@ class TopicRepository @Inject constructor(
     }
   }
 
-  fun loadAllTopics() {
+  fun initialiseAllTopics() {
     TOPIC_JSON_FILE_ASSOCIATIONS.keys.forEach { topicId ->
       val topicBackend = retrieveTopicFromJSON(topicId)
       addTopic(topicBackend)
@@ -251,10 +256,80 @@ class TopicRepository @Inject constructor(
     }
   }
 
+  fun getSkillSummaryDataProvider(skillId: String): DataProvider<SkillSummaryView> {
+    return dataProviders.transformAsync<SkillSummaryDatabase, SkillSummaryView>(
+      GET_TOPIC_TRANSFORMED_PROVIDER_ID,
+      skillSummaryDataStore
+    ) {
+      val skillSummaryDomain = it.skillSummaryDatabaseMap[skillId]
+      val skillSummaryView = convertSkillSummaryDomainToSkillSummaryView(skillSummaryDomain)
+      AsyncResult.success(skillSummaryView)
+    }
+  }
+
+  fun getSubtopicDataProvider(subtopicId: String): DataProvider<SubtopicView> {
+    return dataProviders.transformAsync<SubtopicDatabase, SubtopicView>(
+      GET_TOPIC_TRANSFORMED_PROVIDER_ID,
+      subtopicDataStore
+    ) {
+      val subtopicDomain = it.subtopicDatabaseMap[subtopicId]
+      val subtopicView = convertSubtopicDomainToSubtopicView(subtopicDomain)
+      AsyncResult.success(subtopicView)
+    }
+  }
+
+  fun getSubtopicListDataProvider(topicId: String): DataProvider<List<SubtopicView>> {
+    return dataProviders.transformAsync<SubtopicDatabase, List<SubtopicView>>(
+      GET_TOPIC_TRANSFORMED_PROVIDER_ID,
+      subtopicDataStore
+    ) {
+      val subtopicViewList = ArrayList<SubtopicView>()
+      val subtopicDomainList =
+        it.subtopicDatabaseMap.values.filter { subtopicDomain -> subtopicDomain.topicId == topicId }
+      subtopicDomainList.forEach { subtopicDomain ->
+        subtopicViewList.add(convertSubtopicDomainToSubtopicView(subtopicDomain))
+      }
+      AsyncResult.success(subtopicViewList)
+    }
+  }
+
+  fun getStorySummaryDataProvider(storyId: String): DataProvider<StorySummaryView> {
+    val storySummaryDataProvider = retrieveStorySummaryDataProvider(storyId)
+    val chapterSummaryListDataProvider = retrieveChapterSummaryListForAStoryDataProvider(storyId)
+    return dataProviders.combine(
+      COMBINE_TOPIC_AND_CHAPTER_SUMMARY,
+      storySummaryDataProvider,
+      chapterSummaryListDataProvider,
+      ::combineStorySummaryAndChapterSummaryList
+    )
+  }
+
+  fun getStorySummaryListDataProvider(topicId: String): DataProvider<List<StorySummaryView>> {
+    val storySummaryListDataProvider = retrieveStorySummaryListForATopicDataProvider(topicId)
+    val chapterSummaryListDataProvider = retrieveChapterSummaryListForATopicDataProvider(topicId)
+    return dataProviders.combine(
+      COMBINE_TOPIC_AND_CHAPTER_SUMMARY,
+      storySummaryListDataProvider,
+      chapterSummaryListDataProvider,
+      ::combineStorySummaryListAndChapterSummaryList
+    )
+  }
+
+  fun getTopicDataProvider(topicId: String): DataProvider<TopicView> {
+    return dataProviders.transformAsync<TopicDatabase, TopicView>(
+      GET_TOPIC_TRANSFORMED_PROVIDER_ID,
+      topicDataStore
+    ) {
+      val topicDomain = it.topicDatabaseMap[topicId]
+      val topicView = convertTopicDomainToTopicView(topicDomain)
+      AsyncResult.success(topicView)
+    }
+  }
+
   /** Returns a [TopicSummaryListView] [DataProvider]. */
-  internal fun getTopicSummaryListDataProvider(): DataProvider<TopicSummaryListView> {
-    val topicListDataProvider = getTopicListDataProvider()
-    val chapterSummaryListDataProvider = getChapterSummaryListDataProvider()
+  fun getTopicSummaryListDataProvider(): DataProvider<TopicSummaryListView> {
+    val topicListDataProvider = retrieveTopicListDataProvider()
+    val chapterSummaryListDataProvider = retrieveChapterSummaryListDataProvider()
     return dataProviders.combine(
       COMBINE_TOPIC_AND_CHAPTER_SUMMARY,
       topicListDataProvider,
@@ -263,17 +338,40 @@ class TopicRepository @Inject constructor(
     )
   }
 
-  fun getTopic(topicId: String): DataProvider<TopicDomain> {
-    return dataProviders.transformAsync<TopicDatabase, TopicDomain>(
+  private fun retrieveStorySummaryListForATopicDataProvider(topicId: String): DataProvider<List<StorySummaryDomain>> {
+    return dataProviders.transformAsync<StorySummaryDatabase, List<StorySummaryDomain>>(
       GET_TOPIC_TRANSFORMED_PROVIDER_ID,
-      topicDataStore
+      storySummaryDataStore
     ) {
-      val topicDomain = it.topicDatabaseMap[topicId]
-      AsyncResult.success(topicDomain ?: TopicDomain.getDefaultInstance())
+      val storySummaryDomainList =
+        it.storySummaryDatabaseMap.values.filter { storySummaryDomain -> storySummaryDomain.topicId == topicId }
+      AsyncResult.success(storySummaryDomainList)
     }
   }
 
-  private fun getTopicListDataProvider(): DataProvider<List<TopicDomain>> {
+  private fun retrieveStorySummaryDataProvider(storyId: String): DataProvider<StorySummaryDomain> {
+    return dataProviders.transformAsync<StorySummaryDatabase, StorySummaryDomain>(
+      GET_TOPIC_TRANSFORMED_PROVIDER_ID,
+      storySummaryDataStore
+    ) {
+      val storySummary = it.storySummaryDatabaseMap[storyId]
+      AsyncResult.success(storySummary ?: StorySummaryDomain.getDefaultInstance())
+    }
+  }
+
+  private fun retrieveChapterSummaryListForAStoryDataProvider(storyId: String): DataProvider<List<ChapterSummaryDomain>> {
+    return dataProviders.transformAsync<ChapterSummaryDatabase, List<ChapterSummaryDomain>>(
+      GET_TOPIC_TRANSFORMED_PROVIDER_ID,
+      chapterSummaryDataStore
+    ) {
+      val chapterSummaryList = it.chapterSummaryDatabaseMap.values.filter { chapterSummaryDomain ->
+        chapterSummaryDomain.storyId == storyId
+      }
+      AsyncResult.success(chapterSummaryList.toList())
+    }
+  }
+
+  private fun retrieveTopicListDataProvider(): DataProvider<List<TopicDomain>> {
     return dataProviders.transformAsync<TopicDatabase, List<TopicDomain>>(
       GET_TOPIC_TRANSFORMED_PROVIDER_ID,
       topicDataStore
@@ -282,13 +380,58 @@ class TopicRepository @Inject constructor(
     }
   }
 
-  private fun getChapterSummaryListDataProvider(): DataProvider<List<ChapterSummaryDomain>> {
+  private fun retrieveChapterSummaryListDataProvider(): DataProvider<List<ChapterSummaryDomain>> {
     return dataProviders.transformAsync<ChapterSummaryDatabase, List<ChapterSummaryDomain>>(
       GET_TOPIC_TRANSFORMED_PROVIDER_ID,
       chapterSummaryDataStore
     ) {
       AsyncResult.success(it.chapterSummaryDatabaseMap.values.toList())
     }
+  }
+
+  private fun retrieveChapterSummaryListForATopicDataProvider(topicId: String): DataProvider<List<ChapterSummaryDomain>> {
+    return dataProviders.transformAsync<ChapterSummaryDatabase, List<ChapterSummaryDomain>>(
+      GET_TOPIC_TRANSFORMED_PROVIDER_ID,
+      chapterSummaryDataStore
+    ) {
+      val chapterSummaryDomainList =
+        it.chapterSummaryDatabaseMap.values.filter { chapterSummaryDomain ->
+          chapterSummaryDomain.topicId == topicId
+        }
+      AsyncResult.success(chapterSummaryDomainList)
+    }
+  }
+
+  private fun combineStorySummaryListAndChapterSummaryList(
+    storySummaryDomainList: List<StorySummaryDomain>,
+    chapterSummaryDomainList: List<ChapterSummaryDomain>
+  ): List<StorySummaryView> {
+    val storySummaryViewList = ArrayList<StorySummaryView>()
+    storySummaryDomainList.forEach { storySummaryDomain ->
+      val currentChapterSummaryDomainList =
+        chapterSummaryDomainList.filter { chapterSummaryDomain -> chapterSummaryDomain.storyId == storySummaryDomain.storyId }
+      val storySummaryView = combineStorySummaryAndChapterSummaryList(
+        storySummaryDomain,
+        currentChapterSummaryDomainList
+      )
+      storySummaryViewList.add(storySummaryView)
+    }
+    return storySummaryViewList
+  }
+
+  private fun combineStorySummaryAndChapterSummaryList(
+    storySummaryDomain: StorySummaryDomain,
+    chapterSummaryDomainList: List<ChapterSummaryDomain>
+  ): StorySummaryView {
+    val chapterSummaryViewList = ArrayList<ChapterSummaryView>()
+    chapterSummaryDomainList.forEach { chapterSummaryDomain ->
+      val chapterSummaryView = convertChapterSummaryDomainToChapterSummaryView(chapterSummaryDomain)
+      chapterSummaryViewList.add(chapterSummaryView)
+    }
+    val storySummaryViewBuilder =
+      convertStorySummaryDomainToStorySummaryView(storySummaryDomain).toBuilder()
+    storySummaryViewBuilder.addAllChapter(chapterSummaryViewList)
+    return storySummaryViewBuilder.build()
   }
 
   private fun combineTopicListAndChapterSummaryList(
@@ -495,6 +638,18 @@ class TopicRepository @Inject constructor(
       .build()
   }
 
+  private fun convertChapterSummaryDomainToChapterSummaryView(
+    chapterSummaryDomain: ChapterSummaryDomain
+  ): ChapterSummaryView {
+    return ChapterSummaryView.newBuilder()
+      .setExplorationId(chapterSummaryDomain.explorationId)
+      .setName(chapterSummaryDomain.name)
+      .setSummary(chapterSummaryDomain.summary)
+      .setChapterPlayState(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+      .setChapterThumbnail(chapterSummaryDomain.chapterThumbnail)
+      .build()
+  }
+
   private fun convertSkillSummaryToSkillSummaryDomain(skillSummary: SkillSummary): SkillSummaryDomain {
     return SkillSummaryDomain.newBuilder()
       .setSkillId(skillSummary.skillId)
@@ -512,6 +667,16 @@ class TopicRepository @Inject constructor(
       storySummaryDomainList.add(storySummaryDomain)
     }
     return storySummaryDomainList
+  }
+
+  private fun convertStorySummaryDomainToStorySummaryView(
+    storySummaryDomain: StorySummaryDomain
+  ): StorySummaryView {
+    return StorySummaryView.newBuilder()
+      .setStoryId(storySummaryDomain.storyId)
+      .setStoryName(storySummaryDomain.storyName)
+      .setStoryThumbnail(storySummaryDomain.storyThumbnail)
+      .build()
   }
 
   private fun convertStorySummaryToStorySummaryDomain(
@@ -553,6 +718,47 @@ class TopicRepository @Inject constructor(
       .setVersion(1)
       .setTopicThumbnail(TOPIC_THUMBNAILS.getValue(topicDomain.topicId))
       .build()
+  }
+
+  private fun convertSkillSummaryDomainToSkillSummaryView(skillSummaryDomain: SkillSummaryDomain?): SkillSummaryView {
+    return if (skillSummaryDomain == null) {
+      SkillSummaryView.getDefaultInstance()
+    } else {
+      SkillSummaryView.newBuilder()
+        .setSkillId(skillSummaryDomain.skillId)
+        .setDescription(skillSummaryDomain.description)
+        .setSkillThumbnail(skillSummaryDomain.skillThumbnail)
+        .setThumbnailUrl(skillSummaryDomain.thumbnailUrl)
+        .build()
+    }
+  }
+
+  private fun convertSubtopicDomainToSubtopicView(subtopicDomain: SubtopicDomain?): SubtopicView {
+    return if (subtopicDomain == null) {
+      SubtopicView.getDefaultInstance()
+    } else {
+      SubtopicView.newBuilder()
+        .setSubtopicId(subtopicDomain.subtopicId)
+        .setTitle(subtopicDomain.title)
+        .addAllSkillIds(subtopicDomain.skillIdsList)
+        .setSubtopicThumbnail(subtopicDomain.subtopicThumbnail)
+        .setThumbnailUrl(subtopicDomain.thumbnailUrl)
+        .build()
+    }
+  }
+
+  private fun convertTopicDomainToTopicView(topicDomain: TopicDomain?): TopicView {
+    return if (topicDomain == null) {
+      TopicView.getDefaultInstance()
+    } else {
+      TopicView.newBuilder()
+        .setTopicId(topicDomain.topicId)
+        .setName(topicDomain.name)
+        .setDescription(topicDomain.description)
+        .setTopicThumbnail(topicDomain.topicThumbnail)
+        .setDiskSizeBytes(topicDomain.diskSizeBytes)
+        .build()
+    }
   }
 
   private suspend fun getDeferredResultForChapterSummary(

@@ -385,20 +385,11 @@ message TopicView {
   // A brief description of the topic.
   string description = 3;
 
-  // A list of subtopic contained within this topic.
-  repeated SubtopicView subtopic = 4;
-
-  // A list of summarized stories contained within this topic.
-  repeated StorySummaryView story = 5;
-
-  // A list of summarized skills contained within this topic.
-  repeated SkillSummaryView skill = 6;
-
   // The thumbnail corresponding to this topic.
-  LessonThumbnail topic_thumbnail = 7;
+  LessonThumbnail topic_thumbnail = 4;
 
   // The number of on-disk bytes this topic consumes.
-  int64 disk_size_bytes = 8;
+  int64 disk_size_bytes = 5;
 }
 
 // Top level proto used to store subtopic summaries.
@@ -549,7 +540,7 @@ message StorySummaryView {
   LessonThumbnail story_thumbnail = 3;
 
   // A list of summarized chapters/explorations that can be played within the story.
-  repeated ChapterSummary chapter = 4;
+  repeated ChapterSummaryView chapter = 4;
 }
 
 // A summary of a chapter/exploration that can be played.
