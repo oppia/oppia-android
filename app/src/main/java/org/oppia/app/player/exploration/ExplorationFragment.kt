@@ -18,7 +18,22 @@ class ExplorationFragment : InjectableFragment() {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return explorationFragmentPresenter.handleCreateView(inflater, container)
+    val profileId = arguments!!.getInt(ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, -1)
+    val topicId = arguments!!.getString(ExplorationActivity.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
+    checkNotNull(topicId) { "StateFragment must be created with an topic ID" }
+    val storyId = arguments!!.getString(ExplorationActivity.EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY)
+    checkNotNull(storyId) { "StateFragment must be created with an story ID" }
+    val explorationId =
+      arguments!!.getString(ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY)
+    checkNotNull(explorationId) { "StateFragment must be created with an exploration ID" }
+    return explorationFragmentPresenter.handleCreateView(
+      inflater,
+      container,
+      profileId,
+      topicId,
+      storyId,
+      explorationId
+    )
   }
 
   fun handlePlayAudio() = explorationFragmentPresenter.handlePlayAudio()

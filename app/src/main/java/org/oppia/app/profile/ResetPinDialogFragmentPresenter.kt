@@ -30,12 +30,11 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
   }
 
   @ExperimentalCoroutinesApi
-  fun handleOnCreateDialog(routeDialogInterface: ProfileRouteDialogInterface): Dialog {
-    val profileId = fragment.arguments?.getInt(KEY_RESET_PIN_PROFILE_ID)
-    val name = fragment.arguments?.getString(KEY_RESET_PIN_NAME)
-    checkNotNull(profileId) { "Profile Id must not be null" }
-    checkNotNull(name) { "Name must not be null" }
-
+  fun handleOnCreateDialog(
+    routeDialogInterface: ProfileRouteDialogInterface,
+    profileId: Int,
+    name: String
+  ): Dialog {
     val binding: ResetPinDialogBinding = DataBindingUtil.inflate(
       activity.layoutInflater,
       R.layout.reset_pin_dialog,
