@@ -80,7 +80,7 @@
           android:layout_marginEnd="8dp"
           android:fontFamily="sans-serif-light"
           android:paddingBottom="12dp"
-          android:text="@{@plurals/story_count(viewModel.topic.storyCount, viewModel.topic.storyCount)}"
+          android:text="@{@plurals/lesson_count(viewModel.topic.storyCount, viewModel.topic.storyCount)}"
           android:textColor="@color/white_80"
           android:textSize="14sp"
           android:textStyle="italic"
