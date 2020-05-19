@@ -32,7 +32,6 @@ import org.oppia.app.model.Topic
 import org.oppia.app.model.TopicList
 import org.oppia.app.model.TopicProgress
 import org.oppia.app.model.TopicSummary
-import org.oppia.app.model.TopicSummaryListView
 import org.oppia.app.model.Voiceover
 import org.oppia.app.model.VoiceoverMapping
 import org.oppia.domain.exploration.ExplorationRetriever
@@ -157,8 +156,8 @@ class TopicListController @Inject constructor(
    * Returns the list of [TopicSummary]s currently tracked by the app, possibly up to
    * [EVICTION_TIME_MILLIS] old.
    */
-  fun getTopicList(): LiveData<AsyncResult<TopicSummaryListView>> {
-    return dataProviders.convertToLiveData(topicRepository.getTopicSummaryListDataProvider())
+  fun getTopicList(): LiveData<AsyncResult<TopicList>> {
+    return MutableLiveData(AsyncResult.success(createTopicList()))
   }
 
   /**
