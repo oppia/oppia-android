@@ -324,3 +324,272 @@ message RevisionCard {
   // translations.
   map<string, TranslationMapping> written_translation = 6;
 }
+
+// Corresponds to a single topic that can be read, played, trained, or reviewed.
+message TopicBackend {
+  // The ID corresponding to the topic.
+  string topic_id = 1;
+
+  // The topic's name.
+  string name = 2;
+
+  // A brief description of the topic.
+  string description = 3;
+
+  // A list of summarized stories contained within this topic.
+  repeated StorySummary story = 4;
+
+  // A list of summarized skills contained within this topic.
+  repeated SkillSummary skill = 5;
+
+  // The thumbnail corresponding to this topic.
+  LessonThumbnail topic_thumbnail = 6;
+
+  // The number of on-disk bytes this topic consumes.
+  int64 disk_size_bytes = 7;
+
+  // A list of subtopic contained within this topic.
+  repeated Subtopic subtopic = 8;
+}
+
+message TopicDatabase{
+    map<string, TopicDomain> topic_database = 1;
+}
+
+// Corresponds to a single topic that can be read, played, trained, or reviewed.
+message TopicDomain{
+  // The ID corresponding to the topic.
+  string topic_id = 1;
+
+  // The topic's name.
+  string name = 2;
+
+  // A brief description of the topic.
+  string description = 3;
+
+  // The thumbnail corresponding to this topic.
+  LessonThumbnail topic_thumbnail = 4;
+
+  // The number of on-disk bytes this topic consumes.
+  int64 disk_size_bytes = 5;
+}
+
+// Corresponds to a single topic that can be read, played, trained, or reviewed.
+message TopicView {
+  // The ID corresponding to the topic.
+  string topic_id = 1;
+
+  // The topic's name.
+  string name = 2;
+
+  // A brief description of the topic.
+  string description = 3;
+
+  // A list of subtopic contained within this topic.
+  repeated SubtopicView subtopic = 4;
+
+  // A list of summarized stories contained within this topic.
+  repeated StorySummaryView story = 5;
+
+  // A list of summarized skills contained within this topic.
+  repeated SkillSummaryView skill = 6;
+
+  // The thumbnail corresponding to this topic.
+  LessonThumbnail topic_thumbnail = 7;
+
+  // The number of on-disk bytes this topic consumes.
+  int64 disk_size_bytes = 8;
+}
+
+// Top level proto used to store subtopic summaries.
+message SubtopicDatabase{
+  // Subtopic ID to subtopic summary mapping.
+  map<string, SubtopicDomain> subtopic_database = 1;
+}
+
+// Corresponds to a single subtopic.
+message SubtopicDomain {
+  // The topic ID associated with this subtopic.
+  string topic_id = 1;
+
+  // The ID of the subtopic.
+  string subtopic_id = 2;
+
+  // The title of the subtopic.
+  string title = 3;
+
+  // The list of skill ids associated with the subtopic.
+  repeated string skill_ids = 4;
+
+  // A URL corresponding to a thumbnail associated with this subtopic. If this is absent, the UI should show a reasonable
+  // alternative.
+  string thumbnail_url = 5;
+
+  // The thumbnail corresponding to this subtopic.
+  LessonThumbnail subtopic_thumbnail = 6;
+}
+
+// Corresponds to a single subtopic.
+message SubtopicView {
+  // The ID of the subtopic.
+  string subtopic_id = 1;
+
+  // The title of the subtopic.
+  string title = 2;
+
+  // The list of skill ids associated with the subtopic.
+  repeated string skill_ids = 3;
+
+  // A URL corresponding to a thumbnail associated with this subtopic. If this is absent, the UI should show a reasonable
+  // alternative.
+  string thumbnail_url = 4;
+
+  // The thumbnail corresponding to this subtopic.
+  LessonThumbnail subtopic_thumbnail = 5;
+}
+
+// Top level proto used to store skill summaries.
+message SkillSummaryDatabase{
+  // Skill id to skill summary map.
+  map<string, SkillSummaryDomain> skill_summary_database = 1;
+}
+
+// A summary of a skill that can be trained or reviewed by the player.
+message SkillSummaryDomain {
+  // The ID of the skill.
+  string skill_id = 1;
+
+  // A brief description of the skill.
+  string description = 2;
+
+  // A URL corresponding to a thumbnail associated with this skill. If this is absent, the UI should show a reasonable
+  // alternative.
+  string thumbnail_url = 3;
+
+  // The thumbnail corresponding to this skill.
+  LessonThumbnail skill_thumbnail = 4;
+}
+
+// A summary of a skill that can be trained or reviewed by the player.
+message SkillSummaryView {
+  // The ID of the skill.
+  string skill_id = 1;
+
+  // A brief description of the skill.
+  string description = 2;
+
+  // A URL corresponding to a thumbnail associated with this skill. If this is absent, the UI should show a reasonable
+  // alternative.
+  string thumbnail_url = 3;
+
+  // The thumbnail corresponding to this skill.
+  LessonThumbnail skill_thumbnail = 4;
+}
+
+// Top level proto used to store story summaries.
+message StorySummaryDatabase{
+  // Story ID to story summary map.
+  map<string, StorySummaryDomain> story_summary_database = 1;
+}
+
+// A summary of a story that can be played within a topic.
+message StorySummaryDomain {
+  // The topic ID associated with this story.
+  string topic_id = 1;
+
+  // The ID of the story.
+  string story_id = 2;
+
+  // The name of the story.
+  string story_name = 3;
+
+  // The thumbnail corresponding to this story.
+  LessonThumbnail story_thumbnail = 4;
+}
+
+// Top level proto used to store chapter summaries.
+message ChapterSummaryDatabase{
+  // Exploration ID to chapter summary map.
+  map<string, ChapterSummaryDomain> chapter_summary_database = 1;
+}
+
+// A summary of a chapter/exploration that can be played.
+message ChapterSummaryDomain {
+  // The topic ID associated with this chapter.
+  string topic_id = 1;
+
+  // The story ID associated with this chapter.
+  string story_id = 2;
+
+  // The exploration ID associated with this chapter.
+  string exploration_id = 3;
+
+  // The chapter's name (which is the same as the exploration's title).
+  string name = 4;
+
+  // Summary of this chapter.
+  string summary = 5;
+
+  // Indicates the playable state of the current chapter, including whether it's already been completed.
+  ChapterPlayState chapter_play_state = 6;
+
+  // The thumbnail corresponding to this chapter.
+  LessonThumbnail chapter_thumbnail = 7;
+}
+
+// A summary of a story that can be played within a topic.
+message StorySummaryView {
+  // The ID of the story.
+  string story_id = 1;
+
+  // The name of the story.
+  string story_name = 2;
+
+  // The thumbnail corresponding to this story.
+  LessonThumbnail story_thumbnail = 3;
+
+  // A list of summarized chapters/explorations that can be played within the story.
+  repeated ChapterSummary chapter = 4;
+}
+
+// A summary of a chapter/exploration that can be played.
+message ChapterSummaryView {
+  // The exploration ID associated with this chapter.
+  string exploration_id = 1;
+
+  // The chapter's name (which is the same as the exploration's title).
+  string name = 2;
+
+  // Summary of this chapter.
+  string summary = 3;
+
+  // Indicates the playable state of the current chapter, including whether it's already been completed.
+  ChapterPlayState chapter_play_state = 4;
+
+  // The thumbnail corresponding to this chapter.
+  LessonThumbnail chapter_thumbnail = 5;
+}
+
+// Corresponds to the list of topics that can be shown on the homescreen.
+message TopicSummaryListView {
+  // All topics that are available to the player.
+  repeated TopicSummaryView topic_summary = 2;
+}
+
+// A homescreen summary of a topic.
+message TopicSummaryView {
+  // The ID of the topic.
+  string topic_id = 1;
+
+  // The name of the topic.
+  string name = 2;
+
+  // The associated thumbnail that should be displayed with this topic summary.
+  LessonThumbnail topic_thumbnail = 3;
+
+  // The structural version of the topic.
+  int32 version = 4;
+
+  // The total number of lessons associated with this topic.
+  int32 total_chapter_count = 5;
+}
