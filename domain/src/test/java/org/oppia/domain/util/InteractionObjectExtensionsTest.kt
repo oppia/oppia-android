@@ -15,12 +15,12 @@ import org.robolectric.annotation.Config
 class InteractionObjectExtensionsTest {
 
   @Test
-  fun testListOfSetsOfHtmlStrings_hasCorrectOutput() {
+  fun testToAnswerStr_listOfSetsOfHtmlStrings_multipleLists_correctlyFormatsElements() {
     val listOfSetsOfHtmlStrings = ListOfSetsOfHtmlStrings.newBuilder()
       .addAllSetOfHtmlStrings(
         listOf<StringList>(
-          getHtmlStringList("a", "b", "c"),
-          getHtmlStringList("1", "2")
+          createHtmlStringList("a", "b", "c"),
+          createHtmlStringList("1", "2")
         )
       )
       .build()
@@ -31,7 +31,7 @@ class InteractionObjectExtensionsTest {
     assertThat(interactionObject.toAnswerString()).isEqualTo("[a, b, c], [1, 2]")
   }
 
-  private fun getHtmlStringList(vararg items: String): StringList {
+  private fun createHtmlStringList(vararg items: String): StringList {
     return StringList.newBuilder().addAllHtml(items.toList()).build()
   }
 
