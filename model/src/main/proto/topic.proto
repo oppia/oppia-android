@@ -325,33 +325,6 @@ message RevisionCard {
   map<string, TranslationMapping> written_translation = 6;
 }
 
-// Corresponds to a single topic that can be read, played, trained, or reviewed.
-message TopicBackend {
-  // The ID corresponding to the topic.
-  string topic_id = 1;
-
-  // The topic's name.
-  string name = 2;
-
-  // A brief description of the topic.
-  string description = 3;
-
-  // A list of summarized stories contained within this topic.
-  repeated StorySummary story = 4;
-
-  // A list of summarized skills contained within this topic.
-  repeated SkillSummary skill = 5;
-
-  // The thumbnail corresponding to this topic.
-  LessonThumbnail topic_thumbnail = 6;
-
-  // The number of on-disk bytes this topic consumes.
-  int64 disk_size_bytes = 7;
-
-  // A list of subtopic contained within this topic.
-  repeated Subtopic subtopic = 8;
-}
-
 message TopicDatabase{
     map<string, TopicDomain> topic_database = 1;
 }
