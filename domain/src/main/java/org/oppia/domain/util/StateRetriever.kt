@@ -8,6 +8,7 @@ import org.oppia.app.model.Fraction
 import org.oppia.app.model.Hint
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.ListOfSetsOfHtmlStrings
 import org.oppia.app.model.NumberUnit
 import org.oppia.app.model.NumberWithUnits
 import org.oppia.app.model.Outcome
@@ -273,6 +274,16 @@ class StateRetriever @Inject constructor(
               .setNonNegativeInt(inputsJson.getInt(inputName))
               .build()
           )
+          "HasElementXAtPositionY" -> ruleSpecBuilder.putInput(
+            inputName,
+            createExactInputForDragDropAndSort(inputsJson, inputName)
+          )
+          "HasElementXBeforeElementY" -> ruleSpecBuilder.putInput(
+            inputName,
+            InteractionObject.newBuilder()
+              .setNormalizedString(inputsJson.getString(inputName))
+              .build()
+          )
           else -> ruleSpecBuilder.putInput(inputName, createExactInputFromJson(inputsJson, inputName, interactionId))
         }
 
@@ -280,6 +291,27 @@ class StateRetriever @Inject constructor(
       ruleSpecList.add(ruleSpecBuilder.build())
     }
     return ruleSpecList
+  }
+
+  /**
+   * Returns a Drag-and-Drop-specific [InteractionObject] parsed from the specified input [JSONObject] for the given key name.
+   * This method makes assumptions about how to interpret the input type represented by the [JSONObject].
+   */
+  private fun createExactInputForDragDropAndSort(
+    inputJson: JSONObject?, keyName: String
+  ): InteractionObject {
+    if (inputJson == null) {
+      return InteractionObject.getDefaultInstance()
+    }
+    return when (keyName) {
+      "x" -> InteractionObject.newBuilder()
+        .setNormalizedString(inputJson.getString(keyName))
+        .build()
+      "y" -> InteractionObject.newBuilder()
+        .setNonNegativeInt(inputJson.getInt(keyName))
+        .build()
+      else -> throw IllegalStateException("Encountered unexpected key name: $keyName")
+    }
   }
 
   // Creates an input interaction object from JSON
@@ -308,8 +340,19 @@ class StateRetriever @Inject constructor(
       "FractionInput" -> InteractionObject.newBuilder()
         .setFraction(parseFraction(inputJson.getJSONObject(keyName)))
         .build()
+      "DragAndDropSortInput" -> InteractionObject.newBuilder()
+        .setListOfSetsOfHtmlString(parseListOfSetsOfHtmlStrings(inputJson.getJSONArray(keyName)))
+        .build()
       else -> throw IllegalStateException("Encountered unexpected interaction ID: $interactionId")
     }
+  }
+
+  private fun parseListOfSetsOfHtmlStrings(listOfSetsOfHtmlStringsAnswer: JSONArray): ListOfSetsOfHtmlStrings {
+    val listOfSetsOfHtmlStringsBuilder = ListOfSetsOfHtmlStrings.newBuilder()
+    for (i in 0 until listOfSetsOfHtmlStringsAnswer.length()) {
+      listOfSetsOfHtmlStringsBuilder.addSetOfHtmlStrings(parseStringList(listOfSetsOfHtmlStringsAnswer.getJSONArray(i)))
+    }
+    return listOfSetsOfHtmlStringsBuilder.build()
   }
 
   private fun parseStringList(itemSelectionAnswer: JSONArray): StringList {
