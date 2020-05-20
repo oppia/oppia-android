@@ -96,7 +96,6 @@ class TopicListController @Inject constructor(
   private val dataProviders: DataProviders,
   private val jsonAssetRetriever: JsonAssetRetriever,
   private val topicController: TopicController,
-  private val topicRepository: TopicRepository,
   private val storyProgressController: StoryProgressController,
   private val explorationRetriever: ExplorationRetriever,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
