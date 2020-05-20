@@ -7,14 +7,14 @@
   "exploration_is_linked_to_story": false,
   "is_admin": false,
   "draft_change_list_id": 12,
-  "exploration_id": "3EZtb2cWEL2f",
+  "exploration_id": "test_exploration",
   "states": {
     "End": {
       "param_changes": [],
       "classifier_model_id": null,
       "content": {
         "content_id": "content",
-        "html": "\u003cp\u003eThis is the end\u0026nbsp;\u003c/p\u003e"
+        "html": "<p>This is the end&nbsp;</p>"
       },
       "interaction": {
         "answer_groups": [],
@@ -46,7 +46,7 @@
       "classifier_model_id": null,
       "content": {
         "content_id": "content",
-        "html": "\u003cp\u003eRearrange the following sentence in the correct order:\u003c/p\u003e"
+        "html": "<p>Rearrange the following sentence in the correct order:</p>"
       },
       "interaction": {
         "answer_groups": [
@@ -58,13 +58,13 @@
                 "inputs": {
                   "x": [
                     [
-                      "\u003cp\u003eyesterday\u003c/p\u003e"
+                      "<p>yesterday</p>"
                     ],
                     [
-                      "\u003cp\u003eI bought\u003c/p\u003e"
+                      "<p>I bought</p>"
                     ],
                     [
-                      "\u003cp\u003ea camera at the store\u003c/p\u003e"
+                      "<p>a camera at the store</p>"
                     ]
                   ]
                 }
@@ -77,7 +77,7 @@
               "missing_prerequisite_skill_id": null,
               "feedback": {
                 "content_id": "feedback_1",
-                "html": "\u003cp\u003eYay.This is correct\u003c/p\u003e"
+                "html": "<p>Yay.This is correct</p>"
               },
               "param_changes": [],
               "dest": "End"
@@ -90,7 +90,7 @@
                 "rule_type": "HasElementXAtPositionY",
                 "inputs": {
                   "y": 4,
-                  "x": "\u003cp\u003eI bought\u003c/p\u003e"
+                  "x": "<p>I bought</p>"
                 }
               }
             ],
@@ -101,7 +101,7 @@
               "missing_prerequisite_skill_id": null,
               "feedback": {
                 "content_id": "feedback_2",
-                "html": "\u003cp\u003eThis doesn't seems right\u003c/p\u003e"
+                "html": "<p>This doesn't seems right</p>"
               },
               "param_changes": [],
               "dest": "DragDropSortInput"
@@ -113,8 +113,8 @@
               {
                 "rule_type": "HasElementXBeforeElementY",
                 "inputs": {
-                  "y": "\u003cp\u003eto photograph the parade.\u003c/p\u003e",
-                  "x": "\u003cp\u003eI bought\u003c/p\u003e"
+                  "y": "<p>to photograph the parade.</p>",
+                  "x": "<p>I bought</p>"
                 }
               }
             ],
@@ -125,7 +125,7 @@
               "missing_prerequisite_skill_id": null,
               "feedback": {
                 "content_id": "feedback_3",
-                "html": "\u003cp\u003eLook likes you inverted the order\u003c/p\u003e"
+                "html": "<p>Look likes you inverted the order</p>"
               },
               "param_changes": [],
               "dest": "DragDropSortInput"
@@ -139,16 +139,16 @@
                 "inputs": {
                   "x": [
                     [
-                      "\u003cp\u003eI bought\u003c/p\u003e"
+                      "<p>I bought</p>"
                     ],
                     [
-                      "\u003cp\u003ea camera at the store\u003c/p\u003e"
+                      "<p>a camera at the store</p>"
                     ],
                     [
-                      "\u003cp\u003eyesterday\u003c/p\u003e"
+                      "<p>yesterday</p>"
                     ],
                     [
-                      "\u003cp\u003eto photograph the parade.\u003c/p\u003e"
+                      "<p>to photograph the parade.</p>"
                     ]
                   ]
                 }
@@ -161,7 +161,7 @@
               "missing_prerequisite_skill_id": null,
               "feedback": {
                 "content_id": "feedback_4",
-                "html": "\u003cp\u003eSentence does not make any sense\u003c/p\u003e"
+                "html": "<p>Sentence does not make any sense</p>"
               },
               "param_changes": [],
               "dest": "DragDropSortInput"
@@ -174,7 +174,7 @@
           "missing_prerequisite_skill_id": null,
           "feedback": {
             "content_id": "default_outcome",
-            "html": "\u003cp\u003eThis is incorrect please try again\u003c/p\u003e"
+            "html": "<p>This is incorrect please try again</p>"
           },
           "param_changes": [],
           "dest": "DragDropSortInput"
@@ -185,10 +185,10 @@
           },
           "choices": {
             "value": [
-              "\u003cp\u003eI bought\u003c/p\u003e",
-              "\u003cp\u003ea camera at the store\u003c/p\u003e",
-              "\u003cp\u003eyesterday\u003c/p\u003e",
-              "\u003cp\u003eto photograph the parade.\u003c/p\u003e"
+              "<p>I bought</p>",
+              "<p>a camera at the store</p>",
+              "<p>yesterday</p>",
+              "<p>to photograph the parade.</p>"
             ]
           }
         },
