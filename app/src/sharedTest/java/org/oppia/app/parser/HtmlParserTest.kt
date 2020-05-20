@@ -26,7 +26,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.Matchers.not
 import org.junit.After
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -95,15 +94,19 @@ class HtmlParserTest {
 
   @Test
   fun testHtmlContent_handleCustomOppiaTags_parsedHtmlDisplaysStyledText() {
-    val textView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
-    val htmlParser = htmlParserFactory.create(/* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true)
+    val textView =
+      activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
+    val htmlParser = htmlParserFactory.create(/* entityType= */ "", /* entityId= */
+      "", /* imageCenterAlign= */
+      true
+    )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
       "\u003cp\u003e\"Let's try one last question,\" said Mr. Baker. \"Here's a pineapple cake cut into pieces.\"\u003c/p\u003e\u003coppia-noninteractive-image " +
-          "alt-with-value=\"\u0026amp;quot;Pineapple" +
-          " cake with 7/9 having cherries.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;" +
-          "pineapple_cake_height_479_width_480.png\u0026amp;quot;\"\u003e\u003c/" +
-          "oppia-noninteractive-image\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eQuestion 6\u003c/strong\u003e: What " +
-          "fraction of the cake has big red cherries in the pineapple slices?\u003c/p\u003e",
+        "alt-with-value=\"\u0026amp;quot;Pineapple" +
+        " cake with 7/9 having cherries.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;" +
+        "pineapple_cake_height_479_width_480.png\u0026amp;quot;\"\u003e\u003c/" +
+        "oppia-noninteractive-image\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eQuestion 6\u003c/strong\u003e: What " +
+        "fraction of the cake has big red cherries in the pineapple slices?\u003c/p\u003e",
       textView
     )
     assertThat(textView.text.toString()).isEqualTo(htmlResult.toString())
@@ -113,14 +116,18 @@ class HtmlParserTest {
 
   @Test
   fun testHtmlContent_nonCustomOppiaTags_notParsed() {
-    val textView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
-    val htmlParser = htmlParserFactory.create(/* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true)
+    val textView =
+      activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
+    val htmlParser = htmlParserFactory.create(/* entityType= */ "", /* entityId= */
+      "", /* imageCenterAlign= */
+      true
+    )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
       "\u003cp\u003e\"Let's try one last question,\" said Mr. Baker. \"Here's a pineapple cake cut into pieces.\"\u003c/p\u003e\u003coppia--image " +
-          "alt-with-value=\"\u0026amp;quot;Pineapple cake with 7/9 having cherries.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\"" +
-          " filepath-value=\"\u0026amp;quot;pineapple_cake_height_479_width_480.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image" +
-          "\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003e\u003cstrongQuestion 6\u003c/strong\u003e: What fraction of the cake has big " +
-          "red cherries in the pineapple slices?\u003c/p\u003e",
+        "alt-with-value=\"\u0026amp;quot;Pineapple cake with 7/9 having cherries.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\"" +
+        " filepath-value=\"\u0026amp;quot;pineapple_cake_height_479_width_480.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image" +
+        "\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003e\u003cstrongQuestion 6\u003c/strong\u003e: What fraction of the cake has big " +
+        "red cherries in the pineapple slices?\u003c/p\u003e",
       textView
     )
     // The two strings aren't equal because this HTML contains a Non-Oppia/Non-Html tag e.g. <image> tag and attributes "filepath-value" which isn't parsed.
@@ -130,17 +137,22 @@ class HtmlParserTest {
 
   @Test
   fun testHtmlContent_customSpan_isAdded() {
-    val textView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
-    val htmlParser = htmlParserFactory.create(/* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true)
+    val textView =
+      activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
+    val htmlParser = htmlParserFactory.create(/* entityType= */ "", /* entityId= */
+      "", /* imageCenterAlign= */
+      true
+    )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
       "<p>You should know the following before going on:<br></p>" +
-          "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +
-          "<li>How to tell whether one counting number is bigger or smaller than another<br></li></ul>",
+        "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +
+        "<li>How to tell whether one counting number is bigger or smaller than another<br></li></ul>",
       textView
     )
 
     /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
-    val bulletSpans = htmlResult.getSpans<CustomBulletSpan>(0, htmlResult.length, CustomBulletSpan::class.java)
+    val bulletSpans =
+      htmlResult.getSpans<CustomBulletSpan>(0, htmlResult.length, CustomBulletSpan::class.java)
     assertThat(bulletSpans.size.toLong()).isEqualTo(2)
 
     val bulletSpan0 = bulletSpans[0] as CustomBulletSpan
@@ -196,18 +208,21 @@ class HtmlParserTest {
       htmlResult.length,
       TextLeadingMarginSpan::class.java
     )
-    assertEquals(7, spans.size.toLong())
+//    assertEquals(7, spans.size.toLong())
+    assertThat(spans).hasLength(7)
 // check that the span is indeed a TextLeadingMarginSpan
     val bulletSpan = spans[0] as TextLeadingMarginSpan
 // check that the start and end indexes are the expected ones
-    assertEquals(22, htmlResult.getSpanStart(bulletSpan).toLong())
-    assertEquals(36, htmlResult.getSpanEnd(bulletSpan).toLong())
+    assertThat(htmlResult.getSpanStart(bulletSpan).toLong()).isEqualTo(22)
+    assertThat(htmlResult.getSpanEnd(bulletSpan).toLong()).isEqualTo(36)
+
     val bulletSpan2 = spans[1] as TextLeadingMarginSpan
-    assertEquals(36, htmlResult.getSpanStart(bulletSpan2).toLong())
-    assertEquals(202, htmlResult.getSpanEnd(bulletSpan2).toLong())
+    assertThat(htmlResult.getSpanStart(bulletSpan2).toLong()).isEqualTo(36)
+    assertThat(htmlResult.getSpanEnd(bulletSpan2).toLong()).isEqualTo(202)
   }
 
-  @Qualifier annotation class TestDispatcher
+  @Qualifier
+  annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module

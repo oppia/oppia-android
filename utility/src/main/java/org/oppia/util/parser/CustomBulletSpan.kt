@@ -30,7 +30,7 @@ class CustomBulletSpan(context: Context) : LeadingMarginSpan {
     bulletLeadingMargin = context.resources.getDimensionPixelSize(R.dimen.bullet_leading_margin)
   }
 
-  private var mBulletPath: Path? = null
+  private var bulletPath: Path? = null
 
   override fun getLeadingMargin(first: Boolean): Int {
     return bulletLeadingMargin
@@ -65,14 +65,14 @@ class CustomBulletSpan(context: Context) : LeadingMarginSpan {
       val xPosition = (x + dir * bulletRadius).toFloat()
 
       if (canvas.isHardwareAccelerated) {
-        if (mBulletPath == null) {
-          mBulletPath = Path()
-          mBulletPath!!.addCircle(0.0f, 0.0f, bulletRadius.toFloat(), Direction.CW)
+        if (bulletPath == null) {
+          bulletPath = Path()
+          bulletPath!!.addCircle(0.0f, 0.0f, bulletRadius.toFloat(), Direction.CW)
         }
 
         canvas.save()
         canvas.translate(xPosition, yPosition)
-        canvas.drawPath(mBulletPath!!, paint)
+        canvas.drawPath(bulletPath!!, paint)
         canvas.restore()
       } else {
         canvas.drawCircle(xPosition, yPosition, bulletRadius.toFloat(), paint)

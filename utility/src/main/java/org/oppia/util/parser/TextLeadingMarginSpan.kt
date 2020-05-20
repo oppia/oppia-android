@@ -12,7 +12,6 @@ import org.oppia.util.R
 /**
  * A version of [LeadingMarginSpan] that shows text inside the margin.
  *
- * @param marginWidth Size of the margin.
  * @param indentation The zero-based indentation level of this item.
  * @param string String to show inside the margin.
  */
