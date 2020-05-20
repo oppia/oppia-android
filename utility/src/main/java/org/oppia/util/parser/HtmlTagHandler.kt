@@ -91,7 +91,7 @@ class HtmlTagHandler(private val context: Context) : Html.TagHandler {
       ensureEndsWithNewLine(text)
 
       getLast<BulletListItem>(text)?.let { mark ->
-        setSpanFromMark(text, mark, CustomBulletSpan(context))
+        setSpanFromMark(text, mark, TextLeadingMarginSpan(context, indentation, "●"))
       }
     }
   }
@@ -147,7 +147,7 @@ class HtmlTagHandler(private val context: Context) : Html.TagHandler {
      * Pops out the invisible [mark] span and uses it to get the opening tag location.
      * Then, sets a span from the opening tag position to closing tag position.
      */
-    private fun setSpanFromMark(text: Spannable, mark: Mark, styleSpan: Any) {
+    private fun setSpanFromMark(text: Spannable, mark: Mark, styleSpan: TextLeadingMarginSpan) {
       // Find the location where the mark is inserted in the string.
       val markerLocation = text.getSpanStart(mark)
       // Remove the mark now that the location is saved
@@ -161,7 +161,9 @@ class HtmlTagHandler(private val context: Context) : Html.TagHandler {
 
     /**
      * Inserts an invisible [mark] span that doesn't do any styling.
-     * Instead, [setSpanFromMark] will later find the location of this span so it knows where the opening tag was.
+     * We do not know where to put the span using start and end indexes. openItem is too early and we don’t know where the closing tag is.
+     * But if we try to insert the span in closeItem, we don’t know where the span started anymore.
+     * Instead, [setSpanFromMark] will find the location of this span so it knows where the opening tag was.
      */
     private fun start(text: Spannable, mark: Mark) {
       val currentPosition = text.length

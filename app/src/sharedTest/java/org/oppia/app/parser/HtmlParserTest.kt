@@ -37,7 +37,6 @@ import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
-import org.oppia.util.parser.CustomBulletSpan
 import org.oppia.util.parser.DefaultGcsPrefix
 import org.oppia.util.parser.DefaultGcsResource
 import org.oppia.util.parser.GlideImageLoader
@@ -176,32 +175,27 @@ class HtmlParserTest {
     )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
       """
-            <ul>
-                <li>Item 1</li>
-                <li>Item 2</li>
-                <li>Item 3
-                    <ol>
-                        <li>Nested item 1</li>
-                        <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                        Nulla et tellus eu magna facilisis eleifend. Vestibulum faucibus pulvinar tincidunt. 
-                        Nullam non mauris nisi.</li>
-                    </ol>
-                </li>
-                <li>Item 4</li>
-                <li>Item 5
-                    <ol>
-                        <li>Nested item 1</li>
-                        <li>Nested item 2
-                            <ol>
-                                <li>Double nested item 1</li>
-                                <li>Double nested item 2</li>
-                            </ol>
-                        </li>
-                        <li>Nested item 3</li>
-                    </ol>
-                </li>
-                <li>Item 6</li>
-            </ul>
+           <ul>
+  <li>Item 1</li>
+  <li>Item 2</li>
+  <li>Numbered list:
+    <ol>
+      <li>Nested item in numbered list 1</li>
+      <li>Nested item in numbered list 2</li>
+    </ol>
+  </li>
+  <li>Nested list:
+    <ul>
+      <li>Double nested list:
+        <ul>
+          <li>
+            Double nested item
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
         """,
       textView
     )
