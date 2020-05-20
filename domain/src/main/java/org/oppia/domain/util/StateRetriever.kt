@@ -274,17 +274,7 @@ class StateRetriever @Inject constructor(
               .setNonNegativeInt(inputsJson.getInt(inputName))
               .build()
           )
-          "HasElementXAtPositionY" -> ruleSpecBuilder.putInput(
-            inputName,
-            createExactInputForDragDropAndSort(inputsJson, inputName)
-          )
-          "HasElementXBeforeElementY" -> ruleSpecBuilder.putInput(
-            inputName,
-            InteractionObject.newBuilder()
-              .setNormalizedString(inputsJson.getString(inputName))
-              .build()
-          )
-          else -> ruleSpecBuilder.putInput(inputName, createExactInputFromJson(inputsJson, inputName, interactionId))
+          else -> ruleSpecBuilder.putInput(inputName, createExactInputFromJson(inputsJson, inputName, interactionId,ruleSpecBuilder.ruleType))
         }
 
       }
@@ -298,25 +288,37 @@ class StateRetriever @Inject constructor(
    * This method makes assumptions about how to interpret the input type represented by the [JSONObject].
    */
   private fun createExactInputForDragDropAndSort(
-    inputJson: JSONObject?, keyName: String
+    inputJson: JSONObject?, keyName: String, ruleType: String
   ): InteractionObject {
     if (inputJson == null) {
       return InteractionObject.getDefaultInstance()
     }
-    return when (keyName) {
-      "x" -> InteractionObject.newBuilder()
+    return when (ruleType) {
+      "HasElementXAtPositionY" -> return when (keyName) {
+        "x" -> InteractionObject.newBuilder()
+          .setNormalizedString(inputJson.getString(keyName))
+          .build()
+        "y" -> InteractionObject.newBuilder()
+          .setNonNegativeInt(inputJson.getInt(keyName))
+          .build()
+        else -> throw IllegalStateException("Encountered unexpected key name: $keyName")
+      }
+
+      "HasElementXBeforeElementY" -> InteractionObject.newBuilder()
         .setNormalizedString(inputJson.getString(keyName))
         .build()
-      "y" -> InteractionObject.newBuilder()
-        .setNonNegativeInt(inputJson.getInt(keyName))
+      else -> InteractionObject.newBuilder()
+        .setListOfSetsOfHtmlString(parseListOfSetsOfHtmlStrings(inputJson.getJSONArray(keyName)))
         .build()
-      else -> throw IllegalStateException("Encountered unexpected key name: $keyName")
     }
   }
 
   // Creates an input interaction object from JSON
   private fun createExactInputFromJson(
-    inputJson: JSONObject?, keyName: String, interactionId: String
+    inputJson: JSONObject?,
+    keyName: String,
+    interactionId: String,
+    ruleType: String
   ): InteractionObject {
     if (inputJson == null) {
       return InteractionObject.getDefaultInstance()
@@ -340,9 +342,7 @@ class StateRetriever @Inject constructor(
       "FractionInput" -> InteractionObject.newBuilder()
         .setFraction(parseFraction(inputJson.getJSONObject(keyName)))
         .build()
-      "DragAndDropSortInput" -> InteractionObject.newBuilder()
-        .setListOfSetsOfHtmlString(parseListOfSetsOfHtmlStrings(inputJson.getJSONArray(keyName)))
-        .build()
+      "DragAndDropSortInput" -> createExactInputForDragDropAndSort(inputJson, keyName, ruleType)
       else -> throw IllegalStateException("Encountered unexpected interaction ID: $interactionId")
     }
   }
