@@ -278,6 +278,12 @@ class StateRetriever @Inject constructor(
             inputName,
             createExactInputForDragDropAndSort(inputsJson,inputName)
           )
+          "HasElementXBeforeElementY" -> ruleSpecBuilder.putInput(
+            inputName,
+            InteractionObject.newBuilder()
+              .setNormalizedString(inputsJson.getString(inputName))
+              .build()
+          )
           else -> ruleSpecBuilder.putInput(inputName, createExactInputFromJson(inputsJson, inputName, interactionId))
         }
 
