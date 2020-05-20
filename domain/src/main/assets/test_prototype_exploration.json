@@ -6,15 +6,15 @@
   "correctness_feedback_enabled": false,
   "exploration_is_linked_to_story": false,
   "is_admin": false,
-  "draft_change_list_id": 7,
-  "exploration_id": "Pzo3dPa8J6RA",
+  "draft_change_list_id": 12,
+  "exploration_id": "3EZtb2cWEL2f",
   "states": {
     "End": {
       "param_changes": [],
       "classifier_model_id": null,
       "content": {
         "content_id": "content",
-        "html": "Congratulations, you have finished!"
+        "html": "\u003cp\u003eThis is the end\u0026nbsp;\u003c/p\u003e"
       },
       "interaction": {
         "answer_groups": [],
@@ -41,63 +41,15 @@
         }
       }
     },
-    "Introduction": {
+    "DragDropSortInput": {
       "param_changes": [],
       "classifier_model_id": null,
       "content": {
         "content_id": "content",
-        "html": "\u003cp\u003eThis is test exploration\u003c/p\u003e"
+        "html": "\u003cp\u003eRearrange the following sentence in the correct order:\u003c/p\u003e"
       },
       "interaction": {
         "answer_groups": [
-          {
-            "tagged_skill_misconception_id": null,
-            "rule_specs": [
-              {
-                "rule_type": "HasElementXAtPositionY",
-                "inputs": {
-                  "y": 1,
-                  "x": "\u003cp\u003eThis is item 1\u003c/p\u003e"
-                }
-              }
-            ],
-            "training_data": [],
-            "outcome": {
-              "labelled_as_correct": false,
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null,
-              "feedback": {
-                "content_id": "feedback_1",
-                "html": "\u003cp\u003eThis is the correct\u003c/p\u003e"
-              },
-              "param_changes": [],
-              "dest": "End"
-            }
-          },
-          {
-            "tagged_skill_misconception_id": null,
-            "rule_specs": [
-              {
-                "rule_type": "HasElementXAtPositionY",
-                "inputs": {
-                  "y": 1,
-                  "x": "\u003cp\u003eThis is item 1\u003c/p\u003e"
-                }
-              }
-            ],
-            "training_data": [],
-            "outcome": {
-              "labelled_as_correct": false,
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null,
-              "feedback": {
-                "content_id": "feedback_2",
-                "html": "\u003cp\u003eThis seems incorrect\u003c/p\u003e"
-              },
-              "param_changes": [],
-              "dest": "Introduction"
-            }
-          },
           {
             "tagged_skill_misconception_id": null,
             "rule_specs": [
@@ -106,13 +58,13 @@
                 "inputs": {
                   "x": [
                     [
-                      "\u003cp\u003eThis is item 1\u003c/p\u003e"
+                      "\u003cp\u003eyesterday\u003c/p\u003e"
                     ],
                     [
-                      "\u003cp\u003eThis is item 3\u003c/p\u003e"
+                      "\u003cp\u003eI bought\u003c/p\u003e"
                     ],
                     [
-                      "\u003cp\u003eThis is item 2\u003c/p\u003e"
+                      "\u003cp\u003ea camera at the store\u003c/p\u003e"
                     ]
                   ]
                 }
@@ -124,11 +76,95 @@
               "refresher_exploration_id": null,
               "missing_prerequisite_skill_id": null,
               "feedback": {
-                "content_id": "feedback_3",
-                "html": "\u003cp\u003eThis is correct\u003c/p\u003e"
+                "content_id": "feedback_1",
+                "html": "\u003cp\u003eYay.This is correct\u003c/p\u003e"
               },
               "param_changes": [],
-              "dest": "Introduction"
+              "dest": "End"
+            }
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "rule_specs": [
+              {
+                "rule_type": "HasElementXAtPositionY",
+                "inputs": {
+                  "y": 4,
+                  "x": "\u003cp\u003eI bought\u003c/p\u003e"
+                }
+              }
+            ],
+            "training_data": [],
+            "outcome": {
+              "labelled_as_correct": false,
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "\u003cp\u003eThis doesn't seems right\u003c/p\u003e"
+              },
+              "param_changes": [],
+              "dest": "DragDropSortInput"
+            }
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "rule_specs": [
+              {
+                "rule_type": "HasElementXBeforeElementY",
+                "inputs": {
+                  "y": "\u003cp\u003eto photograph the parade.\u003c/p\u003e",
+                  "x": "\u003cp\u003eI bought\u003c/p\u003e"
+                }
+              }
+            ],
+            "training_data": [],
+            "outcome": {
+              "labelled_as_correct": false,
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "\u003cp\u003eLook likes you inverted the order\u003c/p\u003e"
+              },
+              "param_changes": [],
+              "dest": "DragDropSortInput"
+            }
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "rule_specs": [
+              {
+                "rule_type": "IsEqualToOrderingWithOneItemAtIncorrectPosition",
+                "inputs": {
+                  "x": [
+                    [
+                      "\u003cp\u003eI bought\u003c/p\u003e"
+                    ],
+                    [
+                      "\u003cp\u003ea camera at the store\u003c/p\u003e"
+                    ],
+                    [
+                      "\u003cp\u003eyesterday\u003c/p\u003e"
+                    ],
+                    [
+                      "\u003cp\u003eto photograph the parade.\u003c/p\u003e"
+                    ]
+                  ]
+                }
+              }
+            ],
+            "training_data": [],
+            "outcome": {
+              "labelled_as_correct": false,
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "\u003cp\u003eSentence does not make any sense\u003c/p\u003e"
+              },
+              "param_changes": [],
+              "dest": "DragDropSortInput"
             }
           }
         ],
@@ -138,10 +174,10 @@
           "missing_prerequisite_skill_id": null,
           "feedback": {
             "content_id": "default_outcome",
-            "html": "\u003cp\u003eThis does not seems right\u003c/p\u003e"
+            "html": "\u003cp\u003eThis is incorrect please try again\u003c/p\u003e"
           },
           "param_changes": [],
-          "dest": "Introduction"
+          "dest": "DragDropSortInput"
         },
         "customization_args": {
           "allowMultipleItemsInSamePosition": {
@@ -149,9 +185,10 @@
           },
           "choices": {
             "value": [
-              "\u003cp\u003eThis is item 1\u003c/p\u003e",
-              "\u003cp\u003eThis is item 2\u003c/p\u003e",
-              "\u003cp\u003eThis is item 3\u003c/p\u003e"
+              "\u003cp\u003eI bought\u003c/p\u003e",
+              "\u003cp\u003ea camera at the store\u003c/p\u003e",
+              "\u003cp\u003eyesterday\u003c/p\u003e",
+              "\u003cp\u003eto photograph the parade.\u003c/p\u003e"
             ]
           }
         },
@@ -163,20 +200,22 @@
       "solicit_answer_details": false,
       "written_translations": {
         "translations_mapping": {
-          "content": {},
-          "default_outcome": {},
+          "feedback_4": {},
           "feedback_1": {},
           "feedback_2": {},
-          "feedback_3": {}
+          "feedback_3": {},
+          "default_outcome": {},
+          "content": {}
         }
       },
       "recorded_voiceovers": {
         "voiceovers_mapping": {
-          "content": {},
-          "default_outcome": {},
+          "feedback_4": {},
           "feedback_1": {},
           "feedback_2": {},
-          "feedback_3": {}
+          "feedback_3": {},
+          "default_outcome": {},
+          "content": {}
         }
       }
     }
@@ -201,11 +240,11 @@
   },
   "is_super_admin": true,
   "tags": [],
-  "title": "The Science of Superheroes",
+  "title": "Testing Interaction",
   "iframed": false,
-  "init_state_name": "Introduction",
+  "init_state_name": "DragDropSortInput",
   "language_code": "en",
-  "category": "Algorithms",
+  "category": "English",
   "auto_tts_enabled": true,
   "param_changes": [],
   "username": "aggarwalpulkit596",
@@ -213,5 +252,5 @@
   "user_email": "test@example.com",
   "param_specs": {},
   "is_moderator": false,
-  "objective": "Dummy Objective"
+  "objective": "learn how to arrange the sentence"
 }

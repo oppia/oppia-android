@@ -46,15 +46,29 @@ class StateRetrieverTest {
 
   @Test
   fun testForDragDropInt_hasRuleIsEqualToOrdering_notNull() {
-    val state = createStateFromJson("Introduction")
+    val state = createStateFromJson("DragDropSortInput")
     val answerGroup= state.interaction.answerGroupsList.find { it.ruleSpecsList.first().ruleType == "IsEqualToOrdering" }
     assertNotNull(answerGroup)
   }
 
   @Test
   fun testForDragDropInt_hasRuleHasElementXAtPositionY_notNull() {
-    val state = createStateFromJson("Introduction")
+    val state = createStateFromJson("DragDropSortInput")
     val answerGroup= state.interaction.answerGroupsList.find { it.ruleSpecsList.first().ruleType == "HasElementXAtPositionY" }
+    assertNotNull(answerGroup)
+  }
+
+  @Test
+  fun testForDragDropInt_hasRuleIsEqualToOrderingWithOneItemAtIncorrectPosition_notNull() {
+    val state = createStateFromJson("DragDropSortInput")
+    val answerGroup= state.interaction.answerGroupsList.find { it.ruleSpecsList.first().ruleType == "IsEqualToOrderingWithOneItemAtIncorrectPosition" }
+    assertNotNull(answerGroup)
+  }
+
+  @Test
+  fun testForDragDropInt_hasRuleHasElementXBeforeElementY_notNull() {
+    val state = createStateFromJson("DragDropSortInput")
+    val answerGroup= state.interaction.answerGroupsList.find { it.ruleSpecsList.first().ruleType == "HasElementXBeforeElementY" }
     assertNotNull(answerGroup)
   }
 
