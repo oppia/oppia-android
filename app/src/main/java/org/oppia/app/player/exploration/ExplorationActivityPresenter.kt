@@ -149,8 +149,11 @@ class ExplorationActivityPresenter @Inject constructor(
     if (backflowId == BACKFLOW_ID_STORY){
       activity.startActivity(StoryActivity.createStoryActivityIntent(context,internalProfileId,topicId,storyId))
     }
-    else{
+    else if(backflowId == BACKFLOW_ID_LESSONS){
       activity.startActivity(TopicActivity.createTopicPlayStoryActivityIntent(activity, internalProfileId, topicId,storyId))
+    }
+    else{
+      activity.startActivity(TopicActivity.createTopicActivityIntent(context,internalProfileId,topicId))
     }
   }
 
