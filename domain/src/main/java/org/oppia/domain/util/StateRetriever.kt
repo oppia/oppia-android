@@ -276,7 +276,7 @@ class StateRetriever @Inject constructor(
           )
           "HasElementXAtPositionY" -> ruleSpecBuilder.putInput(
             inputName,
-            createExactInputForDragDropAndSort(inputsJson,inputName)
+            createExactInputForDragDropAndSort(inputsJson, inputName)
           )
           "HasElementXBeforeElementY" -> ruleSpecBuilder.putInput(
             inputName,
@@ -293,7 +293,10 @@ class StateRetriever @Inject constructor(
     return ruleSpecList
   }
 
-  // Creates an input interaction object for DragDropAndSort
+  /**
+   * Returns a Drag-and-Drop-specific [InteractionObject] parsed from the specified input [JSONObject] for the given key name.
+   * This method makes assumptions about how to interpret the input type represented by the [JSONObject].
+   */
   private fun createExactInputForDragDropAndSort(
     inputJson: JSONObject?, keyName: String
   ): InteractionObject {
@@ -307,7 +310,7 @@ class StateRetriever @Inject constructor(
       "y" -> InteractionObject.newBuilder()
         .setNonNegativeInt(inputJson.getInt(keyName))
         .build()
-      else -> throw IllegalStateException("Encountered unexpected keyname : $keyName")
+      else -> throw IllegalStateException("Encountered unexpected key name: $keyName")
     }
   }
 
