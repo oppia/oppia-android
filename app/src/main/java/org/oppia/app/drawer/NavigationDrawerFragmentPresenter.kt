@@ -35,6 +35,7 @@ import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
+import org.oppia.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
 const val KEY_NAVIGATION_PROFILE_ID = "KEY_NAVIGATION_PROFILE_ID"
@@ -252,11 +253,13 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         override fun onDrawerOpened(drawerView: View) {
           super.onDrawerOpened(drawerView)
           fragment.activity!!.invalidateOptionsMenu()
+          StatusBarColor.statusBarColorUpdate(R.color.slideDrawerOpenStatusBar, activity, false)
         }
 
         override fun onDrawerClosed(drawerView: View) {
           super.onDrawerClosed(drawerView)
           fragment.activity!!.invalidateOptionsMenu()
+          StatusBarColor.statusBarColorUpdate(R.color.colorPrimaryDark, activity, false)
         }
       }
       drawerLayout.setDrawerListener(drawerToggle)
@@ -276,11 +279,13 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         override fun onDrawerOpened(drawerView: View) {
           super.onDrawerOpened(drawerView)
           fragment.activity!!.invalidateOptionsMenu()
+          StatusBarColor.statusBarColorUpdate(R.color.slideDrawerOpenStatusBar, activity, false)
         }
 
         override fun onDrawerClosed(drawerView: View) {
           super.onDrawerClosed(drawerView)
           fragment.activity!!.invalidateOptionsMenu()
+          StatusBarColor.statusBarColorUpdate(R.color.colorPrimaryDark, activity, false)
         }
       }
       drawerLayout.setDrawerListener(drawerToggle)

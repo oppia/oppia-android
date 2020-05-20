@@ -4,17 +4,26 @@ import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
+import org.oppia.app.player.state.listener.PreviousNavigationButtonListener
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts
 private const val DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER = "Please continue."
 
-/** [ViewModel] for the 'Continue' button. */
+/**
+ * [StateItemViewModel] for the 'Continue' button. Note that this supports previous state navigation, and differs from
+ * [NextButtonViewModel] in that the latter is for navigating to existing states rather than a new state. This differs
+ * from [ContinueNavigationButtonViewModel] in that the latter is for an already completed state, whereas this
+ * represents an actual interaction.
+ */
 class ContinueInteractionViewModel(
-  private val interactionAnswerReceiver: InteractionAnswerReceiver
+  private val interactionAnswerReceiver: InteractionAnswerReceiver, val hasPreviousButton: Boolean,
+  val previousNavigationButtonListener: PreviousNavigationButtonListener
 ) : StateItemViewModel(ViewType.CONTINUE_INTERACTION), InteractionAnswerHandler {
 
   override fun isExplicitAnswerSubmissionRequired(): Boolean = false
+
+  override fun isAutoNavigating(): Boolean = true
 
   override fun getPendingAnswer(): UserAnswer {
     return UserAnswer.newBuilder()

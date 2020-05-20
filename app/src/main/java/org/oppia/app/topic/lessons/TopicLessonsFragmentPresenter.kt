@@ -15,12 +15,8 @@ import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.Topic
-import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.player.exploration.ExplorationActivityPresenter
-import org.oppia.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.app.topic.RouteToStoryListener
-import org.oppia.app.topic.STORY_ID_ARGUMENT_KEY
-import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
@@ -55,13 +51,14 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     currentExpandedChapterListIndex: Int?,
-    expandedChapterListIndexListener: ExpandedChapterListIndexListener
+    expandedChapterListIndexListener: ExpandedChapterListIndexListener,
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String
   ): View? {
-    internalProfileId = fragment.arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)!!
-    topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
-      "Expected topic ID to be included in arguments for TopicLessonsFragment."
-    }
-    storyId = fragment.arguments?.getString(STORY_ID_ARGUMENT_KEY) ?: ""
+    this.internalProfileId = internalProfileId
+    this.topicId = topicId
+    this.storyId = storyId
     this.currentExpandedChapterListIndex = currentExpandedChapterListIndex
     this.expandedChapterListIndexListener = expandedChapterListIndexListener
     binding = TopicLessonsFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)

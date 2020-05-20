@@ -51,8 +51,10 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        android:paddingTop="28dp"
-        android:paddingBottom="108dp"
+        android:paddingStart="20dp"
+        android:paddingTop="20dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="144dp"
         android:scrollbars="none"
         app:data="@{viewModel.ongoingTopicListViewModelLiveData}" />
 
