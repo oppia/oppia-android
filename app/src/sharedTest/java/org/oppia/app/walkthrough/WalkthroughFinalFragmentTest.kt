@@ -47,7 +47,7 @@ class WalkthroughFinalFragmentTest {
   fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicSelected_topicTitleIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       onView(withId(R.id.walkthrough_welcome_next_button))
-        .perform(click())
+        .perform(scrollTo(), click())
       onView(withId(R.id.walkthrough_topic_recycler_view))
         .perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(
@@ -69,7 +69,7 @@ class WalkthroughFinalFragmentTest {
   fun testWalkthroughWelcomeFragment_recyclerViewIndex2_topicSelected_topicTitleIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       onView(withId(R.id.walkthrough_welcome_next_button))
-        .perform(click())
+        .perform(scrollTo(), click())
       onView(withId(R.id.walkthrough_topic_recycler_view))
         .perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(
@@ -91,7 +91,7 @@ class WalkthroughFinalFragmentTest {
   fun testWalkthroughWelcomeFragment_recyclerViewIndex2_topicSelected_configurationChanged_topicTitleIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       onView(withId(R.id.walkthrough_welcome_next_button))
-        .perform(click())
+        .perform(scrollTo(), click())
       onView(withId(R.id.walkthrough_topic_recycler_view))
         .perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(
@@ -119,7 +119,7 @@ class WalkthroughFinalFragmentTest {
   fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicSelected_yesNoButton_isDisplayedCorrectly() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       onView(withId(R.id.walkthrough_welcome_next_button))
-        .perform(click())
+        .perform(scrollTo(), click())
       onView(withId(R.id.walkthrough_topic_recycler_view))
         .perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(
@@ -140,7 +140,7 @@ class WalkthroughFinalFragmentTest {
   fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicSelected_clickNoButton_worksCorrectly() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       onView(withId(R.id.walkthrough_welcome_next_button))
-        .perform(click())
+        .perform(scrollTo(), click())
       onView(withId(R.id.walkthrough_topic_recycler_view))
         .perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(
