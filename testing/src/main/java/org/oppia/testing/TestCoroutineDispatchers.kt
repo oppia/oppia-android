@@ -20,6 +20,11 @@ import javax.inject.Inject
  * Note that it's recommended all Robolectric tests that utilize this class run in a PAUSED looper
  * mode so that clock coordination is consistent between Robolectric's scheduler and this utility
  * class, otherwise unexpected inconsistencies may arise.
+ *
+ * *NOTE TO DEVELOPERS*: This class is NOT yet ready for broad use until after #89 is resolved.
+ * Please ask in oppia-android-dev if you have a use case that you think requires this class.
+ * Specific cases will be allowed to integrate with if other options are infeasible. Other tests
+ * should rely on existing mechanisms until this utility is ready for broad use.
  */
 @InternalCoroutinesApi
 class TestCoroutineDispatchers @Inject constructor(
