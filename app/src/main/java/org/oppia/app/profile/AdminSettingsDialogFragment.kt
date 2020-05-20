@@ -27,6 +27,11 @@ class AdminSettingsDialogFragment : InjectableDialogFragment() {
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    return adminSettingsDialogFragmentPresenter.handleOnCreateDialog(activity as ProfileRouteDialogInterface)
+    val adminPin = arguments?.getString(KEY_ADMIN_SETTINGS_PIN)
+    checkNotNull(adminPin) { "Admin Pin must not be null" }
+    return adminSettingsDialogFragmentPresenter.handleOnCreateDialog(
+      activity as ProfileRouteDialogInterface,
+      adminPin
+    )
   }
 }
