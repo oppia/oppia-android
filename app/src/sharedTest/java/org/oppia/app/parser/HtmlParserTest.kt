@@ -96,9 +96,10 @@ class HtmlParserTest {
   fun testHtmlContent_handleCustomOppiaTags_parsedHtmlDisplaysStyledText() {
     val textView =
       activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
-    val htmlParser = htmlParserFactory.create(/* entityType= */ "", /* entityId= */
-      "", /* imageCenterAlign= */
-      true
+    val htmlParser = htmlParserFactory.create(
+      /* entityType= */ "",
+      /* entityId= */ "",
+      /* imageCenterAlign= */ true
     )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
       "\u003cp\u003e\"Let's try one last question,\" said Mr. Baker. \"Here's a pineapple cake cut into pieces.\"\u003c/p\u003e\u003coppia-noninteractive-image " +
@@ -118,9 +119,10 @@ class HtmlParserTest {
   fun testHtmlContent_nonCustomOppiaTags_notParsed() {
     val textView =
       activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
-    val htmlParser = htmlParserFactory.create(/* entityType= */ "", /* entityId= */
-      "", /* imageCenterAlign= */
-      true
+    val htmlParser = htmlParserFactory.create(
+      /* entityType= */ "",
+      /* entityId= */ "",
+      /* imageCenterAlign= */ true
     )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
       "\u003cp\u003e\"Let's try one last question,\" said Mr. Baker. \"Here's a pineapple cake cut into pieces.\"\u003c/p\u003e\u003coppia--image " +
@@ -139,9 +141,10 @@ class HtmlParserTest {
   fun testHtmlContent_customSpan_isAdded() {
     val textView =
       activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
-    val htmlParser = htmlParserFactory.create(/* entityType= */ "", /* entityId= */
-      "", /* imageCenterAlign= */
-      true
+    val htmlParser = htmlParserFactory.create(
+      /* entityType= */ "",
+      /* entityId= */ "",
+      /* imageCenterAlign= */true
     )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
       "<p>You should know the following before going on:<br></p>" +
@@ -166,9 +169,10 @@ class HtmlParserTest {
   fun testHtmlContent_textLeadingMarginSpan_isAdded() {
     val textView =
       activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
-    val htmlParser = htmlParserFactory.create(/* entityType= */ "", /* entityId= */
-      "", /* imageCenterAlign= */
-      true
+    val htmlParser = htmlParserFactory.create(
+      /* entityType= */ "",
+      /* entityId= */ "",
+      /* imageCenterAlign= */ true
     )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
       """
