@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth.*
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -15,6 +14,7 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.app.model.State
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -26,6 +26,7 @@ import org.robolectric.annotation.Config
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
+import kotlin.test.assertNotNull
 
 /** Tests for [StateRetriever]. */
 @RunWith(AndroidJUnit4::class)
@@ -44,10 +45,39 @@ class StateRetrieverTest {
   }
 
   @Test
-  fun testDragDropSort() {
+  fun testForDragDropInt_hasRuleIsEqualToOrdering_notNull() {
+    val state = createStateFromJson("DragDropSortInput")
+    val answerGroup= state.interaction.answerGroupsList.find { it.ruleSpecsList.first().ruleType == "IsEqualToOrdering" }
+    assertNotNull(answerGroup)
+  }
+
+  @Test
+  fun testForDragDropInt_hasRuleHasElementXAtPositionY_notNull() {
+    val state = createStateFromJson("DragDropSortInput")
+    val answerGroup= state.interaction.answerGroupsList.find { it.ruleSpecsList.first().ruleType == "HasElementXAtPositionY" }
+    assertNotNull(answerGroup)
+  }
+
+  @Test
+  fun testForDragDropInt_hasRuleIsEqualToOrderingWithOneItemAtIncorrectPosition_notNull() {
+    val state = createStateFromJson("DragDropSortInput")
+    val answerGroup= state.interaction.answerGroupsList.find { it.ruleSpecsList.first().ruleType == "IsEqualToOrderingWithOneItemAtIncorrectPosition" }
+    assertNotNull(answerGroup)
+  }
+
+  @Test
+  fun testForDragDropInt_hasRuleHasElementXBeforeElementY_notNull() {
+    val state = createStateFromJson("DragDropSortInput")
+    val answerGroup= state.interaction.answerGroupsList.find { it.ruleSpecsList.first().ruleType == "HasElementXBeforeElementY" }
+    assertNotNull(answerGroup)
+  }
+
+  private fun createStateFromJson(stateName: String): State {
     val json = jsonAssetRetriever.loadJsonFromAsset("test_prototype_exploration.json")
-    val state = stateRetriever.createStateFromJson("question", json?.getJSONObject("states")?.getJSONObject("Introduction"))
-    assertThat(state).isEqualTo(state)
+    return stateRetriever.createStateFromJson(
+      "question",
+      json?.getJSONObject("states")?.getJSONObject(stateName)
+    )
   }
 
   private fun setUpTestApplicationComponent() {
