@@ -8,7 +8,7 @@ import android.text.Spanned
 import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
 import android.text.Spanned.SPAN_MARK_MARK
 import android.text.style.LeadingMarginSpan
-import org.oppia.util.parser.HtmlTagHandler.ListTag
+import org.oppia.util.parser.ListTagHandler.ListTag
 import org.oppia.util.parser.StringUtils.LI_TAG
 import org.oppia.util.parser.StringUtils.OL_TAG
 import org.oppia.util.parser.StringUtils.UL_TAG
@@ -25,7 +25,7 @@ import java.util.*
  *
  * Reference: https://github.com/daphliu/android-spannable-list-sample/tree/master/app/src/main/java/com/daphneliu/sample/listspansample
  */
-class HtmlTagHandler(private val context: Context) : Html.TagHandler {
+class ListTagHandler(private val context: Context) : Html.TagHandler {
 
   private val lists = Stack<ListTag>()
 
