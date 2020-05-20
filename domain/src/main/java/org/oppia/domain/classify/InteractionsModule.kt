@@ -77,4 +77,13 @@ class InteractionsModule {
   ): InteractionClassifier {
     return GenericInteractionClassifier(ruleClassifiers)
   }
+
+  @Provides
+  @IntoMap
+  @StringKey("DragAndDropSortInput")
+  fun provideDragAndDropSortInputInteractionClassifier(
+    @TextInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>
+  ): InteractionClassifier {
+    return GenericInteractionClassifier(ruleClassifiers)
+  }
 }

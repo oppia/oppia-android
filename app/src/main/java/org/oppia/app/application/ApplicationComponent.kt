@@ -7,6 +7,7 @@ import org.oppia.app.activity.ActivityComponent
 import org.oppia.data.backends.gae.NetworkModule
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
@@ -29,6 +30,7 @@ import javax.inject.Singleton
   ApplicationModule::class, DispatcherModule::class, NetworkModule::class, LoggerModule::class,
   ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
   NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
+  DragDropSortInputModule::class,
   InteractionsModule::class, GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
   HtmlParserEntityTypeModule::class, CachingModule::class
 ])
