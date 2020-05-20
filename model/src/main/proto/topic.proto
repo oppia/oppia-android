@@ -439,6 +439,47 @@ message SubtopicView {
   LessonThumbnail subtopic_thumbnail = 5;
 }
 
+// Top level proto used to store revision card content.
+message RevisionCardDatabase{
+  // Subtopic title to subtopic content mapping.
+  map<string, RevisionCardDomain> subtopic_content_database = 1;
+}
+
+// Corresponds to a revision card that is stored in database.
+message RevisionCardDomain {
+  // The title corresponding to the subtopic.
+  string subtopic_title = 1;
+
+  // The core explanation of the subtopic being revised.
+  SubtitledHtml page_contents = 2;
+}
+
+// Corresponds to a revision card that can be displayed for a specific subtopic.
+message RevisionCardView {
+  // The title corresponding to the subtopic.
+  string subtopic_title = 1;
+
+  // The core explanation of the subtopic being revised.
+  SubtitledHtml page_contents = 2;
+}
+
+// Corresponds to a revision card that can be displayed for a specific subtopic.
+message SubtopicContentView {
+  // The title corresponding to the subtopic.
+  string subtopic_title = 1;
+
+  // The core explanation of the subtopic being revised.
+  SubtitledHtml page_contents = 2;
+
+  // Mapping from content_id to a VoiceoverMapping for each SubtitledHtml in this revision card that has corresponding
+  // recorded audio to play.
+  map<string, VoiceoverMapping> recorded_voiceover = 3;
+
+  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this revision card that has corresponding
+  // translations.
+  map<string, TranslationMapping> written_translation = 4;
+}
+
 // Top level proto used to store skill summaries.
 message SkillSummaryDatabase{
   // Skill id to skill summary map.

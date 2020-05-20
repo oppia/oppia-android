@@ -5,27 +5,23 @@ import kotlinx.coroutines.Deferred
 import org.json.JSONArray
 import org.json.JSONObject
 import org.oppia.app.model.ChapterPlayState
-import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.ChapterSummaryDatabase
 import org.oppia.app.model.ChapterSummaryDomain
 import org.oppia.app.model.ChapterSummaryView
 import org.oppia.app.model.LessonThumbnail
 import org.oppia.app.model.LessonThumbnailGraphic
-import org.oppia.app.model.RevisionCard
-import org.oppia.app.model.SkillSummary
+import org.oppia.app.model.RevisionCardDatabase
+import org.oppia.app.model.RevisionCardDomain
 import org.oppia.app.model.SkillSummaryDatabase
 import org.oppia.app.model.SkillSummaryDomain
 import org.oppia.app.model.SkillSummaryView
-import org.oppia.app.model.StorySummary
 import org.oppia.app.model.StorySummaryDatabase
 import org.oppia.app.model.StorySummaryDomain
 import org.oppia.app.model.StorySummaryView
 import org.oppia.app.model.SubtitledHtml
-import org.oppia.app.model.Subtopic
 import org.oppia.app.model.SubtopicDatabase
 import org.oppia.app.model.SubtopicDomain
 import org.oppia.app.model.SubtopicView
-import org.oppia.app.model.TopicBackend
 import org.oppia.app.model.TopicDatabase
 import org.oppia.app.model.TopicDomain
 import org.oppia.app.model.TopicSummaryListView
@@ -62,6 +58,8 @@ val TOPIC_JSON_FILE_ASSOCIATIONS = mapOf(
   )
 )
 
+private const val SUBTOPIC_TITLE = "What is Fraction?"
+
 private const val ADD_TOPIC_TRANSFORMED_PROVIDER_ID = "add_topic_transformed_id"
 private const val ADD_SUBTOPIC_LIST_TRANSFORMED_PROVIDER_ID = "add_subtopic_list_transformed_id"
 private const val ADD_STORY_SUMMARY_LIST_TRANSFORMED_PROVIDER_ID = "add_story_list_transformed_id"
@@ -87,6 +85,12 @@ class TopicRepository @Inject constructor(
 
   /** Indicates that the given chapter is not found. */
   class ChapterSummaryNotFoundException(msg: String) : Exception(msg)
+
+  /** Indicates that the given revision card content already exists. */
+  class RevisionCardAlreadyExistsException(msg: String) : Exception(msg)
+
+  /** Indicates that the given revision card content is not found. */
+  class RevisionCardNotFoundException(msg: String) : Exception(msg)
 
   /** Indicates that the given skill summary already exists. */
   class SkillSummaryAlreadyExistsException(msg: String) : Exception(msg)
@@ -122,6 +126,18 @@ class TopicRepository @Inject constructor(
     SUCCESS,
     CHAPTER_SUMMARY_ALREADY_EXISTS,
     CHAPTER_SUMMARY_NOT_FOUND
+  }
+
+  /**
+   * These statuses correspond to the exceptions above such that if the deferred contains
+   * REVISION_CARD_ALREADY_FOUND, the [RevisionCardAlreadyExistsException] will be passed to a failed AsyncResult.
+   *
+   * SUCCESS corresponds to a successful AsyncResult.
+   */
+  private enum class RevisionCardActionStatus {
+    SUCCESS,
+    REVISION_CARD_ALREADY_EXISTS,
+    REVISION_CARD_NOT_FOUND
   }
 
   /**
@@ -178,6 +194,12 @@ class TopicRepository @Inject constructor(
       ChapterSummaryDatabase.getDefaultInstance()
     )
 
+  private val revisionCardDataStore =
+    cacheStoreFactory.create(
+      "revision_card_database",
+      RevisionCardDatabase.getDefaultInstance()
+    )
+
   private val skillSummaryDataStore =
     cacheStoreFactory.create(
       "skill_summary_database",
@@ -203,6 +225,15 @@ class TopicRepository @Inject constructor(
         logger.e(
           "DOMAIN",
           "Failed to prime cache chapterSummaryDataStore ahead of LiveData conversion for TopicRepository.",
+          it
+        )
+      }
+    }
+    revisionCardDataStore.primeCacheAsync().invokeOnCompletion {
+      it?.let {
+        logger.e(
+          "DOMAIN",
+          "Failed to prime cache revisionCardDataStore ahead of LiveData conversion for TopicRepository.",
           it
         )
       }
@@ -247,12 +278,12 @@ class TopicRepository @Inject constructor(
 
   fun initialiseAllTopics() {
     TOPIC_JSON_FILE_ASSOCIATIONS.keys.forEach { topicId ->
-      val topicBackend = retrieveTopicFromJSON(topicId)
-      addTopic(topicBackend)
-      addSubTopicList(topicBackend)
-      addSkillSummary(topicBackend)
-      addStorySummary(topicBackend)
-      addChapterSummary(topicBackend)
+      addTopic(retrieveTopicDomainFromJson(topicId))
+      addSubTopicList(retrieveSubtopicDomainListFromJson(topicId))
+      addSkillSummaryList(retrieveSkillSummaryDomainListFromJson(topicId))
+      addStorySummaryList(retrieveStorySummaryDomainListFromJson(topicId))
+      addChapterSummaryList(retrieveChapterSummaryDomainListFromJson(topicId))
+      addRevisionCardList(retrieveRevisionCardDomainListFromJson(FRACTIONS_SUBTOPIC_ID_1))
     }
   }
 
@@ -460,15 +491,14 @@ class TopicRepository @Inject constructor(
    * @param topicBackend TopicBackend which needs to be saved offline.
    * @return a [LiveData] that indicates the success/failure of this add operation.
    */
-  private fun addTopic(topicBackend: TopicBackend): DataProvider<Any?> {
+  private fun addTopic(topicDomain: TopicDomain): DataProvider<Any?> {
     val deferred = topicDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-      val topicDomain = convertTopicBackendToTopicDomain(topicBackend)
-      val topicDatabaseBuilder = it.toBuilder().putTopicDatabase(topicBackend.topicId, topicDomain)
+      val topicDatabaseBuilder = it.toBuilder().putTopicDatabase(topicDomain.topicId, topicDomain)
       Pair(topicDatabaseBuilder.build(), TopicActionStatus.SUCCESS)
     }
     return dataProviders.createInMemoryDataProviderAsync(ADD_TOPIC_TRANSFORMED_PROVIDER_ID) {
       return@createInMemoryDataProviderAsync getDeferredResultForTopic(
-        topicBackend.topicId,
+        topicDomain.topicId,
         deferred
       )
     }
@@ -480,12 +510,11 @@ class TopicRepository @Inject constructor(
    * @param topicBackend TopicBackend which needs to be saved offline.
    * @return a [LiveData] that indicates the success/failure of this add operation.
    */
-  private fun addSubTopicList(topicBackend: TopicBackend): DataProvider<Any?> {
+  private fun addSubTopicList(subtopicDomainList: List<SubtopicDomain>): DataProvider<Any?> {
     val deferred =
       subtopicDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-        val subtopicListDomainList = convertTopicBackendToSubtopicListDomain(topicBackend)
         val subtopicDatabaseBuilder = it.toBuilder()
-        subtopicListDomainList.forEach { subtopicDomain ->
+        subtopicDomainList.forEach { subtopicDomain ->
           subtopicDatabaseBuilder.putSubtopicDatabase(
             subtopicDomain.subtopicId,
             subtopicDomain
@@ -494,10 +523,7 @@ class TopicRepository @Inject constructor(
         Pair(subtopicDatabaseBuilder.build(), SubtopicActionStatus.SUCCESS)
       }
     return dataProviders.createInMemoryDataProviderAsync(ADD_SUBTOPIC_LIST_TRANSFORMED_PROVIDER_ID) {
-      return@createInMemoryDataProviderAsync getDeferredResultForSubtopic(
-        topicBackend.topicId,
-        deferred
-      )
+      return@createInMemoryDataProviderAsync getDeferredResultForSubtopic(deferred)
     }
   }
 
@@ -507,10 +533,9 @@ class TopicRepository @Inject constructor(
    * @param topicBackend TopicBackend which needs to be saved offline.
    * @return a [LiveData] that indicates the success/failure of this add operation.
    */
-  private fun addSkillSummary(topicBackend: TopicBackend): DataProvider<Any?> {
+  private fun addSkillSummaryList(skillSummaryDomainList: List<SkillSummaryDomain>): DataProvider<Any?> {
     val deferred =
       skillSummaryDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-        val skillSummaryDomainList = convertTopicBackendToSkillSummaryDomain(topicBackend)
         val skillSummaryDatabaseBuilder = it.toBuilder()
         skillSummaryDomainList.forEach { skillSummaryDomain ->
           skillSummaryDatabaseBuilder.putSkillSummaryDatabase(
@@ -523,10 +548,7 @@ class TopicRepository @Inject constructor(
     return dataProviders.createInMemoryDataProviderAsync(
       ADD_SKILL_SUMMARY_LIST_TRANSFORMED_PROVIDER_ID
     ) {
-      return@createInMemoryDataProviderAsync getDeferredResultForSkillSummary(
-        topicBackend.topicId,
-        deferred
-      )
+      return@createInMemoryDataProviderAsync getDeferredResultForSkillSummary(deferred)
     }
   }
 
@@ -536,10 +558,9 @@ class TopicRepository @Inject constructor(
    * @param topicBackend TopicBackend which needs to be saved offline.
    * @return a [LiveData] that indicates the success/failure of this add operation.
    */
-  private fun addStorySummary(topicBackend: TopicBackend): DataProvider<Any?> {
+  private fun addStorySummaryList(storySummaryDomainList: List<StorySummaryDomain>): DataProvider<Any?> {
     val deferred =
       storySummaryDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-        val storySummaryDomainList = convertTopicBackendToStorySummaryDomain(topicBackend)
         val storySummaryDatabaseBuilder = it.toBuilder()
         storySummaryDomainList.forEach { storySummaryDomain ->
           storySummaryDatabaseBuilder.putStorySummaryDatabase(
@@ -552,10 +573,7 @@ class TopicRepository @Inject constructor(
     return dataProviders.createInMemoryDataProviderAsync(
       ADD_STORY_SUMMARY_LIST_TRANSFORMED_PROVIDER_ID
     ) {
-      return@createInMemoryDataProviderAsync getDeferredResultForStorySummary(
-        topicBackend.topicId,
-        deferred
-      )
+      return@createInMemoryDataProviderAsync getDeferredResultForStorySummary(deferred)
     }
   }
 
@@ -565,10 +583,9 @@ class TopicRepository @Inject constructor(
    * @param topicBackend TopicBackend which needs to be saved offline.
    * @return a [LiveData] that indicates the success/failure of this add operation.
    */
-  private fun addChapterSummary(topicBackend: TopicBackend): DataProvider<Any?> {
+  private fun addChapterSummaryList(chapterSummaryDomainList: List<ChapterSummaryDomain>): DataProvider<Any?> {
     val deferred =
       chapterSummaryDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-        val chapterSummaryDomainList = convertTopicToChapterSummaryList(topicBackend)
         val chapterSummaryDatabaseBuilder = it.toBuilder()
         chapterSummaryDomainList.forEach { chapterSummaryDomain ->
           chapterSummaryDatabaseBuilder.putChapterSummaryDatabase(
@@ -581,61 +598,33 @@ class TopicRepository @Inject constructor(
     return dataProviders.createInMemoryDataProviderAsync(
       ADD_CHAPTER_SUMMARY_LIST_TRANSFORMED_PROVIDER_ID
     ) {
-      return@createInMemoryDataProviderAsync getDeferredResultForChapterSummary(
-        topicBackend.topicId,
-        deferred
-      )
+      return@createInMemoryDataProviderAsync getDeferredResultForChapterSummary(deferred)
     }
   }
 
-  private fun convertTopicBackendToTopicDomain(topicBackend: TopicBackend): TopicDomain {
-    return TopicDomain.newBuilder()
-      .setTopicId(topicBackend.topicId)
-      .setName(topicBackend.name)
-      .setDescription(topicBackend.description)
-      .setTopicThumbnail(TOPIC_THUMBNAILS.getValue(topicBackend.topicId))
-      .setDiskSizeBytes(topicBackend.diskSizeBytes)
-      .build()
-  }
-
-  private fun convertTopicBackendToSkillSummaryDomain(topicBackend: TopicBackend): List<SkillSummaryDomain> {
-    val skillSummaryDomainList = ArrayList<SkillSummaryDomain>()
-    topicBackend.skillList.forEach { skillSummary ->
-      val skillSummaryDomain = convertSkillSummaryToSkillSummaryDomain(skillSummary)
-      skillSummaryDomainList.add(skillSummaryDomain)
-    }
-    return skillSummaryDomainList
-  }
-
-  private fun convertTopicToChapterSummaryList(topicBackend: TopicBackend): List<ChapterSummaryDomain> {
-    val chapterSummaryList = ArrayList<ChapterSummaryDomain>()
-    topicBackend.storyList.forEach { storySummary ->
-      storySummary.chapterList.forEach { chapterSummary ->
-        val chapterSummaryDomain = convertChapterSummaryToChapterSummaryDomain(
-          topicBackend.topicId,
-          storySummary.storyId,
-          chapterSummary
-        )
-        chapterSummaryList.add(chapterSummaryDomain)
+  /**
+   * Adds a list of stories to offline storage linked to a particular topic.
+   *
+   * @param topicBackend TopicBackend which needs to be saved offline.
+   * @return a [LiveData] that indicates the success/failure of this add operation.
+   */
+  private fun addRevisionCardList(revisionCardDomainList: List<RevisionCardDomain>): DataProvider<Any?> {
+    val deferred =
+      revisionCardDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
+        val revisionCardDatabaseBuilder = it.toBuilder()
+        revisionCardDomainList.forEach { revisionCardDomain ->
+          revisionCardDatabaseBuilder.putSubtopicContentDatabase(
+            revisionCardDomain.subtopicTitle,
+            revisionCardDomain
+          )
+        }
+        Pair(revisionCardDatabaseBuilder.build(), RevisionCardActionStatus.SUCCESS)
       }
+    return dataProviders.createInMemoryDataProviderAsync(
+      ADD_CHAPTER_SUMMARY_LIST_TRANSFORMED_PROVIDER_ID
+    ) {
+      return@createInMemoryDataProviderAsync getDeferredResultForRevisionCard(deferred)
     }
-    return chapterSummaryList
-  }
-
-  private fun convertChapterSummaryToChapterSummaryDomain(
-    topicId: String,
-    storyId: String,
-    chapterSummary: ChapterSummary
-  ): ChapterSummaryDomain {
-    return ChapterSummaryDomain.newBuilder()
-      .setTopicId(topicId)
-      .setStoryId(storyId)
-      .setExplorationId(chapterSummary.explorationId)
-      .setName(chapterSummary.name)
-      .setSummary(chapterSummary.summary)
-      .setChapterPlayState(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
-      .setChapterThumbnail(chapterSummary.chapterThumbnail)
-      .build()
   }
 
   private fun convertChapterSummaryDomainToChapterSummaryView(
@@ -650,25 +639,6 @@ class TopicRepository @Inject constructor(
       .build()
   }
 
-  private fun convertSkillSummaryToSkillSummaryDomain(skillSummary: SkillSummary): SkillSummaryDomain {
-    return SkillSummaryDomain.newBuilder()
-      .setSkillId(skillSummary.skillId)
-      .setDescription(skillSummary.description)
-      .setThumbnailUrl(skillSummary.thumbnailUrl)
-      .setSkillThumbnail(skillSummary.skillThumbnail)
-      .build()
-  }
-
-  private fun convertTopicBackendToStorySummaryDomain(topicBackend: TopicBackend): List<StorySummaryDomain> {
-    val storySummaryDomainList = ArrayList<StorySummaryDomain>()
-    topicBackend.storyList.forEach { storySummary ->
-      val storySummaryDomain =
-        convertStorySummaryToStorySummaryDomain(topicBackend.topicId, storySummary)
-      storySummaryDomainList.add(storySummaryDomain)
-    }
-    return storySummaryDomainList
-  }
-
   private fun convertStorySummaryDomainToStorySummaryView(
     storySummaryDomain: StorySummaryDomain
   ): StorySummaryView {
@@ -676,38 +646,6 @@ class TopicRepository @Inject constructor(
       .setStoryId(storySummaryDomain.storyId)
       .setStoryName(storySummaryDomain.storyName)
       .setStoryThumbnail(storySummaryDomain.storyThumbnail)
-      .build()
-  }
-
-  private fun convertStorySummaryToStorySummaryDomain(
-    topicId: String,
-    storySummary: StorySummary
-  ): StorySummaryDomain {
-    return StorySummaryDomain.newBuilder()
-      .setTopicId(topicId)
-      .setStoryId(storySummary.storyId)
-      .setStoryName(storySummary.storyName)
-      .setStoryThumbnail(storySummary.storyThumbnail)
-      .build()
-  }
-
-  private fun convertTopicBackendToSubtopicListDomain(topicBackend: TopicBackend): List<SubtopicDomain> {
-    val subtopicDomainList = ArrayList<SubtopicDomain>()
-    topicBackend.subtopicList.forEach { subtopic ->
-      val subtopicDomain = convertSubtopicToSubtopicDomain(topicBackend.topicId, subtopic)
-      subtopicDomainList.add(subtopicDomain)
-    }
-    return subtopicDomainList
-  }
-
-  private fun convertSubtopicToSubtopicDomain(topicId: String, subtopic: Subtopic): SubtopicDomain {
-    return SubtopicDomain.newBuilder()
-      .setTopicId(topicId)
-      .setSubtopicId(subtopic.subtopicId)
-      .setTitle(subtopic.title)
-      .setSubtopicThumbnail(subtopic.subtopicThumbnail)
-      .setThumbnailUrl(subtopic.thumbnailUrl)
-      .addAllSkillIds(subtopic.skillIdsList)
       .build()
   }
 
@@ -761,62 +699,62 @@ class TopicRepository @Inject constructor(
     }
   }
 
-  private suspend fun getDeferredResultForChapterSummary(
-    topicId: String,
-    deferred: Deferred<ChapterSummaryActionStatus>
-  ): AsyncResult<Any?> {
+  private suspend fun getDeferredResultForChapterSummary(deferred: Deferred<ChapterSummaryActionStatus>): AsyncResult<Any?> {
     return when (deferred.await()) {
       ChapterSummaryActionStatus.SUCCESS -> AsyncResult.success(null)
       ChapterSummaryActionStatus.CHAPTER_SUMMARY_ALREADY_EXISTS -> AsyncResult.failed(
-        ChapterSummaryAlreadyExistsException("Chapter summary list for topic $topicId is already present.")
+        ChapterSummaryAlreadyExistsException("Chapter summary list is already present.")
       )
       ChapterSummaryActionStatus.CHAPTER_SUMMARY_NOT_FOUND -> AsyncResult.failed(
-        ChapterSummaryNotFoundException("Chapter summary list for topic $topicId not found.")
+        ChapterSummaryNotFoundException("Chapter summary list not found.")
       )
     }
   }
 
-  private suspend fun getDeferredResultForSkillSummary(
-    topicId: String,
-    deferred: Deferred<SkillSummaryActionStatus>
-  ): AsyncResult<Any?> {
+  private suspend fun getDeferredResultForRevisionCard(deferred: Deferred<RevisionCardActionStatus>): AsyncResult<Any?> {
+    return when (deferred.await()) {
+      RevisionCardActionStatus.SUCCESS -> AsyncResult.success(null)
+      RevisionCardActionStatus.REVISION_CARD_ALREADY_EXISTS -> AsyncResult.failed(
+        RevisionCardAlreadyExistsException("Revision card is already present.")
+      )
+      RevisionCardActionStatus.REVISION_CARD_NOT_FOUND -> AsyncResult.failed(
+        RevisionCardNotFoundException("Revision card not found.")
+      )
+    }
+  }
+
+  private suspend fun getDeferredResultForSkillSummary(deferred: Deferred<SkillSummaryActionStatus>): AsyncResult<Any?> {
     return when (deferred.await()) {
       SkillSummaryActionStatus.SUCCESS -> AsyncResult.success(null)
       SkillSummaryActionStatus.SKILL_SUMMARY_ALREADY_EXISTS -> AsyncResult.failed(
-        SkillSummaryAlreadyExistsException("Skill summary list for topic $topicId is already present.")
+        SkillSummaryAlreadyExistsException("Skill summary list is already present.")
       )
       SkillSummaryActionStatus.SKILL_SUMMARY_NOT_FOUND -> AsyncResult.failed(
-        SkillSummaryNotFoundException("Skill summary list for topic $topicId not found.")
+        SkillSummaryNotFoundException("Skill summary list not found.")
       )
     }
   }
 
-  private suspend fun getDeferredResultForStorySummary(
-    topicId: String,
-    deferred: Deferred<StorySummaryActionStatus>
-  ): AsyncResult<Any?> {
+  private suspend fun getDeferredResultForStorySummary(deferred: Deferred<StorySummaryActionStatus>): AsyncResult<Any?> {
     return when (deferred.await()) {
       StorySummaryActionStatus.SUCCESS -> AsyncResult.success(null)
       StorySummaryActionStatus.STORY_SUMMARY_ALREADY_EXISTS -> AsyncResult.failed(
-        StorySummaryAlreadyExistsException("Story summary list for topic $topicId is already present.")
+        StorySummaryAlreadyExistsException("Story summary list is already present.")
       )
       StorySummaryActionStatus.STORY_SUMMARY_NOT_FOUND -> AsyncResult.failed(
-        StorySummaryNotFoundException("Story summary list for topic $topicId not found.")
+        StorySummaryNotFoundException("Story summary list not found.")
       )
     }
   }
 
-  private suspend fun getDeferredResultForSubtopic(
-    topicId: String,
-    deferred: Deferred<SubtopicActionStatus>
-  ): AsyncResult<Any?> {
+  private suspend fun getDeferredResultForSubtopic(deferred: Deferred<SubtopicActionStatus>): AsyncResult<Any?> {
     return when (deferred.await()) {
       SubtopicActionStatus.SUCCESS -> AsyncResult.success(null)
       SubtopicActionStatus.SUBTOPIC_ALREADY_EXISTS -> AsyncResult.failed(
-        SubtopicAlreadyExistsException("Subtopic list for topic $topicId is already present.")
+        SubtopicAlreadyExistsException("Subtopic list is already present.")
       )
       SubtopicActionStatus.SUBTOPIC_NOT_FOUND -> AsyncResult.failed(
-        SubtopicNotFoundException("Subtopic list for topic $topicId not found.")
+        SubtopicNotFoundException("Subtopic list not found.")
       )
     }
   }
@@ -836,29 +774,67 @@ class TopicRepository @Inject constructor(
     }
   }
 
-  private fun retrieveTopicFromJSON(topicId: String): TopicBackend {
+  private fun retrieveTopicDomainFromJson(topicId: String): TopicDomain {
     return when (topicId) {
-      FRACTIONS_TOPIC_ID -> createTopicFromJson(
-        "fractions_topic.json", "fractions_skills.json", "fractions_stories.json"
-      )
-      RATIOS_TOPIC_ID -> createTopicFromJson(
-        "ratios_topic.json", "ratios_skills.json", "ratios_stories.json"
-      )
+      FRACTIONS_TOPIC_ID -> createTopicDomainFromJson("fractions_topic.json")
+      RATIOS_TOPIC_ID -> createTopicDomainFromJson("ratios_topic.json")
       else -> throw IllegalArgumentException("Invalid topic ID: $topicId")
     }
   }
 
-  internal fun retrieveStory(storyId: String): StorySummary {
-    return when (storyId) {
-      FRACTIONS_STORY_ID_0 -> createStoryFromJsonFile("fractions_stories.json", /* index= */ 0)
-      RATIOS_STORY_ID_0 -> createStoryFromJsonFile("ratios_stories.json", /* index= */ 0)
-      RATIOS_STORY_ID_1 -> createStoryFromJsonFile("ratios_stories.json", /* index= */ 1)
-      else -> throw IllegalArgumentException("Invalid story ID: $storyId")
+  private fun retrieveSubtopicDomainListFromJson(topicId: String): List<SubtopicDomain> {
+    return when (topicId) {
+      FRACTIONS_TOPIC_ID -> createSubtopicDomainListFromJson("fractions_topic.json")
+      RATIOS_TOPIC_ID -> createSubtopicDomainListFromJson("ratios_topic.json")
+      else -> throw IllegalArgumentException("Invalid topic ID: $topicId")
     }
   }
 
-  // TODO(#45): Expose this as a data provider, or omit if it's not needed.
-  private fun retrieveReviewCard(topicId: String, subtopicId: String): RevisionCard {
+  private fun retrieveSkillSummaryDomainListFromJson(topicId: String): List<SkillSummaryDomain> {
+    return when (topicId) {
+      FRACTIONS_TOPIC_ID -> createSkillsFromJson("fractions_skills.json")
+      RATIOS_TOPIC_ID -> createSkillsFromJson("ratios_skills.json")
+      else -> throw IllegalArgumentException("Invalid topic ID: $topicId")
+    }
+  }
+
+  private fun retrieveStorySummaryDomainListFromJson(topicId: String): List<StorySummaryDomain> {
+    return when (topicId) {
+      FRACTIONS_TOPIC_ID -> createStoriesFromJson(topicId, "fractions_stories.json")
+      RATIOS_TOPIC_ID -> createStoriesFromJson(topicId, "ratios_stories.json")
+      else -> throw IllegalArgumentException("Invalid topic ID: $topicId")
+    }
+  }
+
+  private fun retrieveChapterSummaryDomainListFromJson(topicId: String): List<ChapterSummaryDomain> {
+    return when (topicId) {
+      FRACTIONS_TOPIC_ID -> {
+        val storyData =
+          jsonAssetRetriever.loadJsonFromAsset("fractions_stories.json")?.getJSONArray("story_list")!!
+        createChaptersFromJson(topicId, storyData)
+      }
+      RATIOS_TOPIC_ID -> {
+        val storyData =
+          jsonAssetRetriever.loadJsonFromAsset("ratios_stories.json")?.getJSONArray("story_list")!!
+        createChaptersFromJson(topicId, storyData)
+      }
+      else -> throw IllegalArgumentException("Invalid topic ID: $topicId")
+    }
+  }
+
+  private fun retrieveRevisionCardDomainListFromJson(topicId: String): List<RevisionCardDomain> {
+    val revisionCardDomainList = ArrayList<RevisionCardDomain>()
+    when (topicId) {
+      FRACTIONS_TOPIC_ID -> {
+        revisionCardDomainList.add(retrieveRevisionCardDomainFromJson(FRACTIONS_SUBTOPIC_ID_1))
+        revisionCardDomainList.add(retrieveRevisionCardDomainFromJson(FRACTIONS_SUBTOPIC_ID_2))
+        revisionCardDomainList.add(retrieveRevisionCardDomainFromJson(FRACTIONS_SUBTOPIC_ID_3))
+      }
+    }
+    return revisionCardDomainList
+  }
+
+  private fun retrieveRevisionCardDomainFromJson(subtopicId: String): RevisionCardDomain {
     return when (subtopicId) {
       FRACTIONS_SUBTOPIC_ID_1 -> createSubtopicFromJson(
         "fractions_subtopics.json"
@@ -869,7 +845,7 @@ class TopicRepository @Inject constructor(
       FRACTIONS_SUBTOPIC_ID_3 -> createSubtopicFromJson(
         "fractions_subtopics.json"
       )
-      else -> throw IllegalArgumentException("Invalid topic Name: $topicId")
+      else -> throw IllegalArgumentException("Invalid subtopicId: $subtopicId")
     }
   }
 
@@ -877,34 +853,35 @@ class TopicRepository @Inject constructor(
    * Creates topic from its json representation. The json file is expected to have
    * a key called 'topic' that holds the topic data.
    */
-  private fun createTopicFromJson(
-    topicFileName: String,
-    skillFileName: String,
-    storyFileName: String
-  ): TopicBackend {
+  private fun createTopicDomainFromJson(topicFileName: String): TopicDomain {
     val topicData = jsonAssetRetriever.loadJsonFromAsset(topicFileName)?.getJSONObject("topic")!!
-    val subtopicList: List<Subtopic> =
-      createSubtopicListFromJsonArray(topicData.optJSONArray("subtopics"))
     val topicId = topicData.getString("id")
-    return TopicBackend.newBuilder()
+    return TopicDomain.newBuilder()
       .setTopicId(topicId)
       .setName(topicData.getString("name"))
       .setDescription(topicData.getString("description"))
-      .addAllSkill(createSkillsFromJson(skillFileName))
-      .addAllStory(createStoriesFromJson(storyFileName))
       .setTopicThumbnail(TOPIC_THUMBNAILS.getValue(topicId))
       .setDiskSizeBytes(computeTopicSizeBytes(TOPIC_FILE_ASSOCIATIONS.getValue(topicId)))
-      .addAllSubtopic(subtopicList)
       .build()
   }
 
+  /**
+   * Creates subtopic list from its json representation. The json file is expected to have
+   * a key called 'subtopics' that holds the subtopic data.
+   */
+  private fun createSubtopicDomainListFromJson(topicFileName: String): List<SubtopicDomain> {
+    val topicData = jsonAssetRetriever.loadJsonFromAsset(topicFileName)?.getJSONObject("topic")!!
+    val topicId = topicData.getString("id")
+    return createSubtopicDomainListFromJsonArray(topicId, topicData.optJSONArray("subtopics"))
+  }
+
   /** Creates a sub-topic from its json representation. */
-  private fun createSubtopicFromJson(topicFileName: String): RevisionCard {
+  private fun createSubtopicFromJson(subtopicFileName: String): RevisionCardDomain {
     val subtopicData =
-      jsonAssetRetriever.loadJsonFromAsset(topicFileName)?.getJSONObject("page_contents")!!
+      jsonAssetRetriever.loadJsonFromAsset(subtopicFileName)?.getJSONObject("page_contents")!!
     val subtopicTitle =
-      jsonAssetRetriever.loadJsonFromAsset(topicFileName)?.getString("subtopic_title")!!
-    return RevisionCard.newBuilder()
+      jsonAssetRetriever.loadJsonFromAsset(subtopicFileName)?.getString("subtopic_title")!!
+    return RevisionCardDomain.newBuilder()
       .setSubtopicTitle(subtopicTitle)
       .setPageContents(
         SubtitledHtml.newBuilder()
@@ -918,9 +895,11 @@ class TopicRepository @Inject constructor(
    * Creates the subtopic list of a topic from its json representation. The json file is expected to have
    * a key called 'subtopic' that contains an array of skill Ids,subtopic_id and title.
    */
-  private fun createSubtopicListFromJsonArray(subtopicJsonArray: JSONArray?): List<Subtopic> {
-    val subtopicList = mutableListOf<Subtopic>()
-
+  private fun createSubtopicDomainListFromJsonArray(
+    topicId: String,
+    subtopicJsonArray: JSONArray?
+  ): List<SubtopicDomain> {
+    val subtopicDomainList = mutableListOf<SubtopicDomain>()
     for (i in 0 until subtopicJsonArray!!.length()) {
       val skillIdList = ArrayList<String>()
 
@@ -930,13 +909,15 @@ class TopicRepository @Inject constructor(
       for (j in 0 until skillJsonArray.length()) {
         skillIdList.add(skillJsonArray.optString(j))
       }
-      val subtopic = Subtopic.newBuilder().setSubtopicId(currentSubtopicJsonObject.optString("id"))
+      val subtopicDomain = SubtopicDomain.newBuilder()
+        .setTopicId(topicId)
+        .setSubtopicId(currentSubtopicJsonObject.optString("id"))
         .setTitle(currentSubtopicJsonObject.optString("title"))
         .setSubtopicThumbnail(createSubtopicThumbnail(currentSubtopicJsonObject.optString("id")))
         .addAllSkillIds(skillIdList).build()
-      subtopicList.add(subtopic)
+      subtopicDomainList.add(subtopicDomain)
     }
-    return subtopicList
+    return subtopicDomainList
   }
 
   private fun computeTopicSizeBytes(constituentFiles: List<String>): Long {
@@ -950,8 +931,8 @@ class TopicRepository @Inject constructor(
    * Creates a list of skill for topic from its json representation. The json file is expected to have
    * a key called 'skill_list' that contains an array of skill objects, each with the key 'skill'.
    */
-  private fun createSkillsFromJson(fileName: String): List<SkillSummary> {
-    val skillList = mutableListOf<SkillSummary>()
+  private fun createSkillsFromJson(fileName: String): List<SkillSummaryDomain> {
+    val skillList = mutableListOf<SkillSummaryDomain>()
     val skillData = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray("skill_list")!!
     for (i in 0 until skillData.length()) {
       skillList.add(createSkillFromJson(skillData.getJSONObject(i).getJSONObject("skill")))
@@ -959,8 +940,8 @@ class TopicRepository @Inject constructor(
     return skillList
   }
 
-  private fun createSkillFromJson(skillData: JSONObject): SkillSummary {
-    return SkillSummary.newBuilder()
+  private fun createSkillFromJson(skillData: JSONObject): SkillSummaryDomain {
+    return SkillSummaryDomain.newBuilder()
       .setSkillId(skillData.getString("id"))
       .setDescription(skillData.getString("description"))
       .setSkillThumbnail(createSkillThumbnail(skillData.getString("id")))
@@ -971,50 +952,57 @@ class TopicRepository @Inject constructor(
    * Creates a list of [StorySummary]s for topic from its json representation. The json file is expected to have
    * a key called 'story_list' that contains an array of story objects, each with the key 'story'.
    */
-  private fun createStoriesFromJson(fileName: String): List<StorySummary> {
-    val storyList = mutableListOf<StorySummary>()
-    val storyData = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray("story_list")!!
-    for (i in 0 until storyData.length()) {
-      storyList.add(createStoryFromJson(storyData.getJSONObject(i).getJSONObject("story")))
+  private fun createStoriesFromJson(topicId: String, fileName: String): List<StorySummaryDomain> {
+    val storySummaryDomainList = mutableListOf<StorySummaryDomain>()
+    val storySummaryData =
+      jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray("story_list")!!
+    for (i in 0 until storySummaryData.length()) {
+      storySummaryDomainList.add(
+        createStoryFromJson(
+          topicId,
+          storySummaryData.getJSONObject(i).getJSONObject("story")
+        )
+      )
     }
-    return storyList
+    return storySummaryDomainList
   }
 
-  /** Creates a list of [StorySummary]s for topic given its json representation and the index of the story in json. */
-  private fun createStoryFromJsonFile(fileName: String, index: Int): StorySummary {
-    val storyData = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray("story_list")!!
-    if (storyData.length() < index) {
-      return StorySummary.getDefaultInstance()
-    }
-    return createStoryFromJson(storyData.getJSONObject(index).getJSONObject("story"))
-  }
-
-  private fun createStoryFromJson(storyData: JSONObject): StorySummary {
+  /** Creates a list of [StorySummaryDomain]s for topic given its json representation and the index of the story in json. */
+  private fun createStoryFromJson(topicId: String, storyData: JSONObject): StorySummaryDomain {
     val storyId = storyData.getString("id")
-    return StorySummary.newBuilder()
+    return StorySummaryDomain.newBuilder()
+      .setTopicId(topicId)
       .setStoryId(storyId)
       .setStoryName(storyData.getString("title"))
       .setStoryThumbnail(STORY_THUMBNAILS.getValue(storyId))
-      .addAllChapter(createChaptersFromJson(storyData.getJSONObject("story_contents").getJSONArray("nodes")))
       .build()
   }
 
-  private fun createChaptersFromJson(chapterData: JSONArray): List<ChapterSummary> {
-    val chapterList = mutableListOf<ChapterSummary>()
+  private fun createChaptersFromJson(
+    topicId: String,
+    storiesData: JSONArray
+  ): List<ChapterSummaryDomain> {
+    val chapterSummaryDomainList = mutableListOf<ChapterSummaryDomain>()
+    for (i in 0 until storiesData.length()) {
+      val storyData = storiesData.getJSONObject(i).getJSONObject("story")
+      val chapterData = storyData.getJSONObject("story_contents").getJSONArray("nodes")
+      for (j in 0 until chapterData.length()) {
+        val chapter = chapterData.getJSONObject(i)
+        val explorationId = chapter.getString("exploration_id")
+        chapterSummaryDomainList.add(
+          ChapterSummaryDomain.newBuilder()
+            .setTopicId(topicId)
+            .setStoryId(storyData.getString("id"))
+            .setExplorationId(explorationId)
+            .setName(chapter.getString("title"))
+            .setChapterPlayState(ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED)
+            .setChapterThumbnail(EXPLORATION_THUMBNAILS.getValue(explorationId))
+            .build()
+        )
+      }
 
-    for (i in 0 until chapterData.length()) {
-      val chapter = chapterData.getJSONObject(i)
-      val explorationId = chapter.getString("exploration_id")
-      chapterList.add(
-        ChapterSummary.newBuilder()
-          .setExplorationId(explorationId)
-          .setName(chapter.getString("title"))
-          .setChapterPlayState(ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED)
-          .setChapterThumbnail(EXPLORATION_THUMBNAILS.getValue(explorationId))
-          .build()
-      )
     }
-    return chapterList
+    return chapterSummaryDomainList
   }
 
   private fun createSkillThumbnail(skillId: String): LessonThumbnail {
