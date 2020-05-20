@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.widget.TextView
-import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -55,8 +54,7 @@ import javax.inject.Singleton
 class ExplorationActivityTest {
   private lateinit var networkConnectionUtil: NetworkConnectionUtil
   private lateinit var explorationDataController: ExplorationDataController
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
 
   private val internalProfileId: Int = 0
 
@@ -243,7 +241,7 @@ class ExplorationActivityTest {
 
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withId(R.id.text_input_interaction_view)).perform(ViewActions.typeText("123"), closeSoftKeyboard())
-      onView(withId(R.id.interaction_button)).perform(click())
+      onView(withId(R.id.submit_answer_button)).perform(click())
       Thread.sleep(1000)
 
       onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))

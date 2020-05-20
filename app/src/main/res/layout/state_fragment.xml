@@ -92,7 +92,7 @@
       android:translationZ="4dp">
 
       <TextView
-        android:id="@+id/congratulation_textview"
+        android:id="@+id/congratulation_text_view"
         android:layout_width="match_parent"
         android:layout_height="54dp"
         android:background="@drawable/congratulation_text_background_shadow"

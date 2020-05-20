@@ -97,6 +97,7 @@ dependencies {
       'androidx.test.espresso:espresso-intents:3.1.0',
       'androidx.test.ext:junit:1.1.1',
       'com.google.truth:truth:0.43',
+      'org.robolectric:annotations:4.3',
       'org.robolectric:robolectric:4.3',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
       'org.mockito:mockito-core:2.7.22',
@@ -111,6 +112,7 @@ dependencies {
       'com.google.truth:truth:0.43',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
       'org.mockito:mockito-android:2.7.22',
+      'org.robolectric:annotations:4.3',
   )
   androidTestUtil(
       'androidx.test:orchestrator:1.2.0',
@@ -127,6 +129,8 @@ dependencies {
   // TODO (#59): Remove this once Bazel is introduced
   api project(':data')
   implementation project(":model")
+  testImplementation project(":model")
+  androidTestImplementation project(":model")
   implementation project(":domain")
   implementation project(":utility")
 }
