@@ -1,15 +1,15 @@
 package org.oppia.util.data
 
 import androidx.lifecycle.LiveData
+import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicReference
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.oppia.util.threading.BackgroundDispatcher
-import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.atomic.AtomicReference
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Various functions to create or manipulate [DataProvider]s.
@@ -192,7 +192,7 @@ class DataProviders @Inject constructor(
     private val dispatcher: CoroutineDispatcher,
     private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
     private val dataProvider: DataProvider<T>
-  ): LiveData<AsyncResult<T>>() {
+  ) : LiveData<AsyncResult<T>>() {
     private val asyncSubscriber: ObserveAsyncChange = this::handleDataProviderUpdate
     private val isActive = AtomicBoolean(false)
     private val runningJob = AtomicReference<Job?>(null)

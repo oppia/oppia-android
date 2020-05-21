@@ -6,6 +6,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.test.assertFailsWith
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -14,8 +16,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.testing.FakeSystemClock
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [AsyncResult]. */
 @RunWith(AndroidJUnit4::class)
@@ -854,7 +854,6 @@ class AsyncResultTest {
       .build()
       .inject(this)
   }
-
 
   // TODO(#89): Move this to a common test application component.
   @Singleton

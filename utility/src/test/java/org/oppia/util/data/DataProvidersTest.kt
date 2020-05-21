@@ -10,13 +10,14 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.async
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -29,14 +30,11 @@ import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyZeroInteractions
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
-import org.oppia.testing.FakeSystemClock
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val BASE_PROVIDER_ID_0 = "base_id_0"
 private const val BASE_PROVIDER_ID_1 = "base_id_1"
@@ -100,7 +98,7 @@ class DataProvidersTest {
   @InternalCoroutinesApi
   @ExperimentalCoroutinesApi
   fun testConvertToLiveData_fakeDataProvider_noObserver_doesNotCallRetrieve() {
-    val fakeDataProvider = object: DataProvider<Int> {
+    val fakeDataProvider = object : DataProvider<Int> {
       var hasRetrieveBeenCalled = false
 
       override fun getId(): Any = "fake_data_provider"
@@ -121,7 +119,7 @@ class DataProvidersTest {
   @InternalCoroutinesApi
   @ExperimentalCoroutinesApi
   fun testConvertToLiveData_fakeDataProvider_withObserver_callsRetrieve() {
-    val fakeDataProvider = object: DataProvider<Int> {
+    val fakeDataProvider = object : DataProvider<Int> {
       var hasRetrieveBeenCalled = false
 
       override fun getId(): Any = "fake_data_provider"
@@ -142,7 +140,7 @@ class DataProvidersTest {
   @InternalCoroutinesApi
   @ExperimentalCoroutinesApi
   fun testConvertToLiveData_trivialDataProvider_withObserver_observerReceivesValue() {
-    val simpleDataProvider = object: DataProvider<Int> {
+    val simpleDataProvider = object : DataProvider<Int> {
       override fun getId(): Any = "simple_data_provider"
 
       override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.success(123)
@@ -161,7 +159,7 @@ class DataProvidersTest {
   @ExperimentalCoroutinesApi
   fun testConvertToLiveData_dataProviderChanges_withObserver_observerReceivesUpdatedValue() {
     var providerValue = 123
-    val simpleDataProvider = object: DataProvider<Int> {
+    val simpleDataProvider = object : DataProvider<Int> {
       override fun getId(): Any = "simple_data_provider"
 
       override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.success(providerValue)
@@ -182,7 +180,7 @@ class DataProvidersTest {
   @ExperimentalCoroutinesApi
   fun testConvertToLiveData_providerChanges_withoutObserver_newObserver_newObserverReceivesValue() {
     var providerValue = 123
-    val simpleDataProvider = object: DataProvider<Int> {
+    val simpleDataProvider = object : DataProvider<Int> {
       override fun getId(): Any = "simple_data_provider"
 
       override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.success(providerValue)
@@ -205,7 +203,7 @@ class DataProvidersTest {
   @InternalCoroutinesApi
   @ExperimentalCoroutinesApi
   fun testConvertToLiveData_dataProviderNotified_sameValue_withObserver_observerNotCalledAgain() {
-    val simpleDataProvider = object: DataProvider<Int> {
+    val simpleDataProvider = object : DataProvider<Int> {
       override fun getId(): Any = "simple_data_provider"
 
       override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.success(123)
@@ -214,7 +212,7 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     // Reset the observer and notify the provider has changed without providing a new value.
-    reset(mockIntLiveDataObserver);
+    reset(mockIntLiveDataObserver)
     asyncDataSubscriptionManager.notifyChangeAsync(simpleDataProvider.getId())
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -229,7 +227,7 @@ class DataProvidersTest {
     val providerOldResult = AsyncResult.success(123)
     testCoroutineDispatchers.advanceTimeBy(10)
     val providerNewResult = AsyncResult.success(456)
-    val simpleDataProvider = object: DataProvider<Int> {
+    val simpleDataProvider = object : DataProvider<Int> {
       var callCount = 0
 
       override fun getId(): Any = "simple_data_provider"
