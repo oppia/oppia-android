@@ -3,12 +3,11 @@ package org.oppia.app.player.audio
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.media.MediaPlayer
 import android.net.Uri
 import android.view.View
 import android.widget.SeekBar
-import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewAction
@@ -21,6 +20,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -41,6 +41,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.testing.AudioFragmentTestActivity
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.audio.AudioPlayerController
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.util.caching.CacheAssetsLocally
@@ -64,15 +65,10 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class AudioFragmentTest {
 
-  @Inject
-  lateinit var context: Context
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var context: Context
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
 
-  private lateinit var activityScenario: ActivityScenario<AudioFragmentTestActivity>
-
-  @Inject
-  lateinit var audioPlayerController: AudioPlayerController
+  @Inject lateinit var audioPlayerController: AudioPlayerController
   private lateinit var shadowMediaPlayer: Any
 
   private val TEST_URL =
@@ -88,7 +84,6 @@ class AudioFragmentTest {
     addMediaInfo()
     shadowMediaPlayer = shadowOf(audioPlayerController.getTestMediaPlayer())
     setDataSource(shadowMediaPlayer, toDataSource(context, Uri.parse(TEST_URL)))
-//    activityScenario = ActivityScenario.launch(AudioFragmentTestActivity::class.java)
   }
 
   @After
@@ -105,26 +100,26 @@ class AudioFragmentTest {
 
   @Test
   fun testAudioFragment_openFragment_showsDefaultAudioLanguage() {
-    ActivityScenario.launch<AudioFragmentTestActivity>(createHomeActivityIntent(1)).use {
+    launch<AudioFragmentTestActivity>(createHomeActivityIntent(1)).use {
       onView(withId(R.id.tvAudioLanguage)).check(matches(withText("EN")))
     }
   }
   @Test
-  fun testAudioFragment_openFragment_showsDefaultAudioLanguageHindi() {
-    ActivityScenario.launch<AudioFragmentTestActivity>(createHomeActivityIntent(0)).use {
+  fun testAudioFragment_openFragment_showsDefaultAudioLanguageAsHindi() {
+    launch<AudioFragmentTestActivity>(createHomeActivityIntent(0)).use {
       onView(withId(R.id.tvAudioLanguage)).check(matches(withText("hi")))
     }
   }
   @Test
   fun testAudioFragment_openFragment_showsEnglishAudioLanguageWhenDefaultAudioLanguageNotAvailable() {
-    ActivityScenario.launch<AudioFragmentTestActivity>(createHomeActivityIntent(2)).use {
+    launch<AudioFragmentTestActivity>(createHomeActivityIntent(2)).use {
       onView(withId(R.id.tvAudioLanguage)).check(matches(withText("EN")))
     }
   }
 
   @Test
   fun testAudioFragment_openFragment_showsFragment() {
-    ActivityScenario.launch<AudioFragmentTestActivity>(createHomeActivityIntent(1)).use {
+    launch<AudioFragmentTestActivity>(createHomeActivityIntent(1)).use {
       onView(withId(R.id.ivPlayPauseAudio)).check(matches(isDisplayed()))
       onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(context.getString(R.string.audio_play_description))))
     }
@@ -132,7 +127,7 @@ class AudioFragmentTest {
 
   @Test
   fun testAudioFragment_invokePrepared_clickPlayButton_showsPauseButton() {
-    ActivityScenario.launch<AudioFragmentTestActivity>(createHomeActivityIntent(1)).use {
+    launch<AudioFragmentTestActivity>(createHomeActivityIntent(1)).use {
       invokePreparedListener(shadowMediaPlayer)
 
       onView(withId(R.id.ivPlayPauseAudio)).perform(click())
@@ -143,7 +138,7 @@ class AudioFragmentTest {
 
   @Test
   fun testAudioFragment_invokePrepared_touchSeekBar_checkStillPaused() {
-    ActivityScenario.launch<AudioFragmentTestActivity>(createHomeActivityIntent(1)).use {
+    launch<AudioFragmentTestActivity>(createHomeActivityIntent(1)).use {
       invokePreparedListener(shadowMediaPlayer)
 
       onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
@@ -154,7 +149,7 @@ class AudioFragmentTest {
 
   @Test
   fun testAudioFragment_invokePrepared_clickPlay_touchSeekBar_checkStillPlaying() {
-    ActivityScenario.launch<AudioFragmentTestActivity>(createHomeActivityIntent(1)).use {
+    launch<AudioFragmentTestActivity>(createHomeActivityIntent(1)).use {
       invokePreparedListener(shadowMediaPlayer)
 
       onView(withId(R.id.ivPlayPauseAudio)).perform(click())
@@ -167,20 +162,18 @@ class AudioFragmentTest {
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testAudioFragment_invokePrepared_playAudio_configurationChange_checkStillPlaying() {
-    ActivityScenario.launch<AudioFragmentTestActivity>(createHomeActivityIntent(1)).use {
+    launch<AudioFragmentTestActivity>(createHomeActivityIntent(1)).use {
       invokePreparedListener(shadowMediaPlayer)
       onView(withId(R.id.ivPlayPauseAudio)).perform(click())
       onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
-      activityScenario.onActivity { activity ->
-        activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
-      }
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
     }
   }
 
   @Test
   fun testAudioFragment_invokePrepared_changeDifferentLanguage_checkResetSeekBarAndPaused() {
-    ActivityScenario.launch<AudioFragmentTestActivity>(createHomeActivityIntent(1)).use {
+    launch<AudioFragmentTestActivity>(createHomeActivityIntent(1)).use {
       invokePreparedListener(shadowMediaPlayer)
       onView(withId(R.id.ivPlayPauseAudio)).perform(click())
       onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
