@@ -44,12 +44,14 @@ import org.oppia.util.data.DataProviders
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 
 private const val CACHE_NAME_1 = "test_cache_1"
 private const val CACHE_NAME_2 = "test_cache_2"
 
 /** Tests for [PersistentCacheStore]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class PersistentCacheStoreTest {
   private companion object {
@@ -65,8 +67,7 @@ class PersistentCacheStoreTest {
 
   @Inject lateinit var dataProviders: DataProviders
 
-  @InternalCoroutinesApi
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @InternalCoroutinesApi @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Mock
   lateinit var mockUserAppHistoryObserver1: Observer<AsyncResult<TestMessage>>

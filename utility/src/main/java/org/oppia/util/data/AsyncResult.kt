@@ -171,17 +171,17 @@ class AsyncResult<T> private constructor(
   companion object {
     /** Returns a pending result. */
     fun <T> pending(): AsyncResult<T> {
-      return AsyncResult(status = Status.PENDING, resultTimeMillis = System.currentTimeMillis())
+      return AsyncResult(status = Status.PENDING, resultTimeMillis = SystemClock.uptimeMillis())
     }
 
     /** Returns a successful result with the specified payload. */
     fun <T> success(value: T): AsyncResult<T> {
-      return AsyncResult(status = Status.SUCCEEDED, resultTimeMillis = System.currentTimeMillis(), value = value)
+      return AsyncResult(status = Status.SUCCEEDED, resultTimeMillis = SystemClock.uptimeMillis(), value = value)
     }
 
     /** Returns a failed result with the specified error. */
     fun <T> failed(error: Throwable): AsyncResult<T> {
-      return AsyncResult(status = Status.FAILED, resultTimeMillis = System.currentTimeMillis(), error = error)
+      return AsyncResult(status = Status.FAILED, resultTimeMillis = SystemClock.uptimeMillis(), error = error)
     }
   }
 
