@@ -1,11 +1,11 @@
 package org.oppia.testing
 
 import android.os.SystemClock
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import org.robolectric.shadows.ShadowLooper
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 /**
  * Helper class to coordinate execution between all threads currently running in a test environment,
@@ -103,14 +103,14 @@ class TestCoroutineDispatchers @Inject constructor(
 
   private fun hasPendingTasks(): Boolean {
     // TODO(#89): Ensure the check for pending UI thread tasks is actually correct.
-    return backgroundTestDispatcher.hasPendingTasks()
-        || blockingTestDispatcher.hasPendingTasks()
-        || !shadowUiLooper.isIdle
+    return backgroundTestDispatcher.hasPendingTasks() ||
+        blockingTestDispatcher.hasPendingTasks() ||
+        !shadowUiLooper.isIdle
   }
 
   private fun hasPendingCompletableTasks(): Boolean {
-    return backgroundTestDispatcher.hasPendingCompletableTasks()
-        || blockingTestDispatcher.hasPendingCompletableTasks()
-        || !shadowUiLooper.isIdle
+    return backgroundTestDispatcher.hasPendingCompletableTasks() ||
+        blockingTestDispatcher.hasPendingCompletableTasks() ||
+        !shadowUiLooper.isIdle
   }
 }
