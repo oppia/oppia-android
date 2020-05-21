@@ -30,6 +30,6 @@ class NavigationDrawerFragment : InjectableFragment(), RouteToProfileProgressLis
   }
 
   override fun routeToProfileProgress(profileId: Int) {
-    startActivity(ProfileProgressActivity.createProfileProgressActivityIntent(this.activity!!, profileId))
+    navigationDrawerFragmentPresenter.openProfileProgress(profileId)
   }
 }

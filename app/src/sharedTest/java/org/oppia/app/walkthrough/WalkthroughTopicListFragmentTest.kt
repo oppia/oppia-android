@@ -44,7 +44,7 @@ class WalkthroughTopicListFragmentTest {
   @Test
   fun testWalkthroughWelcomeFragment_recyclerViewIndex0_topicHeader_topicHeaderIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
-      onView(withId(R.id.walkthrough_welcome_next_button)).perform(click())
+      onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       onView(atPositionOnView(R.id.walkthrough_topic_recycler_view, 0, R.id.walkthrough_topic_header_text_view)).check(
         matches(
           withText(R.string.what_do_you_want_to_learn)
@@ -56,7 +56,7 @@ class WalkthroughTopicListFragmentTest {
   @Test
   fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicCard_topicNameIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
-      onView(withId(R.id.walkthrough_welcome_next_button)).perform(click())
+      onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       onView(withId(R.id.walkthrough_topic_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(atPositionOnView(R.id.walkthrough_topic_recycler_view, 1, R.id.walkthrough_topic_name_text_view)).check(
         matches(
@@ -69,7 +69,7 @@ class WalkthroughTopicListFragmentTest {
   @Test
   fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicCard_configurationChanged_topicNameIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
-      onView(withId(R.id.walkthrough_welcome_next_button)).perform(click())
+      onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       onView(withId(R.id.walkthrough_topic_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(isRoot()).perform(orientationLandscape())
       onView(atPositionOnView(R.id.walkthrough_topic_recycler_view, 1, R.id.walkthrough_topic_name_text_view)).check(

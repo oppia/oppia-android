@@ -4,6 +4,7 @@ import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -41,7 +42,7 @@ class WalkthroughActivityTest {
   @Test
   fun testWalkthroughFragment_increaseProgress_worksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
-      onView(withId(R.id.walkthrough_welcome_next_button)).perform(click())
+      onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
     }
   }
@@ -49,7 +50,7 @@ class WalkthroughActivityTest {
   @Test
   fun testWalkthroughFragment_increaseProgress_configurationChanged_worksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
-      onView(withId(R.id.walkthrough_welcome_next_button)).perform(click())
+      onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
@@ -59,7 +60,7 @@ class WalkthroughActivityTest {
   @Test
   fun testWalkthroughFragment_nextBtn_configurationChanged_backBtn_worksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
-      onView(withId(R.id.walkthrough_welcome_next_button)).perform(click())
+      onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.back_button)).perform(click())
       onView(
@@ -74,7 +75,7 @@ class WalkthroughActivityTest {
   @Test
   fun testWalkthroughFragment_increaseProgress_onBackPressed_decreaseProgress_progressWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
-      onView(withId(R.id.walkthrough_welcome_next_button)).perform(click())
+      onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
       pressBack()
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(1)))
@@ -84,7 +85,7 @@ class WalkthroughActivityTest {
   @Test
   fun testWalkthroughFragment_increaseProgress_decreaseProgress_progressWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
-      onView(withId(R.id.walkthrough_welcome_next_button)).perform(click())
+      onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
       onView(withId(R.id.back_button)).perform(click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(1)))

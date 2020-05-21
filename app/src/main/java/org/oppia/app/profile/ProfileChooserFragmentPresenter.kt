@@ -27,6 +27,7 @@ import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
+import org.oppia.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
 private val COLORS_LIST = listOf(
@@ -77,6 +78,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   /** Binds ViewModel and sets up RecyclerView Adapter. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+    StatusBarColor.statusBarColorUpdate(R.color.profileStatusBar, activity, false)
     binding = ProfileChooserFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.apply {
       viewModel = chooserViewModel
