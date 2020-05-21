@@ -1,12 +1,31 @@
 package org.oppia.testing
 
 import android.os.SystemClock
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import org.robolectric.shadows.ShadowLooper
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
+/**
+ * Helper class to coordinate execution between all threads currently running in a test environment,
+ * using both Robolectric for the main thread and [TestCoroutineDispatcher] for application-specific
+ * threads.
+ *
+ * This class should be used at any point in a test where the test should ensure that a clean thread
+ * synchronization point is needed (such as after an async operation is kicked off). This class can
+ * guarantee that all threads enter a truly idle state (e.g. even in cases where execution "ping
+ * pongs" across multiple threads will still be resolved with a single call to [advanceUntilIdle]).
+ *
+ * Note that it's recommended all Robolectric tests that utilize this class run in a PAUSED looper
+ * mode so that clock coordination is consistent between Robolectric's scheduler and this utility
+ * class, otherwise unexpected inconsistencies may arise.
+ *
+ * *NOTE TO DEVELOPERS*: This class is NOT yet ready for broad use until after #89 is resolved.
+ * Please ask in oppia-android-dev if you have a use case that you think requires this class.
+ * Specific cases will be allowed to integrate with if other options are infeasible. Other tests
+ * should rely on existing mechanisms until this utility is ready for broad use.
+ */
 @InternalCoroutinesApi
 class TestCoroutineDispatchers @Inject constructor(
   @BackgroundTestDispatcher private val backgroundTestDispatcher: TestCoroutineDispatcher,
@@ -15,6 +34,14 @@ class TestCoroutineDispatchers @Inject constructor(
 ) {
   private val shadowUiLooper = ShadowLooper.shadowMainLooper()
 
+  /**
+   * Runs all current tasks pending, but does not follow up with executing any tasks that are
+   * scheduled after this method finishes.
+   *
+   * Note that it's generally not recommended to use this method since it may result in
+   * unanticipated dependencies on the order in which this class processes tasks for each handled
+   * thread and coroutine dispatcher.
+   */
   @ExperimentalCoroutinesApi
   fun runCurrent() {
     do {
@@ -22,12 +49,25 @@ class TestCoroutineDispatchers @Inject constructor(
     } while (hasPendingCompletableTasks())
   }
 
+  /**
+   * Advances the system clock by the specified time in milliseconds and then ensures any new tasks
+   * that were scheduled are fully executed before proceeding. This does not guarantee the
+   * dispatchers enter an idle state, but it should guarantee that any tasks previously not executed
+   * due to it not yet being the time for them to be executed may now run if the clock was
+   * sufficiently forwarded.
+   */
   @ExperimentalCoroutinesApi
   fun advanceTimeBy(delayTimeMillis: Long) {
     fakeSystemClock.advanceTime(delayTimeMillis)
     runCurrent()
   }
 
+  /**
+   * Runs all tasks on all tracked threads & coroutine dispatchers until no other tasks are pending.
+   * However, tasks that require the clock to be advanced will likely not be run (depending on
+   * whether the test under question is using a paused execution model, which is recommended for
+   * Robolectric tests).
+   */
   @ExperimentalCoroutinesApi
   fun advanceUntilIdle() {
     do {
@@ -62,15 +102,15 @@ class TestCoroutineDispatchers @Inject constructor(
   }
 
   private fun hasPendingTasks(): Boolean {
-    // TODO: make idle check correct for all scheduled tasks
-    return backgroundTestDispatcher.hasPendingTasks()
-        || blockingTestDispatcher.hasPendingTasks()
-        || !shadowUiLooper.isIdle
+    // TODO(#89): Ensure the check for pending UI thread tasks is actually correct.
+    return backgroundTestDispatcher.hasPendingTasks() ||
+        blockingTestDispatcher.hasPendingTasks() ||
+        !shadowUiLooper.isIdle
   }
 
   private fun hasPendingCompletableTasks(): Boolean {
-    return backgroundTestDispatcher.hasPendingCompletableTasks()
-        || blockingTestDispatcher.hasPendingCompletableTasks()
-        || !shadowUiLooper.isIdle
+    return backgroundTestDispatcher.hasPendingCompletableTasks() ||
+        blockingTestDispatcher.hasPendingCompletableTasks() ||
+        !shadowUiLooper.isIdle
   }
 }
