@@ -12,6 +12,7 @@ import org.oppia.app.model.LessonThumbnail
 import org.oppia.app.model.LessonThumbnailGraphic
 import org.oppia.app.model.RevisionCardDatabase
 import org.oppia.app.model.RevisionCardDomain
+import org.oppia.app.model.RevisionCardView
 import org.oppia.app.model.SkillSummaryDatabase
 import org.oppia.app.model.SkillSummaryDomain
 import org.oppia.app.model.SkillSummaryView
@@ -287,6 +288,17 @@ class TopicRepository @Inject constructor(
     }
   }
 
+  fun getRevisionCardDataProvider(subtopicTitle: String): DataProvider<RevisionCardView> {
+    return dataProviders.transformAsync<RevisionCardDatabase, RevisionCardView>(
+      GET_TOPIC_TRANSFORMED_PROVIDER_ID,
+      revisionCardDataStore
+    ) {
+      val revisionCardDomain = it.subtopicContentDatabaseMap[subtopicTitle]
+      val revisionCardView = convertRevisionCardDomainToRevisionCardView(revisionCardDomain)
+      AsyncResult.success(revisionCardView)
+    }
+  }
+
   fun getSkillSummaryDataProvider(skillId: String): DataProvider<SkillSummaryView> {
     return dataProviders.transformAsync<SkillSummaryDatabase, SkillSummaryView>(
       GET_TOPIC_TRANSFORMED_PROVIDER_ID,
@@ -314,7 +326,7 @@ class TopicRepository @Inject constructor(
       GET_TOPIC_TRANSFORMED_PROVIDER_ID,
       subtopicDataStore
     ) {
-      val subtopicViewList = ArrayList<SubtopicView>()
+      val subtopicViewList = mutableListOf<SubtopicView>()
       val subtopicDomainList =
         it.subtopicDatabaseMap.values.filter { subtopicDomain -> subtopicDomain.topicId == topicId }
       subtopicDomainList.forEach { subtopicDomain ->
@@ -367,6 +379,148 @@ class TopicRepository @Inject constructor(
       chapterSummaryListDataProvider,
       ::combineTopicListAndChapterSummaryList
     )
+  }
+
+  /**
+   * Adds a topic to offline storage.
+   *
+   * @param topicBackend TopicBackend which needs to be saved offline.
+   * @return a [LiveData] that indicates the success/failure of this add operation.
+   */
+  fun addTopic(topicDomain: TopicDomain): DataProvider<Any?> {
+    val deferred = topicDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
+      val topicDatabaseBuilder = it.toBuilder().putTopicDatabase(topicDomain.topicId, topicDomain)
+      Pair(topicDatabaseBuilder.build(), TopicActionStatus.SUCCESS)
+    }
+    return dataProviders.createInMemoryDataProviderAsync(ADD_TOPIC_TRANSFORMED_PROVIDER_ID) {
+      return@createInMemoryDataProviderAsync getDeferredResultForTopic(
+        topicDomain.topicId,
+        deferred
+      )
+    }
+  }
+
+  /**
+   * Adds a list of subtopic to offline storage linked to a particular topic.
+   *
+   * @param topicBackend TopicBackend which needs to be saved offline.
+   * @return a [LiveData] that indicates the success/failure of this add operation.
+   */
+  fun addSubTopicList(subtopicDomainList: List<SubtopicDomain>): DataProvider<Any?> {
+    val deferred =
+      subtopicDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
+        val subtopicDatabaseBuilder = it.toBuilder()
+        subtopicDomainList.forEach { subtopicDomain ->
+          subtopicDatabaseBuilder.putSubtopicDatabase(
+            subtopicDomain.subtopicId,
+            subtopicDomain
+          )
+        }
+        Pair(subtopicDatabaseBuilder.build(), SubtopicActionStatus.SUCCESS)
+      }
+    return dataProviders.createInMemoryDataProviderAsync(ADD_SUBTOPIC_LIST_TRANSFORMED_PROVIDER_ID) {
+      return@createInMemoryDataProviderAsync getDeferredResultForSubtopic(deferred)
+    }
+  }
+
+  /**
+   * Adds a list of skills to offline storage linked to a particular topic.
+   *
+   * @param topicBackend TopicBackend which needs to be saved offline.
+   * @return a [LiveData] that indicates the success/failure of this add operation.
+   */
+  fun addSkillSummaryList(skillSummaryDomainList: List<SkillSummaryDomain>): DataProvider<Any?> {
+    val deferred =
+      skillSummaryDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
+        val skillSummaryDatabaseBuilder = it.toBuilder()
+        skillSummaryDomainList.forEach { skillSummaryDomain ->
+          skillSummaryDatabaseBuilder.putSkillSummaryDatabase(
+            skillSummaryDomain.skillId,
+            skillSummaryDomain
+          )
+        }
+        Pair(skillSummaryDatabaseBuilder.build(), SkillSummaryActionStatus.SUCCESS)
+      }
+    return dataProviders.createInMemoryDataProviderAsync(
+      ADD_SKILL_SUMMARY_LIST_TRANSFORMED_PROVIDER_ID
+    ) {
+      return@createInMemoryDataProviderAsync getDeferredResultForSkillSummary(deferred)
+    }
+  }
+
+  /**
+   * Adds a list of stories to offline storage linked to a particular topic.
+   *
+   * @param topicBackend TopicBackend which needs to be saved offline.
+   * @return a [LiveData] that indicates the success/failure of this add operation.
+   */
+  fun addStorySummaryList(storySummaryDomainList: List<StorySummaryDomain>): DataProvider<Any?> {
+    val deferred =
+      storySummaryDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
+        val storySummaryDatabaseBuilder = it.toBuilder()
+        storySummaryDomainList.forEach { storySummaryDomain ->
+          storySummaryDatabaseBuilder.putStorySummaryDatabase(
+            storySummaryDomain.storyId,
+            storySummaryDomain
+          )
+        }
+        Pair(storySummaryDatabaseBuilder.build(), StorySummaryActionStatus.SUCCESS)
+      }
+    return dataProviders.createInMemoryDataProviderAsync(
+      ADD_STORY_SUMMARY_LIST_TRANSFORMED_PROVIDER_ID
+    ) {
+      return@createInMemoryDataProviderAsync getDeferredResultForStorySummary(deferred)
+    }
+  }
+
+  /**
+   * Adds a list of stories to offline storage linked to a particular topic.
+   *
+   * @param topicBackend TopicBackend which needs to be saved offline.
+   * @return a [LiveData] that indicates the success/failure of this add operation.
+   */
+  fun addChapterSummaryList(chapterSummaryDomainList: List<ChapterSummaryDomain>): DataProvider<Any?> {
+    val deferred =
+      chapterSummaryDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
+        val chapterSummaryDatabaseBuilder = it.toBuilder()
+        chapterSummaryDomainList.forEach { chapterSummaryDomain ->
+          chapterSummaryDatabaseBuilder.putChapterSummaryDatabase(
+            chapterSummaryDomain.explorationId,
+            chapterSummaryDomain
+          )
+        }
+        Pair(chapterSummaryDatabaseBuilder.build(), ChapterSummaryActionStatus.SUCCESS)
+      }
+    return dataProviders.createInMemoryDataProviderAsync(
+      ADD_CHAPTER_SUMMARY_LIST_TRANSFORMED_PROVIDER_ID
+    ) {
+      return@createInMemoryDataProviderAsync getDeferredResultForChapterSummary(deferred)
+    }
+  }
+
+  /**
+   * Adds a list of stories to offline storage linked to a particular topic.
+   *
+   * @param topicBackend TopicBackend which needs to be saved offline.
+   * @return a [LiveData] that indicates the success/failure of this add operation.
+   */
+  fun addRevisionCardList(revisionCardDomainList: List<RevisionCardDomain>): DataProvider<Any?> {
+    val deferred =
+      revisionCardDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
+        val revisionCardDatabaseBuilder = it.toBuilder()
+        revisionCardDomainList.forEach { revisionCardDomain ->
+          revisionCardDatabaseBuilder.putSubtopicContentDatabase(
+            revisionCardDomain.subtopicTitle,
+            revisionCardDomain
+          )
+        }
+        Pair(revisionCardDatabaseBuilder.build(), RevisionCardActionStatus.SUCCESS)
+      }
+    return dataProviders.createInMemoryDataProviderAsync(
+      ADD_CHAPTER_SUMMARY_LIST_TRANSFORMED_PROVIDER_ID
+    ) {
+      return@createInMemoryDataProviderAsync getDeferredResultForRevisionCard(deferred)
+    }
   }
 
   private fun retrieveStorySummaryListForATopicDataProvider(topicId: String): DataProvider<List<StorySummaryDomain>> {
@@ -437,7 +591,7 @@ class TopicRepository @Inject constructor(
     storySummaryDomainList: List<StorySummaryDomain>,
     chapterSummaryDomainList: List<ChapterSummaryDomain>
   ): List<StorySummaryView> {
-    val storySummaryViewList = ArrayList<StorySummaryView>()
+    val storySummaryViewList = mutableListOf<StorySummaryView>()
     storySummaryDomainList.forEach { storySummaryDomain ->
       val currentChapterSummaryDomainList =
         chapterSummaryDomainList.filter { chapterSummaryDomain -> chapterSummaryDomain.storyId == storySummaryDomain.storyId }
@@ -454,7 +608,7 @@ class TopicRepository @Inject constructor(
     storySummaryDomain: StorySummaryDomain,
     chapterSummaryDomainList: List<ChapterSummaryDomain>
   ): StorySummaryView {
-    val chapterSummaryViewList = ArrayList<ChapterSummaryView>()
+    val chapterSummaryViewList = mutableListOf<ChapterSummaryView>()
     chapterSummaryDomainList.forEach { chapterSummaryDomain ->
       val chapterSummaryView = convertChapterSummaryDomainToChapterSummaryView(chapterSummaryDomain)
       chapterSummaryViewList.add(chapterSummaryView)
@@ -477,154 +631,12 @@ class TopicRepository @Inject constructor(
           chapterSummaryDomain.topicId == topicDomain.topicId
         }.size
       topicSummaryListView.addTopicSummary(
-        topicSummaryView.toBuilder().setTotalChapterCount(
-          chapterCount
-        ).build()
+        topicSummaryView.toBuilder()
+          .setTotalChapterCount(chapterCount)
+          .build()
       )
     }
     return topicSummaryListView.build()
-  }
-
-  /**
-   * Adds a topic to offline storage.
-   *
-   * @param topicBackend TopicBackend which needs to be saved offline.
-   * @return a [LiveData] that indicates the success/failure of this add operation.
-   */
-  private fun addTopic(topicDomain: TopicDomain): DataProvider<Any?> {
-    val deferred = topicDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-      val topicDatabaseBuilder = it.toBuilder().putTopicDatabase(topicDomain.topicId, topicDomain)
-      Pair(topicDatabaseBuilder.build(), TopicActionStatus.SUCCESS)
-    }
-    return dataProviders.createInMemoryDataProviderAsync(ADD_TOPIC_TRANSFORMED_PROVIDER_ID) {
-      return@createInMemoryDataProviderAsync getDeferredResultForTopic(
-        topicDomain.topicId,
-        deferred
-      )
-    }
-  }
-
-  /**
-   * Adds a list of subtopic to offline storage linked to a particular topic.
-   *
-   * @param topicBackend TopicBackend which needs to be saved offline.
-   * @return a [LiveData] that indicates the success/failure of this add operation.
-   */
-  private fun addSubTopicList(subtopicDomainList: List<SubtopicDomain>): DataProvider<Any?> {
-    val deferred =
-      subtopicDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-        val subtopicDatabaseBuilder = it.toBuilder()
-        subtopicDomainList.forEach { subtopicDomain ->
-          subtopicDatabaseBuilder.putSubtopicDatabase(
-            subtopicDomain.subtopicId,
-            subtopicDomain
-          )
-        }
-        Pair(subtopicDatabaseBuilder.build(), SubtopicActionStatus.SUCCESS)
-      }
-    return dataProviders.createInMemoryDataProviderAsync(ADD_SUBTOPIC_LIST_TRANSFORMED_PROVIDER_ID) {
-      return@createInMemoryDataProviderAsync getDeferredResultForSubtopic(deferred)
-    }
-  }
-
-  /**
-   * Adds a list of skills to offline storage linked to a particular topic.
-   *
-   * @param topicBackend TopicBackend which needs to be saved offline.
-   * @return a [LiveData] that indicates the success/failure of this add operation.
-   */
-  private fun addSkillSummaryList(skillSummaryDomainList: List<SkillSummaryDomain>): DataProvider<Any?> {
-    val deferred =
-      skillSummaryDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-        val skillSummaryDatabaseBuilder = it.toBuilder()
-        skillSummaryDomainList.forEach { skillSummaryDomain ->
-          skillSummaryDatabaseBuilder.putSkillSummaryDatabase(
-            skillSummaryDomain.skillId,
-            skillSummaryDomain
-          )
-        }
-        Pair(skillSummaryDatabaseBuilder.build(), SkillSummaryActionStatus.SUCCESS)
-      }
-    return dataProviders.createInMemoryDataProviderAsync(
-      ADD_SKILL_SUMMARY_LIST_TRANSFORMED_PROVIDER_ID
-    ) {
-      return@createInMemoryDataProviderAsync getDeferredResultForSkillSummary(deferred)
-    }
-  }
-
-  /**
-   * Adds a list of stories to offline storage linked to a particular topic.
-   *
-   * @param topicBackend TopicBackend which needs to be saved offline.
-   * @return a [LiveData] that indicates the success/failure of this add operation.
-   */
-  private fun addStorySummaryList(storySummaryDomainList: List<StorySummaryDomain>): DataProvider<Any?> {
-    val deferred =
-      storySummaryDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-        val storySummaryDatabaseBuilder = it.toBuilder()
-        storySummaryDomainList.forEach { storySummaryDomain ->
-          storySummaryDatabaseBuilder.putStorySummaryDatabase(
-            storySummaryDomain.storyId,
-            storySummaryDomain
-          )
-        }
-        Pair(storySummaryDatabaseBuilder.build(), StorySummaryActionStatus.SUCCESS)
-      }
-    return dataProviders.createInMemoryDataProviderAsync(
-      ADD_STORY_SUMMARY_LIST_TRANSFORMED_PROVIDER_ID
-    ) {
-      return@createInMemoryDataProviderAsync getDeferredResultForStorySummary(deferred)
-    }
-  }
-
-  /**
-   * Adds a list of stories to offline storage linked to a particular topic.
-   *
-   * @param topicBackend TopicBackend which needs to be saved offline.
-   * @return a [LiveData] that indicates the success/failure of this add operation.
-   */
-  private fun addChapterSummaryList(chapterSummaryDomainList: List<ChapterSummaryDomain>): DataProvider<Any?> {
-    val deferred =
-      chapterSummaryDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-        val chapterSummaryDatabaseBuilder = it.toBuilder()
-        chapterSummaryDomainList.forEach { chapterSummaryDomain ->
-          chapterSummaryDatabaseBuilder.putChapterSummaryDatabase(
-            chapterSummaryDomain.explorationId,
-            chapterSummaryDomain
-          )
-        }
-        Pair(chapterSummaryDatabaseBuilder.build(), ChapterSummaryActionStatus.SUCCESS)
-      }
-    return dataProviders.createInMemoryDataProviderAsync(
-      ADD_CHAPTER_SUMMARY_LIST_TRANSFORMED_PROVIDER_ID
-    ) {
-      return@createInMemoryDataProviderAsync getDeferredResultForChapterSummary(deferred)
-    }
-  }
-
-  /**
-   * Adds a list of stories to offline storage linked to a particular topic.
-   *
-   * @param topicBackend TopicBackend which needs to be saved offline.
-   * @return a [LiveData] that indicates the success/failure of this add operation.
-   */
-  private fun addRevisionCardList(revisionCardDomainList: List<RevisionCardDomain>): DataProvider<Any?> {
-    val deferred =
-      revisionCardDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-        val revisionCardDatabaseBuilder = it.toBuilder()
-        revisionCardDomainList.forEach { revisionCardDomain ->
-          revisionCardDatabaseBuilder.putSubtopicContentDatabase(
-            revisionCardDomain.subtopicTitle,
-            revisionCardDomain
-          )
-        }
-        Pair(revisionCardDatabaseBuilder.build(), RevisionCardActionStatus.SUCCESS)
-      }
-    return dataProviders.createInMemoryDataProviderAsync(
-      ADD_CHAPTER_SUMMARY_LIST_TRANSFORMED_PROVIDER_ID
-    ) {
-      return@createInMemoryDataProviderAsync getDeferredResultForRevisionCard(deferred)
-    }
   }
 
   private fun convertChapterSummaryDomainToChapterSummaryView(
@@ -637,6 +649,17 @@ class TopicRepository @Inject constructor(
       .setChapterPlayState(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
       .setChapterThumbnail(chapterSummaryDomain.chapterThumbnail)
       .build()
+  }
+
+  private fun convertRevisionCardDomainToRevisionCardView(revisionCardDomain: RevisionCardDomain?): RevisionCardView {
+    return if (revisionCardDomain == null) {
+      RevisionCardView.getDefaultInstance()
+    } else {
+      RevisionCardView.newBuilder()
+        .setSubtopicTitle(revisionCardDomain.subtopicTitle)
+        .setPageContents(revisionCardDomain.pageContents)
+        .build()
+    }
   }
 
   private fun convertStorySummaryDomainToStorySummaryView(
@@ -823,7 +846,7 @@ class TopicRepository @Inject constructor(
   }
 
   private fun retrieveRevisionCardDomainListFromJson(topicId: String): List<RevisionCardDomain> {
-    val revisionCardDomainList = ArrayList<RevisionCardDomain>()
+    val revisionCardDomainList = mutableListOf<RevisionCardDomain>()
     when (topicId) {
       FRACTIONS_TOPIC_ID -> {
         revisionCardDomainList.add(retrieveRevisionCardDomainFromJson(FRACTIONS_SUBTOPIC_ID_1))
@@ -901,7 +924,7 @@ class TopicRepository @Inject constructor(
   ): List<SubtopicDomain> {
     val subtopicDomainList = mutableListOf<SubtopicDomain>()
     for (i in 0 until subtopicJsonArray!!.length()) {
-      val skillIdList = ArrayList<String>()
+      val skillIdList = mutableListOf<String>()
 
       val currentSubtopicJsonObject = subtopicJsonArray.optJSONObject(i)
       val skillJsonArray = currentSubtopicJsonObject.optJSONArray("skill_ids")
@@ -986,21 +1009,18 @@ class TopicRepository @Inject constructor(
     for (i in 0 until storiesData.length()) {
       val storyData = storiesData.getJSONObject(i).getJSONObject("story")
       val chapterData = storyData.getJSONObject("story_contents").getJSONArray("nodes")
-      for (j in 0 until chapterData.length()) {
-        val chapter = chapterData.getJSONObject(i)
-        val explorationId = chapter.getString("exploration_id")
-        chapterSummaryDomainList.add(
-          ChapterSummaryDomain.newBuilder()
-            .setTopicId(topicId)
-            .setStoryId(storyData.getString("id"))
-            .setExplorationId(explorationId)
-            .setName(chapter.getString("title"))
-            .setChapterPlayState(ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED)
-            .setChapterThumbnail(EXPLORATION_THUMBNAILS.getValue(explorationId))
-            .build()
-        )
-      }
-
+      val chapter = chapterData.getJSONObject(i)
+      val explorationId = chapter.getString("exploration_id")
+      chapterSummaryDomainList.add(
+        ChapterSummaryDomain.newBuilder()
+          .setTopicId(topicId)
+          .setStoryId(storyData.getString("id"))
+          .setExplorationId(explorationId)
+          .setName(chapter.getString("title"))
+          .setChapterPlayState(ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED)
+          .setChapterThumbnail(EXPLORATION_THUMBNAILS.getValue(explorationId))
+          .build()
+      )
     }
     return chapterSummaryDomainList
   }
