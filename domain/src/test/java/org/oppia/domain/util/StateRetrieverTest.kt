@@ -31,7 +31,7 @@ import javax.inject.Qualifier
 import javax.inject.Singleton
 import kotlin.test.assertNotNull
 
-const val TEST_EXPLORATION_NAME = "test_prototype_exploration.json"
+const val DRAG_DROP_TEST_EXPLORATION_NAME = "drag_and_drop_test_exploration.json"
 
 /** Tests for [StateRetriever]. */
 @RunWith(AndroidJUnit4::class)
@@ -51,7 +51,7 @@ class StateRetrieverTest {
 
   @Test
   fun testParseState_withDragAndDropInteraction_parsesRuleWithIsEqualToOrderingRuleSpec() {
-    val state = createStateFromJson("DragDropSortInput")
+    val state = createStateFromJson("DragDropSortInput", DRAG_DROP_TEST_EXPLORATION_NAME)
     val ruleSpecMap = state.interaction.answerGroupsList
       .flatMap(AnswerGroup::getRuleSpecsList)
       .associateBy(RuleSpec::getRuleType)
@@ -59,8 +59,17 @@ class StateRetrieverTest {
   }
 
   @Test
+  fun testParseState_withDragAndDropInteraction_parsesRuleWithIsEqualToOrderingWithInputX() {
+    val state = createStateFromJson("DragDropSortInput", DRAG_DROP_TEST_EXPLORATION_NAME)
+    val ruleSpecMap = state.interaction.answerGroupsList
+      .flatMap(AnswerGroup::getRuleSpecsList)
+      .find { it.ruleType == "IsEqualToOrdering" }!!
+    assertThat(ruleSpecMap.inputMap).containsKey("x")
+  }
+
+  @Test
   fun testParseState_withDragAndDropInteraction_parsesRuleWithHasElementXAtPositionYRuleSpec() {
-    val state = createStateFromJson("DragDropSortInput")
+    val state = createStateFromJson("DragDropSortInput", DRAG_DROP_TEST_EXPLORATION_NAME)
     val ruleSpecMap = state.interaction.answerGroupsList
       .flatMap(AnswerGroup::getRuleSpecsList)
       .associateBy(RuleSpec::getRuleType)
@@ -68,8 +77,26 @@ class StateRetrieverTest {
   }
 
   @Test
+  fun testParseState_withDragAndDropInteraction_parsesRuleWithHasElementXAtPositionYWithInputX() {
+    val state = createStateFromJson("DragDropSortInput", DRAG_DROP_TEST_EXPLORATION_NAME)
+    val ruleSpecMap = state.interaction.answerGroupsList
+      .flatMap(AnswerGroup::getRuleSpecsList)
+      .find { it.ruleType == "HasElementXAtPositionY" }!!
+    assertThat(ruleSpecMap.inputMap).containsKey("x")
+  }
+
+  @Test
+  fun testParseState_withDragAndDropInteraction_parsesRuleWithHasElementXAtPositionYWithInputY() {
+    val state = createStateFromJson("DragDropSortInput", DRAG_DROP_TEST_EXPLORATION_NAME)
+    val ruleSpecMap = state.interaction.answerGroupsList
+      .flatMap(AnswerGroup::getRuleSpecsList)
+      .find { it.ruleType == "HasElementXAtPositionY" }!!
+    assertThat(ruleSpecMap.inputMap).containsKey("y")
+  }
+
+  @Test
   fun testParseState_withDragAndDropInteraction_parsesRuleWithIsEqualToOrderingWithOneItemAtIncorrectPositionRuleSpec() {
-    val state = createStateFromJson("DragDropSortInput")
+    val state = createStateFromJson("DragDropSortInput", DRAG_DROP_TEST_EXPLORATION_NAME)
     val ruleSpecMap = state.interaction.answerGroupsList
       .flatMap(AnswerGroup::getRuleSpecsList)
       .associateBy(RuleSpec::getRuleType)
@@ -77,16 +104,43 @@ class StateRetrieverTest {
   }
 
   @Test
+  fun testParseState_withDragAndDropInteraction_parsesRuleWithIsEqualToOrderingWithOneItemAtIncorrectPositionWithInputX() {
+    val state = createStateFromJson("DragDropSortInput", DRAG_DROP_TEST_EXPLORATION_NAME)
+    val ruleSpecMap = state.interaction.answerGroupsList
+      .flatMap(AnswerGroup::getRuleSpecsList)
+      .find { it.ruleType == "IsEqualToOrderingWithOneItemAtIncorrectPosition" }!!
+    assertThat(ruleSpecMap.inputMap).containsKey("x")
+  }
+
+  @Test
   fun testParseState_withDragAndDropInteraction_parsesRuleWithHasElementXBeforeElementYRuleSpec() {
-    val state = createStateFromJson("DragDropSortInput")
+    val state = createStateFromJson("DragDropSortInput", DRAG_DROP_TEST_EXPLORATION_NAME)
     val ruleSpecMap = state.interaction.answerGroupsList
       .flatMap(AnswerGroup::getRuleSpecsList)
       .associateBy(RuleSpec::getRuleType)
     assertThat(ruleSpecMap).containsKey("HasElementXBeforeElementY")
   }
 
-  private fun createStateFromJson(stateName: String): State {
-    val json = jsonAssetRetriever.loadJsonFromAsset(TEST_EXPLORATION_NAME)
+  @Test
+  fun testParseState_withDragAndDropInteraction_parsesRuleWithHasElementXBeforeElementWithInputX() {
+    val state = createStateFromJson("DragDropSortInput", DRAG_DROP_TEST_EXPLORATION_NAME)
+    val ruleSpecMap = state.interaction.answerGroupsList
+      .flatMap(AnswerGroup::getRuleSpecsList)
+      .find { it.ruleType == "HasElementXBeforeElementY" }!!
+    assertThat(ruleSpecMap.inputMap).containsKey("x")
+  }
+
+  @Test
+  fun testParseState_withDragAndDropInteraction_parsesRuleWithHasElementXBeforeElementWithInputY() {
+    val state = createStateFromJson("DragDropSortInput", DRAG_DROP_TEST_EXPLORATION_NAME)
+    val ruleSpecMap = state.interaction.answerGroupsList
+      .flatMap(AnswerGroup::getRuleSpecsList)
+      .find { it.ruleType == "HasElementXBeforeElementY" }!!
+    assertThat(ruleSpecMap.inputMap).containsKey("y")
+  }
+
+  private fun createStateFromJson(stateName: String, explorationName: String): State {
+    val json = jsonAssetRetriever.loadJsonFromAsset(explorationName)
     return stateRetriever.createStateFromJson(
       stateName,
       json?.getJSONObject("states")?.getJSONObject(stateName)

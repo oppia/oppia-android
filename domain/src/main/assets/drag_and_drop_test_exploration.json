@@ -1,6 +1,6 @@
 {
   "correctness_feedback_enabled": false,
-  "exploration_id": "test_exploration",
+  "exploration_id": "drag_and_drop_test_exploration",
   "states": {
     "End": {
       "param_changes": [],
@@ -213,7 +213,7 @@
       }
     }
   },
-  "title": "Testing Interaction",
+  "title": "Drag and Drop Test Exploration",
   "language_code": "en",
   "param_changes": [],
   "param_specs": {},
