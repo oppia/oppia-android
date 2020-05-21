@@ -29,7 +29,6 @@ class StoryChapterSummaryViewModel(
   val name: String = chapterSummary.name
   val summary: String = chapterSummary.summary
   val chapterThumbnail: LessonThumbnail = chapterSummary.chapterThumbnail
-  private val BACKFLOW_ID_STORY = "STORY"
 
   fun onExplorationClicked() {
     explorationDataController.stopPlayingExploration()
@@ -41,7 +40,7 @@ class StoryChapterSummaryViewModel(
         result.isFailure() -> logger.e(STORY_VIEWER_TAG, "Failed to load exploration", result.getErrorOrNull()!!)
         else -> {
           logger.d(STORY_VIEWER_TAG, "Successfully loaded exploration: $explorationId")
-          explorationSelectionListener.selectExploration(internalProfileId, topicId, storyId, explorationId,ExplorationActivityPresenter.BACKFLOW_ID_STORY )
+          explorationSelectionListener.selectExploration(internalProfileId, topicId, storyId, explorationId, /* backflowScreen = */1 )
         }
       }
     })

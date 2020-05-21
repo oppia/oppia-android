@@ -49,7 +49,7 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
     startActivity(RevisionCardActivity.createRevisionCardActivityIntent(this, topicId, subtopicId))
   }
 
-  override fun routeToExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowId: String?) {
+  override fun routeToExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowScreen: Int?) {
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
         this,
@@ -57,7 +57,7 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
         topicId,
         storyId,
         explorationId,
-        backflowId
+        backflowScreen
       )
     )
   }

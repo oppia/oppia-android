@@ -30,7 +30,7 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var explorationId: String
-  private var backflowId: String? = null
+  private var backflowScreen: Int? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -39,8 +39,8 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
     topicId = intent.getStringExtra(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
     storyId = intent.getStringExtra(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY)
     explorationId = intent.getStringExtra(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY)
-    backflowId = intent.getStringExtra(EXPLORATION_ACTIVITY_BACKFLOW_ID)
-    explorationActivityPresenter.handleOnCreate(internalProfileId, topicId, storyId, explorationId, backflowId, this)
+    backflowScreen = intent.getIntExtra(EXPLORATION_ACTIVITY_BACKFLOW_SCREEN,-1)
+    explorationActivityPresenter.handleOnCreate(this, internalProfileId, topicId, storyId, explorationId, backflowScreen)
   }
 
   companion object {
@@ -50,7 +50,7 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
     internal const val EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "ExplorationActivity.topic_id"
     internal const val EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY = "ExplorationActivity.story_id"
     internal const val EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY = "ExplorationActivity.exploration_id"
-    internal const val EXPLORATION_ACTIVITY_BACKFLOW_ID = "ExplorationActivity.backflow_id"
+    internal const val EXPLORATION_ACTIVITY_BACKFLOW_SCREEN = "ExplorationActivity.backflow_screen"
 
     fun createExplorationActivityIntent(
       context: Context,
@@ -58,14 +58,14 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
       topicId: String,
       storyId: String,
       explorationId: String,
-      backflowId: String?
+      backflowScreen: Int?
     ): Intent {
       val intent = Intent(context, ExplorationActivity::class.java)
       intent.putExtra(EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, profileId)
       intent.putExtra(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
       intent.putExtra(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
       intent.putExtra(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
-      intent.putExtra(EXPLORATION_ACTIVITY_BACKFLOW_ID, backflowId)
+      intent.putExtra(EXPLORATION_ACTIVITY_BACKFLOW_SCREEN, backflowScreen)
       return intent
     }
   }

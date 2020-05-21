@@ -29,7 +29,7 @@ class StoryActivity : InjectableAppCompatActivity(), RouteToExplorationListener 
     storyActivityPresenter.handleOnCreate(internalProfileId, topicId, storyId)
   }
 
-  override fun routeToExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowId: String?) {
+  override fun routeToExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowScreen: Int?) {
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
         this,
@@ -37,7 +37,7 @@ class StoryActivity : InjectableAppCompatActivity(), RouteToExplorationListener 
         topicId,
         storyId,
         explorationId,
-        backflowId
+        backflowScreen
       )
     )
   }

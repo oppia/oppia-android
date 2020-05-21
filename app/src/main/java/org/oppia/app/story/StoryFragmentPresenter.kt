@@ -68,7 +68,7 @@ class StoryFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  fun handleSelectExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String,backflowId: String?) {
+  fun handleSelectExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowId: Int?) {
     routeToExplorationListener.routeToExploration(internalProfileId, topicId, storyId, explorationId,backflowId)
   }
 

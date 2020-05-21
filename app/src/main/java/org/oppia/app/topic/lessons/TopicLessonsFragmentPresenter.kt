@@ -45,7 +45,6 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private lateinit var expandedChapterListIndexListener: ExpandedChapterListIndexListener
 
   private val itemList: MutableList<TopicLessonsItemViewModel> = ArrayList()
-  private val BACKFLOW_ID_LESSONS = "LESSONS"
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -120,10 +119,10 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   }
 
   override fun selectChapterSummary(storyId: String, chapterSummary: ChapterSummary) {
-    playExploration(internalProfileId, topicId, storyId, chapterSummary.explorationId, ExplorationActivityPresenter.BACKFLOW_ID_LESSONS)
+    playExploration(internalProfileId, topicId, storyId, chapterSummary.explorationId, /*backflowScreen =*/0)
   }
 
-  private fun playExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowId: String?) {
+  private fun playExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowScreen: Int?) {
     explorationDataController.startPlayingExploration(
       explorationId
     ).observe(fragment, Observer<AsyncResult<Any?>> { result ->
@@ -132,7 +131,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
         result.isFailure() -> logger.e("TopicLessonsFragment", "Failed to load exploration", result.getErrorOrNull()!!)
         else -> {
           logger.d("TopicLessonsFragment", "Successfully loaded exploration")
-          routeToExplorationListener.routeToExploration(internalProfileId, topicId, storyId, explorationId, backflowId)
+          routeToExplorationListener.routeToExploration(internalProfileId, topicId, storyId, explorationId, backflowScreen)
         }
       }
     })

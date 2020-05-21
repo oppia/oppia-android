@@ -37,18 +37,18 @@ class ExplorationActivityPresenter @Inject constructor(
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var context: Context
-  private var backflowId: String? = null
+  private var backflowScreen: Int? = null
 
-  companion object {
-    internal const val BACKFLOW_ID_LESSONS = "LESSONS"
-    internal const val BACKFLOW_ID_STORY = "STORY"
+  enum class ParentActivityForExploration(val value: Int) {
+    BACKFLOW_SCREEN_LESSONS(0),
+    BACKFLOW_SCREEN_STORY(1);
   }
 
   private val exploreViewModel by lazy {
     getExplorationViewModel()
   }
 
-  fun handleOnCreate(internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowId: String?, context: Context) {
+  fun handleOnCreate(context: Context, internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowScreen: Int?) {
     val binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(activity, R.layout.exploration_activity)
     binding.apply {
       viewModel = exploreViewModel
@@ -67,7 +67,7 @@ class ExplorationActivityPresenter @Inject constructor(
     this.topicId = topicId
     this.storyId = storyId
     this.context = context
-    this.backflowId = backflowId
+    this.backflowScreen = backflowScreen
 
     if (getExplorationFragment() == null) {
       val explorationFragment = ExplorationFragment()
@@ -110,7 +110,7 @@ class ExplorationActivityPresenter @Inject constructor(
         it.isFailure() -> logger.e("ExplorationActivity", "Failed to stop exploration", it.getErrorOrNull()!!)
         else -> {
           logger.d("ExplorationActivity", "Successfully stopped exploration")
-          backPressActivitySelector()
+          backPressActivitySelector(backflowScreen)
           (activity as ExplorationActivity).finish()
         }
       }
@@ -145,15 +145,11 @@ class ExplorationActivityPresenter @Inject constructor(
     return ephemeralStateResult.getOrDefault(Exploration.getDefaultInstance())
   }
 
-  private fun backPressActivitySelector(){
-    if (backflowId == BACKFLOW_ID_STORY){
-      activity.startActivity(StoryActivity.createStoryActivityIntent(context,internalProfileId,topicId,storyId))
-    }
-    else if(backflowId == BACKFLOW_ID_LESSONS){
-      activity.startActivity(TopicActivity.createTopicPlayStoryActivityIntent(activity, internalProfileId, topicId,storyId))
-    }
-    else{
-      activity.startActivity(TopicActivity.createTopicActivityIntent(context,internalProfileId,topicId))
+  private fun backPressActivitySelector(backflowScreen: Int?){
+    when(backflowScreen){
+      ParentActivityForExploration.BACKFLOW_SCREEN_STORY.value -> activity.startActivity(StoryActivity.createStoryActivityIntent(context,internalProfileId,topicId,storyId))
+      ParentActivityForExploration.BACKFLOW_SCREEN_LESSONS.value -> activity.startActivity(TopicActivity.createTopicPlayStoryActivityIntent(activity, internalProfileId, topicId,storyId))
+      else -> activity.startActivity(TopicActivity.createTopicActivityIntent(context,internalProfileId,topicId))
     }
   }
 
