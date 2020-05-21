@@ -46,6 +46,8 @@ private const val STR_VALUE_1 = "Now I'm not so sure."
 private const val STR_VALUE_2 = "At least I thought I was."
 private const val INT_XFORMED_STR_VALUE_0 = STR_VALUE_0.length
 private const val INT_XFORMED_STR_VALUE_1 = STR_VALUE_1.length
+private const val INT_XFORMED_STR_VALUE_2 = STR_VALUE_2.length
+private const val INT_XFORMED_STR_VALUE_0_DOUBLED = INT_XFORMED_STR_VALUE_0 * 2
 private const val COMBINED_STR_VALUE_01 = "I used to be indecisive. Now I'm not so sure."
 private const val COMBINED_STR_VALUE_21 = "At least I thought I was. Now I'm not so sure."
 private const val COMBINED_STR_VALUE_02 = "I used to be indecisive. At least I thought I was."
@@ -81,6 +83,7 @@ class DataProvidersTest {
   lateinit var intResultCaptor: ArgumentCaptor<AsyncResult<Int>>
 
   private var inMemoryCachedStr: String? = null
+  private var inMemoryCachedStr2: String? = null
 
   private val backgroundCoroutineScope by lazy {
     CoroutineScope(backgroundCoroutineDispatcher)
@@ -2329,6 +2332,513 @@ class DataProvidersTest {
     assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(IllegalStateException::class.java)
   }
 
+  @Test
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun testNestedXformedProvider_toLiveData_deliversTransformedValue() {
+    val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
+    val dataProvider =
+      dataProviders.createNestedTransformedDataProvider(TRANSFORMED_PROVIDER_ID, baseProvider) {
+        transformStringAsync(it)
+      }
+
+    dataProviders.convertToLiveData(dataProvider).observeForever(mockIntLiveDataObserver)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
+    assertThat(intResultCaptor.value.isSuccess()).isTrue()
+    assertThat(intResultCaptor.value.getOrThrow()).isEqualTo(INT_XFORMED_STR_VALUE_0)
+  }
+
+  @Test
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun testNestedXformedProvider_toLiveData_diffValue_notifiesBase_deliversXformedValueTwo() {
+    inMemoryCachedStr = STR_VALUE_0
+    val baseProvider =
+      dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_0) { inMemoryCachedStr!! }
+    val dataProvider =
+      dataProviders.createNestedTransformedDataProvider(TRANSFORMED_PROVIDER_ID, baseProvider) {
+        transformStringAsync(it)
+      }
+
+    dataProviders.convertToLiveData(dataProvider).observeForever(mockIntLiveDataObserver)
+    inMemoryCachedStr = STR_VALUE_1
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // Notifying the base results in observers of the transformed provider also being called.
+    verify(mockIntLiveDataObserver, atLeastOnce()).onChanged(intResultCaptor.capture())
+    assertThat(intResultCaptor.value.isSuccess()).isTrue()
+    assertThat(intResultCaptor.value.getOrThrow()).isEqualTo(INT_XFORMED_STR_VALUE_1)
+  }
+
+  @Test
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun testNestedXformedProvider_toLiveData_diffVal_notifiesXform_deliversXformedValueTwo() {
+    inMemoryCachedStr = STR_VALUE_0
+    val baseProvider =
+      dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_0) { inMemoryCachedStr!! }
+    val dataProvider =
+      dataProviders.createNestedTransformedDataProvider(TRANSFORMED_PROVIDER_ID, baseProvider) {
+        transformStringAsync(it)
+      }
+
+    dataProviders.convertToLiveData(dataProvider).observeForever(mockIntLiveDataObserver)
+    inMemoryCachedStr = STR_VALUE_1
+    asyncDataSubscriptionManager.notifyChangeAsync(TRANSFORMED_PROVIDER_ID)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // Notifying the transformed provider has the same result as notifying the base provider.
+    verify(mockIntLiveDataObserver, atLeastOnce()).onChanged(intResultCaptor.capture())
+    assertThat(intResultCaptor.value.isSuccess()).isTrue()
+    assertThat(intResultCaptor.value.getOrThrow()).isEqualTo(INT_XFORMED_STR_VALUE_1)
+  }
+
+  @Test
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun testNestedXformedProvider_differentValue_notifiesBase_observeBase_deliversSecondVal() {
+    inMemoryCachedStr = STR_VALUE_0
+    val baseProvider =
+      dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_0) { inMemoryCachedStr!! }
+    val dataProvider =
+      dataProviders.createNestedTransformedDataProvider(TRANSFORMED_PROVIDER_ID, baseProvider) {
+        transformStringAsync(it)
+      }
+
+    dataProviders.convertToLiveData(baseProvider).observeForever(mockStringLiveDataObserver)
+    dataProviders.convertToLiveData(dataProvider).observeForever(mockIntLiveDataObserver)
+    inMemoryCachedStr = STR_VALUE_1
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // Having a transformed data provider with an observer does not change the base's
+    // notification behavior.
+    verify(mockStringLiveDataObserver, atLeastOnce()).onChanged(stringResultCaptor.capture())
+    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
+    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(STR_VALUE_1)
+  }
+
+  @Test
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun testNestedXformedProvider_diffValue_notifiesXformed_observeBase_deliversFirstVal() {
+    inMemoryCachedStr = STR_VALUE_0
+    val baseProvider =
+      dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_0) { inMemoryCachedStr!! }
+    val dataProvider =
+      dataProviders.createNestedTransformedDataProvider(TRANSFORMED_PROVIDER_ID, baseProvider) {
+        transformStringAsync(it)
+      }
+
+    // Ensure the initial state is sent before changing the cache.
+    dataProviders.convertToLiveData(baseProvider).observeForever(mockStringLiveDataObserver)
+    dataProviders.convertToLiveData(dataProvider).observeForever(mockIntLiveDataObserver)
+    testCoroutineDispatchers.advanceUntilIdle()
+    // Now change the cache & give it time to propagate.
+    inMemoryCachedStr = STR_VALUE_1
+    asyncDataSubscriptionManager.notifyChangeAsync(TRANSFORMED_PROVIDER_ID)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // However, notifying that the transformed provider has changed should not affect base
+    // subscriptions even if the base has changed.
+    verify(mockStringLiveDataObserver, atLeastOnce()).onChanged(stringResultCaptor.capture())
+    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
+    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(STR_VALUE_0)
+  }
+
+  @Test
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun testNestedXformedProvider_toLiveData_blockingFunction_doesNotDeliverValue() {
+    // Block transformStringAsync().
+    val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
+    val dataProvider =
+      dataProviders.createNestedTransformedDataProvider(TRANSFORMED_PROVIDER_ID, baseProvider) {
+        transformStringAsync(it)
+      }
+
+    dataProviders.convertToLiveData(dataProvider).observeForever(mockIntLiveDataObserver)
+
+    // No value should be delivered since the async function is blocked.
+    verifyZeroInteractions(mockIntLiveDataObserver)
+  }
+
+  @Test
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun testNestedXformedProvider_toLiveData_blockingFunction_completed_deliversXformedVal() {
+    // Block transformStringAsync().
+    val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
+    val dataProvider =
+      dataProviders.createNestedTransformedDataProvider(TRANSFORMED_PROVIDER_ID, baseProvider) {
+        transformStringAsync(it)
+      }
+
+    dataProviders.convertToLiveData(dataProvider).observeForever(mockIntLiveDataObserver)
+    testCoroutineDispatchers.advanceUntilIdle() // Run transformStringAsync()
+
+    // The value should now be delivered since the async function was unblocked.
+    verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
+    assertThat(intResultCaptor.value.isSuccess()).isTrue()
+    assertThat(intResultCaptor.value.getOrThrow()).isEqualTo(INT_XFORMED_STR_VALUE_0)
+  }
+
+  @Test
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun testNestedXformedProvider_toLiveData_blockingFunction_baseObserved_deliversFirstVal() {
+    // Block transformStringAsync().
+    val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
+    val dataProvider =
+      dataProviders.createNestedTransformedDataProvider(TRANSFORMED_PROVIDER_ID, baseProvider) {
+        transformStringAsync(it)
+      }
+
+    // Observe the base provider & let it complete, but don't complete the derived data provider.
+    dataProviders.convertToLiveData(baseProvider).observeForever(mockStringLiveDataObserver)
+    testCoroutineDispatchers.advanceUntilIdle()
+    dataProviders.convertToLiveData(dataProvider).observeForever(mockIntLiveDataObserver)
+
+    // Verify that even though the transformed provider is blocked, the base can still properly
+    // publish changes.
+    verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
+    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
+    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(STR_VALUE_0)
+  }
+
+  @Test
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun testNestedXformedProvider_toLiveData_transformedPending_deliversPending() {
+    val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
+    val dataProvider =
+      dataProviders.createNestedTransformedDataProvider<String, Int>(
+        TRANSFORMED_PROVIDER_ID,
+        baseProvider
+      ) {
+        AsyncResult.pending()
+      }
+
+    dataProviders.convertToLiveData(dataProvider).observeForever(mockIntLiveDataObserver)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // The transformation result yields a pending delivered result.
+    verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
+    assertThat(intResultCaptor.value.isPending()).isTrue()
+  }
+
+  @Test
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun testNestedXformedProvider_toLiveData_transformedFailure_deliversFailure() {
+    val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
+    val dataProvider =
+      dataProviders.createNestedTransformedDataProvider<String, Int>(
+        TRANSFORMED_PROVIDER_ID,
+        baseProvider
+      ) {
+        AsyncResult.failed(IllegalStateException("Transform failure"))
+      }
+
+    dataProviders.convertToLiveData(dataProvider).observeForever(mockIntLiveDataObserver)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // Note that the failure exception in this case is not chained since the failure occurred in the
+    // transform function.
+    verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
+    assertThat(intResultCaptor.value.isFailure()).isTrue()
+    assertThat(intResultCaptor.value.getErrorOrNull())
+      .isInstanceOf(IllegalStateException::class.java)
+    assertThat(intResultCaptor.value.getErrorOrNull())
+      .hasMessageThat().contains("Transform failure")
+  }
+
+  @Test
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun testNestedXformedProvider_toLiveData_basePending_deliversPending() {
+    val baseProvider = createPendingDataProvider<String>(BASE_PROVIDER_ID_0)
+    val dataProvider =
+      dataProviders.createNestedTransformedDataProvider(TRANSFORMED_PROVIDER_ID, baseProvider) {
+        transformStringAsync(it)
+      }
+
+    dataProviders.convertToLiveData(dataProvider).observeForever(mockIntLiveDataObserver)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // Since the base provider is pending, so is the transformed provider.
+    verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
+    assertThat(intResultCaptor.value.isPending()).isTrue()
+  }
+
+  @Test
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun testNestedXformedProvider_toLiveData_baseFailure_deliversFailure() {
+    val baseProvider =
+      createThrowingDataProvider<String>(BASE_PROVIDER_ID_0, IllegalStateException("Base failure"))
+    val dataProvider =
+      dataProviders.createNestedTransformedDataProvider(TRANSFORMED_PROVIDER_ID, baseProvider) {
+        transformStringAsync(it)
+      }
+
+    dataProviders.convertToLiveData(dataProvider).observeForever(mockIntLiveDataObserver)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // Note that the failure exception in this case is not chained since the failure occurred in the
+    // transform function.
+    verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
+    assertThat(intResultCaptor.value.isFailure()).isTrue()
+    assertThat(intResultCaptor.value.getErrorOrNull())
+      .isInstanceOf(AsyncResult.ChainedFailureException::class.java)
+    assertThat(intResultCaptor.value.getErrorOrNull())
+      .hasCauseThat().isInstanceOf(IllegalStateException::class.java)
+    assertThat(intResultCaptor.value.getErrorOrNull())
+      .hasCauseThat().hasMessageThat().contains("Base failure")
+  }
+
+  @Test
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun testNestedXformedProvider_toLiveData_withObserver_callsTransform() {
+    var fakeTransformCallbackCalled = false
+    val fakeTransformCallback: suspend (String) -> AsyncResult<Int> = {
+      fakeTransformCallbackCalled = true
+      transformStringAsync(it)
+    }
+    val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
+    val dataProvider =
+      dataProviders.createNestedTransformedDataProvider(
+        TRANSFORMED_PROVIDER_ID, baseProvider, fakeTransformCallback
+      )
+
+    dataProviders.convertToLiveData(dataProvider).observeForever(mockIntLiveDataObserver)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // Since there's an observer, the transform method should be called.
+    assertThat(fakeTransformCallbackCalled).isTrue()
+  }
+
+  @Test
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun testNestedXformedProvider_toLiveData_noObserver_doesNotCallTransform() {
+    var fakeTransformCallbackCalled = false
+    val fakeTransformCallback: suspend (String) -> AsyncResult<Int> = {
+      fakeTransformCallbackCalled = true
+      transformStringAsync(it)
+    }
+    val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
+    val dataProvider =
+      dataProviders.createNestedTransformedDataProvider(
+        TRANSFORMED_PROVIDER_ID, baseProvider, fakeTransformCallback
+      )
+
+    dataProviders.convertToLiveData(dataProvider)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // Without an observer, the transform method should not be called.
+    assertThat(fakeTransformCallbackCalled).isFalse()
+  }
+
+  @Test
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun testNestedXformedProvider_toLiveData_basePending_doesNotCallTransform() {
+    var fakeTransformCallbackCalled = false
+    val fakeTransformCallback: suspend (String) -> AsyncResult<Int> = {
+      fakeTransformCallbackCalled = true
+      transformStringAsync(it)
+    }
+    val baseProvider = createPendingDataProvider<String>(BASE_PROVIDER_ID_0)
+    val dataProvider =
+      dataProviders.createNestedTransformedDataProvider(
+        TRANSFORMED_PROVIDER_ID, baseProvider, fakeTransformCallback
+      )
+
+    dataProviders.convertToLiveData(dataProvider).observeForever(mockIntLiveDataObserver)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // A pending base provider should result in the transform method not being called.
+    assertThat(fakeTransformCallbackCalled).isFalse()
+  }
+
+  @Test
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun testNestedXformedProvider_toLiveData_baseFailure_doesNotCallTransform() {
+    var fakeTransformCallbackCalled = false
+    val fakeTransformCallback: suspend (String) -> AsyncResult<Int> = {
+      fakeTransformCallbackCalled = true
+      transformStringAsync(it)
+    }
+    val baseProvider =
+      createThrowingDataProvider<String>(BASE_PROVIDER_ID_0, IllegalStateException("Base failure"))
+    val dataProvider =
+      dataProviders.createNestedTransformedDataProvider(
+        TRANSFORMED_PROVIDER_ID, baseProvider, fakeTransformCallback
+      )
+
+    dataProviders.convertToLiveData(dataProvider).observeForever(mockIntLiveDataObserver)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // A base provider failure should result in the transform method not being called.
+    assertThat(fakeTransformCallbackCalled).isFalse()
+  }
+
+  @Test
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun testNestedXformedProvider_toLiveData_newBaseProvider_newObserver_receivesLatestValue() {
+    val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
+    val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_1)
+    val dataProvider =
+      dataProviders.createNestedTransformedDataProvider(TRANSFORMED_PROVIDER_ID, baseProvider1) {
+        transformStringAsync(it)
+      }
+
+    // Replace the base data provider with something new, then register an observer.
+    dataProvider.setBaseDataProvider(baseProvider2) { transformStringAsync(it) }
+    dataProviders.convertToLiveData(dataProvider).observeForever(mockIntLiveDataObserver)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // The observer should get the newest value immediately.
+    verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
+    assertThat(intResultCaptor.value.isSuccess()).isTrue()
+    assertThat(intResultCaptor.value.getOrThrow()).isEqualTo(INT_XFORMED_STR_VALUE_1)
+  }
+
+  @Test
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun testNestedXformedProvider_toLiveData_newBaseAndTransform_newObserver_receivesLatestValue() {
+    val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
+    val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_0)
+    val dataProvider =
+      dataProviders.createNestedTransformedDataProvider(TRANSFORMED_PROVIDER_ID, baseProvider1) {
+        transformStringAsync(it)
+      }
+
+    // Replace the base data provider with something new, then register an observer.
+    dataProvider.setBaseDataProvider(baseProvider2) { transformStringDoubledAsync(it) }
+    dataProviders.convertToLiveData(dataProvider).observeForever(mockIntLiveDataObserver)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // The observer should get the newest value immediately.
+    verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
+    assertThat(intResultCaptor.value.isSuccess()).isTrue()
+    assertThat(intResultCaptor.value.getOrThrow()).isEqualTo(INT_XFORMED_STR_VALUE_0_DOUBLED)
+  }
+
+  @Test
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun testNestedXformedProvider_toLiveData_newBaseProvider_notifiesObservers() {
+    val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
+    val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_1)
+    val dataProvider =
+      dataProviders.createNestedTransformedDataProvider(TRANSFORMED_PROVIDER_ID, baseProvider1) {
+        transformStringAsync(it)
+      }
+    dataProviders.convertToLiveData(dataProvider).observeForever(mockIntLiveDataObserver)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // Replace the base data provider with something new. It should automatically notify observers.
+    dataProvider.setBaseDataProvider(baseProvider2) { transformStringAsync(it) }
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    verify(mockIntLiveDataObserver, atLeastOnce()).onChanged(intResultCaptor.capture())
+    assertThat(intResultCaptor.value.isSuccess()).isTrue()
+    assertThat(intResultCaptor.value.getOrThrow()).isEqualTo(INT_XFORMED_STR_VALUE_1)
+  }
+
+  @Test
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun testNestedXformedProvider_toLiveData_newBaseProvider_notifiedNewValue_isDelivered() {
+    inMemoryCachedStr = STR_VALUE_1
+    val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
+    val baseProvider2 =
+      dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_1) { inMemoryCachedStr!! }
+    val dataProvider =
+      dataProviders.createNestedTransformedDataProvider(TRANSFORMED_PROVIDER_ID, baseProvider1) {
+        transformStringAsync(it)
+      }
+    dataProviders.convertToLiveData(dataProvider).observeForever(mockIntLiveDataObserver)
+    dataProvider.setBaseDataProvider(baseProvider2) { transformStringAsync(it) }
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // Update the new base provider and notify that it's changed, triggering a change in the
+    // transformed provider.
+    inMemoryCachedStr = STR_VALUE_2
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_1)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    verify(mockIntLiveDataObserver, atLeastOnce()).onChanged(intResultCaptor.capture())
+    assertThat(intResultCaptor.value.isSuccess()).isTrue()
+    assertThat(intResultCaptor.value.getOrThrow()).isEqualTo(INT_XFORMED_STR_VALUE_2)
+  }
+
+  @Test
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun testNestedXformedProvider_toLiveData_newBaseProvider_notifyOldBase_doesNotDeliver() {
+    inMemoryCachedStr = STR_VALUE_0
+    val baseProvider1 =
+      dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_0) { inMemoryCachedStr!! }
+    val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_2)
+    val dataProvider =
+      dataProviders.createNestedTransformedDataProvider(TRANSFORMED_PROVIDER_ID, baseProvider1) {
+        transformStringAsync(it)
+      }
+    dataProviders.convertToLiveData(dataProvider).observeForever(mockIntLiveDataObserver)
+    dataProvider.setBaseDataProvider(baseProvider2) { transformStringAsync(it) }
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // Update the old base provider and notify that it's changed.
+    inMemoryCachedStr = STR_VALUE_1
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // Since the base provider was replaced, it shouldn't result in any observed change.
+    verify(mockIntLiveDataObserver, atLeastOnce()).onChanged(intResultCaptor.capture())
+    assertThat(intResultCaptor.value.isSuccess()).isTrue()
+    assertThat(intResultCaptor.value.getOrThrow()).isEqualTo(INT_XFORMED_STR_VALUE_2)
+  }
+
+  @Test
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun testNestedXformedProvider_toLiveData_newBaseProviderChanged_notifyOld_doesNotDeliverNewVal() {
+    inMemoryCachedStr = STR_VALUE_0
+    inMemoryCachedStr2 = STR_VALUE_1
+    val baseProvider1 =
+      dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_0) { inMemoryCachedStr!! }
+    val baseProvider2 =
+      dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_1) { inMemoryCachedStr2!! }
+    val dataProvider =
+      dataProviders.createNestedTransformedDataProvider(TRANSFORMED_PROVIDER_ID, baseProvider1) {
+        transformStringAsync(it)
+      }
+    dataProviders.convertToLiveData(dataProvider).observeForever(mockIntLiveDataObserver)
+    dataProvider.setBaseDataProvider(baseProvider2) { transformStringAsync(it) }
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // Update the new base provider but notify that the old one changed.
+    inMemoryCachedStr2 = STR_VALUE_2
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // Since the base provider was replaced, the old notification should not trigger a newly
+    // change even though the new base technically did change (but it wasn't notified yet).
+    verify(mockIntLiveDataObserver, atLeastOnce()).onChanged(intResultCaptor.capture())
+    assertThat(intResultCaptor.value.isSuccess()).isTrue()
+    assertThat(intResultCaptor.value.getOrThrow()).isEqualTo(INT_XFORMED_STR_VALUE_1)
+  }
+
   private fun transformString(str: String): Int {
     return str.length
   }
@@ -2340,6 +2850,17 @@ class DataProvidersTest {
   @ExperimentalCoroutinesApi
   private suspend fun transformStringAsync(str: String): AsyncResult<Int> {
     val deferred = backgroundCoroutineScope.async { transformString(str) }
+    deferred.await()
+    return AsyncResult.success(deferred.getCompleted())
+  }
+
+  /**
+   * Transforms the specified string in a similar way as [transformStringAsync], but with a
+   * different transformation method.
+   */
+  @ExperimentalCoroutinesApi
+  private suspend fun transformStringDoubledAsync(str: String): AsyncResult<Int> {
+    val deferred = backgroundCoroutineScope.async { transformString(str) * 2 }
     deferred.await()
     return AsyncResult.success(deferred.getCompleted())
   }

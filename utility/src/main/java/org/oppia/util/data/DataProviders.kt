@@ -194,7 +194,8 @@ class DataProviders @Inject constructor(
   }
 
   /**
-   * A [DataProvider] that acts in the same way as [transformAsync] except the underlying base data provider can change.
+   * A [DataProvider] that acts in the same way as [transformAsync] except the underlying base data
+   * provider can change.
    */
   class NestedTransformedDataProvider<T2> private constructor(
     private val id: Any,
@@ -212,12 +213,24 @@ class DataProviders @Inject constructor(
       return retrieveTransformedData()
     }
 
-    /** Sets a new base [DataProvider] and transform function from which to derive this data provider. */
-    fun <T1> setBaseDataProvider(dataProvider: DataProvider<T1>, transform: suspend (T1) -> AsyncResult<T2>) {
+    /**
+     * Sets a new base [DataProvider] and transform function from which to derive this data
+     * provider.
+     *
+     * Note that this will notify any observers of this provider so that they receive the latest
+     * transformed value.
+     */
+    fun <T1> setBaseDataProvider(
+      dataProvider: DataProvider<T1>,
+      transform: suspend (T1) -> AsyncResult<T2>
+    ) {
       asyncDataSubscriptionManager.dissociateIds(id, baseId)
       baseId = dataProvider.getId()
       retrieveTransformedData = { dataProvider.retrieveData().transformAsync(transform) }
       initializeTransformer()
+
+      // Notify subscribers that the base provider has changed.
+      asyncDataSubscriptionManager.notifyChangeAsync(id)
     }
 
     private fun initializeTransformer() {
@@ -232,7 +245,9 @@ class DataProviders @Inject constructor(
         transform: suspend (T1) -> AsyncResult<T2>,
         asyncDataSubscriptionManager: AsyncDataSubscriptionManager
       ): NestedTransformedDataProvider<T2> {
-        return NestedTransformedDataProvider(id, baseDataProvider.getId(), asyncDataSubscriptionManager) {
+        return NestedTransformedDataProvider(
+          id, baseDataProvider.getId(), asyncDataSubscriptionManager
+        ) {
           baseDataProvider.retrieveData().transformAsync(transform)
         }
       }
