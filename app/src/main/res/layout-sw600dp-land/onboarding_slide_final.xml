@@ -23,7 +23,7 @@
       android:scaleType="centerCrop"
       android:src="@drawable/ic_landscape_onboarding_3"
       app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toStartOf="@+id/guideline4"
+      app:layout_constraintDimensionRatio="H, 10:9"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
@@ -47,13 +47,13 @@
       android:layout_width="360dp"
       android:layout_height="wrap_content"
       android:layout_marginTop="12dp"
-      android:layout_marginEnd="80dp"
       android:fontFamily="sans-serif"
       android:gravity="center_horizontal"
       android:text="@string/onboarding_slide_3_description"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="24sp"
       app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@+id/slide_image_view"
       app:layout_constraintTop_toTopOf="@+id/guideline2" />
 
     <Button
@@ -78,12 +78,5 @@
       android:layout_height="wrap_content"
       android:orientation="horizontal"
       app:layout_constraintGuide_percent="0.5" />
-
-    <androidx.constraintlayout.widget.Guideline
-      android:id="@+id/guideline4"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:orientation="vertical"
-      app:layout_constraintGuide_percent="0.625" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
