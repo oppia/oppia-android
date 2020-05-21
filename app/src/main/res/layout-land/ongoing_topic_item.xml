@@ -37,7 +37,7 @@
         android:importantForAccessibility="no"
         android:scaleType="centerInside"
         android:src="@{viewModel.topic.topicThumbnail.thumbnailGraphic}"
-        app:layout_constraintDimensionRatio="4:3"
+        app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
