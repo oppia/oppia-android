@@ -77,7 +77,9 @@ class DataProviders @Inject constructor(
    * the underlying base provider, [transformAsync] should be used, instead.
    */
   fun <T1, T2> createNestedTransformedDataProvider(
-    newId: Any, dataProvider: DataProvider<T1>, function: suspend (T1) -> AsyncResult<T2>
+    newId: Any,
+    dataProvider: DataProvider<T1>,
+    function: suspend (T1) -> AsyncResult<T2>
   ): NestedTransformedDataProvider<T2> {
     return NestedTransformedDataProvider.createNestedTransformedDataProvider(
       newId, dataProvider, function, asyncDataSubscriptionManager
@@ -199,7 +201,7 @@ class DataProviders @Inject constructor(
     private var baseId: Any,
     private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
     private var retrieveTransformedData: suspend () -> AsyncResult<T2>
-  ): DataProvider<T2> {
+  ) : DataProvider<T2> {
     init {
       initializeTransformer()
     }
