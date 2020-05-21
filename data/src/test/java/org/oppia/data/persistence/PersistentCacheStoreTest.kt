@@ -11,19 +11,17 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import javax.inject.Inject
-import javax.inject.Qualifier
 import javax.inject.Singleton
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.async
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -42,7 +40,6 @@ import org.oppia.testing.TestDispatcherModule
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
 import org.oppia.util.threading.BackgroundDispatcher
-import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 
@@ -69,6 +66,8 @@ class PersistentCacheStoreTest {
 
   @InternalCoroutinesApi @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @Inject @field:BackgroundDispatcher lateinit var backgroundDispatcher: CoroutineDispatcher
+
   @Mock
   lateinit var mockUserAppHistoryObserver1: Observer<AsyncResult<TestMessage>>
 
@@ -81,6 +80,10 @@ class PersistentCacheStoreTest {
   @Captor
   lateinit var userAppHistoryResultCaptor2: ArgumentCaptor<AsyncResult<TestMessage>>
 
+  private val backgroundDispatcherScope by lazy {
+    CoroutineScope(backgroundDispatcher)
+  }
+
   @Before
   @ExperimentalCoroutinesApi
   fun setUp() {
@@ -91,14 +94,23 @@ class PersistentCacheStoreTest {
   @Test
   @ExperimentalCoroutinesApi
   @InternalCoroutinesApi
-  @Ignore // TODO: introduce mechanism to pause automated observer pipeline.
   fun testCache_toLiveData_initialState_isPending() {
     val cacheStore = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
 
-    observeCache(cacheStore, mockUserAppHistoryObserver1)
+    // Directly call retrieveData() to get the very initial state of the provider. Relying on
+    // traditional notification mechanisms like LiveData won't work because TestCoroutineDispatchers
+    // will synchronize execution such that all operations (including the multiple async steps
+    // needed to properly initialize the cache store) will complete without sending the pending
+    // state, yet the pending state is really likely to be observed in production situations. The
+    // timing model in tests is a bit too different from production to properly simulate this case.
+    // This seems like a reasonable workaround to verify the same effective behavior.
+    val deferredResult = backgroundDispatcherScope.async {
+      cacheStore.retrieveData()
+    }
+    testCoroutineDispatchers.advanceUntilIdle()
 
-    verify(mockUserAppHistoryObserver1, atLeastOnce()).onChanged(userAppHistoryResultCaptor1.capture())
-    assertThat(userAppHistoryResultCaptor1.allValues[0].isPending()).isTrue()
+    val result = deferredResult.getCompleted()
+    assertThat(result.isPending()).isTrue()
   }
 
   @Test

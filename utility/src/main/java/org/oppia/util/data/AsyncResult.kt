@@ -40,7 +40,7 @@ class AsyncResult<T> private constructor(
   }
 
   /** Returns whether this result is newer than, or the same age as, the specified result of the same type. */
-  fun isNewerThanOrSameAgeAs(otherResult: AsyncResult<T>): Boolean {
+  fun <O> isNewerThanOrSameAgeAs(otherResult: AsyncResult<O>): Boolean {
     return resultTimeMillis >= otherResult.resultTimeMillis
   }
 
