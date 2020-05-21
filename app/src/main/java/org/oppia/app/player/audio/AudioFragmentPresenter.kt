@@ -25,6 +25,7 @@ import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.audio.CellularAudioDialogController
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.logging.Logger
 import org.oppia.util.networking.NetworkConnectionUtil
 import javax.inject.Inject
 
@@ -41,7 +42,8 @@ class AudioFragmentPresenter @Inject constructor(
   private val cellularAudioDialogController: CellularAudioDialogController,
   private val profileManagementController: ProfileManagementController,
   private val networkConnectionUtil: NetworkConnectionUtil,
-  private val viewModelProvider: ViewModelProvider<AudioViewModel>
+  private val viewModelProvider: ViewModelProvider<AudioViewModel>,
+  private val logger: Logger
 ) {
   var userIsSeeking = false
   var userProgress = 0
@@ -126,6 +128,9 @@ class AudioFragmentPresenter @Inject constructor(
   }
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): String {
+    if (profileResult.isFailure()) {
+      logger.e("AudioFragment", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
+    }
     return getAudioLanguage(profileResult.getOrDefault(Profile.getDefaultInstance()).audioLanguage)
   }
 
