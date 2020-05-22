@@ -55,7 +55,7 @@
         android:paddingStart="56dp"
         android:paddingEnd="56dp"
         android:paddingTop="28dp"
-        android:paddingBottom="92dp"
+        android:paddingBottom="88dp"
         android:scrollbars="none"
         app:data="@{viewModel.ongoingTopicListViewModelLiveData}" />
 
