@@ -234,3 +234,18 @@ Espresso test might execute some checks while the app is doing some operations i
 We can solve this by adding an artificial delay (solution illustrated in some of SO answers to this issue) either by adding code like `SystemClock.sleep(period)` or `Thread.sleep(period)` . Yet with this approach, we might end up having inflexible and slow tests
 
 In order to solve this in a clean and effective manner, we have integrated IdlingResources in the application, [CountingIdlingResource](https://android.jlelse.eu/integrate-espresso-idling-resources-in-your-app-to-build-flexible-ui-tests-c779e24f5057) is one of the easiest to understand resource that comes bundled within the framework.
+
+
+# Tips to run testcases in both Expresso and Roboelectric
+The project contains two kinds of tests, unit tests using Robolectric and instrumentation tests using Espresso.
+
+Both frameworks can create the same kinds of tests, the difference is how they’re executed. Robolectric tests are run on a standard JVM, which makes them very fast to run, but there are some limitations on what can be tested. Espresso tests are run on a device (either actual or virtual) so they more closely resemble the actual running system, but they are a lot slower to run. 
+
+Sometimes it may happen that testcases pass in Expresso but fail in Roboelectric.
+
+For Performance Exception where at least 90 percent of the view should be visible to handle click
+() event.
+Make ScrollView as a parent in XML file and use scrollTo() while performing click() in the test.
+
+Example: 
+`onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())`
