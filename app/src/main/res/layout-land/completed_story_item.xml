@@ -19,6 +19,7 @@
     android:layout_marginTop="8dp"
     android:layout_marginEnd="16dp"
     android:layout_marginBottom="8dp"
+    app:cardElevation="4dp"
     app:cardCornerRadius="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -36,7 +37,7 @@
         android:contentDescription="@{viewModel.completedStory.storyName}"
         android:scaleType="centerInside"
         android:src="@{viewModel.completedStory.lessonThumbnail.thumbnailGraphic}"
-        app:layout_constraintDimensionRatio="16:9"
+        app:layout_constraintDimensionRatio="4:3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
