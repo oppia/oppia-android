@@ -154,13 +154,13 @@ class HtmlParserTest {
 
     /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
     val bulletSpans =
-      htmlResult.getSpans<CustomBulletSpan>(0, htmlResult.length, CustomBulletSpan::class.java)
+      htmlResult.getSpans<TextLeadingMarginSpan>(0, htmlResult.length, TextLeadingMarginSpan::class.java)
     assertThat(bulletSpans.size.toLong()).isEqualTo(2)
 
-    val bulletSpan0 = bulletSpans[0] as CustomBulletSpan
+    val bulletSpan0 = bulletSpans[0] as TextLeadingMarginSpan
     assertThat(bulletSpan0).isNotNull()
 
-    val bulletSpan1 = bulletSpans[1] as CustomBulletSpan
+    val bulletSpan1 = bulletSpans[1] as TextLeadingMarginSpan
     assertThat(bulletSpan1).isNotNull()
   }
 
