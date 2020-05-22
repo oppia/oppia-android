@@ -21,6 +21,7 @@
     android:layout_marginTop="8dp"
     android:layout_marginEnd="16dp"
     android:layout_marginBottom="12dp"
+    app:cardElevation="4dp"
     app:cardCornerRadius="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -37,7 +38,7 @@
         android:importantForAccessibility="no"
         android:scaleType="centerInside"
         android:src="@{viewModel.topic.topicThumbnail.thumbnailGraphic}"
-        app:layout_constraintDimensionRatio="16:9"
+        app:layout_constraintDimensionRatio="4:3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
