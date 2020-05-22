@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "org.oppia.app.model";
+option java_multiple_files = true;
+
+enum EventAction{
+  OPEN_PROFILE = 0;
+  OPEN_HOME = 1;
+  OPEN_INFO_TAB = 2;
+  OPEN_LESSONS_TAB = 3;
+  OPEN_PRACTICE_TAB = 4;
+  OPEN_REVISION_TAB = 5;
+  OPEN_STORY_ACTIVITY= 6;
+  OPEN_REVISION_ACTIVITY = 7;
+  OPEN_EXPLORATION_ACTIVITY = 8;
+  CLICK_AUDIO_BUTTON = 9;
+  CLICK_SUBMIT_BUTTON = 10;
+  CLICK_RECENTLY_PLAYED = 11;
+  CLICK_NEW_TOPIC = 12;
+}
+
+enum Priority{
+  ESSENTIAL = 0;
+  OPTIONAL = 1;
+}
+
