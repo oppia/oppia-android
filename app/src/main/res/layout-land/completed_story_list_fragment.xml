@@ -53,7 +53,7 @@
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingTop="28dp"
-        android:paddingBottom="108dp"
+        android:paddingBottom="88dp"
         android:scrollbars="none"
         app:data="@{viewModel.completedStoryListLiveData}" />
 
