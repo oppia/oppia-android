@@ -29,8 +29,9 @@
 
     <TextView
       android:id="@+id/slide_title_text_view"
-      android:layout_width="360dp"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
+      android:layout_marginEnd="96dp"
       android:layout_marginBottom="12dp"
       android:fontFamily="sans-serif-medium"
       android:gravity="center_horizontal"
@@ -39,7 +40,7 @@
       android:textSize="32sp"
       app:layout_constraintBottom_toTopOf="@+id/guideline"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toEndOf="@+id/slide_image_view" />
+      app:layout_constraintStart_toStartOf="@+id/guideline4" />
 
     <TextView
       android:id="@+id/slide_description_text_view"
@@ -62,5 +63,12 @@
       android:layout_height="wrap_content"
       android:orientation="horizontal"
       app:layout_constraintGuide_percent="0.5" />
+
+    <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/guideline4"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      app:layout_constraintGuide_percent="0.57" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
