@@ -23,13 +23,17 @@ import kotlinx.coroutines.CoroutineDispatcher
 import org.oppia.app.R
 import org.oppia.app.databinding.ContentItemBinding
 import org.oppia.app.databinding.ContinueInteractionItemBinding
+import org.oppia.app.databinding.ContinueNavigationButtonItemBinding
 import org.oppia.app.databinding.FeedbackItemBinding
 import org.oppia.app.databinding.FractionInteractionItemBinding
+import org.oppia.app.databinding.NextButtonItemBinding
 import org.oppia.app.databinding.NumericInputInteractionItemBinding
+import org.oppia.app.databinding.PreviousButtonItemBinding
 import org.oppia.app.databinding.PreviousResponsesHeaderItemBinding
+import org.oppia.app.databinding.ReturnToTopicButtonItemBinding
 import org.oppia.app.databinding.SelectionInteractionItemBinding
-import org.oppia.app.databinding.StateButtonItemBinding
 import org.oppia.app.databinding.StateFragmentBinding
+import org.oppia.app.databinding.SubmitButtonItemBinding
 import org.oppia.app.databinding.SubmittedAnswerItemBinding
 import org.oppia.app.databinding.TextInputInteractionItemBinding
 import org.oppia.app.fragment.FragmentScope
@@ -50,24 +54,31 @@ import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.app.player.state.itemviewmodel.ContinueInteractionViewModel
+import org.oppia.app.player.state.itemviewmodel.ContinueNavigationButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.FeedbackViewModel
 import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.InteractionViewModelFactory
+import org.oppia.app.player.state.itemviewmodel.NextButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
+import org.oppia.app.player.state.itemviewmodel.PreviousButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.PreviousResponsesHeaderViewModel
+import org.oppia.app.player.state.itemviewmodel.ReturnToTopicButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
-import org.oppia.app.player.state.itemviewmodel.StateNavigationButtonViewModel
-import org.oppia.app.player.state.itemviewmodel.StateNavigationButtonViewModel.ContinuationNavigationButtonType
+import org.oppia.app.player.state.itemviewmodel.SubmitButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.SubmittedAnswerViewModel
 import org.oppia.app.player.state.itemviewmodel.TextInputViewModel
+import org.oppia.app.player.state.listener.ContinueNavigationButtonListener
+import org.oppia.app.player.state.listener.NextNavigationButtonListener
+import org.oppia.app.player.state.listener.PreviousNavigationButtonListener
 import org.oppia.app.player.state.listener.PreviousResponsesHeaderClickListener
+import org.oppia.app.player.state.listener.ReturnToTopicNavigationButtonListener
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
-import org.oppia.app.player.state.listener.StateNavigationButtonListener
+import org.oppia.app.player.state.listener.SubmitNavigationButtonListener
+import org.oppia.app.player.stopexploration.StopExplorationInterface
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.utility.LifecycleSafeTimerFactory
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.ExplorationProgressController
 import org.oppia.domain.topic.StoryProgressController
 import org.oppia.util.data.AsyncResult
@@ -91,16 +102,14 @@ class StateFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<StateViewModel>,
-  private val explorationDataController: ExplorationDataController,
   private val explorationProgressController: ExplorationProgressController,
   private val storyProgressController: StoryProgressController,
   private val logger: Logger,
   private val htmlParserFactory: HtmlParser.Factory,
-  private val context: Context,
   private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>,
   private var lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
-) : StateNavigationButtonListener, PreviousResponsesHeaderClickListener {
+) : PreviousResponsesHeaderClickListener {
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
 
@@ -136,14 +145,19 @@ class StateFragmentPresenter @Inject constructor(
    * configuration changes since the user can just re-expand the list.
    */
   private var hasPreviousResponsesExpanded: Boolean = false
-  private lateinit var stateNavigationButtonViewModel: StateNavigationButtonViewModel
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val internalProfileId = fragment.arguments!!.getInt(STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, -1)
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String
+  ): View? {
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    topicId = fragment.arguments!!.getString(STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY)!!
-    storyId = fragment.arguments!!.getString(STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY)!!
-    explorationId = fragment.arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
+    this.topicId = topicId
+    this.storyId = storyId
+    this.explorationId = explorationId
 
     binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     val stateRecyclerViewAdapter = createRecyclerViewAdapter()
@@ -156,35 +170,21 @@ class StateFragmentPresenter @Inject constructor(
       it.viewModel = this.viewModel
     }
 
+    binding.stateRecyclerView.addOnLayoutChangeListener { _, _, _, _, bottom, _, _, _, oldBottom ->
+      if (bottom < oldBottom) {
+        binding.stateRecyclerView.postDelayed({
+          binding.stateRecyclerView.scrollToPosition(stateRecyclerViewAdapter.itemCount - 1)
+        }, 100)
+      }
+    }
+
     binding.hintsAndSolutionFragmentContainer.setOnClickListener {
       routeToHintsAndSolutionListener.routeToHintsAndSolution(
-        explorationId,
+        this.explorationId,
         newAvailableHintIndex,
         allHintsExhausted
       )
     }
-
-    binding.stateRecyclerView.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
-      override fun onLayoutChange(
-        view: View,
-        left: Int,
-        top: Int,
-        right: Int,
-        bottom: Int,
-        oldLeft: Int,
-        oldTop: Int,
-        oldRight: Int,
-        oldBottom: Int
-      ) {
-        if (bottom < oldBottom) {
-          binding.stateRecyclerView.postDelayed({
-            binding.stateRecyclerView.scrollToPosition(
-              stateRecyclerViewAdapter.getItemCount() - 1
-            )
-          }, 100)
-        }
-      }
-    })
 
     subscribeToCurrentState()
     markExplorationAsRecentlyPlayed()
@@ -195,10 +195,34 @@ class StateFragmentPresenter @Inject constructor(
     return BindableAdapter.MultiTypeBuilder
       .newBuilder(StateItemViewModel::viewType)
       .registerViewDataBinder(
-        viewType = StateItemViewModel.ViewType.STATE_NAVIGATION_BUTTON,
-        inflateDataBinding = StateButtonItemBinding::inflate,
-        setViewModel = StateButtonItemBinding::setButtonViewModel,
-        transformViewModel = { it as StateNavigationButtonViewModel }
+        viewType = StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON,
+        inflateDataBinding = ContinueNavigationButtonItemBinding::inflate,
+        setViewModel = ContinueNavigationButtonItemBinding::setButtonViewModel,
+        transformViewModel = { it as ContinueNavigationButtonViewModel }
+      )
+      .registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.PREVIOUS_NAVIGATION_BUTTON,
+        inflateDataBinding = PreviousButtonItemBinding::inflate,
+        setViewModel = PreviousButtonItemBinding::setButtonViewModel,
+        transformViewModel = { it as PreviousButtonViewModel }
+      )
+      .registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.NEXT_NAVIGATION_BUTTON,
+        inflateDataBinding = NextButtonItemBinding::inflate,
+        setViewModel = NextButtonItemBinding::setButtonViewModel,
+        transformViewModel = { it as NextButtonViewModel }
+      )
+      .registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.RETURN_TO_TOPIC_NAVIGATION_BUTTON,
+        inflateDataBinding = ReturnToTopicButtonItemBinding::inflate,
+        setViewModel = ReturnToTopicButtonItemBinding::setButtonViewModel,
+        transformViewModel = { it as ReturnToTopicButtonViewModel }
+      )
+      .registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON,
+        inflateDataBinding = SubmitButtonItemBinding::inflate,
+        setViewModel = SubmitButtonItemBinding::setButtonViewModel,
+        transformViewModel = { it as SubmitButtonViewModel }
       )
       .registerViewBinder(
         viewType = StateItemViewModel.ViewType.CONTENT,
@@ -337,7 +361,7 @@ class StateFragmentPresenter @Inject constructor(
     }
 
     val ephemeralState = result.getOrThrow()
-
+    val hasPreviousState = ephemeralState.hasPreviousState
 
     currentState = ephemeralState.state
 
@@ -394,15 +418,13 @@ class StateFragmentPresenter @Inject constructor(
           }
         }
       }
-      addInteractionForPendingState(pendingItemList, interaction)
+      addInteractionForPendingState(pendingItemList, interaction, hasPreviousState)
     } else if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE) {
       addPreviousAnswers(pendingItemList, ephemeralState.completedState.answerList)
     }
 
-    val hasPreviousState = ephemeralState.hasPreviousState
     var canContinueToNextState = false
     var hasGeneralContinueButton = false
-
     if (ephemeralState.stateTypeCase != EphemeralState.StateTypeCase.TERMINAL_STATE) {
       if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE
         && !ephemeralState.hasNextState
@@ -429,7 +451,7 @@ class StateFragmentPresenter @Inject constructor(
       }
     }
 
-    updateNavigationButtonVisibility(
+    maybeAddNavigationButtons(
       pendingItemList,
       hasPreviousState,
       canContinueToNextState,
@@ -546,25 +568,25 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun showCongratulationMessageOnCorrectAnswer() {
-    binding.congratulationTextview.setVisibility(View.VISIBLE)
+    binding.congratulationTextView.visibility = View.VISIBLE
 
     val fadeIn = AlphaAnimation(0f, 1f)
-    fadeIn.interpolator = DecelerateInterpolator() //add this
+    fadeIn.interpolator = DecelerateInterpolator()
     fadeIn.duration = 2000
 
     val fadeOut = AlphaAnimation(1f, 0f)
-    fadeOut.interpolator = AccelerateInterpolator() //and this
+    fadeOut.interpolator = AccelerateInterpolator()
     fadeOut.startOffset = 1000
     fadeOut.duration = 1000
 
-    val animation = AnimationSet(false) //change to false
+    val animation = AnimationSet(false)
     animation.addAnimation(fadeIn)
     animation.addAnimation(fadeOut)
-    binding.congratulationTextview.setAnimation(animation)
+    binding.congratulationTextView.animation = animation
 
     Handler().postDelayed({
-      binding.congratulationTextview.clearAnimation()
-      binding.congratulationTextview.visibility = View.INVISIBLE
+      binding.congratulationTextView.clearAnimation()
+      binding.congratulationTextView.visibility = View.INVISIBLE
     }, 2000)
 
     lifecycleSafeTimerFactory.cancel()
@@ -596,6 +618,12 @@ class StateFragmentPresenter @Inject constructor(
       )
     }
     return ephemeralStateResult.getOrDefault(AnswerOutcome.getDefaultInstance())
+  }
+
+  fun onReturnToTopicButtonClicked() {
+    hideKeyboard()
+    markExplorationCompleted()
+    (activity as StopExplorationInterface).stopExploration()
   }
 
   /** Helper for [subscribeToHint]. */
@@ -630,26 +658,19 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
-  // TODO(#880): Add test for this button once #495 is merged in develop.
-  override fun onReturnToTopicButtonClicked() {
-    hideKeyboard()
-    markExplorationCompleted()
-    explorationDataController.stopPlayingExploration()
-    activity.finish()
-  }
-
-  override fun onSubmitButtonClicked() {
+  fun onSubmitButtonClicked() {
     hideKeyboard()
     handleSubmitAnswer(viewModel.getPendingAnswer())
   }
 
   fun handleKeyboardAction() {
     hideKeyboard()
-    if (stateNavigationButtonViewModel.isInteractionButtonActive.get()!!)
+    if (viewModel.getCanSubmitAnswer().get() == true) {
       handleSubmitAnswer(viewModel.getPendingAnswer())
+    }
   }
 
-  override fun onContinueButtonClicked() {
+  fun onContinueButtonClicked() {
     viewModel.setHintBulbVisibility(false)
     hideKeyboard()
     moveToNextState()
@@ -659,11 +680,11 @@ class StateFragmentPresenter @Inject constructor(
     subscribeToAnswerOutcome(explorationProgressController.submitAnswer(answer))
   }
 
-  override fun onPreviousButtonClicked() {
+  fun onPreviousButtonClicked() {
     explorationProgressController.moveToPreviousState()
   }
 
-  override fun onNextButtonClicked() = moveToNextState()
+  fun onNextButtonClicked() = moveToNextState()
 
   override fun onResponsesHeaderClicked() {
     togglePreviousAnswers()
@@ -676,11 +697,12 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun addInteractionForPendingState(
-    pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction
+    pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction, hasPreviousButton: Boolean
   ) {
     val interactionViewModelFactory = interactionViewModelFactoryMap.getValue(interaction.id)
     pendingItemList += interactionViewModelFactory(
-      explorationId, interaction, fragment as InteractionAnswerReceiver, fragment as InteractionAnswerErrorReceiver
+      explorationId, interaction, fragment as InteractionAnswerReceiver, fragment as InteractionAnswerErrorReceiver,
+      hasPreviousButton
     )
   }
 
@@ -759,47 +781,36 @@ class StateFragmentPresenter @Inject constructor(
     return null
   }
 
-  private fun updateNavigationButtonVisibility(
+  private fun maybeAddNavigationButtons(
     pendingItemList: MutableList<StateItemViewModel>,
     hasPreviousState: Boolean,
     canContinueToNextState: Boolean,
     hasGeneralContinueButton: Boolean,
-    stateIsTerminal: Boolean
-  ) {
-    stateNavigationButtonViewModel =
-      StateNavigationButtonViewModel(context, this as StateNavigationButtonListener)
-    stateNavigationButtonViewModel.updatePreviousButton(isEnabled = hasPreviousState)
-
-    // Set continuation button.
+    stateIsTerminal: Boolean) {
     when {
-      hasGeneralContinueButton -> {
-        stateNavigationButtonViewModel.updateContinuationButton(
-          ContinuationNavigationButtonType.CONTINUE_BUTTON, isEnabled = true
-        )
-      }
-      canContinueToNextState -> {
-        stateNavigationButtonViewModel.updateContinuationButton(
-          ContinuationNavigationButtonType.NEXT_BUTTON, isEnabled = canContinueToNextState
-        )
-      }
-      stateIsTerminal -> {
-        stateNavigationButtonViewModel.updateContinuationButton(
-          ContinuationNavigationButtonType.RETURN_TO_TOPIC_BUTTON, isEnabled = true
-        )
-      }
-      viewModel.doesMostRecentInteractionRequireExplicitSubmission(pendingItemList) -> {
-        stateNavigationButtonViewModel.updateContinuationButton(
-          ContinuationNavigationButtonType.SUBMIT_BUTTON, isEnabled = true
-        )
-      }
-      else -> {
-        // No continuation button needs to be set since the interaction itself will push for answer submission.
-        stateNavigationButtonViewModel.updateContinuationButton(
-          ContinuationNavigationButtonType.CONTINUE_BUTTON, isEnabled = false
-        )
-      }
-    }
-    pendingItemList += stateNavigationButtonViewModel
+      hasGeneralContinueButton -> ContinueNavigationButtonViewModel(
+        hasPreviousState, fragment as PreviousNavigationButtonListener, fragment as ContinueNavigationButtonListener
+      )
+      canContinueToNextState -> NextButtonViewModel(
+        hasPreviousState, fragment as PreviousNavigationButtonListener, fragment as NextNavigationButtonListener
+      )
+      stateIsTerminal -> ReturnToTopicButtonViewModel(
+        hasPreviousState, fragment as PreviousNavigationButtonListener,
+        fragment as ReturnToTopicNavigationButtonListener
+      )
+      viewModel.doesMostRecentInteractionRequireExplicitSubmission(pendingItemList) -> SubmitButtonViewModel(
+        viewModel.getCanSubmitAnswer(),
+        hasPreviousState,
+        fragment as PreviousNavigationButtonListener,
+        fragment as SubmitNavigationButtonListener
+      )
+      // Otherwise, just show the previous button since the interaction itself will push the answer submission.
+      hasPreviousState && !viewModel.isMostRecentInteractionAutoNavigating(pendingItemList) -> PreviousButtonViewModel(
+        fragment as PreviousNavigationButtonListener
+      )
+      // Otherwise, there's no navigation button that should be shown since the current interaction handles this.
+      else -> null
+    }?.let(pendingItemList::add)
   }
 
   private fun hideKeyboard() {
@@ -821,11 +832,7 @@ class StateFragmentPresenter @Inject constructor(
 
   /** Updates submit button UI as active if pendingAnswerError null else inactive. */
   fun updateSubmitButton(pendingAnswerError: String?) {
-    if (pendingAnswerError != null) {
-      stateNavigationButtonViewModel.isInteractionButtonActive.set(false)
-    } else {
-      stateNavigationButtonViewModel.isInteractionButtonActive.set(true)
-    }
+    viewModel.setCanSubmitAnswer(pendingAnswerError == null)
   }
 
   private fun markExplorationAsRecentlyPlayed() {

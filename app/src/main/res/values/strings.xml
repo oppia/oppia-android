@@ -39,8 +39,8 @@
   <string name="topic_practice_start">Start</string>
   <string name="state_continue_button">Continue</string>
   <string name="state_continue_submit">Submit</string>
-  <string name="previous_state_description">Navigate to previous state</string>
-  <string name="next_state_description">Navigate to next state</string>
+  <string name="previous_state_description">Navigate to the previous card</string>
+  <string name="next_state_description">Navigate to the next card</string>
   <string name="state_submit_button">Submit</string>
   <string name="state_end_exploration_button">Return To Topic</string>
   <string name="previous_responses_header">Previous Responses (%d)</string>

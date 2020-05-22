@@ -20,6 +20,7 @@ import org.oppia.app.options.DefaultAudioActivity
 import org.oppia.app.options.OptionsActivity
 import org.oppia.app.options.StoryTextSizeActivity
 import org.oppia.app.player.exploration.ExplorationActivity
+import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.app.profile.AddProfileActivity
 import org.oppia.app.profile.AdminAuthActivity
 import org.oppia.app.profile.AdminPinActivity
@@ -36,7 +37,6 @@ import org.oppia.app.story.StoryActivity
 import org.oppia.app.testing.AudioFragmentTestActivity
 import org.oppia.app.testing.BindableAdapterTestActivity
 import org.oppia.app.testing.ConceptCardFragmentTestActivity
-import org.oppia.app.testing.ContentCardTestActivity
 import org.oppia.app.testing.ExplorationInjectionActivity
 import org.oppia.app.testing.ExplorationTestActivity
 import org.oppia.app.testing.HomeInjectionActivity
@@ -77,7 +77,6 @@ interface ActivityComponent {
   fun inject(bindableAdapterTestActivity: BindableAdapterTestActivity)
   fun inject(completedStoryListActivity: CompletedStoryListActivity)
   fun inject(conceptCardFragmentTestActivity: ConceptCardFragmentTestActivity)
-  fun inject(contentCardTestActivity: ContentCardTestActivity)
   fun inject(defaultAudioActivity: DefaultAudioActivity)
   fun inject(explorationActivity: ExplorationActivity)
   fun inject(explorationInjectionActivity: ExplorationInjectionActivity)
@@ -107,6 +106,7 @@ interface ActivityComponent {
   fun inject(recentlyPlayedActivity: RecentlyPlayedActivity)
   fun inject(revisionCardActivity: RevisionCardActivity)
   fun inject(splashActivity: SplashActivity)
+  fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
   fun inject(storyActivity: StoryActivity)
   fun inject(storyTextSizeActivity: StoryTextSizeActivity)
   fun inject(topicActivity: TopicActivity)
