@@ -1,5 +1,6 @@
 package org.oppia.domain.util
 
+import javax.inject.Inject
 import org.json.JSONArray
 import org.json.JSONObject
 import org.oppia.app.model.AnswerGroup
@@ -19,7 +20,6 @@ import org.oppia.app.model.StringList
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.Voiceover
 import org.oppia.app.model.VoiceoverMapping
-import javax.inject.Inject
 
 /** Utility that helps create a [State] object given its JSON representation. */
 class StateRetriever @Inject constructor(
@@ -95,7 +95,8 @@ class StateRetriever @Inject constructor(
 
   // Creates the list of answer group objects from JSON
   private fun createAnswerGroupsFromJson(
-    answerGroupsJson: JSONArray?, interactionId: String
+    answerGroupsJson: JSONArray?,
+    interactionId: String
   ): MutableList<AnswerGroup> {
     val answerGroups = mutableListOf<AnswerGroup>()
     if (answerGroupsJson == null) {
@@ -147,7 +148,8 @@ class StateRetriever @Inject constructor(
 
   // Creates a single answer group object from JSON
   private fun createSingleAnswerGroupFromJson(
-    answerGroupJson: JSONObject, interactionId: String
+    answerGroupJson: JSONObject,
+    interactionId: String
   ): AnswerGroup {
     return AnswerGroup.newBuilder()
       .setOutcome(
@@ -255,7 +257,8 @@ class StateRetriever @Inject constructor(
 
   // Creates the list of rule spec objects from JSON
   private fun createRuleSpecsFromJson(
-    ruleSpecJson: JSONArray?, interactionId: String
+    ruleSpecJson: JSONArray?,
+    interactionId: String
   ): MutableList<RuleSpec> {
     val ruleSpecList = mutableListOf<RuleSpec>()
     if (ruleSpecJson == null) {
@@ -286,7 +289,6 @@ class StateRetriever @Inject constructor(
             createExactInputFromJson(inputsJson, inputName, interactionId, ruleSpecBuilder.ruleType)
           )
         }
-
       }
       ruleSpecList.add(ruleSpecBuilder.build())
     }
@@ -332,7 +334,9 @@ class StateRetriever @Inject constructor(
    * This method makes assumptions about how to interpret the input type represented by the [JSONObject].
    */
   private fun createExactInputForDragDropAndSort(
-    inputJson: JSONObject?, keyName: String, ruleType: String
+    inputJson: JSONObject?,
+    keyName: String,
+    ruleType: String
   ): InteractionObject {
     if (inputJson == null) {
       return InteractionObject.getDefaultInstance()

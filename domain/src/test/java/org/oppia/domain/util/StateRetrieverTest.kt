@@ -9,6 +9,9 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Qualifier
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -16,8 +19,11 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.model.AnswerGroup
+import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.ListOfSetsOfHtmlStrings
 import org.oppia.app.model.RuleSpec
 import org.oppia.app.model.State
+import org.oppia.app.model.StringList
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -26,10 +32,6 @@ import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
-import javax.inject.Inject
-import javax.inject.Qualifier
-import javax.inject.Singleton
-import kotlin.test.assertNotNull
 
 const val DRAG_DROP_TEST_EXPLORATION_NAME = "drag_and_drop_test_exploration.json"
 
@@ -59,12 +61,27 @@ class StateRetrieverTest {
   }
 
   @Test
-  fun testParseState_withDragAndDropInteraction_parsesRuleWithIsEqualToOrderingWithInputX() {
+  fun testParseState_withDragAndDropInteraction_parsesRuleWithIsEqualToOrderingWithInputXAndValueAtX() {
     val state = createStateFromJson("DragDropSortInput", DRAG_DROP_TEST_EXPLORATION_NAME)
     val ruleSpecMap = state.interaction.answerGroupsList
       .flatMap(AnswerGroup::getRuleSpecsList)
       .find { it.ruleType == "IsEqualToOrdering" }!!
     assertThat(ruleSpecMap.inputMap).containsKey("x")
+
+    val listOfSetsOfHtmlStrings = ListOfSetsOfHtmlStrings.newBuilder()
+      .addAllSetOfHtmlStrings(
+        listOf<StringList>(
+          createHtmlStringList("<p>yesterday</p>"),
+          createHtmlStringList("<p>I bought</p>"),
+          createHtmlStringList("<p>a camera at the store</p>")
+        )
+      )
+      .build()
+
+    val dragDropInputIsEqualToOrderingValue =
+      InteractionObject.newBuilder().setListOfSetsOfHtmlString(listOfSetsOfHtmlStrings).build()
+
+    assertThat(ruleSpecMap.inputMap["x"]).isEqualTo(dragDropInputIsEqualToOrderingValue)
   }
 
   @Test
@@ -77,21 +94,31 @@ class StateRetrieverTest {
   }
 
   @Test
-  fun testParseState_withDragAndDropInteraction_parsesRuleWithHasElementXAtPositionYWithInputX() {
-    val state = createStateFromJson("DragDropSortInput", DRAG_DROP_TEST_EXPLORATION_NAME)
-    val ruleSpecMap = state.interaction.answerGroupsList
-      .flatMap(AnswerGroup::getRuleSpecsList)
-      .find { it.ruleType == "HasElementXAtPositionY" }!!
-    assertThat(ruleSpecMap.inputMap).containsKey("x")
-  }
-
-  @Test
   fun testParseState_withDragAndDropInteraction_parsesRuleWithHasElementXAtPositionYWithInputY() {
     val state = createStateFromJson("DragDropSortInput", DRAG_DROP_TEST_EXPLORATION_NAME)
     val ruleSpecMap = state.interaction.answerGroupsList
       .flatMap(AnswerGroup::getRuleSpecsList)
       .find { it.ruleType == "HasElementXAtPositionY" }!!
     assertThat(ruleSpecMap.inputMap).containsKey("y")
+
+    val dragDropInputHasElementXAtPositionYValue =
+      InteractionObject.newBuilder().setNonNegativeInt(4).build()
+
+    assertThat(ruleSpecMap.inputMap["y"]).isEqualTo(dragDropInputHasElementXAtPositionYValue)
+  }
+
+  @Test
+  fun testParseState_withDragAndDropInteraction_parsesRuleWithHasElementXAtPositionYWithInputX() {
+    val state = createStateFromJson("DragDropSortInput", DRAG_DROP_TEST_EXPLORATION_NAME)
+    val ruleSpecMap = state.interaction.answerGroupsList
+      .flatMap(AnswerGroup::getRuleSpecsList)
+      .find { it.ruleType == "HasElementXAtPositionY" }!!
+    assertThat(ruleSpecMap.inputMap).containsKey("x")
+
+    val dragDropInputHasElementXAtPositionYValue =
+      InteractionObject.newBuilder().setNormalizedString("<p>I bought</p>").build()
+
+    assertThat(ruleSpecMap.inputMap["x"]).isEqualTo(dragDropInputHasElementXAtPositionYValue)
   }
 
   @Test
@@ -110,6 +137,22 @@ class StateRetrieverTest {
       .flatMap(AnswerGroup::getRuleSpecsList)
       .find { it.ruleType == "IsEqualToOrderingWithOneItemAtIncorrectPosition" }!!
     assertThat(ruleSpecMap.inputMap).containsKey("x")
+
+    val listOfSetsOfHtmlStrings = ListOfSetsOfHtmlStrings.newBuilder()
+      .addAllSetOfHtmlStrings(
+        listOf<StringList>(
+          createHtmlStringList("<p>I bought</p>"),
+          createHtmlStringList("<p>a camera at the store</p>"),
+          createHtmlStringList("<p>yesterday</p>"),
+          createHtmlStringList("<p>to photograph the parade.</p>")
+        )
+      )
+      .build()
+
+    val dragDropInputIsEqualToOrderingWithOneItemAtIncorrectPositionValue =
+      InteractionObject.newBuilder().setListOfSetsOfHtmlString(listOfSetsOfHtmlStrings).build()
+
+    assertThat(ruleSpecMap.inputMap["x"]).isEqualTo(dragDropInputIsEqualToOrderingWithOneItemAtIncorrectPositionValue)
   }
 
   @Test
@@ -128,6 +171,11 @@ class StateRetrieverTest {
       .flatMap(AnswerGroup::getRuleSpecsList)
       .find { it.ruleType == "HasElementXBeforeElementY" }!!
     assertThat(ruleSpecMap.inputMap).containsKey("x")
+
+    val dragDropInputHasElementXAtPositionYValue =
+      InteractionObject.newBuilder().setNormalizedString("<p>I bought</p>").build()
+
+    assertThat(ruleSpecMap.inputMap["x"]).isEqualTo(dragDropInputHasElementXAtPositionYValue)
   }
 
   @Test
@@ -137,6 +185,15 @@ class StateRetrieverTest {
       .flatMap(AnswerGroup::getRuleSpecsList)
       .find { it.ruleType == "HasElementXBeforeElementY" }!!
     assertThat(ruleSpecMap.inputMap).containsKey("y")
+
+    val dragDropInputHasElementXAtPositionYValue =
+      InteractionObject.newBuilder().setNormalizedString("<p>to photograph the parade.</p>").build()
+
+    assertThat(ruleSpecMap.inputMap["y"]).isEqualTo(dragDropInputHasElementXAtPositionYValue)
+  }
+
+  private fun createHtmlStringList(vararg items: String): StringList {
+    return StringList.newBuilder().addAllHtml(items.toList()).build()
   }
 
   private fun createStateFromJson(stateName: String, explorationName: String): State {
