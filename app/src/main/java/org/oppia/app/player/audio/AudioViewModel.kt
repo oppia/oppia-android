@@ -14,7 +14,7 @@ import org.oppia.domain.audio.AudioPlayerController.PlayProgress
 import org.oppia.domain.audio.AudioPlayerController.PlayStatus
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.DefaultResource
-import java.util.Locale
+import java.util.*
 import javax.inject.Inject
 
 /** [ViewModel] for audio-player state. */
@@ -96,7 +96,6 @@ class AudioViewModel @Inject constructor(
           languages.first()
         }
         setAudioLanguageCode(languageCode)
-        (fragment as LanguageInterface).languageSelectionClicked()
       }
     }
   }

@@ -104,12 +104,14 @@ class AudioFragmentTest {
       onView(withId(R.id.tvAudioLanguage)).check(matches(withText("EN")))
     }
   }
+
   @Test
   fun testAudioFragment_openFragment_showsDefaultAudioLanguageAsHindi() {
     launch<AudioFragmentTestActivity>(createHomeActivityIntent(0)).use {
-      onView(withId(R.id.tvAudioLanguage)).check(matches(withText("hi")))
+      onView(withId(R.id.tvAudioLanguage)).check(matches(withText("HI")))
     }
   }
+
   @Test
   fun testAudioFragment_openFragment_showsEnglishAudioLanguageWhenDefaultAudioLanguageNotAvailable() {
     launch<AudioFragmentTestActivity>(createHomeActivityIntent(2)).use {
