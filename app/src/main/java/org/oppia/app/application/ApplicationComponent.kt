@@ -30,9 +30,8 @@ import javax.inject.Singleton
   ApplicationModule::class, DispatcherModule::class, NetworkModule::class, LoggerModule::class,
   ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
   NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-  DragDropSortInputModule::class,
-  InteractionsModule::class, GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
-  HtmlParserEntityTypeModule::class, CachingModule::class
+  DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class, GlideImageLoaderModule::class,
+  ImageParsingModule::class, HtmlParserEntityTypeModule::class, CachingModule::class
 ])
 interface ApplicationComponent {
   @Component.Builder

@@ -14,6 +14,9 @@
       <option name="XML_KEEP_BLANK_LINES" value="0" />
       <option name="XML_WHITE_SPACE_AROUND_CDATA" value="1" />
     </XML>
+    <editorconfig>
+      <option name="ENABLED" value="false" />
+    </editorconfig>
     <codeStyleSettings language="Groovy">
       <indentOptions>
         <option name="INDENT_SIZE" value="2" />

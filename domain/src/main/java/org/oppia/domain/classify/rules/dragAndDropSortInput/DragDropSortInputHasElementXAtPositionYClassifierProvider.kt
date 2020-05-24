@@ -8,8 +8,8 @@ import org.oppia.domain.classify.rules.GenericRuleClassifier
 import org.oppia.domain.classify.rules.RuleClassifierProvider
 
 /**
- * Provider for a classifier that determines whether a fraction has a denominator equal to the specified value per the
- * fraction input interaction.
+ * Provider for a classifier that determines whether a element of [ListOfSetsOfHtmlStrings] at a particular position is equal to the specified value per the
+ * drag drop sort input interaction.
  *
  * https://github.com/oppia/oppia/blob/03f16147e513ad31cbbf3ce882867a1aac99d649/extensions/interactions/DragAndDropSortInput/directives/drag-and-drop-sort-input-rules.service.ts#L78
  */
@@ -29,7 +29,6 @@ internal class DragDropSortInputHasElementXAtPositionYClassifierProvider @Inject
     )
   }
 
-  // TODO(#210): Add tests for this classifier.
   override fun matches(answer: ListOfSetsOfHtmlStrings, firstInput: String, secondInput: Int): Boolean {
     val index: Int = answer.setOfHtmlStringsList.indexOfFirst { it.htmlList.joinToString("") == firstInput }
     return if (index != -1) {

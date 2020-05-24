@@ -12,6 +12,7 @@ import org.junit.runner.RunWith
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.ListOfSetsOfHtmlStrings
 import org.oppia.app.model.StringList
+import org.oppia.domain.classify.RuleClassifier
 import org.robolectric.annotation.Config
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -27,11 +28,12 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
   private val NON_NEGATIVE_VALUE_1 = createNonNegativeInt(value = 1)
   private val STRING_VALUE_2 = createString(value = "test")
   private val STRING_VALUE_3 = createString(value = "test_invalid")
+  private val LIST_OF_SETS_OF_HTML_STRING_VALUE = createListOfSetsOfHtmlStrings()
 
   @Inject
   internal lateinit var dragDropSortInputHasElementXAtPositionYClassifierProvider: DragDropSortInputHasElementXAtPositionYClassifierProvider
 
-  private val hasElementXAtPositionYRuleClassifier by lazy {
+  private val hasElementXAtPositionYRuleClassifier:RuleClassifier by lazy {
     dragDropSortInputHasElementXAtPositionYClassifierProvider.createRuleClassifier()
   }
 
@@ -41,11 +43,47 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
   }
 
   @Test
+  fun testAnswer_nonNegativeInput_testString_sameValue_bothValuesDoNotMatch() {
+    val inputs = mapOf("y" to NON_NEGATIVE_VALUE_0, "x" to STRING_VALUE_2)
+
+    val matches =
+      hasElementXAtPositionYRuleClassifier.matches(answer = LIST_OF_SETS_OF_HTML_STRING_VALUE, inputs = inputs)
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testAnswer_nonNegativeInput_testString_incorrectInputMap_throwsException() {
+    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_0, "y" to STRING_VALUE_2)
+
+    val exception = assertThrows(IllegalStateException::class) {
+      hasElementXAtPositionYRuleClassifier.matches(answer = LIST_OF_SETS_OF_HTML_STRING_VALUE, inputs = inputs)
+    }
+
+    assertThat(exception)
+      .hasMessageThat()
+      .contains("Expected input value to be of type NORMALIZED_STRING not NON_NEGATIVE_INT")
+  }
+
+  @Test
+  fun testAnswer_nonNegativeInput_testString_missingInput_throwsException() {
+    val inputs = mapOf("y" to STRING_VALUE_2)
+
+    val exception = assertThrows(IllegalStateException::class) {
+      hasElementXAtPositionYRuleClassifier.matches(answer = LIST_OF_SETS_OF_HTML_STRING_VALUE, inputs = inputs)
+    }
+
+    assertThat(exception)
+      .hasMessageThat()
+      .contains("Expected classifier inputs to contain parameter with name 'x' but had: [y]")
+  }
+
+  @Test
   fun testAnswer_nonNegativeInput_testString_sameValue_bothValuesMatch() {
     val inputs = mapOf("y" to NON_NEGATIVE_VALUE_1, "x" to STRING_VALUE_2)
 
     val matches =
-      hasElementXAtPositionYRuleClassifier.matches(answer = createListOfSetsOfHtmlStrings(), inputs = inputs)
+      hasElementXAtPositionYRuleClassifier.matches(answer = LIST_OF_SETS_OF_HTML_STRING_VALUE, inputs = inputs)
 
     assertThat(matches).isTrue()
   }

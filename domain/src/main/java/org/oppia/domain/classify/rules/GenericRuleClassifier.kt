@@ -67,7 +67,7 @@ internal class GenericRuleClassifier private constructor(
 
   internal interface MultiTypeDoubleInputMatcher<AT, ITF, ITS> {
     /**
-     * Returns whether the validated and extracted answer matches the single validated and extracted input parameter per
+     * Returns whether the validated and extracted answer matches the two validated and extracted input parameter per
      * the specification of this classifier.
      */
     fun matches(answer: AT, firstInput: ITF, secondInput: ITS): Boolean
