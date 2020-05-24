@@ -1,8 +1,8 @@
 package org.oppia.domain.classify.rules
 
+import javax.inject.Inject
 import org.oppia.app.model.InteractionObject
 import org.oppia.domain.classify.RuleClassifier
-import javax.inject.Inject
 
 /**
  * A convenience [RuleClassifier] which performs parameter extraction and sanitation to simplify classifiers, with the
@@ -16,7 +16,7 @@ internal class GenericRuleClassifier private constructor(
   private val expectedAnswerObjectType: InteractionObject.ObjectTypeCase,
   private val orderedExpectedParameterTypes: LinkedHashMap<String, InteractionObject.ObjectTypeCase>,
   private val matcherDelegate: MatcherDelegate
-): RuleClassifier {
+) : RuleClassifier {
   override fun matches(answer: InteractionObject, inputs: Map<String, InteractionObject>): Boolean {
     check(answer.objectTypeCase == expectedAnswerObjectType) {
       "Expected answer to be of type ${expectedAnswerObjectType.name} not ${answer.objectTypeCase.name}"
@@ -28,7 +28,9 @@ internal class GenericRuleClassifier private constructor(
   }
 
   private fun retrieveInputObject(
-    parameterName: String, expectedObjectType: InteractionObject.ObjectTypeCase, inputs: Map<String, InteractionObject>
+    parameterName: String,
+    expectedObjectType: InteractionObject.ObjectTypeCase,
+    inputs: Map<String, InteractionObject>
   ): InteractionObject {
     val input = checkNotNull(inputs[parameterName]) {
       "Expected classifier inputs to contain parameter with name '$parameterName' but had: ${inputs.keys}"
@@ -63,7 +65,7 @@ internal class GenericRuleClassifier private constructor(
     fun matches(answer: AT, input: IT): Boolean
   }
 
-  internal interface MultiTypeDoubleInputMatcher<AT, ITF,ITS> {
+  internal interface MultiTypeDoubleInputMatcher<AT, ITF, ITS> {
     /**
      * Returns whether the validated and extracted answer matches the single validated and extracted input parameter per
      * the specification of this classifier.
@@ -83,48 +85,48 @@ internal class GenericRuleClassifier private constructor(
 
     abstract fun matches(answer: InteractionObject, inputs: List<InteractionObject>): Boolean
 
-    internal class NoInputMatcherDelegate<T: Any>(
+    internal class NoInputMatcherDelegate<T : Any>(
       private val matcher: NoInputInputMatcher<T>,
       private val extractObject: (InteractionObject) -> T
-    ): MatcherDelegate() {
+    ) : MatcherDelegate() {
       override fun matches(answer: InteractionObject, inputs: List<InteractionObject>): Boolean {
         check(inputs.isEmpty())
         return matcher.matches(extractObject(answer))
       }
     }
 
-    internal class SingleInputMatcherDelegate<T: Any>(
+    internal class SingleInputMatcherDelegate<T : Any>(
       private val matcher: SingleInputMatcher<T>,
       private val extractObject: (InteractionObject) -> T
-    ): MatcherDelegate() {
+    ) : MatcherDelegate() {
       override fun matches(answer: InteractionObject, inputs: List<InteractionObject>): Boolean {
         check(inputs.size == 1)
         return matcher.matches(extractObject(answer), extractObject(inputs.first()))
       }
     }
 
-    internal class MultiTypeSingleInputMatcherDelegate<AT: Any, IT: Any>(
+    internal class MultiTypeSingleInputMatcherDelegate<AT : Any, IT : Any>(
       private val matcher: MultiTypeSingleInputMatcher<AT, IT>,
       private val extractAnswerObject: (InteractionObject) -> AT,
       private val extractInputObject: (InteractionObject) -> IT
-    ): MatcherDelegate() {
+    ) : MatcherDelegate() {
       override fun matches(answer: InteractionObject, inputs: List<InteractionObject>): Boolean {
         check(inputs.size == 1)
         return matcher.matches(extractAnswerObject(answer), extractInputObject(inputs.first()))
       }
     }
 
-    internal class DoubleInputMatcherDelegate<T: Any>(
+    internal class DoubleInputMatcherDelegate<T : Any>(
       private val matcher: DoubleInputMatcher<T>,
       private val extractObject: (InteractionObject) -> T
-    ): MatcherDelegate() {
+    ) : MatcherDelegate() {
       override fun matches(answer: InteractionObject, inputs: List<InteractionObject>): Boolean {
         check(inputs.size == 2)
         return matcher.matches(extractObject(answer), extractObject(inputs[0]), extractObject(inputs[1]))
       }
     }
 
-    internal class MultiTypeDoubleInputMatcherDelegate<AT: Any, ITF: Any, ITS: Any>(
+    internal class MultiTypeDoubleInputMatcherDelegate<AT : Any, ITF : Any, ITS : Any>(
       private val matcher: MultiTypeDoubleInputMatcher<AT, ITF, ITS>,
       private val extractAnswerObject: (InteractionObject) -> AT,
       private val extractObjectFirst: (InteractionObject) -> ITF,
@@ -145,8 +147,9 @@ internal class GenericRuleClassifier private constructor(
     private val interactionObjectTypeExtractorRepository: InteractionObjectTypeExtractorRepository
   ) {
     /** Returns a new [GenericRuleClassifier] for an answer that is not matched to any input values. */
-    inline fun <reified T: Any> createNoInputClassifier(
-      expectedObjectType: InteractionObject.ObjectTypeCase, matcher: NoInputInputMatcher<T>
+    inline fun <reified T : Any> createNoInputClassifier(
+      expectedObjectType: InteractionObject.ObjectTypeCase,
+      matcher: NoInputInputMatcher<T>
     ): GenericRuleClassifier {
       val objectExtractor = interactionObjectTypeExtractorRepository.getExtractor<T>(expectedObjectType)
       return GenericRuleClassifier(
@@ -156,8 +159,10 @@ internal class GenericRuleClassifier private constructor(
     /**
      * Returns a new [GenericRuleClassifier] for a single input value with the same type as the answer being classified.
      */
-    inline fun <reified T: Any> createSingleInputClassifier(
-      expectedObjectType: InteractionObject.ObjectTypeCase, inputParameterName: String, matcher: SingleInputMatcher<T>
+    inline fun <reified T : Any> createSingleInputClassifier(
+      expectedObjectType: InteractionObject.ObjectTypeCase,
+      inputParameterName: String,
+      matcher: SingleInputMatcher<T>
     ): GenericRuleClassifier {
       val objectExtractor = interactionObjectTypeExtractorRepository.getExtractor<T>(expectedObjectType)
       return GenericRuleClassifier(
@@ -169,9 +174,10 @@ internal class GenericRuleClassifier private constructor(
      * Returns a new [GenericRuleClassifier] for a single input value that has a different type than the answer being
      * classified.
      */
-    inline fun <reified AT: Any, reified IT: Any> createMultiTypeSingleInputClassifier(
+    inline fun <reified AT : Any, reified IT : Any> createMultiTypeSingleInputClassifier(
       expectedAnswerObjectType: InteractionObject.ObjectTypeCase,
-      expectedInputObjectType: InteractionObject.ObjectTypeCase, inputParameterName: String,
+      expectedInputObjectType: InteractionObject.ObjectTypeCase,
+      inputParameterName: String,
       matcher: MultiTypeSingleInputMatcher<AT, IT>
     ): GenericRuleClassifier {
       val answerObjectExtractor = interactionObjectTypeExtractorRepository.getExtractor<AT>(expectedAnswerObjectType)
@@ -182,11 +188,13 @@ internal class GenericRuleClassifier private constructor(
     }
 
     /** Returns a new [GenericRuleClassifier] for two input values of the different type as the answer it classifies. */
-    inline fun <reified AT: Any, reified ITF: Any,reified ITS: Any> createDoubleInputClassifier(
+    inline fun <reified AT : Any, reified ITF : Any, reified ITS : Any> createDoubleInputClassifier(
       expectedAnswerObjectType: InteractionObject.ObjectTypeCase,
-      expectedObjectType1: InteractionObject.ObjectTypeCase, firstInputParameterName: String,
-      expectedObjectType2: InteractionObject.ObjectTypeCase, secondInputParameterName: String,
-      matcher: MultiTypeDoubleInputMatcher<AT,ITF,ITS>
+      expectedObjectType1: InteractionObject.ObjectTypeCase,
+      firstInputParameterName: String,
+      expectedObjectType2: InteractionObject.ObjectTypeCase,
+      secondInputParameterName: String,
+      matcher: MultiTypeDoubleInputMatcher<AT, ITF, ITS>
     ): GenericRuleClassifier {
       val answerObjectExtractor =
         interactionObjectTypeExtractorRepository.getExtractor<AT>(expectedAnswerObjectType)
@@ -195,8 +203,8 @@ internal class GenericRuleClassifier private constructor(
       val objectExtractorSecond =
         interactionObjectTypeExtractorRepository.getExtractor<ITS>(expectedObjectType2)
       val parameters: LinkedHashMap<String, InteractionObject.ObjectTypeCase> = linkedMapOf(
-        firstInputParameterName to expectedAnswerObjectType,
-        secondInputParameterName to expectedAnswerObjectType
+        firstInputParameterName to expectedObjectType1,
+        secondInputParameterName to expectedObjectType2
       )
       return GenericRuleClassifier(
         expectedAnswerObjectType,
@@ -206,9 +214,11 @@ internal class GenericRuleClassifier private constructor(
     }
 
     /** Returns a new [GenericRuleClassifier] for two input values of the same type as the answer it classifies. */
-    inline fun <reified T: Any> createDoubleInputClassifier(
-      expectedObjectType: InteractionObject.ObjectTypeCase, firstInputParameterName: String,
-      secondInputParameterName: String, matcher: DoubleInputMatcher<T>
+    inline fun <reified T : Any> createDoubleInputClassifier(
+      expectedObjectType: InteractionObject.ObjectTypeCase,
+      firstInputParameterName: String,
+      secondInputParameterName: String,
+      matcher: DoubleInputMatcher<T>
     ): GenericRuleClassifier {
       val objectExtractor = interactionObjectTypeExtractorRepository.getExtractor<T>(expectedObjectType)
       val parameters = linkedMapOf(
