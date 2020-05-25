@@ -49,7 +49,9 @@ dependencies {
       'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03',
       'com.google.dagger:dagger:2.24',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
-      'androidx.exifinterface:exifinterface:1.0.0-rc01'
+      'androidx.exifinterface:exifinterface:1.0.0-rc01',
+      'com.google.firebase:firebase-analytics-ktx:17.4.2',
+      'com.google.firebase:firebase-crashlytics:17.0.0'
   )
   testImplementation(
       'android.arch.core:core-testing:1.1.1',

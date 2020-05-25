@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.firebase.crashlytics'
 
 android {
   compileSdkVersion 28
@@ -89,6 +90,8 @@ dependencies {
       'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1',
       'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.1',
       'org.mockito:mockito-core:2.7.22',
+      'com.google.firebase:firebase-analytics-ktx:17.4.2',
+      'com.google.firebase:firebase-crashlytics:17.0.0'
   )
   testImplementation(
       'androidx.test:core:1.2.0',
