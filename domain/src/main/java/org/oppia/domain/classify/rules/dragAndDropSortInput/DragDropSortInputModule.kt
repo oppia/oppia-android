@@ -18,5 +18,13 @@ class DragDropSortInputModule{
     classifierProvider: DragDropSortInputHasElementXAtPositionYClassifierProvider
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
+  @Provides
+  @IntoMap
+  @StringKey("IsEqualToOrdering")
+  @DragDropSortInputRules
+  internal fun provideDragDropSortInputIsEqualToOrderingRuleClassifier(
+    classifierProvider: DragDropSortInputIsEqualToOrderingClassifierProvider
+  ): RuleClassifier = classifierProvider.createRuleClassifier()
+
 }
 
