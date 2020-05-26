@@ -7,17 +7,14 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.widget.TextView
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
-import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -27,7 +24,6 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
-import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -40,10 +36,15 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import java.util.concurrent.AbstractExecutorService
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
+import javax.inject.Inject
+import javax.inject.Qualifier
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
-import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsString
@@ -58,6 +59,7 @@ import org.oppia.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.app.model.ProfileId
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.hasGridItemCount
 import org.oppia.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.profile.ProfileTestHelper
@@ -71,12 +73,6 @@ import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
-import java.util.concurrent.AbstractExecutorService
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
-import javax.inject.Inject
-import javax.inject.Qualifier
-import javax.inject.Singleton
 
 /** Tests for [RecentlyPlayedActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -494,6 +490,7 @@ class RecentlyPlayedFragmentTest {
         internalProfileId
       )
     ).use {
+      waitForTheView(withText(R.string.ongoing_story_last_week))
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           0
@@ -510,6 +507,7 @@ class RecentlyPlayedFragmentTest {
         internalProfileId
       )
     ).use {
+      waitForTheView(withText(R.string.ongoing_story_last_week))
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -526,6 +524,7 @@ class RecentlyPlayedFragmentTest {
         internalProfileId
       )
     ).use {
+      waitForTheView(withText(R.string.ongoing_story_last_week))
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           2
@@ -542,6 +541,7 @@ class RecentlyPlayedFragmentTest {
         internalProfileId
       )
     ).use {
+      waitForTheView(withText(R.string.ongoing_story_last_week))
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           3
@@ -558,6 +558,7 @@ class RecentlyPlayedFragmentTest {
         internalProfileId
       )
     ).use {
+      waitForTheView(withText(R.string.ongoing_story_last_week))
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
@@ -575,6 +576,7 @@ class RecentlyPlayedFragmentTest {
         internalProfileId
       )
     ).use {
+      waitForTheView(withText(R.string.ongoing_story_last_week))
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
@@ -592,6 +594,7 @@ class RecentlyPlayedFragmentTest {
         internalProfileId
       )
     ).use {
+      waitForTheView(withText(R.string.ongoing_story_last_week))
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
@@ -609,6 +612,7 @@ class RecentlyPlayedFragmentTest {
         internalProfileId
       )
     ).use {
+      waitForTheView(withText(R.string.ongoing_story_last_week))
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
@@ -617,11 +621,6 @@ class RecentlyPlayedFragmentTest {
       )
       onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(1, 3))
     }
-  }
-
-  /** Returns span count ViewAssertion for a recycler view that use GridLayoutManager. */
-  private fun hasGridItemCount(spanCount: Int, position: Int): ViewAssertion {
-    return RecyclerViewGridItemCountAssertion(spanCount, position)
   }
 
   private fun waitForTheView(viewMatcher: Matcher<View>): ViewInteraction {
@@ -771,22 +770,6 @@ class RecentlyPlayedFragmentTest {
 
     override fun awaitTermination(timeout: Long, unit: TimeUnit?): Boolean {
       throw UnsupportedOperationException()
-    }
-  }
-
-  /** Custom class to check number of spans occupied by an item at a given position. */
-  private class RecyclerViewGridItemCountAssertion(
-    private val count: Int,
-    private val position: Int
-  ) : ViewAssertion {
-    override fun check(view: View, noViewFoundException: NoMatchingViewException?) {
-      if (noViewFoundException != null) {
-        throw noViewFoundException
-      }
-      check(view is RecyclerView) { "The asserted view is not RecyclerView" }
-      check(view.layoutManager is GridLayoutManager) { "RecyclerView must use GridLayoutManager" }
-      val spanCount = (view.layoutManager as GridLayoutManager).spanSizeLookup.getSpanSize(position)
-      assertThat("RecyclerViewGrid span count", spanCount, CoreMatchers.equalTo(count))
     }
   }
 }
