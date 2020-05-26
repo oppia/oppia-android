@@ -147,9 +147,9 @@ class ExplorationActivityPresenter @Inject constructor(
 
   private fun backPressActivitySelector(backflowScreen: Int?){
     when(backflowScreen){
-      ParentActivityForExploration.BACKFLOW_SCREEN_STORY.value -> activity.startActivity(StoryActivity.createStoryActivityIntent(context,internalProfileId,topicId,storyId))
-      ParentActivityForExploration.BACKFLOW_SCREEN_LESSONS.value -> activity.startActivity(TopicActivity.createTopicPlayStoryActivityIntent(activity, internalProfileId, topicId,storyId))
-      else -> activity.startActivity(TopicActivity.createTopicActivityIntent(context,internalProfileId,topicId))
+      ParentActivityForExploration.BACKFLOW_SCREEN_STORY.value -> activity.startActivity(StoryActivity.createStoryActivityIntent(context, internalProfileId, topicId, storyId))
+      ParentActivityForExploration.BACKFLOW_SCREEN_LESSONS.value -> activity.startActivity(TopicActivity.createTopicPlayStoryActivityIntent(activity, internalProfileId, topicId, storyId))
+      else -> activity.startActivity(TopicActivity.createTopicActivityIntent(context, internalProfileId, topicId))
     }
   }
 

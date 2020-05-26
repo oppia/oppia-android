@@ -40,7 +40,7 @@ class StoryChapterSummaryViewModel(
         result.isFailure() -> logger.e(STORY_VIEWER_TAG, "Failed to load exploration", result.getErrorOrNull()!!)
         else -> {
           logger.d(STORY_VIEWER_TAG, "Successfully loaded exploration: $explorationId")
-          explorationSelectionListener.selectExploration(internalProfileId, topicId, storyId, explorationId, /* backflowScreen = */1 )
+          explorationSelectionListener.selectExploration(internalProfileId, topicId, storyId, explorationId, /* backflowScreen= */ 1 )
         }
       }
     })

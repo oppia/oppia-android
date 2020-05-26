@@ -63,7 +63,12 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
   }
 
   override fun onBackPressed() {
-    startActivity(HomeActivity.createHomeActivity(this,internalProfileId))
+    startActivity(
+      HomeActivity.createHomeActivity(
+        this,
+        internalProfileId
+      )
+    )
   }
 
   companion object {

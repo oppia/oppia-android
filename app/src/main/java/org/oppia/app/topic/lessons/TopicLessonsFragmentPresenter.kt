@@ -119,7 +119,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   }
 
   override fun selectChapterSummary(storyId: String, chapterSummary: ChapterSummary) {
-    playExploration(internalProfileId, topicId, storyId, chapterSummary.explorationId, /*backflowScreen =*/0)
+    playExploration(internalProfileId, topicId, storyId, chapterSummary.explorationId, /* backflowScreen= */ 0)
   }
 
   private fun playExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowScreen: Int?) {

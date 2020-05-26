@@ -68,8 +68,8 @@ class StoryFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  fun handleSelectExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowId: Int?) {
-    routeToExplorationListener.routeToExploration(internalProfileId, topicId, storyId, explorationId,backflowId)
+  fun handleSelectExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowScreen: Int?) {
+    routeToExplorationListener.routeToExploration(internalProfileId, topicId, storyId, explorationId, backflowScreen)
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<StoryItemViewModel> {
