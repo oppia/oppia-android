@@ -4,7 +4,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.LessonThumbnail
-import org.oppia.app.player.exploration.ExplorationActivityPresenter
 import org.oppia.app.story.ExplorationSelectionListener
 import org.oppia.app.story.StoryFragment
 import org.oppia.domain.exploration.ExplorationDataController

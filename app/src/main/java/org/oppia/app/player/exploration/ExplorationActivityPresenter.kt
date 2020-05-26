@@ -14,7 +14,6 @@ import org.oppia.app.activity.ActivityScope
 import org.oppia.app.databinding.ExplorationActivityBinding
 import org.oppia.app.model.Exploration
 import org.oppia.app.story.StoryActivity
-import org.oppia.app.story.StoryFragment
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationDataController
