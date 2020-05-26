@@ -241,11 +241,32 @@ The project contains two kinds of tests, unit tests using Robolectric and instru
 
 Both frameworks can create the same kinds of tests, the difference is how they’re executed. Robolectric tests are run on a standard JVM, which makes them very fast to run, but there are some limitations on what can be tested. Espresso tests are run on a device (either actual or virtual) so they more closely resemble the actual running system, but they are a lot slower to run. 
 
-Sometimes it may happen that testcases pass in Expresso but fail in Roboelectric.
+Sometimes it may happen that testcases pass in Expresso but fail in Roboelectric. Direct dependencies on Robolectric causes build failures when trying to build the test with Espresso.
 
-For Performance Exception where at least 90 percent of the view should be visible to handle click
+For **Performance Exception** where at least 90 percent of the view should be visible to handle click
 () event.
 Make ScrollView as a parent in XML file and use scrollTo() while performing click() in the test.
 
 Example: 
 `onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())`
+
+**Assertion Failure :** Unlike on a real device, Robolectric shares a single thread for both UI operations and Test code. By default, Robolectric will execute tasks posted to Loopers synchronously inline. This causes Robolectric to execute tasks earlier than they would be on a real device. 
+
+Robolectric’s default behavior is to process posted code synchronously and immediately, so the assertion fails with **[before, after, between]**, which is clearly incorrect.
+
+Apply the LooperMode(PAUSED) annotation to your test package/class/method [reference](http://robolectric.org/blog/2019/06/04/paused-looper/).
+
+```
+@LooperMode(LooperMode.Mode.PAUSED)
+  @Test
+  fun testAdministratorControlsFragment_clickOkButtonInLogoutDialog_opensProfileActivity() {
+    ActivityScenario.launch<AdministratorControlsActivity>(createAdministratorControlsActivityIntent(0)).use {
+      onView(withId(R.id.administrator_controls_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(4))
+      onView(withId(R.id.log_out_text_view)).perform(click())
+      onView(withText(R.string.log_out_dialog_message)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.log_out_dialog_okay_button)).perform(click())
+      intended(hasComponent(ProfileActivity::class.java.name))
+    }
+  }
+```
