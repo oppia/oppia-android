@@ -115,8 +115,8 @@ jobs:
           name: Domain tests
           command: ./.circleci/gradle/gradlew -i :domain:test
       - run:
-          name: App -  FAQ, Help, Splash, Parser, RecyclerView, Utility tests
-          command: ./.circleci/gradle/gradlew -i :app:testDebugUnitTest --tests org.oppia.app.faq* --tests org.oppia.app.help* --tests org.oppia.app.splash* --tests org.oppia.app.parser* --tests org.oppia.app.recyclerview* --tests org.oppia.app.utility* 
+          name: App -  Walkthrough, FAQ, Help, Splash, Parser, RecyclerView, Utility tests
+          command: ./.circleci/gradle/gradlew -i :app:testDebugUnitTest --tests org.oppia.app.walkthrough* --tests org.oppia.app.faq* --tests org.oppia.app.help* --tests org.oppia.app.splash* --tests org.oppia.app.parser* --tests org.oppia.app.recyclerview* --tests org.oppia.app.utility*
       - run:
           name: Save test results
           command: |
