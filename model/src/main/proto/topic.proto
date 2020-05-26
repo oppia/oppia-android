@@ -324,3 +324,41 @@ message RevisionCard {
   // translations.
   map<string, TranslationMapping> written_translation = 6;
 }
+
+// Top level proto used to store skill summaries.
+message SkillSummaryDatabase{
+  // Skill id to skill summary map.
+  map<string, SkillSummaryDomain> skill_summary_database = 1;
+}
+
+// A summary of a skill that can be trained or reviewed by the player which is saved in database.
+message SkillSummaryDomain {
+  // The ID of the skill.
+  string skill_id = 1;
+
+  // A brief description of the skill.
+  string description = 2;
+
+  // A URL corresponding to a thumbnail associated with this skill. If this is absent, the UI should show a reasonable
+  // alternative.
+  string thumbnail_url = 3;
+
+  // The thumbnail corresponding to this skill.
+  LessonThumbnail skill_thumbnail = 4;
+}
+
+// A skill that can be view as a concept card.
+message ConceptCardView {
+  // The ID of the skill.
+  string skill_id = 1;
+
+  // A brief description of the skill.
+  string description = 2;
+
+  // A URL corresponding to a thumbnail associated with this skill. If this is absent, the UI should show a reasonable
+  // alternative.
+  string thumbnail_url = 3;
+
+  // The thumbnail corresponding to this skill.
+  LessonThumbnail skill_thumbnail = 4;
+}
