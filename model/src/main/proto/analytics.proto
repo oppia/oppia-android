@@ -14,7 +14,7 @@ enum EventAction{
 // Supported priority of events for analytics logging
 enum Priority{
   // The undefined priority of an event
-  UNKNOWN_PRIORITY = 0;
+  UNKNOWN = 0;
   // The priority of events whose logs should not be removed from the storage on most occasions
   // but can be removed if they're the only ones there and size limit exceeds.
   ESSENTIAL = 1;
