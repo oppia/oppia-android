@@ -27,7 +27,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -786,9 +786,7 @@ class RecentlyPlayedFragmentTest {
       check(view is RecyclerView) { "The asserted view is not RecyclerView" }
       check(view.layoutManager is GridLayoutManager) { "RecyclerView must use GridLayoutManager" }
       val spanCount = (view.layoutManager as GridLayoutManager).spanSizeLookup.getSpanSize(position)
-      ViewMatchers.assertThat(
-        "RecyclerViewGrid span count", spanCount, CoreMatchers.equalTo(count)
-      )
+      assertThat("RecyclerViewGrid span count", spanCount, CoreMatchers.equalTo(count))
     }
   }
 }

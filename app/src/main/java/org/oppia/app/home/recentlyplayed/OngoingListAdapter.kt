@@ -5,9 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.databinding.OngoingStoryCardBinding
 import org.oppia.app.databinding.SectionTitleBinding
-import org.oppia.app.home.recentlyplayed.OngoingStoryViewModel
-import org.oppia.app.home.recentlyplayed.RecentlyPlayedItemViewModel
-import org.oppia.app.home.recentlyplayed.SectionTitleViewModel
 
 private const val VIEW_TYPE_SECTION_TITLE_TEXT = 1
 private const val VIEW_TYPE_SECTION_STORY_ITEM = 2
