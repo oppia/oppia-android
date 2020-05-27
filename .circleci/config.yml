@@ -116,7 +116,7 @@ jobs:
       - run:
           name: App -  FAQ, Help, Splash, Parser, RecyclerView, Story, Utility tests, Walkthrough
           command: ./.circleci/gradle/gradlew -i :app:testDebugUnitTest --tests org.oppia.app.faq* --tests org.oppia.app.help* --tests org.oppia.app.splash*
-            --tests org.oppia.app.parser* --tests org.oppia.app.recyclerview* --tests org.oppia.app.story*  --tests org.oppia.app.utility* --tests org.oppia.app.walkthrough*
+            --tests org.oppia.app.parser* --tests org.oppia.app.recyclerview* --tests org.oppia.app.story* --tests org.oppia.app.utility* --tests org.oppia.app.walkthrough*
       - run:
           name: Save test results
           command: |
