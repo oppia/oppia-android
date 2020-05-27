@@ -36,8 +36,8 @@ class TopicTestActivityForStory : InjectableAppCompatActivity(), RouteToQuestion
     startActivity(StoryActivity.createStoryActivityIntent(this, internalProfileId, topicId, storyId))
   }
 
-  override fun routeToExploration(profileId: Int, topicId: String, storyId: String, explorationId: String, backflowScreen: Int?) {
-    startActivity(ExplorationActivity.createExplorationActivityIntent(this, profileId, topicId, storyId, explorationId, backflowScreen))
+  override fun routeToExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowScreen: Int) {
+    startActivity(ExplorationActivity.createExplorationActivityIntent(this, internalProfileId, topicId, storyId, explorationId, backflowScreen))
   }
 
   override fun routeToRevisionCard(topicId: String, subtopicId: String) {

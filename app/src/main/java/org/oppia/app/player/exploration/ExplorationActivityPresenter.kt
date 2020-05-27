@@ -36,18 +36,20 @@ class ExplorationActivityPresenter @Inject constructor(
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var context: Context
-  private var backflowScreen: Int? = null
-
-  enum class ParentActivityForExploration(val value: Int) {
-    BACKFLOW_SCREEN_LESSONS(0),
-    BACKFLOW_SCREEN_STORY(1);
-  }
+  private var backflowScreen: Int = BackflowScreenEnum.BACKFLOW_SCREEN_DEFAULT.value
 
   private val exploreViewModel by lazy {
     getExplorationViewModel()
   }
 
-  fun handleOnCreate(context: Context, internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowScreen: Int?) {
+  fun handleOnCreate(
+    context: Context,
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    backflowScreen: Int
+  ) {
     val binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(activity, R.layout.exploration_activity)
     binding.apply {
       viewModel = exploreViewModel
@@ -103,17 +105,22 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   fun stopExploration() {
-    explorationDataController.stopPlayingExploration().observe(activity, Observer<AsyncResult<Any?>> {
-      when {
-        it.isPending() -> logger.d("ExplorationActivity", "Stopping exploration")
-        it.isFailure() -> logger.e("ExplorationActivity", "Failed to stop exploration", it.getErrorOrNull()!!)
-        else -> {
-          logger.d("ExplorationActivity", "Successfully stopped exploration")
-          backPressActivitySelector(backflowScreen)
-          (activity as ExplorationActivity).finish()
+    explorationDataController.stopPlayingExploration()
+      .observe(activity, Observer<AsyncResult<Any?>> {
+        when {
+          it.isPending() -> logger.d("ExplorationActivity", "Stopping exploration")
+          it.isFailure() -> logger.e(
+            "ExplorationActivity",
+            "Failed to stop exploration",
+            it.getErrorOrNull()!!
+          )
+          else -> {
+            logger.d("ExplorationActivity", "Successfully stopped exploration")
+            backPressActivitySelector(backflowScreen)
+            (activity as ExplorationActivity).finish()
+          }
         }
-      }
-    })
+      })
   }
 
   private fun updateToolbarTitle(explorationId: String) {
@@ -144,11 +151,38 @@ class ExplorationActivityPresenter @Inject constructor(
     return ephemeralStateResult.getOrDefault(Exploration.getDefaultInstance())
   }
 
-  private fun backPressActivitySelector(backflowScreen: Int?){
-    when(backflowScreen){
-      ParentActivityForExploration.BACKFLOW_SCREEN_STORY.value -> activity.startActivity(StoryActivity.createStoryActivityIntent(context, internalProfileId, topicId, storyId))
-      ParentActivityForExploration.BACKFLOW_SCREEN_LESSONS.value -> activity.startActivity(TopicActivity.createTopicPlayStoryActivityIntent(activity, internalProfileId, topicId, storyId))
-      else -> activity.startActivity(TopicActivity.createTopicActivityIntent(context, internalProfileId, topicId))
+  private fun backPressActivitySelector(backflowScreen: Int?) {
+    when (backflowScreen) {
+      BackflowScreenEnum.BACKFLOW_SCREEN_STORY.value -> activity.startActivity(
+        StoryActivity.createStoryActivityIntent(
+          context,
+          internalProfileId,
+          topicId,
+          storyId
+        )
+      )
+      BackflowScreenEnum.BACKFLOW_SCREEN_LESSONS.value -> activity.startActivity(
+        TopicActivity.createTopicPlayStoryActivityIntent(
+          activity,
+          internalProfileId,
+          topicId,
+          storyId
+        )
+      )
+      BackflowScreenEnum.BACKFLOW_SCREEN_DEFAULT.value -> activity.startActivity(
+        TopicActivity.createTopicActivityIntent(
+          context,
+          internalProfileId,
+          topicId
+        )
+      )
+      else -> activity.startActivity(
+        TopicActivity.createTopicActivityIntent(
+          context,
+          internalProfileId,
+          topicId
+        )
+      )
     }
   }
 

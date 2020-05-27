@@ -6,6 +6,7 @@ import kotlinx.android.synthetic.main.exploration_test_activity.*
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.home.RouteToExplorationListener
+import org.oppia.app.player.exploration.BackflowScreenEnum
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.TEST_EXPLORATION_ID_5
 import org.oppia.domain.topic.TEST_STORY_ID_0
@@ -48,7 +49,7 @@ class ExplorationTestActivityPresenter @Inject constructor(
         result.isFailure() -> logger.e(TAG_EXPLORATION_TEST_ACTIVITY, "Failed to load exploration", result.getErrorOrNull()!!)
         else -> {
           logger.d(TAG_EXPLORATION_TEST_ACTIVITY, "Successfully loaded exploration")
-          routeToExplorationListener.routeToExploration(INTERNAL_PROFILE_ID, TOPIC_ID, STORY_ID, EXPLORATION_ID, /* backflowScreen= */ null)
+          routeToExplorationListener.routeToExploration(INTERNAL_PROFILE_ID, TOPIC_ID, STORY_ID, EXPLORATION_ID, BackflowScreenEnum.BACKFLOW_SCREEN_DEFAULT.value)
         }
       }
     })

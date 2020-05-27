@@ -30,7 +30,6 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var explorationId: String
-  private var backflowScreen: Int? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -39,7 +38,7 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
     topicId = intent.getStringExtra(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
     storyId = intent.getStringExtra(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY)
     explorationId = intent.getStringExtra(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY)
-    backflowScreen = intent.getIntExtra(EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY, -1)
+    val backflowScreen = intent.getIntExtra(EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY, BackflowScreenEnum.BACKFLOW_SCREEN_DEFAULT.value)
     explorationActivityPresenter.handleOnCreate(this, internalProfileId, topicId, storyId, explorationId, backflowScreen)
   }
 
@@ -58,7 +57,7 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
       topicId: String,
       storyId: String,
       explorationId: String,
-      backflowScreen: Int?
+      backflowScreen: Int
     ): Intent {
       val intent = Intent(context, ExplorationActivity::class.java)
       intent.putExtra(EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, profileId)

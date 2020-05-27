@@ -31,7 +31,7 @@ class RecentlyPlayedActivity : InjectableAppCompatActivity(), RouteToExploration
     }
   }
 
-  override fun routeToExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowScreen: Int?) {
+  override fun routeToExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowScreen: Int) {
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
         this,

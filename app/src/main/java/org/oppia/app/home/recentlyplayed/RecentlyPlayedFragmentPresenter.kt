@@ -19,6 +19,7 @@ import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.app.model.OngoingStoryList
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.PromotedStory
+import org.oppia.app.player.exploration.BackflowScreenEnum
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
@@ -162,7 +163,13 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
         )
         else -> {
           logger.d("RecentlyPlayedFragment", "Successfully loaded exploration")
-          routeToExplorationListener.routeToExploration(internalProfileId, topicId, storyId, explorationId, /* backflowScreen = */ null)
+          routeToExplorationListener.routeToExploration(
+            internalProfileId,
+            topicId,
+            storyId,
+            explorationId,
+            /* backflowScreen = */ BackflowScreenEnum.BACKFLOW_SCREEN_DEFAULT.value
+          )
           activity.finish()
         }
       }

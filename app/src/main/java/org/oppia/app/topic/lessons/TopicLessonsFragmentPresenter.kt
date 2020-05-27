@@ -15,6 +15,7 @@ import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.Topic
+import org.oppia.app.player.exploration.BackflowScreenEnum
 import org.oppia.app.topic.RouteToStoryListener
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.topic.TopicController
@@ -118,10 +119,10 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   }
 
   override fun selectChapterSummary(storyId: String, chapterSummary: ChapterSummary) {
-    playExploration(internalProfileId, topicId, storyId, chapterSummary.explorationId, /* backflowScreen= */ 0)
+    playExploration(internalProfileId, topicId, storyId, chapterSummary.explorationId, BackflowScreenEnum.BACKFLOW_SCREEN_LESSONS.value)
   }
 
-  private fun playExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowScreen: Int?) {
+  private fun playExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowScreen: Int) {
     explorationDataController.startPlayingExploration(
       explorationId
     ).observe(fragment, Observer<AsyncResult<Any?>> { result ->
