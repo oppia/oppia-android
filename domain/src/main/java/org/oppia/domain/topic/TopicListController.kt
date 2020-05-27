@@ -309,7 +309,7 @@ class TopicListController @Inject constructor(
         }
       }
     }
-    if (ongoingStoryListBuilder.recentStoryCount == 0) {
+    if ((ongoingStoryListBuilder.olderStoryCount + ongoingStoryListBuilder.recentStoryCount) == 0) {
       ongoingStoryListBuilder.addAllRecentStory(recommendedStoryList())
     }
     return ongoingStoryListBuilder.build()
