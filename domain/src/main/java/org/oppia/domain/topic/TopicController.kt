@@ -356,16 +356,23 @@ class TopicController @Inject constructor(
           val chapterBuilder = chapterSummary.toBuilder()
           chapterBuilder.chapterPlayState =
             storyProgress.chapterProgressMap[chapterSummary.explorationId]!!.chapterPlayState
-          storyBuilder.setChapter(chapterIndex, chapterBuilder)
+          storyBuilder.setChapter(chapterIndex, chapterBuilder.build())
         } else {
-          if (storyBuilder.getChapter(chapterIndex - 1).chapterPlayState == ChapterPlayState.COMPLETED) {
+          if(chapterIndex!=0) {
+            if (storySummary.getChapter(chapterIndex - 1).chapterPlayState == ChapterPlayState.COMPLETED) {
+              val chapterBuilder = chapterSummary.toBuilder()
+              chapterBuilder.chapterPlayState = ChapterPlayState.NOT_STARTED
+              storyBuilder.setChapter(chapterIndex, chapterBuilder.build())
+            } else {
+              val chapterBuilder = chapterSummary.toBuilder()
+              chapterBuilder.chapterPlayState = ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
+              storyBuilder.setChapter(chapterIndex, chapterBuilder.build())
+            }
+          }
+          else{
             val chapterBuilder = chapterSummary.toBuilder()
             chapterBuilder.chapterPlayState = ChapterPlayState.NOT_STARTED
-            storyBuilder.setChapter(chapterIndex, chapterBuilder)
-          } else {
-            val chapterBuilder = chapterSummary.toBuilder()
-            chapterBuilder.chapterPlayState = ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
-            storyBuilder.setChapter(chapterIndex, chapterBuilder)
+            storyBuilder.setChapter(chapterIndex, chapterBuilder.build())
           }
         }
       }
