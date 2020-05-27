@@ -8,7 +8,7 @@ import org.oppia.domain.classify.rules.GenericRuleClassifier
 import org.oppia.domain.classify.rules.RuleClassifierProvider
 
 /**
- * Provider for a classifier that determines whether a element of [ListOfSetsOfHtmlStrings] at a particular position is equal to the specified value per the
+ * Provider for a classifier that determines whether an element of [ListOfSetsOfHtmlStrings] at a particular position is equal to the specified value per the
  * drag drop sort input interaction.
  *
  * https://github.com/oppia/oppia/blob/03f16147e513ad31cbbf3ce882867a1aac99d649/extensions/interactions/DragAndDropSortInput/directives/drag-and-drop-sort-input-rules.service.ts#L78
@@ -20,21 +20,22 @@ internal class DragDropSortInputHasElementXAtPositionYClassifierProvider @Inject
 
   override fun createRuleClassifier(): RuleClassifier {
     return classifierFactory.createDoubleInputClassifier(
-      InteractionObject.ObjectTypeCase.LIST_OF_SETS_OF_HTML_STRING,
-      InteractionObject.ObjectTypeCase.NORMALIZED_STRING,
-      "x",
-      InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT,
-      "y",
-      this
+      expectedAnswerObjectType = InteractionObject.ObjectTypeCase.LIST_OF_SETS_OF_HTML_STRING,
+      expectedObjectType1 = InteractionObject.ObjectTypeCase.NORMALIZED_STRING,
+      firstInputParameterName = "x",
+      expectedObjectType2 = InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT,
+      secondInputParameterName = "y",
+      matcher = this
     )
   }
 
-  override fun matches(answer: ListOfSetsOfHtmlStrings, firstInput: String, secondInput: Int): Boolean {
-    val index: Int = answer.setOfHtmlStringsList.indexOfFirst { it.htmlList.joinToString("") == firstInput }
-    return if (index != -1) {
-      index == secondInput
-    } else {
-      false
-    }
+  override fun matches(
+    answer: ListOfSetsOfHtmlStrings,
+    firstInput: String,
+    secondInput: Int
+  ): Boolean {
+    return answer.setOfHtmlStringsList.indexOfFirst {
+      it.htmlList.joinToString("").contains(firstInput)
+    } == secondInput
   }
 }
