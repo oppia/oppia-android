@@ -7,7 +7,6 @@ workflows:
   circleci_tests:
     jobs:
       - linters
-      - flaky_tests
       - non_flaky_tests
 
 var_for_docker_image: &docker_image circleci/android:api-28
