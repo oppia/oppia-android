@@ -61,12 +61,9 @@ class StateRetrieverTest {
   }
 
   @Test
-  fun testParseState_withDragAndDropInteraction_parsesRuleWithIsEqualToOrderingWithInputXAndValueAtX() {
+  fun testParseState_withDragAndDropInteraction_parsesRuleWithIsEqualToOrderingWithValueAtX() {
     val state = createStateFromJson("DragDropSortInput", DRAG_DROP_TEST_EXPLORATION_NAME)
-    val ruleSpecMap = state.interaction.answerGroupsList
-      .flatMap(AnswerGroup::getRuleSpecsList)
-      .find { it.ruleType == "IsEqualToOrdering" }!!
-    assertThat(ruleSpecMap.inputMap).containsKey("x")
+    val ruleSpecMap = lookUpRuleSpec(state, "IsEqualToOrdering")
 
     val listOfSetsOfHtmlStrings = ListOfSetsOfHtmlStrings.newBuilder()
       .addAllSetOfHtmlStrings(
@@ -94,12 +91,9 @@ class StateRetrieverTest {
   }
 
   @Test
-  fun testParseState_withDragAndDropInteraction_parsesRuleWithHasElementXAtPositionYWithInputY() {
+  fun testParseState_withDragAndDropInteraction_parsesRuleWithHasElementXAtPositionYWithValueAtY() {
     val state = createStateFromJson("DragDropSortInput", DRAG_DROP_TEST_EXPLORATION_NAME)
-    val ruleSpecMap = state.interaction.answerGroupsList
-      .flatMap(AnswerGroup::getRuleSpecsList)
-      .find { it.ruleType == "HasElementXAtPositionY" }!!
-    assertThat(ruleSpecMap.inputMap).containsKey("y")
+    val ruleSpecMap = lookUpRuleSpec(state, "HasElementXAtPositionY")
 
     val dragDropInputHasElementXAtPositionYValue =
       InteractionObject.newBuilder().setNonNegativeInt(4).build()
@@ -108,12 +102,9 @@ class StateRetrieverTest {
   }
 
   @Test
-  fun testParseState_withDragAndDropInteraction_parsesRuleWithHasElementXAtPositionYWithInputX() {
+  fun testParseState_withDragAndDropInteraction_parsesRuleWithHasElementXAtPositionYWithValueAtX() {
     val state = createStateFromJson("DragDropSortInput", DRAG_DROP_TEST_EXPLORATION_NAME)
-    val ruleSpecMap = state.interaction.answerGroupsList
-      .flatMap(AnswerGroup::getRuleSpecsList)
-      .find { it.ruleType == "HasElementXAtPositionY" }!!
-    assertThat(ruleSpecMap.inputMap).containsKey("x")
+    val ruleSpecMap = lookUpRuleSpec(state, "HasElementXAtPositionY")
 
     val dragDropInputHasElementXAtPositionYValue =
       InteractionObject.newBuilder().setNormalizedString("<p>I bought</p>").build()
@@ -131,12 +122,9 @@ class StateRetrieverTest {
   }
 
   @Test
-  fun testParseState_withDragAndDropInteraction_parsesRuleWithIsEqualToOrderingWithOneItemAtIncorrectPositionWithInputX() {
+  fun testParseState_withDragAndDropInteraction_parsesRuleWithIsEqualToOrderingWithOneItemAtIncorrectPositionWithValueAtX() {
     val state = createStateFromJson("DragDropSortInput", DRAG_DROP_TEST_EXPLORATION_NAME)
-    val ruleSpecMap = state.interaction.answerGroupsList
-      .flatMap(AnswerGroup::getRuleSpecsList)
-      .find { it.ruleType == "IsEqualToOrderingWithOneItemAtIncorrectPosition" }!!
-    assertThat(ruleSpecMap.inputMap).containsKey("x")
+    val ruleSpecMap = lookUpRuleSpec(state, "IsEqualToOrderingWithOneItemAtIncorrectPosition")
 
     val listOfSetsOfHtmlStrings = ListOfSetsOfHtmlStrings.newBuilder()
       .addAllSetOfHtmlStrings(
@@ -165,12 +153,9 @@ class StateRetrieverTest {
   }
 
   @Test
-  fun testParseState_withDragAndDropInteraction_parsesRuleWithHasElementXBeforeElementWithInputX() {
+  fun testParseState_withDragAndDropInteraction_parsesRuleWithHasElementXBeforeElementWithValueAtX() {
     val state = createStateFromJson("DragDropSortInput", DRAG_DROP_TEST_EXPLORATION_NAME)
-    val ruleSpecMap = state.interaction.answerGroupsList
-      .flatMap(AnswerGroup::getRuleSpecsList)
-      .find { it.ruleType == "HasElementXBeforeElementY" }!!
-    assertThat(ruleSpecMap.inputMap).containsKey("x")
+    val ruleSpecMap = lookUpRuleSpec(state, "HasElementXBeforeElementY")
 
     val dragDropInputHasElementXAtPositionYValue =
       InteractionObject.newBuilder().setNormalizedString("<p>I bought</p>").build()
@@ -179,17 +164,20 @@ class StateRetrieverTest {
   }
 
   @Test
-  fun testParseState_withDragAndDropInteraction_parsesRuleWithHasElementXBeforeElementWithInputY() {
+  fun testParseState_withDragAndDropInteraction_parsesRuleWithHasElementXBeforeElementWithValueAtY() {
     val state = createStateFromJson("DragDropSortInput", DRAG_DROP_TEST_EXPLORATION_NAME)
-    val ruleSpecMap = state.interaction.answerGroupsList
-      .flatMap(AnswerGroup::getRuleSpecsList)
-      .find { it.ruleType == "HasElementXBeforeElementY" }!!
-    assertThat(ruleSpecMap.inputMap).containsKey("y")
+    val ruleSpecMap = lookUpRuleSpec(state, "HasElementXBeforeElementY")
 
     val dragDropInputHasElementXAtPositionYValue =
       InteractionObject.newBuilder().setNormalizedString("<p>to photograph the parade.</p>").build()
 
     assertThat(ruleSpecMap.inputMap["y"]).isEqualTo(dragDropInputHasElementXAtPositionYValue)
+  }
+
+  private fun lookUpRuleSpec(state: State, ruleSpecName: String): RuleSpec {
+    return state.interaction.answerGroupsList
+      .flatMap(AnswerGroup::getRuleSpecsList)
+      .find { it.ruleType == ruleSpecName }!!
   }
 
   private fun createHtmlStringList(vararg items: String): StringList {

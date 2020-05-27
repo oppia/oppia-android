@@ -203,7 +203,8 @@ class StateRetriever @Inject constructor(
         .setIsNegative(correctAnswerObject.getBoolean("isNegative"))
         .build()
     } else {
-      CorrectAnswer.newBuilder().setCorrectAnswer(containerObject.getString("correct_answer"))
+      CorrectAnswer.newBuilder()
+        .setCorrectAnswer(containerObject.getString("correct_answer"))
         .build()
     }
   }
