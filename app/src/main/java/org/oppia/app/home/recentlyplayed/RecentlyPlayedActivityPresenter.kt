@@ -5,6 +5,8 @@ import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import javax.inject.Inject
 
+const val TAG_RECENTLY_PLAYED_FRAGMENT = "TAG_RECENTLY_PLAYED_FRAGMENT"
+
 /** The presenter for [RecentlyPlayedActivity]. */
 @ActivityScope
 class RecentlyPlayedActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
@@ -13,7 +15,8 @@ class RecentlyPlayedActivityPresenter @Inject constructor(private val activity: 
     if (getRecentlyPlayedFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.recently_played_fragment_placeholder,
-        RecentlyPlayedFragment.newInstance(internalProfileId)
+        RecentlyPlayedFragment.newInstance(internalProfileId),
+        TAG_RECENTLY_PLAYED_FRAGMENT
       ).commitNow()
     }
   }
