@@ -51,10 +51,14 @@ import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
+
+private const val PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_HINDI = 0
+private const val PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH = 1
+private const val PROFILE_ID_INVALID_AUDIO_LANGUAGE = 2
 
 /**
  * TODO(#59): Make this test work with Espresso.
@@ -99,29 +103,29 @@ class AudioFragmentTest {
   }
 
   @Test
-  fun testAudioFragment_openFragment_showsDefaultAudioLanguage() {
-    launch<AudioFragmentTestActivity>(createHomeActivityIntent(1)).use {
+  fun testAudioFragment_openFragment_profileWithEnglishAudioLanguage_showsEnglishAudioLanguage() {
+    launch<AudioFragmentTestActivity>(createHomeActivityIntent(PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH)).use {
       onView(withId(R.id.tvAudioLanguage)).check(matches(withText("EN")))
     }
   }
 
   @Test
   fun testAudioFragment_openFragment_showsDefaultAudioLanguageAsHindi() {
-    launch<AudioFragmentTestActivity>(createHomeActivityIntent(0)).use {
+    launch<AudioFragmentTestActivity>(createHomeActivityIntent(PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_HINDI)).use {
       onView(withId(R.id.tvAudioLanguage)).check(matches(withText("HI")))
     }
   }
 
   @Test
   fun testAudioFragment_openFragment_showsEnglishAudioLanguageWhenDefaultAudioLanguageNotAvailable() {
-    launch<AudioFragmentTestActivity>(createHomeActivityIntent(2)).use {
+    launch<AudioFragmentTestActivity>(createHomeActivityIntent(PROFILE_ID_INVALID_AUDIO_LANGUAGE)).use {
       onView(withId(R.id.tvAudioLanguage)).check(matches(withText("EN")))
     }
   }
 
   @Test
   fun testAudioFragment_openFragment_showsFragment() {
-    launch<AudioFragmentTestActivity>(createHomeActivityIntent(1)).use {
+    launch<AudioFragmentTestActivity>(createHomeActivityIntent(PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH)).use {
       onView(withId(R.id.ivPlayPauseAudio)).check(matches(isDisplayed()))
       onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(context.getString(R.string.audio_play_description))))
     }
@@ -129,7 +133,7 @@ class AudioFragmentTest {
 
   @Test
   fun testAudioFragment_invokePrepared_clickPlayButton_showsPauseButton() {
-    launch<AudioFragmentTestActivity>(createHomeActivityIntent(1)).use {
+    launch<AudioFragmentTestActivity>(createHomeActivityIntent(PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH)).use {
       invokePreparedListener(shadowMediaPlayer)
 
       onView(withId(R.id.ivPlayPauseAudio)).perform(click())
@@ -140,7 +144,7 @@ class AudioFragmentTest {
 
   @Test
   fun testAudioFragment_invokePrepared_touchSeekBar_checkStillPaused() {
-    launch<AudioFragmentTestActivity>(createHomeActivityIntent(1)).use {
+    launch<AudioFragmentTestActivity>(createHomeActivityIntent(PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH)).use {
       invokePreparedListener(shadowMediaPlayer)
 
       onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
@@ -151,7 +155,7 @@ class AudioFragmentTest {
 
   @Test
   fun testAudioFragment_invokePrepared_clickPlay_touchSeekBar_checkStillPlaying() {
-    launch<AudioFragmentTestActivity>(createHomeActivityIntent(1)).use {
+    launch<AudioFragmentTestActivity>(createHomeActivityIntent(PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH)).use {
       invokePreparedListener(shadowMediaPlayer)
 
       onView(withId(R.id.ivPlayPauseAudio)).perform(click())
@@ -164,7 +168,7 @@ class AudioFragmentTest {
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testAudioFragment_invokePrepared_playAudio_configurationChange_checkStillPlaying() {
-    launch<AudioFragmentTestActivity>(createHomeActivityIntent(1)).use {
+    launch<AudioFragmentTestActivity>(createHomeActivityIntent(PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH)).use {
       invokePreparedListener(shadowMediaPlayer)
       onView(withId(R.id.ivPlayPauseAudio)).perform(click())
       onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
@@ -175,7 +179,7 @@ class AudioFragmentTest {
 
   @Test
   fun testAudioFragment_invokePrepared_changeDifferentLanguage_checkResetSeekBarAndPaused() {
-    launch<AudioFragmentTestActivity>(createHomeActivityIntent(1)).use {
+    launch<AudioFragmentTestActivity>(createHomeActivityIntent(PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH)).use {
       invokePreparedListener(shadowMediaPlayer)
       onView(withId(R.id.ivPlayPauseAudio)).perform(click())
       onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
