@@ -285,7 +285,7 @@ class ExplorationActivityTest {
 
   private fun createExplorationActivityIntent(internalProfileId: Int, topicId: String, storyId: String, explorationId: String): Intent {
     return ExplorationActivity.createExplorationActivityIntent(
-      ApplicationProvider.getApplicationContext(), internalProfileId, topicId, storyId, explorationId, /* backflowScreen= */ null
+      ApplicationProvider.getApplicationContext(), internalProfileId, topicId, storyId, explorationId, BackflowScreenEnum.BACKFLOW_SCREEN_DEFAULT.value
     )
   }
 

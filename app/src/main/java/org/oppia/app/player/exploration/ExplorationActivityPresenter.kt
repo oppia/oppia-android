@@ -105,22 +105,21 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   fun stopExploration() {
-    explorationDataController.stopPlayingExploration()
-      .observe(activity, Observer<AsyncResult<Any?>> {
-        when {
-          it.isPending() -> logger.d("ExplorationActivity", "Stopping exploration")
-          it.isFailure() -> logger.e(
-            "ExplorationActivity",
-            "Failed to stop exploration",
-            it.getErrorOrNull()!!
-          )
-          else -> {
-            logger.d("ExplorationActivity", "Successfully stopped exploration")
-            backPressActivitySelector(backflowScreen)
-            (activity as ExplorationActivity).finish()
-          }
+    explorationDataController.stopPlayingExploration().observe(activity, Observer<AsyncResult<Any?>> {
+      when {
+        it.isPending() -> logger.d("ExplorationActivity", "Stopping exploration")
+        it.isFailure() -> logger.e(
+          "ExplorationActivity",
+          "Failed to stop exploration",
+          it.getErrorOrNull()!!
+        )
+        else -> {
+          logger.d("ExplorationActivity", "Successfully stopped exploration")
+          backPressActivitySelector(backflowScreen)
+          (activity as ExplorationActivity).finish()
         }
-      })
+      }
+    })
   }
 
   private fun updateToolbarTitle(explorationId: String) {
@@ -151,7 +150,7 @@ class ExplorationActivityPresenter @Inject constructor(
     return ephemeralStateResult.getOrDefault(Exploration.getDefaultInstance())
   }
 
-  private fun backPressActivitySelector(backflowScreen: Int?) {
+  private fun backPressActivitySelector(backflowScreen: Int) {
     when (backflowScreen) {
       BackflowScreenEnum.BACKFLOW_SCREEN_STORY.value -> activity.startActivity(
         StoryActivity.createStoryActivityIntent(

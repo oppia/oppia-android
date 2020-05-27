@@ -20,6 +20,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.player.exploration.BackflowScreenEnum
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.domain.topic.TEST_EXPLORATION_ID_1
 import org.oppia.domain.topic.TEST_STORY_ID_1
@@ -61,6 +62,7 @@ class StoryActivityTest {
       intended(
         allOf(
           hasExtra(ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY, TEST_EXPLORATION_ID_1),
+          hasExtra(ExplorationActivity.EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY, BackflowScreenEnum.BACKFLOW_SCREEN_STORY.value),
           hasComponent(ExplorationActivity::class.java.name)
         )
       )
