@@ -26,6 +26,8 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.model.TopicList
 import org.oppia.app.model.TopicSummary
 import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.domain.topic.StoryProgressController
+import org.oppia.domain.topic.StoryProgressTestHelper
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.datetime.DateTimeUtil
