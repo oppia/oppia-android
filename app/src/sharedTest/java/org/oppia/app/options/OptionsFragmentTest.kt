@@ -51,12 +51,9 @@ import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
-import org.robolectric.annotation.Config
 
-//val shadowList = arrayOf(OptionsActivity::class,DefaultAudioActivity::class, AppLanguageActivity::class, StoryTextSizeActivity::class)
 /** Tests for [OptionsFragment]. */
 @RunWith(AndroidJUnit4::class)
-@Config(shadows=[DefaultAudioActivity::class])
 class OptionsFragmentTest {
 
   @Inject lateinit var profileTestHelper: ProfileTestHelper
