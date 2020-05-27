@@ -7,8 +7,8 @@ import android.text.Spannable
 import android.text.Spanned
 import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
 import android.text.Spanned.SPAN_MARK_MARK
-import android.text.style.LeadingMarginSpan
-import org.oppia.util.parser.ListTagHandler.ListTag
+import android.util.Log
+import org.oppia.util.parser.HtmlTagHandler.ListTag
 import org.oppia.util.parser.StringUtils.LI_TAG
 import org.oppia.util.parser.StringUtils.OL_TAG
 import org.oppia.util.parser.StringUtils.UL_TAG
@@ -16,20 +16,20 @@ import org.xml.sax.XMLReader
 import java.util.*
 
 /**
- * Called when the HTML parser reaches an opening or closing tag.
- * We only handle list tags and ignore other tags.
+ * Implements support for ordered ({@code <ol>}) and unordered ({@code <ul>}) lists in to Android TextView.
  *
  * <ul> and <ol> tags are pushed to the [lists] stack and popped when the closing tag is reached.
  *
  * <li> tags are handled by the [ListTag] instance corresponding to the parent tag.
  *
  * Reference: https://github.com/daphliu/android-spannable-list-sample/tree/master/app/src/main/java/com/daphneliu/sample/listspansample
+
  */
-class ListTagHandler(private val context: Context) : Html.TagHandler {
+class HtmlTagHandler(private val context: Context) : Html.TagHandler {
 
   private val lists = Stack<ListTag>()
-
-  override fun handleTag(opening: Boolean, tag: String, output: Editable, xmlReader: XMLReader) {
+  
+  override fun handleTag(opening: Boolean, tag: String?, output: Editable, xmlReader: XMLReader?) {
     when (tag) {
       UL_TAG -> if (opening) {
         // handle <ul>
@@ -52,6 +52,9 @@ class ListTagHandler(private val context: Context) : Html.TagHandler {
         // handle </li>
         lists.peek().closeItem(output, indentation = lists.size - 1)
       }
+      else -> {
+        Log.d("HtmlTagHandler", "Found an unsupported tag " + tag);
+      }
     }
   }
 
@@ -59,7 +62,6 @@ class ListTagHandler(private val context: Context) : Html.TagHandler {
    * Handler for <li> tags. Subclasses set the bullet appearance.
    */
   private interface ListTag {
-
     /**
      * Called when an opening <li> tag is encountered.
      *
@@ -78,10 +80,9 @@ class ListTagHandler(private val context: Context) : Html.TagHandler {
   }
 
   /**
-   * Subclass of [ListTag] for unordered lists.
+   * Class representing the unordered list ({@code <ul>}) HTML tag.
    */
   private inner class UnorderedListTag : ListTag {
-
     override fun openItem(text: Editable) {
       ensureEndsWithNewLine(text)
       start(text, BulletListItem())
@@ -89,18 +90,17 @@ class ListTagHandler(private val context: Context) : Html.TagHandler {
 
     override fun closeItem(text: Editable, indentation: Int) {
       ensureEndsWithNewLine(text)
-
       getLast<BulletListItem>(text)?.let { mark ->
         setSpanFromMark(text, mark, TextLeadingMarginSpan(context, indentation, "●"))
       }
     }
+
   }
 
   /**
-   * Subclass of [ListTag] for ordered lists.
+   * Class representing the ordered list ({@code <ol>}) HTML tag.
    */
   private inner class OrderedListTag : ListTag {
-
     private var index = 1
 
     override fun openItem(text: Editable) {
@@ -115,14 +115,10 @@ class ListTagHandler(private val context: Context) : Html.TagHandler {
         setSpanFromMark(text, mark, TextLeadingMarginSpan(context, indentation, "${mark.number}."))
       }
     }
+
   }
 
-  /**
-   * These static methods are based on the Android Html class source code.
-   * https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/text/Html.java
-   */
   companion object {
-
     /**
      * Appends a new line to [text] if it doesn't already end in a new line
      */
@@ -150,7 +146,6 @@ class ListTagHandler(private val context: Context) : Html.TagHandler {
     private fun setSpanFromMark(text: Spannable, mark: Mark, styleSpan: TextLeadingMarginSpan) {
       // Find the location where the mark is inserted in the string.
       val markerLocation = text.getSpanStart(mark)
-      // Remove the mark now that the location is saved
       text.removeSpan(mark)
 
       val end = text.length
@@ -170,4 +165,5 @@ class ListTagHandler(private val context: Context) : Html.TagHandler {
       text.setSpan(mark, currentPosition, currentPosition, SPAN_MARK_MARK)
     }
   }
+
 }
