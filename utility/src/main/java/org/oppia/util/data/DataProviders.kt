@@ -72,6 +72,21 @@ class DataProviders @Inject constructor(
   }
 
   /**
+   * Returns a new [NestedTransformedDataProvider]. By default, the data provider returned by this function behaves the
+   * same as [transformAsync]'s, except this one supports changing its based provider. If callers do not plan to change
+   * the underlying base provider, [transformAsync] should be used, instead.
+   */
+  fun <T1, T2> createNestedTransformedDataProvider(
+    newId: Any,
+    dataProvider: DataProvider<T1>,
+    function: suspend (T1) -> AsyncResult<T2>
+  ): NestedTransformedDataProvider<T2> {
+    return NestedTransformedDataProvider.createNestedTransformedDataProvider(
+      newId, dataProvider, function, asyncDataSubscriptionManager
+    )
+  }
+
+  /**
    * Returns a new [DataProvider] that combines two other providers by applying the specified function to produce a new
    * value each time either data provider changes.
    *
@@ -176,6 +191,67 @@ class DataProviders @Inject constructor(
    */
   fun <T> convertToLiveData(dataProvider: DataProvider<T>): LiveData<AsyncResult<T>> {
     return NotifiableAsyncLiveData(backgroundDispatcher, asyncDataSubscriptionManager, dataProvider)
+  }
+
+  /**
+   * A [DataProvider] that acts in the same way as [transformAsync] except the underlying base data
+   * provider can change.
+   */
+  class NestedTransformedDataProvider<T2> private constructor(
+    private val id: Any,
+    private var baseId: Any,
+    private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
+    private var retrieveTransformedData: suspend () -> AsyncResult<T2>
+  ) : DataProvider<T2> {
+    init {
+      initializeTransformer()
+    }
+
+    override fun getId(): Any = id
+
+    override suspend fun retrieveData(): AsyncResult<T2> {
+      return retrieveTransformedData()
+    }
+
+    /**
+     * Sets a new base [DataProvider] and transform function from which to derive this data
+     * provider.
+     *
+     * Note that this will notify any observers of this provider so that they receive the latest
+     * transformed value.
+     */
+    fun <T1> setBaseDataProvider(
+      dataProvider: DataProvider<T1>,
+      transform: suspend (T1) -> AsyncResult<T2>
+    ) {
+      asyncDataSubscriptionManager.dissociateIds(id, baseId)
+      baseId = dataProvider.getId()
+      retrieveTransformedData = { dataProvider.retrieveData().transformAsync(transform) }
+      initializeTransformer()
+
+      // Notify subscribers that the base provider has changed.
+      asyncDataSubscriptionManager.notifyChangeAsync(id)
+    }
+
+    private fun initializeTransformer() {
+      asyncDataSubscriptionManager.associateIds(id, baseId)
+    }
+
+    companion object {
+      /** Returns a new [NestedTransformedDataProvider]. */
+      internal fun <T1, T2> createNestedTransformedDataProvider(
+        id: Any,
+        baseDataProvider: DataProvider<T1>,
+        transform: suspend (T1) -> AsyncResult<T2>,
+        asyncDataSubscriptionManager: AsyncDataSubscriptionManager
+      ): NestedTransformedDataProvider<T2> {
+        return NestedTransformedDataProvider(
+          id, baseDataProvider.getId(), asyncDataSubscriptionManager
+        ) {
+          baseDataProvider.retrieveData().transformAsync(transform)
+        }
+      }
+    }
   }
 
   /**
