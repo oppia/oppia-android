@@ -48,8 +48,8 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener {
     return storyFragmentPresenter.handleCreateView(inflater, container, internalProfileId, topicId, storyId)
   }
 
-  override fun selectExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String) {
-    storyFragmentPresenter.handleSelectExploration(internalProfileId, topicId, storyId, explorationId)
+  override fun selectExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowScreen: Int?) {
+    storyFragmentPresenter.handleSelectExploration(internalProfileId, topicId, storyId, explorationId, backflowScreen)
   }
 
   fun smoothScrollToPosition(position: Int) {

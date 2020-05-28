@@ -108,7 +108,7 @@ class OngoingTopicListActivityTest {
   @Test
   fun testOngoingTopicList_checkItem0_storyCountIsCorrect() {
     launch<OngoingTopicListActivity>(createOngoingTopicListActivityIntent(internalProfileId)).use {
-      waitForTheView(withText("2 Stories"))
+      waitForTheView(withText("2 Lessons"))
       onView(withId(R.id.ongoing_topic_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           0
@@ -116,7 +116,7 @@ class OngoingTopicListActivityTest {
       )
       onView(atPositionOnView(R.id.ongoing_topic_list, 0, R.id.story_count_text_view)).check(
         matches(
-          withText(containsString("2 Stories"))
+          withText(containsString("2 Lessons"))
         )
       )
     }
@@ -160,7 +160,7 @@ class OngoingTopicListActivityTest {
   @Test
   fun testOngoingTopicList_checkItem1_storyCountIsCorrect() {
     launch<OngoingTopicListActivity>(createOngoingTopicListActivityIntent(internalProfileId)).use {
-      waitForTheView(withText("1 Story"))
+      waitForTheView(withText("1 Lesson"))
       onView(withId(R.id.ongoing_topic_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -168,7 +168,7 @@ class OngoingTopicListActivityTest {
       )
       onView(atPositionOnView(R.id.ongoing_topic_list, 1, R.id.story_count_text_view)).check(
         matches(
-          withText(containsString("1 Story"))
+          withText(containsString("1 Lesson"))
         )
       )
     }
@@ -178,7 +178,7 @@ class OngoingTopicListActivityTest {
   fun testOngoingTopicList_changeConfiguration_checkItem1_storyCountIsCorrect() {
     launch<OngoingTopicListActivity>(createOngoingTopicListActivityIntent(internalProfileId)).use {
       onView(isRoot()).perform(orientationLandscape())
-      waitForTheView(withText("1 Story"))
+      waitForTheView(withText("1 Lesson"))
       onView(withId(R.id.ongoing_topic_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -186,7 +186,7 @@ class OngoingTopicListActivityTest {
       )
       onView(atPositionOnView(R.id.ongoing_topic_list, 1, R.id.story_count_text_view)).check(
         matches(
-          withText(containsString("1 Story"))
+          withText(containsString("1 Lesson"))
         )
       )
     }
