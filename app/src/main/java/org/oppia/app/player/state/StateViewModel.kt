@@ -25,6 +25,8 @@ class StateViewModel @Inject constructor() : ObservableViewModel() {
 
   var currentStateName: String? = null
 
+  private val canSubmitAnswer = ObservableField(true)
+
   fun setAudioBarVisibility(audioBarVisible: Boolean) {
     isAudioBarVisible.set(audioBarVisible)
   }
@@ -49,7 +51,15 @@ class StateViewModel @Inject constructor() : ObservableViewModel() {
     return getPendingAnswerHandler(itemList)?.isExplicitAnswerSubmissionRequired() ?: true
   }
 
-  // TODO(#164): Add a hasPendingAnswer() that binds to the enabled state of the Submit button.
+  /** Returns whether there is currently a pending interaction that also acts like a navigation button. */
+  fun isMostRecentInteractionAutoNavigating(itemList: List<StateItemViewModel>): Boolean {
+    return getPendingAnswerHandler(itemList)?.isAutoNavigating() ?: false
+  }
+
+  fun setCanSubmitAnswer(canSubmitAnswer: Boolean) = this.canSubmitAnswer.set(canSubmitAnswer)
+
+  fun getCanSubmitAnswer(): ObservableField<Boolean> = canSubmitAnswer
+
   fun getPendingAnswer(): UserAnswer {
     return if (getPendingAnswerHandler(itemList)?.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME) != null) {
       UserAnswer.getDefaultInstance()

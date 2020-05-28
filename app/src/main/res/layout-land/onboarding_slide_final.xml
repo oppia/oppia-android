@@ -18,6 +18,7 @@
       android:id="@+id/slide_image_view"
       android:layout_width="0dp"
       android:layout_height="0dp"
+      android:contentDescription="@string/onboarding_slide_3_title"
       android:adjustViewBounds="true"
       android:scaleType="fitXY"
       android:src="@drawable/ic_landscape_onboarding_3"
