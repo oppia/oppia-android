@@ -91,7 +91,7 @@ class HtmlTagHandler(private val context: Context) : Html.TagHandler {
     override fun closeItem(text: Editable, indentation: Int) {
       ensureEndsWithNewLine(text)
       getLast<BulletListItem>(text)?.let { mark ->
-        setSpanFromMark(text, mark, TextLeadingMarginSpan(context, indentation, "●"))
+        setSpanFromMark(text, mark, CustomLeadingMarginSpan(context, indentation, "●"))
       }
     }
 
@@ -112,7 +112,7 @@ class HtmlTagHandler(private val context: Context) : Html.TagHandler {
     override fun closeItem(text: Editable, indentation: Int) {
       ensureEndsWithNewLine(text)
       getLast<NumberListItem>(text)?.let { mark ->
-        setSpanFromMark(text, mark, TextLeadingMarginSpan(context, indentation, "${mark.number}."))
+        setSpanFromMark(text, mark, CustomLeadingMarginSpan(context, indentation, "${mark.number}."))
       }
     }
 
@@ -143,7 +143,7 @@ class HtmlTagHandler(private val context: Context) : Html.TagHandler {
      * Pops out the invisible [mark] span and uses it to get the opening tag location.
      * Then, sets a span from the opening tag position to closing tag position.
      */
-    private fun setSpanFromMark(text: Spannable, mark: Mark, styleSpan: TextLeadingMarginSpan) {
+    private fun setSpanFromMark(text: Spannable, mark: Mark, styleSpan: CustomLeadingMarginSpan) {
       // Find the location where the mark is inserted in the string.
       val markerLocation = text.getSpanStart(mark)
       text.removeSpan(mark)

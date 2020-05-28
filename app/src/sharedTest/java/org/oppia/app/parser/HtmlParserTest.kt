@@ -43,7 +43,6 @@ import org.oppia.util.parser.GlideImageLoader
 import org.oppia.util.parser.HtmlParser
 import org.oppia.util.parser.ImageDownloadUrlTemplate
 import org.oppia.util.parser.ImageLoader
-import org.oppia.util.parser.TextLeadingMarginSpan
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Inject

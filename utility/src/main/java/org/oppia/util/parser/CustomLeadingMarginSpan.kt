@@ -15,7 +15,7 @@ import org.oppia.util.R
  * @param indentation The zero-based indentation level of this item.
  * @param string String to show inside the margin.
  */
-class TextLeadingMarginSpan(
+class CustomLeadingMarginSpan(
   context: Context,
   private val indentation: Int,
   private val string: String
