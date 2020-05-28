@@ -8,12 +8,12 @@ import android.text.Spanned
 import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
 import android.text.Spanned.SPAN_MARK_MARK
 import android.util.Log
+import java.util.Stack
 import org.oppia.util.parser.CustomTagHandler.ListTag
 import org.oppia.util.parser.StringUtils.LI_TAG
 import org.oppia.util.parser.StringUtils.OL_TAG
 import org.oppia.util.parser.StringUtils.UL_TAG
 import org.xml.sax.XMLReader
-import java.util.*
 
 /**
  * Implements support for ordered ({@code <ol>}) and unordered ({@code <ul>}) lists in to Android TextView.
