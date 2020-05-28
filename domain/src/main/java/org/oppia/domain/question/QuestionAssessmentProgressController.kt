@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.oppia.app.model.AnsweredQuestionOutcome
 import org.oppia.app.model.EphemeralQuestion
-import org.oppia.app.model.Interaction
 import org.oppia.app.model.Question
 import org.oppia.app.model.State
 import org.oppia.app.model.UserAnswer
@@ -121,7 +120,7 @@ class QuestionAssessmentProgressController @Inject constructor(
           progress.stateDeck.submitAnswer(answer, answeredQuestionOutcome.feedback)
           // Do not proceed unless the user submitted the correct answer.
           if (answeredQuestionOutcome.isCorrectAnswer) {
-            progress.completeCurrentCard()
+            progress.completeCurrentQuestion()
             if (!progress.isAssessmentCompleted()) {
               // Only push the next state if the assessment isn't completed.
               progress.stateDeck.pushState(progress.getNextState(), prohibitSameStateName = false)
@@ -169,8 +168,8 @@ class QuestionAssessmentProgressController @Inject constructor(
         }
         progress.stateDeck.navigateToNextState()
         // Track whether the learner has moved to a new card.
-        if (progress.isViewingMostRecentCard()) {
-          progress.processNavigationToNewCard()
+        if (progress.isViewingMostRecentQuestion()) {
+          progress.processNavigationToNewQuestion()
         }
         asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_DATA_PROVIDER_ID)
       }
