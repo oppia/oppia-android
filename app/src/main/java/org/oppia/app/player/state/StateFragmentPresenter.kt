@@ -80,12 +80,18 @@ class StateFragmentPresenter @Inject constructor(
     explorationProgressController.getCurrentState()
   }
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val internalProfileId = fragment.arguments!!.getInt(STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, -1)
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String
+  ): View? {
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    topicId = fragment.arguments!!.getString(STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY)!!
-    storyId = fragment.arguments!!.getString(STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY)!!
-    explorationId = fragment.arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
+    this.topicId = topicId
+    this.storyId = storyId
+    this.explorationId = explorationId
 
     binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     recyclerViewAssembler = createRecyclerViewAssembler(
@@ -118,7 +124,7 @@ class StateFragmentPresenter @Inject constructor(
 
     binding.hintsAndSolutionFragmentContainer.setOnClickListener {
       routeToHintsAndSolutionListener.routeToHintsAndSolution(
-        explorationId,
+        this.explorationId,
         viewModel.newAvailableHintIndex,
         viewModel.allHintsExhausted
       )

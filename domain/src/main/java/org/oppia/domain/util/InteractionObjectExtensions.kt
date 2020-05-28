@@ -4,6 +4,7 @@ import org.oppia.app.model.Fraction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.InteractionObject.ObjectTypeCase.BOOL_VALUE
 import org.oppia.app.model.InteractionObject.ObjectTypeCase.FRACTION
+import org.oppia.app.model.InteractionObject.ObjectTypeCase.LIST_OF_SETS_OF_HTML_STRING
 import org.oppia.app.model.InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT
 import org.oppia.app.model.InteractionObject.ObjectTypeCase.NORMALIZED_STRING
 import org.oppia.app.model.InteractionObject.ObjectTypeCase.NUMBER_WITH_UNITS
@@ -11,6 +12,7 @@ import org.oppia.app.model.InteractionObject.ObjectTypeCase.OBJECTTYPE_NOT_SET
 import org.oppia.app.model.InteractionObject.ObjectTypeCase.REAL
 import org.oppia.app.model.InteractionObject.ObjectTypeCase.SET_OF_HTML_STRING
 import org.oppia.app.model.InteractionObject.ObjectTypeCase.SIGNED_INT
+import org.oppia.app.model.ListOfSetsOfHtmlStrings
 import org.oppia.app.model.NumberUnit
 import org.oppia.app.model.NumberWithUnits
 import org.oppia.app.model.StringList
@@ -26,6 +28,7 @@ fun InteractionObject.toAnswerString(): String {
     NUMBER_WITH_UNITS -> numberWithUnits.toAnswerString()
     SET_OF_HTML_STRING -> setOfHtmlString.toAnswerString()
     FRACTION -> fraction.toAnswerString()
+    LIST_OF_SETS_OF_HTML_STRING -> listOfSetsOfHtmlString.toAnswerString()
     OBJECTTYPE_NOT_SET -> "" // The default InteractionObject should be an empty string.
   }
 }
@@ -58,6 +61,10 @@ private fun NumberUnit.toAnswerStringPart(): String {
 
 private fun StringList.toAnswerString(): String {
   return htmlList.joinToString()
+}
+
+private fun ListOfSetsOfHtmlStrings.toAnswerString(): String {
+  return setOfHtmlStringsList.joinToString { "[${it.toAnswerString()}]" }
 }
 
 // https://github.com/oppia/oppia/blob/37285a/core/templates/dev/head/domain/objects/FractionObjectFactory.ts#L47

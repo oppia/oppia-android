@@ -1,11 +1,12 @@
 package org.oppia.app.completedstorylist
 
+import android.content.res.Configuration
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.app.databinding.CompletedStoryItemBinding
 import org.oppia.app.databinding.CompletedStoryListFragmentBinding
 import org.oppia.app.recyclerview.BindableAdapter
@@ -30,7 +31,9 @@ class CompletedStoryListFragmentPresenter @Inject constructor(
       (activity as CompletedStoryListActivity).finish()
     }
     binding.completedStoryList.apply {
-      layoutManager = LinearLayoutManager(activity.applicationContext)
+      val spanCount =
+        if (fragment.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 3 else 2
+      layoutManager = GridLayoutManager(context, spanCount)
       adapter = createRecyclerViewAdapter()
     }
     binding.let {

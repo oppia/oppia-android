@@ -30,6 +30,7 @@
   <color name="oppiaStrokeBlack">#CC333333</color>
   <color name="oppiaProgressChapterFinished">#E76F51</color>
   <color name="oppiaProgressChapterNotFinished">#999999</color>
+  <color name="oppiaAdminAuthSecondaryText">#555555</color>
   <color name="oppiaOnboardingDivider">#999999</color>
   <color name="oppiaDisabledButtonBackground">#33999999</color>
   <color name="oppiaTextShadow">#1F000000</color>
@@ -77,7 +78,7 @@
   <color name="submitButtonInactiveText">#61000000</color>
   <color name="grey">#CCCCCC</color>
   <!-- INPUT LAYOUT EDITTEXT -->
-  <color name="editTextError">#AB0517</color>
+  <color name="editTextError">#923026</color>
   <color name="editTextHint">#80333333</color>
   <color name="light_grey">#61000000</color>
   <color name="mid_grey">#ff333333</color>

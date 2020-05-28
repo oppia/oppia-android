@@ -331,7 +331,7 @@
   <string name="show_hide_hint_list">Show/Hide hint list of %s</string>
   <string name="show_hide_solution_list">Show/Hide solution</string>
   <string name="the_only_solution_is">The only solution is :  </string>
-  <string name="this_will_reveal_the_solution">This will reveal the solution. Are you Sure</string>
+  <string name="this_will_reveal_the_solution">This will reveal the solution. Are you sure?</string>
   <string name="reveal">Reveal</string>
   <!-- TextViewBindingAdapters -->
   <string name="just_now">just now</string>

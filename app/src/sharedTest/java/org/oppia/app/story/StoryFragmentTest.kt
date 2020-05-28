@@ -59,6 +59,7 @@ import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
+import org.robolectric.annotation.LooperMode
 import java.util.concurrent.AbstractExecutorService
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
@@ -67,6 +68,7 @@ import javax.inject.Qualifier
 import javax.inject.Singleton
 
 /** Tests for [StoryFragment]. */
+@LooperMode(LooperMode.Mode.PAUSED)
 @RunWith(AndroidJUnit4::class)
 class StoryFragmentTest {
 

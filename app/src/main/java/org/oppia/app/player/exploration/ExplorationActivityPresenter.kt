@@ -1,5 +1,6 @@
 package org.oppia.app.player.exploration
 
+import android.content.Context
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +13,7 @@ import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.databinding.ExplorationActivityBinding
 import org.oppia.app.model.Exploration
+import org.oppia.app.story.StoryActivity
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationDataController
@@ -32,12 +34,20 @@ class ExplorationActivityPresenter @Inject constructor(
   private lateinit var explorationToolbar: Toolbar
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
+  private lateinit var storyId: String
+  private lateinit var context: Context
+  private var backflowScreen: Int? = null
+
+  enum class ParentActivityForExploration(val value: Int) {
+    BACKFLOW_SCREEN_LESSONS(0),
+    BACKFLOW_SCREEN_STORY(1);
+  }
 
   private val exploreViewModel by lazy {
     getExplorationViewModel()
   }
 
-  fun handleOnCreate(internalProfileId: Int, topicId: String, storyId: String, explorationId: String) {
+  fun handleOnCreate(context: Context, internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowScreen: Int?) {
     val binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(activity, R.layout.exploration_activity)
     binding.apply {
       viewModel = exploreViewModel
@@ -54,6 +64,9 @@ class ExplorationActivityPresenter @Inject constructor(
     updateToolbarTitle(explorationId)
     this.internalProfileId = internalProfileId
     this.topicId = topicId
+    this.storyId = storyId
+    this.context = context
+    this.backflowScreen = backflowScreen
 
     if (getExplorationFragment() == null) {
       val explorationFragment = ExplorationFragment()
@@ -96,7 +109,7 @@ class ExplorationActivityPresenter @Inject constructor(
         it.isFailure() -> logger.e("ExplorationActivity", "Failed to stop exploration", it.getErrorOrNull()!!)
         else -> {
           logger.d("ExplorationActivity", "Successfully stopped exploration")
-          activity.startActivity(TopicActivity.createTopicActivityIntent(activity, internalProfileId, topicId))
+          backPressActivitySelector(backflowScreen)
           (activity as ExplorationActivity).finish()
         }
       }
@@ -138,6 +151,14 @@ class ExplorationActivityPresenter @Inject constructor(
       logger.e("StateFragment", "Failed to retrieve answer outcome", ephemeralStateResult.getErrorOrNull()!!)
     }
     return ephemeralStateResult.getOrDefault(Exploration.getDefaultInstance())
+  }
+
+  private fun backPressActivitySelector(backflowScreen: Int?){
+    when(backflowScreen){
+      ParentActivityForExploration.BACKFLOW_SCREEN_STORY.value -> activity.startActivity(StoryActivity.createStoryActivityIntent(context, internalProfileId, topicId, storyId))
+      ParentActivityForExploration.BACKFLOW_SCREEN_LESSONS.value -> activity.startActivity(TopicActivity.createTopicPlayStoryActivityIntent(activity, internalProfileId, topicId, storyId))
+      else -> activity.startActivity(TopicActivity.createTopicActivityIntent(context, internalProfileId, topicId))
+    }
   }
 
   fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
