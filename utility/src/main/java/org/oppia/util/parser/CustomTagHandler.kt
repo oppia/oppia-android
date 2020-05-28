@@ -8,7 +8,7 @@ import android.text.Spanned
 import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
 import android.text.Spanned.SPAN_MARK_MARK
 import android.util.Log
-import org.oppia.util.parser.HtmlTagHandler.ListTag
+import org.oppia.util.parser.CustomTagHandler.ListTag
 import org.oppia.util.parser.StringUtils.LI_TAG
 import org.oppia.util.parser.StringUtils.OL_TAG
 import org.oppia.util.parser.StringUtils.UL_TAG
@@ -25,10 +25,10 @@ import java.util.*
  * Reference: https://github.com/daphliu/android-spannable-list-sample/tree/master/app/src/main/java/com/daphneliu/sample/listspansample
 
  */
-class HtmlTagHandler(private val context: Context) : Html.TagHandler {
+class CustomTagHandler(private val context: Context) : Html.TagHandler {
 
   private val lists = Stack<ListTag>()
-  
+
   override fun handleTag(opening: Boolean, tag: String?, output: Editable, xmlReader: XMLReader?) {
     when (tag) {
       UL_TAG -> if (opening) {
@@ -53,7 +53,7 @@ class HtmlTagHandler(private val context: Context) : Html.TagHandler {
         lists.peek().closeItem(output, indentation = lists.size - 1)
       }
       else -> {
-        Log.d("HtmlTagHandler", "Found an unsupported tag " + tag);
+        Log.d("HtmlTagHandler", "Found an unsupported tag " + tag)
       }
     }
   }
@@ -94,7 +94,6 @@ class HtmlTagHandler(private val context: Context) : Html.TagHandler {
         setSpanFromMark(text, mark, CustomLeadingMarginSpan(context, indentation, "●"))
       }
     }
-
   }
 
   /**
@@ -115,7 +114,6 @@ class HtmlTagHandler(private val context: Context) : Html.TagHandler {
         setSpanFromMark(text, mark, CustomLeadingMarginSpan(context, indentation, "${mark.number}."))
       }
     }
-
   }
 
   companion object {
@@ -165,5 +163,4 @@ class HtmlTagHandler(private val context: Context) : Html.TagHandler {
       text.setSpan(mark, currentPosition, currentPosition, SPAN_MARK_MARK)
     }
   }
-
 }

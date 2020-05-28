@@ -3,9 +3,6 @@ package org.oppia.util.parser
 import android.app.Application
 import android.content.Context
 import android.text.Html
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.BulletSpan
 import androidx.core.text.HtmlCompat
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -14,7 +11,9 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import junit.framework.Assert.assertEquals
+import javax.inject.Inject
+import javax.inject.Qualifier
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -34,9 +33,6 @@ import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
-import javax.inject.Inject
-import javax.inject.Qualifier
-import javax.inject.Singleton
 
 /** Tests for [DateTimeUtil]. */
 @RunWith(AndroidJUnit4::class)
@@ -76,9 +72,10 @@ class TagHandlerTest {
     val source = "CITRUS FRUITS:<ul><li>LEMON</li><li>LIME</li><li>ORANGE</li></ul>"
     var flags: Int = Html.FROM_HTML_MODE_LEGACY
 
-    assertEquals(
-      "CITRUS FRUITS:\n\nLEMON\n\nLIME\n\nORANGE\n\n",
-      HtmlCompat.fromHtml(source, flags, null, ListTagHandler(context)).toString()
+    assertThat(
+      "CITRUS FRUITS:\n\nLEMON\n\nLIME\n\nORANGE\n\n"
+    ).isEqualTo(
+      HtmlCompat.fromHtml(source, flags, null, CustomTagHandler(context)).toString()
     )
   }
 
@@ -87,11 +84,13 @@ class TagHandlerTest {
     val source = "CITRUS FRUITS:<ol><li>LEMON</li><li>LIME</li><li>ORANGE</li></ol>"
     var flags: Int = Html.FROM_HTML_MODE_LEGACY
 
-    assertEquals(
-      "CITRUS FRUITS:\n\nLEMON\n\nLIME\n\nORANGE\n\n",
-      HtmlCompat.fromHtml(source, flags, null, ListTagHandler(context)).toString()
+    assertThat(
+      "CITRUS FRUITS:\n\nLEMON\n\nLIME\n\nORANGE\n\n"
+    ).isEqualTo(
+      HtmlCompat.fromHtml(source, flags, null, CustomTagHandler(context)).toString()
     )
   }
+
   @Test
   fun testNestedListFromHtml() {
     val source = "<ul>\n" +
@@ -117,13 +116,14 @@ class TagHandlerTest {
       "</ul>"
     var flags: Int = Html.FROM_HTML_MODE_LEGACY
 
-    assertEquals(
-      "Item 1\n\nItem 2\n\nNumbered list: \n\nNested item in numbered list 1\n\nNested item in numbered list 2\n\nNested list: \n\nDouble nested list: \n\nDouble nested item \n\n",
-      HtmlCompat.fromHtml(source, flags, null, ListTagHandler(context)).toString()
+    assertThat(
+      "Item 1\n\nItem 2\n\nNumbered list: \n\nNested item in numbered list 1\n\nNested item in numbered list 2\n\nNested list: \n\nDouble nested list: \n\nDouble nested item \n\n"
     )
+      .isEqualTo(HtmlCompat.fromHtml(source, flags, null, CustomTagHandler(context)).toString())
   }
 
-  @Qualifier annotation class TestDispatcher
+  @Qualifier
+  annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module
