@@ -43,8 +43,8 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer_nonNegativeInput_testString_bothIncorrectInputMap_throwsException() {
-    // reverse the mapping of x and y  input parameters to check correctness of parameters.
+  fun testAnswer_nonNegativeInput_testString_bothInputsWithIncorrectTypes_throwsException() {
+    // Reverse the x and y parameters to ensure both have the incorrect type.
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_1, "y" to STRING_VALUE_2)
 
     val exception = assertThrows(IllegalStateException::class) {
@@ -57,7 +57,7 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer_nonNegativeInput_testString_xAsIncorrectInputMap_throwsException() {
+  fun testAnswer_nonNegativeInput_testString_xInputWithIncorrectType_throwsException() {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_1, "y" to NON_NEGATIVE_VALUE_1)
 
     val exception = assertThrows(IllegalStateException::class) {
@@ -70,7 +70,7 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer_nonNegativeInput_testString_yAsIncorrectInputMap_throwsException() {
+  fun testAnswer_nonNegativeInput_testString_yInputWithIncorrectType_throwsException() {
     val inputs = mapOf("x" to STRING_VALUE_2, "y" to STRING_VALUE_2)
 
     val exception = assertThrows(IllegalStateException::class) {
@@ -97,7 +97,7 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
 
   @Test
   fun testAnswer_nonNegativeInput_missingInputY_throwsException() {
-    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_1)
+    val inputs = mapOf("x" to STRING_VALUE_2)
 
     val exception = assertThrows(IllegalStateException::class) {
       hasElementXAtPositionYRuleClassifier.matches(answer = LIST_OF_SETS_OF_HTML_STRING_VALUE, inputs = inputs)
@@ -105,7 +105,20 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
 
     assertThat(exception)
       .hasMessageThat()
-      .contains("Expected input value to be of type NORMALIZED_STRING not NON_NEGATIVE_INT")
+      .contains("Expected classifier inputs to contain parameter with name 'y' but had: [x]")
+  }
+
+  @Test
+  fun testAnswer_bothInputMissing_throwsException() {
+    val inputs = mapOf("z" to STRING_VALUE_2)
+
+    val exception = assertThrows(IllegalStateException::class) {
+      hasElementXAtPositionYRuleClassifier.matches(answer = LIST_OF_SETS_OF_HTML_STRING_VALUE, inputs = inputs)
+    }
+
+    assertThat(exception)
+      .hasMessageThat()
+      .contains("Expected classifier inputs to contain parameter with name 'x' but had: [z]")
   }
 
   @Test
@@ -119,7 +132,7 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer_elementXWithPositionY_xValueDoNotMatch() {
+  fun testAnswer_elementXWithPositionY_xValueDoesNotMatch() {
     val inputs = mapOf("y" to NON_NEGATIVE_VALUE_1, "x" to STRING_VALUE_3)
 
     val matches =
@@ -129,7 +142,7 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer_elementXWithPositionY_yValueDoNotMatch() {
+  fun testAnswer_elementXWithPositionY_yValueDoesNotMatch() {
     val inputs = mapOf("y" to NON_NEGATIVE_VALUE_0, "x" to STRING_VALUE_2)
 
     val matches =
