@@ -48,6 +48,7 @@ import org.oppia.domain.topic.TEST_SKILL_ID_0
 import org.oppia.domain.topic.TEST_SKILL_ID_1
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -60,6 +61,7 @@ import org.robolectric.annotation.Config
 private const val DUMMY_DESCRIPTION_TEXT = "dummy_description_text"
 private const val DUMMY_THUMBNAIL_URL = "dummy_thumbnail_url"
 private const val INVALID_SKILL_ID = "invalid_skill_id"
+private const val SKILL_SUMMARY_LIST_DATA_PROVIDER_ID = "skill_summary_list_data_provider"
 
 /** Tests for [SkillRepository]. */
 @RunWith(AndroidJUnit4::class)
@@ -111,13 +113,13 @@ class SkillRepositoryTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun tesSkillSummary_storeAllSkillSummariesToProtoDatabase_getFractionSkillID0_correctSkillSummaryData() =
+  fun testSkillSummary_storeAllSkillSummariesToProtoDatabase_getFractionSkillId0_correctSkillSummaryData() =
     runBlockingTest(coroutineContext) {
       skillRepository.storeAllSkillSummariesToProtoDatabase()
       advanceUntilIdle()
 
       val skillSummaryDataProvider =
-        skillRepository.getSkillSummaryDataProvider(FRACTIONS_SKILL_ID_0)
+        skillRepository.getConceptCardViewDataProvider(FRACTIONS_SKILL_ID_0)
       dataProviders.convertToLiveData(skillSummaryDataProvider)
         .observeForever(mockConceptCardViewObserver)
       advanceUntilIdle()
@@ -130,13 +132,13 @@ class SkillRepositoryTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun tesSkillSummary_storeAllSkillSummariesToProtoDatabase_getFractionSkillID1_correctSkillSummaryData() =
+  fun tesSkillSummary_storeAllSkillSummariesToProtoDatabase_getFractionSkillId1_correctSkillSummaryData() =
     runBlockingTest(coroutineContext) {
       skillRepository.storeAllSkillSummariesToProtoDatabase()
       advanceUntilIdle()
 
       val skillSummaryDataProvider =
-        skillRepository.getSkillSummaryDataProvider(FRACTIONS_SKILL_ID_1)
+        skillRepository.getConceptCardViewDataProvider(FRACTIONS_SKILL_ID_1)
       dataProviders.convertToLiveData(skillSummaryDataProvider)
         .observeForever(mockConceptCardViewObserver)
       advanceUntilIdle()
@@ -149,13 +151,13 @@ class SkillRepositoryTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun tesSkillSummary_storeAllSkillSummariesToProtoDatabase_getFractionSkillID2_correctSkillSummaryData() =
+  fun tesSkillSummary_storeAllSkillSummariesToProtoDatabase_getFractionSkillId2_correctSkillSummaryData() =
     runBlockingTest(coroutineContext) {
       skillRepository.storeAllSkillSummariesToProtoDatabase()
       advanceUntilIdle()
 
       val skillSummaryDataProvider =
-        skillRepository.getSkillSummaryDataProvider(FRACTIONS_SKILL_ID_2)
+        skillRepository.getConceptCardViewDataProvider(FRACTIONS_SKILL_ID_2)
       dataProviders.convertToLiveData(skillSummaryDataProvider)
         .observeForever(mockConceptCardViewObserver)
       advanceUntilIdle()
@@ -168,12 +170,12 @@ class SkillRepositoryTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun tesSkillSummary_storeAllSkillSummariesToProtoDatabase_getRatiosSkillID0_correctSkillSummaryData() =
+  fun tesSkillSummary_storeAllSkillSummariesToProtoDatabase_getRatiosSkillId0_correctSkillSummaryData() =
     runBlockingTest(coroutineContext) {
       skillRepository.storeAllSkillSummariesToProtoDatabase()
       advanceUntilIdle()
 
-      val skillSummaryDataProvider = skillRepository.getSkillSummaryDataProvider(RATIOS_SKILL_ID_0)
+      val skillSummaryDataProvider = skillRepository.getConceptCardViewDataProvider(RATIOS_SKILL_ID_0)
       dataProviders.convertToLiveData(skillSummaryDataProvider)
         .observeForever(mockConceptCardViewObserver)
       advanceUntilIdle()
@@ -188,10 +190,10 @@ class SkillRepositoryTest {
   @ExperimentalCoroutinesApi
   fun tesSkillSummary_addSkillSummaryList_getSkillSummary0_correctSkillSummaryData() =
     runBlockingTest(coroutineContext) {
-      skillRepository.addSkillSummaryList(createSkillSummaryList())
+      skillRepository.insertSkillSummaryList(createSkillSummaryList())
       advanceUntilIdle()
 
-      val skillSummaryDataProvider = skillRepository.getSkillSummaryDataProvider(TEST_SKILL_ID_0)
+      val skillSummaryDataProvider = skillRepository.getConceptCardViewDataProvider(TEST_SKILL_ID_0)
       dataProviders.convertToLiveData(skillSummaryDataProvider)
         .observeForever(mockConceptCardViewObserver)
       advanceUntilIdle()
@@ -206,12 +208,12 @@ class SkillRepositoryTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun tesSkillSummary_storeAllSkillSummariesToProtoDatabase_getInvalidSkillID_noSkillSummaryDataFound() =
+  fun tesSkillSummary_storeAllSkillSummariesToProtoDatabase_getInvalidSkillId_defaultSkillSummaryDataFound() =
     runBlockingTest(coroutineContext) {
-      skillRepository.addSkillSummaryList(createSkillSummaryList())
+      skillRepository.insertSkillSummaryList(createSkillSummaryList())
       advanceUntilIdle()
 
-      val skillSummaryDataProvider = skillRepository.getSkillSummaryDataProvider(INVALID_SKILL_ID)
+      val skillSummaryDataProvider = skillRepository.getConceptCardViewDataProvider(INVALID_SKILL_ID)
       dataProviders.convertToLiveData(skillSummaryDataProvider)
         .observeForever(mockConceptCardViewObserver)
       advanceUntilIdle()
@@ -225,10 +227,10 @@ class SkillRepositoryTest {
   @ExperimentalCoroutinesApi
   fun tesSkillSummary_addSkillSummaryList_getSkillSummary1_correctSkillSummaryData() =
     runBlockingTest(coroutineContext) {
-      skillRepository.addSkillSummaryList(createSkillSummaryList())
+      skillRepository.insertSkillSummaryList(createSkillSummaryList())
       advanceUntilIdle()
 
-      val skillSummaryDataProvider = skillRepository.getSkillSummaryDataProvider(TEST_SKILL_ID_1)
+      val skillSummaryDataProvider = skillRepository.getConceptCardViewDataProvider(TEST_SKILL_ID_1)
       dataProviders.convertToLiveData(skillSummaryDataProvider)
         .observeForever(mockConceptCardViewObserver)
       advanceUntilIdle()
@@ -256,11 +258,11 @@ class SkillRepositoryTest {
     assertThat(conceptCardViewResultCaptor.value.isSuccess()).isTrue()
   }
 
-  private fun createSkillSummaryList(): List<SkillSummaryDomain> {
+  private fun createSkillSummaryList(): DataProvider<List<SkillSummaryDomain>> {
     val skillSummaryDomainList = mutableListOf<SkillSummaryDomain>()
     skillSummaryDomainList.add(createSkillSummary0())
     skillSummaryDomainList.add(createSkillSummary1())
-    return skillSummaryDomainList
+    return dataProviders.createInMemoryDataProvider(SKILL_SUMMARY_LIST_DATA_PROVIDER_ID) { skillSummaryDomainList }
   }
 
   private fun createSkillSummary0(): SkillSummaryDomain {

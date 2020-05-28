@@ -3,8 +3,6 @@ package org.oppia.domain.repository
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Deferred
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.json.JSONObject
 import org.oppia.app.model.ConceptCardView
 import org.oppia.app.model.LessonThumbnail
@@ -24,11 +22,16 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
 import org.oppia.util.logging.Logger
+import javax.inject.Inject
+import javax.inject.Singleton
 
+private const val INSERT_SKILL_SUMMARY_LIST_DATA_PROVIDER_ID =
+  "insert_skill_summary_list_data_provider"
+private const val SKILL_SUMMARY_LIST_DATA_PROVIDER_ID = "skill_summary_list_data_provider"
 private const val ADD_SKILL_SUMMARY_LIST_TRANSFORMED_PROVIDER_ID = "add_skill_list_transformed_id"
-private const val GET_SKILL_SUMMARY_TRANSFORMED_PROVIDER_ID = "get_skill_summary_transformed_id"
+private const val TRANSFORMED_CONCEPT_CARD_PROVIDER_ID = "get_skill_summary_transformed_id"
 
-/** Controller for retrieving all aspects of a topic. */
+/** Controller for inserting and reading skills from proto-database. */
 @Singleton
 class SkillRepository @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
@@ -37,22 +40,9 @@ class SkillRepository @Inject constructor(
   private val logger: Logger
 ) {
 
-  /** Indicates that the given skill summary already exists. */
-  class SkillSummaryAlreadyExistsException(msg: String) : Exception(msg)
-
-  /** Indicates that the given skill summary is not found. */
-  class SkillSummaryNotFoundException(msg: String) : Exception(msg)
-
-  /**
-   * These statuses correspond to the exceptions above such that if the deferred contains
-   * SKILL_SUMMARY_ALREADY_FOUND, the [SkillSummaryAlreadyExistsException] will be passed to a failed AsyncResult.
-   *
-   * SUCCESS corresponds to a successful AsyncResult.
-   */
+  /** Corresponds to successful AsyncResult. */
   private enum class SkillSummaryActionStatus {
-    SUCCESS,
-    SKILL_SUMMARY_ALREADY_EXISTS,
-    SKILL_SUMMARY_NOT_FOUND
+    SUCCESS
   }
 
   private val skillSummaryDataStore =
@@ -82,7 +72,7 @@ class SkillRepository @Inject constructor(
     return MutableLiveData(
       try {
         TOPIC_FILE_ASSOCIATIONS.keys.forEach { topicId ->
-          addSkillSummaryList(retrieveSkillSummaryDomainListFromJson(topicId))
+          insertSkillSummaryList(retrieveSkillSummaryDomainListFromJson(topicId))
         }
         AsyncResult.success<Any?>(SkillSummaryActionStatus.SUCCESS)
       } catch (e: Exception) {
@@ -97,9 +87,9 @@ class SkillRepository @Inject constructor(
    * @param skillId the ID corresponding to the skill for which [ConceptCardView] needs to be fetched.
    * @return a [DataProvider] for a [ConceptCardView].
    */
-  fun getSkillSummaryDataProvider(skillId: String): DataProvider<ConceptCardView> {
+  fun getConceptCardViewDataProvider(skillId: String): DataProvider<ConceptCardView> {
     return dataProviders.transformAsync<SkillSummaryDatabase, ConceptCardView>(
-      GET_SKILL_SUMMARY_TRANSFORMED_PROVIDER_ID,
+      TRANSFORMED_CONCEPT_CARD_PROVIDER_ID,
       skillSummaryDataStore
     ) {
       val skillSummaryDomain = it.skillSummaryDatabaseMap[skillId]
@@ -109,27 +99,26 @@ class SkillRepository @Inject constructor(
   }
 
   /**
-   * Adds a list of skills to offline storage.
+   * Inserts a list of skills to offline storage.
    *
-   * @param skillSummaryDomainList List of skill summaries which needs to be saved offline.
+   * @param skillSummaryDomainListDataProvider [DataProvider] containing list of skill summaries which needs to be saved offline.
    * @return a [LiveData] that indicates the success/failure of this add operation.
    */
-  fun addSkillSummaryList(skillSummaryDomainList: List<SkillSummaryDomain>): DataProvider<Any?> {
-    val deferred =
-      skillSummaryDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-        val skillSummaryDatabaseBuilder = it.toBuilder()
-        skillSummaryDomainList.forEach { skillSummaryDomain ->
-          skillSummaryDatabaseBuilder.putSkillSummaryDatabase(
-            skillSummaryDomain.skillId,
-            skillSummaryDomain
-          )
+  fun insertSkillSummaryList(skillSummaryDomainListDataProvider: DataProvider<List<SkillSummaryDomain>>): DataProvider<Any?> {
+    return dataProviders.transform(
+      INSERT_SKILL_SUMMARY_LIST_DATA_PROVIDER_ID,
+      skillSummaryDomainListDataProvider
+    ) { skillSummaryDomainList ->
+      val deferred =
+        skillSummaryDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
+          val skillSummaryDatabase = it.toBuilder()
+            .putAllSkillSummaryDatabase(skillSummaryDomainList.associateBy(SkillSummaryDomain::getSkillId))
+            .build()
+          Pair(skillSummaryDatabase, SkillSummaryActionStatus.SUCCESS)
         }
-        Pair(skillSummaryDatabaseBuilder.build(), SkillSummaryActionStatus.SUCCESS)
+      dataProviders.createInMemoryDataProviderAsync(ADD_SKILL_SUMMARY_LIST_TRANSFORMED_PROVIDER_ID) {
+        getDeferredResultForSkillSummary(deferred)
       }
-    return dataProviders.createInMemoryDataProviderAsync(
-      ADD_SKILL_SUMMARY_LIST_TRANSFORMED_PROVIDER_ID
-    ) {
-      return@createInMemoryDataProviderAsync getDeferredResultForSkillSummary(deferred)
     }
   }
 
@@ -149,21 +138,16 @@ class SkillRepository @Inject constructor(
   private suspend fun getDeferredResultForSkillSummary(deferred: Deferred<SkillSummaryActionStatus>): AsyncResult<Any?> {
     return when (deferred.await()) {
       SkillSummaryActionStatus.SUCCESS -> AsyncResult.success(null)
-      SkillSummaryActionStatus.SKILL_SUMMARY_ALREADY_EXISTS -> AsyncResult.failed(
-        SkillSummaryAlreadyExistsException("Skill summary list is already present.")
-      )
-      SkillSummaryActionStatus.SKILL_SUMMARY_NOT_FOUND -> AsyncResult.failed(
-        SkillSummaryNotFoundException("Skill summary list not found.")
-      )
     }
   }
 
-  private fun retrieveSkillSummaryDomainListFromJson(topicId: String): List<SkillSummaryDomain> {
-    return when (topicId) {
+  private fun retrieveSkillSummaryDomainListFromJson(topicId: String): DataProvider<List<SkillSummaryDomain>> {
+    val skillSummaryDomainList = when (topicId) {
       FRACTIONS_TOPIC_ID -> createSkillsFromJson("fractions_skills.json")
       RATIOS_TOPIC_ID -> createSkillsFromJson("ratios_skills.json")
       else -> throw IllegalArgumentException("Invalid topic ID: $topicId")
     }
+    return dataProviders.createInMemoryDataProvider(SKILL_SUMMARY_LIST_DATA_PROVIDER_ID) { skillSummaryDomainList }
   }
 
   /**
@@ -172,9 +156,11 @@ class SkillRepository @Inject constructor(
    */
   private fun createSkillsFromJson(fileName: String): List<SkillSummaryDomain> {
     val skillList = mutableListOf<SkillSummaryDomain>()
-    val skillData = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray("skill_list")!!
-    for (i in 0 until skillData.length()) {
-      skillList.add(createSkillFromJson(skillData.getJSONObject(i).getJSONObject("skill")))
+    val skillData = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray("skill_list")
+    if (skillData != null) {
+      for (i in 0 until skillData.length()) {
+        skillList.add(createSkillFromJson(skillData.getJSONObject(i).getJSONObject("skill")))
+      }
     }
     return skillList
   }
