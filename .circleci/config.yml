@@ -7,7 +7,6 @@ workflows:
   circleci_tests:
     jobs:
       - linters
-      - flaky_tests
       - non_flaky_tests
 
 var_for_docker_image: &docker_image circleci/android:api-28
@@ -115,8 +114,9 @@ jobs:
           name: Domain tests
           command: ./.circleci/gradle/gradlew -i :domain:test
       - run:
-          name: App -  FAQ, Help, Splash, Parser, RecyclerView, Utility tests
-          command: ./.circleci/gradle/gradlew -i :app:testDebugUnitTest --tests org.oppia.app.faq* --tests org.oppia.app.help* --tests org.oppia.app.splash* --tests org.oppia.app.parser* --tests org.oppia.app.recyclerview* --tests org.oppia.app.utility* 
+          name: App -  FAQ, Help, Splash, Parser, RecyclerView, Story, Utility tests, Walkthrough
+          command: ./.circleci/gradle/gradlew -i :app:testDebugUnitTest --tests org.oppia.app.faq* --tests org.oppia.app.help* --tests org.oppia.app.splash*
+            --tests org.oppia.app.parser* --tests org.oppia.app.recyclerview* --tests org.oppia.app.story* --tests org.oppia.app.utility* --tests org.oppia.app.walkthrough*
       - run:
           name: Save test results
           command: |
