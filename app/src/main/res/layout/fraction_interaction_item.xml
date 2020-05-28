@@ -47,6 +47,7 @@
       app:textChangedListener="@{viewModel.answerTextWatcher}" />
 
     <TextView
+      android:id="@+id/fraction_input_error"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginStart="16dp"

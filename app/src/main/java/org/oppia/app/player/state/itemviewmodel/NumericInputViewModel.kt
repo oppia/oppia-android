@@ -13,7 +13,7 @@ import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 
-/** [ViewModel] for the numeric input interaction. */
+/** [StateItemViewModel] for the numeric input interaction. */
 class NumericInputViewModel(
   private val context: Context,
   private val interactionAnswerErrorReceiver: InteractionAnswerErrorReceiver

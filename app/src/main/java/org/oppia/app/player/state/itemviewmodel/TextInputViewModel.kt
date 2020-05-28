@@ -5,7 +5,7 @@ import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 
-/** [ViewModel] for the text input interaction. */
+/** [StateItemViewModel] for the text input interaction. */
 class TextInputViewModel(
   interaction: Interaction
 ) : StateItemViewModel(ViewType.TEXT_INPUT_INTERACTION), InteractionAnswerHandler {
