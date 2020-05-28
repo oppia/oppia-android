@@ -13,7 +13,6 @@ import android.view.ViewTreeObserver
 import android.widget.TextView
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import org.oppia.util.gcsresource.DefaultResourceBucketName
 import javax.inject.Inject
 
 // TODO(#169): Replace this with exploration asset downloader.

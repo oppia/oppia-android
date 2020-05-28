@@ -23,12 +23,11 @@ import javax.inject.Singleton
 /** Tests for [QuestionPlayerActivity]. */
 @RunWith(AndroidJUnit4::class)
 class QuestionPlayerActivityTest {
+  // TODO(#503): add tests for QuestionPlayerActivity (use StateFragmentTest for a reference).
 
   @Test
-  fun testQuestionPlayerActivity_loadQuestionPlayerFragment_hasDummyString() {
-    ActivityScenario.launch(QuestionPlayerActivity::class.java).use {
-      // onView(withId(R.id.dummy_text_view)).check(matches(withText("Questions functionality is coming soon")))
-    }
+  fun tempTest() {
+    // TODO(#503): remove.
   }
 
   @Module
