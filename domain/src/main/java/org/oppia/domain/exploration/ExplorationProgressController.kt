@@ -315,26 +315,20 @@ class ExplorationProgressController @Inject constructor(
   }
 
   private suspend fun retrieveCurrentStateWithinCacheAsync(): AsyncResult<EphemeralState> {
-    var explorationId: String? = null
-    lateinit var currentStage: ExplorationProgress.PlayStage
-    explorationProgressLock.withLock {
-      currentStage = explorationProgress.playStage
-      if (currentStage == ExplorationProgress.PlayStage.LOADING_EXPLORATION) {
-        explorationId = explorationProgress.currentExplorationId
-      }
+    val explorationId: String? = explorationProgressLock.withLock {
+      if (explorationProgress.playStage == ExplorationProgress.PlayStage.LOADING_EXPLORATION) {
+        explorationProgress.currentExplorationId
+      } else null
     }
 
-    val exploration: Exploration? =
-      if (explorationId != null) explorationRetriever.loadExploration(explorationId!!) else null
+    val exploration = explorationId?.let(explorationRetriever::loadExploration)
 
     explorationProgressLock.withLock {
       // It's possible for the exploration ID or stage to change between critical sections. However, this is the only
-      // way to ensure the exploration is loaded since suspended functions cannot be called within a mutex.
+      // way to ensure the exploration is loaded since suspended functions cannot be called within a mutex. Note that
+      // it's also possible for the stage to change between critical sections, sometimes due to this suspend function
+      // being called multiple times and a former call finishing the exploration load.
       check(exploration == null || explorationProgress.currentExplorationId == explorationId) {
-        "Encountered race condition when retrieving exploration. ID changed from $explorationId" +
-          " to ${explorationProgress.currentExplorationId}"
-      }
-      check(explorationProgress.playStage == currentStage) {
         "Encountered race condition when retrieving exploration. ID changed from $explorationId" +
           " to ${explorationProgress.currentExplorationId}"
       }

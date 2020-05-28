@@ -15,19 +15,17 @@ import javax.inject.Inject
 class ExplorationFragmentPresenter @Inject constructor(
   private val fragment: Fragment
 ) {
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    profileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String
+  ): View? {
     val binding = ExplorationFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false).root
-
+    val stateFragment = StateFragment.newInstance(profileId, topicId, storyId, explorationId)
     if (getStateFragment() == null) {
-      val profileId = fragment.arguments!!.getInt(ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, -1)
-      val topicId = fragment.arguments!!.getString(ExplorationActivity.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
-      checkNotNull(topicId) { "StateFragment must be created with an topic ID" }
-      val storyId = fragment.arguments!!.getString(ExplorationActivity.EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY)
-      checkNotNull(storyId) { "StateFragment must be created with an story ID" }
-      val explorationId =
-        fragment.arguments!!.getString(ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY)
-      checkNotNull(explorationId) { "StateFragment must be created with an exploration ID" }
-      val stateFragment = StateFragment.newInstance(profileId, topicId, storyId, explorationId)
       fragment.childFragmentManager.beginTransaction().add(
         R.id.state_fragment_placeholder,
         stateFragment

@@ -11,8 +11,8 @@ import java.util.concurrent.Executors
 import javax.inject.Singleton
 
 /**
- * Dagger [Module] that provides [CoroutineDispatcher]s that bind to [BackgroundDispatcher] and [BlockingDispatcher]
- * qualifiers.
+ * Dagger [Module] that provides [CoroutineDispatcher]s that bind to [BackgroundDispatcher] and
+ * [BlockingDispatcher] qualifiers.
  */
 @Module
 class TestDispatcherModule {
@@ -38,15 +38,21 @@ class TestDispatcherModule {
   @BackgroundTestDispatcher
   @InternalCoroutinesApi
   @Singleton
-  fun provideBackgroundTestDispatcher(factory: TestCoroutineDispatcher.Factory): TestCoroutineDispatcher {
-    return factory.createDispatcher(Executors.newFixedThreadPool(/* nThreads= */ 4).asCoroutineDispatcher())
+  fun provideBackgroundTestDispatcher(
+    factory: TestCoroutineDispatcher.Factory
+  ): TestCoroutineDispatcher {
+    return factory.createDispatcher(
+      Executors.newFixedThreadPool(/* nThreads= */ 4).asCoroutineDispatcher()
+    )
   }
 
   @Provides
   @BlockingTestDispatcher
   @InternalCoroutinesApi
   @Singleton
-  fun provideBlockingTestDispatcher(factory: TestCoroutineDispatcher.Factory): TestCoroutineDispatcher {
+  fun provideBlockingTestDispatcher(
+    factory: TestCoroutineDispatcher.Factory
+  ): TestCoroutineDispatcher {
     return factory.createDispatcher(Executors.newSingleThreadExecutor().asCoroutineDispatcher())
   }
 }
