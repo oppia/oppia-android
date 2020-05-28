@@ -50,7 +50,18 @@ class StateFragment : InjectableFragment(), InteractionAnswerReceiver, Interacti
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return stateFragmentPresenter.handleCreateView(inflater, container)
+    val internalProfileId = arguments!!.getInt(STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, -1)
+    val topicId = arguments!!.getString(STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY)!!
+    val storyId = arguments!!.getString(STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY)!!
+    val explorationId = arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
+    return stateFragmentPresenter.handleCreateView(
+      inflater,
+      container,
+      internalProfileId,
+      topicId,
+      storyId,
+      explorationId
+    )
   }
 
   override fun onAnswerReadyForSubmission(answer: UserAnswer) {

@@ -5,6 +5,7 @@ import org.oppia.app.player.state.listener.ReturnToTopicNavigationButtonListener
 
 /** [StateItemViewModel] for both previous state navigation and navigating back to the topic containing this lesson. */
 class ReturnToTopicButtonViewModel(
-  val hasPreviousButton: Boolean, val previousNavigationButtonListener: PreviousNavigationButtonListener,
+  val hasPreviousButton: Boolean,
+  val previousNavigationButtonListener: PreviousNavigationButtonListener,
   val returnToTopicNavigationButtonListener: ReturnToTopicNavigationButtonListener
 ) : StateItemViewModel(ViewType.RETURN_TO_TOPIC_NAVIGATION_BUTTON)

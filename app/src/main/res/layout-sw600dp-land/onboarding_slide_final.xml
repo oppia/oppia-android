@@ -32,24 +32,24 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginStart="8dp"
-      android:layout_marginTop="80dp"
       android:layout_marginEnd="28dp"
+      android:layout_marginBottom="12dp"
       android:fontFamily="sans-serif-medium"
       android:gravity="center_horizontal"
       android:text="@string/onboarding_slide_3_title"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="24sp"
+      app:layout_constraintBottom_toTopOf="@+id/guideline2"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="1.0"
-      app:layout_constraintStart_toEndOf="@+id/slide_image_view"
-      app:layout_constraintTop_toTopOf="parent" />
+      app:layout_constraintStart_toEndOf="@+id/slide_image_view" />
 
     <TextView
       android:id="@+id/slide_description_text_view"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginStart="20dp"
-      android:layout_marginTop="16dp"
+      android:layout_marginTop="12dp"
       android:layout_marginEnd="40dp"
       android:fontFamily="sans-serif"
       android:gravity="center_horizontal"
@@ -59,14 +59,14 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="0.0"
       app:layout_constraintStart_toEndOf="@+id/slide_image_view"
-      app:layout_constraintTop_toBottomOf="@+id/slide_title_text_view" />
+      app:layout_constraintTop_toTopOf="@+id/guideline2" />
 
     <Button
       android:id="@+id/get_started_button"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginTop="24dp"
       android:layout_marginStart="28dp"
+      android:layout_marginTop="24dp"
       android:layout_marginEnd="52dp"
       android:background="@drawable/primary_rounded_button"
       android:fontFamily="sans-serif-medium"
@@ -78,5 +78,12 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toEndOf="@+id/slide_image_view"
       app:layout_constraintTop_toBottomOf="@id/slide_description_text_view" />
+
+    <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/guideline2"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      app:layout_constraintGuide_percent="0.5" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
