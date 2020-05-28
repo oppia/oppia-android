@@ -27,7 +27,7 @@ import javax.inject.Singleton
 
 private const val INSERT_SKILL_SUMMARY_LIST_DATA_PROVIDER_ID =
   "insert_skill_summary_list_data_provider"
-private const val SKILL_SUMMARY_LIST_DATA_PROVIDER_ID = "skill_summary_list_data_provider"
+const val SKILL_SUMMARY_LIST_DATA_PROVIDER_ID = "skill_summary_list_data_provider"
 private const val ADD_SKILL_SUMMARY_LIST_TRANSFORMED_PROVIDER_ID = "add_skill_list_transformed_id"
 private const val TRANSFORMED_CONCEPT_CARD_PROVIDER_ID = "get_skill_summary_transformed_id"
 
@@ -88,13 +88,12 @@ class SkillRepository @Inject constructor(
    * @return a [DataProvider] for a [ConceptCardView].
    */
   fun getConceptCardViewDataProvider(skillId: String): DataProvider<ConceptCardView> {
-    return dataProviders.transformAsync<SkillSummaryDatabase, ConceptCardView>(
+    return dataProviders.transform(
       TRANSFORMED_CONCEPT_CARD_PROVIDER_ID,
       skillSummaryDataStore
     ) {
       val skillSummaryDomain = it.skillSummaryDatabaseMap[skillId]
-      val conceptCardView = convertSkillSummaryDomainToConceptCardView(skillSummaryDomain)
-      AsyncResult.success(conceptCardView)
+      convertSkillSummaryDomainToConceptCardView(skillSummaryDomain)
     }
   }
 
@@ -106,18 +105,17 @@ class SkillRepository @Inject constructor(
    */
   fun insertSkillSummaryList(skillSummaryDomainListDataProvider: DataProvider<List<SkillSummaryDomain>>): DataProvider<Any?> {
     return dataProviders.transform(
-      INSERT_SKILL_SUMMARY_LIST_DATA_PROVIDER_ID,
-      skillSummaryDomainListDataProvider
-    ) { skillSummaryDomainList ->
-      val deferred =
-        skillSummaryDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-          val skillSummaryDatabase = it.toBuilder()
-            .putAllSkillSummaryDatabase(skillSummaryDomainList.associateBy(SkillSummaryDomain::getSkillId))
-            .build()
-          Pair(skillSummaryDatabase, SkillSummaryActionStatus.SUCCESS)
+      INSERT_SKILL_SUMMARY_LIST_DATA_PROVIDER_ID, skillSummaryDomainListDataProvider
+    ) { skillSummaryDomainList->
+      skillSummaryDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
+        val skillSummaryDatabaseBuilder = it.toBuilder()
+        skillSummaryDomainList.forEach { skillSummaryDomain ->
+          skillSummaryDatabaseBuilder.putSkillSummaryDatabase(
+            skillSummaryDomain.skillId,
+            skillSummaryDomain
+          )
         }
-      dataProviders.createInMemoryDataProviderAsync(ADD_SKILL_SUMMARY_LIST_TRANSFORMED_PROVIDER_ID) {
-        getDeferredResultForSkillSummary(deferred)
+        Pair(skillSummaryDatabaseBuilder.build(), SkillSummaryActionStatus.SUCCESS)
       }
     }
   }
