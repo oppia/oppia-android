@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicLong
 import javax.inject.Inject
 
 // TODO(#89): Actually finish this implementation so that it properly works across Robolectric and
-// Espresso, and add tests for it.
+//  Espresso, and add tests for it.
 /**
  * A Robolectric-specific fake for the system clock that can be used to manipulate time in a
  * consistent way.
