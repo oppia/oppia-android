@@ -67,9 +67,7 @@ anchor_for_install_buf: &install_buf
         CACHE_BIN=$CACHE/bin
         BINARY_NAME="buf"
 
-        curl -sSL \
-        "https://github.com/bufbuild/buf/releases/download/v$BUFVERSION/$BINARY_NAME-$UNAME_OS-$UNAME_ARCH" \
-        -o "$CACHE_BIN/$BINARY_NAME"
+        curl -sSL "https://github.com/bufbuild/buf/releases/download/v$BUFVERSION/$BINARY_NAME-$UNAME_OS-$UNAME_ARCH" -o "$CACHE_BIN/$BINARY_NAME"
 
         chmod +x "$CACHE_BIN/$BINARY_NAME"
 
