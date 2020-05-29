@@ -3,9 +3,8 @@ package org.oppia.app.home.recentlyplayed
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
+import org.oppia.app.testing.RecentlyPlayedFragmentActivityTest.Companion.TAG_RECENTLY_PLAYED_FRAGMENT
 import javax.inject.Inject
-
-const val TAG_RECENTLY_PLAYED_FRAGMENT = "TAG_RECENTLY_PLAYED_FRAGMENT"
 
 /** The presenter for [RecentlyPlayedActivity]. */
 @ActivityScope

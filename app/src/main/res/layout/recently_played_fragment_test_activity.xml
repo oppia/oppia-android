@@ -4,4 +4,4 @@
   android:id="@+id/recently_played_fragment_placeholder"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context=".testing.RecentlyPlayedFragmentTestActivity" />
+  tools:context=".testing.RecentlyPlayedFragmentActivityTest" />

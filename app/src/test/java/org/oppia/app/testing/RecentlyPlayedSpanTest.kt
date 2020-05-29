@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -46,7 +47,6 @@ import org.mockito.AdditionalMatchers.not
 import org.oppia.app.R
 import org.oppia.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.app.home.recentlyplayed.RecentlyPlayedFragment
-import org.oppia.app.home.recentlyplayed.TAG_RECENTLY_PLAYED_FRAGMENT
 import org.oppia.app.model.ProfileId
 import org.oppia.app.recyclerview.RecyclerViewMatcher
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -67,6 +67,8 @@ import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
+
+private const val TAG_RECENTLY_PLAYED_FRAGMENT_RECYCLER_VIEW = "recently_played_recycler_view"
 
 @RunWith(AndroidJUnit4::class)
 class RecentlyPlayedSpanTest {
@@ -119,7 +121,7 @@ class RecentlyPlayedSpanTest {
   @LooperMode(LooperMode.Mode.PAUSED)
   @Test
   fun testA() {
-    launch(RecentlyPlayedActivity::class.java).use { scenario ->
+    launch(RecentlyPlayedFragmentActivityTest::class.java).use { scenario ->
       scenario.onActivity { activity ->
         Truth.assertThat(getOngoingStoryRecyclerViewGridLayoutManager(activity).spanCount)
           .isEqualTo(2)
@@ -152,13 +154,13 @@ class RecentlyPlayedSpanTest {
     }
   }
 
-  private fun getOngoingStoryRecyclerViewGridLayoutManager(activity: RecentlyPlayedActivity): GridLayoutManager {
+  private fun getOngoingStoryRecyclerViewGridLayoutManager(activity: RecentlyPlayedFragmentActivityTest): GridLayoutManager {
     return getOngoingStoryRecyclerView(activity).layoutManager as GridLayoutManager
   }
 
-  private fun getOngoingStoryRecyclerView(activity: RecentlyPlayedActivity): RecyclerView {
+  private fun getOngoingStoryRecyclerView(activity: RecentlyPlayedFragmentActivityTest): RecyclerView {
     return getRecentlyPlayedFragment(activity).view?.findViewWithTag<View>(
-      TAG_RECENTLY_PLAYED_FRAGMENT
+      TAG_RECENTLY_PLAYED_FRAGMENT_RECYCLER_VIEW
     )!! as RecyclerView
   }
 
@@ -271,8 +273,8 @@ class RecentlyPlayedSpanTest {
     fun inject(recentlyPlayedSpanTest: RecentlyPlayedSpanTest)
   }
 
-  private fun getRecentlyPlayedFragment(activity: RecentlyPlayedActivity): RecentlyPlayedFragment {
-    return activity.supportFragmentManager.findFragmentByTag(TAG_RECENTLY_PLAYED_FRAGMENT) as RecentlyPlayedFragment
+  private fun getRecentlyPlayedFragment(activity: RecentlyPlayedFragmentActivityTest): RecentlyPlayedFragment {
+    return activity.supportFragmentManager.findFragmentByTag(RecentlyPlayedFragmentActivityTest.TAG_RECENTLY_PLAYED_FRAGMENT) as RecentlyPlayedFragment
   }
 
   // TODO(#59): Move this to a general-purpose testing library that replaces all CoroutineExecutors with an
