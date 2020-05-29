@@ -61,7 +61,7 @@ anchor_for_install_buf: &install_buf
 
         curl -sSL https://github.com/bufbuild/buf/releases/download/v$BUFVERSION/buf-Linux-x86_64
 
-        chmod a+x buf
+        chmod a+x buf-Linux-x86_64
 
 version: 2
 jobs:
