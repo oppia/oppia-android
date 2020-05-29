@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package model;
 
-import "subtitled_html.proto";
-import "interaction_object.proto";
-import "translation.proto";
-import "voiceover.proto";
+import "src/main/proto/subtitled_html.proto";
+import "src/main/proto/interaction_object.proto";
+import "src/main/proto/translation.proto";
+import "src/main/proto/voiceover.proto";
 
 option java_package = "org.oppia.app.model";
 option java_multiple_files = true;

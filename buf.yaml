@@ -1,0 +1,27 @@
+# buf.yaml files should always be in the root of your repository.
+build:
+  roots:
+    # roots is the directories that all .proto files are contained within, and
+    # all imports must derive from.
+    # Only .proto files within these directory will be compiled.
+    - model
+  # excludes is the list of directories within root to exclude.
+  excludes:
+    - model/build
+
+# lint contains the options for lint checks.
+lint:
+  # use is the list of checker categories and ids to use for buf check lint.
+  use:
+    # The BASIC category includes everything from the MINIMAL category, as well as the STYLE_BASIC category.
+    # The MINIMAL category represents what we consider to be fundamental rules for modern Protobuf development,
+    # regardless of style
+    - BASIC
+    # checks that filenames are lower_snake_case.
+    - FILE_LOWER_SNAKE_CASE
+  # This removes ids or categories from the use list.
+  except:
+    # checks that enums do not have the allow_alias option set.
+    - ENUM_NO_ALLOW_ALIAS
+    # checks that all files with are in a directory that matches their package name.
+    - PACKAGE_DIRECTORY_MATCH
