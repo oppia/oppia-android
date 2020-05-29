@@ -59,17 +59,9 @@ anchor_for_install_buf: &install_buf
 
         echo Using Bufbuild version $BUFVERSION
 
-        PROJECT="oppia-android"
-        UNAME_OS=$(uname -s)
-        UNAME_ARCH=$(uname -m)
-        CACHE_BASE=$HOME/.cache/$PROJECT
-        CACHE=$CACHE_BASE/$UNAME_OS/$UNAME_ARCH
-        CACHE_BIN=$CACHE/bin
-        BINARY_NAME="buf"
+        curl -sSL https://github.com/bufbuild/buf/releases/download/v$BUFVERSION/buf-Linux-x86_64
 
-        curl -sSL "https://github.com/bufbuild/buf/releases/download/v$BUFVERSION/$BINARY_NAME-$UNAME_OS-$UNAME_ARCH" -o "$CACHE_BIN/$BINARY_NAME"
-
-        chmod +x "$CACHE_BIN/$BINARY_NAME"
+        chmod a+x buf
 
 version: 2
 jobs:
