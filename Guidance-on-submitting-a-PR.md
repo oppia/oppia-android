@@ -30,6 +30,8 @@ Note: This checklist should be embedded in your every PR explanation with approp
 
 ## Tips for getting your PR merged after submission
 1. Keep track of **Assignees** section and reply to comments in the PR itself.
-2. PRs should not be merged if there are any requested changes.
-3. Make sure to resolve all conversations with appropriate comments and replies. **No** conversation should be resolved without having a proper end to the conversation.
-4. Once everything is ready for merge, add a top-level comment confirming the merge decision, and merge the PR. If any issues need to be filed subsequently, file them and refer to them here too.
+2. PRs should not be merged if there are any requested changes, or if there are any unresolved conversation threads.
+3. Do not resolve a conversation if you didn't open it, unless the author explicitly says that you can. You should re-assign the PR to the author once you address all of the comments so that they can verify & mark the conversations as resolved.
+4. Make sure that the assignee list always reflects the contributors who have actionable items left on the PR (either to make requested changes, merge the PR, review it, or resolve open comment threads). Note that it's perfectly fine if sometimes both the author and reviewer of a PR are both assigned to it (one reviewer may have finished a review pass and requested changes--in this situation both another reviewer and author might have actionable work items to complete).
+5. Address all comments before sending a PR back to a reviewer. 'Address' can mean implementing a code change, asking a clarifying question, or providing an explanation why you don't think a suggestion should implemented. Make sure each comment thread has at a reply from you before sending the PR back to that reviewer.
+6. Once the PR is ready to merge, add a top-level comment confirming the merge decision, and merge the PR. If any issues need to be filed subsequently, file them and refer to them in the PR via a comment.
