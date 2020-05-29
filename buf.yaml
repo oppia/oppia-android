@@ -16,6 +16,7 @@ lint:
     # The BASIC category includes everything from the MINIMAL category, as well as the STYLE_BASIC category.
     # The MINIMAL category represents what we consider to be fundamental rules for modern Protobuf development,
     # regardless of style
+    # The DEFAULT category includes everything from the BASIC category, as well as the STYLE_DEFAULT category
     - BASIC
     # checks that filenames are lower_snake_case.
     - FILE_LOWER_SNAKE_CASE
