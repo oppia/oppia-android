@@ -11,6 +11,8 @@ workflows:
 
 var_for_docker_image: &docker_image circleci/android:api-28
 
+var_for_docker_buf_image: &docker_buf_image bufbuild/buf
+
 anchor_for_job_defaults: &job_defaults
   working_directory: ~/repo
   environment:
@@ -19,6 +21,7 @@ anchor_for_job_defaults: &job_defaults
       TERM: dumb
   docker:
     - image: *docker_image
+    - image: *docker_buf_image
 
 anchor_for_android_dependencies: &install_android_dependencies
   name: Install Android dependencies
@@ -45,22 +48,6 @@ anchor_for_install_ktlint: &install_ktlint
 anchor_for_restore_cache: &restore_cache
   key: jars-{{ checksum "build.gradle" }}
 
-anchor_for_install_buf: &install_buf
-  name: Download latest buf
-  command: >
-        get_latest_release() {
-             curl --silent "https://api.github.com/repos/$1/releases" |
-             grep '"tag_name":' |
-             sed -E 's/.*"([^"]+)".*/\1/'
-        }
-
-        BUFBUILD=$(get_latest_release bufbuild/buf)
-        BUFVERSION=${BUFBUILD%%[[:space:]]*}
-
-        echo Using Bufbuild version $BUFVERSION
-
-        curl -sSL https://github.com/bufbuild/buf/releases/download/v$BUFVERSION/buf-Linux-x86_64
-
 version: 2
 jobs:
   linters:
@@ -71,8 +58,7 @@ jobs:
           <<: *restore_cache
       - run:
           <<: *install_ktlint
-      - run:
-          <<: *install_buf
+      - setup_remote_docker
       - save_cache:
           paths:
             - ~/.gradle
@@ -82,7 +68,7 @@ jobs:
           command: ./ktlint utility/**/*.kt data/**/*.kt && echo "Lint completed successfully"
       - run:
           name: Buf check - proto files
-          command: buf check lint
+          command: docker run --volume "$(pwd):/workspace" --workdir /workspace bufbuild/buf check lint
       - store_artifacts:
           path: app/build/reports
           destination: reports
