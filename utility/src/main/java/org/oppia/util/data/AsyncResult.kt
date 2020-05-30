@@ -1,8 +1,11 @@
 package org.oppia.util.data
 
+import android.os.SystemClock
+
 /** Represents the result from a single asynchronous function. */
 class AsyncResult<T> private constructor(
   private val status: Status,
+  private val resultTimeMillis: Long,
   private val value: T? = null,
   private val error: Throwable? = null
 ) {
@@ -34,6 +37,11 @@ class AsyncResult<T> private constructor(
   /** Returns whether this result has completed (successfully or unsuccessfully). */
   fun isCompleted(): Boolean {
     return isSuccess() || isFailure()
+  }
+
+  /** Returns whether this result is newer than, or the same age as, the specified result of the same type. */
+  fun <O> isNewerThanOrSameAgeAs(otherResult: AsyncResult<O>): Boolean {
+    return resultTimeMillis >= otherResult.resultTimeMillis
   }
 
   /** Returns the value of the result if it succeeded, otherwise the specified default value. */
@@ -163,17 +171,17 @@ class AsyncResult<T> private constructor(
   companion object {
     /** Returns a pending result. */
     fun <T> pending(): AsyncResult<T> {
-      return AsyncResult(status = Status.PENDING)
+      return AsyncResult(status = Status.PENDING, resultTimeMillis = SystemClock.uptimeMillis())
     }
 
     /** Returns a successful result with the specified payload. */
     fun <T> success(value: T): AsyncResult<T> {
-      return AsyncResult(status = Status.SUCCEEDED, value = value)
+      return AsyncResult(status = Status.SUCCEEDED, resultTimeMillis = SystemClock.uptimeMillis(), value = value)
     }
 
     /** Returns a failed result with the specified error. */
     fun <T> failed(error: Throwable): AsyncResult<T> {
-      return AsyncResult(status = Status.FAILED, error = error)
+      return AsyncResult(status = Status.FAILED, resultTimeMillis = SystemClock.uptimeMillis(), error = error)
     }
   }
 

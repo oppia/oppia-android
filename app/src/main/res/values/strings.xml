@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="app_name">Oppia</string>
-  <string name="nav_header_title">Sean</string>
   <string name="nav_header_desc">Navigation header</string>
   <string name="menu_home">Home</string>
   <string name="menu_options">Options</string>
@@ -234,9 +233,9 @@
   <string name="home_activity_back_dialog_message">Would you like to exit your profile?</string>
   <string name="home_activity_back_dialog_cancel">Cancel</string>
   <string name="home_activity_back_dialog_exit">Exit</string>
-  <!-- ProfileListActivity. -->
+  <!-- ProfileListActivity -->
   <string name="profile_list_activity_title">Profiles</string>
-  <!-- ProfileEditActivity. -->
+  <!-- ProfileEditActivity -->
   <string name="profile_edit_created">Created on %s</string>
   <string name="profile_last_used">Last used </string>
   <string name="profile_edit_rename">Rename</string>
@@ -253,11 +252,11 @@
   <string name="profile_picture_edit_alert_dialog_cancel_button">Cancel</string>
   <string name="profile_picture_edit_alert_dialog_view_profile_picture">View Profile Picture</string>
   <string name="profile_picture_edit_alert_dialog_choose_from_library">Choose From Library</string>
-  <!-- ProfileRenameActivity. -->
+  <!-- ProfileRenameActivity -->
   <string name="profile_rename_title">Rename Profile</string>
   <string name="profile_rename_label">New Name</string>
   <string name="profile_rename_save">save</string>
-  <!-- ProfileResetPinActivity. -->
+  <!-- ProfileResetPinActivity -->
   <string name="profile_reset_pin_title">Reset PIN</string>
   <string name="profile_reset_pin_main">Enter a new PIN for the user to enter when accessing their profile.</string>
   <string name="profile_reset_pin_user_pin_label">3-Digit PIN</string>

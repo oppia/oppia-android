@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import org.oppia.app.home.HomeActivity
 import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.story.StoryActivity
@@ -48,14 +49,24 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
     startActivity(RevisionCardActivity.createRevisionCardActivityIntent(this, topicId, subtopicId))
   }
 
-  override fun routeToExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String) {
+  override fun routeToExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowScreen: Int?) {
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
         this,
         internalProfileId,
         topicId,
         storyId,
-        explorationId
+        explorationId,
+        backflowScreen
+      )
+    )
+  }
+
+  override fun onBackPressed() {
+    startActivity(
+      HomeActivity.createHomeActivity(
+        this,
+        internalProfileId
       )
     )
   }
