@@ -7,9 +7,10 @@ import android.view.WindowManager
 import org.oppia.app.model.StoryTextSize
 
 object FontScaleConfigurationUtil {
-  fun adjustFontSize(
+
+  fun adjustFontScale(
     context: Context,
-    result: StoryTextSize
+    result: String
   ) {
     val configuration = context.resources.configuration
     configuration.fontScale = getStoryTextSize(result)
@@ -22,12 +23,13 @@ object FontScaleConfigurationUtil {
     context.resources.displayMetrics.setTo(metrics)
   }
 
-  fun getStoryTextSize(storyTextSize: StoryTextSize): Float {
+  fun getStoryTextSize(storyTextSize: String): Float {
     return when (storyTextSize) {
-      StoryTextSize.SMALL_TEXT_SIZE -> .8f
-      StoryTextSize.MEDIUM_TEXT_SIZE -> 1.0f
-      StoryTextSize.LARGE_TEXT_SIZE -> 1.4f
+      StoryTextSize.SMALL_TEXT_SIZE.name -> .8f
+      StoryTextSize.MEDIUM_TEXT_SIZE.name -> 1.0f
+      StoryTextSize.LARGE_TEXT_SIZE.name -> 1.4f
       else -> 1.6f
     }
   }
+
 }

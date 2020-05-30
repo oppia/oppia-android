@@ -12,9 +12,13 @@ import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.databinding.ExplorationActivityBinding
 import org.oppia.app.model.Exploration
+import org.oppia.app.model.Profile
+import org.oppia.app.model.ProfileId
+import org.oppia.app.model.StoryTextSize
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationDataController
+import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
@@ -27,23 +31,37 @@ class ExplorationActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val explorationDataController: ExplorationDataController,
   private val viewModelProvider: ViewModelProvider<ExplorationViewModel>,
+  private val profileManagementController: ProfileManagementController,
   private val logger: Logger
 ) {
   private lateinit var explorationToolbar: Toolbar
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
+  private lateinit var storyId: String
+  private lateinit var explorationId: String
+  private lateinit var profileId: ProfileId
+  private lateinit var storyTextSize: StoryTextSize
 
   private val exploreViewModel by lazy {
     getExplorationViewModel()
   }
 
-  fun handleOnCreate(internalProfileId: Int, topicId: String, storyId: String, explorationId: String) {
-    val binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(activity, R.layout.exploration_activity)
+  fun handleOnCreate(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String
+  ) {
+    val binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(
+      activity,
+      R.layout.exploration_activity
+    )
     binding.apply {
       viewModel = exploreViewModel
       lifecycleOwner = activity
     }
-
+    this.explorationId = explorationId
+    this.storyId = storyId
     explorationToolbar = binding.explorationToolbar
     activity.setSupportActionBar(explorationToolbar)
 
@@ -54,21 +72,51 @@ class ExplorationActivityPresenter @Inject constructor(
     updateToolbarTitle(explorationId)
     this.internalProfileId = internalProfileId
     this.topicId = topicId
+    this.profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+  }
 
-    if (getExplorationFragment() == null) {
-      val explorationFragment = ExplorationFragment()
-      val args = Bundle()
-      args.putInt(ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-      args.putString(ExplorationActivity.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
-      args.putString(ExplorationActivity.EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
-      args.putString(ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
-      explorationFragment.arguments = args
-      activity.supportFragmentManager.beginTransaction().add(
-        R.id.exploration_fragment_placeholder,
-        explorationFragment,
-        TAG_EXPLORATION_FRAGMENT
-      ).commitNow()
+  private fun getProfileData(profileId: ProfileId): LiveData<StoryTextSize> {
+    return Transformations.map(
+      profileManagementController.getProfile(profileId),
+      ::processGetProfileResult
+    )
+  }
+
+  fun subscribeToAudioLanguageLiveData(profileId: ProfileId) {
+    getProfileData(profileId).observe(activity, Observer<StoryTextSize> { result ->
+      if (getExplorationFragment() == null) {
+        val explorationFragment = ExplorationFragment()
+        val args = Bundle()
+        args.putInt(
+          ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY,
+          internalProfileId
+        )
+        args.putString(ExplorationActivity.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
+        args.putString(ExplorationActivity.EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
+        args.putString(ExplorationActivity.EXPLORATION_ACTIVITY_STORY_TEXT_SIZE, result.name)
+        args.putString(
+          ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY,
+          explorationId
+        )
+        explorationFragment.arguments = args
+        activity.supportFragmentManager.beginTransaction().add(
+          R.id.exploration_fragment_placeholder,
+          explorationFragment,
+          TAG_EXPLORATION_FRAGMENT
+        ).commitNow()
+      }
+    })
+  }
+
+  private fun processGetProfileResult(profileResult: AsyncResult<Profile>): StoryTextSize {
+    if (profileResult.isFailure()) {
+      logger.e(
+        "ExplorationActivity",
+        "Failed to retrieve profile",
+        profileResult.getErrorOrNull()!!
+      )
     }
+    return profileResult.getOrDefault(Profile.getDefaultInstance()).storyTextSize
   }
 
   fun showAudioButton() = exploreViewModel.showAudioButton.set(true)
@@ -79,7 +127,8 @@ class ExplorationActivityPresenter @Inject constructor(
 
   fun showAudioStreamingOff() = exploreViewModel.isAudioStreamingOn.set(false)
 
-  fun setAudioBarVisibility(isVisible: Boolean) = getExplorationFragment()?.setAudioBarVisibility(isVisible)
+  fun setAudioBarVisibility(isVisible: Boolean) =
+    getExplorationFragment()?.setAudioBarVisibility(isVisible)
 
   fun scrollToTop() = getExplorationFragment()?.scrollToTop()
 
@@ -90,17 +139,28 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   fun stopExploration() {
-    explorationDataController.stopPlayingExploration().observe(activity, Observer<AsyncResult<Any?>> {
-      when {
-        it.isPending() -> logger.d("ExplorationActivity", "Stopping exploration")
-        it.isFailure() -> logger.e("ExplorationActivity", "Failed to stop exploration", it.getErrorOrNull()!!)
-        else -> {
-          logger.d("ExplorationActivity", "Successfully stopped exploration")
-          activity.startActivity(TopicActivity.createTopicActivityIntent(activity, internalProfileId, topicId))
-          (activity as ExplorationActivity).finish()
+    explorationDataController.stopPlayingExploration()
+      .observe(activity, Observer<AsyncResult<Any?>> {
+        when {
+          it.isPending() -> logger.d("ExplorationActivity", "Stopping exploration")
+          it.isFailure() -> logger.e(
+            "ExplorationActivity",
+            "Failed to stop exploration",
+            it.getErrorOrNull()!!
+          )
+          else -> {
+            logger.d("ExplorationActivity", "Successfully stopped exploration")
+            activity.startActivity(
+              TopicActivity.createTopicActivityIntent(
+                activity,
+                internalProfileId,
+                topicId
+              )
+            )
+            (activity as ExplorationActivity).finish()
+          }
         }
-      }
-    })
+      })
   }
 
   private fun updateToolbarTitle(explorationId: String) {
@@ -126,7 +186,11 @@ class ExplorationActivityPresenter @Inject constructor(
   /** Helper for subscribeToExploration. */
   private fun processExploration(ephemeralStateResult: AsyncResult<Exploration>): Exploration {
     if (ephemeralStateResult.isFailure()) {
-      logger.e("StateFragment", "Failed to retrieve answer outcome", ephemeralStateResult.getErrorOrNull()!!)
+      logger.e(
+        "StateFragment",
+        "Failed to retrieve answer outcome",
+        ephemeralStateResult.getErrorOrNull()!!
+      )
     }
     return ephemeralStateResult.getOrDefault(Exploration.getDefaultInstance())
   }

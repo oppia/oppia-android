@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.Menu
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.app.model.ProfileId
+import org.oppia.app.model.StoryTextSize
 import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionFragment
 import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionListener
@@ -15,6 +17,7 @@ import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.app.player.stopexploration.StopExplorationDialogFragment
 import org.oppia.app.player.stopexploration.StopExplorationInterface
+import org.oppia.app.utility.FontScaleConfigurationUtil
 import javax.inject.Inject
 
 private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
@@ -30,11 +33,14 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var explorationId: String
+  private lateinit var profileId: ProfileId
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     internalProfileId = intent.getIntExtra(EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, -1)
+    this.profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    explorationActivityPresenter.subscribeToAudioLanguageLiveData(this.profileId)
     topicId = intent.getStringExtra(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
     storyId = intent.getStringExtra(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY)
     explorationId = intent.getStringExtra(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY)
@@ -47,6 +53,7 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
     internal const val EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY = "ExplorationActivity.profile_id"
     internal const val EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "ExplorationActivity.topic_id"
     internal const val EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY = "ExplorationActivity.story_id"
+    internal const val EXPLORATION_ACTIVITY_STORY_TEXT_SIZE = "ExplorationActivity.size"
     internal const val EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY = "ExplorationActivity.exploration_id"
     fun createExplorationActivityIntent(
       context: Context,
@@ -66,6 +73,11 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
 
   override fun onBackPressed() {
     showStopExplorationDialogFragment()
+  }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    FontScaleConfigurationUtil.adjustFontScale(this, StoryTextSize.MEDIUM_TEXT_SIZE.name)
   }
 
   private fun showStopExplorationDialogFragment() {

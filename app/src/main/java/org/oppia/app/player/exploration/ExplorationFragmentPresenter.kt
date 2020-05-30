@@ -24,12 +24,8 @@ import javax.inject.Inject
 /** The presenter for [ExplorationFragment]. */
 @FragmentScope
 class ExplorationFragmentPresenter @Inject constructor(
-  private val fragment: Fragment,
-  private val profileManagementController: ProfileManagementController,
-  private val logger: Logger,
-  private val activity: AppCompatActivity
-  ) {
-  private lateinit var profileId: ProfileId
+  private val fragment: Fragment
+) {
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -38,10 +34,10 @@ class ExplorationFragmentPresenter @Inject constructor(
     storyId: String,
     explorationId: String
   ): View? {
-    this.profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    subscribeToAudioLanguageLiveData()
-    val binding = ExplorationFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false).root
-    val stateFragment = StateFragment.newInstance(internalProfileId, topicId, storyId, explorationId)
+    val binding =
+      ExplorationFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false).root
+    val stateFragment =
+      StateFragment.newInstance(internalProfileId, topicId, storyId, explorationId)
     if (getStateFragment() == null) {
       fragment.childFragmentManager.beginTransaction().add(
         R.id.state_fragment_placeholder,
@@ -50,29 +46,13 @@ class ExplorationFragmentPresenter @Inject constructor(
     }
     return binding
   }
-  private fun getProfileData(): LiveData<StoryTextSize> {
-    return Transformations.map(
-      profileManagementController.getProfile(profileId),
-      ::processGetProfileResult
-    )
-  }
 
-  private fun subscribeToAudioLanguageLiveData() {
-    getProfileData().observe(activity, Observer<StoryTextSize> { result ->
-      FontScaleConfigurationUtil.adjustFontSize(activity,result)
-    })
-  }
-  private fun processGetProfileResult(profileResult: AsyncResult<Profile>): StoryTextSize {
-    if (profileResult.isFailure()) {
-      logger.e("ExplorationFragment", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
-    }
-    return profileResult.getOrDefault(Profile.getDefaultInstance()).storyTextSize
-  }
   fun handlePlayAudio() {
     getStateFragment()?.handlePlayAudio()
   }
 
-  fun setAudioBarVisibility(isVisible: Boolean) = getStateFragment()?.setAudioBarVisibility(isVisible)
+  fun setAudioBarVisibility(isVisible: Boolean) =
+    getStateFragment()?.setAudioBarVisibility(isVisible)
 
   fun scrollToTop() = getStateFragment()?.scrollToTop()
 
@@ -84,11 +64,11 @@ class ExplorationFragmentPresenter @Inject constructor(
     getStateFragment()?.handleKeyboardAction()
   }
 
-  fun revealHint(saveUserChoice: Boolean, hintIndex: Int){
+  fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
     getStateFragment()?.revealHint(saveUserChoice, hintIndex)
   }
 
-  fun revealSolution(saveUserChoice: Boolean){
+  fun revealSolution(saveUserChoice: Boolean) {
     getStateFragment()?.revealSolution(saveUserChoice)
   }
 }
