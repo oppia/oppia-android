@@ -6,6 +6,8 @@ import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.google.firebase.FirebaseApp
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -22,9 +24,14 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers
 import org.mockito.Captor
 import org.mockito.Mock
+import org.mockito.Mockito
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.any
 import org.mockito.Mockito.atLeastOnce
+import org.mockito.Mockito.doNothing
 import org.mockito.Mockito.reset
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyZeroInteractions
@@ -32,6 +39,7 @@ import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
+import org.oppia.util.crashlytics.CrashlyticsWrapper
 import org.oppia.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -70,11 +78,27 @@ class DataProvidersTest {
   @Inject @field:BackgroundDispatcher
   lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
 
+  @Inject
+  @Mock
+  lateinit var mockCrashlyticsWrapper: CrashlyticsWrapper
+
   @Mock
   lateinit var mockStringLiveDataObserver: Observer<AsyncResult<String>>
 
   @Mock
   lateinit var mockIntLiveDataObserver: Observer<AsyncResult<Int>>
+
+  @Mock
+  lateinit var exception: IllegalStateException
+
+  @Mock
+  lateinit var firebaseCrashlytics: FirebaseCrashlytics
+
+  @Mock
+  lateinit var firebaseApp: FirebaseApp
+
+  @Captor
+  lateinit var exceptionCaptor: ArgumentCaptor<Exception>
 
   @Captor
   lateinit var stringResultCaptor: ArgumentCaptor<AsyncResult<String>>
@@ -92,6 +116,9 @@ class DataProvidersTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    /*setUpFirebase()
+    FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
+    CrashlyticsWrapper.firebaseCrashlytics = FirebaseCrashlytics.getInstance()*/
   }
 
   // Note: custom data providers aren't explicitly tested since their interaction with the infrastructure is tested
@@ -407,13 +434,17 @@ class DataProvidersTest {
   @ExperimentalCoroutinesApi
   fun testInMemoryDataProvider_toLiveData_throwsException_deliversFailure() {
     val dataProvider = createThrowingDataProvider<String>(BASE_PROVIDER_ID_0, IllegalStateException("Failed"))
-
     dataProviders.convertToLiveData(dataProvider).observeForever(mockStringLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
+
+    //doNothing().`when`(mockCrashlyticsWrapper.logException(exception))
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
     assertThat(stringResultCaptor.value.isFailure()).isTrue()
     assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(IllegalStateException::class.java)
+    verify(mockCrashlyticsWrapper).logException(exceptionCaptor.capture())
+    assertThat(exceptionCaptor.value).isInstanceOf(IllegalStateException::class.java)
+
   }
 
   @Test
@@ -2917,6 +2948,9 @@ class DataProvidersTest {
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
+/*
+    FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
+*/
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -2929,9 +2963,24 @@ class DataProvidersTest {
     }
   }
 
+  @Module
+  class TestCrashlyticsModule {
+    @Provides
+    @Singleton
+    fun provideFirebaseCrashlytics(): FirebaseCrashlytics{
+      return Mockito.mock(FirebaseCrashlytics::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCrashlyticsWrapper(): CrashlyticsWrapper{
+      return Mockito.mock(CrashlyticsWrapper::class.java)
+    }
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestDispatcherModule::class, TestModule::class])
+  @Component(modules = [TestDispatcherModule::class, TestModule::class, TestCrashlyticsModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

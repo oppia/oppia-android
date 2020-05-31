@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.gms.google-services'
 
 android {
   compileSdkVersion 28
@@ -50,6 +51,9 @@ dependencies {
       'com.caverock:androidsvg-aar:1.4',
       'com.github.bumptech.glide:glide:4.9.0',
       'com.google.dagger:dagger:2.24',
+      'com.google.firebase:firebase-analytics-ktx:17.4.2',
+      'com.google.firebase:firebase-crashlytics:17.0.0',
+      'com.google.firebase:firebase-core:17.4.2',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
   )
   testImplementation(

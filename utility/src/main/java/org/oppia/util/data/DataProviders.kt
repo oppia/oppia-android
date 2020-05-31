@@ -1,6 +1,10 @@
 package org.oppia.util.data
 
+import android.app.Application
+import android.content.pm.ApplicationInfo
 import androidx.lifecycle.LiveData
+import com.google.firebase.FirebaseApp
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
@@ -9,6 +13,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import org.oppia.util.crashlytics.CrashlyticsWrapper
 import org.oppia.util.threading.BackgroundDispatcher
 
 /**
@@ -20,7 +25,8 @@ import org.oppia.util.threading.BackgroundDispatcher
 @Singleton
 class DataProviders @Inject constructor(
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
-  private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager
+  private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
+  private val crashlyticsWrapper: CrashlyticsWrapper
 ) {
   /**
    * Returns a new [DataProvider] that applies the specified function each time new data is available to it, and
@@ -41,9 +47,17 @@ class DataProviders @Inject constructor(
       }
 
       override suspend fun retrieveData(): AsyncResult<T2> {
+        //crashlyticsWrapper.logMessage("Sarthak")
+        try{
+          throw Exception("Sarthak")
+        }
+        catch(exception: Exception){
+          crashlyticsWrapper.logException(exception)
+        }
         return try {
           dataProvider.retrieveData().transform(function)
         } catch (t: Throwable) {
+          crashlyticsWrapper.logException(Exception(t))
           AsyncResult.failed(t)
         }
       }
@@ -114,6 +128,7 @@ class DataProviders @Inject constructor(
         return try {
           dataProvider1.retrieveData().combineWith(dataProvider2.retrieveData(), function)
         } catch (t: Throwable) {
+          crashlyticsWrapper.logException(Exception(t))
           AsyncResult.failed(t)
         }
       }
@@ -162,8 +177,9 @@ class DataProviders @Inject constructor(
       override suspend fun retrieveData(): AsyncResult<T> {
         return try {
           AsyncResult.success(loadFromMemory())
-        } catch (t: Throwable) {
-          AsyncResult.failed(t)
+        } catch (e: Exception) {
+          crashlyticsWrapper.logException(e)
+          AsyncResult.failed(e)
         }
       }
     }
