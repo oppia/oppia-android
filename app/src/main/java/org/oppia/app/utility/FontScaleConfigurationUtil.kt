@@ -5,25 +5,25 @@ import android.content.Context.WINDOW_SERVICE
 import android.util.DisplayMetrics
 import android.view.WindowManager
 import org.oppia.app.model.StoryTextSize
+import org.oppia.util.threading.BackgroundDispatcher
+import javax.inject.Inject
 
-object FontScaleConfigurationUtil {
-
-  fun adjustFontScale(
-    context: Context,
-    result: String
-  ) {
+class FontScaleConfigurationUtil @Inject constructor(
+  private val context: Context, private val result: String
+) {
+  fun adjustFontScale() {
     val configuration = context.resources.configuration
     configuration.fontScale = getStoryTextSize(result)
     val metrics: DisplayMetrics = context.getResources().getDisplayMetrics()
-    val wm =
+    val windowManager =
       context.getSystemService(WINDOW_SERVICE) as WindowManager?
-    wm!!.defaultDisplay.getMetrics(metrics)
+    windowManager!!.defaultDisplay.getMetrics(metrics)
     metrics.scaledDensity = configuration.fontScale * metrics.density
     context.createConfigurationContext(configuration)
     context.resources.displayMetrics.setTo(metrics)
   }
 
-  fun getStoryTextSize(storyTextSize: String): Float {
+  private fun getStoryTextSize(storyTextSize: String): Float {
     return when (storyTextSize) {
       StoryTextSize.SMALL_TEXT_SIZE.name -> .8f
       StoryTextSize.MEDIUM_TEXT_SIZE.name -> 1.0f
@@ -31,5 +31,4 @@ object FontScaleConfigurationUtil {
       else -> 1.6f
     }
   }
-
 }

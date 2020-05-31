@@ -16,6 +16,7 @@ import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.StoryTextSize
 import org.oppia.app.topic.TopicActivity
+import org.oppia.app.utility.FontScaleConfigurationUtil
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.profile.ProfileManagementController
@@ -139,6 +140,7 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   fun stopExploration() {
+    FontScaleConfigurationUtil(activity, StoryTextSize.MEDIUM_TEXT_SIZE.name).adjustFontScale()
     explorationDataController.stopPlayingExploration()
       .observe(activity, Observer<AsyncResult<Any?>> {
         when {

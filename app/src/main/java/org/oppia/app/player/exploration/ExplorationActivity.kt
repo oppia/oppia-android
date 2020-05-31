@@ -75,11 +75,6 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
     showStopExplorationDialogFragment()
   }
 
-  override fun onDestroy() {
-    super.onDestroy()
-    FontScaleConfigurationUtil.adjustFontScale(this, StoryTextSize.MEDIUM_TEXT_SIZE.name)
-  }
-
   private fun showStopExplorationDialogFragment() {
     val previousFragment = supportFragmentManager.findFragmentByTag(TAG_STOP_EXPLORATION_DIALOG)
     if (previousFragment != null) {

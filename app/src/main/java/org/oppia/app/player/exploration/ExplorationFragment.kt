@@ -17,7 +17,7 @@ class ExplorationFragment : InjectableFragment() {
     super.onAttach(context)
     val storyTextSize =
       arguments!!.getString(ExplorationActivity.EXPLORATION_ACTIVITY_STORY_TEXT_SIZE)
-    FontScaleConfigurationUtil.adjustFontScale(context, storyTextSize)
+    FontScaleConfigurationUtil(context, storyTextSize).adjustFontScale()
     fragmentComponent.inject(this)
   }
 
