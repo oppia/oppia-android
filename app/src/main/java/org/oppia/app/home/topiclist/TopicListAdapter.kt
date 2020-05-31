@@ -200,8 +200,13 @@ class TopicListAdapter(
       }
 
       if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+        val maxItemsInARow = if (activity.resources.getBoolean(R.bool.isTablet)) {
+          3
+        } else {
+          2
+        }
         when {
-          position % 2 == 0 -> marginLayoutParams.setMargins(
+          position % maxItemsInARow == 0 -> marginLayoutParams.setMargins(
             marginMin,
             marginTopBottom,
             marginMax,
@@ -215,20 +220,25 @@ class TopicListAdapter(
           )
         }
       } else {
+        val maxItemsInARow = if (activity.resources.getBoolean(R.bool.isTablet)) {
+          4
+        } else {
+          3
+        }
         when {
-          position % 3 == 0 -> marginLayoutParams.setMargins(
+          position % maxItemsInARow == 0 -> marginLayoutParams.setMargins(
             marginMax,
             marginTopBottom,
             /* right= */ 0,
             marginTopBottom
           )
-          position % 3 == 1 -> marginLayoutParams.setMargins(
+          position % maxItemsInARow == 1 -> marginLayoutParams.setMargins(
             marginMin,
             marginTopBottom,
             marginMin,
             marginTopBottom
           )
-          position % 3 == 2 -> marginLayoutParams.setMargins(
+          position % maxItemsInARow == 2 -> marginLayoutParams.setMargins(
             /* left= */ 0,
             marginTopBottom,
             marginMax,
