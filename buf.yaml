@@ -25,4 +25,4 @@ lint:
     # checks that enums do not have the allow_alias option set.
     - ENUM_NO_ALLOW_ALIAS
     # checks that all files with are in a directory that matches their package name.
-    #- PACKAGE_DIRECTORY_MATCH
+    - PACKAGE_DIRECTORY_MATCH
