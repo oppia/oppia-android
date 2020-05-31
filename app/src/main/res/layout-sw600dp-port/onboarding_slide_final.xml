@@ -20,8 +20,7 @@
       android:layout_height="0dp"
       android:contentDescription="@string/onboarding_slide_3_title"
       android:src="@drawable/ic_portrait_onboarding_3"
-      android:scaleType="fitXY"
-      app:layout_constraintDimensionRatio="H, 384:295"
+      app:layout_constraintDimensionRatio="5:4"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
