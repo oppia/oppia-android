@@ -442,7 +442,7 @@ class DataProvidersTest {
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
     assertThat(stringResultCaptor.value.isFailure()).isTrue()
     assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(IllegalStateException::class.java)
-    verify(mockCrashlyticsWrapper).logException(exceptionCaptor.capture())
+    verify(mockCrashlyticsWrapper, atLeastOnce()).logException(exceptionCaptor.capture())
     assertThat(exceptionCaptor.value).isInstanceOf(IllegalStateException::class.java)
 
   }
