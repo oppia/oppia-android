@@ -128,8 +128,6 @@
     <activity
       android:name=".testing.ProfileChooserFragmentTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity android:name=".testing.RecentlyPlayedFragmentActivityTest"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".testing.StoryFragmentTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />

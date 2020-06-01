@@ -56,7 +56,6 @@ android {
     }
     test {
       java.srcDirs += "src/sharedTest/java"
-      java.srcDirs += [file("$buildDir/generated/source/kapt/debugUnitTest")]
       kotlin.srcDirs += "src/sharedTest/java"
     }
   }

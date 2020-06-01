@@ -44,7 +44,6 @@ import org.oppia.app.testing.HomeTestActivity
 import org.oppia.app.testing.HtmlParserTestActivity
 import org.oppia.app.testing.NavigationDrawerTestActivity
 import org.oppia.app.testing.ProfileChooserFragmentTestActivity
-import org.oppia.app.testing.RecentlyPlayedFragmentActivityTest
 import org.oppia.app.testing.StoryFragmentTestActivity
 import org.oppia.app.testing.TopicTestActivity
 import org.oppia.app.testing.TopicTestActivityForStory
@@ -98,7 +97,6 @@ interface ActivityComponent {
   fun inject(profileActivity: ProfileActivity)
   fun inject(questionPlayerActivity: QuestionPlayerActivity)
   fun inject(profileChooserFragmentTestActivity: ProfileChooserFragmentTestActivity)
-  fun inject(recentlyPlayedFragmentActivityTest: RecentlyPlayedFragmentActivityTest)
   fun inject(profileEditActivity: ProfileEditActivity)
   fun inject(profileListActivity: ProfileListActivity)
   fun inject(profilePictureActivity: ProfilePictureActivity)
