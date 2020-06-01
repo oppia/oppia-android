@@ -1138,11 +1138,7 @@ class DataProvidersTest {
 
     // A base provider failure should result in the transform method not being called.
     assertThat(fakeTransformCallbackCalled).isFalse()
-
-    // HERE
     verify(TestCrashlyticsModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
-
-    // assertThat(exceptionCaptor.value).isInstanceOf(java.lang.IllegalStateException::class.java)
   }
 
   @Test
@@ -1613,7 +1609,6 @@ class DataProvidersTest {
     assertThat(stringResultCaptor.value.isFailure()).isTrue()
     assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(AsyncResult.ChainedFailureException::class.java)
     assertThat(stringResultCaptor.value.getErrorOrNull()).hasCauseThat().isInstanceOf(IllegalStateException::class.java)
-
     verify(TestCrashlyticsModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
@@ -1654,7 +1649,6 @@ class DataProvidersTest {
     assertThat(stringResultCaptor.value.isFailure()).isTrue()
     assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(AsyncResult.ChainedFailureException::class.java)
     assertThat(stringResultCaptor.value.getErrorOrNull()).hasCauseThat().isInstanceOf(IllegalStateException::class.java)
-
     verify(TestCrashlyticsModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
@@ -2199,7 +2193,6 @@ class DataProvidersTest {
     assertThat(stringResultCaptor.value.isFailure()).isTrue()
     assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(AsyncResult.ChainedFailureException::class.java)
     assertThat(stringResultCaptor.value.getErrorOrNull()).hasCauseThat().isInstanceOf(IllegalStateException::class.java)
-
     verify(TestCrashlyticsModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
