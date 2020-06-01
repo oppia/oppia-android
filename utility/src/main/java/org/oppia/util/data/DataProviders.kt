@@ -1,10 +1,6 @@
 package org.oppia.util.data
 
-import android.app.Application
-import android.content.pm.ApplicationInfo
 import androidx.lifecycle.LiveData
-import com.google.firebase.FirebaseApp
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
@@ -49,9 +45,9 @@ class DataProviders @Inject constructor(
       override suspend fun retrieveData(): AsyncResult<T2> {
         return try {
           dataProvider.retrieveData().transform(function)
-        } catch (t: Throwable) {
-          crashlyticsWrapper.logException(Exception(t))
-          AsyncResult.failed(t)
+        } catch (e: Exception) {
+          crashlyticsWrapper.logException(e)
+          AsyncResult.failed(e)
         }
       }
     }
@@ -120,9 +116,9 @@ class DataProviders @Inject constructor(
       override suspend fun retrieveData(): AsyncResult<O> {
         return try {
           dataProvider1.retrieveData().combineWith(dataProvider2.retrieveData(), function)
-        } catch (t: Throwable) {
-          crashlyticsWrapper.logException(Exception(t))
-          AsyncResult.failed(t)
+        } catch (e: Exception) {
+          crashlyticsWrapper.logException(e)
+          AsyncResult.failed(e)
         }
       }
     }
