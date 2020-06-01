@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
+import org.oppia.app.utility.FontScaleConfigurationUtil
 import javax.inject.Inject
 
 /** Fragment that contains displays single exploration. */
@@ -14,6 +15,9 @@ class ExplorationFragment : InjectableFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
+    val storyTextSize =
+      arguments!!.getString(ExplorationActivity.EXPLORATION_ACTIVITY_STORY_DEFAULT_FONT_SIZE_ARGUMENT_KEY)
+    FontScaleConfigurationUtil(context, storyTextSize).adjustFontScale()
     fragmentComponent.inject(this)
   }
 

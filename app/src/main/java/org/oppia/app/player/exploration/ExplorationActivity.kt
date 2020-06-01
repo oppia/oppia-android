@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.Menu
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.app.model.StoryTextSize
 import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionFragment
 import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionListener
@@ -21,9 +22,11 @@ private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
 const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
 
 /** The starting point for exploration. */
-class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterface, StateKeyboardButtonListener,
-  AudioButtonListener, HintsAndSolutionListener, RouteToHintsAndSolutionListener, RevealHintListener,
-  RevealSolutionInterface {
+class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterface,
+  StateKeyboardButtonListener,
+  AudioButtonListener, HintsAndSolutionListener, RouteToHintsAndSolutionListener,
+  RevealHintListener,
+  RevealSolutionInterface, DeafultFontSizeStateListener {
 
   @Inject lateinit var explorationActivityPresenter: ExplorationActivityPresenter
   private var internalProfileId: Int = -1
@@ -40,17 +43,29 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
     storyId = intent.getStringExtra(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY)
     explorationId = intent.getStringExtra(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY)
     backflowScreen = intent.getIntExtra(EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY, -1)
-    explorationActivityPresenter.handleOnCreate(this, internalProfileId, topicId, storyId, explorationId, backflowScreen)
+    explorationActivityPresenter.handleOnCreate(
+      this,
+      internalProfileId,
+      topicId,
+      storyId,
+      explorationId,
+      backflowScreen
+    )
   }
 
   companion object {
     /** Returns a new [Intent] to route to [ExplorationActivity] for a specified exploration. */
 
-    internal const val EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY = "ExplorationActivity.profile_id"
+    internal const val EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY =
+      "ExplorationActivity.profile_id"
     internal const val EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "ExplorationActivity.topic_id"
     internal const val EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY = "ExplorationActivity.story_id"
-    internal const val EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY = "ExplorationActivity.exploration_id"
-    internal const val EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY = "ExplorationActivity.backflow_screen"
+    internal const val EXPLORATION_ACTIVITY_STORY_DEFAULT_FONT_SIZE_ARGUMENT_KEY =
+      "ExplorationActivity.story_default_font_size"
+    internal const val EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY =
+      "ExplorationActivity.exploration_id"
+    internal const val EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY =
+      "ExplorationActivity.backflow_screen"
 
     fun createExplorationActivityIntent(
       context: Context,
@@ -130,12 +145,20 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
     allHintsExhausted: Boolean
   ) {
     if (getHintsAndSolution() == null) {
-      val hintsAndSolutionFragment = HintsAndSolutionFragment.newInstance(explorationId, newAvailableHintIndex, allHintsExhausted)
+      val hintsAndSolutionFragment = HintsAndSolutionFragment.newInstance(
+        explorationId,
+        newAvailableHintIndex,
+        allHintsExhausted
+      )
       hintsAndSolutionFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }
   }
 
   override fun dismiss() {
     getHintsAndSolution()?.dismiss()
+  }
+
+  override fun onDeafultFontSizeLoaded(result: StoryTextSize) {
+    explorationActivityPresenter.loadExplorationFragment(result)
   }
 }

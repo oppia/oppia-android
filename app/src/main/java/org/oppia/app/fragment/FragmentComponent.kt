@@ -19,6 +19,7 @@ import org.oppia.app.ongoingtopiclist.OngoingTopicListFragment
 import org.oppia.app.options.OptionsFragment
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.exploration.ExplorationFragment
+import org.oppia.app.player.exploration.ExplorationManagerFragment
 import org.oppia.app.player.state.StateFragment
 import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionFragment
 import org.oppia.app.player.state.itemviewmodel.InteractionViewModelModule
@@ -65,6 +66,7 @@ interface FragmentComponent {
   fun inject(conceptCardFragment: ConceptCardFragment)
   fun inject(downloadsTabFragment: DownloadsTabFragment)
   fun inject(explorationFragment: ExplorationFragment)
+  fun inject(explorationManagerFragment: ExplorationManagerFragment)
   fun inject(faqListFragment: FAQListFragment)
   fun inject(helpFragment: HelpFragment)
   fun inject(hintsAndSolutionFragment: HintsAndSolutionFragment)

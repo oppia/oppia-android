@@ -13,8 +13,10 @@ import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.databinding.ExplorationActivityBinding
 import org.oppia.app.model.Exploration
+import org.oppia.app.model.StoryTextSize
 import org.oppia.app.story.StoryActivity
 import org.oppia.app.topic.TopicActivity
+import org.oppia.app.utility.FontScaleConfigurationUtil
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.util.data.AsyncResult
@@ -22,8 +24,10 @@ import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
 const val TAG_EXPLORATION_FRAGMENT = "TAG_EXPLORATION_FRAGMENT"
+const val TAG_EXPLORATION_MANAGER_FRAGMENT = "TAG_EXPLORATION_MANAGER_FRAGMENT"
 
 /** The Presenter for [ExplorationActivity]. */
+
 @ActivityScope
 class ExplorationActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
@@ -35,6 +39,7 @@ class ExplorationActivityPresenter @Inject constructor(
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
   private lateinit var storyId: String
+  private lateinit var explorationId: String
   private lateinit var context: Context
   private var backflowScreen: Int? = null
 
@@ -47,8 +52,18 @@ class ExplorationActivityPresenter @Inject constructor(
     getExplorationViewModel()
   }
 
-  fun handleOnCreate(context: Context, internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowScreen: Int?) {
-    val binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(activity, R.layout.exploration_activity)
+  fun handleOnCreate(
+    context: Context,
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    backflowScreen: Int?
+  ) {
+    val binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(
+      activity,
+      R.layout.exploration_activity
+    )
     binding.apply {
       viewModel = exploreViewModel
       lifecycleOwner = activity
@@ -65,18 +80,46 @@ class ExplorationActivityPresenter @Inject constructor(
     this.internalProfileId = internalProfileId
     this.topicId = topicId
     this.storyId = storyId
+    this.explorationId = explorationId
     this.context = context
     this.backflowScreen = backflowScreen
+    if (getExplorationManagerFragment() == null) {
+      val explorationManagerFragment = ExplorationManagerFragment()
+      val args = Bundle()
+      args.putInt(
+        ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY,
+        internalProfileId
+      )
+      explorationManagerFragment.arguments = args
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.exploration_fragment_placeholder,
+        explorationManagerFragment,
+        TAG_EXPLORATION_MANAGER_FRAGMENT
+      ).commitNow()
+    }
 
-    if (getExplorationFragment() == null) {
+  }
+
+  fun loadExplorationFragment(result: StoryTextSize) {
+    if (getExplorationManagerFragment() != null) {
       val explorationFragment = ExplorationFragment()
       val args = Bundle()
-      args.putInt(ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+      args.putInt(
+        ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY,
+        internalProfileId
+      )
       args.putString(ExplorationActivity.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
       args.putString(ExplorationActivity.EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
-      args.putString(ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
+      args.putString(
+        ExplorationActivity.EXPLORATION_ACTIVITY_STORY_DEFAULT_FONT_SIZE_ARGUMENT_KEY,
+        result.name
+      )
+      args.putString(
+        ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY,
+        explorationId
+      )
       explorationFragment.arguments = args
-      activity.supportFragmentManager.beginTransaction().add(
+      activity.supportFragmentManager.beginTransaction().replace(
         R.id.exploration_fragment_placeholder,
         explorationFragment,
         TAG_EXPLORATION_FRAGMENT
@@ -92,9 +135,16 @@ class ExplorationActivityPresenter @Inject constructor(
 
   fun showAudioStreamingOff() = exploreViewModel.isAudioStreamingOn.set(false)
 
-  fun setAudioBarVisibility(isVisible: Boolean) = getExplorationFragment()?.setAudioBarVisibility(isVisible)
+  fun setAudioBarVisibility(isVisible: Boolean) =
+    getExplorationFragment()?.setAudioBarVisibility(isVisible)
 
   fun scrollToTop() = getExplorationFragment()?.scrollToTop()
+
+  private fun getExplorationManagerFragment(): ExplorationManagerFragment? {
+    return activity.supportFragmentManager.findFragmentByTag(
+      TAG_EXPLORATION_MANAGER_FRAGMENT
+    ) as ExplorationManagerFragment?
+  }
 
   private fun getExplorationFragment(): ExplorationFragment? {
     return activity.supportFragmentManager.findFragmentById(
@@ -103,17 +153,23 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   fun stopExploration() {
-    explorationDataController.stopPlayingExploration().observe(activity, Observer<AsyncResult<Any?>> {
-      when {
-        it.isPending() -> logger.d("ExplorationActivity", "Stopping exploration")
-        it.isFailure() -> logger.e("ExplorationActivity", "Failed to stop exploration", it.getErrorOrNull()!!)
-        else -> {
-          logger.d("ExplorationActivity", "Successfully stopped exploration")
-          backPressActivitySelector(backflowScreen)
-          (activity as ExplorationActivity).finish()
+    FontScaleConfigurationUtil(activity, StoryTextSize.MEDIUM_TEXT_SIZE.name).adjustFontScale()
+    explorationDataController.stopPlayingExploration()
+      .observe(activity, Observer<AsyncResult<Any?>> {
+        when {
+          it.isPending() -> logger.d("ExplorationActivity", "Stopping exploration")
+          it.isFailure() -> logger.e(
+            "ExplorationActivity",
+            "Failed to stop exploration",
+            it.getErrorOrNull()!!
+          )
+          else -> {
+            logger.d("ExplorationActivity", "Successfully stopped exploration")
+            backPressActivitySelector(backflowScreen)
+            (activity as ExplorationActivity).finish()
+          }
         }
-      }
-    })
+      })
   }
 
   private fun updateToolbarTitle(explorationId: String) {
@@ -139,16 +195,35 @@ class ExplorationActivityPresenter @Inject constructor(
   /** Helper for subscribeToExploration. */
   private fun processExploration(ephemeralStateResult: AsyncResult<Exploration>): Exploration {
     if (ephemeralStateResult.isFailure()) {
-      logger.e("StateFragment", "Failed to retrieve answer outcome", ephemeralStateResult.getErrorOrNull()!!)
+      logger.e(
+        "StateFragment",
+        "Failed to retrieve answer outcome",
+        ephemeralStateResult.getErrorOrNull()!!
+      )
     }
     return ephemeralStateResult.getOrDefault(Exploration.getDefaultInstance())
   }
 
-  private fun backPressActivitySelector(backflowScreen: Int?){
-    when(backflowScreen){
-      ParentActivityForExploration.BACKFLOW_SCREEN_STORY.value -> activity.startActivity(StoryActivity.createStoryActivityIntent(context, internalProfileId, topicId, storyId))
-      ParentActivityForExploration.BACKFLOW_SCREEN_LESSONS.value -> activity.startActivity(TopicActivity.createTopicPlayStoryActivityIntent(activity, internalProfileId, topicId, storyId))
-      else -> activity.startActivity(TopicActivity.createTopicActivityIntent(context, internalProfileId, topicId))
+  private fun backPressActivitySelector(backflowScreen: Int?) {
+    when (backflowScreen) {
+      ParentActivityForExploration.BACKFLOW_SCREEN_STORY.value -> activity.startActivity(
+        StoryActivity.createStoryActivityIntent(context, internalProfileId, topicId, storyId)
+      )
+      ParentActivityForExploration.BACKFLOW_SCREEN_LESSONS.value -> activity.startActivity(
+        TopicActivity.createTopicPlayStoryActivityIntent(
+          activity,
+          internalProfileId,
+          topicId,
+          storyId
+        )
+      )
+      else -> activity.startActivity(
+        TopicActivity.createTopicActivityIntent(
+          context,
+          internalProfileId,
+          topicId
+        )
+      )
     }
   }
 
