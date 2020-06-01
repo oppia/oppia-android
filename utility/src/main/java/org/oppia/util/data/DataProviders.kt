@@ -47,13 +47,6 @@ class DataProviders @Inject constructor(
       }
 
       override suspend fun retrieveData(): AsyncResult<T2> {
-        //crashlyticsWrapper.logMessage("Sarthak")
-        try{
-          throw Exception("Sarthak")
-        }
-        catch(exception: Exception){
-          crashlyticsWrapper.logException(exception)
-        }
         return try {
           dataProvider.retrieveData().transform(function)
         } catch (t: Throwable) {

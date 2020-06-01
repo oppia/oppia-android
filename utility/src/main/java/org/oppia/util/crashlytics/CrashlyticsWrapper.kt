@@ -8,24 +8,23 @@ import javax.inject.Singleton
 /** Controller for providing custom crash reporting to Firebase Crashlytics */
 @Singleton
 open class CrashlyticsWrapper @Inject constructor(
-  private var firebaseCrashlytics : FirebaseCrashlytics
-)
-  : CrashlyticWrapperInterface {
+  private var firebaseCrashlytics : FirebaseCrashlytics) {
 
   /** Logs a custom non-fatal exception to Firebase Crashlytics */
-  override fun logException(exception: java.lang.Exception) {
+  open fun logException(exception: Exception) {
       firebaseCrashlytics.recordException(exception)
       Log.i("TAAGGG", exception.message)
+
   }
 
   /** Logs a custom log message which can be put alongside a crash report to Firebase Crashlytics */
-  override fun logMessage(message: String){
+  open fun logMessage(message: String){
     firebaseCrashlytics.log(message)
     Log.i("TAG", message)
   }
 
   /** Sets up a user identifier which is attached in every crash report to Firebase Crashlytics */
-  override fun setUserIdentifier(identifier: String){
+  open fun setUserIdentifier(identifier: String){
     firebaseCrashlytics.setUserId(identifier)
   }
 }

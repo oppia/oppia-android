@@ -6,7 +6,6 @@ import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.FirebaseApp
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.BindsInstance
 import dagger.Component
@@ -28,13 +27,12 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.any
 import org.mockito.Mockito.atLeastOnce
-import org.mockito.Mockito.doNothing
 import org.mockito.Mockito.reset
+import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyZeroInteractions
+import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.testing.TestCoroutineDispatchers
@@ -65,6 +63,12 @@ private const val COMBINED_STR_VALUE_02 = "I used to be indecisive. At least I t
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class DataProvidersTest {
+  /**
+   * Returns Mockito.any() as nullable type to avoid java.lang.IllegalStateException when
+   * null is returned.
+   */
+  fun <T> any(): T = Mockito.any<T>()
+
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
@@ -78,27 +82,11 @@ class DataProvidersTest {
   @Inject @field:BackgroundDispatcher
   lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
 
-  @Inject
-  @Mock
-  lateinit var mockCrashlyticsWrapper: CrashlyticsWrapper
-
   @Mock
   lateinit var mockStringLiveDataObserver: Observer<AsyncResult<String>>
 
   @Mock
   lateinit var mockIntLiveDataObserver: Observer<AsyncResult<Int>>
-
-  @Mock
-  lateinit var exception: IllegalStateException
-
-  @Mock
-  lateinit var firebaseCrashlytics: FirebaseCrashlytics
-
-  @Mock
-  lateinit var firebaseApp: FirebaseApp
-
-  @Captor
-  lateinit var exceptionCaptor: ArgumentCaptor<Exception>
 
   @Captor
   lateinit var stringResultCaptor: ArgumentCaptor<AsyncResult<String>>
@@ -116,9 +104,7 @@ class DataProvidersTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    /*setUpFirebase()
-    FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
-    CrashlyticsWrapper.firebaseCrashlytics = FirebaseCrashlytics.getInstance()*/
+    MockitoAnnotations.initMocks(this);
   }
 
   // Note: custom data providers aren't explicitly tested since their interaction with the infrastructure is tested
@@ -437,13 +423,11 @@ class DataProvidersTest {
     dataProviders.convertToLiveData(dataProvider).observeForever(mockStringLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
-    //doNothing().`when`(mockCrashlyticsWrapper.logException(exception))
-
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
     assertThat(stringResultCaptor.value.isFailure()).isTrue()
     assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(IllegalStateException::class.java)
-    verify(mockCrashlyticsWrapper, atLeastOnce()).logException(exceptionCaptor.capture())
-    assertThat(exceptionCaptor.value).isInstanceOf(IllegalStateException::class.java)
+    // HERE
+    verify(TestCrashlyticsModule.mockCrashlyticsWrapper).logException(any())
 
   }
 
@@ -1155,6 +1139,10 @@ class DataProvidersTest {
 
     // A base provider failure should result in the transform method not being called.
     assertThat(fakeTransformCallbackCalled).isFalse()
+
+    // HERE
+    verify(TestCrashlyticsModule.mockCrashlyticsWrapper).logException(any())
+    //assertThat(exceptionCaptor.value).isInstanceOf(java.lang.IllegalStateException::class.java)
   }
 
   @Test
@@ -1624,6 +1612,8 @@ class DataProvidersTest {
     assertThat(stringResultCaptor.value.isFailure()).isTrue()
     assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(AsyncResult.ChainedFailureException::class.java)
     assertThat(stringResultCaptor.value.getErrorOrNull()).hasCauseThat().isInstanceOf(IllegalStateException::class.java)
+
+    // HERE
   }
 
   @Test
@@ -1662,6 +1652,8 @@ class DataProvidersTest {
     assertThat(stringResultCaptor.value.isFailure()).isTrue()
     assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(AsyncResult.ChainedFailureException::class.java)
     assertThat(stringResultCaptor.value.getErrorOrNull()).hasCauseThat().isInstanceOf(IllegalStateException::class.java)
+
+    // HERE
   }
 
   @Test
@@ -2202,6 +2194,8 @@ class DataProvidersTest {
     assertThat(stringResultCaptor.value.isFailure()).isTrue()
     assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(AsyncResult.ChainedFailureException::class.java)
     assertThat(stringResultCaptor.value.getErrorOrNull()).hasCauseThat().isInstanceOf(IllegalStateException::class.java)
+
+    // HERE
   }
 
   @Test
@@ -2965,6 +2959,9 @@ class DataProvidersTest {
 
   @Module
   class TestCrashlyticsModule {
+    companion object {
+      var mockCrashlyticsWrapper = Mockito.mock(CrashlyticsWrapper::class.java)
+    }
     @Provides
     @Singleton
     fun provideFirebaseCrashlytics(): FirebaseCrashlytics{
@@ -2973,8 +2970,8 @@ class DataProvidersTest {
 
     @Provides
     @Singleton
-    fun provideCrashlyticsWrapper(): CrashlyticsWrapper{
-      return Mockito.mock(CrashlyticsWrapper::class.java)
+    fun provideCrashlyticsWrapper(): CrashlyticsWrapper {
+      return mockCrashlyticsWrapper
     }
   }
 
