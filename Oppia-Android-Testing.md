@@ -250,7 +250,8 @@ Make ScrollView as a parent in XML file and use scrollTo() while performing clic
 Example: 
 `onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())`
 
-**Assertion Failure :** Unlike on a real device, Robolectric shares a single thread for both UI operations and Test code. By default, Robolectric will execute tasks posted to Loopers synchronously inline. This causes Robolectric to execute tasks earlier than they would be on a real device. 
+### Assertion Failure :
+1. Unlike on a real device, Robolectric shares a single thread for both UI operations and Test code. By default, Robolectric will execute tasks posted to Loopers synchronously inline. This causes Robolectric to execute tasks earlier than they would be on a real device. 
 
 Robolectric’s default behavior is to process posted code synchronously and immediately, so the assertion fails with **[before, after, between]**, which is clearly incorrect.
 
@@ -269,4 +270,16 @@ Apply the LooperMode(PAUSED) annotation to your test package/class/method [refer
       intended(hasComponent(ProfileActivity::class.java.name))
     }
   }
+```
+2. Choosing the right matcher to check your view.
+ - The doesNotExist() view assertion checks if a view exists in the current view hierarchy.
+
+```
+onView(withId(R.id.made_up_view_id)).check(doesNotExist())
+```
+
+ - We may have to test if the view is Visible or Gone and if `isDisplayed()` doesn't work, we make use of `withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE))`. This matcher checks how the visibility of a view is set in the code.
+
+```
+onView(allOf(withId(R.id.ivPlayPauseAudio),withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
 ```
