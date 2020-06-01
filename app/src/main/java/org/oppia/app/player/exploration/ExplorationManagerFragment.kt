@@ -5,6 +5,9 @@ import android.os.Bundle
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
+/**
+ * FragmentManager of [ExplorationFragment] that observes data provider that retrive default story text size.
+ */
 class ExplorationManagerFragment : InjectableFragment() {
   @Inject lateinit var explorationManagerFragmentPresenter: ExplorationManagerFragmentPresenter
 

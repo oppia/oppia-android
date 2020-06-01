@@ -13,6 +13,7 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
+/** The presenter for [ExplorationManagerFragment]. */
 @FragmentScope
 class ExplorationManagerFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
@@ -20,7 +21,8 @@ class ExplorationManagerFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
   private lateinit var profileId: ProfileId
-  fun handleCreate(internalProfileId: Int){
+
+  fun handleCreate(internalProfileId: Int) {
     this.profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     getProfileData().observe(activity, Observer<StoryTextSize> { result ->
       (activity as DeafultFontSizeStateListener).onDeafultFontSizeLoaded(result)
@@ -34,10 +36,13 @@ class ExplorationManagerFragmentPresenter @Inject constructor(
     )
   }
 
-
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): StoryTextSize {
     if (profileResult.isFailure()) {
-      logger.e("ExplorationManagerFragment", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
+      logger.e(
+        "ExplorationManagerFragment",
+        "Failed to retrieve profile",
+        profileResult.getErrorOrNull()!!
+      )
     }
     return profileResult.getOrDefault(Profile.getDefaultInstance()).storyTextSize
   }
