@@ -55,12 +55,13 @@ anchor_for_install_buf: &install_buf
       }
 
       BUFBUILD=$(get_latest_release bufbuild/buf)
+
       BUFVERSION=${BUFBUILD%%[[:space:]]*}
 
       echo Using Bufbuild version $BUFVERSION
 
-      curl -sSLO
-      https://github.com/bufbuild/buf/releases/download/v$BUFVERSION/buf-$(uname -s)-$(uname -m) > /home/circleci/repo/buf
+      curl -sSL
+      https://github.com/bufbuild/buf/releases/download/$BUFVERSION/buf-$(uname -s)-$(uname -m) > /home/circleci/repo/buf
 
       chmod +x /home/circleci/repo/buf
 
@@ -84,8 +85,8 @@ jobs:
           name: Kotlin tests - Data, Utility
           command: ./ktlint utility/**/*.kt data/**/*.kt && echo "Ktlint completed successfully"
       - run:
-          name: pwd
-          command: ./buf check lint && echo "Bufbuild completed successfully"
+          name: BufBuild check proto files
+          command: ./buf check lint --input=model/src/main/proto --input-config buf.yaml && echo "Bufbuild completed successfully"
       - store_artifacts:
           path: app/build/reports
           destination: reports

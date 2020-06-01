@@ -32,3 +32,7 @@ sourceSets {
   main.java.srcDirs += "${protobuf.generatedFilesBaseDir}/main/javalite"
   main.java.srcDirs += "$projectDir/src/main/proto"
 }
+
+processResources {
+  exclude('**/*.proto')
+}
