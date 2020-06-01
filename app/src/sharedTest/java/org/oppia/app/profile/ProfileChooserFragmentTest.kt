@@ -15,6 +15,7 @@ import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.pressBack
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -291,7 +292,7 @@ class ProfileChooserFragmentTest {
           isDisplayed()
         )
       )
-      onView(isRoot()).perform(pressBack())
+      onView(isRoot()).perform(closeSoftKeyboard(), pressBack())
       onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed()))
     }
   }
@@ -313,7 +314,7 @@ class ProfileChooserFragmentTest {
       onView(withText(context.resources.getString(R.string.admin_auth_admin_controls_sub))).check(
         matches(isDisplayed())
       )
-      onView(isRoot()).perform(pressBack())
+      onView(isRoot()).perform(closeSoftKeyboard(), pressBack())
       onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed()))
     }
   }
@@ -365,7 +366,9 @@ class ProfileChooserFragmentTest {
       it.onActivity { activity ->
         val profileRecyclerView = activity.findViewById<RecyclerView>(R.id.profile_recycler_view)
         val layoutManager = profileRecyclerView.layoutManager as GridLayoutManager
-        assertThat(layoutManager.spanCount).isEqualTo(2)
+        if (!activity.resources.getBoolean(R.bool.isTablet)) {
+          assertThat(layoutManager.spanCount).isEqualTo(2)
+        }
       }
     }
   }
