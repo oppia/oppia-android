@@ -3,7 +3,7 @@ package org.oppia.app.player.state.itemviewmodel
 import androidx.databinding.ObservableBoolean
 import org.oppia.app.player.state.listener.PreviousResponsesHeaderClickListener
 
-/** [ViewModel] for the header of the section of previously submitted answers. */
+/** [StateItemViewModel] for the header of the section of previously submitted answers. */
 class PreviousResponsesHeaderViewModel(
   val previousAnswerCount: Int, var isExpanded: ObservableBoolean,
   private val previousResponsesHeaderClickListener: PreviousResponsesHeaderClickListener

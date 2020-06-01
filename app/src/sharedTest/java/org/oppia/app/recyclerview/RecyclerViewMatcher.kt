@@ -2,11 +2,12 @@ package org.oppia.app.recyclerview
 
 import android.content.res.Resources
 import android.view.View
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.ViewAssertion
-import androidx.test.espresso.matcher.ViewMatchers
-import org.hamcrest.CoreMatchers
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -30,7 +31,7 @@ class RecyclerViewMatcher {
         var childView: View? = null
 
         override fun describeTo(description: Description) {
-          var idDescription = Integer.toString(recyclerViewId)
+          var idDescription = recyclerViewId.toString()
           if (this.resources != null) {
             idDescription = try {
               this.resources!!.getResourceName(recyclerViewId)
@@ -68,24 +69,37 @@ class RecyclerViewMatcher {
     fun hasItemCount(count: Int): ViewAssertion {
       return RecyclerViewItemCountAssertion(count)
     }
+
+    /** Returns span count ViewAssertion for a recycler view that use GridLayoutManager. */
+    fun hasGridItemCount(spanCount: Int, position: Int): ViewAssertion {
+      return RecyclerViewGridItemCountAssertion(spanCount, position)
+    }
   }
 
   private class RecyclerViewItemCountAssertion(private val count: Int) : ViewAssertion {
-
     override fun check(view: View, noViewFoundException: NoMatchingViewException?) {
       if (noViewFoundException != null) {
         throw noViewFoundException
       }
-
       check(view is RecyclerView) { "The asserted view is not RecyclerView" }
-
       checkNotNull(view.adapter) { "No adapter is assigned to RecyclerView" }
+      assertThat("RecyclerView item count", view.adapter!!.itemCount, equalTo(count))
+    }
+  }
 
-      ViewMatchers.assertThat(
-        "RecyclerView item count",
-        view.adapter!!.itemCount,
-        CoreMatchers.equalTo(count)
-      )
+  /** Custom class to check number of spans occupied by an item at a given position. */
+  private class RecyclerViewGridItemCountAssertion(
+    private val count: Int,
+    private val position: Int
+  ) : ViewAssertion {
+    override fun check(view: View, noViewFoundException: NoMatchingViewException?) {
+      if (noViewFoundException != null) {
+        throw noViewFoundException
+      }
+      check(view is RecyclerView) { "The asserted view is not RecyclerView" }
+      check(view.layoutManager is GridLayoutManager) { "RecyclerView must use GridLayoutManager" }
+      val spanCount = (view.layoutManager as GridLayoutManager).spanSizeLookup.getSpanSize(position)
+      assertThat("RecyclerViewGrid span count", spanCount, equalTo(count))
     }
   }
 }
