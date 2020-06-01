@@ -253,9 +253,9 @@ Example:
 ### Assertion Failure :
 1. Unlike on a real device, Robolectric shares a single thread for both UI operations and Test code. By default, Robolectric will execute tasks posted to Loopers synchronously inline. This causes Robolectric to execute tasks earlier than they would be on a real device. 
 
-Robolectric’s default behavior is to process posted code synchronously and immediately, so the assertion fails with **[before, after, between]**, which is clearly incorrect.
+- Robolectric’s default behavior is to process posted code synchronously and immediately, so the assertion fails with **[before, after, between]**, which is clearly incorrect.
 
-Apply the LooperMode(PAUSED) annotation to your test package/class/method [reference](http://robolectric.org/blog/2019/06/04/paused-looper/).
+- Apply the LooperMode(PAUSED) annotation to your test package/class/method [reference](http://robolectric.org/blog/2019/06/04/paused-looper/).
 
 ```
 @LooperMode(LooperMode.Mode.PAUSED)
