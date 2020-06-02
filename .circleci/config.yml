@@ -61,7 +61,7 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}
       - run:
           name: Kotlin tests - Data, Utility
-          command: ./ktlint utility/**/*.kt data/**/*.kt && echo "Lint completed successfully"
+          command: ./ktlint --android utility/**/*.kt data/**/*.kt && echo "Lint completed successfully"
       - store_artifacts:
           path: app/build/reports
           destination: reports
