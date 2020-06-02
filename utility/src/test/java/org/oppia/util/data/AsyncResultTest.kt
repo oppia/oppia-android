@@ -738,7 +738,8 @@ class AsyncResultTest {
     val combined = result1.combineWithAsync(result2) { _, _ -> AsyncResult.success(0) }
 
     assertThat(combined.getErrorOrNull()).isInstanceOf(
-      AsyncResult.ChainedFailureException::class.java)
+      AsyncResult.ChainedFailureException::class.java
+    )
     assertThat(combined.getErrorOrNull()).hasCauseThat()
       .isInstanceOf(UnsupportedOperationException::class.java)
   }
@@ -752,7 +753,8 @@ class AsyncResultTest {
     val combined = result1.combineWithAsync(result2) { _, _ -> AsyncResult.success(0) }
 
     assertThat(combined.getErrorOrNull()).isInstanceOf(
-      AsyncResult.ChainedFailureException::class.java)
+      AsyncResult.ChainedFailureException::class.java
+    )
     assertThat(combined.getErrorOrNull()).hasCauseThat()
       .isInstanceOf(UnsupportedOperationException::class.java)
   }
@@ -766,7 +768,8 @@ class AsyncResultTest {
     val combined = result1.combineWithAsync(result2) { _, _ -> AsyncResult.success(0) }
 
     assertThat(combined.getErrorOrNull()).isInstanceOf(
-      AsyncResult.ChainedFailureException::class.java)
+      AsyncResult.ChainedFailureException::class.java
+    )
     assertThat(combined.getErrorOrNull()).hasCauseThat()
       .isInstanceOf(UnsupportedOperationException::class.java)
   }
@@ -799,7 +802,11 @@ class AsyncResultTest {
     val result = AsyncResult.failed<String>(UnsupportedOperationException("Reason"))
 
     // Different exceptions have different stack traces, so they can't be equal despite similar constructions.
-    assertThat(result).isNotEqualTo(AsyncResult.failed<String>(UnsupportedOperationException("Reason")))
+    assertThat(result).isNotEqualTo(
+      AsyncResult.failed<String>(
+        UnsupportedOperationException("Reason")
+      )
+    )
   }
 
   @Test
@@ -830,7 +837,8 @@ class AsyncResultTest {
   fun testFailedResult_hashCode_isNotEqualToFailedResultWithDifferentInstanceOfSameExceptionType() {
     val resultHash = AsyncResult.failed<String>(UnsupportedOperationException("Reason")).hashCode()
 
-    // Different exceptions have different stack traces, so they can't be equal despite similar constructions.
+    // Different exceptions have different stack traces,
+    // so they can't be equal despite similar constructions.
     assertThat(resultHash).isNotEqualTo(
       AsyncResult.failed<String>(UnsupportedOperationException("Reason")).hashCode()
     )

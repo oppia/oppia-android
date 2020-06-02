@@ -38,9 +38,11 @@ import org.robolectric.annotation.Config
 @Config(manifest = Config.NONE)
 class DirectoryManagementUtilTest {
 
-  @Inject lateinit var directoryManagementUtil: DirectoryManagementUtil
+  @Inject
+  lateinit var directoryManagementUtil: DirectoryManagementUtil
 
-  @Inject lateinit var context: Context
+  @Inject
+  lateinit var context: Context
 
   // https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/
   @ObsoleteCoroutinesApi
@@ -156,8 +158,10 @@ class DirectoryManagementUtilTest {
 
   private fun getAbsoluteDirPath(path: String): String {
     /**
-     * context.filesDir.toString() looks like /tmp/robolectric-Method_test_name/org.oppia.util.test-dataDir/files
-     * dropLast(5) removes files from the path and then it appends the real path with "app_" as a prefix
+     * context.filesDir.toString() looks like
+     * /tmp/robolectric-Method_test_name/org.oppia.util.test-dataDir/files
+     * dropLast(5) removes files from the path and then it appends the real path
+     * with "app_" as a prefix
      */
     return context.filesDir.toString().dropLast(5) + "app_" + path
   }
@@ -185,14 +189,18 @@ class DirectoryManagementUtilTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
     @Singleton
     @Provides
     @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBlockingDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
