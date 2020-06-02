@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "org.oppia.app.model";
+option java_multiple_files = true;
+
+// Supported event actions for analytics logging
+enum EventAction{
+  // The undefined user action of an event
+  UNKNOWN_EVENT_ACTION = 0;
+}
+
+// Supported priority of events for analytics logging
+enum Priority{
+  // The undefined priority of an event
+  UNKNOWN_PRIORITY = 0;
+  // The priority of events whose logs should not be removed from the storage on most occasions
+  // but can be removed if they're the only ones there and size limit exceeds.
+  ESSENTIAL = 1;
+  // The priority of events whose logs can be removed from the storage if the size exceeds a certain limit
+  OPTIONAL = 2;
+}
