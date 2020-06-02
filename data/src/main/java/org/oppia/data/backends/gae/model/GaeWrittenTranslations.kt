@@ -10,6 +10,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class GaeWrittenTranslations(
 
-  @Json(name = "translations_mapping") val translationsMapping: Map<String, Map<String, GaeWrittenTranslation>>?
+  @Json(name = "translations_mapping") val translationsMapping:
+  Map<String, Map<String, GaeWrittenTranslation>>?
 
 )
