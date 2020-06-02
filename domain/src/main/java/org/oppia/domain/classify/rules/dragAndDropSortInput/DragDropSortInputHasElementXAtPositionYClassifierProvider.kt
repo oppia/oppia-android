@@ -35,7 +35,7 @@ internal class DragDropSortInputHasElementXAtPositionYClassifierProvider @Inject
     secondInput: Int
   ): Boolean {
     return answer.setOfHtmlStringsList.indexOfFirst {
-      it.htmlList.joinToString("").contains(firstInput)
+      it.htmlList.contains(firstInput)
     } == secondInput
   }
 }
