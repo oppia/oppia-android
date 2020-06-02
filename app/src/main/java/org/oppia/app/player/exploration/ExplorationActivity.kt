@@ -22,9 +22,12 @@ private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
 const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
 
 /** The starting point for exploration. */
-class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterface,
+class ExplorationActivity : InjectableAppCompatActivity(),
+  StopExplorationInterface,
   StateKeyboardButtonListener,
-  AudioButtonListener, HintsAndSolutionListener, RouteToHintsAndSolutionListener,
+  AudioButtonListener,
+  HintsAndSolutionListener,
+  RouteToHintsAndSolutionListener,
   RevealHintListener,
   RevealSolutionInterface, DeafultFontSizeStateListener {
 
@@ -158,7 +161,7 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
     getHintsAndSolution()?.dismiss()
   }
 
-  override fun onDeafultFontSizeLoaded(result: StoryTextSize) {
-    explorationActivityPresenter.loadExplorationFragment(result)
+  override fun onDeafultFontSizeLoaded(storyTextSize: StoryTextSize) {
+    explorationActivityPresenter.loadExplorationFragment(storyTextSize)
   }
 }

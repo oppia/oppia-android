@@ -17,15 +17,23 @@ class ExplorationFragment : InjectableFragment() {
     super.onAttach(context)
     val storyTextSize =
       arguments!!.getString(ExplorationActivity.EXPLORATION_ACTIVITY_STORY_DEFAULT_FONT_SIZE_ARGUMENT_KEY)
+    checkNotNull(storyTextSize) { "ExplorationFragment must be created with a story text size" }
     FontScaleConfigurationUtil(context, storyTextSize).adjustFontScale()
     fragmentComponent.inject(this)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    val profileId = arguments!!.getInt(ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, -1)
-    val topicId = arguments!!.getString(ExplorationActivity.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
+    val profileId =
+      arguments!!.getInt(ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, -1)
+    val topicId =
+      arguments!!.getString(ExplorationActivity.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
     checkNotNull(topicId) { "StateFragment must be created with an topic ID" }
-    val storyId = arguments!!.getString(ExplorationActivity.EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY)
+    val storyId =
+      arguments!!.getString(ExplorationActivity.EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY)
     checkNotNull(storyId) { "StateFragment must be created with an story ID" }
     val explorationId =
       arguments!!.getString(ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY)
@@ -44,15 +52,16 @@ class ExplorationFragment : InjectableFragment() {
 
   fun onKeyboardAction() = explorationFragmentPresenter.onKeyboardAction()
 
-  fun setAudioBarVisibility(isVisible: Boolean) = explorationFragmentPresenter.setAudioBarVisibility(isVisible)
+  fun setAudioBarVisibility(isVisible: Boolean) =
+    explorationFragmentPresenter.setAudioBarVisibility(isVisible)
 
   fun scrollToTop() = explorationFragmentPresenter.scrollToTop()
 
-  fun revealHint(saveUserChoice: Boolean, hintIndex: Int){
+  fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
     explorationFragmentPresenter.revealHint(saveUserChoice, hintIndex)
   }
 
-  fun revealSolution(saveUserChoice: Boolean){
+  fun revealSolution(saveUserChoice: Boolean) {
     explorationFragmentPresenter.revealSolution(saveUserChoice)
   }
 }

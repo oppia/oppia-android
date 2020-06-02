@@ -15,9 +15,8 @@ class FontScaleConfigurationUtil @Inject constructor(
   fun adjustFontScale() {
     val configuration = context.resources.configuration
     configuration.fontScale = getFontScaleByStoryTextSize()
-    val metrics: DisplayMetrics = context.getResources().getDisplayMetrics()
-    val windowManager =
-      context.getSystemService(WINDOW_SERVICE) as WindowManager?
+    val metrics: DisplayMetrics = context.resources.displayMetrics
+    val windowManager = context.getSystemService(WINDOW_SERVICE) as WindowManager?
     windowManager!!.defaultDisplay.getMetrics(metrics)
     metrics.scaledDensity = configuration.fontScale * metrics.density
     context.createConfigurationContext(configuration)
@@ -26,7 +25,7 @@ class FontScaleConfigurationUtil @Inject constructor(
 
   /** This method returns font scale by story text size. */
   private fun getFontScaleByStoryTextSize(): Float {
-    return when (storyTextSize) {
+    return when (this.storyTextSize) {
       StoryTextSize.SMALL_TEXT_SIZE.name -> .8f
       StoryTextSize.MEDIUM_TEXT_SIZE.name -> 1.0f
       StoryTextSize.LARGE_TEXT_SIZE.name -> 1.4f

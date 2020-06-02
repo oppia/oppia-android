@@ -6,7 +6,8 @@ import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
 /**
- * FragmentManager of [ExplorationFragment] that observes data provider that retrive default story text size.
+ * ManagerFragment of [ExplorationFragment] that observes data provider that retrieve default story
+ * text size.
  */
 class ExplorationManagerFragment : InjectableFragment() {
   @Inject lateinit var explorationManagerFragmentPresenter: ExplorationManagerFragmentPresenter
@@ -19,8 +20,11 @@ class ExplorationManagerFragment : InjectableFragment() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     val internalProfileId =
-      arguments!!.getInt(ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, -1)
+      arguments!!.getInt(
+        ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, /* defaultValue= */
+        -1
+      )
     explorationManagerFragmentPresenter.handleCreate(internalProfileId)
-    setRetainInstance(true)
+    retainInstance = true
   }
 }
