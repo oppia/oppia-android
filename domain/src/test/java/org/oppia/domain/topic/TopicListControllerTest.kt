@@ -56,6 +56,7 @@ import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 import kotlin.coroutines.EmptyCoroutineContext
+import org.oppia.domain.topic.StoryProgressControllerTest.TestFirebaseModule
 
 private const val NINE_DAYS_IN_MS = 9 * 24 * 60 * 60 * 1000
 
@@ -611,24 +612,6 @@ class TopicListControllerTest {
   // Returns a timestamp which is atleast a week older than current timestamp.
   private fun getOldTimestamp(): Long {
     return Date().time - NINE_DAYS_IN_MS
-  }
-
-  @Module
-  class TestFirebaseModule {
-    companion object {
-      var mockCrashlyticsWrapper = Mockito.mock(CrashlyticsWrapper::class.java)
-    }
-    @Provides
-    @Singleton
-    fun provideFirebaseCrashlytics(): FirebaseCrashlytics {
-      return Mockito.mock(FirebaseCrashlytics::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideCrashlyticsWrapper(): CrashlyticsWrapper {
-      return mockCrashlyticsWrapper
-    }
   }
 
   @Qualifier annotation class TestDispatcher

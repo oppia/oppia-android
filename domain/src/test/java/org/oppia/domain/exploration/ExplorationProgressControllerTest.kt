@@ -6,7 +6,6 @@ import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -48,7 +47,6 @@ import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.util.toAnswerString
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.firebase.CrashlyticsWrapper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -60,6 +58,7 @@ import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 import kotlin.coroutines.EmptyCoroutineContext
+import org.oppia.domain.topic.StoryProgressControllerTest.TestFirebaseModule
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -1399,24 +1398,6 @@ class ExplorationProgressControllerTest {
   }
 
   private fun createContinueButtonAnswer() = createTextInputAnswer(DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER)
-
-  @Module
-  class TestFirebaseModule {
-    companion object {
-      var mockCrashlyticsWrapper = Mockito.mock(CrashlyticsWrapper::class.java)
-    }
-    @Provides
-    @Singleton
-    fun provideFirebaseCrashlytics(): FirebaseCrashlytics {
-      return Mockito.mock(FirebaseCrashlytics::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideCrashlyticsWrapper(): CrashlyticsWrapper {
-      return mockCrashlyticsWrapper
-    }
-  }
 
   @Qualifier
   annotation class TestDispatcher

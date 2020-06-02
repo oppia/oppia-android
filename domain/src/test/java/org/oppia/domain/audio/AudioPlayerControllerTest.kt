@@ -49,6 +49,7 @@ import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.reflect.KClass
 import kotlin.reflect.full.cast
 import kotlin.test.fail
+import org.oppia.domain.topic.StoryProgressControllerTest.TestFirebaseModule
 
 /** Tests for [AudioPlayerControllerTest]. */
 @RunWith(AndroidJUnit4::class)
@@ -434,24 +435,6 @@ class AudioPlayerControllerTest {
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
-  }
-
-  @Module
-  class TestFirebaseModule {
-    companion object {
-      var mockCrashlyticsWrapper = Mockito.mock(CrashlyticsWrapper::class.java)
-    }
-    @Provides
-    @Singleton
-    fun provideFirebaseCrashlytics(): FirebaseCrashlytics {
-      return Mockito.mock(FirebaseCrashlytics::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideCrashlyticsWrapper(): CrashlyticsWrapper {
-      return mockCrashlyticsWrapper
-    }
   }
 
   @Qualifier

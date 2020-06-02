@@ -57,6 +57,7 @@ import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 import kotlin.coroutines.EmptyCoroutineContext
+import org.oppia.domain.topic.StoryProgressControllerTest.TestFirebaseModule
 
 /** Tests for [StoryProgressTestHelper]. */
 @RunWith(AndroidJUnit4::class)
@@ -710,24 +711,6 @@ class StoryProgressTestHelperTest {
   private fun verifyGetOngoingStoryListSucceeded() {
     verify(mockOngoingStoryListObserver, atLeastOnce()).onChanged(ongoingStoryListResultCaptor.capture())
     assertThat(ongoingStoryListResultCaptor.value.isSuccess()).isTrue()
-  }
-
-  @Module
-  class TestFirebaseModule {
-    companion object {
-      var mockCrashlyticsWrapper = Mockito.mock(CrashlyticsWrapper::class.java)
-    }
-    @Provides
-    @Singleton
-    fun provideFirebaseCrashlytics(): FirebaseCrashlytics {
-      return Mockito.mock(FirebaseCrashlytics::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideCrashlyticsWrapper(): CrashlyticsWrapper {
-      return mockCrashlyticsWrapper
-    }
   }
 
   @Qualifier annotation class TestDispatcher

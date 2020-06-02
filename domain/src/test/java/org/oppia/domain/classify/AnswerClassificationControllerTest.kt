@@ -14,7 +14,6 @@ import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito
 import org.oppia.app.model.AnswerGroup
 import org.oppia.app.model.Fraction
 import org.oppia.app.model.Interaction
@@ -32,12 +31,12 @@ import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputMo
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.util.firebase.CrashlyticsWrapper
 import org.robolectric.annotation.Config
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass
 import kotlin.reflect.full.cast
+import org.oppia.domain.topic.StoryProgressControllerTest.TestFirebaseModule
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -470,23 +469,6 @@ class AnswerClassificationControllerTest {
       throw t
     }
     throw AssertionError("Reached an impossible state when verifying that an exception was thrown.")
-  }
-  @Module
-  class TestFirebaseModule {
-    companion object {
-      var mockCrashlyticsWrapper = Mockito.mock(CrashlyticsWrapper::class.java)
-    }
-    @Provides
-    @Singleton
-    fun provideFirebaseCrashlytics(): FirebaseCrashlytics {
-      return Mockito.mock(FirebaseCrashlytics::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideCrashlyticsWrapper(): CrashlyticsWrapper {
-      return mockCrashlyticsWrapper
-    }
   }
 
   // TODO(#89): Move this to a common test application component.

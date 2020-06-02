@@ -30,7 +30,7 @@ import org.oppia.app.model.CellularDataPreference
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.firebase.CrashlyticsWrapper
+import org.oppia.domain.topic.StoryProgressControllerTest.TestFirebaseModule
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -154,24 +154,6 @@ class CellularAudioDialogControllerTest {
     assertThat(cellularDataResultCaptor.value.isSuccess()).isTrue()
     assertThat(cellularDataResultCaptor.value.getOrThrow().hideDialog).isTrue()
     assertThat(cellularDataResultCaptor.value.getOrThrow().useCellularData).isTrue()
-  }
-
-  @Module
-  class TestFirebaseModule {
-    companion object {
-      var mockCrashlyticsWrapper = Mockito.mock(CrashlyticsWrapper::class.java)
-    }
-    @Provides
-    @Singleton
-    fun provideFirebaseCrashlytics(): FirebaseCrashlytics {
-      return Mockito.mock(FirebaseCrashlytics::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideCrashlyticsWrapper(): CrashlyticsWrapper {
-      return mockCrashlyticsWrapper
-    }
   }
 
   // TODO(#89): Move this to a common test application component.
