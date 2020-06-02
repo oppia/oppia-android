@@ -1,11 +1,12 @@
 package org.oppia.domain.classify.rules.dragAndDropSortInput
 
+import javax.inject.Inject
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.ListOfSetsOfHtmlStrings
+import org.oppia.app.model.StringList
 import org.oppia.domain.classify.RuleClassifier
 import org.oppia.domain.classify.rules.GenericRuleClassifier
 import org.oppia.domain.classify.rules.RuleClassifierProvider
-import javax.inject.Inject
 
 /**
  * Provider for a classifier that determines whether two objects of [ListOfSetsOfHtmlStrings] are equal by checking their every list of both objects at every index
@@ -23,25 +24,23 @@ internal class DragDropSortInputIsEqualToOrderingClassifierProvider @Inject cons
   }
 
   override fun matches(answer: ListOfSetsOfHtmlStrings, input: ListOfSetsOfHtmlStrings): Boolean {
-    return answer.setOfHtmlStringsCount == input.setOfHtmlStringsCount && (checkEquality(
+    return answer.setOfHtmlStringsCount == input.setOfHtmlStringsCount && (areListOfSetsOfHtmlStringsEqual(
       answer, input
     ))
   }
 
-  private fun checkEquality(
-    answer: ListOfSetsOfHtmlStrings, input: ListOfSetsOfHtmlStrings
-  ): Boolean {
-    for (i in 0  until answer.setOfHtmlStringsCount) {
-      if (answer.getSetOfHtmlStrings(i).htmlCount == input.getSetOfHtmlStrings(i).htmlCount) {
-        for ( j in 0 until answer.getSetOfHtmlStrings(i).htmlCount) {
-          if (input.getSetOfHtmlStrings(i).htmlList.indexOf(answer.getSetOfHtmlStrings(i).getHtml(j)) == -1) {
-            return false
-          }
-        }
-      } else {
-        return false
-      }
+  private fun areListOfSetsOfHtmlStringsEqual(answer: ListOfSetsOfHtmlStrings, input: ListOfSetsOfHtmlStrings): Boolean {
+    if (answer.setOfHtmlStringsCount != input.setOfHtmlStringsCount) {
+      return false
     }
-    return true
+    val answerStringSets = answer.setOfHtmlStringsList
+    val inputStringSets = input.setOfHtmlStringsList
+    return (answerStringSets zip inputStringSets).map { (first, second) ->
+      areSetsOfHtmlStringsEqual(first, second)
+    }.reduce(Boolean::and)
+  }
+
+  private fun areSetsOfHtmlStringsEqual(first: StringList, second: StringList): Boolean {
+    return HashSet(first.htmlList) == HashSet(second.htmlList)
   }
 }

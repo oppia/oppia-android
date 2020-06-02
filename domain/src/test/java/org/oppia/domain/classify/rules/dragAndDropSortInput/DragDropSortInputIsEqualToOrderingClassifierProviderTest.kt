@@ -3,9 +3,14 @@ package org.oppia.domain.classify.rules.dragAndDropSortInput
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.*
 import dagger.BindsInstance
 import dagger.Component
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.reflect.KClass
+import kotlin.reflect.full.cast
+import kotlin.test.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -14,24 +19,26 @@ import org.oppia.app.model.ListOfSetsOfHtmlStrings
 import org.oppia.app.model.StringList
 import org.oppia.domain.classify.RuleClassifier
 import org.robolectric.annotation.Config
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.reflect.KClass
-import kotlin.reflect.full.cast
-import kotlin.test.fail
 
 /** Tests for [DragDropSortInputIsEqualToOrderingClassifierProvider]. */
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
 class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
-  private val LIST_OF_SETS_OF_HTML_STRING_VALUE_1 = createListOfSetsOfHtmlStrings("this","is","a","test")
-  private val LIST_OF_SETS_OF_HTML_STRING_VALUE_2 = createListOfSetsOfHtmlStrings("is","this","a","test")
-  private val LIST_OF_SETS_OF_HTML_STRING_VALUE_3 = createListOfSetsOfHtmlStrings("this","is","a","failed","test")
+  private val LIST_OF_SETS_OF_HTML_STRING_VALUE_1 = createListOfSetsOfHtmlStrings(listOf("item a", "item b"), listOf("item 2"), listOf("item 3"))
+  private val LIST_OF_SETS_OF_HTML_STRING_VALUE_2 = createListOfSetsOfHtmlStrings(listOf("item 2"), listOf("item a", "item b"), listOf("item 3"))
+  private val LIST_OF_SETS_OF_HTML_STRING_VALUE_3 = createListOfSetsOfHtmlStrings(
+    listOf("item invalid 1"),
+    listOf("item invalid a", "item invalid b"),
+    listOf("item invalid 3")
+  )
+  private val LIST_OF_SETS_OF_HTML_STRING_VALUE_4 = createListOfSetsOfHtmlStrings(listOf("item 2"), listOf("item a", "item b"))
+  private val LIST_OF_SETS_OF_HTML_STRING_VALUE_5 = createListOfSetsOfHtmlStrings(listOf("item a"), listOf("item 2"), listOf("item 3"))
+
 
   @Inject
   internal lateinit var dragDropSortInputIsEqualToOrderingClassifierProvider: DragDropSortInputIsEqualToOrderingClassifierProvider
 
-  private val isEqualToOrderingClassifierProvider:RuleClassifier by lazy {
+  private val isEqualToOrderingClassifierProvider: RuleClassifier by lazy {
     dragDropSortInputIsEqualToOrderingClassifierProvider.createRuleClassifier()
   }
 
@@ -42,32 +49,51 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
 
   @Test
   fun testAnswer_testLisOfSetsOfHtmlString_sameValue_bothValuesMatch() {
-    val inputs = mapOf( "x" to LIST_OF_SETS_OF_HTML_STRING_VALUE_1)
+    val inputs = mapOf("x" to LIST_OF_SETS_OF_HTML_STRING_VALUE_1)
 
     val matches =
       isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_OF_HTML_STRING_VALUE_1, inputs = inputs)
 
-    Truth.assertThat(matches).isTrue()
+    assertThat(matches).isTrue()
   }
 
   @Test
-  fun testAnswer_testLisOfSetsOfHtmlString_differentValue_bothValuesDoNotMatch() {
-    val inputs = mapOf( "x" to LIST_OF_SETS_OF_HTML_STRING_VALUE_2)
+  fun testAnswer_testLisOfSetsOfHtmlString_differentOrder_bothValuesDoNotMatch() {
+    val inputs = mapOf("x" to LIST_OF_SETS_OF_HTML_STRING_VALUE_2)
 
     val matches =
       isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_OF_HTML_STRING_VALUE_1, inputs = inputs)
 
-    Truth.assertThat(matches).isFalse()
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testAnswer_testLisOfSetsOfHtmlString_differentList_bothValuesDoNotMatch() {
+    val inputs = mapOf("x" to LIST_OF_SETS_OF_HTML_STRING_VALUE_3)
+
+    val matches =
+      isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_OF_HTML_STRING_VALUE_1, inputs = inputs)
+
+    assertThat(matches).isFalse()
   }
 
   @Test
   fun testAnswer_testLisOfSetsOfHtmlString_differentLength_bothValuesDoNotMatch() {
-    val inputs = mapOf( "x" to LIST_OF_SETS_OF_HTML_STRING_VALUE_3)
+    val inputs = mapOf("x" to LIST_OF_SETS_OF_HTML_STRING_VALUE_4)
 
     val matches =
       isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_OF_HTML_STRING_VALUE_1, inputs = inputs)
 
-    Truth.assertThat(matches).isFalse()
+    assertThat(matches).isFalse()
+  }
+  @Test
+  fun testAnswer_testLisOfSetsOfHtmlString_elementDifferentLength_bothValuesDoNotMatch() {
+    val inputs = mapOf("x" to LIST_OF_SETS_OF_HTML_STRING_VALUE_5)
+
+    val matches =
+      isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_OF_HTML_STRING_VALUE_1, inputs = inputs)
+
+    assertThat(matches).isFalse()
   }
 
   @Test
@@ -78,15 +104,14 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
       isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_OF_HTML_STRING_VALUE_1, inputs = inputs)
     }
 
-    Truth.assertThat(exception)
+    assertThat(exception)
       .hasMessageThat()
       .contains("Expected classifier inputs to contain parameter with name 'x' but had: [y]")
   }
 
-
-  private fun createListOfSetsOfHtmlStrings(vararg items: String): InteractionObject {
+  private fun createListOfSetsOfHtmlStrings(vararg items: List<String>): InteractionObject {
     val listOfSetsOfHtmlStrings = ListOfSetsOfHtmlStrings.newBuilder()
-      .addAllSetOfHtmlStrings(items.map { createHtmlStringList(it.split("")) })
+      .addAllSetOfHtmlStrings(items.map { createHtmlStringList(it) })
       .build()
 
     return InteractionObject.newBuilder().setListOfSetsOfHtmlString(listOfSetsOfHtmlStrings).build()
