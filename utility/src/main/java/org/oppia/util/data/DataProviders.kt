@@ -9,7 +9,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import org.oppia.util.crashlytics.CrashlyticsWrapper
+import org.oppia.util.firebase.CrashlyticsWrapper
 import org.oppia.util.threading.BackgroundDispatcher
 
 /**

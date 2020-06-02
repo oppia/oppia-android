@@ -1,4 +1,4 @@
-package org.oppia.util.crashlytics
+package org.oppia.util.firebase
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import javax.inject.Inject

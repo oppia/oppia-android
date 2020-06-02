@@ -35,7 +35,7 @@ import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
-import org.oppia.util.crashlytics.CrashlyticsWrapper
+import org.oppia.util.firebase.CrashlyticsWrapper
 import org.oppia.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -66,6 +66,7 @@ class DataProvidersTest {
    * null is returned.
    */
   fun <T> any(): T = Mockito.any<T>()
+// TODO (#1233) : Add a MockitoHelper class to handle nullable versions of all mockito matchers
 
   @Rule
   @JvmField
@@ -102,7 +103,6 @@ class DataProvidersTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    MockitoAnnotations.initMocks(this)
   }
 
   // Note: custom data providers aren't explicitly tested since their interaction with the infrastructure is tested
@@ -424,7 +424,7 @@ class DataProvidersTest {
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
     assertThat(stringResultCaptor.value.isFailure()).isTrue()
     assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(IllegalStateException::class.java)
-    verify(TestCrashlyticsModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -822,7 +822,7 @@ class DataProvidersTest {
     assertThat(intResultCaptor.value.isFailure()).isTrue()
     assertThat(intResultCaptor.value.getErrorOrNull()).isInstanceOf(IllegalStateException::class.java)
     assertThat(intResultCaptor.value.getErrorOrNull()).hasMessageThat().contains("Transform failure")
-    verify(TestCrashlyticsModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -842,7 +842,7 @@ class DataProvidersTest {
     assertThat(intResultCaptor.value.getErrorOrNull()).isInstanceOf(AsyncResult.ChainedFailureException::class.java)
     assertThat(intResultCaptor.value.getErrorOrNull()).hasCauseThat().isInstanceOf(IllegalStateException::class.java)
     assertThat(intResultCaptor.value.getErrorOrNull()).hasCauseThat().hasMessageThat().contains("Base failure")
-    verify(TestCrashlyticsModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -1061,7 +1061,7 @@ class DataProvidersTest {
     assertThat(intResultCaptor.value.getErrorOrNull()).isInstanceOf(AsyncResult.ChainedFailureException::class.java)
     assertThat(intResultCaptor.value.getErrorOrNull()).hasCauseThat().isInstanceOf(IllegalStateException::class.java)
     assertThat(intResultCaptor.value.getErrorOrNull()).hasCauseThat().hasMessageThat().contains("Base failure")
-    verify(TestCrashlyticsModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -1138,7 +1138,7 @@ class DataProvidersTest {
 
     // A base provider failure should result in the transform method not being called.
     assertThat(fakeTransformCallbackCalled).isFalse()
-    verify(TestCrashlyticsModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -1449,7 +1449,7 @@ class DataProvidersTest {
     assertThat(stringResultCaptor.value.isFailure()).isTrue()
     assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(AsyncResult.ChainedFailureException::class.java)
     assertThat(stringResultCaptor.value.getErrorOrNull()).hasCauseThat().isInstanceOf(IllegalStateException::class.java)
-    verify(TestCrashlyticsModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -1609,7 +1609,7 @@ class DataProvidersTest {
     assertThat(stringResultCaptor.value.isFailure()).isTrue()
     assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(AsyncResult.ChainedFailureException::class.java)
     assertThat(stringResultCaptor.value.getErrorOrNull()).hasCauseThat().isInstanceOf(IllegalStateException::class.java)
-    verify(TestCrashlyticsModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -1629,7 +1629,7 @@ class DataProvidersTest {
     assertThat(stringResultCaptor.value.isFailure()).isTrue()
     assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(AsyncResult.ChainedFailureException::class.java)
     assertThat(stringResultCaptor.value.getErrorOrNull()).hasCauseThat().isInstanceOf(IllegalStateException::class.java)
-    verify(TestCrashlyticsModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -1649,7 +1649,7 @@ class DataProvidersTest {
     assertThat(stringResultCaptor.value.isFailure()).isTrue()
     assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(AsyncResult.ChainedFailureException::class.java)
     assertThat(stringResultCaptor.value.getErrorOrNull()).hasCauseThat().isInstanceOf(IllegalStateException::class.java)
-    verify(TestCrashlyticsModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -1669,7 +1669,7 @@ class DataProvidersTest {
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
     assertThat(stringResultCaptor.value.isFailure()).isTrue()
     assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(IllegalStateException::class.java)
-    verify(TestCrashlyticsModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -2153,7 +2153,7 @@ class DataProvidersTest {
     assertThat(stringResultCaptor.value.isFailure()).isTrue()
     assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(AsyncResult.ChainedFailureException::class.java)
     assertThat(stringResultCaptor.value.getErrorOrNull()).hasCauseThat().isInstanceOf(IllegalStateException::class.java)
-    verify(TestCrashlyticsModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -2173,7 +2173,7 @@ class DataProvidersTest {
     assertThat(stringResultCaptor.value.isFailure()).isTrue()
     assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(AsyncResult.ChainedFailureException::class.java)
     assertThat(stringResultCaptor.value.getErrorOrNull()).hasCauseThat().isInstanceOf(IllegalStateException::class.java)
-    verify(TestCrashlyticsModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -2193,7 +2193,7 @@ class DataProvidersTest {
     assertThat(stringResultCaptor.value.isFailure()).isTrue()
     assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(AsyncResult.ChainedFailureException::class.java)
     assertThat(stringResultCaptor.value.getErrorOrNull()).hasCauseThat().isInstanceOf(IllegalStateException::class.java)
-    verify(TestCrashlyticsModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -2621,7 +2621,7 @@ class DataProvidersTest {
       .hasCauseThat().isInstanceOf(IllegalStateException::class.java)
     assertThat(intResultCaptor.value.getErrorOrNull())
       .hasCauseThat().hasMessageThat().contains("Base failure")
-    verify(TestCrashlyticsModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -2954,7 +2954,7 @@ class DataProvidersTest {
   }
 
   @Module
-  class TestCrashlyticsModule {
+  class TestFirebaseModule {
     companion object {
       var mockCrashlyticsWrapper = Mockito.mock(CrashlyticsWrapper::class.java)
     }
@@ -2973,7 +2973,7 @@ class DataProvidersTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestDispatcherModule::class, TestModule::class, TestCrashlyticsModule::class])
+  @Component(modules = [TestDispatcherModule::class, TestModule::class, TestFirebaseModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
