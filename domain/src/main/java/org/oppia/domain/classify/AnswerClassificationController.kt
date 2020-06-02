@@ -4,6 +4,7 @@ import org.oppia.app.model.AnswerGroup
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.Outcome
+import org.oppia.util.firebase.CrashlyticsWrapper
 import javax.inject.Inject
 
 // TODO(#59): Restrict the visibility of this class to only other controllers.
@@ -15,7 +16,8 @@ import javax.inject.Inject
  * This controller should only be interacted with via background threads.
  */
 class AnswerClassificationController @Inject constructor(
-  private val interactionClassifiers: Map<String, @JvmSuppressWildcards InteractionClassifier>
+  private val interactionClassifiers: Map<String, @JvmSuppressWildcards InteractionClassifier>,
+  private val crashlyticsWrapper: CrashlyticsWrapper
 ) {
   /**
    * Classifies the specified answer in the context of the specified [Interaction] and returns the [Outcome] that best
@@ -48,6 +50,7 @@ class AnswerClassificationController @Inject constructor(
             return answerGroup.outcome
           }
         } catch (e: Exception) {
+          crashlyticsWrapper.logException(e)
           throw IllegalStateException("Failed when classifying answer $answer for interaction $interactionId", e)
         }
       }

@@ -6,6 +6,7 @@ import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -45,6 +46,7 @@ import org.oppia.domain.topic.TEST_SKILL_ID_0
 import org.oppia.domain.topic.TEST_SKILL_ID_1
 import org.oppia.domain.topic.TEST_SKILL_ID_2
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.firebase.CrashlyticsWrapper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -69,6 +71,13 @@ class QuestionAssessmentProgressControllerTest {
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
+  /**
+   * Returns Mockito.any() as nullable type to avoid java.lang.IllegalStateException when
+   * null is returned.
+   */
+  fun <T> any(): T = Mockito.any<T>()
+// TODO (#1233): Add a MockitoHelper class to handle nullable versions of all mockito matchers
 
   @Inject lateinit var questionTrainingController: QuestionTrainingController
 
@@ -226,6 +235,7 @@ class QuestionAssessmentProgressControllerTest {
     assertThat(resultLiveData.value!!.getErrorOrNull())
       .hasMessageThat()
       .contains("Cannot stop a new training session which wasn't started")
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -241,6 +251,7 @@ class QuestionAssessmentProgressControllerTest {
     assertThat(resultLiveData.value!!.getErrorOrNull())
       .hasMessageThat()
       .contains("Cannot start a new training session until the previous one is completed")
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -292,6 +303,7 @@ class QuestionAssessmentProgressControllerTest {
     assertThat(asyncAnswerOutcomeCaptor.value.getErrorOrNull())
       .hasMessageThat()
       .contains("Cannot submit an answer if a training session has not yet begun.")
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -453,6 +465,7 @@ class QuestionAssessmentProgressControllerTest {
     assertThat(asyncNullableResultCaptor.value.getErrorOrNull())
       .hasMessageThat()
       .contains("Cannot navigate to a next question if a training session has not begun.")
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -471,6 +484,7 @@ class QuestionAssessmentProgressControllerTest {
     assertThat(asyncNullableResultCaptor.value.getErrorOrNull())
       .hasMessageThat()
       .contains("Cannot navigate to next state; at most recent state.")
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -526,6 +540,7 @@ class QuestionAssessmentProgressControllerTest {
     assertThat(asyncNullableResultCaptor.value.getErrorOrNull())
       .hasMessageThat()
       .contains("Cannot navigate to next state; at most recent state.")
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -691,6 +706,7 @@ class QuestionAssessmentProgressControllerTest {
     assertThat(asyncNullableResultCaptor.value.getErrorOrNull())
       .hasMessageThat()
       .contains("Cannot navigate to next state; at most recent state.")
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -750,6 +766,24 @@ class QuestionAssessmentProgressControllerTest {
    */
   private fun subscribeToCurrentQuestionToAllowSessionToLoad() {
     questionAssessmentProgressController.getCurrentQuestion().observeForever(mockCurrentQuestionLiveDataObserver)
+  }
+
+  @Module
+  class TestFirebaseModule {
+    companion object {
+      var mockCrashlyticsWrapper = Mockito.mock(CrashlyticsWrapper::class.java)
+    }
+    @Provides
+    @Singleton
+    fun provideFirebaseCrashlytics(): FirebaseCrashlytics {
+      return Mockito.mock(FirebaseCrashlytics::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCrashlyticsWrapper(): CrashlyticsWrapper {
+      return mockCrashlyticsWrapper
+    }
   }
 
   @ExperimentalCoroutinesApi
@@ -907,7 +941,7 @@ class QuestionAssessmentProgressControllerTest {
   @Component(modules = [
     TestModule::class, TestQuestionModule::class, ContinueModule::class, FractionInputModule::class,
     ItemSelectionInputModule::class, MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
-    NumericInputRuleModule::class, TextInputRuleModule::class, InteractionsModule::class
+    NumericInputRuleModule::class, TextInputRuleModule::class, InteractionsModule::class, TestFirebaseModule::class
   ])
   interface TestApplicationComponent {
     @Component.Builder

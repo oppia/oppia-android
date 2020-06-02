@@ -7,6 +7,7 @@ import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
+import org.oppia.util.firebase.CrashlyticsWrapper
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.random.Random
@@ -21,7 +22,8 @@ class QuestionTrainingController @Inject constructor(
   private val topicController: TopicController,
   private val dataProviders: DataProviders,
   @QuestionCountPerTrainingSession private val questionCountPerSession: Int,
-  @QuestionTrainingSeed private val questionTrainingSeed: Long
+  @QuestionTrainingSeed private val questionTrainingSeed: Long,
+  private val crashlyticsWrapper: CrashlyticsWrapper
 ) {
 
   private val seedRandom = Random(questionTrainingSeed)
@@ -49,6 +51,7 @@ class QuestionTrainingController @Inject constructor(
       ) { it }
       dataProviders.convertToLiveData(erasedDataProvider)
     } catch (e: Exception) {
+      crashlyticsWrapper.logException(e)
       MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -98,6 +101,7 @@ class QuestionTrainingController @Inject constructor(
       questionAssessmentProgressController.finishQuestionTrainingSession()
       MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
+      crashlyticsWrapper.logException(e)
       MutableLiveData(AsyncResult.failed(e))
     }
   }

@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import org.oppia.util.caching.AssetRepository
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.firebase.CrashlyticsWrapper
 import org.oppia.util.logging.Logger
 import org.oppia.util.threading.BackgroundDispatcher
 import java.io.IOException
@@ -34,7 +35,8 @@ class AudioPlayerController @Inject constructor(
   private val logger: Logger,
   private val assetRepository: AssetRepository,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
-  @CacheAssetsLocally private val cacheAssetsLocally: Boolean
+  @CacheAssetsLocally private val cacheAssetsLocally: Boolean,
+  private val crashlyticsWrapper: CrashlyticsWrapper
 ) {
 
   inner class AudioMutableLiveData :
@@ -180,6 +182,7 @@ class AudioPlayerController @Inject constructor(
       }
       mediaPlayer.prepareAsync()
     } catch (e: IOException) {
+      crashlyticsWrapper.logException(e)
       logger.e("AudioPlayerController", "Failed to set data source for media player", e)
     }
     playProgress?.value = AsyncResult.pending()

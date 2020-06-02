@@ -6,6 +6,7 @@ import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -27,6 +28,7 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Captor
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
@@ -35,6 +37,7 @@ import org.oppia.app.model.ProfileId
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.firebase.CrashlyticsWrapper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -142,6 +145,24 @@ class StoryProgressControllerTest {
     assertThat(recordProgressResultCaptor.value.isSuccess()).isTrue()
   }
 
+  @Module
+  class TestFirebaseModule {
+    companion object {
+      var mockCrashlyticsWrapper = Mockito.mock(CrashlyticsWrapper::class.java)
+    }
+    @Provides
+    @Singleton
+    fun provideFirebaseCrashlytics(): FirebaseCrashlytics {
+      return Mockito.mock(FirebaseCrashlytics::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCrashlyticsWrapper(): CrashlyticsWrapper {
+      return mockCrashlyticsWrapper
+    }
+  }
+
   @Qualifier annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
@@ -196,7 +217,7 @@ class StoryProgressControllerTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class])
+  @Component(modules = [TestModule::class, TestFirebaseModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

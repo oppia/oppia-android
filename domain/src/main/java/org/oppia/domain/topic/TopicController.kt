@@ -33,6 +33,7 @@ import org.oppia.domain.util.StateRetriever
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
+import org.oppia.util.firebase.CrashlyticsWrapper
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -104,7 +105,8 @@ class TopicController @Inject constructor(
   private val dataProviders: DataProviders,
   private val jsonAssetRetriever: JsonAssetRetriever,
   private val stateRetriever: StateRetriever,
-  private val storyProgressController: StoryProgressController
+  private val storyProgressController: StoryProgressController,
+  private val crashlyticsWrapper: CrashlyticsWrapper
 ) {
 
   /**
@@ -200,6 +202,7 @@ class TopicController @Inject constructor(
       try {
         AsyncResult.success(retrieveReviewCard(topicId, subtopicId))
       } catch (e: Exception) {
+        crashlyticsWrapper.logException(e)
         AsyncResult.failed<RevisionCard>(e)
       }
     )

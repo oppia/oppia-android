@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -28,6 +29,7 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Captor
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
@@ -48,6 +50,7 @@ import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_1
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_2
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_3
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.firebase.CrashlyticsWrapper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -71,6 +74,13 @@ class ExplorationDataControllerTest {
   @Rule
   @JvmField
   val executorRule = InstantTaskExecutorRule()
+
+  /**
+   * Returns Mockito.any() as nullable type to avoid java.lang.IllegalStateException when
+   * null is returned.
+   */
+  fun <T> any(): T = Mockito.any<T>()
+// TODO (#1233): Add a MockitoHelper class to handle nullable versions of all mockito matchers
 
   @Inject lateinit var explorationDataController: ExplorationDataController
 
@@ -261,6 +271,7 @@ class ExplorationDataControllerTest {
     explorationLiveData.observeForever(mockExplorationObserver)
     verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
     assertThat(explorationResultCaptor.value.isFailure()).isTrue()
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Qualifier
@@ -312,13 +323,31 @@ class ExplorationDataControllerTest {
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
   }
 
+  @Module
+  class TestFirebaseModule {
+    companion object {
+      var mockCrashlyticsWrapper = Mockito.mock(CrashlyticsWrapper::class.java)
+    }
+    @Provides
+    @Singleton
+    fun provideFirebaseCrashlytics(): FirebaseCrashlytics {
+      return Mockito.mock(FirebaseCrashlytics::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCrashlyticsWrapper(): CrashlyticsWrapper {
+      return mockCrashlyticsWrapper
+    }
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
       TestModule::class, ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
       MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
-      TextInputRuleModule::class, InteractionsModule::class
+      TextInputRuleModule::class, InteractionsModule::class, TestFirebaseModule::class
     ]
   )
   interface TestApplicationComponent {

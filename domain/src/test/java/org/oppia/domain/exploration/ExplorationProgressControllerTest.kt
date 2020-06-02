@@ -6,6 +6,7 @@ import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -21,6 +22,7 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Captor
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.Mockito.atLeast
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
@@ -46,6 +48,7 @@ import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.util.toAnswerString
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.firebase.CrashlyticsWrapper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -78,6 +81,13 @@ class ExplorationProgressControllerTest {
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
+  /**
+   * Returns Mockito.any() as nullable type to avoid java.lang.IllegalStateException when
+   * null is returned.
+   */
+  fun <T> any(): T = Mockito.any<T>()
+// TODO (#1233): Add a MockitoHelper class to handle nullable versions of all mockito matchers
 
   @Inject lateinit var explorationDataController: ExplorationDataController
 
@@ -160,6 +170,8 @@ class ExplorationProgressControllerTest {
     assertThat(currentStateResultCaptor.value.getErrorOrNull())
       .hasMessageThat()
       .contains("Invalid exploration ID: invalid_exp_id")
+
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -264,6 +276,8 @@ class ExplorationProgressControllerTest {
     assertThat(asyncResultCaptor.value.getErrorOrNull())
       .hasMessageThat()
       .contains("Expected to finish previous exploration before starting a new one.")
+
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -301,6 +315,8 @@ class ExplorationProgressControllerTest {
     assertThat(asyncAnswerOutcomeCaptor.value.getErrorOrNull())
       .hasMessageThat()
       .contains("Cannot submit an answer if an exploration is not being played.")
+
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -320,6 +336,8 @@ class ExplorationProgressControllerTest {
     assertThat(asyncAnswerOutcomeCaptor.value.getErrorOrNull())
       .hasMessageThat()
       .contains("Cannot submit an answer while the exploration is being loaded.")
+
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -468,6 +486,7 @@ class ExplorationProgressControllerTest {
     assertThat(asyncResultCaptor.value.getErrorOrNull())
       .hasMessageThat()
       .contains("Cannot navigate to a next state if an exploration is not being played.")
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -485,6 +504,8 @@ class ExplorationProgressControllerTest {
     assertThat(asyncResultCaptor.value.getErrorOrNull())
       .hasMessageThat()
       .contains("Cannot navigate to a next state if an exploration is being loaded.")
+
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -503,6 +524,8 @@ class ExplorationProgressControllerTest {
     assertThat(asyncResultCaptor.value.getErrorOrNull())
       .hasMessageThat()
       .contains("Cannot navigate to next state; at most recent state.")
+
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -556,6 +579,8 @@ class ExplorationProgressControllerTest {
     assertThat(asyncResultCaptor.value.getErrorOrNull())
       .hasMessageThat()
       .contains("Cannot navigate to next state; at most recent state.")
+
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -570,6 +595,8 @@ class ExplorationProgressControllerTest {
     assertThat(asyncResultCaptor.value.getErrorOrNull())
       .hasMessageThat()
       .contains("Cannot navigate to a previous state if an exploration is not being played.")
+
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -588,6 +615,8 @@ class ExplorationProgressControllerTest {
     assertThat(asyncResultCaptor.value.getErrorOrNull())
       .hasMessageThat()
       .contains("Cannot navigate to a previous state if an exploration is being loaded.")
+
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -606,6 +635,8 @@ class ExplorationProgressControllerTest {
     assertThat(asyncResultCaptor.value.getErrorOrNull())
       .hasMessageThat()
       .contains("Cannot navigate to previous state; at initial state.")
+
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -625,6 +656,8 @@ class ExplorationProgressControllerTest {
     assertThat(asyncResultCaptor.value.getErrorOrNull())
       .hasMessageThat()
       .contains("Cannot navigate to previous state; at initial state.")
+
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -681,6 +714,8 @@ class ExplorationProgressControllerTest {
     assertThat(asyncResultCaptor.value.getErrorOrNull())
       .hasMessageThat()
       .contains("Cannot navigate to previous state; at initial state.")
+
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -1174,6 +1209,8 @@ class ExplorationProgressControllerTest {
     assertThat(asyncResultCaptor.value.getErrorOrNull())
       .hasMessageThat()
       .contains("Cannot navigate to next state; at most recent state.")
+
+    verify(TestFirebaseModule.mockCrashlyticsWrapper, atLeastOnce()).logException(any())
   }
 
   @Test
@@ -1363,6 +1400,24 @@ class ExplorationProgressControllerTest {
 
   private fun createContinueButtonAnswer() = createTextInputAnswer(DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER)
 
+  @Module
+  class TestFirebaseModule {
+    companion object {
+      var mockCrashlyticsWrapper = Mockito.mock(CrashlyticsWrapper::class.java)
+    }
+    @Provides
+    @Singleton
+    fun provideFirebaseCrashlytics(): FirebaseCrashlytics {
+      return Mockito.mock(FirebaseCrashlytics::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCrashlyticsWrapper(): CrashlyticsWrapper {
+      return mockCrashlyticsWrapper
+    }
+  }
+
   @Qualifier
   annotation class TestDispatcher
 
@@ -1418,7 +1473,7 @@ class ExplorationProgressControllerTest {
     modules = [
       TestModule::class, ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
       MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
-      TextInputRuleModule::class, InteractionsModule::class
+      TextInputRuleModule::class, InteractionsModule::class, TestFirebaseModule::class
     ]
   )
   interface TestApplicationComponent {

@@ -22,6 +22,7 @@ import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
+import org.oppia.util.firebase.CrashlyticsWrapper
 import org.oppia.util.logging.Logger
 import org.oppia.util.profile.DirectoryManagementUtil
 import java.io.File
@@ -56,7 +57,8 @@ class ProfileManagementController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
   private val dataProviders: DataProviders,
   private val context: Context,
-  private val directoryManagementUtil: DirectoryManagementUtil
+  private val directoryManagementUtil: DirectoryManagementUtil,
+  private val crashlyticsWrapper: CrashlyticsWrapper
 ) {
   private var currentProfileId: Int = -1
   private val profileDataStore = cacheStoreFactory.create("profile_database", ProfileDatabase.getDefaultInstance())
@@ -583,6 +585,7 @@ class ProfileManagementController @Inject constructor(
           .compress(Bitmap.CompressFormat.PNG, /* quality= */ 100, fos)
       }
     } catch (e: Exception) {
+      crashlyticsWrapper.logException(e)
       logger.e("ProfileManagementController", "Failed to store user submitted avatar image", e)
       return null
     }
