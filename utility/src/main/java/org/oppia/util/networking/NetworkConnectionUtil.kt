@@ -24,11 +24,14 @@ class NetworkConnectionUtil @Inject constructor(private val context: Context) {
     testConnectionStatus?.let {
       return it
     }
-    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val connectivityManager = context.getSystemService(
+      Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     return connectivityManager.activeNetworkInfo?.let { activeNetwork ->
       val isConnected = activeNetwork.isConnected
-      val isLocal = activeNetwork.type == ConnectivityManager.TYPE_WIFI || activeNetwork.type == ConnectivityManager.TYPE_ETHERNET
-      val isCellular = activeNetwork.type == ConnectivityManager.TYPE_MOBILE || activeNetwork.type == ConnectivityManager.TYPE_WIMAX
+      val isLocal = activeNetwork.type == ConnectivityManager.TYPE_WIFI ||
+        activeNetwork.type == ConnectivityManager.TYPE_ETHERNET
+      val isCellular = activeNetwork.type == ConnectivityManager.TYPE_MOBILE ||
+        activeNetwork.type == ConnectivityManager.TYPE_WIMAX
       return@let when {
         isConnected && isLocal -> ConnectionStatus.LOCAL
         isConnected && isCellular -> ConnectionStatus.CELLULAR

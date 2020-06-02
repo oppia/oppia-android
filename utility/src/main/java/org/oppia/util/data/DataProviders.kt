@@ -14,8 +14,9 @@ import org.oppia.util.threading.BackgroundDispatcher
 /**
  * Various functions to create or manipulate [DataProvider]s.
  *
- * It's recommended to transform providers rather than [LiveData] since the latter occurs on the main thread, and the
- * former can occur safely on background threads to reduce UI lag and user perceived latency.
+ * It's recommended to transform providers rather than [LiveData] since the latter occurs on the
+ * main thread, and the former can occur safely on background threads to reduce UI lag and
+ * user perceived latency.
  */
 @Singleton
 class DataProviders @Inject constructor(
@@ -23,17 +24,21 @@ class DataProviders @Inject constructor(
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager
 ) {
   /**
-   * Returns a new [DataProvider] that applies the specified function each time new data is available to it, and
-   * provides it to its own subscribers.
+   * Returns a new [DataProvider] that applies the specified function each time new data
+   * is available to it, and provides it to its own subscribers.
    *
-   * Notifications to the original data provider will also notify subscribers to the transformed data provider of
-   * changes, but not vice versa.
+   * Notifications to the original data provider will also notify subscribers to the transformed
+   * data provider of changes, but not vice versa.
    *
-   * Note that the input transformation function should be non-blocking, have no side effects, and be thread-safe since
-   * it may be called on different background threads at different times. It should perform no UI operations or
-   * otherwise interact with UI components.
+   * Note that the input transformation function should be non-blocking, have no side effects,
+   * and be thread-safe since it may be called on different background threads at different times.
+   * It should perform no UI operations or otherwise interact with UI components.
    */
-  fun <T1, T2> transform(newId: Any, dataProvider: DataProvider<T1>, function: (T1) -> T2): DataProvider<T2> {
+  fun <T1, T2> transform(
+    newId: Any,
+    dataProvider: DataProvider<T1>,
+    function: (T1) -> T2
+  ): DataProvider<T2> {
     asyncDataSubscriptionManager.associateIds(newId, dataProvider.getId())
     return object : DataProvider<T2> {
       override fun getId(): Any {
@@ -51,8 +56,8 @@ class DataProviders @Inject constructor(
   }
 
   /**
-   * Returns a transformed [DataProvider] in the same way as [transform] except the transformation function can be
-   * blocking.
+   * Returns a transformed [DataProvider] in the same way as [transform] except the
+   * transformation function can be blocking.
    */
   fun <T1, T2> transformAsync(
     newId: Any,
@@ -72,9 +77,10 @@ class DataProviders @Inject constructor(
   }
 
   /**
-   * Returns a new [NestedTransformedDataProvider]. By default, the data provider returned by this function behaves the
-   * same as [transformAsync]'s, except this one supports changing its based provider. If callers do not plan to change
-   * the underlying base provider, [transformAsync] should be used, instead.
+   * Returns a new [NestedTransformedDataProvider]. By default, the data provider returned by this
+   * function behaves the same as [transformAsync]'s, except this one supports changing its
+   * based provider. If callers do not plan to change the underlying base provider,
+   * [transformAsync] should be used, instead.
    */
   fun <T1, T2> createNestedTransformedDataProvider(
     newId: Any,
@@ -87,15 +93,15 @@ class DataProviders @Inject constructor(
   }
 
   /**
-   * Returns a new [DataProvider] that combines two other providers by applying the specified function to produce a new
-   * value each time either data provider changes.
+   * Returns a new [DataProvider] that combines two other providers by applying the specified
+   * function to produce a new value each time either data provider changes.
    *
-   * Notifications to the original data providers will also notify subscribers to the combined data provider of
-   * changes, but not vice versa.
+   * Notifications to the original data providers will also notify subscribers to the
+   * combined data provider of changes, but not vice versa.
    *
-   * Note that the combine function should be non-blocking, have no side effects, and be thread-safe since it may be
-   * called on different background threads at different times. It should perform no UI operations or otherwise interact
-   * with UI components.
+   * Note that the combine function should be non-blocking, have no side effects,
+   * and be thread-safe since it may be called on different background threads at different times.
+   * It should perform no UI operations or otherwise interact with UI components.
    */
   fun <O, T1, T2> combine(
     newId: Any,
@@ -121,7 +127,8 @@ class DataProviders @Inject constructor(
   }
 
   /**
-   * Returns a transformed [DataProvider] in the same way as [combine] except the combine function can be blocking.
+   * Returns a transformed [DataProvider] in the same way as [combine] except the combine function
+   * can be blocking.
    */
   fun <O, T1, T2> combineAsync(
     newId: Any,
@@ -143,15 +150,15 @@ class DataProviders @Inject constructor(
   }
 
   /**
-   * Returns a new in-memory [DataProvider] with the specified function being called each time the provider's data is
-   * retrieved, and the specified identifier.
+   * Returns a new in-memory [DataProvider] with the specified function being called each time the
+   * provider's data is retrieved, and the specified identifier.
    *
-   * Note that the loadFromMemory function should be non-blocking, and have no side effects. It should also be thread
-   * safe since it can be called from different background threads. It also should never interact with UI components or
-   * perform UI operations.
+   * Note that the loadFromMemory function should be non-blocking, and have no side effects.
+   * It should also be thread safe since it can be called from different background threads.
+   * It also should never interact with UI components or perform UI operations.
    *
-   * Changes to the returned data provider can be propagated using calls to [AsyncDataSubscriptionManager.notifyChange]
-   * with the in-memory provider's identifier.
+   * Changes to the returned data provider can be propagated using calls to
+   * [AsyncDataSubscriptionManager.notifyChange] with the in-memory provider's identifier.
    */
   fun <T> createInMemoryDataProvider(id: Any, loadFromMemory: () -> T): DataProvider<T> {
     return object : DataProvider<T> {
@@ -170,10 +177,13 @@ class DataProviders @Inject constructor(
   }
 
   /**
-   * Returns a new in-memory [DataProvider] in the same way as [createInMemoryDataProvider] except the load function can
-   * be blocking.
+   * Returns a new in-memory [DataProvider] in the same way as [createInMemoryDataProvider]
+   * except the load function can be blocking.
    */
-  fun <T> createInMemoryDataProviderAsync(id: Any, loadFromMemoryAsync: suspend () -> AsyncResult<T>): DataProvider<T> {
+  fun <T> createInMemoryDataProviderAsync(
+    id: Any,
+    loadFromMemoryAsync: suspend () -> AsyncResult<T>
+  ): DataProvider<T> {
     return object : DataProvider<T> {
       override fun getId(): Any {
         return id
@@ -186,8 +196,9 @@ class DataProviders @Inject constructor(
   }
 
   /**
-   * Converts a [DataProvider] to [LiveData]. This will use a background executor to handle processing of the coroutine,
-   * but [LiveData] guarantees that final delivery of the result will happen on the main thread.
+   * Converts a [DataProvider] to [LiveData]. This will use a background executor to handle
+   * processing of the coroutine, but [LiveData] guarantees that final delivery of the result
+   * will happen on the main thread.
    */
   fun <T> convertToLiveData(dataProvider: DataProvider<T>): LiveData<AsyncResult<T>> {
     return NotifiableAsyncLiveData(backgroundDispatcher, asyncDataSubscriptionManager, dataProvider)

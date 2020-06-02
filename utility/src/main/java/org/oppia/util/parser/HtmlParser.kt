@@ -22,9 +22,11 @@ class HtmlParser private constructor(
 ) {
 
   /**
-   * This method replaces custom Oppia tags with Android-compatible versions for a given raw HTML string, and returns the HTML [Spannable].
+   * This method replaces custom Oppia tags with Android-compatible versions for a given raw
+   * HTML string, and returns the HTML [Spannable].
    * @param rawString rawString argument is the string from the string-content
-   * @param htmlContentTextView htmlContentTextView argument is the TextView, that need to be passed as argument to ImageGetter class for image parsing
+   * @param htmlContentTextView htmlContentTextView argument is the TextView,
+   * that need to be passed as argument to ImageGetter class for image parsing
    * @return Spannable Spannable represents the styled text.
    */
   fun parseOppiaHtml(rawString: String, htmlContentTextView: TextView): Spannable {
@@ -45,12 +47,15 @@ class HtmlParser private constructor(
       htmlContent = htmlContent.replace("&amp;quot;", "")
     }
 
-    val imageGetter = urlImageParserFactory.create(htmlContentTextView, entityType, entityId, imageCenterAlign)
+    val imageGetter = urlImageParserFactory.create(
+      htmlContentTextView, entityType, entityId, imageCenterAlign)
 
-    val htmlSpannable = HtmlCompat.fromHtml(htmlContent, HtmlCompat.FROM_HTML_MODE_LEGACY, imageGetter, LiTagHandler()) as Spannable
+    val htmlSpannable = HtmlCompat.fromHtml(
+      htmlContent, HtmlCompat.FROM_HTML_MODE_LEGACY, imageGetter, LiTagHandler()) as Spannable
 
     val spannableBuilder = SpannableStringBuilder(htmlSpannable)
-    val bulletSpans = spannableBuilder.getSpans(0, spannableBuilder.length, BulletSpan::class.java)
+    val bulletSpans = spannableBuilder.getSpans(
+      0, spannableBuilder.length, BulletSpan::class.java)
     bulletSpans.forEach {
       val start = spannableBuilder.getSpanStart(it)
       val end = spannableBuilder.getSpanEnd(it)

@@ -20,7 +20,10 @@ import org.oppia.util.logging.Logger
  * quickly and synchronously.
  */
 @Singleton
-class AssetRepository @Inject constructor(private val context: Context, private val logger: Logger) {
+class AssetRepository @Inject constructor(
+  private val context: Context,
+  private val logger: Logger
+) {
   private val repositoryLock = ReentrantLock()
 
   /** Map of asset names to file contents for text file assets. */
@@ -34,19 +37,22 @@ class AssetRepository @Inject constructor(private val context: Context, private 
     }
   }
 
-  /** Ensures the contents corresponding to the specified asset are available for quick retrieval. */
+  /** Ensures the contents corresponding to the specified asset are available for
+   * quick retrieval.
+   */
   fun primeTextFileFromLocalAssets(assetName: String) {
     repositoryLock.withLock {
       if (assetName !in textFileAssets) {
         logger.d("AssetRepo", "Caching local text asset: $assetName")
-        textFileAssets[assetName] = context.assets.open(assetName).bufferedReader().use { it.readText() }
+        textFileAssets[assetName] = context.assets.open(assetName).bufferedReader().use {
+          it.readText() }
       }
     }
   }
 
   /**
-   * Returns a function to retrieve the stream of the binary asset corresponding to the specified URL, to be called on a
-   * background thread.
+   * Returns a function to retrieve the stream of the binary asset corresponding to the
+   * specified URL, to be called on a background thread.
    */
   fun loadRemoteBinaryAsset(url: String): () -> ByteArray {
     return {

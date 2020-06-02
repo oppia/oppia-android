@@ -731,7 +731,10 @@ class InMemoryBlockingCacheTest {
 
   // TODO(#89): Move to a common test library.
   /** A replacement to JUnit5's assertThrows() with Kotlin suspend coroutine support. */
-  private suspend fun <T : Throwable> assertThrowsAsync(type: KClass<T>, operation: suspend () -> Unit): T {
+  private suspend fun <T : Throwable> assertThrowsAsync(
+    type: KClass<T>,
+    operation: suspend () -> Unit
+  ): T {
     try {
       operation()
       fail("Expected to encounter exception of $type")
