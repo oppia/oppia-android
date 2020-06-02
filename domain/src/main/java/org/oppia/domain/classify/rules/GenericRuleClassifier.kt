@@ -131,7 +131,6 @@ internal class GenericRuleClassifier private constructor(
       private val extractAnswerObject: (InteractionObject) -> AT,
       private val extractFirstParamObject: (InteractionObject) -> ITF,
       private val extractSecondParamObject: (InteractionObject) -> ITS
-
     ) : MatcherDelegate() {
       override fun matches(answer: InteractionObject, inputs: List<InteractionObject>): Boolean {
         check(inputs.size == 2)

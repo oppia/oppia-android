@@ -109,7 +109,7 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer_bothInputMissing_throwsException() {
+  fun testAnswer_bothInputsMissing_throwsException() {
     val inputs = mapOf("z" to STRING_VALUE_2)
 
     val exception = assertThrows(IllegalStateException::class) {
