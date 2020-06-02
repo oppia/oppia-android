@@ -12,6 +12,7 @@ import org.oppia.app.parser.StringToNumberParser
 import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
+import javax.inject.Inject
 
 /** [StateItemViewModel] for the numeric input interaction. */
 class NumericInputViewModel(
@@ -21,7 +22,7 @@ class NumericInputViewModel(
   var answerText: CharSequence = ""
   private var pendingAnswerError: String? = null
   val errorMessage = ObservableField<String>("")
-  private val stringToNumberParser: StringToNumberParser = StringToNumberParser()
+  @Inject lateinit var stringToNumberParser: StringToNumberParser
 
   init {
     val callback: Observable.OnPropertyChangedCallback = object : Observable.OnPropertyChangedCallback() {

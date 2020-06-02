@@ -19,6 +19,7 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.utility.LifecycleSafeTimerFactory
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.util.firebase.CrashlyticsWrapper
 import org.oppia.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
@@ -30,7 +31,8 @@ class PinPasswordActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
   private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
-  private val viewModelProvider: ViewModelProvider<PinPasswordViewModel>
+  private val viewModelProvider: ViewModelProvider<PinPasswordViewModel>,
+  private val crashlyticsWrapper: CrashlyticsWrapper
 ) {
   private val pinViewModel by lazy {
     getPinPasswordViewModel()
@@ -130,6 +132,7 @@ class PinPasswordActivityPresenter @Inject constructor(
         try {
           activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + activity.packageName)))
         } catch (e: ActivityNotFoundException) {
+          crashlyticsWrapper.logException(e)
           activity.startActivity(
             Intent(
               Intent.ACTION_VIEW,

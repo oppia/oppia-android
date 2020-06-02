@@ -4,9 +4,13 @@ import android.content.Context
 import androidx.annotation.StringRes
 import org.oppia.app.R
 import org.oppia.domain.util.normalizeWhitespace
+import org.oppia.util.firebase.CrashlyticsWrapper
+import javax.inject.Inject
 
 /** This class contains methods that help to parse string to number, check realtime and submit time errors. */
-class StringToNumberParser {
+class StringToNumberParser @Inject constructor(
+  private val crashlyticsWrapper: CrashlyticsWrapper
+){
   private val validCharsRegex = """^[\d\s.-]+$""".toRegex()
 
   /**
@@ -44,6 +48,7 @@ class StringToNumberParser {
       text.toDouble()
       NumericInputParsingError.VALID
     } catch (e: Exception) {
+      crashlyticsWrapper.logException(e)
       NumericInputParsingError.INVALID_FORMAT
     }
   }
