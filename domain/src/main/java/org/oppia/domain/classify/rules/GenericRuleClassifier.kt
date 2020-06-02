@@ -67,7 +67,7 @@ internal class GenericRuleClassifier private constructor(
 
   internal interface MultiTypeDoubleInputMatcher<AT, ITF, ITS> {
     /**
-     * Returns whether the validated and extracted answer matches the two validated and extracted input parameter per
+     * Returns whether the validated and extracted answer matches the two validated and extracted input parameters per
      * the specification of this classifier.
      */
     fun matches(answer: AT, firstInput: ITF, secondInput: ITS): Boolean
@@ -129,14 +129,13 @@ internal class GenericRuleClassifier private constructor(
     internal class MultiTypeDoubleInputMatcherDelegate<AT : Any, ITF : Any, ITS : Any>(
       private val matcher: MultiTypeDoubleInputMatcher<AT, ITF, ITS>,
       private val extractAnswerObject: (InteractionObject) -> AT,
-      private val extractObjectFirst: (InteractionObject) -> ITF,
-      private val extractObjectSecond: (InteractionObject) -> ITS
-
+      private val extractFirstParamObject: (InteractionObject) -> ITF,
+      private val extractSecondParamObject: (InteractionObject) -> ITS
     ) : MatcherDelegate() {
       override fun matches(answer: InteractionObject, inputs: List<InteractionObject>): Boolean {
         check(inputs.size == 2)
         return matcher.matches(
-          extractAnswerObject(answer), extractObjectFirst(inputs[0]), extractObjectSecond(inputs[1])
+          extractAnswerObject(answer), extractFirstParamObject(inputs[0]), extractSecondParamObject(inputs[1])
         )
       }
     }
@@ -187,7 +186,10 @@ internal class GenericRuleClassifier private constructor(
         MatcherDelegate.MultiTypeSingleInputMatcherDelegate(matcher, answerObjectExtractor, inputObjectExtractor))
     }
 
-    /** Returns a new [GenericRuleClassifier] for two input values of the different type as the answer it classifies. */
+    /**
+     * Returns a new [GenericRuleClassifier] for two input values of different types, possibly also different from
+     * the answer's type.
+     */
     inline fun <reified AT : Any, reified ITF : Any, reified ITS : Any> createDoubleInputClassifier(
       expectedAnswerObjectType: InteractionObject.ObjectTypeCase,
       expectedObjectType1: InteractionObject.ObjectTypeCase,
