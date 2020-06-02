@@ -99,7 +99,7 @@ message ProfileChooserUiModel {
 
 // Supported Story text sizes for user preference.
 enum StoryTextSize {
-  SMALL_TEXT_SIZE = 0;
+  SMALL_TEXT_SIZE_UNSPECIFIED = 0;
   MEDIUM_TEXT_SIZE = 1;
   LARGE_TEXT_SIZE = 2;
   EXTRA_LARGE_TEXT_SIZE =  3;
@@ -108,7 +108,7 @@ enum StoryTextSize {
 // TODO(#669): Add translation for language selection and track updating of this list to match the supported translation list.
 // Supported App language for user preference.
 enum AppLanguage {
-  ENGLISH_APP_LANGUAGE = 0;
+  ENGLISH_APP_LANGUAGE_UNSPECIFIED = 0;
   HINDI_APP_LANGUAGE = 1;
   FRENCH_APP_LANGUAGE = 2;
   CHINESE_APP_LANGUAGE =  3;
@@ -117,7 +117,7 @@ enum AppLanguage {
 // TODO(#669): Add translation for language selection and track updating of this list to match the supported translation list.
 // Supported Audio language for user preference.
 enum AudioLanguage {
-  NO_AUDIO = 0;
+  NO_AUDIO_UNSPECIFIED = 0;
   ENGLISH_AUDIO_LANGUAGE = 1;
   HINDI_AUDIO_LANGUAGE = 2;
   FRENCH_AUDIO_LANGUAGE = 3;

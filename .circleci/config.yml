@@ -85,8 +85,8 @@ jobs:
           name: Kotlin tests - Data, Utility
           command: ./ktlint utility/**/*.kt data/**/*.kt && echo "Ktlint completed successfully"
       - run:
-          name: BufBuild check proto files
-          command: ./buf check lint --input=model/src/main/proto --input-config buf.yaml && echo "Bufbuild completed successfully"
+          name: Protobuf lint check
+          command: ./buf check lint --input=model/src/main/proto --input-config buf.yaml && echo "Protobuf lint check completed successfully"
       - store_artifacts:
           path: app/build/reports
           destination: reports

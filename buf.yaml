@@ -18,12 +18,10 @@ lint:
     # The MINIMAL category represents what we consider to be fundamental rules for modern Protobuf development,
     # regardless of style
     # The DEFAULT category includes everything from the BASIC category, as well as the STYLE_DEFAULT category
-    - BASIC
-    # Checks that filenames are lower_snake_case.
-    - FILE_LOWER_SNAKE_CASE
+    - DEFAULT
   # This removes ids or categories from the use list.
   except:
-    # Checks that enums do not have the allow_alias option set.
-    - ENUM_NO_ALLOW_ALIAS
     # Checks that all files with are in a directory that matches their package name.
     - PACKAGE_DIRECTORY_MATCH
+    - PACKAGE_VERSION_SUFFIX
+    - ENUM_VALUE_PREFIX

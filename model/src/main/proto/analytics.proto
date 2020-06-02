@@ -8,13 +8,13 @@ option java_multiple_files = true;
 // Supported event actions for analytics logging
 enum EventAction{
   // The undefined user action of an event
-  UNKNOWN_EVENT_ACTION = 0;
+  UNKNOWN_EVENT_ACTION_UNSPECIFIED = 0;
 }
 
 // Supported priority of events for analytics logging
 enum Priority{
   // The undefined priority of an event
-  UNKNOWN_PRIORITY = 0;
+  UNKNOWN_PRIORITY_UNSPECIFIED = 0;
   // The priority of events whose logs should not be removed from the storage on most occasions
   // but can be removed if they're the only ones there and size limit exceeds.
   ESSENTIAL = 1;
