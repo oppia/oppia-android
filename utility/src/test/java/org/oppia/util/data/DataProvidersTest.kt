@@ -66,7 +66,7 @@ class DataProvidersTest {
    * null is returned.
    */
   fun <T> any(): T = Mockito.any<T>()
-// TODO (#1233) : Add a MockitoHelper class to handle nullable versions of all mockito matchers
+// TODO (#1233): Add a MockitoHelper class to handle nullable versions of all mockito matchers
 
   @Rule
   @JvmField
