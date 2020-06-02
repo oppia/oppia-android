@@ -74,6 +74,7 @@ import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
+import org.oppia.app.settings.profile.ProfileListActivityTest.TestFirebaseModule
 
 /** Tests for [TopicLessonsFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -508,7 +509,7 @@ class TopicLessonsFragmentTest {
   }
 
   @Singleton
-  @Component(modules = [TestModule::class])
+  @Component(modules = [TestModule::class, TestFirebaseModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

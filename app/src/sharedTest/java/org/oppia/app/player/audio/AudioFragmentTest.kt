@@ -50,6 +50,7 @@ import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
+import org.oppia.app.settings.profile.ProfileListActivityTest.TestFirebaseModule
 
 /**
  * TODO(#59): Make this test work with Espresso.
@@ -285,7 +286,7 @@ class AudioFragmentTest {
   }
 
   @Singleton
-  @Component(modules = [TestModule::class])
+  @Component(modules = [TestModule::class, TestFirebaseModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

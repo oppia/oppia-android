@@ -40,6 +40,7 @@ import java.util.concurrent.AbstractExecutorService
 import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 import javax.inject.Singleton
+import org.oppia.app.settings.profile.ProfileListActivityTest.TestFirebaseModule
 
 /**
  * Tests for [SplashActivity]. For context on the activity test rule setup see:
@@ -149,7 +150,7 @@ class SplashActivityTest {
   }
 
   @Singleton
-  @Component(modules = [TestModule::class])
+  @Component(modules = [TestModule::class, TestFirebaseModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
