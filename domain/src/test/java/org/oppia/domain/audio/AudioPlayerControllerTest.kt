@@ -7,11 +7,17 @@ import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Qualifier
+import javax.inject.Singleton
+import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.reflect.KClass
+import kotlin.reflect.full.cast
+import kotlin.test.fail
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -23,15 +29,14 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Captor
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.domain.audio.AudioPlayerController.PlayStatus
+import org.oppia.domain.topic.StoryProgressControllerTest.TestFirebaseModule
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.firebase.CrashlyticsWrapper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -42,14 +47,6 @@ import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowMediaPlayer
 import org.robolectric.shadows.util.DataSource
-import javax.inject.Inject
-import javax.inject.Qualifier
-import javax.inject.Singleton
-import kotlin.coroutines.EmptyCoroutineContext
-import kotlin.reflect.KClass
-import kotlin.reflect.full.cast
-import kotlin.test.fail
-import org.oppia.domain.topic.StoryProgressControllerTest.TestFirebaseModule
 
 /** Tests for [AudioPlayerControllerTest]. */
 @RunWith(AndroidJUnit4::class)
@@ -158,7 +155,6 @@ class AudioPlayerControllerTest {
     assertThat(audioPlayerResultCaptor.value.isPending()).isTrue()
   }
 
-
   @Test
   fun tesObserver_preparePlayer_invokeCompletion_capturesCompletedState() {
     arrangeMediaPlayer()
@@ -205,11 +201,11 @@ class AudioPlayerControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testObserver_preparePlayer_invokePlayAndAdvance_capturesManyPlayingStates() = runBlockingTest(coroutineContext){
+  fun testObserver_preparePlayer_invokePlayAndAdvance_capturesManyPlayingStates() = runBlockingTest(coroutineContext) {
     arrangeMediaPlayer()
 
     audioPlayerController.play()
-    advanceTimeBy(1000) //Wait for next schedule update call
+    advanceTimeBy(1000) // Wait for next schedule update call
     shadowMediaPlayer.invokeCompletionListener()
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
@@ -290,8 +286,8 @@ class AudioPlayerControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testScheduling_preparePlayer_invokePauseAndAdvance_verifyTestDoesNotHang()
-      = runBlockingTest(coroutineContext) {
+  fun testScheduling_preparePlayer_invokePauseAndAdvance_verifyTestDoesNotHang() =
+      runBlockingTest(coroutineContext) {
     arrangeMediaPlayer()
 
     audioPlayerController.play()
@@ -306,8 +302,8 @@ class AudioPlayerControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testScheduling_preparePlayer_invokeCompletionAndAdvance_verifyTestDoesNotHang()
-      = runBlockingTest(coroutineContext) {
+  fun testScheduling_preparePlayer_invokeCompletionAndAdvance_verifyTestDoesNotHang() =
+      runBlockingTest(coroutineContext) {
     arrangeMediaPlayer()
 
     audioPlayerController.play()
@@ -322,8 +318,8 @@ class AudioPlayerControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testScheduling_observeData_removeObserver_verifyTestDoesNotHang()
-      = runBlockingTest(coroutineContext) {
+  fun testScheduling_observeData_removeObserver_verifyTestDoesNotHang() =
+      runBlockingTest(coroutineContext) {
     val playProgress = audioPlayerController.initializeMediaPlayer()
     audioPlayerController.changeDataSource(TEST_URL)
 
@@ -337,8 +333,8 @@ class AudioPlayerControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testScheduling_addAndRemoveObservers_verifyTestDoesNotHang()
-      = runBlockingTest(coroutineContext) {
+  fun testScheduling_addAndRemoveObservers_verifyTestDoesNotHang() =
+      runBlockingTest(coroutineContext) {
     val playProgress = audioPlayerController.initializeMediaPlayer()
     audioPlayerController.changeDataSource(TEST_URL)
 
@@ -354,8 +350,8 @@ class AudioPlayerControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_invokeErrorListener_invokePrepared_verifyAudioStatusIsFailure()
-      = runBlockingTest(coroutineContext) {
+  fun testController_invokeErrorListener_invokePrepared_verifyAudioStatusIsFailure() =
+      runBlockingTest(coroutineContext) {
     audioPlayerController.initializeMediaPlayer().observeForever(mockAudioPlayerObserver)
     audioPlayerController.changeDataSource(TEST_URL)
 
@@ -409,15 +405,15 @@ class AudioPlayerControllerTest {
   }
 
   private fun addMediaInfo() {
-    val dataSource = DataSource.toDataSource(context , Uri.parse(TEST_URL))
-    val dataSource2 = DataSource.toDataSource(context , Uri.parse(TEST_URL2))
-    val mediaInfo = ShadowMediaPlayer.MediaInfo(/* duration= */ 1000,/* preparationDelay= */ 0)
+    val dataSource = DataSource.toDataSource(context, Uri.parse(TEST_URL))
+    val dataSource2 = DataSource.toDataSource(context, Uri.parse(TEST_URL2))
+    val mediaInfo = ShadowMediaPlayer.MediaInfo(/* duration= */ 1000, /* preparationDelay= */ 0)
     ShadowMediaPlayer.addMediaInfo(dataSource, mediaInfo)
     ShadowMediaPlayer.addMediaInfo(dataSource2, mediaInfo)
   }
 
   // TODO(#89): Move to a common test library.
-  private fun <T: Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
+  private fun <T : Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
     try {
       operation()
       fail("Expected to encounter exception of $type")

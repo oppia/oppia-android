@@ -37,6 +37,9 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Qualifier
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -51,6 +54,7 @@ import org.oppia.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.settings.profile.ProfileListActivity
+import org.oppia.app.settings.profile.ProfileListActivityTest.TestFirebaseModule
 import org.oppia.app.testing.NavigationDrawerTestActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationPortrait
@@ -61,10 +65,6 @@ import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
-import javax.inject.Inject
-import javax.inject.Qualifier
-import javax.inject.Singleton
-import org.oppia.app.settings.profile.ProfileListActivityTest.TestFirebaseModule
 
 /** Tests for [AdministratorControlsActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -274,7 +274,7 @@ class AdministratorControlsActivityTest {
 
   /** Functions nestedScrollTo() and findFirstParentLayoutOfClass() taken from: https://stackoverflow.com/a/46037284/8860848 */
   private fun nestedScrollTo(): ViewAction {
-    return object: ViewAction {
+    return object : ViewAction {
       override fun getDescription(): String {
         return "View is not NestedScrollView"
       }
@@ -286,12 +286,10 @@ class AdministratorControlsActivityTest {
       }
 
       override fun perform(uiController: UiController, view: View) {
-        try
-        {
+        try {
           val nestedScrollView = findFirstParentLayoutOfClass(view, NestedScrollView::class.java) as NestedScrollView
           nestedScrollView.scrollTo(0, view.getTop())
-        }
-        catch (e:Exception) {
+        } catch (e: Exception) {
           throw PerformException.Builder()
             .withActionDescription(this.description)
             .withViewDescription(HumanReadables.describe(view))
@@ -303,18 +301,14 @@ class AdministratorControlsActivityTest {
     }
   }
 
-  private fun findFirstParentLayoutOfClass(view: View, parentClass:Class<out View>): View {
-    var parent : ViewParent = FrameLayout(view.getContext())
+  private fun findFirstParentLayoutOfClass(view: View, parentClass: Class<out View>): View {
+    var parent: ViewParent = FrameLayout(view.getContext())
     lateinit var incrementView: ViewParent
     var i = 0
-    while (!(parent.javaClass === parentClass))
-    {
-      if (i == 0)
-      {
+    while (!(parent.javaClass === parentClass)) {
+      if (i == 0) {
         parent = findParent(view)
-      }
-      else
-      {
+      } else {
         parent = findParent(incrementView)
       }
       incrementView = parent

@@ -2,15 +2,15 @@ package org.oppia.domain.question
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.random.Random
 import org.oppia.app.model.Question
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
 import org.oppia.util.firebase.CrashlyticsWrapper
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.random.Random
 
 private const val TRAINING_QUESTIONS_PROVIDER = "TrainingQuestionsProvider"
 private const val RETRIEVE_QUESTIONS_RESULT_DATA_PROVIDER = "RetrieveQuestionsResultsProvider"
@@ -79,7 +79,9 @@ class QuestionTrainingController @Inject constructor(
   // Attempts to fetch equal number of questions per skill. Removes any duplicates and limits the questions to be
   // equal to TOTAL_QUESTIONS_PER_TOPIC questions.
   private fun getFilteredQuestionsForTraining(
-    skillIdsList: List<String>, questionsList: List<Question>, numQuestionsPerSkill: Int
+    skillIdsList: List<String>,
+    questionsList: List<Question>,
+    numQuestionsPerSkill: Int
   ): List<Question> {
     val trainingQuestions = mutableListOf<Question>()
     for (skillId in skillIdsList) {

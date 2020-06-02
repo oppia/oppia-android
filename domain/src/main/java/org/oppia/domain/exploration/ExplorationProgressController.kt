@@ -2,6 +2,10 @@ package org.oppia.domain.exploration
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import java.util.concurrent.locks.ReentrantLock
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.concurrent.withLock
 import org.oppia.app.model.AnswerOutcome
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.Exploration
@@ -14,10 +18,6 @@ import org.oppia.util.data.AsyncDataSubscriptionManager
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
 import org.oppia.util.firebase.CrashlyticsWrapper
-import java.util.concurrent.locks.ReentrantLock
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.concurrent.withLock
 
 private const val CURRENT_STATE_DATA_PROVIDER_ID = "CurrentStateDataProvider"
 
@@ -170,7 +170,6 @@ class ExplorationProgressController @Inject constructor(
             hintIndex
           )
           explorationProgress.stateDeck.pushStateForHint(state, hintIndex)
-
         } finally {
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always
           // showing hint' situation. This can specifically happen if hint throws an exception.
@@ -206,7 +205,6 @@ class ExplorationProgressController @Inject constructor(
             solutionIsRevealed
           )
           explorationProgress.stateDeck.pushStateForSolution(state)
-
         } finally {
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always
           // showing solution' situation. This can specifically happen if solution throws an exception.

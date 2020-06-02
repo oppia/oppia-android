@@ -6,6 +6,12 @@ import android.os.Build
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import java.io.IOException
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.locks.ReentrantLock
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.concurrent.withLock
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -17,12 +23,6 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.firebase.CrashlyticsWrapper
 import org.oppia.util.logging.Logger
 import org.oppia.util.threading.BackgroundDispatcher
-import java.io.IOException
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.locks.ReentrantLock
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.concurrent.withLock
 
 /**
  * Controller which provides audio playing capabilities.
@@ -64,7 +64,7 @@ class AudioPlayerController @Inject constructor(
     PREPARED, // mediaPlayer in "Prepared" state, ready to play(), pause(), seekTo().
     PLAYING, // mediaPlayer in "Started" state, ready to pause(), seekTo().
     PAUSED, // mediaPlayer in "Paused" state, ready to play(), seekTo().
-    COMPLETED  // mediaPlayer in "PlaybackCompleted" state, ready to play(), seekTo().
+    COMPLETED // mediaPlayer in "PlaybackCompleted" state, ready to play(), seekTo().
   }
 
   /**

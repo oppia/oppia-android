@@ -1,11 +1,11 @@
 package org.oppia.domain.classify
 
+import javax.inject.Inject
 import org.oppia.app.model.AnswerGroup
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.Outcome
 import org.oppia.util.firebase.CrashlyticsWrapper
-import javax.inject.Inject
 
 // TODO(#59): Restrict the visibility of this class to only other controllers.
 /**
@@ -35,8 +35,11 @@ class AnswerClassificationController @Inject constructor(
   // Based on the Oppia web version:
   // https://github.com/oppia/oppia/blob/edb62f/core/templates/dev/head/pages/exploration-player-page/services/answer-classification.service.ts#L57.
   private fun classifyAnswer(
-    answer: InteractionObject, answerGroups: List<AnswerGroup>, defaultOutcome: Outcome,
-    interactionClassifier: InteractionClassifier, interactionId: String
+    answer: InteractionObject,
+    answerGroups: List<AnswerGroup>,
+    defaultOutcome: Outcome,
+    interactionClassifier: InteractionClassifier,
+    interactionId: String
   ): Outcome {
     for (answerGroup in answerGroups) {
       for (ruleSpec in answerGroup.ruleSpecsList) {

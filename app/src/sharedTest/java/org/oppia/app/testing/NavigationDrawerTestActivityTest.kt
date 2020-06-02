@@ -42,6 +42,9 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Qualifier
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -59,6 +62,7 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.mydownloads.MyDownloadsActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.app.settings.profile.ProfileListActivityTest.TestFirebaseModule
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.domain.topic.StoryProgressTestHelper
@@ -69,10 +73,6 @@ import org.oppia.util.logging.LogLevel
 import org.oppia.util.system.OppiaClock
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
-import javax.inject.Inject
-import javax.inject.Qualifier
-import javax.inject.Singleton
-import org.oppia.app.settings.profile.ProfileListActivityTest.TestFirebaseModule
 
 // Time: Wed Apr 24 2019 08:22:00
 private const val MORNING_TIMESTAMP = 1556094120000
@@ -386,7 +386,7 @@ class NavigationDrawerTestActivityTest {
 
     /** Functions nestedScrollTo() and findFirstParentLayoutOfClass() taken from: https://stackoverflow.com/a/46037284/8860848 */
   private fun nestedScrollTo(): ViewAction {
-    return object: ViewAction {
+    return object : ViewAction {
       override fun getDescription(): String {
         return "View is not NestedScrollView"
       }
@@ -398,12 +398,10 @@ class NavigationDrawerTestActivityTest {
       }
 
       override fun perform(uiController: UiController, view: View) {
-        try
-        {
+        try {
           val nestedScrollView = findFirstParentLayoutOfClass(view, NestedScrollView::class.java) as NestedScrollView
           nestedScrollView.scrollTo(0, view.getTop())
-        }
-        catch (e:Exception) {
+        } catch (e: Exception) {
           throw PerformException.Builder()
             .withActionDescription(this.description)
             .withViewDescription(HumanReadables.describe(view))
@@ -415,18 +413,14 @@ class NavigationDrawerTestActivityTest {
     }
   }
 
-  private fun findFirstParentLayoutOfClass(view: View, parentClass:Class<out View>): View {
-    var parent : ViewParent = FrameLayout(view.getContext())
+  private fun findFirstParentLayoutOfClass(view: View, parentClass: Class<out View>): View {
+    var parent: ViewParent = FrameLayout(view.getContext())
     lateinit var incrementView: ViewParent
     var i = 0
-    while (!(parent.javaClass === parentClass))
-    {
-      if (i == 0)
-      {
+    while (!(parent.javaClass === parentClass)) {
+      if (i == 0) {
         parent = findParent(view)
-      }
-      else
-      {
+      } else {
         parent = findParent(incrementView)
       }
       incrementView = parent
@@ -440,7 +434,6 @@ class NavigationDrawerTestActivityTest {
   private fun findParent(view: ViewParent): ViewParent {
     return view.getParent()
   }
-
 
   @Qualifier annotation class TestDispatcher
 

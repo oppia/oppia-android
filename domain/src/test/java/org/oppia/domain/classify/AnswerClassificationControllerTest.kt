@@ -5,11 +5,14 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.reflect.KClass
+import kotlin.reflect.full.cast
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
@@ -31,12 +34,8 @@ import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputMo
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
-import org.robolectric.annotation.Config
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.reflect.KClass
-import kotlin.reflect.full.cast
 import org.oppia.domain.topic.StoryProgressControllerTest.TestFirebaseModule
+import org.robolectric.annotation.Config
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -457,7 +456,7 @@ class AnswerClassificationControllerTest {
 
   // TODO(#89): Move to a common test library.
   /** A replacement to JUnit5's assertThrows(). */
-  private fun <T: Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
+  private fun <T : Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
     try {
       operation()
       fail("Expected to encounter exception of $type")

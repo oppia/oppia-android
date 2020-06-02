@@ -2,15 +2,15 @@ package org.oppia.app.parser
 
 import android.content.Context
 import androidx.annotation.StringRes
+import javax.inject.Inject
 import org.oppia.app.R
 import org.oppia.domain.util.normalizeWhitespace
 import org.oppia.util.firebase.CrashlyticsWrapper
-import javax.inject.Inject
 
 /** This class contains methods that help to parse string to number, check realtime and submit time errors. */
 class StringToNumberParser @Inject constructor(
   private val crashlyticsWrapper: CrashlyticsWrapper
-){
+) {
   private val validCharsRegex = """^[\d\s.-]+$""".toRegex()
 
   /**

@@ -22,6 +22,9 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Qualifier
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -34,6 +37,8 @@ import org.oppia.app.R
 import org.oppia.app.model.AppLanguage
 import org.oppia.app.model.AudioLanguage
 import org.oppia.app.model.StoryTextSize
+import org.oppia.app.settings.profile.ProfileListActivityTest.TestFirebaseModule
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
@@ -42,11 +47,6 @@ import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
-import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
-import javax.inject.Inject
-import javax.inject.Qualifier
-import javax.inject.Singleton
-import org.oppia.app.settings.profile.ProfileListActivityTest.TestFirebaseModule
 
 @RunWith(AndroidJUnit4::class)
 class ProfileEditActivityTest {
@@ -141,7 +141,6 @@ class ProfileEditActivityTest {
       intended(hasComponent(ProfileResetPinActivity::class.java.name))
     }
   }
-
 
   @Test
   fun testProfileEditActivity_configurationChange_startActivityWithUserProfile_clickResetPin_checkOpensProfileResetPinActivity() {

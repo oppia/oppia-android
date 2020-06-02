@@ -9,6 +9,11 @@ import android.provider.MediaStore
 import androidx.exifinterface.media.ExifInterface
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import java.io.File
+import java.io.FileOutputStream
+import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.Deferred
 import org.oppia.app.model.AppLanguage
 import org.oppia.app.model.AudioLanguage
@@ -25,11 +30,6 @@ import org.oppia.util.data.DataProviders
 import org.oppia.util.firebase.CrashlyticsWrapper
 import org.oppia.util.logging.Logger
 import org.oppia.util.profile.DirectoryManagementUtil
-import java.io.File
-import java.io.FileOutputStream
-import java.util.*
-import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val TRANSFORMED_GET_PROFILES_PROVIDER_ID = "transformed_get_profiles_provider_id"
 private const val TRANSFORMED_GET_PROFILE_PROVIDER_ID = "transformed_get_profile_provider_id"
@@ -393,7 +393,8 @@ class ProfileManagementController @Inject constructor(
    * @return a [LiveData] that indicates the success/failure of this update operation.
    */
   fun updateAllowDownloadAccess(
-    profileId: ProfileId, allowDownloadAccess: Boolean
+    profileId: ProfileId,
+    allowDownloadAccess: Boolean
   ): LiveData<AsyncResult<Any?>> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
       val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
@@ -418,7 +419,8 @@ class ProfileManagementController @Inject constructor(
    * @return a [LiveData] that indicates the success/failure of this update operation.
    */
   fun updateStoryTextSize(
-    profileId: ProfileId, storyTextSize: StoryTextSize
+    profileId: ProfileId,
+    storyTextSize: StoryTextSize
   ): LiveData<AsyncResult<Any?>> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
       val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
@@ -443,7 +445,8 @@ class ProfileManagementController @Inject constructor(
    * @return a [LiveData] that indicates the success/failure of this update operation.
    */
   fun updateAppLanguage(
-    profileId: ProfileId, appLanguage: AppLanguage
+    profileId: ProfileId,
+    appLanguage: AppLanguage
   ): LiveData<AsyncResult<Any?>> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
       val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
@@ -468,7 +471,8 @@ class ProfileManagementController @Inject constructor(
    * @return a [LiveData] that indicates the success/failure of this update operation.
    */
   fun updateAudioLanguage(
-    profileId: ProfileId, audioLanguage: AudioLanguage
+    profileId: ProfileId,
+    audioLanguage: AudioLanguage
   ): LiveData<AsyncResult<Any?>> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
       val profile = it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(

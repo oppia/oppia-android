@@ -6,13 +6,13 @@ import android.text.TextWatcher
 import androidx.databinding.Bindable
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
+import javax.inject.Inject
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.parser.StringToNumberParser
 import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
-import javax.inject.Inject
 
 /** [StateItemViewModel] for the numeric input interaction. */
 class NumericInputViewModel(

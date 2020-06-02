@@ -27,6 +27,10 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import java.util.Locale
+import javax.inject.Inject
+import javax.inject.Qualifier
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -37,6 +41,7 @@ import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.settings.profile.ProfileListActivityTest.TestFirebaseModule
 import org.oppia.app.testing.AudioFragmentTestActivity
 import org.oppia.domain.audio.AudioPlayerController
 import org.oppia.util.caching.CacheAssetsLocally
@@ -46,11 +51,6 @@ import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
-import java.util.Locale
-import javax.inject.Inject
-import javax.inject.Qualifier
-import javax.inject.Singleton
-import org.oppia.app.settings.profile.ProfileListActivityTest.TestFirebaseModule
 
 /**
  * TODO(#59): Make this test work with Espresso.
@@ -114,7 +114,6 @@ class AudioFragmentTest {
     onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
   }
 
-
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testAudioFragment_invokePrepared_playAudio_configurationChange_checkStillPlaying() {
@@ -153,7 +152,7 @@ class AudioFragmentTest {
   }
 
   private fun clickSeekBar(position: Int): ViewAction {
-    return GeneralClickAction(Tap.SINGLE, object: CoordinatesProvider {
+    return GeneralClickAction(Tap.SINGLE, object : CoordinatesProvider {
       override fun calculateCoordinates(view: View?): FloatArray {
         val seekBar = view as SeekBar
         val screenPos = IntArray(2)
@@ -162,7 +161,7 @@ class AudioFragmentTest {
 
         val percentagePos = (position.toFloat() / seekBar.max)
         val screenX = trueWith * percentagePos + screenPos[0] + seekBar.paddingLeft
-        val screenY = seekBar.height/2f + screenPos[1]
+        val screenY = seekBar.height / 2f + screenPos[1]
         val coordinates = FloatArray(2)
         coordinates[0] = screenX
         coordinates[1] = screenY
@@ -179,9 +178,9 @@ class AudioFragmentTest {
   }
 
   private fun addMediaInfo() {
-    val dataSource = toDataSource(context , Uri.parse(TEST_URL))
-    val dataSource2 = toDataSource(context , Uri.parse(TEST_URL2))
-    val mediaInfo = createMediaInfo(/* duration= */ 1000,/* preparationDelay= */ 0)
+    val dataSource = toDataSource(context, Uri.parse(TEST_URL))
+    val dataSource2 = toDataSource(context, Uri.parse(TEST_URL2))
+    val mediaInfo = createMediaInfo(/* duration= */ 1000, /* preparationDelay= */ 0)
     addMediaInfo(dataSource, mediaInfo)
     addMediaInfo(dataSource2, mediaInfo)
   }

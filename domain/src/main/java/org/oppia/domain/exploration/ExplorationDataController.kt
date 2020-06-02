@@ -1,13 +1,12 @@
 package org.oppia.domain.exploration
 
-
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import javax.inject.Inject
 import org.oppia.app.model.Exploration
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
 import org.oppia.util.firebase.CrashlyticsWrapper
-import javax.inject.Inject
 
 private const val EXPLORATION_DATA_PROVIDER_ID = "ExplorationDataProvider"
 

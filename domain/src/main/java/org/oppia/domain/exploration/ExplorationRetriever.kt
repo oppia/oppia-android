@@ -1,5 +1,7 @@
 package org.oppia.domain.exploration
 
+import java.io.IOException
+import javax.inject.Inject
 import org.json.JSONObject
 import org.oppia.app.model.Exploration
 import org.oppia.app.model.State
@@ -12,8 +14,6 @@ import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_3
 import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.domain.util.StateRetriever
 import org.oppia.util.firebase.CrashlyticsWrapper
-import java.io.IOException
-import javax.inject.Inject
 
 const val TEST_EXPLORATION_ID_5 = "0"
 const val TEST_EXPLORATION_ID_6 = "1"
