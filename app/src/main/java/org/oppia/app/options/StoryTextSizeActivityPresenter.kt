@@ -15,7 +15,7 @@ import javax.inject.Inject
 class StoryTextSizeActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
-  private var fontSize: String = getStoryTextSize(StoryTextSize.SMALL_TEXT_SIZE)
+  private var fontSize: String = getStoryTextSize(StoryTextSize.SMALL_TEXT_SIZE_UNSPECIFIED)
 
   fun handleOnCreate(prefSummaryValue: String) {
     val binding =
@@ -31,9 +31,9 @@ class StoryTextSizeActivityPresenter @Inject constructor(
     }
 
     when (prefSummaryValue) {
-      getStoryTextSize(StoryTextSize.SMALL_TEXT_SIZE) -> {
+      getStoryTextSize(StoryTextSize.SMALL_TEXT_SIZE_UNSPECIFIED) -> {
         binding.storyTextSizeSeekBar.progress = 0
-        binding.previewTextview.textSize = getStoryTextSizeInFloat(StoryTextSize.SMALL_TEXT_SIZE)
+        binding.previewTextview.textSize = getStoryTextSizeInFloat(StoryTextSize.SMALL_TEXT_SIZE_UNSPECIFIED)
       }
       getStoryTextSize(StoryTextSize.MEDIUM_TEXT_SIZE) -> {
         binding.storyTextSizeSeekBar.progress = 5
@@ -59,8 +59,8 @@ class StoryTextSizeActivityPresenter @Inject constructor(
 
         when (progressValue) {
           0 -> {
-            fontSize = getStoryTextSize(StoryTextSize.SMALL_TEXT_SIZE)
-            binding.previewTextview.textSize = getStoryTextSizeInFloat(StoryTextSize.SMALL_TEXT_SIZE)
+            fontSize = getStoryTextSize(StoryTextSize.SMALL_TEXT_SIZE_UNSPECIFIED)
+            binding.previewTextview.textSize = getStoryTextSizeInFloat(StoryTextSize.SMALL_TEXT_SIZE_UNSPECIFIED)
           }
           5 -> {
             fontSize = getStoryTextSize(StoryTextSize.MEDIUM_TEXT_SIZE)
@@ -92,7 +92,7 @@ class StoryTextSizeActivityPresenter @Inject constructor(
 
   fun getStoryTextSizeInFloat(storyTextSize: StoryTextSize): Float {
     return when (storyTextSize) {
-      StoryTextSize.SMALL_TEXT_SIZE -> 16f
+      StoryTextSize.SMALL_TEXT_SIZE_UNSPECIFIED -> 16f
       StoryTextSize.MEDIUM_TEXT_SIZE -> 18f
       StoryTextSize.LARGE_TEXT_SIZE -> 20f
       else -> 22f
@@ -101,7 +101,7 @@ class StoryTextSizeActivityPresenter @Inject constructor(
 
   fun getStoryTextSize(storyTextSize: StoryTextSize): String {
     return when (storyTextSize) {
-      StoryTextSize.SMALL_TEXT_SIZE -> "Small"
+      StoryTextSize.SMALL_TEXT_SIZE_UNSPECIFIED -> "Small"
       StoryTextSize.MEDIUM_TEXT_SIZE -> "Medium"
       StoryTextSize.LARGE_TEXT_SIZE -> "Large"
       else -> "Extra Large"

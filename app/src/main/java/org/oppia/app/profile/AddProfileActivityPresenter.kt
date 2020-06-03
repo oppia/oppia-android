@@ -37,9 +37,9 @@ import org.oppia.util.data.AsyncResult
 import javax.inject.Inject
 
 const val GALLERY_INTENT_RESULT_CODE = 1
-private val DEFAULT_STORY_TEXT_SIZE = StoryTextSize.SMALL_TEXT_SIZE
-private val DEFAULT_APP_LANGUAGE = AppLanguage.ENGLISH_APP_LANGUAGE
-private val DEFAULT_AUDIO_LANGUAGE = AudioLanguage.NO_AUDIO
+private val DEFAULT_STORY_TEXT_SIZE = StoryTextSize.SMALL_TEXT_SIZE_UNSPECIFIED
+private val DEFAULT_APP_LANGUAGE = AppLanguage.ENGLISH_APP_LANGUAGE_UNSPECIFIED
+private val DEFAULT_AUDIO_LANGUAGE = AudioLanguage.AUDIO_UNSPECIFIED
 
 /** The presenter for [AddProfileActivity]. */
 @ActivityScope

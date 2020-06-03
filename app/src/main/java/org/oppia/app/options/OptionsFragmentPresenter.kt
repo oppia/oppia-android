@@ -37,9 +37,9 @@ class OptionsFragmentPresenter @Inject constructor(
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
   private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
-  private var storyTextSize = StoryTextSize.SMALL_TEXT_SIZE
-  private var appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
-  private var audioLanguage = AudioLanguage.NO_AUDIO
+  private var storyTextSize = StoryTextSize.SMALL_TEXT_SIZE_UNSPECIFIED
+  private var appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE_UNSPECIFIED
+  private var audioLanguage = AudioLanguage.AUDIO_UNSPECIFIED
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = OptionsFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -116,9 +116,9 @@ class OptionsFragmentPresenter @Inject constructor(
 
   fun updateStoryTextSize(textSize: String) {
     when (textSize) {
-      getOptionControlsItemViewModel().getStoryTextSize(StoryTextSize.SMALL_TEXT_SIZE) -> {
-        profileManagementController.updateStoryTextSize(profileId, StoryTextSize.SMALL_TEXT_SIZE)
-        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE
+      getOptionControlsItemViewModel().getStoryTextSize(StoryTextSize.SMALL_TEXT_SIZE_UNSPECIFIED) -> {
+        profileManagementController.updateStoryTextSize(profileId, StoryTextSize.SMALL_TEXT_SIZE_UNSPECIFIED)
+        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE_UNSPECIFIED
       }
       getOptionControlsItemViewModel().getStoryTextSize(StoryTextSize.MEDIUM_TEXT_SIZE) -> {
         profileManagementController.updateStoryTextSize(profileId, StoryTextSize.MEDIUM_TEXT_SIZE)
@@ -138,12 +138,12 @@ class OptionsFragmentPresenter @Inject constructor(
 
   fun updateAppLanguage(language: String) {
     when (language) {
-      getOptionControlsItemViewModel().getAppLanguage(AppLanguage.ENGLISH_APP_LANGUAGE) -> {
+      getOptionControlsItemViewModel().getAppLanguage(AppLanguage.ENGLISH_APP_LANGUAGE_UNSPECIFIED) -> {
         profileManagementController.updateAppLanguage(
           profileId,
-          AppLanguage.ENGLISH_APP_LANGUAGE
+          AppLanguage.ENGLISH_APP_LANGUAGE_UNSPECIFIED
         )
-        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
+        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE_UNSPECIFIED
       }
       getOptionControlsItemViewModel().getAppLanguage(AppLanguage.HINDI_APP_LANGUAGE) -> {
         profileManagementController.updateAppLanguage(
@@ -173,12 +173,12 @@ class OptionsFragmentPresenter @Inject constructor(
 
   fun updateAudioLanguage(language: String) {
     when (language) {
-      getOptionControlsItemViewModel().getAudioLanguage(AudioLanguage.NO_AUDIO) -> {
+      getOptionControlsItemViewModel().getAudioLanguage(AudioLanguage.AUDIO_UNSPECIFIED) -> {
         profileManagementController.updateAudioLanguage(
           profileId,
-          AudioLanguage.NO_AUDIO
+          AudioLanguage.AUDIO_UNSPECIFIED
         )
-        audioLanguage = AudioLanguage.NO_AUDIO
+        audioLanguage = AudioLanguage.AUDIO_UNSPECIFIED
       }
       getOptionControlsItemViewModel().getAudioLanguage(AudioLanguage.ENGLISH_AUDIO_LANGUAGE) -> {
         profileManagementController.updateAudioLanguage(

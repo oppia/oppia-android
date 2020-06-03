@@ -26,8 +26,8 @@ class ProfileChooserFragmentTestActivityPresenter @Inject constructor(
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = true,
-      storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-      appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
+      storyTextSize = StoryTextSize.SMALL_TEXT_SIZE_UNSPECIFIED,
+      appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE_UNSPECIFIED,
       audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
     )
     profileManagementController.addProfile(
