@@ -10,8 +10,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.model.InteractionObject
-import org.oppia.domain.classify.rules.textinput.DaggerTextInputEqualsRuleClassifierProviderTest_TestApplicationComponent
-import org.oppia.domain.classify.rules.textinput.TextInputEqualsRuleClassifierProvider
 import org.robolectric.annotation.Config
 import java.lang.IllegalStateException
 import javax.inject.Inject
@@ -141,7 +139,7 @@ class TextInputEqualsRuleClassifierProviderTest {
   }
 
   // TODO(#89): Move to a common test library.
-  private fun <T: Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
+  private fun <T : Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
     try {
       operation()
       fail("Expected to encounter exception of $type")
