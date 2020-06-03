@@ -19,7 +19,7 @@ anchor_for_job_defaults: &job_defaults
       JVM_OPTS: -Xmx3200m
       TERM: dumb
   docker:
-    - image: *var_for_docker_image
+    - image: *docker_image
 
 anchor_for_android_dependencies: &install_android_dependencies
   name: Install Android dependencies
