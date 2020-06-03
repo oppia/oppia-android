@@ -8,7 +8,7 @@ import javax.inject.Singleton
 @Singleton
 open class CrashLogger @Inject constructor(
   private var firebaseCrashlytics: FirebaseCrashlytics
-): CrashLoggerInterface {
+) : CrashLoggerInterface {
 
   /** Logs a custom non-fatal exception to Firebase Crashlytics. */
   override fun logException(exception: Exception) {

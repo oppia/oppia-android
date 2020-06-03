@@ -9,5 +9,4 @@ interface CrashLoggerInterface {
   fun logMessage(message: String)
 
   fun setUserIdentifier(identifier: String)
-
 }
