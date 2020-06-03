@@ -29,6 +29,7 @@ internal class DragDropSortInputHasElementXAtPositionYClassifierProvider @Inject
     )
   }
 
+  /* We are adding +1 in matching logic to make it even with the web login i.e. input will be of base 1 rather base 0 */
   override fun matches(
     answer: ListOfSetsOfHtmlStrings,
     firstInput: String,
@@ -36,6 +37,6 @@ internal class DragDropSortInputHasElementXAtPositionYClassifierProvider @Inject
   ): Boolean {
     return answer.setOfHtmlStringsList.indexOfFirst {
       it.htmlList.contains(firstInput)
-    } == secondInput
+    } + 1 == secondInput
   }
 }

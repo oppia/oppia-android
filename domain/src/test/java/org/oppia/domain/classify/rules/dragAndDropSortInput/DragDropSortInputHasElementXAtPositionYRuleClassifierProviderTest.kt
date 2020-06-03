@@ -24,8 +24,8 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
 class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
-  private val NON_NEGATIVE_VALUE_0 = createNonNegativeInt(value = 0)
-  private val NON_NEGATIVE_VALUE_1 = createNonNegativeInt(value = 1)
+  private val NON_NEGATIVE_VALUE_0 = createNonNegativeInt(value = 1)
+  private val NON_NEGATIVE_VALUE_1 = createNonNegativeInt(value = 2)
   private val STRING_VALUE_2 = createString(value = "test item 2")
   private val STRING_VALUE_3 = createString(value = "test item invalid")
   private val LIST_OF_SETS_OF_HTML_STRING_VALUE = createListOfSetsOfHtmlStrings()
@@ -170,7 +170,7 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
       .addAllSetOfHtmlStrings(
         listOf<StringList>(
           createHtmlStringList("1", "2"),
-          createHtmlStringList("test item 1","test item 2","test item 3")
+          createHtmlStringList("test item 1", "test item 2", "test item 3")
           )
       )
       .build()
