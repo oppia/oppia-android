@@ -13,6 +13,7 @@ We're still working on setting up the basics of the Android project, but we are 
 2. Download/Install latest [Android Studio](https://developer.android.com/studio/?gclid=EAIaIQobChMI8fX3n5Lb6AIVmH8rCh24JQsxEAAYASAAEgL4L_D_BwE&gclsrc=aw.ds#downloads).
 3. Install the following linters:
    * [Ktlint](https://github.com/pinterest/ktlint#installation)
+   * [Bufbuild](https://buf.build/docs/installation)
 
 ## Installation
 
