@@ -26,13 +26,14 @@ import kotlin.test.fail
 class NumericInputEqualsRuleClassifierProviderTest {
 
   private val NON_NEGATIVE_REAL_VALUE_1_5 = createReal(value = 1.5)
-  private val REAL_VALUE_RANGE_VALUE_1 = createReal(value = 1.000051)
-  private val REAL_VALUE_RANGE_VALUE_2 = createReal(value = 1.000052)
-  private val REAL_VALUE_RANGE_VALUE_3 = createReal(value = 1.000061)
   private val NON_NEGATIVE_REAL_VALUE_3_5 = createReal(value = 3.5)
   private val NEGATIVE_REAL_VALUE_1_5 = createReal(value = -1.5)
   private val NEGATIVE_REAL_VALUE_3_5 = createReal(value = -3.5)
   private val STRING_VALUE = createString(value = "test")
+  // Epsilon in approximatelyEquals() is 1e-5
+  private val REAL_VALUE_RANGE_VALUE_1 = createReal(value = 1.000051)
+  private val REAL_VALUE_RANGE_VALUE_2 = createReal(value = 1.000052)
+  private val REAL_VALUE_RANGE_VALUE_3 = createReal(value = 1.000061)
 
 
   @Inject
@@ -47,18 +48,6 @@ class NumericInputEqualsRuleClassifierProviderTest {
   fun setUp() {
     setUpTestApplicationComponent()
   }
-
-  //testNonNegativeRealAnswer_nonNegativeRealInput_sameExactValue_bothValuesMatch DONE
-  //testNegativeRealAnswer_negativeRealInput_sameExactValue_bothValuesMatch DONE
-  //testRealAnswer_realInput_valuesInRange_bothValuesMatch DONE
-
-  //testNonNegativeRealAnswer_nonNegativeRealInput_valueOutOfRange_valuesDoNotMatch DONE
-  //testNegativeRealAnswer_negativeRealInput_valueOutOfRange_valuesDoNotMatch DONE
-  //testNegativeRealAnswer_nonNegativeRealInput_valueOutOfRange_valuesDoNotMatch DONE
-  //testRealAnswer_realInput_valueAtRange_valuesDoNotMatch DONE
-
-  //testRealAnswer_missingInput_throwsException DONE
-  //testRealAnswer_stringInput_throwsException DONE
 
   @Test
   fun testNonNegativeRealAnswer_nonNegativeRealInput_sameExactValue_bothValuesMatch() {
@@ -93,7 +82,7 @@ class NumericInputEqualsRuleClassifierProviderTest {
 
     val matches = inputEqualsRuleClassifier.matches(answer = NON_NEGATIVE_REAL_VALUE_3_5, inputs = inputs)
 
-    assertThat(matches).isTrue()
+    assertThat(matches).isFalse()
   }
 
   @Test
@@ -102,7 +91,7 @@ class NumericInputEqualsRuleClassifierProviderTest {
 
     val matches = inputEqualsRuleClassifier.matches(answer = NEGATIVE_REAL_VALUE_3_5, inputs = inputs)
 
-    assertThat(matches).isTrue()
+    assertThat(matches).isFalse()
   }
 
   @Test
@@ -111,7 +100,7 @@ class NumericInputEqualsRuleClassifierProviderTest {
 
     val matches = inputEqualsRuleClassifier.matches(answer = NEGATIVE_REAL_VALUE_3_5, inputs = inputs)
 
-    assertThat(matches).isTrue()
+    assertThat(matches).isFalse()
   }
 
   @Test
@@ -120,11 +109,11 @@ class NumericInputEqualsRuleClassifierProviderTest {
 
     val matches = inputEqualsRuleClassifier.matches(answer = REAL_VALUE_RANGE_VALUE_3, inputs = inputs)
 
-    assertThat(matches).isTrue()
+    assertThat(matches).isFalse()
   }
 
   @Test
-  fun ttestRealAnswer_missingInput_throwsException() {
+  fun testRealAnswer_missingInput_throwsException() {
     val inputs = mapOf("y" to NON_NEGATIVE_REAL_VALUE_1_5)
 
     val exception = assertThrows(IllegalStateException::class) {
