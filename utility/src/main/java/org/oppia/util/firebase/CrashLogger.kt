@@ -12,7 +12,7 @@ open class CrashLogger @Inject constructor(
 
   /** Logs a custom non-fatal exception to Firebase Crashlytics. */
   override fun logException(exception: Exception) {
-      firebaseCrashlytics.recordException(exception)
+    firebaseCrashlytics.recordException(exception)
   }
 
   /** Logs a custom log message which can be put alongside a crash report to Firebase Crashlytics. */
