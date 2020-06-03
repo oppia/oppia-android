@@ -35,7 +35,6 @@ class NumericInputEqualsRuleClassifierProviderTest {
   private val REAL_VALUE_RANGE_VALUE_2 = createReal(value = 1.000052)
   private val REAL_VALUE_RANGE_VALUE_3 = createReal(value = 1.000061)
 
-
   @Inject
   internal lateinit var numericInputEqualsRuleClassifierProvider:
     NumericInputEqualsRuleClassifierProvider
@@ -138,7 +137,6 @@ class NumericInputEqualsRuleClassifierProviderTest {
       .contains("Expected input value to be of type REAL not NORMALIZED_STRING")
   }
 
-
   private fun createReal(value: Double): InteractionObject {
     return InteractionObject.newBuilder().setReal(value).build()
   }
@@ -154,17 +152,17 @@ class NumericInputEqualsRuleClassifierProviderTest {
       .inject(this)
   }
 
-    // TODO(#89): Move to a common test library.
-   private fun <T: Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
-      try {
-        operation()
-        fail("Expected to encounter exception of $type")
-      } catch (t: Throwable) {
-        if (type.isInstance(t)) {
-          return type.cast(t)
-        }
-        // Unexpected exception; throw it.
-        throw t
+  // TODO(#89): Move to a common test library.
+  private fun <T : Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
+    try {
+      operation()
+      fail("Expected to encounter exception of $type")
+    } catch (t: Throwable) {
+      if (type.isInstance(t)) {
+        return type.cast(t)
+      }
+      // Unexpected exception; throw it.
+      throw t
     }
   }
 
