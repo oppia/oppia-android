@@ -44,7 +44,7 @@ anchor_for_install_ktlint: &install_ktlint
         chmod a+x ktlint
 
 anchor_for_restore_cache: &restore_cache
-  key: jars-{{ checksum "build.gradle" }}
+  keys: jars-{{ checksum "build.gradle" }}
 
 version: 2
 jobs:
@@ -110,7 +110,7 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}
       - run: 
           name: Build App
-          command: ./.circleci/gradle/gradlew -i assembleDebug --no-daemon --max-workers 2
+          command: ./.circleci/gradle/gradlew -i build
       - run:
           name: Utility tests
           command: ./.circleci/gradle/gradlew -i :utility:test --no-daemon --max-workers 2
