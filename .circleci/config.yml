@@ -14,12 +14,12 @@ var_for_docker_image: &docker_image circleci/android:api-28
 anchor_for_job_defaults: &job_defaults
   working_directory: ~/repo
   environment:
-      GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
+      GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx3200m -XX:+HeapDumpOnOutOfMemoryError"'
       # Customize the JVM maximum heap limit
       JVM_OPTS: -Xmx3200m
       TERM: dumb
   docker:
-    - image: *docker_image
+    - image: *var_for_docker_image
 
 anchor_for_android_dependencies: &install_android_dependencies
   name: Install Android dependencies
@@ -98,6 +98,7 @@ jobs:
           path: ~/test-results/junit
   non_flaky_tests:
     <<: *job_defaults
+    resource_class: large
     steps:
       - checkout
       - restore_cache:
