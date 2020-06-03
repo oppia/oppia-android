@@ -12,7 +12,8 @@ data class GaeExplorationContainer(
 
   @Json(name = "record_playthrough_probability") val recordPlaythroughProbability: Float?,
   @Json(name = "exploration_id") val explorationId: String?,
-  @Json(name = "state_classifier_mapping") val stateClassifierMapping: Map<String, GaeStateClassifier>?,
+  @Json(name = "state_classifier_mapping") val stateClassifierMapping:
+  Map<String, GaeStateClassifier>?,
   @Json(name = "user_email") val userEmail: String?,
   @Json(name = "version") val version: Int?,
   @Json(name = "correctness_feedback_enabled") val isCorrectnessFeedbackEnabled: Boolean?,

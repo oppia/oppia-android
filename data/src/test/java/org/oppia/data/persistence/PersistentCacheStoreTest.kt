@@ -90,7 +90,8 @@ class PersistentCacheStoreTest {
     setUpTestApplicationComponent()
   }
 
-  // TODO(#59): Create a test-only proto for this test rather than needing to reuse a production-facing proto.
+  // TODO(#59): Create a test-only proto for this test rather than needing to reuse a
+  //  production-facing proto.
   @Test
   @ExperimentalCoroutinesApi
   @InternalCoroutinesApi
@@ -122,9 +123,11 @@ class PersistentCacheStoreTest {
     observeCache(cacheStore, mockUserAppHistoryObserver1)
 
     // The initial cache state should be the default cache value.
-    verify(mockUserAppHistoryObserver1, atLeastOnce()).onChanged(userAppHistoryResultCaptor1.capture())
+    verify(mockUserAppHistoryObserver1, atLeastOnce()).onChanged(
+      userAppHistoryResultCaptor1.capture())
     assertThat(userAppHistoryResultCaptor1.value.isSuccess()).isTrue()
-    assertThat(userAppHistoryResultCaptor1.value.getOrThrow()).isEqualTo(TestMessage.getDefaultInstance())
+    assertThat(userAppHistoryResultCaptor1.value.getOrThrow()).isEqualTo(
+      TestMessage.getDefaultInstance())
   }
 
   @Test
@@ -136,7 +139,8 @@ class PersistentCacheStoreTest {
     observeCache(cacheStore, mockUserAppHistoryObserver1)
 
     // Caches can have non-default initial states.
-    verify(mockUserAppHistoryObserver1, atLeastOnce()).onChanged(userAppHistoryResultCaptor1.capture())
+    verify(mockUserAppHistoryObserver1, atLeastOnce()).onChanged(
+      userAppHistoryResultCaptor1.capture())
     assertThat(userAppHistoryResultCaptor1.value.isSuccess()).isTrue()
     assertThat(userAppHistoryResultCaptor1.value.getOrThrow()).isEqualTo(TEST_MESSAGE_VERSION_1)
   }
@@ -152,7 +156,8 @@ class PersistentCacheStoreTest {
     val storeOp = cacheStore.storeDataAsync { TEST_MESSAGE_VERSION_1 }
     testCoroutineDispatchers.advanceUntilIdle()
 
-    // The store operation should be completed, and the observer should be notified of the changed value.
+    // The store operation should be completed, and the observer should be notified of the
+    // changed value.
     assertThat(storeOp.isCompleted).isTrue()
     verify(mockUserAppHistoryObserver1).onChanged(userAppHistoryResultCaptor1.capture())
     assertThat(userAppHistoryResultCaptor1.value.isSuccess()).isTrue()
@@ -169,7 +174,8 @@ class PersistentCacheStoreTest {
     testCoroutineDispatchers.advanceUntilIdle()
     observeCache(cacheStore, mockUserAppHistoryObserver1)
 
-    // The store operation should be completed, and the observer's only call should be the updated state.
+    // The store operation should be completed, and the observer's only call should be the
+    // updated state.
     assertThat(storeOp.isCompleted).isTrue()
     verify(mockUserAppHistoryObserver1).onChanged(userAppHistoryResultCaptor1.capture())
     assertThat(userAppHistoryResultCaptor1.value.isSuccess()).isTrue()
@@ -187,7 +193,8 @@ class PersistentCacheStoreTest {
     val storeOp = cacheStore.storeDataAsync(updateInMemoryCache = false) { TEST_MESSAGE_VERSION_1 }
     testCoroutineDispatchers.advanceUntilIdle()
 
-    // The store operation should be completed, but the observe will not be notified of changes since the in-memory
+    // The store operation should be completed, but the observe will not be notified of
+    // changes since the in-memory
     // cache was not changed.
     assertThat(storeOp.isCompleted).isTrue()
     verifyZeroInteractions(mockUserAppHistoryObserver1)
@@ -203,12 +210,15 @@ class PersistentCacheStoreTest {
     testCoroutineDispatchers.advanceUntilIdle()
     observeCache(cacheStore, mockUserAppHistoryObserver1)
 
-    // The store operation should be completed, but the observer will receive the updated state since the cache wasn't
+    // The store operation should be completed, but the observer will receive the updated state
+    // since the cache wasn't
     // primed and no previous observers initialized it.
-    // NB: This may not be ideal behavior long-term; the store may need to be updated to be more resilient to these
+    // NB: This may not be ideal behavior long-term; the store may need to be updated to be more
+    // resilient to these
     // types of scenarios.
     assertThat(storeOp.isCompleted).isTrue()
-    verify(mockUserAppHistoryObserver1, atLeastOnce()).onChanged(userAppHistoryResultCaptor1.capture())
+    verify(mockUserAppHistoryObserver1, atLeastOnce()).onChanged(
+      userAppHistoryResultCaptor1.capture())
     assertThat(userAppHistoryResultCaptor1.value.isSuccess()).isTrue()
     assertThat(userAppHistoryResultCaptor1.value.getOrThrow()).isEqualTo(TEST_MESSAGE_VERSION_1)
   }
@@ -225,11 +235,14 @@ class PersistentCacheStoreTest {
     val cacheStore2 = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
     observeCache(cacheStore2, mockUserAppHistoryObserver1)
 
-    // The new cache should have the updated value since it points to the same file as the first cache. This is
-    // simulating something closer to an app restart or non-UI Dagger component refresh since UI components should share
+    // The new cache should have the updated value since it points to the same file as the first
+    // cache. This is
+    // simulating something closer to an app restart or non-UI Dagger component refresh since
+    // UI components should share
     // the same cache instance via an application-bound controller object.
     assertThat(storeOp.isCompleted).isTrue()
-    verify(mockUserAppHistoryObserver1, atLeastOnce()).onChanged(userAppHistoryResultCaptor1.capture())
+    verify(mockUserAppHistoryObserver1, atLeastOnce()).onChanged(
+      userAppHistoryResultCaptor1.capture())
     assertThat(userAppHistoryResultCaptor1.value.isSuccess()).isTrue()
     assertThat(userAppHistoryResultCaptor1.value.getOrThrow()).isEqualTo(TEST_MESSAGE_VERSION_1)
   }
@@ -246,12 +259,16 @@ class PersistentCacheStoreTest {
     val cacheStore2 = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
     observeCache(cacheStore2, mockUserAppHistoryObserver1)
 
-    // The new cache should have the updated value since it points to the same file as the first cache, even though the
-    // update operation did not update the in-memory cache (the new cache has a separate in-memory cache). This is
-    // simulating something closer to an app restart or non-UI Dagger component refresh since UI components should share
+    // The new cache should have the updated value since it points to the same file as the first
+    // cache, even though the
+    // update operation did not update the in-memory cache (the new cache has a separate
+    // in-memory cache). This is
+    // simulating something closer to an app restart or non-UI Dagger component refresh since
+    // UI components should share
     // the same cache instance via an application-bound controller object.
     assertThat(storeOp.isCompleted).isTrue()
-    verify(mockUserAppHistoryObserver1, atLeastOnce()).onChanged(userAppHistoryResultCaptor1.capture())
+    verify(mockUserAppHistoryObserver1, atLeastOnce()).onChanged(
+      userAppHistoryResultCaptor1.capture())
     assertThat(userAppHistoryResultCaptor1.value.isSuccess()).isTrue()
     assertThat(userAppHistoryResultCaptor1.value.getOrThrow()).isEqualTo(TEST_MESSAGE_VERSION_1)
   }
@@ -261,20 +278,24 @@ class PersistentCacheStoreTest {
   @InternalCoroutinesApi
   fun testExistingDiskCache_newCacheObject_updateNoMemThenRead_receivesNewValue() {
     val cacheStore1 = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
-    val storeOp1 = cacheStore1.storeDataAsync(updateInMemoryCache = false) { TEST_MESSAGE_VERSION_1 }
+    val storeOp1 = cacheStore1.storeDataAsync(
+      updateInMemoryCache = false) { TEST_MESSAGE_VERSION_1 }
     testCoroutineDispatchers.advanceUntilIdle()
 
     // Create a new cache with the same name and update it, then observe it.
     val cacheStore2 = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
-    val storeOp2 = cacheStore2.storeDataAsync(updateInMemoryCache = false) { TEST_MESSAGE_VERSION_2 }
+    val storeOp2 = cacheStore2.storeDataAsync(
+      updateInMemoryCache = false) { TEST_MESSAGE_VERSION_2 }
     testCoroutineDispatchers.advanceUntilIdle()
     observeCache(cacheStore2, mockUserAppHistoryObserver1)
 
-    // Both operations should be complete, and the observer will receive the latest value since the update was posted
+    // Both operations should be complete, and the observer will receive the latest value since
+    // the update was posted
     // before the read occurred.
     assertThat(storeOp1.isCompleted).isTrue()
     assertThat(storeOp2.isCompleted).isTrue()
-    verify(mockUserAppHistoryObserver1, atLeastOnce()).onChanged(userAppHistoryResultCaptor1.capture())
+    verify(mockUserAppHistoryObserver1, atLeastOnce()).onChanged(
+      userAppHistoryResultCaptor1.capture())
     assertThat(userAppHistoryResultCaptor1.value.isSuccess()).isTrue()
     assertThat(userAppHistoryResultCaptor1.value.getOrThrow()).isEqualTo(TEST_MESSAGE_VERSION_2)
   }
@@ -284,23 +305,28 @@ class PersistentCacheStoreTest {
   @InternalCoroutinesApi
   fun testExistingDiskCache_newObject_updateNoMemThenRead_primed_receivesPrevVal() {
     val cacheStore1 = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
-    val storeOp1 = cacheStore1.storeDataAsync(updateInMemoryCache = false) { TEST_MESSAGE_VERSION_1 }
+    val storeOp1 = cacheStore1.storeDataAsync(
+      updateInMemoryCache = false) { TEST_MESSAGE_VERSION_1 }
     testCoroutineDispatchers.advanceUntilIdle()
 
-    // Create a new cache with the same name and update it, then observe it. However, first prime it.
+    // Create a new cache with the same name and update it, then observe it.
+    // However, first prime it.
     val cacheStore2 = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
     val primeOp = cacheStore2.primeCacheAsync()
     testCoroutineDispatchers.advanceUntilIdle()
-    val storeOp2 = cacheStore2.storeDataAsync(updateInMemoryCache = false) { TEST_MESSAGE_VERSION_2 }
+    val storeOp2 = cacheStore2.storeDataAsync(
+      updateInMemoryCache = false) { TEST_MESSAGE_VERSION_2 }
     testCoroutineDispatchers.advanceUntilIdle()
     observeCache(cacheStore2, mockUserAppHistoryObserver1)
 
-    // All operations should be complete, but the observer will receive the previous update rather than th elatest since
+    // All operations should be complete, but the observer will receive the previous update rather
+    // than the latest since
     // it wasn't updated in memory and the cache was pre-primed.
     assertThat(storeOp1.isCompleted).isTrue()
     assertThat(storeOp2.isCompleted).isTrue()
     assertThat(primeOp.isCompleted).isTrue()
-    verify(mockUserAppHistoryObserver1, atLeastOnce()).onChanged(userAppHistoryResultCaptor1.capture())
+    verify(mockUserAppHistoryObserver1, atLeastOnce()).onChanged(
+      userAppHistoryResultCaptor1.capture())
     assertThat(userAppHistoryResultCaptor1.value.isSuccess()).isTrue()
     assertThat(userAppHistoryResultCaptor1.value.getOrThrow()).isEqualTo(TEST_MESSAGE_VERSION_1)
   }
@@ -310,10 +336,12 @@ class PersistentCacheStoreTest {
   @InternalCoroutinesApi
   fun testExistingDiskCache_newObject_updateMemThenRead_primed_receivesNewVal() {
     val cacheStore1 = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
-    val storeOp1 = cacheStore1.storeDataAsync(updateInMemoryCache = false) { TEST_MESSAGE_VERSION_1 }
+    val storeOp1 = cacheStore1.storeDataAsync(
+      updateInMemoryCache = false) { TEST_MESSAGE_VERSION_1 }
     testCoroutineDispatchers.advanceUntilIdle()
 
-    // Create a new cache with the same name and update it, then observe it. However, first prime it.
+    // Create a new cache with the same name and update it, then observe it.
+    // However, first prime it.
     val cacheStore2 = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
     val primeOp = cacheStore2.primeCacheAsync()
     testCoroutineDispatchers.advanceUntilIdle()
@@ -321,12 +349,14 @@ class PersistentCacheStoreTest {
     testCoroutineDispatchers.advanceUntilIdle()
     observeCache(cacheStore2, mockUserAppHistoryObserver1)
 
-    // Similar to the previous test, except due to the in-memory update the observer will receive the latest result
+    // Similar to the previous test, except due to the in-memory update the observer will
+    // receive the latest result
     // regardless of the cache priming.
     assertThat(storeOp1.isCompleted).isTrue()
     assertThat(storeOp2.isCompleted).isTrue()
     assertThat(primeOp.isCompleted).isTrue()
-    verify(mockUserAppHistoryObserver1, atLeastOnce()).onChanged(userAppHistoryResultCaptor1.capture())
+    verify(mockUserAppHistoryObserver1, atLeastOnce()).onChanged(
+      userAppHistoryResultCaptor1.capture())
     assertThat(userAppHistoryResultCaptor1.value.isSuccess()).isTrue()
     assertThat(userAppHistoryResultCaptor1.value.getOrThrow()).isEqualTo(TEST_MESSAGE_VERSION_2)
   }
@@ -336,7 +366,8 @@ class PersistentCacheStoreTest {
   @InternalCoroutinesApi
   fun testCache_primed_afterStoreUpdateWithoutMemUpdate_notForced_observesOldValue() {
     val cacheStore = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
-    observeCache(cacheStore, mockUserAppHistoryObserver1) // Force initializing the store's in-memory cache
+    // Force initializing the store's in-memory cache
+    observeCache(cacheStore, mockUserAppHistoryObserver1)
 
     val storeOp = cacheStore.storeDataAsync(updateInMemoryCache = false) { TEST_MESSAGE_VERSION_1 }
     testCoroutineDispatchers.advanceUntilIdle()
@@ -344,13 +375,16 @@ class PersistentCacheStoreTest {
     testCoroutineDispatchers.advanceUntilIdle()
     observeCache(cacheStore, mockUserAppHistoryObserver2)
 
-    // Both ops will succeed, and the observer will receive the old value due to the update not changing the in-memory
+    // Both ops will succeed, and the observer will receive the old value due to the update not
+    // changing the in-memory
     // cache, and the prime no-oping due to the cache already being initialized.
     assertThat(storeOp.isCompleted).isTrue()
     assertThat(primeOp.isCompleted).isTrue()
-    verify(mockUserAppHistoryObserver2, atLeastOnce()).onChanged(userAppHistoryResultCaptor1.capture())
+    verify(mockUserAppHistoryObserver2, atLeastOnce()).onChanged(
+      userAppHistoryResultCaptor1.capture())
     assertThat(userAppHistoryResultCaptor1.value.isSuccess()).isTrue()
-    assertThat(userAppHistoryResultCaptor1.value.getOrThrow()).isEqualTo(TestMessage.getDefaultInstance())
+    assertThat(userAppHistoryResultCaptor1.value.getOrThrow()).isEqualTo(
+      TestMessage.getDefaultInstance())
   }
 
   @Test
@@ -358,7 +392,8 @@ class PersistentCacheStoreTest {
   @InternalCoroutinesApi
   fun testCache_primed_afterStoreUpdateWithoutMemoryUpdate_forced_observesNewValue() {
     val cacheStore = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
-    observeCache(cacheStore, mockUserAppHistoryObserver1) // Force initializing the store's in-memory cache
+    // Force initializing the store's in-memory cache
+    observeCache(cacheStore, mockUserAppHistoryObserver1)
 
     val storeOp = cacheStore.storeDataAsync(updateInMemoryCache = false) { TEST_MESSAGE_VERSION_1 }
     testCoroutineDispatchers.advanceUntilIdle()
@@ -366,11 +401,12 @@ class PersistentCacheStoreTest {
     testCoroutineDispatchers.advanceUntilIdle()
     observeCache(cacheStore, mockUserAppHistoryObserver2)
 
-    // The observer will receive the new value because the prime was forced. This ensures the store's in-memory cache is
-    // now up-to-date with the on-disk representation.
+    // The observer will receive the new value because the prime was forced.
+    // This ensures the store's in-memory cache is  now up-to-date with the on-disk representation.
     assertThat(storeOp.isCompleted).isTrue()
     assertThat(primeOp.isCompleted).isTrue()
-    verify(mockUserAppHistoryObserver2, atLeastOnce()).onChanged(userAppHistoryResultCaptor1.capture())
+    verify(mockUserAppHistoryObserver2, atLeastOnce()).onChanged(
+      userAppHistoryResultCaptor1.capture())
     assertThat(userAppHistoryResultCaptor1.value.isSuccess()).isTrue()
     assertThat(userAppHistoryResultCaptor1.value.getOrThrow()).isEqualTo(TEST_MESSAGE_VERSION_1)
   }
@@ -385,11 +421,14 @@ class PersistentCacheStoreTest {
     testCoroutineDispatchers.advanceUntilIdle()
     observeCache(cacheStore, mockUserAppHistoryObserver1)
 
-    // The new observer should observe the store with its default state since nothing needed to be cleared.
+    // The new observer should observe the store with its default state since nothing
+    // needed to be cleared.
     assertThat(clearOp.isCompleted).isTrue()
-    verify(mockUserAppHistoryObserver1, atLeastOnce()).onChanged(userAppHistoryResultCaptor1.capture())
+    verify(mockUserAppHistoryObserver1, atLeastOnce()).onChanged(
+      userAppHistoryResultCaptor1.capture())
     assertThat(userAppHistoryResultCaptor1.value.isSuccess()).isTrue()
-    assertThat(userAppHistoryResultCaptor1.value.getOrThrow()).isEqualTo(TestMessage.getDefaultInstance())
+    assertThat(userAppHistoryResultCaptor1.value.getOrThrow()).isEqualTo(
+      TestMessage.getDefaultInstance())
   }
 
   @Test
@@ -407,9 +446,11 @@ class PersistentCacheStoreTest {
     // The new observer should observe that the store is cleared.
     assertThat(storeOp.isCompleted).isTrue()
     assertThat(clearOp.isCompleted).isTrue()
-    verify(mockUserAppHistoryObserver1, atLeastOnce()).onChanged(userAppHistoryResultCaptor1.capture())
+    verify(mockUserAppHistoryObserver1, atLeastOnce()).onChanged(
+      userAppHistoryResultCaptor1.capture())
     assertThat(userAppHistoryResultCaptor1.value.isSuccess()).isTrue()
-    assertThat(userAppHistoryResultCaptor1.value.getOrThrow()).isEqualTo(TestMessage.getDefaultInstance())
+    assertThat(userAppHistoryResultCaptor1.value.getOrThrow()).isEqualTo(
+      TestMessage.getDefaultInstance())
   }
 
   @Test
@@ -428,9 +469,11 @@ class PersistentCacheStoreTest {
     // The observer should not be notified the cache was cleared.
     assertThat(storeOp.isCompleted).isTrue()
     assertThat(clearOp.isCompleted).isTrue()
-    verify(mockUserAppHistoryObserver1, atLeastOnce()).onChanged(userAppHistoryResultCaptor1.capture())
+    verify(mockUserAppHistoryObserver1, atLeastOnce()).onChanged(
+      userAppHistoryResultCaptor1.capture())
     assertThat(userAppHistoryResultCaptor1.value.isSuccess()).isTrue()
-    assertThat(userAppHistoryResultCaptor1.value.getOrThrow()).isEqualTo(TestMessage.getDefaultInstance())
+    assertThat(userAppHistoryResultCaptor1.value.getOrThrow()).isEqualTo(
+      TestMessage.getDefaultInstance())
   }
 
   @Test
@@ -446,11 +489,12 @@ class PersistentCacheStoreTest {
     val cacheStore2 = cacheFactory.create(CACHE_NAME_1, TEST_MESSAGE_VERSION_2)
     observeCache(cacheStore2, mockUserAppHistoryObserver1)
 
-    // The new observer should observe that there's no persisted on-disk store since it has a different default value
-    // that would only be used if there wasn't already on-disk storage.
+    // The new observer should observe that there's no persisted on-disk store since it has a
+    // different default value that would only be used if there wasn't already on-disk storage.
     assertThat(storeOp.isCompleted).isTrue()
     assertThat(clearOp.isCompleted).isTrue()
-    verify(mockUserAppHistoryObserver1, atLeastOnce()).onChanged(userAppHistoryResultCaptor1.capture())
+    verify(mockUserAppHistoryObserver1, atLeastOnce()).onChanged(
+      userAppHistoryResultCaptor1.capture())
     assertThat(userAppHistoryResultCaptor1.value.isSuccess()).isTrue()
     assertThat(userAppHistoryResultCaptor1.value.getOrThrow()).isEqualTo(TEST_MESSAGE_VERSION_2)
   }
@@ -466,12 +510,13 @@ class PersistentCacheStoreTest {
     val cacheStore2 = cacheFactory.create(CACHE_NAME_1, TEST_MESSAGE_VERSION_2)
     observeCache(cacheStore2, mockUserAppHistoryObserver1)
 
-    // The new cache should observe the updated on-disk value rather than its new default since an on-disk value exists.
-    // This isn't a very realistic test since all caches should use default proto instances for initialization, but it's
-    // a possible edge case that should at least have established behavior that can be adjusted later if it isn't
-    // desirable in some circumstances.
+    // The new cache should observe the updated on-disk value rather than its new default since
+    // an on-disk value exists. This isn't a very realistic test since all caches should use default
+    // proto instances for initialization, but it's a possible edge case that should at least have
+    // established behavior that can be adjusted later if it isn't desirable in some circumstances.
     assertThat(storeOp.isCompleted).isTrue()
-    verify(mockUserAppHistoryObserver1, atLeastOnce()).onChanged(userAppHistoryResultCaptor1.capture())
+    verify(mockUserAppHistoryObserver1, atLeastOnce()).onChanged(
+      userAppHistoryResultCaptor1.capture())
     assertThat(userAppHistoryResultCaptor1.value.isSuccess()).isTrue()
     assertThat(userAppHistoryResultCaptor1.value.getOrThrow()).isEqualTo(TEST_MESSAGE_VERSION_1)
   }
@@ -489,8 +534,8 @@ class PersistentCacheStoreTest {
     val storeOp = cacheStore1.storeDataAsync { TEST_MESSAGE_VERSION_1 }
     testCoroutineDispatchers.advanceUntilIdle()
 
-    // The observer of the second store will be not notified of the change to the first store since they have different
-    // names.
+    // The observer of the second store will be not notified of the change to the first store since
+    // they have different names.
     assertThat(storeOp.isCompleted).isTrue()
     verifyZeroInteractions(mockUserAppHistoryObserver2)
   }
@@ -510,14 +555,18 @@ class PersistentCacheStoreTest {
     observeCache(cacheStore1b, mockUserAppHistoryObserver1)
     observeCache(cacheStore2b, mockUserAppHistoryObserver2)
 
-    // Only the observer of the first cache should notice the update since they are different caches.
+    // Only the observer of the first cache should notice the update since they are
+    // different caches.
     assertThat(storeOp.isCompleted).isTrue()
-    verify(mockUserAppHistoryObserver1, atLeastOnce()).onChanged(userAppHistoryResultCaptor1.capture())
-    verify(mockUserAppHistoryObserver2, atLeastOnce()).onChanged(userAppHistoryResultCaptor2.capture())
+    verify(mockUserAppHistoryObserver1, atLeastOnce()).onChanged(
+      userAppHistoryResultCaptor1.capture())
+    verify(mockUserAppHistoryObserver2, atLeastOnce()).onChanged(
+      userAppHistoryResultCaptor2.capture())
     assertThat(userAppHistoryResultCaptor1.value.isSuccess()).isTrue()
     assertThat(userAppHistoryResultCaptor1.value.getOrThrow()).isEqualTo(TEST_MESSAGE_VERSION_1)
     assertThat(userAppHistoryResultCaptor2.value.isSuccess()).isTrue()
-    assertThat(userAppHistoryResultCaptor2.value.getOrThrow()).isEqualTo(TestMessage.getDefaultInstance())
+    assertThat(userAppHistoryResultCaptor2.value.getOrThrow()).isEqualTo(
+      TestMessage.getDefaultInstance())
   }
 
   @Test
@@ -535,25 +584,32 @@ class PersistentCacheStoreTest {
 
     // The new observer should receive an IOException error when trying to read the file.
     assertThat(storeOp.isCompleted).isTrue()
-    verify(mockUserAppHistoryObserver1, atLeastOnce()).onChanged(userAppHistoryResultCaptor1.capture())
+    verify(mockUserAppHistoryObserver1, atLeastOnce()).onChanged(
+      userAppHistoryResultCaptor1.capture())
     assertThat(userAppHistoryResultCaptor1.value.isFailure()).isTrue()
-    assertThat(userAppHistoryResultCaptor1.value.getErrorOrNull()).isInstanceOf(IOException::class.java)
+    assertThat(userAppHistoryResultCaptor1.value.getErrorOrNull()).isInstanceOf(
+      IOException::class.java)
   }
 
   @ExperimentalCoroutinesApi
   @InternalCoroutinesApi
-  private fun <T : MessageLite> observeCache(cacheStore: PersistentCacheStore<T>, observer: Observer<AsyncResult<T>>) {
+  private fun <T : MessageLite> observeCache(
+    cacheStore: PersistentCacheStore<T>,
+    observer: Observer<AsyncResult<T>>
+  ) {
     dataProviders.convertToLiveData(cacheStore).observeForever(observer)
     testCoroutineDispatchers.advanceUntilIdle()
   }
 
   private fun corruptFileCache(cacheName: String) {
-    // NB: This is unfortunately tied to the implementation details of PersistentCacheStore. If this ends up being an
-    // issue, the store should be updated to call into a file path provider that can also be used in this test to
-    // retrieve the file cache. This may also be needed for downstream profile work if per-profile data stores are done
-    // via subdirectories or altered filenames.
+    // NB: This is unfortunately tied to the implementation details of PersistentCacheStore.
+    // If this ends up being an issue, the store should be updated to call into a file path provider
+    // that can also be used in this test to retrieve the file cache. This may also be needed for
+    // downstream profile work if per-profile data stores are done via subdirectories or altered
+    // filenames.
     val cacheFileName = "$cacheName.cache"
-    val cacheFile = File(ApplicationProvider.getApplicationContext<Context>().filesDir, cacheFileName)
+    val cacheFile = File(
+      ApplicationProvider.getApplicationContext<Context>().filesDir, cacheFileName)
     FileOutputStream(cacheFile).use {
       it.write(byteArrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
     }
