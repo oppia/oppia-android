@@ -3,9 +3,14 @@ package org.oppia.domain.classify.rules.dragAndDropSortInput
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth.*
+import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.reflect.KClass
+import kotlin.reflect.full.cast
+import kotlin.test.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -14,11 +19,6 @@ import org.oppia.app.model.ListOfSetsOfHtmlStrings
 import org.oppia.app.model.StringList
 import org.oppia.domain.classify.RuleClassifier
 import org.robolectric.annotation.Config
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.reflect.KClass
-import kotlin.reflect.full.cast
-import kotlin.test.fail
 
 /** Tests for [DragDropSortInputHasElementXBeforeElementYClassifierProvider]. */
 @RunWith(AndroidJUnit4::class)
@@ -44,7 +44,6 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
 
   @Test
   fun testAnswer_nonNegativeInput_bothInputsWithIncorrectTypes_throwsException() {
-    // Reverse the x and y parameters to ensure both have the incorrect type.
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_4, "y" to NON_NEGATIVE_VALUE_4)
 
     val exception = assertThrows(IllegalStateException::class) {
@@ -122,8 +121,8 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer_elementXAfterElementY_orderedInCorrectly() {
-    val inputs = mapOf("x" to STRING_VALUE_2,"y" to STRING_VALUE_1)
+  fun testAnswer_elementXAfterElementY_orderedIncorrectly() {
+    val inputs = mapOf("x" to STRING_VALUE_2, "y" to STRING_VALUE_1)
 
     val matches =
       hasElementXBeforeElementYRuleClassifier.matches(answer = LIST_OF_SETS_OF_HTML_STRING_VALUE, inputs = inputs)
@@ -132,7 +131,7 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer_elementX_invalidElementY_orderedInCorrectly() {
+  fun testAnswer_elementX_invalidElementY_orderedIncorrectly() {
     val inputs = mapOf("y" to STRING_VALUE_3, "x" to STRING_VALUE_2)
 
     val matches =
@@ -143,7 +142,7 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
 
   @Test
   fun testAnswer_elementXBeforeElementY_orderedCorrectly() {
-    val inputs = mapOf("x" to STRING_VALUE_1,"y" to STRING_VALUE_2)
+    val inputs = mapOf("x" to STRING_VALUE_1, "y" to STRING_VALUE_2)
 
     val matches =
       hasElementXBeforeElementYRuleClassifier.matches(answer = LIST_OF_SETS_OF_HTML_STRING_VALUE, inputs = inputs)

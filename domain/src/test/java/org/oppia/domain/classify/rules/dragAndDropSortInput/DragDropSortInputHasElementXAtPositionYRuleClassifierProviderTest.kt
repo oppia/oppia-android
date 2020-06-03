@@ -170,7 +170,7 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
       .addAllSetOfHtmlStrings(
         listOf<StringList>(
           createHtmlStringList("1", "2"),
-          createHtmlStringList("test item 1","test item 2","test item 3")
+          createHtmlStringList("test item 1", "test item 2", "test item 3")
           )
       )
       .build()
