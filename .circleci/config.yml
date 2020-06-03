@@ -98,7 +98,6 @@ jobs:
           path: ~/test-results/junit
   non_flaky_tests:
     <<: *job_defaults
-    resource_class: large
     steps:
       - checkout
       - restore_cache:
