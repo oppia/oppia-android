@@ -28,6 +28,8 @@ class TextInputContainsRuleClassifierProviderTest {
   private val STRING_INPUT_MIDDLE = createString(value = "is a")
   private val STRING_INPUT_END = createString(value = "a test")
   private val STRING_INPUT_EXTENDS_ANSWER = createString(value = "this is a test i will break")
+  private val STRING_INPUT_NO_SPACES = createString(value = "thisisatest")
+  private val STRING_INPUT_EXTRA_SPACES = createString(value = " this   is  a  test ")
   private val STRING_INPUT_NOT_ANSWER = createString(value = "an answer")
 
   @Inject
@@ -80,6 +82,15 @@ class TextInputContainsRuleClassifierProviderTest {
   }
 
   @Test
+  fun testStringAnswer_stringExtraSpacesInput_answerContainsInput_bothValuesMatch() {
+    val inputs = mapOf("x" to STRING_INPUT_EXTRA_SPACES)
+
+    val matches = inputContainsRuleClassifier.matches(answer = STRING_ANSWER, inputs = inputs)
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
   fun testStringAnswer_stringInput_inputNotInAnswer_valuesDoNotMatch() {
     val inputs = mapOf("x" to STRING_INPUT_NOT_ANSWER)
 
@@ -95,6 +106,28 @@ class TextInputContainsRuleClassifierProviderTest {
     val matches = inputContainsRuleClassifier.matches(answer = STRING_ANSWER, inputs = inputs)
 
     assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testStringAnswer_stringNoSpacesInput_answerPartiallyContainsInput_valuesDoNotMatch() {
+    val inputs = mapOf("x" to STRING_INPUT_NO_SPACES)
+
+    val matches = inputContainsRuleClassifier.matches(answer = STRING_ANSWER, inputs = inputs)
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testStringAnswer_missingInput_throwsException() {
+    val inputs = mapOf("y" to STRING_ANSWER)
+
+    val exception = assertThrows(IllegalStateException::class) {
+      inputContainsRuleClassifier.matches(answer = STRING_ANSWER, inputs = inputs)
+    }
+
+    assertThat(exception)
+      .hasMessageThat()
+      .contains("Expected classifier inputs to contain parameter with name 'x'")
   }
 
   @Test
