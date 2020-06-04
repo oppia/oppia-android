@@ -103,10 +103,14 @@ class ProfileChooserFragmentPresenter @Inject constructor(
         }
         GridLayoutManager(activity, spanCount)
       } else {
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-          GridLayoutManager(activity, /* spanCount= */ 2)
+        if (activity.resources.getBoolean(R.bool.isTablet)) {
+          GridLayoutManager(activity, /* spanCount= */ 1)
         } else {
-          LinearLayoutManager(activity)
+          if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            GridLayoutManager(activity, /* spanCount= */ 2)
+          } else {
+            LinearLayoutManager(activity)
+          }
         }
       }
       binding.profileRecyclerView.layoutManager = layoutManager
