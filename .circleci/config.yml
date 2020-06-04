@@ -6,16 +6,14 @@ workflows:
   version: 2
   circleci_tests:
     jobs:
-      - setup
-      - linters:
-          requires:
-            - setup
+      - install_android_dependencies
+      - linters
       - app_build:
           requires:
-              - setup
+              - install_android_dependencies
       - utility_tests:
           requires:
-              - setup
+              - install_android_dependencies
 
 var_for_docker_image: &docker_image circleci/android:api-28
 
@@ -31,21 +29,28 @@ anchor_for_job_defaults: &job_defaults
     - image: *docker_image
 
 anchor_for_restore_cache: &restore_cache
-  keys: jars-{{ checksum "build.gradle" }}
-
-anchor_for_android_dependencies: &install_android_dependencies
-  name: Install Android dependencies
-  command: ./.circleci/gradle/gradlew androidDependencies
-      
+  keys: jars-{{ checksum "build.gradle" }}      
 
 version: 2
 jobs:
-  setup:
+  install_android_dependencies:
     <<: *job_defaults
     steps:
       - checkout
+      - restore_cache:
+          <<: *restore_cache
       - run:
-          <<: *install_android_dependencies
+          name: Install Android dependencies
+          command: ./.circleci/gradle/gradlew androidDependencies
+      - save_cache:
+          paths:
+              - ~/.gradle
+          key: jars-{{ checksum "build.gradle" }}
+
+  linters:
+    <<: *job_defaults
+    steps:
+      - checkout
       - run:
           name: Download Ktlint
           command: >
@@ -57,16 +62,6 @@ jobs:
                 https://github.com/pinterest/ktlint/releases/download/$KTLINT/ktlint
 
                 chmod a+x ktlint
-      - persist_to_workspace:
-          root: /home/circleci
-          path: oppia-android
-
-  linters:
-    <<: *job_defaults
-    steps:
-      - checkout
-      - attach_workspace:
-          at: /home/circleci/oppia-android
       - run:
           name: Kotlin tests - Data, Utility
           command: ./ktlint utility/**/*.kt data/**/*.kt && echo "Lint completed successfully"
@@ -78,8 +73,8 @@ jobs:
     <<: *job_defaults
     steps:
       - checkout
-      - attach_workspace:
-          at: /home/circleci/oppia-android
+      - restore_cache:
+          <<: *restore_cache
       - run: 
           name: Build App
           command: ./.circleci/gradle/gradlew -i build
@@ -91,8 +86,8 @@ jobs:
     <<: *job_defaults
     steps:
       - checkout
-      - attach_workspace:
-          at: /home/circleci/
+      - restore_cache:
+          <<: *restore_cache
       - run: 
           name: Utility Robolectric Tests
           command: ./.circleci/gradle/gradlew -i :utility:testDebugUnitTest
