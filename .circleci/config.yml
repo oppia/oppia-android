@@ -26,18 +26,26 @@ anchor_for_job_defaults: &job_defaults
       # Customize the JVM maximum heap limit
       JVM_OPTS: -Xmx3200m
       TERM: dumb
+      JAVA_HOME: /usr/lib/jvm/openjdk-11
   docker:
     - image: *docker_image
 
 anchor_for_restore_cache: &restore_cache
   key: jars-{{ checksum "build.gradle" }}      
 
-version: 2
+version: 2.1
+orbs:
+  vm-install-tools: entur/vm-install-tools@0.0.6
+
 jobs:
   install_android_dependencies:
     <<: *job_defaults
     steps:
       - checkout
+      - run: 
+          name: Update installer
+          command: sudo apt-get update && sudo apt-get install software-properties-common
+      - vm-install-tools/install-java11
       - restore_cache:
           <<: *restore_cache
       - run:
