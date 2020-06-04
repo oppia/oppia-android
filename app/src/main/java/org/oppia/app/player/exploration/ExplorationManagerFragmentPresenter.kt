@@ -25,7 +25,7 @@ class ExplorationManagerFragmentPresenter @Inject constructor(
   fun handleCreate(internalProfileId: Int) {
     this.profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     getProfileData().observe(activity, Observer<StoryTextSize> { result ->
-      (activity as DeafultFontSizeStateListener).onDeafultFontSizeLoaded(result)
+      (activity as DefaultFontSizeStateListener).onDefaultFontSizeLoaded(result)
     })
   }
 

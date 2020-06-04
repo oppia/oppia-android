@@ -29,7 +29,8 @@ class ExplorationActivity : InjectableAppCompatActivity(),
   HintsAndSolutionListener,
   RouteToHintsAndSolutionListener,
   RevealHintListener,
-  RevealSolutionInterface, DeafultFontSizeStateListener {
+  RevealSolutionInterface,
+  DefaultFontSizeStateListener {
 
   @Inject lateinit var explorationActivityPresenter: ExplorationActivityPresenter
   private var internalProfileId: Int = -1
@@ -161,7 +162,7 @@ class ExplorationActivity : InjectableAppCompatActivity(),
     getHintsAndSolution()?.dismiss()
   }
 
-  override fun onDeafultFontSizeLoaded(storyTextSize: StoryTextSize) {
+  override fun onDefaultFontSizeLoaded(storyTextSize: StoryTextSize) {
     explorationActivityPresenter.loadExplorationFragment(storyTextSize)
   }
 }
