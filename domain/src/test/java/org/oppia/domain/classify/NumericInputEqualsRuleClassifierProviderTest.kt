@@ -11,6 +11,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.model.InteractionObject
 import org.oppia.domain.classify.rules.numericinput.NumericInputEqualsRuleClassifierProvider
+import org.oppia.domain.util.EPSILON
 import org.robolectric.annotation.Config
 import java.lang.IllegalStateException
 import javax.inject.Inject
@@ -29,10 +30,6 @@ class NumericInputEqualsRuleClassifierProviderTest {
   private val NEGATIVE_REAL_VALUE_1_5 = createReal(value = -1.5)
   private val NEGATIVE_REAL_VALUE_3_5 = createReal(value = -3.5)
   private val STRING_VALUE = createString(value = "test")
-  // Epsilon in approximatelyEquals() is 1e-5
-  private val REAL_VALUE_RANGE_VALUE_1 = createReal(value = 1.000051)
-  private val REAL_VALUE_RANGE_VALUE_2 = createReal(value = 1.000052)
-  private val REAL_VALUE_RANGE_VALUE_3 = createReal(value = 1.000061)
 
   @Inject
   internal lateinit var numericInputEqualsRuleClassifierProvider:
@@ -67,9 +64,9 @@ class NumericInputEqualsRuleClassifierProviderTest {
 
   @Test
   fun testPositiveRealAnswer_positiveRealInput_valuesInRange_bothValuesMatch() {
-    val inputs = mapOf("x" to REAL_VALUE_RANGE_VALUE_1)
+    val inputs = mapOf("x" to createReal(value = 5 * EPSILON))
 
-    val matches = inputEqualsRuleClassifier.matches(answer = REAL_VALUE_RANGE_VALUE_2, inputs = inputs)
+    val matches = inputEqualsRuleClassifier.matches(answer = createReal(value = 5 * EPSILON + EPSILON / 10), inputs = inputs)
 
     assertThat(matches).isTrue()
   }
@@ -103,9 +100,9 @@ class NumericInputEqualsRuleClassifierProviderTest {
 
   @Test
   fun testPositiveRealAnswer_positiveRealInput_valueAtRange_valuesDoNotMatch() {
-    val inputs = mapOf("x" to REAL_VALUE_RANGE_VALUE_1)
+    val inputs = mapOf("x" to createReal(value = 5 * EPSILON))
 
-    val matches = inputEqualsRuleClassifier.matches(answer = REAL_VALUE_RANGE_VALUE_3, inputs = inputs)
+    val matches = inputEqualsRuleClassifier.matches(answer = createReal(value = 6 * EPSILON), inputs = inputs)
 
     assertThat(matches).isFalse()
   }
