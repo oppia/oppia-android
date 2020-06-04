@@ -26,7 +26,7 @@ anchor_for_job_defaults: &job_defaults
       # Customize the JVM maximum heap limit
       JVM_OPTS: -Xmx3200m
       TERM: dumb
-      JAVA_HOME: /usr/lib/jvm/openjdk-11
+      JAVA_HOME: /usr/lib/jvm/jdk-11.0.6+10/bin
   docker:
     - image: *docker_image
 
@@ -62,7 +62,7 @@ jobs:
 
             sudo sh -c 'for bin in /usr/lib/jvm/jdk-11.0.6+10/bin/*; do
             update-alternatives --set $(basename $bin) $bin; done'
-          
+
       - restore_cache:
           <<: *restore_cache
       - run:
