@@ -8,27 +8,27 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:123456789012:android:d544ded26ae57f7fe6e25b",
+        "mobilesdk_app_id": "1:123456789012:android:fakestringreplacee25b",
         "android_client_info": {
           "package_name": "org.oppia.app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "123456789012-4unv88bb0rj9c4ki29hanl213qg6ter8.apps.googleusercontent.com",
+          "client_id": "123456789012-fakestringreplaceatreleaseg6ter8.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "BJabTzEHBlKeXx1u8fMxi58ZC5E-mwcZTB4nPi4"
+          "current_key": "fakestringreplaceatreleaseE-mwcZTB4nPi4"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "123456789012-4unv88bb0rj9c4ki29hanl213qg6ter8.apps.googleusercontent.com",
+              "client_id": "123456789012-fakestringreplaceatreleaseg6ter8.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
