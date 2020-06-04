@@ -28,7 +28,11 @@ anchor_for_job_defaults: &job_defaults
     - image: *docker_image
 
 anchor_for_restore_cache: &restore_cache
-  keys: jars-{{ checksum "build.gradle" 
+  keys: jars-{{ checksum "build.gradle" }}
+
+anchor_for_android_dependencies: &install_android_dependencies
+  name: Install Android dependencies
+  command: ./.circleci/gradle/gradlew androidDependencies
       
 
 version: 2
@@ -50,16 +54,11 @@ jobs:
                 chmod a+x ktlint
 
       - run:
-          name: Install Android dependencies
-          command: ./.circleci/gradle/gradlew androidDependencies
-      - persist_to_workspace:
-            root: /home/circleci/
+          <<: *install_android_dependencies
   linters:
     <<: *job_defaults
     steps:
       - checkout
-      - attach_workspace:
-          at: /home/circleci/
       - run:
           name: Kotlin tests - Data, Utility
           command: ./ktlint utility/**/*.kt data/**/*.kt && echo "Lint completed successfully"
@@ -71,8 +70,6 @@ jobs:
     <<: *job_defaults
     steps:
       - checkout
-      - attach_workspace:
-          at: /home/circleci/
       - run: 
           name: Build App
           command: ./.circleci/gradle/gradlew -i build
