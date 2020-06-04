@@ -26,7 +26,7 @@ class TextInputEqualsRuleClassifierProviderTest {
   private val STRING_VALUE_TEST_LOWERCASE = createString(value = "test")
   private val STRING_VALUE = createString(value = "string")
   private val STRING_VALUE_TEST_EXTRA_SPACES = createString(value = "test  a  lot  ")
-  private val STRING_VALUE_TEST_SINGL_SPACES = createString(value = "test a lot")
+  private val STRING_VALUE_TEST_SINGLE_SPACES = createString(value = "test a lot")
   private val STRING_VALUE_TEST_NO_SPACES = createString(value = "testalot")
   private val NON_NEGATIVE_VALUE = createNonNegativeInt(value = 1)
 
@@ -74,7 +74,7 @@ class TextInputEqualsRuleClassifierProviderTest {
   fun testStringAnswer_stringInput_sameStringDifferentSpaces_bothValuesMatch() {
     val inputs = mapOf("x" to STRING_VALUE_TEST_EXTRA_SPACES)
 
-    val matches = inputEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_SINGL_SPACES, inputs = inputs)
+    val matches = inputEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_SINGLE_SPACES, inputs = inputs)
 
     assertThat(matches).isTrue()
   }
@@ -92,7 +92,7 @@ class TextInputEqualsRuleClassifierProviderTest {
   fun testStringAnswer_stringNoSpacesInput_differentStrings_bothValuesDoNotMatch() {
     val inputs = mapOf("x" to STRING_VALUE_TEST_NO_SPACES)
 
-    val matches = inputEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_SINGL_SPACES, inputs = inputs)
+    val matches = inputEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_SINGLE_SPACES, inputs = inputs)
 
     assertThat(matches).isFalse()
   }
