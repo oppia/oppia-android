@@ -57,7 +57,7 @@ class HtmlParser private constructor(
       formattedHtml,
       HtmlCompat.FROM_HTML_MODE_LEGACY,
       imageGetter,
-      CustomTagHandler(htmlContentTextView.context)
+      CustomTagHandler()
     ) as Spannable
 
     val spannableBuilder = SpannableStringBuilder(htmlSpannable)

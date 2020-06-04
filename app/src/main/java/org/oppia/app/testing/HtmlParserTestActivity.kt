@@ -35,7 +35,93 @@ class HtmlParserTestActivity : InjectableAppCompatActivity() {
     val testHtmlContentOrderedListTextView: TextView =
       findViewById(R.id.test_html_content_with_ordered_list_text_view)
     val rawDummyString2 =
-      """ <ul> <li>Item 1</li> <li>Item 2</li> <li>Item 3 <ol> <li>Nested item 1</li> <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla et tellus eu magna facilisis eleifend. Vestibulum faucibus pulvinar tincidunt. Nullam non mauris nisi.</li> </ol> </li> <li>Item 4</li> <li>Item 5 <ol> <li>Nested item 1</li> <li>Nested item 2 <ol> <li>Double nested item 1</li> <li>Double nested item 2</li> </ol> </li> <li>Nested item 3</li> </ol> </li> <li>Item 6</li> </ul> """
+      """<html>
+<h3>nested unordered lists</h3>
+<ul>
+  <li>
+     first level
+     <ul>
+        <li>
+           second level
+           <ul>
+              <li>
+                 third level
+                 <ul>
+                    <li>
+                       fourth level
+                       <ul>
+                          <li>fifth level</li>
+                       </ul>
+                    </li>
+                    <li>fourth level</li>
+                 </ul>
+              </li>
+              <li>third level</li>
+           </ul>
+        </li>
+        <li>second level</li>
+        <li>second level: this should be a long enough text that will be wrapped into multiple lines</li>
+     </ul>
+  </li>
+  <li>first level</li>
+</ul> 
+
+<hr>
+<h3>nested ordered lists</h3>
+<ol>
+  <li>
+     first level
+     <ol>
+        <li>
+           second level
+           <ol>
+              <li>
+                 third level
+                 <ol>
+                    <li>
+                       fourth level
+                       <ol>
+                          <li>fifth level</li>
+                       </ol>
+                    </li>
+                    <li>fourth level</li>
+                 </ol>
+              </li>
+              <li>third level</li>
+           </ol>
+        </li>
+        <li>second level</li>
+        <li>second level: this should be a long enough text that will be wrapped into multiple lines</li>
+     </ol>
+  </li>
+  <li>first level</li>
+</ol>
+
+<hr>
+<h3>Mixed (ol and ul) nested lists:</h3>
+<ul>
+  <li>
+     first unordered
+     <ol>
+        <li>first ordered</li>
+        <li>
+           second ordered
+           <ul>
+              <li>
+                 unordered in second ordered
+                 <ol>
+                    <li>ordered in "unordered in second ordered"</li>
+                    <li>another ordered in ""unordered in second ordered"</li>
+                 </ol>
+              </li>
+           </ul>
+        </li>
+        <li>third ordered with some other formatting: <b>bold</b> and <i>italics</i></li>
+     </ol>
+  </li>
+  <li>second unordered</li>
+</ul>
+</html>"""
     val htmlResult2: Spannable =
       htmlParserFactory.create(
         /* entityType= */ "exploration",

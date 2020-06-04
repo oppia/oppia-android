@@ -75,7 +75,7 @@ class TagHandlerTest {
     assertThat(
       "CITRUS FRUITS:\n\nLEMON\n\nLIME\n\nORANGE\n\n"
     ).isEqualTo(
-      HtmlCompat.fromHtml(source, flags, null, CustomTagHandler(context)).toString()
+      HtmlCompat.fromHtml(source, flags, null, CustomTagHandler()).toString()
     )
   }
 
@@ -87,7 +87,7 @@ class TagHandlerTest {
     assertThat(
       "CITRUS FRUITS:\n\nLEMON\n\nLIME\n\nORANGE\n\n"
     ).isEqualTo(
-      HtmlCompat.fromHtml(source, flags, null, CustomTagHandler(context)).toString()
+      HtmlCompat.fromHtml(source, flags, null, CustomTagHandler()).toString()
     )
   }
 
@@ -119,7 +119,7 @@ class TagHandlerTest {
     assertThat(
       "Item 1\n\nItem 2\n\nNumbered list: \n\nNested item in numbered list 1\n\nNested item in numbered list 2\n\nNested list: \n\nDouble nested list: \n\nDouble nested item \n\n"
     )
-      .isEqualTo(HtmlCompat.fromHtml(source, flags, null, CustomTagHandler(context)).toString())
+      .isEqualTo(HtmlCompat.fromHtml(source, flags, null, CustomTagHandler()).toString())
   }
 
   @Qualifier
