@@ -17,7 +17,7 @@ workflows:
 var_for_docker_image: &docker_image circleci/android:api-28
 
 anchor_for_job_defaults: &job_defaults
-  working_directory: ~/repo
+  working_directory: /home/circleci/oppia-android
   environment:
       GRADLE_OPTS: '-Dorg.gradle.daemon=false -Xmx3200m -XX:+HeapDumpOnOutOfMemoryError'
       GRADLE_OPTIONS: --no-daemon --max-workers 2
@@ -54,11 +54,15 @@ jobs:
                 https://github.com/pinterest/ktlint/releases/download/$KTLINT/ktlint
 
                 chmod a+x ktlint
+      - persist_to_workspace:
+          root: /home/circleci/
 
   linters:
     <<: *job_defaults
     steps:
       - checkout
+      - attach_workspace:
+          at: /home/circleci/
       - run:
           name: Kotlin tests - Data, Utility
           command: ./ktlint utility/**/*.kt data/**/*.kt && echo "Lint completed successfully"
@@ -70,6 +74,8 @@ jobs:
     <<: *job_defaults
     steps:
       - checkout
+      - attach_workspace:
+          at: /home/circleci/
       - run: 
           name: Build App
           command: ./.circleci/gradle/gradlew -i build
