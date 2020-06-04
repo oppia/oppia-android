@@ -17,14 +17,14 @@ class AudioFragmentTestActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     val internalProfileId =
-      intent.getIntExtra(KEY_AUDIO_FRAGMENT_TEST_PROFILE_ID,/* defaultValue= */ 0)
+      intent.getIntExtra(KEY_AUDIO_FRAGMENT_TEST_PROFILE_ID,/* defaultValue= */ -1)
     audioFragmentTestActivityController.handleOnCreate(internalProfileId)
   }
 
   companion object {
-    fun createAudioFragmentTestActivity(context: Context, profileId: Int?): Intent {
+    fun createAudioFragmentTestActivity(context: Context, internalProfileId: Int?): Intent {
       val intent = Intent(context, AudioFragmentTestActivity::class.java)
-      intent.putExtra(KEY_AUDIO_FRAGMENT_TEST_PROFILE_ID, profileId)
+      intent.putExtra(KEY_AUDIO_FRAGMENT_TEST_PROFILE_ID, internalProfileId)
       return intent
     }
   }
