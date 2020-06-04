@@ -12,4 +12,10 @@ class FirebaseModule {
   fun provideFirebaseCrashlytics(): FirebaseCrashlytics {
     return FirebaseCrashlytics.getInstance()
   }
+
+  @Singleton
+  @Provides
+  fun provideCrashLogger(): CrashLogger {
+    return CrashLoggerImplementation(provideFirebaseCrashlytics())
+  }
 }
