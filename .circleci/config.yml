@@ -19,7 +19,7 @@ var_for_docker_image: &docker_image circleci/android:api-28
 anchor_for_job_defaults: &job_defaults
   working_directory: ~/repo
   environment:
-      GRADLE_OPTS: '-Dorg.gradle.daemon=false -Xmx3200m -XX:+HeapDumpOnOutOfMemoryError"'
+      GRADLE_OPTS: '-Dorg.gradle.daemon=false -Xmx3200m -XX:+HeapDumpOnOutOfMemoryError'
       GRADLE_OPTIONS: --no-daemon --max-workers 2
       # Customize the JVM maximum heap limit
       JVM_OPTS: -Xmx3200m
@@ -42,6 +42,8 @@ jobs:
     steps:
       - checkout
       - run:
+          <<: *install_android_dependencies
+      - run:
           name: Download Ktlint
           command: >
                 KTLINT="0.37.0"
@@ -53,8 +55,6 @@ jobs:
 
                 chmod a+x ktlint
 
-      - run:
-          <<: *install_android_dependencies
   linters:
     <<: *job_defaults
     steps:
