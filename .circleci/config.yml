@@ -28,12 +28,15 @@ anchor_for_job_defaults: &job_defaults
     - image: *docker_image
 
 anchor_for_restore_cache: &restore_cache
-  keys: jars-{{ checksum "build.gradle" }}
+  keys: jars-{{ checksum "build.gradle" 
+      
 
-commands:
-  install_ktlint:
-    description: Download and Install Ktlint
+version: 2
+jobs:
+  setup:
+    <<: *job_defaults
     steps:
+      - checkout
       - run:
           name: Download Ktlint
           command: >
@@ -46,14 +49,6 @@ commands:
 
                 chmod a+x ktlint
 
-
-version: 2
-jobs:
-  setup:
-    <<: *job_defaults
-    steps:
-      - checkout
-      - install_ktlint
       - run:
           name: Install Android dependencies
           command: ./.circleci/gradle/gradlew androidDependencies
