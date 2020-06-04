@@ -9,13 +9,7 @@ import javax.inject.Singleton
 class FirebaseModule {
   @Singleton
   @Provides
-  fun provideFirebaseCrashlytics(): FirebaseCrashlytics {
-    return FirebaseCrashlytics.getInstance()
-  }
-
-  @Singleton
-  @Provides
   fun provideCrashLogger(): CrashLogger {
-    return CrashLoggerImplementation(provideFirebaseCrashlytics())
+    return CrashLoggerImplementation(FirebaseCrashlytics.getInstance())
   }
 }
