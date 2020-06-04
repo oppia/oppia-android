@@ -50,14 +50,14 @@ version: 2
 jobs:
   setup:
     <<: *job_defaults
-  steps:
-    - checkout
-    - run:
-          <<: *install_ktlint
-    - run:
-          <<: *install_android_dependencies
-    - persist_to_workspace:
-          root: /home/circleci/
+    steps:
+      - checkout
+      - run:
+            <<: *install_ktlint
+      - run:
+            <<: *install_android_dependencies
+      - persist_to_workspace:
+            root: /home/circleci/
   linters:
     <<: *job_defaults
     steps:
