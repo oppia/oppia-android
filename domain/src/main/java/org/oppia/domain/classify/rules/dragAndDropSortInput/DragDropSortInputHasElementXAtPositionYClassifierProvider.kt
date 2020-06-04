@@ -29,7 +29,10 @@ internal class DragDropSortInputHasElementXAtPositionYClassifierProvider @Inject
     )
   }
 
-  /* We are adding +1 in matching logic to make it even with the web login i.e. input will be of base 1 rather base 0 */
+  /**
+   *  We are adding +1 in matching logic to make it even with the web login i.e. input will be of base 1 rather base 0,
+   *  which is done to make it human friendly.
+   *  */
   override fun matches(
     answer: ListOfSetsOfHtmlStrings,
     firstInput: String,

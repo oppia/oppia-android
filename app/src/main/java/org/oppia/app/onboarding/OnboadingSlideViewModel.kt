@@ -30,7 +30,11 @@ class OnboardingSlideViewModel(val context: Context, viewPagerSlide: ViewPagerSl
     when (viewPagerSlide) {
       ViewPagerSlide.SLIDE_0 -> {
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-          slideImage.set(R.drawable.ic_landscape_onboarding_0)
+          if (context.resources.getBoolean(R.bool.isTablet)) {
+            slideImage.set(R.drawable.ic_landscape_onboarding_0_tablet)
+          } else {
+            slideImage.set(R.drawable.ic_landscape_onboarding_0)
+          }
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
           slideImage.set(R.drawable.ic_portrait_onboarding_0)
         }
@@ -40,7 +44,11 @@ class OnboardingSlideViewModel(val context: Context, viewPagerSlide: ViewPagerSl
       }
       ViewPagerSlide.SLIDE_1 -> {
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-          slideImage.set(R.drawable.ic_landscape_onboarding_1)
+          if (context.resources.getBoolean(R.bool.isTablet)) {
+            slideImage.set(R.drawable.ic_landscape_onboarding_1_tablet)
+          } else {
+            slideImage.set(R.drawable.ic_landscape_onboarding_1)
+          }
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
           slideImage.set(R.drawable.ic_portrait_onboarding_1)
         }
@@ -50,7 +58,11 @@ class OnboardingSlideViewModel(val context: Context, viewPagerSlide: ViewPagerSl
       }
       ViewPagerSlide.SLIDE_2 -> {
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-          slideImage.set(R.drawable.ic_landscape_onboarding_2)
+          if (context.resources.getBoolean(R.bool.isTablet)) {
+            slideImage.set(R.drawable.ic_landscape_onboarding_2_tablet)
+          } else {
+            slideImage.set(R.drawable.ic_landscape_onboarding_2)
+          }
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
           slideImage.set(R.drawable.ic_portrait_onboarding_2)
         }

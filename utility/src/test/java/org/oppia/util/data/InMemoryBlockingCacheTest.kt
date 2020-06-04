@@ -9,12 +9,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
-import javax.inject.Qualifier
-import javax.inject.Singleton
-import kotlin.reflect.KClass
-import kotlin.reflect.full.cast
-import kotlin.test.fail
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -27,6 +21,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
+import javax.inject.Inject
+import javax.inject.Qualifier
+import javax.inject.Singleton
+import kotlin.reflect.KClass
+import kotlin.reflect.full.cast
+import kotlin.test.fail
 
 private const val INITIALIZED_CACHE_VALUE = "inited cache value"
 private const val CREATED_CACHE_VALUE = "created cache value"
