@@ -8,10 +8,13 @@ workflows:
     jobs:
       - install_android_dependencies
       - linters
-      - app_build:
+      - utility_tests:
           requires:
               - install_android_dependencies
-      - utility_tests:
+      - domain_tests:
+          requires:
+              - install_android_dependencies
+      - non_flaky_tests:
           requires:
               - install_android_dependencies
 
@@ -67,19 +70,6 @@ jobs:
           path: linter/reports
       - store_test_results:
           path: linter/test-results
-  app_build:
-    <<: *job_defaults
-    steps:
-      - checkout
-      - restore_cache:
-          <<: *restore_cache
-      - run: 
-          name: Build App
-          command: ./.circleci/gradle/gradlew -i build
-      - store_artifacts:
-          path: app/build/reports
-      - store_test_results:
-          path: app/build/test-results
   utility_tests:
     <<: *job_defaults
     steps:
@@ -99,6 +89,25 @@ jobs:
           path: ~/utility-test-results
       - store_artifacts:
           path: ~/utility-test-results/junit
+  domain_tests:
+    <<: *job_defaults
+    steps:
+      - checkout
+      - restore_cache:
+          <<: *restore_cache
+      - run: 
+          name: Domain Robolectric Tests
+          command: ./.circleci/gradle/gradlew -i :domain:testDebugUnitTest
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/domain-test-results/junit/
+            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/domain-test-results/junit/ \;
+          when: always
+      - store_test_results:
+          path: ~/domain-test-results
+      - store_artifacts:
+          path: ~/domain-test-results/junit
   non_flaky_tests:
     <<: *job_defaults
     steps:
@@ -106,33 +115,16 @@ jobs:
       - restore_cache:
           <<: *restore_cache
       - run:
-          name: Install Android dependencies
-          command: ./.circleci/gradle/gradlew androidDependencies
-      - save_cache:
-          paths:
-            - ~/.gradle
-          key: jars-{{ checksum "build.gradle" }}
-      - run: 
-          name: Build App
-          command: ./.circleci/gradle/gradlew -i build
-      - run:
-          name: Utility tests
-          command: ./.circleci/gradle/gradlew -i :utility:test --no-daemon --max-workers 2
-      - run:
-          name: Domain tests
-          command: ./.circleci/gradle/gradlew -i :domain:test --no-daemon --max-workers 2
-      - run:
           name: App -  FAQ, Help, Splash, Parser, RecyclerView, Story, Utility tests, Walkthrough
           command: ./.circleci/gradle/gradlew -i :app:testDebugUnitTest --tests org.oppia.app.faq* --tests org.oppia.app.help* --tests org.oppia.app.splash*
             --tests org.oppia.app.parser* --tests org.oppia.app.recyclerview* --tests org.oppia.app.story* --tests org.oppia.app.utility* --tests org.oppia.app.walkthrough*
-            --no-daemon --max-workers 2
       - run:
           name: Save test results
           command: |
-            mkdir -p ~/test-results/junit/
-            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/test-results/junit/ \;
+            mkdir -p ~/app-test-results/junit/
+            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/app-test-results/junit/ \;
           when: always
       - store_test_results:
-          path: ~/test-results
+          path: ~/app-test-results
       - store_artifacts:
-          path: ~/test-results/junit
+          path: ~/app-test-results/junit
