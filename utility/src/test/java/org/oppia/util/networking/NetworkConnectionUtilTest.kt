@@ -10,9 +10,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
-import javax.inject.Qualifier
-import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -34,6 +31,9 @@ import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowNetworkInfo
+import javax.inject.Inject
+import javax.inject.Qualifier
+import javax.inject.Singleton
 
 /** Tests for [NetworkConnectionUtil]. */
 @RunWith(AndroidJUnit4::class)
