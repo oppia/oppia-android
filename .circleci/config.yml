@@ -27,24 +27,25 @@ anchor_for_job_defaults: &job_defaults
   docker:
     - image: *docker_image
 
-anchor_for_android_dependencies: &install_android_dependencies
-  name: Install Android dependencies
-  command: ./.circleci/gradle/gradlew androidDependencies
-
-anchor_for_install_ktlint: &install_ktlint
-  name: Download Ktlint
-  command: >
-        KTLINT="0.37.0"
-
-        echo Using Ktlint $KTLINT
-
-        curl -sSLO
-        https://github.com/pinterest/ktlint/releases/download/$KTLINT/ktlint
-
-        chmod a+x ktlint
-
 anchor_for_restore_cache: &restore_cache
   keys: jars-{{ checksum "build.gradle" }}
+
+commands:
+  install_ktlint:
+    description: Download and Install Ktlint
+    steps:
+      - run:
+          name: Download Ktlint
+          command: >
+                KTLINT="0.37.0"
+
+                echo Using Ktlint $KTLINT
+
+                curl -sSLO
+                https://github.com/pinterest/ktlint/releases/download/$KTLINT/ktlint
+
+                chmod a+x ktlint
+
 
 version: 2
 jobs:
@@ -52,10 +53,10 @@ jobs:
     <<: *job_defaults
     steps:
       - checkout
+      - install_ktlint
       - run:
-            <<: *install_ktlint
-      - run:
-            <<: *install_android_dependencies
+          name: Install Android dependencies
+          command: ./.circleci/gradle/gradlew androidDependencies
       - persist_to_workspace:
             root: /home/circleci/
   linters:
@@ -91,7 +92,8 @@ jobs:
       - restore_cache:
           <<: *restore_cache
       - run:
-          <<: *install_android_dependencies
+          name: Install Android dependencies
+          command: ./.circleci/gradle/gradlew androidDependencies
       - save_cache:
           paths:
             - ~/.gradle
