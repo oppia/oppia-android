@@ -10,8 +10,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -38,6 +36,8 @@ import org.oppia.testing.TestFirebaseModule
 import org.oppia.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val BASE_PROVIDER_ID_0 = "base_id_0"
 private const val BASE_PROVIDER_ID_1 = "base_id_1"
@@ -1651,7 +1651,8 @@ class DataProvidersTest {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_1)
     val dataProvider = dataProviders.combine<String, String, String>(
-      COMBINED_PROVIDER_ID, baseProvider1, baseProvider2) { _, _ ->
+      COMBINED_PROVIDER_ID, baseProvider1, baseProvider2
+    ) { _, _ ->
       throw IllegalStateException("Combine failure")
     }
 
@@ -2313,7 +2314,8 @@ class DataProvidersTest {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_1)
     val dataProvider = dataProviders.combineAsync<String, String, String>(
-      COMBINED_PROVIDER_ID, baseProvider1, baseProvider2) { _, _ ->
+      COMBINED_PROVIDER_ID, baseProvider1, baseProvider2
+    ) { _, _ ->
       AsyncResult.pending()
     }
 
@@ -2331,7 +2333,8 @@ class DataProvidersTest {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_1)
     val dataProvider = dataProviders.combineAsync<String, String, String>(
-      COMBINED_PROVIDER_ID, baseProvider1, baseProvider2) { _, _ ->
+      COMBINED_PROVIDER_ID, baseProvider1, baseProvider2
+    ) { _, _ ->
       AsyncResult.failed(IllegalStateException("Combine failure"))
     }
 

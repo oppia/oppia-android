@@ -45,6 +45,9 @@ android {
     execution 'ANDROIDX_TEST_ORCHESTRATOR'
     unitTests {
       includeAndroidResources = true
+      all {
+        maxHeapSize = "1024m"
+      }
     }
     animationsDisabled = true
   }
