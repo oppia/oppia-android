@@ -135,8 +135,7 @@ class HtmlParserTest {
     onView(withId(R.id.test_html_content_text_view)).check(matches(not(textView.text.toString())))
   }
 
-  @Qualifier
-  annotation class TestDispatcher
+  @Qualifier annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module
