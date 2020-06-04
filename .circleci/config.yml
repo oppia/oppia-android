@@ -13,6 +13,9 @@ workflows:
       - app_build:
           requires:
               - setup
+      - utility_tests:
+          requires:
+              - setup
 
 var_for_docker_image: &docker_image circleci/android:api-28
 
@@ -55,14 +58,14 @@ jobs:
 
                 chmod a+x ktlint
       - persist_to_workspace:
-          root: /home/circleci/
+          root: /home/circleci/oppia-android
 
   linters:
     <<: *job_defaults
     steps:
       - checkout
       - attach_workspace:
-          at: /home/circleci/
+          at: /home/circleci/oppia-android
       - run:
           name: Kotlin tests - Data, Utility
           command: ./ktlint utility/**/*.kt data/**/*.kt && echo "Lint completed successfully"
@@ -75,7 +78,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: /home/circleci/
+          at: /home/circleci/oppia-android
       - run: 
           name: Build App
           command: ./.circleci/gradle/gradlew -i build
@@ -83,6 +86,25 @@ jobs:
           path: app/build/reports
       - store_test_results:
           path: app/build/test-results
+  utility_tests:
+    <<: *job_defaults
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /home/circleci/
+      - run: 
+          name: Utility Robolectric Tests
+          command: ./.circleci/gradle/gradlew -i :utility:testDebugUnitTest
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/utility-test-results/junit/
+            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/utility-test-results/junit/ \;
+          when: always
+      - store_test_results:
+          path: ~/utility-test-results
+      - store_artifacts:
+          path: ~/utility-test-results/junit
   non_flaky_tests:
     <<: *job_defaults
     steps:
