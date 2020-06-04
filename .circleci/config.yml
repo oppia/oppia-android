@@ -58,7 +58,8 @@ jobs:
 
                 chmod a+x ktlint
       - persist_to_workspace:
-          root: /home/circleci/oppia-android
+          root: /home/circleci
+          path: oppia-android
 
   linters:
     <<: *job_defaults
