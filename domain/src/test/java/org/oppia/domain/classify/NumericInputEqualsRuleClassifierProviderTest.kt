@@ -20,13 +20,12 @@ import kotlin.reflect.full.cast
 import kotlin.test.fail
 
 /** Tests for [NumericInputEqualsRuleClassifierProvider]. */
-
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
 class NumericInputEqualsRuleClassifierProviderTest {
 
-  private val NON_NEGATIVE_REAL_VALUE_1_5 = createReal(value = 1.5)
-  private val NON_NEGATIVE_REAL_VALUE_3_5 = createReal(value = 3.5)
+  private val POSITIVE_REAL_VALUE_1_5 = createReal(value = 1.5)
+  private val POSITIVE_REAL_VALUE_3_5 = createReal(value = 3.5)
   private val NEGATIVE_REAL_VALUE_1_5 = createReal(value = -1.5)
   private val NEGATIVE_REAL_VALUE_3_5 = createReal(value = -3.5)
   private val STRING_VALUE = createString(value = "test")
@@ -49,10 +48,10 @@ class NumericInputEqualsRuleClassifierProviderTest {
   }
 
   @Test
-  fun testNonNegativeRealAnswer_nonNegativeRealInput_sameExactValue_bothValuesMatch() {
-    val inputs = mapOf("x" to NON_NEGATIVE_REAL_VALUE_1_5)
+  fun testPositiveRealAnswer_positiveRealInput_sameExactValue_bothValuesMatch() {
+    val inputs = mapOf("x" to POSITIVE_REAL_VALUE_1_5)
 
-    val matches = inputEqualsRuleClassifier.matches(answer = NON_NEGATIVE_REAL_VALUE_1_5, inputs = inputs)
+    val matches = inputEqualsRuleClassifier.matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
 
     assertThat(matches).isTrue()
   }
@@ -67,7 +66,7 @@ class NumericInputEqualsRuleClassifierProviderTest {
   }
 
   @Test
-  fun testNonNegativeRealAnswer_nonNegativeRealInput_valuesInRange_bothValuesMatch() {
+  fun testPositiveRealAnswer_positiveRealInput_valuesInRange_bothValuesMatch() {
     val inputs = mapOf("x" to REAL_VALUE_RANGE_VALUE_1)
 
     val matches = inputEqualsRuleClassifier.matches(answer = REAL_VALUE_RANGE_VALUE_2, inputs = inputs)
@@ -76,10 +75,10 @@ class NumericInputEqualsRuleClassifierProviderTest {
   }
 
   @Test
-  fun testNonNegativeRealAnswer_nonNegativeRealInput_valueOutOfRange_valuesDoNotMatch() {
-    val inputs = mapOf("x" to NON_NEGATIVE_REAL_VALUE_1_5)
+  fun testPositiveRealAnswer_positiveRealInput_valueOutOfRange_valuesDoNotMatch() {
+    val inputs = mapOf("x" to POSITIVE_REAL_VALUE_1_5)
 
-    val matches = inputEqualsRuleClassifier.matches(answer = NON_NEGATIVE_REAL_VALUE_3_5, inputs = inputs)
+    val matches = inputEqualsRuleClassifier.matches(answer = POSITIVE_REAL_VALUE_3_5, inputs = inputs)
 
     assertThat(matches).isFalse()
   }
@@ -94,8 +93,8 @@ class NumericInputEqualsRuleClassifierProviderTest {
   }
 
   @Test
-  fun testNegativeRealAnswer_nonNegativeRealInput_valueOutOfRange_valuesDoNotMatch() {
-    val inputs = mapOf("x" to NON_NEGATIVE_REAL_VALUE_3_5)
+  fun testNegativeRealAnswer_positiveRealInput_valueOutOfRange_valuesDoNotMatch() {
+    val inputs = mapOf("x" to POSITIVE_REAL_VALUE_3_5)
 
     val matches = inputEqualsRuleClassifier.matches(answer = NEGATIVE_REAL_VALUE_3_5, inputs = inputs)
 
@@ -103,7 +102,7 @@ class NumericInputEqualsRuleClassifierProviderTest {
   }
 
   @Test
-  fun testNonNegativeRealAnswer_nonNegativeRealInput_valueAtRange_valuesDoNotMatch() {
+  fun testPositiveRealAnswer_positiveRealInput_valueAtRange_valuesDoNotMatch() {
     val inputs = mapOf("x" to REAL_VALUE_RANGE_VALUE_1)
 
     val matches = inputEqualsRuleClassifier.matches(answer = REAL_VALUE_RANGE_VALUE_3, inputs = inputs)
@@ -113,10 +112,10 @@ class NumericInputEqualsRuleClassifierProviderTest {
 
   @Test
   fun testRealAnswer_missingInput_throwsException() {
-    val inputs = mapOf("y" to NON_NEGATIVE_REAL_VALUE_1_5)
+    val inputs = mapOf("y" to POSITIVE_REAL_VALUE_1_5)
 
     val exception = assertThrows(IllegalStateException::class) {
-      inputEqualsRuleClassifier.matches(answer = NON_NEGATIVE_REAL_VALUE_1_5, inputs = inputs)
+      inputEqualsRuleClassifier.matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
     }
 
     assertThat(exception)
@@ -129,7 +128,7 @@ class NumericInputEqualsRuleClassifierProviderTest {
     val inputs = mapOf("x" to STRING_VALUE)
 
     val exception = assertThrows(IllegalStateException::class) {
-      inputEqualsRuleClassifier.matches(answer = NON_NEGATIVE_REAL_VALUE_1_5, inputs = inputs)
+      inputEqualsRuleClassifier.matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
     }
 
     assertThat(exception)
