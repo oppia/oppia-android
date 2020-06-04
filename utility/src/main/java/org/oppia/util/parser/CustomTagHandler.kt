@@ -3,164 +3,56 @@ package org.oppia.util.parser
 import android.content.Context
 import android.text.Editable
 import android.text.Html
-import android.text.Spannable
-import android.text.Spanned
-import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-import android.text.Spanned.SPAN_MARK_MARK
-import android.util.Log
-import java.util.Stack
-import org.oppia.util.parser.CustomTagHandler.ListTag
 import org.oppia.util.parser.StringUtils.LI_TAG
 import org.oppia.util.parser.StringUtils.OL_TAG
 import org.oppia.util.parser.StringUtils.UL_TAG
 import org.xml.sax.XMLReader
+import java.util.*
 
 /**
  * Implements support for ordered ({@code <ol>}) and unordered ({@code <ul>}) lists in to Android TextView.
  *
- * <ul> and <ol> tags are pushed to the [lists] stack and popped when the closing tag is reached.
+ * <ul> and <ol> tags are added to the [listParents] array and removed when the closing tag is reached.
  *
- * <li> tags are handled by the [ListTag] instance corresponding to the parent tag.
- *
- * Reference: https://github.com/daphliu/android-spannable-list-sample/tree/master/app/src/main/java/com/daphneliu/sample/listspansample
-
+ * <li> tags are handled corresponding to the parent tag.
  */
 class CustomTagHandler(private val context: Context) : Html.TagHandler {
-
-  private val lists = Stack<ListTag>()
-
-  override fun handleTag(opening: Boolean, tag: String?, output: Editable, xmlReader: XMLReader?) {
-    when (tag) {
-      UL_TAG -> if (opening) {
-        // handle <ul>
-        lists.push(UnorderedListTag())
+  private var listItemCount = 0
+  private val listParents: Vector<String> = Vector<String>()
+  private val listCounter: Vector<Int> = Vector<Int>()
+  override fun handleTag(
+    opening: Boolean,
+    tag: String,
+    output: Editable,
+    xmlReader: XMLReader?
+  ) {
+    if (tag == UL_TAG || tag == OL_TAG) {
+      if (opening) {
+        listParents.add(listParents.size, tag)
+        listCounter.add(listCounter.size, 0)
       } else {
-        // handle </ul>
-        lists.pop()
+        listParents.removeElementAt(listParents.size - 1)
+        listCounter.removeElementAt(listCounter.size - 1)
       }
-      OL_TAG -> if (opening) {
-        // handle <ol>
-        lists.push(OrderedListTag())
-      } else {
-        // handle </ol>
-        lists.pop()
-      }
-      LI_TAG -> if (opening) {
-        // handle <li>
-        lists.peek().openItem(output)
-      } else {
-        // handle </li>
-        lists.peek().closeItem(output, indentation = lists.size - 1)
-      }
-      else -> {
-        Log.d("HtmlTagHandler", "Found an unsupported tag " + tag)
-      }
+    } else if (tag == LI_TAG && opening) {
+      handleListTag(output)
     }
   }
 
-  /**
-   * Handler for <li> tags. Subclasses set the bullet appearance.
-   */
-  private interface ListTag {
-    /**
-     * Called when an opening <li> tag is encountered.
-     *
-     * Inserts an invisible [Mark] span that doesn't do any styling.
-     * Instead, [closeItem] will later find the location of this span so it knows where the opening tag was.
-     */
-    fun openItem(text: Editable)
-
-    /**
-     * Called when a closing </li> tag is encountered.
-     *
-     * Pops out the invisible [Mark] span and uses it to get the opening tag location.
-     * Then, sets a [LeadingMarginSpan] from the opening tag position to closing tag position.
-     */
-    fun closeItem(text: Editable, indentation: Int)
-  }
-
-  /**
-   * Class representing the unordered list ({@code <ul>}) HTML tag.
-   */
-  private inner class UnorderedListTag : ListTag {
-    override fun openItem(text: Editable) {
-      ensureEndsWithNewLine(text)
-      start(text, BulletListItem())
-    }
-
-    override fun closeItem(text: Editable, indentation: Int) {
-      ensureEndsWithNewLine(text)
-      getLast<BulletListItem>(text)?.let { mark ->
-        setSpanFromMark(text, mark, CustomLeadingMarginSpan(context, indentation, "●"))
-      }
-    }
-  }
-
-  /**
-   * Class representing the ordered list ({@code <ol>}) HTML tag.
-   */
-  private inner class OrderedListTag : ListTag {
-    private var index = 1
-
-    override fun openItem(text: Editable) {
-      ensureEndsWithNewLine(text)
-      start(text, NumberListItem(index))
-      index++
-    }
-
-    override fun closeItem(text: Editable, indentation: Int) {
-      ensureEndsWithNewLine(text)
-      getLast<NumberListItem>(text)?.let { mark ->
-        setSpanFromMark(text, mark, CustomLeadingMarginSpan(context, indentation, "${mark.number}."))
-      }
-    }
-  }
-
-  companion object {
-    /**
-     * Appends a new line to [text] if it doesn't already end in a new line
-     */
-    private fun ensureEndsWithNewLine(text: Editable) {
-      if (text.isNotEmpty() && text.last() != '\n') {
-        text.append("\n")
-      }
-    }
-
-    /**
-     * Returns the most recently added span of type [T] in [text].
-     *
-     * Invisible marking spans are inserted to record the location of opening HTML tags in the text.
-     * We do this rather than using a stack in case text is inserted and the relative location shifts around.
-     *
-     * The last span corresponds to the top of the "stack".
-     */
-    private inline fun <reified T : Mark> getLast(text: Spanned) =
-      text.getSpans(0, text.length, T::class.java).lastOrNull()
-
-    /**
-     * Pops out the invisible [mark] span and uses it to get the opening tag location.
-     * Then, sets a span from the opening tag position to closing tag position.
-     */
-    private fun setSpanFromMark(text: Spannable, mark: Mark, styleSpan: CustomLeadingMarginSpan) {
-      // Find the location where the mark is inserted in the string.
-      val markerLocation = text.getSpanStart(mark)
-      text.removeSpan(mark)
-
-      val end = text.length
-      if (markerLocation != end) {
-        text.setSpan(styleSpan, markerLocation, end, SPAN_EXCLUSIVE_EXCLUSIVE)
-      }
-    }
-
-    /**
-     * Inserts an invisible [mark] span that doesn't do any styling.
-     * We do not know where to put the span using start and end indexes. openItem is too early and we don’t know where the closing tag is.
-     * But if we try to insert the span in closeItem, we don’t know where the span started anymore.
-     * Instead, [setSpanFromMark] will find the location of this span so it knows where the opening tag was.
-     */
-    private fun start(text: Spannable, mark: Mark) {
-      val currentPosition = text.length
-      text.setSpan(mark, currentPosition, currentPosition, SPAN_MARK_MARK)
+  private fun handleListTag(output: Editable) {
+    if (listParents.lastElement().equals(UL_TAG)) {
+      if (output.length != 0)
+        output.append("\n")
+      for (i in 1 until listCounter.size) output.append("\t")
+      output.append("● ")
+    } else if (listParents.lastElement().equals(OL_TAG)) {
+      listItemCount = listCounter.lastElement() + 1
+      if (output.length != 0)
+        output.append("\n")
+      for (i in 1 until listCounter.size) output.append("\t")
+      output.append("$listItemCount. ")
+      listCounter.removeElementAt(listCounter.size - 1)
+      listCounter.add(listCounter.size, listItemCount)
     }
   }
 }

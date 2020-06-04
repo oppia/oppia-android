@@ -34,27 +34,8 @@ class HtmlParserTestActivity : InjectableAppCompatActivity() {
 
     val testHtmlContentOrderedListTextView: TextView =
       findViewById(R.id.test_html_content_with_ordered_list_text_view)
-    val rawDummyString2 = "<ul>\n" +
-      "  <li>Item 1</li>\n" +
-      "  <li>Item 2</li>\n" +
-      "  <li>Numbered list:\n" +
-      "    <ol>\n" +
-      "      <li>Nested item in numbered list 1</li>\n" +
-      "      <li>Nested item in numbered list 2</li>\n" +
-      "    </ol>\n" +
-      "  </li>\n" +
-      "  <li>Nested list:\n" +
-      "    <ul>\n" +
-      "      <li>Double nested list:\n" +
-      "        <ul>\n" +
-      "          <li>\n" +
-      "            Double nested item\n" +
-      "          </li>\n" +
-      "        </ul>\n" +
-      "      </li>\n" +
-      "    </ul>\n" +
-      "  </li>\n" +
-      "</ul>"
+    val rawDummyString2 =
+      """ <ul> <li>Item 1</li> <li>Item 2</li> <li>Item 3 <ol> <li>Nested item 1</li> <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla et tellus eu magna facilisis eleifend. Vestibulum faucibus pulvinar tincidunt. Nullam non mauris nisi.</li> </ol> </li> <li>Item 4</li> <li>Item 5 <ol> <li>Nested item 1</li> <li>Nested item 2 <ol> <li>Double nested item 1</li> <li>Double nested item 2</li> </ol> </li> <li>Nested item 3</li> </ol> </li> <li>Item 6</li> </ul> """
     val htmlResult2: Spannable =
       htmlParserFactory.create(
         /* entityType= */ "exploration",
