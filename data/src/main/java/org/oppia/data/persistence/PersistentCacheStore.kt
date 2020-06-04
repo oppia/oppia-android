@@ -3,6 +3,13 @@ package org.oppia.data.persistence
 import android.content.Context
 import androidx.annotation.GuardedBy
 import com.google.protobuf.MessageLite
+import kotlinx.coroutines.Deferred
+import org.oppia.app.model.ProfileId
+import org.oppia.util.data.AsyncDataSubscriptionManager
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProvider
+import org.oppia.util.data.InMemoryBlockingCache
+import org.oppia.util.profile.DirectoryManagementUtil
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -11,13 +18,6 @@ import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
-import kotlinx.coroutines.Deferred
-import org.oppia.app.model.ProfileId
-import org.oppia.util.data.AsyncDataSubscriptionManager
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.data.DataProvider
-import org.oppia.util.data.InMemoryBlockingCache
-import org.oppia.util.profile.DirectoryManagementUtil
 
 /**
  * An on-disk persistent cache for proto messages that ensures reads and writes happen in a well-defined order. Note
@@ -46,6 +46,12 @@ class PersistentCacheStore<T : MessageLite> private constructor(
   @GuardedBy("failureLock") private var deferredLoadCacheFailure: Throwable? = null
   private val cache = cacheFactory.create(CachePayload(state = CacheState.UNLOADED, value = initialValue))
 
+  init {
+    cache.observeChanges {
+      asyncDataSubscriptionManager.notifyChange(providerId)
+    }
+  }
+
   override fun getId(): Any {
     return providerId
   }
@@ -54,7 +60,7 @@ class PersistentCacheStore<T : MessageLite> private constructor(
     cache.readIfPresentAsync().await().let { cachePayload ->
       // First, determine whether the current cache has been attempted to be retrieved from disk.
       if (cachePayload.state == CacheState.UNLOADED) {
-        deferLoadFileAndNotify()
+        deferLoadFile()
         return AsyncResult.pending()
       }
 
@@ -109,7 +115,6 @@ class PersistentCacheStore<T : MessageLite> private constructor(
     val deferred = cache.updateWithCustomChannelIfPresentAsync { cachePayload ->
       if (cachePayload.state == CacheState.UNLOADED) {
         val filePayload = loadFileCache(cachePayload)
-        asyncDataSubscriptionManager.notifyChange(providerId)
         Pair(filePayload, filePayload.value)
       } else {
         Pair(cachePayload, cachePayload.value)
@@ -135,9 +140,6 @@ class PersistentCacheStore<T : MessageLite> private constructor(
    */
   fun storeDataAsync(updateInMemoryCache: Boolean = true, update: (T) -> T): Deferred<Any> {
     return cache.updateIfPresentAsync { cachedPayload ->
-      // Although it's odd to notify before the change is made, the single threaded nature of the blocking cache ensures
-      // nothing can read from it until this update completes.
-      asyncDataSubscriptionManager.notifyChange(providerId)
       val updatedPayload = storeFileCache(cachedPayload, update)
       if (updateInMemoryCache) updatedPayload else cachedPayload
     }
@@ -146,16 +148,13 @@ class PersistentCacheStore<T : MessageLite> private constructor(
   /** See [storeDataAsync]. Stores data and allows for a custom deferred result. */
   fun <V> storeDataWithCustomChannelAsync(updateInMemoryCache: Boolean = true, update: (T) -> Pair<T, V>): Deferred<V> {
     return cache.updateWithCustomChannelIfPresentAsync { cachedPayload ->
-      // Although it's odd to notify before the change is made, the single threaded nature of the blocking cache ensures
-      // nothing can read from it until this update completes.
-      asyncDataSubscriptionManager.notifyChange(providerId)
       val (updatedPayload, customResult) = storeFileCacheWithCustomChannel(cachedPayload, update)
       if (updateInMemoryCache) Pair(updatedPayload, customResult) else Pair(cachedPayload, customResult)
     }
   }
 
   /**
-   * Returns a [Deferred] indicating when the cache was cleared and its on-disk file, removed. This does not notify
+   * Returns a [Deferred] indicating when the cache was cleared and its on-disk file, removed. This does notify
    * subscribers.
    */
   fun clearCacheAsync(): Deferred<Any> {
@@ -172,10 +171,8 @@ class PersistentCacheStore<T : MessageLite> private constructor(
     }
   }
 
-  private fun deferLoadFileAndNotify() {
-    // Schedule another update to the cache that actually loads the file from memory. Record any potential failures.
+  private fun deferLoadFile() {
     cache.updateIfPresentAsync { cachePayload ->
-      asyncDataSubscriptionManager.notifyChange(providerId)
       loadFileCache(cachePayload)
     }.invokeOnCompletion {
       failureLock.withLock {

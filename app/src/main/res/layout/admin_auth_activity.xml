@@ -104,7 +104,7 @@
         <Button
           android:id="@+id/admin_auth_submit_button"
           style="@style/StateButtonActive"
-          android:layout_marginTop="44dp"
+          android:layout_marginTop="48dp"
           android:layout_marginEnd="28dp"
           android:layout_marginBottom="44dp"
           android:background="@{viewModel.isSubmitButtonActive ? @drawable/state_button_primary_background :@drawable/start_button_transparent_background}"
