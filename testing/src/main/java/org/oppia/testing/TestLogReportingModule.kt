@@ -6,8 +6,11 @@ import java.lang.Exception
 import javax.inject.Singleton
 import org.oppia.util.firebase.CrashLogger
 
+/**
+ * Provides fake crash logging dependencies.
+ */
 @Module
-class TestFirebaseModule {
+class TestLogReportingModule {
   companion object {
     var exceptionList = ArrayList<Exception>()
   }

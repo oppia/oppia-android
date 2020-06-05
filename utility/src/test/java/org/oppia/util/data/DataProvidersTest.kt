@@ -10,6 +10,8 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -22,7 +24,6 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Captor
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.reset
 import org.mockito.Mockito.verify
@@ -32,12 +33,10 @@ import org.mockito.junit.MockitoRule
 import org.oppia.testing.FakeCrashLogger
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
-import org.oppia.testing.TestFirebaseModule
+import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val BASE_PROVIDER_ID_0 = "base_id_0"
 private const val BASE_PROVIDER_ID_1 = "base_id_1"
@@ -60,13 +59,6 @@ private const val COMBINED_STR_VALUE_02 = "I used to be indecisive. At least I t
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class DataProvidersTest {
-
-  // TODO(#1233): Add a MockitoHelper class to handle nullable versions of all mockito matchers.
-  /**
-   * Returns Mockito.any() as nullable type to avoid java.lang.IllegalStateException when
-   * null is returned.
-   */
-  fun <T> any(): T = Mockito.any<T>()
 
   @Rule
   @JvmField
@@ -2858,7 +2850,7 @@ class DataProvidersTest {
   @ExperimentalCoroutinesApi
   fun testNestedXformedProvider_toLiveData_baseFailure_logsException() {
 
-    fakeCrashLogger.cleanExceptionList()
+    fakeCrashLogger.clearAllExceptions()
     val baseProvider =
       createThrowingDataProvider<String>(BASE_PROVIDER_ID_0, IllegalStateException("Base failure"))
     val dataProvider =
@@ -2964,7 +2956,7 @@ class DataProvidersTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestDispatcherModule::class, TestModule::class, TestFirebaseModule::class])
+  @Component(modules = [TestDispatcherModule::class, TestModule::class, TestLogReportingModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

@@ -5,8 +5,11 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
+/**
+ * Provides crash logging dependencies.
+ */
 @Module
-class FirebaseModule {
+class LogReportingModule {
   @Singleton
   @Provides
   fun provideCrashLogger(): CrashLogger {
