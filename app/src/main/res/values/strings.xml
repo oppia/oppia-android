@@ -155,7 +155,7 @@
   <string name="profile_chooser_select">Select your profile</string>
   <string name="profile_chooser_add">Add Profile</string>
   <string name="set_up_multiple_profiles">Set up Multiple Profiles</string>
-  <string name="set_up_multiple_profiles_description">Add up to 10 users to your account.Perfect for families and classrooms.</string>
+  <string name="set_up_multiple_profiles_description">Add up to 10 users to your account. Perfect for families and classrooms.</string>
   <string name="profile_chooser_administrator_controls">Administrator Controls</string>
   <string name="profile_chooser_language">Language</string>
   <!-- AdminAuthActivity -->
