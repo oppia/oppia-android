@@ -25,5 +25,12 @@ class DragDropSortInputModule{
   internal fun provideDragDropSortInputHasElementXBeforeElementYRuleClassifier(
     classifierProvider: DragDropSortInputHasElementXBeforeElementYClassifierProvider
   ): RuleClassifier = classifierProvider.createRuleClassifier()
-}
 
+  @Provides
+  @IntoMap
+  @StringKey("IsEqualToOrderingWithOneItemAtIncorrectPosition")
+  @DragDropSortInputRules
+  internal fun provideDragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionRuleClassifier(
+    classifierProvider: DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider
+  ): RuleClassifier = classifierProvider.createRuleClassifier()
+}
