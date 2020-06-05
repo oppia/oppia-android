@@ -496,7 +496,11 @@ class RecentlyPlayedFragmentTest {
           0
         )
       )
-      onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(2, 0))
+      if (context.resources.getBoolean(R.bool.isTablet)) {
+        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(3, 0))
+      } else {
+        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(2, 0))
+      }
     }
   }
 
@@ -530,7 +534,11 @@ class RecentlyPlayedFragmentTest {
           2
         )
       )
-      onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(2, 2))
+      if (context.resources.getBoolean(R.bool.isTablet)) {
+        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(3, 2))
+      } else {
+        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(2, 2))
+      }
     }
   }
 
@@ -565,7 +573,11 @@ class RecentlyPlayedFragmentTest {
           0
         )
       )
-      onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(3, 0))
+      if (context.resources.getBoolean(R.bool.isTablet)) {
+        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(4, 0))
+      } else {
+        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(3, 0))
+      }
     }
   }
 
@@ -601,7 +613,11 @@ class RecentlyPlayedFragmentTest {
           2
         )
       )
-      onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(3, 2))
+      if (context.resources.getBoolean(R.bool.isTablet)) {
+        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(4, 2))
+      } else {
+        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(3, 2))
+      }
     }
   }
 
