@@ -15,4 +15,10 @@ class LogReportingModule {
   fun provideCrashLogger(): CrashLogger {
     return CrashLoggerImplementation(FirebaseCrashlytics.getInstance())
   }
+
+  @Singleton
+  @Provides
+  fun provideEventLogger(): EventLogger {
+    return EventLoggerImplementation()
+  }
 }
