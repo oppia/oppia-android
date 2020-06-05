@@ -10,11 +10,11 @@ import org.oppia.app.model.PromotedStory
 import javax.inject.Inject
 
 private const val RECENTLY_PLAYED_FRAGMENT_INTERNAL_PROFILE_ID_KEY = "RecentlyPlayedFragment.internal_profile_id"
-const val TAG_RECENTLY_PLAYED_FRAGMENT = "recently-played-fragment"
 
 /** Fragment that contains all recently played stories. */
 class RecentlyPlayedFragment : InjectableFragment(), OngoingStoryClickListener {
   companion object {
+    const val TAG_RECENTLY_PLAYED_FRAGMENT = "recently-played-fragment"
     /** Returns a new [RecentlyPlayedFragment] to display recently played stories. */
     fun newInstance(internalProfileId: Int): RecentlyPlayedFragment {
       val recentlyPlayedFragment = RecentlyPlayedFragment()

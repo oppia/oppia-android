@@ -14,7 +14,7 @@ class RecentlyPlayedActivityPresenter @Inject constructor(private val activity: 
       activity.supportFragmentManager.beginTransaction().add(
         R.id.recently_played_fragment_placeholder,
         RecentlyPlayedFragment.newInstance(internalProfileId),
-        TAG_RECENTLY_PLAYED_FRAGMENT
+        RecentlyPlayedFragment.TAG_RECENTLY_PLAYED_FRAGMENT
       ).commitNow()
     }
   }
