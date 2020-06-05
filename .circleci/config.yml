@@ -75,9 +75,9 @@ jobs:
             echo Using Bufbuild version $BUFVERSION
 
             curl -sSL
-            https://github.com/bufbuild/buf/releases/download/$BUFVERSION/buf-$(uname -s)-$(uname -m) > /home/circleci/repo/buf
+            https://github.com/bufbuild/buf/releases/download/$BUFVERSION/buf-$(uname -s)-$(uname -m) > /home/circleci/oppia-android/buf
 
-            chmod +x /home/circleci/repo/buf
+            chmod +x /home/circleci/oppia-android/buf
       - run:
           name: Kotlin tests - Data, Utility
           command: ./ktlint utility/**/*.kt data/**/*.kt && echo "Lint completed successfully"
