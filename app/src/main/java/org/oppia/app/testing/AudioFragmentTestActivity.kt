@@ -17,7 +17,7 @@ class AudioFragmentTestActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     val internalProfileId =
-      intent.getIntExtra(KEY_AUDIO_FRAGMENT_TEST_PROFILE_ID,/* defaultValue= */ -1)
+      intent.getIntExtra(KEY_AUDIO_FRAGMENT_TEST_PROFILE_ID, /* defaultValue= */ 0)
     audioFragmentTestActivityController.handleOnCreate(internalProfileId)
   }
 
