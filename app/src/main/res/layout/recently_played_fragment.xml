@@ -47,8 +47,7 @@
         android:overScrollMode="never"
         android:paddingTop="8dp"
         android:paddingBottom="172dp"
-        android:scrollbars="none"
-        android:tag="recently_played_recycler_view" />
+        android:scrollbars="none" />
 
       <View
         android:id="@+id/recently_played__shadow_view"
