@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.profile.ProfileChooserViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.core.widget.NestedScrollView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/profileChooserBackground"
+      android:overScrollMode="never"
+      android:scrollbars="none">
+
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/profile_chooser_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+          android:id="@+id/profile_chooser_language_icon"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          android:layout_marginEnd="36dp"
+          android:paddingStart="4dp"
+          android:paddingTop="20dp"
+          android:paddingEnd="20dp"
+          android:src="@drawable/ic_language_icon_grey_24dp"
+          android:visibility="gone"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:fontFamily="sans-serif"
+          android:gravity="center"
+          android:minHeight="48dp"
+          android:paddingTop="20dp"
+          android:text="@string/profile_chooser_language"
+          android:textColor="@color/profileChooserGreyTextColor"
+          android:textSize="16sp"
+          android:visibility="gone"
+          app:layout_constraintEnd_toStartOf="@+id/profile_chooser_language_icon"
+          app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+          android:id="@+id/profile_select_text"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="36dp"
+          android:layout_marginTop="64dp"
+          android:layout_marginEnd="36dp"
+          android:fontFamily="sans-serif"
+          android:text="@string/profile_chooser_select"
+          android:textColor="@color/white"
+          android:textSize="24sp"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/profile_recycler_view"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_marginStart="36dp"
+          android:layout_marginTop="124dp"
+          android:layout_marginEnd="36dp"
+          android:clipToPadding="false"
+          android:fadingEdge="horizontal"
+          android:fadingEdgeLength="72dp"
+          android:orientation="vertical"
+          android:overScrollMode="never"
+          android:paddingBottom="@dimen/bottom_white_space"
+          android:requiresFadingEdge="vertical"
+          android:scrollbars="none"
+          android:tag="profile_recycler_view"
+          app:data="@{viewModel.profiles}"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/profile_select_text" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="96dp"
+      android:background="@drawable/profile_chooser_gradient"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent" />
+
+    <LinearLayout
+      android:id="@+id/administrator_controls_linear_layout"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:onClick="@{(v) -> viewModel.onAdministratorControlsButtonClicked()}"
+      android:background="@drawable/profile_chooser_gradient"
+      android:orientation="horizontal"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent">
+
+      <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:minHeight="48dp"
+        android:text="@string/profile_chooser_administrator_controls"
+        android:textColor="@color/profileChooserGreyTextColor"
+        android:textSize="16sp" />
+
+      <ImageView
+        android:id="@+id/profile_chooser_setting_icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="24dp"
+        android:paddingStart="8dp"
+        android:paddingTop="12dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="12dp"
+        android:src="@drawable/ic_settings_grey_48dp" />
+    </LinearLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
