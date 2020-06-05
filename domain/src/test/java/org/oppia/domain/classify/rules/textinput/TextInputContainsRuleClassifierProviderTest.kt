@@ -48,6 +48,24 @@ class TextInputContainsRuleClassifierProviderTest {
   }
 
   @Test
+  fun testEmptyStringAnswer_emptyStringInput_answerContainsInput_bothValuesMatch() {
+    val inputs = mapOf("x" to createString(value = ""))
+
+    val matches = inputContainsRuleClassifier.matches(answer = createString(value = ""), inputs = inputs)
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testNonEmptyStringAnswer_emptyStringInput_answerContainsInput_bothValuesMatch() {
+    val inputs = mapOf("x" to createString(value = ""))
+
+    val matches = inputContainsRuleClassifier.matches(answer = STRING_ANSWER, inputs = inputs)
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
   fun testStringAnswer_stringInput_answerContainsInputAtBeginning_bothValuesMatch() {
     val inputs = mapOf("x" to createString(value = "this is"))
 
@@ -88,6 +106,15 @@ class TextInputContainsRuleClassifierProviderTest {
     val inputs = mapOf("x" to createString(value = "an answer"))
 
     val matches = inputContainsRuleClassifier.matches(answer = STRING_ANSWER, inputs = inputs)
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testEmptyStringAnswer_nonEmptyStringInput_answerDoesNotContainInput_valuesDoNotMatch() {
+    val inputs = mapOf("x" to STRING_ANSWER)
+
+    val matches = inputContainsRuleClassifier.matches(answer = createString(value = ""), inputs = inputs)
 
     assertThat(matches).isFalse()
   }
