@@ -48,6 +48,7 @@ import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_1
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_2
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_3
+import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -319,7 +320,8 @@ class ExplorationDataControllerTest {
     modules = [
       TestModule::class, ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
       MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
-      TextInputRuleModule::class, DragDropSortInputModule::class, InteractionsModule::class
+      TextInputRuleModule::class, DragDropSortInputModule::class, InteractionsModule::class,
+      TestLogReportingModule::class
     ]
   )
   interface TestApplicationComponent {

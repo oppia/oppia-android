@@ -6,7 +6,6 @@ import java.lang.Exception
 import javax.inject.Singleton
 import org.oppia.util.firebase.CrashLogger
 import org.oppia.util.firebase.EventLogger
-import org.oppia.util.firebase.EventLoggerImplementation
 
 /**
  * Provides fake crash logging dependencies.
@@ -27,6 +26,6 @@ class TestLogReportingModule {
   @Singleton
   @Provides
   fun provideEventLogger(): EventLogger {
-    return EventLoggerImplementation()
+    return FakeEventLogger()
   }
 }
