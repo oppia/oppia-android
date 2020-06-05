@@ -5,7 +5,7 @@ import android.view.ViewGroup.MarginLayoutParams
 import androidx.databinding.BindingAdapter
 
 /** Used to set a margin-start for profile chooser items. */
-@BindingAdapter("app:profile_chooser_marginStart")
+@BindingAdapter("app:profileChooserMarginStart")
 fun setLayoutMarginStart(view: View, marginStart: Float) {
   if (view.layoutParams is MarginLayoutParams) {
     val params = view.layoutParams as MarginLayoutParams
@@ -15,7 +15,7 @@ fun setLayoutMarginStart(view: View, marginStart: Float) {
 }
 
 /** Used to set a margin-end for profile chooser items. */
-@BindingAdapter("app:profile_chooser_marginEnd")
+@BindingAdapter("app:profileChooserMarginEnd")
 fun setLayoutMarginEnd(view: View, marginEnd: Float) {
   if (view.layoutParams is MarginLayoutParams) {
     val params = view.layoutParams as MarginLayoutParams
@@ -25,7 +25,7 @@ fun setLayoutMarginEnd(view: View, marginEnd: Float) {
 }
 
 /** Used to set a margin-top for profile chooser items. */
-@BindingAdapter("app:profile_chooser_marginTop")
+@BindingAdapter("app:profileChooserMarginTop")
 fun setLayoutMarginTop(view: View, marginTop: Float) {
   if (view.layoutParams is MarginLayoutParams) {
     val params = view.layoutParams as MarginLayoutParams
@@ -35,7 +35,7 @@ fun setLayoutMarginTop(view: View, marginTop: Float) {
 }
 
 /** Used to set a margin-bottom for profile chooser items. */
-@BindingAdapter("app:profile_chooser_marginBottom")
+@BindingAdapter("app:profileChooserMarginBottom")
 fun setLayoutMarginBottom(view: View, marginBottom: Float) {
   if (view.layoutParams is MarginLayoutParams) {
     val params = view.layoutParams as MarginLayoutParams
