@@ -81,7 +81,7 @@ class OptionControlsViewModel @Inject constructor(
 
   fun getStoryTextSize(storyTextSize: StoryTextSize): String {
     return when (storyTextSize) {
-      StoryTextSize.SMALL_TEXT_SIZE_UNSPECIFIED -> "Small"
+      StoryTextSize.SMALL_TEXT_SIZE -> "Small"
       StoryTextSize.MEDIUM_TEXT_SIZE -> "Medium"
       StoryTextSize.LARGE_TEXT_SIZE -> "Large"
       else -> "Extra Large"
@@ -90,7 +90,7 @@ class OptionControlsViewModel @Inject constructor(
 
   fun getAppLanguage(appLanguage: AppLanguage): String {
     return when (appLanguage) {
-      AppLanguage.ENGLISH_APP_LANGUAGE_UNSPECIFIED -> "English"
+      AppLanguage.ENGLISH_APP_LANGUAGE -> "English"
       AppLanguage.HINDI_APP_LANGUAGE -> "Hindi"
       AppLanguage.FRENCH_APP_LANGUAGE -> "French"
       AppLanguage.CHINESE_APP_LANGUAGE -> "Chinese"
@@ -100,7 +100,7 @@ class OptionControlsViewModel @Inject constructor(
 
   fun getAudioLanguage(audioLanguage: AudioLanguage): String {
     return when (audioLanguage) {
-      AudioLanguage.AUDIO_UNSPECIFIED -> "No Audio"
+      AudioLanguage.NO_AUDIO -> "No Audio"
       AudioLanguage.ENGLISH_AUDIO_LANGUAGE -> "English"
       AudioLanguage.HINDI_AUDIO_LANGUAGE -> "Hindi"
       AudioLanguage.FRENCH_AUDIO_LANGUAGE -> "French"

@@ -1,12 +1,9 @@
 package org.oppia.app.testing
 
-import android.content.Context
-import android.content.res.Configuration
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -23,7 +20,7 @@ private const val TAG_PROFILE_CHOOSER_FRAGMENT_RECYCLER_VIEW = "profile_recycler
 /**
  * Tests for ensuring [ProfileChooserFragment] uses the correct column count for profiles based on display density.
  * Reference document :https://developer.android.com/reference/androidx/test/core/app/ActivityScenario
- * */
+ */
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
 class ProfileChooserSpanTest {

@@ -21,8 +21,8 @@ class ProfileTestHelper @Inject constructor(
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = true,
-      storyTextSize = StoryTextSize.SMALL_TEXT_SIZE_UNSPECIFIED,
-      appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE_UNSPECIFIED,
+      storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
+      appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
       audioLanguage = AudioLanguage.HINDI_AUDIO_LANGUAGE
     )
     profileManagementController.addProfile(
@@ -48,8 +48,8 @@ class ProfileTestHelper @Inject constructor(
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = true,
-      storyTextSize = StoryTextSize.SMALL_TEXT_SIZE_UNSPECIFIED,
-      appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE_UNSPECIFIED,
+      storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
+      appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
       audioLanguage = AudioLanguage.HINDI_AUDIO_LANGUAGE
     )
     return profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(0).build())
@@ -66,7 +66,7 @@ class ProfileTestHelper @Inject constructor(
         colorRgb = -10710042,
         isAdmin = false,
         storyTextSize = StoryTextSize.LARGE_TEXT_SIZE,
-        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE_UNSPECIFIED,
+        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
         audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
       )
     }

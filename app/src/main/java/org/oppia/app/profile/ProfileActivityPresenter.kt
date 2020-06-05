@@ -26,8 +26,8 @@ class ProfileActivityPresenter @Inject constructor(
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = true,
-      storyTextSize = StoryTextSize.SMALL_TEXT_SIZE_UNSPECIFIED,
-      appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE_UNSPECIFIED,
+      storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
+      appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
       audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
     )
     activity.setContentView(R.layout.profile_activity)
