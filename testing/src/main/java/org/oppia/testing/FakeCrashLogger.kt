@@ -19,7 +19,7 @@ class FakeCrashLogger : CrashLogger {
     return if (size > 0) {
       exceptionList[size - 1]
     } else {
-      exceptionList[size]
+      throw NullPointerException("No element present")
     }
   }
 

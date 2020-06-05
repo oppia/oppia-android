@@ -2862,6 +2862,8 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     assertThat(fakeCrashLogger.getMostRecentException()).isInstanceOf(IllegalStateException::class.java)
+    assertThat(fakeCrashLogger.getMostRecentException().message).matches("Base failure")
+
   }
 
   private fun transformString(str: String): Int {
