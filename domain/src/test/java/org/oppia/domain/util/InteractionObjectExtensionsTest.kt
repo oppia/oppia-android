@@ -34,5 +34,4 @@ class InteractionObjectExtensionsTest {
   private fun createHtmlStringList(vararg items: String): StringList {
     return StringList.newBuilder().addAllHtml(items.toList()).build()
   }
-
 }

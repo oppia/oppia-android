@@ -65,6 +65,7 @@ dependencies {
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
       'org.mockito:mockito-core:2.19.0',
       'org.robolectric:robolectric:4.3',
+      project(":testing"),
   )
   // TODO (#59): Remove this once Bazel is introduced
   // TODO (#97): Isolate retrofit-mock dependency from production
