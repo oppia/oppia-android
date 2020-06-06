@@ -1,8 +1,13 @@
 package org.oppia.app.home.recentlyplayed
 
+import android.content.Context
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.app.R
 import org.oppia.app.databinding.OngoingStoryCardBinding
 import org.oppia.app.databinding.SectionTitleBinding
 
@@ -11,8 +16,13 @@ private const val VIEW_TYPE_SECTION_STORY_ITEM = 2
 
 /** Adapter to inflate different items/views inside [RecyclerView] for Ongoing Story List. */
 class OngoingListAdapter(
+  private val activity: AppCompatActivity,
   private val itemList: MutableList<RecentlyPlayedItemViewModel>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+  private val orientation = Resources.getSystem().configuration.orientation
+  private var titleIndex: Int = 0
+  private var tempPosition: Int = 0
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
@@ -41,17 +51,50 @@ class OngoingListAdapter(
     }
   }
 
-  override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+  override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
     when (holder.itemViewType) {
       VIEW_TYPE_SECTION_TITLE_TEXT -> {
+        titleIndex = position + 1
         (holder as SectionTitleViewHolder).bind(itemList[position] as SectionTitleViewModel)
       }
       VIEW_TYPE_SECTION_STORY_ITEM -> {
+        tempPosition = position - titleIndex
         (holder as OngoingStoryViewHolder).bind(itemList[position] as OngoingStoryViewModel)
+        val marginEnd = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+          if (tempPosition % 2 == 1)
+            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
+          else {
+            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_8)
+          }
+        } else {
+          (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)//this will be updated in next PR
+        }
+        val marginStart = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+          if (tempPosition % 2 == 1)
+            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_8)
+          else {
+            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
+          }
+        } else {
+          (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)//this will be updated in next PR
+        }
+        val params =
+          holder.binding.ongoingStoryCardView!!.layoutParams as (ViewGroup.MarginLayoutParams)
+        val marginTop = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+          if (tempPosition > 1) {
+            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_16)
+          } else {
+            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
+          }
+        } else {
+          (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)//this will be updated in next PR
+        }
+        val marginBottom = 0
+        params.setMargins(marginStart, marginTop, marginEnd, marginBottom)
+        holder.binding.ongoingStoryCardView.requestLayout()
       }
       else -> throw IllegalArgumentException("Invalid item view type: ${holder.itemViewType}")
     }
-  }
 
   override fun getItemViewType(position: Int): Int {
     return when (itemList[position]) {
