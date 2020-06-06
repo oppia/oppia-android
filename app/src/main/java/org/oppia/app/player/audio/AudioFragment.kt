@@ -40,7 +40,8 @@ class AudioFragment : InjectableFragment(), LanguageInterface, AudioUiManager,
     savedInstanceState: Bundle?
   ): View? {
     super.onCreateView(inflater, container, savedInstanceState)
-    val internalProfileId = arguments!!.getInt(AUDIO_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, -1)
+    val internalProfileId =
+      arguments!!.getInt(AUDIO_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, /* defaultValue= */-1)
     return audioFragmentPresenter.handleCreateView(inflater, container, internalProfileId)
   }
 
