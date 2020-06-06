@@ -21,8 +21,8 @@ class ExplorationManagerFragment : InjectableFragment() {
     super.onCreate(savedInstanceState)
     val internalProfileId =
       arguments!!.getInt(
-        ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, /* defaultValue= */
-        -1
+        ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY,
+        /* defaultValue= */ -1
       )
     explorationManagerFragmentPresenter.handleCreate(internalProfileId)
     retainInstance = true
