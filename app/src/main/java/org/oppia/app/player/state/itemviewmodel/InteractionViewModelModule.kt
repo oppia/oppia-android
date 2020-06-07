@@ -73,4 +73,15 @@ class InteractionViewModelModule {
   fun provideTextInputViewModelFactory(): InteractionViewModelFactory {
     return { _, interaction, _, _, _ -> TextInputViewModel(interaction) }
   }
+
+  @Provides
+  @IntoMap
+  @StringKey("DragAndDropSortInput")
+  fun provideDragAndDropSortInputViewModelFactory(): InteractionViewModelFactory {
+    return { explorationId, interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver, _ ->
+      DragAndDropSortInputViewModel(
+        explorationId, interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver
+      )
+    }
+  }
 }
