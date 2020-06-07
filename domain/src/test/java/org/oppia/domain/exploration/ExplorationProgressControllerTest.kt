@@ -46,6 +46,7 @@ import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.util.toAnswerString
+import org.oppia.testing.FakeCrashLogger
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
@@ -55,6 +56,7 @@ import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
+import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -109,6 +111,8 @@ class ExplorationProgressControllerTest {
   @Captor lateinit var asyncResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
 
   @Captor lateinit var asyncAnswerOutcomeCaptor: ArgumentCaptor<AsyncResult<AnswerOutcome>>
+
+  private val fakeCrashLogger = FakeCrashLogger()
 
   @ExperimentalCoroutinesApi
   private val coroutineContext by lazy {
@@ -1238,6 +1242,25 @@ class ExplorationProgressControllerTest {
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
     assertThat(currentState.state.name).isEqualTo("End Card") // This state is not in the other test exp.
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testMoveToNext_afterMovingFromCompletedState_failsWithError_logsException() = runBlockingTest(coroutineContext) {
+    fakeCrashLogger.clearAllExceptions()
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(TEST_EXPLORATION_ID_5)
+    submitMultipleChoiceAnswer(0)
+    moveToNextState()
+
+    // Try skipping past the current state.
+    val moveToStateResult = explorationProgressController.moveToNextState()
+    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
+    advanceUntilIdle()
+
+    assertThat(fakeCrashLogger.getMostRecentException()).isInstanceOf(IllegalStateException::class.java)
+    assertThat(fakeCrashLogger.getMostRecentException().message)
+      .matches("Cannot navigate to next state; at most recent state.")
   }
 
   private suspend fun getTestExploration5(): Exploration {

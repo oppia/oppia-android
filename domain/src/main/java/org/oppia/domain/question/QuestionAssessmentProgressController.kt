@@ -14,6 +14,7 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
 import org.oppia.util.data.DataProviders.NestedTransformedDataProvider
+import org.oppia.util.firebase.CrashLogger
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -35,7 +36,8 @@ private const val EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID = "EmptyQuestionsListDat
 class QuestionAssessmentProgressController @Inject constructor(
   private val dataProviders: DataProviders,
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
-  private val answerClassificationController: AnswerClassificationController
+  private val answerClassificationController: AnswerClassificationController,
+  private val crashLogger: CrashLogger
 ) {
   // TODO(#247): Add support for populating the list of skill IDs to review at the end of the training session.
   // TODO(#248): Add support for the assessment ending prematurely due to learner demonstrating sufficient proficiency.
@@ -140,6 +142,7 @@ class QuestionAssessmentProgressController @Inject constructor(
         return MutableLiveData(AsyncResult.success(answeredQuestionOutcome))
       }
     } catch (e: Exception) {
+      crashLogger.logException(e)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -175,6 +178,7 @@ class QuestionAssessmentProgressController @Inject constructor(
       }
       return MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
+      crashLogger.logException(e)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -227,6 +231,7 @@ class QuestionAssessmentProgressController @Inject constructor(
           TrainStage.SUBMITTING_ANSWER -> AsyncResult.pending()
         }
       } catch (e: Exception) {
+        crashLogger.logException(e)
         AsyncResult.failed(e)
       }
     }

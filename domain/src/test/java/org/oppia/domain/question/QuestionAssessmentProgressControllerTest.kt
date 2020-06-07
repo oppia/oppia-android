@@ -45,6 +45,7 @@ import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.topic.TEST_SKILL_ID_0
 import org.oppia.domain.topic.TEST_SKILL_ID_1
 import org.oppia.domain.topic.TEST_SKILL_ID_2
+import org.oppia.testing.FakeCrashLogger
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
@@ -67,6 +68,7 @@ class QuestionAssessmentProgressControllerTest {
   private val TEST_SKILL_ID_LIST_02 = listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_2) // questions 2, 1, 5
   private val TEST_SKILL_ID_LIST_01 = listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1) // questions 2, 0, 3
   private val TEST_SKILL_ID_LIST_2 = listOf(TEST_SKILL_ID_2) // questions 4, 5, 2
+  private val fakeCrashLogger = FakeCrashLogger()
 
   @Rule
   @JvmField
@@ -735,6 +737,24 @@ class QuestionAssessmentProgressControllerTest {
     assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
     // This question is not in the other test session.
     assertThat(currentQuestion.ephemeralState.state.content.html).contains("What fraction does 'half'")
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testMoveToNext_onFinalQuestion_failsWithError_logsException() = runBlockingTest(coroutineContext) {
+    fakeCrashLogger.clearAllExceptions()
+    subscribeToCurrentQuestionToAllowSessionToLoad()
+    startTrainingSession(TEST_SKILL_ID_LIST_2)
+    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
+    submitNumericInputAnswerAndMoveToNextQuestion(5.0)
+    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+
+    val moveToStateResult = questionAssessmentProgressController.moveToNextQuestion()
+    moveToStateResult.observeForever(mockAsyncNullableResultLiveDataObserver)
+    advanceUntilIdle()
+
+    assertThat(fakeCrashLogger.getMostRecentException()).isInstanceOf(IllegalStateException::class.java)
+    assertThat(fakeCrashLogger.getMostRecentException().message).matches("Cannot navigate to next state; at most recent state.")
   }
 
   private fun setUpTestApplicationWithSeed(questionSeed: Long) {

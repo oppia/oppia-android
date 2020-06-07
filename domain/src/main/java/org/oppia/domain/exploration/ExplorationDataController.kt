@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import org.oppia.app.model.Exploration
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
+import org.oppia.util.firebase.CrashLogger
 import javax.inject.Inject
 
 private const val EXPLORATION_DATA_PROVIDER_ID = "ExplorationDataProvider"
@@ -19,7 +20,8 @@ private const val EXPLORATION_DATA_PROVIDER_ID = "ExplorationDataProvider"
 class ExplorationDataController @Inject constructor(
   private val explorationProgressController: ExplorationProgressController,
   private val explorationRetriever: ExplorationRetriever,
-  private val dataProviders: DataProviders
+  private val dataProviders: DataProviders,
+  private val crashLogger: CrashLogger
 ) {
   /** Returns an [Exploration] given an ID. */
   fun getExplorationById(id: String): LiveData<AsyncResult<Exploration>> {
@@ -45,6 +47,7 @@ class ExplorationDataController @Inject constructor(
       explorationProgressController.beginExplorationAsync(explorationId)
       MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
+      crashLogger.logException(e)
       MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -58,6 +61,7 @@ class ExplorationDataController @Inject constructor(
       explorationProgressController.finishExplorationAsync()
       MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
+      crashLogger.logException(e)
       MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -67,6 +71,7 @@ class ExplorationDataController @Inject constructor(
     return try {
       AsyncResult.success(explorationRetriever.loadExploration(explorationId))
     } catch (e: Exception) {
+      crashLogger.logException(e)
       AsyncResult.failed(e)
     }
   }

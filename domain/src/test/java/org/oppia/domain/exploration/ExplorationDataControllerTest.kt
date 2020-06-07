@@ -48,6 +48,7 @@ import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_1
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_2
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_3
+import org.oppia.testing.FakeCrashLogger
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
@@ -89,6 +90,7 @@ class ExplorationDataControllerTest {
   private val coroutineContext by lazy {
     EmptyCoroutineContext + testDispatcher
   }
+  private val fakeCrashLogger = FakeCrashLogger()
 
   // https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/
   @ObsoleteCoroutinesApi
@@ -263,6 +265,18 @@ class ExplorationDataControllerTest {
     explorationLiveData.observeForever(mockExplorationObserver)
     verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
     assertThat(explorationResultCaptor.value.isFailure()).isTrue()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testController_returnsNullForNonExistentExploration_logsException() = runBlockingTest(coroutineContext) {
+    fakeCrashLogger.clearAllExceptions()
+    val explorationLiveData = explorationDataController.getExplorationById("NON_EXISTENT_TEST")
+    advanceUntilIdle()
+    explorationLiveData.observeForever(mockExplorationObserver)
+
+    assertThat(fakeCrashLogger.getMostRecentException()).isInstanceOf(IllegalStateException::class.java)
+    assertThat(fakeCrashLogger.getMostRecentException().message).matches("Invalid exploration ID: NON_EXISTENT_TEST")
   }
 
   @Qualifier

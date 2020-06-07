@@ -11,6 +11,7 @@ import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_2
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_3
 import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.domain.util.StateRetriever
+import org.oppia.util.firebase.CrashLogger
 import java.io.IOException
 import javax.inject.Inject
 
@@ -25,7 +26,8 @@ const val TEST_EXPLORATION_ID_7 = "3"
 /** Internal class for actually retrieving an exploration object for uses in domain controllers. */
 class ExplorationRetriever @Inject constructor(
   private val jsonAssetRetriever: JsonAssetRetriever,
-  private val stateRetriever: StateRetriever
+  private val stateRetriever: StateRetriever,
+  private val crashLogger: CrashLogger
 ) {
   // TODO(#169): Force callers of this method on a background thread.
   /** Loads and returns an exploration for the specified exploration ID, or fails. */
@@ -58,6 +60,7 @@ class ExplorationRetriever @Inject constructor(
         .putAllStates(createStatesFromJsonObject(explorationObject.getJSONObject("states")))
         .build()
     } catch (e: IOException) {
+      crashLogger.logException(e)
       throw(Throwable("Failed to load and parse the json asset file. %s", e))
     }
   }
