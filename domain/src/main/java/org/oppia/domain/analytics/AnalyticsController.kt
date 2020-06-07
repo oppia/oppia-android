@@ -24,7 +24,7 @@ class AnalyticsController @Inject constructor(
 
   /**
    * Logs transition events.
-   * These events are given HIGH priority .
+   * These events are given HIGH priority.
    */
   fun logTransitionEvent(
     context: Context,
