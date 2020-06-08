@@ -26,12 +26,12 @@
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_marginStart="16dp"
+      android:layout_marginEnd="16dp"
       android:layout_marginBottom="24dp"
       android:gravity="center_horizontal"
       android:orientation="vertical"
       app:profileChooserMarginBottom="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_20 : @dimen/margin_28}"
-      app:profileChooserMarginStart="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_20 : @dimen/margin_44}"
-      app:profileChooserMarginEnd="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_16 : @dimen/margin_72}"
       app:profileChooserMarginTop="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_16 : @dimen/margin_24}">
 
       <de.hdodenhof.circleimageview.CircleImageView
@@ -49,6 +49,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:fontFamily="sans-serif-medium"
+        android:gravity="center"
         android:text="@{presenter.wasProfileEverBeenAddedValue ? @string/profile_chooser_add : @string/set_up_multiple_profiles}"
         android:textColor="@color/white"
         android:textSize="14sp" />
