@@ -20,6 +20,7 @@ message InteractionObject {
     StringList set_of_html_string = 7;
     Fraction fraction = 8;
     ListOfSetsOfHtmlStrings list_of_sets_of_html_string = 9;
+    ImageWithRegions image_with_regions = 10;
   }
 }
 
@@ -53,5 +54,30 @@ message Fraction {
 
 // Structure for a ListOfString object.
 message ListOfSetsOfHtmlStrings {
-  repeated StringList set_of_html_strings = 1;
+  StringList set_of_html_strings = 1;
+}
+
+// Structure for a ImageWithRegions object.
+message ImageWithRegions {
+  string image_path = 1;
+  repeated LabelRegions label_regions = 2;
+}
+
+message LabelRegions {
+  string label = 1;
+  Region region = 2;
+}
+
+message Region {
+  string region_type = 1;
+  NormalizedRectangle2D area = 2;
+}
+
+message NormalizedRectangle2D {
+  message Point2d {
+    float x = 1;
+    float y = 2;
+  }
+  Point2d lower_left = 1;
+  Point2d upper_right = 2;
 }
