@@ -8,9 +8,10 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.databinding.ItemSelectionInteractionItemsBinding
+import org.oppia.app.databinding.DragDropInteractionItemsBinding
 import org.oppia.app.databinding.MultipleChoiceInteractionItemsBinding
 import org.oppia.app.fragment.InjectableFragment
+import org.oppia.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.recyclerview.DragItemTouchHelperCallback
@@ -46,21 +47,22 @@ class DragDropSortInteractionView @JvmOverloads constructor(
     this.explorationId = explorationId
   }
 
-  private fun createAdapter(): BindableAdapter<SelectionInteractionContentViewModel> {
+  private fun createAdapter(): BindableAdapter<DragDropInteractionContentViewModel> {
     return BindableAdapter.SingleTypeBuilder
-      .newBuilder<SelectionInteractionContentViewModel>()
+      .newBuilder<DragDropInteractionContentViewModel>()
       .registerViewBinder(
         inflateView = { parent ->
-          MultipleChoiceInteractionItemsBinding.inflate(
+          DragDropInteractionItemsBinding.inflate(
             LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
           ).root
         },
         bindView = { view, viewModel ->
-          val binding = DataBindingUtil.findBinding<MultipleChoiceInteractionItemsBinding>(view)!!
+          val binding = DataBindingUtil.findBinding<DragDropInteractionItemsBinding>(view)!!
           binding.htmlContent =
-            htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ false).parseOppiaHtml(
-              viewModel.htmlContent, binding.multipleChoiceContentTextView
-            )
+            htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ false)
+              .parseOppiaHtml(
+                viewModel.htmlContent, binding.dragDropContentTextView
+              )
           binding.viewModel = viewModel
         }
       )
@@ -68,10 +70,11 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   }
 }
 
-/** Bind ItemTouchHelper.SimpleCallback with RecyclerView for a  [DragDropSortInteractionView] via data-binding. */
+/** Bind ItemTouchHelper.SimpleCallback with RecyclerView for a [DragDropSortInteractionView] via data-binding. */
 @BindingAdapter("onItemDrag")
 fun setItemDragToRecyclerView(
-  recyclerView: RecyclerView, onItemDrag: DragItemTouchHelperCallback.OnItemDragListener
+  dragDropSortInteractionView: DragDropSortInteractionView,
+  onItemDrag: DragItemTouchHelperCallback.OnItemDragListener
 ) {
   val dragCallback: ItemTouchHelper.Callback =
     DragItemTouchHelperCallback.Builder(
@@ -81,5 +84,11 @@ fun setItemDragToRecyclerView(
       .build()
 
   val itemTouchHelper = ItemTouchHelper(dragCallback)
-  itemTouchHelper.attachToRecyclerView(recyclerView)
+  itemTouchHelper.attachToRecyclerView(dragDropSortInteractionView)
 }
+
+/** Sets the exploration ID for a specific [DragDropSortInteractionView] via data-binding. */
+@BindingAdapter("explorationId")
+fun setExplorationId(
+  dragDropSortInteractionView: DragDropSortInteractionView, explorationId: String
+) = dragDropSortInteractionView.setExplorationId(explorationId)

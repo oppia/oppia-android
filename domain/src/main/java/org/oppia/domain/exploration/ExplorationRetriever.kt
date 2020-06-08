@@ -37,7 +37,7 @@ class ExplorationRetriever @Inject constructor(
       TEST_EXPLORATION_ID_7 -> loadExplorationFromAsset("oppia_exploration.json")
       FRACTIONS_EXPLORATION_ID_0 -> loadExplorationFromAsset("fractions_exploration0.json")
       FRACTIONS_EXPLORATION_ID_1 -> loadExplorationFromAsset("fractions_exploration1.json")
-      RATIOS_EXPLORATION_ID_0 -> loadExplorationFromAsset("ratios_exploration0.json")
+      RATIOS_EXPLORATION_ID_0 -> loadExplorationFromAsset("drag_and_drop_test_exploration.json")
       RATIOS_EXPLORATION_ID_1 -> loadExplorationFromAsset("ratios_exploration1.json")
       RATIOS_EXPLORATION_ID_2 -> loadExplorationFromAsset("ratios_exploration2.json")
       RATIOS_EXPLORATION_ID_3 -> loadExplorationFromAsset("ratios_exploration3.json")
