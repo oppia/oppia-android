@@ -61,25 +61,31 @@ class OngoingListAdapter(
         storyGridPosition = position - titleIndex
         (holder as OngoingStoryViewHolder).bind(itemList[position] as OngoingStoryViewModel)
         val marginEnd = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-          if (storyGridPosition % 2 == 1)
+          if (storyGridPosition % 2 == 1) {
             (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
-          else {
+          } else {
             (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_8)
           }
         } else {
-          (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)//this will be updated in next PR
+          if (storyGridPosition % 2 == 1) {
+            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_72)
+          } else {
+            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_8)
+          }
         }
         val marginStart = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-          if (storyGridPosition % 2 == 1)
+          if (storyGridPosition % 2 == 1) {
             (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_8)
-          else {
+          } else {
             (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
           }
         } else {
-          (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)//this will be updated in next PR
+          if (storyGridPosition % 2 == 1) {
+            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_8)
+          } else {
+            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_72)
+          }
         }
-        val params =
-          holder.binding.ongoingStoryCardView!!.layoutParams as (ViewGroup.MarginLayoutParams)
         val marginTop = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
           if (storyGridPosition > 1) {
             (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_16)
@@ -87,8 +93,14 @@ class OngoingListAdapter(
             (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
           }
         } else {
-          (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)//this will be updated in next PR
+          if (storyGridPosition > 1) {
+            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_16)
+          } else {
+            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
+          }
         }
+        val params =
+          holder.binding.ongoingStoryCardView!!.layoutParams as (ViewGroup.MarginLayoutParams)
         val marginBottom = 0
         params.setMargins(marginStart, marginTop, marginEnd, marginBottom)
         holder.binding.ongoingStoryCardView.requestLayout()
