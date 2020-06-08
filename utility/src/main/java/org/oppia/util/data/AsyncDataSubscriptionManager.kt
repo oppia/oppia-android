@@ -1,7 +1,5 @@
 package org.oppia.util.data
 
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -10,6 +8,8 @@ import org.oppia.util.threading.ConcurrentQueueMap
 import org.oppia.util.threading.dequeue
 import org.oppia.util.threading.enqueue
 import org.oppia.util.threading.getQueue
+import javax.inject.Inject
+import javax.inject.Singleton
 
 internal typealias ObserveAsyncChange = suspend () -> Unit
 

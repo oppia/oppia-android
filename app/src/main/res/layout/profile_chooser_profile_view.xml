@@ -5,6 +5,10 @@
 
   <data>
 
+    <import type="android.widget.LinearLayout" />
+
+    <import type="android.view.Gravity" />
+
     <import type="android.view.View" />
 
     <variable
@@ -20,66 +24,78 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
-    android:layout_marginBottom="24dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    app:profileChooserMarginBottom="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_20 : @dimen/margin_0}">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-      android:id="@+id/profile_avatar_img"
-      android:layout_width="72dp"
-      android:layout_height="72dp"
-      android:layout_marginBottom="8dp"
-      app:civ_border_color="@color/avatarBorder"
-      app:civ_border_width="1dp"
-      profile:src="@{viewModel.profile.avatar}" />
-
-    <TextView
-      android:id="@+id/profile_name_text"
-      android:layout_width="wrap_content"
+    <LinearLayout
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:ellipsize="end"
-      android:fontFamily="sans-serif-medium"
-      android:gravity="center"
-      android:maxLines="2"
-      android:paddingStart="8dp"
-      android:paddingEnd="8dp"
-      android:singleLine="false"
-      android:text="@{viewModel.profile.name}"
-      android:textColor="@color/white"
-      android:textSize="14sp" />
+      android:gravity="@{presenter.wasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
+      android:orientation="@{presenter.wasProfileEverBeenAddedValue ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL}"
+      app:profileChooserMarginEnd="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_16 : @dimen/margin_28}"
+      app:profileChooserMarginStart="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_16 : @dimen/margin_28}"
+      app:profileChooserMarginTop="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_24}">
 
-    <TextView
-      android:id="@+id/profile_last_visited"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="2dp"
-      android:fontFamily="sans-serif-light"
-      android:textColor="@color/white"
-      android:textSize="12sp"
-      android:textStyle="italic"
-      android:visibility="@{viewModel.profile.lastLoggedInTimestampMs > 0 ? View.VISIBLE : View.GONE}"
-      profile:lastVisited="@{viewModel.profile.lastLoggedInTimestampMs}" />
+      <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_avatar_img"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        app:civ_border_color="@color/avatarBorder"
+        app:civ_border_width="1dp"
+        profile:src="@{viewModel.profile.avatar}" />
 
-    <TextView
-      android:id="@+id/profile_is_admin_text"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="2dp"
-      android:fontFamily="sans-serif-light"
-      android:gravity="center"
-      android:paddingStart="8dp"
-      android:paddingEnd="8dp"
-      android:text="@string/profile_chooser_admin"
-      android:textColor="@color/white"
-      android:textSize="12sp"
-      android:textStyle="italic"
-      android:visibility="@{viewModel.profile.isAdmin ? View.VISIBLE : View.GONE}" />
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="@{presenter.wasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
+        android:orientation="vertical"
+        app:profileChooserMarginTop="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_8 : @dimen/margin_0}"
+        app:profileChooserMarginStart="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_20}">
+
+        <TextView
+          android:id="@+id/profile_name_text"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:ellipsize="end"
+          android:fontFamily="sans-serif-medium"
+          android:gravity="center"
+          android:maxLines="2"
+          android:singleLine="false"
+          android:text="@{viewModel.profile.name}"
+          android:textColor="@color/white"
+          android:textSize="14sp" />
+
+        <TextView
+          android:id="@+id/profile_last_visited"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:fontFamily="sans-serif-light"
+          android:textColor="@color/white"
+          android:textSize="12sp"
+          android:textStyle="italic"
+          android:visibility="@{viewModel.profile.lastLoggedInTimestampMs > 0 ? View.VISIBLE : View.GONE}"
+          profile:lastVisited="@{viewModel.profile.lastLoggedInTimestampMs}" />
+
+        <TextView
+          android:id="@+id/profile_is_admin_text"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:fontFamily="sans-serif-light"
+          android:gravity="center"
+          android:text="@string/profile_chooser_admin"
+          android:textColor="@color/white"
+          android:textSize="12sp"
+          android:textStyle="italic"
+          android:visibility="@{viewModel.profile.isAdmin &amp;&amp; presenter.wasProfileEverBeenAddedValue ? View.VISIBLE : View.GONE}" />
+      </LinearLayout>
+    </LinearLayout>
 
     <View
       android:id="@+id/add_profile_divider_view"
       android:layout_width="match_parent"
       android:layout_height="0.5dp"
-      android:layout_marginTop="24dp"
-      android:visibility="@{presenter.wasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}"
-      android:background="@color/oppiaProfileChooserDivider" />
+      android:layout_marginTop="60dp"
+      android:background="@color/oppiaProfileChooserDivider"
+      android:visibility="@{presenter.wasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
   </LinearLayout>
 </layout>

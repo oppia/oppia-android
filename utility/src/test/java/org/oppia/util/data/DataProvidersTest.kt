@@ -10,8 +10,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -35,6 +33,8 @@ import org.oppia.testing.TestDispatcherModule
 import org.oppia.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val BASE_PROVIDER_ID_0 = "base_id_0"
 private const val BASE_PROVIDER_ID_1 = "base_id_1"

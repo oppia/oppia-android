@@ -22,3 +22,6 @@ import javax.inject.Qualifier
 
 /** Corresponds to [org.oppia.domain.classify.RuleClassifier]s that can be used by the numeric input interaction. */
 @Qualifier annotation class NumericInputRules
+
+/** Corresponds to [org.oppia.domain.classify.RuleClassifier]s that can be used by the drag drop sort input interaction. */
+@Qualifier annotation class DragDropSortInputRules

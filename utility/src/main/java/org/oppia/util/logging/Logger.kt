@@ -2,14 +2,14 @@ package org.oppia.util.logging
 
 import android.content.Context
 import android.util.Log
-import java.io.File
-import java.util.Calendar
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.oppia.util.threading.BlockingDispatcher
+import java.io.File
+import java.util.Calendar
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Wrapper class for Android logcat and file logging. All logs in the app should use this class. */
 @Singleton

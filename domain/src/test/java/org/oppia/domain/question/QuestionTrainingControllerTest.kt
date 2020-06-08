@@ -36,6 +36,7 @@ import org.mockito.junit.MockitoRule
 import org.oppia.app.model.EphemeralQuestion
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
@@ -300,8 +301,8 @@ class QuestionTrainingControllerTest {
   @Singleton
   @Component(modules = [
     TestModule::class, ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
-    MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
-    TextInputRuleModule::class, InteractionsModule::class, TestQuestionModule::class
+    MultipleChoiceInputModule::class, DragDropSortInputModule::class, NumberWithUnitsRuleModule::class,
+    NumericInputRuleModule::class, TextInputRuleModule::class, InteractionsModule::class, TestQuestionModule::class
   ])
   interface TestApplicationComponent {
     @Component.Builder
