@@ -24,15 +24,16 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
 class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
-  private val LIST_OF_SETS_OF_HTML_STRING_VALUE_1 = createListOfSetsOfHtmlStrings(listOf("item a", "item b"), listOf("item 2"), listOf("item 3"))
-  private val LIST_OF_SETS_OF_HTML_STRING_VALUE_2 = createListOfSetsOfHtmlStrings(listOf("item 2"), listOf("item a", "item b"), listOf("item 3"))
-  private val LIST_OF_SETS_OF_HTML_STRING_VALUE_3 = createListOfSetsOfHtmlStrings(
-    listOf("item invalid 1"),
-    listOf("item invalid a", "item invalid b"),
-    listOf("item invalid 3")
-  )
-  private val LIST_OF_SETS_OF_HTML_STRING_VALUE_4 = createListOfSetsOfHtmlStrings(listOf("item 2"), listOf("item a", "item b"))
-  private val LIST_OF_SETS_OF_HTML_STRING_VALUE_5 = createListOfSetsOfHtmlStrings(listOf("item a"), listOf("item 2"), listOf("item 3"))
+  private val ITEM_SET_1_A = listOf("item a")
+  private val ITEM_SET_1_AB = listOf("item a", "item b")
+  private val ITEM_SET_2_ITEM_2 = listOf("item 2")
+  private val ITEM_SET_3_ITEM_3 = listOf("item 3")
+  private val ITEM_SET_4_INVALID_AB = listOf("item invalid a", "item invalid b")
+  private val LIST_OF_SETS_OF_HTML_STRING_VALUE_1 = createListOfSetsOfHtmlStrings(ITEM_SET_1_AB, ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3)
+  private val LIST_OF_SETS_OF_HTML_STRING_VALUE_2 = createListOfSetsOfHtmlStrings(ITEM_SET_2_ITEM_2, ITEM_SET_1_AB, ITEM_SET_3_ITEM_3)
+  private val LIST_OF_SETS_OF_HTML_STRING_VALUE_3 = createListOfSetsOfHtmlStrings(ITEM_SET_2_ITEM_2, ITEM_SET_4_INVALID_AB, ITEM_SET_3_ITEM_3)
+  private val LIST_OF_SETS_OF_HTML_STRING_VALUE_4 = createListOfSetsOfHtmlStrings(ITEM_SET_2_ITEM_2, ITEM_SET_1_AB)
+  private val LIST_OF_SETS_OF_HTML_STRING_VALUE_5 = createListOfSetsOfHtmlStrings(ITEM_SET_1_A, ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3)
 
 
   @Inject
