@@ -30,6 +30,7 @@ class DragItemTouchHelperCallback private constructor(dragDirs: Int, swipeDirs: 
       return false
     }
     // Notify the adapter of the move
+    recyclerView.adapter!!.notifyItemMoved(source.adapterPosition, target.adapterPosition)
     onItemDragListener!!.onItemDragged(source.adapterPosition, target.adapterPosition)
     return true
   }
@@ -41,7 +42,6 @@ class DragItemTouchHelperCallback private constructor(dragDirs: Int, swipeDirs: 
   ) { // We only want the active item to change
     if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
       viewHolder!!.itemView.alpha = ALPHA_FULL / 2
-      viewHolder.itemView.setBackgroundColor(Color.LTGRAY)
     }
     super.onSelectedChanged(viewHolder, actionState)
   }
@@ -51,7 +51,6 @@ class DragItemTouchHelperCallback private constructor(dragDirs: Int, swipeDirs: 
     viewHolder: RecyclerView.ViewHolder
   ) {
     viewHolder.itemView.alpha = ALPHA_FULL
-    viewHolder.itemView.setBackgroundColor(0)
     super.clearView(recyclerView, viewHolder)
   }
 
@@ -61,7 +60,7 @@ class DragItemTouchHelperCallback private constructor(dragDirs: Int, swipeDirs: 
 
   class Builder(internal val dragDirs: Int, internal val swipeDirs: Int) {
     internal var onItemDragListener: OnItemDragListener? = null
-    internal var dragEnabled = false
+    internal var dragEnabled = true
     fun onItemDragListener(value: OnItemDragListener?): Builder {
       onItemDragListener = value
       return this

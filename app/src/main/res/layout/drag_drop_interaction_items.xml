@@ -17,6 +17,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="48dp"
+    android:background="@drawable/rounded_rect_grey_border_white_background"
     android:layout_margin="4dp"
     android:gravity="center_vertical">
 

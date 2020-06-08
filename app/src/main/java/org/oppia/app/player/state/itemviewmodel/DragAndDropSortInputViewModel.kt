@@ -5,6 +5,7 @@ import org.oppia.app.model.Interaction
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
+import org.oppia.app.recyclerview.DragItemTouchHelperCallback
 import org.oppia.app.viewmodel.ObservableArrayList
 
 class DragAndDropSortInputViewModel(
@@ -12,7 +13,8 @@ class DragAndDropSortInputViewModel(
   interaction: Interaction,
   interactionAnswerReceiver: InteractionAnswerReceiver,
   interactionAnswerErrorReceiver: InteractionAnswerErrorReceiver
-) : StateItemViewModel(ViewType.DRAG_DROP_SORT_INTERACTION), InteractionAnswerHandler {
+) : StateItemViewModel(ViewType.DRAG_DROP_SORT_INTERACTION), InteractionAnswerHandler,
+  DragItemTouchHelperCallback.OnItemDragListener {
   private val allowMultipleItemsInSamePosition: Boolean by lazy {
     interaction.customizationArgsMap["allowMultipleItemsInSamePosition"]?.boolValue ?: false
   }
@@ -21,15 +23,15 @@ class DragAndDropSortInputViewModel(
   }
 
   val choiceItems: ObservableList<DragDropInteractionContentViewModel> =
-    computeChoiceItems(choiceStrings, this)
+    computeChoiceItems(choiceStrings)
 
-  fun onItemDragged(indexFrom: Int, indexTo: Int) {
+  override fun onItemDragged(indexFrom: Int, indexTo: Int) {
 
   }
 
   companion object {
     private fun computeChoiceItems(
-      choiceStrings: List<String>, dragAndDropSortInputViewModel: DragAndDropSortInputViewModel
+      choiceStrings: List<String>
     ): ObservableArrayList<DragDropInteractionContentViewModel> {
       val observableList = ObservableArrayList<DragDropInteractionContentViewModel>()
       observableList += choiceStrings.mapIndexed { index, choiceString ->
