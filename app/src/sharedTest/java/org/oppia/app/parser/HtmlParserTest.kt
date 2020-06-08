@@ -4,8 +4,6 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
-import android.graphics.Bitmap
 import android.text.Spannable
 import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
@@ -17,7 +15,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import com.bumptech.glide.request.target.CustomTarget
 import com.google.common.truth.Truth.assertThat
 import dagger.Binds
 import dagger.BindsInstance
@@ -40,7 +37,6 @@ import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
-import org.oppia.util.parser.CustomBulletSpan
 import org.oppia.util.parser.DefaultGcsPrefix
 import org.oppia.util.parser.DefaultGcsResource
 import org.oppia.util.parser.GlideImageLoader
@@ -127,28 +123,6 @@ class HtmlParserTest {
     // The two strings aren't equal because this HTML contains a Non-Oppia/Non-Html tag e.g. <image> tag and attributes "filepath-value" which isn't parsed.
     assertThat(textView.text.toString()).isNotEqualTo(htmlResult.toString())
     onView(withId(R.id.test_html_content_text_view)).check(matches(not(textView.text.toString())))
-  }
-
-  @Test
-  fun testHtmlContent_customSpan_isAdded() {
-    val textView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
-    val htmlParser = htmlParserFactory.create(/* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true)
-    val htmlResult: Spannable = htmlParser.parseOppiaHtml(
-      "<p>You should know the following before going on:<br></p>" +
-          "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +
-          "<li>How to tell whether one counting number is bigger or smaller than another<br></li></ul>",
-      textView
-    )
-
-    /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
-    val bulletSpans = htmlResult.getSpans<CustomBulletSpan>(0, htmlResult.length, CustomBulletSpan::class.java)
-    assertThat(bulletSpans.size.toLong()).isEqualTo(2)
-
-    val bulletSpan0 = bulletSpans[0] as CustomBulletSpan
-    assertThat(bulletSpan0).isNotNull()
-
-    val bulletSpan1 = bulletSpans[1] as CustomBulletSpan
-    assertThat(bulletSpan1).isNotNull()
   }
 
   @Qualifier annotation class TestDispatcher
