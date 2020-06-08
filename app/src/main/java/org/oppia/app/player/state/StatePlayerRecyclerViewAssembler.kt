@@ -32,6 +32,7 @@ import org.oppia.app.databinding.TextInputInteractionItemBinding
 import org.oppia.app.model.AnswerAndResponse
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.HelpIndex
+import org.oppia.app.model.HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.PendingState
 import org.oppia.app.model.State
@@ -73,9 +74,9 @@ import org.oppia.util.parser.HtmlParser
 import org.oppia.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 
-private const val DELAY_SHOW_HINTS_NO_ANSWERS_MS = 30_000L
-private const val DELAY_SHOW_HINTS_ONE_WRONG_ANSWER_MS = 60_000L
-private const val DELAY_SHOW_HINTS_MULTIPLE_WRONG_ANSWERS_MS = 10_000L
+private const val DELAY_SHOW_INITIAL_HINT_MS = 60_000L
+private const val DELAY_SHOW_ADDITIONAL_HINTS_MS = 30_000L
+private const val DELAY_SHOW_ADDITIONAL_HINTS_FROM_WRONG_ANSWER_MS = 10_000L
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 
 /**
@@ -858,24 +859,54 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
   }
 
+  // TODO(#1273): Add thorough testing for hints & solutions.
   /**
    * Handler for showing hints to the learner after a period of time in the event they submit a
    * wrong answer.
+   *
+   * # Flow chart for when hints are shown
+   *
+   *            Submit 1st              Submit wrong
+   *            wrong answer            answer
+   *              +---+                   +---+
+   *              |   |                   |   |
+   *              |   v                   |   v
+   *            +-+---+----+            +-+---+-----+           +----------+
+   *     Initial| No       | Wait 60s   |           | View hint | Hint     |
+   *     state  | hint     +----------->+ Hint      +---------->+ consumed |
+   *     +----->+ released | or, submit | available | Wait 30s  |          |
+   *            |          | 2nd wrong  |           +<----------+          |
+   *            +----------+ answer     +----+------+           +----+-----+
+   *                                         ^                       |
+   *                                         |Wait 10s               |
+   *                                         |                       |
+   *                                    +----+------+                |
+   *                               +--->+ No        | Submit wrong   |
+   *                   Submit wrong|    | hint      | answer         |
+   *                   answer      |    | available +<---------------+
+   *                               +----+           |
+   *                                    +-----------+
+   *
+   * # Logic for selecting a hint
+   *
+   * Hints are selected based on the availability of hints to show, and any previous hints that have
+   * been shown. A new hint will only be made available if its previous hint has been viewed by the
+   * learner. Hints are always shown in order. If all hints have been exhausted and viewed by the
+   * user, then the 'hint available' state in the diagram above will trigger the solution to be
+   * made available to view, if a solution is present. Once the solution is viewed by the learner,
+   * they will reach a terminal state for hints and no additional hints or solutions will be made
+   * available.
    */
   private class HintHandler(
     private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory, private val fragment: Fragment
   ) {
-    /**
-     * The number of wrong answers that have been processed by this handler. This is initialized to
-     * -1 since '0' is a valid number that will trigger one-time special behavior.
-     */
-    private var trackedWrongAnswerCount = -1
+    private var trackedWrongAnswerCount = 0
     private var previousHelpIndex: HelpIndex = HelpIndex.getDefaultInstance()
     private var hintSequenceNumber = 0
 
     /** Resets this handler to prepare it for a new state, cancelling any pending hints. */
     fun reset() {
-      trackedWrongAnswerCount = -1
+      trackedWrongAnswerCount = 0
       previousHelpIndex = HelpIndex.getDefaultInstance()
       // Cancel any potential pending hints by advancing the sequence number. Note that this isn't
       // reset to 0 to ensure that all previous hint tasks are cancelled, and new tasks can be
@@ -897,22 +928,36 @@ class StatePlayerRecyclerViewAssembler private constructor(
       // doesn't answer after some duration). Note that if there's already a timer to show a hint,
       // it will be reset for each subsequent answer.
       val nextUnrevealedHintIndex = getNextHintIndexToReveal(state)
+      val isFirstHint = previousHelpIndex.indexTypeCase == INDEXTYPE_NOT_SET
       val wrongAnswerCount = pendingState.wrongAnswerList.size
-      if (wrongAnswerCount == 0) {
-        // If no answers have been submitted, schedule an automatic help after a fixed amount of
-        // time. This will automatically reset if something changes other than answers (e.g.
-        // revealing a hint), which may trigger more help to become available.
-        scheduleShowHint(DELAY_SHOW_HINTS_NO_ANSWERS_MS, nextUnrevealedHintIndex)
-      } else if (wrongAnswerCount != trackedWrongAnswerCount) {
-        // Otherwise, only process wrong answers if the count has changed.
-        if (wrongAnswerCount == 1) {
-          scheduleShowHint(DELAY_SHOW_HINTS_ONE_WRONG_ANSWER_MS, nextUnrevealedHintIndex)
+      if (wrongAnswerCount == trackedWrongAnswerCount) {
+        // If no answers have been submitted, schedule a task to automatically help after a fixed
+        // amount of time. This will automatically reset if something changes other than answers
+        // (e.g. revealing a hint), which may trigger more help to become available.
+        if (isFirstHint) {
+          // The learner needs to wait longer for the initial hint to show since they need some time
+          // to read through and consider the question.
+          scheduleShowHint(DELAY_SHOW_INITIAL_HINT_MS, nextUnrevealedHintIndex)
         } else {
-          scheduleShowHint(DELAY_SHOW_HINTS_MULTIPLE_WRONG_ANSWERS_MS, nextUnrevealedHintIndex)
+          scheduleShowHint(DELAY_SHOW_ADDITIONAL_HINTS_MS, nextUnrevealedHintIndex)
         }
+      } else {
+        // See if the learner's new wrong answer justifies showing a hint.
+        if (isFirstHint) {
+          if (wrongAnswerCount > 1) {
+            // If more than one answer has been submitted and no hint has yet been shown, show a
+            // hint immediately since the learner is probably stuck.
+            showHintImmediately(nextUnrevealedHintIndex)
+          }
+        } else {
+          // Otherwise, always schedule to show a hint on a new wrong answer for subsequent hints.
+          scheduleShowHint(
+            DELAY_SHOW_ADDITIONAL_HINTS_FROM_WRONG_ANSWER_MS,
+            nextUnrevealedHintIndex
+          )
+        }
+        trackedWrongAnswerCount = wrongAnswerCount
       }
-
-      trackedWrongAnswerCount = wrongAnswerCount
     }
 
     /**
@@ -943,21 +988,33 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     /**
      * Schedules to allow the hint of the specified index to be shown after the specified delay,
-     * cancelling any potentially previous pending hints initiated by calls to this method.
+     * cancelling any previously pending hints initiated by calls to this method.
      */
     private fun scheduleShowHint(delayMs: Long, helpIndexToShow: HelpIndex) {
       val targetSequenceNumber = ++hintSequenceNumber
       lifecycleSafeTimerFactory.createTimer(delayMs).observe(fragment, Observer {
-        // Only finish this timer if no other hints were scheduled and no cancellations occurred.
-        if (targetSequenceNumber == hintSequenceNumber) {
-          if (previousHelpIndex != helpIndexToShow) {
-            // Only indicate the hint is available if its index is actually new (including if it
-            // becomes null such as in the case of the solution becoming available).
-            (fragment as ShowHintAvailabilityListener).onHintAvailable(helpIndexToShow)
-            previousHelpIndex = helpIndexToShow
-          }
-        }
+        showHint(targetSequenceNumber, helpIndexToShow)
       })
+    }
+
+    /**
+     * Immediately indicates the specified hint is ready to be shown, cancelling any previously
+     * pending hints initiated by calls to [scheduleShowHint].
+     */
+    private fun showHintImmediately(helpIndexToShow: HelpIndex) {
+      showHint(++hintSequenceNumber, helpIndexToShow)
+    }
+
+    private fun showHint(targetSequenceNumber: Int, helpIndexToShow: HelpIndex) {
+      // Only finish this timer if no other hints were scheduled and no cancellations occurred.
+      if (targetSequenceNumber == hintSequenceNumber) {
+        if (previousHelpIndex != helpIndexToShow) {
+          // Only indicate the hint is available if its index is actually new (including if it
+          // becomes null such as in the case of the solution becoming available).
+          (fragment as ShowHintAvailabilityListener).onHintAvailable(helpIndexToShow)
+          previousHelpIndex = helpIndexToShow
+        }
+      }
     }
   }
 }
