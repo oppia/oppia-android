@@ -126,10 +126,18 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       recentStoryCount + 1
     }
 
-    val spanCount = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-      2
+    val spanCount = if (activity.resources.getBoolean(R.bool.isTablet)) {
+      if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+        3
+      } else {
+        4
+      }
     } else {
-      3
+      if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+        2
+      } else {
+        3
+      }
     }
 
     val layoutManager = GridLayoutManager(activity.applicationContext, spanCount)

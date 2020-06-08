@@ -43,7 +43,8 @@ message ParamSpec {
 
 // Supported object types for parameters.
 enum ObjectType {
-  UNICODE_STRING = 0;
+  OBJECT_TYPE_UNSPECIFIED = 0;
+  UNICODE_STRING = 1;
 }
 
 // Structure for a single state

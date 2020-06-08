@@ -26,5 +26,12 @@ class DragDropSortInputModule{
     classifierProvider: DragDropSortInputIsEqualToOrderingClassifierProvider
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
+  @Provides
+  @IntoMap
+  @StringKey("HasElementXBeforeElementY")
+  @DragDropSortInputRules
+  internal fun provideDragDropSortInputHasElementXBeforeElementYRuleClassifier(
+    classifierProvider: DragDropSortInputHasElementXBeforeElementYClassifierProvider
+  ): RuleClassifier = classifierProvider.createRuleClassifier()
 }
 
