@@ -14,7 +14,7 @@ import org.oppia.util.firebase.EventLogger
 class TestLogReportingModule {
   companion object {
     var exceptionList = ArrayList<Exception>()
-    var eventNameList = ArrayList<String>()
+    var eventList = ArrayList<Event>()
   }
 
   @Provides

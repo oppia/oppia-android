@@ -7,12 +7,17 @@ import org.oppia.app.model.EventAction
 import org.oppia.app.model.Priority
 import org.oppia.util.firebase.EventLogger
 
-private const val TIMESTAMP = "timestamp"
-private const val TOPIC_ID = "topicId"
-private const val STORY_ID = "storyId"
-private const val QUESTION_ID = "questionId"
-private const val EXPLORATION_ID = "explorationId"
-private const val PRIORITY = "priority"
+const val TIMESTAMP_KEY = "timestamp"
+const val TOPIC_ID_KEY = "topicId"
+const val STORY_ID_KEY = "storyId"
+const val QUESTION_ID_KEY = "questionId"
+const val EXPLORATION_ID_KEY = "explorationId"
+const val PRIORITY_KEY = "priority"
+const val TEST_TIMESTAMP = 1556094120000
+const val TEST_TOPIC_ID = "test_topicId"
+const val TEST_STORY_ID = "test_storyId"
+const val TEST_EXPLORATION_ID = "test_explorationId"
+const val TEST_QUESTION_ID = "test_questionId"
 
 /**
  * Controller for handling analytics event logging.
@@ -20,8 +25,6 @@ private const val PRIORITY = "priority"
 class AnalyticsController @Inject constructor(
   private val eventLogger: EventLogger
 ) {
-  private var bundle: Bundle = Bundle()
-
   /**
    * Logs transition events.
    * These events are given HIGH priority.
@@ -35,8 +38,12 @@ class AnalyticsController @Inject constructor(
     explorationId: String?,
     questionId: String?
   ) {
-    bundle = eventBundleMaker(timestamp, topicId, storyId, explorationId, questionId, Priority.ESSENTIAL)
-    eventLogger.logEvent(context, bundle, eventAction.toString())
+    eventLogger
+      .logEvent(
+        context,
+        createEventBundle(timestamp, topicId, storyId, explorationId, questionId, Priority.ESSENTIAL),
+        eventAction.toString()
+      )
   }
 
   /**
@@ -52,14 +59,18 @@ class AnalyticsController @Inject constructor(
     explorationId: String?,
     questionId: String?
   ) {
-    bundle = eventBundleMaker(timestamp, topicId, storyId, explorationId, questionId, Priority.OPTIONAL)
-    eventLogger.logEvent(context, bundle, eventAction.toString())
+    eventLogger
+      .logEvent(
+        context,
+        createEventBundle(timestamp, topicId, storyId, explorationId, questionId, Priority.OPTIONAL),
+        eventAction.toString()
+      )
   }
 
   /**
    * Returns a bundle containing relevant data for event reporting to console.
    */
-  private fun eventBundleMaker(
+  private fun createEventBundle(
     timestamp: Long,
     topicId: String?,
     storyId: String?,
@@ -68,12 +79,12 @@ class AnalyticsController @Inject constructor(
     priority: Priority
   ): Bundle {
     val bundle = Bundle()
-    bundle.putLong(TIMESTAMP, timestamp)
-    bundle.putString(TOPIC_ID, topicId)
-    bundle.putString(STORY_ID, storyId)
-    bundle.putString(EXPLORATION_ID, explorationId)
-    bundle.putString(QUESTION_ID, questionId)
-    bundle.putString(PRIORITY, priority.toString())
+    bundle.putLong(TIMESTAMP_KEY, timestamp)
+    bundle.putString(TOPIC_ID_KEY, topicId)
+    bundle.putString(STORY_ID_KEY, storyId)
+    bundle.putString(EXPLORATION_ID_KEY, explorationId)
+    bundle.putString(QUESTION_ID_KEY, questionId)
+    bundle.putString(PRIORITY_KEY, priority.toString())
     return bundle
   }
 }

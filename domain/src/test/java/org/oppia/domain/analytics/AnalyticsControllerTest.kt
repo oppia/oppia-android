@@ -15,15 +15,10 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.model.EventAction
+import org.oppia.app.model.Priority
 import org.oppia.testing.FakeEventLogger
 import org.oppia.testing.TestLogReportingModule
 import org.robolectric.annotation.Config
-
-private const val TIMESTAMP = 1556094120000
-private const val TOPIC_ID = "topicId"
-private const val STORY_ID = "storyId"
-private const val EXPLORATION_ID = "explorationId"
-private const val QUESTION_ID = "questionId"
 
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
@@ -33,37 +28,49 @@ class AnalyticsControllerTest {
   private val fakeEventLogger = FakeEventLogger()
 
   @Test
-  fun testController_clearList_LogTransitionEvent_checkLogsEvent() {
-    fakeEventLogger.clearAllTitles()
+  fun testController_LogTransitionEvent_checkLogsEvent() {
+    fakeEventLogger.clearAllEvents()
 
     analyticsController.logTransitionEvent(
       ApplicationProvider.getApplicationContext(),
-      TIMESTAMP,
+      TEST_TIMESTAMP,
       EventAction.UNKNOWN_EVENT_ACTION,
-      TOPIC_ID,
-      STORY_ID,
-      EXPLORATION_ID,
-      QUESTION_ID
+      TEST_TOPIC_ID,
+      TEST_STORY_ID,
+      TEST_EXPLORATION_ID,
+      TEST_QUESTION_ID
     )
 
-    assertThat(fakeEventLogger.getMostRecentTitle()).matches(EventAction.UNKNOWN_EVENT_ACTION.toString())
+    assertThat(fakeEventLogger.getMostRecentEvent().title).matches(EventAction.UNKNOWN_EVENT_ACTION.toString())
+    assertThat(fakeEventLogger.getMostRecentEvent().bundle.get(TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
+    assertThat(fakeEventLogger.getMostRecentEvent().bundle.get(TOPIC_ID_KEY)).isEqualTo(TEST_TOPIC_ID)
+    assertThat(fakeEventLogger.getMostRecentEvent().bundle.get(STORY_ID_KEY)).isEqualTo(TEST_STORY_ID)
+    assertThat(fakeEventLogger.getMostRecentEvent().bundle.get(EXPLORATION_ID_KEY)).isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(fakeEventLogger.getMostRecentEvent().bundle.get(QUESTION_ID_KEY)).isEqualTo(TEST_QUESTION_ID)
+    assertThat(fakeEventLogger.getMostRecentEvent().bundle.get(PRIORITY_KEY)).isEqualTo(Priority.ESSENTIAL.toString())
   }
 
   @Test
-  fun testController_clearList_LogClickEvent_checkLogsEvent() {
-    fakeEventLogger.clearAllTitles()
+  fun testController_LogClickEvent_checkLogsEvent() {
+    fakeEventLogger.clearAllEvents()
 
     analyticsController.logClickEvent(
       ApplicationProvider.getApplicationContext(),
-      TIMESTAMP,
+      TEST_TIMESTAMP,
       EventAction.UNKNOWN_EVENT_ACTION,
-      TOPIC_ID,
-      STORY_ID,
-      EXPLORATION_ID,
-      QUESTION_ID
+      TEST_TOPIC_ID,
+      TEST_STORY_ID,
+      TEST_EXPLORATION_ID,
+      TEST_QUESTION_ID
     )
 
-    assertThat(fakeEventLogger.getMostRecentTitle()).matches(EventAction.UNKNOWN_EVENT_ACTION.toString())
+    assertThat(fakeEventLogger.getMostRecentEvent().title).matches(EventAction.UNKNOWN_EVENT_ACTION.toString())
+    assertThat(fakeEventLogger.getMostRecentEvent().bundle.get(TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
+    assertThat(fakeEventLogger.getMostRecentEvent().bundle.get(TOPIC_ID_KEY)).isEqualTo(TEST_TOPIC_ID)
+    assertThat(fakeEventLogger.getMostRecentEvent().bundle.get(STORY_ID_KEY)).isEqualTo(TEST_STORY_ID)
+    assertThat(fakeEventLogger.getMostRecentEvent().bundle.get(EXPLORATION_ID_KEY)).isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(fakeEventLogger.getMostRecentEvent().bundle.get(QUESTION_ID_KEY)).isEqualTo(TEST_QUESTION_ID)
+    assertThat(fakeEventLogger.getMostRecentEvent().bundle.get(PRIORITY_KEY)).isEqualTo(Priority.OPTIONAL.toString())
   }
 
   @Before
