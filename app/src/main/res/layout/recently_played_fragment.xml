@@ -46,7 +46,7 @@
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingTop="8dp"
-        android:paddingBottom="172dp"
+        android:paddingBottom="168dp"
         android:scrollbars="none" />
 
       <View

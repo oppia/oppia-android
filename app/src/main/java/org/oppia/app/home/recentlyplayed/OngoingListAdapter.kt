@@ -22,7 +22,7 @@ class OngoingListAdapter(
 
   private val orientation = Resources.getSystem().configuration.orientation
   private var titleIndex: Int = 0
-  private var tempPosition: Int = 0
+  private var storyGridPosition: Int = 0
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
@@ -58,10 +58,10 @@ class OngoingListAdapter(
         (holder as SectionTitleViewHolder).bind(itemList[position] as SectionTitleViewModel)
       }
       VIEW_TYPE_SECTION_STORY_ITEM -> {
-        tempPosition = position - titleIndex
+        storyGridPosition = position - titleIndex
         (holder as OngoingStoryViewHolder).bind(itemList[position] as OngoingStoryViewModel)
         val marginEnd = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-          if (tempPosition % 2 == 1)
+          if (storyGridPosition % 2 == 1)
             (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
           else {
             (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_8)
@@ -70,7 +70,7 @@ class OngoingListAdapter(
           (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)//this will be updated in next PR
         }
         val marginStart = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-          if (tempPosition % 2 == 1)
+          if (storyGridPosition % 2 == 1)
             (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_8)
           else {
             (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
@@ -81,7 +81,7 @@ class OngoingListAdapter(
         val params =
           holder.binding.ongoingStoryCardView!!.layoutParams as (ViewGroup.MarginLayoutParams)
         val marginTop = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-          if (tempPosition > 1) {
+          if (storyGridPosition > 1) {
             (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_16)
           } else {
             (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
