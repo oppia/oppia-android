@@ -100,16 +100,24 @@ class InMemoryBlockingCache<T : Any> private constructor(
    */
   fun updateIfPresentAsync(update: suspend (T) -> T): Deferred<T> {
     return blockingScope.async {
-      setCache(update(checkNotNull(value) {
-        "Expected to update the cache only after it's been created" }))
+      setCache(
+        update(
+          checkNotNull(value) {
+            "Expected to update the cache only after it's been created"
+          }
+        )
+      )
     }
   }
 
   /** See [updateIfPresentAsync]. Returns a custom deferred result. */
   fun <V> updateWithCustomChannelIfPresentAsync(update: suspend (T) -> Pair<T, V>): Deferred<V> {
     return blockingScope.async {
-      val (updatedValue, customResult) = update(checkNotNull(value) {
-        "Expected to update the cache only after it's been created" })
+      val (updatedValue, customResult) = update(
+        checkNotNull(value) {
+          "Expected to update the cache only after it's been created"
+        }
+      )
       setCache(updatedValue)
       customResult
     }

@@ -25,7 +25,8 @@ class NetworkConnectionUtil @Inject constructor(private val context: Context) {
       return it
     }
     val connectivityManager = context.getSystemService(
-      Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+      Context.CONNECTIVITY_SERVICE
+    ) as ConnectivityManager
     return connectivityManager.activeNetworkInfo?.let { activeNetwork ->
       val isConnected = activeNetwork.isConnected
       val isLocal = activeNetwork.type == ConnectivityManager.TYPE_WIFI ||

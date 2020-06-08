@@ -18,6 +18,7 @@ class RepositoryGlideModule : AppGlideModule() {
     registry.register(SVG::class.java, Picture::class.java, SvgDrawableTranscoder())
       .append(InputStream::class.java, SVG::class.java, SvgDecoder())
       .append(
-        ImageAssetFetcher::class.java, InputStream::class.java, RepositoryModelLoader.Factory())
+        ImageAssetFetcher::class.java, InputStream::class.java, RepositoryModelLoader.Factory()
+      )
   }
 }

@@ -45,7 +45,8 @@ class AssetRepository @Inject constructor(
       if (assetName !in textFileAssets) {
         logger.d("AssetRepo", "Caching local text asset: $assetName")
         textFileAssets[assetName] = context.assets.open(assetName).bufferedReader().use {
-          it.readText() }
+          it.readText()
+        }
       }
     }
   }
