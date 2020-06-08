@@ -3,6 +3,7 @@ package org.oppia.app.home.recentlyplayed
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -23,6 +24,13 @@ class OngoingListAdapter(
   private val orientation = Resources.getSystem().configuration.orientation
   private var titleIndex: Int = 0
   private var storyGridPosition: Int = 0
+  private val metrics = DisplayMetrics()
+  private var screenWidth = 0
+
+  init {
+    activity.windowManager.defaultDisplay.getMetrics(metrics)
+    screenWidth = metrics.widthPixels
+  }
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
@@ -60,23 +68,75 @@ class OngoingListAdapter(
       VIEW_TYPE_SECTION_STORY_ITEM -> {
         storyGridPosition = position - titleIndex
         (holder as OngoingStoryViewHolder).bind(itemList[position] as OngoingStoryViewModel)
-        val marginEnd = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-          if (storyGridPosition % 2 == 1)
-            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
-          else {
-            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_8)
+        val marginEnd = if (activity.resources.getBoolean(R.bool.isTablet)) {
+          if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            when (storyGridPosition % 3) {
+              0 -> 0
+              1 -> {
+                val singleItemWidth = (screenWidth / 3) - (activity as Context).resources.getDimensionPixelSize(R.dimen.recently_played_tablet_port_outer_margin)
+                (screenWidth / 6) - (singleItemWidth / 2)
+              }
+              else -> (activity as Context).resources.getDimensionPixelSize(R.dimen.recently_played_tablet_port_outer_margin)
+            }
+          } else {
+            when (storyGridPosition % 4) {
+              0 -> 0
+              1 -> {
+                val singleItemWidth = (screenWidth / 4) - (activity as Context).resources.getDimensionPixelSize(R.dimen.recently_played_tablet_land_outer_margin)
+                ((screenWidth - 4 * singleItemWidth) / 6) / 2
+              }
+              2 -> {
+                val singleItemWidth = (screenWidth / 4) - (activity as Context).resources.getDimensionPixelSize(R.dimen.recently_played_tablet_land_outer_margin)
+                (screenWidth - 4 * singleItemWidth) / 6
+              }
+              else -> (activity as Context).resources.getDimensionPixelSize(R.dimen.recently_played_tablet_land_outer_margin)
+            }
           }
         } else {
-          (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)//this will be updated in next PR
+          if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if (storyGridPosition % 2 == 1)
+              (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
+            else {
+              (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_8)
+            }
+          } else {
+            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)//this will be updated in next PR
+          }
         }
-        val marginStart = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-          if (storyGridPosition % 2 == 1)
-            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_8)
-          else {
-            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
+        val marginStart = if (activity.resources.getBoolean(R.bool.isTablet)) {
+          if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            when (storyGridPosition % 3) {
+              0 -> (activity as Context).resources.getDimensionPixelSize(R.dimen.recently_played_tablet_port_outer_margin)
+              1 -> {
+                val singleItemWidth = (screenWidth / 3) - (activity as Context).resources.getDimensionPixelSize(R.dimen.recently_played_tablet_port_outer_margin)
+                (screenWidth / 6) - (singleItemWidth / 2)
+              }
+              else -> 0
+            }
+          } else {
+            when (storyGridPosition % 4) {
+              0 -> (activity as Context).resources.getDimensionPixelSize(R.dimen.recently_played_tablet_land_outer_margin)
+              1 -> {
+                val singleItemWidth = (screenWidth / 4) - (activity as Context).resources.getDimensionPixelSize(R.dimen.recently_played_tablet_land_outer_margin)
+                (screenWidth - 4 * singleItemWidth) / 6
+              }
+              2 -> {
+                val singleItemWidth = (screenWidth / 4) - (activity as Context).resources.getDimensionPixelSize(R.dimen.recently_played_tablet_land_outer_margin)
+                ((screenWidth - 4 * singleItemWidth) / 6) / 2
+              }
+              else -> 0
+            }
           }
         } else {
-          (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)//this will be updated in next PR
+          if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if (storyGridPosition % 2 == 1)
+              (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_8)
+            else {
+              (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
+            }
+          } else {
+            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)//this will be updated in next PR
+          }
         }
         val params =
           holder.binding.ongoingStoryCardView!!.layoutParams as (ViewGroup.MarginLayoutParams)
