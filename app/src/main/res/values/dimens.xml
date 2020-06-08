@@ -23,7 +23,7 @@
   <dimen name="padding_20">20dp</dimen>
   <dimen name="padding_44">44dp</dimen>
   <dimen name="padding_72">72dp</dimen>
-  <dimen name="margin_152">152dp</dimen>
+  <dimen name="padding_128">128dp</dimen>
   <dimen name="margin_120">120dp</dimen>
   <dimen name="margin_72">72dp</dimen>
   <dimen name="margin_36">36dp</dimen>
@@ -37,4 +37,5 @@
   <dimen name="enter_text_view_padding_start">60dp</dimen>
   <dimen name="enter_text_view_padding_end">60dp</dimen>
   <dimen name="promoted_story_card_width">280dp</dimen>
+  <dimen name="home_tablet_land_outer_margin">96dp</dimen>
 </resources>
