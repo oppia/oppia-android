@@ -11,7 +11,7 @@ import org.oppia.util.parser.HtmlParser
 
 // TODO(#216): Make use of generic data-binding-enabled RecyclerView adapter.
 
-private const val TAG_REVEAL_SOLUTION_DIALOG = "REVEAL_SOLUTION_DIALOG"
+const val TAG_REVEAL_SOLUTION_DIALOG = "REVEAL_SOLUTION_DIALOG"
 private const val VIEW_TYPE_HINT_ITEM = 1
 private const val VIEW_TYPE_SOLUTION_ITEM = 2
 

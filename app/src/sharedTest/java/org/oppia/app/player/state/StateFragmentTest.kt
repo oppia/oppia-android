@@ -383,7 +383,6 @@ class StateFragmentTest {
     }
   }
 
-
   @Module
   class TestModule {
     @Provides

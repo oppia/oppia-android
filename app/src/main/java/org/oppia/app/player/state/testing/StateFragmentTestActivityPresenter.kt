@@ -46,6 +46,11 @@ class StateFragmentTestActivityPresenter @Inject constructor(
 
   fun scrollToTop() = getStateFragment()?.scrollToTop()
 
+  fun revealHint(saveUserChoice: Boolean, hintIndex: Int) =
+    getStateFragment()?.revealHint(saveUserChoice, hintIndex)
+
+  fun revealSolution(saveUserChoice: Boolean) = getStateFragment()?.revealSolution(saveUserChoice)
+
   private fun startPlayingExploration(
     profileId: Int, topicId: String, storyId: String, explorationId: String
   ) {

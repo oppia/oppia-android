@@ -104,6 +104,7 @@ dependencies {
       'org.robolectric:robolectric:4.3',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
       'org.mockito:mockito-core:2.7.22',
+      project(":testing"),
   )
   androidTestImplementation(
       'androidx.test:core:1.2.0',
