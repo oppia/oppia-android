@@ -158,8 +158,13 @@ class HintsAndSolutionAdapter(
       binding.viewModel = solutionViewModel
       binding.root.visibility = View.GONE
       binding.solutionTitle.text = solutionViewModel.title.get()!!.capitalize()
-      binding.solutionCorrectAnswer.text =
-        """${solutionViewModel.numerator.get()}/${solutionViewModel.denominator.get()}"""
+      // TODO(#1050): Update to display answers for any answer type.
+      if (solutionViewModel.correctAnswer.get().isNullOrEmpty()) {
+        binding.solutionCorrectAnswer.text =
+          """${solutionViewModel.numerator.get()}/${solutionViewModel.denominator.get()}"""
+      } else {
+        binding.solutionCorrectAnswer.text = solutionViewModel.correctAnswer.get()
+      }
       binding.solutionSummary.text = htmlParserFactory.create(
         resourceBucketName, entityType, explorationId!!, /* imageCenterAlign= */ true
       ).parseOppiaHtml(

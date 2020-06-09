@@ -411,9 +411,13 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_checkSpanForItem0_spanSizeIsTwo() {
+  fun testHomeActivity_checkSpanForItem0_spanSizeIsTwoOrThree() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
-      onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(2, 0))
+      if (context.resources.getBoolean(R.bool.isTablet)) {
+        onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(3, 0))
+      } else {
+        onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(2, 0))
+      }
     }
   }
 
@@ -425,10 +429,14 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_configurationChange_checkSpanForItem0_spanSizeIsTwo() {
+  fun testHomeActivity_configurationChange_checkSpanForItem0_spanSizeIsThreeOrFour() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(3, 0))
+      if (context.resources.getBoolean(R.bool.isTablet)) {
+        onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(4, 0))
+      } else {
+        onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(3, 0))
+      }
     }
   }
 

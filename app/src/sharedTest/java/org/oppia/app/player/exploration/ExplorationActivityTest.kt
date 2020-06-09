@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.widget.TextView
-import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -55,8 +54,7 @@ import javax.inject.Singleton
 class ExplorationActivityTest {
   private lateinit var networkConnectionUtil: NetworkConnectionUtil
   private lateinit var explorationDataController: ExplorationDataController
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
 
   private val internalProfileId: Int = 0
 
@@ -287,7 +285,7 @@ class ExplorationActivityTest {
 
   private fun createExplorationActivityIntent(internalProfileId: Int, topicId: String, storyId: String, explorationId: String): Intent {
     return ExplorationActivity.createExplorationActivityIntent(
-      ApplicationProvider.getApplicationContext(), internalProfileId, topicId, storyId, explorationId
+      ApplicationProvider.getApplicationContext(), internalProfileId, topicId, storyId, explorationId, /* backflowScreen= */ null
     )
   }
 

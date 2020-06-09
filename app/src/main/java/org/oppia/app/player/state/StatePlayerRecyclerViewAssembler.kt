@@ -32,6 +32,7 @@ import org.oppia.app.databinding.TextInputInteractionItemBinding
 import org.oppia.app.model.AnswerAndResponse
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.HelpIndex
+import org.oppia.app.model.HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.PendingState
 import org.oppia.app.model.State
@@ -73,19 +74,20 @@ import org.oppia.util.parser.HtmlParser
 import org.oppia.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 
-private const val DELAY_SHOW_HINTS_NO_ANSWERS_MS = 30_000L
-private const val DELAY_SHOW_HINTS_ONE_WRONG_ANSWER_MS = 60_000L
-private const val DELAY_SHOW_HINTS_MULTIPLE_WRONG_ANSWERS_MS = 10_000L
+private const val DELAY_SHOW_INITIAL_HINT_MS = 60_000L
+private const val DELAY_SHOW_ADDITIONAL_HINTS_MS = 30_000L
+private const val DELAY_SHOW_ADDITIONAL_HINTS_FROM_WRONG_ANSWER_MS = 10_000L
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 
 /**
- * An assembler for generating the list of view models to bind to the state player recycler view. This class also
- * handles some non-recycler view feature management, such as the congratulations message for a correct answer.
+ * An assembler for generating the list of view models to bind to the state player recycler view.
+ * This class also handles some non-recycler view feature management, such as the congratulations
+ * message for a correct answer.
  *
- * One instance of this class should exist per fragment hosting the underlying recycler view. It's expected that this
- * class be reconstructed on configuration changes, as it nor its contents are directly parcelable. The state loss from
- * recreating this class will have the expected behavior so long as the next assembler has the same feature set as the
- * one being destroyed.
+ * One instance of this class should exist per fragment hosting the underlying recycler view. It's
+ * expected that this class be reconstructed on configuration changes, as it nor its contents are
+ * directly parcelable. The state loss from recreating this class will have the expected behavior so
+ * long as the next assembler has the same feature set as the one being destroyed.
  *
  * This class should only be interacted on the main thread.
  *
@@ -107,19 +109,20 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private val currentStateName: ObservableField<String>?,
   private val isAudioPlaybackEnabled: ObservableField<Boolean>?,
   private val audioUiManagerRetriever: AudioUiManagerRetriever?,
-  private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>,
+  private val interactionViewModelFactoryMap: Map<
+    String, @JvmSuppressWildcards InteractionViewModelFactory>,
   backgroundCoroutineDispatcher: CoroutineDispatcher
 ) {
   /**
-   * A list of view models corresponding to past view models that are hidden by default. These are intentionally not
-   * retained upon configuration changes since the user can just re-expand the list. Note that the first element of this
-   * list (when initialized), will always be the previous answers header to help locate the items in the recycler view
-   * (when present).
+   * A list of view models corresponding to past view models that are hidden by default. These are
+   * intentionally not retained upon configuration changes since the user can just re-expand the
+   * list. Note that the first element of this list (when initialized), will always be the previous
+   * answers header to help locate the items in the recycler view (when present).
    */
   private val previousAnswerViewModels: MutableList<StateItemViewModel> = mutableListOf()
   /**
-   * Whether the previously submitted wrong answers should be expanded. This value is intentionally not retained upon
-   * configuration changes since the user can just re-expand the list.
+   * Whether the previously submitted wrong answers should be expanded. This value is intentionally
+   * not retained upon configuration changes since the user can just re-expand the list.
    */
   private var hasPreviousResponsesExpanded: Boolean = false
 
@@ -131,9 +134,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private var audioPlaybackContentId: String? = null
 
   /**
-   * An ever-present [PreviousNavigationButtonListener] that can exist even if backward navigation is disabled. This
-   * listener no-ops if backward navigation is enabled. This serves to allows the host fragment to not need to implement
-   * [PreviousNavigationButtonListener] if backward navigation is disabled.
+   * An ever-present [PreviousNavigationButtonListener] that can exist even if backward navigation
+   * is disabled. This listener no-ops if backward navigation is enabled. This serves to allows the
+   * host fragment to not need to implement [PreviousNavigationButtonListener] if backward
+   * navigation is disabled.
    */
   private val previousNavigationButtonListener = object : PreviousNavigationButtonListener {
     override fun onPreviousButtonClicked() {
@@ -144,8 +148,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
   }
 
   /**
-   * Computes a list of view models corresponding to the specified [EphemeralState] and the configuration of this
-   * assembler, as well as the GCS entity ID that should be associated with rich-text rendering for this state.
+   * Computes a list of view models corresponding to the specified [EphemeralState] and the
+   * configuration of this assembler, as well as the GCS entity ID that should be associated with
+   * rich-text rendering for this state.
    */
   fun compute(ephemeralState: EphemeralState, gcsEntityId: String): List<StateItemViewModel> {
     val hasPreviousState = ephemeralState.hasPreviousState
@@ -209,24 +214,34 @@ class StatePlayerRecyclerViewAssembler private constructor(
   }
 
   private fun addInteractionForPendingState(
-    pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction, hasPreviousButton: Boolean,
+    pendingItemList: MutableList<StateItemViewModel>,
+    interaction: Interaction,
+    hasPreviousButton: Boolean,
     gcsEntityId: String
   ) {
     val interactionViewModelFactory = interactionViewModelFactoryMap.getValue(interaction.id)
     pendingItemList += interactionViewModelFactory(
-      gcsEntityId, interaction, fragment as InteractionAnswerReceiver, fragment as InteractionAnswerErrorReceiver, hasPreviousButton
+      gcsEntityId,
+      interaction,
+      fragment as InteractionAnswerReceiver,
+      fragment as InteractionAnswerErrorReceiver,
+      hasPreviousButton
     )
   }
 
   private fun addContentItem(
-    pendingItemList: MutableList<StateItemViewModel>, ephemeralState: EphemeralState, gcsEntityId: String
+    pendingItemList: MutableList<StateItemViewModel>,
+    ephemeralState: EphemeralState,
+    gcsEntityId: String
   ) {
     val contentSubtitledHtml: SubtitledHtml = ephemeralState.state.content
     pendingItemList += ContentViewModel(contentSubtitledHtml.html, gcsEntityId)
   }
 
   private fun addPreviousAnswers(
-    pendingItemList: MutableList<StateItemViewModel>, answersAndResponses: List<AnswerAndResponse>, gcsEntityId: String
+    pendingItemList: MutableList<StateItemViewModel>,
+    answersAndResponses: List<AnswerAndResponse>,
+    gcsEntityId: String
   ) {
     if (answersAndResponses.size > 1) {
       if (playerFeatureSet.wrongAnswerCollapsing) {
@@ -239,7 +254,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
         }
       }
       // Only add previous answers if current responses are expanded, or if collapsing is disabled.
-      val showPreviousAnswers = !playerFeatureSet.wrongAnswerCollapsing || hasPreviousResponsesExpanded
+      val showPreviousAnswers = !playerFeatureSet.wrongAnswerCollapsing ||
+        hasPreviousResponsesExpanded
       for (answerAndResponse in answersAndResponses.take(answersAndResponses.size - 1)) {
         if (playerFeatureSet.pastAnswerSupport) {
           createSubmittedAnswer(answerAndResponse.userAnswer, gcsEntityId).let { viewModel ->
@@ -282,7 +298,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val headerModel = previousAnswerViewModels.first() as PreviousResponsesHeaderViewModel
     val expandPreviousAnswers = !headerModel.isExpanded.get()
     val headerIndex = itemList.indexOf(headerModel)
-    val previousAnswersAndFeedbacks = previousAnswerViewModels.takeLast(previousAnswerViewModels.size - 1)
+    val previousAnswersAndFeedbacks =
+      previousAnswerViewModels.takeLast(previousAnswerViewModels.size - 1)
     if (expandPreviousAnswers) {
       // Add the pending view models to the recycler view to expand them.
       itemList.addAll(headerIndex + 1, previousAnswersAndFeedbacks)
@@ -296,9 +313,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
   }
 
   /**
-   * Ensures that the previous responses, if any, are no longer expanded. This does not recompute the recycler view
-   * adapter data--that requires another call to [compute]. If this is meant to have an immediate UI effect,
-   * [togglePreviousAnswers] should be used, instead.
+   * Ensures that the previous responses, if any, are no longer expanded. This does not recompute
+   * the recycler view adapter data--that requires another call to [compute]. If this is meant to
+   * have an immediate UI effect, [togglePreviousAnswers] should be used, instead.
    */
   fun collapsePreviousResponses() {
     check(playerFeatureSet.wrongAnswerCollapsing) {
@@ -312,7 +329,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
     check(playerFeatureSet.showCongratulationsOnCorrectAnswer) {
       "Cannot show congratulations message for assembler that doesn't support it"
     }
-    val textView = checkNotNull(congratulationsTextView) { "Expected non-null reference to congratulations text view" }
+    val textView = checkNotNull(congratulationsTextView) {
+      "Expected non-null reference to congratulations text view"
+    }
     textView.visibility = View.VISIBLE
 
     val fadeIn = AlphaAnimation(0f, 1f)
@@ -382,7 +401,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
     return audioUiManagerRetriever()
   }
 
-  private fun createSubmittedAnswer(userAnswer: UserAnswer, gcsEntityId: String): SubmittedAnswerViewModel {
+  private fun createSubmittedAnswer(
+    userAnswer: UserAnswer,
+    gcsEntityId: String
+  ): SubmittedAnswerViewModel {
     return SubmittedAnswerViewModel(userAnswer, gcsEntityId)
   }
 
@@ -404,12 +426,16 @@ class StatePlayerRecyclerViewAssembler private constructor(
     when {
       hasGeneralContinueButton && playerFeatureSet.forwardNavigation -> {
         pendingItemList += ContinueNavigationButtonViewModel(
-          hasPreviousButton, previousNavigationButtonListener, fragment as ContinueNavigationButtonListener
+          hasPreviousButton,
+          previousNavigationButtonListener,
+          fragment as ContinueNavigationButtonListener
         )
       }
       canContinueToNextState && playerFeatureSet.forwardNavigation -> {
         pendingItemList += NextButtonViewModel(
-          hasPreviousButton, previousNavigationButtonListener, fragment as NextNavigationButtonListener
+          hasPreviousButton,
+          previousNavigationButtonListener,
+          fragment as NextNavigationButtonListener
         )
       }
       stateIsTerminal -> {
@@ -423,7 +449,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
           )
         }
       }
-      doesMostRecentInteractionRequireExplicitSubmission(pendingItemList) && playerFeatureSet.interactionSupport -> {
+      doesMostRecentInteractionRequireExplicitSubmission(pendingItemList) &&
+        playerFeatureSet.interactionSupport -> {
         val canSubmitAnswer = checkNotNull(this.canSubmitAnswer) {
           "Expected non-null submit answer observable for submit button when interaction support " +
             "is enabled"
@@ -435,41 +462,51 @@ class StatePlayerRecyclerViewAssembler private constructor(
           fragment as SubmitNavigationButtonListener
         )
       }
-      // Otherwise, just show the previous button since the interaction itself will push the answer submission.
+      // Otherwise, just show the previous button since the interaction itself will push the answer
+      // submission.
       hasPreviousButton && !isMostRecentInteractionAutoNavigating(pendingItemList) -> {
         pendingItemList += PreviousButtonViewModel(
           previousNavigationButtonListener
         )
       }
 
-      // Otherwise, there's no navigation button that should be shown since the current interaction handles this or
-      // navigation in this context is disabled.
+      // Otherwise, there's no navigation button that should be shown since the current interaction
+      // handles this or navigation in this context is disabled.
     }
   }
 
   /**
-   * Returns whether there is currently a pending interaction that requires an additional user action to submit the
-   * answer.
+   * Returns whether there is currently a pending interaction that requires an additional user
+   * action to submit the answer.
    */
-  private fun doesMostRecentInteractionRequireExplicitSubmission(itemList: List<StateItemViewModel>): Boolean {
+  private fun doesMostRecentInteractionRequireExplicitSubmission(
+    itemList: List<StateItemViewModel>
+  ): Boolean {
     return getPendingAnswerHandler(itemList)?.isExplicitAnswerSubmissionRequired() ?: true
   }
 
-  /** Returns whether there is currently a pending interaction that also acts like a navigation button. */
+  /**
+   * Returns whether there is currently a pending interaction that also acts like a navigation
+   * button.
+   */
   private fun isMostRecentInteractionAutoNavigating(itemList: List<StateItemViewModel>): Boolean {
     return getPendingAnswerHandler(itemList)?.isAutoNavigating() ?: false
   }
 
-  /** Returns the latest [InteractionAnswerHandler] representing the current pending one, or null if there is none. */
+  /**
+   * Returns the latest [InteractionAnswerHandler] representing the current pending one, or null if
+   * there is none.
+   */
   fun getPendingAnswerHandler(itemList: List<StateItemViewModel>): InteractionAnswerHandler? {
-    // In the future, it may be ideal to make this more robust by actually tracking the handler corresponding to the
-    // pending interaction.
+    // In the future, it may be ideal to make this more robust by actually tracking the handler
+    // corresponding to the pending interaction.
     return itemList.findLast { it is InteractionAnswerHandler } as? InteractionAnswerHandler
   }
 
   /**
-   * Builder to construct new [StatePlayerRecyclerViewAssembler]s in a way that allows granular control over the
-   * features enabled by the assembler. Instances of this class should be created using its injectable [Factory].
+   * Builder to construct new [StatePlayerRecyclerViewAssembler]s in a way that allows granular
+   * control over the features enabled by the assembler. Instances of this class should be created
+   * using its injectable [Factory].
    */
   class Builder private constructor(
     private val htmlParserFactory: HtmlParser.Factory, private val resourceBucketName: String,
@@ -477,8 +514,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val interactionViewModelFactoryMap: Map<String, InteractionViewModelFactory>,
     private val backgroundCoroutineDispatcher: CoroutineDispatcher
   ) {
-    private val adapterBuilder = BindableAdapter.MultiTypeBuilder.newBuilder(StateItemViewModel::viewType)
-    /** Tracks features individually enabled for the assembler. No features are enabled by default. */
+    private val adapterBuilder = BindableAdapter.MultiTypeBuilder.newBuilder(
+      StateItemViewModel::viewType
+    )
+    /**
+     * Tracks features individually enabled for the assembler. No features are enabled by default.
+     */
     private val featureSets = mutableSetOf(PlayerFeatureSet())
     private var congratulationsTextView: TextView? = null
     private var canSubmitAnswer: ObservableField<Boolean>? = null
@@ -492,16 +533,24 @@ class StatePlayerRecyclerViewAssembler private constructor(
       adapterBuilder.registerViewBinder(
         viewType = StateItemViewModel.ViewType.CONTENT,
         inflateView = { parent ->
-          ContentItemBinding.inflate(LayoutInflater.from(parent.context), parent, /* attachToParent= */ false).root
+          ContentItemBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            /* attachToParent= */ false
+          ).root
         },
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<ContentItemBinding>(view)!!
           val contentViewModel = viewModel as ContentViewModel
           binding.htmlContent =
             htmlParserFactory.create(
-              resourceBucketName, entityType, contentViewModel.gcsEntityId, /* imageCenterAlign= */ true
+              resourceBucketName,
+              entityType,
+              contentViewModel.gcsEntityId,
+              imageCenterAlign = true
             ).parseOppiaHtml(
-              contentViewModel.htmlContent.toString(), binding.contentTextView
+              contentViewModel.htmlContent.toString(),
+              binding.contentTextView
             )
         }
       )
@@ -514,16 +563,24 @@ class StatePlayerRecyclerViewAssembler private constructor(
       adapterBuilder.registerViewBinder(
         viewType = StateItemViewModel.ViewType.FEEDBACK,
         inflateView = { parent ->
-          FeedbackItemBinding.inflate(LayoutInflater.from(parent.context), parent, /* attachToParent= */ false).root
+          FeedbackItemBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            /* attachToParent= */ false
+          ).root
         },
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<FeedbackItemBinding>(view)!!
           val feedbackViewModel = viewModel as FeedbackViewModel
           binding.htmlContent =
             htmlParserFactory.create(
-              resourceBucketName, entityType, feedbackViewModel.gcsEntityId, /* imageCenterAlign= */ true
+              resourceBucketName,
+              entityType,
+              feedbackViewModel.gcsEntityId,
+              imageCenterAlign = true
             ).parseOppiaHtml(
-              feedbackViewModel.htmlContent.toString(), binding.feedbackTextView
+              feedbackViewModel.htmlContent.toString(),
+              binding.feedbackTextView
             )
         }
       )
@@ -587,10 +644,14 @@ class StatePlayerRecyclerViewAssembler private constructor(
           when (userAnswer.textualAnswerCase) {
             UserAnswer.TextualAnswerCase.HTML_ANSWER -> {
               val htmlParser = htmlParserFactory.create(
-                resourceBucketName, entityType, submittedAnswerViewModel.gcsEntityId, imageCenterAlign = false
+                resourceBucketName,
+                entityType,
+                submittedAnswerViewModel.gcsEntityId,
+                imageCenterAlign = false
               )
               binding.submittedAnswer = htmlParser.parseOppiaHtml(
-                userAnswer.htmlAnswer, binding.submittedAnswerTextView
+                userAnswer.htmlAnswer,
+                binding.submittedAnswerTextView
               )
             }
             else -> binding.submittedAnswer = userAnswer.plainAnswer
@@ -602,8 +663,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
 
     /**
-     * Adds support for automatically collapsing past wrong answers. This feature is not enabled without
-     * [addPastAnswersSupport] also being enabled.
+     * Adds support for automatically collapsing past wrong answers. This feature is not enabled
+     * without [addPastAnswersSupport] also being enabled.
      */
     fun addWrongAnswerCollapsingSupport(): Builder {
       adapterBuilder.registerViewDataBinder(
@@ -628,7 +689,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
       return this
     }
 
-    /** Adds support for navigating to next states. Note that this also enables the 'Continue' interaction. */
+    /**
+     * Adds support for navigating to next states. Note that this also enables the 'Continue'
+     * interaction.
+     */
     fun addForwardNavigationSupport(): Builder {
       adapterBuilder.registerViewDataBinder(
         viewType = StateItemViewModel.ViewType.CONTINUE_INTERACTION,
@@ -650,7 +714,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
       return this
     }
 
-    /** Adds support for displaying a button that allows the learner to replay the lesson experience. */
+    /**
+     * Adds support for displaying a button that allows the learner to replay the lesson experience.
+     */
     fun addReplayButtonSupport(): Builder {
       adapterBuilder.registerViewDataBinder(
         viewType = StateItemViewModel.ViewType.REPLAY_NAVIGATION_BUTTON,
@@ -662,7 +728,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
       return this
     }
 
-    /** Adds support for displaying a 'return to topic' button at the end of the lesson experience. */
+    /**
+     * Adds support for displaying a 'return to topic' button at the end of the lesson experience.
+     */
     fun addReturnToTopicSupport(): Builder {
       adapterBuilder.registerViewDataBinder(
         viewType = StateItemViewModel.ViewType.RETURN_TO_TOPIC_NAVIGATION_BUTTON,
@@ -674,7 +742,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
       return this
     }
 
-    /** Adds support for displaying a congratulations answer when the learner submits a correct answer. */
+    /**
+     * Adds support for displaying a congratulations answer when the learner submits a correct
+     * answer.
+     */
     fun addCongratulationsForCorrectAnswers(congratulationsTextView: TextView): Builder {
       this.congratulationsTextView = congratulationsTextView
       featureSets += PlayerFeatureSet(showCongratulationsOnCorrectAnswer = true)
@@ -733,10 +804,14 @@ class StatePlayerRecyclerViewAssembler private constructor(
     /** Fragment injectable factory to create new [Builder]s. */
     class Factory @Inject constructor(
       private val htmlParserFactory: HtmlParser.Factory, private val fragment: Fragment,
-      private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>,
+      private val interactionViewModelFactoryMap: Map<
+        String, @JvmSuppressWildcards InteractionViewModelFactory>,
       @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
     ) {
-      /** Returns a new [Builder] for the specified GCS resource bucket information for loading assets. */
+      /**
+       * Returns a new [Builder] for the specified GCS resource bucket information for loading
+       * assets.
+       */
       fun create(resourceBucketName: String, entityType: String): Builder {
         return Builder(
           htmlParserFactory, resourceBucketName, entityType, fragment, interactionViewModelFactoryMap,
@@ -761,7 +836,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val hintsAndSolutionsSupport: Boolean = false,
     val supportAudioVoiceovers: Boolean = false
   ) {
-    /** Returns a union of this feature set with other one. Loosely based on https://stackoverflow.com/a/49605849. */
+    /**
+     * Returns a union of this feature set with other one. Loosely based on
+     * https://stackoverflow.com/a/49605849.
+     */
     fun union(other: PlayerFeatureSet): PlayerFeatureSet {
       return PlayerFeatureSet(
         contentSupport = contentSupport || other.contentSupport,
@@ -781,24 +859,54 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
   }
 
+  // TODO(#1273): Add thorough testing for hints & solutions.
   /**
    * Handler for showing hints to the learner after a period of time in the event they submit a
    * wrong answer.
+   *
+   * # Flow chart for when hints are shown
+   *
+   *            Submit 1st              Submit wrong
+   *            wrong answer            answer
+   *              +---+                   +---+
+   *              |   |                   |   |
+   *              |   v                   |   v
+   *            +-+---+----+            +-+---+-----+           +----------+
+   *     Initial| No       | Wait 60s   |           | View hint | Hint     |
+   *     state  | hint     +----------->+ Hint      +---------->+ consumed |
+   *     +----->+ released | or, submit | available | Wait 30s  |          |
+   *            |          | 2nd wrong  |           +<----------+          |
+   *            +----------+ answer     +----+------+           +----+-----+
+   *                                         ^                       |
+   *                                         |Wait 10s               |
+   *                                         |                       |
+   *                                    +----+------+                |
+   *                               +--->+ No        | Submit wrong   |
+   *                   Submit wrong|    | hint      | answer         |
+   *                   answer      |    | available +<---------------+
+   *                               +----+           |
+   *                                    +-----------+
+   *
+   * # Logic for selecting a hint
+   *
+   * Hints are selected based on the availability of hints to show, and any previous hints that have
+   * been shown. A new hint will only be made available if its previous hint has been viewed by the
+   * learner. Hints are always shown in order. If all hints have been exhausted and viewed by the
+   * user, then the 'hint available' state in the diagram above will trigger the solution to be
+   * made available to view, if a solution is present. Once the solution is viewed by the learner,
+   * they will reach a terminal state for hints and no additional hints or solutions will be made
+   * available.
    */
   private class HintHandler(
     private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory, private val fragment: Fragment
   ) {
-    /**
-     * The number of wrong answers that have been processed by this handler. This is initialized to
-     * -1 since '0' is a valid number that will trigger one-time special behavior.
-     */
-    private var trackedWrongAnswerCount = -1
+    private var trackedWrongAnswerCount = 0
     private var previousHelpIndex: HelpIndex = HelpIndex.getDefaultInstance()
     private var hintSequenceNumber = 0
 
     /** Resets this handler to prepare it for a new state, cancelling any pending hints. */
     fun reset() {
-      trackedWrongAnswerCount = -1
+      trackedWrongAnswerCount = 0
       previousHelpIndex = HelpIndex.getDefaultInstance()
       // Cancel any potential pending hints by advancing the sequence number. Note that this isn't
       // reset to 0 to ensure that all previous hint tasks are cancelled, and new tasks can be
@@ -820,22 +928,36 @@ class StatePlayerRecyclerViewAssembler private constructor(
       // doesn't answer after some duration). Note that if there's already a timer to show a hint,
       // it will be reset for each subsequent answer.
       val nextUnrevealedHintIndex = getNextHintIndexToReveal(state)
+      val isFirstHint = previousHelpIndex.indexTypeCase == INDEXTYPE_NOT_SET
       val wrongAnswerCount = pendingState.wrongAnswerList.size
-      if (wrongAnswerCount == 0) {
-        // If no answers have been submitted, schedule an automatic help after a fixed amount of
-        // time. This will automatically reset if something changes other than answers (e.g.
-        // revealing a hint), which may trigger more help to become available.
-        scheduleShowHint(DELAY_SHOW_HINTS_NO_ANSWERS_MS, nextUnrevealedHintIndex)
-      } else if (wrongAnswerCount != trackedWrongAnswerCount) {
-        // Otherwise, only process wrong answers if the count has changed.
-        if (wrongAnswerCount == 1) {
-          scheduleShowHint(DELAY_SHOW_HINTS_ONE_WRONG_ANSWER_MS, nextUnrevealedHintIndex)
+      if (wrongAnswerCount == trackedWrongAnswerCount) {
+        // If no answers have been submitted, schedule a task to automatically help after a fixed
+        // amount of time. This will automatically reset if something changes other than answers
+        // (e.g. revealing a hint), which may trigger more help to become available.
+        if (isFirstHint) {
+          // The learner needs to wait longer for the initial hint to show since they need some time
+          // to read through and consider the question.
+          scheduleShowHint(DELAY_SHOW_INITIAL_HINT_MS, nextUnrevealedHintIndex)
         } else {
-          scheduleShowHint(DELAY_SHOW_HINTS_MULTIPLE_WRONG_ANSWERS_MS, nextUnrevealedHintIndex)
+          scheduleShowHint(DELAY_SHOW_ADDITIONAL_HINTS_MS, nextUnrevealedHintIndex)
         }
+      } else {
+        // See if the learner's new wrong answer justifies showing a hint.
+        if (isFirstHint) {
+          if (wrongAnswerCount > 1) {
+            // If more than one answer has been submitted and no hint has yet been shown, show a
+            // hint immediately since the learner is probably stuck.
+            showHintImmediately(nextUnrevealedHintIndex)
+          }
+        } else {
+          // Otherwise, always schedule to show a hint on a new wrong answer for subsequent hints.
+          scheduleShowHint(
+            DELAY_SHOW_ADDITIONAL_HINTS_FROM_WRONG_ANSWER_MS,
+            nextUnrevealedHintIndex
+          )
+        }
+        trackedWrongAnswerCount = wrongAnswerCount
       }
-
-      trackedWrongAnswerCount = wrongAnswerCount
     }
 
     /**
@@ -866,21 +988,33 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     /**
      * Schedules to allow the hint of the specified index to be shown after the specified delay,
-     * cancelling any potentially previous pending hints initiated by calls to this method.
+     * cancelling any previously pending hints initiated by calls to this method.
      */
     private fun scheduleShowHint(delayMs: Long, helpIndexToShow: HelpIndex) {
       val targetSequenceNumber = ++hintSequenceNumber
       lifecycleSafeTimerFactory.createTimer(delayMs).observe(fragment, Observer {
-        // Only finish this timer if no other hints were scheduled and no cancellations occurred.
-        if (targetSequenceNumber == hintSequenceNumber) {
-          if (previousHelpIndex != helpIndexToShow) {
-            // Only indicate the hint is available if its index is actually new (including if it
-            // becomes null such as in the case of the solution becoming available).
-            (fragment as ShowHintAvailabilityListener).onHintAvailable(helpIndexToShow)
-            previousHelpIndex = helpIndexToShow
-          }
-        }
+        showHint(targetSequenceNumber, helpIndexToShow)
       })
+    }
+
+    /**
+     * Immediately indicates the specified hint is ready to be shown, cancelling any previously
+     * pending hints initiated by calls to [scheduleShowHint].
+     */
+    private fun showHintImmediately(helpIndexToShow: HelpIndex) {
+      showHint(++hintSequenceNumber, helpIndexToShow)
+    }
+
+    private fun showHint(targetSequenceNumber: Int, helpIndexToShow: HelpIndex) {
+      // Only finish this timer if no other hints were scheduled and no cancellations occurred.
+      if (targetSequenceNumber == hintSequenceNumber) {
+        if (previousHelpIndex != helpIndexToShow) {
+          // Only indicate the hint is available if its index is actually new (including if it
+          // becomes null such as in the case of the solution becoming available).
+          (fragment as ShowHintAvailabilityListener).onHintAvailable(helpIndexToShow)
+          previousHelpIndex = helpIndexToShow
+        }
+      }
     }
   }
 }
