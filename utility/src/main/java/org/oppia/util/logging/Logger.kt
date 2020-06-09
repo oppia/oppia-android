@@ -7,14 +7,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.oppia.util.threading.BlockingDispatcher
 import java.io.File
-import java.util.*
+import java.util.Calendar
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Wrapper class for Android logcat and file logging. All logs in the app should use this class. */
 @Singleton
 class Logger @Inject constructor(
-  context: Context, @BlockingDispatcher private val blockingDispatcher: CoroutineDispatcher,
+  context: Context,
+  @BlockingDispatcher private val blockingDispatcher: CoroutineDispatcher,
   @EnableConsoleLog private val enableConsoleLog: Boolean,
   @EnableFileLog private val enableFileLog: Boolean,
   @GlobalLogLevel private val globalLogLevel: LogLevel
@@ -86,7 +87,7 @@ class Logger @Inject constructor(
 
   private fun writeInternal(logLevel: LogLevel, tag: String, fullLog: String) {
     if (!isLogEnable(logLevel)) {
-      return;
+      return
     }
     if (enableConsoleLog) {
       Log.println(logLevel.logLevel, tag, fullLog)

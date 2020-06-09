@@ -13,8 +13,7 @@ const val BINDABLE_TEST_FRAGMENT_TAG = "bindable_adapter_test_fragment"
 // TODO(#59): Make this fragment only included in relevant tests instead of all prod builds.
 /** A test fragment for the bindable RecyclerView adapter. */
 class BindableAdapterTestFragment: InjectableFragment() {
-  @Inject
-  lateinit var bindableAdapterTestFragmentPresenter: BindableAdapterTestFragmentPresenter
+  @Inject lateinit var bindableAdapterTestFragmentPresenter: BindableAdapterTestFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)

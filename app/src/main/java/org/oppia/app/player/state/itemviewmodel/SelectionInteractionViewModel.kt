@@ -12,9 +12,12 @@ import org.oppia.app.viewmodel.ObservableArrayList
 
 /** [StateItemViewModel] for multiple or item-selection input choice list. */
 class SelectionInteractionViewModel(
-  val entityId: String, interaction: Interaction, private val interactionAnswerReceiver: InteractionAnswerReceiver
-): StateItemViewModel(ViewType.SELECTION_INTERACTION), InteractionAnswerHandler {
+  val entityId: String,
+  interaction: Interaction,
+  private val interactionAnswerReceiver: InteractionAnswerReceiver
+) : StateItemViewModel(ViewType.SELECTION_INTERACTION), InteractionAnswerHandler {
   private val interactionId: String = interaction.id
+
   private val choiceStrings: List<String> by lazy {
     interaction.customizationArgsMap["choices"]?.setOfHtmlString?.htmlList ?: listOf()
   }

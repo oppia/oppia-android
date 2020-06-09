@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!-- FAQ Questions Array -->
+  <string-array name="faq_questions">
+    <item>@string/faq_question_1</item>
+    <item>@string/faq_question_2</item>
+    <item>@string/faq_question_3</item>
+    <item>@string/faq_question_4</item>
+    <item>@string/faq_question_5</item>
+    <item>@string/faq_question_6</item>
+    <item>@string/faq_question_7</item>
+    <item>@string/faq_question_8</item>
+  </string-array>
+
+  <string-array name="faq_answers">
+    <item>@string/faq_answer_1</item>
+    <item>@string/faq_answer_1</item>
+    <item>@string/faq_answer_1</item>
+    <item>@string/faq_answer_1</item>
+    <item>@string/faq_answer_1</item>
+    <item>@string/faq_answer_1</item>
+    <item>@string/faq_answer_1</item>
+    <item>@string/faq_answer_1</item>
+  </string-array>
+</resources>

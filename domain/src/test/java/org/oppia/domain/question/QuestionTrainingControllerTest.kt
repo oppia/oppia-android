@@ -22,21 +22,21 @@ import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Captor
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
-import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
-import org.oppia.app.model.Question
+import org.oppia.app.model.EphemeralQuestion
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
@@ -45,10 +45,10 @@ import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.topic.TEST_QUESTION_ID_0
 import org.oppia.domain.topic.TEST_QUESTION_ID_1
-import org.oppia.domain.topic.TEST_QUESTION_ID_2
 import org.oppia.domain.topic.TEST_QUESTION_ID_3
 import org.oppia.domain.topic.TEST_SKILL_ID_0
 import org.oppia.domain.topic.TEST_SKILL_ID_1
+import org.oppia.domain.topic.TEST_SKILL_ID_2
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -74,14 +74,21 @@ class QuestionTrainingControllerTest {
   @JvmField
   val executorRule = InstantTaskExecutorRule()
 
-  @Inject
-  lateinit var questionTrainingController: QuestionTrainingController
+  @Inject lateinit var questionTrainingController: QuestionTrainingController
+
+  @Inject lateinit var questionAssessmentProgressController: QuestionAssessmentProgressController
 
   @Mock
-  lateinit var mockQuestionListObserver: Observer<AsyncResult<Any?>>
+  lateinit var mockQuestionListObserver: Observer<AsyncResult<Any>>
+
+  @Mock
+  lateinit var mockCurrentQuestionLiveDataObserver: Observer<AsyncResult<EphemeralQuestion>>
 
   @Captor
-  lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
+  lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<Any>>
+
+  @Captor
+  lateinit var currentQuestionResultCaptor: ArgumentCaptor<AsyncResult<EphemeralQuestion>>
 
   @Inject
   @field:TestDispatcher
@@ -99,6 +106,7 @@ class QuestionTrainingControllerTest {
   @ExperimentalCoroutinesApi
   @ObsoleteCoroutinesApi
   fun setUp() {
+    TestQuestionModule.questionSeed = 0
     Dispatchers.setMain(testThread)
     setUpTestApplicationComponent()
   }
@@ -120,46 +128,109 @@ class QuestionTrainingControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_successfullyStartsQuestionSessionForExistingSkillIds() = runBlockingTest(coroutineContext) {
+  fun testController_startTrainingSession_succeeds() = runBlockingTest(coroutineContext) {
     val questionListLiveData = questionTrainingController.startQuestionTrainingSession(
       listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
     )
     advanceUntilIdle()
+
     questionListLiveData.observeForever(mockQuestionListObserver)
     verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
-
     assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
-    @Suppress("UNCHECKED_CAST") // TODO(#111): Observe this via the progress controller, instead.
-    val questionsList = questionListResultCaptor.value.getOrThrow() as List<Question>
-    assertThat(questionsList.size).isEqualTo(3)
-    val questionIds = questionsList.map { it.questionId }
-    assertThat(questionIds).containsExactlyElementsIn(
-      mutableListOf(
-        TEST_QUESTION_ID_0, TEST_QUESTION_ID_1, TEST_QUESTION_ID_3
-      )
-    )
   }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_startsDifferentQuestionSessionForExistingSkillIds() = runBlockingTest(coroutineContext) {
+  fun testController_startTrainingSession_sessionStartsWithInitialQuestion() = runBlockingTest(coroutineContext) {
+    questionTrainingController.startQuestionTrainingSession(
+      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
+    )
+    advanceUntilIdle()
+
+    val resultLiveData = questionAssessmentProgressController.getCurrentQuestion()
+    resultLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
+    advanceUntilIdle()
+
+    verify(mockCurrentQuestionLiveDataObserver).onChanged(currentQuestionResultCaptor.capture())
+    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
+    assertThat(currentQuestionResultCaptor.value.getOrThrow().question.questionId).isEqualTo(TEST_QUESTION_ID_1)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testController_startTrainingSession_differentSeed_succeeds() = runBlockingTest(coroutineContext) {
+    TestQuestionModule.questionSeed = 2
+    setUpTestApplicationComponent() // Recreate with the new seed
     val questionListLiveData = questionTrainingController.startQuestionTrainingSession(
       listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
     )
     advanceUntilIdle()
+
     questionListLiveData.observeForever(mockQuestionListObserver)
     verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
-
     assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
-    @Suppress("UNCHECKED_CAST") // TODO(#111): Observe this via the progress controller, instead.
-    val questionsList = questionListResultCaptor.value.getOrThrow() as List<Question>
-    assertThat(questionsList.size).isEqualTo(3)
-    val questionIds = questionsList.map { it.questionId }
-    assertThat(questionIds).containsExactlyElementsIn(
-      mutableListOf(
-        TEST_QUESTION_ID_2, TEST_QUESTION_ID_0, TEST_QUESTION_ID_3
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testController_startTrainingSession_differentSeed_sessionStartsWithInitialQuestion() =
+    runBlockingTest(coroutineContext) {
+      TestQuestionModule.questionSeed = 2
+      setUpTestApplicationComponent() // Recreate with the new seed
+      questionTrainingController.startQuestionTrainingSession(
+        listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
       )
+      advanceUntilIdle()
+
+      val resultLiveData = questionAssessmentProgressController.getCurrentQuestion()
+      resultLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
+      advanceUntilIdle()
+
+      verify(mockCurrentQuestionLiveDataObserver).onChanged(currentQuestionResultCaptor.capture())
+      assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
+      assertThat(currentQuestionResultCaptor.value.getOrThrow().question.questionId).isEqualTo(TEST_QUESTION_ID_0)
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testController_startTrainingSession_differentSkills_succeeds() = runBlockingTest(coroutineContext) {
+    val questionListLiveData = questionTrainingController.startQuestionTrainingSession(
+      listOf(TEST_SKILL_ID_1, TEST_SKILL_ID_2)
     )
+    advanceUntilIdle()
+
+    questionListLiveData.observeForever(mockQuestionListObserver)
+    verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
+    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testController_startTrainingSession_differentSkills_sessionStartsWithInitialQuestion() =
+    runBlockingTest(coroutineContext) {
+      questionTrainingController.startQuestionTrainingSession(
+        listOf(TEST_SKILL_ID_1, TEST_SKILL_ID_2)
+      )
+      advanceUntilIdle()
+
+      val resultLiveData = questionAssessmentProgressController.getCurrentQuestion()
+      resultLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
+      advanceUntilIdle()
+
+      verify(mockCurrentQuestionLiveDataObserver).onChanged(currentQuestionResultCaptor.capture())
+      assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
+      assertThat(currentQuestionResultCaptor.value.getOrThrow().question.questionId).isEqualTo(TEST_QUESTION_ID_3)
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testController_startTrainingSession_noSkills_fails() = runBlockingTest(coroutineContext) {
+    val questionListLiveData = questionTrainingController.startQuestionTrainingSession(listOf())
+    advanceUntilIdle()
+
+    questionListLiveData.observeForever(mockQuestionListObserver)
+    verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
+    assertThat(questionListResultCaptor.value.isFailure()).isTrue()
   }
 
   @Qualifier
@@ -168,23 +239,10 @@ class QuestionTrainingControllerTest {
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
-    @Mock
-    lateinit var questionTrainingConstantsProvider: QuestionTrainingConstantsProvider
-
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
       return application
-    }
-
-    @Provides
-    @Singleton
-    fun provideQuestionTrainingConstantsProvider(): QuestionTrainingConstantsProvider {
-      MockitoAnnotations.initMocks(this)
-      Mockito.`when`(
-        questionTrainingConstantsProvider.getQuestionCountPerTrainingSession()
-      ).thenReturn(10)
-      return questionTrainingConstantsProvider
     }
 
     @ExperimentalCoroutinesApi
@@ -236,15 +294,15 @@ class QuestionTrainingControllerTest {
 
     @Provides
     @QuestionTrainingSeed
-    fun provideQuestionTrainingSeed(): Long = questionSeed++
+    fun provideQuestionTrainingSeed(): Long = questionSeed
   }
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(modules = [
     TestModule::class, ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
-    MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
-    TextInputRuleModule::class, InteractionsModule::class, TestQuestionModule::class
+    MultipleChoiceInputModule::class, DragDropSortInputModule::class, NumberWithUnitsRuleModule::class,
+    NumericInputRuleModule::class, TextInputRuleModule::class, InteractionsModule::class, TestQuestionModule::class
   ])
   interface TestApplicationComponent {
     @Component.Builder

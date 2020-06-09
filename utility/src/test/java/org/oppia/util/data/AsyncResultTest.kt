@@ -1,16 +1,33 @@
 package org.oppia.util.data
 
+import android.app.Application
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import dagger.BindsInstance
+import dagger.Component
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.oppia.testing.FakeSystemClock
+import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.test.assertFailsWith
 
 /** Tests for [AsyncResult]. */
-@RunWith(JUnit4::class)
+@RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class AsyncResultTest {
+
+  @Inject lateinit var fakeSystemClock: FakeSystemClock
+
+  @Before
+  fun setUp() {
+    setUpTestApplicationComponent()
+  }
 
   /* Pending tests. */
 
@@ -83,6 +100,69 @@ class AsyncResultTest {
   }
 
   @Test
+  fun testPendingAsyncResult_combinedWithPending_isStillPending() {
+    val result1 = AsyncResult.pending<String>()
+    val result2 = AsyncResult.pending<Float>()
+
+    val combined = result1.combineWith(result2) { _, _ -> 0 }
+
+    assertThat(combined.isPending()).isTrue()
+  }
+
+  @Test
+  fun testPendingAsyncResult_combinedWithFailure_isStillPending() {
+    val result1 = AsyncResult.pending<String>()
+    val result2 = AsyncResult.failed<Float>(RuntimeException())
+
+    val combined = result1.combineWith(result2) { _, _ -> 0 }
+
+    assertThat(combined.isPending()).isTrue()
+  }
+
+  @Test
+  fun testPendingAsyncResult_combinedWithSuccess_isStillPending() {
+    val result1 = AsyncResult.pending<String>()
+    val result2 = AsyncResult.success(1.0f)
+
+    val combined = result1.combineWith(result2) { _, _ -> 0 }
+
+    assertThat(combined.isPending()).isTrue()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testPendingAsyncResult_combinedAsyncWithPending_isStillPending() = runBlockingTest {
+    val result1 = AsyncResult.pending<String>()
+    val result2 = AsyncResult.pending<Float>()
+
+    val combined = result1.combineWithAsync(result2) { _, _ -> AsyncResult.success(0) }
+
+    assertThat(combined.isPending()).isTrue()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testPendingAsyncResult_combinedAsyncWithFailure_isStillPending() = runBlockingTest {
+    val result1 = AsyncResult.pending<String>()
+    val result2 = AsyncResult.failed<Float>(RuntimeException())
+
+    val combined = result1.combineWithAsync(result2) { _, _ -> AsyncResult.success(0) }
+
+    assertThat(combined.isPending()).isTrue()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testPendingAsyncResult_combinedAsyncWithSuccess_isStillPending() = runBlockingTest {
+    val result1 = AsyncResult.pending<String>()
+    val result2 = AsyncResult.success(1.0f)
+
+    val combined = result1.combineWithAsync(result2) { _, _ -> AsyncResult.success(0) }
+
+    assertThat(combined.isPending()).isTrue()
+  }
+
+  @Test
   fun testPendingResult_isEqualToAnotherPendingResult() {
     val result = AsyncResult.pending<String>()
 
@@ -124,6 +204,67 @@ class AsyncResultTest {
     val resultHash = AsyncResult.pending<String>().hashCode()
 
     assertThat(resultHash).isNotEqualTo(AsyncResult.failed<String>(UnsupportedOperationException()).hashCode())
+  }
+
+  @Test
+  fun testPendingResult_comparedWithItself_isTheSameAge() {
+    val result = AsyncResult.pending<String>()
+
+    val areSameAge = result.isNewerThanOrSameAgeAs(result)
+
+    assertThat(areSameAge).isTrue()
+  }
+
+  @Test
+  fun testPendingResult_comparedWithOtherPendingResult_createdAtTheSameTime_areTheSameAge() {
+    val result1 = AsyncResult.pending<String>()
+    val result2 = AsyncResult.pending<String>()
+
+    val areSameAge = result1.isNewerThanOrSameAgeAs(result2)
+
+    assertThat(areSameAge).isTrue()
+  }
+
+  @Test
+  fun testPendingResult_comparedWithSucceededResult_createdAtTheSameTime_areTheSameAge() {
+    val pendingResult = AsyncResult.pending<String>()
+    val success = AsyncResult.success("value")
+
+    val areSameAge = pendingResult.isNewerThanOrSameAgeAs(success)
+
+    assertThat(areSameAge).isTrue()
+  }
+
+  @Test
+  fun testPendingResult_comparedWithFailedResult_createdAtTheSameTime_areTheSameAge() {
+    val pendingResult = AsyncResult.pending<String>()
+    val failure = AsyncResult.failed<Float>(RuntimeException())
+
+    val areSameAge = pendingResult.isNewerThanOrSameAgeAs(failure)
+
+    assertThat(areSameAge).isTrue()
+  }
+
+  @Test
+  fun testPendingResult_comparedWithOlderPendingResult_isNewer() {
+    val olderResult = AsyncResult.pending<String>()
+    fakeSystemClock.advanceTime(millis = 10)
+    val newerResult = AsyncResult.pending<String>()
+
+    val isNewer = newerResult.isNewerThanOrSameAgeAs(olderResult)
+
+    assertThat(isNewer).isTrue()
+  }
+
+  @Test
+  fun testPendingResult_comparedWithNewerPendingResult_isNotNewer() {
+    val olderResult = AsyncResult.pending<String>()
+    fakeSystemClock.advanceTime(millis = 10)
+    val newerResult = AsyncResult.pending<String>()
+
+    val isNewer = olderResult.isNewerThanOrSameAgeAs(newerResult)
+
+    assertThat(isNewer).isFalse()
   }
 
   /* Success tests. */
@@ -218,6 +359,99 @@ class AsyncResultTest {
   }
 
   @Test
+  fun testSucceededAsyncResult_combinedWithPending_isPending() {
+    val result1 = AsyncResult.success("value")
+    val result2 = AsyncResult.pending<Float>()
+
+    val combined = result1.combineWith(result2) { _, _ -> 0 }
+
+    assertThat(combined.isPending()).isTrue()
+  }
+
+  @Test
+  fun testSucceededAsyncResult_combinedWithFailure_isFailedWithCorrectChainedFailure() {
+    val result1 = AsyncResult.success("value")
+    val result2 = AsyncResult.failed<Float>(RuntimeException())
+
+    val combined = result1.combineWith(result2) { _, _ -> 0 }
+
+    assertThat(combined.isFailure()).isTrue()
+    assertThat(combined.getErrorOrNull()).isInstanceOf(AsyncResult.ChainedFailureException::class.java)
+    assertThat(combined.getErrorOrNull()).hasCauseThat().isInstanceOf(RuntimeException::class.java)
+  }
+
+  @Test
+  fun testSucceededAsyncResult_combinedWithSuccess_hasCombinedSuccessValue() {
+    val result1 = AsyncResult.success("value")
+    val result2 = AsyncResult.success(1.0)
+
+    val combined = result1.combineWith(result2) { v1, v2 -> v1 + v2 }
+
+    assertThat(combined.getOrThrow()).contains("value")
+    assertThat(combined.getOrThrow()).contains("1.0")
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testSucceededAsyncResult_combinedAsyncWithPending_isPending() = runBlockingTest {
+    val result1 = AsyncResult.success("value")
+    val result2 = AsyncResult.pending<Float>()
+
+    val combined = result1.combineWithAsync(result2) { _, _ -> AsyncResult.success(0) }
+
+    assertThat(combined.isPending()).isTrue()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testSucceededAsyncResult_combinedAsyncWithFailure_isFailedWithCorrectChainedFailure() = runBlockingTest {
+    val result1 = AsyncResult.success("value")
+    val result2 = AsyncResult.failed<Float>(RuntimeException())
+
+    val combined = result1.combineWithAsync(result2) { _, _ -> AsyncResult.success(0) }
+
+    assertThat(combined.isFailure()).isTrue()
+    assertThat(combined.getErrorOrNull()).isInstanceOf(AsyncResult.ChainedFailureException::class.java)
+    assertThat(combined.getErrorOrNull()).hasCauseThat().isInstanceOf(RuntimeException::class.java)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testSucceededAsyncResult_combinedAsyncWithSuccess_resultPending_isPending() = runBlockingTest {
+    val result1 = AsyncResult.success("value")
+    val result2 = AsyncResult.success(1.0)
+
+    val combined = result1.combineWithAsync(result2) { _, _ -> AsyncResult.pending<Int>() }
+
+    assertThat(combined.isPending()).isTrue()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testSucceededAsyncResult_combinedAsyncWithSuccess_resultFailure_isFailed() = runBlockingTest {
+    val result1 = AsyncResult.success("value")
+    val result2 = AsyncResult.success(1.0)
+
+    val combined = result1.combineWithAsync(result2) { _, _ -> AsyncResult.failed<Int>(RuntimeException()) }
+
+    // Note that the failure is not chained since the transform function was responsible for 'throwing' it.
+    assertThat(combined.isFailure()).isTrue()
+    assertThat(combined.getErrorOrNull()).isInstanceOf(RuntimeException::class.java)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testSucceededAsyncResult_combinedAsyncWithSuccess_resultSuccess_hasCombinedSuccessValue() = runBlockingTest {
+    val result1 = AsyncResult.success("value")
+    val result2 = AsyncResult.success(1.0)
+
+    val combined = result1.combineWithAsync(result2) { v1, v2 -> AsyncResult.success(v1 + v2) }
+
+    assertThat(combined.getOrThrow()).contains("value")
+    assertThat(combined.getOrThrow()).contains("1.0")
+  }
+
+  @Test
   fun testSucceededResult_isNotEqualToPendingResult() {
     val result = AsyncResult.success("Success")
 
@@ -286,6 +520,67 @@ class AsyncResultTest {
     val resultHash = AsyncResult.success("Success").hashCode()
 
     assertThat(resultHash).isNotEqualTo(AsyncResult.failed<String>(UnsupportedOperationException()).hashCode())
+  }
+
+  @Test
+  fun testSucceededResult_comparedWithItself_isTheSameAge() {
+    val result = AsyncResult.success("value")
+
+    val areSameAge = result.isNewerThanOrSameAgeAs(result)
+
+    assertThat(areSameAge).isTrue()
+  }
+
+  @Test
+  fun testSucceededResult_comparedWithPendingResult_createdAtTheSameTime_areTheSameAge() {
+    val pendingResult = AsyncResult.pending<String>()
+    val success = AsyncResult.success("value")
+
+    val areSameAge = success.isNewerThanOrSameAgeAs(pendingResult)
+
+    assertThat(areSameAge).isTrue()
+  }
+
+  @Test
+  fun testSucceededResult_comparedWithOtherSucceededResult_createdAtTheSameTime_areTheSameAge() {
+    val result1 = AsyncResult.success("value")
+    val result2 = AsyncResult.success("value")
+
+    val areSameAge = result1.isNewerThanOrSameAgeAs(result2)
+
+    assertThat(areSameAge).isTrue()
+  }
+
+  @Test
+  fun testSucceededResult_comparedWithFailedResult_createdAtTheSameTime_areTheSameAge() {
+    val success = AsyncResult.success("value")
+    val failure = AsyncResult.failed<Float>(RuntimeException())
+
+    val areSameAge = success.isNewerThanOrSameAgeAs(failure)
+
+    assertThat(areSameAge).isTrue()
+  }
+
+  @Test
+  fun testSucceededResult_comparedWithOlderSucceededResult_isNewer() {
+    val olderResult = AsyncResult.success("value")
+    fakeSystemClock.advanceTime(millis = 10)
+    val newerResult = AsyncResult.success("value")
+
+    val isNewer = newerResult.isNewerThanOrSameAgeAs(olderResult)
+
+    assertThat(isNewer).isTrue()
+  }
+
+  @Test
+  fun testSucceededResult_comparedWithNewerSucceededResult_isNotNewer() {
+    val olderResult = AsyncResult.success("value")
+    fakeSystemClock.advanceTime(millis = 10)
+    val newerResult = AsyncResult.success("value")
+
+    val isNewer = olderResult.isNewerThanOrSameAgeAs(newerResult)
+
+    assertThat(isNewer).isFalse()
   }
 
   /* Failure tests. */
@@ -361,6 +656,75 @@ class AsyncResultTest {
   }
 
   @Test
+  fun testFailedAsyncResult_combinedWithPending_isStillChainedFailure() {
+    val result1 = AsyncResult.failed<String>(UnsupportedOperationException())
+    val result2 = AsyncResult.pending<Float>()
+
+    val combined = result1.combineWith(result2) { _, _ -> 0 }
+
+    assertThat(combined.getErrorOrNull()).isInstanceOf(AsyncResult.ChainedFailureException::class.java)
+    assertThat(combined.getErrorOrNull()).hasCauseThat().isInstanceOf(UnsupportedOperationException::class.java)
+  }
+
+  @Test
+  fun testFailedAsyncResult_combinedWithFailure_hasFirstFailureChained() {
+    val result1 = AsyncResult.failed<String>(UnsupportedOperationException())
+    val result2 = AsyncResult.failed<Float>(RuntimeException())
+
+    val combined = result1.combineWith(result2) { _, _ -> 0 }
+
+    assertThat(combined.getErrorOrNull()).isInstanceOf(AsyncResult.ChainedFailureException::class.java)
+    assertThat(combined.getErrorOrNull()).hasCauseThat().isInstanceOf(UnsupportedOperationException::class.java)
+  }
+
+  @Test
+  fun testFailedAsyncResult_combinedWithSuccess_isStillChainedFailure() {
+    val result1 = AsyncResult.failed<String>(UnsupportedOperationException())
+    val result2 = AsyncResult.success(1.0f)
+
+    val combined = result1.combineWith(result2) { _, _ -> 0 }
+
+    assertThat(combined.getErrorOrNull()).isInstanceOf(AsyncResult.ChainedFailureException::class.java)
+    assertThat(combined.getErrorOrNull()).hasCauseThat().isInstanceOf(UnsupportedOperationException::class.java)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testFailedAsyncResult_combinedAsyncWithPending_isStillChainedFailure() = runBlockingTest {
+    val result1 = AsyncResult.failed<String>(UnsupportedOperationException())
+    val result2 = AsyncResult.pending<Float>()
+
+    val combined = result1.combineWithAsync(result2) { _, _ -> AsyncResult.success(0) }
+
+    assertThat(combined.getErrorOrNull()).isInstanceOf(AsyncResult.ChainedFailureException::class.java)
+    assertThat(combined.getErrorOrNull()).hasCauseThat().isInstanceOf(UnsupportedOperationException::class.java)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testFailedAsyncResult_combinedAsyncWithFailure_isStillChainedFailure() = runBlockingTest {
+    val result1 = AsyncResult.failed<String>(UnsupportedOperationException())
+    val result2 = AsyncResult.failed<Float>(RuntimeException())
+
+    val combined = result1.combineWithAsync(result2) { _, _ -> AsyncResult.success(0) }
+
+    assertThat(combined.getErrorOrNull()).isInstanceOf(AsyncResult.ChainedFailureException::class.java)
+    assertThat(combined.getErrorOrNull()).hasCauseThat().isInstanceOf(UnsupportedOperationException::class.java)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testFailedAsyncResult_combinedAsyncWithSuccess_isStillChainedFailure() = runBlockingTest {
+    val result1 = AsyncResult.failed<String>(UnsupportedOperationException())
+    val result2 = AsyncResult.success(1.0f)
+
+    val combined = result1.combineWithAsync(result2) { _, _ -> AsyncResult.success(0) }
+
+    assertThat(combined.getErrorOrNull()).isInstanceOf(AsyncResult.ChainedFailureException::class.java)
+    assertThat(combined.getErrorOrNull()).hasCauseThat().isInstanceOf(UnsupportedOperationException::class.java)
+  }
+
+  @Test
   fun testFailedResult_isNotEqualToPendingResult() {
     val result = AsyncResult.failed<String>(UnsupportedOperationException("Reason"))
 
@@ -421,5 +785,87 @@ class AsyncResultTest {
 
     // Different exceptions have different stack traces, so they can't be equal despite similar constructions.
     assertThat(resultHash).isNotEqualTo(AsyncResult.failed<String>(UnsupportedOperationException("Reason")).hashCode())
+  }
+
+  @Test
+  fun testFailedResult_comparedWithItself_isTheSameAge() {
+    val result = AsyncResult.failed<Float>(RuntimeException())
+
+    val areSameAge = result.isNewerThanOrSameAgeAs(result)
+
+    assertThat(areSameAge).isTrue()
+  }
+
+  @Test
+  fun testFailedResult_comparedWithPendingResult_createdAtTheSameTime_areTheSameAge() {
+    val failure = AsyncResult.failed<Float>(RuntimeException())
+    val pendingResult = AsyncResult.pending<String>()
+
+    val areSameAge = failure.isNewerThanOrSameAgeAs(pendingResult)
+
+    assertThat(areSameAge).isTrue()
+  }
+
+  @Test
+  fun testFailedResult_comparedWithSucceededResult_createdAtTheSameTime_areTheSameAge() {
+    val failure = AsyncResult.failed<Float>(RuntimeException())
+    val success = AsyncResult.success("value")
+
+    val areSameAge = failure.isNewerThanOrSameAgeAs(success)
+
+    assertThat(areSameAge).isTrue()
+  }
+
+  @Test
+  fun testFailedResult_comparedWithOtherFailedResult_createdAtTheSameTime_areTheSameAge() {
+    val result1 = AsyncResult.failed<Float>(RuntimeException())
+    val result2 = AsyncResult.failed<Float>(RuntimeException())
+
+    val areSameAge = result1.isNewerThanOrSameAgeAs(result2)
+
+    assertThat(areSameAge).isTrue()
+  }
+
+  @Test
+  fun testFailedResult_comparedWithOlderFailedResult_isNewer() {
+    val olderResult = AsyncResult.failed<Float>(RuntimeException())
+    fakeSystemClock.advanceTime(millis = 10)
+    val newerResult = AsyncResult.failed<Float>(RuntimeException())
+
+    val isNewer = newerResult.isNewerThanOrSameAgeAs(olderResult)
+
+    assertThat(isNewer).isTrue()
+  }
+
+  @Test
+  fun testFailedResult_comparedWithNewerFailedResult_isNotNewer() {
+    val olderResult = AsyncResult.failed<Float>(RuntimeException())
+    fakeSystemClock.advanceTime(millis = 10)
+    val newerResult = AsyncResult.failed<Float>(RuntimeException())
+
+    val isNewer = olderResult.isNewerThanOrSameAgeAs(newerResult)
+
+    assertThat(isNewer).isFalse()
+  }
+
+  private fun setUpTestApplicationComponent() {
+    DaggerAsyncResultTest_TestApplicationComponent.builder()
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
+  }
+
+  // TODO(#89): Move this to a common test application component.
+  @Singleton
+  @Component(modules = [])
+  interface TestApplicationComponent {
+    @Component.Builder
+    interface Builder {
+      @BindsInstance
+      fun setApplication(application: Application): Builder
+      fun build(): TestApplicationComponent
+    }
+
+    fun inject(asyncResultTest: AsyncResultTest)
   }
 }

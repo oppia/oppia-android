@@ -19,7 +19,7 @@ internal class FractionInputHasNumeratorEqualToRuleClassifierProvider @Inject co
 
   override fun createRuleClassifier(): RuleClassifier {
     return classifierFactory.createMultiTypeSingleInputClassifier(
-      InteractionObject.ObjectTypeCase.FRACTION, InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT, "x", this)
+      InteractionObject.ObjectTypeCase.FRACTION, InteractionObject.ObjectTypeCase.SIGNED_INT, "x", this)
   }
 
   // TODO(#210): Add tests for this classifier.

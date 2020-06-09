@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.firebase.crashlytics'
 
 android {
   compileSdkVersion 28
@@ -16,6 +17,11 @@ android {
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     // https://developer.android.com/training/testing/junit-runner#ato-gradle
     testInstrumentationRunnerArguments clearPackageData: 'true'
+    javaCompileOptions {
+      annotationProcessorOptions {
+        includeCompileClasspath true
+      }
+    }
   }
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_8
@@ -38,6 +44,9 @@ android {
     execution 'ANDROIDX_TEST_ORCHESTRATOR'
     unitTests {
       includeAndroidResources = true
+      all {
+        maxHeapSize = "1024m"
+      }
     }
     animationsDisabled = true
   }
@@ -62,19 +71,30 @@ dependencies {
       'androidx.appcompat:appcompat:1.0.2',
       'androidx.constraintlayout:constraintlayout:1.1.3',
       'androidx.core:core-ktx:1.0.2',
+      'androidx.legacy:legacy-support-v4:1.0.0',
+      'androidx.lifecycle:lifecycle-extensions:2.0.0',
+      'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-alpha03',
+      'androidx.navigation:navigation-fragment:2.0.0',
+      'androidx.navigation:navigation-fragment-ktx:2.0.0',
+      'androidx.navigation:navigation-ui:2.0.0',
+      'androidx.navigation:navigation-ui-ktx:2.0.0',
       "androidx.fragment:fragment:$fragment_version",
       'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-alpha03',
       'androidx.multidex:multidex:2.0.1',
       'androidx.recyclerview:recyclerview:1.0.0',
+      'com.chaos.view:pinview:1.4.3',
       'com.github.bumptech.glide:glide:4.9.0',
-      'com.google.android.material:material:1.0.0-alpha1',
-      'com.google.android.material:material:1.0.0',
+      'com.google.android.material:material:1.2.0-alpha02',
       'com.google.dagger:dagger:2.24',
+      'com.google.firebase:firebase-analytics-ktx:17.4.2',
+      'com.google.firebase:firebase-crashlytics:17.0.0',
       'com.google.guava:guava:28.1-android',
+      'com.jackandphantom.android:circularimageview:1.2.0',
+      'de.hdodenhof:circleimageview:3.0.1',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
       'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1',
       'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.1',
-      'org.mockito:mockito-core:2.7.22',
+      'org.mockito:mockito-core:2.7.22'
   )
   testImplementation(
       'androidx.test:core:1.2.0',
@@ -83,6 +103,7 @@ dependencies {
       'androidx.test.espresso:espresso-intents:3.1.0',
       'androidx.test.ext:junit:1.1.1',
       'com.google.truth:truth:0.43',
+      'org.robolectric:annotations:4.3',
       'org.robolectric:robolectric:4.3',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
       'org.mockito:mockito-core:2.7.22',
@@ -97,6 +118,7 @@ dependencies {
       'com.google.truth:truth:0.43',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
       'org.mockito:mockito-android:2.7.22',
+      'org.robolectric:annotations:4.3',
   )
   androidTestUtil(
       'androidx.test:orchestrator:1.2.0',
@@ -117,4 +139,10 @@ dependencies {
   androidTestImplementation project(":model")
   implementation project(":domain")
   implementation project(":utility")
+}
+// The GeneratedMessageLite implementations of protobufs are depending on protobuf-java
+// instead of protobuf-lite after Android Studio 3.5,
+// The below command stops that from happening: https://github.com/google/tink/issues/282
+configurations {
+  all*.exclude module: 'protobuf-java'
 }

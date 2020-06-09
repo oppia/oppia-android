@@ -12,6 +12,11 @@ android {
     targetSdkVersion 28
     versionCode 1
     versionName "1.0"
+    javaCompileOptions {
+      annotationProcessorOptions {
+        includeCompileClasspath true
+      }
+    }
   }
 
   compileOptions {
@@ -42,6 +47,7 @@ dependencies {
   implementation(
       'androidx.appcompat:appcompat:1.0.2',
       'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03',
+      'com.caverock:androidsvg-aar:1.4',
       'com.github.bumptech.glide:glide:4.9.0',
       'com.google.dagger:dagger:2.24',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
@@ -56,6 +62,7 @@ dependencies {
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
       'org.mockito:mockito-core:2.19.0',
       'org.robolectric:robolectric:4.3',
+      project(":testing"),
   )
   kapt(
       'com.github.bumptech.glide:compiler:4.9.0',

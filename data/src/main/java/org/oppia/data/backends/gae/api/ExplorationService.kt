@@ -10,5 +10,4 @@ interface ExplorationService {
 
   @GET("explorehandler/init/{exploration_id}")
   fun getExplorationById(@Path("exploration_id") explorationId: String): Call<GaeExplorationContainer>
-
 }

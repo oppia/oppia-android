@@ -8,90 +8,86 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.home.continueplaying.OngoingStoryViewModel" />
+      type="org.oppia.app.home.recentlyplayed.OngoingStoryViewModel" />
   </data>
 
   <com.google.android.material.card.MaterialCardView
+    android:id="@+id/ongoing_story_card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="28dp"
-    android:layout_marginTop="28dp"
-    android:layout_marginEnd="28dp"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="match_parent"
+      android:clickable="true"
+      android:focusable="true"
       android:onClick="@{viewModel::clickOnOngoingStoryTile}">
 
       <ImageView
         android:id="@+id/lesson_thumbnail"
-        android:layout_width="80dp"
-        android:layout_height="44dp"
-        android:layout_marginStart="8dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="@{@string/lesson_thumbnail_content_description(viewModel.ongoingStory.nextChapterName)}"
         android:importantForAccessibility="no"
-        android:paddingStart="40dp"
-        android:paddingTop="4dp"
-        android:paddingEnd="40dp"
-        android:scaleType="centerCrop"
+        android:scaleType="fitCenter"
         android:src="@{viewModel.ongoingStory.lessonThumbnail.thumbnailGraphic}"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="4:3"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:roundedRectDrawableWithColor="@{viewModel.ongoingStory.lessonThumbnail.backgroundColorRgb}" />
+        app:topRoundedRectDrawableWithColor="@{viewModel.ongoingStory.lessonThumbnail.backgroundColorRgb}" />
 
-      <LinearLayout
-        android:layout_width="0dp"
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="12dp"
         android:background="@color/white"
-        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/lesson_thumbnail"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-          android:id="@+id/chapter_name_text_view"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:ellipsize="end"
-          android:fontFamily="sans-serif-medium"
-          android:maxLines="1"
-          android:text="@{viewModel.ongoingStory.nextChapterName}"
-          android:textColor="@color/oppiaPrimaryText"
-          android:textSize="18sp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lesson_thumbnail">
 
         <TextView
           android:id="@+id/story_name_text_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="4dp"
-          android:layout_marginBottom="4dp"
+          android:layout_marginStart="8dp"
+          android:layout_marginTop="8dp"
+          android:layout_marginEnd="8dp"
           android:ellipsize="end"
           android:fontFamily="sans-serif"
           android:maxLines="1"
           android:text="@{viewModel.ongoingStory.storyName}"
           android:textColor="@color/oppiaPrimaryText"
-          android:textSize="16sp" />
+          android:textSize="14sp"
+          android:textStyle="bold"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
           android:id="@+id/topic_name_text_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:layout_marginStart="8dp"
+          android:layout_marginTop="4dp"
+          android:layout_marginEnd="8dp"
+          android:layout_marginBottom="12dp"
           android:ellipsize="end"
           android:fontFamily="sans-serif-light"
           android:maxLines="1"
           android:text="@{viewModel.ongoingStory.topicName}"
           android:textAllCaps="true"
           android:textColor="@color/oppiaPrimaryText"
-          android:textSize="14sp" />
-      </LinearLayout>
+          android:textSize="14sp"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/story_name_text_view" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
   </com.google.android.material.card.MaterialCardView>
 </layout>
