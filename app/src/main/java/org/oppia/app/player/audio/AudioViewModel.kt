@@ -100,7 +100,6 @@ class AudioViewModel @Inject constructor(
           languages.first()
         }
         setAudioLanguageCode(languageCode)
-        (fragment as LanguageInterface).languageSelectionClicked()
       }
     }
   }

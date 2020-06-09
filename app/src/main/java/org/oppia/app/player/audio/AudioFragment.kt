@@ -18,6 +18,21 @@ class AudioFragment :
   @Inject
   lateinit var audioFragmentPresenter: AudioFragmentPresenter
 
+  companion object {
+    /**
+     * Creates a new instance of a AudioFragment.
+     * @param profileId used by AudioFragment to get Audio Language.
+     * @return a new instance of [AudioFragment].
+     */
+    fun newInstance(profileId: Int): AudioFragment {
+      val audioFragment = AudioFragment()
+      val args = Bundle()
+      args.putInt(AUDIO_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, profileId)
+      audioFragment.arguments = args
+      return audioFragment
+    }
+  }
+
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
@@ -29,7 +44,9 @@ class AudioFragment :
     savedInstanceState: Bundle?
   ): View? {
     super.onCreateView(inflater, container, savedInstanceState)
-    return audioFragmentPresenter.handleCreateView(inflater, container)
+    val internalProfileId =
+      arguments!!.getInt(AUDIO_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, /* defaultValue= */ -1)
+    return audioFragmentPresenter.handleCreateView(inflater, container, internalProfileId)
   }
 
   override fun languageSelectionClicked() {

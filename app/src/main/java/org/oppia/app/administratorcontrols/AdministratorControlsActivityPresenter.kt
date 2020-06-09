@@ -32,10 +32,10 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       activity.findViewById<View>(R.id.administrator_controls_activity_toolbar) as Toolbar
     activity.setSupportActionBar(toolbar)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
-    navigationDrawerFragment =
-      activity.supportFragmentManager
-        .findFragmentById(R.id.administrator_controls_activity_fragment_navigation_drawer)
-        as NavigationDrawerFragment
+    navigationDrawerFragment = activity
+      .supportFragmentManager
+      .findFragmentById(R.id.administrator_controls_activity_fragment_navigation_drawer)
+      as NavigationDrawerFragment
     navigationDrawerFragment.setUpDrawer(
       activity
         .findViewById<View>(R.id.administrator_controls_activity_drawer_layout)
