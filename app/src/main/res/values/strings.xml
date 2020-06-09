@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="app_name">Oppia</string>
-  <string name="nav_header_title">Sean</string>
   <string name="nav_header_desc">Navigation header</string>
   <string name="menu_home">Home</string>
   <string name="menu_options">Options</string>
@@ -162,7 +161,7 @@
   <string name="profile_chooser_select">Select your profile</string>
   <string name="profile_chooser_add">Add Profile</string>
   <string name="set_up_multiple_profiles">Set up Multiple Profiles</string>
-  <string name="set_up_multiple_profiles_description">Add up to 10 users to your account.Perfect for families and classrooms.</string>
+  <string name="set_up_multiple_profiles_description">Add up to 10 users to your account. Perfect for families and classrooms.</string>
   <string name="profile_chooser_administrator_controls">Administrator Controls</string>
   <string name="profile_chooser_language">Language</string>
   <!-- AdminAuthActivity -->
@@ -240,9 +239,9 @@
   <string name="home_activity_back_dialog_message">Would you like to exit your profile?</string>
   <string name="home_activity_back_dialog_cancel">Cancel</string>
   <string name="home_activity_back_dialog_exit">Exit</string>
-  <!-- ProfileListActivity. -->
+  <!-- ProfileListActivity -->
   <string name="profile_list_activity_title">Profiles</string>
-  <!-- ProfileEditActivity. -->
+  <!-- ProfileEditActivity -->
   <string name="profile_edit_created">Created on %s</string>
   <string name="profile_last_used">Last used </string>
   <string name="profile_edit_rename">Rename</string>
@@ -259,11 +258,11 @@
   <string name="profile_picture_edit_alert_dialog_cancel_button">Cancel</string>
   <string name="profile_picture_edit_alert_dialog_view_profile_picture">View Profile Picture</string>
   <string name="profile_picture_edit_alert_dialog_choose_from_library">Choose From Library</string>
-  <!-- ProfileRenameActivity. -->
+  <!-- ProfileRenameActivity -->
   <string name="profile_rename_title">Rename Profile</string>
   <string name="profile_rename_label">New Name</string>
   <string name="profile_rename_save">save</string>
-  <!-- ProfileResetPinActivity. -->
+  <!-- ProfileResetPinActivity -->
   <string name="profile_reset_pin_title">Reset PIN</string>
   <string name="profile_reset_pin_main">Enter a new PIN for the user to enter when accessing their profile.</string>
   <string name="profile_reset_pin_user_pin_label">3-Digit PIN</string>
@@ -331,7 +330,7 @@
   <string name="show_hide_hint_list">Show/Hide hint list of %s</string>
   <string name="show_hide_solution_list">Show/Hide solution</string>
   <string name="the_only_solution_is">The only solution is :  </string>
-  <string name="this_will_reveal_the_solution">This will reveal the solution. Are you Sure</string>
+  <string name="this_will_reveal_the_solution">This will reveal the solution. Are you sure?</string>
   <string name="reveal">Reveal</string>
   <!-- TextViewBindingAdapters -->
   <string name="just_now">just now</string>

@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.firebase.crashlytics'
 
 android {
   compileSdkVersion 28
@@ -43,6 +44,9 @@ android {
     execution 'ANDROIDX_TEST_ORCHESTRATOR'
     unitTests {
       includeAndroidResources = true
+      all {
+        maxHeapSize = "1024m"
+      }
     }
     animationsDisabled = true
   }
@@ -82,13 +86,15 @@ dependencies {
       'com.github.bumptech.glide:glide:4.9.0',
       'com.google.android.material:material:1.2.0-alpha02',
       'com.google.dagger:dagger:2.24',
+      'com.google.firebase:firebase-analytics-ktx:17.4.2',
+      'com.google.firebase:firebase-crashlytics:17.0.0',
       'com.google.guava:guava:28.1-android',
       'com.jackandphantom.android:circularimageview:1.2.0',
       'de.hdodenhof:circleimageview:3.0.1',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
       'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1',
       'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.1',
-      'org.mockito:mockito-core:2.7.22',
+      'org.mockito:mockito-core:2.7.22'
   )
   testImplementation(
       'androidx.test:core:1.2.0',

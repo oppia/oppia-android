@@ -24,8 +24,10 @@ import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.domain.topic.TEST_EXPLORATION_ID_1
 import org.oppia.domain.topic.TEST_STORY_ID_1
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
+import org.robolectric.annotation.LooperMode
 
 /** Tests for [StoryActivity]. */
+@LooperMode(LooperMode.Mode.PAUSED)
 @RunWith(AndroidJUnit4::class)
 class StoryActivityTest {
 

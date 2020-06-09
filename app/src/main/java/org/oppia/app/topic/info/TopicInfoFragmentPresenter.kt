@@ -12,8 +12,6 @@ import org.oppia.app.databinding.TopicInfoFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Topic
-import org.oppia.app.topic.PROFILE_ID_ARGUMENT_KEY
-import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
@@ -42,11 +40,14 @@ class TopicInfoFragmentPresenter @Inject constructor(
     )
   }
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    internalProfileId = fragment.arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)!!
-    topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
-      "Expected topic ID to be included in arguments for TopicInfoFragment."
-    }
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    internalProfileId: Int,
+    topicId: String
+  ): View? {
+    this.internalProfileId = internalProfileId
+    this.topicId = topicId
     binding = TopicInfoFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     subscribeToTopicLiveData()
     binding.let {

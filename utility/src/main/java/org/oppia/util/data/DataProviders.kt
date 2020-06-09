@@ -77,7 +77,9 @@ class DataProviders @Inject constructor(
    * the underlying base provider, [transformAsync] should be used, instead.
    */
   fun <T1, T2> createNestedTransformedDataProvider(
-    newId: Any, dataProvider: DataProvider<T1>, function: suspend (T1) -> AsyncResult<T2>
+    newId: Any,
+    dataProvider: DataProvider<T1>,
+    function: suspend (T1) -> AsyncResult<T2>
   ): NestedTransformedDataProvider<T2> {
     return NestedTransformedDataProvider.createNestedTransformedDataProvider(
       newId, dataProvider, function, asyncDataSubscriptionManager
@@ -192,14 +194,15 @@ class DataProviders @Inject constructor(
   }
 
   /**
-   * A [DataProvider] that acts in the same way as [transformAsync] except the underlying base data provider can change.
+   * A [DataProvider] that acts in the same way as [transformAsync] except the underlying base data
+   * provider can change.
    */
   class NestedTransformedDataProvider<T2> private constructor(
     private val id: Any,
     private var baseId: Any,
     private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
     private var retrieveTransformedData: suspend () -> AsyncResult<T2>
-  ): DataProvider<T2> {
+  ) : DataProvider<T2> {
     init {
       initializeTransformer()
     }
@@ -210,12 +213,24 @@ class DataProviders @Inject constructor(
       return retrieveTransformedData()
     }
 
-    /** Sets a new base [DataProvider] and transform function from which to derive this data provider. */
-    fun <T1> setBaseDataProvider(dataProvider: DataProvider<T1>, transform: suspend (T1) -> AsyncResult<T2>) {
+    /**
+     * Sets a new base [DataProvider] and transform function from which to derive this data
+     * provider.
+     *
+     * Note that this will notify any observers of this provider so that they receive the latest
+     * transformed value.
+     */
+    fun <T1> setBaseDataProvider(
+      dataProvider: DataProvider<T1>,
+      transform: suspend (T1) -> AsyncResult<T2>
+    ) {
       asyncDataSubscriptionManager.dissociateIds(id, baseId)
       baseId = dataProvider.getId()
       retrieveTransformedData = { dataProvider.retrieveData().transformAsync(transform) }
       initializeTransformer()
+
+      // Notify subscribers that the base provider has changed.
+      asyncDataSubscriptionManager.notifyChangeAsync(id)
     }
 
     private fun initializeTransformer() {
@@ -230,7 +245,9 @@ class DataProviders @Inject constructor(
         transform: suspend (T1) -> AsyncResult<T2>,
         asyncDataSubscriptionManager: AsyncDataSubscriptionManager
       ): NestedTransformedDataProvider<T2> {
-        return NestedTransformedDataProvider(id, baseDataProvider.getId(), asyncDataSubscriptionManager) {
+        return NestedTransformedDataProvider(
+          id, baseDataProvider.getId(), asyncDataSubscriptionManager
+        ) {
           baseDataProvider.retrieveData().transformAsync(transform)
         }
       }
@@ -238,19 +255,20 @@ class DataProviders @Inject constructor(
   }
 
   /**
-   * A version of [LiveData] which automatically pipes data from a specified [DataProvider] to LiveData observers in a
-   * thread-safe and lifecycle-safe way.
+   * A version of [LiveData] which automatically pipes data from a specified [DataProvider] to
+   * LiveData observers in a thread-safe and lifecycle-safe way.
    *
-   * This class will immediately retrieve the latest state of its input [DataProvider] at the first occurrence of an
-   * observer, but not before then. It guarantees that all active observers (including new ones) will receive an
-   * eventually consistent state of the data provider. It also will not deliver the same value more than once in a row
-   * to avoid over-alerting observers of changes.
+   * This class will immediately retrieve the latest state of its input [DataProvider] at the first
+   * occurrence of an active observer, but not before then. It guarantees that all active observers
+   * (including new ones) will receive an eventually consistent state of the data provider. It also
+   * will not deliver the same value more than once in a row to avoid over-alerting observers of
+   * changes.
    */
   private class NotifiableAsyncLiveData<T>(
     private val dispatcher: CoroutineDispatcher,
     private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
     private val dataProvider: DataProvider<T>
-  ): LiveData<AsyncResult<T>>() {
+  ) : LiveData<AsyncResult<T>>() {
     private val asyncSubscriber: ObserveAsyncChange = this::handleDataProviderUpdate
     private val isActive = AtomicBoolean(false)
     private val runningJob = AtomicReference<Job?>(null)
@@ -258,19 +276,18 @@ class DataProviders @Inject constructor(
 
     override fun onActive() {
       super.onActive()
-      // Subscribe the ID immediately in case there's a value in the data provider already ready.
+      // Subscribe to the ID immediately in case there's a value in the data provider already ready.
       asyncDataSubscriptionManager.subscribe(dataProvider.getId(), asyncSubscriber)
       isActive.set(true)
 
-      // If there's no currently cached value or soon-to-be cached value, kick-off a data retrieval so that new
-      // observers can receive the most up-to-date value.
+      // If there's no currently cached value or soon-to-be cached value, kick-off a data retrieval
+      // so that new observers can receive the most up-to-date value.
       if (runningJob.get() == null) {
-        val scope = CoroutineScope(dispatcher)
-        val job = scope.launch {
+        val job = CoroutineScope(dispatcher).launch {
           handleDataProviderUpdate()
         }
-        // Note that this can race against handleDataProviderUpdate() clearing the job, but in either outcome the
-        // behavior should still be correct via eventual consistency.
+        // Note that this can race against handleDataProviderUpdate() clearing the job, but in
+        // either outcome the behavior should still be correct (eventual consistency).
         runningJob.set(job)
       }
     }
@@ -285,28 +302,12 @@ class DataProviders @Inject constructor(
     }
 
     override fun setValue(value: AsyncResult<T>?) {
-      // TODO(BenHenning): Fetch the in-memory cache from the data provider (once possible) to get the latest snapshot
-      // rather than incorrectly ignoring the value being passed to setValue().
-//      val (propagateValue, newValue) = coroutineLiveDataLock.withLock {
-//        val isNewValue = cache != pendingCache
-
-        // Indicate that this live data now has a cached value.
-//        cache = pendingCache
-
-//        return@withLock Pair(isNewValue, pendingCache)
-//      }
-
-      // Only propagate the value if it's changed.
-//      if (propagateValue) {
-//        super.setValue(newValue)
-//      }
-
-      checkNotNull(value) { "Null values should not be posted to coroutine LiveDatas." }
+      checkNotNull(value) { "Null values should not be posted to NotifiableAsyncLiveData." }
       val currentCache = cache // This is safe because cache can only be changed on the main thread.
       if (currentCache != null) {
         if (value.isNewerThanOrSameAgeAs(currentCache) && currentCache != value) {
-          // Only propagate the value if it's changed and is newer since it's possible for subscription callbacks to
-          // happen out-of-order.
+          // Only propagate the value if it's changed and is newer since it's possible for observer
+          // callbacks to happen out-of-order.
           cache = value
           super.setValue(value)
         }
@@ -317,33 +318,25 @@ class DataProviders @Inject constructor(
     }
 
     private suspend fun handleDataProviderUpdate() {
-      // This doesn't guarantee that retrieveData() is only called when the live data is active (e.g. it can become
-      // inactive right after the value is posted & before it's dispatched), but it does guarantee that it won't be
-      // called when the live data is currently inactive.
-//      if (isActive.get()) {
-//        coroutineLiveDataLock.withLock {
-          // Save the latest call to retrieveData() as the source of truth in case calls into retrieveData() trigger a
-          // loop (e.g. due to a deferred quickly executing and notifying provider changes) where the loop may be executed
-          // out of order (though this is generally expected to only happen in tests due to differing dispatcher behavior
-          // from prod).
-//          val newPendingValue = dataProvider.retrieveData()
-//          pendingCache = newPendingValue
-//          super.postValue(newPendingValue)
-//          runningJob.set(null) // Erase any pending jobs since the live data will soon be up-to-date.
-//        }
-//      }
-
-      fetchFromDataProvider()?.let {
+      // This doesn't guarantee that retrieveData() is only called when the live data is active
+      // (e.g. it can become inactive right after the value is posted & before it's dispatched), but
+      // it does guarantee that it won't be called when the live data is currently inactive. This
+      // also safely passes the value to the main thread and relies on LiveData's own internal
+      // mechanism which in turn always calls setValue(), even if there are no active observers. See
+      // the override of setValue() above for the adjusted semantics this class requires to ensure
+      // its own cache remains up-to-date.
+      retrieveFromDataProvider()?.let {
         super.postValue(it)
         runningJob.set(null)
       }
     }
 
-    private suspend fun fetchFromDataProvider(): AsyncResult<T>? {
+    private suspend fun retrieveFromDataProvider(): AsyncResult<T>? {
       return if (isActive.get()) {
-        // Although it's possible for the live data to become inactive after this point, this follows the expected
-        // contract of the data provider (it may have its data fetched and not delivered), and it guarantees eventual
-        // consistency since the class still caches the results in case a new observer is added later.
+        // Although it's possible for the live data to become inactive after this point, this
+        // follows the expected contract of the data provider (it may have its data retrieved and
+        // not delivered), and it guarantees eventual consistency since the class still caches the
+        // results in case a new observer is added later.
         dataProvider.retrieveData()
       } else null
     }

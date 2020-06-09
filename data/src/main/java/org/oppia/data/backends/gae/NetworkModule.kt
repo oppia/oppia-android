@@ -2,13 +2,13 @@ package org.oppia.data.backends.gae
 
 import dagger.Module
 import dagger.Provides
-import javax.inject.Qualifier
-import javax.inject.Singleton
 import okhttp3.OkHttpClient
 import org.oppia.data.backends.gae.api.ClassroomService
 import org.oppia.data.backends.gae.api.TopicService
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import javax.inject.Qualifier
+import javax.inject.Singleton
 
 /**
  * Module which provides all required dependencies about network
