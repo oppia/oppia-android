@@ -24,11 +24,12 @@ class NumericInputViewModel(
   private val stringToNumberParser: StringToNumberParser = StringToNumberParser()
 
   init {
-    val callback: Observable.OnPropertyChangedCallback = object : Observable.OnPropertyChangedCallback() {
-      override fun onPropertyChanged(sender: Observable, propertyId: Int) {
-        interactionAnswerErrorReceiver.onPendingAnswerError(pendingAnswerError)
+    val callback: Observable.OnPropertyChangedCallback =
+      object : Observable.OnPropertyChangedCallback() {
+        override fun onPropertyChanged(sender: Observable, propertyId: Int) {
+          interactionAnswerErrorReceiver.onPendingAnswerError(pendingAnswerError)
+        }
       }
-    }
     errorMessage.addOnPropertyChangedCallback(callback)
   }
 
@@ -36,12 +37,22 @@ class NumericInputViewModel(
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
     if (answerText.isNotEmpty()) {
       pendingAnswerError = when (category) {
-        AnswerErrorCategory.REAL_TIME -> stringToNumberParser.getRealTimeAnswerError(answerText.toString()).getErrorMessageFromStringRes(
-          context
-        )
-        AnswerErrorCategory.SUBMIT_TIME -> stringToNumberParser.getSubmitTimeError(answerText.toString()).getErrorMessageFromStringRes(
-          context
-        )
+        AnswerErrorCategory.REAL_TIME ->
+          stringToNumberParser
+            .getRealTimeAnswerError(
+              answerText.toString()
+            )
+            .getErrorMessageFromStringRes(
+              context
+            )
+        AnswerErrorCategory.SUBMIT_TIME ->
+          stringToNumberParser
+            .getSubmitTimeError(
+              answerText.toString()
+            )
+            .getErrorMessageFromStringRes(
+              context
+            )
       }
     }
     errorMessage.set(pendingAnswerError)
@@ -68,7 +79,8 @@ class NumericInputViewModel(
     val userAnswerBuilder = UserAnswer.newBuilder()
     if (answerText.isNotEmpty()) {
       val answerTextString = answerText.toString()
-      userAnswerBuilder.answer = InteractionObject.newBuilder().setReal(answerTextString.toDouble()).build()
+      userAnswerBuilder.answer =
+        InteractionObject.newBuilder().setReal(answerTextString.toDouble()).build()
       userAnswerBuilder.plainAnswer = answerTextString
     }
     return userAnswerBuilder.build()

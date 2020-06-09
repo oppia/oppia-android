@@ -27,6 +27,7 @@ class AppVersionActivityPresenter @Inject constructor(private val activity: AppC
   }
 
   private fun getAppVersionFragment(): AppVersionFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.app_version_fragment_placeholder) as AppVersionFragment?
+    return activity.supportFragmentManager
+      .findFragmentById(R.id.app_version_fragment_placeholder) as AppVersionFragment?
   }
 }

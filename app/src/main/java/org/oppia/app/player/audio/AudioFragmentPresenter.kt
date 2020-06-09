@@ -49,15 +49,23 @@ class AudioFragmentPresenter @Inject constructor(
   /** Sets up SeekBar listener, ViewModel, and gets VoiceoverMappings or restores saved state */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     cellularAudioDialogController.getCellularDataPreference()
-      .observe(fragment, Observer<AsyncResult<CellularDataPreference>> {
-        if (it.isSuccess()) {
-          val prefs = it.getOrDefault(CellularDataPreference.getDefaultInstance())
-          showCellularDataDialog = !(prefs.hideDialog)
-          useCellularData = prefs.useCellularData
+      .observe(
+        fragment,
+        Observer<AsyncResult<CellularDataPreference>> {
+          if (it.isSuccess()) {
+            val prefs = it
+              .getOrDefault(CellularDataPreference.getDefaultInstance())
+            showCellularDataDialog = !(prefs.hideDialog)
+            useCellularData = prefs.useCellularData
+          }
         }
-      })
+      )
 
-    val binding = AudioFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    val binding = AudioFragmentBinding.inflate(
+      inflater,
+      container,
+      /* attachToRoot= */ false
+    )
     binding.sbAudioProgress.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
       override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
         if (fromUser) {
@@ -74,10 +82,13 @@ class AudioFragmentPresenter @Inject constructor(
         userIsSeeking = false
       }
     })
-    viewModel.playStatusLiveData.observe(fragment, Observer {
-      prepared = it != AudioViewModel.UiAudioPlayStatus.LOADING
-      binding.sbAudioProgress.isEnabled = prepared
-    })
+    viewModel.playStatusLiveData.observe(
+      fragment,
+      Observer {
+        prepared = it != AudioViewModel.UiAudioPlayStatus.LOADING
+        binding.sbAudioProgress.isEnabled = prepared
+      }
+    )
 
     binding.let {
       it.viewModel = viewModel
@@ -97,7 +108,9 @@ class AudioFragmentPresenter @Inject constructor(
 
   /** Shows language dialog fragment with language list from exploration */
   fun showLanguageDialogFragment() {
-    val previousFragment = fragment.childFragmentManager.findFragmentByTag(TAG_LANGUAGE_DIALOG)
+    val previousFragment = fragment
+      .childFragmentManager
+      .findFragmentByTag(TAG_LANGUAGE_DIALOG)
     if (previousFragment != null) {
       fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
@@ -122,11 +135,13 @@ class AudioFragmentPresenter @Inject constructor(
     }
   }
 
-  fun setStateAndExplorationId(newState: State, explorationId: String) = viewModel.setStateAndExplorationId(newState, explorationId)
+  fun setStateAndExplorationId(newState: State, explorationId: String) =
+    viewModel.setStateAndExplorationId(newState, explorationId)
 
   fun loadMainContentAudio(allowAutoPlay: Boolean) = viewModel.loadMainContentAudio(allowAutoPlay)
 
-  fun loadFeedbackAudio(contentId: String, allowAutoPlay: Boolean) = viewModel.loadFeedbackAudio(contentId, allowAutoPlay)
+  fun loadFeedbackAudio(contentId: String, allowAutoPlay: Boolean) =
+    viewModel.loadFeedbackAudio(contentId, allowAutoPlay)
 
   fun pauseAudio() {
     if (prepared)
@@ -203,6 +218,7 @@ class AudioFragmentPresenter @Inject constructor(
       override fun onAnimationEnd(p0: Animation?) {
         (activity as AudioButtonListener).setAudioBarVisibility(false)
       }
+
       override fun onAnimationStart(p0: Animation?) {}
       override fun onAnimationRepeat(p0: Animation?) {}
     })
@@ -210,7 +226,9 @@ class AudioFragmentPresenter @Inject constructor(
   }
 
   private fun showCellularDataDialogFragment() {
-    val previousFragment = fragment.childFragmentManager.findFragmentByTag(TAG_CELLULAR_DATA_DIALOG)
+    val previousFragment = fragment
+      .childFragmentManager
+      .findFragmentByTag(TAG_CELLULAR_DATA_DIALOG)
     if (previousFragment != null) {
       fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }

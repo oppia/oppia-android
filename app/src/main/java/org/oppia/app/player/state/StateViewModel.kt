@@ -47,7 +47,9 @@ class StateViewModel @Inject constructor() : ObservableViewModel() {
    * Returns whether there is currently a pending interaction that requires an additional user action to submit the
    * answer.
    */
-  fun doesMostRecentInteractionRequireExplicitSubmission(itemList: List<StateItemViewModel>): Boolean {
+  fun doesMostRecentInteractionRequireExplicitSubmission(
+    itemList: List<StateItemViewModel>
+  ): Boolean {
     return getPendingAnswerHandler(itemList)?.isExplicitAnswerSubmissionRequired() ?: true
   }
 
@@ -61,13 +63,18 @@ class StateViewModel @Inject constructor() : ObservableViewModel() {
   fun getCanSubmitAnswer(): ObservableField<Boolean> = canSubmitAnswer
 
   fun getPendingAnswer(): UserAnswer {
-    return if (getPendingAnswerHandler(itemList)?.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME) != null) {
+    return if (getPendingAnswerHandler(itemList)?.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+      != null
+    ) {
       UserAnswer.getDefaultInstance()
-    } else
+    } else {
       getPendingAnswerHandler(itemList)?.getPendingAnswer() ?: UserAnswer.getDefaultInstance()
+    }
   }
 
-  private fun getPendingAnswerHandler(itemList: List<StateItemViewModel>): InteractionAnswerHandler? {
+  private fun getPendingAnswerHandler(
+    itemList: List<StateItemViewModel>
+  ): InteractionAnswerHandler? {
     // Search through all items to find the latest InteractionAnswerHandler which should be the pending one. In the
     // future, it may be ideal to make this more robust by actually tracking the handler corresponding to the pending
     // interaction.

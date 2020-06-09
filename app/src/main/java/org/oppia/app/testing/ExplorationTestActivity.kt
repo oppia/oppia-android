@@ -9,7 +9,8 @@ import javax.inject.Inject
 
 /** The activity for testing [TopicFragment]. */
 class ExplorationTestActivity : InjectableAppCompatActivity(), RouteToExplorationListener {
-  @Inject lateinit var explorationTestActivityPresenter: ExplorationTestActivityPresenter
+  @Inject
+  lateinit var explorationTestActivityPresenter: ExplorationTestActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -17,7 +18,13 @@ class ExplorationTestActivity : InjectableAppCompatActivity(), RouteToExploratio
     explorationTestActivityPresenter.handleOnCreate()
   }
 
-  override fun routeToExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowScreen: Int?) {
+  override fun routeToExploration(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    backflowScreen: Int?
+  ) {
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
         this,

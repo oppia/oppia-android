@@ -7,7 +7,8 @@ import javax.inject.Inject
 /** Test Activity used for testing AudioFragment */
 class AudioFragmentTestActivity : InjectableAppCompatActivity() {
 
-  @Inject lateinit var audioFragmentTestActivityController: AudioFragmentTestActivityPresenter
+  @Inject
+  lateinit var audioFragmentTestActivityController: AudioFragmentTestActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

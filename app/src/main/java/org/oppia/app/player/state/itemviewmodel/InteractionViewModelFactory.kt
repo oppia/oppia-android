@@ -10,6 +10,9 @@ import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
  * there's a previous button enabled (only relevant for navigation-based interactions).
  */
 typealias InteractionViewModelFactory = (
-  explorationId: String, interaction: Interaction, interactionAnswerReceiver: InteractionAnswerReceiver,
-  interactionAnswerErrorReceiver: InteractionAnswerErrorReceiver, hasPreviousButton: Boolean
+  explorationId: String,
+  interaction: Interaction,
+  interactionAnswerReceiver: InteractionAnswerReceiver,
+  interactionAnswerErrorReceiver: InteractionAnswerErrorReceiver,
+  hasPreviousButton: Boolean
 ) -> StateItemViewModel

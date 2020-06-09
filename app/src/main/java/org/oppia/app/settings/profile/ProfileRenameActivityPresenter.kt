@@ -35,7 +35,10 @@ class ProfileRenameActivityPresenter @Inject constructor(
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
 
     val binding =
-      DataBindingUtil.setContentView<ProfileRenameActivityBinding>(activity, R.layout.profile_rename_activity)
+      DataBindingUtil.setContentView<ProfileRenameActivityBinding>(
+        activity,
+        R.layout.profile_rename_activity
+      )
     val profileId = activity.intent.getIntExtra(KEY_PROFILE_RENAME_PROFILE_ID, 0)
 
     binding.apply {
@@ -49,17 +52,22 @@ class ProfileRenameActivityPresenter @Inject constructor(
 
     binding.profileRenameSaveButton.setOnClickListener {
       renameViewModel.nameErrorMsg.set("")
-      val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+      val imm = activity
+        .getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
       imm?.hideSoftInputFromWindow(activity.currentFocus?.windowToken, 0)
       val name = binding.inputName.getInput()
       if (name.isEmpty()) {
         renameViewModel.nameErrorMsg.set(activity.resources.getString(R.string.add_profile_error_name_empty))
         return@setOnClickListener
       }
-      profileManagementController.updateName(ProfileId.newBuilder().setInternalId(profileId).build(), name)
-        .observe(activity, Observer {
-          handleAddProfileResult(it, profileId)
-        })
+      profileManagementController
+        .updateName(ProfileId.newBuilder().setInternalId(profileId).build(), name)
+        .observe(
+          activity,
+          Observer {
+            handleAddProfileResult(it, profileId)
+          }
+        )
     }
 
     binding.inputName.post {
@@ -81,16 +89,18 @@ class ProfileRenameActivityPresenter @Inject constructor(
       activity.startActivity(intent)
     } else if (result.isFailure()) {
       when (result.getErrorOrNull()) {
-        is ProfileManagementController.ProfileNameNotUniqueException -> renameViewModel.nameErrorMsg.set(
-          activity.resources.getString(
-            R.string.add_profile_error_name_not_unique
+        is ProfileManagementController.ProfileNameNotUniqueException ->
+          renameViewModel.nameErrorMsg.set(
+            activity.resources.getString(
+              R.string.add_profile_error_name_not_unique
+            )
           )
-        )
-        is ProfileManagementController.ProfileNameOnlyLettersException -> renameViewModel.nameErrorMsg.set(
-          activity.resources.getString(
-            R.string.add_profile_error_name_only_letters
+        is ProfileManagementController.ProfileNameOnlyLettersException ->
+          renameViewModel.nameErrorMsg.set(
+            activity.resources.getString(
+              R.string.add_profile_error_name_only_letters
+            )
           )
-        )
       }
     }
   }

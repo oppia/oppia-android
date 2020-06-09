@@ -14,14 +14,19 @@ private const val KEY_SKILL_ID_LIST = "SKILL_ID_LIST"
 
 /** Fragment that displays skills for topic practice mode. */
 class TopicPracticeFragment : InjectableFragment() {
-  @Inject lateinit var topicPracticeFragmentPresenter: TopicPracticeFragmentPresenter
+  @Inject
+  lateinit var topicPracticeFragmentPresenter: TopicPracticeFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
     var selectedIdList = ArrayList<String>()
     if (savedInstanceState != null) {
       selectedIdList = savedInstanceState.getStringArrayList(KEY_SKILL_ID_LIST)
@@ -41,6 +46,9 @@ class TopicPracticeFragment : InjectableFragment() {
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    outState.putStringArrayList(KEY_SKILL_ID_LIST, topicPracticeFragmentPresenter.selectedSkillIdList)
+    outState.putStringArrayList(
+      KEY_SKILL_ID_LIST,
+      topicPracticeFragmentPresenter.selectedSkillIdList
+    )
   }
 }

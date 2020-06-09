@@ -13,7 +13,8 @@ import javax.inject.Inject
 
 /** The central activity for all users entering the app. */
 class HomeActivity : InjectableAppCompatActivity(), RouteToTopicListener {
-  @Inject lateinit var homeActivityPresenter: HomeActivityPresenter
+  @Inject
+  lateinit var homeActivityPresenter: HomeActivityPresenter
   private var internalProfileId: Int = -1
 
   companion object {
@@ -33,7 +34,13 @@ class HomeActivity : InjectableAppCompatActivity(), RouteToTopicListener {
   }
 
   override fun routeToTopic(internalProfileId: Int, topicId: String) {
-    startActivity(TopicActivity.createTopicActivityIntent(this, internalProfileId, topicId))
+    startActivity(
+      TopicActivity.createTopicActivityIntent(
+        this,
+        internalProfileId,
+        topicId
+      )
+    )
   }
 
   override fun onBackPressed() {

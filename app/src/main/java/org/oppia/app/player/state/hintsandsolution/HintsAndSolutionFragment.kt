@@ -15,10 +15,13 @@ private const val KEY_NEW_AVAILABLE_HINT_INDEX = "NEW_AVAILABLE_HINT_INDEX"
 private const val KEY_ALL_HINTS_EXHAUSTED = "ALL_HINTS_EXHAUSTED"
 
 /* Fragment that displays a fullscreen dialog for Hints and Solutions. */
-class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListIndexListener,
+class HintsAndSolutionFragment :
+  InjectableDialogFragment(),
+  ExpandedHintListIndexListener,
   RevealSolutionInterface {
 
-  @Inject lateinit var hintsAndSolutionFragmentPresenter: HintsAndSolutionFragmentPresenter
+  @Inject
+  lateinit var hintsAndSolutionFragmentPresenter: HintsAndSolutionFragmentPresenter
 
   private var currentExpandedHintListIndex: Int? = null
 
@@ -61,19 +64,30 @@ class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListInd
     savedInstanceState: Bundle?
   ): View? {
     if (savedInstanceState != null) {
-      currentExpandedHintListIndex = savedInstanceState.getInt(KEY_CURRENT_EXPANDED_LIST_INDEX, -1)
+      currentExpandedHintListIndex = savedInstanceState.getInt(
+        KEY_CURRENT_EXPANDED_LIST_INDEX,
+        -1
+      )
       if (currentExpandedHintListIndex == -1) {
         currentExpandedHintListIndex = null
       }
     }
     val args =
-      checkNotNull(arguments) { "Expected arguments to be passed to HintsAndSolutionFragment" }
+      checkNotNull(arguments) {
+        "Expected arguments to be passed to HintsAndSolutionFragment"
+      }
     val explorationId =
-      checkNotNull(args.getString(KEY_EXPLORATION_ID)) { "Expected explorationId to be passed to HintsAndSolutionFragment" }
+      checkNotNull(args.getString(KEY_EXPLORATION_ID)) {
+        "Expected explorationId to be passed to HintsAndSolutionFragment"
+      }
     val newAvailableHintIndex =
-      checkNotNull(args.getInt(KEY_NEW_AVAILABLE_HINT_INDEX)) { "Expected explorationId to be passed to HintsAndSolutionFragment" }
+      checkNotNull(args.getInt(KEY_NEW_AVAILABLE_HINT_INDEX)) {
+        "Expected explorationId to be passed to HintsAndSolutionFragment"
+      }
     val allHintsExhausted =
-      checkNotNull(args.getBoolean(KEY_ALL_HINTS_EXHAUSTED)) { "Expected explorationId to be passed to HintsAndSolutionFragment" }
+      checkNotNull(args.getBoolean(KEY_ALL_HINTS_EXHAUSTED)) {
+        "Expected explorationId to be passed to HintsAndSolutionFragment"
+      }
     return hintsAndSolutionFragmentPresenter.handleCreateView(
       inflater,
       container,

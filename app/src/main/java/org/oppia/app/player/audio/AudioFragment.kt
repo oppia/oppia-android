@@ -10,15 +10,24 @@ import org.oppia.app.model.State
 import javax.inject.Inject
 
 /** Fragment that controls audio for a content-card. */
-class AudioFragment : InjectableFragment(), LanguageInterface, AudioUiManager, CellularDataInterface {
-  @Inject lateinit var audioFragmentPresenter: AudioFragmentPresenter
+class AudioFragment :
+  InjectableFragment(),
+  LanguageInterface,
+  AudioUiManager,
+  CellularDataInterface {
+  @Inject
+  lateinit var audioFragmentPresenter: AudioFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
     super.onCreateView(inflater, container, savedInstanceState)
     return audioFragmentPresenter.handleCreateView(inflater, container)
   }

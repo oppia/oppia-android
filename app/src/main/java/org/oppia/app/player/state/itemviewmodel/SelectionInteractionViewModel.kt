@@ -17,7 +17,9 @@ class SelectionInteractionViewModel(
   interaction: Interaction,
   private val interactionAnswerReceiver: InteractionAnswerReceiver,
   interactionAnswerErrorReceiver: InteractionAnswerErrorReceiver
-) : StateItemViewModel(ViewType.SELECTION_INTERACTION), InteractionAnswerHandler {
+) :
+  StateItemViewModel(ViewType.SELECTION_INTERACTION),
+  InteractionAnswerHandler {
   private val interactionId: String = interaction.id
 
   private val choiceStrings: List<String> by lazy {
@@ -29,10 +31,12 @@ class SelectionInteractionViewModel(
   private val maxAllowableSelectionCount: Int by lazy {
     // Assume that at least 1 answer always needs to be submitted, and that the max can't be less than the min for cases
     // when either of the counts are not specified.
-    interaction.customizationArgsMap["maxAllowableSelectionCount"]?.signedInt ?: minAllowableSelectionCount
+    interaction.customizationArgsMap["maxAllowableSelectionCount"]?.signedInt
+      ?: minAllowableSelectionCount
   }
   private val selectedItems: MutableList<Int> = mutableListOf()
-  val choiceItems: ObservableList<SelectionInteractionContentViewModel> = computeChoiceItems(choiceStrings, this)
+  val choiceItems: ObservableList<SelectionInteractionContentViewModel> =
+    computeChoiceItems(choiceStrings, this)
 
   override fun isExplicitAnswerSubmissionRequired(): Boolean {
     // If more than one answer is allowed, then a submission button is needed.
@@ -48,7 +52,8 @@ class SelectionInteractionViewModel(
       ).build()
       userAnswerBuilder.htmlAnswer = convertSelectedItemsToHtmlString(selectedItemsHtml)
     } else if (selectedItems.size == 1) {
-      userAnswerBuilder.answer = InteractionObject.newBuilder().setNonNegativeInt(selectedItems.first()).build()
+      userAnswerBuilder.answer =
+        InteractionObject.newBuilder().setNonNegativeInt(selectedItems.first()).build()
       userAnswerBuilder.htmlAnswer = convertSelectedItemsToHtmlString(selectedItemsHtml)
     }
     return userAnswerBuilder.build()
@@ -107,12 +112,15 @@ class SelectionInteractionViewModel(
 
   companion object {
     private fun computeChoiceItems(
-      choiceStrings: List<String>, selectionInteractionViewModel: SelectionInteractionViewModel
+      choiceStrings: List<String>,
+      selectionInteractionViewModel: SelectionInteractionViewModel
     ): ObservableArrayList<SelectionInteractionContentViewModel> {
       val observableList = ObservableArrayList<SelectionInteractionContentViewModel>()
       observableList += choiceStrings.mapIndexed { index, choiceString ->
         SelectionInteractionContentViewModel(
-          htmlContent = choiceString, itemIndex = index, selectionInteractionViewModel = selectionInteractionViewModel
+          htmlContent = choiceString,
+          itemIndex = index,
+          selectionInteractionViewModel = selectionInteractionViewModel
         )
       }
       return observableList

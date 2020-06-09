@@ -14,7 +14,12 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private val fragment: Fragment
 ) {
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val binding = QuestionPlayerFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    val binding =
+      QuestionPlayerFragmentBinding.inflate(
+        inflater,
+        container,
+        /* attachToRoot= */ false
+      )
     binding.let {
       it.lifecycleOwner = fragment
     }

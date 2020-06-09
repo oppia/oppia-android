@@ -19,8 +19,10 @@ class TopicSummaryViewModel(
 ) : HomeItemViewModel() {
   val name: String = topicSummary.name
   val totalChapterCount: Int = topicSummary.totalChapterCount
+
   @ColorInt
   val backgroundColor: Int = retrieveBackgroundColor()
+
   @ColorInt
   val darkerBackgroundOverlayColor: Int = computeDarkerBackgroundColor()
 

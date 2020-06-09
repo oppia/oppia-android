@@ -19,6 +19,8 @@ class QuestionPlayerActivityPresenter @Inject constructor(private val activity: 
   }
 
   private fun getQuestionPlayerFragment(): QuestionPlayerFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.question_player_fragment_placeholder) as QuestionPlayerFragment?
+    return activity
+      .supportFragmentManager
+      .findFragmentById(R.id.question_player_fragment_placeholder) as QuestionPlayerFragment?
   }
 }

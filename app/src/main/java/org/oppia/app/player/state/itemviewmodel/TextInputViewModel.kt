@@ -16,7 +16,8 @@ class TextInputViewModel(
     val userAnswerBuilder = UserAnswer.newBuilder()
     if (answerText.isNotEmpty()) {
       val answerTextString = answerText.toString()
-      userAnswerBuilder.answer = InteractionObject.newBuilder().setNormalizedString(answerTextString).build()
+      userAnswerBuilder.answer =
+        InteractionObject.newBuilder().setNormalizedString(answerTextString).build()
       userAnswerBuilder.plainAnswer = answerTextString
     }
     return userAnswerBuilder.build()

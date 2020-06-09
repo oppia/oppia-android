@@ -122,7 +122,11 @@ class TopicListAdapter(
       is TopicSummaryViewModel -> {
         VIEW_TYPE_TOPIC_LIST
       }
-      else -> throw IllegalArgumentException("Invalid type of data $position with item ${itemList[position]}")
+      else -> {
+        throw IllegalArgumentException(
+          "Invalid type of data $position with item ${itemList[position]}"
+        )
+      }
     }
   }
 
@@ -147,7 +151,11 @@ class TopicListAdapter(
       binding.viewModel = promotedStoryListViewModel
       val promotedStoryAdapter = PromotedStoryListAdapter(activity, promotedStoryList)
       val horizontalLayoutManager =
-        LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, /* reverseLayout= */ false)
+        LinearLayoutManager(
+          activity,
+          LinearLayoutManager.HORIZONTAL,
+          /* reverseLayout= */ false
+        )
       binding.promotedStoryListRecyclerView.apply {
         layoutManager = horizontalLayoutManager
         adapter = promotedStoryAdapter
@@ -173,9 +181,21 @@ class TopicListAdapter(
         (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_72)
       }
       if (promotedStoryList.size > 1) {
-        binding.promotedStoryListRecyclerView.setPadding(paddingStart, 0, paddingEnd, 0)
+        binding.promotedStoryListRecyclerView
+          .setPadding(
+            paddingStart,
+            0,
+            paddingEnd,
+            0
+          )
       } else {
-        binding.promotedStoryListRecyclerView.setPadding(paddingStart, 0, paddingStart, 0)
+        binding.promotedStoryListRecyclerView
+          .setPadding(
+            paddingStart,
+            0,
+            paddingStart,
+            0
+          )
       }
     }
   }
@@ -191,7 +211,8 @@ class TopicListAdapter(
     internal fun bind(topicSummaryViewModel: TopicSummaryViewModel, position: Int) {
       binding.viewModel = topicSummaryViewModel
 
-      val marginLayoutParams = binding.topicContainer.layoutParams as ViewGroup.MarginLayoutParams
+      val marginLayoutParams =
+        binding.topicContainer.layoutParams as ViewGroup.MarginLayoutParams
 
       val marginMax = if (activity.resources.getBoolean(R.bool.isTablet)) {
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {

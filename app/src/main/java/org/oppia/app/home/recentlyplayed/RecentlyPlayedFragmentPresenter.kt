@@ -47,7 +47,11 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     container: ViewGroup?,
     internalProfileId: Int
   ): View? {
-    binding = RecentlyPlayedFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding = RecentlyPlayedFragmentBinding.inflate(
+      inflater,
+      container,
+      /* attachToRoot= */ false
+    )
     binding.recentlyPlayedToolbar.setNavigationOnClickListener {
       (activity as RecentlyPlayedActivity).finish()
     }
@@ -65,37 +69,45 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   }
 
   private val ongoingStoryListSummaryResultLiveData: LiveData<AsyncResult<OngoingStoryList>> by lazy {
-    topicListController.getOngoingStoryList(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+    topicListController.getOngoingStoryList(
+      ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    )
   }
 
   private fun subscribeToOngoingStoryList() {
-    getAssumedSuccessfulOngoingStoryList().observe(fragment, Observer<OngoingStoryList> { it ->
-      if (it.recentStoryCount > 0) {
-        val recentSectionTitleViewModel =
-          SectionTitleViewModel(activity.getString(R.string.ongoing_story_last_week), false)
-        itemList.add(recentSectionTitleViewModel)
-        for (promotedStory in it.recentStoryList) {
-          val ongoingStoryViewModel =
-            OngoingStoryViewModel(promotedStory, fragment as OngoingStoryClickListener)
-          itemList.add(ongoingStoryViewModel)
+    getAssumedSuccessfulOngoingStoryList().observe(
+      fragment,
+      Observer<OngoingStoryList> { it ->
+        if (it.recentStoryCount > 0) {
+          val recentSectionTitleViewModel =
+            SectionTitleViewModel(activity.getString(R.string.ongoing_story_last_week), false)
+          itemList.add(recentSectionTitleViewModel)
+          for (promotedStory in it.recentStoryList) {
+            val ongoingStoryViewModel =
+              OngoingStoryViewModel(promotedStory, fragment as OngoingStoryClickListener)
+            itemList.add(ongoingStoryViewModel)
+          }
         }
-      }
 
-      if (it.olderStoryCount > 0) {
-        val showDivider = itemList.isNotEmpty()
-        val olderSectionTitleViewModel =
-          SectionTitleViewModel(activity.getString(R.string.ongoing_story_last_month), showDivider)
-        itemList.add(olderSectionTitleViewModel)
-        for (promotedStory in it.olderStoryList) {
-          val ongoingStoryViewModel =
-            OngoingStoryViewModel(promotedStory, fragment as OngoingStoryClickListener)
-          itemList.add(ongoingStoryViewModel)
+        if (it.olderStoryCount > 0) {
+          val showDivider = itemList.isNotEmpty()
+          val olderSectionTitleViewModel =
+            SectionTitleViewModel(
+              activity.getString(R.string.ongoing_story_last_month),
+              showDivider
+            )
+          itemList.add(olderSectionTitleViewModel)
+          for (promotedStory in it.olderStoryList) {
+            val ongoingStoryViewModel =
+              OngoingStoryViewModel(promotedStory, fragment as OngoingStoryClickListener)
+            itemList.add(ongoingStoryViewModel)
+          }
         }
+        binding.ongoingStoryRecyclerView.layoutManager =
+          createLayoutManager(it.recentStoryCount, it.olderStoryCount)
+        ongoingListAdapter.notifyDataSetChanged()
       }
-      binding.ongoingStoryRecyclerView.layoutManager =
-        createLayoutManager(it.recentStoryCount, it.olderStoryCount)
-      ongoingListAdapter.notifyDataSetChanged()
-    })
+    )
   }
 
   private fun getAssumedSuccessfulOngoingStoryList(): LiveData<OngoingStoryList> {
@@ -160,20 +172,29 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   private fun playExploration(topicId: String, storyId: String, explorationId: String) {
     explorationDataController.startPlayingExploration(
       explorationId
-    ).observe(fragment, Observer<AsyncResult<Any?>> { result ->
-      when {
-        result.isPending() -> logger.d("RecentlyPlayedFragment", "Loading exploration")
-        result.isFailure() -> logger.e(
-          "RecentlyPlayedFragment",
-          "Failed to load exploration",
-          result.getErrorOrNull()!!
-        )
-        else -> {
-          logger.d("RecentlyPlayedFragment", "Successfully loaded exploration")
-          routeToExplorationListener.routeToExploration(internalProfileId, topicId, storyId, explorationId, /* backflowScreen = */ null)
-          activity.finish()
+    ).observe(
+      fragment,
+      Observer<AsyncResult<Any?>> { result ->
+        when {
+          result.isPending() -> logger.d("RecentlyPlayedFragment", "Loading exploration")
+          result.isFailure() -> logger.e(
+            "RecentlyPlayedFragment",
+            "Failed to load exploration",
+            result.getErrorOrNull()!!
+          )
+          else -> {
+            logger.d("RecentlyPlayedFragment", "Successfully loaded exploration")
+            routeToExplorationListener.routeToExploration(
+              internalProfileId,
+              topicId,
+              storyId,
+              explorationId, /* backflowScreen = */
+              null
+            )
+            activity.finish()
+          }
         }
       }
-    })
+    )
   }
 }

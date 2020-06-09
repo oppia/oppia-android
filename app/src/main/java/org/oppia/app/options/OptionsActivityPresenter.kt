@@ -31,8 +31,10 @@ class OptionsActivityPresenter @Inject constructor(
     val toolbar = activity.findViewById<View>(R.id.options_activity_toolbar) as Toolbar
     activity.setSupportActionBar(toolbar)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
-    navigationDrawerFragment =
-      activity.supportFragmentManager.findFragmentById(R.id.options_activity_fragment_navigation_drawer) as NavigationDrawerFragment
+    navigationDrawerFragment = activity
+      .supportFragmentManager
+      .findFragmentById(R.id.options_activity_fragment_navigation_drawer)
+      as NavigationDrawerFragment
     navigationDrawerFragment!!.setUpDrawer(
       activity.findViewById<View>(R.id.options_activity_drawer_layout) as DrawerLayout,
       toolbar, R.id.nav_options
@@ -40,7 +42,9 @@ class OptionsActivityPresenter @Inject constructor(
   }
 
   private fun getOptionFragment(): OptionsFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.options_fragment_placeholder) as OptionsFragment?
+    return activity
+      .supportFragmentManager
+      .findFragmentById(R.id.options_fragment_placeholder) as OptionsFragment?
   }
 
   fun updateStoryTextSize(textSize: String) {

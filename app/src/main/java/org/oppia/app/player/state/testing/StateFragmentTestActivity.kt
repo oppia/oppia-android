@@ -20,10 +20,16 @@ internal const val TEST_ACTIVITY_EXPLORATION_ID_EXTRA = "StateFragmentTestActivi
 
 /** Test Activity used for testing StateFragment */
 class StateFragmentTestActivity :
-  InjectableAppCompatActivity(), StopExplorationInterface, StateKeyboardButtonListener,
-  AudioButtonListener, HintsAndSolutionListener, RouteToHintsAndSolutionListener,
-  RevealHintListener, RevealSolutionInterface {
-  @Inject lateinit var stateFragmentTestActivityPresenter: StateFragmentTestActivityPresenter
+  InjectableAppCompatActivity(),
+  StopExplorationInterface,
+  StateKeyboardButtonListener,
+  AudioButtonListener,
+  HintsAndSolutionListener,
+  RouteToHintsAndSolutionListener,
+  RevealHintListener,
+  RevealSolutionInterface {
+  @Inject
+  lateinit var stateFragmentTestActivityPresenter: StateFragmentTestActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -37,7 +43,11 @@ class StateFragmentTestActivity :
 
   companion object {
     fun createTestActivityIntent(
-      context: Context, profileId: Int, topicId: String, storyId: String, explorationId: String
+      context: Context,
+      profileId: Int,
+      topicId: String,
+      storyId: String,
+      explorationId: String
     ): Intent {
       val intent = Intent(context, StateFragmentTestActivity::class.java)
       intent.putExtra(TEST_ACTIVITY_PROFILE_ID_EXTRA, profileId)
@@ -68,7 +78,8 @@ class StateFragmentTestActivity :
     explorationId: String,
     newAvailableHintIndex: Int,
     allHintsExhausted: Boolean
-  ) {}
+  ) {
+  }
 
   override fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {}
 

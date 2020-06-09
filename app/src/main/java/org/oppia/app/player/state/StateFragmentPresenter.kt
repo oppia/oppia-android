@@ -86,7 +86,7 @@ import org.oppia.util.logging.Logger
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.util.parser.HtmlParser
 import org.oppia.util.threading.BackgroundDispatcher
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY = "STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY"
@@ -106,7 +106,8 @@ class StateFragmentPresenter @Inject constructor(
   private val storyProgressController: StoryProgressController,
   private val logger: Logger,
   private val htmlParserFactory: HtmlParser.Factory,
-  private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>,
+  private val interactionViewModelFactoryMap: Map<String,
+    @JvmSuppressWildcards InteractionViewModelFactory>,
   private var lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
 ) : PreviousResponsesHeaderClickListener {
@@ -133,6 +134,7 @@ class StateFragmentPresenter @Inject constructor(
   private val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
     explorationProgressController.getCurrentState()
   }
+
   /**
    * A list of view models corresponding to past view models that are hidden by default. These are intentionally not
    * retained upon configuration changes since the user can just re-expand the list. Note that the first element of this
@@ -140,6 +142,7 @@ class StateFragmentPresenter @Inject constructor(
    * (when present).
    */
   private val previousAnswerViewModels: MutableList<StateItemViewModel> = mutableListOf()
+
   /**
    * Whether the previously submitted wrong answers should be expanded. This value is intentionally not retained upon
    * configuration changes since the user can just re-expand the list.
@@ -159,7 +162,11 @@ class StateFragmentPresenter @Inject constructor(
     this.storyId = storyId
     this.explorationId = explorationId
 
-    binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding = StateFragmentBinding.inflate(
+      inflater,
+      container,
+      /* attachToRoot= */ false
+    )
     val stateRecyclerViewAdapter = createRecyclerViewAdapter()
     binding.stateRecyclerView.apply {
       adapter = stateRecyclerViewAdapter
@@ -176,9 +183,13 @@ class StateFragmentPresenter @Inject constructor(
     }
     binding.stateRecyclerView.addOnLayoutChangeListener { _, _, _, _, bottom, _, _, _, oldBottom ->
       if (bottom < oldBottom) {
-        binding.stateRecyclerView.postDelayed({
-          binding.stateRecyclerView.scrollToPosition(stateRecyclerViewAdapter.itemCount - 1)
-        }, 100)
+        binding.stateRecyclerView.postDelayed(
+          {
+            binding.stateRecyclerView
+              .scrollToPosition(stateRecyclerViewAdapter.itemCount - 1)
+          },
+          100
+        )
       }
     }
 
@@ -239,11 +250,15 @@ class StateFragmentPresenter @Inject constructor(
         },
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<ContentItemBinding>(view)!!
-          binding.htmlContent =
-            htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ true)
-              .parseOppiaHtml(
-                (viewModel as ContentViewModel).htmlContent.toString(), binding.contentTextView
-              )
+          binding.htmlContent = htmlParserFactory
+            .create(
+              entityType,
+              explorationId,
+              /* imageCenterAlign= */ true
+            )
+            .parseOppiaHtml(
+              (viewModel as ContentViewModel).htmlContent.toString(), binding.contentTextView
+            )
         }
       )
       .registerViewBinder(
@@ -257,11 +272,15 @@ class StateFragmentPresenter @Inject constructor(
         },
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<FeedbackItemBinding>(view)!!
-          binding.htmlContent =
-            htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ true)
-              .parseOppiaHtml(
-                (viewModel as FeedbackViewModel).htmlContent.toString(), binding.feedbackTextView
-              )
+          binding.htmlContent = htmlParserFactory
+            .create(
+              entityType,
+              explorationId,
+              /* imageCenterAlign= */ true
+            )
+            .parseOppiaHtml(
+              (viewModel as FeedbackViewModel).htmlContent.toString(), binding.feedbackTextView
+            )
         }
       )
       .registerViewDataBinder(
@@ -302,11 +321,13 @@ class StateFragmentPresenter @Inject constructor(
           ).root
         },
         bindView = { view, viewModel ->
-          val binding = DataBindingUtil.findBinding<SubmittedAnswerItemBinding>(view)!!
+          val binding = DataBindingUtil
+            .findBinding<SubmittedAnswerItemBinding>(view)!!
           val userAnswer = (viewModel as SubmittedAnswerViewModel).submittedUserAnswer
           when (userAnswer.textualAnswerCase) {
             UserAnswer.TextualAnswerCase.HTML_ANSWER -> {
-              val htmlParser = htmlParserFactory.create(entityType, explorationId, imageCenterAlign = true)
+              val htmlParser =
+                htmlParserFactory.create(entityType, explorationId, imageCenterAlign = true)
               binding.submittedAnswer = htmlParser.parseOppiaHtml(
                 userAnswer.htmlAnswer, binding.submittedAnswerTextView
               )
@@ -334,11 +355,22 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
-    subscribeToHint(explorationProgressController.submitHintIsRevealed(currentState, saveUserChoice, hintIndex))
+    subscribeToHint(
+      explorationProgressController.submitHintIsRevealed(
+        currentState,
+        saveUserChoice,
+        hintIndex
+      )
+    )
   }
 
   fun revealSolution(saveUserChoice: Boolean) {
-    subscribeToSolution(explorationProgressController.submitSolutionIsRevealed(currentState, saveUserChoice))
+    subscribeToSolution(
+      explorationProgressController.submitSolutionIsRevealed(
+        currentState,
+        saveUserChoice
+      )
+    )
   }
 
   private fun getStateViewModel(): StateViewModel {
@@ -350,14 +382,20 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun subscribeToCurrentState() {
-    ephemeralStateLiveData.observe(fragment, Observer<AsyncResult<EphemeralState>> { result ->
-      processEphemeralStateResult(result)
-    })
+    ephemeralStateLiveData.observe(
+      fragment,
+      Observer<AsyncResult<EphemeralState>> { result ->
+        processEphemeralStateResult(result)
+      }
+    )
   }
 
   private fun processEphemeralStateResult(result: AsyncResult<EphemeralState>) {
     if (result.isFailure()) {
-      logger.e("StateFragment", "Failed to retrieve ephemeral state", result.getErrorOrNull()!!)
+      logger.e(
+        "StateFragment",
+        "Failed to retrieve ephemeral state", result.getErrorOrNull()!!
+      )
       return
     } else if (result.isPending()) {
       // Display nothing until a valid result is available.
@@ -390,11 +428,14 @@ class StateFragmentPresenter @Inject constructor(
           lifecycleSafeTimerFactory.cancel()
           lifecycleSafeTimerFactory = LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
           if (!ephemeralState.state.interaction.hintList[0].hintIsRevealed) {
-            lifecycleSafeTimerFactory.createTimer(60000).observe(activity, Observer {
-              newAvailableHintIndex = 0
-              viewModel.setHintOpenedAndUnRevealedVisibility(true)
-              viewModel.setHintBulbVisibility(true)
-            })
+            lifecycleSafeTimerFactory.createTimer(60000).observe(
+              activity,
+              Observer {
+                newAvailableHintIndex = 0
+                viewModel.setHintOpenedAndUnRevealedVisibility(true)
+                viewModel.setHintBulbVisibility(true)
+              }
+            )
           }
         } else if (!isNewWrongAnswerSubmitted) {
           // Subsequent hints are unlocked at 30s intervals when no answer is submitted by the user.
@@ -403,19 +444,27 @@ class StateFragmentPresenter @Inject constructor(
             lifecycleSafeTimerFactory = LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
 
             if (index != 0 && !ephemeralState.state.interaction.hintList[index].hintIsRevealed) {
-              lifecycleSafeTimerFactory.createTimer(30000).observe(activity, Observer {
-                newAvailableHintIndex = index
-                viewModel.setHintOpenedAndUnRevealedVisibility(true)
-                viewModel.setHintBulbVisibility(true)
-              })
-              break
-            } else if (index == (ephemeralState.state.interaction.hintList.size - 1) && !ephemeralState.state.interaction.solution.solutionIsRevealed) {
-              if (ephemeralState.state.interaction.solution.hasCorrectAnswer()) {
-                lifecycleSafeTimerFactory.createTimer(30000).observe(activity, Observer {
-                  allHintsExhausted = true
+              lifecycleSafeTimerFactory.createTimer(30000).observe(
+                activity,
+                Observer {
+                  newAvailableHintIndex = index
                   viewModel.setHintOpenedAndUnRevealedVisibility(true)
                   viewModel.setHintBulbVisibility(true)
-                })
+                }
+              )
+              break
+            } else if (index == (ephemeralState.state.interaction.hintList.size - 1) &&
+              !ephemeralState.state.interaction.solution.solutionIsRevealed
+            ) {
+              if (ephemeralState.state.interaction.solution.hasCorrectAnswer()) {
+                lifecycleSafeTimerFactory.createTimer(30000).observe(
+                  activity,
+                  Observer {
+                    allHintsExhausted = true
+                    viewModel.setHintOpenedAndUnRevealedVisibility(true)
+                    viewModel.setHintBulbVisibility(true)
+                  }
+                )
               }
               break
             }
@@ -430,8 +479,8 @@ class StateFragmentPresenter @Inject constructor(
     var canContinueToNextState = false
     var hasGeneralContinueButton = false
     if (ephemeralState.stateTypeCase != EphemeralState.StateTypeCase.TERMINAL_STATE) {
-      if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE
-        && !ephemeralState.hasNextState
+      if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE &&
+        !ephemeralState.hasNextState
       ) {
         hasGeneralContinueButton = true
       } else if (ephemeralState.completedState.answerList.size > 0 && ephemeralState.hasNextState) {
@@ -475,12 +524,15 @@ class StateFragmentPresenter @Inject constructor(
    */
   private fun subscribeToHint(hintResultLiveData: LiveData<AsyncResult<Hint>>) {
     val hintLiveData = getHintIsRevealed(hintResultLiveData)
-    hintLiveData.observe(fragment, Observer<Hint> { result ->
-      // If the hint was revealed remove dot and radar.
-      if (result.hintIsRevealed) {
-        viewModel.setHintOpenedAndUnRevealedVisibility(false)
+    hintLiveData.observe(
+      fragment,
+      Observer<Hint> { result ->
+        // If the hint was revealed remove dot and radar.
+        if (result.hintIsRevealed) {
+          viewModel.setHintOpenedAndUnRevealedVisibility(false)
+        }
       }
-    })
+    )
   }
 
   /**
@@ -490,12 +542,15 @@ class StateFragmentPresenter @Inject constructor(
    */
   private fun subscribeToSolution(solutionResultLiveData: LiveData<AsyncResult<Solution>>) {
     val solutionLiveData = getSolutionIsRevealed(solutionResultLiveData)
-    solutionLiveData.observe(fragment, Observer<Solution> { result ->
-      // If the hint was revealed remove dot and radar.
-      if (result.solutionIsRevealed) {
-        viewModel.setHintOpenedAndUnRevealedVisibility(false)
+    solutionLiveData.observe(
+      fragment,
+      Observer<Solution> { result ->
+        // If the hint was revealed remove dot and radar.
+        if (result.solutionIsRevealed) {
+          viewModel.setHintOpenedAndUnRevealedVisibility(false)
+        }
       }
-    })
+    )
   }
 
   /**
@@ -503,66 +558,82 @@ class StateFragmentPresenter @Inject constructor(
    * Whenever an answer is submitted using ExplorationProgressController.submitAnswer function,
    * this function will wait for the response from that function and based on which we can move to next state.
    */
-  private fun subscribeToAnswerOutcome(answerOutcomeResultLiveData: LiveData<AsyncResult<AnswerOutcome>>) {
+  private fun subscribeToAnswerOutcome(
+    answerOutcomeResultLiveData: LiveData<AsyncResult<AnswerOutcome>>
+  ) {
     val answerOutcomeLiveData = getAnswerOutcome(answerOutcomeResultLiveData)
-    answerOutcomeLiveData.observe(fragment, Observer<AnswerOutcome> { result ->
-      // If the answer was submitted on behalf of the Continue interaction, automatically continue to the next state.
-      if (result.state.interaction.id == "Continue") {
-        lifecycleSafeTimerFactory.cancel()
-        viewModel.setHintBulbVisibility(false)
-        moveToNextState()
-      } else {
-        if (result.labelledAsCorrectAnswer) {
+    answerOutcomeLiveData.observe(
+      fragment,
+      Observer<AnswerOutcome> { result ->
+        // If the answer was submitted on behalf of the Continue interaction, automatically continue to the next state.
+        if (result.state.interaction.id == "Continue") {
           lifecycleSafeTimerFactory.cancel()
           viewModel.setHintBulbVisibility(false)
-          showCongratulationMessageOnCorrectAnswer()
+          moveToNextState()
         } else {
-          numberOfWrongAnswers += 1
-          // Show new hint in 10sec on submitting new wrong answer. Cancel and Reinitialize timer.
-          if (numberOfWrongAnswers > 1) {
-            isNewWrongAnswerSubmitted = true
+          if (result.labelledAsCorrectAnswer) {
             lifecycleSafeTimerFactory.cancel()
-            lifecycleSafeTimerFactory = LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
-            if (currentState.interaction.hintList.size != 0) {
-              for (index in 0 until currentState.interaction.hintList.size) {
-                if (index == 0 && !currentState.interaction.hintList[0].hintIsRevealed) {
-                  lifecycleSafeTimerFactory.createTimer(10000).observe(activity, Observer {
-                    newAvailableHintIndex = 0
-                    viewModel.setHintOpenedAndUnRevealedVisibility(true)
-                    viewModel.setHintBulbVisibility(true)
-                    isNewWrongAnswerSubmitted = false
-                  })
-                  break
-                }
-                if (index != 0 && !currentState.interaction.hintList[index].hintIsRevealed) {
-                  lifecycleSafeTimerFactory.createTimer(10000).observe(activity, Observer {
-                    newAvailableHintIndex = index
-                    viewModel.setHintOpenedAndUnRevealedVisibility(true)
-                    viewModel.setHintBulbVisibility(true)
-                    isNewWrongAnswerSubmitted = false
-                  })
-                  break
-                } else if (index == (currentState.interaction.hintList.size - 1) && !currentState.interaction.solution.solutionIsRevealed) {
-                  if (currentState.interaction.solution.hasCorrectAnswer()) {
-                    lifecycleSafeTimerFactory.createTimer(10000).observe(activity, Observer {
-                      allHintsExhausted = true
-                      viewModel.setHintOpenedAndUnRevealedVisibility(true)
-                      viewModel.setHintBulbVisibility(true)
-                      isNewWrongAnswerSubmitted = false
-                    })
+            viewModel.setHintBulbVisibility(false)
+            showCongratulationMessageOnCorrectAnswer()
+          } else {
+            numberOfWrongAnswers += 1
+            // Show new hint in 10sec on submitting new wrong answer. Cancel and Reinitialize timer.
+            if (numberOfWrongAnswers > 1) {
+              isNewWrongAnswerSubmitted = true
+              lifecycleSafeTimerFactory.cancel()
+              lifecycleSafeTimerFactory = LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
+              if (currentState.interaction.hintList.size != 0) {
+                for (index in 0 until currentState.interaction.hintList.size) {
+                  if (index == 0 && !currentState.interaction.hintList[0].hintIsRevealed) {
+                    lifecycleSafeTimerFactory.createTimer(10000).observe(
+                      activity,
+                      Observer {
+                        newAvailableHintIndex = 0
+                        viewModel.setHintOpenedAndUnRevealedVisibility(true)
+                        viewModel.setHintBulbVisibility(true)
+                        isNewWrongAnswerSubmitted = false
+                      }
+                    )
+                    break
                   }
-                  break
+                  if (index != 0 && !currentState.interaction.hintList[index].hintIsRevealed) {
+                    lifecycleSafeTimerFactory.createTimer(10000).observe(
+                      activity,
+                      Observer {
+                        newAvailableHintIndex = index
+                        viewModel.setHintOpenedAndUnRevealedVisibility(true)
+                        viewModel.setHintBulbVisibility(true)
+                        isNewWrongAnswerSubmitted = false
+                      }
+                    )
+                    break
+                  } else if (index == (currentState.interaction.hintList.size - 1) &&
+                    !currentState.interaction.solution.solutionIsRevealed
+                  ) {
+                    if (currentState.interaction.solution.hasCorrectAnswer()) {
+                      lifecycleSafeTimerFactory.createTimer(10000).observe(
+                        activity,
+                        Observer {
+                          allHintsExhausted = true
+                          viewModel.setHintOpenedAndUnRevealedVisibility(true)
+                          viewModel.setHintBulbVisibility(true)
+                          isNewWrongAnswerSubmitted = false
+                        }
+                      )
+                    }
+                    break
+                  }
                 }
               }
             }
           }
-        }
-        feedbackId = result.feedback.contentId
-        if (isAudioShowing()) {
-          (getAudioFragment() as AudioUiManager).loadFeedbackAudio(feedbackId!!, true)
+          feedbackId = result.feedback.contentId
+          if (isAudioShowing()) {
+            (getAudioFragment() as AudioUiManager).loadFeedbackAudio(feedbackId!!, true)
+          }
         }
       }
-    })
+    )
   }
 
   private fun showCongratulationMessageOnCorrectAnswer() {
@@ -582,10 +653,13 @@ class StateFragmentPresenter @Inject constructor(
     animation.addAnimation(fadeOut)
     binding.congratulationTextView.animation = animation
 
-    Handler().postDelayed({
-      binding.congratulationTextView.clearAnimation()
-      binding.congratulationTextView.visibility = View.INVISIBLE
-    }, 2000)
+    Handler().postDelayed(
+      {
+        binding.congratulationTextView.clearAnimation()
+        binding.congratulationTextView.visibility = View.INVISIBLE
+      },
+      2000
+    )
 
     lifecycleSafeTimerFactory.cancel()
     viewModel.setHintBulbVisibility(false)
@@ -602,12 +676,16 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   /** Helper for [subscribeToAnswerOutcome]. */
-  private fun getAnswerOutcome(answerOutcome: LiveData<AsyncResult<AnswerOutcome>>): LiveData<AnswerOutcome> {
+  private fun getAnswerOutcome(
+    answerOutcome: LiveData<AsyncResult<AnswerOutcome>>
+  ): LiveData<AnswerOutcome> {
     return Transformations.map(answerOutcome, ::processAnswerOutcome)
   }
 
   /** Helper for [subscribeToAnswerOutcome]. */
-  private fun processAnswerOutcome(ephemeralStateResult: AsyncResult<AnswerOutcome>): AnswerOutcome {
+  private fun processAnswerOutcome(
+    ephemeralStateResult: AsyncResult<AnswerOutcome>
+  ): AnswerOutcome {
     if (ephemeralStateResult.isFailure()) {
       logger.e(
         "StateFragment",
@@ -689,17 +767,26 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun moveToNextState() {
-    explorationProgressController.moveToNextState().observe(fragment, Observer<AsyncResult<Any?>> {
-      hasPreviousResponsesExpanded = false
-    })
+    explorationProgressController.moveToNextState().observe(
+      fragment,
+      Observer<AsyncResult<Any?>> {
+        hasPreviousResponsesExpanded = false
+      }
+    )
   }
 
   private fun addInteractionForPendingState(
-    pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction, hasPreviousButton: Boolean
+    pendingItemList: MutableList<StateItemViewModel>,
+    interaction: Interaction,
+    hasPreviousButton: Boolean
   ) {
-    val interactionViewModelFactory = interactionViewModelFactoryMap.getValue(interaction.id)
+    val interactionViewModelFactory = interactionViewModelFactoryMap
+      .getValue(interaction.id)
     pendingItemList += interactionViewModelFactory(
-      explorationId, interaction, fragment as InteractionAnswerReceiver, fragment as InteractionAnswerErrorReceiver,
+      explorationId,
+      interaction,
+      fragment as InteractionAnswerReceiver,
+      fragment as InteractionAnswerErrorReceiver,
       hasPreviousButton
     )
   }
@@ -713,11 +800,14 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun addPreviousAnswers(
-    pendingItemList: MutableList<StateItemViewModel>, answersAndResponses: List<AnswerAndResponse>
+    pendingItemList: MutableList<StateItemViewModel>,
+    answersAndResponses: List<AnswerAndResponse>
   ) {
     if (answersAndResponses.size > 1) {
       PreviousResponsesHeaderViewModel(
-        answersAndResponses.size - 1, ObservableBoolean(hasPreviousResponsesExpanded), this
+        answersAndResponses.size - 1,
+        ObservableBoolean(hasPreviousResponsesExpanded),
+        this
       ).let { viewModel ->
         pendingItemList += viewModel
         previousAnswerViewModels += viewModel
@@ -749,7 +839,8 @@ class StateFragmentPresenter @Inject constructor(
    * [PreviousResponsesHeaderViewModel].
    */
   private fun togglePreviousAnswers() {
-    val headerModel = previousAnswerViewModels.first() as PreviousResponsesHeaderViewModel
+    val headerModel = previousAnswerViewModels
+      .first() as PreviousResponsesHeaderViewModel
     val expandPreviousAnswers = !headerModel.isExpanded.get()
     val headerIndex = viewModel.itemList.indexOf(headerModel)
     val previousAnswersAndFeedbacks =
@@ -784,28 +875,35 @@ class StateFragmentPresenter @Inject constructor(
     hasPreviousState: Boolean,
     canContinueToNextState: Boolean,
     hasGeneralContinueButton: Boolean,
-    stateIsTerminal: Boolean) {
+    stateIsTerminal: Boolean
+  ) {
     when {
       hasGeneralContinueButton -> ContinueNavigationButtonViewModel(
-        hasPreviousState, fragment as PreviousNavigationButtonListener, fragment as ContinueNavigationButtonListener
+        hasPreviousState,
+        fragment as PreviousNavigationButtonListener,
+        fragment as ContinueNavigationButtonListener
       )
       canContinueToNextState -> NextButtonViewModel(
-        hasPreviousState, fragment as PreviousNavigationButtonListener, fragment as NextNavigationButtonListener
+        hasPreviousState,
+        fragment as PreviousNavigationButtonListener,
+        fragment as NextNavigationButtonListener
       )
       stateIsTerminal -> ReturnToTopicButtonViewModel(
         hasPreviousState, fragment as PreviousNavigationButtonListener,
         fragment as ReturnToTopicNavigationButtonListener
       )
-      viewModel.doesMostRecentInteractionRequireExplicitSubmission(pendingItemList) -> SubmitButtonViewModel(
-        viewModel.getCanSubmitAnswer(),
-        hasPreviousState,
-        fragment as PreviousNavigationButtonListener,
-        fragment as SubmitNavigationButtonListener
-      )
+      viewModel.doesMostRecentInteractionRequireExplicitSubmission(pendingItemList) ->
+        SubmitButtonViewModel(
+          viewModel.getCanSubmitAnswer(),
+          hasPreviousState,
+          fragment as PreviousNavigationButtonListener,
+          fragment as SubmitNavigationButtonListener
+        )
       // Otherwise, just show the previous button since the interaction itself will push the answer submission.
-      hasPreviousState && !viewModel.isMostRecentInteractionAutoNavigating(pendingItemList) -> PreviousButtonViewModel(
-        fragment as PreviousNavigationButtonListener
-      )
+      hasPreviousState && !viewModel.isMostRecentInteractionAutoNavigating(pendingItemList) ->
+        PreviousButtonViewModel(
+          fragment as PreviousNavigationButtonListener
+        )
       // Otherwise, there's no navigation button that should be shown since the current interaction handles this.
       else -> null
     }?.let(pendingItemList::add)
@@ -820,7 +918,8 @@ class StateFragmentPresenter @Inject constructor(
     )
   }
 
-  fun setAudioBarVisibility(visibility: Boolean) = getStateViewModel().setAudioBarVisibility(visibility)
+  fun setAudioBarVisibility(visibility: Boolean) =
+    getStateViewModel().setAudioBarVisibility(visibility)
 
   fun scrollToTop() {
     binding.stateRecyclerView.smoothScrollToPosition(0)
@@ -834,10 +933,22 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun markExplorationAsRecentlyPlayed() {
-    storyProgressController.recordRecentlyPlayedChapter(profileId, topicId, storyId, explorationId, Date().time)
+    storyProgressController.recordRecentlyPlayedChapter(
+      profileId,
+      topicId,
+      storyId,
+      explorationId,
+      Date().time
+    )
   }
 
   private fun markExplorationCompleted() {
-    storyProgressController.recordCompletedChapter(profileId, topicId, storyId, explorationId, Date().time)
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      topicId,
+      storyId,
+      explorationId,
+      Date().time
+    )
   }
 }

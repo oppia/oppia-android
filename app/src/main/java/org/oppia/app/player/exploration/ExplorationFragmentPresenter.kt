@@ -23,7 +23,8 @@ class ExplorationFragmentPresenter @Inject constructor(
     storyId: String,
     explorationId: String
   ): View? {
-    val binding = ExplorationFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false).root
+    val binding =
+      ExplorationFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false).root
     val stateFragment = StateFragment.newInstance(profileId, topicId, storyId, explorationId)
     if (getStateFragment() == null) {
       fragment.childFragmentManager.beginTransaction().add(
@@ -38,23 +39,26 @@ class ExplorationFragmentPresenter @Inject constructor(
     getStateFragment()?.handlePlayAudio()
   }
 
-  fun setAudioBarVisibility(isVisible: Boolean) = getStateFragment()?.setAudioBarVisibility(isVisible)
+  fun setAudioBarVisibility(isVisible: Boolean) =
+    getStateFragment()?.setAudioBarVisibility(isVisible)
 
   fun scrollToTop() = getStateFragment()?.scrollToTop()
 
   private fun getStateFragment(): StateFragment? {
-    return fragment.childFragmentManager.findFragmentById(R.id.state_fragment_placeholder) as StateFragment?
+    return fragment
+      .childFragmentManager
+      .findFragmentById(R.id.state_fragment_placeholder) as StateFragment?
   }
 
   fun onKeyboardAction() {
     getStateFragment()?.handleKeyboardAction()
   }
 
-  fun revealHint(saveUserChoice: Boolean, hintIndex: Int){
+  fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
     getStateFragment()?.revealHint(saveUserChoice, hintIndex)
   }
 
-  fun revealSolution(saveUserChoice: Boolean){
+  fun revealSolution(saveUserChoice: Boolean) {
     getStateFragment()?.revealSolution(saveUserChoice)
   }
 }

@@ -27,7 +27,8 @@ class RevisionCardViewModel @Inject constructor(
   private lateinit var topicId: String
   private lateinit var subtopicId: String
   private lateinit var binding: RevisionCardFragmentBinding
-  private val returnToTopicClickListener: ReturnToTopicClickListener = activity as ReturnToTopicClickListener
+  private val returnToTopicClickListener: ReturnToTopicClickListener =
+    activity as ReturnToTopicClickListener
 
   var subtopicTitle: String = ""
 
@@ -47,20 +48,29 @@ class RevisionCardViewModel @Inject constructor(
   }
 
   private val revisionCardResultLiveData: LiveData<AsyncResult<RevisionCard>> by lazy {
-    topicController.getRevisionCard(topicId,subtopicId)
+    topicController.getRevisionCard(topicId, subtopicId)
   }
 
   private fun processExplanationLiveData(): LiveData<CharSequence> {
     return Transformations.map(revisionCardResultLiveData, ::processExplanationResult)
   }
 
-  private fun processExplanationResult(revisionCardResult: AsyncResult<RevisionCard>): CharSequence {
+  private fun processExplanationResult(
+    revisionCardResult: AsyncResult<RevisionCard>
+  ): CharSequence {
     if (revisionCardResult.isFailure()) {
-      logger.e("RevisionCardFragment", "Failed to retrieve Revision Card", revisionCardResult.getErrorOrNull()!!)
+      logger.e(
+        "RevisionCardFragment",
+        "Failed to retrieve Revision Card",
+        revisionCardResult.getErrorOrNull()!!
+      )
     }
-    val revisionCard = revisionCardResult.getOrDefault(RevisionCard.getDefaultInstance())
+    val revisionCard = revisionCardResult.getOrDefault(
+      RevisionCard.getDefaultInstance()
+    )
     subtopicTitle = revisionCard.subtopicTitle
-    return htmlParserFactory.create(entityType, subtopicId, /* imageCenterAlign= */ true)
+    return htmlParserFactory
+      .create(entityType, subtopicId, /* imageCenterAlign= */ true)
       .parseOppiaHtml(revisionCard.pageContents.html, binding.revisionCardExplanationText)
   }
 }

@@ -24,10 +24,19 @@ class AudioFragmentTestActivityPresenter @Inject constructor(
         audioFragment
       ).commitNow()
       val state = State.newBuilder().setContent(SubtitledHtml.newBuilder().setContentId("content"))
-        .putRecordedVoiceovers("content", VoiceoverMapping.newBuilder()
-          .putVoiceoverMapping("en", Voiceover.newBuilder().setFileName("content-en-057j51i2es.mp3").build())
-          .putVoiceoverMapping("es", Voiceover.newBuilder().setFileName("content-es-i0nhu49z0q.mp3").build())
-          .build()).build()
+        .putRecordedVoiceovers(
+          "content",
+          VoiceoverMapping.newBuilder()
+            .putVoiceoverMapping(
+              "en",
+              Voiceover.newBuilder().setFileName("content-en-057j51i2es.mp3").build()
+            )
+            .putVoiceoverMapping(
+              "es",
+              Voiceover.newBuilder().setFileName("content-es-i0nhu49z0q.mp3").build()
+            )
+            .build()
+        ).build()
       audioFragment.setStateAndExplorationId(state, "2mzzFVDLuAj8")
       audioFragment.loadMainContentAudio(false)
     }

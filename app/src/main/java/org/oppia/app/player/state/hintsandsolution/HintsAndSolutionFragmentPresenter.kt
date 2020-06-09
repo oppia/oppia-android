@@ -47,7 +47,8 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
    * Host activity must inherit HintsAndSolutionListener to dismiss this fragment.
    */
   fun handleCreateView(
-    inflater: LayoutInflater, container: ViewGroup?,
+    inflater: LayoutInflater,
+    container: ViewGroup?,
     explorationId: String?,
     currentExpandedHintListIndex: Int?,
     newAvailableHintIndex: Int,
@@ -56,7 +57,11 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
   ): View? {
 
     binding =
-      HintsAndSolutionFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+      HintsAndSolutionFragmentBinding.inflate(
+        inflater,
+        container,
+        /* attachToRoot= */ false
+      )
     this.currentExpandedHintListIndex = currentExpandedHintListIndex
     this.expandedHintListIndexListener = expandedHintListIndexListener
     binding.hintsAndSolutionToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
@@ -75,14 +80,20 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
   }
 
   private fun subscribeToCurrentState() {
-    ephemeralStateLiveData.observe(fragment, Observer<AsyncResult<EphemeralState>> { result ->
-      processEphemeralStateResult(result)
-    })
+    ephemeralStateLiveData.observe(
+      fragment,
+      Observer<AsyncResult<EphemeralState>> { result ->
+        processEphemeralStateResult(result)
+      }
+    )
   }
 
   private fun processEphemeralStateResult(result: AsyncResult<EphemeralState>) {
     if (result.isFailure()) {
-      logger.e("StateFragment", "Failed to retrieve ephemeral state", result.getErrorOrNull()!!)
+      logger.e(
+        "StateFragment",
+        "Failed to retrieve ephemeral state", result.getErrorOrNull()!!
+      )
       return
     } else if (result.isPending()) {
       // Display nothing until a valid result is available.

@@ -40,6 +40,7 @@ interface InteractionAnswerReceiver {
 enum class AnswerErrorCategory {
   /** Corresponds to errors that may be found while the user is trying to input an answer.  */
   REAL_TIME,
+
   /** Corresponds to errors that may be found only when a user tries to submit an answer.  */
   SUBMIT_TIME
 }

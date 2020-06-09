@@ -12,7 +12,8 @@ import javax.inject.Inject
 class OngoingTopicListFragment : InjectableFragment() {
 
   companion object {
-    internal const val ONGOING_TOPIC_LIST_FRAGMENT_PROFILE_ID_KEY = "OngoingTopicListFragment.profile_id"
+    internal const val ONGOING_TOPIC_LIST_FRAGMENT_PROFILE_ID_KEY =
+      "OngoingTopicListFragment.profile_id"
 
     /** Returns a new [OngoingTopicListFragment] to display corresponding to the specified profile ID. */
     fun newInstance(internalProfileId: Int): OngoingTopicListFragment {
@@ -24,7 +25,8 @@ class OngoingTopicListFragment : InjectableFragment() {
     }
   }
 
-  @Inject lateinit var ongoingTopicListFragmentPresenter: OngoingTopicListFragmentPresenter
+  @Inject
+  lateinit var ongoingTopicListFragmentPresenter: OngoingTopicListFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -36,8 +38,16 @@ class OngoingTopicListFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val args = checkNotNull(arguments) { "Expected arguments to be passed to OngoingTopicListFragment" }
-    val internalProfileId = args.getInt(ONGOING_TOPIC_LIST_FRAGMENT_PROFILE_ID_KEY, -1)
-    return ongoingTopicListFragmentPresenter.handleCreateView(inflater, container, internalProfileId)
+    val args =
+      checkNotNull(arguments) { "Expected arguments to be passed to OngoingTopicListFragment" }
+    val internalProfileId = args.getInt(
+      ONGOING_TOPIC_LIST_FRAGMENT_PROFILE_ID_KEY,
+      -1
+    )
+    return ongoingTopicListFragmentPresenter.handleCreateView(
+      inflater,
+      container,
+      internalProfileId
+    )
   }
 }

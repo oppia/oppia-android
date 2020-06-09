@@ -16,7 +16,8 @@ class BindableAdapterTestFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<BindableAdapterTestViewModel>
 ) {
-  @VisibleForTesting val viewModel: BindableAdapterTestViewModel by lazy {
+  @VisibleForTesting
+  val viewModel: BindableAdapterTestViewModel by lazy {
     getBindableAdapterTestViewModel()
   }
 

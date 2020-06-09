@@ -18,9 +18,16 @@ import org.oppia.app.player.state.listener.SubmitNavigationButtonListener
 import javax.inject.Inject
 
 /** Fragment that represents the current state of an exploration. */
-class StateFragment : InjectableFragment(), InteractionAnswerReceiver, InteractionAnswerHandler,
-  InteractionAnswerErrorReceiver, ContinueNavigationButtonListener, NextNavigationButtonListener,
-  PreviousNavigationButtonListener, ReturnToTopicNavigationButtonListener, SubmitNavigationButtonListener {
+class StateFragment :
+  InjectableFragment(),
+  InteractionAnswerReceiver,
+  InteractionAnswerHandler,
+  InteractionAnswerErrorReceiver,
+  ContinueNavigationButtonListener,
+  NextNavigationButtonListener,
+  PreviousNavigationButtonListener,
+  ReturnToTopicNavigationButtonListener,
+  SubmitNavigationButtonListener {
   companion object {
     /**
      * Creates a new instance of a StateFragment.
@@ -30,7 +37,12 @@ class StateFragment : InjectableFragment(), InteractionAnswerReceiver, Interacti
      * @param explorationId used by StateFragment to mark progress and manage exploration.
      * @return a new instance of [StateFragment].
      */
-    fun newInstance(internalProfileId: Int, topicId: String, storyId: String, explorationId: String): StateFragment {
+    fun newInstance(
+      internalProfileId: Int,
+      topicId: String,
+      storyId: String,
+      explorationId: String
+    ): StateFragment {
       val stateFragment = StateFragment()
       val args = Bundle()
       args.putInt(STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
@@ -42,18 +54,32 @@ class StateFragment : InjectableFragment(), InteractionAnswerReceiver, Interacti
     }
   }
 
-  @Inject lateinit var stateFragmentPresenter: StateFragmentPresenter
+  @Inject
+  lateinit var stateFragmentPresenter: StateFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    val internalProfileId = arguments!!.getInt(STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, -1)
-    val topicId = arguments!!.getString(STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY)!!
-    val storyId = arguments!!.getString(STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY)!!
-    val explorationId = arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
+    val internalProfileId = arguments!!.getInt(
+      STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY,
+      -1
+    )
+    val topicId = arguments!!.getString(
+      STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY
+    )!!
+    val storyId = arguments!!.getString(
+      STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY
+    )!!
+    val explorationId = arguments!!.getString(
+      STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY
+    )!!
     return stateFragmentPresenter.handleCreateView(
       inflater,
       container,
@@ -74,7 +100,8 @@ class StateFragment : InjectableFragment(), InteractionAnswerReceiver, Interacti
 
   override fun onPreviousButtonClicked() = stateFragmentPresenter.onPreviousButtonClicked()
 
-  override fun onReturnToTopicButtonClicked() = stateFragmentPresenter.onReturnToTopicButtonClicked()
+  override fun onReturnToTopicButtonClicked() =
+    stateFragmentPresenter.onReturnToTopicButtonClicked()
 
   override fun onSubmitButtonClicked() = stateFragmentPresenter.onSubmitButtonClicked()
 
@@ -86,7 +113,8 @@ class StateFragment : InjectableFragment(), InteractionAnswerReceiver, Interacti
     stateFragmentPresenter.updateSubmitButton(pendingAnswerError)
   }
 
-  fun setAudioBarVisibility(visibility: Boolean) = stateFragmentPresenter.setAudioBarVisibility(visibility)
+  fun setAudioBarVisibility(visibility: Boolean) =
+    stateFragmentPresenter.setAudioBarVisibility(visibility)
 
   fun scrollToTop() = stateFragmentPresenter.scrollToTop()
 

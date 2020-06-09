@@ -11,7 +11,9 @@ import javax.inject.Inject
 
 /** The presenter for [AdministratorControlsActivity]. */
 @ActivityScope
-class AdministratorControlsActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
+class AdministratorControlsActivityPresenter @Inject constructor(
+  private val activity: AppCompatActivity
+) {
   private lateinit var navigationDrawerFragment: NavigationDrawerFragment
 
   fun handleOnCreate() {
@@ -26,18 +28,25 @@ class AdministratorControlsActivityPresenter @Inject constructor(private val act
   }
 
   private fun setUpNavigationDrawer() {
-    val toolbar = activity.findViewById<View>(R.id.administrator_controls_activity_toolbar) as Toolbar
+    val toolbar =
+      activity.findViewById<View>(R.id.administrator_controls_activity_toolbar) as Toolbar
     activity.setSupportActionBar(toolbar)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     navigationDrawerFragment =
-      activity.supportFragmentManager.findFragmentById(R.id.administrator_controls_activity_fragment_navigation_drawer) as NavigationDrawerFragment
+      activity.supportFragmentManager
+        .findFragmentById(R.id.administrator_controls_activity_fragment_navigation_drawer)
+        as NavigationDrawerFragment
     navigationDrawerFragment.setUpDrawer(
-      activity.findViewById<View>(R.id.administrator_controls_activity_drawer_layout) as DrawerLayout,
+      activity
+        .findViewById<View>(R.id.administrator_controls_activity_drawer_layout)
+        as DrawerLayout,
       toolbar, /* menuItemId = */ 0
     )
   }
 
   private fun getAdministratorControlsFragment(): AdministratorControlsFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.administrator_controls_fragment_placeholder) as AdministratorControlsFragment?
+    return activity.supportFragmentManager
+      .findFragmentById(R.id.administrator_controls_fragment_placeholder)
+      as AdministratorControlsFragment?
   }
 }

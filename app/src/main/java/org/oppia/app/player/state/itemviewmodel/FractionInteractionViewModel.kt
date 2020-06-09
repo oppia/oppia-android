@@ -29,11 +29,12 @@ class FractionInteractionViewModel(
   private val stringToFractionParser: StringToFractionParser = StringToFractionParser()
 
   init {
-    val callback: Observable.OnPropertyChangedCallback = object : Observable.OnPropertyChangedCallback() {
-      override fun onPropertyChanged(sender: Observable, propertyId: Int) {
-        interactionAnswerErrorReceiver.onPendingAnswerError(pendingAnswerError)
+    val callback: Observable.OnPropertyChangedCallback =
+      object : Observable.OnPropertyChangedCallback() {
+        override fun onPropertyChanged(sender: Observable, propertyId: Int) {
+          interactionAnswerErrorReceiver.onPendingAnswerError(pendingAnswerError)
+        }
       }
-    }
     errorMessage.addOnPropertyChangedCallback(callback)
   }
 
@@ -53,14 +54,18 @@ class FractionInteractionViewModel(
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
     if (answerText.isNotEmpty()) {
       when (category) {
-        AnswerErrorCategory.REAL_TIME -> pendingAnswerError =
-          stringToFractionParser.getRealTimeAnswerError(answerText.toString()).getErrorMessageFromStringRes(
-            context
-          )
-        AnswerErrorCategory.SUBMIT_TIME -> pendingAnswerError =
-          stringToFractionParser.getSubmitTimeError(answerText.toString()).getErrorMessageFromStringRes(
-            context
-          )
+        AnswerErrorCategory.REAL_TIME ->
+          pendingAnswerError =
+            stringToFractionParser.getRealTimeAnswerError(answerText.toString())
+              .getErrorMessageFromStringRes(
+                context
+              )
+        AnswerErrorCategory.SUBMIT_TIME ->
+          pendingAnswerError =
+            stringToFractionParser.getSubmitTimeError(answerText.toString())
+              .getErrorMessageFromStringRes(
+                context
+              )
       }
       errorMessage.set(pendingAnswerError)
     }
@@ -84,8 +89,10 @@ class FractionInteractionViewModel(
   }
 
   private fun deriveHintText(interaction: Interaction): CharSequence {
-    val customPlaceholder = interaction.customizationArgsMap["customPlaceholder"]?.normalizedString ?: ""
-    val allowNonzeroIntegerPart = interaction.customizationArgsMap["allowNonzeroIntegerPart"]?.boolValue ?: true
+    val customPlaceholder =
+      interaction.customizationArgsMap["customPlaceholder"]?.normalizedString ?: ""
+    val allowNonzeroIntegerPart =
+      interaction.customizationArgsMap["allowNonzeroIntegerPart"]?.boolValue ?: true
     return when {
       customPlaceholder.isNotEmpty() -> customPlaceholder
       !allowNonzeroIntegerPart -> context.getString(R.string.fractions_default_hint_text_no_integer)

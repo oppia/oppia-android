@@ -12,14 +12,19 @@ import javax.inject.Inject
 
 /** Fragment that contains an introduction to the app. */
 class HomeFragment : InjectableFragment(), TopicSummaryClickListener {
-  @Inject lateinit var homeFragmentPresenter: HomeFragmentPresenter
+  @Inject
+  lateinit var homeFragmentPresenter: HomeFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
     return homeFragmentPresenter.handleCreateView(inflater, container)
   }
 

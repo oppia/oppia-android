@@ -81,11 +81,15 @@ class AudioViewModel @Inject constructor(
    */
   private fun loadAudio(contentId: String?, allowAutoPlay: Boolean) {
     autoPlay = allowAutoPlay
-    voiceoverMap = (state.recordedVoiceoversMap[contentId ?: state.content.contentId]
-      ?: VoiceoverMapping.getDefaultInstance()).voiceoverMappingMap
+    voiceoverMap = (
+      state.recordedVoiceoversMap[contentId ?: state.content.contentId]
+        ?: VoiceoverMapping.getDefaultInstance()
+      ).voiceoverMappingMap
     languages = voiceoverMap.keys.toList().map { it.toLowerCase(Locale.getDefault()) }
     when {
-      selectedLanguageCode.isEmpty() && languages.any { it == defaultLanguage } -> setAudioLanguageCode(defaultLanguage)
+      selectedLanguageCode.isEmpty() && languages.any { it == defaultLanguage } -> setAudioLanguageCode(
+        defaultLanguage
+      )
       languages.any { it == selectedLanguageCode } -> setAudioLanguageCode(selectedLanguageCode)
       languages.isNotEmpty() -> {
         autoPlay = false
@@ -170,7 +174,9 @@ class AudioViewModel @Inject constructor(
     }
   }
 
+  /* ktlint-disable max-line-length */
   private fun voiceOverToUri(voiceover: Voiceover?): String {
     return "https://storage.googleapis.com/$gcsResource/exploration/$explorationId/assets/audio/${voiceover?.fileName}"
   }
+  /* ktlint-enable max-line-length */
 }

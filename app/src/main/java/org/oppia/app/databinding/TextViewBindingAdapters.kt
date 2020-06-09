@@ -19,7 +19,7 @@ fun setProfileDataText(textView: TextView, timestamp: Long) {
 
 @BindingAdapter("profile:lastVisited")
 fun setProfileLastVisitedText(textView: TextView, timestamp: Long) {
-   textView.text =
+  textView.text =
     String.format(
       textView.context.getString(R.string.profile_last_used) + " " + getTimeAgo(
         timestamp,

@@ -7,7 +7,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.DialogFragment
 import org.oppia.app.R
-
 import org.oppia.app.player.exploration.ExplorationActivity
 
 /**
@@ -28,7 +27,8 @@ class StopExplorationDialogFragment : DialogFragment() {
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
     val stopExplorationInterface: StopExplorationInterface = activity as ExplorationActivity
 
-    return AlertDialog.Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
+    return AlertDialog
+      .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
       .setTitle(R.string.stop_exploration_dialog_title)
       .setMessage(R.string.stop_exploration_dialog_description)
       .setPositiveButton(R.string.stop_exploration_dialog_leave_button) { _, _ ->

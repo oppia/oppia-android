@@ -6,7 +6,7 @@ import org.oppia.app.activity.InjectableAppCompatActivity
 
 // TODO(#59): Make this activity only included in relevant tests instead of all prod builds.
 /** A test activity for the bindable RecyclerView adapter. */
-class BindableAdapterTestActivity: InjectableAppCompatActivity() {
+class BindableAdapterTestActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)

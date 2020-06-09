@@ -59,7 +59,11 @@ class HomeFragmentPresenter @Inject constructor(
   private val orientation = Resources.getSystem().configuration.orientation
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding = HomeFragmentBinding.inflate(
+      inflater,
+      container,
+      /* attachToRoot= */ false
+    )
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
 
@@ -120,19 +124,28 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   private fun getProfileData(): LiveData<Profile> {
-    return Transformations.map(profileManagementController.getProfile(profileId), ::processGetProfileResult)
+    return Transformations.map(
+      profileManagementController.getProfile(profileId),
+      ::processGetProfileResult
+    )
   }
 
   private fun subscribeToProfileLiveData() {
-    profileLiveData.observe(activity, Observer<Profile> { result ->
-      profileName = result.name
-      setProfileName()
-    })
+    profileLiveData.observe(
+      activity,
+      Observer<Profile> { result ->
+        profileName = result.name
+        setProfileName()
+      }
+    )
   }
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
     if (profileResult.isFailure()) {
-      logger.e("HomeFragment", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
+      logger.e(
+        "HomeFragment",
+        "Failed to retrieve profile", profileResult.getErrorOrNull()!!
+      )
     }
     return profileResult.getOrDefault(Profile.getDefaultInstance())
   }
@@ -142,24 +155,35 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   private fun subscribeToTopicList() {
-    getAssumedSuccessfulTopicList().observe(fragment, Observer<TopicList> { result ->
-      for (topicSummary in result.topicSummaryList) {
-        val topicSummaryViewModel = TopicSummaryViewModel(topicSummary, fragment as TopicSummaryClickListener)
-        itemList.add(topicSummaryViewModel)
+    getAssumedSuccessfulTopicList().observe(
+      fragment,
+      Observer<TopicList> { result ->
+        for (topicSummary in result.topicSummaryList) {
+          val topicSummaryViewModel =
+            TopicSummaryViewModel(topicSummary, fragment as TopicSummaryClickListener)
+          itemList.add(topicSummaryViewModel)
+        }
+        topicListAdapter.notifyDataSetChanged()
       }
-      topicListAdapter.notifyDataSetChanged()
-    })
+    )
   }
 
   private fun getAssumedSuccessfulTopicList(): LiveData<TopicList> {
     // If there's an error loading the data, assume the default.
-    return Transformations.map(topicListSummaryResultLiveData) { it.getOrDefault(TopicList.getDefaultInstance()) }
+    return Transformations.map(topicListSummaryResultLiveData) {
+      it.getOrDefault(TopicList.getDefaultInstance())
+    }
   }
 
   private fun setProfileName() {
     if (::welcomeViewModel.isInitialized && ::profileName.isInitialized) {
       welcomeViewModel.profileName.set(profileName)
-      welcomeViewModel.greeting.set(DateTimeUtil(fragment.requireContext(), oppiaClock).getGreetingMessage())
+      welcomeViewModel.greeting.set(
+        DateTimeUtil(
+          fragment.requireContext(),
+          oppiaClock
+        ).getGreetingMessage()
+      )
     }
   }
 
@@ -168,19 +192,26 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   private fun subscribeToOngoingStoryList() {
-    getAssumedSuccessfulOngoingStoryList().observe(fragment, Observer<OngoingStoryList> {
-      it.recentStoryList.take(3).forEach { promotedStory ->
-        val recentStory = PromotedStoryViewModel(activity, internalProfileId)
-        recentStory.setPromotedStory(promotedStory)
-        promotedStoryList.add(recentStory)
+    getAssumedSuccessfulOngoingStoryList().observe(
+      fragment,
+      Observer<OngoingStoryList> {
+        it.recentStoryList.take(3).forEach { promotedStory ->
+          val recentStory = PromotedStoryViewModel(activity, internalProfileId)
+          recentStory.setPromotedStory(promotedStory)
+          promotedStoryList.add(recentStory)
+        }
+        topicListAdapter.notifyItemChanged(1)
       }
-      topicListAdapter.notifyItemChanged(1)
-    })
+    )
   }
 
   private fun getAssumedSuccessfulOngoingStoryList(): LiveData<OngoingStoryList> {
     // If there's an error loading the data, assume the default.
-    return Transformations.map(ongoingStoryListSummaryResultLiveData) { it.getOrDefault(OngoingStoryList.getDefaultInstance()) }
+    return Transformations.map(ongoingStoryListSummaryResultLiveData) {
+      it.getOrDefault(
+        OngoingStoryList.getDefaultInstance()
+      )
+    }
   }
 
   fun onTopicSummaryClicked(topicSummary: TopicSummary) {

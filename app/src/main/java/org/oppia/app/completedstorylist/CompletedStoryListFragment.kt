@@ -11,7 +11,8 @@ import javax.inject.Inject
 /** Fragment for displaying completed stories. */
 class CompletedStoryListFragment : InjectableFragment() {
   companion object {
-    internal const val COMPLETED_STORY_LIST_FRAGMENT_PROFILE_ID_KEY = "CompletedStoryListFragment.profile_id"
+    internal const val COMPLETED_STORY_LIST_FRAGMENT_PROFILE_ID_KEY =
+      "CompletedStoryListFragment.profile_id"
 
     /** Returns a new [CompletedStoryListFragment] to display corresponding to the specified profile ID. */
     fun newInstance(internalProfileId: Int): CompletedStoryListFragment {
@@ -23,7 +24,8 @@ class CompletedStoryListFragment : InjectableFragment() {
     }
   }
 
-  @Inject lateinit var completedStoryListFragmentPresenter: CompletedStoryListFragmentPresenter
+  @Inject
+  lateinit var completedStoryListFragmentPresenter: CompletedStoryListFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -35,8 +37,16 @@ class CompletedStoryListFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val args = checkNotNull(arguments) { "Expected arguments to be passed to CompletedStoryListFragment" }
-    val internalProfileId = args.getInt(COMPLETED_STORY_LIST_FRAGMENT_PROFILE_ID_KEY, -1)
-    return completedStoryListFragmentPresenter.handleCreateView(inflater, container, internalProfileId)
+    val args =
+      checkNotNull(arguments) { "Expected arguments to be passed to CompletedStoryListFragment" }
+    val internalProfileId = args.getInt(
+      COMPLETED_STORY_LIST_FRAGMENT_PROFILE_ID_KEY,
+      -1
+    )
+    return completedStoryListFragmentPresenter.handleCreateView(
+      inflater,
+      container,
+      internalProfileId
+    )
   }
 }

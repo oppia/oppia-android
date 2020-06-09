@@ -60,11 +60,14 @@ class TopicActivityPresenter @Inject constructor(
   private val topicLiveData: LiveData<Topic> by lazy { getTopic() }
 
   private fun subscribeToTopicLiveData() {
-    topicLiveData.observe(activity, Observer<Topic> { result ->
-      val topicName = result.name
-      val toolbar = activity.findViewById<View>(R.id.topic_activity_toolbar) as Toolbar
-      toolbar.title = activity.getString(R.string.topic_prefix, topicName)
-    })
+    topicLiveData.observe(
+      activity,
+      Observer<Topic> { result ->
+        val topicName = result.name
+        val toolbar = activity.findViewById<View>(R.id.topic_activity_toolbar) as Toolbar
+        toolbar.title = activity.getString(R.string.topic_prefix, topicName)
+      }
+    )
   }
 
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
@@ -86,15 +89,25 @@ class TopicActivityPresenter @Inject constructor(
     val toolbar = activity.findViewById<View>(R.id.topic_activity_toolbar) as Toolbar
     activity.setSupportActionBar(toolbar)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
-    navigationDrawerFragment =
-      activity.supportFragmentManager.findFragmentById(R.id.topic_activity_fragment_navigation_drawer) as NavigationDrawerFragment
+    navigationDrawerFragment = activity
+      .supportFragmentManager
+      .findFragmentById(
+        R.id.topic_activity_fragment_navigation_drawer
+      ) as NavigationDrawerFragment
     navigationDrawerFragment!!.setUpDrawer(
-      activity.findViewById<View>(R.id.topic_activity_drawer_layout) as DrawerLayout,
+      activity
+        .findViewById<View>(
+          R.id.topic_activity_drawer_layout
+        ) as DrawerLayout,
       toolbar, R.id.nav_home
     )
   }
 
   private fun getTopicFragment(): TopicFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.topic_fragment_placeholder) as TopicFragment?
+    return activity
+      .supportFragmentManager
+      .findFragmentById(
+        R.id.topic_fragment_placeholder
+      ) as TopicFragment?
   }
 }

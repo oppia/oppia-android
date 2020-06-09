@@ -10,8 +10,8 @@ import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.Ad
 import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsAppInformationViewModel
 import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsDownloadPermissionsViewModel
 import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsGeneralViewModel
-import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsProfileViewModel
 import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsItemViewModel
+import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsProfileViewModel
 import org.oppia.app.databinding.AdministratorControlsAccountActionsViewBinding
 import org.oppia.app.databinding.AdministratorControlsAppInformationViewBinding
 import org.oppia.app.databinding.AdministratorControlsDownloadPermissionsViewBinding
@@ -38,7 +38,12 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
   private lateinit var profileId: ProfileId
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    binding = AdministratorControlsFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding =
+      AdministratorControlsFragmentBinding.inflate(
+        inflater,
+        container,
+        /* attachToRoot= */ false
+      )
 
     val viewModel = getAdministratorControlsViewModel()
     internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
@@ -64,11 +69,16 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
     return BindableAdapter.MultiTypeBuilder
       .newBuilder<AdministratorControlsItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
-          is AdministratorControlsGeneralViewModel -> ViewType.VIEW_TYPE_GENERAL
-          is AdministratorControlsProfileViewModel -> ViewType.VIEW_TYPE_PROFILE
-          is AdministratorControlsDownloadPermissionsViewModel -> ViewType.VIEW_TYPE_DOWNLOAD_PERMISSIONS
-          is AdministratorControlsAppInformationViewModel -> ViewType.VIEW_TYPE_APP_INFORMATION
-          is AdministratorControlsAccountActionsViewModel -> ViewType.VIEW_TYPE_ACCOUNT_ACTIONS
+          is AdministratorControlsGeneralViewModel ->
+            ViewType.VIEW_TYPE_GENERAL
+          is AdministratorControlsProfileViewModel ->
+            ViewType.VIEW_TYPE_PROFILE
+          is AdministratorControlsDownloadPermissionsViewModel ->
+            ViewType.VIEW_TYPE_DOWNLOAD_PERMISSIONS
+          is AdministratorControlsAppInformationViewModel ->
+            ViewType.VIEW_TYPE_APP_INFORMATION
+          is AdministratorControlsAccountActionsViewModel ->
+            ViewType.VIEW_TYPE_ACCOUNT_ACTIONS
           else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
         }
       }

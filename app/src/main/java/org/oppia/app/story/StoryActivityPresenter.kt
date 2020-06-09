@@ -19,6 +19,8 @@ class StoryActivityPresenter @Inject constructor(private val activity: AppCompat
   }
 
   private fun getStoryFragment(): StoryFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.story_fragment_placeholder) as StoryFragment?
+    return activity
+      .supportFragmentManager
+      .findFragmentById(R.id.story_fragment_placeholder) as StoryFragment?
   }
 }

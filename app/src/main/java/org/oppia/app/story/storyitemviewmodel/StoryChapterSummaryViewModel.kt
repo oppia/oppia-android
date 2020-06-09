@@ -33,15 +33,28 @@ class StoryChapterSummaryViewModel(
     explorationDataController.stopPlayingExploration()
     explorationDataController.startPlayingExploration(
       explorationId
-    ).observe(fragment, Observer<AsyncResult<Any?>> { result ->
-      when {
-        result.isPending() -> logger.d(STORY_VIEWER_TAG, "Loading exploration")
-        result.isFailure() -> logger.e(STORY_VIEWER_TAG, "Failed to load exploration", result.getErrorOrNull()!!)
-        else -> {
-          logger.d(STORY_VIEWER_TAG, "Successfully loaded exploration: $explorationId")
-          explorationSelectionListener.selectExploration(internalProfileId, topicId, storyId, explorationId, /* backflowScreen= */ 1 )
+    ).observe(
+      fragment,
+      Observer<AsyncResult<Any?>> { result ->
+        when {
+          result.isPending() -> logger.d(STORY_VIEWER_TAG, "Loading exploration")
+          result.isFailure() -> logger.e(
+            STORY_VIEWER_TAG,
+            "Failed to load exploration",
+            result.getErrorOrNull()!!
+          )
+          else -> {
+            logger.d(STORY_VIEWER_TAG, "Successfully loaded exploration: $explorationId")
+            explorationSelectionListener.selectExploration(
+              internalProfileId,
+              topicId,
+              storyId,
+              explorationId, /* backflowScreen= */
+              1
+            )
+          }
         }
       }
-    })
+    )
   }
 }

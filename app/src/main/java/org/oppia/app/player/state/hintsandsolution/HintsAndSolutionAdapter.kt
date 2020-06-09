@@ -74,7 +74,9 @@ class HintsAndSolutionAdapter(
       is SolutionViewModel -> {
         VIEW_TYPE_SOLUTION_ITEM
       }
-      else -> throw IllegalArgumentException("Invalid type of data $position with item ${itemList[position]}")
+      else -> throw IllegalArgumentException(
+        "Invalid type of data $position with item ${itemList[position]}"
+      )
     }
   }
 
@@ -98,18 +100,25 @@ class HintsAndSolutionAdapter(
         binding.root.visibility = View.GONE
       }
 
-      binding.hintTitle.text = hintsViewModel.title.get()!!.replace("_", " ").capitalize()
-      binding.hintsAndSolutionSummary.text =
-        htmlParserFactory.create(entityType, explorationId!!, /* imageCenterAlign= */ true)
-          .parseOppiaHtml(
-            hintsViewModel.hintsAndSolutionSummary.get()!!, binding.hintsAndSolutionSummary
-          )
+      binding.hintTitle.text = hintsViewModel.title.get()!!
+        .replace("_", " ").capitalize()
+      binding.hintsAndSolutionSummary.text = htmlParserFactory
+        .create(
+          entityType,
+          explorationId!!,
+          /* imageCenterAlign= */ true
+        )
+        .parseOppiaHtml(
+          hintsViewModel.hintsAndSolutionSummary.get()!!, binding.hintsAndSolutionSummary
+        )
 
       if (hintsViewModel.hintCanBeRevealed.get()!!) {
         binding.root.visibility = View.VISIBLE
         binding.revealHintButton.setOnClickListener {
           hintsViewModel.isHintRevealed.set(true)
-          (fragment.requireActivity() as? RevealHintListener)?.revealHint(true, position)
+          (fragment.requireActivity() as? RevealHintListener)?.revealHint(
+            true, position
+          )
           currentExpandedHintListIndex =
             if (currentExpandedHintListIndex != null && currentExpandedHintListIndex == position) {
               null
@@ -130,7 +139,9 @@ class HintsAndSolutionAdapter(
               position
             }
           expandedHintListIndexListener.onExpandListIconClicked(currentExpandedHintListIndex)
-          if (previousIndex != null && currentExpandedHintListIndex != null && previousIndex == currentExpandedHintListIndex) {
+          if (previousIndex != null && currentExpandedHintListIndex != null &&
+            previousIndex == currentExpandedHintListIndex
+          ) {
             notifyItemChanged(currentExpandedHintListIndex!!)
           } else {
             if (previousIndex != null) {
@@ -162,7 +173,12 @@ class HintsAndSolutionAdapter(
       } else {
         binding.solutionCorrectAnswer.text = solutionViewModel.correctAnswer.get()
       }
-      binding.solutionSummary.text = htmlParserFactory.create(entityType, explorationId!!, /* imageCenterAlign= */ true)
+      binding.solutionSummary.text = htmlParserFactory
+        .create(
+          entityType,
+          explorationId!!,
+          /* imageCenterAlign= */ true
+        )
         .parseOppiaHtml(
           solutionViewModel.solutionSummary.get()!!, binding.solutionSummary
         )
@@ -184,7 +200,9 @@ class HintsAndSolutionAdapter(
               position
             }
           expandedHintListIndexListener.onExpandListIconClicked(currentExpandedHintListIndex)
-          if (previousIndex != null && currentExpandedHintListIndex != null && previousIndex == currentExpandedHintListIndex) {
+          if (previousIndex != null && currentExpandedHintListIndex != null &&
+            previousIndex == currentExpandedHintListIndex
+          ) {
             notifyItemChanged(currentExpandedHintListIndex!!)
           } else {
             if (previousIndex != null) {
@@ -200,7 +218,8 @@ class HintsAndSolutionAdapter(
   }
 
   private fun showRevealSolutionDialogFragment() {
-    val previousFragment = fragment.childFragmentManager.findFragmentByTag(TAG_REVEAL_SOLUTION_DIALOG)
+    val previousFragment =
+      fragment.childFragmentManager.findFragmentByTag(TAG_REVEAL_SOLUTION_DIALOG)
     if (previousFragment != null) {
       fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }

@@ -10,14 +10,19 @@ import javax.inject.Inject
 
 /** Fragment that contains Administrator Controls of the application. */
 class AdministratorControlsFragment : InjectableFragment() {
-  @Inject lateinit var administratorControlsFragmentPresenter: AdministratorControlsFragmentPresenter
+  @Inject
+  lateinit var administratorControlsFragmentPresenter: AdministratorControlsFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
     return administratorControlsFragmentPresenter.handleCreateView(inflater, container)
   }
 }

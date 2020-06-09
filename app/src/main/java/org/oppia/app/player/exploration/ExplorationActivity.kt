@@ -21,11 +21,18 @@ private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
 const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
 
 /** The starting point for exploration. */
-class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterface, StateKeyboardButtonListener,
-  AudioButtonListener, HintsAndSolutionListener, RouteToHintsAndSolutionListener, RevealHintListener,
+class ExplorationActivity :
+  InjectableAppCompatActivity(),
+  StopExplorationInterface,
+  StateKeyboardButtonListener,
+  AudioButtonListener,
+  HintsAndSolutionListener,
+  RouteToHintsAndSolutionListener,
+  RevealHintListener,
   RevealSolutionInterface {
 
-  @Inject lateinit var explorationActivityPresenter: ExplorationActivityPresenter
+  @Inject
+  lateinit var explorationActivityPresenter: ExplorationActivityPresenter
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
   private lateinit var storyId: String
@@ -35,22 +42,44 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    internalProfileId = intent.getIntExtra(EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, -1)
-    topicId = intent.getStringExtra(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
-    storyId = intent.getStringExtra(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY)
-    explorationId = intent.getStringExtra(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY)
-    backflowScreen = intent.getIntExtra(EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY, -1)
-    explorationActivityPresenter.handleOnCreate(this, internalProfileId, topicId, storyId, explorationId, backflowScreen)
+    internalProfileId = intent.getIntExtra(
+      EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY,
+      -1
+    )
+    topicId = intent.getStringExtra(
+      EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
+    )
+    storyId = intent.getStringExtra(
+      EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY
+    )
+    explorationId = intent.getStringExtra(
+      EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY
+    )
+    backflowScreen = intent.getIntExtra(
+      EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY,
+      -1
+    )
+    explorationActivityPresenter.handleOnCreate(
+      this,
+      internalProfileId,
+      topicId,
+      storyId,
+      explorationId,
+      backflowScreen
+    )
   }
 
   companion object {
     /** Returns a new [Intent] to route to [ExplorationActivity] for a specified exploration. */
 
-    internal const val EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY = "ExplorationActivity.profile_id"
+    internal const val EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY =
+      "ExplorationActivity.profile_id"
     internal const val EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "ExplorationActivity.topic_id"
     internal const val EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY = "ExplorationActivity.story_id"
-    internal const val EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY = "ExplorationActivity.exploration_id"
-    internal const val EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY = "ExplorationActivity.backflow_screen"
+    internal const val EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY =
+      "ExplorationActivity.exploration_id"
+    internal const val EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY =
+      "ExplorationActivity.backflow_screen"
 
     fun createExplorationActivityIntent(
       context: Context,
@@ -75,7 +104,8 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
   }
 
   private fun showStopExplorationDialogFragment() {
-    val previousFragment = supportFragmentManager.findFragmentByTag(TAG_STOP_EXPLORATION_DIALOG)
+    val previousFragment = supportFragmentManager
+      .findFragmentByTag(TAG_STOP_EXPLORATION_DIALOG)
     if (previousFragment != null) {
       supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
@@ -121,7 +151,10 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
   }
 
   private fun getHintsAndSolution(): HintsAndSolutionFragment? {
-    return supportFragmentManager.findFragmentByTag(TAG_HINTS_AND_SOLUTION_DIALOG) as HintsAndSolutionFragment?
+    return supportFragmentManager
+      .findFragmentByTag(
+        TAG_HINTS_AND_SOLUTION_DIALOG
+      ) as HintsAndSolutionFragment?
   }
 
   override fun routeToHintsAndSolution(
@@ -130,7 +163,11 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopExplorationInterf
     allHintsExhausted: Boolean
   ) {
     if (getHintsAndSolution() == null) {
-      val hintsAndSolutionFragment = HintsAndSolutionFragment.newInstance(explorationId, newAvailableHintIndex, allHintsExhausted)
+      val hintsAndSolutionFragment = HintsAndSolutionFragment.newInstance(
+        explorationId,
+        newAvailableHintIndex,
+        allHintsExhausted
+      )
       hintsAndSolutionFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }
   }

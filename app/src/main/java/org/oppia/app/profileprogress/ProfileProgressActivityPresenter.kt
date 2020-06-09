@@ -35,7 +35,8 @@ class ProfileProgressActivityPresenter @Inject constructor(
   }
 
   private fun setUpNavigationDrawer() {
-    val toolbar = activity.findViewById<View>(R.id.profile_progress_activity_toolbar) as Toolbar
+    val toolbar = activity
+      .findViewById<View>(R.id.profile_progress_activity_toolbar) as Toolbar
     activity.setSupportActionBar(toolbar)
     activity.supportActionBar!!.setTitle(R.string.profile)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
@@ -46,7 +47,9 @@ class ProfileProgressActivityPresenter @Inject constructor(
   }
 
   private fun getProfileProgressFragment(): ProfileProgressFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.profile_progress_fragment_placeholder) as ProfileProgressFragment?
+    return activity
+      .supportFragmentManager
+      .findFragmentById(R.id.profile_progress_fragment_placeholder) as ProfileProgressFragment?
   }
 
   fun showPictureEditDialog() {
@@ -66,7 +69,11 @@ class ProfileProgressActivityPresenter @Inject constructor(
 
   fun handleOnActivityResult(intent: Intent?) {
     intent?.let {
-      profileManagementController.updateProfileAvatar(profileId, intent.data, /* colorRgb= */ -10710042)
+      profileManagementController.updateProfileAvatar(
+        profileId,
+        intent.data, /* colorRgb= */
+        -10710042
+      )
     }
   }
 }

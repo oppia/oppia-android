@@ -9,7 +9,8 @@ import javax.inject.Inject
 
 /** Activity that controls profile creation and selection. */
 class ProfileActivity : InjectableAppCompatActivity() {
-  @Inject lateinit var profileActivityPresenter: ProfileActivityPresenter
+  @Inject
+  lateinit var profileActivityPresenter: ProfileActivityPresenter
 
   companion object {
     fun createProfileActivity(context: Context): Intent {

@@ -10,7 +10,7 @@ import org.oppia.app.view.ViewComponent
  * A fragment that facilitates field injection to children. This fragment can only be used with
  * [InjectableAppCompatActivity] contexts.
  */
-abstract class InjectableFragment: Fragment() {
+abstract class InjectableFragment : Fragment() {
   /**
    * The [FragmentComponent] corresponding to this fragment. This cannot be used before [onAttach] is called, and can be
    * used to inject lateinit fields in child fragments during fragment attachment (which is recommended to be done in an
@@ -20,7 +20,8 @@ abstract class InjectableFragment: Fragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent = (requireActivity() as InjectableAppCompatActivity).createFragmentComponent(this)
+    fragmentComponent = (requireActivity() as InjectableAppCompatActivity)
+      .createFragmentComponent(this)
   }
 
   fun createViewComponent(view: View): ViewComponent {

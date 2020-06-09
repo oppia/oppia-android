@@ -52,17 +52,26 @@ class ConceptCardViewModel @Inject constructor(
 
   private fun processConceptCardResult(conceptCardResult: AsyncResult<ConceptCard>): ConceptCard {
     if (conceptCardResult.isFailure()) {
-      logger.e("ConceptCardFragment", "Failed to retrieve Concept Card", conceptCardResult.getErrorOrNull()!!)
+      logger.e(
+        "ConceptCardFragment",
+        "Failed to retrieve Concept Card",
+        conceptCardResult.getErrorOrNull()!!
+      )
     }
     return conceptCardResult.getOrDefault(ConceptCard.getDefaultInstance())
   }
 
   private fun processExplanationResult(conceptCardResult: AsyncResult<ConceptCard>): CharSequence {
     if (conceptCardResult.isFailure()) {
-      logger.e("ConceptCardFragment", "Failed to retrieve Concept Card", conceptCardResult.getErrorOrNull()!!)
+      logger.e(
+        "ConceptCardFragment",
+        "Failed to retrieve Concept Card",
+        conceptCardResult.getErrorOrNull()!!
+      )
     }
     val conceptCard = conceptCardResult.getOrDefault(ConceptCard.getDefaultInstance())
-    return htmlParserFactory.create(entityType, skillId, /* imageCenterAlign= */ true)
+    return htmlParserFactory
+      .create(entityType, skillId, /* imageCenterAlign= */ true)
       .parseOppiaHtml(conceptCard.explanation.html, binding.conceptCardExplanationText)
   }
 }

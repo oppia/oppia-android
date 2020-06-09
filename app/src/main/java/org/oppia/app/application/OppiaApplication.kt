@@ -6,7 +6,7 @@ import androidx.multidex.MultiDexApplication
 import org.oppia.app.activity.ActivityComponent
 
 /** The root [Application] of the Oppia app. */
-class OppiaApplication: MultiDexApplication() {
+class OppiaApplication : MultiDexApplication() {
   /** The root [ApplicationComponent]. */
   private val component: ApplicationComponent by lazy {
     DaggerApplicationComponent.builder()
