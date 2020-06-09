@@ -109,11 +109,6 @@ class StateFragmentPresenter @Inject constructor(
       it.viewModel = this.viewModel
     }
 
-    if (getAudioFragment() == null) {
-      fragment.childFragmentManager.beginTransaction()
-        .add(R.id.audio_fragment_placeholder, AudioFragment(), TAG_AUDIO_FRAGMENT).commitNow()
-    }
-
     binding.stateRecyclerView.addOnLayoutChangeListener { _, _, _, _, bottom, _, _, _, oldBottom ->
       if (bottom < oldBottom) {
         binding.stateRecyclerView.postDelayed({
@@ -244,6 +239,11 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun getAudioUiManager(): AudioUiManager? {
+    if (getAudioFragment() == null) {
+      val audioFragment: AudioFragment = AudioFragment.newInstance(profileId.internalId)
+      fragment.childFragmentManager.beginTransaction()
+        .add(R.id.audio_fragment_placeholder, audioFragment, TAG_AUDIO_FRAGMENT).commitNow()
+    }
     return getAudioFragment() as? AudioUiManager
   }
 

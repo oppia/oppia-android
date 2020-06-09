@@ -55,13 +55,3 @@ message Fraction {
 message ListOfSetsOfHtmlStrings {
   repeated StringList set_of_html_strings = 1;
 }
-
-// Structure for a DragAndDropHtmlString object.
-message DragAndDropHtmlString {
-  string html = 1;
-}
-
-// Structure for a DragAndDropPositiveInt object.
-message DragAndDropPositiveInt {
-  uint32 non_negative_int = 1;
-}
