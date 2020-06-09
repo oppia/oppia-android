@@ -43,7 +43,8 @@ message ParamSpec {
 
 // Supported object types for parameters.
 enum ObjectType {
-  UNICODE_STRING = 0;
+  OBJECT_TYPE_UNSPECIFIED = 0;
+  UNICODE_STRING = 1;
 }
 
 // Structure for a single state
@@ -80,7 +81,7 @@ message Interaction {
   repeated AnswerGroup answer_groups = 2;
   Solution solution = 3;
   repeated AnswerGroup confirmed_unclassified_answers = 4;
-  Hint hint = 5;
+  repeated Hint hint = 5;
   Outcome default_outcome = 6;
   // Mapping from the name of a customization arg to the default interaction
   // object of the customization arg
@@ -108,14 +109,33 @@ message Solution {
   string interaction_id = 1;
   // Flag that is true if correct_answer is the only correct answer of the question.
   bool answer_is_exclusive = 2;
-  string correct_answer = 3;
+  // correct_answer of the State.
+  CorrectAnswer correct_answer = 3;
+  // Core explanation to the correct answer.
   SubtitledHtml explanation = 4;
+  // To check if the solution was revealed or not by the learner.
+  bool solution_is_revealed = 5;
+}
+
+// Structure for a Correct answer in Solution
+// Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeSolution.kt
+message CorrectAnswer {
+  int32 denominator = 1;
+  int32 numerator = 2;
+  int32 whole_number = 3;
+  bool is_negative = 4;
+  string correct_answer = 5;
 }
 
 // Structure for a single hint
 // Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeHint.kt
 message Hint {
+  // Hint data.
   SubtitledHtml hint_content = 1;
+  // To check if the hint was revealed or not
+  bool hint_is_revealed = 2;
+  // The current state that is display to the user.
+  State state = 3;
 }
 
 // Structure for a single outcome
@@ -175,6 +195,8 @@ message PendingState {
   // A list of previous wrong answers that led back to this state, and Oppia's responses. These responses are in the
   // order the learner submitted them.
   repeated AnswerAndResponse wrong_answer = 1;
+  // A list of hints.
+  repeated Hint hint = 2;
 }
 
 // Corresponds to an exploration state that the learner has previous completed.
@@ -233,5 +255,28 @@ message AnswerOutcome {
     // Indicates that the learner needs to play the specified exploration ID to refresh missing topics and then return
     // to restart the current exploration.
     string refresher_exploration_id = 7;
+  }
+}
+
+// A structure corresponding to the index of a hint or solution in a state. This structure is set up
+// to properly account for variable numbers of hints, for cases when only a solution or no solution
+// exists, and for when there are no hints or solutions.
+message HelpIndex {
+  // This type is uninitialized in cases when no index is currently available (either because a hint
+  // or solution hasn't yet been triggered, or because there are none to trigger).
+  oneof index_type {
+    // Indicates this help index corresponds to the index of a hint within the hint list of a state.
+    int32 hint_index = 1;
+
+    // Indicates this help index corresponds to the solution of a state. The boolean value here has
+    // no importance and is always 'true'.
+    bool show_solution = 2;
+
+    // Indicates that everything available has been revealed. Note that this is different than the
+    // case when there are no hints or solutions to trigger, even though the resulting behavior may
+    // be different. This case specifically indicates that all hints and the solution, if present,
+    // have been revealed and there's no other help to provide. The boolean value here has no
+    // importance and is always 'true'.
+    bool everything_revealed = 3;
   }
 }

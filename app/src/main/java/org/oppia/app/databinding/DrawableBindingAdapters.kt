@@ -16,6 +16,13 @@ fun setBackgroundDrawable(view: View, @ColorInt colorRgb: Int) {
   (view.background as GradientDrawable).setColor((0xff000000 or colorRgb.toLong()).toInt())
 }
 
+@BindingAdapter("app:topRoundedRectDrawableWithColor")
+fun setTopBackgroundDrawable(view: View, @ColorInt colorRgb: Int) {
+  view.setBackgroundResource(R.drawable.top_rounded_rect_background)
+  // The input color needs to have alpha channel prepended to it.
+  (view.background as GradientDrawable).setColor((0xff000000 or colorRgb.toLong()).toInt())
+}
+
 @BindingAdapter("app:bottomRoundedRectDrawableWithColor")
 fun setBottomBackgroundDrawable(view: View, @ColorInt colorRgb: Int) {
   view.setBackgroundResource(R.drawable.bottom_rounded_rect_background)

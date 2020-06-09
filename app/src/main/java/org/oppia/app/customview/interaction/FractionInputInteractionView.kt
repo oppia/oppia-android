@@ -26,12 +26,12 @@ class FractionInputInteractionView @JvmOverloads constructor(
   attrs: AttributeSet? = null,
   defStyle: Int = android.R.attr.editTextStyle
 ) : EditText(context, attrs, defStyle), View.OnFocusChangeListener {
-  private val hintText: String
+  private val hintText: CharSequence
   private val stateKeyboardButtonListener: StateKeyboardButtonListener
 
   init {
     onFocusChangeListener = this
-    hintText = (hint ?: "").toString()
+    hintText = (hint ?: "")
     stateKeyboardButtonListener = context as StateKeyboardButtonListener
   }
 

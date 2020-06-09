@@ -35,6 +35,7 @@ import org.mockito.junit.MockitoRule
 import org.oppia.app.model.Exploration
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
@@ -72,8 +73,7 @@ class ExplorationDataControllerTest {
   @JvmField
   val executorRule = InstantTaskExecutorRule()
 
-  @Inject
-  lateinit var explorationDataController: ExplorationDataController
+  @Inject lateinit var explorationDataController: ExplorationDataController
 
   @Mock
   lateinit var mockExplorationObserver: Observer<AsyncResult<Exploration>>
@@ -130,7 +130,7 @@ class ExplorationDataControllerTest {
     verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
     assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
     assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
-    val exploration = explorationResultCaptor.value.getOrThrow();
+    val exploration = explorationResultCaptor.value.getOrThrow()
     assertThat(exploration.title).isEqualTo("Welcome to Oppia!")
     assertThat(exploration.languageCode).isEqualTo("en")
     assertThat(exploration.statesCount).isEqualTo(6)
@@ -151,7 +151,7 @@ class ExplorationDataControllerTest {
     verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
     assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
     assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
-    val exploration = explorationResultCaptor.value.getOrThrow();
+    val exploration = explorationResultCaptor.value.getOrThrow()
     assertThat(exploration.title).isEqualTo("About Oppia")
     assertThat(exploration.languageCode).isEqualTo("en")
     assertThat(exploration.statesCount).isEqualTo(11)
@@ -168,7 +168,7 @@ class ExplorationDataControllerTest {
 
     assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
     assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
-    val exploration = explorationResultCaptor.value.getOrThrow();
+    val exploration = explorationResultCaptor.value.getOrThrow()
     assertThat(exploration.title).isEqualTo("What is a Fraction?")
     assertThat(exploration.languageCode).isEqualTo("en")
     assertThat(exploration.statesCount).isEqualTo(25)
@@ -184,7 +184,7 @@ class ExplorationDataControllerTest {
     verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
     assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
     assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
-    val exploration = explorationResultCaptor.value.getOrThrow();
+    val exploration = explorationResultCaptor.value.getOrThrow()
     assertThat(exploration.title).isEqualTo("The Meaning of \"Equal Parts\"")
     assertThat(exploration.languageCode).isEqualTo("en")
     assertThat(exploration.statesCount).isEqualTo(18)
@@ -200,7 +200,7 @@ class ExplorationDataControllerTest {
     verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
     assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
     assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
-    val exploration = explorationResultCaptor.value.getOrThrow();
+    val exploration = explorationResultCaptor.value.getOrThrow()
     assertThat(exploration.title).isEqualTo("What is a Ratio?")
     assertThat(exploration.languageCode).isEqualTo("en")
     assertThat(exploration.statesCount).isEqualTo(26)
@@ -216,7 +216,7 @@ class ExplorationDataControllerTest {
     verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
     assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
     assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
-    val exploration = explorationResultCaptor.value.getOrThrow();
+    val exploration = explorationResultCaptor.value.getOrThrow()
     assertThat(exploration.title).isEqualTo("Order is Important")
     assertThat(exploration.languageCode).isEqualTo("en")
     assertThat(exploration.statesCount).isEqualTo(22)
@@ -232,7 +232,7 @@ class ExplorationDataControllerTest {
     verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
     assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
     assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
-    val exploration = explorationResultCaptor.value.getOrThrow();
+    val exploration = explorationResultCaptor.value.getOrThrow()
     assertThat(exploration.title).isEqualTo("Equivalent Ratios")
     assertThat(exploration.languageCode).isEqualTo("en")
     assertThat(exploration.statesCount).isEqualTo(24)
@@ -248,7 +248,7 @@ class ExplorationDataControllerTest {
     verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
     assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
     assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
-    val exploration = explorationResultCaptor.value.getOrThrow();
+    val exploration = explorationResultCaptor.value.getOrThrow()
     assertThat(exploration.title).isEqualTo("Writing Ratios in Simplest Form")
     assertThat(exploration.languageCode).isEqualTo("en")
     assertThat(exploration.statesCount).isEqualTo(21)
@@ -319,7 +319,7 @@ class ExplorationDataControllerTest {
     modules = [
       TestModule::class, ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
       MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
-      TextInputRuleModule::class, InteractionsModule::class
+      TextInputRuleModule::class, DragDropSortInputModule::class, InteractionsModule::class
     ]
   )
   interface TestApplicationComponent {

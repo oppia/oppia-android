@@ -98,6 +98,14 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     recyclerViewAssembler.adapter.notifyDataSetChanged()
   }
 
+  /**
+   * Updates whether the submit button should be active based on whether the pending answer is in an
+   * error state.
+   */
+  fun updateSubmitButton(pendingAnswerError: String?) {
+    questionViewModel.setCanSubmitAnswer(pendingAnswerError == null)
+  }
+
   fun handleKeyboardAction() = onSubmitButtonClicked()
 
   private fun subscribeToCurrentQuestion() {
@@ -180,7 +188,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     // TODO(#502): Add support for surfacing skills that need to be reviewed by the learner.
     return builder.addContentSupport()
       .addFeedbackSupport()
-      .addInteractionSupport()
+      .addInteractionSupport(questionViewModel.getCanSubmitAnswer())
       .addPastAnswersSupport()
       .addWrongAnswerCollapsingSupport()
       .addForwardNavigationSupport()

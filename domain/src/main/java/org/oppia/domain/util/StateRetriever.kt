@@ -1,21 +1,25 @@
 package org.oppia.domain.util
 
+import javax.inject.Inject
 import org.json.JSONArray
 import org.json.JSONObject
 import org.oppia.app.model.AnswerGroup
+import org.oppia.app.model.CorrectAnswer
 import org.oppia.app.model.Fraction
+import org.oppia.app.model.Hint
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.ListOfSetsOfHtmlStrings
 import org.oppia.app.model.NumberUnit
 import org.oppia.app.model.NumberWithUnits
 import org.oppia.app.model.Outcome
 import org.oppia.app.model.RuleSpec
+import org.oppia.app.model.Solution
 import org.oppia.app.model.State
 import org.oppia.app.model.StringList
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.Voiceover
 import org.oppia.app.model.VoiceoverMapping
-import javax.inject.Inject
 
 /** Utility that helps create a [State] object given its JSON representation. */
 class StateRetriever @Inject constructor(
@@ -71,6 +75,16 @@ class StateRetriever @Inject constructor(
           getJsonObject(interactionJson, "customization_args")
         )
       )
+      .addAllHint(
+        createListOfHintsFromJson(
+          interactionJson.getJSONArray("hints")
+        )
+      )
+      .setSolution(
+        createSolutionFromJson(
+          getJsonObject(interactionJson, "solution")
+        )
+      )
       .build()
   }
 
@@ -81,7 +95,8 @@ class StateRetriever @Inject constructor(
 
   // Creates the list of answer group objects from JSON
   private fun createAnswerGroupsFromJson(
-    answerGroupsJson: JSONArray?, interactionId: String
+    answerGroupsJson: JSONArray?,
+    interactionId: String
   ): MutableList<AnswerGroup> {
     val answerGroups = mutableListOf<AnswerGroup>()
     if (answerGroupsJson == null) {
@@ -97,9 +112,44 @@ class StateRetriever @Inject constructor(
     return answerGroups
   }
 
+  // Creates the list of hints objects from JSON
+  private fun createListOfHintsFromJson(
+    hintsJson: JSONArray?
+  ): MutableList<Hint> {
+    val hints = mutableListOf<Hint>()
+    if (hintsJson == null) {
+      return hints
+    }
+    for (i in 0 until hintsJson.length()) {
+      hints.add(
+        createSingleHintFromJson(
+          hintsJson.getJSONObject(i)
+        )
+      )
+    }
+    return hints
+  }
+
+  // Creates an hint object from JSON
+  private fun createSingleHintFromJson(hintJson: JSONObject?): Hint {
+    if (hintJson == null) {
+      return Hint.getDefaultInstance()
+    }
+    return Hint.newBuilder()
+      .setHintContent(
+        SubtitledHtml.newBuilder().setHtml(
+          hintJson.getJSONObject("hint_content")?.getString("html")
+        ).setContentId(
+          hintJson.getJSONObject("hint_content")?.optString("content_id")
+        )
+      )
+      .build()
+  }
+
   // Creates a single answer group object from JSON
   private fun createSingleAnswerGroupFromJson(
-    answerGroupJson: JSONObject, interactionId: String
+    answerGroupJson: JSONObject,
+    interactionId: String
   ): AnswerGroup {
     return AnswerGroup.newBuilder()
       .setOutcome(
@@ -125,6 +175,40 @@ class StateRetriever @Inject constructor(
       .build()
   }
 
+  // Creates a solution object from JSON
+  private fun createSolutionFromJson(solutionJson: JSONObject?): Solution {
+    if (solutionJson == null) {
+      return Solution.getDefaultInstance()
+    }
+    return Solution.newBuilder()
+      .setCorrectAnswer(createCorrectAnswer(solutionJson))
+      .setExplanation(
+        SubtitledHtml.newBuilder().setHtml(
+          solutionJson.getJSONObject("explanation")?.getString("html")
+        ).setContentId(
+          solutionJson.getJSONObject("explanation")?.optString("content_id")
+        )
+      )
+      .setAnswerIsExclusive(solutionJson.getBoolean("answer_is_exclusive"))
+      .build()
+  }
+
+  private fun createCorrectAnswer(containerObject: JSONObject): CorrectAnswer {
+    val correctAnswerObject = containerObject.optJSONObject("correct_answer")
+    return if (correctAnswerObject != null) {
+      CorrectAnswer.newBuilder()
+        .setNumerator(correctAnswerObject.getInt("numerator"))
+        .setDenominator(correctAnswerObject.getInt("denominator"))
+        .setWholeNumber(correctAnswerObject.getInt("wholeNumber"))
+        .setIsNegative(correctAnswerObject.getBoolean("isNegative"))
+        .build()
+    } else {
+      CorrectAnswer.newBuilder()
+        .setCorrectAnswer(containerObject.getString("correct_answer"))
+        .build()
+    }
+  }
+
   // TODO(#298): Remove this and only parse SubtitledHtml according the latest schema after all test explorations are
   //  updated.
   /**
@@ -143,14 +227,21 @@ class StateRetriever @Inject constructor(
   }
 
   // Creates VoiceoverMappings from JSON and adds onto State
-  private fun createVoiceOverMappingsFromJson(recordedVoiceovers: JSONObject, stateBuilder: State.Builder) {
+  private fun createVoiceOverMappingsFromJson(
+    recordedVoiceovers: JSONObject,
+    stateBuilder: State.Builder
+  ) {
     val voiceoverMappingJson = recordedVoiceovers.getJSONObject("voiceovers_mapping")
     voiceoverMappingJson?.let {
       for (key in it.keys()) {
         val voiceoverMapping = VoiceoverMapping.newBuilder()
         val voiceoverJson = it.getJSONObject(key)
+        if (voiceoverJson.length() == 0) continue
         for (lang in voiceoverJson.keys()) {
-          voiceoverMapping.putVoiceoverMapping(lang, createVoiceOverFromJson(voiceoverJson.getJSONObject(lang)))
+          voiceoverMapping.putVoiceoverMapping(
+            lang,
+            createVoiceOverFromJson(voiceoverJson.getJSONObject(lang))
+          )
         }
         stateBuilder.putRecordedVoiceovers(key, voiceoverMapping.build())
       }
@@ -167,7 +258,8 @@ class StateRetriever @Inject constructor(
 
   // Creates the list of rule spec objects from JSON
   private fun createRuleSpecsFromJson(
-    ruleSpecJson: JSONArray?, interactionId: String
+    ruleSpecJson: JSONArray?,
+    interactionId: String
   ): MutableList<RuleSpec> {
     val ruleSpecList = mutableListOf<RuleSpec>()
     if (ruleSpecJson == null) {
@@ -193,9 +285,11 @@ class StateRetriever @Inject constructor(
               .setNonNegativeInt(inputsJson.getInt(inputName))
               .build()
           )
-          else -> ruleSpecBuilder.putInput(inputName, createExactInputFromJson(inputsJson, inputName, interactionId))
+          else -> ruleSpecBuilder.putInput(
+            inputName,
+            createExactInputFromJson(inputsJson, inputName, interactionId, ruleSpecBuilder.ruleType)
+          )
         }
-
       }
       ruleSpecList.add(ruleSpecBuilder.build())
     }
@@ -204,7 +298,10 @@ class StateRetriever @Inject constructor(
 
   // Creates an input interaction object from JSON
   private fun createExactInputFromJson(
-    inputJson: JSONObject?, keyName: String, interactionId: String
+    inputJson: JSONObject?,
+    keyName: String,
+    interactionId: String,
+    ruleType: String
   ): InteractionObject {
     if (inputJson == null) {
       return InteractionObject.getDefaultInstance()
@@ -228,8 +325,53 @@ class StateRetriever @Inject constructor(
       "FractionInput" -> InteractionObject.newBuilder()
         .setFraction(parseFraction(inputJson.getJSONObject(keyName)))
         .build()
+      "DragAndDropSortInput" -> createExactInputForDragDropAndSort(inputJson, keyName, ruleType)
       else -> throw IllegalStateException("Encountered unexpected interaction ID: $interactionId")
     }
+  }
+
+  /**
+   * Returns a Drag-and-Drop-specific [InteractionObject] parsed from the specified input [JSONObject] for the given key name.
+   * This method makes assumptions about how to interpret the input type represented by the [JSONObject].
+   */
+  private fun createExactInputForDragDropAndSort(
+    inputJson: JSONObject?,
+    keyName: String,
+    ruleType: String
+  ): InteractionObject {
+    if (inputJson == null) {
+      return InteractionObject.getDefaultInstance()
+    }
+    return when (ruleType) {
+      "HasElementXAtPositionY" -> return when (keyName) {
+        "x" -> InteractionObject.newBuilder()
+          .setNormalizedString(inputJson.getString(keyName))
+          .build()
+        "y" -> InteractionObject.newBuilder()
+          .setNonNegativeInt(inputJson.getInt(keyName))
+          .build()
+        else -> throw IllegalStateException("Encountered unexpected key name: $keyName")
+      }
+
+      "HasElementXBeforeElementY" -> InteractionObject.newBuilder()
+        .setNormalizedString(inputJson.getString(keyName))
+        .build()
+      else -> InteractionObject.newBuilder()
+        .setListOfSetsOfHtmlString(parseListOfSetsOfHtmlStrings(inputJson.getJSONArray(keyName)))
+        .build()
+    }
+  }
+
+  private fun parseListOfSetsOfHtmlStrings(listOfSetsOfHtmlStringsAnswer: JSONArray): ListOfSetsOfHtmlStrings {
+    val listOfSetsOfHtmlStringsBuilder = ListOfSetsOfHtmlStrings.newBuilder()
+    for (i in 0 until listOfSetsOfHtmlStringsAnswer.length()) {
+      listOfSetsOfHtmlStringsBuilder.addSetOfHtmlStrings(
+        parseStringList(
+          listOfSetsOfHtmlStringsAnswer.getJSONArray(i)
+        )
+      )
+    }
+    return listOfSetsOfHtmlStringsBuilder.build()
   }
 
   private fun parseStringList(itemSelectionAnswer: JSONArray): StringList {
@@ -244,7 +386,8 @@ class StateRetriever @Inject constructor(
     val numberWithUnitsBuilder = NumberWithUnits.newBuilder()
     when (numberWithUnitsAnswer.getString("type")) {
       "real" -> numberWithUnitsBuilder.real = numberWithUnitsAnswer.getDouble("real")
-      "fraction" -> numberWithUnitsBuilder.fraction = parseFraction(numberWithUnitsAnswer.getJSONObject("fraction"))
+      "fraction" -> numberWithUnitsBuilder.fraction =
+        parseFraction(numberWithUnitsAnswer.getJSONObject("fraction"))
     }
     val unitsArray = numberWithUnitsAnswer.getJSONArray("units")
     for (i in 0 until unitsArray.length()) {
@@ -290,7 +433,8 @@ class StateRetriever @Inject constructor(
   private fun createCustomizationArgValueFromJson(customizationArgValue: Any): InteractionObject {
     val interactionObjectBuilder = InteractionObject.newBuilder()
     when (customizationArgValue) {
-      is String -> return interactionObjectBuilder.setNormalizedString(customizationArgValue).build()
+      is String -> return interactionObjectBuilder.setNormalizedString(customizationArgValue)
+        .build()
       is Int -> return interactionObjectBuilder.setSignedInt(customizationArgValue).build()
       is Double -> return interactionObjectBuilder.setReal(customizationArgValue).build()
       is Boolean -> return interactionObjectBuilder.setBoolValue(customizationArgValue).build()

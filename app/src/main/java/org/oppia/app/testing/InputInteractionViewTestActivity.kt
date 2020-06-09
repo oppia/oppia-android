@@ -1,39 +1,68 @@
 package org.oppia.app.testing
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.app.R
 import org.oppia.app.customview.interaction.FractionInputInteractionView
 import org.oppia.app.customview.interaction.NumericInputInteractionView
 import org.oppia.app.customview.interaction.TextInputInteractionView
-import org.oppia.app.databinding.ActivityNumericInputInteractionViewTestBinding
+import org.oppia.app.databinding.ActivityInputInteractionViewTestBinding
 import org.oppia.app.model.Interaction
+import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
+import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
 import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.app.player.state.itemviewmodel.TextInputViewModel
+import org.oppia.app.player.state.listener.StateKeyboardButtonListener
 
 /**
  * This is a dummy activity to test input interaction views.
- * It contains [NumericInputInteractionView], [TextInputInteractionView], [FractionInputInteractionView] and [NumberWithUnitsInputInteractionView].
+ * It contains [FractionInputInteractionView], [NumericInputInteractionView],and [TextInputInteractionView].
  */
-class InputInteractionViewTestActivity : AppCompatActivity() {
-  val numericInputViewModel = NumericInputViewModel()
+class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButtonListener,
+  InteractionAnswerErrorReceiver {
+  override fun onEditorAction(actionCode: Int) {
+  }
+
+  private lateinit var binding: ActivityInputInteractionViewTestBinding
+  lateinit var fractionInteractionViewModel: FractionInteractionViewModel
+  val numericInputViewModel = NumericInputViewModel(
+    context = this,
+    interactionAnswerErrorReceiver = this
+  )
+
   val textInputViewModel = TextInputViewModel(
     interaction = Interaction.getDefaultInstance()
-  )
-  val fractionInteractionViewModel = FractionInteractionViewModel(
-    interaction = Interaction.getDefaultInstance(),
-    context = this@InputInteractionViewTestActivity.applicationContext
   )
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    val binding = DataBindingUtil.setContentView<ActivityNumericInputInteractionViewTestBinding>(
-      this, R.layout.activity_numeric_input_interaction_view_test
+    binding = DataBindingUtil.setContentView<ActivityInputInteractionViewTestBinding>(
+      this, R.layout.activity_input_interaction_view_test
+    )
+    fractionInteractionViewModel = FractionInteractionViewModel(
+      interaction = Interaction.getDefaultInstance(),
+      context = this,
+      interactionAnswerErrorReceiver = this
     )
     binding.numericInputViewModel = numericInputViewModel
     binding.textInputViewModel = textInputViewModel
     binding.fractionInteractionViewModel = fractionInteractionViewModel
+  }
+
+  fun getPendingAnswerErrorOnSubmitClick(v: View) {
+    fractionInteractionViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+    numericInputViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+  }
+
+  override fun onPendingAnswerError(
+    pendingAnswerError: String?
+  ) {
+    if (pendingAnswerError != null)
+      binding.submitButton.isEnabled = false
+    else
+      binding.submitButton.isEnabled = true
   }
 }
