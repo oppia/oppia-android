@@ -62,8 +62,11 @@ private const val CONDITION_CHECK_INTERVAL = 100L
 @RunWith(AndroidJUnit4::class)
 class PinPasswordActivityTest {
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
 
   private val adminPin = "12345"
   private val adminId = 0
@@ -146,8 +149,13 @@ class PinPasswordActivityTest {
       )
     ).use {
       closeSoftKeyboard()
-      onView(withId(R.id.input_pin)).perform(closeSoftKeyboard()).perform(typeText("54321"), closeSoftKeyboard())
-      onView(withText(context.getString(R.string.pin_password_incorrect_pin))).check(matches(isDisplayed()))
+      onView(withId(R.id.input_pin)).perform(closeSoftKeyboard())
+        .perform(typeText("54321"), closeSoftKeyboard())
+      onView(withText(context.getString(R.string.pin_password_incorrect_pin))).check(
+        matches(
+          isDisplayed()
+        )
+      )
     }
   }
 
@@ -161,7 +169,11 @@ class PinPasswordActivityTest {
       )
     ).use {
       onView(withId(R.id.input_pin)).perform(typeText("321"), closeSoftKeyboard())
-      onView(withText(context.getString(R.string.pin_password_incorrect_pin))).check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.pin_password_incorrect_pin))).check(
+        matches(
+          isDisplayed()
+        )
+      )
     }
   }
 
@@ -176,7 +188,11 @@ class PinPasswordActivityTest {
     ).use {
       onView(withId(R.id.input_pin)).perform(typeText(""), closeSoftKeyboard())
       onView(withId(R.id.forgot_pin)).perform(click())
-      onView(withText(context.getString(R.string.pin_password_forgot_message))).check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.pin_password_forgot_message))).check(
+        matches(
+          isDisplayed()
+        )
+      )
     }
   }
 
@@ -207,10 +223,15 @@ class PinPasswordActivityTest {
         typeText("5"),
         closeSoftKeyboard()
       )
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText("")))
+      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(
+        matches(
+          withText("")
+        )
+      )
     }
   }
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_inputShortPin_checkPinLengthError() {
     ActivityScenario.launch<PinPasswordActivity>(
@@ -243,10 +264,16 @@ class PinPasswordActivityTest {
         typeText("1"),
         closeSoftKeyboard()
       )
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText("")))
+      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(
+        matches(
+          withText("")
+        )
+      )
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_inputNewPin_inputOldPin_checkWrongPinError() {
     ActivityScenario.launch<PinPasswordActivity>(
@@ -270,10 +297,16 @@ class PinPasswordActivityTest {
       onView(withText(context.getString(R.string.admin_settings_submit))).perform(click())
       onView(withText(context.getString(R.string.pin_password_close))).perform(click())
       onView(withId(R.id.input_pin)).perform(typeText("123"), closeSoftKeyboard())
-      onView(withText(context.getString(R.string.pin_password_incorrect_pin))).check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.pin_password_incorrect_pin))).check(
+        matches(
+          isDisplayed()
+        )
+      )
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_inputNewPin_inputNewPin_checkOpensHomeActivity() {
     ActivityScenario.launch<PinPasswordActivity>(
@@ -301,7 +334,9 @@ class PinPasswordActivityTest {
       intended(hasComponent(HomeActivity::class.java.name))
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_changeConfiguration_checkInputPinIsPresent() {
     ActivityScenario.launch<PinPasswordActivity>(
@@ -318,10 +353,16 @@ class PinPasswordActivityTest {
         closeSoftKeyboard()
       )
       onView(isRoot()).perform(orientationLandscape())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText("1234")))
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).check(
+        matches(
+          withText("1234")
+        )
+      )
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_clickSubmit_changeConfiguration_restPinDialogIsDisplayed() {
     ActivityScenario.launch<PinPasswordActivity>(
@@ -342,7 +383,9 @@ class PinPasswordActivityTest {
       onView(withText(context.getString(R.string.reset_pin_enter))).check(matches(isDisplayed()))
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_clickSubmit_inputNewPin_changeConfiguration_clickSubmit_pinChangeIsSuccessful() {
     ActivityScenario.launch<PinPasswordActivity>(
@@ -368,7 +411,9 @@ class PinPasswordActivityTest {
       onView(withText(context.getString(R.string.pin_password_success))).check(matches(isDisplayed()))
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-enable max-line-length */
   @Test
   fun testPinPasswordActivityWithAdmin_clickForgot_changeConfiguration_checkOpensAdminForgotDialog() {
     ActivityScenario.launch<PinPasswordActivity>(
@@ -381,10 +426,16 @@ class PinPasswordActivityTest {
       onView(withId(R.id.input_pin)).perform(typeText(""), closeSoftKeyboard())
       onView(withId(R.id.forgot_pin)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
-      onView(withText(context.getString(R.string.pin_password_forgot_message))).check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.pin_password_forgot_message))).check(
+        matches(
+          isDisplayed()
+        )
+      )
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testPinPasswordActivityWithUser_clickForgot_inputWrongAdminPin_changeConfiguration_checkWrongAdminPinError() {
     ActivityScenario.launch<PinPasswordActivity>(
@@ -413,10 +464,16 @@ class PinPasswordActivityTest {
         closeSoftKeyboard()
       )
       onView(isRoot()).perform(orientationLandscape())
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText("")))
+      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(
+        matches(
+          withText("")
+        )
+      )
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testPinPasswordActivityWithUser_clickForgot_inputAdminPin_inputIncorrectPin_clickSubmit_changeConfiguration_errorIsDisplayed() {
     ActivityScenario.launch<PinPasswordActivity>(
@@ -447,6 +504,7 @@ class PinPasswordActivityTest {
       ).check(matches(withText(R.string.add_profile_error_pin_length)))
     }
   }
+  /* ktlint-enable max-line-length */
 
   @Test
   @ExperimentalCoroutinesApi
@@ -462,7 +520,11 @@ class PinPasswordActivityTest {
       closeSoftKeyboard()
       onView(withId(R.id.input_pin)).perform(typeText("54321"), closeSoftKeyboard())
       onView(isRoot()).perform(orientationLandscape())
-      onView(withText(context.getString(R.string.pin_password_incorrect_pin))).check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.pin_password_incorrect_pin))).check(
+        matches(
+          isDisplayed()
+        )
+      )
     }
   }
 
@@ -491,10 +553,15 @@ class PinPasswordActivityTest {
         adminId
       )
     ).use {
-      onView(withId(R.id.show_hide_password_image_view)).check(matches(withDrawable(R.drawable.ic_show_eye_icon)))
+      onView(withId(R.id.show_hide_password_image_view)).check(
+        matches(
+          withDrawable(R.drawable.ic_show_eye_icon)
+        )
+      )
     }
   }
 
+  /* ktlint-disable max-line-length */
   @Test
   @ExperimentalCoroutinesApi
   fun testPinPasswordActivityWithAdmin_checkShowHidePassword_clickShowHidePassword_textChangesToHide() {
@@ -510,7 +577,9 @@ class PinPasswordActivityTest {
       onView(withText(context.getString(R.string.pin_password_hide))).check(matches(isDisplayed()))
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   @ExperimentalCoroutinesApi
   fun testPinPasswordActivityWithAdmin_checkShowHidePassword_clickShowHidePassword_imageChangesToHide() {
@@ -523,10 +592,16 @@ class PinPasswordActivityTest {
     ).use {
       onView(withId(R.id.input_pin)).perform(typeText(""), closeSoftKeyboard())
       onView(withId(R.id.show_pin)).perform(click())
-      onView(withId(R.id.show_hide_password_image_view)).check(matches(withDrawable(R.drawable.ic_hide_eye_icon)))
+      onView(withId(R.id.show_hide_password_image_view)).check(
+        matches(
+          withDrawable(R.drawable.ic_hide_eye_icon)
+        )
+      )
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   @ExperimentalCoroutinesApi
   fun testPinPasswordActivityWithAdmin_checkShowHidePassword_clickShowHidePassword_changeConfiguration_hideViewIsShown() {
@@ -542,9 +617,16 @@ class PinPasswordActivityTest {
       onView(withId(R.id.show_pin)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       onView(withText(context.getString(R.string.pin_password_hide))).check(matches(isDisplayed()))
-      onView(withId(R.id.show_hide_password_image_view)).check(matches(withDrawable(R.drawable.ic_hide_eye_icon)))
+      onView(withId(R.id.show_hide_password_image_view)).check(
+        matches(
+          withDrawable(
+            R.drawable.ic_hide_eye_icon
+          )
+        )
+      )
     }
   }
+  /* ktlint-enable max-line-length */
 
   private fun getCurrentActivity(): Activity? {
     var currentActivity: Activity? = null
@@ -560,7 +642,8 @@ class PinPasswordActivityTest {
 
   private inline fun <reified T : Activity> isVisible(): Boolean {
     val am =
-      InstrumentationRegistry.getInstrumentation().targetContext.getSystemService(ACTIVITY_SERVICE) as ActivityManager
+      InstrumentationRegistry.getInstrumentation()
+        .targetContext.getSystemService(ACTIVITY_SERVICE) as ActivityManager
     val visibleActivityName = this.getCurrentActivity()!!::class.java.name
     return visibleActivityName == T::class.java.name
   }
@@ -570,12 +653,15 @@ class PinPasswordActivityTest {
     while (!isVisible<T>()) {
       Thread.sleep(CONDITION_CHECK_INTERVAL)
       if (System.currentTimeMillis() - startTime >= TIMEOUT) {
-        throw AssertionError("Activity ${T::class.java.simpleName} not visible after $TIMEOUT milliseconds")
+        throw AssertionError(
+          "Activity ${T::class.java.simpleName} not visible after $TIMEOUT milliseconds"
+        )
       }
     }
   }
 
-  @Qualifier annotation class TestDispatcher
+  @Qualifier
+  annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module
@@ -597,14 +683,18 @@ class PinPasswordActivityTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
     @Singleton
     @Provides
     @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBlockingDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 

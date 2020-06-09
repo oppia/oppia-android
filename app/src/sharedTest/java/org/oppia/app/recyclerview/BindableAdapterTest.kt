@@ -61,7 +61,8 @@ class BindableAdapterTest {
 
     ActivityScenario.launch(BindableAdapterTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        val recyclerView: RecyclerView = getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
+        val recyclerView: RecyclerView =
+          getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
 
         assertThat(recyclerView.childCount).isEqualTo(0)
       }
@@ -82,11 +83,24 @@ class BindableAdapterTest {
       safelyWaitUntilIdle()
 
       scenario.onActivity { activity ->
-        val recyclerView: RecyclerView = getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
+        val recyclerView: RecyclerView =
+          getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
         assertThat(recyclerView.childCount).isEqualTo(1)
       }
       // Perform onView() verification off the the main thread to avoid deadlocking.
-      onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText(STR_VALUE_0.strValue)))
+      onView(
+        atPosition(
+          R.id.test_recycler_view,
+          0
+        )
+      )
+        .check(
+          matches(
+            withText(
+              STR_VALUE_0.strValue
+            )
+          )
+        )
     }
   }
 
@@ -104,12 +118,34 @@ class BindableAdapterTest {
       safelyWaitUntilIdle()
 
       scenario.onActivity { activity ->
-        val recyclerView: RecyclerView = getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
+        val recyclerView: RecyclerView =
+          getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
-      onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText(STR_VALUE_1.strValue)))
-      onView(atPosition(R.id.test_recycler_view, 1)).check(matches(withText(STR_VALUE_0.strValue)))
-      onView(atPosition(R.id.test_recycler_view, 2)).check(matches(withText(STR_VALUE_2.strValue)))
+      onView(atPosition(R.id.test_recycler_view, 0))
+        .check(
+          matches(
+            withText(
+              STR_VALUE_1.strValue
+            )
+          )
+        )
+      onView(atPosition(R.id.test_recycler_view, 1))
+        .check(
+          matches(
+            withText(
+              STR_VALUE_0.strValue
+            )
+          )
+        )
+      onView(atPosition(R.id.test_recycler_view, 2))
+        .check(
+          matches(
+            withText(
+              STR_VALUE_2.strValue
+            )
+          )
+        )
     }
   }
 
@@ -128,13 +164,31 @@ class BindableAdapterTest {
 
       // Verify that all three values are bound in the correct order and with the correct values.
       scenario.onActivity { activity ->
-        val recyclerView: RecyclerView = getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
+        val recyclerView: RecyclerView =
+          getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
 
-      onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText(STR_VALUE_1.strValue)))
-      onView(atPosition(R.id.test_recycler_view, 1)).check(matches(withSubstring(INT_VALUE_0.intValue.toString())))
-      onView(atPosition(R.id.test_recycler_view, 2)).check(matches(withSubstring(INT_VALUE_1.intValue.toString())))
+      onView(atPosition(R.id.test_recycler_view, 0))
+        .check(
+          matches(
+            withText(
+              STR_VALUE_1.strValue
+            )
+          )
+        )
+      onView(
+        atPosition(
+          R.id.test_recycler_view,
+          1
+        )
+      ).check(matches(withSubstring(INT_VALUE_0.intValue.toString())))
+      onView(
+        atPosition(
+          R.id.test_recycler_view,
+          2
+        )
+      ).check(matches(withSubstring(INT_VALUE_1.intValue.toString())))
     }
   }
 
@@ -152,11 +206,19 @@ class BindableAdapterTest {
       safelyWaitUntilIdle()
 
       scenario.onActivity { activity ->
-        val recyclerView: RecyclerView = getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
+        val recyclerView: RecyclerView =
+          getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
         assertThat(recyclerView.childCount).isEqualTo(1)
       }
       // Perform onView() verification off the the main thread to avoid deadlocking.
-      onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText(STR_VALUE_0.strValue)))
+      onView(atPosition(R.id.test_recycler_view, 0))
+        .check(
+          matches(
+            withText(
+              STR_VALUE_0.strValue
+            )
+          )
+        )
     }
   }
 
@@ -174,13 +236,35 @@ class BindableAdapterTest {
       safelyWaitUntilIdle()
 
       scenario.onActivity { activity ->
-        val recyclerView: RecyclerView = getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
+        val recyclerView: RecyclerView =
+          getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
 
-      onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText(STR_VALUE_1.strValue)))
-      onView(atPosition(R.id.test_recycler_view, 1)).check(matches(withText(STR_VALUE_0.strValue)))
-      onView(atPosition(R.id.test_recycler_view, 2)).check(matches(withText(STR_VALUE_2.strValue)))
+      onView(atPosition(R.id.test_recycler_view, 0))
+        .check(
+          matches(
+            withText(
+              STR_VALUE_1.strValue
+            )
+          )
+        )
+      onView(atPosition(R.id.test_recycler_view, 1))
+        .check(
+          matches(
+            withText(
+              STR_VALUE_0.strValue
+            )
+          )
+        )
+      onView(atPosition(R.id.test_recycler_view, 2))
+        .check(
+          matches(
+            withText(
+              STR_VALUE_2.strValue
+            )
+          )
+        )
     }
   }
 
@@ -199,13 +283,31 @@ class BindableAdapterTest {
 
       // Verify that all three values are bound in the correct order and with the correct values.
       scenario.onActivity { activity ->
-        val recyclerView: RecyclerView = getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
+        val recyclerView: RecyclerView =
+          getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
 
-      onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText(STR_VALUE_1.strValue)))
-      onView(atPosition(R.id.test_recycler_view, 1)).check(matches(withSubstring(INT_VALUE_0.intValue.toString())))
-      onView(atPosition(R.id.test_recycler_view, 2)).check(matches(withSubstring(INT_VALUE_1.intValue.toString())))
+      onView(atPosition(R.id.test_recycler_view, 0))
+        .check(
+          matches(
+            withText(
+              STR_VALUE_1.strValue
+            )
+          )
+        )
+      onView(
+        atPosition(
+          R.id.test_recycler_view,
+          1
+        )
+      ).check(matches(withSubstring(INT_VALUE_0.intValue.toString())))
+      onView(
+        atPosition(
+          R.id.test_recycler_view,
+          2
+        )
+      ).check(matches(withSubstring(INT_VALUE_1.intValue.toString())))
     }
   }
 
@@ -264,14 +366,18 @@ class BindableAdapterTest {
   private fun inflateTextViewForStringWithoutDataBinding(viewGroup: ViewGroup): TextView {
     val inflater = LayoutInflater.from(ApplicationProvider.getApplicationContext())
     return inflater.inflate(
-      R.layout.test_text_view_for_string_no_data_binding, viewGroup, /* attachToRoot= */ false
+      R.layout.test_text_view_for_string_no_data_binding,
+      viewGroup,
+      /* attachToRoot= */ false
     ) as TextView
   }
 
   private fun inflateTextViewForIntWithoutDataBinding(viewGroup: ViewGroup): TextView {
     val inflater = LayoutInflater.from(ApplicationProvider.getApplicationContext())
     return inflater.inflate(
-      R.layout.test_text_view_for_int_no_data_binding, viewGroup, /* attachToRoot= */ false
+      R.layout.test_text_view_for_int_no_data_binding,
+      viewGroup,
+      /* attachToRoot= */ false
     ) as TextView
   }
 
@@ -283,20 +389,30 @@ class BindableAdapterTest {
     textView.text = "Value: " + data.intValue
   }
 
-  private fun getRecyclerViewListLiveData(activity: BindableAdapterTestActivity): MutableLiveData<List<TestModel>> {
+  private fun getRecyclerViewListLiveData(
+    activity: BindableAdapterTestActivity
+  ): MutableLiveData<List<TestModel>> {
     return getTestViewModel(activity).dataListLiveData
   }
 
-  private fun getTestViewModel(activity: BindableAdapterTestActivity): BindableAdapterTestViewModel {
+  private fun getTestViewModel(
+    activity: BindableAdapterTestActivity
+  ): BindableAdapterTestViewModel {
     return getTestFragmentPresenter(activity).viewModel
   }
 
-  private fun getTestFragmentPresenter(activity: BindableAdapterTestActivity): BindableAdapterTestFragmentPresenter {
+  private fun getTestFragmentPresenter(
+    activity: BindableAdapterTestActivity
+  ): BindableAdapterTestFragmentPresenter {
     return getTestFragment(activity).bindableAdapterTestFragmentPresenter
   }
 
-  private fun getTestFragment(activity: BindableAdapterTestActivity): BindableAdapterTestFragment {
-    return activity.supportFragmentManager.findFragmentByTag(BINDABLE_TEST_FRAGMENT_TAG) as BindableAdapterTestFragment
+  private fun getTestFragment(
+    activity: BindableAdapterTestActivity
+  ): BindableAdapterTestFragment {
+    return activity
+      .supportFragmentManager
+      .findFragmentByTag(BINDABLE_TEST_FRAGMENT_TAG) as BindableAdapterTestFragment
   }
 
   private fun safelyWaitUntilIdle() {

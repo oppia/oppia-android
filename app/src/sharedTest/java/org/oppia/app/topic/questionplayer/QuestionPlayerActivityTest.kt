@@ -27,7 +27,14 @@ class QuestionPlayerActivityTest {
   @Test
   fun testQuestionPlayerActivity_loadQuestionPlayerFragment_hasDummyString() {
     ActivityScenario.launch(QuestionPlayerActivity::class.java).use {
-      onView(withId(R.id.dummy_text_view)).check(matches(withText("Questions functionality is coming soon")))
+      onView(withId(R.id.dummy_text_view))
+        .check(
+          matches(
+            withText(
+              "Questions functionality is coming soon"
+            )
+          )
+        )
     }
   }
 
@@ -46,7 +53,9 @@ class QuestionPlayerActivityTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@BlockingDispatcher blockingDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @BlockingDispatcher blockingDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return blockingDispatcher
     }
   }

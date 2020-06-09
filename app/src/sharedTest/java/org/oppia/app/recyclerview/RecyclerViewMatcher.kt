@@ -48,7 +48,9 @@ class RecyclerViewMatcher {
         public override fun matchesSafely(view: View): Boolean {
           this.resources = view.resources
           if (childView == null) {
-            val recyclerView = view.rootView.findViewById<View>(recyclerViewId) as RecyclerView
+            val recyclerView = view
+              .rootView
+              .findViewById<View>(recyclerViewId) as RecyclerView
             if (recyclerView.id == recyclerViewId) {
               childView = recyclerView.findViewHolderForAdapterPosition(position)!!.itemView
             } else {
@@ -98,7 +100,8 @@ class RecyclerViewMatcher {
       }
       check(view is RecyclerView) { "The asserted view is not RecyclerView" }
       check(view.layoutManager is GridLayoutManager) { "RecyclerView must use GridLayoutManager" }
-      val spanCount = (view.layoutManager as GridLayoutManager).spanSizeLookup.getSpanSize(position)
+      val spanCount = (view.layoutManager as GridLayoutManager)
+        .spanSizeLookup.getSpanSize(position)
       assertThat("RecyclerViewGrid span count", spanCount, equalTo(count))
     }
   }

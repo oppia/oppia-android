@@ -36,12 +36,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import java.util.concurrent.AbstractExecutorService
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
-import javax.inject.Inject
-import javax.inject.Qualifier
-import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -73,14 +67,25 @@ import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
+import java.util.concurrent.AbstractExecutorService
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
+import javax.inject.Inject
+import javax.inject.Qualifier
+import javax.inject.Singleton
 
 /** Tests for [RecentlyPlayedActivity]. */
 @RunWith(AndroidJUnit4::class)
 class RecentlyPlayedFragmentTest {
 
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
-  @Inject lateinit var context: Context
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var storyProgressTestHelper: StoryProgressTestHelper
+
+  @Inject
+  lateinit var context: Context
 
   private val internalProfileId = 0
 
@@ -497,9 +502,11 @@ class RecentlyPlayedFragmentTest {
         )
       )
       if (context.resources.getBoolean(R.bool.isTablet)) {
-        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(3, 0))
+        onView(withId(R.id.ongoing_story_recycler_view))
+          .check(hasGridItemCount(3, 0))
       } else {
-        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(2, 0))
+        onView(withId(R.id.ongoing_story_recycler_view))
+          .check(hasGridItemCount(2, 0))
       }
     }
   }
@@ -517,7 +524,8 @@ class RecentlyPlayedFragmentTest {
           1
         )
       )
-      onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(1, 1))
+      onView(withId(R.id.ongoing_story_recycler_view))
+        .check(hasGridItemCount(1, 1))
     }
   }
 
@@ -535,9 +543,11 @@ class RecentlyPlayedFragmentTest {
         )
       )
       if (context.resources.getBoolean(R.bool.isTablet)) {
-        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(3, 2))
+        onView(withId(R.id.ongoing_story_recycler_view))
+          .check(hasGridItemCount(3, 2))
       } else {
-        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(2, 2))
+        onView(withId(R.id.ongoing_story_recycler_view))
+          .check(hasGridItemCount(2, 2))
       }
     }
   }
@@ -555,7 +565,8 @@ class RecentlyPlayedFragmentTest {
           3
         )
       )
-      onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(1, 3))
+      onView(withId(R.id.ongoing_story_recycler_view))
+        .check(hasGridItemCount(1, 3))
     }
   }
 
@@ -574,9 +585,11 @@ class RecentlyPlayedFragmentTest {
         )
       )
       if (context.resources.getBoolean(R.bool.isTablet)) {
-        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(4, 0))
+        onView(withId(R.id.ongoing_story_recycler_view))
+          .check(hasGridItemCount(4, 0))
       } else {
-        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(3, 0))
+        onView(withId(R.id.ongoing_story_recycler_view))
+          .check(hasGridItemCount(3, 0))
       }
     }
   }
@@ -595,7 +608,8 @@ class RecentlyPlayedFragmentTest {
           1
         )
       )
-      onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(1, 1))
+      onView(withId(R.id.ongoing_story_recycler_view))
+        .check(hasGridItemCount(1, 1))
     }
   }
 
@@ -614,9 +628,11 @@ class RecentlyPlayedFragmentTest {
         )
       )
       if (context.resources.getBoolean(R.bool.isTablet)) {
-        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(4, 2))
+        onView(withId(R.id.ongoing_story_recycler_view))
+          .check(hasGridItemCount(4, 2))
       } else {
-        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(3, 2))
+        onView(withId(R.id.ongoing_story_recycler_view))
+          .check(hasGridItemCount(3, 2))
       }
     }
   }
@@ -635,7 +651,8 @@ class RecentlyPlayedFragmentTest {
           3
         )
       )
-      onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(1, 3))
+      onView(withId(R.id.ongoing_story_recycler_view))
+        .check(hasGridItemCount(1, 3))
     }
   }
 
@@ -708,14 +725,18 @@ class RecentlyPlayedFragmentTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
     @Singleton
     @Provides
     @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBlockingDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
@@ -761,7 +782,8 @@ class RecentlyPlayedFragmentTest {
     override fun isTerminated(): Boolean = false
 
     private val handler = Handler(Looper.getMainLooper())
-    val countingResource = CountingIdlingResource("main_thread_executor_counting_idling_resource")
+    val countingResource =
+      CountingIdlingResource("main_thread_executor_counting_idling_resource")
 
     override fun execute(command: Runnable?) {
       countingResource.increment()

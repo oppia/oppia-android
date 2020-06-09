@@ -35,15 +35,19 @@ import org.oppia.domain.topic.RATIOS_TOPIC_ID
 
 private const val TEST_TOPIC_ID = "GJ2rLXRKD5hw"
 private const val TOPIC_NAME = "Fractions"
+
+/* ktlint-disable max-line-length */
 private const val TOPIC_DESCRIPTION =
   "You'll often need to talk about part of an object or group. For example, a jar of milk might be half-full, or " +
     "some of the eggs in a box might have broken. In these lessons, you'll learn to use fractions to describe " +
     "situations like these."
-private const val DUMMY_TOPIC_DESCRIPTION_LONG = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. " +
-  "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and " +
-  "scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, " +
-  "remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, " +
-  "and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
+private const val DUMMY_TOPIC_DESCRIPTION_LONG =
+  "Lorem Ipsum is simply dummy text of the printing and typesetting industry. " +
+    "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and " +
+    "scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, " +
+    "remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, " +
+    "and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+/* ktlint-enable max-line-length */
 
 // NOTE TO DEVELOPERS: this test must be annotated with @LooperMode(LooperMode.MODE.PAUSED) to pass on Robolectric.
 /** Tests for [TopicInfoFragment]. */
@@ -62,7 +66,15 @@ class TopicInfoFragmentTest {
   @Test
   fun testTopicInfoFragment_loadFragmentWithTestTopicId1_checkTopicDescription_isCorrect() {
     launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
-      onView(withId(R.id.topic_description_text_view)).check(matches(withText(containsString(TOPIC_DESCRIPTION))))
+      onView(withId(R.id.topic_description_text_view)).check(
+        matches(
+          withText(
+            containsString(
+              TOPIC_DESCRIPTION
+            )
+          )
+        )
+      )
     }
   }
 
@@ -72,7 +84,11 @@ class TopicInfoFragmentTest {
       scenario.onActivity { activity ->
         val descriptionTextView: TextView = activity.findViewById(R.id.topic_description_text_view)
         val descriptionText = descriptionTextView.text as SpannedString
-        val spans = descriptionText.getSpans(0, descriptionText.length, StyleSpan::class.java)
+        val spans = descriptionText.getSpans(
+          0,
+          descriptionText.length,
+          StyleSpan::class.java
+        )
         assertThat(spans).isNotEmpty()
       }
     }
@@ -112,14 +128,25 @@ class TopicInfoFragmentTest {
   @Test
   fun testTopicInfoFragment_loadFragment_checkDefaultTopicDescriptionLines_fiveLinesVisible() {
     launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
-      onView(withId(R.id.topic_description_text_view)).check(matches(maxLines(/* lineCount= */ 5)))
+      onView(withId(R.id.topic_description_text_view))
+        .check(
+          matches(
+            maxLines(
+              /* lineCount= */ 5
+            )
+          )
+        )
     }
   }
 
   @Test
   fun testTopicInfoFragment_loadFragment_moreThanFiveLines_seeMoreIsVisible() {
     launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
-      onView(withId(R.id.topic_description_text_view)).perform(setTextInTextView(DUMMY_TOPIC_DESCRIPTION_LONG))
+      onView(withId(R.id.topic_description_text_view)).perform(
+        setTextInTextView(
+          DUMMY_TOPIC_DESCRIPTION_LONG
+        )
+      )
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
       onView(withId(R.id.see_more_text_view)).check(matches(isDisplayed()))
       onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.see_more)))
@@ -129,17 +156,32 @@ class TopicInfoFragmentTest {
   @Test
   fun testTopicInfoFragment_loadFragment_seeMoreIsVisible_and_fiveLinesVisible() {
     launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
-      onView(withId(R.id.topic_description_text_view)).perform(setTextInTextView(DUMMY_TOPIC_DESCRIPTION_LONG))
+      onView(withId(R.id.topic_description_text_view)).perform(
+        setTextInTextView(
+          DUMMY_TOPIC_DESCRIPTION_LONG
+        )
+      )
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
       onView(withId(R.id.see_more_text_view)).check(matches(isDisplayed()))
-      onView(withId(R.id.topic_description_text_view)).check(matches(maxLines(/* lineCount= */ 5)))
+      onView(withId(R.id.topic_description_text_view))
+        .check(
+          matches(
+            maxLines(
+              /* lineCount= */ 5
+            )
+          )
+        )
     }
   }
 
   @Test
   fun testTopicInfoFragment_loadFragment_clickSeeMore_seeLessVisible() {
     launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
-      onView(withId(R.id.topic_description_text_view)).perform(setTextInTextView(DUMMY_TOPIC_DESCRIPTION_LONG))
+      onView(withId(R.id.topic_description_text_view)).perform(
+        setTextInTextView(
+          DUMMY_TOPIC_DESCRIPTION_LONG
+        )
+      )
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
       onView(withId(R.id.see_more_text_view)).perform(click())
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
@@ -166,9 +208,16 @@ class TopicInfoFragmentTest {
     }
   }
 
-  private fun launchTopicActivityIntent(internalProfileId: Int, topicId: String): ActivityScenario<TopicActivity> {
+  private fun launchTopicActivityIntent(
+    internalProfileId: Int,
+    topicId: String
+  ): ActivityScenario<TopicActivity> {
     val intent =
-      TopicActivity.createTopicActivityIntent(ApplicationProvider.getApplicationContext(), internalProfileId, topicId)
+      TopicActivity.createTopicActivityIntent(
+        ApplicationProvider.getApplicationContext(),
+        internalProfileId,
+        topicId
+      )
     return ActivityScenario.launch(intent)
   }
 
@@ -176,7 +225,10 @@ class TopicInfoFragmentTest {
   private fun setTextInTextView(value: String): ViewAction {
     return object : ViewAction {
       override fun getConstraints(): Matcher<View> {
-        return CoreMatchers.allOf(isDisplayed(), ViewMatchers.isAssignableFrom(TextView::class.java))
+        return CoreMatchers.allOf(
+          isDisplayed(),
+          ViewMatchers.isAssignableFrom(TextView::class.java)
+        )
       }
 
       override fun perform(uiController: UiController, view: View) {
@@ -189,7 +241,7 @@ class TopicInfoFragmentTest {
     }
   }
 
-  //Reference: https://stackoverflow.com/a/46296194
+  // Reference: https://stackoverflow.com/a/46296194
   /** Custom function to check the maxLines value for a TextView. */
   private fun maxLines(lineCount: Int): TypeSafeMatcher<View> {
     return object : TypeSafeMatcher<View>() {

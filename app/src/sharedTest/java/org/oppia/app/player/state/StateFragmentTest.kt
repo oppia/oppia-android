@@ -62,8 +62,11 @@ import javax.inject.Singleton
 /** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)
 class StateFragmentTest {
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var context: Context
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var context: Context
 
   private val internalProfileId: Int = 1
 
@@ -146,8 +149,8 @@ class StateFragmentTest {
       onView(withId(R.id.submit_answer_button)).perform(click())
 
       // The submission button should now be disabled and there should be an error.
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())));
-      onView(withId(R.id.fraction_input_error)).check(matches(isDisplayed()));
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+      onView(withId(R.id.fraction_input_error)).check(matches(isDisplayed()))
     }
   }
 
@@ -163,7 +166,7 @@ class StateFragmentTest {
       onView(withId(R.id.fraction_input_interaction_view)).perform(typeText("2"))
 
       // The submit button should be re-enabled since the text view changed.
-      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()));
+      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
     }
   }
 
@@ -177,6 +180,7 @@ class StateFragmentTest {
     }
   }
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testStateFragment_loadExploration_submitAnswer_clickContinueButton_previousButtonIsDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_30).use {
@@ -187,7 +191,9 @@ class StateFragmentTest {
       onView(withId(R.id.previous_state_navigation_button)).check(matches(isDisplayed()))
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testStateFragment_loadExploration_submitAnswer_clickContinueThenPrevious_onlyNextButtonIsShown() {
     launchForExploration(TEST_EXPLORATION_ID_30).use {
@@ -201,7 +207,9 @@ class StateFragmentTest {
       onView(withId(R.id.next_state_navigation_button)).check(matches(isDisplayed()))
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testStateFragment_loadExploration_submitAnswer_clickContinueThenPreviousThenNext_prevAndSubmitShown() {
     launchForExploration(TEST_EXPLORATION_ID_30).use {
@@ -217,6 +225,7 @@ class StateFragmentTest {
       onView(withId(R.id.next_state_navigation_button)).check(doesNotExist())
     }
   }
+  /* ktlint-enable max-line-length */
 
   @Test
   fun testStateFragment_loadExploration_continueToEndExploration_hasReturnToTopicButton() {
@@ -230,6 +239,7 @@ class StateFragmentTest {
     }
   }
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testStateFragment_loadExploration_continueToEndExploration_clickReturnToTopic_destroysActivity() {
     launchForExploration(TEST_EXPLORATION_ID_30).use {
@@ -242,6 +252,7 @@ class StateFragmentTest {
       onView(withId(R.id.play_test_exploration_button)).check(matches(isDisplayed()))
     }
   }
+  /* ktlint-enable max-line-length */
 
   @Test
   fun testContentCard_forDemoExploration_withCustomOppiaTags_displaysParsedHtml() {
@@ -250,8 +261,12 @@ class StateFragmentTest {
 
       val htmlResult =
         "Hi, welcome to Oppia! is a tool that helps you create interactive learning activities that can be " +
-            "continually improved over time.\n\nIncidentally, do you know where the name 'Oppia' comes from?"
-      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(matches(withText(htmlResult)))
+          "continually improved over time.\n\nIncidentally, do you know where the name 'Oppia' comes from?"
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(
+        matches(
+          withText(htmlResult)
+        )
+      )
     }
   }
 
@@ -287,32 +302,47 @@ class StateFragmentTest {
     onView(withId(R.id.continue_navigation_button)).perform(click())
 
     // Third state: Multiple choice. Correct answer: Eagle.
-    onView(atPositionOnView(
-      recyclerViewId = R.id.selection_interaction_recyclerview,
-      position = 2,
-      targetViewId = R.id.multiple_choice_radio_button)).perform(click())
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_interaction_recyclerview,
+        position = 2,
+        targetViewId = R.id.multiple_choice_radio_button
+      )
+    ).perform(click())
     onView(withId(R.id.continue_navigation_button)).perform(click())
 
     // Fourth state: Item selection (radio buttons). Correct answer: Green.
-    onView(atPositionOnView(
-      recyclerViewId = R.id.selection_interaction_recyclerview,
-      position = 0,
-      targetViewId = R.id.multiple_choice_radio_button)).perform(click())
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_interaction_recyclerview,
+        position = 0,
+        targetViewId = R.id.multiple_choice_radio_button
+      )
+    ).perform(click())
     onView(withId(R.id.continue_navigation_button)).perform(click())
 
     // Fourth state: Item selection (checkboxes). Correct answer: {Red, Green, Blue}.
-    onView(atPositionOnView(
-      recyclerViewId = R.id.selection_interaction_recyclerview,
-      position = 0,
-      targetViewId = R.id.item_selection_checkbox)).perform(click())
-    onView(atPositionOnView(
-      recyclerViewId = R.id.selection_interaction_recyclerview,
-      position = 2,
-      targetViewId = R.id.item_selection_checkbox)).perform(click())
-    onView(atPositionOnView(
-      recyclerViewId = R.id.selection_interaction_recyclerview,
-      position = 3,
-      targetViewId = R.id.item_selection_checkbox)).perform(click())
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_interaction_recyclerview,
+        position = 0,
+        targetViewId = R.id.item_selection_checkbox
+      )
+    ).perform(click())
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_interaction_recyclerview,
+        position = 2,
+        targetViewId = R.id.item_selection_checkbox
+      )
+    ).perform(click())
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_interaction_recyclerview,
+        position = 3,
+        targetViewId = R.id.item_selection_checkbox
+      )
+    ).perform(click())
     onView(withId(R.id.submit_answer_button)).perform(click())
     onView(withId(R.id.continue_navigation_button)).perform(click())
 
@@ -381,7 +411,6 @@ class StateFragmentTest {
     }
   }
 
-
   @Module
   class TestModule {
     @Provides
@@ -397,7 +426,9 @@ class StateFragmentTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@BlockingDispatcher blockingDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @BlockingDispatcher blockingDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return blockingDispatcher
     }
 
@@ -450,7 +481,8 @@ class StateFragmentTest {
     override fun isTerminated(): Boolean = false
 
     private val handler = Handler(Looper.getMainLooper())
-    val countingResource = CountingIdlingResource("main_thread_executor_counting_idling_resource")
+    val countingResource =
+      CountingIdlingResource("main_thread_executor_counting_idling_resource")
 
     override fun execute(command: Runnable?) {
       countingResource.increment()

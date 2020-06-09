@@ -61,8 +61,12 @@ import javax.inject.Singleton
 class OngoingTopicListActivityTest {
 
   private val internalProfileId = 0
-  @Inject lateinit var context: Context
-  @Inject lateinit var storyProfileTestHelper: StoryProgressTestHelper
+
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var storyProfileTestHelper: StoryProgressTestHelper
 
   @Before
   @ExperimentalCoroutinesApi
@@ -71,8 +75,14 @@ class OngoingTopicListActivityTest {
     setUpTestApplicationComponent()
     IdlingRegistry.getInstance().register(MainThreadExecutor.countingResource)
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    storyProfileTestHelper.markFullStoryPartialTopicProgressForRatios(profileId, timestampOlderThanAWeek = false)
-    storyProfileTestHelper.markPartialTopicProgressForFractions(profileId, timestampOlderThanAWeek = false)
+    storyProfileTestHelper.markFullStoryPartialTopicProgressForRatios(
+      profileId,
+      timestampOlderThanAWeek = false
+    )
+    storyProfileTestHelper.markPartialTopicProgressForFractions(
+      profileId,
+      timestampOlderThanAWeek = false
+    )
   }
 
   @After
@@ -114,7 +124,12 @@ class OngoingTopicListActivityTest {
           0
         )
       )
-      onView(atPositionOnView(R.id.ongoing_topic_list, 0, R.id.story_count_text_view)).check(
+      onView(
+        atPositionOnView(
+          R.id.ongoing_topic_list,
+          0, R.id.story_count_text_view
+        )
+      ).check(
         matches(
           withText(containsString("2 Lessons"))
         )
@@ -166,7 +181,12 @@ class OngoingTopicListActivityTest {
           1
         )
       )
-      onView(atPositionOnView(R.id.ongoing_topic_list, 1, R.id.story_count_text_view)).check(
+      onView(
+        atPositionOnView(
+          R.id.ongoing_topic_list,
+          1, R.id.story_count_text_view
+        )
+      ).check(
         matches(
           withText(containsString("1 Lesson"))
         )
@@ -184,7 +204,12 @@ class OngoingTopicListActivityTest {
           1
         )
       )
-      onView(atPositionOnView(R.id.ongoing_topic_list, 1, R.id.story_count_text_view)).check(
+      onView(
+        atPositionOnView(
+          R.id.ongoing_topic_list,
+          1, R.id.story_count_text_view
+        )
+      ).check(
         matches(
           withText(containsString("1 Lesson"))
         )
@@ -202,7 +227,12 @@ class OngoingTopicListActivityTest {
           0
         )
       )
-      onView(atPositionOnView(R.id.ongoing_topic_list, 0, R.id.topic_name_text_view)).check(
+      onView(
+        atPositionOnView(
+          R.id.ongoing_topic_list,
+          0, R.id.topic_name_text_view
+        )
+      ).check(
         matches(
           withText(containsString("Ratios and Proportional Reasoning"))
         )
@@ -264,7 +294,8 @@ class OngoingTopicListActivityTest {
     }
   }
 
-  @Qualifier annotation class TestDispatcher
+  @Qualifier
+  annotation class TestDispatcher
 
   @Module
   class TestModule {
@@ -285,14 +316,18 @@ class OngoingTopicListActivityTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
     @Singleton
     @Provides
     @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBlockingDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
@@ -338,7 +373,8 @@ class OngoingTopicListActivityTest {
     override fun isTerminated(): Boolean = false
 
     private val handler = Handler(Looper.getMainLooper())
-    val countingResource = CountingIdlingResource("main_thread_executor_counting_idling_resource")
+    val countingResource =
+      CountingIdlingResource("main_thread_executor_counting_idling_resource")
 
     override fun execute(command: Runnable?) {
       countingResource.increment()

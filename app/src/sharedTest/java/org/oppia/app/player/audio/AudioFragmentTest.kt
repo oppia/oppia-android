@@ -60,15 +60,21 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class AudioFragmentTest {
 
-  @Inject lateinit var context: Context
+  @Inject
+  lateinit var context: Context
 
   private lateinit var activityScenario: ActivityScenario<AudioFragmentTestActivity>
 
-  @Inject lateinit var audioPlayerController: AudioPlayerController
+  @Inject
+  lateinit var audioPlayerController: AudioPlayerController
   private lateinit var shadowMediaPlayer: Any
 
-  private val TEST_URL = "https://storage.googleapis.com/oppiaserver-resources/exploration/2mzzFVDLuAj8/assets/audio/content-en-057j51i2es.mp3"
-  private val TEST_URL2 = "https://storage.googleapis.com/oppiaserver-resources/exploration/2mzzFVDLuAj8/assets/audio/content-es-i0nhu49z0q.mp3"
+  /* ktlint-disable max-line-length */
+  private val TEST_URL =
+    "https://storage.googleapis.com/oppiaserver-resources/exploration/2mzzFVDLuAj8/assets/audio/content-en-057j51i2es.mp3"
+  private val TEST_URL2 =
+    "https://storage.googleapis.com/oppiaserver-resources/exploration/2mzzFVDLuAj8/assets/audio/content-es-i0nhu49z0q.mp3"
+  /* ktlint-enable max-line-length */
 
   @Before
   fun setUp() {
@@ -81,8 +87,10 @@ class AudioFragmentTest {
 
   @Test
   fun testAudioFragment_openFragment_showsFragment() {
-    onView(withId(R.id.ivPlayPauseAudio)).check(matches(isDisplayed()))
-    onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(context.getString(R.string.audio_play_description))))
+    onView(withId(R.id.ivPlayPauseAudio))
+      .check(matches(isDisplayed()))
+    onView(withId(R.id.ivPlayPauseAudio))
+      .check(matches(withContentDescription(context.getString(R.string.audio_play_description))))
   }
 
   @Test
@@ -112,7 +120,6 @@ class AudioFragmentTest {
 
     onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
   }
-
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
@@ -152,22 +159,26 @@ class AudioFragmentTest {
   }
 
   private fun clickSeekBar(position: Int): ViewAction {
-    return GeneralClickAction(Tap.SINGLE, object: CoordinatesProvider {
-      override fun calculateCoordinates(view: View?): FloatArray {
-        val seekBar = view as SeekBar
-        val screenPos = IntArray(2)
-        seekBar.getLocationInWindow(screenPos)
-        val trueWith = seekBar.width - seekBar.paddingLeft - seekBar.paddingRight
+    return GeneralClickAction(
+      Tap.SINGLE,
+      object : CoordinatesProvider {
+        override fun calculateCoordinates(view: View?): FloatArray {
+          val seekBar = view as SeekBar
+          val screenPos = IntArray(2)
+          seekBar.getLocationInWindow(screenPos)
+          val trueWith = seekBar.width - seekBar.paddingLeft - seekBar.paddingRight
 
-        val percentagePos = (position.toFloat() / seekBar.max)
-        val screenX = trueWith * percentagePos + screenPos[0] + seekBar.paddingLeft
-        val screenY = seekBar.height/2f + screenPos[1]
-        val coordinates = FloatArray(2)
-        coordinates[0] = screenX
-        coordinates[1] = screenY
-        return coordinates
-      }
-    }, Press.FINGER, /* inputDevice= */ 0, /* deviceState= */ 0)
+          val percentagePos = (position.toFloat() / seekBar.max)
+          val screenX = trueWith * percentagePos + screenPos[0] + seekBar.paddingLeft
+          val screenY = seekBar.height / 2f + screenPos[1]
+          val coordinates = FloatArray(2)
+          coordinates[0] = screenX
+          coordinates[1] = screenY
+          return coordinates
+        }
+      },
+      Press.FINGER, /* inputDevice= */ 0, /* deviceState= */ 0
+    )
   }
 
   private fun setUpTestApplicationComponent() {
@@ -178,9 +189,12 @@ class AudioFragmentTest {
   }
 
   private fun addMediaInfo() {
-    val dataSource = toDataSource(context , Uri.parse(TEST_URL))
-    val dataSource2 = toDataSource(context , Uri.parse(TEST_URL2))
-    val mediaInfo = createMediaInfo(/* duration= */ 1000,/* preparationDelay= */ 0)
+    val dataSource = toDataSource(context, Uri.parse(TEST_URL))
+    val dataSource2 = toDataSource(context, Uri.parse(TEST_URL2))
+    val mediaInfo = createMediaInfo(
+      /* duration= */ 1000,
+      /* preparationDelay= */ 0
+    )
     addMediaInfo(dataSource, mediaInfo)
     addMediaInfo(dataSource2, mediaInfo)
   }
@@ -195,13 +209,17 @@ class AudioFragmentTest {
   /** Calls Robolectric's Shadows.shadowOf() using reflection. */
   private fun shadowOf(mediaPlayer: MediaPlayer): Any {
     val shadowsClass = Class.forName("org.robolectric.Shadows")
-    return shadowsClass.getMethod("shadowOf", MediaPlayer::class.java).invoke(/* obj= */ null, mediaPlayer)
+    return shadowsClass.getMethod("shadowOf", MediaPlayer::class.java)
+      .invoke(/* obj= */ null, mediaPlayer)
   }
 
   /** Calls ShadowMediaPlayer.setDataSource() using reflection. */
   private fun setDataSource(shadowMediaPlayer: Any, dataSource: Any) {
-    val dataSourceClass = Class.forName("org.robolectric.shadows.util.DataSource")
-    shadowMediaPlayer.javaClass.getMethod("setDataSource", dataSourceClass).invoke(shadowMediaPlayer, dataSource)
+    val dataSourceClass = Class.forName(
+      "org.robolectric.shadows.util.DataSource"
+    )
+    shadowMediaPlayer.javaClass.getMethod("setDataSource", dataSourceClass)
+      .invoke(shadowMediaPlayer, dataSource)
   }
 
   /** Calls ShadowMediaPlayer.invokePreparedListener() using reflection. */
@@ -211,23 +229,36 @@ class AudioFragmentTest {
 
   /** Returns a new ShadowMediaPlayer.MediaInfo using reflection. */
   private fun createMediaInfo(duration: Int, preparationDelay: Int): Any {
-    val mediaInfoClass = Class.forName("org.robolectric.shadows.ShadowMediaPlayer\$MediaInfo")
-    return mediaInfoClass.getConstructor(Int::class.java, Int::class.java).newInstance(duration, preparationDelay)
+    val mediaInfoClass = Class.forName(
+      "org.robolectric.shadows.ShadowMediaPlayer\$MediaInfo"
+    )
+    return mediaInfoClass.getConstructor(Int::class.java, Int::class.java)
+      .newInstance(duration, preparationDelay)
   }
 
   /** Calls ShadowMediaPlayer.addMediaInfo() using reflection. */
   private fun addMediaInfo(dataSource: Any, mediaInfo: Any) {
-    val shadowMediaPlayerClass = Class.forName("org.robolectric.shadows.ShadowMediaPlayer")
-    val dataSourceClass = Class.forName("org.robolectric.shadows.util.DataSource")
-    val mediaInfoClass = Class.forName("org.robolectric.shadows.ShadowMediaPlayer\$MediaInfo")
-    val addMediaInfoMethod = shadowMediaPlayerClass.getMethod("addMediaInfo", dataSourceClass, mediaInfoClass)
+    val shadowMediaPlayerClass = Class.forName(
+      "org.robolectric.shadows.ShadowMediaPlayer"
+    )
+    val dataSourceClass = Class.forName(
+      "org.robolectric.shadows.util.DataSource"
+    )
+    val mediaInfoClass = Class.forName(
+      "org.robolectric.shadows.ShadowMediaPlayer\$MediaInfo"
+    )
+    val addMediaInfoMethod =
+      shadowMediaPlayerClass.getMethod("addMediaInfo", dataSourceClass, mediaInfoClass)
     addMediaInfoMethod.invoke(/* obj= */ null, dataSource, mediaInfo)
   }
 
   /** Calls DataSource.toDataSource() using reflection. */
   private fun toDataSource(context: Context, uri: Uri): Any {
-    val dataSourceClass = Class.forName("org.robolectric.shadows.util.DataSource")
-    val toDataSourceMethod = dataSourceClass.getMethod("toDataSource", Context::class.java, Uri::class.java)
+    val dataSourceClass = Class.forName(
+      "org.robolectric.shadows.util.DataSource"
+    )
+    val toDataSourceMethod =
+      dataSourceClass.getMethod("toDataSource", Context::class.java, Uri::class.java)
     return toDataSourceMethod.invoke(/* obj= */ null, context, uri)
   }
 
@@ -254,14 +285,18 @@ class AudioFragmentTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
     @Singleton
     @Provides
     @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBlockingDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
@@ -293,6 +328,7 @@ class AudioFragmentTest {
       fun setApplication(application: Application): Builder
       fun build(): TestApplicationComponent
     }
+
     fun inject(audioFragmentTest: AudioFragmentTest)
   }
 }
