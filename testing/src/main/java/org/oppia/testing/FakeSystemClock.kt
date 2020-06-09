@@ -22,8 +22,15 @@ class FakeSystemClock @Inject constructor() {
     currentTimeMillis = AtomicLong(initialMillis)
   }
 
+  /** Returns the current time of the fake clock, in milliseconds. */
   fun getTimeMillis(): Long = currentTimeMillis.get()
 
+  /**
+   * Advances the clock time by the specific number of milliseconds, and returns the new value. It's
+   * recommended to *never* use this method directly as it may result in UI-scheduled tasks
+   * executing before background tasks, and may cause background tasks to execute at the wrong time.
+   * If a test needs time to be advanced, it should use [TestCoroutineDispatchers.advanceTimeBy].
+   */
   fun advanceTime(millis: Long): Long {
     val newTime = currentTimeMillis.addAndGet(millis)
     Robolectric.getForegroundThreadScheduler().advanceTo(newTime)

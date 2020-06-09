@@ -17,13 +17,18 @@ import javax.inject.Inject
 import kotlin.Comparator
 import kotlin.coroutines.CoroutineContext
 
-// TODO(BenHenning): Audit & adjust the thread safety of this class, and determine if there's a way
-//  to move off of the internal coroutine API.
+// TODO(#89): Audit & adjust the thread safety of this class, and determine if there's a way to move
+//  off of the internal coroutine API.
 
 /**
  * Replacement for Kotlin's test coroutine dispatcher that can be used to replace coroutine
  * dispatching functionality in a Robolectric test in a way that can be coordinated across multiple
  * dispatchers for execution synchronization.
+ *
+ * Developers should never use this dispatcher directly. Integrating with it should be done via
+ * [TestDispatcherModule] and ensuring thread synchronization should be done via
+ * [TestCoroutineDispatchers]. Attempting to interact directly with this dispatcher may cause timing
+ * inconsistencies between the UI thread and other application coroutine dispatchers.
  */
 @InternalCoroutinesApi
 @Suppress("EXPERIMENTAL_API_USAGE")
