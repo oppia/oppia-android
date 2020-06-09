@@ -11,6 +11,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
+import org.oppia.app.R
 import org.oppia.app.databinding.HomeFragmentBinding
 import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.app.fragment.FragmentScope
@@ -73,10 +74,18 @@ class HomeFragmentPresenter @Inject constructor(
     itemList.add(allTopicsViewModel)
     topicListAdapter = TopicListAdapter(activity, itemList, promotedStoryList)
 
-    val spanCount = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-      2
+    val spanCount = if (activity.resources.getBoolean(R.bool.isTablet)) {
+      if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        4
+      } else {
+        3
+      }
     } else {
-      3
+      if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+        2
+      } else {
+        3
+      }
     }
 
     val homeLayoutManager = GridLayoutManager(activity.applicationContext, spanCount)
