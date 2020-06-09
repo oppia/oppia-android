@@ -27,6 +27,7 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.model.TopicList
 import org.oppia.app.model.TopicSummary
 import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.domain.topic.StoryProgressTestHelper
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.datetime.DateTimeUtil
@@ -42,6 +43,7 @@ class HomeFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val topicListController: TopicListController,
   private val oppiaClock: OppiaClock,
+  private val storyProgressTestHelper: StoryProgressTestHelper,
   private val logger: Logger
 ) {
   private val routeToTopicListener = activity as RouteToTopicListener
@@ -65,7 +67,10 @@ class HomeFragmentPresenter @Inject constructor(
 
     internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-
+storyProgressTestHelper.markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(profileId,true)
+storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(profileId,true)
+storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(profileId,true)
+storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0AndStory1Exploration2(profileId,true)
     welcomeViewModel = WelcomeViewModel()
     promotedStoryListViewModel = PromotedStoryListViewModel(activity, internalProfileId)
     allTopicsViewModel = AllTopicsViewModel()

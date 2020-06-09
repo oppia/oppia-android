@@ -11,6 +11,7 @@
   <!-- OPPIA COLORS -->
   <color name="oppiaDarkBlue">#2D4A9D</color>
   <color name="oppiaPrimaryText">#333333</color>
+  <color name="oppiaPrimaryText80">#CC333333</color>
   <color name="oppiaPrimaryLight">#009688</color>
   <color name="oppiaPrimaryText30">#4D333333</color>
   <color name="oppiaPrimaryText70">#B3333333</color>

@@ -6,6 +6,7 @@ import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
 import org.oppia.app.databinding.OngoingStoryCardBinding
@@ -23,6 +24,7 @@ class OngoingListAdapter(
   private val orientation = Resources.getSystem().configuration.orientation
   private var titleIndex: Int = 0
   private var storyGridPosition: Int = 0
+  private var recyclerView: RecyclerView? = null
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
@@ -51,6 +53,11 @@ class OngoingListAdapter(
     }
   }
 
+  override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+    super.onAttachedToRecyclerView(recyclerView)
+    this.recyclerView = recyclerView
+  }
+
   override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
     when (holder.itemViewType) {
       VIEW_TYPE_SECTION_TITLE_TEXT -> {
@@ -58,8 +65,24 @@ class OngoingListAdapter(
         (holder as SectionTitleViewHolder).bind(itemList[position] as SectionTitleViewModel)
       }
       VIEW_TYPE_SECTION_STORY_ITEM -> {
+        val spanCount = (recyclerView!!.layoutManager as GridLayoutManager).spanCount
         storyGridPosition = position - titleIndex
+        val x: Int = storyGridPosition % spanCount
+        val column = x + 1
         (holder as OngoingStoryViewHolder).bind(itemList[position] as OngoingStoryViewModel)
+        val marginStart = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+          if (column == 1) {
+            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
+          } else {
+            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_8)
+          }
+        } else {
+          if (column == 1) {
+            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_72)
+          } else {
+            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_16)
+          }
+        }
         val marginEnd = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
           if (storyGridPosition % 2 == 1) {
             (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
@@ -67,23 +90,10 @@ class OngoingListAdapter(
             (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_8)
           }
         } else {
-          if (storyGridPosition % 2 == 1) {
+          if (column == 3) {
             (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_72)
           } else {
-            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_8)
-          }
-        }
-        val marginStart = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-          if (storyGridPosition % 2 == 1) {
-            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_8)
-          } else {
-            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
-          }
-        } else {
-          if (storyGridPosition % 2 == 1) {
-            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_8)
-          } else {
-            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_72)
+            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_0)
           }
         }
         val marginTop = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -93,10 +103,10 @@ class OngoingListAdapter(
             (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
           }
         } else {
-          if (storyGridPosition > 1) {
-            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_16)
-          } else {
+          if (storyGridPosition <= 2) {
             (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
+          } else {
+            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_16)
           }
         }
         val params =
