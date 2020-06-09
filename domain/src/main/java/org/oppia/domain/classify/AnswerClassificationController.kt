@@ -1,11 +1,10 @@
 package org.oppia.domain.classify
 
+import javax.inject.Inject
 import org.oppia.app.model.AnswerGroup
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.Outcome
-import org.oppia.util.firebase.CrashLogger
-import javax.inject.Inject
 
 // TODO(#59): Restrict the visibility of this class to only other controllers.
 /**
@@ -16,8 +15,7 @@ import javax.inject.Inject
  * This controller should only be interacted with via background threads.
  */
 class AnswerClassificationController @Inject constructor(
-  private val interactionClassifiers: Map<String, @JvmSuppressWildcards InteractionClassifier>,
-  private val crashLogger: CrashLogger
+  private val interactionClassifiers: Map<String, @JvmSuppressWildcards InteractionClassifier>
 ) {
   /**
    * Classifies the specified answer in the context of the specified [Interaction] and returns the [Outcome] that best
@@ -35,8 +33,11 @@ class AnswerClassificationController @Inject constructor(
   // Based on the Oppia web version:
   // https://github.com/oppia/oppia/blob/edb62f/core/templates/dev/head/pages/exploration-player-page/services/answer-classification.service.ts#L57.
   private fun classifyAnswer(
-    answer: InteractionObject, answerGroups: List<AnswerGroup>, defaultOutcome: Outcome,
-    interactionClassifier: InteractionClassifier, interactionId: String
+    answer: InteractionObject,
+    answerGroups: List<AnswerGroup>,
+    defaultOutcome: Outcome,
+    interactionClassifier: InteractionClassifier,
+    interactionId: String
   ): Outcome {
     for (answerGroup in answerGroups) {
       for (ruleSpec in answerGroup.ruleSpecsList) {
@@ -50,7 +51,6 @@ class AnswerClassificationController @Inject constructor(
             return answerGroup.outcome
           }
         } catch (e: Exception) {
-          crashLogger.logException(e)
           throw IllegalStateException("Failed when classifying answer $answer for interaction $interactionId", e)
         }
       }

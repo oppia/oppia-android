@@ -11,6 +11,14 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import java.io.IOException
+import javax.inject.Inject
+import javax.inject.Qualifier
+import javax.inject.Singleton
+import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.reflect.KClass
+import kotlin.reflect.full.cast
+import kotlin.test.fail
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -27,6 +35,7 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.domain.audio.AudioPlayerController.PlayStatus
+import org.oppia.testing.FakeCrashLogger
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.data.AsyncResult
@@ -40,13 +49,6 @@ import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowMediaPlayer
 import org.robolectric.shadows.util.DataSource
-import javax.inject.Inject
-import javax.inject.Qualifier
-import javax.inject.Singleton
-import kotlin.coroutines.EmptyCoroutineContext
-import kotlin.reflect.KClass
-import kotlin.reflect.full.cast
-import kotlin.test.fail
 
 /** Tests for [AudioPlayerControllerTest]. */
 @RunWith(AndroidJUnit4::class)
@@ -75,9 +77,11 @@ class AudioPlayerControllerTest {
 
   @Inject lateinit var audioPlayerController: AudioPlayerController
   private lateinit var shadowMediaPlayer: ShadowMediaPlayer
+  private var fakeCrashLogger = FakeCrashLogger()
 
   private val TEST_URL = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
   private val TEST_URL2 = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
+  private val TEST_FAIL_URL = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2"
 
   @Before
   fun setUp() {
@@ -155,7 +159,6 @@ class AudioPlayerControllerTest {
     assertThat(audioPlayerResultCaptor.value.isPending()).isTrue()
   }
 
-
   @Test
   fun tesObserver_preparePlayer_invokeCompletion_capturesCompletedState() {
     arrangeMediaPlayer()
@@ -202,11 +205,11 @@ class AudioPlayerControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testObserver_preparePlayer_invokePlayAndAdvance_capturesManyPlayingStates() = runBlockingTest(coroutineContext){
+  fun testObserver_preparePlayer_invokePlayAndAdvance_capturesManyPlayingStates() = runBlockingTest(coroutineContext) {
     arrangeMediaPlayer()
 
     audioPlayerController.play()
-    advanceTimeBy(1000) //Wait for next schedule update call
+    advanceTimeBy(1000) // Wait for next schedule update call
     shadowMediaPlayer.invokeCompletionListener()
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
@@ -287,8 +290,8 @@ class AudioPlayerControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testScheduling_preparePlayer_invokePauseAndAdvance_verifyTestDoesNotHang()
-      = runBlockingTest(coroutineContext) {
+  fun testScheduling_preparePlayer_invokePauseAndAdvance_verifyTestDoesNotHang() =
+      runBlockingTest(coroutineContext) {
     arrangeMediaPlayer()
 
     audioPlayerController.play()
@@ -303,8 +306,8 @@ class AudioPlayerControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testScheduling_preparePlayer_invokeCompletionAndAdvance_verifyTestDoesNotHang()
-      = runBlockingTest(coroutineContext) {
+  fun testScheduling_preparePlayer_invokeCompletionAndAdvance_verifyTestDoesNotHang() =
+      runBlockingTest(coroutineContext) {
     arrangeMediaPlayer()
 
     audioPlayerController.play()
@@ -319,8 +322,8 @@ class AudioPlayerControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testScheduling_observeData_removeObserver_verifyTestDoesNotHang()
-      = runBlockingTest(coroutineContext) {
+  fun testScheduling_observeData_removeObserver_verifyTestDoesNotHang() =
+      runBlockingTest(coroutineContext) {
     val playProgress = audioPlayerController.initializeMediaPlayer()
     audioPlayerController.changeDataSource(TEST_URL)
 
@@ -334,8 +337,8 @@ class AudioPlayerControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testScheduling_addAndRemoveObservers_verifyTestDoesNotHang()
-      = runBlockingTest(coroutineContext) {
+  fun testScheduling_addAndRemoveObservers_verifyTestDoesNotHang() =
+      runBlockingTest(coroutineContext) {
     val playProgress = audioPlayerController.initializeMediaPlayer()
     audioPlayerController.changeDataSource(TEST_URL)
 
@@ -351,8 +354,8 @@ class AudioPlayerControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_invokeErrorListener_invokePrepared_verifyAudioStatusIsFailure()
-      = runBlockingTest(coroutineContext) {
+  fun testController_invokeErrorListener_invokePrepared_verifyAudioStatusIsFailure() =
+      runBlockingTest(coroutineContext) {
     audioPlayerController.initializeMediaPlayer().observeForever(mockAudioPlayerObserver)
     audioPlayerController.changeDataSource(TEST_URL)
 
@@ -361,6 +364,16 @@ class AudioPlayerControllerTest {
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
     assertThat(audioPlayerResultCaptor.value.isFailure()).isTrue()
+  }
+
+  @Test
+  fun testController_initializePlayer_invokeChangeDataSource_logsException() {
+    fakeCrashLogger.clearAllExceptions()
+    audioPlayerController.initializeMediaPlayer()
+
+    audioPlayerController.changeDataSource(TEST_FAIL_URL)
+
+    assertThat(fakeCrashLogger.getMostRecentException()).isInstanceOf(IOException::class.java)
   }
 
   @Test
@@ -406,15 +419,17 @@ class AudioPlayerControllerTest {
   }
 
   private fun addMediaInfo() {
-    val dataSource = DataSource.toDataSource(context , Uri.parse(TEST_URL))
-    val dataSource2 = DataSource.toDataSource(context , Uri.parse(TEST_URL2))
-    val mediaInfo = ShadowMediaPlayer.MediaInfo(/* duration= */ 1000,/* preparationDelay= */ 0)
+    val dataSource = DataSource.toDataSource(context, Uri.parse(TEST_URL))
+    val dataSource2 = DataSource.toDataSource(context, Uri.parse(TEST_URL2))
+    val dataSource3 = DataSource.toDataSource(context, Uri.parse(TEST_FAIL_URL))
+    val mediaInfo = ShadowMediaPlayer.MediaInfo(/* duration= */ 1000, /* preparationDelay= */ 0)
     ShadowMediaPlayer.addMediaInfo(dataSource, mediaInfo)
     ShadowMediaPlayer.addMediaInfo(dataSource2, mediaInfo)
+    ShadowMediaPlayer.addException(dataSource3, IOException())
   }
 
   // TODO(#89): Move to a common test library.
-  private fun <T: Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
+  private fun <T : Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
     try {
       operation()
       fail("Expected to encounter exception of $type")
