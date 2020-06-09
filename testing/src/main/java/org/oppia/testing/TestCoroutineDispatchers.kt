@@ -1,11 +1,10 @@
 package org.oppia.testing
 
-import android.os.SystemClock
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import org.robolectric.shadows.ShadowLooper
+import java.util.TreeSet
+import javax.inject.Inject
 
 /**
  * Helper class to coordinate execution between all threads currently running in a test environment,
@@ -58,8 +57,18 @@ class TestCoroutineDispatchers @Inject constructor(
    */
   @ExperimentalCoroutinesApi
   fun advanceTimeBy(delayTimeMillis: Long) {
-    fakeSystemClock.advanceTime(delayTimeMillis)
-    runCurrent()
+    var remainingDelayMillis = delayTimeMillis
+    while (remainingDelayMillis > 0) {
+      val currentTimeMillis = fakeSystemClock.getTimeMillis()
+      val taskDelayMillis =
+        advanceToNextFutureTask(currentTimeMillis, maxDelayMs = remainingDelayMillis)
+      if (taskDelayMillis == null) {
+        // If there are no delayed tasks, advance by the full time requested.
+        fakeSystemClock.advanceTime(remainingDelayMillis)
+        runCurrent()
+      }
+      remainingDelayMillis -= taskDelayMillis ?: remainingDelayMillis
+    }
   }
 
   /**
@@ -70,9 +79,42 @@ class TestCoroutineDispatchers @Inject constructor(
    */
   @ExperimentalCoroutinesApi
   fun advanceUntilIdle() {
-    do {
-      flushAllTasks()
-    } while (hasPendingTasks())
+    // First, run through all tasks that are currently pending and can be run immediately.
+    runCurrent()
+
+    // Now, the dispatchers can't proceed until time moves forward. Execute the next most recent
+    // task schedule, and everything subsequently scheduled until the dispatchers are in a waiting
+    // state again. Repeat until all tasks have been executed (and thus the dispatchers enter an
+    // idle state).
+    while (hasPendingTasks()) {
+      val currentTimeMillis = fakeSystemClock.getTimeMillis()
+      val taskDelayMillis = checkNotNull(advanceToNextFutureTask(currentTimeMillis)) {
+        "Expected to find task with delay for waiting dispatchers with non-empty task queues"
+      }
+      fakeSystemClock.advanceTime(taskDelayMillis)
+      runCurrent()
+    }
+  }
+
+  /**
+   * Advances the clock to the next most recently scheduled task, then runs all tasks until the
+   * dispatcher enters a waiting state (meaning they cannot execute anything until the clock is
+   * advanced). If a task was executed, returns the delay added to the current system time in order
+   * to execute it. Returns null if the time to the next task is beyond the specified maximum delay,
+   * if any.
+   */
+  @ExperimentalCoroutinesApi
+  private fun advanceToNextFutureTask(
+    currentTimeMillis: Long, maxDelayMs: Long = Long.MAX_VALUE
+  ): Long? {
+    val nextFutureTimeMillis = getNextFutureTaskTimeMillis(currentTimeMillis)
+    val timeToTaskMillis = nextFutureTimeMillis?.let { it - currentTimeMillis }
+    val timeToAdvanceBy = timeToTaskMillis?.takeIf { it < maxDelayMs }
+    return timeToAdvanceBy?.let {
+      fakeSystemClock.advanceTime(it)
+      runCurrent()
+      return@let it
+    }
   }
 
   @ExperimentalCoroutinesApi
@@ -88,29 +130,39 @@ class TestCoroutineDispatchers @Inject constructor(
     }
   }
 
-  @ExperimentalCoroutinesApi
-  private fun flushAllTasks() {
-    val currentTimeMillis = fakeSystemClock.getTimeMillis()
-    if (backgroundTestDispatcher.hasPendingCompletableTasks()) {
-      backgroundTestDispatcher.advanceUntilIdle()
-    }
-    if (blockingTestDispatcher.hasPendingCompletableTasks()) {
-      blockingTestDispatcher.advanceUntilIdle()
-    }
-    shadowUiLooper.idleFor(currentTimeMillis, TimeUnit.MILLISECONDS)
-    SystemClock.setCurrentTimeMillis(currentTimeMillis)
-  }
-
+  /** Returns whether any of the dispatchers have any tasks to run, including in the future. */
   private fun hasPendingTasks(): Boolean {
-    // TODO(#89): Ensure the check for pending UI thread tasks is actually correct.
     return backgroundTestDispatcher.hasPendingTasks() ||
         blockingTestDispatcher.hasPendingTasks() ||
-        !shadowUiLooper.isIdle
+        getNextUiThreadFutureTaskTimeMillis(fakeSystemClock.getTimeMillis()) != null
   }
 
+  /** Returns whether any of the dispatchers have tasks that can be run now. */
   private fun hasPendingCompletableTasks(): Boolean {
     return backgroundTestDispatcher.hasPendingCompletableTasks() ||
         blockingTestDispatcher.hasPendingCompletableTasks() ||
         !shadowUiLooper.isIdle
+  }
+
+  private fun getNextFutureTaskTimeMillis(timeMillis: Long): Long? {
+    val nextBackgroundFutureTaskTimeMills =
+      backgroundTestDispatcher.getNextFutureTaskCompletionTimeMillis(timeMillis)
+    val nextBlockingFutureTaskTimeMills =
+      backgroundTestDispatcher.getNextFutureTaskCompletionTimeMillis(timeMillis)
+    val nextUiFutureTaskTimeMills = getNextUiThreadFutureTaskTimeMillis(timeMillis)
+    val futureTimes: TreeSet<Long> = sortedSetOf()
+    nextBackgroundFutureTaskTimeMills?.let { futureTimes.add(it) }
+    nextBlockingFutureTaskTimeMills?.let { futureTimes.add(it) }
+    nextUiFutureTaskTimeMills?.let { futureTimes.add(it) }
+    return futureTimes.firstOrNull()
+  }
+
+  private fun getNextUiThreadFutureTaskTimeMillis(timeMillis: Long): Long? {
+    val delayMs = shadowUiLooper.nextScheduledTaskTime.toMillis()
+    if (delayMs == 0L && shadowUiLooper.isIdle) {
+      // If there's no delay and the looper is idle, that means there are no scheduled tasks.
+      return null
+    }
+    return timeMillis + delayMs
   }
 }
