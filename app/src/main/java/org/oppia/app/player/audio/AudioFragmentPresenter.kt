@@ -122,10 +122,13 @@ class AudioFragmentPresenter @Inject constructor(
   }
 
   private fun subscribeToAudioLanguageLiveData() {
-    getProfileData().observe(activity, Observer<String> { result ->
-      viewModel.selectedLanguageCode = result
-      viewModel.loadMainContentAudio(false)
-    })
+    getProfileData().observe(
+      activity,
+      Observer<String> { result ->
+        viewModel.selectedLanguageCode = result
+        viewModel.loadMainContentAudio(false)
+      }
+    )
   }
 
   /** Gets language code by [AudioLanguage]. */
