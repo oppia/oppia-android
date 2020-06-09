@@ -29,22 +29,13 @@ class ViewPagerAdapter(
         return topicInfoTab
       }
       TopicTab.LESSONS -> {
-        val topicPlayTab = TopicLessonsFragment()
-
-        if (storyId.isNotEmpty())
-          args.putString(STORY_ID_ARGUMENT_KEY, storyId)
-        topicPlayTab.arguments = args
-        return topicPlayTab
+        return TopicLessonsFragment.newInstance(internalProfileId, topicId, storyId)
       }
       TopicTab.PRACTICE -> {
-        val topicPracticeTab = TopicPracticeFragment()
-        topicPracticeTab.arguments = args
-        return topicPracticeTab
+        return TopicPracticeFragment.newInstance(internalProfileId, topicId)
       }
       TopicTab.REVISION -> {
-        val topicReviewTab = TopicRevisionFragment()
-        topicReviewTab.arguments = args
-        return topicReviewTab
+        return TopicRevisionFragment.newInstance(internalProfileId, topicId)
       }
     }
   }

@@ -13,6 +13,18 @@ import javax.inject.Inject
 
 /** Fragment that card for topic revision. */
 class TopicRevisionFragment : InjectableFragment(), RevisionSubtopicSelector {
+  companion object {
+    /** Returns a new [TopicRevisionFragment] */
+    fun newInstance(internalProfileId: Int, topicId: String): TopicRevisionFragment {
+      val topicRevisionFragment = TopicRevisionFragment()
+      val args = Bundle()
+      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+      args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
+      topicRevisionFragment.arguments = args
+      return topicRevisionFragment
+    }
+  }
+
   @Inject lateinit var topicReviewFragmentPresenter: TopicRevisionFragmentPresenter
 
   override fun onAttach(context: Context) {
