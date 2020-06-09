@@ -12,17 +12,15 @@
   <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="12dp"
-    android:layout_marginTop="@dimen/divider_margin_top"
-    android:layout_marginEnd="12dp"
-    android:layout_marginBottom="@dimen/divider_margin_bottom">
+    android:layout_marginStart="28dp"
+    android:layout_marginTop="36dp"
+    android:layout_marginEnd="28dp"
+    android:layout_marginBottom="28dp">
 
     <TextView
       android:id="@+id/question_player_content_text_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginTop="16dp"
-      android:layout_marginBottom="16dp"
       android:fontFamily="sans-serif"
       android:text="@{htmlContent}"
       android:textColor="@color/oppiaPrimaryText"
