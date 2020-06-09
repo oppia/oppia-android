@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
+import org.oppia.app.topic.PROFILE_ID_ARGUMENT_KEY
+import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
 import javax.inject.Inject
 
 private const val KEY_SKILL_ID_LIST = "SKILL_ID_LIST"
@@ -24,7 +26,17 @@ class TopicPracticeFragment : InjectableFragment() {
     if (savedInstanceState != null) {
       selectedIdList = savedInstanceState.getStringArrayList(KEY_SKILL_ID_LIST)
     }
-    return topicPracticeFragmentPresenter.handleCreateView(inflater, container, selectedIdList)
+    val internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)!!
+    val topicId = checkNotNull(arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
+      "Expected topic ID to be included in arguments for TopicPracticeFragment."
+    }
+    return topicPracticeFragmentPresenter.handleCreateView(
+      inflater,
+      container,
+      selectedIdList,
+      internalProfileId,
+      topicId
+    )
   }
 
   override fun onSaveInstanceState(outState: Bundle) {

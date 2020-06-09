@@ -316,7 +316,7 @@ class ExplorationProgressController @Inject constructor(
 
   private suspend fun retrieveCurrentStateWithinCacheAsync(): AsyncResult<EphemeralState> {
     val explorationId: String? = explorationProgressLock.withLock {
-      return@withLock if (explorationProgress.playStage == ExplorationProgress.PlayStage.LOADING_EXPLORATION) {
+      if (explorationProgress.playStage == ExplorationProgress.PlayStage.LOADING_EXPLORATION) {
         explorationProgress.currentExplorationId
       } else null
     }

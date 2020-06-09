@@ -15,7 +15,7 @@ internal class QuestionAssessmentProgress {
   private var questionsList: List<Question> = listOf()
   internal val stateList: StateList by lazy { StateList(questionsList) }
   internal val stateDeck: StateDeck by lazy { StateDeck(stateList.getFirstState(), this::isTopStateTerminal) }
-  private var isTopCardCompleted: Boolean = false
+  private var isTopQuestionCompleted: Boolean = false
 
   /** Initialize the assessment with the specified list of questions. */
   internal fun initialize(questionsList: List<Question>) {
@@ -23,17 +23,17 @@ internal class QuestionAssessmentProgress {
     this.questionsList = questionsList
     stateList.reset(questionsList)
     stateDeck.resetDeck(stateList.getFirstState())
-    isTopCardCompleted = false
+    isTopQuestionCompleted = false
   }
 
-  /** Processes when the current card has just been completed. */
-  internal fun completeCurrentCard() {
-    isTopCardCompleted = true
+  /** Processes when the current question card has just been completed. */
+  internal fun completeCurrentQuestion() {
+    isTopQuestionCompleted = true
   }
 
-  /** Processes when a new pending card has been navigated to. */
-  internal fun processNavigationToNewCard() {
-    isTopCardCompleted = false
+  /** Processes when a new pending question card has been navigated to. */
+  internal fun processNavigationToNewQuestion() {
+    isTopQuestionCompleted = false
   }
 
   /**
@@ -80,7 +80,7 @@ internal class QuestionAssessmentProgress {
 
   /** Returns whether the learner has completed the assessment. */
   internal fun isAssessmentCompleted(): Boolean {
-    return getCurrentQuestionIndex() == getTotalQuestionCount() - 1 && isTopCardCompleted
+    return getCurrentQuestionIndex() == getTotalQuestionCount() - 1 && isTopQuestionCompleted
   }
 
   /** Returns the index of the current question being played. */
@@ -94,7 +94,7 @@ internal class QuestionAssessmentProgress {
   }
 
   /** Returns whether the learner is currently viewing the most recent question card. */
-  internal fun isViewingMostRecentCard(): Boolean {
+  internal fun isViewingMostRecentQuestion(): Boolean {
     return stateDeck.isCurrentStateTopOfDeck()
   }
 

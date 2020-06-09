@@ -10,20 +10,28 @@ import android.view.animation.AnimationUtils
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.Transformations
 import org.oppia.app.R
 import org.oppia.app.databinding.AudioFragmentBinding
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.model.AudioLanguage
 import org.oppia.app.model.CellularDataPreference
+import org.oppia.app.model.Profile
+import org.oppia.app.model.ProfileId
 import org.oppia.app.model.State
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.audio.CellularAudioDialogController
+import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.logging.Logger
 import org.oppia.util.networking.NetworkConnectionUtil
 import javax.inject.Inject
 
 const val TAG_LANGUAGE_DIALOG = "LANGUAGE_DIALOG"
 private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
+const val AUDIO_FRAGMENT_PROFILE_ID_ARGUMENT_KEY = "AUDIO_FRAGMENT_PROFILE_ID_ARGUMENT_KEY"
 
 /** The presenter for [AudioFragment]. */
 @FragmentScope
@@ -32,12 +40,14 @@ class AudioFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val context: Context,
   private val cellularAudioDialogController: CellularAudioDialogController,
+  private val profileManagementController: ProfileManagementController,
   private val networkConnectionUtil: NetworkConnectionUtil,
-  private val viewModelProvider: ViewModelProvider<AudioViewModel>
+  private val viewModelProvider: ViewModelProvider<AudioViewModel>,
+  private val logger: Logger
 ) {
   var userIsSeeking = false
   var userProgress = 0
-
+  private lateinit var profileId: ProfileId
   private var feedbackId: String? = null
   private var showCellularDataDialog = true
   private var useCellularData = false
@@ -47,7 +57,12 @@ class AudioFragmentPresenter @Inject constructor(
   }
 
   /** Sets up SeekBar listener, ViewModel, and gets VoiceoverMappings or restores saved state */
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    internalProfileId: Int
+  ): View? {
+    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     cellularAudioDialogController.getCellularDataPreference()
       .observe(fragment, Observer<AsyncResult<CellularDataPreference>> {
         if (it.isSuccess()) {
@@ -84,8 +99,40 @@ class AudioFragmentPresenter @Inject constructor(
       it.audioFragment = fragment as AudioFragment
       it.lifecycleOwner = fragment
     }
-
+    subscribeToAudioLanguageLiveData()
     return binding.root
+  }
+
+  private fun getProfileData(): LiveData<String> {
+    return Transformations.map(
+      profileManagementController.getProfile(profileId),
+      ::processGetProfileResult
+    )
+  }
+
+  private fun subscribeToAudioLanguageLiveData() {
+    getProfileData().observe(activity, Observer<String> { result ->
+      viewModel.selectedLanguageCode = result
+      viewModel.loadMainContentAudio(false)
+    })
+  }
+
+  /** Gets language code by [AudioLanguage]. */
+  private fun getAudioLanguage(audioLanguage: AudioLanguage): String {
+    return when (audioLanguage) {
+      AudioLanguage.ENGLISH_AUDIO_LANGUAGE -> "en"
+      AudioLanguage.HINDI_AUDIO_LANGUAGE -> "hi"
+      AudioLanguage.FRENCH_AUDIO_LANGUAGE -> "fr"
+      AudioLanguage.CHINESE_AUDIO_LANGUAGE -> "zh"
+      else -> "en"
+    }
+  }
+
+  private fun processGetProfileResult(profileResult: AsyncResult<Profile>): String {
+    if (profileResult.isFailure()) {
+      logger.e("AudioFragment", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
+    }
+    return getAudioLanguage(profileResult.getOrDefault(Profile.getDefaultInstance()).audioLanguage)
   }
 
   /** Sets selected language code in presenter and ViewModel */
@@ -122,11 +169,13 @@ class AudioFragmentPresenter @Inject constructor(
     }
   }
 
-  fun setStateAndExplorationId(newState: State, explorationId: String) = viewModel.setStateAndExplorationId(newState, explorationId)
+  fun setStateAndExplorationId(newState: State, explorationId: String) =
+    viewModel.setStateAndExplorationId(newState, explorationId)
 
   fun loadMainContentAudio(allowAutoPlay: Boolean) = viewModel.loadMainContentAudio(allowAutoPlay)
 
-  fun loadFeedbackAudio(contentId: String, allowAutoPlay: Boolean) = viewModel.loadFeedbackAudio(contentId, allowAutoPlay)
+  fun loadFeedbackAudio(contentId: String, allowAutoPlay: Boolean) =
+    viewModel.loadFeedbackAudio(contentId, allowAutoPlay)
 
   fun pauseAudio() {
     if (prepared)
@@ -203,6 +252,7 @@ class AudioFragmentPresenter @Inject constructor(
       override fun onAnimationEnd(p0: Animation?) {
         (activity as AudioButtonListener).setAudioBarVisibility(false)
       }
+
       override fun onAnimationStart(p0: Animation?) {}
       override fun onAnimationRepeat(p0: Animation?) {}
     })

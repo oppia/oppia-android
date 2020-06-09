@@ -33,11 +33,12 @@ class TopicFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     internalProfileId: Int,
-    topicId: String
+    topicId: String,
+    storyId: String
   ): View? {
     val binding = TopicFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.lifecycleOwner = fragment
-    storyId = fragment.arguments?.getString(STORY_ID_ARGUMENT_KEY) ?: ""
+    this.storyId = storyId
     viewPager = binding.root.findViewById(R.id.topic_tabs_viewpager) as ViewPager
     tabLayout = binding.root.findViewById(R.id.topic_tabs_container) as TabLayout
     this.internalProfileId = internalProfileId
@@ -60,5 +61,7 @@ class TopicFragmentPresenter @Inject constructor(
     tabLayout.getTabAt(3)!!.setText(fragment.getString(R.string.revision)).setIcon(tabIcons[3])
     if (topicId.isNotEmpty() && storyId.isNotEmpty())
       setCurrentTab(TopicTab.LESSONS)
+    else if(topicId.isNotEmpty() && storyId.isEmpty())
+      setCurrentTab(TopicTab.INFO)
   }
 }

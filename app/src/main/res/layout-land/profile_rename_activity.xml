@@ -51,6 +51,7 @@
       <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="56dp"
         android:background="@drawable/general_item_background_border"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -61,7 +62,6 @@
           android:layout_marginStart="168dp"
           android:layout_marginTop="32dp"
           android:layout_marginEnd="168dp"
-          android:layout_marginBottom="12dp"
           app:label="@string/profile_rename_label"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
@@ -73,8 +73,8 @@
           style="@style/StateButtonActive"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginTop="20dp"
-          android:layout_marginEnd="160dp"
+          android:layout_marginTop="16dp"
+          android:layout_marginEnd="168dp"
           android:background="@{viewModel.inputName.length > 0 ? @drawable/state_button_primary_background :@drawable/start_button_transparent_background}"
           android:clickable="@{viewModel.inputName.length > 0}"
           android:text="@string/profile_rename_save"
