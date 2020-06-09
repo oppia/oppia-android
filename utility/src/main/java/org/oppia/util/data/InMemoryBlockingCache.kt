@@ -1,12 +1,12 @@
 package org.oppia.util.data
 
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import org.oppia.util.threading.BlockingDispatcher
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * An in-memory cache that provides blocking CRUD operations such that each operation is guaranteed to operate exactly
