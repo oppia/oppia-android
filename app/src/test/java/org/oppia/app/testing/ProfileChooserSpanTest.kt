@@ -36,12 +36,16 @@ class ProfileChooserSpanTest {
     Intents.release()
   }
 
-  private fun getProfileRecyclerViewGridLayoutManager(activity: ProfileChooserFragmentTestActivity): GridLayoutManager {
+  private fun getProfileRecyclerViewGridLayoutManager(
+    activity: ProfileChooserFragmentTestActivity
+  ): GridLayoutManager {
     return getProfileRecyclerView(activity).layoutManager as GridLayoutManager
   }
 
   private fun getProfileRecyclerView(activity: ProfileChooserFragmentTestActivity): RecyclerView {
-    return getProfileChooserFragment(activity).view?.findViewWithTag<View>(TAG_PROFILE_CHOOSER_FRAGMENT_RECYCLER_VIEW)!! as RecyclerView
+    return getProfileChooserFragment(activity).view?.findViewWithTag<View>(
+      TAG_PROFILE_CHOOSER_FRAGMENT_RECYCLER_VIEW
+    )!! as RecyclerView
   }
 
   @Test
@@ -173,7 +177,13 @@ class ProfileChooserSpanTest {
     }
   }
 
-  private fun getProfileChooserFragment(activity: ProfileChooserFragmentTestActivity): ProfileChooserFragment {
-    return activity.supportFragmentManager.findFragmentByTag(ProfileChooserFragmentTestActivity.TAG_PROFILE_CHOOSER_FRAGMENT) as ProfileChooserFragment
+  private fun getProfileChooserFragment(
+    activity: ProfileChooserFragmentTestActivity
+  ): ProfileChooserFragment {
+    return activity
+      .supportFragmentManager
+      .findFragmentByTag(
+        ProfileChooserFragmentTestActivity.TAG_PROFILE_CHOOSER_FRAGMENT
+      ) as ProfileChooserFragment
   }
 }
