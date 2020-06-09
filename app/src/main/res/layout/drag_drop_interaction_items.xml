@@ -1,5 +1,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
 
   <data>
 
@@ -12,25 +13,36 @@
       type="org.oppia.app.player.state.itemviewmodel.DragDropInteractionContentViewModel" />
   </data>
 
-  <RelativeLayout
+  <LinearLayout
     android:id="@+id/drag_drop_item_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="48dp"
-    android:background="@drawable/rounded_rect_grey_border_white_background"
     android:layout_margin="4dp"
     android:gravity="center_vertical">
 
-
     <TextView
       android:id="@+id/drag_drop_content_text_view"
-      android:layout_width="match_parent"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:textSize="16sp"
+      android:layout_weight="1"
       android:layout_marginStart="4dp"
+      android:background="@drawable/rounded_rect_grey_border_white_background"
       android:fontFamily="sans-serif"
+      android:gravity="center_vertical"
+      android:minHeight="40dp"
+      android:padding="16dp"
       android:paddingTop="4dp"
       android:text="@{htmlContent}"
-      android:textColor="@color/oppiaDarkBlue" />
-  </RelativeLayout>
+      android:textColor="@color/oppiaDarkBlue"
+      android:textSize="16sp" />
+
+    <ImageView
+      android:id="@+id/drag_drop_content_group_item"
+      android:focusable="true"
+      android:clickable="true"
+      android:layout_margin="@dimen/margin_8"
+      android:src="@drawable/ic_file_download_primary_24dp"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"/>
+  </LinearLayout>
 </layout>

@@ -34,6 +34,7 @@
       android:layout_marginEnd="20dp"
       android:layout_marginBottom="@dimen/divider_margin_bottom"
       android:divider="@android:color/transparent"
+      app:allowMultipleItemsInSamePosition="@{viewModel.getSortType()}"
       app:data="@{viewModel.choiceItems}"
       app:onItemDrag="@{(indexFrom, indexTo) -> viewModel.onItemDragged(indexFrom, indexTo)}"
       app:explorationId="@{viewModel.explorationId}"

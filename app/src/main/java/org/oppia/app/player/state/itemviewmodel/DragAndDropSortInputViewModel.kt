@@ -2,6 +2,7 @@ package org.oppia.app.player.state.itemviewmodel
 
 import androidx.databinding.ObservableList
 import org.oppia.app.model.Interaction
+import org.oppia.app.model.StringList
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
@@ -29,6 +30,11 @@ class DragAndDropSortInputViewModel(
 
   }
 
+  /** Returns the [SelectionItemInputType] that should be used to render items of this view model. */
+  fun getSortType(): Boolean {
+    return allowMultipleItemsInSamePosition
+  }
+
   companion object {
     private fun computeChoiceItems(
       choiceStrings: List<String>
@@ -36,7 +42,7 @@ class DragAndDropSortInputViewModel(
       val observableList = ObservableArrayList<DragDropInteractionContentViewModel>()
       observableList += choiceStrings.mapIndexed { index, choiceString ->
         DragDropInteractionContentViewModel(
-          htmlContent = choiceString, itemIndex = index
+          htmlContent = StringList.newBuilder().addHtml(choiceString).build(), itemIndex = index
         )
       }
       return observableList
