@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
+
   <data>
+
     <import type="android.view.View" />
+
     <variable
       name="viewModel"
       type="org.oppia.app.player.exploration.ExplorationViewModel" />
   </data>
+
   <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -24,19 +28,21 @@
         android:id="@+id/exploration_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="end"
         android:background="@color/colorPrimary"
         android:minHeight="?attr/actionBarSize"
-        android:layout_gravity="end"
         android:theme="@style/Widget.AppCompat.ActionBar"
+        app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:titleTextColor="@color/white">
+
         <ImageView
           android:id="@+id/action_audio_player"
           android:layout_width="48dp"
           android:layout_height="48dp"
           android:layout_gravity="end"
           android:scaleType="center"
-          android:visibility="@{viewModel.showAudioButton ? View.VISIBLE : View.GONE}"
-          android:src="@{viewModel.isAudioStreamingOn ? @drawable/ic_audio_streaming_on_24dp :  @drawable/ic_audio_streaming_off_24dp}" />
+          android:src="@{viewModel.isAudioStreamingOn ? @drawable/ic_audio_streaming_on_24dp :  @drawable/ic_audio_streaming_off_24dp}"
+          android:visibility="@{viewModel.showAudioButton ? View.VISIBLE : View.GONE}" />
       </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
