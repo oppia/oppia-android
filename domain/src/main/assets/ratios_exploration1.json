@@ -406,7 +406,7 @@
           "param_changes": [],
           "feedback": {
             "content_id": "default_outcome",
-            "html": "<p>No, that is not correct. If you don't know how to solve this question, try playing the <oppia-noninteractive-link text-with-value=\"&amp;quot;\\&amp;quot;What is a Ratio?\\&amp;quot; lesson&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/drag_and_drop_test_exploration&amp;quot;\"></oppia-noninteractive-link>.</p>"
+            "html": "<p>No, that is not correct. If you don't know how to solve this question, try playing the <oppia-noninteractive-link text-with-value=\"&amp;quot;\\&amp;quot;What is a Ratio?\\&amp;quot; lesson&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/2mzzFVDLuAj8&amp;quot;\"></oppia-noninteractive-link>.</p>"
           },
           "dest": "Review 4",
           "refresher_exploration_id": null,
@@ -520,10 +520,10 @@
           "param_changes": [],
           "feedback": {
             "content_id": "default_outcome",
-            "html": "<p>No, that is incorrect. Actually, <strong>each</strong> of these three pictures represents the ratio 1:2.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 cup of milk on the left and 2 cups of blueberry puree on the right&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190116_155938_8twq7xxnwo_height_74_width_294.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p> </p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 L of blueberry puree on the left and 2 L of milk on the right.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190116_160034_ftmdsux4hr_height_95_width_294.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p> </p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;2 cups of blueberry puree on the left and 4 cups of milk on the right.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190116_161602_sdz63sveqc_height_151_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>If you don't know why this is true, it would be a good idea to play the <oppia-noninteractive-link text-with-value=\"&amp;quot;\\&amp;quot;What is a Ratio?\\&amp;quot; lesson&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/drag_and_drop_test_exploration&amp;quot;\"></oppia-noninteractive-link> first!</p>"
+            "html": "<p>No, that is incorrect. Actually, <strong>each</strong> of these three pictures represents the ratio 1:2.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 cup of milk on the left and 2 cups of blueberry puree on the right&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190116_155938_8twq7xxnwo_height_74_width_294.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p> </p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 L of blueberry puree on the left and 2 L of milk on the right.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190116_160034_ftmdsux4hr_height_95_width_294.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p> </p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;2 cups of blueberry puree on the left and 4 cups of milk on the right.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190116_161602_sdz63sveqc_height_151_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>If you don't know why this is true, it would be a good idea to play the <oppia-noninteractive-link text-with-value=\"&amp;quot;\\&amp;quot;What is a Ratio?\\&amp;quot; lesson&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/2mzzFVDLuAj8&amp;quot;\"></oppia-noninteractive-link> first!</p>"
           },
           "dest": "Review 5",
-          "refresher_exploration_id": "drag_and_drop_test_exploration",
+          "refresher_exploration_id": "2mzzFVDLuAj8",
           "missing_prerequisite_skill_id": null,
           "labelled_as_correct": false
         },
@@ -852,7 +852,7 @@
           "param_changes": [],
           "feedback": {
             "content_id": "default_outcome",
-            "html": "<p>No, that is wrong. If you do not know how to solve this question, go and study the <oppia-noninteractive-link text-with-value=\"&amp;quot;lesson \\&amp;quot;What is a Ratio?\\&amp;quot;&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/drag_and_drop_test_exploration&amp;quot;\"></oppia-noninteractive-link> first.</p>"
+            "html": "<p>No, that is wrong. If you do not know how to solve this question, go and study the <oppia-noninteractive-link text-with-value=\"&amp;quot;lesson \\&amp;quot;What is a Ratio?\\&amp;quot;&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/2mzzFVDLuAj8&amp;quot;\"></oppia-noninteractive-link> first.</p>"
           },
           "dest": "Review 1",
           "refresher_exploration_id": null,
@@ -1041,7 +1041,7 @@
           "param_changes": [],
           "feedback": {
             "content_id": "default_outcome",
-            "html": "<p>No, that is wrong. Try again. If you need a refresher, try playing the <oppia-noninteractive-link text-with-value=\"&amp;quot;\\&amp;quot;What is a Ratio?\\&amp;quot; lesson&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/drag_and_drop_test_exploration&amp;quot;\"></oppia-noninteractive-link>.</p>"
+            "html": "<p>No, that is wrong. Try again. If you need a refresher, try playing the <oppia-noninteractive-link text-with-value=\"&amp;quot;\\&amp;quot;What is a Ratio?\\&amp;quot; lesson&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/2mzzFVDLuAj8&amp;quot;\"></oppia-noninteractive-link>.</p>"
           },
           "dest": "Review 2",
           "refresher_exploration_id": null,
@@ -1171,7 +1171,7 @@
           "param_changes": [],
           "feedback": {
             "content_id": "default_outcome",
-            "html": "<p>No, that is wrong. Try again. If you need a refresher, try playing the <oppia-noninteractive-link text-with-value=\"&amp;quot;\\&amp;quot;What is a Ratio?\\&amp;quot; lesson&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/drag_and_drop_test_exploration&amp;quot;\"></oppia-noninteractive-link>.</p>"
+            "html": "<p>No, that is wrong. Try again. If you need a refresher, try playing the <oppia-noninteractive-link text-with-value=\"&amp;quot;\\&amp;quot;What is a Ratio?\\&amp;quot; lesson&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/2mzzFVDLuAj8&amp;quot;\"></oppia-noninteractive-link>.</p>"
           },
           "dest": "Review 3",
           "refresher_exploration_id": null,

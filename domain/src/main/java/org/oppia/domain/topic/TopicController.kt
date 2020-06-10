@@ -77,7 +77,7 @@ val TOPIC_FILE_ASSOCIATIONS = mapOf(
     "fractions_topic.json"
   ),
   RATIOS_TOPIC_ID to listOf(
-    "drag_and_drop_test_exploration.json",
+    "ratios_exploration0.json",
     "ratios_exploration1.json",
     "ratios_exploration2.json",
     "ratios_exploration3.json",

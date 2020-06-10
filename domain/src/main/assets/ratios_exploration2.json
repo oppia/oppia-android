@@ -1345,7 +1345,7 @@
           "param_changes": [],
           "feedback": {
             "content_id": "default_outcome",
-            "html": "<p>No, that's not correct. Try again. If you need a refresher, take another look at the <oppia-noninteractive-link text-with-value=\"&amp;quot;\\&amp;quot;What is a Ratio?\\&amp;quot; lesson&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/drag_and_drop_test_exploration&amp;quot;\"></oppia-noninteractive-link>.</p>"
+            "html": "<p>No, that's not correct. Try again. If you need a refresher, take another look at the <oppia-noninteractive-link text-with-value=\"&amp;quot;\\&amp;quot;What is a Ratio?\\&amp;quot; lesson&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/2mzzFVDLuAj8&amp;quot;\"></oppia-noninteractive-link>.</p>"
           },
           "dest": "Review 1",
           "refresher_exploration_id": null,
