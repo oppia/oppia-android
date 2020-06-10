@@ -32,15 +32,16 @@ internal class DragDropSortInputIsEqualToOrderingClassifierProvider @Inject cons
   /**
    * This functions checks the equality of two nested lists irrespective of positions of nested list only ordering of first list matters
    * It returns true if all the list items are equal and are at correct position otherwise false
-   *
-   * For Ex - list1 = [a, b, c] & list2 = [1, 2, 3]
-   *          list1 zip list2 => [a1, b2, b3]
-   *          then two items are checked using areSetsOfHtmlStringsEqual which gives a boolean value
-   *          then reduce operator on a list of boolean for ex [false, true, false, false, false]
-   *          will result in  val a = false x true x false x false x false where x signifies the operator
-   *          which is meant to be applied.
    */
   private fun areListOfSetsOfHtmlStringsEqual(answer: ListOfSetsOfHtmlStrings, input: ListOfSetsOfHtmlStrings): Boolean {
+    /**
+     *For Ex - list1 = [a, b, c] & list2 = [1, 2, 3]
+     *          list1 zip list2 => [{a, 1}, {b, 2}, {b, 3}]
+     *          then two items are checked using areSetsOfHtmlStringsEqual which gives a boolean value
+     *          then reduce operator on a list of boolean for ex [false, true, false, false, false]
+     *          will result in  val a = false && true && false && false && false where && signifies the operator
+     *          which is meant to be applied.
+     */
     if (answer.setOfHtmlStringsCount != input.setOfHtmlStringsCount) {
       return false
     }
