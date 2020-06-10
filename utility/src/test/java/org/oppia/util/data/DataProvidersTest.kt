@@ -68,6 +68,8 @@ class DataProvidersTest {
 
   @Inject lateinit var asyncDataSubscriptionManager: AsyncDataSubscriptionManager
 
+  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
+
   @InternalCoroutinesApi @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Inject @field:BackgroundDispatcher
@@ -87,7 +89,6 @@ class DataProvidersTest {
 
   private var inMemoryCachedStr: String? = null
   private var inMemoryCachedStr2: String? = null
-  private var fakeCrashLogger = FakeExceptionLogger()
 
   private val backgroundCoroutineScope by lazy {
     CoroutineScope(backgroundCoroutineDispatcher)
@@ -2849,7 +2850,7 @@ class DataProvidersTest {
   @InternalCoroutinesApi
   @ExperimentalCoroutinesApi
   fun testNestedXformedProvider_toLiveData_baseFailure_logsException() {
-    fakeCrashLogger.clearAllExceptions()
+    fakeExceptionLogger.clearAllExceptions()
     val baseProvider =
       createThrowingDataProvider<String>(BASE_PROVIDER_ID_0, IllegalStateException("Base failure"))
     val dataProvider =
@@ -2859,11 +2860,10 @@ class DataProvidersTest {
 
     dataProviders.convertToLiveData(dataProvider).observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
-    val exception = fakeCrashLogger.getMostRecentException()
+    val exception = fakeExceptionLogger.getMostRecentException()
 
     assertThat(exception).isInstanceOf(IllegalStateException::class.java)
     assertThat(exception).hasMessageThat().contains("Base failure")
-
   }
 
   private fun transformString(str: String): Int {

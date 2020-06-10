@@ -8,7 +8,7 @@ import kotlin.Exception
 /** A test specific fake for the exception logger. */
 @Singleton
 class FakeExceptionLogger @Inject constructor() : ExceptionLogger {
-  private var exceptionList: MutableList<Exception> = ArrayList()
+  private var exceptionList = ArrayList<Exception>()
 
   override fun logException(exception: Exception) {
     exceptionList.add(exception)
@@ -17,10 +17,6 @@ class FakeExceptionLogger @Inject constructor() : ExceptionLogger {
   /** Returns the most recently logged exception. */
   fun getMostRecentException(): Exception = exceptionList.last()
 
-
   /** Clears all the exceptions that are currently logged. */
-  fun clearAllExceptions() {
-    exceptionList.clear()
-  }
-
+  fun clearAllExceptions() = exceptionList.clear()
 }
