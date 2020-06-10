@@ -11,7 +11,7 @@ import org.oppia.app.fragment.FragmentComponent
  * An [AppCompatActivity] that facilitates field injection to child activities and constituent fragments that extend
  * [org.oppia.app.fragment.InjectableFragment].
  */
-abstract class InjectableAppCompatActivity: AppCompatActivity() {
+abstract class InjectableAppCompatActivity : AppCompatActivity() {
   /**
    * The [ActivityComponent] corresponding to this activity. This cannot be used before [onCreate] is called, and can be
    * used to inject lateinit fields in child activities during activity creation (which is recommended to be done in an
@@ -38,6 +38,7 @@ abstract class InjectableAppCompatActivity: AppCompatActivity() {
   }
 
   fun createFragmentComponent(fragment: Fragment): FragmentComponent {
-    return activityComponent.getFragmentComponentBuilderProvider().get().setFragment(fragment).build()
+    return activityComponent.getFragmentComponentBuilderProvider().get().setFragment(fragment)
+      .build()
   }
 }
