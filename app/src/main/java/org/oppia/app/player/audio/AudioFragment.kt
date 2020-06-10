@@ -62,6 +62,16 @@ class AudioFragment : InjectableFragment(), LanguageInterface, AudioUiManager,
     audioFragmentPresenter.handleOnDestroy()
   }
 
+  override fun enableAudioPlayback(contentId: String?) {
+    audioFragmentPresenter.handleAudioClick(
+      shouldEnableAudioPlayback = true, feedbackId = contentId
+    )
+  }
+
+  override fun disableAudioPlayback() {
+    audioFragmentPresenter.handleAudioClick(shouldEnableAudioPlayback = false, feedbackId = null)
+  }
+
   override fun setStateAndExplorationId(newState: State, explorationId: String) =
     audioFragmentPresenter.setStateAndExplorationId(newState, explorationId)
 
@@ -86,7 +96,4 @@ class AudioFragment : InjectableFragment(), LanguageInterface, AudioUiManager,
 
   /** Used in data binding to know position of user's touch */
   fun getUserPosition() = audioFragmentPresenter.userProgress
-
-  fun handleAudioClick(isShowing: Boolean, feedbackId: String?) =
-    audioFragmentPresenter.handleAudioClick(isShowing, feedbackId)
 }
