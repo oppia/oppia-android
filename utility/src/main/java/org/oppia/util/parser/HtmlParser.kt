@@ -37,7 +37,11 @@ class HtmlParser private constructor(
     }
 
     if (htmlContent.contains(CUSTOM_IMG_TAG)) {
-      htmlContent = htmlContent.replace(CUSTOM_IMG_TAG, REPLACE_IMG_TAG, /* ignoreCase= */false)
+      htmlContent = htmlContent.replace(
+        CUSTOM_IMG_TAG,
+        REPLACE_IMG_TAG,
+        /* ignoreCase= */false
+      )
       htmlContent = htmlContent.replace(
         CUSTOM_IMG_FILE_PATH_ATTRIBUTE,
         REPLACE_IMG_FILE_PATH_ATTRIBUTE, /* ignoreCase= */false
@@ -45,12 +49,26 @@ class HtmlParser private constructor(
       htmlContent = htmlContent.replace("&amp;quot;", "")
     }
 
-    val imageGetter = urlImageParserFactory.create(htmlContentTextView, entityType, entityId, imageCenterAlign)
+    val imageGetter = urlImageParserFactory.create(
+      htmlContentTextView,
+      entityType,
+      entityId,
+      imageCenterAlign
+    )
 
-    val htmlSpannable = HtmlCompat.fromHtml(htmlContent, HtmlCompat.FROM_HTML_MODE_LEGACY, imageGetter, LiTagHandler()) as Spannable
+    val htmlSpannable = HtmlCompat.fromHtml(
+      htmlContent,
+      HtmlCompat.FROM_HTML_MODE_LEGACY,
+      imageGetter,
+      LiTagHandler()
+    ) as Spannable
 
     val spannableBuilder = SpannableStringBuilder(htmlSpannable)
-    val bulletSpans = spannableBuilder.getSpans(0, spannableBuilder.length, BulletSpan::class.java)
+    val bulletSpans = spannableBuilder.getSpans(
+      /* queryStart= */0,
+      spannableBuilder.length,
+      BulletSpan::class.java
+    )
     bulletSpans.forEach {
       val start = spannableBuilder.getSpanStart(it)
       val end = spannableBuilder.getSpanEnd(it)

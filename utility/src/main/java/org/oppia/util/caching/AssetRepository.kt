@@ -1,7 +1,6 @@
 package org.oppia.util.caching
 
 import android.content.Context
-import org.oppia.util.logging.Logger
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
@@ -10,6 +9,7 @@ import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
+import org.oppia.util.logging.Logger
 
 // TODO(#169): Leverage this repository or a version of it for caching all topic contents in a proto. It may also be
 //  worth keeping a version of this repository for caching audio files within certain size limits for buffering during
@@ -20,7 +20,10 @@ import kotlin.concurrent.withLock
  * quickly and synchronously.
  */
 @Singleton
-class AssetRepository @Inject constructor(private val context: Context, private val logger: Logger) {
+class AssetRepository @Inject constructor(
+  private val context: Context,
+  private val logger: Logger
+) {
   private val repositoryLock = ReentrantLock()
 
   /** Map of asset names to file contents for text file assets. */
@@ -39,7 +42,9 @@ class AssetRepository @Inject constructor(private val context: Context, private 
     repositoryLock.withLock {
       if (assetName !in textFileAssets) {
         logger.d("AssetRepo", "Caching local text asset: $assetName")
-        textFileAssets[assetName] = context.assets.open(assetName).bufferedReader().use { it.readText() }
+        textFileAssets[assetName] = context.assets.open(assetName).bufferedReader().use {
+          it.readText()
+        }
       }
     }
   }
