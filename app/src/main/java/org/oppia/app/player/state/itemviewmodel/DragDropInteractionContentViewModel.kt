@@ -5,7 +5,11 @@ import org.oppia.app.viewmodel.ObservableViewModel
 
 /** [ObservableViewModel] for MultipleChoiceInput values or ItemSelectionInput values. */
 class DragDropInteractionContentViewModel(
-  val htmlContent: StringList, private val itemIndex: Int
+  var htmlContent: StringList, var itemIndex: Int, var listSize:Int,
+  private val dragAndDropSortInputViewModel: DragAndDropSortInputViewModel
 ) : ObservableViewModel() {
 
+  fun handleGrouping() {
+    dragAndDropSortInputViewModel.updateList(itemIndex)
+  }
 }

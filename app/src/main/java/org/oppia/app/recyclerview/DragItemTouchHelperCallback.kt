@@ -1,6 +1,5 @@
 package org.oppia.app.recyclerview
 
-import android.graphics.Color
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 
@@ -30,7 +29,7 @@ class DragItemTouchHelperCallback private constructor(dragDirs: Int, swipeDirs: 
       return false
     }
     // Notify the adapter of the move
-    onItemDragListener!!.onItemDragged(source.adapterPosition, target.adapterPosition)
+    onItemDragListener!!.onItemDragged(source.adapterPosition, target.adapterPosition,recyclerView.adapter!!)
     return true
   }
 
@@ -54,7 +53,11 @@ class DragItemTouchHelperCallback private constructor(dragDirs: Int, swipeDirs: 
   }
 
   interface OnItemDragListener {
-    fun onItemDragged(indexFrom: Int, indexTo: Int)
+    fun onItemDragged(
+      indexFrom: Int,
+      indexTo: Int,
+      adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
+    )
   }
 
   class Builder(internal val dragDirs: Int, internal val swipeDirs: Int) {

@@ -17,6 +17,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import org.oppia.app.databinding.ContentItemBinding
 import org.oppia.app.databinding.ContinueInteractionItemBinding
 import org.oppia.app.databinding.ContinueNavigationButtonItemBinding
+import org.oppia.app.databinding.DragDropInteractionItemBinding
+import org.oppia.app.databinding.DragDropInteractionItemsBinding
 import org.oppia.app.databinding.FeedbackItemBinding
 import org.oppia.app.databinding.FractionInteractionItemBinding
 import org.oppia.app.databinding.NextButtonItemBinding
@@ -46,6 +48,7 @@ import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.app.player.state.itemviewmodel.ContinueInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.ContinueNavigationButtonViewModel
+import org.oppia.app.player.state.itemviewmodel.DragAndDropSortInputViewModel
 import org.oppia.app.player.state.itemviewmodel.FeedbackViewModel
 import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.InteractionViewModelFactory
@@ -607,6 +610,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
         inflateDataBinding = FractionInteractionItemBinding::inflate,
         setViewModel = FractionInteractionItemBinding::setViewModel,
         transformViewModel = { it as FractionInteractionViewModel }
+      ).registerViewDataBinder(
+          viewType = StateItemViewModel.ViewType.DRAG_DROP_SORT_INTERACTION,
+          inflateDataBinding = DragDropInteractionItemBinding::inflate,
+          setViewModel = DragDropInteractionItemBinding::setViewModel,
+          transformViewModel = { it as DragAndDropSortInputViewModel }
       ).registerViewDataBinder(
         viewType = StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION,
         inflateDataBinding = NumericInputInteractionItemBinding::inflate,

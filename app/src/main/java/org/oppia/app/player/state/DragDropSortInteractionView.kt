@@ -76,7 +76,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
           binding.htmlContent =
             htmlParserFactory.create(resourceBucketName, entityType, entityId, /* imageCenterAlign= */ false)
               .parseOppiaHtml(
-                viewModel.htmlContent.htmlList.first(), binding.dragDropContentTextView
+                viewModel.htmlContent.htmlList.joinToString(separator = "<br>"), binding.dragDropContentTextView
               )
           binding.dragDropContentGroupItem.isVisible = isMultipleItemsInSamePositionAllowed
           binding.viewModel = viewModel
