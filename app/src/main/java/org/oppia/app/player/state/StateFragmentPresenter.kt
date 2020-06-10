@@ -172,10 +172,6 @@ class StateFragmentPresenter @Inject constructor(
       it.viewModel = this.viewModel
     }
 
-    if (getAudioFragment() == null) {
-      fragment.childFragmentManager.beginTransaction()
-        .add(R.id.audio_fragment_placeholder, AudioFragment(), TAG_AUDIO_FRAGMENT).commitNow()
-    }
     binding.stateRecyclerView.addOnLayoutChangeListener { _, _, _, _, bottom, _, _, _, oldBottom ->
       if (bottom < oldBottom) {
         binding.stateRecyclerView.postDelayed({
@@ -445,6 +441,12 @@ class StateFragmentPresenter @Inject constructor(
       } else if (ephemeralState.completedState.answerList.size > 0 && ephemeralState.hasNextState) {
         canContinueToNextState = true
       }
+    }
+
+    if (getAudioFragment() == null) {
+      val audioFragment: AudioFragment = AudioFragment.newInstance(profileId.internalId)
+      fragment.childFragmentManager.beginTransaction()
+        .add(R.id.audio_fragment_placeholder, audioFragment, TAG_AUDIO_FRAGMENT).commitNow()
     }
 
     val audioManager = getAudioFragment() as AudioUiManager
