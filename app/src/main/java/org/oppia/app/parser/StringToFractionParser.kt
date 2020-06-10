@@ -9,10 +9,14 @@ import org.oppia.domain.util.normalizeWhitespace
 
 /** This class contains method that helps to parse string to fraction. */
 class StringToFractionParser {
-  private val wholeNumberOnlyRegex = """^-? ?(\d+)$""".toRegex()
-  private val fractionOnlyRegex = """^-? ?(\d+) ?/ ?(\d+)$""".toRegex()
-  private val mixedNumberRegex = """^-? ?(\d+) (\d+) ?/ ?(\d+)$""".toRegex()
-  private val invalidCharsRegex = """^[\d\s/-]+$""".toRegex()
+  private val wholeNumberOnlyRegex =
+    """^-? ?(\d+)$""".toRegex()
+  private val fractionOnlyRegex =
+    """^-? ?(\d+) ?/ ?(\d+)$""".toRegex()
+  private val mixedNumberRegex =
+    """^-? ?(\d+) (\d+) ?/ ?(\d+)$""".toRegex()
+  private val invalidCharsRegex =
+    """^[\d\s/-]+$""".toRegex()
   private val invalidCharsLengthRegex = "\\d{8,}".toRegex()
 
   /**
@@ -64,12 +68,14 @@ class StringToFractionParser {
 
   /** Returns a [Fraction] parse from the specified raw text string. */
   fun parseFractionFromString(text: String): Fraction {
-    return parseFraction(text) ?: throw IllegalArgumentException("Incorrectly formatted fraction: $text")
+    return parseFraction(text)
+      ?: throw IllegalArgumentException("Incorrectly formatted fraction: $text")
   }
 
   private fun parseMixedNumber(inputText: String): Fraction? {
     val mixedNumberMatch = mixedNumberRegex.matchEntire(inputText) ?: return null
-    val (_, wholeNumberText, numeratorText, denominatorText) = mixedNumberMatch.groupValues
+    val (_, wholeNumberText, numeratorText, denominatorText) =
+      mixedNumberMatch.groupValues
     return Fraction.newBuilder()
       .setIsNegative(isInputNegative(inputText))
       .setWholeNumber(wholeNumberText.toInt())
