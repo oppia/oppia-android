@@ -13,6 +13,7 @@ import org.oppia.app.model.EphemeralState
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationProgressController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.Logger
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.util.parser.HtmlParser
@@ -26,6 +27,7 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
   private val htmlParserFactory: HtmlParser.Factory,
   private val logger: Logger,
   private val explorationProgressController: ExplorationProgressController,
+  @DefaultResourceBucketName private val resourceBucketName: String,
   @ExplorationHtmlParserEntityType private val entityType: String
 ) {
 
@@ -104,6 +106,7 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
           currentExpandedHintListIndex,
           viewModel.explorationId.get(),
           htmlParserFactory,
+          resourceBucketName,
           entityType
         )
 
