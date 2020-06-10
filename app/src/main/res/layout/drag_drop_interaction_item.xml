@@ -37,7 +37,7 @@
       app:allowMultipleItemsInSamePosition="@{viewModel.getSortType()}"
       app:data="@{viewModel.choiceItems}"
       app:onItemDrag="@{(indexFrom, indexTo) -> viewModel.onItemDragged(indexFrom, indexTo)}"
-      app:explorationId="@{viewModel.explorationId}"
+      app:entityId="@{viewModel.entityId}"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
   </LinearLayout>
 </layout>

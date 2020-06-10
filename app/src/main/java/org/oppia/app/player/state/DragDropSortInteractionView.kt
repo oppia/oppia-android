@@ -16,6 +16,7 @@ import org.oppia.app.player.state.itemviewmodel.DragDropInteractionContentViewMo
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.recyclerview.DragItemTouchHelperCallback
+import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
@@ -30,13 +31,16 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   // Default to checkboxes to ensure that something can render even if it may not be correct.
   private var isMultipleItemsInSamePositionAllowed: Boolean = false
 
-  @Inject
-  lateinit var htmlParserFactory: HtmlParser.Factory
+  @Inject lateinit var htmlParserFactory: HtmlParser.Factory
 
   @Inject
   @field:ExplorationHtmlParserEntityType
   lateinit var entityType: String
-  private lateinit var explorationId: String
+  @Inject
+  @field:DefaultResourceBucketName
+  lateinit var resourceBucketName: String
+
+  private lateinit var entityId: String
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
@@ -54,8 +58,8 @@ class DragDropSortInteractionView @JvmOverloads constructor(
 
   // TODO(#264): Clean up HTML parser such that it can be handled completely through a binding adapter, allowing
   //  TextViews that require custom Oppia HTML parsing to be fully automatically bound through data-binding.
-  fun setExplorationId(explorationId: String) {
-    this.explorationId = explorationId
+  fun setEntityId(entityId: String) {
+    this.entityId = entityId
   }
 
   private fun createAdapter(): BindableAdapter<DragDropInteractionContentViewModel> {
@@ -70,7 +74,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<DragDropInteractionItemsBinding>(view)!!
           binding.htmlContent =
-            htmlParserFactory.create(entityType, explorationId, /* imageCenterAlign= */ false)
+            htmlParserFactory.create(resourceBucketName, entityType, entityId, /* imageCenterAlign= */ false)
               .parseOppiaHtml(
                 viewModel.htmlContent.htmlList.first(), binding.dragDropContentTextView
               )
@@ -101,10 +105,10 @@ fun setItemDragToRecyclerView(
 }
 
 /** Sets the exploration ID for a specific [DragDropSortInteractionView] via data-binding. */
-@BindingAdapter("explorationId")
-fun setExplorationId(
-  dragDropSortInteractionView: DragDropSortInteractionView, explorationId: String
-) = dragDropSortInteractionView.setExplorationId(explorationId)
+@BindingAdapter("entityId")
+fun setEntityId(
+  dragDropSortInteractionView: DragDropSortInteractionView, entityId: String
+) = dragDropSortInteractionView.setEntityId(entityId)
 
 /** Sets the [SelectionItemInputType] for a specific [SelectionInteractionView] via data-binding. */
 @BindingAdapter("allowMultipleItemsInSamePosition")

@@ -2,18 +2,17 @@ package org.oppia.app.player.state.itemviewmodel
 
 import androidx.databinding.ObservableList
 import org.oppia.app.model.Interaction
+import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.ListOfSetsOfHtmlStrings
 import org.oppia.app.model.StringList
-import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
+import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
-import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.recyclerview.DragItemTouchHelperCallback
 import org.oppia.app.viewmodel.ObservableArrayList
 
 class DragAndDropSortInputViewModel(
-  val explorationId: String,
-  interaction: Interaction,
-  interactionAnswerReceiver: InteractionAnswerReceiver,
-  interactionAnswerErrorReceiver: InteractionAnswerErrorReceiver
+  val entityId: String,
+  interaction: Interaction
 ) : StateItemViewModel(ViewType.DRAG_DROP_SORT_INTERACTION), InteractionAnswerHandler,
   DragItemTouchHelperCallback.OnItemDragListener {
   private val allowMultipleItemsInSamePosition: Boolean by lazy {
@@ -27,7 +26,26 @@ class DragAndDropSortInputViewModel(
     computeChoiceItems(choiceStrings)
 
   override fun onItemDragged(indexFrom: Int, indexTo: Int) {
+    val item = choiceItems[indexFrom]
+    choiceItems.removeAt(indexFrom)
+    choiceItems.add(indexTo, item)
+  }
 
+  override fun getPendingAnswer(): UserAnswer {
+    val userAnswerBuilder = UserAnswer.newBuilder()
+    val listItems = choiceItems.map { it.htmlContent }
+    val listItemsHtml = choiceItems.map { it.htmlContent.htmlList.first() }
+    userAnswerBuilder.htmlAnswer = convertSelectedItemsToHtmlString(listItemsHtml)
+    userAnswerBuilder.answer =
+      InteractionObject.newBuilder().setListOfSetsOfHtmlString(
+        ListOfSetsOfHtmlStrings.newBuilder().addAllSetOfHtmlStrings(listItems).build()
+      ).build()
+    return userAnswerBuilder.build()
+  }
+
+  /** Returns an HTML list containing all of the HTML string elements as items in the list. */
+  private fun convertSelectedItemsToHtmlString(htmlItems: Collection<String>): String {
+    return "<li>${htmlItems.joinToString(separator = "</li><li>")}</li>"
   }
 
   /** Returns the [SelectionItemInputType] that should be used to render items of this view model. */

@@ -30,7 +30,6 @@ class DragItemTouchHelperCallback private constructor(dragDirs: Int, swipeDirs: 
       return false
     }
     // Notify the adapter of the move
-    recyclerView.adapter!!.notifyItemMoved(source.adapterPosition, target.adapterPosition)
     onItemDragListener!!.onItemDragged(source.adapterPosition, target.adapterPosition)
     return true
   }
