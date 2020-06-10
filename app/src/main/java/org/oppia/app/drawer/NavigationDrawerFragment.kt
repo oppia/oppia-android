@@ -8,20 +8,24 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import org.oppia.app.fragment.InjectableFragment
-import org.oppia.app.profileprogress.ProfileProgressActivity
 import javax.inject.Inject
 
 /** [NavigationDrawerFragment] to show navigation drawer. */
 class NavigationDrawerFragment : InjectableFragment(), RouteToProfileProgressListener {
 
-  @Inject lateinit var navigationDrawerFragmentPresenter: NavigationDrawerFragmentPresenter
+  @Inject
+  lateinit var navigationDrawerFragmentPresenter: NavigationDrawerFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
     return navigationDrawerFragmentPresenter.handleCreateView(inflater, container)
   }
 
