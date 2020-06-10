@@ -30,7 +30,7 @@ import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyZeroInteractions
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
-import org.oppia.testing.FakeCrashLogger
+import org.oppia.testing.FakeExceptionLogger
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
@@ -87,7 +87,7 @@ class DataProvidersTest {
 
   private var inMemoryCachedStr: String? = null
   private var inMemoryCachedStr2: String? = null
-  private var fakeCrashLogger = FakeCrashLogger()
+  private var fakeCrashLogger = FakeExceptionLogger()
 
   private val backgroundCoroutineScope by lazy {
     CoroutineScope(backgroundCoroutineDispatcher)
@@ -2849,7 +2849,6 @@ class DataProvidersTest {
   @InternalCoroutinesApi
   @ExperimentalCoroutinesApi
   fun testNestedXformedProvider_toLiveData_baseFailure_logsException() {
-
     fakeCrashLogger.clearAllExceptions()
     val baseProvider =
       createThrowingDataProvider<String>(BASE_PROVIDER_ID_0, IllegalStateException("Base failure"))
@@ -2860,9 +2859,10 @@ class DataProvidersTest {
 
     dataProviders.convertToLiveData(dataProvider).observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
+    val exception = fakeCrashLogger.getMostRecentException()
 
-    assertThat(fakeCrashLogger.getMostRecentException()).isInstanceOf(IllegalStateException::class.java)
-    assertThat(fakeCrashLogger.getMostRecentException().message).matches("Base failure")
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat().contains("Base failure")
 
   }
 

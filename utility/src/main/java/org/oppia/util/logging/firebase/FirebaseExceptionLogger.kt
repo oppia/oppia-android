@@ -1,13 +1,12 @@
-package org.oppia.util.firebase
+package org.oppia.util.logging.firebase
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import javax.inject.Singleton
+import org.oppia.util.logging.ExceptionLogger
 
 /** Logger for providing custom crash reporting to Firebase Crashlytics. */
-@Singleton
-open class CrashLoggerImplementation(
+class FirebaseExceptionLogger(
   private var firebaseCrashlytics: FirebaseCrashlytics
-) : CrashLogger {
+) : ExceptionLogger {
 
   /** Logs a custom non-fatal exception to Firebase Crashlytics. */
   override fun logException(exception: Exception) {

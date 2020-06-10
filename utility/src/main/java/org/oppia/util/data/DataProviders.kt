@@ -5,7 +5,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import org.oppia.util.firebase.CrashLogger
+import org.oppia.util.logging.ExceptionLogger
 import org.oppia.util.threading.BackgroundDispatcher
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
@@ -22,8 +22,9 @@ import javax.inject.Singleton
 class DataProviders @Inject constructor(
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
-  private val crashLogger: CrashLogger
+  private val exceptionLogger: ExceptionLogger
 ) {
+
   /**
    * Returns a new [DataProvider] that applies the specified function each time new data is available to it, and
    * provides it to its own subscribers.
@@ -46,7 +47,7 @@ class DataProviders @Inject constructor(
         return try {
           dataProvider.retrieveData().transform(function)
         } catch (e: Exception) {
-          crashLogger.logException(e)
+          exceptionLogger.logException(e)
           AsyncResult.failed(e)
         }
       }
@@ -117,7 +118,7 @@ class DataProviders @Inject constructor(
         return try {
           dataProvider1.retrieveData().combineWith(dataProvider2.retrieveData(), function)
         } catch (e: Exception) {
-          crashLogger.logException(e)
+          exceptionLogger.logException(e)
           AsyncResult.failed(e)
         }
       }
@@ -167,7 +168,7 @@ class DataProviders @Inject constructor(
         return try {
           AsyncResult.success(loadFromMemory())
         } catch (e: Exception) {
-          crashLogger.logException(e)
+          exceptionLogger.logException(e)
           AsyncResult.failed(e)
         }
       }
