@@ -1,17 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
   tools:context=".player.state.testing.StateFragmentTestActivity">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.player.state.testing.StateFragmentTesViewModel" />
+  </data>
+
   <FrameLayout
-    android:id="@+id/state_fragment_placeholder"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
-  <Button
-    android:id="@+id/play_test_exploration_button"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="16dp"
-    android:text="Play exploration" />
-</FrameLayout>
+    android:layout_height="match_parent">
+
+    <FrameLayout
+      android:id="@+id/state_fragment_placeholder"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent" />
+
+    <Button
+      android:id="@+id/play_test_exploration_button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="16dp"
+      android:text="Play exploration"
+      android:visibility="@{viewModel.hasExplorationStarted ? View.GONE : View.VISIBLE}" />
+  </FrameLayout>
+</layout>
