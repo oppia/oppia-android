@@ -10,27 +10,27 @@ workflows:
       - linters
       - utility_tests:
           requires:
-              - install_android_dependencies
+            - install_android_dependencies
       - domain_tests:
           requires:
-              - install_android_dependencies
+            - install_android_dependencies
       - non_flaky_tests:
           requires:
-              - install_android_dependencies
+            - install_android_dependencies
 
 var_for_docker_image: &docker_image circleci/android:api-28
 
 anchor_for_job_defaults: &job_defaults
   working_directory: /home/circleci/oppia-android
   environment:
-      # Customize the JVM maximum heap limit
-      JVM_OPTS: -Xmx3200m
-      TERM: dumb
+    # Customize the JVM maximum heap limit
+    JVM_OPTS: -Xmx3200m
+    TERM: dumb
   docker:
     - image: *docker_image
 
 anchor_for_restore_cache: &restore_cache
-  key: jars-{{ checksum "build.gradle" }}      
+  key: jars-{{ checksum "build.gradle" }}
 
 version: 2
 
@@ -39,7 +39,7 @@ jobs:
     <<: *job_defaults
     steps:
       - checkout
-      - run: 
+      - run:
           name: Update installer
           command: sudo apt-get update && sudo apt-get install software-properties-common
       - restore_cache:
@@ -59,17 +59,31 @@ jobs:
       - run:
           name: Download Ktlint
           command: >
-                KTLINT="0.37.0"
+            KTLINT="0.37.0"
 
-                echo Using Ktlint $KTLINT
+            echo Using Ktlint $KTLINT
 
-                curl -sSLO
-                https://github.com/pinterest/ktlint/releases/download/$KTLINT/ktlint
+            curl -sSLO
+            https://github.com/pinterest/ktlint/releases/download/$KTLINT/ktlint
 
-                chmod a+x ktlint
+            chmod a+x ktlint
+      - run:
+          name: Download buf
+          command: >
+            BUFVERSION="v0.15.0"
+
+            echo Using Bufbuild version $BUFVERSION
+
+            curl -sSL
+            https://github.com/bufbuild/buf/releases/download/$BUFVERSION/buf-$(uname -s)-$(uname -m) > /home/circleci/oppia-android/buf
+
+            chmod +x /home/circleci/oppia-android/buf
       - run:
           name: Kotlin tests - Data, Utility
           command: ./ktlint utility/**/*.kt data/**/*.kt && echo "Lint completed successfully"
+      - run:
+          name: Protobuf lint check
+          command: ./buf check lint --input=model/src/main/proto --input-config buf.yaml && echo "Protobuf lint check completed successfully"
       - store_artifacts:
           path: linter/reports
       - store_test_results:
@@ -80,7 +94,7 @@ jobs:
       - checkout
       - restore_cache:
           <<: *restore_cache
-      - run: 
+      - run:
           name: Utility Robolectric Tests
           command: ./.circleci/gradle/gradlew -i :utility:testDebugUnitTest
       - run:
@@ -99,7 +113,7 @@ jobs:
       - checkout
       - restore_cache:
           <<: *restore_cache
-      - run: 
+      - run:
           name: Domain Robolectric Tests
           command: ./.circleci/gradle/gradlew -i :domain:testDebugUnitTest
       - run:
@@ -119,9 +133,9 @@ jobs:
       - restore_cache:
           <<: *restore_cache
       - run:
-          name: App -  FAQ, Help, Parser, RecyclerView, Story, Utility tests, Walkthrough
-          command: ./.circleci/gradle/gradlew -i :app:testDebugUnitTest --tests org.oppia.app.faq* --tests org.oppia.app.help*
-            --tests org.oppia.app.parser* --tests org.oppia.app.recyclerview* --tests org.oppia.app.story* --tests org.oppia.app.utility* --tests org.oppia.app.walkthrough*
+          name: App -  FAQ, Help, Mydownloads, Parser, RecyclerView, Story, Utility tests
+          command: ./.circleci/gradle/gradlew -i :app:testDebugUnitTest --tests org.oppia.app.faq* --tests org.oppia.app.help* --tests org.oppia.app.mydownloads*
+            --tests org.oppia.app.parser* --tests org.oppia.app.recyclerview* --tests org.oppia.app.story* --tests org.oppia.app.utility*
       - run:
           name: Save test results
           command: |

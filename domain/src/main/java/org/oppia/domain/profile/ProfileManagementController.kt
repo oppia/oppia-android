@@ -29,6 +29,7 @@ import java.io.FileOutputStream
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.math.sign
 
 private const val TRANSFORMED_GET_PROFILES_PROVIDER_ID = "transformed_get_profiles_provider_id"
 private const val TRANSFORMED_GET_PROFILE_PROVIDER_ID = "transformed_get_profile_provider_id"
@@ -216,7 +217,7 @@ class ProfileManagementController @Inject constructor(
         newProfileBuilder.avatar = ProfileAvatar.newBuilder().setAvatarColorRgb(colorRgb).build()
       }
 
-      val wasProfileEverAdded = !it.wasProfileEverAdded && !isAdmin
+      val wasProfileEverAdded = it.profilesCount >0
 
       val profileDatabaseBuilder =
         it.toBuilder()

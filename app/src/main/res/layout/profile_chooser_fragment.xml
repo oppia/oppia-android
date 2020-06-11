@@ -70,9 +70,9 @@
           android:id="@+id/profile_recycler_view"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
-          android:layout_marginStart="36dp"
+          android:layout_marginStart="32dp"
           android:layout_marginTop="36dp"
-          android:layout_marginEnd="36dp"
+          android:layout_marginEnd="32dp"
           android:clipToPadding="false"
           android:fadingEdge="horizontal"
           android:fadingEdgeLength="72dp"
@@ -90,9 +90,10 @@
 
     <View
       android:layout_width="match_parent"
-      android:layout_height="96dp"
+      android:layout_height="128dp"
       android:background="@drawable/profile_chooser_gradient"
       app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintEnd_toEndOf="parent" />
 
     <LinearLayout
@@ -100,7 +101,6 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:onClick="@{(v) -> viewModel.onAdministratorControlsButtonClicked()}"
-      android:background="@drawable/profile_chooser_gradient"
       android:orientation="horizontal"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent">

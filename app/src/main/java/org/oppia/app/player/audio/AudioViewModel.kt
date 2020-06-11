@@ -13,7 +13,7 @@ import org.oppia.domain.audio.AudioPlayerController
 import org.oppia.domain.audio.AudioPlayerController.PlayProgress
 import org.oppia.domain.audio.AudioPlayerController.PlayStatus
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.gcsresource.DefaultResource
+import org.oppia.util.gcsresource.DefaultResourceBucketName
 import java.util.Locale
 import javax.inject.Inject
 
@@ -22,7 +22,7 @@ import javax.inject.Inject
 class AudioViewModel @Inject constructor(
   private val audioPlayerController: AudioPlayerController,
   private val fragment: Fragment,
-  @DefaultResource private val gcsResource: String
+  @DefaultResourceBucketName private val gcsResource: String
 ) : ViewModel() {
 
   private lateinit var state: State
@@ -96,7 +96,6 @@ class AudioViewModel @Inject constructor(
           languages.first()
         }
         setAudioLanguageCode(languageCode)
-        (fragment as LanguageInterface).languageSelectionClicked()
       }
     }
   }
