@@ -10,6 +10,7 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.RevisionCard
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.Logger
 import org.oppia.util.parser.HtmlParser
 import org.oppia.util.parser.RevisionCardHtmlParserEntityType
@@ -22,6 +23,7 @@ class RevisionCardViewModel @Inject constructor(
   private val topicController: TopicController,
   private val logger: Logger,
   private val htmlParserFactory: HtmlParser.Factory,
+  @DefaultResourceBucketName private val resourceBucketName: String,
   @RevisionCardHtmlParserEntityType private val entityType: String
 ) : ViewModel() {
   private lateinit var topicId: String
@@ -60,7 +62,8 @@ class RevisionCardViewModel @Inject constructor(
     }
     val revisionCard = revisionCardResult.getOrDefault(RevisionCard.getDefaultInstance())
     subtopicTitle = revisionCard.subtopicTitle
-    return htmlParserFactory.create(entityType, subtopicId, /* imageCenterAlign= */ true)
-      .parseOppiaHtml(revisionCard.pageContents.html, binding.revisionCardExplanationText)
+    return htmlParserFactory.create(
+      resourceBucketName, entityType, subtopicId, /* imageCenterAlign= */ true
+    ).parseOppiaHtml(revisionCard.pageContents.html, binding.revisionCardExplanationText)
   }
 }
