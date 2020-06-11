@@ -215,7 +215,9 @@ class BindableAdapter<T : Any> internal constructor(
      * @return this
      */
     fun <V : View> registerViewBinder(
-      viewType: E, inflateView: (ViewGroup) -> V, bindView: (V, T) -> Unit
+      viewType: E,
+      inflateView: (ViewGroup) -> V,
+      bindView: (V, T) -> Unit
     ): MultiTypeBuilder<T, E> {
       checkViewTypeIsUnique(viewType)
       val viewHolderFactory: ViewHolderFactory<T> = { viewGroup ->
@@ -307,7 +309,7 @@ class BindableAdapter<T : Any> internal constructor(
        * Returns a new [MultiTypeBuilder] with the specified function that returns the enum type of view a specific data
        * item corresponds to.
        */
-      inline fun <reified T: Any, reified E: Enum<E>> newBuilder(
+      inline fun <reified T : Any, reified E : Enum<E>> newBuilder(
         noinline computeViewType: ComputeViewType<T, E>
       ): MultiTypeBuilder<T, E> {
         return MultiTypeBuilder(T::class, computeViewType)
