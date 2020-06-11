@@ -133,7 +133,7 @@ class HtmlParserTest {
   }
 
   @Test
-  fun testHtmlContent_handleUnorderedList_parsedHtmlDisplaysBulletList() {
+  fun testHtmlContent_handleSingleUnorderedList_parsedHtmlDisplaysBulletList() {
     val textView =
       activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
     val source = "<html>CITRUS FRUITS:<ul><li>LEMON</li><li>LIME</li><li>ORANGE</li></ul></html>"
@@ -153,7 +153,7 @@ class HtmlParserTest {
   }
 
   @Test
-  fun testHtmlContent_handleOrderedList_parsedHtmlDisplaysNumberedList() {
+  fun testHtmlContent_handleSingleOrderedList_parsedHtmlDisplaysNumberedList() {
     val textView =
       activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
     val source = "CITRUS FRUITS:<ol><li>LEMON</li><li>LIME</li><li>ORANGE</li></ol>"
@@ -253,6 +253,22 @@ class HtmlParserTest {
     )
     val formattedHtml = htmlParser.parseOppiaHtml(source, textView).toString()
 
+    assertThat(
+      formattedHtml
+    ).isNotEqualTo(
+      "CITRUS FRUITS:" +
+        "\n1. LEMON" +
+        "\n2. LIME" +
+        "\n3. ORANGE"
+    )
+    assertThat(
+      formattedHtml
+    ).isNotEqualTo(
+      "CITRUS FRUITS:\n" +
+        "● LEMON\n" +
+        "● LIME\n" +
+        "● ORANGE"
+    )
     assertThat(
       formattedHtml
     ).isEqualTo(
