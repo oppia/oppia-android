@@ -75,34 +75,89 @@ class ConceptCardFragmentTest {
   fun testConceptCardFragment_configurationChange_conceptCardIsDisplayedCorrectly() {
     onView(isRoot()).perform(orientationLandscape())
     onView(withId(R.id.open_dialog_0)).perform(click())
-    onView(withId(R.id.concept_card_explanation_text)).check(matches(withText("Hello. Welcome to Oppia.")))
+    onView(withId(R.id.concept_card_explanation_text))
+      .check(
+        matches(
+          withText(
+            "Hello. Welcome to Oppia."
+          )
+        )
+      )
     onView(withId(R.id.concept_card_explanation_text)).check(matches(not(containsRichText())))
   }
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testConceptCardFragment_openDialogFragment0_checkSkillAndExplanationAreDisplayedWithoutRichText() {
     onView(withId(R.id.open_dialog_0)).perform(click())
-    onView(withId(R.id.concept_card_heading_text)).check(matches(withText("An important skill")))
-    onView(withId(R.id.concept_card_explanation_text)).check(matches(withText("Hello. Welcome to Oppia.")))
+    onView(withId(R.id.concept_card_heading_text))
+      .check(
+        matches(
+          withText(
+            "An important skill"
+          )
+        )
+      )
+    onView(withId(R.id.concept_card_explanation_text))
+      .check(
+        matches(
+          withText(
+            "Hello. Welcome to Oppia."
+          )
+        )
+      )
     onView(withId(R.id.concept_card_explanation_text)).check(matches(not(containsRichText())))
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testConceptCardFragment_openDialogFragment1_checkSkillAndExplanationAreDisplayedWithRichText() {
     onView(withId(R.id.open_dialog_1)).perform(click())
-    onView(withId(R.id.concept_card_heading_text)).check(matches(withText("Another important skill")))
-    onView(withId(R.id.concept_card_explanation_text)).check(matches(withText("Explanation with rich text.")))
+    onView(withId(R.id.concept_card_heading_text))
+      .check(
+        matches(
+          withText(
+            "Another important skill"
+          )
+        )
+      )
+    onView(withId(R.id.concept_card_explanation_text))
+      .check(
+        matches(
+          withText(
+            "Explanation with rich text."
+          )
+        )
+      )
     onView(withId(R.id.concept_card_explanation_text)).check(matches(containsRichText()))
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testConceptCardFragment_openDialogFragmentWithSkill2_afterConfigurationChange_workedExamplesAreDisplayed() {
     onView(withId(R.id.open_dialog_1)).perform(click())
     onView(isRoot()).perform(orientationLandscape())
-    onView(withId(R.id.concept_card_heading_text)).check(matches(withText("Another important skill")))
-    onView(withId(R.id.concept_card_explanation_text)).check(matches(withText("Explanation with rich text.")))
+    onView(withId(R.id.concept_card_heading_text))
+      .check(
+        matches(
+          withText(
+            "Another important skill"
+          )
+        )
+      )
+    onView(withId(R.id.concept_card_explanation_text))
+      .check(
+        matches(
+          withText(
+            "Explanation with rich text."
+          )
+        )
+      )
     onView(withId(R.id.concept_card_explanation_text)).check(matches(containsRichText()))
   }
+  /* ktlint-enable max-line-length */
 
   @Module
   class TestModule {
@@ -119,7 +174,9 @@ class ConceptCardFragmentTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@BlockingDispatcher blockingDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @BlockingDispatcher blockingDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return blockingDispatcher
     }
   }

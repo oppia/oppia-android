@@ -77,7 +77,14 @@ class TopicPracticeFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.master_skills_text_view)).check(matches(withText(R.string.topic_practice_master_these_skills)))
+      onView(withId(R.id.master_skills_text_view))
+        .check(
+          matches(
+            withText(
+              R.string.topic_practice_master_these_skills
+            )
+          )
+        )
       onView(withId(R.id.topic_practice_skill_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           10
@@ -97,10 +104,20 @@ class TopicPracticeFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).perform(
+      onView(
+        atPositionOnView(
+          R.id.topic_practice_skill_list,
+          1, R.id.subtopic_check_box
+        )
+      ).perform(
         click()
       )
-      onView(atPositionOnView(R.id.topic_practice_skill_list, 2, R.id.subtopic_check_box)).perform(
+      onView(
+        atPositionOnView(
+          R.id.topic_practice_skill_list,
+          2, R.id.subtopic_check_box
+        )
+      ).perform(
         click()
       )
     }
@@ -115,7 +132,12 @@ class TopicPracticeFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).perform(
+      onView(
+        atPositionOnView(
+          R.id.topic_practice_skill_list,
+          1, R.id.subtopic_check_box
+        )
+      ).perform(
         click()
       )
       onView(withId(R.id.topic_practice_skill_list)).perform(
@@ -136,15 +158,26 @@ class TopicPracticeFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).perform(
+      onView(
+        atPositionOnView(
+          R.id.topic_practice_skill_list,
+          1, R.id.subtopic_check_box
+        )
+      ).perform(
         click()
       )
-      onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).perform(
+      onView(
+        atPositionOnView(
+          R.id.topic_practice_skill_list,
+          1, R.id.subtopic_check_box
+        )
+      ).perform(
         click()
       )
     }
   }
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testTopicPracticeFragment_loadFragment_selectSubtopics_deselectsubtopics_startButtonIsInactive() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
@@ -154,10 +187,20 @@ class TopicPracticeFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).perform(
+      onView(
+        atPositionOnView(
+          R.id.topic_practice_skill_list,
+          1, R.id.subtopic_check_box
+        )
+      ).perform(
         click()
       )
-      onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).perform(
+      onView(
+        atPositionOnView(
+          R.id.topic_practice_skill_list,
+          1, R.id.subtopic_check_box
+        )
+      ).perform(
         click()
       )
       onView(withId(R.id.topic_practice_skill_list)).perform(
@@ -168,7 +211,9 @@ class TopicPracticeFragmentTest {
       onView(withId(R.id.topic_practice_start_button)).check(matches(not(isClickable())))
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testTopicPracticeFragment_loadFragment_selectSubtopics_clickStartButton_skillListTransferSuccessfully() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)
@@ -178,7 +223,12 @@ class TopicPracticeFragmentTest {
         isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())
-    onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).perform(
+    onView(
+      atPositionOnView(
+        R.id.topic_practice_skill_list,
+        1, R.id.subtopic_check_box
+      )
+    ).perform(
       click()
     )
     onView(withId(R.id.topic_practice_skill_list)).perform(
@@ -190,6 +240,7 @@ class TopicPracticeFragmentTest {
     intended(hasComponent(QuestionPlayerActivity::class.java.name))
     intended(hasExtra(QuestionPlayerActivity.getIntentKey(), skillIdList))
   }
+  /* ktlint-enable max-line-length */
 
   @Test
   fun testTopicPracticeFragment_loadFragment_selectSkills_configurationChange_skillsAreSelected() {
@@ -200,11 +251,21 @@ class TopicPracticeFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).perform(
+      onView(
+        atPositionOnView(
+          R.id.topic_practice_skill_list,
+          1, R.id.subtopic_check_box
+        )
+      ).perform(
         click()
       )
       onView(isRoot()).perform(orientationLandscape())
-      onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).check(
+      onView(
+        atPositionOnView(
+          R.id.topic_practice_skill_list,
+          1, R.id.subtopic_check_box
+        )
+      ).check(
         matches(isChecked())
       )
     }
@@ -235,6 +296,7 @@ class TopicPracticeFragmentTest {
     }
   }
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testTopicPracticeFragment_loadFragment_selectSkills_configurationChange_startButtonRemainsActive() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
@@ -244,7 +306,12 @@ class TopicPracticeFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).perform(
+      onView(
+        atPositionOnView(
+          R.id.topic_practice_skill_list,
+          1, R.id.subtopic_check_box
+        )
+      ).perform(
         click()
       )
       onView(isRoot()).perform(orientationLandscape())
@@ -256,6 +323,7 @@ class TopicPracticeFragmentTest {
       onView(withId(R.id.topic_practice_start_button)).check(matches(isClickable()))
     }
   }
+  /* ktlint-enable max-line-length */
 
   @Test
   fun testTopicPracticeFragment_loadFragment_changeOrientation_titleIsCorrect() {
@@ -272,9 +340,16 @@ class TopicPracticeFragmentTest {
     }
   }
 
-  private fun launchTopicActivityIntent(internalProfileId: Int, topicId: String): ActivityScenario<TopicActivity> {
+  private fun launchTopicActivityIntent(
+    internalProfileId: Int,
+    topicId: String
+  ): ActivityScenario<TopicActivity> {
     val intent =
-      TopicActivity.createTopicActivityIntent(ApplicationProvider.getApplicationContext(), internalProfileId, topicId)
+      TopicActivity.createTopicActivityIntent(
+        ApplicationProvider.getApplicationContext(),
+        internalProfileId,
+        topicId
+      )
     return ActivityScenario.launch(intent)
   }
 
@@ -298,7 +373,9 @@ class TopicPracticeFragmentTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@BlockingDispatcher blockingDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @BlockingDispatcher blockingDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return blockingDispatcher
     }
   }

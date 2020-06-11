@@ -134,7 +134,17 @@ class TopicFragmentTest {
       )
       onView(
         atPosition(R.id.story_summary_recycler_view, 1)
-      ).check(matches(hasDescendant(withText(containsString("Matthew Goes to the Bakery")))))
+      ).check(
+        matches(
+          hasDescendant(
+            withText(
+              containsString(
+                "Matthew Goes to the Bakery"
+              )
+            )
+          )
+        )
+      )
     }
   }
 
@@ -279,7 +289,17 @@ class TopicFragmentTest {
           R.id.story_summary_recycler_view,
           1
         )
-      ).check(matches(hasDescendant(withText(containsString("Matthew Goes to the Bakery")))))
+      ).check(
+        matches(
+          hasDescendant(
+            withText(
+              containsString(
+                "Matthew Goes to the Bakery"
+              )
+            )
+          )
+        )
+      )
     }
   }
 
@@ -349,8 +369,10 @@ class TopicFragmentTest {
     }
   }
 
-  private fun launchTopicActivityIntent(internalProfileId: Int, topicId: String):
-    ActivityScenario<TopicActivity> {
+  private fun launchTopicActivityIntent(
+    internalProfileId: Int,
+    topicId: String
+  ): ActivityScenario<TopicActivity> {
     val intent =
       TopicActivity.createTopicActivityIntent(
         ApplicationProvider.getApplicationContext(),
@@ -375,7 +397,9 @@ class TopicFragmentTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@BlockingDispatcher blockingDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @BlockingDispatcher blockingDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return blockingDispatcher
     }
   }
