@@ -484,7 +484,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_checkSpanForItem0_spanSizeIsTwo() {
+  fun testRecentlyPlayedTestActivity_checkSpanForItem0_spanSizeIsTwoOrThree() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
         internalProfileId
@@ -496,7 +496,11 @@ class RecentlyPlayedFragmentTest {
           0
         )
       )
-      onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(2, 0))
+      if (context.resources.getBoolean(R.bool.isTablet)) {
+        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(3, 0))
+      } else {
+        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(2, 0))
+      }
     }
   }
 
@@ -518,7 +522,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_checkSpanForItem2_spanSizeIsTwo() {
+  fun testRecentlyPlayedTestActivity_checkSpanForItem2_spanSizeIsTwoOrThree() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
         internalProfileId
@@ -530,7 +534,11 @@ class RecentlyPlayedFragmentTest {
           2
         )
       )
-      onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(2, 2))
+      if (context.resources.getBoolean(R.bool.isTablet)) {
+        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(3, 2))
+      } else {
+        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(2, 2))
+      }
     }
   }
 
@@ -552,7 +560,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_configurationChange_checkSpanForItem0_spanSizeIsThree() {
+  fun testRecentlyPlayedTestActivity_configurationChange_checkSpanForItem0_spanSizeIsThreeOrFour() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
         internalProfileId
@@ -565,7 +573,11 @@ class RecentlyPlayedFragmentTest {
           0
         )
       )
-      onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(3, 0))
+      if (context.resources.getBoolean(R.bool.isTablet)) {
+        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(4, 0))
+      } else {
+        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(3, 0))
+      }
     }
   }
 
@@ -588,7 +600,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_configurationChange_checkSpanForItem2_spanSizeIsThree() {
+  fun testRecentlyPlayedTestActivity_configurationChange_checkSpanForItem2_spanSizeIsThreeOrFour() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
         internalProfileId
@@ -601,7 +613,11 @@ class RecentlyPlayedFragmentTest {
           2
         )
       )
-      onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(3, 2))
+      if (context.resources.getBoolean(R.bool.isTablet)) {
+        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(4, 2))
+      } else {
+        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(3, 2))
+      }
     }
   }
 
