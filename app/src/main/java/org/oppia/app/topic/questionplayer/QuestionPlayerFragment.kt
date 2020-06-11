@@ -18,19 +18,30 @@ import org.oppia.app.player.state.listener.SubmitNavigationButtonListener
 import javax.inject.Inject
 
 /** Fragment that contains all questions in Question Player. */
-class QuestionPlayerFragment: InjectableFragment(), InteractionAnswerReceiver,
-  InteractionAnswerErrorReceiver, ContinueNavigationButtonListener, NextNavigationButtonListener,
-  ReplayButtonListener, ReturnToTopicNavigationButtonListener, SubmitNavigationButtonListener,
+class QuestionPlayerFragment :
+  InjectableFragment(),
+  InteractionAnswerReceiver,
+  InteractionAnswerErrorReceiver,
+  ContinueNavigationButtonListener,
+  NextNavigationButtonListener,
+  ReplayButtonListener,
+  ReturnToTopicNavigationButtonListener,
+  SubmitNavigationButtonListener,
   PreviousResponsesHeaderClickListener {
 
-  @Inject lateinit var questionPlayerFragmentPresenter: QuestionPlayerFragmentPresenter
+  @Inject
+  lateinit var questionPlayerFragmentPresenter: QuestionPlayerFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
     return questionPlayerFragmentPresenter.handleCreateView(inflater, container)
   }
 
@@ -44,11 +55,13 @@ class QuestionPlayerFragment: InjectableFragment(), InteractionAnswerReceiver,
 
   override fun onReplayButtonClicked() = questionPlayerFragmentPresenter.onReplayButtonClicked()
 
-  override fun onReturnToTopicButtonClicked() = questionPlayerFragmentPresenter.onReturnToTopicButtonClicked()
+  override fun onReturnToTopicButtonClicked() =
+    questionPlayerFragmentPresenter.onReturnToTopicButtonClicked()
 
   override fun onSubmitButtonClicked() = questionPlayerFragmentPresenter.onSubmitButtonClicked()
 
-  override fun onResponsesHeaderClicked() = questionPlayerFragmentPresenter.onResponsesHeaderClicked()
+  override fun onResponsesHeaderClicked() =
+    questionPlayerFragmentPresenter.onResponsesHeaderClicked()
 
   override fun onPendingAnswerError(pendingAnswerError: String?) =
     questionPlayerFragmentPresenter.updateSubmitButton(pendingAnswerError)

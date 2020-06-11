@@ -33,7 +33,8 @@ class QuestionPlayerViewModel @Inject constructor() : ObservableViewModel() {
   private fun getPendingAnswerWithoutError(
     recyclerViewAssembler: StatePlayerRecyclerViewAssembler
   ): UserAnswer? {
-    val answerHandler = recyclerViewAssembler.getPendingAnswerHandler(itemList)
+    val answerHandler = recyclerViewAssembler
+      .getPendingAnswerHandler(itemList)
     return if (answerHandler?.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME) == null) {
       answerHandler?.getPendingAnswer()
     } else {
