@@ -8,21 +8,20 @@ import org.oppia.app.model.StringList
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.recyclerview.DragItemTouchHelperCallback
+import org.oppia.app.recyclerview.OnItemDragListener
 
+/** [StateItemViewModel] for drag drop & sort choice list. */
 class DragAndDropSortInputViewModel(
   val entityId: String,
   interaction: Interaction
 ) : StateItemViewModel(ViewType.DRAG_DROP_SORT_INTERACTION), InteractionAnswerHandler,
-  DragItemTouchHelperCallback.OnItemDragListener {
-  private val allowMultipleItemsInSamePosition: Boolean by lazy {
-    interaction.customizationArgsMap["allowMultipleItemsInSamePosition"]?.boolValue ?: false
-  }
+  OnItemDragListener {
   private val choiceStrings: List<String> by lazy {
     interaction.customizationArgsMap["choices"]?.setOfHtmlString?.htmlList ?: listOf()
   }
 
   val choiceItems: ArrayList<DragDropInteractionContentViewModel> =
-    computeChoiceItems(choiceStrings, this)
+    computeChoiceItems(choiceStrings)
 
   override fun onItemDragged(
     indexFrom: Int,
@@ -32,19 +31,13 @@ class DragAndDropSortInputViewModel(
     val item = choiceItems[indexFrom]
     choiceItems.removeAt(indexFrom)
     choiceItems.add(indexTo, item)
-    adapter.notifyItemMoved(indexFrom,indexTo)
+    adapter.notifyItemMoved(indexFrom, indexTo)
   }
 
   override fun getPendingAnswer(): UserAnswer {
     val userAnswerBuilder = UserAnswer.newBuilder()
     val listItems = choiceItems.map { it.htmlContent }
-    val listItemsHtml = choiceItems.map {
-      it.htmlContent.htmlList.joinToString(
-        prefix = "<br><ul>",
-        separator = "</ul><ul>",
-        postfix = "</ul>"
-      )
-    }
+    val listItemsHtml = choiceItems.map { it.htmlContent.htmlList.joinToString() }
     userAnswerBuilder.htmlAnswer = convertSelectedItemsToHtmlString(listItemsHtml)
     userAnswerBuilder.answer =
       InteractionObject.newBuilder().setListOfSetsOfHtmlString(
@@ -58,38 +51,17 @@ class DragAndDropSortInputViewModel(
     return "<li>${htmlItems.joinToString(separator = "</li><li>")}</li>"
   }
 
-  /** Returns the [SelectionItemInputType] that should be used to render items of this view model. */
-  fun getSortType(): Boolean {
-    return allowMultipleItemsInSamePosition
-  }
-
-  fun updateList(itemIndex: Int) {
-    val item = choiceItems[itemIndex]
-    val nextItem = choiceItems[itemIndex + 1]
-    choiceItems.removeAt(itemIndex)
-    nextItem.htmlContent = StringList.newBuilder().addAllHtml(nextItem.htmlContent.htmlList)
-      .addAllHtml(item.htmlContent.htmlList)
-      .build()
-    nextItem.itemIndex = itemIndex
-    nextItem.listSize = item.listSize - 1
-    choiceItems[itemIndex] = nextItem
-  }
-
   companion object {
     private fun computeChoiceItems(
-      choiceStrings: List<String>,
-      dragAndDropSortInputViewModel: DragAndDropSortInputViewModel
+      choiceStrings: List<String>
     ): ArrayList<DragDropInteractionContentViewModel> {
-      val observableList = ArrayList<DragDropInteractionContentViewModel>()
-      observableList += choiceStrings.mapIndexed { index, choiceString ->
+      val itemList = ArrayList<DragDropInteractionContentViewModel>()
+      itemList += choiceStrings.map { choiceString ->
         DragDropInteractionContentViewModel(
-          htmlContent = StringList.newBuilder().addHtml(choiceString).build(),
-          itemIndex = index,
-          listSize = choiceStrings.size,
-          dragAndDropSortInputViewModel = dragAndDropSortInputViewModel
+          htmlContent = StringList.newBuilder().addHtml(choiceString).build()
         )
       }
-      return observableList
+      return itemList
     }
   }
 }
