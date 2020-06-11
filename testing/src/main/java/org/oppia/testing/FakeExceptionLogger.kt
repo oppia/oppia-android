@@ -8,7 +8,7 @@ import kotlin.Exception
 /** A test specific fake for the exception logger. */
 @Singleton
 class FakeExceptionLogger @Inject constructor() : ExceptionLogger {
-  private var exceptionList = ArrayList<Exception>()
+  var exceptionList = ArrayList<Exception>()
 
   override fun logException(exception: Exception) {
     exceptionList.add(exception)

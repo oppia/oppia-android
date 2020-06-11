@@ -2866,6 +2866,45 @@ class DataProvidersTest {
     assertThat(exception).hasMessageThat().contains("Base failure")
   }
 
+  @Test
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun testTransform_toLiveData_throwsException_deliversFailure_logsException() {
+    fakeExceptionLogger.clearAllExceptions()
+    val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
+    val dataProvider = dataProviders.transform<String, Int>(TRANSFORMED_PROVIDER_ID, baseProvider) {
+      throw IllegalStateException("Transform failure")
+    }
+
+    dataProviders.convertToLiveData(dataProvider).observeForever(mockIntLiveDataObserver)
+    testCoroutineDispatchers.advanceUntilIdle()
+    val exception =  fakeExceptionLogger.getMostRecentException()
+
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat().contains("Transform failure")
+  }
+
+  @Test
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun testCombine_combinerThrowsException_deliversFailure_logsException() {
+    fakeExceptionLogger.clearAllExceptions()
+    val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
+    val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_1)
+    val dataProvider = dataProviders.combine<String, String, String>(
+      COMBINED_PROVIDER_ID, baseProvider1, baseProvider2
+    ) { _, _ ->
+      throw IllegalStateException("Combine failure")
+    }
+
+    dataProviders.convertToLiveData(dataProvider).observeForever(mockStringLiveDataObserver)
+    testCoroutineDispatchers.advanceUntilIdle()
+    val exception = fakeExceptionLogger.getMostRecentException()
+
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat().contains("Combine failure")
+  }
+
   private fun transformString(str: String): Int {
     return str.length
   }
