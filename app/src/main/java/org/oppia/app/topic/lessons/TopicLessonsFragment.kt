@@ -18,7 +18,7 @@ private const val KEY_CURRENT_EXPANDED_LIST_INDEX = "CURRENT_EXPANDED_LIST_INDEX
 class TopicLessonsFragment : InjectableFragment(), ExpandedChapterListIndexListener, StorySummarySelector {
 
   companion object {
-    /** Returns a new [TopicLessonsFragment] */
+    /** Returns a new [TopicLessonsFragment]. */
     fun newInstance(internalProfileId: Int, topicId: String, storyId: String): TopicLessonsFragment {
       val topicLessonsFragment = TopicLessonsFragment()
       val args = Bundle()

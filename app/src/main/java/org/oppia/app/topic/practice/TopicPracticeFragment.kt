@@ -15,7 +15,7 @@ private const val KEY_SKILL_ID_LIST = "SKILL_ID_LIST"
 /** Fragment that displays skills for topic practice mode. */
 class TopicPracticeFragment : InjectableFragment() {
   companion object {
-    /** Returns a new [TopicPracticeFragment] */
+    /** Returns a new [TopicPracticeFragment]. */
     fun newInstance(internalProfileId: Int, topicId: String): TopicPracticeFragment {
       val topicPracticeFragment = TopicPracticeFragment()
       val args = Bundle()

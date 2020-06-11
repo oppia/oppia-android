@@ -19,21 +19,18 @@ class ViewPagerAdapter(
   FragmentStatePagerAdapter(fragmentManager) {
 
   override fun getItem(position: Int): Fragment {
-    val args = Bundle()
-    args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
-    args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-    when (TopicTab.getTabForPosition(position)) {
+    return when (TopicTab.getTabForPosition(position)) {
       TopicTab.INFO -> {
-        return TopicInfoFragment.newInstance(internalProfileId, topicId)
+        TopicInfoFragment.newInstance(internalProfileId, topicId)
       }
       TopicTab.LESSONS -> {
-        return TopicLessonsFragment.newInstance(internalProfileId, topicId, storyId)
+        TopicLessonsFragment.newInstance(internalProfileId, topicId, storyId)
       }
       TopicTab.PRACTICE -> {
-        return TopicPracticeFragment.newInstance(internalProfileId, topicId)
+        TopicPracticeFragment.newInstance(internalProfileId, topicId)
       }
       TopicTab.REVISION -> {
-        return TopicRevisionFragment.newInstance(internalProfileId, topicId)
+        TopicRevisionFragment.newInstance(internalProfileId, topicId)
       }
     }
   }
