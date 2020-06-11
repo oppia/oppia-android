@@ -36,6 +36,17 @@ class ProfileTestHelper @Inject constructor(
       appLanguage = AppLanguage.HINDI_APP_LANGUAGE,
       audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
     )
+    profileManagementController.addProfile(
+      name = "Nikita",
+      pin = "123",
+      avatarImagePath = null,
+      allowDownloadAccess = false,
+      colorRgb = -10710042,
+      isAdmin = false,
+      storyTextSize = StoryTextSize.MEDIUM_TEXT_SIZE,
+      appLanguage = AppLanguage.CHINESE_APP_LANGUAGE,
+      audioLanguage = AudioLanguage.CHINESE_AUDIO_LANGUAGE
+    )
     return profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(0).build())
   }
 

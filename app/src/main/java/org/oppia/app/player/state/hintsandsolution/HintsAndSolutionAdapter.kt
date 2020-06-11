@@ -21,9 +21,10 @@ class HintsAndSolutionAdapter(
   private val itemList: List<HintsAndSolutionItemViewModel>,
   private val expandedHintListIndexListener: ExpandedHintListIndexListener,
   private var currentExpandedHintListIndex: Int?,
-  private var explorationId: String?,
-  private var htmlParserFactory: HtmlParser.Factory,
-  private var entityType: String
+  private val explorationId: String?,
+  private val htmlParserFactory: HtmlParser.Factory,
+  private val resourceBucketName: String,
+  private val entityType: String
 ) :
   RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -100,10 +101,11 @@ class HintsAndSolutionAdapter(
 
       binding.hintTitle.text = hintsViewModel.title.get()!!.replace("_", " ").capitalize()
       binding.hintsAndSolutionSummary.text =
-        htmlParserFactory.create(entityType, explorationId!!, /* imageCenterAlign= */ true)
-          .parseOppiaHtml(
-            hintsViewModel.hintsAndSolutionSummary.get()!!, binding.hintsAndSolutionSummary
-          )
+        htmlParserFactory.create(
+          resourceBucketName, entityType, explorationId!!, /* imageCenterAlign= */ true
+        ).parseOppiaHtml(
+          hintsViewModel.hintsAndSolutionSummary.get()!!, binding.hintsAndSolutionSummary
+        )
 
       if (hintsViewModel.hintCanBeRevealed.get()!!) {
         binding.root.visibility = View.VISIBLE
@@ -156,16 +158,18 @@ class HintsAndSolutionAdapter(
       binding.viewModel = solutionViewModel
       binding.root.visibility = View.GONE
       binding.solutionTitle.text = solutionViewModel.title.get()!!.capitalize()
+      // TODO(#1050): Update to display answers for any answer type.
       if (solutionViewModel.correctAnswer.get().isNullOrEmpty()) {
         binding.solutionCorrectAnswer.text =
           """${solutionViewModel.numerator.get()}/${solutionViewModel.denominator.get()}"""
       } else {
         binding.solutionCorrectAnswer.text = solutionViewModel.correctAnswer.get()
       }
-      binding.solutionSummary.text = htmlParserFactory.create(entityType, explorationId!!, /* imageCenterAlign= */ true)
-        .parseOppiaHtml(
-          solutionViewModel.solutionSummary.get()!!, binding.solutionSummary
-        )
+      binding.solutionSummary.text = htmlParserFactory.create(
+        resourceBucketName, entityType, explorationId!!, /* imageCenterAlign= */ true
+      ).parseOppiaHtml(
+        solutionViewModel.solutionSummary.get()!!, binding.solutionSummary
+      )
 
       if (solutionViewModel.solutionCanBeRevealed.get()!!) {
         binding.root.visibility = View.VISIBLE

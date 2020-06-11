@@ -33,12 +33,12 @@ import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.testing.HtmlParserTestActivity
 import org.oppia.util.caching.CacheAssetsLocally
+import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.parser.DefaultGcsPrefix
-import org.oppia.util.parser.DefaultGcsResource
 import org.oppia.util.parser.GlideImageLoader
 import org.oppia.util.parser.HtmlParser
 import org.oppia.util.parser.ImageDownloadUrlTemplate
@@ -56,6 +56,9 @@ class HtmlParserTest {
 
   private lateinit var launchedActivity: Activity
   @Inject lateinit var htmlParserFactory: HtmlParser.Factory
+  @Inject
+  @field:DefaultResourceBucketName
+  lateinit var resourceBucketName: String
 
   @get:Rule
   var activityTestRule: ActivityTestRule<HtmlParserTestActivity> = ActivityTestRule(
@@ -92,20 +95,17 @@ class HtmlParserTest {
 
   @Test
   fun testHtmlContent_handleCustomOppiaTags_parsedHtmlDisplaysStyledText() {
-    val textView =
-      activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
+    val textView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
     val htmlParser = htmlParserFactory.create(
-      /* entityType= */ "",
-      /* entityId= */ "",
-      /* imageCenterAlign= */ true
+      resourceBucketName, /* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true
     )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
       "\u003cp\u003e\"Let's try one last question,\" said Mr. Baker. \"Here's a pineapple cake cut into pieces.\"\u003c/p\u003e\u003coppia-noninteractive-image " +
-        "alt-with-value=\"\u0026amp;quot;Pineapple" +
-        " cake with 7/9 having cherries.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;" +
-        "pineapple_cake_height_479_width_480.png\u0026amp;quot;\"\u003e\u003c/" +
-        "oppia-noninteractive-image\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eQuestion 6\u003c/strong\u003e: What " +
-        "fraction of the cake has big red cherries in the pineapple slices?\u003c/p\u003e",
+          "alt-with-value=\"\u0026amp;quot;Pineapple" +
+          " cake with 7/9 having cherries.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;" +
+          "pineapple_cake_height_479_width_480.png\u0026amp;quot;\"\u003e\u003c/" +
+          "oppia-noninteractive-image\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eQuestion 6\u003c/strong\u003e: What " +
+          "fraction of the cake has big red cherries in the pineapple slices?\u003c/p\u003e",
       textView
     )
     assertThat(textView.text.toString()).isEqualTo(htmlResult.toString())
@@ -115,19 +115,16 @@ class HtmlParserTest {
 
   @Test
   fun testHtmlContent_nonCustomOppiaTags_notParsed() {
-    val textView =
-      activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
+    val textView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
     val htmlParser = htmlParserFactory.create(
-      /* entityType= */ "",
-      /* entityId= */ "",
-      /* imageCenterAlign= */ true
+      resourceBucketName, /* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true
     )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
       "\u003cp\u003e\"Let's try one last question,\" said Mr. Baker. \"Here's a pineapple cake cut into pieces.\"\u003c/p\u003e\u003coppia--image " +
-        "alt-with-value=\"\u0026amp;quot;Pineapple cake with 7/9 having cherries.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\"" +
-        " filepath-value=\"\u0026amp;quot;pineapple_cake_height_479_width_480.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image" +
-        "\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003e\u003cstrongQuestion 6\u003c/strong\u003e: What fraction of the cake has big " +
-        "red cherries in the pineapple slices?\u003c/p\u003e",
+          "alt-with-value=\"\u0026amp;quot;Pineapple cake with 7/9 having cherries.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\"" +
+          " filepath-value=\"\u0026amp;quot;pineapple_cake_height_479_width_480.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image" +
+          "\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003e\u003cstrongQuestion 6\u003c/strong\u003e: What fraction of the cake has big " +
+          "red cherries in the pineapple slices?\u003c/p\u003e",
       textView
     )
     // The two strings aren't equal because this HTML contains a Non-Oppia/Non-Html tag e.g. <image> tag and attributes "filepath-value" which isn't parsed.
@@ -318,14 +315,14 @@ class HtmlParserTest {
     @DefaultGcsPrefix
     @Singleton
     fun provideDefaultGcsPrefix(): String {
-      return "https://storage.googleapis.com/"
+      return "https://storage.googleapis.com"
     }
 
     @Provides
-    @DefaultGcsResource
+    @DefaultResourceBucketName
     @Singleton
     fun provideDefaultGcsResource(): String {
-      return "oppiaserver-resources/"
+      return "oppiaserver-resources"
     }
 
     @Provides
