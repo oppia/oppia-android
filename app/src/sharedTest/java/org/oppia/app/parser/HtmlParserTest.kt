@@ -92,15 +92,20 @@ class HtmlParserTest {
 
   @Test
   fun testHtmlContent_handleCustomOppiaTags_parsedHtmlDisplaysStyledText() {
-    val textView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
-    val htmlParser = htmlParserFactory.create(/* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true)
+    val textView =
+      activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
+    val htmlParser = htmlParserFactory.create(
+      /* entityType= */ "",
+      /* entityId= */ "",
+      /* imageCenterAlign= */ true
+    )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
       "\u003cp\u003e\"Let's try one last question,\" said Mr. Baker. \"Here's a pineapple cake cut into pieces.\"\u003c/p\u003e\u003coppia-noninteractive-image " +
-          "alt-with-value=\"\u0026amp;quot;Pineapple" +
-          " cake with 7/9 having cherries.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;" +
-          "pineapple_cake_height_479_width_480.png\u0026amp;quot;\"\u003e\u003c/" +
-          "oppia-noninteractive-image\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eQuestion 6\u003c/strong\u003e: What " +
-          "fraction of the cake has big red cherries in the pineapple slices?\u003c/p\u003e",
+        "alt-with-value=\"\u0026amp;quot;Pineapple" +
+        " cake with 7/9 having cherries.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;" +
+        "pineapple_cake_height_479_width_480.png\u0026amp;quot;\"\u003e\u003c/" +
+        "oppia-noninteractive-image\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eQuestion 6\u003c/strong\u003e: What " +
+        "fraction of the cake has big red cherries in the pineapple slices?\u003c/p\u003e",
       textView
     )
     assertThat(textView.text.toString()).isEqualTo(htmlResult.toString())
@@ -110,14 +115,19 @@ class HtmlParserTest {
 
   @Test
   fun testHtmlContent_nonCustomOppiaTags_notParsed() {
-    val textView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
-    val htmlParser = htmlParserFactory.create(/* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true)
+    val textView =
+      activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
+    val htmlParser = htmlParserFactory.create(
+      /* entityType= */ "",
+      /* entityId= */ "",
+      /* imageCenterAlign= */ true
+    )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
       "\u003cp\u003e\"Let's try one last question,\" said Mr. Baker. \"Here's a pineapple cake cut into pieces.\"\u003c/p\u003e\u003coppia--image " +
-          "alt-with-value=\"\u0026amp;quot;Pineapple cake with 7/9 having cherries.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\"" +
-          " filepath-value=\"\u0026amp;quot;pineapple_cake_height_479_width_480.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image" +
-          "\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003e\u003cstrongQuestion 6\u003c/strong\u003e: What fraction of the cake has big " +
-          "red cherries in the pineapple slices?\u003c/p\u003e",
+        "alt-with-value=\"\u0026amp;quot;Pineapple cake with 7/9 having cherries.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\"" +
+        " filepath-value=\"\u0026amp;quot;pineapple_cake_height_479_width_480.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image" +
+        "\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003e\u003cstrongQuestion 6\u003c/strong\u003e: What fraction of the cake has big " +
+        "red cherries in the pineapple slices?\u003c/p\u003e",
       textView
     )
     // The two strings aren't equal because this HTML contains a Non-Oppia/Non-Html tag e.g. <image> tag and attributes "filepath-value" which isn't parsed.
@@ -125,7 +135,149 @@ class HtmlParserTest {
     onView(withId(R.id.test_html_content_text_view)).check(matches(not(textView.text.toString())))
   }
 
-  @Qualifier annotation class TestDispatcher
+  @Test
+  fun testHtmlContent_handleUnorderedList_parsedHtmlDisplaysBulletList() {
+    val textView =
+      activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
+    val source = "<html>CITRUS FRUITS:<ul><li>LEMON</li><li>LIME</li><li>ORANGE</li></ul></html>"
+    val htmlParser = htmlParserFactory.create(
+      /* entityType= */ "",
+      /* entityId= */ "",
+      /* imageCenterAlign= */ true
+    )
+    val formattedHtml = htmlParser.parseOppiaHtml(source, textView).toString()
+
+    assertThat(
+      formattedHtml
+    ).isEqualTo(
+      "CITRUS FRUITS:\n" +
+        "● LEMON\n" +
+        "● LIME\n" +
+        "● ORANGE"
+    )
+  }
+
+  @Test
+  fun testHtmlContent_handleOrderedList_parsedHtmlDisplaysNumberedList() {
+    val textView =
+      activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
+    val source = "CITRUS FRUITS:<ol><li>LEMON</li><li>LIME</li><li>ORANGE</li></ol>"
+    val htmlParser = htmlParserFactory.create(
+      /* entityType= */ "",
+      /* entityId= */ "",
+      /* imageCenterAlign= */ true
+    )
+    val formattedHtml = htmlParser.parseOppiaHtml(source, textView).toString()
+
+    assertThat(
+      formattedHtml
+    ).isEqualTo(
+      "CITRUS FRUITS:" +
+        "\n1. LEMON" +
+        "\n2. LIME" +
+        "\n3. ORANGE"
+    )
+  }
+
+  @Test
+  fun testHtmlContent_handleUnorderedAndOrderedList_parsedHtmlShowsBulletAndNumberedList() {
+    val textView =
+      activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
+    val source =
+      "Mixed List:<ul><li>Item 1</li><li>Item 2</li><li>Numbered list:</li></ul><ol><li>Item 1</li><li>Item 2</li></ol"
+    val htmlParser = htmlParserFactory.create(
+      /* entityType= */ "",
+      /* entityId= */ "",
+      /* imageCenterAlign= */ true
+    )
+    val formattedHtml = htmlParser.parseOppiaHtml(source, textView).toString()
+
+    assertThat(
+      formattedHtml
+    ).isEqualTo(
+      "Mixed List:" +
+        "\n● Item 1" +
+        "\n● Item 2" +
+        "\n● Numbered list:" +
+        "\n1. Item 1" +
+        "\n2. Item 2"
+    )
+  }
+
+  @Test
+  fun testHtmlContent_handleNestedList_parsedHtmlDisplaysNestedList() {
+    val textView =
+      activityTestRule.activity.findViewById(R.id.test_html_content_with_ordered_list_text_view) as TextView
+    val htmlParser = htmlParserFactory.create(
+      /* entityType= */ "",
+      /* entityId= */ "",
+      /* imageCenterAlign= */ true
+    )
+    val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+      """<ul>
+                <li>Item 1</li>
+                <li>Item 2</li>
+                <li>Item 3
+                    <ol>
+                        <li>Nested item 1</li>
+                        <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+                        Nulla et tellus eu magna facilisis eleifend. Vestibulum faucibus pulvinar tincidunt. 
+                        Nullam non mauris nisi.</li>
+                    </ol>
+                </li>
+                <li>Item 4</li>
+                <li>Item 5
+                    <ol>
+                        <li>Nested item 1</li>
+                        <li>Nested item 2
+                            <ol>
+                                <li>Double nested item 1</li>
+                                <li>Double nested item 2</li>
+                            </ol>
+                        </li>
+                        <li>Nested item 3</li>
+                    </ol>
+                </li>
+                <li>Item 6</li>
+            </ul>
+        """",
+      textView
+    )
+    assertThat(textView.text.toString()).isEqualTo(htmlResult.toString())
+    onView(withId(R.id.test_html_content_with_ordered_list_text_view)).check(matches(isDisplayed()))
+    onView(withId(R.id.test_html_content_with_ordered_list_text_view)).check(
+      matches(
+        withText(
+          textView.text.toString()
+        )
+      )
+    )
+  }
+
+  @Test
+  fun testHtmlContent_liTagWithoutOrderedAndUnorderedTag_failsToAddBulletOrNumberedList() {
+    val textView =
+      activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
+    val source = "CITRUS FRUITS:<li>LEMON</li><li>LIME</li><li>ORANGE</li>"
+    val htmlParser = htmlParserFactory.create(
+      /* entityType= */ "",
+      /* entityId= */ "",
+      /* imageCenterAlign= */ true
+    )
+    val formattedHtml = htmlParser.parseOppiaHtml(source, textView).toString()
+
+    assertThat(
+      formattedHtml
+    ).isEqualTo(
+      "CITRUS FRUITS:" +
+        "LEMON" +
+        "LIME" +
+        "ORANGE"
+    )
+  }
+
+  @Qualifier
+  annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module
