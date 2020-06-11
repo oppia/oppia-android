@@ -41,6 +41,7 @@
   <string name="previous_state_description">Navigate to the previous card</string>
   <string name="next_state_description">Navigate to the next card</string>
   <string name="state_submit_button">Submit</string>
+  <string name="lesson_replay_button_text">Replay</string>
   <string name="state_end_exploration_button">Return To Topic</string>
   <string name="previous_responses_header">Previous Responses (%d)</string>
   <string name="state_learn_again_button">Learn Again</string>
@@ -77,6 +78,11 @@
   <string name="recently_played_activity">Recently-Played Stories</string>
   <string name="topic_downloaded">Topic Downloaded</string>
   <string name="downloaded">Downloaded</string>
+  <string name="question_player_title">Train Mode</string>
+  <string name="question_training_session_progress">Question %d of %d</string>
+  <string name="question_training_session_progress_finished">Complete</string>
+  <string name="question_training_session_finished_header">Finished</string>
+  <string name="question_training_session_finished_message">You have finished all of the questions! You can choose to play another set of questions, or return to the topic.</string>
   <string name="status_in_progress">In Progress</string>
   <string name="status_completed">Completed</string>
   <string name="show_hide_chapter_list">Show/Hide chapter list of %s</string>

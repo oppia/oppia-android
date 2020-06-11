@@ -14,13 +14,12 @@ import javax.inject.Inject
  */
 internal class TextInputEqualsRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
-): RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<String> {
+) : RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<String> {
 
   override fun createRuleClassifier(): RuleClassifier {
     return classifierFactory.createSingleInputClassifier(InteractionObject.ObjectTypeCase.NORMALIZED_STRING, "x", this)
   }
 
-  // TODO(#210): Add tests for this classifier.
   override fun matches(answer: String, input: String): Boolean {
     return answer.normalizeWhitespace().equals(input.normalizeWhitespace(), /* ignoreCase= */ true)
   }
