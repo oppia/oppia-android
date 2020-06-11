@@ -38,7 +38,7 @@ class DragDropSortInputModule{
   @IntoMap
   @StringKey("IsEqualToOrderingWithOneItemIncorrect")
   @DragDropSortInputRules
-  internal fun provideDragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionRuleClassifier(
-    classifierProvider: DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider
+  internal fun provideDragDropSortInputIsEqualToOrderingWithOneItemIncorrectRuleClassifier(
+    classifierProvider: DragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProvider
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 }

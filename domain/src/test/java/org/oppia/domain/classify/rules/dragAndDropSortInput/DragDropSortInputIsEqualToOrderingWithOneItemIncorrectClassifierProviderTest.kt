@@ -20,29 +20,32 @@ import org.oppia.app.model.StringList
 import org.oppia.domain.classify.RuleClassifier
 import org.robolectric.annotation.Config
 
-/** Tests for [DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider]. */
+/** Tests for [DragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProvider]. */
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
-class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProviderTest {
+class DragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProviderTest {
   private val NON_NEGATIVE_VALUE_0 = createNonNegativeInt(value = 0)
   private val ITEM_SET_1_AB = listOf("item a", "item b")
+  private val ITEM_SET_1_ABC = listOf("item a", "item b", "item c")
   private val ITEM_SET_1_A = listOf("item a")
   private val ITEM_SET_2_ITEM_2 = listOf("item 2")
   private val ITEM_SET_3_ITEM_3 = listOf("item 3")
   private val ITEM_SET_4_INVALID_AB = listOf("item invalid a", "item invalid b")
-  private val LIST_OF_SETS_123 =
+  private val SET_LIST_ITEMS_AB_ITEM_2_ITEM_3 =
     createListOfSetsOfHtmlStrings(ITEM_SET_1_AB, ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3)
-  private val LIST_OF_SETS_132 =
-    createListOfSetsOfHtmlStrings(ITEM_SET_1_AB, ITEM_SET_3_ITEM_3, ITEM_SET_2_ITEM_2)
-  private val LIST_OF_SETS_1A23 =
+  private val SET_LIST_ITEMS_ABC_ITEM_2_ITEM_3 =
+    createListOfSetsOfHtmlStrings(ITEM_SET_1_ABC, ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3)
+  private val SET_LIST_ITEM_2_ITEM_3_ITEMS_AB =
+    createListOfSetsOfHtmlStrings(ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3, ITEM_SET_1_AB)
+  private val SET_LIST_ITEM_A_ITEM_2_ITEM_3 =
     createListOfSetsOfHtmlStrings(ITEM_SET_1_A, ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3)
 
   @Inject
-  internal lateinit var dragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider:
-    DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider
+  internal lateinit var dragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProvider:
+    DragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProvider
 
-  private val isEqualToOrderingWithOneItemAtIncorrectPositionClassifier: RuleClassifier by lazy {
-    dragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider.createRuleClassifier()
+  private val isEqualToOrderingWithOneItemIncorrectClassifier: RuleClassifier by lazy {
+    dragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProvider.createRuleClassifier()
   }
 
   @Before
@@ -55,8 +58,8 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_0)
 
     val exception = assertThrows(IllegalStateException::class) {
-      isEqualToOrderingWithOneItemAtIncorrectPositionClassifier.matches(
-        answer = LIST_OF_SETS_123,
+      isEqualToOrderingWithOneItemIncorrectClassifier.matches(
+        answer = SET_LIST_ITEMS_AB_ITEM_2_ITEM_3,
         inputs = inputs
       )
     }
@@ -68,11 +71,11 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
 
   @Test
   fun testAnswer_testLisOfSetsOfHtmlString_sameValue_bothValuesMatch_failsCorrectly() {
-    val inputs = mapOf("x" to LIST_OF_SETS_123)
+    val inputs = mapOf("x" to SET_LIST_ITEMS_AB_ITEM_2_ITEM_3)
 
     val matches =
-      isEqualToOrderingWithOneItemAtIncorrectPositionClassifier.matches(
-        answer = LIST_OF_SETS_123,
+      isEqualToOrderingWithOneItemIncorrectClassifier.matches(
+        answer = SET_LIST_ITEMS_AB_ITEM_2_ITEM_3,
         inputs = inputs
       )
 
@@ -81,11 +84,11 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
 
   @Test
   fun testAnswer_testLisOfSetsOfHtmlString_differByOneElement_bothValuesDoNotMatch() {
-    val inputs = mapOf("x" to LIST_OF_SETS_123)
+    val inputs = mapOf("x" to SET_LIST_ITEMS_AB_ITEM_2_ITEM_3)
 
     val matches =
-      isEqualToOrderingWithOneItemAtIncorrectPositionClassifier.matches(
-        answer = LIST_OF_SETS_1A23,
+      isEqualToOrderingWithOneItemIncorrectClassifier.matches(
+        answer = SET_LIST_ITEM_A_ITEM_2_ITEM_3,
         inputs = inputs
       )
 
@@ -93,12 +96,38 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
   }
 
   @Test
+  fun testAnswer_testLisOfSetsOfHtmlString_differByOneElement_differentOrder_bothValuesDoNotMatch_failsCorrectly() {
+    val inputs = mapOf("x" to SET_LIST_ITEM_2_ITEM_3_ITEMS_AB)
+
+    val matches =
+      isEqualToOrderingWithOneItemIncorrectClassifier.matches(
+        answer = SET_LIST_ITEM_A_ITEM_2_ITEM_3,
+        inputs = inputs
+      )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testAnswer_testLisOfSetsOfHtmlString_differByTwoElement_bothValuesDoNot_failsCorrectly() {
+    val inputs = mapOf("x" to SET_LIST_ITEMS_ABC_ITEM_2_ITEM_3)
+
+    val matches =
+      isEqualToOrderingWithOneItemIncorrectClassifier.matches(
+        answer = SET_LIST_ITEM_A_ITEM_2_ITEM_3,
+        inputs = inputs
+      )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
   fun testAnswer_testLisOfSetsOfHtmlString_incorrectInputMap_throwsException() {
-    val inputs = mapOf("y" to LIST_OF_SETS_123)
+    val inputs = mapOf("y" to SET_LIST_ITEMS_AB_ITEM_2_ITEM_3)
 
     val exception = assertThrows(IllegalStateException::class) {
-      isEqualToOrderingWithOneItemAtIncorrectPositionClassifier.matches(
-        answer = LIST_OF_SETS_123,
+      isEqualToOrderingWithOneItemIncorrectClassifier.matches(
+        answer = SET_LIST_ITEMS_AB_ITEM_2_ITEM_3,
         inputs = inputs
       )
     }
@@ -125,7 +154,7 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerDragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProviderTest_TestApplicationComponent.builder()
+    DaggerDragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProviderTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
   }
 
@@ -155,6 +184,6 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProviderTest)
+    fun inject(test: DragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProviderTest)
   }
 }
