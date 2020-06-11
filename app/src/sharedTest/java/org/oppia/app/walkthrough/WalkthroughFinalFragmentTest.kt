@@ -24,8 +24,10 @@ import org.oppia.app.R
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.app.utility.ProgressMatcher.Companion.withProgress
+import org.robolectric.annotation.LooperMode
 
 /** Tests for [WalkthroughFinalFragment]. */
+@LooperMode(LooperMode.Mode.PAUSED)
 @RunWith(AndroidJUnit4::class)
 class WalkthroughFinalFragmentTest {
 
