@@ -17,13 +17,21 @@ class OnboardingPagerAdapter(
   override fun instantiateItem(container: ViewGroup, position: Int): Any {
     if (position == TOTAL_NUMBER_OF_SLIDES - 1) {
       val binding =
-        OnboardingSlideFinalBinding.inflate(LayoutInflater.from(context), container, false)
+        OnboardingSlideFinalBinding.inflate(
+          LayoutInflater.from(context),
+          container,
+          false
+        )
       binding.viewModel = onboardingSlideFinalViewModel
       container.addView(binding.root)
       return binding.root
     }
 
-    val binding = OnboardingSlideBinding.inflate(LayoutInflater.from(context), container, false)
+    val binding = OnboardingSlideBinding.inflate(
+      LayoutInflater.from(context),
+      container,
+      false
+    )
     val onboardingSlideViewModel =
       OnboardingSlideViewModel(context, ViewPagerSlide.getSlideForPosition(position))
     binding.viewModel = onboardingSlideViewModel
