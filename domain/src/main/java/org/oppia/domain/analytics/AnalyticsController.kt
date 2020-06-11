@@ -5,7 +5,7 @@ import android.os.Bundle
 import javax.inject.Inject
 import org.oppia.app.model.EventAction
 import org.oppia.app.model.Priority
-import org.oppia.util.firebase.EventLogger
+import org.oppia.util.logging.EventLogger
 
 const val TIMESTAMP_KEY = "timestamp"
 const val TOPIC_ID_KEY = "topicId"
@@ -21,6 +21,8 @@ const val TEST_QUESTION_ID = "test_questionId"
 
 /**
  * Controller for handling analytics event logging.
+ * [logTransitionEvent] should be used to log screen transition events.
+ * [logClickEvent] should be used to log button click events.
  */
 class AnalyticsController @Inject constructor(
   private val eventLogger: EventLogger
@@ -67,9 +69,7 @@ class AnalyticsController @Inject constructor(
       )
   }
 
-  /**
-   * Returns a bundle containing relevant data for event reporting to console.
-   */
+  /** Returns a bundle containing relevant data for event reporting. */
   private fun createEventBundle(
     timestamp: Long,
     topicId: String?,

@@ -2,36 +2,30 @@ package org.oppia.testing
 
 import android.content.Context
 import android.os.Bundle
-import org.oppia.testing.TestLogReportingModule.Companion.eventList
-import org.oppia.util.firebase.EventLogger
+import org.oppia.util.logging.EventLogger
+import java.util.ArrayList
+import javax.inject.Inject
+import javax.inject.Singleton
 
-/**
- * A test specific fake event logger that adds the logged events to a list of events.
- */
-class FakeEventLogger : EventLogger {
+/**  A test specific fake for the event logger. */
+@Singleton
+class FakeEventLogger @Inject constructor() : EventLogger {
+  private val eventList = ArrayList<Event>()
 
-  /** This is used to add the logged event to a list of events. */
   override fun logEvent(context: Context, bundle: Bundle, title: String) {
     eventList.add(Event(title, bundle))
   }
 
-  /** This is used to get the most recent event present in the list of events. */
-  fun getMostRecentEvent(): Event {
-    val size = eventList.size
-    return if (size > 0) {
-      eventList[size - 1]
-    } else {
-      throw NullPointerException("No value present")
-    }
-  }
+  /** Returns the most recently logged event. */
+  fun getMostRecentEvent(): Event = eventList.last()
 
-  /** This is used to clear all the events present in the list. */
-  fun clearAllEvents() {
-    eventList.clear()
-  }
+  /** Clears all the events that are currently logged.. */
+  fun clearAllEvents() = eventList.clear()
 }
 
 /**
+ * Returns an event object containing title and bundle which enables event recording.
+ *
  * @param [title]: title of the logged event.
  * @param [bundle]: bundle that the contains information that needs to be logged.
  */

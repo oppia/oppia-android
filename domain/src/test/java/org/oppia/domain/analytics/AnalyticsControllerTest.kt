@@ -25,7 +25,7 @@ import org.robolectric.annotation.Config
 class AnalyticsControllerTest {
 
   @Inject lateinit var analyticsController: AnalyticsController
-  private val fakeEventLogger = FakeEventLogger()
+  @Inject lateinit var fakeEventLogger: FakeEventLogger
 
   @Test
   fun testController_LogTransitionEvent_checkLogsEvent() {
@@ -34,14 +34,14 @@ class AnalyticsControllerTest {
     analyticsController.logTransitionEvent(
       ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
-      EventAction.UNKNOWN_EVENT_ACTION,
+      EventAction.EVENT_ACTION_UNSPECIFIED,
       TEST_TOPIC_ID,
       TEST_STORY_ID,
       TEST_EXPLORATION_ID,
       TEST_QUESTION_ID
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().title).matches(EventAction.UNKNOWN_EVENT_ACTION.toString())
+    assertThat(fakeEventLogger.getMostRecentEvent().title).matches(EventAction.EVENT_ACTION_UNSPECIFIED.toString())
     assertThat(fakeEventLogger.getMostRecentEvent().bundle.get(TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
     assertThat(fakeEventLogger.getMostRecentEvent().bundle.get(TOPIC_ID_KEY)).isEqualTo(TEST_TOPIC_ID)
     assertThat(fakeEventLogger.getMostRecentEvent().bundle.get(STORY_ID_KEY)).isEqualTo(TEST_STORY_ID)
@@ -57,14 +57,14 @@ class AnalyticsControllerTest {
     analyticsController.logClickEvent(
       ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
-      EventAction.UNKNOWN_EVENT_ACTION,
+      EventAction.EVENT_ACTION_UNSPECIFIED,
       TEST_TOPIC_ID,
       TEST_STORY_ID,
       TEST_EXPLORATION_ID,
       TEST_QUESTION_ID
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().title).matches(EventAction.UNKNOWN_EVENT_ACTION.toString())
+    assertThat(fakeEventLogger.getMostRecentEvent().title).matches(EventAction.EVENT_ACTION_UNSPECIFIED.toString())
     assertThat(fakeEventLogger.getMostRecentEvent().bundle.get(TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
     assertThat(fakeEventLogger.getMostRecentEvent().bundle.get(TOPIC_ID_KEY)).isEqualTo(TEST_TOPIC_ID)
     assertThat(fakeEventLogger.getMostRecentEvent().bundle.get(STORY_ID_KEY)).isEqualTo(TEST_STORY_ID)
