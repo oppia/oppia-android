@@ -12,6 +12,18 @@ import javax.inject.Inject
 
 /** Fragment that contains info of Topic. */
 class TopicInfoFragment : InjectableFragment() {
+  companion object {
+    /** Returns a new [TopicInfoFragment]. */
+    fun newInstance(internalProfileId: Int, topicId: String): TopicInfoFragment {
+      val topicInfoFragment = TopicInfoFragment()
+      val args = Bundle()
+      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+      args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
+      topicInfoFragment.arguments = args
+      return topicInfoFragment
+    }
+  }
+
   @Inject lateinit var topicInfoFragmentPresenter: TopicInfoFragmentPresenter
 
   override fun onAttach(context: Context) {
