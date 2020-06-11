@@ -3,6 +3,13 @@ package org.oppia.data.persistence
 import android.content.Context
 import androidx.annotation.GuardedBy
 import com.google.protobuf.MessageLite
+import kotlinx.coroutines.Deferred
+import org.oppia.app.model.ProfileId
+import org.oppia.util.data.AsyncDataSubscriptionManager
+import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProvider
+import org.oppia.util.data.InMemoryBlockingCache
+import org.oppia.util.profile.DirectoryManagementUtil
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -11,13 +18,6 @@ import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
-import kotlinx.coroutines.Deferred
-import org.oppia.app.model.ProfileId
-import org.oppia.util.data.AsyncDataSubscriptionManager
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.data.DataProvider
-import org.oppia.util.data.InMemoryBlockingCache
-import org.oppia.util.profile.DirectoryManagementUtil
 
 /**
  * An on-disk persistent cache for proto messages that ensures reads and writes happen in a well-defined order. Note
