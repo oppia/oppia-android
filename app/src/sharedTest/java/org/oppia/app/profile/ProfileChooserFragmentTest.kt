@@ -75,9 +75,14 @@ private const val CONDITION_CHECK_INTERVAL = 100L
 @RunWith(AndroidJUnit4::class)
 class ProfileChooserFragmentTest {
 
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var profileManagementController: ProfileManagementController
-  @Inject lateinit var context: Context
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var profileManagementController: ProfileManagementController
+
+  @Inject
+  lateinit var context: Context
 
   @Before
   @ExperimentalCoroutinesApi
@@ -102,26 +107,63 @@ class ProfileChooserFragmentTest {
   fun testProfileChooserFragment_initializeProfiles_checkProfilesAreShown() {
     profileTestHelper.initializeProfiles()
     launch(ProfileActivity::class.java).use {
-      onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
-      onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_name_text)).check(
+      onView(withId(R.id.profile_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          0
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.profile_recycler_view,
+          0, R.id.profile_name_text
+        )
+      ).check(
         matches(
           withText("Sean")
         )
       )
-      onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_is_admin_text)).check(
+      onView(
+        atPositionOnView(
+          R.id.profile_recycler_view,
+          0, R.id.profile_is_admin_text
+        )
+      ).check(
         matches(withText(context.getString(R.string.profile_chooser_admin)))
       )
-      onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
-      onView(atPositionOnView(R.id.profile_recycler_view, 1, R.id.profile_name_text)).check(
+      onView(withId(R.id.profile_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.profile_recycler_view,
+          1, R.id.profile_name_text
+        )
+      ).check(
         matches(
           withText("Ben")
         )
       )
-      onView(atPositionOnView(R.id.profile_recycler_view, 1, R.id.profile_is_admin_text)).check(
+      onView(
+        atPositionOnView(
+          R.id.profile_recycler_view,
+          1, R.id.profile_is_admin_text
+        )
+      ).check(
         matches(not(isDisplayed()))
       )
-      onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
-      onView(atPositionOnView(R.id.profile_recycler_view, 2, R.id.add_profile_text)).check(
+      onView(withId(R.id.profile_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          2
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.profile_recycler_view,
+          2, R.id.add_profile_text
+        )
+      ).check(
         matches(
           withText(context.getString(R.string.profile_chooser_add))
         )
@@ -140,12 +182,22 @@ class ProfileChooserFragmentTest {
       onView(isRoot()).perform(pressBack())
       onView(withText(R.string.home_activity_back_dialog_exit)).perform(click())
       intended(hasComponent(ProfileActivity::class.java.name))
-      onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_last_visited)).check(
+      onView(
+        atPositionOnView(
+          R.id.profile_recycler_view,
+          0, R.id.profile_last_visited
+        )
+      ).check(
         matches(
           isDisplayed()
         )
       )
-      onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_last_visited)).check(
+      onView(
+        atPositionOnView(
+          R.id.profile_recycler_view,
+          0, R.id.profile_last_visited
+        )
+      ).check(
         matches(
           withText(
             String.format(
@@ -157,23 +209,39 @@ class ProfileChooserFragmentTest {
     }
   }
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileChooserFragment_initializeProfiles_changeConfiguration_checkProfilesLastVisitedTimeIsShown() {
     profileTestHelper.initializeProfiles()
     launch<ProfileActivity>(createProfileActivityIntent()).use {
-      onView(atPosition(R.id.profile_recycler_view, 0)).perform(click())
+      onView(
+        atPosition(
+          R.id.profile_recycler_view,
+          0
+        )
+      ).perform(click())
       intended(hasComponent(PinPasswordActivity::class.java.name))
       onView(withId(R.id.input_pin)).perform(typeText("12345"))
       intended(hasComponent(HomeActivity::class.java.name))
       onView(isRoot()).perform(pressBack())
       onView(withText(R.string.home_activity_back_dialog_exit)).perform(click())
       intended(hasComponent(ProfileActivity::class.java.name))
-      onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_last_visited)).check(
+      onView(
+        atPositionOnView(
+          R.id.profile_recycler_view,
+          0, R.id.profile_last_visited
+        )
+      ).check(
         matches(
           isDisplayed()
         )
       )
-      onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_last_visited)).check(
+      onView(
+        atPositionOnView(
+          R.id.profile_recycler_view,
+          0, R.id.profile_last_visited
+        )
+      ).check(
         matches(
           withText(
             String.format(
@@ -183,7 +251,12 @@ class ProfileChooserFragmentTest {
         )
       )
       onView(isRoot()).perform(orientationLandscape())
-      onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_last_visited)).check(
+      onView(
+        atPositionOnView(
+          R.id.profile_recycler_view,
+          0, R.id.profile_last_visited
+        )
+      ).check(
         matches(
           withText(
             String.format(
@@ -194,6 +267,7 @@ class ProfileChooserFragmentTest {
       )
     }
   }
+  /* ktlint-enable max-line-length */
 
   @Test
   @ExperimentalCoroutinesApi
@@ -201,62 +275,152 @@ class ProfileChooserFragmentTest {
     profileTestHelper.initializeProfiles()
     profileTestHelper.addMoreProfiles(8)
     launch(ProfileActivity::class.java).use {
-      onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
-      onView(atPositionOnView(R.id.profile_recycler_view, 0, R.id.profile_name_text)).check(
+      onView(withId(R.id.profile_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          0
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.profile_recycler_view,
+          0, R.id.profile_name_text
+        )
+      ).check(
         matches(
           withText("Sean")
         )
       )
-      onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
-      onView(atPositionOnView(R.id.profile_recycler_view, 1, R.id.profile_name_text)).check(
+      onView(withId(R.id.profile_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.profile_recycler_view,
+          1, R.id.profile_name_text
+        )
+      ).check(
         matches(
           withText("A")
         )
       )
-      onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
-      onView(atPositionOnView(R.id.profile_recycler_view, 2, R.id.profile_name_text)).check(
+      onView(withId(R.id.profile_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          2
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.profile_recycler_view,
+          2, R.id.profile_name_text
+        )
+      ).check(
         matches(
           withText("B")
         )
       )
-      onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
-      onView(atPositionOnView(R.id.profile_recycler_view, 3, R.id.profile_name_text)).check(
+      onView(withId(R.id.profile_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          3
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.profile_recycler_view,
+          3, R.id.profile_name_text
+        )
+      ).check(
         matches(
           withText("Ben")
         )
       )
-      onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(4))
-      onView(atPositionOnView(R.id.profile_recycler_view, 4, R.id.profile_name_text)).check(
+      onView(withId(R.id.profile_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          4
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.profile_recycler_view,
+          4, R.id.profile_name_text
+        )
+      ).check(
         matches(
           withText("C")
         )
       )
-      onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(5))
-      onView(atPositionOnView(R.id.profile_recycler_view, 5, R.id.profile_name_text)).check(
+      onView(withId(R.id.profile_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          5
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.profile_recycler_view,
+          5, R.id.profile_name_text
+        )
+      ).check(
         matches(
           withText("D")
         )
       )
-      onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(6))
-      onView(atPositionOnView(R.id.profile_recycler_view, 6, R.id.profile_name_text)).check(
+      onView(withId(R.id.profile_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          6
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.profile_recycler_view,
+          6, R.id.profile_name_text
+        )
+      ).check(
         matches(
           withText("E")
         )
       )
-      onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(7))
-      onView(atPositionOnView(R.id.profile_recycler_view, 7, R.id.profile_name_text)).check(
+      onView(withId(R.id.profile_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          7
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.profile_recycler_view,
+          7, R.id.profile_name_text
+        )
+      ).check(
         matches(
           withText("F")
         )
       )
-      onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(8))
-      onView(atPositionOnView(R.id.profile_recycler_view, 8, R.id.profile_name_text)).check(
+      onView(withId(R.id.profile_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          8
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.profile_recycler_view,
+          8, R.id.profile_name_text
+        )
+      ).check(
         matches(
           withText("G")
         )
       )
-      onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(9))
-      onView(atPositionOnView(R.id.profile_recycler_view, 9, R.id.profile_name_text)).check(
+      onView(withId(R.id.profile_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          9
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.profile_recycler_view,
+          9, R.id.profile_name_text
+        )
+      ).check(
         matches(
           withText("H")
         )
@@ -273,6 +437,7 @@ class ProfileChooserFragmentTest {
     }
   }
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileChooserFragment_clickAddProfile_checkOpensAdminAuthActivity_onBackButton_opensProfileChooserFragment() {
     profileTestHelper.initializeProfiles()
@@ -296,7 +461,9 @@ class ProfileChooserFragmentTest {
       onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed()))
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileChooserFragment_clickAdminControls_checkOpensAdminAuthActivity_onBackButton_opensProfileChooserFragment() {
     profileTestHelper.initializeProfiles()
@@ -318,6 +485,7 @@ class ProfileChooserFragmentTest {
       onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed()))
     }
   }
+  /* ktlint-enable max-line-length */
 
   @Test
   fun testProfileChooserFragment_clickAdminProfileWithNoPin_checkOpensAdminPinActivity() {
@@ -364,7 +532,9 @@ class ProfileChooserFragmentTest {
     launch<ProfileActivity>(createProfileActivityIntent()).use {
       onView(isRoot()).perform(orientationLandscape())
       it.onActivity { activity ->
-        val profileRecyclerView = activity.findViewById<RecyclerView>(R.id.profile_recycler_view)
+        val profileRecyclerView = activity.findViewById<RecyclerView>(
+          R.id.profile_recycler_view
+        )
         val layoutManager = profileRecyclerView.layoutManager as GridLayoutManager
         if (!activity.resources.getBoolean(R.bool.isTablet)) {
           assertThat(layoutManager.spanCount).isEqualTo(2)
@@ -378,8 +548,11 @@ class ProfileChooserFragmentTest {
     profileTestHelper.addOnlyAdminProfile()
     launch<ProfileActivity>(createProfileActivityIntent()).use {
       it.onActivity { activity ->
-        val profileRecyclerView = activity.findViewById<RecyclerView>(R.id.profile_recycler_view)
-        val layoutManager = profileRecyclerView.layoutManager as LinearLayoutManager
+        val profileRecyclerView = activity.findViewById<RecyclerView>(
+          R.id.profile_recycler_view
+        )
+        val layoutManager = profileRecyclerView
+          .layoutManager as LinearLayoutManager
         assertThat(layoutManager.orientation).isEqualTo(LinearLayoutManager.VERTICAL)
       }
     }
@@ -399,7 +572,12 @@ class ProfileChooserFragmentTest {
   fun testProfileChooserFragment_onlyAdminProfile_checkDescriptionText_isDisplayed() {
     profileTestHelper.addOnlyAdminProfile()
     launch<ProfileActivity>(createProfileActivityIntent()).use {
-      onView(atPositionOnView(R.id.profile_recycler_view, 1, R.id.add_profile_description_text))
+      onView(
+        atPositionOnView(
+          R.id.profile_recycler_view,
+          1, R.id.add_profile_description_text
+        )
+      )
         .check(matches(isDisplayed()))
     }
   }
@@ -417,7 +595,12 @@ class ProfileChooserFragmentTest {
   fun testProfileChooserFragment_multipleProfiles_checkDescriptionText_isDisplayed() {
     profileTestHelper.initializeProfiles()
     launch<ProfileActivity>(createProfileActivityIntent()).use {
-      onView(atPositionOnView(R.id.profile_recycler_view, 2, R.id.add_profile_description_text))
+      onView(
+        atPositionOnView(
+          R.id.profile_recycler_view,
+          2, R.id.add_profile_description_text
+        )
+      )
         .check(matches(not(isDisplayed())))
     }
   }
@@ -436,7 +619,9 @@ class ProfileChooserFragmentTest {
 
   private inline fun <reified T : Activity> isVisible(): Boolean {
     val am =
-      InstrumentationRegistry.getInstrumentation().targetContext.getSystemService(ACTIVITY_SERVICE) as ActivityManager
+      InstrumentationRegistry.getInstrumentation().targetContext.getSystemService(
+        ACTIVITY_SERVICE
+      ) as ActivityManager
     val visibleActivityName = this.getCurrentActivity()!!::class.java.name
     return visibleActivityName == T::class.java.name
   }
@@ -446,7 +631,9 @@ class ProfileChooserFragmentTest {
     while (!isVisible<T>()) {
       Thread.sleep(CONDITION_CHECK_INTERVAL)
       if (System.currentTimeMillis() - startTime >= TIMEOUT) {
-        throw AssertionError("Activity ${T::class.java.simpleName} not visible after $TIMEOUT milliseconds")
+        throw AssertionError(
+          "Activity ${T::class.java.simpleName} not visible after $TIMEOUT milliseconds"
+        )
       }
     }
   }
@@ -459,7 +646,8 @@ class ProfileChooserFragmentTest {
     return ApplicationProvider.getApplicationContext<Context>().resources
   }
 
-  @Qualifier annotation class TestDispatcher
+  @Qualifier
+  annotation class TestDispatcher
 
   @Module
   class TestModule {
@@ -480,14 +668,18 @@ class ProfileChooserFragmentTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
     @Singleton
     @Provides
     @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBlockingDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 

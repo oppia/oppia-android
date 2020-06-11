@@ -2,7 +2,6 @@ package org.oppia.app.profile
 
 import android.app.Application
 import android.content.Context
-import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -52,8 +51,11 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class AdminPinActivityTest {
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
 
   @Before
   @ExperimentalCoroutinesApi
@@ -70,7 +72,14 @@ class AdminPinActivityTest {
 
   @Test
   fun testAdminPinActivity_inputPin_inputConfirmPin_clickSubmit_checkOpensAddProfileActivity() {
-    launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 1)).use {
+    launch<AdminPinActivity>(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context,
+        0,
+        -10710042,
+        1
+      )
+    ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("12345"),
         closeSoftKeyboard()
@@ -85,10 +94,18 @@ class AdminPinActivityTest {
     }
   }
 
+  /* ktlint-disable max-line-length */
   @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView") // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Test
   fun testAdminPinActivity_inputPin_inputConfirmPin_clickImeActionButton_checkOpensAddProfileActivity() {
-    launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 1)).use {
+    launch<AdminPinActivity>(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context,
+        0,
+        -10710042,
+        1
+      )
+    ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("12345"),
         closeSoftKeyboard()
@@ -101,10 +118,19 @@ class AdminPinActivityTest {
       intended(hasComponent(AddProfileActivity::class.java.name))
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testAdminAuthActivity_inputPin_inputConfirmPin_clickSubmit_checkOpensAdministratorControlsActivity() {
-    launch<AdminAuthActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0))
+    launch<AdminAuthActivity>(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context,
+        0,
+        -10710042,
+        0
+      )
+    )
       .use {
         onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
           typeText("12345"),
@@ -119,11 +145,20 @@ class AdminPinActivityTest {
         intended(hasComponent(AdministratorControlsActivity::class.java.name))
       }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView") // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Test
   fun testAdminAuthActivity_inputPin_inputConfirmPin_clickImeActionButton_checkOpensAdministratorControlsActivity() {
-    launch<AdminAuthActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0))
+    launch<AdminAuthActivity>(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context,
+        0,
+        -10710042,
+        0
+      )
+    )
       .use {
         onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
           typeText("12345"),
@@ -137,10 +172,18 @@ class AdminPinActivityTest {
         intended(hasComponent(AdministratorControlsActivity::class.java.name))
       }
   }
+  /* ktlint-enable max-line-length */
 
   @Test
   fun testAdminPinActivity_inputShortPin_clickIsDisabled() {
-    launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
+    launch<AdminPinActivity>(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context,
+        0,
+        -10710042,
+        0
+      )
+    ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("123"),
         closeSoftKeyboard()
@@ -152,7 +195,14 @@ class AdminPinActivityTest {
 
   @Test
   fun testAdminPinActivity_inputShortPin_clickSubmit_inputPin_checkErrorIsCleared() {
-    launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
+    launch<AdminPinActivity>(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context,
+        0,
+        -10710042,
+        0
+      )
+    ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("123"),
         closeSoftKeyboard()
@@ -162,13 +212,24 @@ class AdminPinActivityTest {
         typeText("45"),
         closeSoftKeyboard()
       )
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText("")))
+      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(
+        matches(
+          withText("")
+        )
+      )
     }
   }
 
   @Test
   fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickSubmit_checkConfirmWrongError() {
-    launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
+    launch<AdminPinActivity>(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context,
+        0,
+        -10710042,
+        0
+      )
+    ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("12345"),
         closeSoftKeyboard()
@@ -188,10 +249,18 @@ class AdminPinActivityTest {
     }
   }
 
+  /* ktlint-disable max-line-length */
   @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView") // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Test
   fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickImeActionButton_checkConfirmWrongError() {
-    launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
+    launch<AdminPinActivity>(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context,
+        0,
+        -10710042,
+        0
+      )
+    ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("12345"),
         closeSoftKeyboard()
@@ -209,10 +278,19 @@ class AdminPinActivityTest {
       )
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickSubmit_inputConfirmPin_checkErrorIsCleared() {
-    launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
+    launch<AdminPinActivity>(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context,
+        0,
+        -10710042,
+        0
+      )
+    ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("12345"),
         closeSoftKeyboard()
@@ -234,11 +312,20 @@ class AdminPinActivityTest {
       ).check(matches(withText("")))
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView") // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Test
   fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickImeActionButton_inputConfirmPin_checkErrorIsCleared() {
-    launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
+    launch<AdminPinActivity>(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context,
+        0,
+        -10710042,
+        0
+      )
+    ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("12345"),
         closeSoftKeyboard()
@@ -259,10 +346,19 @@ class AdminPinActivityTest {
       ).check(matches(withText("")))
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testAdminPinActivity_configurationChange_inputPin_inputConfirmPin_clickSubmit_checkOpensAddProfileActivity() {
-    launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 1)).use {
+    launch<AdminPinActivity>(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context,
+        0,
+        -10710042,
+        1
+      )
+    ).use {
       onView(isRoot()).perform(orientationLandscape())
       closeSoftKeyboard()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
@@ -278,11 +374,20 @@ class AdminPinActivityTest {
       intended(hasComponent(AddProfileActivity::class.java.name))
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView") // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Test
   fun testAdminPinActivity_configurationChange_inputPin_inputConfirmPin_clickImeActionButton_checkOpensAddProfileActivity() {
-    launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 1)).use {
+    launch<AdminPinActivity>(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context,
+        0,
+        -10710042,
+        1
+      )
+    ).use {
       onView(isRoot()).perform(orientationLandscape())
       closeSoftKeyboard()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
@@ -297,10 +402,19 @@ class AdminPinActivityTest {
       intended(hasComponent(AddProfileActivity::class.java.name))
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testAdminPinActivity_configurationChange_inputPin_inputConfirmPin_clickSubmit_checkOpensAdministratorControlsActivity() {
-    launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
+    launch<AdminPinActivity>(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context,
+        0,
+        -10710042,
+        0
+      )
+    ).use {
       onView(isRoot()).perform(orientationLandscape())
       closeSoftKeyboard()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
@@ -316,11 +430,20 @@ class AdminPinActivityTest {
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView") // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Test
   fun testAdminPinActivity_configurationChange_inputPin_inputConfirmPin_clickImeActionButton_checkOpensAdministratorControlsActivity() {
-    launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
+    launch<AdminPinActivity>(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context,
+        0,
+        -10710042,
+        0
+      )
+    ).use {
       onView(isRoot()).perform(orientationLandscape())
       closeSoftKeyboard()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
@@ -335,10 +458,18 @@ class AdminPinActivityTest {
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
     }
   }
+  /* ktlint-enable max-line-length */
 
   @Test
   fun testAdminPinActivity_configurationChange_inputShortPin_clickSubmit_clickIsDisabled() {
-    launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
+    launch<AdminPinActivity>(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context,
+        0,
+        -10710042,
+        0
+      )
+    ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("123"),
@@ -349,9 +480,17 @@ class AdminPinActivityTest {
     }
   }
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testAdminPinActivity_configurationChange_inputShortPin_clickSubmit_inputPin_checkErrorIsCleared() {
-    launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
+    launch<AdminPinActivity>(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context,
+        0,
+        -10710042,
+        0
+      )
+    ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("123"),
@@ -362,13 +501,26 @@ class AdminPinActivityTest {
         typeText("45"),
         closeSoftKeyboard()
       )
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText("")))
+      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(
+        matches(
+          withText("")
+        )
+      )
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testAdminPinActivity_configurationChange_inputPin_inputWrongConfirmPin_clickSubmit_checkConfirmWrongError() {
-    launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
+    launch<AdminPinActivity>(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context,
+        0,
+        -10710042,
+        0
+      )
+    ).use {
       onView(isRoot()).perform(orientationLandscape())
       closeSoftKeyboard()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
@@ -390,11 +542,20 @@ class AdminPinActivityTest {
       )
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView") // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Test
   fun testAdminPinActivity_configurationChange_inputPin_inputWrongConfirmPin_clickImeActionButton_checkConfirmWrongError() {
-    launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
+    launch<AdminPinActivity>(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context,
+        0,
+        -10710042,
+        0
+      )
+    ).use {
       onView(isRoot()).perform(orientationLandscape())
       closeSoftKeyboard()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
@@ -415,10 +576,19 @@ class AdminPinActivityTest {
       )
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testAdminPinActivity_configurationChange_inputPin_inputWrongConfirmPin_clickSubmit_inputConfirmPin_checkErrorIsCleared() {
-    launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
+    launch<AdminPinActivity>(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context,
+        0,
+        -10710042,
+        0
+      )
+    ).use {
       onView(isRoot()).perform(orientationLandscape())
       closeSoftKeyboard()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
@@ -444,11 +614,20 @@ class AdminPinActivityTest {
       ).check(matches(withText("")))
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView") // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Test
   fun testAdminPinActivity_configurationChange_inputPin_inputWrongConfirmPin_clickImeActionButton_inputConfirmPin_checkErrorIsCleared() {
-    launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
+    launch<AdminPinActivity>(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context,
+        0,
+        -10710042,
+        0
+      )
+    ).use {
       onView(isRoot()).perform(orientationLandscape())
       closeSoftKeyboard()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
@@ -473,10 +652,19 @@ class AdminPinActivityTest {
       ).check(matches(withText("")))
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickSubmit_configurationChange_checkConfirmWrongError() {
-    launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
+    launch<AdminPinActivity>(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context,
+        0,
+        -10710042,
+        0
+      )
+    ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("12345"),
         closeSoftKeyboard()
@@ -496,11 +684,20 @@ class AdminPinActivityTest {
       ).check(matches(withText(R.string.admin_pin_error_pin_confirm_wrong)))
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView") // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Test
   fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickImeActionButton_configurationChange_checkConfirmWrongError() {
-    launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
+    launch<AdminPinActivity>(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context,
+        0,
+        -10710042,
+        0
+      )
+    ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("12345"),
         closeSoftKeyboard()
@@ -519,10 +716,18 @@ class AdminPinActivityTest {
       ).check(matches(withText(R.string.admin_pin_error_pin_confirm_wrong)))
     }
   }
+  /* ktlint-enable max-line-length */
 
   @Test
   fun testAdminPinActivity_inputShortPin_configurationChange_clicIsDisabled() {
-    launch<AdminPinActivity>(AdminPinActivity.createAdminPinActivityIntent(context, 0, -10710042, 0)).use {
+    launch<AdminPinActivity>(
+      AdminPinActivity.createAdminPinActivityIntent(
+        context,
+        0,
+        -10710042,
+        0
+      )
+    ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
         typeText("123"),
         closeSoftKeyboard()
@@ -540,7 +745,8 @@ class AdminPinActivityTest {
       .inject(this)
   }
 
-  @Qualifier annotation class TestDispatcher
+  @Qualifier
+  annotation class TestDispatcher
 
   @Module
   class TestModule {
@@ -561,14 +767,18 @@ class AdminPinActivityTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
     @Singleton
     @Provides
     @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBlockingDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
