@@ -24,9 +24,7 @@ class ViewPagerAdapter(
     args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
     when (TopicTab.getTabForPosition(position)) {
       TopicTab.INFO -> {
-        val topicInfoTab = TopicInfoFragment()
-        topicInfoTab.arguments = args
-        return topicInfoTab
+        return TopicInfoFragment.newInstance(internalProfileId, topicId)
       }
       TopicTab.LESSONS -> {
         return TopicLessonsFragment.newInstance(internalProfileId, topicId, storyId)

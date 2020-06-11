@@ -37,7 +37,7 @@
       android:divider="@android:color/transparent"
       app:allOptionsItemInputType="@{viewModel.getSelectionItemInputType()}"
       app:data="@{viewModel.choiceItems}"
-      app:explorationId="@{viewModel.explorationId}"
+      app:entityId="@{viewModel.entityId}"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
   </LinearLayout>
 </layout>
