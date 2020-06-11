@@ -15,8 +15,12 @@ import javax.inject.Inject
 private const val KEY_CURRENT_EXPANDED_LIST_INDEX = "CURRENT_EXPANDED_LIST_INDEX"
 
 /** Fragment that contains subtopic list for lessons mode. */
-class TopicLessonsFragment : InjectableFragment(), ExpandedChapterListIndexListener, StorySummarySelector {
-  @Inject lateinit var topicLessonsFragmentPresenter: TopicLessonsFragmentPresenter
+class TopicLessonsFragment :
+  InjectableFragment(),
+  ExpandedChapterListIndexListener,
+  StorySummarySelector {
+  @Inject
+  lateinit var topicLessonsFragmentPresenter: TopicLessonsFragmentPresenter
 
   private var currentExpandedChapterListIndex: Int? = null
 
@@ -25,9 +29,14 @@ class TopicLessonsFragment : InjectableFragment(), ExpandedChapterListIndexListe
     fragmentComponent.inject(this)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
     if (savedInstanceState != null) {
-      currentExpandedChapterListIndex = savedInstanceState.getInt(KEY_CURRENT_EXPANDED_LIST_INDEX, -1)
+      currentExpandedChapterListIndex =
+        savedInstanceState.getInt(KEY_CURRENT_EXPANDED_LIST_INDEX, -1)
       if (currentExpandedChapterListIndex == -1) {
         currentExpandedChapterListIndex = null
       }
