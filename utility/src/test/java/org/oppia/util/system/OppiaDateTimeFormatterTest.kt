@@ -9,12 +9,12 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import javax.inject.Inject
+import javax.inject.Singleton
 
 // Time: Wed Apr 24 2019 08:22:00
 private const val MORNING_TIMESTAMP = 1556094120000

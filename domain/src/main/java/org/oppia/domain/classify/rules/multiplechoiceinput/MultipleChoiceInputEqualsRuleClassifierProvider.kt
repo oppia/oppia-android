@@ -20,7 +20,6 @@ internal class MultipleChoiceInputEqualsRuleClassifierProvider @Inject construct
     return classifierFactory.createSingleInputClassifier(InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT, "x", this)
   }
 
-  // TODO(#210): Add tests for this classifier.
   override fun matches(answer: Int, input: Int): Boolean {
     return answer == input
   }
