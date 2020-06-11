@@ -15,7 +15,9 @@ class ProfilePictureActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    val internalProfileId = intent.getIntExtra(PROFILE_PICTURE_ACTIVITY_PROFILE_ID_KEY, -1)
+    val internalProfileId = intent.getIntExtra(
+      PROFILE_PICTURE_ACTIVITY_PROFILE_ID_KEY, -1
+    )
     profilePictureActivityPresenter.handleOnCreate(internalProfileId)
   }
 
