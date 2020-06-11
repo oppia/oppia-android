@@ -10,14 +10,19 @@ import javax.inject.Inject
 
 /** The first slide for [WalkthroughActivity]. */
 class WalkthroughWelcomeFragment : InjectableFragment() {
-  @Inject lateinit var walkthroughWelcomeFragmentPresenter: WalkthroughWelcomeFragmentPresenter
+  @Inject
+  lateinit var walkthroughWelcomeFragmentPresenter: WalkthroughWelcomeFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
     return walkthroughWelcomeFragmentPresenter.handleCreateView(inflater, container)
   }
 }

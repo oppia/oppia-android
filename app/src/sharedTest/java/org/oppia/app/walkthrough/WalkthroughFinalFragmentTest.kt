@@ -92,6 +92,7 @@ class WalkthroughFinalFragmentTest {
     }
   }
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testWalkthroughWelcomeFragment_recyclerViewIndex2_topicSelected_configurationChanged_topicTitleIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
@@ -119,7 +120,9 @@ class WalkthroughFinalFragmentTest {
       )
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicSelected_yesNoButton_isDisplayedCorrectly() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
@@ -140,7 +143,9 @@ class WalkthroughFinalFragmentTest {
         .check(matches(isDisplayed()))
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicSelected_clickNoButton_worksCorrectly() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
@@ -160,4 +165,5 @@ class WalkthroughFinalFragmentTest {
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
     }
   }
+  /* ktlint-enable max-line-length */
 }

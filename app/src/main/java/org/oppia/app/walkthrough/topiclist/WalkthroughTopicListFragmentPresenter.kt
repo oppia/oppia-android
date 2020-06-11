@@ -35,7 +35,12 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val viewModel = getWalkthroughTopicViewModel()
 
-    binding = WalkthroughTopicListFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding =
+      WalkthroughTopicListFragmentBinding.inflate(
+        inflater,
+        container,
+        /* attachToRoot= */ false
+      )
 
     binding.let {
       it.lifecycleOwner = fragment
