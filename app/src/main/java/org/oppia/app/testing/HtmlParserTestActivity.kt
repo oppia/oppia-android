@@ -65,9 +65,7 @@ class HtmlParserTestActivity : InjectableAppCompatActivity() {
         """
     val htmlResult2: Spannable =
       htmlParserFactory.create(
-        /* entityType= */ "exploration",
-        /* entityId= */ "oppia",
-        /* imageCenterAlign= */ false
+        resourceBucketName, /* entityType= */ "exploration", /* entityId= */ "oppia", /* imageCenterAlign= */ false
       ).parseOppiaHtml(
         rawDummyString2,
         testHtmlContentOrderedListTextView

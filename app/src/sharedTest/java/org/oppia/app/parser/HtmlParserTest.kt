@@ -138,9 +138,7 @@ class HtmlParserTest {
       activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
     val source = "<html>CITRUS FRUITS:<ul><li>LEMON</li><li>LIME</li><li>ORANGE</li></ul></html>"
     val htmlParser = htmlParserFactory.create(
-      /* entityType= */ "",
-      /* entityId= */ "",
-      /* imageCenterAlign= */ true
+      resourceBucketName, /* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true
     )
     val formattedHtml = htmlParser.parseOppiaHtml(source, textView).toString()
 
@@ -160,9 +158,7 @@ class HtmlParserTest {
       activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
     val source = "CITRUS FRUITS:<ol><li>LEMON</li><li>LIME</li><li>ORANGE</li></ol>"
     val htmlParser = htmlParserFactory.create(
-      /* entityType= */ "",
-      /* entityId= */ "",
-      /* imageCenterAlign= */ true
+      resourceBucketName, /* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true
     )
     val formattedHtml = htmlParser.parseOppiaHtml(source, textView).toString()
 
@@ -183,9 +179,7 @@ class HtmlParserTest {
     val source =
       "Mixed List:<ul><li>Item 1</li><li>Item 2</li><li>Numbered list:</li></ul><ol><li>Item 1</li><li>Item 2</li></ol"
     val htmlParser = htmlParserFactory.create(
-      /* entityType= */ "",
-      /* entityId= */ "",
-      /* imageCenterAlign= */ true
+      resourceBucketName, /* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true
     )
     val formattedHtml = htmlParser.parseOppiaHtml(source, textView).toString()
 
@@ -206,9 +200,7 @@ class HtmlParserTest {
     val textView =
       activityTestRule.activity.findViewById(R.id.test_html_content_with_ordered_list_text_view) as TextView
     val htmlParser = htmlParserFactory.create(
-      /* entityType= */ "",
-      /* entityId= */ "",
-      /* imageCenterAlign= */ true
+      resourceBucketName, /* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true
     )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
       """<ul>
@@ -237,7 +229,7 @@ class HtmlParserTest {
                 </li>
                 <li>Item 6</li>
             </ul>
-        """",
+        """,
       textView
     )
     assertThat(textView.text.toString()).isEqualTo(htmlResult.toString())
@@ -257,9 +249,7 @@ class HtmlParserTest {
       activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
     val source = "CITRUS FRUITS:<li>LEMON</li><li>LIME</li><li>ORANGE</li>"
     val htmlParser = htmlParserFactory.create(
-      /* entityType= */ "",
-      /* entityId= */ "",
-      /* imageCenterAlign= */ true
+      resourceBucketName, /* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true
     )
     val formattedHtml = htmlParser.parseOppiaHtml(source, textView).toString()
 
