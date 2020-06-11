@@ -53,6 +53,8 @@
         android:layout_height="wrap_content"
         android:overScrollMode="never"
         android:scrollbars="none"
+        android:paddingBottom="168dp"
+        android:clipToPadding="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -60,7 +62,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:background="@color/white"
+          android:background="@drawable/general_item_background_border"
           android:paddingBottom="108dp">
 
           <TextView

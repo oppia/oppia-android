@@ -1,27 +1,17 @@
 package org.oppia.testing
 
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
-import java.lang.Exception
-import javax.inject.Singleton
-import org.oppia.util.firebase.CrashLogger
-import org.oppia.util.firebase.EventLogger
+import org.oppia.util.logging.ExceptionLogger
 
 /**
  * Provides fake crash logging dependencies.
  */
 @Module
-class TestLogReportingModule {
-  companion object {
-    var exceptionList = ArrayList<Exception>()
-    var eventList = ArrayList<Event>()
-  }
+abstract class TestLogReportingModule {
 
-  @Provides
-  @Singleton
-  fun provideCrashlyticsLogger(): CrashLogger {
-    return FakeCrashLogger()
-  }
+  @Binds
+  abstract fun bindFakeCrashLogger(fakeExceptionLogger: FakeExceptionLogger): ExceptionLogger
 
   @Singleton
   @Provides

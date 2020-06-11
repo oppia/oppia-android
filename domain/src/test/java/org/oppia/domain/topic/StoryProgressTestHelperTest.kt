@@ -41,12 +41,12 @@ import org.oppia.app.model.Topic
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.parser.DefaultGcsPrefix
-import org.oppia.util.parser.DefaultGcsResource
 import org.oppia.util.parser.ImageDownloadUrlTemplate
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
@@ -769,10 +769,10 @@ class StoryProgressTestHelperTest {
     }
 
     @Provides
-    @DefaultGcsResource
+    @DefaultResourceBucketName
     @Singleton
     fun provideDefaultGcsResource(): String {
-      return "oppiaserver-resources/"
+      return "oppiaserver-resources"
     }
 
     @Provides

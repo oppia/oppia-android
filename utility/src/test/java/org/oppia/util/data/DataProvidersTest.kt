@@ -30,7 +30,7 @@ import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyZeroInteractions
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
-import org.oppia.testing.FakeCrashLogger
+import org.oppia.testing.FakeExceptionLogger
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
@@ -68,6 +68,8 @@ class DataProvidersTest {
 
   @Inject lateinit var asyncDataSubscriptionManager: AsyncDataSubscriptionManager
 
+  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
+
   @InternalCoroutinesApi @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Inject @field:BackgroundDispatcher
@@ -87,7 +89,6 @@ class DataProvidersTest {
 
   private var inMemoryCachedStr: String? = null
   private var inMemoryCachedStr2: String? = null
-  private var fakeCrashLogger = FakeCrashLogger()
 
   private val backgroundCoroutineScope by lazy {
     CoroutineScope(backgroundCoroutineDispatcher)
@@ -2849,8 +2850,7 @@ class DataProvidersTest {
   @InternalCoroutinesApi
   @ExperimentalCoroutinesApi
   fun testNestedXformedProvider_toLiveData_baseFailure_logsException() {
-
-    fakeCrashLogger.clearAllExceptions()
+    fakeExceptionLogger.clearAllExceptions()
     val baseProvider =
       createThrowingDataProvider<String>(BASE_PROVIDER_ID_0, IllegalStateException("Base failure"))
     val dataProvider =
@@ -2860,8 +2860,49 @@ class DataProvidersTest {
 
     dataProviders.convertToLiveData(dataProvider).observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
+    val exception = fakeExceptionLogger.getMostRecentException()
 
-    assertThat(fakeCrashLogger.getMostRecentException()).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat().contains("Base failure")
+  }
+
+  @Test
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun testTransform_toLiveData_throwsException_deliversFailure_logsException() {
+    fakeExceptionLogger.clearAllExceptions()
+    val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
+    val dataProvider = dataProviders.transform<String, Int>(TRANSFORMED_PROVIDER_ID, baseProvider) {
+      throw IllegalStateException("Transform failure")
+    }
+
+    dataProviders.convertToLiveData(dataProvider).observeForever(mockIntLiveDataObserver)
+    testCoroutineDispatchers.advanceUntilIdle()
+    val exception =  fakeExceptionLogger.getMostRecentException()
+
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat().contains("Transform failure")
+  }
+
+  @Test
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun testCombine_combinerThrowsException_deliversFailure_logsException() {
+    fakeExceptionLogger.clearAllExceptions()
+    val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
+    val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_1)
+    val dataProvider = dataProviders.combine<String, String, String>(
+      COMBINED_PROVIDER_ID, baseProvider1, baseProvider2
+    ) { _, _ ->
+      throw IllegalStateException("Combine failure")
+    }
+
+    dataProviders.convertToLiveData(dataProvider).observeForever(mockStringLiveDataObserver)
+    testCoroutineDispatchers.advanceUntilIdle()
+    val exception = fakeExceptionLogger.getMostRecentException()
+
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat().contains("Combine failure")
   }
 
   private fun transformString(str: String): Int {

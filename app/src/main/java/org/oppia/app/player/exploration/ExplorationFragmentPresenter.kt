@@ -42,10 +42,6 @@ class ExplorationFragmentPresenter @Inject constructor(
 
   fun scrollToTop() = getStateFragment()?.scrollToTop()
 
-  private fun getStateFragment(): StateFragment? {
-    return fragment.childFragmentManager.findFragmentById(R.id.state_fragment_placeholder) as StateFragment?
-  }
-
   fun onKeyboardAction() {
     getStateFragment()?.handleKeyboardAction()
   }
@@ -56,5 +52,9 @@ class ExplorationFragmentPresenter @Inject constructor(
 
   fun revealSolution(saveUserChoice: Boolean){
     getStateFragment()?.revealSolution(saveUserChoice)
+  }
+
+  private fun getStateFragment(): StateFragment? {
+    return fragment.childFragmentManager.findFragmentById(R.id.state_fragment_placeholder) as StateFragment?
   }
 }
