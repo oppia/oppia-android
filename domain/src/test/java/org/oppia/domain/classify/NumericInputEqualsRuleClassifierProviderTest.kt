@@ -11,7 +11,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.model.InteractionObject
 import org.oppia.domain.classify.rules.numericinput.NumericInputEqualsRuleClassifierProvider
-import org.oppia.domain.util.EPSILON
+import org.oppia.domain.util.FLOAT_EQUALITY_INTERVAL
 import org.robolectric.annotation.Config
 import java.lang.IllegalStateException
 import javax.inject.Inject
@@ -64,9 +64,9 @@ class NumericInputEqualsRuleClassifierProviderTest {
 
   @Test
   fun testPositiveRealAnswer_positiveRealInput_valuesInRange_bothValuesMatch() {
-    val inputs = mapOf("x" to createReal(value = 5 * EPSILON))
+    val inputs = mapOf("x" to createReal(value = 5 * FLOAT_EQUALITY_INTERVAL))
 
-    val matches = inputEqualsRuleClassifier.matches(answer = createReal(value = 5 * EPSILON + EPSILON / 10), inputs = inputs)
+    val matches = inputEqualsRuleClassifier.matches(answer = createReal(value = 5 * FLOAT_EQUALITY_INTERVAL + FLOAT_EQUALITY_INTERVAL / 10), inputs = inputs)
 
     assertThat(matches).isTrue()
   }
@@ -100,9 +100,9 @@ class NumericInputEqualsRuleClassifierProviderTest {
 
   @Test
   fun testPositiveRealAnswer_positiveRealInput_valueAtRange_valuesDoNotMatch() {
-    val inputs = mapOf("x" to createReal(value = 5 * EPSILON))
+    val inputs = mapOf("x" to createReal(value = 5 * FLOAT_EQUALITY_INTERVAL))
 
-    val matches = inputEqualsRuleClassifier.matches(answer = createReal(value = 6 * EPSILON), inputs = inputs)
+    val matches = inputEqualsRuleClassifier.matches(answer = createReal(value = 6 * FLOAT_EQUALITY_INTERVAL), inputs = inputs)
 
     assertThat(matches).isFalse()
   }
