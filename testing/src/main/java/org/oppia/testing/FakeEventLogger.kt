@@ -10,7 +10,7 @@ import javax.inject.Singleton
 /**  A test specific fake for the event logger. */
 @Singleton
 class FakeEventLogger @Inject constructor() : EventLogger {
-  private val eventList = ArrayList<Event>()
+  val eventList = ArrayList<Event>()
 
   override fun logEvent(context: Context, bundle: Bundle, title: String) {
     eventList.add(Event(title, bundle))
