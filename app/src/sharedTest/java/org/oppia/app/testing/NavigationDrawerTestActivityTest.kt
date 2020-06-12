@@ -134,9 +134,8 @@ class NavigationDrawerTestActivityTest {
       .inject(this)
   }
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_defaultProfileNameAtIndex0_displayProfileNameSuccessfully() {
+  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_defaultProfileNameAtIndex0_displayProfileNameSuccessfully() { // ktlint-disable max-line-length
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId
@@ -149,11 +148,9 @@ class NavigationDrawerTestActivityTest {
         .check(matches(withText("Sean")))
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_changeConfiguration_defaultProfileNameAtIndex0_displayProfileNameSuccessfully() {
+  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_changeConfiguration_defaultProfileNameAtIndex0_displayProfileNameSuccessfully() { // ktlint-disable max-line-length
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId
@@ -170,11 +167,9 @@ class NavigationDrawerTestActivityTest {
       onView(withId(R.id.nav_header_profile_name)).check(matches(withText("Sean")))
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_checkProfileProgress_displayProfileProgressSuccessfully() {
+  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_checkProfileProgress_displayProfileProgressSuccessfully() { // ktlint-disable max-line-length
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId
@@ -197,11 +192,9 @@ class NavigationDrawerTestActivityTest {
         )
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_defaultProfileNameAtIndex1_displayProfileNameSuccessfully() {
+  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_defaultProfileNameAtIndex1_displayProfileNameSuccessfully() { // ktlint-disable max-line-length
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId1
@@ -217,11 +210,9 @@ class NavigationDrawerTestActivityTest {
       onView(withId(R.id.nav_header_profile_name)).check(matches(withText("Ben")))
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_navigationDrawerIsOpenedSuccessfully() {
+  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_navigationDrawerIsOpenedSuccessfully() { // ktlint-disable max-line-length
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withContentDescription(R.string.drawer_open_content_description))
         .check(
@@ -234,11 +225,9 @@ class NavigationDrawerTestActivityTest {
       onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_changeConfiguration_navigationDrawerIsOpenedSuccessfully() {
+  fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_changeConfiguration_navigationDrawerIsOpenedSuccessfully() { // ktlint-disable max-line-length
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withContentDescription(R.string.drawer_open_content_description))
         .check(
@@ -252,43 +241,35 @@ class NavigationDrawerTestActivityTest {
       onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testNavigationDrawerTestActivity_openNavigationDrawerAndRotate_navigationDrawerIsNotClosedAfterRotationIsVerifiedSuccessfully() {
+  fun testNavigationDrawerTestActivity_openNavigationDrawerAndRotate_navigationDrawerIsNotClosedAfterRotationIsVerifiedSuccessfully() { // ktlint-disable max-line-length
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testNavigationDrawerTestActivity_openNavigationDrawerAndClose_closingOfNavigationDrawerIsVerifiedSuccessfully() {
+  fun testNavigationDrawerTestActivity_openNavigationDrawerAndClose_closingOfNavigationDrawerIsVerifiedSuccessfully() { // ktlint-disable max-line-length
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
       onView(withId(R.id.home_activity_drawer_layout)).perform(close())
       onView(withId(R.id.home_activity_drawer_layout)).check(matches(isClosed()))
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testNavigationDrawerTestActivity_withAdminProfile_openNavigationDrawer_checkAdministratorControlsDisplayed() {
+  fun testNavigationDrawerTestActivity_withAdminProfile_openNavigationDrawer_checkAdministratorControlsDisplayed() { // ktlint-disable max-line-length
     launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(0)).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
       onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed()))
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testNavigationDrawerTestActivity_withAdminProfile_openNavigationDrawer_changeConfiguration_checkAdministratorControlsDisplayed() {
+  fun testNavigationDrawerTestActivity_withAdminProfile_openNavigationDrawer_changeConfiguration_checkAdministratorControlsDisplayed() { // ktlint-disable max-line-length
     launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(0)).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
@@ -296,11 +277,9 @@ class NavigationDrawerTestActivityTest {
       onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed()))
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testNavigationDrawerTestActivity_withAdminProfile_openNavigationDrawer_clickAdministratorControls_checkOpensAdministratorControlsActivity() {
+  fun testNavigationDrawerTestActivity_withAdminProfile_openNavigationDrawer_clickAdministratorControls_checkOpensAdministratorControlsActivity() { // ktlint-disable max-line-length
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId
@@ -313,11 +292,9 @@ class NavigationDrawerTestActivityTest {
       intended(hasExtra(AdministratorControlsActivity.getIntentKey(), 0))
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testNavigationDrawerTestActivity_withUserProfile_openNavigationDrawer_checkAdministratorControlsNotDisplayed() {
+  fun testNavigationDrawerTestActivity_withUserProfile_openNavigationDrawer_checkAdministratorControlsNotDisplayed() { // ktlint-disable max-line-length
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId1
@@ -334,11 +311,9 @@ class NavigationDrawerTestActivityTest {
         )
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_showsHelpFragmentSuccessfully() {
+  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_showsHelpFragmentSuccessfully() { // ktlint-disable max-line-length
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
       onView(withText(R.string.menu_help)).perform(click())
@@ -350,33 +325,27 @@ class NavigationDrawerTestActivityTest {
       ).check(matches(withText(R.string.menu_help)))
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectMyDownloadsMenuInNavigationDrawer_showsMyDownloadsFragmentSuccessfully() {
+  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectMyDownloadsMenuInNavigationDrawer_showsMyDownloadsFragmentSuccessfully() { // ktlint-disable max-line-length
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
       onView(withText(R.string.menu_my_downloads)).perform(click())
       intended(hasComponent(MyDownloadsActivity::class.java.name))
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectSwitchProfileMenu_showsExitToProfileChooserDialog() {
+  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectSwitchProfileMenu_showsExitToProfileChooserDialog() { // ktlint-disable max-line-length
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
       onView(withText(R.string.menu_switch_profile)).perform(click())
       onView(withText(R.string.home_activity_back_dialog_message)).check(matches(isDisplayed()))
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectSwitchProfileMenu_showsExitToProfileChooserDialog_clickExit_checkOpensProfileActivity() {
+  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectSwitchProfileMenu_showsExitToProfileChooserDialog_clickExit_checkOpensProfileActivity() { // ktlint-disable max-line-length
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
       onView(withText(R.string.menu_switch_profile)).perform(click())
@@ -385,11 +354,9 @@ class NavigationDrawerTestActivityTest {
       intended(hasComponent(ProfileActivity::class.java.name))
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectSwitchProfileMenu_showsExitToProfileChooserDialog_clickCancel_checkDrawerIsClosed() {
+  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectSwitchProfileMenu_showsExitToProfileChooserDialog_clickCancel_checkDrawerIsClosed() { // ktlint-disable max-line-length
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
       onView(withText(R.string.menu_switch_profile)).perform(click())
@@ -405,11 +372,9 @@ class NavigationDrawerTestActivityTest {
       ).check(matches(withText(R.string.menu_home)))
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_clickNavigationDrawerHamburger_navigationDrawerIsOpenedAndVerifiedSuccessfully() {
+  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_clickNavigationDrawerHamburger_navigationDrawerIsOpenedAndVerifiedSuccessfully() { // ktlint-disable max-line-length
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
       onView(withText(R.string.menu_help)).perform(click())
@@ -426,11 +391,9 @@ class NavigationDrawerTestActivityTest {
       onView(withId(R.id.help_activity_drawer_layout))
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_openingAndClosingOfDrawerIsVerifiedSuccessfully() {
+  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_openingAndClosingOfDrawerIsVerifiedSuccessfully() { // ktlint-disable max-line-length
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
       onView(withText(R.string.menu_help)).perform(click())
@@ -447,11 +410,9 @@ class NavigationDrawerTestActivityTest {
       onView(withId(R.id.help_activity_drawer_layout)).check(matches(isOpen()))
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_navigationDrawerClosingIsVerifiedSuccessfully() {
+  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_navigationDrawerClosingIsVerifiedSuccessfully() { // ktlint-disable max-line-length
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
       onView(withText(R.string.menu_help)).perform(click())
@@ -466,11 +427,9 @@ class NavigationDrawerTestActivityTest {
       onView(withId(R.id.help_activity_drawer_layout)).check(matches(isClosed()))
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_selectHomeMenuInNavigationDrawer_showsHomeFragmentSuccessfully() {
+  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_selectHomeMenuInNavigationDrawer_showsHomeFragmentSuccessfully() { // ktlint-disable max-line-length
     getApplicationDependencies()
     oppiaClock.setCurrentTimeMs(MORNING_TIMESTAMP)
     launch(NavigationDrawerTestActivity::class.java).use {
@@ -498,7 +457,6 @@ class NavigationDrawerTestActivityTest {
       ).check(matches(withText("Good morning,")))
     }
   }
-  /* ktlint-enable max-line-length */
 
   /** Functions nestedScrollTo() and findFirstParentLayoutOfClass() taken from: https://stackoverflow.com/a/46037284/8860848 */
   private fun nestedScrollTo(): ViewAction {
