@@ -19,6 +19,27 @@ class TopicLessonsFragment :
   InjectableFragment(),
   ExpandedChapterListIndexListener,
   StorySummarySelector {
+
+  companion object {
+    /** Returns a new [TopicLessonsFragment]. */
+    fun newInstance(
+      internalProfileId: Int,
+      topicId: String,
+      storyId: String
+    ): TopicLessonsFragment {
+      val topicLessonsFragment = TopicLessonsFragment()
+      val args = Bundle()
+      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+      args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
+
+      if (storyId.isNotEmpty())
+        args.putString(STORY_ID_ARGUMENT_KEY, storyId)
+
+      topicLessonsFragment.arguments = args
+      return topicLessonsFragment
+    }
+  }
+
   @Inject
   lateinit var topicLessonsFragmentPresenter: TopicLessonsFragmentPresenter
 
