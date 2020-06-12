@@ -133,9 +133,8 @@ class OptionsFragmentTest {
     }
   }
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testOptionFragment_clickStoryTextSize_changeTextSizeToLarge_changeConfiguration_checkTextSizeLargeIsSelected() {
+  fun testOptionFragment_clickStoryTextSize_changeTextSizeToLarge_changeConfiguration_checkTextSizeLargeIsSelected() { // ktlint-disable max-length-line
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
       onView(
         atPositionOnView(
@@ -159,7 +158,6 @@ class OptionsFragmentTest {
       )
     }
   }
-  /* ktlint-enable max-line-length */
 
   @Test
   fun testOptionFragment_clickStoryTextSize_changeTextSizeToMediumSuccessfully() {
@@ -186,9 +184,8 @@ class OptionsFragmentTest {
     }
   }
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testOptionFragment_clickStoryTextSize_changeTextSizeToMedium_changeConfiguration_checkTextSizeMediumIsSelected() {
+  fun testOptionFragment_clickStoryTextSize_changeTextSizeToMedium_changeConfiguration_checkTextSizeMediumIsSelected() { // ktlint-disable max-length-line
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
       onView(
         atPositionOnView(
@@ -212,7 +209,6 @@ class OptionsFragmentTest {
       )
     }
   }
-  /* ktlint-enable max-line-length */
 
   @Test
   fun testOptionFragment_clickStoryTextSize_changeTextSizeToExtraLargeSuccessfully() {
@@ -239,9 +235,8 @@ class OptionsFragmentTest {
     }
   }
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testOptionFragment_clickStoryTextSize_changeTextSizeToExtraLarge_changeConfiguration_checkTextSizeExtraLargeIsSelected() {
+  fun testOptionFragment_clickStoryTextSize_changeTextSizeToExtraLarge_changeConfiguration_checkTextSizeExtraLargeIsSelected() { // ktlint-disable max-length-line
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
       onView(
         atPositionOnView(
@@ -265,7 +260,6 @@ class OptionsFragmentTest {
       )
     }
   }
-  /* ktlint-enable max-line-length */
 
   @Test
   fun testOptionFragment_clickAppLanguage_changeAppLanguageToFrenchSuccessfully() {
@@ -298,9 +292,8 @@ class OptionsFragmentTest {
     }
   }
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testOptionFragment_clickAppLanguage_changeAppLanguageToFrench_changeConfiguration_selectedLanguageIsFrench() {
+  fun testOptionFragment_clickAppLanguage_changeAppLanguageToFrench_changeConfiguration_selectedLanguageIsFrench() { // ktlint-disable max-length-line
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
       onView(
         atPositionOnView(
@@ -330,7 +323,6 @@ class OptionsFragmentTest {
       )
     }
   }
-  /* ktlint-enable max-line-length */
 
   @Test
   fun testOptionFragment_clickAppLanguage_changeAppLanguageHindiSuccessfully() {
@@ -362,9 +354,8 @@ class OptionsFragmentTest {
     }
   }
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testOptionFragment_clickDefaultAudioLanguage_changeDefaultAudioLanguageToEnglishSuccessfully() {
+  fun testOptionFragment_clickDefaultAudioLanguage_changeDefaultAudioLanguageToEnglishSuccessfully() { // ktlint-disable max-length-line
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
       onView(
         atPositionOnView(
@@ -394,11 +385,9 @@ class OptionsFragmentTest {
       )
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testOptionFragment_checkDefaultAudioLanguage_changeLanguageToEnglish_changeConfiguration_checkEnglishLanguageIsSelected() {
+  fun testOptionFragment_checkDefaultAudioLanguage_changeLanguageToEnglish_changeConfiguration_checkEnglishLanguageIsSelected() { // ktlint-disable max-length-line
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
       onView(
         atPositionOnView(
@@ -428,11 +417,9 @@ class OptionsFragmentTest {
       )
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testOptionFragment_checkDefaultAudioLanguage_changeLanguageToChinese_changeConfiguration_checkChineseLanguageIsSelected() {
+  fun testOptionFragment_checkDefaultAudioLanguage_changeLanguageToChinese_changeConfiguration_checkChineseLanguageIsSelected() { // ktlint-disable max-length-line
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
       onView(
         atPositionOnView(
@@ -463,11 +450,9 @@ class OptionsFragmentTest {
       )
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testOptionFragment_checkDefaultAudioLanguage_changeLanguageToHindi_changeConfiguration_checkHindiLanguageIsSelected() {
+  fun testOptionFragment_checkDefaultAudioLanguage_changeLanguageToHindi_changeConfiguration_checkHindiLanguageIsSelected() { // ktlint-disable max-length-line
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
       onView(
         atPositionOnView(
@@ -497,11 +482,9 @@ class OptionsFragmentTest {
       )
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testOptionFragment_clickDefaultAudioLanguage_changeDefaultAudioLanguageToChineseSuccessfully() {
+  fun testOptionFragment_clickDefaultAudioLanguage_changeDefaultAudioLanguageToChineseSuccessfully() { // ktlint-disable max-length-line
     launch<OptionsActivity>(createOptionActivityIntent(0)).use {
       onView(
         atPositionOnView(
@@ -530,7 +513,6 @@ class OptionsFragmentTest {
       )
     }
   }
-  /* ktlint-enable max-line-length */
 
   @Test
   fun testOptionFragment_changeConfiguration_checkTextSizeLargeIsSmall() {
