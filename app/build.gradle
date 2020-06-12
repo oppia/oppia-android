@@ -123,6 +123,22 @@ dependencies {
       'org.mockito:mockito-android:2.7.22',
       'org.robolectric:annotations:4.3',
   )
+  // Adding the testing module directly causes duplicates of the below groups so we need to
+  // exclude them before adding the testing module to the androidTestImplementation dependencies
+  androidTestImplementation (project(":testing")) {
+    exclude group: 'org.apache.maven', module: 'maven-artifact'
+    exclude group: 'org.apache.maven', module: 'maven-artifact-manager'
+    exclude group: 'org.apache.maven', module: 'maven-model'
+    exclude group: 'org.apache.maven', module: 'maven-plugin-registry'
+    exclude group: 'org.apache.maven', module: 'maven-profile'
+    exclude group: 'org.apache.maven', module: 'maven-project'
+    exclude group: 'org.apache.maven', module: 'maven-settings'
+    exclude group: 'org.apache.maven', module: 'maven-error-diagnostics'
+    exclude group: 'org.apache.maven', module: 'maven-ant-tasks'
+    exclude group: "org.apache.maven.wagon"
+    exclude group: "org.codehaus.plexus"
+    exclude group: "org.robolectric"
+  }
   androidTestUtil(
       'androidx.test:orchestrator:1.2.0',
   )
