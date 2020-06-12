@@ -11,6 +11,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -53,6 +54,7 @@ class ProfilePictureActivityTest {
     Intents.init()
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
+    FirebaseApp.initializeApp(context)
   }
 
   @After

@@ -35,6 +35,7 @@ import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
 import com.google.common.truth.Truth.assertThat
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -85,6 +86,7 @@ class ProfileChooserFragmentTest {
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
+    FirebaseApp.initializeApp(context)
   }
 
   @After

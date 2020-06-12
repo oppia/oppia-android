@@ -32,6 +32,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -96,6 +97,7 @@ class TopicLessonsFragmentTest {
     IdlingRegistry.getInstance().register(MainThreadExecutor.countingResource)
     profileTestHelper.initializeProfiles()
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    FirebaseApp.initializeApp(context)
   }
 
   @After

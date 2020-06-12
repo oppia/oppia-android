@@ -25,6 +25,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -76,6 +77,7 @@ class OngoingTopicListActivityTest {
     setUpTestApplicationComponent()
     IdlingRegistry.getInstance().register(MainThreadExecutor.countingResource)
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    FirebaseApp.initializeApp(context)
     storyProfileTestHelper.markFullStoryPartialTopicProgressForRatios(
       profileId,
       timestampOlderThanAWeek = false

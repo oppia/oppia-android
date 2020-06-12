@@ -26,6 +26,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -78,6 +79,7 @@ class PinPasswordActivityTest {
     GlobalScope.launch(Dispatchers.Main) {
       profileTestHelper.initializeProfiles()
     }
+    FirebaseApp.initializeApp(context)
   }
 
   @After

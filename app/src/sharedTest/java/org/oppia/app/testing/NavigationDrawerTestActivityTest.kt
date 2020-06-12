@@ -38,6 +38,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -95,6 +96,7 @@ class NavigationDrawerTestActivityTest {
     Intents.init()
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
+    FirebaseApp.initializeApp(context)
     storyProfileTestHelper.markFullStoryPartialTopicProgressForRatios(
       ProfileId.newBuilder().setInternalId(
         internalProfileId

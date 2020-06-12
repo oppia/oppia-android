@@ -25,6 +25,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -89,6 +90,7 @@ class AudioFragmentTest {
     addMediaInfo()
     shadowMediaPlayer = shadowOf(audioPlayerController.getTestMediaPlayer())
     setDataSource(shadowMediaPlayer, toDataSource(context, Uri.parse(TEST_URL)))
+    FirebaseApp.initializeApp(context)
   }
 
   @After

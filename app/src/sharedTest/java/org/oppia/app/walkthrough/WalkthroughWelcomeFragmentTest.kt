@@ -10,6 +10,7 @@ import androidx.test.espresso.assertion.ViewAssertions.*
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -43,6 +44,7 @@ import javax.inject.Singleton
 class WalkthroughWelcomeFragmentTest {
 
   @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var context: Context
   private val internalProfileId = 0
   private lateinit var profileId: ProfileId
 
@@ -52,6 +54,7 @@ class WalkthroughWelcomeFragmentTest {
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    FirebaseApp.initializeApp(context)
   }
 
   @After

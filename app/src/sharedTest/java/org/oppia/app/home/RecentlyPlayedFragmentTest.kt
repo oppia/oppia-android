@@ -32,6 +32,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -103,6 +104,7 @@ class RecentlyPlayedFragmentTest {
       profileId,
       timestampOlderThanAWeek = true
     )
+    FirebaseApp.initializeApp(context)
   }
 
   @After

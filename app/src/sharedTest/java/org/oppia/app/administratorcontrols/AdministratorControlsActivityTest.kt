@@ -33,6 +33,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -79,6 +80,7 @@ class AdministratorControlsActivityTest {
     Intents.init()
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
+    FirebaseApp.initializeApp(context)
   }
 
   @After

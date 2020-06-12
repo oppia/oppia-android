@@ -14,6 +14,7 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -39,6 +40,7 @@ import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import java.util.concurrent.AbstractExecutorService
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -48,11 +50,15 @@ import javax.inject.Singleton
  */
 @RunWith(AndroidJUnit4::class)
 class SplashActivityTest {
+
+  @Inject lateinit var context: Context
+
   @Before
   fun setUp() {
     Intents.init()
     IdlingRegistry.getInstance().register(MainThreadExecutor.countingResource)
     simulateNewAppInstance()
+    FirebaseApp.initializeApp(context)
   }
 
   @After
