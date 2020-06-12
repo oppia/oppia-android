@@ -162,8 +162,8 @@ class TopicLessonsFragmentTest {
   @Test
   fun testLessonsPlayFragment_loadRatiosTopic_completeStoryProgress_isDisplayed() {
     storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
-      profileId, /* timestampOlderThanAWeek= */
-      false
+      profileId,
+      /* timestampOlderThanAWeek= */ false
     )
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       waitForTheView(withText("100%"))
@@ -185,8 +185,8 @@ class TopicLessonsFragmentTest {
   @Test
   fun testLessonsPlayFragment_loadRatiosTopic_partialStoryProgress_isDisplayed() {
     storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
-      profileId, /* timestampOlderThanAWeek= */
-      false
+      profileId,
+      /* timestampOlderThanAWeek= */ false
     )
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       onView(
@@ -360,9 +360,8 @@ class TopicLessonsFragmentTest {
     }
   }
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_clickExpandListIconIndex2_chapterListForIndex1IsNotDisplayed() {
+  fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_clickExpandListIconIndex2_chapterListForIndex1IsNotDisplayed() { // ktlint-disable max-line-length
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       onView(
         allOf(
@@ -408,11 +407,9 @@ class TopicLessonsFragmentTest {
       ).check(matches(not(isDisplayed())))
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_clickExpandListIconIndex0_chapterListForIndex0IsNotDisplayed() {
+  fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_clickExpandListIconIndex0_chapterListForIndex0IsNotDisplayed() { // ktlint-disable max-line-length
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       onView(
         allOf(
@@ -458,11 +455,9 @@ class TopicLessonsFragmentTest {
       ).check(matches(not(isDisplayed())))
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_configurationChange_chapterListIsVisible() {
+  fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_configurationChange_chapterListIsVisible() { // ktlint-disable max-line-length
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       onView(
         allOf(
@@ -492,7 +487,6 @@ class TopicLessonsFragmentTest {
       ).check(matches(isDisplayed()))
     }
   }
-  /* ktlint-enable max-line-length */
 
   private fun waitForTheView(viewMatcher: Matcher<View>): ViewInteraction {
     return onView(isRoot()).perform(waitForMatch(viewMatcher, 30000L))

@@ -47,7 +47,9 @@ class TopicRevisionFragmentTest {
 
   @get:Rule
   var topicActivityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
-    TopicActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+    TopicActivity::class.java,
+    /* initialTouchMode= */ true,
+    /* launchActivity= */ false
   )
 
   @Test
@@ -82,9 +84,8 @@ class TopicRevisionFragmentTest {
     onView(atPosition(R.id.revision_recycler_view, 0)).perform(click())
   }
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testTopicRevisionFragment_loadFragment_selectReviewTopics_reviewCardDisplaysCorrectExplanation() {
+  fun testTopicRevisionFragment_loadFragment_selectReviewTopics_reviewCardDisplaysCorrectExplanation() { // ktlint-disable max-line-length
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
@@ -103,7 +104,6 @@ class TopicRevisionFragmentTest {
         )
     }
   }
-  /* ktlint-enable max-line-length */
 
   @Test
   fun testTopicRevisionFragment_loadFragment_checkTopicThumbnail_isCorrect() {
@@ -135,7 +135,12 @@ class TopicRevisionFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.revision_recycler_view)).check(GridLayoutManagerColumnCountAssertion(2))
+      onView(withId(R.id.revision_recycler_view))
+        .check(
+          GridLayoutManagerColumnCountAssertion(
+            2
+          )
+        )
     }
   }
 
@@ -186,7 +191,12 @@ class TopicRevisionFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.revision_recycler_view)).check(GridLayoutManagerColumnCountAssertion(3))
+      onView(withId(R.id.revision_recycler_view))
+        .check(
+          GridLayoutManagerColumnCountAssertion(
+            3
+          )
+        )
     }
   }
 

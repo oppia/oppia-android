@@ -55,7 +55,9 @@ class TopicPracticeFragmentTest {
 
   @get:Rule
   var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
-    TopicActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+    TopicActivity::class.java,
+    /* initialTouchMode= */ true,
+    /* launchActivity= */ false
   )
 
   @Before
@@ -177,9 +179,8 @@ class TopicPracticeFragmentTest {
     }
   }
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testTopicPracticeFragment_loadFragment_selectSubtopics_deselectsubtopics_startButtonIsInactive() {
+  fun testTopicPracticeFragment_loadFragment_selectSubtopics_deselectsubtopics_startButtonIsInactive() { // ktlint-disable max-line-length
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
@@ -211,11 +212,9 @@ class TopicPracticeFragmentTest {
       onView(withId(R.id.topic_practice_start_button)).check(matches(not(isClickable())))
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testTopicPracticeFragment_loadFragment_selectSubtopics_clickStartButton_skillListTransferSuccessfully() {
+  fun testTopicPracticeFragment_loadFragment_selectSubtopics_clickStartButton_skillListTransferSuccessfully() { // ktlint-disable max-line-length
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)
     onView(
       allOf(
@@ -240,7 +239,6 @@ class TopicPracticeFragmentTest {
     intended(hasComponent(QuestionPlayerActivity::class.java.name))
     intended(hasExtra(QuestionPlayerActivity.getIntentKey(), skillIdList))
   }
-  /* ktlint-enable max-line-length */
 
   @Test
   fun testTopicPracticeFragment_loadFragment_selectSkills_configurationChange_skillsAreSelected() {
@@ -296,9 +294,8 @@ class TopicPracticeFragmentTest {
     }
   }
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testTopicPracticeFragment_loadFragment_selectSkills_configurationChange_startButtonRemainsActive() {
+  fun testTopicPracticeFragment_loadFragment_selectSkills_configurationChange_startButtonRemainsActive() { // ktlint-disable max-line-length
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
@@ -323,7 +320,6 @@ class TopicPracticeFragmentTest {
       onView(withId(R.id.topic_practice_start_button)).check(matches(isClickable()))
     }
   }
-  /* ktlint-enable max-line-length */
 
   @Test
   fun testTopicPracticeFragment_loadFragment_changeOrientation_titleIsCorrect() {
@@ -334,9 +330,23 @@ class TopicPracticeFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.master_skills_text_view)).check(matches(withText(R.string.topic_practice_master_these_skills)))
+      onView(withId(R.id.master_skills_text_view))
+        .check(
+          matches(
+            withText(
+              R.string.topic_practice_master_these_skills
+            )
+          )
+        )
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.master_skills_text_view)).check(matches(withText(R.string.topic_practice_master_these_skills)))
+      onView(withId(R.id.master_skills_text_view))
+        .check(
+          matches(
+            withText(
+              R.string.topic_practice_master_these_skills
+            )
+          )
+        )
     }
   }
 

@@ -36,18 +36,19 @@ import org.oppia.domain.topic.RATIOS_TOPIC_ID
 private const val TEST_TOPIC_ID = "GJ2rLXRKD5hw"
 private const val TOPIC_NAME = "Fractions"
 
-/* ktlint-disable max-line-length */
 private const val TOPIC_DESCRIPTION =
-  "You'll often need to talk about part of an object or group. For example, a jar of milk might be half-full, or " +
-    "some of the eggs in a box might have broken. In these lessons, you'll learn to use fractions to describe " +
-    "situations like these."
+  "You'll often need to talk about part of an object or group. For example, " +
+    "a jar of milk might be half-full, or some of the eggs in a box might have broken. " +
+    "In these lessons, you'll learn to use fractions to describe situations like these."
 private const val DUMMY_TOPIC_DESCRIPTION_LONG =
   "Lorem Ipsum is simply dummy text of the printing and typesetting industry. " +
-    "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and " +
-    "scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, " +
-    "remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, " +
-    "and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-/* ktlint-enable max-line-length */
+    "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, " +
+    "when an unknown printer took a galley of type and scrambled it to make a type " +
+    "specimen book. It has survived not only five centuries, but also the leap into " +
+    "electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s " +
+    "with the release of Letraset sheets containing Lorem Ipsum passages, and more " +
+    "recently with desktop publishing software like Aldus PageMaker " +
+    "including versions of Lorem Ipsum."
 
 // NOTE TO DEVELOPERS: this test must be annotated with @LooperMode(LooperMode.MODE.PAUSED) to pass on Robolectric.
 /** Tests for [TopicInfoFragment]. */

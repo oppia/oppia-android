@@ -86,9 +86,8 @@ class ConceptCardFragmentTest {
     onView(withId(R.id.concept_card_explanation_text)).check(matches(not(containsRichText())))
   }
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testConceptCardFragment_openDialogFragment0_checkSkillAndExplanationAreDisplayedWithoutRichText() {
+  fun testConceptCardFragment_openDialogFragment0_checkSkillAndExplanationAreDisplayedWithoutRichText() { // ktlint-disable max-line-length
     onView(withId(R.id.open_dialog_0)).perform(click())
     onView(withId(R.id.concept_card_heading_text))
       .check(
@@ -108,11 +107,9 @@ class ConceptCardFragmentTest {
       )
     onView(withId(R.id.concept_card_explanation_text)).check(matches(not(containsRichText())))
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testConceptCardFragment_openDialogFragment1_checkSkillAndExplanationAreDisplayedWithRichText() {
+  fun testConceptCardFragment_openDialogFragment1_checkSkillAndExplanationAreDisplayedWithRichText() { // ktlint-disable max-line-length
     onView(withId(R.id.open_dialog_1)).perform(click())
     onView(withId(R.id.concept_card_heading_text))
       .check(
@@ -132,11 +129,9 @@ class ConceptCardFragmentTest {
       )
     onView(withId(R.id.concept_card_explanation_text)).check(matches(containsRichText()))
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testConceptCardFragment_openDialogFragmentWithSkill2_afterConfigurationChange_workedExamplesAreDisplayed() {
+  fun testConceptCardFragment_openDialogFragmentWithSkill2_afterConfigurationChange_workedExamplesAreDisplayed() { // ktlint-disable max-line-length
     onView(withId(R.id.open_dialog_1)).perform(click())
     onView(isRoot()).perform(orientationLandscape())
     onView(withId(R.id.concept_card_heading_text))
@@ -157,7 +152,6 @@ class ConceptCardFragmentTest {
       )
     onView(withId(R.id.concept_card_explanation_text)).check(matches(containsRichText()))
   }
-  /* ktlint-enable max-line-length */
 
   @Module
   class TestModule {
