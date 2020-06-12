@@ -141,6 +141,7 @@ dependencies {
   androidTestImplementation project(":model")
   implementation project(":domain")
   implementation project(":utility")
+  androidTestImplementation project(":testing")
 }
 // The GeneratedMessageLite implementations of protobufs are depending on protobuf-java
 // instead of protobuf-lite after Android Studio 3.5,
