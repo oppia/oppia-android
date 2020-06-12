@@ -32,7 +32,7 @@ class FAQListFragmentPresenter @Inject constructor(
     binding = FaqListFragmentBinding.inflate(
       inflater,
       container,
-      /* attachToRoot = */ false
+      /* attachToRoot= */ false
     )
 
     binding.faqFragmentRecyclerView.apply {
