@@ -10,8 +10,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -37,6 +35,8 @@ import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val BASE_PROVIDER_ID_0 = "base_id_0"
 private const val BASE_PROVIDER_ID_1 = "base_id_1"
@@ -2878,7 +2878,7 @@ class DataProvidersTest {
 
     dataProviders.convertToLiveData(dataProvider).observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
-    val exception =  fakeExceptionLogger.getMostRecentException()
+    val exception = fakeExceptionLogger.getMostRecentException()
 
     assertThat(exception).isInstanceOf(IllegalStateException::class.java)
     assertThat(exception).hasMessageThat().contains("Transform failure")
