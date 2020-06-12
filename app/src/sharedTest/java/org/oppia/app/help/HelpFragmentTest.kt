@@ -49,9 +49,8 @@ class HelpFragmentTest {
     }
   }
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun openHelpActivity_configurationChanged_scrollRecyclerViewToZeroPosition_showsFAQSuccessfully() {
+  fun openHelpActivity_configurationChanged_scrollRecyclerViewToZeroPosition_showsFAQSuccessfully() { // ktlint-disable max-line-length
     launch(HelpActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.help_fragment_recycler_view)).perform(
@@ -64,7 +63,6 @@ class HelpFragmentTest {
       ).check(matches(withText(R.string.frequently_asked_questions_FAQ)))
     }
   }
-  /* ktlint-enable max-line-length */
 
   @Test
   fun openHelpActivity_selectFAQ_showFAQActivitySuccessfully() {
@@ -86,16 +84,14 @@ class HelpFragmentTest {
     }
   }
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun openHelpActivity_openNavigationDrawerAndClose_closingOfNavigationDrawerIsVerifiedSuccessfully() {
+  fun openHelpActivity_openNavigationDrawerAndClose_closingOfNavigationDrawerIsVerifiedSuccessfully() { // ktlint-disable max-line-length
     launch(HelpActivity::class.java).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
       onView(withId(R.id.help_activity_drawer_layout)).perform(close())
       onView(withId(R.id.help_activity_drawer_layout)).check(matches(isClosed()))
     }
   }
-  /* ktlint-enable max-line-length */
 
   @After
   fun tearDown() {
