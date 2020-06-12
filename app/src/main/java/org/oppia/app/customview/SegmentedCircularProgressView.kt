@@ -93,21 +93,22 @@ class SegmentedCircularProgressView : View {
 
     var angleStartPoint = -90f
 
-    /* ktlint-disable max-line-length */
     if (totalChapters > 1) {
       // Draws arc for every finished chapter.
       for (i in 0 until chaptersFinished) {
         val startAngle =
-          angleStartPoint + i * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE) + STROKE_DASH_GAP_IN_DEGREE / 2
+          angleStartPoint + i * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE) +
+            STROKE_DASH_GAP_IN_DEGREE / 2
         canvas.drawArc(baseRect!!, startAngle, sweepAngle, false, chapterFinishedArcPaint)
       }
       angleStartPoint += chaptersFinished * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE)
       // Draws arc for every unfinished chapter.
       for (i in 0 until chaptersNotFinished) {
         val startAngle =
-          angleStartPoint + i * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE) + STROKE_DASH_GAP_IN_DEGREE / 2
+          angleStartPoint + i * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE) +
+            STROKE_DASH_GAP_IN_DEGREE / 2
         canvas.drawArc(baseRect!!, startAngle, sweepAngle, false, chapterNotFinishedArcPaint)
-      } /* ktlint-enable max-line-length */
+      }
     } else if (totalChapters == 1) {
       // Draws entire circle for finished an unfinished chapter.
       if (chaptersFinished == 1) {
