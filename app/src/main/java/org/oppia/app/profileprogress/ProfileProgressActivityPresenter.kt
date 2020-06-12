@@ -72,8 +72,8 @@ class ProfileProgressActivityPresenter @Inject constructor(
     intent?.let {
       profileManagementController.updateProfileAvatar(
         profileId,
-        intent.data, /* colorRgb= */
-        -10710042
+        intent.data,
+        /* colorRgb= */ 10710042
       )
     }
   }
