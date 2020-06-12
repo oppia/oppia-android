@@ -8,6 +8,10 @@
     <variable
       name="viewModel"
       type="org.oppia.app.profile.ProfileChooserViewModel" />
+
+    <variable
+      name="presenter"
+      type="org.oppia.app.profile.ProfileChooserFragmentPresenter" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -76,14 +80,17 @@
           android:fadingEdgeLength="72dp"
           android:orientation="vertical"
           android:overScrollMode="never"
-          android:paddingBottom="@dimen/bottom_white_space"
+          android:paddingBottom="@{presenter.wasProfileEverBeenAddedValue ? @dimen/padding_296dp : @dimen/bottom_white_space}"
           android:requiresFadingEdge="vertical"
           android:scrollbars="none"
           android:tag="profile_recycler_view"
           app:data="@{viewModel.profiles}"
           app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@id/profile_select_text"
-          tools:layout_editor_absoluteX="16dp" />
+          app:profileChooserMarginEnd="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_72 : @dimen/margin_0}"
+          app:profileChooserMarginStart="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_72 : @dimen/margin_0}" />
       </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
