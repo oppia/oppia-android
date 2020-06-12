@@ -42,7 +42,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
         .findViewById<View>(
           R.id.administrator_controls_activity_drawer_layout
         ) as DrawerLayout,
-      toolbar, /* menuItemId = */ 0
+      toolbar, /* menuItemId= */ 0
     )
   }
 
