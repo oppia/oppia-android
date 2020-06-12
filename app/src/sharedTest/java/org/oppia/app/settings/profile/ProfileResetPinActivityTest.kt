@@ -49,8 +49,11 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class ProfileResetPinActivityTest {
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
 
   @Before
   @ExperimentalCoroutinesApi
@@ -72,6 +75,7 @@ class ProfileResetPinActivityTest {
       .inject(this)
   }
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileResetPinActivity_startActivityWithAdmin_inputPin_inputConfirmPin_clickSave_checkReturnsToProfileEditActivity() {
     launch<ProfileResetPinActivity>(
@@ -93,7 +97,9 @@ class ProfileResetPinActivityTest {
       intended(hasComponent(ProfileEditActivity::class.java.name))
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileResetPinActivity_startActivityWithAdmin_changeConfiguration_inputPin_inputConfirmPin_clickSave_checkReturnsToProfileEditActivity() {
     launch<ProfileResetPinActivity>(
@@ -104,11 +110,14 @@ class ProfileResetPinActivityTest {
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(scrollTo()).perform(
-        typeText("12345"),
-        closeSoftKeyboard()
-      )
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(scrollTo()).perform(
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(scrollTo())
+        .perform(
+          typeText("12345"),
+          closeSoftKeyboard()
+        )
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        scrollTo()
+      ).perform(
         typeText("12345"),
         closeSoftKeyboard()
       )
@@ -117,7 +126,9 @@ class ProfileResetPinActivityTest {
       intended(hasComponent(ProfileEditActivity::class.java.name))
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileResetPinActivity_startActivityWithUser_inputPin_inputConfirmPin_clickSave_checkReturnsToProfileEditActivity() {
     launch<ProfileResetPinActivity>(
@@ -139,7 +150,9 @@ class ProfileResetPinActivityTest {
       intended(hasComponent(ProfileEditActivity::class.java.name))
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileResetPinActivity_startActivityWithAdmin_inputShortPin_clickSave_checkPinLengthError() {
     launch<ProfileResetPinActivity>(
@@ -166,7 +179,9 @@ class ProfileResetPinActivityTest {
       ).check(matches(withText(context.getString(R.string.profile_reset_pin_error_admin_pin_length))))
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileResetPinActivity_startActivityWithAdmin_inputShortPin_clickSave_changeConfiguration_checkPinLengthError() {
     launch<ProfileResetPinActivity>(
@@ -196,7 +211,9 @@ class ProfileResetPinActivityTest {
       )
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileResetPinActivity_startActivityWithAdmin_inputShortPin_clickSave_inputPin_checkErrorIsCleared() {
     launch<ProfileResetPinActivity>(
@@ -215,10 +232,16 @@ class ProfileResetPinActivityTest {
         typeText("5"),
         closeSoftKeyboard()
       )
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText("")))
+      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(
+        matches(
+          withText("")
+        )
+      )
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileResetPinActivity_startActivityWithAdmin_inputShortPin_clickSave_inputPin_configurationChange_checkErrorIsCleared() {
     launch<ProfileResetPinActivity>(
@@ -238,10 +261,16 @@ class ProfileResetPinActivityTest {
         closeSoftKeyboard()
       )
       onView(isRoot()).perform(orientationLandscape())
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText("")))
+      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(
+        matches(
+          withText("")
+        )
+      )
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileResetPinActivity_startActivityWithAdmin_inputWrongConfirmPin_clickSave_checkConfirmWrongError() {
     launch<ProfileResetPinActivity>(
@@ -269,7 +298,9 @@ class ProfileResetPinActivityTest {
       )
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileResetPinActivity_startActivityWithAdmin_inputWrongConfirmPin_clickSave_changeConfiguration_checkConfirmWrongError() {
     launch<ProfileResetPinActivity>(
@@ -289,7 +320,12 @@ class ProfileResetPinActivityTest {
       )
       onView(withId(R.id.profile_reset_save_button)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(scrollTo()).check(
+      onView(
+        allOf(
+          withId(R.id.error_text),
+          isDescendantOfA(withId(R.id.input_confirm_pin))
+        )
+      ).perform(scrollTo()).check(
         matches(
           withText(
             context.getString(R.string.add_profile_error_pin_confirm_wrong)
@@ -298,7 +334,9 @@ class ProfileResetPinActivityTest {
       )
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileResetPinActivity_inputPin_inputConfirmPin_changeConfiguration_inputPinExists_confirmInputPinExists_saveButtonIsClickable() {
     launch<ProfileResetPinActivity>(
@@ -325,10 +363,13 @@ class ProfileResetPinActivityTest {
           isDescendantOfA(withId(R.id.input_confirm_pin))
         )
       ).perform(scrollTo()).check(matches(withText("12345")))
-      onView(withId(R.id.profile_reset_save_button)).perform(scrollTo()).check(matches(isClickable()))
+      onView(withId(R.id.profile_reset_save_button)).perform(scrollTo())
+        .check(matches(isClickable()))
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileResetPinActivity_startActivityWithAdmin_inputWrongConfirmPin_clickSave_inputConfirmPin_checkErrorIsCleared() {
     launch<ProfileResetPinActivity>(
@@ -359,7 +400,9 @@ class ProfileResetPinActivityTest {
       ).check(matches(withText("")))
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileResetPinActivity_startActivityWithUser_inputShortPin_clickSave_checkPinLengthError() {
     launch<ProfileResetPinActivity>(
@@ -386,7 +429,9 @@ class ProfileResetPinActivityTest {
       ).check(matches(withText(context.getString(R.string.profile_reset_pin_error_user_pin_length))))
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileResetPinActivity_startActivityWithUser_inputShortPin_clickSave_inputPin_checkErrorIsCleared() {
     launch<ProfileResetPinActivity>(
@@ -405,10 +450,16 @@ class ProfileResetPinActivityTest {
         typeText("3"),
         closeSoftKeyboard()
       )
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(matches(withText("")))
+      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(
+        matches(
+          withText("")
+        )
+      )
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileResetPinActivity_startActivityWithUser_inputWrongConfirmPin_clickSave_checkConfirmWrongError() {
     launch<ProfileResetPinActivity>(
@@ -436,7 +487,9 @@ class ProfileResetPinActivityTest {
       )
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileResetPinActivity_startActivityWithUser_inputWrongConfirmPin_clickSave_inputConfirmPin_checkErrorIsCleared() {
     launch<ProfileResetPinActivity>(
@@ -467,6 +520,7 @@ class ProfileResetPinActivityTest {
       ).check(matches(withText("")))
     }
   }
+  /* ktlint-enable max-line-length */
 
   @Test
   fun testProfileResetPinActivity_default_saveButtonIsNotClickable() {
@@ -491,7 +545,8 @@ class ProfileResetPinActivityTest {
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.profile_reset_save_button)).perform(scrollTo()).check(matches(not(isClickable())))
+      onView(withId(R.id.profile_reset_save_button)).perform(scrollTo())
+        .check(matches(not(isClickable())))
     }
   }
 
@@ -526,7 +581,8 @@ class ProfileResetPinActivityTest {
         closeSoftKeyboard()
       )
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.profile_reset_save_button)).perform(scrollTo()).check(matches(not(isClickable())))
+      onView(withId(R.id.profile_reset_save_button)).perform(scrollTo())
+        .check(matches(not(isClickable())))
     }
   }
 
@@ -551,6 +607,7 @@ class ProfileResetPinActivityTest {
     }
   }
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileResetPinActivity_inputPin_inputConfirmPin_saveButtonIsClickable_clearInputPin_saveButtonIsNotClickable() {
     launch<ProfileResetPinActivity>(
@@ -576,7 +633,9 @@ class ProfileResetPinActivityTest {
       onView(withId(R.id.profile_reset_save_button)).check(matches(not(isClickable())))
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileResetPinActivity_inputPin_inputConfirmPin_saveButtonIsClickable_clearConfirmInputPin_saveButtonIsNotClickable() {
     launch<ProfileResetPinActivity>(
@@ -602,7 +661,9 @@ class ProfileResetPinActivityTest {
       onView(withId(R.id.profile_reset_save_button)).check(matches(not(isClickable())))
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileResetPinActivity_inputPin_inputConfirmPin_saveButtonIsClickable_clearConfirmInputPin_changeConfiguration_saveButtonIsNotClickable() {
     launch<ProfileResetPinActivity>(
@@ -626,11 +687,14 @@ class ProfileResetPinActivityTest {
         closeSoftKeyboard()
       )
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.profile_reset_save_button)).perform(scrollTo()).check(matches(not(isClickable())))
+      onView(withId(R.id.profile_reset_save_button)).perform(scrollTo())
+        .check(matches(not(isClickable())))
     }
   }
+  /* ktlint-enable max-line-length */
 
-  @Qualifier annotation class TestDispatcher
+  @Qualifier
+  annotation class TestDispatcher
 
   @Module
   class TestModule {
@@ -651,14 +715,18 @@ class ProfileResetPinActivityTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
     @Singleton
     @Provides
     @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBlockingDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 

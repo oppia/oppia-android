@@ -48,8 +48,11 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class ProfileRenameActivityTest {
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
 
   @Before
   @ExperimentalCoroutinesApi
@@ -73,8 +76,18 @@ class ProfileRenameActivityTest {
 
   @Test
   fun testProfileRenameActivity_inputNewName_clickSave_checkNameIsSaved() {
-    launch<ProfileRenameActivity>(ProfileRenameActivity.createProfileRenameActivity(context, 1)).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText("James"))
+    launch<ProfileRenameActivity>(
+      ProfileRenameActivity.createProfileRenameActivity(
+        context,
+        1
+      )
+    ).use {
+      onView(
+        allOf(
+          withId(R.id.input),
+          isDescendantOfA(withId(R.id.input_name))
+        )
+      ).perform(typeText("James"))
       onView(withId(R.id.profile_rename_save_button)).perform(click())
       intended(hasComponent(ProfileEditActivity::class.java.name))
       onView(withId(R.id.profile_edit_name)).check(matches(withText("James")))
@@ -83,8 +96,18 @@ class ProfileRenameActivityTest {
 
   @Test
   fun testProfileRenameActivity_inputNewName_configurationChange_checkSaveIsEnabled() {
-    launch<ProfileRenameActivity>(ProfileRenameActivity.createProfileRenameActivity(context, 1)).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText("James"))
+    launch<ProfileRenameActivity>(
+      ProfileRenameActivity.createProfileRenameActivity(
+        context,
+        1
+      )
+    ).use {
+      onView(
+        allOf(
+          withId(R.id.input),
+          isDescendantOfA(withId(R.id.input_name))
+        )
+      ).perform(typeText("James"))
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_rename_save_button)).check(matches(isEnabled()))
     }
@@ -92,17 +115,41 @@ class ProfileRenameActivityTest {
 
   @Test
   fun testProfileRenameActivity_inputNewName_configurationChange_inputTextExists() {
-    launch<ProfileRenameActivity>(ProfileRenameActivity.createProfileRenameActivity(context, 1)).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText("James"))
+    launch<ProfileRenameActivity>(
+      ProfileRenameActivity.createProfileRenameActivity(
+        context,
+        1
+      )
+    ).use {
+      onView(
+        allOf(
+          withId(R.id.input),
+          isDescendantOfA(withId(R.id.input_name))
+        )
+      ).perform(typeText("James"))
       onView(isRoot()).perform(orientationLandscape())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).check(matches(withText("James")))
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).check(
+        matches(
+          withText("James")
+        )
+      )
     }
   }
 
   @Test
   fun testProfileRenameActivity_inputOldName_clickSave_checkNameNotUniqueError() {
-    launch<ProfileRenameActivity>(ProfileRenameActivity.createProfileRenameActivity(context, 1)).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText("Sean"))
+    launch<ProfileRenameActivity>(
+      ProfileRenameActivity.createProfileRenameActivity(
+        context,
+        1
+      )
+    ).use {
+      onView(
+        allOf(
+          withId(R.id.input),
+          isDescendantOfA(withId(R.id.input_name))
+        )
+      ).perform(typeText("Sean"))
       onView(withId(R.id.profile_rename_save_button)).perform(click())
       onView(
         allOf(
@@ -115,18 +162,48 @@ class ProfileRenameActivityTest {
 
   @Test
   fun testProfileRenameActivity_inputOldNam_clickSave_inputName_checkErrorIsCleared() {
-    launch<ProfileRenameActivity>(ProfileRenameActivity.createProfileRenameActivity(context, 1)).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText("Sean"))
+    launch<ProfileRenameActivity>(
+      ProfileRenameActivity.createProfileRenameActivity(
+        context,
+        1
+      )
+    ).use {
+      onView(
+        allOf(
+          withId(R.id.input),
+          isDescendantOfA(withId(R.id.input_name))
+        )
+      ).perform(typeText("Sean"))
       onView(withId(R.id.profile_rename_save_button)).perform(click())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText(" "))
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_name)))).check(matches(withText("")))
+      onView(
+        allOf(
+          withId(R.id.input),
+          isDescendantOfA(withId(R.id.input_name))
+        )
+      ).perform(typeText(" "))
+      onView(
+        allOf(
+          withId(R.id.error_text),
+          isDescendantOfA(withId(R.id.input_name))
+        )
+      ).check(matches(withText("")))
     }
   }
 
   @Test
   fun testProfileRenameActivity_inputNameWithNumbers_clickCreate_checkNameOnlyLettersError() {
-    launch<ProfileRenameActivity>(ProfileRenameActivity.createProfileRenameActivity(context, 1)).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText("123"))
+    launch<ProfileRenameActivity>(
+      ProfileRenameActivity.createProfileRenameActivity(
+        context,
+        1
+      )
+    ).use {
+      onView(
+        allOf(
+          withId(R.id.input),
+          isDescendantOfA(withId(R.id.input_name))
+        )
+      ).perform(typeText("123"))
       onView(withId(R.id.profile_rename_save_button)).perform(click())
       onView(
         allOf(
@@ -139,29 +216,63 @@ class ProfileRenameActivityTest {
 
   @Test
   fun testProfileRenameActivity_inputNameWithNumbers_clickCreate_inputName_checkErrorIsCleared() {
-    launch<ProfileRenameActivity>(ProfileRenameActivity.createProfileRenameActivity(context, 1)).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText("123"))
+    launch<ProfileRenameActivity>(
+      ProfileRenameActivity.createProfileRenameActivity(
+        context,
+        1
+      )
+    ).use {
+      onView(
+        allOf(
+          withId(R.id.input),
+          isDescendantOfA(withId(R.id.input_name))
+        )
+      ).perform(typeText("123"))
       onView(withId(R.id.profile_rename_save_button)).perform(click())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(typeText(" "))
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_name)))).check(matches(withText("")))
+      onView(
+        allOf(
+          withId(R.id.input),
+          isDescendantOfA(withId(R.id.input_name))
+        )
+      ).perform(typeText(" "))
+      onView(
+        allOf(
+          withId(R.id.error_text),
+          isDescendantOfA(withId(R.id.input_name))
+        )
+      ).check(matches(withText("")))
     }
   }
 
   @Test
   fun testProfileRenameActivity_inputName_changeConfiguration_checkNameIsDisplayed() {
-    launch<ProfileRenameActivity>(ProfileRenameActivity.createProfileRenameActivity(context, 1)).use {
+    launch<ProfileRenameActivity>(
+      ProfileRenameActivity.createProfileRenameActivity(
+        context,
+        1
+      )
+    ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(
         typeText("test"),
         closeSoftKeyboard()
       )
       onView(isRoot()).perform(orientationLandscape())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).check(matches(withText("test")))
+      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).check(
+        matches(
+          withText("test")
+        )
+      )
     }
   }
 
   @Test
   fun testProfileRenameActivity_inputOldName_clickSave_changeConfiguration_errorIsVisible() {
-    launch<ProfileRenameActivity>(ProfileRenameActivity.createProfileRenameActivity(context, 1)).use {
+    launch<ProfileRenameActivity>(
+      ProfileRenameActivity.createProfileRenameActivity(
+        context,
+        1
+      )
+    ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(
         typeText("Sean"),
         closeSoftKeyboard()
@@ -179,14 +290,20 @@ class ProfileRenameActivityTest {
 
   @Test
   fun testProfileRenameActivity_clickSave_changeConfiguration_saveButtonIsNotClickable() {
-    launch<ProfileRenameActivity>(ProfileRenameActivity.createProfileRenameActivity(context, 1)).use {
+    launch<ProfileRenameActivity>(
+      ProfileRenameActivity.createProfileRenameActivity(
+        context,
+        1
+      )
+    ).use {
       onView(withId(R.id.profile_rename_save_button)).check(matches(not(isClickable())))
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_rename_save_button)).check(matches(not(isClickable())))
     }
   }
 
-  @Qualifier annotation class TestDispatcher
+  @Qualifier
+  annotation class TestDispatcher
 
   @Module
   class TestModule {
@@ -207,14 +324,18 @@ class ProfileRenameActivityTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
     @Singleton
     @Provides
     @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBlockingDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
