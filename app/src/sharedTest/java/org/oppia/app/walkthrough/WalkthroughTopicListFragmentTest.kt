@@ -85,9 +85,8 @@ class WalkthroughTopicListFragmentTest {
     }
   }
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicCard_configurationChanged_topicNameIsCorrect() {
+  fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicCard_configurationChanged_topicNameIsCorrect() { // ktlint-disable max-line-length
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       onView(withId(R.id.walkthrough_topic_recycler_view)).perform(
@@ -109,5 +108,4 @@ class WalkthroughTopicListFragmentTest {
       )
     }
   }
-  /* ktlint-enable max-line-length */
 }
