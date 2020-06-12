@@ -19,6 +19,10 @@ class OnboardingActivityPresenter @Inject constructor(private val activity: AppC
   }
 
   private fun getOnboardingFragment(): OnboardingFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.onboarding_fragment_placeholder) as OnboardingFragment?
+    return activity
+      .supportFragmentManager
+      .findFragmentById(
+        R.id.onboarding_fragment_placeholder
+      ) as OnboardingFragment?
   }
 }

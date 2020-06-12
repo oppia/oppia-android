@@ -10,8 +10,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -37,6 +35,8 @@ import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val BASE_PROVIDER_ID_0 = "base_id_0"
 private const val BASE_PROVIDER_ID_1 = "base_id_1"
@@ -2850,7 +2850,6 @@ class DataProvidersTest {
   @InternalCoroutinesApi
   @ExperimentalCoroutinesApi
   fun testNestedXformedProvider_toLiveData_baseFailure_logsException() {
-    fakeExceptionLogger.clearAllExceptions()
     val baseProvider =
       createThrowingDataProvider<String>(BASE_PROVIDER_ID_0, IllegalStateException("Base failure"))
     val dataProvider =
@@ -2870,7 +2869,6 @@ class DataProvidersTest {
   @InternalCoroutinesApi
   @ExperimentalCoroutinesApi
   fun testTransform_toLiveData_throwsException_deliversFailure_logsException() {
-    fakeExceptionLogger.clearAllExceptions()
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val dataProvider = dataProviders.transform<String, Int>(TRANSFORMED_PROVIDER_ID, baseProvider) {
       throw IllegalStateException("Transform failure")
@@ -2878,7 +2876,7 @@ class DataProvidersTest {
 
     dataProviders.convertToLiveData(dataProvider).observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
-    val exception =  fakeExceptionLogger.getMostRecentException()
+    val exception = fakeExceptionLogger.getMostRecentException()
 
     assertThat(exception).isInstanceOf(IllegalStateException::class.java)
     assertThat(exception).hasMessageThat().contains("Transform failure")
@@ -2888,7 +2886,6 @@ class DataProvidersTest {
   @InternalCoroutinesApi
   @ExperimentalCoroutinesApi
   fun testCombine_combinerThrowsException_deliversFailure_logsException() {
-    fakeExceptionLogger.clearAllExceptions()
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_1)
     val dataProvider = dataProviders.combine<String, String, String>(

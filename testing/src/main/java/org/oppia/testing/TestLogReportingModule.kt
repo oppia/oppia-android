@@ -5,14 +5,14 @@ import dagger.Module
 import org.oppia.util.logging.EventLogger
 import org.oppia.util.logging.ExceptionLogger
 
-/** Provides fake crash and event logging dependencies. */
+/** Provides fake log reporting dependencies. */
 @Module
-abstract class TestLogReportingModule {
+interface TestLogReportingModule {
 
   @Binds
-  abstract fun bindFakeCrashLogger(fakeExceptionLogger: FakeExceptionLogger): ExceptionLogger
+  fun bindFakeCrashLogger(fakeExceptionLogger: FakeExceptionLogger): ExceptionLogger
 
   @Binds
-  abstract fun bindFakeEventLogger(fakeEventLogger: FakeEventLogger): EventLogger
+  fun bindFakeEventLogger(fakeEventLogger: FakeEventLogger): EventLogger
 
 }

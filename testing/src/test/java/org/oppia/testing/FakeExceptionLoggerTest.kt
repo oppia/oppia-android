@@ -30,6 +30,9 @@ class FakeExceptionLoggerTest {
   @Inject
   lateinit var exceptionLogger: ExceptionLogger
 
+  private val exception1 = IllegalStateException("First Exception")
+  private val exception2 = NullPointerException("Second Exception")
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -46,8 +49,8 @@ class FakeExceptionLoggerTest {
 
   @Test
   fun testFakeExceptionLogger_logExceptionTwice_returnsLatestException() {
-    exceptionLogger.logException(IllegalStateException("First Exception"))
-    exceptionLogger.logException(NullPointerException("Second Exception"))
+    exceptionLogger.logException(exception1)
+    exceptionLogger.logException(exception2)
     val exception = fakeExceptionLogger.getMostRecentException()
 
     assertThat(exception).isInstanceOf(NullPointerException::class.java)
@@ -56,9 +59,9 @@ class FakeExceptionLoggerTest {
 
   @Test
   fun testFakeExceptionLogger_logException_clearList_logExceptionAgain_returnsLatestException() {
-    exceptionLogger.logException(IllegalStateException("First Exception"))
+    exceptionLogger.logException(exception1)
     fakeExceptionLogger.clearAllExceptions()
-    exceptionLogger.logException(NullPointerException("Second Exception"))
+    exceptionLogger.logException(exception2)
     val exception = fakeExceptionLogger.getMostRecentException()
 
     assertThat(exception).isInstanceOf(NullPointerException::class.java)
@@ -72,12 +75,11 @@ class FakeExceptionLoggerTest {
     }
 
     assertThat(exception).isInstanceOf(NoSuchElementException::class.java)
-    assertThat(exception).hasMessageThat().contains("List is empty.")
   }
 
   @Test
   fun testFakeExceptionLogger_logException_clearAllExceptions_getMostRecent_returnsFailure() {
-    exceptionLogger.logException(IllegalStateException("First Exception"))
+    exceptionLogger.logException(IllegalStateException("Test Exception"))
     fakeExceptionLogger.clearAllExceptions()
 
     val exception = assertThrows(NoSuchElementException::class) {
@@ -85,62 +87,57 @@ class FakeExceptionLoggerTest {
     }
 
     assertThat(exception).isInstanceOf(NoSuchElementException::class.java)
-    assertThat(exception).hasMessageThat().contains("List is empty.")
   }
-
   @Test
   fun testFakeExceptionLogger_clearAllExceptions_returnsEmptyList() {
     fakeExceptionLogger.clearAllExceptions()
-    val exceptionList = fakeExceptionLogger.exceptionList
+    val isEmptyList = fakeExceptionLogger.noExceptionsPresent()
 
-    assertThat(exceptionList.isEmpty()).isTrue()
+    assertThat(isEmptyList).isTrue()
   }
 
   @Test
   fun testFakeExceptionLogger_logException_clearAllExceptions_returnsEmptyList() {
     exceptionLogger.logException(IllegalStateException("Test Exception"))
     fakeExceptionLogger.clearAllExceptions()
-    val exceptionList = fakeExceptionLogger.exceptionList
 
-    assertThat(exceptionList.isEmpty()).isTrue()
+    val isEmptyList = fakeExceptionLogger.noExceptionsPresent()
+
+    assertThat(isEmptyList).isTrue()
   }
 
   @Test
   fun testFakeExceptionLogger_logMultipleExceptions_clearAllExceptions_returnsEmptyList() {
-    exceptionLogger.logException(IllegalStateException("First Exception"))
-    exceptionLogger.logException(NullPointerException("Second Exception"))
+    exceptionLogger.logException(exception1)
+    exceptionLogger.logException(exception2)
     fakeExceptionLogger.clearAllExceptions()
 
-    val exceptionList = fakeExceptionLogger.exceptionList
+    val isEmptyList = fakeExceptionLogger.noExceptionsPresent()
 
-    assertThat(exceptionList.isEmpty()).isTrue()
+    assertThat(isEmptyList).isTrue()
   }
 
   @Test
   fun testFakeExceptionLogger_logException_returnsNonEmptyList() {
     exceptionLogger.logException(IllegalStateException("Test Exception"))
 
-    val exceptionList = fakeExceptionLogger.exceptionList
-    val exceptionListSize = exceptionList.size
+    val isEmptyList = fakeExceptionLogger.noExceptionsPresent()
 
-    assertThat(exceptionList.isNotEmpty()).isTrue()
-    assertThat(exceptionList[exceptionListSize - 1]).isInstanceOf(IllegalStateException::class.java)
-    assertThat(exceptionList[exceptionListSize - 1]).hasMessageThat().contains("Test Exception")
+    assertThat(isEmptyList).isFalse()
   }
 
   @Test
   fun testFakeExceptionLogger_logMultipleExceptions_returnsNonEmptyList() {
-    exceptionLogger.logException(IllegalStateException("First Exception"))
-    exceptionLogger.logException(NullPointerException("Second Exception"))
+    exceptionLogger.logException(exception1)
+    exceptionLogger.logException(exception2)
 
-    val exceptionList = fakeExceptionLogger.exceptionList
-    val exceptionListSize = exceptionList.size
+    val exceptionLogStatus1 = fakeExceptionLogger.hasExceptionLogged(exception1)
+    val exceptionLogStatus2 = fakeExceptionLogger.hasExceptionLogged(exception2)
+    val exceptionListStatus = fakeExceptionLogger.noExceptionsPresent()
 
-    assertThat(exceptionList.isNotEmpty()).isTrue()
-    assertThat(exceptionList[exceptionListSize - 2]).isInstanceOf(IllegalStateException::class.java)
-    assertThat(exceptionList[exceptionListSize - 2]).hasMessageThat().contains("First Exception")
-    assertThat(exceptionList[exceptionListSize - 1]).isInstanceOf(NullPointerException::class.java)
-    assertThat(exceptionList[exceptionListSize - 1]).hasMessageThat().contains("Second Exception")
+    assertThat(exceptionListStatus).isFalse()
+    assertThat(exceptionLogStatus1).isTrue()
+    assertThat(exceptionLogStatus2).isTrue()
   }
 
   // TODO(#89): Move to a common test library.
