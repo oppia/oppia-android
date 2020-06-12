@@ -5,19 +5,65 @@ package model;
 option java_package = "org.oppia.app.model";
 option java_multiple_files = true;
 
-// Supported event actions for analytics logging
-enum EventAction{
-  // The undefined user action of an event
-  EVENT_ACTION_UNSPECIFIED = 0;
+// Structure for an event log.
+message EventLog {
+  // The timestamp of the event.
+  int64 timestamp = 1;
+  // The action happening in the event.
+  EventAction action_name = 2;
+  // The priority of the event.
+  Priority priority = 3;
+  // The activity context of the event.
+  Context context = 4;
+
+  // Structure of an activity context.
+  message Context {
+    oneof activity_context {
+      // The event being logged is related to exploration.
+      ExplorationContext exploration_context = 1;
+      // The event being logged is related to the question player.
+      QuestionContext question_context = 2;
+    }
+  }
+
+  // Structure of an exploration context.
+  message ExplorationContext {
+    // The active topic ID when the event is logged
+    string topic_id = 1;
+    // The active story ID when the event is logged
+    string story_id = 2;
+    // The active exploration ID when the event is logged
+    string exploration_id = 3;
+  }
+
+  // Structure of a question context.
+  message QuestionContext {
+    // The active topic ID when the event is logged
+    string topic_id = 1;
+    // The active question ID when the event is logged
+    string question_id = 2;
+  }
+
+  // Supported event actions for event logging
+  enum EventAction {
+    // The undefined user action of an event
+    EVENT_ACTION_UNSPECIFIED = 0;
+  }
+
+  // Supported priority of events for event logging
+  enum Priority {
+    // The undefined priority of an event
+    PRIORITY_UNSPECIFIED = 0;
+    // The priority of events whose logs should not be removed from the storage on most occasions
+    // but can be removed if they're the only ones there and size limit exceeds.
+    ESSENTIAL = 1;
+    // The priority of events whose logs can be removed from the storage if the size exceeds a certain limit
+    OPTIONAL = 2;
+  }
 }
 
-// Supported priority of events for analytics logging
-enum Priority{
-  // The undefined priority of an event
-  PRIORITY_UNSPECIFIED = 0;
-  // The priority of events whose logs should not be removed from the storage on most occasions
-  // but can be removed if they're the only ones there and size limit exceeds.
-  ESSENTIAL = 1;
-  // The priority of events whose logs can be removed from the storage if the size exceeds a certain limit
-  OPTIONAL = 2;
+// Structure of a container that contains event logs.
+message EventLogs{
+  repeated EventLog event_log = 1;
 }
+
