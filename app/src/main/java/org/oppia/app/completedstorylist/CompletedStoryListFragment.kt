@@ -37,12 +37,12 @@ class CompletedStoryListFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val args =
-      checkNotNull(arguments) { "Expected arguments to be passed to CompletedStoryListFragment" }
-    val internalProfileId = args
-      .getInt(
-        COMPLETED_STORY_LIST_FRAGMENT_PROFILE_ID_KEY, -1
-      )
+    val args = checkNotNull(arguments) {
+      "Expected arguments to be passed to CompletedStoryListFragment"
+    }
+    val internalProfileId = args.getInt(
+      COMPLETED_STORY_LIST_FRAGMENT_PROFILE_ID_KEY, -1
+    )
     return completedStoryListFragmentPresenter.handleCreateView(
       inflater,
       container,
