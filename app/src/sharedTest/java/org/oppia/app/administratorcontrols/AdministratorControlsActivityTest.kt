@@ -95,9 +95,8 @@ class AdministratorControlsActivityTest {
       .inject(this)
   }
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testAdministratorControlsActivity_withAdminProfile_openAdministratorControlsActivityFromNavigationDrawer_onBackPressed_showsHomeActivity() {
+  fun testAdministratorControlsActivity_withAdminProfile_openAdministratorControlsActivityFromNavigationDrawer_onBackPressed_showsHomeActivity() { // ktlint-disable max-line-length
     ActivityScenario
       .launch<NavigationDrawerTestActivity>(
         createNavigationDrawerActivityIntent(0)
@@ -112,7 +111,6 @@ class AdministratorControlsActivityTest {
         onView(withId(R.id.home_recycler_view)).check(matches(isDisplayed()))
       }
   }
-  /* ktlint-enable max-line-length */
 
   @Test
   fun testAdministratorControlsFragment_loadFragment_displayGeneralAndProfileManagement() {
@@ -134,7 +132,15 @@ class AdministratorControlsActivityTest {
           0, R.id.edit_account_text_view
         )
       )
-        .check(matches(withText(context.resources.getString(R.string.administrator_controls_edit_account))))
+        .check(
+          matches(
+            withText(
+              context.resources.getString(
+                R.string.administrator_controls_edit_account
+              )
+            )
+          )
+        )
       onView(
         atPositionOnView(
           R.id.administrator_controls_list,
@@ -149,7 +155,15 @@ class AdministratorControlsActivityTest {
           1, R.id.edit_profiles_text_view
         )
       )
-        .check(matches(withText(context.resources.getString(R.string.administrator_controls_edit_profiles))))
+        .check(
+          matches(
+            withText(
+              context.resources.getString(
+                R.string.administrator_controls_edit_profiles
+              )
+            )
+          )
+        )
     }
   }
 
@@ -167,7 +181,15 @@ class AdministratorControlsActivityTest {
           R.id.download_permissions_text_view
         )
       )
-        .check(matches(withText(context.resources.getString(R.string.administrator_controls_download_permissions_label))))
+        .check(
+          matches(
+            withText(
+              context.resources.getString(
+                R.string.administrator_controls_download_permissions_label
+              )
+            )
+          )
+        )
       onView(
         atPositionOnView(
           R.id.administrator_controls_list,
@@ -217,7 +239,15 @@ class AdministratorControlsActivityTest {
           3, R.id.app_version_text_view
         )
       )
-        .check(matches(withText(context.resources.getString(R.string.administrator_controls_app_version))))
+        .check(
+          matches(
+            withText(
+              context.resources.getString(
+                R.string.administrator_controls_app_version
+              )
+            )
+          )
+        )
       onView(
         atPositionOnView(
           R.id.administrator_controls_list,
@@ -231,13 +261,20 @@ class AdministratorControlsActivityTest {
           4, R.id.log_out_text_view
         )
       )
-        .check(matches(withText(context.resources.getString(R.string.administrator_controls_log_out))))
+        .check(
+          matches(
+            withText(
+              context.resources.getString(
+                R.string.administrator_controls_log_out
+              )
+            )
+          )
+        )
     }
   }
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testAdministratorControlsFragment_loadFragment_topicUpdateOnWifiSwitchIsNotChecked_autoUpdateTopicSwitchIsNotChecked() {
+  fun testAdministratorControlsFragment_loadFragment_topicUpdateOnWifiSwitchIsNotChecked_autoUpdateTopicSwitchIsNotChecked() { // ktlint-disable max-line-length
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         0
@@ -265,11 +302,9 @@ class AdministratorControlsActivityTest {
         .check(matches(not(isChecked())))
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testAdministratorControlsFragment_topicUpdateOnWifiSwitchIsChecked_configurationChange_checkIfSwitchIsChecked() {
+  fun testAdministratorControlsFragment_topicUpdateOnWifiSwitchIsChecked_configurationChange_checkIfSwitchIsChecked() { // ktlint-disable max-line-length
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         0
@@ -342,11 +377,9 @@ class AdministratorControlsActivityTest {
     )
       .check(matches(not(isChecked())))
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testAdministratorControlsFragment_loadFragment_onClickTopicUpdateOnWifiSwitch_checkSwitchRemainsChecked_onOpeningAdministratorControlsFragmentAgain() {
+  fun testAdministratorControlsFragment_loadFragment_onClickTopicUpdateOnWifiSwitch_checkSwitchRemainsChecked_onOpeningAdministratorControlsFragmentAgain() { // ktlint-disable max-line-length
     ActivityScenario
       .launch<NavigationDrawerTestActivity>(
         createNavigationDrawerActivityIntent(0)
@@ -387,11 +420,9 @@ class AdministratorControlsActivityTest {
           .check(matches(isChecked()))
       }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testAdministratorControlsFragment_loadFragment_clickEditProfile_checkOpensProfileListActivity() {
+  fun testAdministratorControlsFragment_loadFragment_clickEditProfile_checkOpensProfileListActivity() { // ktlint-disable max-line-length
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         0
@@ -401,7 +432,6 @@ class AdministratorControlsActivityTest {
       intended(hasComponent(ProfileListActivity::class.java.name))
     }
   }
-  /* ktlint-enable max-line-length */
 
   @Test
   fun testAdministratorControlsFragment_clickLogoutButton_displaysLogoutDialog() {
@@ -424,7 +454,6 @@ class AdministratorControlsActivityTest {
         .check(matches(isDisplayed()))
     }
   }
-  /* ktlint-enable max-line-length */
 
   // TODO(#762): Replace [ProfileChooserActivity] to [LoginActivity] once it is added.
   @Test
