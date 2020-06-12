@@ -64,8 +64,11 @@ class AdministratorControlsViewModel @Inject constructor(
     itemViewModelList.add(AdministratorControlsProfileViewModel(routeToProfileListListener))
     itemViewModelList.add(
       AdministratorControlsDownloadPermissionsViewModel(
-        fragment, logger, profileManagementController,
-        userProfileId, deviceSettings
+        fragment,
+        logger,
+        profileManagementController,
+        userProfileId,
+        deviceSettings
       )
     )
     itemViewModelList.add(AdministratorControlsAppInformationViewModel(activity))
