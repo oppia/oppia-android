@@ -61,8 +61,12 @@ import javax.inject.Singleton
 class OngoingTopicListActivityTest {
 
   private val internalProfileId = 0
-  @Inject lateinit var context: Context
-  @Inject lateinit var storyProfileTestHelper: StoryProgressTestHelper
+
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var storyProfileTestHelper: StoryProgressTestHelper
 
   @Before
   @ExperimentalCoroutinesApi
@@ -71,8 +75,14 @@ class OngoingTopicListActivityTest {
     setUpTestApplicationComponent()
     IdlingRegistry.getInstance().register(MainThreadExecutor.countingResource)
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    storyProfileTestHelper.markFullStoryPartialTopicProgressForRatios(profileId, timestampOlderThanAWeek = false)
-    storyProfileTestHelper.markPartialTopicProgressForFractions(profileId, timestampOlderThanAWeek = false)
+    storyProfileTestHelper.markFullStoryPartialTopicProgressForRatios(
+      profileId,
+      timestampOlderThanAWeek = false
+    )
+    storyProfileTestHelper.markPartialTopicProgressForFractions(
+      profileId,
+      timestampOlderThanAWeek = false
+    )
   }
 
   @After
@@ -90,14 +100,23 @@ class OngoingTopicListActivityTest {
 
   @Test
   fun testOngoingTopicList_checkItem0_titleIsCorrect() {
-    launch<OngoingTopicListActivity>(createOngoingTopicListActivityIntent(internalProfileId)).use {
+    launch<OngoingTopicListActivity>(
+      createOngoingTopicListActivityIntent(
+        internalProfileId
+      )
+    ).use {
       waitForTheView(withText("Ratios and Proportional Reasoning"))
       onView(withId(R.id.ongoing_topic_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           0
         )
       )
-      onView(atPositionOnView(R.id.ongoing_topic_list, 0, R.id.topic_name_text_view)).check(
+      onView(
+        atPositionOnView(
+          R.id.ongoing_topic_list,
+          0, R.id.topic_name_text_view
+        )
+      ).check(
         matches(
           withText(containsString("Ratios and Proportional Reasoning"))
         )
@@ -107,14 +126,23 @@ class OngoingTopicListActivityTest {
 
   @Test
   fun testOngoingTopicList_checkItem0_storyCountIsCorrect() {
-    launch<OngoingTopicListActivity>(createOngoingTopicListActivityIntent(internalProfileId)).use {
+    launch<OngoingTopicListActivity>(
+      createOngoingTopicListActivityIntent(
+        internalProfileId
+      )
+    ).use {
       waitForTheView(withText("2 Lessons"))
       onView(withId(R.id.ongoing_topic_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           0
         )
       )
-      onView(atPositionOnView(R.id.ongoing_topic_list, 0, R.id.story_count_text_view)).check(
+      onView(
+        atPositionOnView(
+          R.id.ongoing_topic_list,
+          0, R.id.story_count_text_view
+        )
+      ).check(
         matches(
           withText(containsString("2 Lessons"))
         )
@@ -124,7 +152,11 @@ class OngoingTopicListActivityTest {
 
   @Test
   fun testOngoingTopicList_changeConfiguration_checkItem1_titleIsCorrect() {
-    launch<OngoingTopicListActivity>(createOngoingTopicListActivityIntent(internalProfileId)).use {
+    launch<OngoingTopicListActivity>(
+      createOngoingTopicListActivityIntent(
+        internalProfileId
+      )
+    ).use {
       onView(isRoot()).perform(orientationLandscape())
       waitForTheView(withText("Fractions"))
       onView(withId(R.id.ongoing_topic_list)).perform(
@@ -132,7 +164,12 @@ class OngoingTopicListActivityTest {
           1
         )
       )
-      onView(atPositionOnView(R.id.ongoing_topic_list, 1, R.id.topic_name_text_view)).check(
+      onView(
+        atPositionOnView(
+          R.id.ongoing_topic_list,
+          1, R.id.topic_name_text_view
+        )
+      ).check(
         matches(
           withText(containsString("Fractions"))
         )
@@ -142,14 +179,21 @@ class OngoingTopicListActivityTest {
 
   @Test
   fun testOngoingTopicList_checkItem1_titleIsCorrect() {
-    launch<OngoingTopicListActivity>(createOngoingTopicListActivityIntent(internalProfileId)).use {
+    launch<OngoingTopicListActivity>(
+      createOngoingTopicListActivityIntent(internalProfileId)
+    ).use {
       waitForTheView(withText("Fractions"))
       onView(withId(R.id.ongoing_topic_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
         )
       )
-      onView(atPositionOnView(R.id.ongoing_topic_list, 1, R.id.topic_name_text_view)).check(
+      onView(
+        atPositionOnView(
+          R.id.ongoing_topic_list,
+          1, R.id.topic_name_text_view
+        )
+      ).check(
         matches(
           withText(containsString("Fractions"))
         )
@@ -159,14 +203,23 @@ class OngoingTopicListActivityTest {
 
   @Test
   fun testOngoingTopicList_checkItem1_storyCountIsCorrect() {
-    launch<OngoingTopicListActivity>(createOngoingTopicListActivityIntent(internalProfileId)).use {
+    launch<OngoingTopicListActivity>(
+      createOngoingTopicListActivityIntent(
+        internalProfileId
+      )
+    ).use {
       waitForTheView(withText("1 Lesson"))
       onView(withId(R.id.ongoing_topic_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
         )
       )
-      onView(atPositionOnView(R.id.ongoing_topic_list, 1, R.id.story_count_text_view)).check(
+      onView(
+        atPositionOnView(
+          R.id.ongoing_topic_list,
+          1, R.id.story_count_text_view
+        )
+      ).check(
         matches(
           withText(containsString("1 Lesson"))
         )
@@ -176,7 +229,11 @@ class OngoingTopicListActivityTest {
 
   @Test
   fun testOngoingTopicList_changeConfiguration_checkItem1_storyCountIsCorrect() {
-    launch<OngoingTopicListActivity>(createOngoingTopicListActivityIntent(internalProfileId)).use {
+    launch<OngoingTopicListActivity>(
+      createOngoingTopicListActivityIntent(
+        internalProfileId
+      )
+    ).use {
       onView(isRoot()).perform(orientationLandscape())
       waitForTheView(withText("1 Lesson"))
       onView(withId(R.id.ongoing_topic_list)).perform(
@@ -184,7 +241,12 @@ class OngoingTopicListActivityTest {
           1
         )
       )
-      onView(atPositionOnView(R.id.ongoing_topic_list, 1, R.id.story_count_text_view)).check(
+      onView(
+        atPositionOnView(
+          R.id.ongoing_topic_list,
+          1, R.id.story_count_text_view
+        )
+      ).check(
         matches(
           withText(containsString("1 Lesson"))
         )
@@ -194,7 +256,11 @@ class OngoingTopicListActivityTest {
 
   @Test
   fun testTopicPracticeFragment_loadFragment_changeConfiguration_topicNameIsCorrect() {
-    launch<OngoingTopicListActivity>(createOngoingTopicListActivityIntent(internalProfileId)).use {
+    launch<OngoingTopicListActivity>(
+      createOngoingTopicListActivityIntent(
+        internalProfileId
+      )
+    ).use {
       onView(isRoot()).perform(orientationLandscape())
       waitForTheView(withText("Ratios and Proportional Reasoning"))
       onView(withId(R.id.ongoing_topic_list)).perform(
@@ -202,7 +268,12 @@ class OngoingTopicListActivityTest {
           0
         )
       )
-      onView(atPositionOnView(R.id.ongoing_topic_list, 0, R.id.topic_name_text_view)).check(
+      onView(
+        atPositionOnView(
+          R.id.ongoing_topic_list,
+          0, R.id.topic_name_text_view
+        )
+      ).check(
         matches(
           withText(containsString("Ratios and Proportional Reasoning"))
         )
@@ -264,7 +335,8 @@ class OngoingTopicListActivityTest {
     }
   }
 
-  @Qualifier annotation class TestDispatcher
+  @Qualifier
+  annotation class TestDispatcher
 
   @Module
   class TestModule {
@@ -285,14 +357,18 @@ class OngoingTopicListActivityTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
     @Singleton
     @Provides
     @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBlockingDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
@@ -338,7 +414,8 @@ class OngoingTopicListActivityTest {
     override fun isTerminated(): Boolean = false
 
     private val handler = Handler(Looper.getMainLooper())
-    val countingResource = CountingIdlingResource("main_thread_executor_counting_idling_resource")
+    val countingResource =
+      CountingIdlingResource("main_thread_executor_counting_idling_resource")
 
     override fun execute(command: Runnable?) {
       countingResource.increment()

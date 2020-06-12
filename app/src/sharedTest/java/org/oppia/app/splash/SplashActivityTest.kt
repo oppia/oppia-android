@@ -64,7 +64,9 @@ class SplashActivityTest {
   // disabled to launch Activity explicitly within each test case.
   @get:Rule
   var activityTestRule: ActivityTestRule<SplashActivity> = ActivityTestRule(
-    SplashActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+    SplashActivity::class.java,
+    /* initialTouchMode= */ true,
+    /* launchActivity= */ false
   )
 
   @Test
@@ -122,7 +124,9 @@ class SplashActivityTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
@@ -176,7 +180,8 @@ class SplashActivityTest {
     override fun isTerminated(): Boolean = false
 
     private val handler = Handler(Looper.getMainLooper())
-    val countingResource = CountingIdlingResource("main_thread_executor_counting_idling_resource")
+    val countingResource =
+      CountingIdlingResource("main_thread_executor_counting_idling_resource")
 
     override fun execute(command: Runnable?) {
       countingResource.increment()
