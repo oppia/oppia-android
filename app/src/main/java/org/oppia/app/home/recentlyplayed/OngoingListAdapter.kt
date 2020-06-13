@@ -66,10 +66,12 @@ class OngoingListAdapter(
       }
       VIEW_TYPE_SECTION_STORY_ITEM -> {
         val spanCount = (recyclerView!!.layoutManager as GridLayoutManager).spanCount
+        (holder as OngoingStoryViewHolder).bind(itemList[position] as OngoingStoryViewModel)
+
         storyGridPosition = position - titleIndex
         val x: Int = storyGridPosition % spanCount
         val column = x + 1
-        (holder as OngoingStoryViewHolder).bind(itemList[position] as OngoingStoryViewModel)
+
         val marginStart = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
           if (column == 1) {
             (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
