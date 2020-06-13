@@ -15,11 +15,18 @@ import javax.inject.Inject
 private const val KEY_CURRENT_EXPANDED_LIST_INDEX = "CURRENT_EXPANDED_LIST_INDEX"
 
 /** Fragment that contains subtopic list for lessons mode. */
-class TopicLessonsFragment : InjectableFragment(), ExpandedChapterListIndexListener, StorySummarySelector {
+class TopicLessonsFragment :
+  InjectableFragment(),
+  ExpandedChapterListIndexListener,
+  StorySummarySelector {
 
   companion object {
     /** Returns a new [TopicLessonsFragment]. */
-    fun newInstance(internalProfileId: Int, topicId: String, storyId: String): TopicLessonsFragment {
+    fun newInstance(
+      internalProfileId: Int,
+      topicId: String,
+      storyId: String
+    ): TopicLessonsFragment {
       val topicLessonsFragment = TopicLessonsFragment()
       val args = Bundle()
       args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
@@ -33,7 +40,8 @@ class TopicLessonsFragment : InjectableFragment(), ExpandedChapterListIndexListe
     }
   }
 
-  @Inject lateinit var topicLessonsFragmentPresenter: TopicLessonsFragmentPresenter
+  @Inject
+  lateinit var topicLessonsFragmentPresenter: TopicLessonsFragmentPresenter
 
   private var currentExpandedChapterListIndex: Int? = null
 
@@ -42,9 +50,14 @@ class TopicLessonsFragment : InjectableFragment(), ExpandedChapterListIndexListe
     fragmentComponent.inject(this)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
     if (savedInstanceState != null) {
-      currentExpandedChapterListIndex = savedInstanceState.getInt(KEY_CURRENT_EXPANDED_LIST_INDEX, -1)
+      currentExpandedChapterListIndex =
+        savedInstanceState.getInt(KEY_CURRENT_EXPANDED_LIST_INDEX, -1)
       if (currentExpandedChapterListIndex == -1) {
         currentExpandedChapterListIndex = null
       }

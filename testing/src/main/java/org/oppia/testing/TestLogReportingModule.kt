@@ -10,7 +10,7 @@ import org.oppia.util.logging.ExceptionLogger
 interface TestLogReportingModule {
 
   @Binds
-  fun bindFakeCrashLogger(fakeExceptionLogger: FakeExceptionLogger): ExceptionLogger
+  fun bindFakeExceptionLogger(fakeExceptionLogger: FakeExceptionLogger): ExceptionLogger
 
   @Binds
   fun bindFakeEventLogger(fakeEventLogger: FakeEventLogger): EventLogger
