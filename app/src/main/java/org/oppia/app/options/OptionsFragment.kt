@@ -17,14 +17,19 @@ const val REQUEST_CODE_AUDIO_LANGUAGE = 3
 
 /** Fragment that contains an introduction to the app. */
 class OptionsFragment : InjectableFragment() {
-  @Inject lateinit var optionsFragmentPresenter: OptionsFragmentPresenter
+  @Inject
+  lateinit var optionsFragmentPresenter: OptionsFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
     return optionsFragmentPresenter.handleCreateView(inflater, container)
   }
 
