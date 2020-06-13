@@ -66,4 +66,3 @@ message EventLog {
 message EventLogs{
   repeated EventLog event_log = 1;
 }
-
