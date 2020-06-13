@@ -46,6 +46,7 @@ import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.util.toAnswerString
+import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -1419,7 +1420,8 @@ class ExplorationProgressControllerTest {
     modules = [
       TestModule::class, ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
       MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
-      TextInputRuleModule::class, DragDropSortInputModule::class, InteractionsModule::class
+      TextInputRuleModule::class, DragDropSortInputModule::class, InteractionsModule::class,
+      TestLogReportingModule::class
     ]
   )
   interface TestApplicationComponent {

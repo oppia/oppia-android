@@ -37,6 +37,7 @@ dependencies {
       'androidx.test.ext:junit:1.1.1',
       'com.google.truth:truth:0.43',
       'junit:junit:4.12',
+      "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version",
   )
   kapt(
       'com.google.dagger:dagger-compiler:2.24',

@@ -45,6 +45,7 @@ import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.topic.TEST_SKILL_ID_0
 import org.oppia.domain.topic.TEST_SKILL_ID_1
 import org.oppia.domain.topic.TEST_SKILL_ID_2
+import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -908,7 +909,8 @@ class QuestionAssessmentProgressControllerTest {
   @Component(modules = [
     TestModule::class, TestQuestionModule::class, ContinueModule::class, FractionInputModule::class,
     ItemSelectionInputModule::class, MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
-    NumericInputRuleModule::class, TextInputRuleModule::class, InteractionsModule::class, DragDropSortInputModule::class
+    NumericInputRuleModule::class, TextInputRuleModule::class, InteractionsModule::class, DragDropSortInputModule::class,
+    TestLogReportingModule::class
   ])
   interface TestApplicationComponent {
     @Component.Builder
