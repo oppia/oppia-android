@@ -48,6 +48,7 @@ import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_1
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_2
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_3
+import org.oppia.testing.FakeExceptionLogger
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
@@ -75,6 +76,8 @@ class ExplorationDataControllerTest {
   val executorRule = InstantTaskExecutorRule()
 
   @Inject lateinit var explorationDataController: ExplorationDataController
+
+  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
 
   @Mock
   lateinit var mockExplorationObserver: Observer<AsyncResult<Exploration>>
@@ -263,6 +266,18 @@ class ExplorationDataControllerTest {
     explorationLiveData.observeForever(mockExplorationObserver)
     verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
     assertThat(explorationResultCaptor.value.isFailure()).isTrue()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testController_returnsNull_logsException() = runBlockingTest(coroutineContext) {
+    val explorationLiveData = explorationDataController.getExplorationById("NON_EXISTENT_TEST")
+    advanceUntilIdle()
+    explorationLiveData.observeForever(mockExplorationObserver)
+    val exception = fakeExceptionLogger.getMostRecentException()
+
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat().contains("Invalid exploration ID: NON_EXISTENT_TEST")
   }
 
   @Qualifier
