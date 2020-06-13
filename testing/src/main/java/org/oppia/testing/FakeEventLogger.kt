@@ -2,6 +2,7 @@ package org.oppia.testing
 
 import android.content.Context
 import android.os.Bundle
+import org.oppia.app.model.EventLog
 import org.oppia.util.logging.EventLogger
 import java.util.ArrayList
 import javax.inject.Inject
@@ -10,23 +11,21 @@ import javax.inject.Singleton
 /**  A test specific fake for the event logger. */
 @Singleton
 class FakeEventLogger @Inject constructor() : EventLogger {
-  val eventList = ArrayList<Event>()
+  private val eventList = ArrayList<EventLog>()
 
-  override fun logEvent(context: Context, bundle: Bundle, title: String) {
-    eventList.add(Event(title, bundle))
+  override fun logEvent(context: Context, eventLog: EventLog){
+    eventList.add(eventLog)
   }
 
   /** Returns the most recently logged event. */
-  fun getMostRecentEvent(): Event = eventList.last()
+  fun getMostRecentEvent(): EventLog = eventList.last()
 
   /** Clears all the events that are currently logged.. */
   fun clearAllEvents() = eventList.clear()
-}
 
-/**
- * Returns an event object containing title and bundle which enables event recording.
- *
- * @param [title]: title of the logged event.
- * @param [bundle]: bundle that the contains information that needs to be logged.
- */
-class Event(var title: String, var bundle: Bundle)
+  /** Checks if a certain event has been logged or not. */
+  fun hasEventLogged(eventLog: EventLog): Boolean = eventList.contains(eventLog)
+
+  /** Returns true if there are no events logged. */
+  fun noEventsPresent(): Boolean = eventList.isEmpty()
+}

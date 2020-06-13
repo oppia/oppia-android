@@ -1,7 +1,7 @@
 package org.oppia.util.logging
 
 import android.content.Context
-import android.os.Bundle
+import org.oppia.app.model.EventLog
 
 /**
  * Logger for tracking events.
@@ -14,8 +14,7 @@ interface EventLogger {
    * Logs events to remote services or log them to a file on disk.
    *
    * @param context: refers to the context of the activity where event is happening.
-   * @param bundle: refers to the bundle which contains all the relevant data to be reported
-   * @param title: refers to the title of the event that will be logged
+   * @param eventLog: refers to the log object which contains all the relevant data to be reported.
    */
-  fun logEvent(context: Context, bundle: Bundle, title: String)
+  fun logEvent(context: Context, eventLog: EventLog)
 }

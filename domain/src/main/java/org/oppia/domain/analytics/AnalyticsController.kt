@@ -1,18 +1,12 @@
 package org.oppia.domain.analytics
 
 import android.content.Context
-import android.os.Bundle
+import org.oppia.app.model.EventLog
 import javax.inject.Inject
-import org.oppia.app.model.EventAction
-import org.oppia.app.model.Priority
+import org.oppia.app.model.EventLog.EventAction
+import org.oppia.app.model.EventLog.Priority
 import org.oppia.util.logging.EventLogger
 
-const val TIMESTAMP_KEY = "timestamp"
-const val TOPIC_ID_KEY = "topicId"
-const val STORY_ID_KEY = "storyId"
-const val QUESTION_ID_KEY = "questionId"
-const val EXPLORATION_ID_KEY = "explorationId"
-const val PRIORITY_KEY = "priority"
 const val TEST_TIMESTAMP = 1556094120000
 const val TEST_TOPIC_ID = "test_topicId"
 const val TEST_STORY_ID = "test_storyId"
@@ -40,12 +34,12 @@ class AnalyticsController @Inject constructor(
     explorationId: String?,
     questionId: String?
   ) {
-    eventLogger
-      .logEvent(
-        context,
-        createEventBundle(timestamp, topicId, storyId, explorationId, questionId, Priority.ESSENTIAL),
-        eventAction.toString()
+    eventLogger.logEvent(
+      context,
+      createEventLog(
+        timestamp, topicId, eventAction, storyId, explorationId, questionId, Priority.ESSENTIAL
       )
+    )
   }
 
   /**
@@ -61,30 +55,72 @@ class AnalyticsController @Inject constructor(
     explorationId: String?,
     questionId: String?
   ) {
-    eventLogger
-      .logEvent(
-        context,
-        createEventBundle(timestamp, topicId, storyId, explorationId, questionId, Priority.OPTIONAL),
-        eventAction.toString()
+    eventLogger.logEvent(
+      context,
+      createEventLog(
+        timestamp, topicId, eventAction, storyId, explorationId, questionId, Priority.OPTIONAL
       )
+    )
   }
 
-  /** Returns a bundle containing relevant data for event reporting. */
-  private fun createEventBundle(
+  /** Returns an event log containing relevant data for event reporting. */
+  private fun createEventLog(
     timestamp: Long,
     topicId: String?,
+    eventAction: EventAction,
     storyId: String?,
     explorationId: String?,
     questionId: String?,
     priority: Priority
-  ): Bundle {
-    val bundle = Bundle()
-    bundle.putLong(TIMESTAMP_KEY, timestamp)
-    bundle.putString(TOPIC_ID_KEY, topicId)
-    bundle.putString(STORY_ID_KEY, storyId)
-    bundle.putString(EXPLORATION_ID_KEY, explorationId)
-    bundle.putString(QUESTION_ID_KEY, questionId)
-    bundle.putString(PRIORITY_KEY, priority.toString())
-    return bundle
+  ): EventLog {
+
+    return EventLog.newBuilder()
+      .setTimestamp(timestamp)
+      .setActionName(eventAction)
+      .setPriority(priority)
+      .setContext(contextCreation(topicId, storyId, explorationId, questionId))
+      .build()
+  }
+
+  /** Returns the activity context of an event. */
+  private fun contextCreation(
+    topicId: String?,
+    storyId: String?,
+    explorationId: String?,
+    questionId: String?
+  ): EventLog.Context{
+    return if(questionId != null){
+      EventLog.Context.newBuilder()
+        .setQuestionContext(questionContext(topicId, questionId))
+        .build()
+    } else{
+      EventLog.Context.newBuilder()
+        .setExplorationContext(explorationContext(topicId, storyId, explorationId))
+        .build()
+    }
+  }
+
+  /** Returns the context of an event related to exploration. */
+  private fun explorationContext(
+    topicId: String?,
+    storyId: String?,
+    explorationId: String?
+  ): EventLog.Context.ExplorationContext{
+    return EventLog.Context.ExplorationContext.newBuilder()
+      .setTopicId(topicId)
+      .setStoryId(storyId)
+      .setExplorationId(explorationId)
+      .build()
+  }
+
+  /** Returns the context of an event related to question. */
+  private fun questionContext(
+    topicId: String?,
+    questionId: String?
+  ): EventLog.Context.QuestionContext{
+    return EventLog.Context.QuestionContext.newBuilder()
+      .setTopicId(topicId)
+      .setQuestionId(questionId)
+      .build()
   }
 }
