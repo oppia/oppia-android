@@ -16,6 +16,7 @@ import org.junit.runner.RunWith
 import org.oppia.app.model.EventLog
 import org.oppia.app.model.EventLog.Priority
 import org.oppia.util.logging.EventLogger
+import org.oppia.util.logging.firebase.PRIORITY_KEY
 import org.robolectric.annotation.Config
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -139,6 +140,14 @@ class FakeEventLoggerTest {
     assertThat(eventListStatus).isFalse()
     assertThat(eventLogStatus1).isTrue()
     assertThat(eventLogStatus2).isTrue()
+  }
+
+  @Test
+  fun testFakeEventLogger_logEvent_returnsEventBundle() {
+    eventLogger.logEvent(context, eventLog1)
+    val eventBundle = fakeEventLogger.getMostRecentEventBundle()
+
+    assertThat(eventBundle.get(PRIORITY_KEY)).isEqualTo(Priority.ESSENTIAL.toString())
   }
 
   // TODO(#89): Move to a common test library.

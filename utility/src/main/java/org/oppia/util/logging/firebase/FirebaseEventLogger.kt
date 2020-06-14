@@ -6,6 +6,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import org.oppia.app.model.EventLog
 import org.oppia.app.model.EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT
 import org.oppia.app.model.EventLog.Context.ActivityContextCase.QUESTION_CONTEXT
+import org.oppia.util.logging.EventBundleCreator
 import org.oppia.util.logging.EventLogger
 import javax.inject.Singleton
 
@@ -18,11 +19,11 @@ const val PRIORITY_KEY = "priority"
 
 /** Logger for event logging to Firebase Analytics. */
 @Singleton
-class FirebaseEventLogger(
+open class FirebaseEventLogger(
   private val firebaseAnalytics: FirebaseAnalytics
-) : EventLogger {
+) : EventLogger, EventBundleCreator {
 
-  private lateinit var bundle: Bundle
+  private var bundle = Bundle()
 
   /** Logs an event to Firebase Analytics. */
   override fun logEvent(context: Context, eventLog: EventLog) {
@@ -35,7 +36,7 @@ class FirebaseEventLogger(
     firebaseAnalytics.logEvent(eventLog.actionName.toString(), bundle)
   }
 
-  private fun createExplorationContextBundle(eventLog: EventLog): Bundle {
+  override fun createExplorationContextBundle(eventLog: EventLog): Bundle {
     val bundle = Bundle()
     bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(TOPIC_ID_KEY, eventLog.context.explorationContext.topicId)
@@ -45,7 +46,7 @@ class FirebaseEventLogger(
     return bundle
   }
 
-  private fun createQuestionContextBundle(eventLog: EventLog): Bundle {
+  override fun createQuestionContextBundle(eventLog: EventLog): Bundle {
     val bundle = Bundle()
     bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(TOPIC_ID_KEY, eventLog.context.questionContext.topicId)
@@ -54,7 +55,7 @@ class FirebaseEventLogger(
     return bundle
   }
 
-  private fun defaultBundle(eventLog: EventLog): Bundle {
+  override fun defaultBundle(eventLog: EventLog): Bundle {
     val bundle = Bundle()
     bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(PRIORITY_KEY, eventLog.priority.toString())
