@@ -49,6 +49,7 @@ import org.oppia.domain.topic.TEST_QUESTION_ID_3
 import org.oppia.domain.topic.TEST_SKILL_ID_0
 import org.oppia.domain.topic.TEST_SKILL_ID_1
 import org.oppia.domain.topic.TEST_SKILL_ID_2
+import org.oppia.testing.FakeExceptionLogger
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
@@ -58,6 +59,7 @@ import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
+import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -78,6 +80,8 @@ class QuestionTrainingControllerTest {
   @Inject lateinit var questionTrainingController: QuestionTrainingController
 
   @Inject lateinit var questionAssessmentProgressController: QuestionAssessmentProgressController
+
+  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
 
   @Mock
   lateinit var mockQuestionListObserver: Observer<AsyncResult<Any>>
@@ -232,6 +236,19 @@ class QuestionTrainingControllerTest {
     questionListLiveData.observeForever(mockQuestionListObserver)
     verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
     assertThat(questionListResultCaptor.value.isFailure()).isTrue()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testStopTrainingSession_withoutStartingSession_fails() = runBlockingTest(coroutineContext) {
+    questionTrainingController.stopQuestionTrainingSession()
+    advanceUntilIdle()
+
+    val exception = fakeExceptionLogger.getMostRecentException()
+
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat()
+      .contains("Cannot stop a new training session which wasn't started")
   }
 
   @Qualifier
