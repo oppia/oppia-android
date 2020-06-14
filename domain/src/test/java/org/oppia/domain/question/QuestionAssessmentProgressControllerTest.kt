@@ -740,6 +740,7 @@ class QuestionAssessmentProgressControllerTest {
     assertThat(currentQuestion.ephemeralState.state.content.html).contains("What fraction does 'half'")
   }
 
+  @Test
   @ExperimentalCoroutinesApi
   fun testMoveToNext_onFinalQuestion_failsWithError_logsException()
     = runBlockingTest(coroutineContext) {
