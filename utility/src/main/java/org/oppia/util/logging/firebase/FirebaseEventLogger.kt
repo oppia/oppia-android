@@ -19,7 +19,7 @@ const val PRIORITY_KEY = "priority"
 
 /** Logger for event logging to Firebase Analytics. */
 @Singleton
-open class FirebaseEventLogger(
+class FirebaseEventLogger(
   private val firebaseAnalytics: FirebaseAnalytics
 ) : EventLogger, EventBundleCreator {
 
