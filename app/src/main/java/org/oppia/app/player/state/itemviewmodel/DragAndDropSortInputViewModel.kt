@@ -7,7 +7,6 @@ import org.oppia.app.model.ListOfSetsOfHtmlStrings
 import org.oppia.app.model.StringList
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
-import org.oppia.app.recyclerview.DragItemTouchHelperCallback
 import org.oppia.app.recyclerview.OnItemDragListener
 
 /** [StateItemViewModel] for drag drop & sort choice list. */
@@ -16,12 +15,15 @@ class DragAndDropSortInputViewModel(
   interaction: Interaction
 ) : StateItemViewModel(ViewType.DRAG_DROP_SORT_INTERACTION), InteractionAnswerHandler,
   OnItemDragListener {
+  private val allowMultipleItemsInSamePosition: Boolean by lazy {
+    interaction.customizationArgsMap["allowMultipleItemsInSamePosition"]?.boolValue ?: false
+  }
   private val choiceStrings: List<String> by lazy {
     interaction.customizationArgsMap["choices"]?.setOfHtmlString?.htmlList ?: listOf()
   }
 
   val choiceItems: ArrayList<DragDropInteractionContentViewModel> =
-    computeChoiceItems(choiceStrings)
+    computeChoiceItems(choiceStrings, this)
 
   override fun onItemDragged(
     indexFrom: Int,
@@ -51,14 +53,46 @@ class DragAndDropSortInputViewModel(
     return "<li>${htmlItems.joinToString(separator = "</li><li>")}</li>"
   }
 
+  /** Returns whether the grouping is allowed or not for [DragAndDropSortInputViewModel]. */
+  fun getGroupingStatus(): Boolean {
+    return allowMultipleItemsInSamePosition
+  }
+
+  fun updateList(
+    itemIndex: Int,
+    adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
+  ) {
+    val item = choiceItems[itemIndex]
+    val nextItem = choiceItems[itemIndex + 1]
+    nextItem.htmlContent = StringList.newBuilder().addAllHtml(nextItem.htmlContent.htmlList)
+      .addAllHtml(item.htmlContent.htmlList)
+      .build()
+    choiceItems[itemIndex + 1] = nextItem
+
+    choiceItems.removeAt(itemIndex)
+    adapter.notifyItemRemoved(itemIndex)
+
+    choiceItems.forEachIndexed { index, dragDropInteractionContentViewModel ->
+      dragDropInteractionContentViewModel.itemIndex -= 1
+      dragDropInteractionContentViewModel.listSize = item.listSize - 1
+    }
+    //to update the content of grouped item
+
+    adapter.notifyDataSetChanged()
+  }
+
   companion object {
     private fun computeChoiceItems(
-      choiceStrings: List<String>
+      choiceStrings: List<String>,
+      dragAndDropSortInputViewModel: DragAndDropSortInputViewModel
     ): ArrayList<DragDropInteractionContentViewModel> {
       val itemList = ArrayList<DragDropInteractionContentViewModel>()
-      itemList += choiceStrings.map { choiceString ->
+      itemList += choiceStrings.mapIndexed { index, choiceString ->
         DragDropInteractionContentViewModel(
-          htmlContent = StringList.newBuilder().addHtml(choiceString).build()
+          htmlContent = StringList.newBuilder().addHtml(choiceString).build(),
+          itemIndex = index,
+          listSize = choiceStrings.size,
+          dragAndDropSortInputViewModel = dragAndDropSortInputViewModel
         )
       }
       return itemList

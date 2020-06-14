@@ -3,6 +3,7 @@ package org.oppia.app.player.state
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentManager
@@ -26,6 +27,8 @@ import javax.inject.Inject
 class DragDropSortInteractionView @JvmOverloads constructor(
   context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : RecyclerView(context, attrs, defStyleAttr) {
+  // Default to grouping is disabled.
+  private var isMultipleItemsInSamePositionAllowed: Boolean = false
 
   @Inject lateinit var htmlParserFactory: HtmlParser.Factory
 
@@ -41,6 +44,14 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
     FragmentManager.findFragment<InjectableFragment>(this).createViewComponent(this).inject(this)
+  }
+
+  fun allowMultipleItemsInSamePosition(isAllowed: Boolean) {
+    // TODO(#299): Find a cleaner way to initialize the item input type. Using data-binding results in a race condition
+    //  with setting the adapter data, so this needs to be done in an order-agnostic way. There should be a way to do
+    //  this more efficiently and cleanly than always relying on notifying of potential changes in the adapter when the
+    //  type is set (plus the type ought to be permanent).
+    this.isMultipleItemsInSamePositionAllowed = isAllowed
     adapter = createAdapter()
   }
 
@@ -66,6 +77,8 @@ class DragDropSortInteractionView @JvmOverloads constructor(
               .parseOppiaHtml(
                 viewModel.htmlContent.htmlList.joinToString(separator = "<br>"), binding.dragDropContentTextView
               )
+          binding.adapter = adapter
+          binding.dragDropContentGroupItem.isVisible = isMultipleItemsInSamePositionAllowed
           binding.viewModel = viewModel
         }
       )
@@ -96,3 +109,9 @@ fun setItemDragToRecyclerView(
 fun setEntityId(
   dragDropSortInteractionView: DragDropSortInteractionView, entityId: String
 ) = dragDropSortInteractionView.setEntityId(entityId)
+
+/** Sets the [SelectionItemInputType] for a specific [SelectionInteractionView] via data-binding. */
+@BindingAdapter("allowMultipleItemsInSamePosition")
+fun setAllowMultipleItemsInSamePosition(
+  dragDropSortInteractionView: DragDropSortInteractionView, isAllowed: Boolean
+) = dragDropSortInteractionView.allowMultipleItemsInSamePosition(isAllowed)
