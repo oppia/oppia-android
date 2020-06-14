@@ -2,10 +2,10 @@ package org.oppia.domain.analytics
 
 import android.content.Context
 import org.oppia.app.model.EventLog
-import javax.inject.Inject
 import org.oppia.app.model.EventLog.EventAction
 import org.oppia.app.model.EventLog.Priority
 import org.oppia.util.logging.EventLogger
+import javax.inject.Inject
 
 const val TEST_TIMESTAMP = 1556094120000
 const val TEST_TOPIC_ID = "test_topicId"
@@ -88,12 +88,12 @@ class AnalyticsController @Inject constructor(
     storyId: String?,
     explorationId: String?,
     questionId: String?
-  ): EventLog.Context{
-    return if(questionId != null){
+  ): EventLog.Context {
+    return if (questionId != null) {
       EventLog.Context.newBuilder()
         .setQuestionContext(questionContext(topicId, questionId))
         .build()
-    } else{
+    } else {
       EventLog.Context.newBuilder()
         .setExplorationContext(explorationContext(topicId, storyId, explorationId))
         .build()
@@ -105,8 +105,8 @@ class AnalyticsController @Inject constructor(
     topicId: String?,
     storyId: String?,
     explorationId: String?
-  ): EventLog.Context.ExplorationContext{
-    return EventLog.Context.ExplorationContext.newBuilder()
+  ): EventLog.ExplorationContext {
+    return EventLog.ExplorationContext.newBuilder()
       .setTopicId(topicId)
       .setStoryId(storyId)
       .setExplorationId(explorationId)
@@ -117,8 +117,8 @@ class AnalyticsController @Inject constructor(
   private fun questionContext(
     topicId: String?,
     questionId: String?
-  ): EventLog.Context.QuestionContext{
-    return EventLog.Context.QuestionContext.newBuilder()
+  ): EventLog.QuestionContext {
+    return EventLog.QuestionContext.newBuilder()
       .setTopicId(topicId)
       .setQuestionId(questionId)
       .build()

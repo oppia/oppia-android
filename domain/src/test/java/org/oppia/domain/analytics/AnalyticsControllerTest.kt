@@ -12,6 +12,8 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.app.model.EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT
+import org.oppia.app.model.EventLog.Context.ActivityContextCase.QUESTION_CONTEXT
 import org.oppia.app.model.EventLog.EventAction
 import org.oppia.app.model.EventLog.Priority
 import org.oppia.testing.FakeEventLogger
@@ -26,6 +28,7 @@ class AnalyticsControllerTest {
 
   @Inject
   lateinit var analyticsController: AnalyticsController
+
   @Inject
   lateinit var fakeEventLogger: FakeEventLogger
 
@@ -47,8 +50,8 @@ class AnalyticsControllerTest {
       .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
-    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase.number)
-      .isEqualTo(2)
+    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
+      .isEqualTo(QUESTION_CONTEXT)
   }
 
   @Test
@@ -69,8 +72,8 @@ class AnalyticsControllerTest {
       .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
-    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase.number)
-      .isEqualTo(1)
+    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
+      .isEqualTo(EXPLORATION_CONTEXT)
   }
 
   @Test
@@ -91,8 +94,8 @@ class AnalyticsControllerTest {
       .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
-    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase.number)
-      .isEqualTo(2)
+    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
+      .isEqualTo(QUESTION_CONTEXT)
   }
 
   @Test
@@ -113,8 +116,8 @@ class AnalyticsControllerTest {
       .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
-    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase.number)
-      .isEqualTo(1)
+    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
+      .isEqualTo(EXPLORATION_CONTEXT)
   }
 
   @Before

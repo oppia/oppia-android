@@ -4,6 +4,8 @@ import android.content.Context
 import android.os.Bundle
 import com.google.firebase.analytics.FirebaseAnalytics
 import org.oppia.app.model.EventLog
+import org.oppia.app.model.EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT
+import org.oppia.app.model.EventLog.Context.ActivityContextCase.QUESTION_CONTEXT
 import org.oppia.util.logging.EventLogger
 import javax.inject.Singleton
 
@@ -25,9 +27,9 @@ class FirebaseEventLogger(
   /** Logs an event to Firebase Analytics. */
   override fun logEvent(context: Context, eventLog: EventLog) {
     bundle =
-      when (eventLog.context.activityContextCase.number) {
-        1 -> createExplorationContextBundle(eventLog)
-        2 -> createQuestionContextBundle(eventLog)
+      when (eventLog.context.activityContextCase) {
+        EXPLORATION_CONTEXT -> createExplorationContextBundle(eventLog)
+        QUESTION_CONTEXT -> createQuestionContextBundle(eventLog)
         else -> defaultBundle(eventLog)
       }
     firebaseAnalytics.logEvent(eventLog.actionName.toString(), bundle)
