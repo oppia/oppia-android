@@ -175,6 +175,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     answerOutcomeLiveData.observe(
       fragment,
       Observer<AnsweredQuestionOutcome> { result ->
+        recyclerViewAssembler.isCorrectAnswer.set(result.isCorrectAnswer)
         if (result.isCorrectAnswer) {
           recyclerViewAssembler.showCongratulationMessageOnCorrectAnswer()
         }

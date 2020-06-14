@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="submittedAnswer"
+      type="CharSequence" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.player.state.itemviewmodel.SubmittedAnswerViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="28dp"
+    android:layout_marginTop="@dimen/divider_margin_top"
+    android:layout_marginEnd="28dp"
+    android:layout_marginBottom="@dimen/divider_margin_bottom">
+
+    <TextView
+      android:id="@+id/question_player_submitted_answer_text_view"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:background="@drawable/submitted_answer_background"
+      android:paddingStart="12dp"
+      android:paddingTop="8dp"
+      android:paddingEnd="12dp"
+      android:paddingBottom="8dp"
+      android:text="@{submittedAnswer}"
+      android:textAlignment="viewStart"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textSize="16sp"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintWidth_max="wrap"
+      app:layout_constraintWidth_percent=".87" />
+
+    <ImageView
+      android:id="@+id/question_player_answer_tick"
+      android:layout_width="24dp"
+      android:layout_height="24dp"
+      android:layout_marginStart="8dp"
+      android:layout_marginEnd="8dp"
+      android:src="@drawable/ic_check_primary"
+      android:visibility="@{viewModel.isCorrectAnswer.get() ? View.VISIBLE : View.GONE}"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toEndOf="@+id/question_player_submitted_answer_text_view"
+      app:layout_constraintTop_toTopOf="parent" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
