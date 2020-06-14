@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 class DragItemTouchHelperCallback private constructor(dragDirs: Int, swipeDirs: Int) :
   ItemTouchHelper.SimpleCallback(dragDirs, swipeDirs) {
   private var dragEnabled = false
-  private var onItemDragListener: OnItemDragListener? = null
+  private lateinit var onItemDragListener: OnItemDragListener
 
   private constructor(builder: Builder) : this(builder.dragDirs, builder.swipeDirs) {
     dragEnabled = builder.dragEnabled
@@ -25,10 +25,7 @@ class DragItemTouchHelperCallback private constructor(dragDirs: Int, swipeDirs: 
     source: RecyclerView.ViewHolder,
     target: RecyclerView.ViewHolder
   ): Boolean {
-    if (source.itemViewType != target.itemViewType) {
-      return false
-    }
-    onItemDragListener!!.onItemDragged(
+    onItemDragListener.onItemDragged(
       source.adapterPosition,
       target.adapterPosition,
       recyclerView.adapter!!
@@ -49,13 +46,12 @@ class DragItemTouchHelperCallback private constructor(dragDirs: Int, swipeDirs: 
     super.clearView(recyclerView, viewHolder)
   }
 
-  class Builder(internal val dragDirs: Int, internal val swipeDirs: Int) {
-    internal var onItemDragListener: OnItemDragListener? = null
+  class Builder(
+    internal val dragDirs: Int,
+    internal val swipeDirs: Int,
+    internal val onItemDragListener: OnItemDragListener
+  ) {
     internal var dragEnabled = true
-    fun onItemDragListener(value: OnItemDragListener?): Builder {
-      onItemDragListener = value
-      return this
-    }
 
     fun build(): DragItemTouchHelperCallback {
       return DragItemTouchHelperCallback(this)

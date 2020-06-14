@@ -40,9 +40,8 @@ class DragDropTestActivityPresenter @Inject constructor(private val activity: Ap
 
   private fun createDragCallback(): ItemTouchHelper.Callback {
     return DragItemTouchHelperCallback.Builder(
-        ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0
+        ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0, activity as OnItemDragListener
       )
-      .onItemDragListener(activity as OnItemDragListener)
       .build()
   }
 
