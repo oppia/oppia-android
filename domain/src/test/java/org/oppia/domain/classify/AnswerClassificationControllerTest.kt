@@ -31,6 +31,7 @@ import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputMo
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.testing.FakeExceptionLogger
 import org.oppia.testing.TestLogReportingModule
 import org.robolectric.annotation.Config
 import javax.inject.Inject

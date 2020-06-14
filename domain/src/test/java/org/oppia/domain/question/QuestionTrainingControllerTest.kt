@@ -59,10 +59,10 @@ import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
-import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
+import kotlin.IllegalStateException
 import kotlin.coroutines.EmptyCoroutineContext
 
 /** Tests for [QuestionTrainingController]. */
@@ -240,7 +240,23 @@ class QuestionTrainingControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testStopTrainingSession_withoutStartingSession_fails() = runBlockingTest(coroutineContext) {
+  fun testController_startTrainingSession_noSkills_fails_logsException()
+    = runBlockingTest(coroutineContext) {
+    questionTrainingController.startQuestionTrainingSession(listOf())
+    questionTrainingController.startQuestionTrainingSession(listOf())
+    advanceUntilIdle()
+
+    val exception = fakeExceptionLogger.getMostRecentException()
+
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat()
+      .contains("Cannot start a new training session until the previous one is completed.")
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testStopTrainingSession_withoutStartingSession_fails_logsException()
+    = runBlockingTest(coroutineContext) {
     questionTrainingController.stopQuestionTrainingSession()
     advanceUntilIdle()
 

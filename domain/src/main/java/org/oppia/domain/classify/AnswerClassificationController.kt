@@ -16,8 +16,7 @@ import javax.inject.Inject
  * This controller should only be interacted with via background threads.
  */
 class AnswerClassificationController @Inject constructor(
-  private val interactionClassifiers: Map<String, @JvmSuppressWildcards InteractionClassifier>,
-  private val exceptionLogger: ExceptionLogger
+  private val interactionClassifiers: Map<String, @JvmSuppressWildcards InteractionClassifier>
 ) {
   /**
    * Classifies the specified answer in the context of the specified [Interaction] and returns the [Outcome] that best
@@ -50,7 +49,6 @@ class AnswerClassificationController @Inject constructor(
             return answerGroup.outcome
           }
         } catch (e: Exception) {
-          exceptionLogger.logException(e)
           throw IllegalStateException("Failed when classifying answer $answer for interaction $interactionId", e)
         }
       }
