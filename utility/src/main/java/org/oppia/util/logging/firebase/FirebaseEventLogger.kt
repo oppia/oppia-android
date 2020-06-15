@@ -15,7 +15,6 @@ import javax.inject.Singleton
 class FirebaseEventLogger(
   private val firebaseAnalytics: FirebaseAnalytics
 ) : EventLogger {
-  
   private var bundle = Bundle()
 
   /** Logs an event to Firebase Analytics. */

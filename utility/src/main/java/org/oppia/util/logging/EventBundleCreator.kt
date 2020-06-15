@@ -17,7 +17,7 @@ const val PRIORITY_KEY = "priority"
 class EventBundleCreator {
 
   /** Creates a bundle from event having exploration context. */
-  fun createExplorationContextBundle(eventLog: EventLog): Bundle{
+  fun createExplorationContextBundle(eventLog: EventLog): Bundle {
     val bundle = Bundle()
     bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(TOPIC_ID_KEY, eventLog.context.explorationContext.topicId)
@@ -38,7 +38,7 @@ class EventBundleCreator {
   }
 
   /** Creates a bundle from event having no context. */
-  fun defaultBundle(eventLog: EventLog): Bundle{
+  fun defaultBundle(eventLog: EventLog): Bundle {
     val bundle = Bundle()
     bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(PRIORITY_KEY, eventLog.priority.toString())
