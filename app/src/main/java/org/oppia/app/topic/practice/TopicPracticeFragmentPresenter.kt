@@ -50,7 +50,11 @@ class TopicPracticeFragmentPresenter @Inject constructor(
     viewModel.setInternalProfileId(internalProfileId)
 
     selectedSkillIdList = skillList
-    binding = TopicPracticeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding = TopicPracticeFragmentBinding.inflate(
+      inflater,
+      container,
+      /* attachToRoot= */ false
+    )
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
 
@@ -97,7 +101,10 @@ class TopicPracticeFragmentPresenter @Inject constructor(
       .build()
   }
 
-  private fun bindSkillView(binding: TopicPracticeSubtopicBinding, model: TopicPracticeSubtopicViewModel) {
+  private fun bindSkillView(
+    binding: TopicPracticeSubtopicBinding,
+    model: TopicPracticeSubtopicViewModel
+  ) {
     binding.viewModel = model
     binding.isChecked = selectedSkillIdList.contains(model.subtopic.subtopicId)
     binding.subtopicCheckBox.setOnCheckedChangeListener { _, isChecked ->
@@ -109,14 +116,19 @@ class TopicPracticeFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun bindFooterView(binding: TopicPracticeFooterViewBinding, model: TopicPracticeFooterViewModel) {
+  private fun bindFooterView(
+    binding: TopicPracticeFooterViewBinding,
+    model: TopicPracticeFooterViewModel
+  ) {
     topicPracticeFooterViewBinding = binding
     binding.viewModel = model
     binding.isSubmitButtonActive = selectedSkillIdList.isNotEmpty()
     binding.topicPracticeStartButton.setOnClickListener {
       val skillIdList = ArrayList(skillIdHashMap.values)
       logger.d("TopicPracticeFragmentPresenter", "Skill Ids = " + skillIdList.flatten())
-      routeToQuestionPlayerListener.routeToQuestionPlayer(skillIdList.flatten() as ArrayList<String>)
+      routeToQuestionPlayerListener.routeToQuestionPlayer(
+        skillIdList.flatten() as ArrayList<String>
+      )
     }
   }
 

@@ -19,7 +19,10 @@ class AppVersionViewModel @Inject constructor(
   val versionName = ObservableField<String>(BuildConfig.VERSION_NAME)
 
   private val lastUpdateDateTime =
-    fragment.activity!!.packageManager.getPackageInfo(fragment.activity!!.packageName, /* flags= */ 0).lastUpdateTime
+    fragment.activity!!.packageManager.getPackageInfo(
+      fragment.activity!!.packageName,
+      /* flags= */ 0
+    ).lastUpdateTime
   val lastUpdateDate = ObservableField<String>(getDateTime(lastUpdateDateTime))
 
   private fun getDateTime(lastUpdateTime: Long): String? {

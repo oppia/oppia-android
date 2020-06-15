@@ -48,7 +48,11 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private lateinit var recyclerViewAssembler: StatePlayerRecyclerViewAssembler
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    binding = QuestionPlayerFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding = QuestionPlayerFragmentBinding.inflate(
+      inflater,
+      container,
+      /* attachToRoot= */ false
+    )
 
     recyclerViewAssembler = createRecyclerViewAssembler(
       assemblerBuilderFactory.create(resourceBucketName, "skill"),
@@ -109,14 +113,21 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   fun handleKeyboardAction() = onSubmitButtonClicked()
 
   private fun subscribeToCurrentQuestion() {
-    ephemeralQuestionLiveData.observe(fragment, Observer {
-      processEphemeralQuestionResult(it)
-    })
+    ephemeralQuestionLiveData.observe(
+      fragment,
+      Observer {
+        processEphemeralQuestionResult(it)
+      }
+    )
   }
 
   private fun processEphemeralQuestionResult(result: AsyncResult<EphemeralQuestion>) {
     if (result.isFailure()) {
-      logger.e("QuestionPlayerFragment", "Failed to retrieve ephemeral question", result.getErrorOrNull()!!)
+      logger.e(
+        "QuestionPlayerFragment",
+        "Failed to retrieve ephemeral question",
+        result.getErrorOrNull()!!
+      )
     } else if (result.isPending()) {
       // Display nothing until a valid result is available.
       return
@@ -128,18 +139,24 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     updateEndSessionMessage(ephemeralQuestion.ephemeralState)
 
     questionViewModel.itemList.clear()
-    questionViewModel.itemList += recyclerViewAssembler.compute(ephemeralQuestion.ephemeralState, skillId)
+    questionViewModel.itemList += recyclerViewAssembler.compute(
+      ephemeralQuestion.ephemeralState,
+      skillId
+    )
   }
 
   private fun updateProgress(currentQuestionIndex: Int, questionCount: Int) {
     questionViewModel.currentQuestion.set(currentQuestionIndex + 1)
     questionViewModel.questionCount.set(questionCount)
-    questionViewModel.progressPercentage.set((((currentQuestionIndex + 1) / questionCount.toDouble()) * 100).toInt())
+    questionViewModel.progressPercentage.set(
+      (((currentQuestionIndex + 1) / questionCount.toDouble()) * 100).toInt()
+    )
     questionViewModel.isAtEndOfSession.set(currentQuestionIndex == questionCount)
   }
 
   private fun updateEndSessionMessage(ephemeralState: EphemeralState) {
-    val isStateTerminal = ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE
+    val isStateTerminal =
+      ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE
     val endSessionViewsVisibility = if (isStateTerminal) View.VISIBLE else View.GONE
     binding.endSessionHeaderTextView.visibility = endSessionViewsVisibility
     binding.endSessionBodyTextView.visibility = endSessionViewsVisibility
@@ -150,13 +167,19 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   /** This function listens to and processes the result of submitAnswer from QuestionAssessmentProgressController. */
-  private fun subscribeToAnswerOutcome(answerOutcomeResultLiveData: LiveData<AsyncResult<AnsweredQuestionOutcome>>) {
-    val answerOutcomeLiveData = Transformations.map(answerOutcomeResultLiveData, ::processAnsweredQuestionOutcome)
-    answerOutcomeLiveData.observe(fragment, Observer<AnsweredQuestionOutcome> { result ->
-      if (result.isCorrectAnswer) {
-        recyclerViewAssembler.showCongratulationMessageOnCorrectAnswer()
+  private fun subscribeToAnswerOutcome(
+    answerOutcomeResultLiveData: LiveData<AsyncResult<AnsweredQuestionOutcome>>
+  ) {
+    val answerOutcomeLiveData =
+      Transformations.map(answerOutcomeResultLiveData, ::processAnsweredQuestionOutcome)
+    answerOutcomeLiveData.observe(
+      fragment,
+      Observer<AnsweredQuestionOutcome> { result ->
+        if (result.isCorrectAnswer) {
+          recyclerViewAssembler.showCongratulationMessageOnCorrectAnswer()
+        }
       }
-    })
+    )
   }
 
   /** Helper for subscribeToAnswerOutcome. */
@@ -164,7 +187,11 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     answeredQuestionOutcomeResult: AsyncResult<AnsweredQuestionOutcome>
   ): AnsweredQuestionOutcome {
     if (answeredQuestionOutcomeResult.isFailure()) {
-      logger.e("StateFragment", "Failed to retrieve answer outcome", answeredQuestionOutcomeResult.getErrorOrNull()!!)
+      logger.e(
+        "StateFragment",
+        "Failed to retrieve answer outcome",
+        answeredQuestionOutcomeResult.getErrorOrNull()!!
+      )
     }
     return answeredQuestionOutcomeResult.getOrDefault(AnsweredQuestionOutcome.getDefaultInstance())
   }
@@ -174,8 +201,12 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   private fun hideKeyboard() {
-    val inputManager: InputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    inputManager.hideSoftInputFromWindow(fragment.view!!.windowToken, InputMethodManager.SHOW_FORCED)
+    val inputManager: InputMethodManager =
+      activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputManager.hideSoftInputFromWindow(
+      fragment.view!!.windowToken,
+      InputMethodManager.SHOW_FORCED
+    )
   }
 
   private fun createRecyclerViewAssembler(

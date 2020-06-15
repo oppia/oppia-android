@@ -9,7 +9,10 @@ import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import javax.inject.Inject
 
 /** The activity for setting user preferences. */
-class OptionsActivity : InjectableAppCompatActivity(), RouteToAppLanguageListListener, RouteToAudioLanguageListListener,
+class OptionsActivity :
+  InjectableAppCompatActivity(),
+  RouteToAppLanguageListListener,
+  RouteToAudioLanguageListListener,
   RouteToStoryTextSizeListener {
   @Inject
   lateinit var optionActivityPresenter: OptionsActivityPresenter
@@ -53,7 +56,8 @@ class OptionsActivity : InjectableAppCompatActivity(), RouteToAppLanguageListLis
         this,
         APP_LANGUAGE,
         appLanguage
-      ), REQUEST_CODE_APP_LANGUAGE
+      ),
+      REQUEST_CODE_APP_LANGUAGE
     )
   }
 
@@ -63,7 +67,8 @@ class OptionsActivity : InjectableAppCompatActivity(), RouteToAppLanguageListLis
         this,
         AUDIO_LANGUAGE,
         audioLanguage
-      ), REQUEST_CODE_AUDIO_LANGUAGE
+      ),
+      REQUEST_CODE_AUDIO_LANGUAGE
     )
   }
 
@@ -73,7 +78,8 @@ class OptionsActivity : InjectableAppCompatActivity(), RouteToAppLanguageListLis
         this,
         STORY_TEXT_SIZE,
         storyTextSize
-      ), REQUEST_CODE_TEXT_SIZE
+      ),
+      REQUEST_CODE_TEXT_SIZE
     )
   }
 }

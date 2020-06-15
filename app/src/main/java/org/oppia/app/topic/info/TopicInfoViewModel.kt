@@ -17,7 +17,8 @@ class TopicInfoViewModel @Inject constructor(
 
   val topic = ObservableField<Topic>(Topic.getDefaultInstance())
   val topicDescription = ObservableField<CharSequence>("")
-  var downloadStatusIndicatorDrawableResourceId = ObservableField(R.drawable.ic_available_offline_primary_24dp)
+  var downloadStatusIndicatorDrawableResourceId =
+    ObservableField(R.drawable.ic_available_offline_primary_24dp)
   val isDescriptionExpanded = ObservableField<Boolean>(true)
   val isSeeMoreVisible = ObservableField<Boolean>(true)
 

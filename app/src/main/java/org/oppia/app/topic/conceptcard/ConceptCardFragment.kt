@@ -29,7 +29,8 @@ class ConceptCardFragment : InjectableDialogFragment() {
     }
   }
 
-  @Inject lateinit var conceptCardFragmentPresenter: ConceptCardFragmentPresenter
+  @Inject
+  lateinit var conceptCardFragmentPresenter: ConceptCardFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -41,10 +42,19 @@ class ConceptCardFragment : InjectableDialogFragment() {
     setStyle(STYLE_NORMAL, R.style.FullScreenDialogStyle)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
     super.onCreateView(inflater, container, savedInstanceState)
-    val args = checkNotNull(arguments) { "Expected arguments to be passed to ConceptCardFragment" }
-    val skillId = checkNotNull(args.getString(KEY_SKILL_ID)) { "Expected skillId to be passed to ConceptCardFragment" }
+    val args = checkNotNull(arguments) {
+      "Expected arguments to be passed to ConceptCardFragment"
+    }
+    val skillId =
+      checkNotNull(args.getString(KEY_SKILL_ID)) {
+        "Expected skillId to be passed to ConceptCardFragment"
+      }
     return conceptCardFragmentPresenter.handleCreateView(inflater, container, skillId)
   }
 

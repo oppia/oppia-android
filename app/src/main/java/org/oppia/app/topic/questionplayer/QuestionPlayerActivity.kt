@@ -10,14 +10,19 @@ import org.oppia.app.player.stopplaying.StopExplorationDialogFragment
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
 import javax.inject.Inject
 
-const val QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY = "QuestionPlayerActivity.skill_id_list"
+const val QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY =
+  "QuestionPlayerActivity.skill_id_list"
 private const val TAG_STOP_TRAINING_SESSION_DIALOG = "STOP_TRAINING_SESSION_DIALOG"
 
 /** Activity for QuestionPlayer in train mode. */
-class QuestionPlayerActivity : InjectableAppCompatActivity(), StopStatePlayingSessionListener,
-  RestartPlayingSessionListener, StateKeyboardButtonListener {
+class QuestionPlayerActivity :
+  InjectableAppCompatActivity(),
+  StopStatePlayingSessionListener,
+  RestartPlayingSessionListener,
+  StateKeyboardButtonListener {
 
-  @Inject lateinit var questionPlayerActivityPresenter: QuestionPlayerActivityPresenter
+  @Inject
+  lateinit var questionPlayerActivityPresenter: QuestionPlayerActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -38,7 +43,8 @@ class QuestionPlayerActivity : InjectableAppCompatActivity(), StopStatePlayingSe
   }
 
   private fun showStopExplorationDialogFragment() {
-    val previousFragment = supportFragmentManager.findFragmentByTag(TAG_STOP_TRAINING_SESSION_DIALOG)
+    val previousFragment =
+      supportFragmentManager.findFragmentByTag(TAG_STOP_TRAINING_SESSION_DIALOG)
     if (previousFragment != null) {
       supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
@@ -48,7 +54,10 @@ class QuestionPlayerActivity : InjectableAppCompatActivity(), StopStatePlayingSe
 
   companion object {
     /** Returns a new [Intent] to route to [QuestionPlayerActivity] for a specified skill ID list. */
-    fun createQuestionPlayerActivityIntent(context: Context, skillIdList: ArrayList<String>): Intent {
+    fun createQuestionPlayerActivityIntent(
+      context: Context,
+      skillIdList: ArrayList<String>
+    ): Intent {
       val intent = Intent(context, QuestionPlayerActivity::class.java)
       intent.putExtra(QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY, skillIdList)
       return intent

@@ -18,11 +18,12 @@ class ChapterSummaryAdapter(
 ) :
   RecyclerView.Adapter<ChapterSummaryAdapter.ChapterSummaryViewHolder>() {
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChapterSummaryViewHolder {
-    val chapterSummaryListItemBinding = DataBindingUtil.inflate<LessonsChapterViewBinding>(
-      LayoutInflater.from(parent.context),
-      R.layout.lessons_chapter_view, parent,
-      /* attachToRoot= */ false
-    )
+    val chapterSummaryListItemBinding = DataBindingUtil
+      .inflate<LessonsChapterViewBinding>(
+        LayoutInflater.from(parent.context),
+        R.layout.lessons_chapter_view, parent,
+        /* attachToRoot= */ false
+      )
     return ChapterSummaryViewHolder(chapterSummaryListItemBinding)
   }
 
