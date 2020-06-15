@@ -70,8 +70,15 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_infoTopicTab_isDisplayedInTabLayout() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      onView(withText(TopicTab.getTabForPosition(0).name))
-        .check(matches(isDescendantOfA(withId(R.id.topic_tabs_container))))
+      onView(withText(TopicTab.getTabForPosition(0).name)).check(
+        matches(
+          isDescendantOfA(
+            withId(
+              R.id.topic_tabs_container
+            )
+          )
+        )
+      )
     }
   }
 
@@ -210,7 +217,11 @@ class TopicFragmentTest {
       ).perform(click())
       onView(atPositionOnView(R.id.revision_recycler_view, 0, R.id.subtopic_title)).check(
         matches(
-          withText(containsString("What is a Fraction?"))
+          withText(
+            containsString(
+              "What is a Fraction?"
+            )
+          )
         )
       )
     }
@@ -344,7 +355,15 @@ class TopicFragmentTest {
       )
       onView(
         atPositionOnView(R.id.revision_recycler_view, 0, R.id.subtopic_title)
-      ).check(matches(withText(containsString("What is a Fraction?"))))
+      ).check(
+        matches(
+          withText(
+            containsString(
+              "What is a Fraction?"
+            )
+          )
+        )
+      )
     }
   }
 
