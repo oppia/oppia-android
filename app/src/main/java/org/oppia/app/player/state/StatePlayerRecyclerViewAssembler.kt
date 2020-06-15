@@ -78,7 +78,6 @@ import org.oppia.app.utility.LifecycleSafeTimerFactory
 import org.oppia.util.parser.HtmlParser
 import org.oppia.util.threading.BackgroundDispatcher
 import javax.inject.Inject
-import org.oppia.app.topic.questionplayer.QuestionPlayerFragment
 
 private const val DELAY_SHOW_INITIAL_HINT_MS = 60_000L
 private const val DELAY_SHOW_ADDITIONAL_HINTS_MS = 30_000L
