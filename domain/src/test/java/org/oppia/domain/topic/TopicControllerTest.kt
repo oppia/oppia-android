@@ -1123,7 +1123,7 @@ class TopicControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testGetRevisionCard_falseInformation_returnsFailure_logsException(){
+  fun testGetRevisionCard_noTopicAndSubtopicId_returnsFailure_logsException(){
     topicController.getRevisionCard("","")
 
     val exception = fakeExceptionLogger.getMostRecentException()

@@ -31,8 +31,6 @@ import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputMo
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.testing.FakeExceptionLogger
-import org.oppia.testing.TestLogReportingModule
 import org.robolectric.annotation.Config
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -487,8 +485,7 @@ class AnswerClassificationControllerTest {
   @Component(modules = [
     TestModule::class, ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
     MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
-    TextInputRuleModule::class, DragDropSortInputModule::class, InteractionsModule::class,
-    TestLogReportingModule::class
+    TextInputRuleModule::class, DragDropSortInputModule::class, InteractionsModule::class
   ])
   interface TestApplicationComponent {
     @Component.Builder
