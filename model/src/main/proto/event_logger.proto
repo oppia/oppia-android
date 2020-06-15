@@ -28,26 +28,46 @@ message EventLog {
 
   // Structure of an exploration context.
   message ExplorationContext {
-    // The active topic ID when the event is logged
+    // The active topic ID when the event is logged.
     string topic_id = 1;
-    // The active story ID when the event is logged
+    // The active story ID when the event is logged.
     string story_id = 2;
-    // The active exploration ID when the event is logged
+    // The active exploration ID when the event is logged.
     string exploration_id = 3;
   }
 
   // Structure of a question context.
   message QuestionContext {
-    // The active topic ID when the event is logged
+    // The active topic ID when the event is logged.
     string topic_id = 1;
-    // The active question ID when the event is logged
+    // The active question ID when the event is logged.
     string question_id = 2;
   }
 
-  // Supported event actions for event logging
+  // Supported event actions for event logging.
   enum EventAction {
-    // The undefined user action of an event
+    // The undefined user action of an event.
     EVENT_ACTION_UNSPECIFIED = 0;
+    // Opening of home activity.
+    OPEN_HOME = 1;
+    // Opening of info tab under topic activity.
+    OPEN_INFO_TAB = 2;
+    // Opening of lessons tab under topic activity.
+    OPEN_LESSONS_TAB = 3;
+    // Opening of practice tab under topic activity.
+    OPEN_PRACTICE_TAB = 4;
+    // Opening of revision tab under topic activity.
+    OPEN_REVISION_TAB = 5;
+    // Opening of story activity.
+    OPEN_STORY_ACTIVITY= 6;
+    // Opening of revision activity.
+    OPEN_REVISION_ACTIVITY = 7;
+    // Opening of exploration activity.
+    OPEN_EXPLORATION_ACTIVITY = 8;
+    // Click on audio button.
+    CLICK_AUDIO_BUTTON = 9;
+    // Click on submit button.
+    CLICK_SUBMIT_BUTTON = 10;
   }
 
   // Supported priority of events for event logging
