@@ -57,7 +57,6 @@
         android:divider="@android:color/transparent"
         android:dividerHeight="8dp"
         android:overScrollMode="never"
-        android:padding="16dp"
         android:paddingStart="@dimen/padding_24dp"
         android:paddingEnd="@dimen/padding_24dp"
         app:data="@{viewModel.itemList}"
