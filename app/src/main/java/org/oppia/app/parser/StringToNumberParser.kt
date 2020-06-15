@@ -7,7 +7,8 @@ import org.oppia.domain.util.normalizeWhitespace
 
 /** This class contains methods that help to parse string to number, check realtime and submit time errors. */
 class StringToNumberParser {
-  private val validCharsRegex = """^[\d\s.-]+$""".toRegex()
+  private val validCharsRegex =
+    """^[\d\s.-]+$""".toRegex()
 
   /**
    * Returns a [NumericInputParsingError] for obvious incorrect number formatting issues for the specified raw text, or
