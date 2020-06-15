@@ -21,7 +21,9 @@ import org.oppia.app.player.state.listener.StateKeyboardButtonListener
  * This is a dummy activity to test input interaction views.
  * It contains [FractionInputInteractionView], [NumericInputInteractionView],and [TextInputInteractionView].
  */
-class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButtonListener,
+class InputInteractionViewTestActivity :
+  AppCompatActivity(),
+  StateKeyboardButtonListener,
   InteractionAnswerErrorReceiver {
   override fun onEditorAction(actionCode: Int) {
   }
