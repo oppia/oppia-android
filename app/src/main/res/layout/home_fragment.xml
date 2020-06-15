@@ -10,7 +10,7 @@
       type="org.oppia.app.home.HomeFragmentPresenter" />
   </data>
 
-  <LinearLayout
+  <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -21,11 +21,15 @@
       android:id="@+id/home_recycler_view"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:paddingTop="36dp"
       android:clipToPadding="false"
-      android:paddingEnd="24dp"
-      android:paddingStart="24dp"
-      android:paddingBottom="24dp"
-      android:overScrollMode="never" />
-  </LinearLayout>
+      android:overScrollMode="never"
+      android:paddingTop="36dp"
+      android:paddingBottom="148dp"
+      android:scrollbars="none" />
+
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="6dp"
+      android:background="@drawable/toolbar_drop_shadow" />
+  </FrameLayout>
 </layout>

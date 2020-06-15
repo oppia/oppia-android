@@ -15,13 +15,17 @@ import javax.inject.Inject
 class ExplorationFragmentPresenter @Inject constructor(
   private val fragment: Fragment
 ) {
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    profileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String
+  ): View? {
     val binding = ExplorationFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false).root
-
+    val stateFragment = StateFragment.newInstance(profileId, topicId, storyId, explorationId)
     if (getStateFragment() == null) {
-      val explorationId = fragment.arguments!!.getString(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
-      checkNotNull(explorationId) { "StateFragment must be created with an exploration ID" }
-      val stateFragment = StateFragment.newInstance(explorationId)
       fragment.childFragmentManager.beginTransaction().add(
         R.id.state_fragment_placeholder,
         stateFragment
@@ -34,8 +38,20 @@ class ExplorationFragmentPresenter @Inject constructor(
     getStateFragment()?.handlePlayAudio()
   }
 
+  fun setAudioBarVisibility(isVisible: Boolean) = getStateFragment()?.setAudioBarVisibility(isVisible)
+
+  fun scrollToTop() = getStateFragment()?.scrollToTop()
+
   fun onKeyboardAction() {
     getStateFragment()?.handleKeyboardAction()
+  }
+
+  fun revealHint(saveUserChoice: Boolean, hintIndex: Int){
+    getStateFragment()?.revealHint(saveUserChoice, hintIndex)
+  }
+
+  fun revealSolution(saveUserChoice: Boolean){
+    getStateFragment()?.revealSolution(saveUserChoice)
   }
 
   private fun getStateFragment(): StateFragment? {

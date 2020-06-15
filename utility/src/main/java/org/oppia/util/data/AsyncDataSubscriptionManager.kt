@@ -2,7 +2,6 @@ package org.oppia.util.data
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.ConcurrentQueueMap
@@ -53,18 +52,20 @@ class AsyncDataSubscriptionManager @Inject constructor(
   }
 
   /**
+   * Removes the specified association between parent and child IDs to prevent notifications to the parent ID from also
+   * notifying observers of the child ID.
+   */
+  internal fun dissociateIds(childId: Any, parentId: Any) {
+    associatedIds.dequeue(parentId, childId)
+  }
+
+  /**
    * Notifies all subscribers of the specified [DataProvider] id that the provider has been changed and should be
    * re-queried for its latest state.
    */
   suspend fun notifyChange(id: Any) {
-    // Ensure observed changes are called specifically on the main thread since that's what NotifiableAsyncLiveData
-    // expects.
-    // TODO(#90): Update NotifiableAsyncLiveData so that observeChange() can occur on background threads to avoid any
-    //  load on the UI thread until the final data value is ready for delivery.
-    val scope = CoroutineScope(Dispatchers.Main)
-    scope.launch {
-      subscriptionMap.getQueue(id).forEach { observeChange -> observeChange() }
-    }
+    // Notify subscribers.
+    subscriptionMap.getQueue(id).forEach { observeChange -> observeChange() }
 
     // Also notify all children observing this parent.
     associatedIds.getQueue(id).forEach { childId -> notifyChange(childId) }

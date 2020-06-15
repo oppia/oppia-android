@@ -38,12 +38,9 @@ import javax.inject.Singleton
 @Config(manifest = Config.NONE)
 class DirectoryManagementUtilTest {
 
-  @Inject
-  lateinit var directoryManagementUtil: DirectoryManagementUtil
+  @Inject lateinit var directoryManagementUtil: DirectoryManagementUtil
 
-
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
 
   // https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/
   @ObsoleteCoroutinesApi

@@ -24,6 +24,7 @@ import org.oppia.app.model.RuleSpec
 import org.oppia.app.model.StringList
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
@@ -104,8 +105,7 @@ class AnswerClassificationControllerTest {
       .build()
   }
 
-  @Inject
-  lateinit var answerClassificationController: AnswerClassificationController
+  @Inject lateinit var answerClassificationController: AnswerClassificationController
 
   @Before
   fun setUp() {
@@ -485,7 +485,7 @@ class AnswerClassificationControllerTest {
   @Component(modules = [
     TestModule::class, ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
     MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
-    TextInputRuleModule::class, InteractionsModule::class
+    TextInputRuleModule::class, DragDropSortInputModule::class, InteractionsModule::class
   ])
   interface TestApplicationComponent {
     @Component.Builder

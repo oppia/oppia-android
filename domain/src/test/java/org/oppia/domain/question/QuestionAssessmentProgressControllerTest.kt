@@ -26,15 +26,16 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
-import org.oppia.app.model.AnswerOutcome
 import org.oppia.app.model.AnsweredQuestionOutcome
 import org.oppia.app.model.EphemeralQuestion
 import org.oppia.app.model.EphemeralState.StateTypeCase.COMPLETED_STATE
 import org.oppia.app.model.EphemeralState.StateTypeCase.PENDING_STATE
 import org.oppia.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.UserAnswer
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
@@ -66,18 +67,13 @@ class QuestionAssessmentProgressControllerTest {
   private val TEST_SKILL_ID_LIST_01 = listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1) // questions 2, 0, 3
   private val TEST_SKILL_ID_LIST_2 = listOf(TEST_SKILL_ID_2) // questions 4, 5, 2
 
-  // TODO: add tests for multiple sessions (& verify that reverting the fix for reinitializing the question data
-  //  provider breaks as expected).
-
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Inject
-  lateinit var questionTrainingController: QuestionTrainingController
+  @Inject lateinit var questionTrainingController: QuestionTrainingController
 
-  @Inject
-  lateinit var questionAssessmentProgressController: QuestionAssessmentProgressController
+  @Inject lateinit var questionAssessmentProgressController: QuestionAssessmentProgressController
 
   @ExperimentalCoroutinesApi
   @Inject
@@ -88,10 +84,10 @@ class QuestionAssessmentProgressControllerTest {
   lateinit var mockCurrentQuestionLiveDataObserver: Observer<AsyncResult<EphemeralQuestion>>
 
   @Mock
-  lateinit var mockCurrentQuestionLiveDataObserver2: Observer<AsyncResult<EphemeralQuestion>>
+  lateinit var mockAsyncResultLiveDataObserver: Observer<AsyncResult<Any>>
 
   @Mock
-  lateinit var mockAsyncResultLiveDataObserver: Observer<AsyncResult<Any?>>
+  lateinit var mockAsyncNullableResultLiveDataObserver: Observer<AsyncResult<Any?>>
 
   @Mock
   lateinit var mockAsyncAnswerOutcomeObserver: Observer<AsyncResult<AnsweredQuestionOutcome>>
@@ -100,7 +96,10 @@ class QuestionAssessmentProgressControllerTest {
   lateinit var currentQuestionResultCaptor: ArgumentCaptor<AsyncResult<EphemeralQuestion>>
 
   @Captor
-  lateinit var asyncResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
+  lateinit var asyncResultCaptor: ArgumentCaptor<AsyncResult<Any>>
+
+  @Captor
+  lateinit var asyncNullableResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
 
   @Captor
   lateinit var asyncAnswerOutcomeCaptor: ArgumentCaptor<AsyncResult<AnsweredQuestionOutcome>>
@@ -112,7 +111,7 @@ class QuestionAssessmentProgressControllerTest {
 
   @Before
   fun setUp() {
-    setUpTestApplicationComponent()
+    setUpTestApplicationWithSeed(questionSeed = 0)
   }
 
   @Test
@@ -138,8 +137,9 @@ class QuestionAssessmentProgressControllerTest {
     verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(currentQuestionResultCaptor.capture())
     assertThat(currentQuestionResultCaptor.value.isFailure()).isTrue()
     assertThat(currentQuestionResultCaptor.value.getErrorOrNull())
+      .hasCauseThat()
       .hasMessageThat()
-      .contains("Cannot start a training session with zero questions.")
+      .contains("Expected at least 1 question")
   }
 
   @Test
@@ -173,7 +173,7 @@ class QuestionAssessmentProgressControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testGetCurrentQuestion_playSession_loaded_returnsInitialStatePending() = runBlockingTest(
+  fun testGetCurrentQuestion_playSession_loaded_returnsInitialQuestionPending() = runBlockingTest(
     coroutineContext
   ) {
     startTrainingSession(TEST_SKILL_ID_LIST_012)
@@ -193,7 +193,7 @@ class QuestionAssessmentProgressControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testGetCurrentQuestion_playInvalidSession_thenPlayValidExp_returnsInitialPendingState() = runBlockingTest(
+  fun testGetCurrentQuestion_playInvalidSession_thenPlayValidExp_returnsInitialPendingQuestion() = runBlockingTest(
     coroutineContext
   ) {
     // Start with starting an invalid training session.
@@ -258,7 +258,7 @@ class QuestionAssessmentProgressControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testGetCurrentQuestion_playSecondSession_afterFinishingPrev_loaded_returnsInitialState() = runBlockingTest(
+  fun testGetCurrentQuestion_playSecondSession_afterFinishingPrev_loaded_returnsInitialQuestion() = runBlockingTest(
     coroutineContext
   ) {
     val currentQuestionLiveData = questionAssessmentProgressController.getCurrentQuestion()
@@ -292,31 +292,13 @@ class QuestionAssessmentProgressControllerTest {
     assertThat(asyncAnswerOutcomeCaptor.value.isFailure()).isTrue()
     assertThat(asyncAnswerOutcomeCaptor.value.getErrorOrNull())
       .hasMessageThat()
-      .contains("Cannot submit an answer if an session is not being played.")
-  }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testSubmitAnswer_whileLoading_failsWithError() = runBlockingTest(coroutineContext) {
-    // Start playing an session, but don't wait for it to complete.
-    subscribeToCurrentQuestionToAllowSessionToLoad()
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
-
-    val result = questionAssessmentProgressController.submitAnswer(createMultipleChoiceAnswer(0))
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
-    advanceUntilIdle()
-
-    // Verify that the answer submission failed.
-    verify(mockAsyncAnswerOutcomeObserver, atLeastOnce()).onChanged(asyncAnswerOutcomeCaptor.capture())
-    assertThat(asyncAnswerOutcomeCaptor.value.isFailure()).isTrue()
-    assertThat(asyncAnswerOutcomeCaptor.value.getErrorOrNull())
-      .hasMessageThat()
-      .contains("Cannot submit an answer while the session is being loaded.")
+      .contains("Cannot submit an answer if a training session has not yet begun.")
   }
 
   @Test
   @ExperimentalCoroutinesApi
   fun testSubmitAnswer_forMultipleChoice_correctAnswer_succeeds() = runBlockingTest(coroutineContext) {
+    setUpTestApplicationWithSeed(questionSeed = 6)
     subscribeToCurrentQuestionToAllowSessionToLoad()
     startTrainingSession(TEST_SKILL_ID_LIST_2)
 
@@ -334,6 +316,7 @@ class QuestionAssessmentProgressControllerTest {
   fun testSubmitAnswer_forMultipleChoice_correctAnswer_returnsOutcomeWithTransition() = runBlockingTest(
     coroutineContext
   ) {
+    setUpTestApplicationWithSeed(questionSeed = 6)
     subscribeToCurrentQuestionToAllowSessionToLoad()
     startTrainingSession(TEST_SKILL_ID_LIST_2)
 
@@ -353,6 +336,7 @@ class QuestionAssessmentProgressControllerTest {
   fun testSubmitAnswer_forMultipleChoice_wrongAnswer_succeeds() = runBlockingTest(
     coroutineContext
   ) {
+    setUpTestApplicationWithSeed(questionSeed = 6)
     subscribeToCurrentQuestionToAllowSessionToLoad()
     startTrainingSession(TEST_SKILL_ID_LIST_2)
 
@@ -367,9 +351,10 @@ class QuestionAssessmentProgressControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testSubmitAnswer_forMultipleChoice_wrongAnswer_providesDefaultFeedbackAndNewStateTransition() = runBlockingTest(
+  fun testSubmitAnswer_forMultChoice_wrongAnswer_providesDefaultFeedbackAndNewQuestionTransition() = runBlockingTest(
     coroutineContext
   ) {
+    setUpTestApplicationWithSeed(questionSeed = 6)
     subscribeToCurrentQuestionToAllowSessionToLoad()
     startTrainingSession(TEST_SKILL_ID_LIST_2)
 
@@ -380,15 +365,16 @@ class QuestionAssessmentProgressControllerTest {
     // Verify that the answer submission was successful.
     verify(mockAsyncAnswerOutcomeObserver, atLeastOnce()).onChanged(asyncAnswerOutcomeCaptor.capture())
     val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
-    assertThat(answerOutcome.feedback.html).contains("Incorrect. Try again.")
+    assertThat(answerOutcome.feedback.html).isEmpty()
     assertThat(answerOutcome.isCorrectAnswer).isFalse()
   }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testGetCurrentQuestion_afterSubmittingCorrectMultiChoiceAnswer_becomesCompletedState() = runBlockingTest(
+  fun testGetCurrentQuestion_afterSubmittingCorrectMultiChoiceAnswer_becomesCompletedQuestion() = runBlockingTest(
     coroutineContext
   ) {
+    setUpTestApplicationWithSeed(questionSeed = 6)
     val currentQuestionLiveData = questionAssessmentProgressController.getCurrentQuestion()
     currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
     startTrainingSession(TEST_SKILL_ID_LIST_2)
@@ -400,18 +386,19 @@ class QuestionAssessmentProgressControllerTest {
     assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
     val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
     assertThat(ephemeralQuestion.currentQuestionIndex).isEqualTo(0)
-    assertThat(ephemeralQuestion.totalQuestionCount).isEqualTo(2)
+    assertThat(ephemeralQuestion.totalQuestionCount).isEqualTo(3)
     assertThat(ephemeralQuestion.ephemeralState.stateTypeCase).isEqualTo(COMPLETED_STATE)
     val completedState = ephemeralQuestion.ephemeralState.completedState
-    assertThat(completedState.getAnswer(0).userAnswer.nonNegativeInt).isEqualTo(1)
+    assertThat(completedState.getAnswer(0).userAnswer.answer.nonNegativeInt).isEqualTo(1)
     assertThat(completedState.getAnswer(0).feedback.html).contains("That's correct!")
   }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testGetCurrentQuestion_afterSubmittingWrongMultiChoiceAnswer_updatesPendingState() = runBlockingTest(
+  fun testGetCurrentQuestion_afterSubmittingWrongMultiChoiceAnswer_updatesPendingQuestion() = runBlockingTest(
     coroutineContext
   ) {
+    setUpTestApplicationWithSeed(questionSeed = 6)
     val currentQuestionLiveData = questionAssessmentProgressController.getCurrentQuestion()
     currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
     startTrainingSession(TEST_SKILL_ID_LIST_2)
@@ -423,18 +410,19 @@ class QuestionAssessmentProgressControllerTest {
     assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
     val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
     assertThat(ephemeralQuestion.currentQuestionIndex).isEqualTo(0)
-    assertThat(ephemeralQuestion.totalQuestionCount).isEqualTo(2)
+    assertThat(ephemeralQuestion.totalQuestionCount).isEqualTo(3)
     assertThat(ephemeralQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
     val pendingState = ephemeralQuestion.ephemeralState.pendingState
-    assertThat(pendingState.getWrongAnswer(0).userAnswer.nonNegativeInt).isEqualTo(0)
-    assertThat(pendingState.getWrongAnswer(0).feedback.html).contains("Incorrect. Try again.")
+    assertThat(pendingState.getWrongAnswer(0).userAnswer.answer.nonNegativeInt).isEqualTo(0)
+    assertThat(pendingState.getWrongAnswer(0).feedback.html).isEmpty()
   }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testGetCurrentQuestion_afterSubmittingWrongThenRightAnswer_updatesToStateWithBothAnswers() = runBlockingTest(
+  fun testGetCurrentQuestion_afterSubmittingWrongThenRightAnswer_updatesToQuestionWithBothAnswers() = runBlockingTest(
     coroutineContext
   ) {
+    setUpTestApplicationWithSeed(questionSeed = 6)
     subscribeToCurrentQuestionToAllowSessionToLoad()
     startTrainingSession(TEST_SKILL_ID_LIST_2)
     submitMultipleChoiceAnswer(0)
@@ -446,12 +434,12 @@ class QuestionAssessmentProgressControllerTest {
     assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
     val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
     assertThat(ephemeralQuestion.currentQuestionIndex).isEqualTo(0)
-    assertThat(ephemeralQuestion.totalQuestionCount).isEqualTo(2)
+    assertThat(ephemeralQuestion.totalQuestionCount).isEqualTo(3)
     assertThat(ephemeralQuestion.ephemeralState.stateTypeCase).isEqualTo(COMPLETED_STATE)
     val completedState = ephemeralQuestion.ephemeralState.completedState
-    assertThat(completedState.getAnswer(0).userAnswer.nonNegativeInt).isEqualTo(0)
-    assertThat(completedState.getAnswer(0).feedback.html).contains("Incorrect. Try again.")
-    assertThat(completedState.getAnswer(1).userAnswer.nonNegativeInt).isEqualTo(1)
+    assertThat(completedState.getAnswer(0).userAnswer.answer.nonNegativeInt).isEqualTo(0)
+    assertThat(completedState.getAnswer(0).feedback.html).isEmpty()
+    assertThat(completedState.getAnswer(1).userAnswer.answer.nonNegativeInt).isEqualTo(1)
     assertThat(completedState.getAnswer(1).feedback.html).contains("That's correct!")
   }
 
@@ -459,236 +447,96 @@ class QuestionAssessmentProgressControllerTest {
   @ExperimentalCoroutinesApi
   fun testMoveToNext_beforePlaying_failsWithError() = runBlockingTest(coroutineContext) {
     val moveToStateResult = questionAssessmentProgressController.moveToNextQuestion()
-    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
+    moveToStateResult.observeForever(mockAsyncNullableResultLiveDataObserver)
 
-    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isFailure()).isTrue()
-    assertThat(asyncResultCaptor.value.getErrorOrNull())
+    verify(mockAsyncNullableResultLiveDataObserver, atLeastOnce()).onChanged(asyncNullableResultCaptor.capture())
+    assertThat(asyncNullableResultCaptor.value.isFailure()).isTrue()
+    assertThat(asyncNullableResultCaptor.value.getErrorOrNull())
       .hasMessageThat()
-      .contains("Cannot navigate to a next state if an session is not being played.")
+      .contains("Cannot navigate to a next question if a training session has not begun.")
   }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testMoveToNext_whileLoadingSession_failsWithError() = runBlockingTest(coroutineContext) {
-    // Start playing an session, but don't wait for it to complete.
+  fun testMoveToNext_forPendingInitialQuestion_failsWithError() = runBlockingTest(coroutineContext) {
     subscribeToCurrentQuestionToAllowSessionToLoad()
     startTrainingSession(TEST_SKILL_ID_LIST_2)
 
     val moveToStateResult = questionAssessmentProgressController.moveToNextQuestion()
-    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
-
-    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isFailure()).isTrue()
-    assertThat(asyncResultCaptor.value.getErrorOrNull())
-      .hasMessageThat()
-      .contains("Cannot navigate to a next state if an session is being loaded.")
-  }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testMoveToNext_forPendingInitialState_failsWithError() = runBlockingTest(coroutineContext) {
-    subscribeToCurrentQuestionToAllowSessionToLoad()
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
-
-    val moveToStateResult = questionAssessmentProgressController.moveToNextQuestion()
-    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
+    moveToStateResult.observeForever(mockAsyncNullableResultLiveDataObserver)
     advanceUntilIdle()
 
     // Verify that we can't move ahead since the current state isn't yet completed.
-    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isFailure()).isTrue()
-    assertThat(asyncResultCaptor.value.getErrorOrNull())
+    verify(mockAsyncNullableResultLiveDataObserver, atLeastOnce()).onChanged(asyncNullableResultCaptor.capture())
+    assertThat(asyncNullableResultCaptor.value.isFailure()).isTrue()
+    assertThat(asyncNullableResultCaptor.value.getErrorOrNull())
       .hasMessageThat()
       .contains("Cannot navigate to next state; at most recent state.")
   }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testMoveToNext_forCompletedState_succeeds() = runBlockingTest(coroutineContext) {
+  fun testMoveToNext_forCompletedQuestion_succeeds() = runBlockingTest(coroutineContext) {
+    setUpTestApplicationWithSeed(questionSeed = 6)
     subscribeToCurrentQuestionToAllowSessionToLoad()
     startTrainingSession(TEST_SKILL_ID_LIST_2)
-    submitMultipleChoiceAnswer(0)
+    submitMultipleChoiceAnswer(1)
 
     val moveToStateResult = questionAssessmentProgressController.moveToNextQuestion()
-    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
+    moveToStateResult.observeForever(mockAsyncNullableResultLiveDataObserver)
     advanceUntilIdle()
 
-    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isSuccess()).isTrue()
+    verify(mockAsyncNullableResultLiveDataObserver, atLeastOnce()).onChanged(asyncNullableResultCaptor.capture())
+    assertThat(asyncNullableResultCaptor.value.isSuccess()).isTrue()
   }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testMoveToNext_forCompletedState_movesToNextState() = runBlockingTest(coroutineContext) {
+  fun testMoveToNext_forCompletedQuestion_movesToNextQuestion() = runBlockingTest(coroutineContext) {
+    setUpTestApplicationWithSeed(questionSeed = 6)
     val currentQuestionLiveData = questionAssessmentProgressController.getCurrentQuestion()
     currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
     startTrainingSession(TEST_SKILL_ID_LIST_2)
-    submitMultipleChoiceAnswer(0)
+    submitMultipleChoiceAnswer(1)
 
     moveToNextQuestion()
 
     verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(currentQuestionResultCaptor.capture())
     assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
     val currentQuestion = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(currentQuestion.ephemeralState.state.name).isEqualTo("What language")
-    assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
+    assertThat(currentQuestion.ephemeralState.state.content.html).contains("frac{1}{4}")
   }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testMoveToNext_afterMovingFromCompletedState_failsWithError() = runBlockingTest(coroutineContext) {
+  fun testMoveToNext_afterMovingFromCompletedQuestion_failsWithError() = runBlockingTest(coroutineContext) {
+    setUpTestApplicationWithSeed(questionSeed = 6)
     subscribeToCurrentQuestionToAllowSessionToLoad()
     startTrainingSession(TEST_SKILL_ID_LIST_2)
-    submitMultipleChoiceAnswer(0)
+    submitMultipleChoiceAnswer(1)
     moveToNextQuestion()
 
     // Try skipping past the current state.
     val moveToStateResult = questionAssessmentProgressController.moveToNextQuestion()
-    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
+    moveToStateResult.observeForever(mockAsyncNullableResultLiveDataObserver)
     advanceUntilIdle()
 
     // Verify we can't move ahead since the new state isn't yet completed.
-    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isFailure()).isTrue()
-    assertThat(asyncResultCaptor.value.getErrorOrNull())
+    verify(mockAsyncNullableResultLiveDataObserver, atLeastOnce()).onChanged(asyncNullableResultCaptor.capture())
+    assertThat(asyncNullableResultCaptor.value.isFailure()).isTrue()
+    assertThat(asyncNullableResultCaptor.value.getErrorOrNull())
       .hasMessageThat()
       .contains("Cannot navigate to next state; at most recent state.")
-  }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testMoveToPrevious_beforePlaying_failsWithError() = runBlockingTest(coroutineContext) {
-    val moveToStateResult = questionAssessmentProgressController.moveToPreviousQuestion()
-    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
-    advanceUntilIdle()
-
-    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isFailure()).isTrue()
-    assertThat(asyncResultCaptor.value.getErrorOrNull())
-      .hasMessageThat()
-      .contains("Cannot navigate to a previous state if an session is not being played.")
-  }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testMoveToPrevious_whileLoadingSession_failsWithError() = runBlockingTest(coroutineContext) {
-    // Start playing an session, but don't wait for it to complete.
-    subscribeToCurrentQuestionToAllowSessionToLoad()
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
-
-    val moveToStateResult = questionAssessmentProgressController.moveToPreviousQuestion()
-    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
-    advanceUntilIdle()
-
-    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isFailure()).isTrue()
-    assertThat(asyncResultCaptor.value.getErrorOrNull())
-      .hasMessageThat()
-      .contains("Cannot navigate to a previous state if an session is being loaded.")
-  }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testMoveToPrevious_onPendingInitialState_failsWithError() = runBlockingTest(coroutineContext) {
-    subscribeToCurrentQuestionToAllowSessionToLoad()
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
-
-    val moveToStateResult = questionAssessmentProgressController.moveToPreviousQuestion()
-    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
-    advanceUntilIdle()
-
-    // Verify we can't move behind since the current state is the initial session state.
-    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isFailure()).isTrue()
-    assertThat(asyncResultCaptor.value.getErrorOrNull())
-      .hasMessageThat()
-      .contains("Cannot navigate to previous state; at initial state.")
-  }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testMoveToPrevious_onCompletedInitialState_failsWithError() = runBlockingTest(coroutineContext) {
-    subscribeToCurrentQuestionToAllowSessionToLoad()
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
-    submitMultipleChoiceAnswer(0)
-
-    val moveToStateResult = questionAssessmentProgressController.moveToPreviousQuestion()
-    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
-    advanceUntilIdle()
-
-    // Still can't navigate behind for a completed initial state since there's no previous state.
-    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isFailure()).isTrue()
-    assertThat(asyncResultCaptor.value.getErrorOrNull())
-      .hasMessageThat()
-      .contains("Cannot navigate to previous state; at initial state.")
-  }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testMoveToPrevious_forStateWithCompletedPreviousState_succeeds() = runBlockingTest(coroutineContext) {
-    subscribeToCurrentQuestionToAllowSessionToLoad()
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(0)
-
-    val moveToStateResult = questionAssessmentProgressController.moveToPreviousQuestion()
-    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
-    advanceUntilIdle()
-
-    // Verify that we can navigate to the previous state since the current state is complete and not initial.
-    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isSuccess()).isTrue()
-  }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testMoveToPrevious_forCompletedState_movesToPreviousState() = runBlockingTest(coroutineContext) {
-    val currentQuestionLiveData = questionAssessmentProgressController.getCurrentQuestion()
-    currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(0)
-
-    moveToPreviousQuestion()
-
-    // Since the answer submission and forward navigation should work (see earlier tests), verify that the move to the
-    // previous state does return us back to the initial session state (which is now completed).
-    verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(currentQuestionResultCaptor.capture())
-    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-    val currentQuestion = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(currentQuestion.ephemeralState.state.name).isEqualTo("Welcome!")
-    assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(COMPLETED_STATE)
-  }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testMoveToPrevious_navigatedForwardThenBackToInitial_failsWithError() = runBlockingTest(coroutineContext) {
-    subscribeToCurrentQuestionToAllowSessionToLoad()
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(0)
-    moveToPreviousQuestion()
-
-    val moveToStateResult = questionAssessmentProgressController.moveToPreviousQuestion()
-    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
-    advanceUntilIdle()
-
-    // The first previous navigation should succeed (see above), but the second will fail since we're back at the
-    // initial state.
-    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isFailure()).isTrue()
-    assertThat(asyncResultCaptor.value.getErrorOrNull())
-      .hasMessageThat()
-      .contains("Cannot navigate to previous state; at initial state.")
   }
 
   @Test
   @ExperimentalCoroutinesApi
   fun testSubmitAnswer_forTextInput_correctAnswer_returnsOutcomeWithTransition() = runBlockingTest(coroutineContext) {
+    setUpTestApplicationWithSeed(questionSeed = 2)
     subscribeToCurrentQuestionToAllowSessionToLoad()
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(0)
+    startTrainingSession(TEST_SKILL_ID_LIST_01)
 
-    val result = questionAssessmentProgressController.submitAnswer(createTextInputAnswer("Finnish"))
+    val result = questionAssessmentProgressController.submitAnswer(createTextInputAnswer("1/4"))
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     advanceUntilIdle()
 
@@ -696,17 +544,17 @@ class QuestionAssessmentProgressControllerTest {
     verify(mockAsyncAnswerOutcomeObserver, atLeastOnce()).onChanged(asyncAnswerOutcomeCaptor.capture())
     val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
     assertThat(answerOutcome.isCorrectAnswer).isTrue()
-    assertThat(answerOutcome.feedback.html).contains("Yes! Oppia is the Finnish word for learn.")
+    assertThat(answerOutcome.feedback.html).contains("That's correct!")
   }
 
   @Test
   @ExperimentalCoroutinesApi
   fun testSubmitAnswer_forTextInput_wrongAnswer_returnsDefaultOutcome() = runBlockingTest(coroutineContext) {
+    setUpTestApplicationWithSeed(questionSeed = 2)
     subscribeToCurrentQuestionToAllowSessionToLoad()
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(0)
+    startTrainingSession(TEST_SKILL_ID_LIST_01)
 
-    val result = questionAssessmentProgressController.submitAnswer(createTextInputAnswer("Klingon"))
+    val result = questionAssessmentProgressController.submitAnswer(createTextInputAnswer("2/4"))
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     advanceUntilIdle()
 
@@ -714,19 +562,19 @@ class QuestionAssessmentProgressControllerTest {
     verify(mockAsyncAnswerOutcomeObserver, atLeastOnce()).onChanged(asyncAnswerOutcomeCaptor.capture())
     val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
     assertThat(answerOutcome.isCorrectAnswer).isFalse()
-    assertThat(answerOutcome.feedback.html).contains("Sorry, nope")
+    assertThat(answerOutcome.feedback.html).isEmpty()
   }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testGetCurrentQuestion_secondState_submitRightAnswer_pendingStateBecomesCompleted() = runBlockingTest(
+  fun testGetCurrentQuestion_secondQuestion_submitRightAnswer_pendingQuestionBecomesCompleted() = runBlockingTest(
     coroutineContext
   ) {
     subscribeToCurrentQuestionToAllowSessionToLoad()
     startTrainingSession(TEST_SKILL_ID_LIST_2)
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(0)
+    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
 
-    val result = questionAssessmentProgressController.submitAnswer(createTextInputAnswer("Finnish"))
+    val result = questionAssessmentProgressController.submitAnswer(createNumericInputAnswer(5.0))
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     advanceUntilIdle()
 
@@ -734,23 +582,25 @@ class QuestionAssessmentProgressControllerTest {
     verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(currentQuestionResultCaptor.capture())
     assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
     val currentQuestion = currentQuestionResultCaptor.value.getOrThrow()
+    assertThat(currentQuestion.currentQuestionIndex).isEqualTo(1)
+    assertThat(currentQuestion.totalQuestionCount).isEqualTo(3)
     assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(COMPLETED_STATE)
     val completedState = currentQuestion.ephemeralState.completedState
     assertThat(completedState.answerCount).isEqualTo(1)
-    assertThat(completedState.getAnswer(0).userAnswer.normalizedString).isEqualTo("Finnish")
-    assertThat(completedState.getAnswer(0).feedback.html).contains("Yes! Oppia is the Finnish word")
+    assertThat(completedState.getAnswer(0).userAnswer.answer.real).isWithin(1e-5).of(5.0)
+    assertThat(completedState.getAnswer(0).feedback.html).contains("That's correct!")
   }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testGetCurrentQuestion_secondState_submitWrongAnswer_updatePendingState() = runBlockingTest(
+  fun testGetCurrentQuestion_secondQuestion_submitWrongAnswer_updatePendingQuestion() = runBlockingTest(
     coroutineContext
   ) {
     subscribeToCurrentQuestionToAllowSessionToLoad()
     startTrainingSession(TEST_SKILL_ID_LIST_2)
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(0)
+    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
 
-    val result = questionAssessmentProgressController.submitAnswer(createTextInputAnswer("Klingon"))
+    val result = questionAssessmentProgressController.submitAnswer(createNumericInputAnswer(4.0))
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     advanceUntilIdle()
 
@@ -758,74 +608,13 @@ class QuestionAssessmentProgressControllerTest {
     verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(currentQuestionResultCaptor.capture())
     assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
     val currentQuestion = currentQuestionResultCaptor.value.getOrThrow()
+    assertThat(currentQuestion.currentQuestionIndex).isEqualTo(1)
+    assertThat(currentQuestion.totalQuestionCount).isEqualTo(3)
     assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
     val pendingState = currentQuestion.ephemeralState.pendingState
     assertThat(pendingState.wrongAnswerCount).isEqualTo(1)
-    assertThat(pendingState.getWrongAnswer(0).userAnswer.normalizedString).isEqualTo("Klingon")
-    assertThat(pendingState.getWrongAnswer(0).feedback.html).contains("Sorry, nope")
-  }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testGetCurrentQuestion_afterMovePreviousAndNext_returnscurrentQuestion() = runBlockingTest(coroutineContext) {
-    val currentQuestionLiveData = questionAssessmentProgressController.getCurrentQuestion()
-    currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(0)
-
-    moveToPreviousQuestion()
-    moveToNextQuestion()
-
-    // The current state should stay the same.
-    verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(currentQuestionResultCaptor.capture())
-    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-    val currentQuestion = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(currentQuestion.ephemeralState.state.name).isEqualTo("What language")
-    assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
-  }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testGetCurrentQuestion_afterMoveNextAndPrevious_returnscurrentQuestion() = runBlockingTest(coroutineContext) {
-    val currentQuestionLiveData = questionAssessmentProgressController.getCurrentQuestion()
-    currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(0)
-    submitTextInputAnswer("Finnish") // Submit the answer but do not proceed to the next state.
-
-    moveToNextQuestion()
-    moveToPreviousQuestion()
-
-    // The current state should stay the same.
-    verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(currentQuestionResultCaptor.capture())
-    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-    val currentQuestion = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(currentQuestion.ephemeralState.state.name).isEqualTo("What language")
-    assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(COMPLETED_STATE)
-  }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testGetCurrentQuestion_afterMoveToPrevious_onThirdState_newObserver_receivesCompletedSecondState() = runBlockingTest(
-    coroutineContext
-  ) {
-    subscribeToCurrentQuestionToAllowSessionToLoad()
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(0) // First state -> second
-    submitTextInputAnswerAndMoveToNextQuestion("Finnish") // Second state -> third
-
-    // Move to the previous state and register a new observer.
-    moveToPreviousQuestion() // Third state -> second
-    val currentQuestionLiveData = questionAssessmentProgressController.getCurrentQuestion()
-    currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver2)
-    advanceUntilIdle()
-
-    // The new observer should observe the completed second state since it's the current pending state.
-    verify(mockCurrentQuestionLiveDataObserver2, atLeastOnce()).onChanged(currentQuestionResultCaptor.capture())
-    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-    val currentQuestion = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(currentQuestion.ephemeralState.state.name).isEqualTo("What language")
-    assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(COMPLETED_STATE)
+    assertThat(pendingState.getWrongAnswer(0).userAnswer.answer.real).isWithin(1e-5).of(4.0)
+    assertThat(pendingState.getWrongAnswer(0).feedback.html).isEmpty()
   }
 
   @Test
@@ -835,10 +624,8 @@ class QuestionAssessmentProgressControllerTest {
   ) {
     subscribeToCurrentQuestionToAllowSessionToLoad()
     startTrainingSession(TEST_SKILL_ID_LIST_2)
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(0)
-    submitTextInputAnswerAndMoveToNextQuestion("Finnish")
 
-    val result = questionAssessmentProgressController.submitAnswer(createNumericInputAnswer(121.0))
+    val result = questionAssessmentProgressController.submitAnswer(createNumericInputAnswer(3.0))
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     advanceUntilIdle()
 
@@ -846,7 +633,7 @@ class QuestionAssessmentProgressControllerTest {
     verify(mockAsyncAnswerOutcomeObserver, atLeastOnce()).onChanged(asyncAnswerOutcomeCaptor.capture())
     val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
     assertThat(answerOutcome.isCorrectAnswer).isTrue()
-    assertThat(answerOutcome.feedback.html).contains("Yes, that's correct: 11 times 11 is 121.")
+    assertThat(answerOutcome.feedback.html).contains("That's correct!")
   }
 
   @Test
@@ -854,10 +641,8 @@ class QuestionAssessmentProgressControllerTest {
   fun testSubmitAnswer_forNumericInput_wrongAnswer_returnsOutcomeWithTransition() = runBlockingTest(coroutineContext) {
     subscribeToCurrentQuestionToAllowSessionToLoad()
     startTrainingSession(TEST_SKILL_ID_LIST_2)
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(0)
-    submitTextInputAnswerAndMoveToNextQuestion("Finnish")
 
-    val result = questionAssessmentProgressController.submitAnswer(createNumericInputAnswer(122.0))
+    val result = questionAssessmentProgressController.submitAnswer(createNumericInputAnswer(2.0))
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     advanceUntilIdle()
 
@@ -865,138 +650,94 @@ class QuestionAssessmentProgressControllerTest {
     verify(mockAsyncAnswerOutcomeObserver, atLeastOnce()).onChanged(asyncAnswerOutcomeCaptor.capture())
     val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
     assertThat(answerOutcome.isCorrectAnswer).isFalse()
-    assertThat(answerOutcome.feedback.html).contains("You are actually very close.")
+    assertThat(answerOutcome.feedback.html).isEmpty()
   }
-
-//  @Test
-//  @ExperimentalCoroutinesApi
-//  fun testGetCurrentQuestion_fifthState_isTerminalState() = runBlockingTest(coroutineContext) {
-//    val currentQuestionLiveData = questionAssessmentProgressController.getCurrentQuestion()
-//    currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
-//    startTrainingSession(TEST_SKILL_ID_LIST_2)
-//    submitMultipleChoiceAnswerAndMoveToNextQuestion(0)
-//    submitTextInputAnswerAndMoveToNextQuestion("Finnish")
-//    submitNumericInputAnswerAndMoveToNextQuestion(121.0)
-//
-//    submitContinueButtonAnswerAndMoveToNextQuestion()
-//
-//    // Verify that the fifth state is terminal.
-//    verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(currentQuestionResultCaptor.capture())
-//    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-//    val currentQuestion = currentQuestionResultCaptor.value.getOrThrow()
-//    assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(TERMINAL_STATE)
-//  }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testGetCurrentQuestion_afterMoveToPrevious_onThirdState_updatesToCompletedSecondState() = runBlockingTest(
+  fun testGetCurrentQuestion_thirdQuestion_isTerminalQuestion() = runBlockingTest(coroutineContext) {
+    val currentQuestionLiveData = questionAssessmentProgressController.getCurrentQuestion()
+    currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
+    startTrainingSession(TEST_SKILL_ID_LIST_2)
+    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
+    submitNumericInputAnswerAndMoveToNextQuestion(5.0)
+
+    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+
+    // Verify that the third state is terminal.
+    verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(currentQuestionResultCaptor.capture())
+    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
+    val currentQuestion = currentQuestionResultCaptor.value.getOrThrow()
+    assertThat(currentQuestion.currentQuestionIndex).isEqualTo(3)
+    assertThat(currentQuestion.totalQuestionCount).isEqualTo(3)
+    assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(TERMINAL_STATE)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testMoveToNext_onFinalQuestion_failsWithError() = runBlockingTest(coroutineContext) {
+    subscribeToCurrentQuestionToAllowSessionToLoad()
+    startTrainingSession(TEST_SKILL_ID_LIST_2)
+    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
+    submitNumericInputAnswerAndMoveToNextQuestion(5.0)
+    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+
+    val moveToStateResult = questionAssessmentProgressController.moveToNextQuestion()
+    moveToStateResult.observeForever(mockAsyncNullableResultLiveDataObserver)
+    advanceUntilIdle()
+
+    // Verify we can't navigate past the last state of the training session.
+    verify(mockAsyncNullableResultLiveDataObserver, atLeastOnce()).onChanged(asyncNullableResultCaptor.capture())
+    assertThat(asyncNullableResultCaptor.value.isFailure()).isTrue()
+    assertThat(asyncNullableResultCaptor.value.getErrorOrNull())
+      .hasMessageThat()
+      .contains("Cannot navigate to next state; at most recent state.")
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testGetCurrentQuestion_afterPlayingSecondSession_returnsTerminalQuestion() = runBlockingTest(coroutineContext) {
+    val currentQuestionLiveData = questionAssessmentProgressController.getCurrentQuestion()
+    currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
+
+    startTrainingSession(TEST_SKILL_ID_LIST_01)
+    submitMultipleChoiceAnswerAndMoveToNextQuestion(1) // question 1
+    submitNumericInputAnswerAndMoveToNextQuestion(3.0) // question 2
+    submitTextInputAnswerAndMoveToNextQuestion("1/2") // question 3
+
+    // Verify that we're now on the final state.
+    verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(currentQuestionResultCaptor.capture())
+    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
+    val currentQuestion = currentQuestionResultCaptor.value.getOrThrow()
+    assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(TERMINAL_STATE)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testGetCurrentQuestion_afterPlayingThroughPreviousSessions_returnsQuestionFromSecondSession() = runBlockingTest(
     coroutineContext
   ) {
     val currentQuestionLiveData = questionAssessmentProgressController.getCurrentQuestion()
     currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(0)
-    submitTextInputAnswerAndMoveToNextQuestion("Finnish")
+    playThroughSessionWithSkillList2()
 
-    moveToPreviousQuestion()
+    startTrainingSession(TEST_SKILL_ID_LIST_01)
+    submitTextInputAnswerAndMoveToNextQuestion("1/4") // question 0
+    submitMultipleChoiceAnswerAndMoveToNextQuestion(1) // question 1
 
-    // Verify that the current state is the second state, and is completed. It should also have the previously submitted
-    // answer, allowing learners to potentially view past answers.
+    // Verify that we're on the second-to-last state of the second session.
     verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(currentQuestionResultCaptor.capture())
     assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
     val currentQuestion = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(COMPLETED_STATE)
-    assertThat(currentQuestion.ephemeralState.state.name).isEqualTo("What language")
-    val completedState = currentQuestion.ephemeralState.completedState
-    assertThat(completedState.getAnswer(0).userAnswer.normalizedString).isEqualTo("Finnish")
+    assertThat(currentQuestion.currentQuestionIndex).isEqualTo(2)
+    assertThat(currentQuestion.totalQuestionCount).isEqualTo(3)
+    assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
+    // This question is not in the other test session.
+    assertThat(currentQuestion.ephemeralState.state.content.html).contains("What fraction does 'half'")
   }
 
-//  @Test
-//  @ExperimentalCoroutinesApi
-//  fun testMoveToNext_onFinalState_failsWithError() = runBlockingTest(coroutineContext) {
-//    subscribeToCurrentQuestionToAllowSessionToLoad()
-//    startTrainingSession(TEST_SKILL_ID_LIST_2)
-//    submitMultipleChoiceAnswerAndMoveToNextQuestion(0)
-//    submitTextInputAnswerAndMoveToNextQuestion("Finnish")
-//    submitNumericInputAnswerAndMoveToNextQuestion(121.0)
-//    submitContinueButtonAnswerAndMoveToNextQuestion()
-//
-//    val moveToStateResult = questionAssessmentProgressController.moveToNextQuestion()
-//    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
-//    advanceUntilIdle()
-//
-//    // Verify we can't navigate past the last state of the training session.
-//    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
-//    assertThat(asyncResultCaptor.value.isFailure()).isTrue()
-//    assertThat(asyncResultCaptor.value.getErrorOrNull())
-//      .hasMessageThat()
-//      .contains("Cannot navigate to next state; at most recent state.")
-//  }
-
-//  @Test
-//  @ExperimentalCoroutinesApi
-//  fun testGetCurrentQuestion_afterPlayingFullSecondSesson_returnsTerminalState() = runBlockingTest(coroutineContext) {
-//    val currentQuestionLiveData = questionAssessmentProgressController.getCurrentQuestion()
-//    currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
-//
-//    startTrainingSession(TEST_SKILL_ID_LIST_01)
-//    submitContinueButtonAnswerAndMoveToNextQuestion()
-//    submitMultipleChoiceAnswerAndMoveToNextQuestion(3) // Those were all the questions I had!
-//    submitContinueButtonAnswerAndMoveToNextQuestion()
-//
-//    // Verify that we're now on the final state.
-//    verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(currentQuestionResultCaptor.capture())
-//    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-//    val currentQuestion = currentQuestionResultCaptor.value.getOrThrow()
-//    assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(TERMINAL_STATE)
-//  }
-
-//  @Test
-//  @ExperimentalCoroutinesApi
-//  fun testGetCurrentQuestion_afterPlayingFullSecondSesson_diffPath_returnsTerminalState() = runBlockingTest(
-//    coroutineContext
-//  ) {
-//    val currentQuestionLiveData = questionAssessmentProgressController.getCurrentQuestion()
-//    currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
-//
-//    startTrainingSession(TEST_SKILL_ID_LIST_01)
-//    submitContinueButtonAnswerAndMoveToNextQuestion()
-//    submitMultipleChoiceAnswerAndMoveToNextQuestion(0) // How do your sessions work?
-//    submitTextInputAnswerAndMoveToNextQuestion("Oppia Otter") // Can I ask your name?
-//    submitContinueButtonAnswerAndMoveToNextQuestion()
-//    submitMultipleChoiceAnswerAndMoveToNextQuestion(3) // Those were all the questions I had!
-//    submitContinueButtonAnswerAndMoveToNextQuestion()
-//
-//    // Verify that a different path can also result in reaching the end state.
-//    verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(currentQuestionResultCaptor.capture())
-//    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-//    val currentQuestion = currentQuestionResultCaptor.value.getOrThrow()
-//    assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(TERMINAL_STATE)
-//  }
-
-//  @Test
-//  @ExperimentalCoroutinesApi
-//  fun testGetCurrentQuestion_afterPlayingThroughPreviousSessions_returnsStateFromSecondSession() = runBlockingTest(
-//    coroutineContext
-//  ) {
-//    val currentQuestionLiveData = questionAssessmentProgressController.getCurrentQuestion()
-//    currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
-//    playThroughSession5()
-//
-//    startTrainingSession(TEST_SKILL_ID_LIST_01)
-//    submitContinueButtonAnswerAndMoveToNextQuestion()
-//    submitMultipleChoiceAnswerAndMoveToNextQuestion(3) // Those were all the questions I had!
-//
-//    // Verify that we're on the second-to-last state of the second session.
-//    verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(currentQuestionResultCaptor.capture())
-//    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-//    val currentQuestion = currentQuestionResultCaptor.value.getOrThrow()
-//    assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
-//    // This state is not in the other test session.
-//    assertThat(currentQuestion.ephemeralState.state.name).isEqualTo("End Card")
-//  }
-
-  private fun setUpTestApplicationComponent() {
+  private fun setUpTestApplicationWithSeed(questionSeed: Long) {
+    TestQuestionModule.questionSeed = questionSeed
     DaggerQuestionAssessmentProgressControllerTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
@@ -1061,27 +802,39 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @ExperimentalCoroutinesApi
-  private fun moveToPreviousQuestion() {
-    questionAssessmentProgressController.moveToPreviousQuestion()
-    testDispatcher.advanceUntilIdle()
-  }
-
-  @ExperimentalCoroutinesApi
   private fun endTrainingSession() {
     questionTrainingController.stopQuestionTrainingSession()
     testDispatcher.advanceUntilIdle()
   }
 
-  private fun createMultipleChoiceAnswer(choiceIndex: Int): InteractionObject {
-    return InteractionObject.newBuilder().setNonNegativeInt(choiceIndex).build()
+  @ExperimentalCoroutinesApi
+  private fun playThroughSessionWithSkillList2() {
+    startTrainingSession(TEST_SKILL_ID_LIST_2)
+    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
+    submitNumericInputAnswerAndMoveToNextQuestion(5.0)
+    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+    endTrainingSession()
   }
 
-  private fun createTextInputAnswer(textAnswer: String): InteractionObject {
-    return InteractionObject.newBuilder().setNormalizedString(textAnswer).build()
+  private fun createMultipleChoiceAnswer(choiceIndex: Int): UserAnswer {
+    return UserAnswer.newBuilder()
+      .setAnswer(InteractionObject.newBuilder().setNonNegativeInt(choiceIndex))
+      .setPlainAnswer(choiceIndex.toString())
+      .build()
   }
 
-  private fun createNumericInputAnswer(numericAnswer: Double): InteractionObject {
-    return InteractionObject.newBuilder().setReal(numericAnswer).build()
+  private fun createTextInputAnswer(textAnswer: String): UserAnswer {
+    return UserAnswer.newBuilder()
+      .setAnswer(InteractionObject.newBuilder().setNormalizedString(textAnswer).build())
+      .setPlainAnswer(textAnswer)
+      .build()
+  }
+
+  private fun createNumericInputAnswer(numericAnswer: Double): UserAnswer {
+    return UserAnswer.newBuilder()
+      .setAnswer(InteractionObject.newBuilder().setReal(numericAnswer).build())
+      .setPlainAnswer(numericAnswer.toString())
+      .build()
   }
 
   @Qualifier
@@ -1147,7 +900,7 @@ class QuestionAssessmentProgressControllerTest {
 
     @Provides
     @QuestionTrainingSeed
-    fun provideQuestionTrainingSeed(): Long = questionSeed++
+    fun provideQuestionTrainingSeed(): Long = questionSeed
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -1155,7 +908,7 @@ class QuestionAssessmentProgressControllerTest {
   @Component(modules = [
     TestModule::class, TestQuestionModule::class, ContinueModule::class, FractionInputModule::class,
     ItemSelectionInputModule::class, MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
-    NumericInputRuleModule::class, TextInputRuleModule::class, InteractionsModule::class
+    NumericInputRuleModule::class, TextInputRuleModule::class, InteractionsModule::class, DragDropSortInputModule::class
   ])
   interface TestApplicationComponent {
     @Component.Builder

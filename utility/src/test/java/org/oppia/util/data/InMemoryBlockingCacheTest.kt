@@ -38,8 +38,7 @@ private const val UPDATED_ASYNC_VALUE = "updated async value"
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
 class InMemoryBlockingCacheTest {
-  @Inject
-  lateinit var cacheFactory: InMemoryBlockingCache.Factory
+  @Inject lateinit var cacheFactory: InMemoryBlockingCache.Factory
 
   @ExperimentalCoroutinesApi
   @Inject
@@ -732,7 +731,7 @@ class InMemoryBlockingCacheTest {
 
   // TODO(#89): Move to a common test library.
   /** A replacement to JUnit5's assertThrows() with Kotlin suspend coroutine support. */
-  private suspend fun <T: Throwable> assertThrowsAsync(type: KClass<T>, operation: suspend () -> Unit): T {
+  private suspend fun <T : Throwable> assertThrowsAsync(type: KClass<T>, operation: suspend () -> Unit): T {
     try {
       operation()
       fail("Expected to encounter exception of $type")

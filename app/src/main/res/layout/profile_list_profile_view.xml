@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:profile="http://schemas.android.com/tools">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="profile"
+      type="org.oppia.app.model.Profile" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/general_item_background_border">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+      android:id="@+id/profile_list_image"
+      android:layout_width="40dp"
+      android:layout_height="40dp"
+      android:layout_marginStart="28dp"
+      android:layout_marginTop="18dp"
+      android:layout_marginBottom="18dp"
+      android:background="@drawable/profile_image_shadow"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      profile:src="@{profile.avatar}" />
+
+    <TextView
+      android:id="@+id/profile_list_name"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="20dp"
+      android:layout_marginEnd="20dp"
+      android:ellipsize="end"
+      android:fontFamily="sans-serif"
+      android:maxLines="1"
+      android:text="@{profile.name}"
+      android:textColor="@color/oppiaPrimaryTextDark"
+      android:textSize="16sp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@id/profile_list_image"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+      android:id="@+id/profile_list_admin_text"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="20dp"
+      android:layout_marginEnd="20dp"
+      android:fontFamily="sans-serif"
+      android:text="@string/profile_chooser_admin"
+      android:textColor="@color/black_38"
+      android:textSize="12sp"
+      android:textStyle="italic"
+      android:visibility="@{profile.isAdmin ? View.VISIBLE : View.GONE}"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@id/profile_list_image"
+      app:layout_constraintTop_toBottomOf="@id/profile_list_name" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

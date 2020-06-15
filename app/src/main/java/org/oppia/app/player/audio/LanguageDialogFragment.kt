@@ -66,11 +66,13 @@ class LanguageDialogFragment : DialogFragment() {
       .setSingleChoiceItems(options, selectedIndex) { dialog, which ->
         selectedIndex = which
       }
-      .setPositiveButton(R.string.audio_language_select_dialog_okay_button) { dialog, whichButton ->
-        languageInterface.onLanguageSelected(languageCodeArrayList[selectedIndex])
+      .setPositiveButton(R.string.audio_language_select_dialog_okay_button) { _, _ ->
+        if (selectedIndex != -1) {
+          languageInterface.onLanguageSelected(languageCodeArrayList[selectedIndex])
+        }
         dismiss()
       }
-      .setNegativeButton(R.string.audio_language_select_dialog_cancel_button) { dialog, whichButton ->
+      .setNegativeButton(R.string.audio_language_select_dialog_cancel_button) { _, _ ->
         dismiss()
       }
       .create()
