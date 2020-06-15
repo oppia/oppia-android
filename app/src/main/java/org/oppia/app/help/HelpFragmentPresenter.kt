@@ -25,7 +25,11 @@ class HelpFragmentPresenter @Inject constructor(
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val viewModel = getHelpListViewModel()
 
-    binding = HelpFragmentBinding.inflate(inflater, container, /* attachToRoot = */ false)
+    binding = HelpFragmentBinding.inflate(
+      inflater,
+      container,
+      /* attachToRoot = */ false
+    )
     binding.helpFragmentRecyclerView.apply {
       layoutManager = LinearLayoutManager(activity.applicationContext)
       adapter = createRecyclerViewAdapter()

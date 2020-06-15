@@ -12,7 +12,8 @@ import javax.inject.Inject
 /** The FAQ page activity for placement of different FAQs. */
 class FAQListActivity : InjectableAppCompatActivity(), RouteToFAQSingleListener {
 
-  @Inject lateinit var faqListActivityPresenter: FAQListActivityPresenter
+  @Inject
+  lateinit var faqListActivityPresenter: FAQListActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

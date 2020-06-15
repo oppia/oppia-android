@@ -22,9 +22,18 @@ class OngoingTopicListFragmentPresenter @Inject constructor(
 
   private lateinit var binding: OngoingTopicListFragmentBinding
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, internalProfileId: Int): View? {
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    internalProfileId: Int
+  ): View? {
     val viewModel = getOngoingTopicListViewModel()
-    binding = OngoingTopicListFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding =
+      OngoingTopicListFragmentBinding.inflate(
+        inflater,
+        container,
+        /* attachToRoot= */ false
+      )
     viewModel.setProfileId(internalProfileId)
 
     binding.ongoingTopicListToolbar.setNavigationOnClickListener {
@@ -34,7 +43,11 @@ class OngoingTopicListFragmentPresenter @Inject constructor(
     binding.ongoingTopicList.apply {
       adapter = createRecyclerViewAdapter()
       val spanCount =
-        if (fragment.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 3 else 2
+        if (fragment.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+          3
+        } else {
+          2
+        }
       layoutManager = GridLayoutManager(context, spanCount)
     }
 

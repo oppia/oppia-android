@@ -49,6 +49,7 @@ import org.oppia.domain.topic.TEST_QUESTION_ID_3
 import org.oppia.domain.topic.TEST_SKILL_ID_0
 import org.oppia.domain.topic.TEST_SKILL_ID_1
 import org.oppia.domain.topic.TEST_SKILL_ID_2
+import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -302,7 +303,8 @@ class QuestionTrainingControllerTest {
   @Component(modules = [
     TestModule::class, ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
     MultipleChoiceInputModule::class, DragDropSortInputModule::class, NumberWithUnitsRuleModule::class,
-    NumericInputRuleModule::class, TextInputRuleModule::class, InteractionsModule::class, TestQuestionModule::class
+    NumericInputRuleModule::class, TextInputRuleModule::class, InteractionsModule::class, TestQuestionModule::class,
+    TestLogReportingModule::class
   ])
   interface TestApplicationComponent {
     @Component.Builder

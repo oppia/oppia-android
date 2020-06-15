@@ -30,6 +30,7 @@ import org.oppia.app.mydownloads.MyDownloadsActivity
 import org.oppia.app.options.OptionsActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.profileprogress.ProfileProgressActivity
+import org.oppia.app.topic.TopicActivity
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.topic.TopicController
@@ -222,7 +223,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
    * expected to provide. The [menuItemId] corresponds to the menu ID of the current activity, for navigation purposes.
    */
   fun setUpDrawer(drawerLayout: DrawerLayout, toolbar: Toolbar, menuItemId: Int) {
-    previousMenuItemId = menuItemId
+    previousMenuItemId = if (activity is TopicActivity) null else menuItemId
     if (menuItemId != 0) {
       getFooterViewModel().isAdministratorControlsSelected.set(false)
       when (NavigationDrawerItem.valueFromNavId(menuItemId)) {
