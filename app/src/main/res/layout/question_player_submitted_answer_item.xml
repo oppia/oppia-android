@@ -48,7 +48,7 @@
       android:layout_marginStart="8dp"
       android:layout_marginEnd="8dp"
       android:src="@drawable/ic_check_primary"
-      android:visibility="@{viewModel.isCorrectAnswer.get() ? View.VISIBLE : View.GONE}"
+      android:visibility="@{viewModel.isCorrectAnswer ? View.VISIBLE : View.GONE}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toEndOf="@+id/question_player_submitted_answer_text_view"
       app:layout_constraintTop_toTopOf="parent" />
