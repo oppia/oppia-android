@@ -17,8 +17,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:paddingStart="@dimen/padding_24dp"
-      android:paddingEnd="@dimen/padding_24dp">
+      android:paddingStart="24dp"
+      android:paddingEnd="24dp">
 
       <TextView
         android:id="@+id/end_session_header_text_view"
@@ -54,11 +54,14 @@
         android:id="@+id/question_recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:clipToPadding="false"
         android:divider="@android:color/transparent"
         android:dividerHeight="8dp"
         android:overScrollMode="never"
-        android:paddingStart="@dimen/padding_24dp"
-        android:paddingEnd="@dimen/padding_24dp"
+        android:paddingStart="24dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="16dp"
         app:data="@{viewModel.itemList}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@id/question_progress_bar"
