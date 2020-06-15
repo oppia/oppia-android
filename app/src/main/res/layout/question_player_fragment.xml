@@ -119,5 +119,11 @@
         android:textSize="20sp"
         android:visibility="invisible" />
     </FrameLayout>
+
+    <View
+      android:id="@+id/question_player_toolbar_shadow_view"
+      android:layout_width="match_parent"
+      android:layout_height="6dp"
+      android:background="@drawable/toolbar_drop_shadow" />
   </FrameLayout>
 </layout>
