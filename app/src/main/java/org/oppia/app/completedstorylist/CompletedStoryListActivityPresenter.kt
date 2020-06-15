@@ -13,10 +13,13 @@ class CompletedStoryListActivityPresenter @Inject constructor(
   fun handleOnCreate(internalProfileId: Int) {
     activity.setContentView(R.layout.completed_story_list_activity)
     if (getCompletedStoryListFragment() == null) {
-      activity.supportFragmentManager.beginTransaction().add(
-        R.id.completed_story_list_fragment_placeholder,
-        CompletedStoryListFragment.newInstance(internalProfileId)
-      ).commitNow()
+      activity
+        .supportFragmentManager
+        .beginTransaction()
+        .add(
+          R.id.completed_story_list_fragment_placeholder,
+          CompletedStoryListFragment.newInstance(internalProfileId)
+        ).commitNow()
     }
   }
 
