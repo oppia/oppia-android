@@ -340,7 +340,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
       "Expected non-null reference to congratulations text view"
     }
     textView.visibility = View.VISIBLE
-
     val fadeIn = AlphaAnimation(0f, 1f)
     fadeIn.interpolator = DecelerateInterpolator()
     fadeIn.duration = 2000

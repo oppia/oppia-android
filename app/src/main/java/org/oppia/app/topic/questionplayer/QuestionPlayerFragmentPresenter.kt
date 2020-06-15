@@ -48,11 +48,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private lateinit var recyclerViewAssembler: StatePlayerRecyclerViewAssembler
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    binding = QuestionPlayerFragmentBinding.inflate(
-      inflater,
-      container,
-      /* attachToRoot= */ false
-    )
+    binding = QuestionPlayerFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
     recyclerViewAssembler = createRecyclerViewAssembler(
       assemblerBuilderFactory.create(resourceBucketName, "skill"),

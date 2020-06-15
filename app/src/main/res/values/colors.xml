@@ -36,6 +36,7 @@
   <color name="oppiaTextShadow">#1F000000</color>
   <color name="oppiaGreyBorder">#DDDDDD</color>
   <color name="oppiaDashedDivider">#80707070</color>
+  <color name="oppiaSubmittedAnswerTextColor">#777777</color>
   <color name="oppiaBackgroundYellowIvory">#FFFFF0</color>
   <color name="oppiaSubmittedAnswerTextColor">#777777</color>
   <color name="oppiaFAQDivider">#707070</color>
