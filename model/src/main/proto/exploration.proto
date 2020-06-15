@@ -126,6 +126,7 @@ message CorrectAnswer {
   bool is_negative = 4;
   string correct_answer = 5;
 }
+
 // Structure for a single hint
 // Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeHint.kt
 message Hint {
@@ -254,5 +255,28 @@ message AnswerOutcome {
     // Indicates that the learner needs to play the specified exploration ID to refresh missing topics and then return
     // to restart the current exploration.
     string refresher_exploration_id = 7;
+  }
+}
+
+// A structure corresponding to the index of a hint or solution in a state. This structure is set up
+// to properly account for variable numbers of hints, for cases when only a solution or no solution
+// exists, and for when there are no hints or solutions.
+message HelpIndex {
+  // This type is uninitialized in cases when no index is currently available (either because a hint
+  // or solution hasn't yet been triggered, or because there are none to trigger).
+  oneof index_type {
+    // Indicates this help index corresponds to the index of a hint within the hint list of a state.
+    int32 hint_index = 1;
+
+    // Indicates this help index corresponds to the solution of a state. The boolean value here has
+    // no importance and is always 'true'.
+    bool show_solution = 2;
+
+    // Indicates that everything available has been revealed. Note that this is different than the
+    // case when there are no hints or solutions to trigger, even though the resulting behavior may
+    // be different. This case specifically indicates that all hints and the solution, if present,
+    // have been revealed and there's no other help to provide. The boolean value here has no
+    // importance and is always 'true'.
+    bool everything_revealed = 3;
   }
 }

@@ -40,9 +40,9 @@ import org.oppia.util.caching.AssetRepository
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
+import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.Logger
 import org.oppia.util.parser.DefaultGcsPrefix
-import org.oppia.util.parser.DefaultGcsResource
 import org.oppia.util.parser.ImageDownloadUrlTemplate
 import org.oppia.util.threading.BackgroundDispatcher
 import java.util.Date
@@ -101,7 +101,7 @@ class TopicListController @Inject constructor(
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
   @CacheAssetsLocally private val cacheAssetsLocally: Boolean,
   @DefaultGcsPrefix private val gcsPrefix: String,
-  @DefaultGcsResource private val gcsResource: String,
+  @DefaultResourceBucketName private val gcsResource: String,
   @ImageDownloadUrlTemplate private val imageDownloadUrlTemplate: String,
   logger: Logger,
   assetRepository: AssetRepository

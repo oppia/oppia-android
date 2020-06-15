@@ -91,6 +91,8 @@ class StateFragmentTest {
   //  9. Testing all possible invalid/error input cases for each interaction.
   //  10. Testing interactions with custom Oppia tags (including images) render correctly (when manually inspected) and are correctly functional.
   //  11. Update the tests to work properly on Robolectric (requires idling resource + replacing the dispatchers to leverage a coordinated test dispatcher library).
+  //  12. Add tests for hints & solutions.
+  //  13. Add tests for audio states.
   // TODO(#56): Add support for testing that previous/next button states are properly retained on config changes.
 
   @Test

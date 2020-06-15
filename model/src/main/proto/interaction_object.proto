@@ -57,27 +57,35 @@ message ListOfSetsOfHtmlStrings {
   StringList set_of_html_strings = 1;
 }
 
-// Structure for a ImageWithRegions object.
+// An image overlaid with labeled regions.
 message ImageWithRegions {
+  // A string that represents a filepath which will be prefixed with '[exploration_id]/assets.
   string image_path = 1;
-  repeated LabelRegions label_regions = 2;
-}
 
-message LabelRegions {
-  string label = 1;
-  Region region = 2;
-}
+  // A region of an image, including its shape and coordinates.
+  message LabelRegion {
+    // A name for a particular region.
+    string label = 1;
 
-message Region {
-  string region_type = 1;
-  NormalizedRectangle2D area = 2;
-}
+    message Region {
+      // A shape value for a particular region.
+      string region_type = 1;
 
-message NormalizedRectangle2D {
-  message Point2d {
-    float x = 1;
-    float y = 2;
+      message NormalizedRectangle2d {
+        message Point2d {
+          float x = 1;
+          float y = 2;
+        }
+        // Origin is top-left, increasing x is to the right, increasing y is down.
+        Point2d upper_left = 1;
+        Point2d lower_right = 2;
+      }
+
+      NormalizedRectangle2d area = 2;
+    }
+
+    Region region = 2;
+
   }
-  Point2d lower_left = 1;
-  Point2d upper_right = 2;
+  repeated LabelRegion label_regions = 2;
 }
