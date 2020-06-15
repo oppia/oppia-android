@@ -15,10 +15,14 @@ class StoryFragmentTestActivityPresenter @Inject constructor(
     activity.setContentView(R.layout.story_fragment_test_activity)
     if (getStoryFragment() == null) {
       val internalProfileId = activity.intent.getIntExtra(INTERNAL_PROFILE_ID_TEST_INTENT_EXTRA, -1)
-      val topicId = checkNotNull(activity.intent.getStringExtra(TOPIC_ID_TEST_INTENT_EXTRA)) {
+      val topicId = checkNotNull(
+        activity.intent.getStringExtra(TOPIC_ID_TEST_INTENT_EXTRA)
+      ) {
         "Expected non-null topic ID to be passed in using extra key: $TOPIC_ID_TEST_INTENT_EXTRA"
       }
-      val storyId = checkNotNull(activity.intent.getStringExtra(STORY_ID_TEST_INTENT_EXTRA)) {
+      val storyId = checkNotNull(
+        activity.intent.getStringExtra(STORY_ID_TEST_INTENT_EXTRA)
+      ) {
         "Expected non-null story ID to be passed in using extra key: $STORY_ID_TEST_INTENT_EXTRA"
       }
       activity.supportFragmentManager.beginTransaction().add(
@@ -29,6 +33,10 @@ class StoryFragmentTestActivityPresenter @Inject constructor(
   }
 
   private fun getStoryFragment(): StoryFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.story_fragment_placeholder) as StoryFragment?
+    return activity
+      .supportFragmentManager
+      .findFragmentById(
+        R.id.story_fragment_placeholder
+      ) as StoryFragment?
   }
 }

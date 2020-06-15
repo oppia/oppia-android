@@ -23,6 +23,10 @@ message EventLog {
       ExplorationContext exploration_context = 1;
       // The event being logged is related to the question player.
       QuestionContext question_context = 2;
+      // The event being logged is related to the topic activity.
+      TopicContext topic_context = 3;
+      // The event being logged is related to the story activity.
+      StoryContext story_context = 4;
     }
   }
 
@@ -42,6 +46,20 @@ message EventLog {
     string topic_id = 1;
     // The active question ID when the event is logged.
     string question_id = 2;
+  }
+
+  // Structure of an topic context.
+  message TopicContext {
+    // The active topic ID when the event is logged.
+    string topic_id = 1;
+  }
+
+  // Structure of an story context.
+  message StoryContext {
+    // The active topic ID when the event is logged.
+    string topic_id = 1;
+    // The active story ID when the event is logged.
+    string story_id = 2;
   }
 
   // Supported event actions for event logging.

@@ -71,6 +71,37 @@ class FirebaseEventLoggerTest {
     .setPriority(EventLog.Priority.ESSENTIAL)
     .build()
 
+  private val eventLogTopicContext = EventLog.newBuilder()
+    .setActionName(EventLog.EventAction.EVENT_ACTION_UNSPECIFIED)
+    .setContext(
+      EventLog.Context.newBuilder()
+        .setTopicContext(
+          EventLog.TopicContext.newBuilder()
+            .setTopicId(TEST_TOPIC_ID)
+            .build()
+        )
+        .build()
+    )
+    .setTimestamp(TEST_TIMESTAMP)
+    .setPriority(EventLog.Priority.ESSENTIAL)
+    .build()
+
+  private val eventLogStoryContext = EventLog.newBuilder()
+    .setActionName(EventLog.EventAction.EVENT_ACTION_UNSPECIFIED)
+    .setContext(
+      EventLog.Context.newBuilder()
+        .setStoryContext(
+          EventLog.StoryContext.newBuilder()
+            .setTopicId(TEST_TOPIC_ID)
+            .setStoryId(TEST_STORY_ID)
+            .build()
+        )
+        .build()
+    )
+    .setTimestamp(TEST_TIMESTAMP)
+    .setPriority(EventLog.Priority.ESSENTIAL)
+    .build()
+
   private val eventLogNoContext = EventLog.newBuilder()
     .setTimestamp(TEST_TIMESTAMP)
     .setPriority(EventLog.Priority.ESSENTIAL)
@@ -104,6 +135,29 @@ class FirebaseEventLoggerTest {
     assertThat(eventBundle.get(PRIORITY_KEY)).isEqualTo(EventLog.Priority.ESSENTIAL.toString())
     assertThat(eventBundle.get(TOPIC_ID_KEY)).isEqualTo(TEST_TOPIC_ID)
     assertThat(eventBundle.get(QUESTION_ID_KEY)).isEqualTo(TEST_QUESTION_ID)
+  }
+
+  @Test
+  fun testBundleCreation_logEvent_withTopicContext_isSuccessful() {
+    fakeEventLogger
+      .logEvent(ApplicationProvider.getApplicationContext(), eventLogTopicContext)
+    val eventBundle = fakeEventLogger.getMostRecentEventBundle()
+
+    assertThat(eventBundle.get(TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
+    assertThat(eventBundle.get(PRIORITY_KEY)).isEqualTo(EventLog.Priority.ESSENTIAL.toString())
+    assertThat(eventBundle.get(TOPIC_ID_KEY)).isEqualTo(TEST_TOPIC_ID)
+  }
+
+  @Test
+  fun testBundleCreation_logEvent_withStoryContext_isSuccessful() {
+    fakeEventLogger
+      .logEvent(ApplicationProvider.getApplicationContext(), eventLogStoryContext)
+    val eventBundle = fakeEventLogger.getMostRecentEventBundle()
+
+    assertThat(eventBundle.get(TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
+    assertThat(eventBundle.get(PRIORITY_KEY)).isEqualTo(EventLog.Priority.ESSENTIAL.toString())
+    assertThat(eventBundle.get(TOPIC_ID_KEY)).isEqualTo(TEST_TOPIC_ID)
+    assertThat(eventBundle.get(STORY_ID_KEY)).isEqualTo(TEST_STORY_ID)
   }
 
   @Test
