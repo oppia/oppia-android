@@ -23,6 +23,7 @@ import org.oppia.app.databinding.NextButtonItemBinding
 import org.oppia.app.databinding.NumericInputInteractionItemBinding
 import org.oppia.app.databinding.PreviousButtonItemBinding
 import org.oppia.app.databinding.PreviousResponsesHeaderItemBinding
+import org.oppia.app.databinding.QuestionPlayerContentItemBinding
 import org.oppia.app.databinding.ReplayButtonItemBinding
 import org.oppia.app.databinding.ReturnToTopicButtonItemBinding
 import org.oppia.app.databinding.SelectionInteractionItemBinding
@@ -69,6 +70,7 @@ import org.oppia.app.player.state.listener.ReturnToTopicNavigationButtonListener
 import org.oppia.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.app.player.state.listener.SubmitNavigationButtonListener
 import org.oppia.app.recyclerview.BindableAdapter
+import org.oppia.app.topic.questionplayer.QuestionPlayerFragment
 import org.oppia.app.utility.LifecycleSafeTimerFactory
 import org.oppia.util.parser.HtmlParser
 import org.oppia.util.threading.BackgroundDispatcher
@@ -421,7 +423,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     hasPreviousState: Boolean,
     canContinueToNextState: Boolean,
     hasGeneralContinueButton: Boolean,
-    stateIsTerminal: Boolean) {
+    stateIsTerminal: Boolean
+  ) {
     val hasPreviousButton = playerFeatureSet.backwardNavigation && hasPreviousState
     when {
       hasGeneralContinueButton && playerFeatureSet.forwardNavigation -> {
@@ -530,30 +533,56 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     /** Adds support for displaying state content to the learner. */
     fun addContentSupport(): Builder {
-      adapterBuilder.registerViewBinder(
-        viewType = StateItemViewModel.ViewType.CONTENT,
-        inflateView = { parent ->
-          ContentItemBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            /* attachToParent= */ false
-          ).root
-        },
-        bindView = { view, viewModel ->
-          val binding = DataBindingUtil.findBinding<ContentItemBinding>(view)!!
-          val contentViewModel = viewModel as ContentViewModel
-          binding.htmlContent =
-            htmlParserFactory.create(
-              resourceBucketName,
-              entityType,
-              contentViewModel.gcsEntityId,
-              imageCenterAlign = true
-            ).parseOppiaHtml(
-              contentViewModel.htmlContent.toString(),
-              binding.contentTextView
-            )
-        }
-      )
+      if (fragment is QuestionPlayerFragment)
+        adapterBuilder.registerViewBinder(
+          viewType = StateItemViewModel.ViewType.CONTENT,
+          inflateView = { parent ->
+            QuestionPlayerContentItemBinding.inflate(
+              LayoutInflater.from(parent.context),
+              parent,
+              /* attachToParent= */ false
+            ).root
+          },
+          bindView = { view, viewModel ->
+            val binding = DataBindingUtil.findBinding<QuestionPlayerContentItemBinding>(view)!!
+            val contentViewModel = viewModel as ContentViewModel
+            binding.htmlContent =
+              htmlParserFactory.create(
+                resourceBucketName,
+                entityType,
+                contentViewModel.gcsEntityId,
+                imageCenterAlign = true
+              ).parseOppiaHtml(
+                contentViewModel.htmlContent.toString(),
+                binding.questionPlayerContentTextView
+              )
+          }
+        )
+      else {
+        adapterBuilder.registerViewBinder(
+          viewType = StateItemViewModel.ViewType.CONTENT,
+          inflateView = { parent ->
+            ContentItemBinding.inflate(
+              LayoutInflater.from(parent.context),
+              parent,
+              /* attachToParent= */ false
+            ).root
+          },
+          bindView = { view, viewModel ->
+            val binding = DataBindingUtil.findBinding<ContentItemBinding>(view)!!
+            val contentViewModel = viewModel as ContentViewModel
+            binding.htmlContent =
+              htmlParserFactory.create(
+                resourceBucketName,
+                entityType,
+                contentViewModel.gcsEntityId,
+                imageCenterAlign = true
+              ).parseOppiaHtml(
+                contentViewModel.htmlContent.toString(), binding.contentTextView
+              )
+          }
+        )
+      }
       featureSets += PlayerFeatureSet(contentSupport = true)
       return this
     }
@@ -852,7 +881,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         replaySupport = replaySupport || other.replaySupport,
         returnToTopicNavigation = returnToTopicNavigation || other.returnToTopicNavigation,
         showCongratulationsOnCorrectAnswer = showCongratulationsOnCorrectAnswer
-            || other.showCongratulationsOnCorrectAnswer,
+          || other.showCongratulationsOnCorrectAnswer,
         hintsAndSolutionsSupport = hintsAndSolutionsSupport || other.hintsAndSolutionsSupport,
         supportAudioVoiceovers = supportAudioVoiceovers || other.supportAudioVoiceovers
       )
