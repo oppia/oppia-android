@@ -46,6 +46,7 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Question
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.Topic
+import org.oppia.testing.FakeExceptionLogger
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.data.AsyncResult
@@ -68,6 +69,7 @@ class TopicControllerTest {
 
   @Inject lateinit var storyProgressController: StoryProgressController
   @Inject lateinit var topicController: TopicController
+  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
 
   @Rule
   @JvmField
@@ -1118,6 +1120,17 @@ class TopicControllerTest {
       assertThat(completedStoryList.completedStoryList[0].storyId).isEqualTo(FRACTIONS_STORY_ID_0)
       assertThat(completedStoryList.completedStoryList[1].storyId).isEqualTo(RATIOS_STORY_ID_0)
     }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testGetRevisionCard_noTopicAndSubtopicId_returnsFailure_logsException(){
+    topicController.getRevisionCard("","")
+
+    val exception = fakeExceptionLogger.getMostRecentException()
+
+    assertThat(exception).isInstanceOf(IllegalArgumentException::class.java)
+    assertThat(exception).hasMessageThat().contains("Invalid topic Name: ")
+  }
 
   private fun setUpTestApplicationComponent() {
     DaggerTopicControllerTest_TestApplicationComponent.builder()

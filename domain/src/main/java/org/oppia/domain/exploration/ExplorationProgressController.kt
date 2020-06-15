@@ -13,6 +13,7 @@ import org.oppia.domain.classify.AnswerClassificationController
 import org.oppia.util.data.AsyncDataSubscriptionManager
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
+import org.oppia.util.logging.ExceptionLogger
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -34,7 +35,8 @@ class ExplorationProgressController @Inject constructor(
   private val dataProviders: DataProviders,
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
   private val explorationRetriever: ExplorationRetriever,
-  private val answerClassificationController: AnswerClassificationController
+  private val answerClassificationController: AnswerClassificationController,
+  private val exceptionLogger: ExceptionLogger
 ) {
   // TODO(#180): Add support for hints.
   // TODO(#179): Add support for parameters.
@@ -142,6 +144,7 @@ class ExplorationProgressController @Inject constructor(
         return MutableLiveData(AsyncResult.success(answerOutcome))
       }
     } catch (e: Exception) {
+      exceptionLogger.logException(e)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -177,6 +180,7 @@ class ExplorationProgressController @Inject constructor(
         return MutableLiveData(AsyncResult.success(hint))
       }
     } catch (e: Exception) {
+      exceptionLogger.logException(e)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -213,6 +217,7 @@ class ExplorationProgressController @Inject constructor(
         return MutableLiveData(AsyncResult.success(solution))
       }
     } catch (e: Exception) {
+      exceptionLogger.logException(e)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -244,6 +249,7 @@ class ExplorationProgressController @Inject constructor(
       }
       return MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
+      exceptionLogger.logException(e)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -279,6 +285,7 @@ class ExplorationProgressController @Inject constructor(
       }
       return MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
+      exceptionLogger.logException(e)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -310,6 +317,7 @@ class ExplorationProgressController @Inject constructor(
     return try {
       retrieveCurrentStateWithinCacheAsync()
     } catch (e: Exception) {
+      exceptionLogger.logException(e)
       AsyncResult.failed(e)
     }
   }
@@ -340,6 +348,7 @@ class ExplorationProgressController @Inject constructor(
             finishLoadExploration(exploration!!, explorationProgress)
             AsyncResult.success(explorationProgress.stateDeck.getCurrentEphemeralState())
           } catch (e: Exception) {
+            exceptionLogger.logException(e)
             AsyncResult.failed<EphemeralState>(e)
           }
         }
