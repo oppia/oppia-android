@@ -116,6 +116,15 @@ class ExplorationActivityPresenter @Inject constructor(
     })
   }
 
+  fun onKeyboardAction(actionCode: Int) {
+    if (actionCode == EditorInfo.IME_ACTION_DONE) {
+      val explorationFragment = activity.supportFragmentManager.findFragmentByTag(
+        TAG_EXPLORATION_FRAGMENT
+      ) as? ExplorationFragment
+      explorationFragment?.onKeyboardAction()
+    }
+  }
+
   private fun updateToolbarTitle(explorationId: String) {
     subscribeToExploration(explorationDataController.getExplorationById(explorationId))
   }
@@ -149,14 +158,6 @@ class ExplorationActivityPresenter @Inject constructor(
       ParentActivityForExploration.BACKFLOW_SCREEN_STORY.value -> activity.startActivity(StoryActivity.createStoryActivityIntent(context, internalProfileId, topicId, storyId))
       ParentActivityForExploration.BACKFLOW_SCREEN_LESSONS.value -> activity.startActivity(TopicActivity.createTopicPlayStoryActivityIntent(activity, internalProfileId, topicId, storyId))
       else -> activity.startActivity(TopicActivity.createTopicActivityIntent(context, internalProfileId, topicId))
-    }
-  }
-
-  fun onKeyboardAction(actionCode: Int) {
-    if (actionCode == EditorInfo.IME_ACTION_DONE) {
-      val explorationFragment =
-        activity.supportFragmentManager.findFragmentByTag(TAG_EXPLORATION_FRAGMENT) as ExplorationFragment
-      explorationFragment.onKeyboardAction()
     }
   }
 

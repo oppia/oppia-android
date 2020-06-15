@@ -19,6 +19,10 @@ class MyDownloadsActivityPresenter @Inject constructor(private val activity: App
   }
 
   private fun getMyDownloadsFragment(): MyDownloadsFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.my_downloads_fragment_placeholder) as MyDownloadsFragment?
+    return activity
+      .supportFragmentManager
+      .findFragmentById(
+        R.id.my_downloads_fragment_placeholder
+      ) as MyDownloadsFragment?
   }
 }

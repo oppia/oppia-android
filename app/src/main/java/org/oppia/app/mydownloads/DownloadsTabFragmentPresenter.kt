@@ -11,7 +11,12 @@ import javax.inject.Inject
 @FragmentScope
 class DownloadsTabFragmentPresenter @Inject constructor() {
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val binding = DownloadsTabFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    val binding =
+      DownloadsTabFragmentBinding.inflate(
+        inflater,
+        container,
+        /* attachToRoot= */ false
+      )
     return binding.root
   }
 }

@@ -41,6 +41,10 @@ class ProfileActivityPresenter @Inject constructor(
   }
 
   private fun getProfileChooserFragment(): ProfileChooserFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.profile_chooser_fragment_placeholder) as ProfileChooserFragment?
+    return activity
+      .supportFragmentManager
+      .findFragmentById(
+        R.id.profile_chooser_fragment_placeholder
+      ) as ProfileChooserFragment?
   }
 }

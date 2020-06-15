@@ -43,7 +43,10 @@ class PinPasswordActivityPresenter @Inject constructor(
     StatusBarColor.statusBarColorUpdate(R.color.pinInputStatusBar, activity, true)
     val adminPin = activity.intent.getStringExtra(KEY_PIN_PASSWORD_ADMIN_PIN)
     profileId = activity.intent.getIntExtra(KEY_PIN_PASSWORD_PROFILE_ID, -1)
-    val binding = DataBindingUtil.setContentView<PinPasswordActivityBinding>(activity, R.layout.pin_password_activity)
+    val binding = DataBindingUtil.setContentView<PinPasswordActivityBinding>(
+      activity,
+      R.layout.pin_password_activity
+    )
     pinViewModel.setProfileId(profileId)
     binding.apply {
       lifecycleOwner = activity
@@ -60,19 +63,29 @@ class PinPasswordActivityPresenter @Inject constructor(
           if (inputtedPin.isNotEmpty()) {
             pinViewModel.showError.set(false)
           }
-          if (inputtedPin.length == pinViewModel.correctPin.get()!!.length && inputtedPin.isNotEmpty() && pinViewModel.correctPin.get()!!.isNotEmpty()) {
+          if (inputtedPin.length == pinViewModel.correctPin.get()!!.length &&
+            inputtedPin.isNotEmpty() && pinViewModel.correctPin.get()!!
+              .isNotEmpty()
+          ) {
             if (inputtedPin.toString() == pinViewModel.correctPin.get()) {
-              profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(profileId).build())
-                .observe(activity, Observer {
-                  if (it.isSuccess()) {
-                    activity.startActivity((HomeActivity.createHomeActivity(activity, profileId)))
+              profileManagementController
+                .loginToProfile(ProfileId.newBuilder().setInternalId(profileId).build())
+                .observe(
+                  activity,
+                  Observer {
+                    if (it.isSuccess()) {
+                      activity.startActivity((HomeActivity.createHomeActivity(activity, profileId)))
+                    }
                   }
-                })
+                )
             } else {
               binding.inputPin.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.shake))
-              lifecycleSafeTimerFactory.createTimer(1000).observe(activity, Observer {
-                binding.inputPin.setText("")
-              })
+              lifecycleSafeTimerFactory.createTimer(1000).observe(
+                activity,
+                Observer {
+                  binding.inputPin.setText("")
+                }
+              )
               pinViewModel.showError.set(true)
             }
           }
@@ -87,11 +100,13 @@ class PinPasswordActivityPresenter @Inject constructor(
       if (pinViewModel.isAdmin.get()!!) {
         showAdminForgotPin()
       } else {
-        val previousFrag = activity.supportFragmentManager.findFragmentByTag(TAG_ADMIN_SETTINGS_DIALOG)
+        val previousFrag =
+          activity.supportFragmentManager.findFragmentByTag(TAG_ADMIN_SETTINGS_DIALOG)
         if (previousFrag != null) {
           activity.supportFragmentManager.beginTransaction().remove(previousFrag).commitNow()
         }
-        val dialogFragment = AdminSettingsDialogFragment.newInstance(adminPin)
+        val dialogFragment = AdminSettingsDialogFragment
+          .newInstance(adminPin)
         dialogFragment.showNow(activity.supportFragmentManager, TAG_ADMIN_SETTINGS_DIALOG)
       }
     }
@@ -102,13 +117,28 @@ class PinPasswordActivityPresenter @Inject constructor(
   }
 
   fun handleRouteToResetPinDialog() {
-    (activity.supportFragmentManager.findFragmentByTag(TAG_ADMIN_SETTINGS_DIALOG) as DialogFragment).dismiss()
-    val dialogFragment = ResetPinDialogFragment.newInstance(profileId, pinViewModel.name.get()!!)
+    (
+      activity
+        .supportFragmentManager
+        .findFragmentByTag(
+          TAG_ADMIN_SETTINGS_DIALOG
+        ) as DialogFragment
+      ).dismiss()
+    val dialogFragment = ResetPinDialogFragment.newInstance(
+      profileId,
+      pinViewModel.name.get()!!
+    )
     dialogFragment.showNow(activity.supportFragmentManager, TAG_RESET_PIN_DIALOG)
   }
 
   fun handleRouteToSuccessDialog() {
-    (activity.supportFragmentManager.findFragmentByTag(TAG_RESET_PIN_DIALOG) as DialogFragment).dismiss()
+    (
+      activity
+        .supportFragmentManager
+        .findFragmentByTag(
+          TAG_RESET_PIN_DIALOG
+        ) as DialogFragment
+      ).dismiss()
     showSuccessDialog()
   }
 
@@ -128,12 +158,19 @@ class PinPasswordActivityPresenter @Inject constructor(
       .setPositiveButton(R.string.pin_password_play_store) { dialog, _ ->
         pinViewModel.showAdminPinForgotPasswordPopUp.set(false)
         try {
-          activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + activity.packageName)))
+          activity.startActivity(
+            Intent(
+              Intent.ACTION_VIEW,
+              Uri.parse("market://details?id=" + activity.packageName)
+            )
+          )
         } catch (e: ActivityNotFoundException) {
           activity.startActivity(
             Intent(
               Intent.ACTION_VIEW,
-              Uri.parse("https://play.google.com/store/apps/details?id=" + activity.packageName)
+              Uri.parse(
+                "https://play.google.com/store/apps/details?id=" + activity.packageName
+              )
             )
           )
         }

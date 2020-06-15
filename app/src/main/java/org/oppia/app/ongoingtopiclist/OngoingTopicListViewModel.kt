@@ -21,7 +21,9 @@ class OngoingTopicListViewModel @Inject constructor(
   private var internalProfileId: Int = -1
 
   private val ongoingTopicListResultLiveData: LiveData<AsyncResult<OngoingTopicList>> by lazy {
-    topicController.getOngoingTopicList(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+    topicController.getOngoingTopicList(
+      ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    )
   }
 
   private val ongoingTopicListLiveData: LiveData<OngoingTopicList> by lazy {
@@ -36,18 +38,28 @@ class OngoingTopicListViewModel @Inject constructor(
     this.internalProfileId = internalProfileId
   }
 
-  private fun processOngoingTopicResult(ongoingTopicListResult: AsyncResult<OngoingTopicList>): OngoingTopicList {
+  private fun processOngoingTopicResult(
+    ongoingTopicListResult: AsyncResult<OngoingTopicList>
+  ): OngoingTopicList {
     if (ongoingTopicListResult.isFailure()) {
-      logger.e("OngoingTopicListFragment", "Failed to retrieve OngoingTopicList: ", ongoingTopicListResult.getErrorOrNull()!!)
+      logger.e(
+        "OngoingTopicListFragment",
+        "Failed to retrieve OngoingTopicList: ",
+        ongoingTopicListResult.getErrorOrNull()!!
+      )
     }
     return ongoingTopicListResult.getOrDefault(OngoingTopicList.getDefaultInstance())
   }
 
-  private fun processOngoingTopicList(ongoingTopicList: OngoingTopicList): List<OngoingTopicItemViewModel> {
+  private fun processOngoingTopicList(
+    ongoingTopicList: OngoingTopicList
+  ): List<OngoingTopicItemViewModel> {
     val itemViewModelList: MutableList<OngoingTopicItemViewModel> = mutableListOf()
-    itemViewModelList.addAll(ongoingTopicList.topicList.map { topic ->
-      OngoingTopicItemViewModel(topic)
-    })
+    itemViewModelList.addAll(
+      ongoingTopicList.topicList.map { topic ->
+        OngoingTopicItemViewModel(topic)
+      }
+    )
     return itemViewModelList
   }
 }
