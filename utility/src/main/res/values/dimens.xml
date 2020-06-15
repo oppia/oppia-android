@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <dimen name="bullet_radius">4dp</dimen>
-  <dimen name="bullet_gap_width">28dp</dimen>
+  <dimen name="bullet_radius">2dp</dimen>
+  <dimen name="bullet_gap_width">12dp</dimen>
   <dimen name="bullet_y_offset">2dp</dimen>
-  <dimen name="bullet_leading_margin">28dp</dimen>
+  <dimen name="bullet_leading_margin">12dp</dimen>
 </resources>

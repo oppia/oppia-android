@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.text.Spannable
+import android.text.style.LeadingMarginSpan
 import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -38,6 +39,7 @@ import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
+import org.oppia.util.parser.BulletSpanWithRadius
 import org.oppia.util.parser.DefaultGcsPrefix
 import org.oppia.util.parser.GlideImageLoader
 import org.oppia.util.parser.HtmlParser
@@ -54,6 +56,8 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class HtmlParserTest {
 
+  private val BULLET_RADIUS: Int = ApplicationProvider.getApplicationContext<Context>().resources.getDimensionPixelSize(org.oppia.util.R.dimen.bullet_radius)
+  private val GAP_WIDTH: Int = ApplicationProvider.getApplicationContext<Context>().resources.getDimensionPixelSize(org.oppia.util.R.dimen.bullet_gap_width)
   private lateinit var launchedActivity: Activity
   @Inject lateinit var htmlParserFactory: HtmlParser.Factory
   @Inject
@@ -132,68 +136,68 @@ class HtmlParserTest {
     onView(withId(R.id.test_html_content_text_view)).check(matches(not(textView.text.toString())))
   }
 
-  @Test
-  fun testHtmlContent_handleSingleUnorderedList_parsedHtmlDisplaysBulletList() {
-    val textView =
-      activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
-    val source = "<html>CITRUS FRUITS:<ul><li>LEMON</li><li>LIME</li><li>ORANGE</li></ul></html>"
-    val htmlParser = htmlParserFactory.create(
-      resourceBucketName, /* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true
-    )
-    val formattedHtml = htmlParser.parseOppiaHtml(source, textView).toString()
+//  @Test
+//  fun testHtmlContent_handleSingleUnorderedList_parsedHtmlDisplaysBulletList() {
+//    val textView =
+//      activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
+//    val source = "<html>CITRUS FRUITS:<ul><li>LEMON</li><li>LIME</li><li>ORANGE</li></ul></html>"
+//    val htmlParser = htmlParserFactory.create(
+//      resourceBucketName, /* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true
+//    )
+//    val formattedHtml = htmlParser.parseOppiaHtml(source, textView).toString()
+//
+//    assertThat(
+//      formattedHtml
+//    ).isEqualTo(
+//      "CITRUS FRUITS:\n" +
+//        "● LEMON\n" +
+//        "● LIME\n" +
+//        "● ORANGE"
+//    )
+//  }
 
-    assertThat(
-      formattedHtml
-    ).isEqualTo(
-      "CITRUS FRUITS:\n" +
-        "● LEMON\n" +
-        "● LIME\n" +
-        "● ORANGE"
-    )
-  }
+//  @Test
+//  fun testHtmlContent_handleSingleOrderedList_parsedHtmlDisplaysNumberedList() {
+//    val textView =
+//      activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
+//    val source = "CITRUS FRUITS:<ol><li>LEMON</li><li>LIME</li><li>ORANGE</li></ol>"
+//    val htmlParser = htmlParserFactory.create(
+//      resourceBucketName, /* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true
+//    )
+//    val formattedHtml = htmlParser.parseOppiaHtml(source, textView).toString()
+//
+//    assertThat(
+//      formattedHtml
+//    ).isEqualTo(
+//      "CITRUS FRUITS:" +
+//        "\n1. LEMON" +
+//        "\n2. LIME" +
+//        "\n3. ORANGE"
+//    )
+//  }
 
-  @Test
-  fun testHtmlContent_handleSingleOrderedList_parsedHtmlDisplaysNumberedList() {
-    val textView =
-      activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
-    val source = "CITRUS FRUITS:<ol><li>LEMON</li><li>LIME</li><li>ORANGE</li></ol>"
-    val htmlParser = htmlParserFactory.create(
-      resourceBucketName, /* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true
-    )
-    val formattedHtml = htmlParser.parseOppiaHtml(source, textView).toString()
-
-    assertThat(
-      formattedHtml
-    ).isEqualTo(
-      "CITRUS FRUITS:" +
-        "\n1. LEMON" +
-        "\n2. LIME" +
-        "\n3. ORANGE"
-    )
-  }
-
-  @Test
-  fun testHtmlContent_handleUnorderedAndOrderedList_parsedHtmlShowsBulletAndNumberedList() {
-    val textView =
-      activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
-    val source =
-      "Mixed List:<ul><li>Item 1</li><li>Item 2</li><li>Numbered list:</li></ul><ol><li>Item 1</li><li>Item 2</li></ol"
-    val htmlParser = htmlParserFactory.create(
-      resourceBucketName, /* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true
-    )
-    val formattedHtml = htmlParser.parseOppiaHtml(source, textView).toString()
-
-    assertThat(
-      formattedHtml
-    ).isEqualTo(
-      "Mixed List:" +
-        "\n● Item 1" +
-        "\n● Item 2" +
-        "\n● Numbered list:" +
-        "\n1. Item 1" +
-        "\n2. Item 2"
-    )
-  }
+//  @Test
+//  fun testHtmlContent_handleUnorderedAndOrderedList_parsedHtmlShowsBulletAndNumberedList() {
+//    val textView =
+//      activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
+//    val source =
+//      "Mixed List:<ul><li>Item 1</li><li>Item 2</li><li>Numbered list:</li></ul><ol><li>Item 1</li><li>Item 2</li></ol"
+//    val htmlParser = htmlParserFactory.create(
+//      resourceBucketName, /* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true
+//    )
+//    val formattedHtml = htmlParser.parseOppiaHtml(source, textView).toString()
+//
+//    assertThat(
+//      formattedHtml
+//    ).isEqualTo(
+//      "Mixed List:" +
+//        "\n● Item 1" +
+//        "\n● Item 2" +
+//        "\n● Numbered list:" +
+//        "\n1. Item 1" +
+//        "\n2. Item 2"
+//    )
+//  }
 
   @Test
   fun testHtmlContent_handleNestedList_parsedHtmlDisplaysNestedList() {
@@ -216,7 +220,7 @@ class HtmlParserTest {
                 </li>
                 <li>Item 4</li>
                 <li>Item 5
-                    <ol>
+                    <ul>
                         <li>Nested item 1</li>
                         <li>Nested item 2
                             <ol>
@@ -225,7 +229,7 @@ class HtmlParserTest {
                             </ol>
                         </li>
                         <li>Nested item 3</li>
-                    </ol>
+                    </ul>
                 </li>
                 <li>Item 6</li>
             </ul>
@@ -244,39 +248,62 @@ class HtmlParserTest {
   }
 
   @Test
-  fun testHtmlContent_liTagWithoutOrderedAndUnorderedTag_failsToAddBulletOrNumberedList() {
-    val textView =
-      activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
-    val source = "CITRUS FRUITS:<li>LEMON</li><li>LIME</li><li>ORANGE</li>"
+  fun testHtmlContent_bulletSpanWithRadius_isAdded() {
+    val textView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
     val htmlParser = htmlParserFactory.create(
-      resourceBucketName, /* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true
+      resourceBucketName, /* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true)
+    val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+      "<p>You should know the following before going on:<br></p>" +
+        "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +
+        "<li>How to tell whether one counting number is bigger or smaller than another<br></li></ul>",
+      textView
     )
-    val formattedHtml = htmlParser.parseOppiaHtml(source, textView).toString()
 
-    assertThat(
-      formattedHtml
-    ).isNotEqualTo(
-      "CITRUS FRUITS:" +
-        "\n1. LEMON" +
-        "\n2. LIME" +
-        "\n3. ORANGE"
+    /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
+    val bulletSpans = htmlResult.getSpans<BulletSpanWithRadius>(0, htmlResult.length, BulletSpanWithRadius::class.java)
+    assertThat(bulletSpans.size.toLong()).isEqualTo(2)
+
+    val bulletSpan0 = bulletSpans[0] as BulletSpanWithRadius
+    assertThat(bulletSpan0).isNotNull()
+
+    val bulletSpan1 = bulletSpans[1] as BulletSpanWithRadius
+    assertThat(bulletSpan1).isNotNull()
+
+    assertThat(htmlResult.getSpanEnd(bulletSpan0)).isEqualTo(htmlResult.getSpanStart(bulletSpan1))
+  }
+  @Test
+  fun testHtmlContent_numberedLeadingMarginSpan_isAdded() {
+    val textView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName, /* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true)
+    val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+      "<p>You should know the following before going on:<br></p>" +
+        "<ol><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +
+        "<li>How to tell whether one counting number is bigger or smaller than another<br></li></ol>",
+      textView
     )
-    assertThat(
-      formattedHtml
-    ).isNotEqualTo(
-      "CITRUS FRUITS:\n" +
-        "● LEMON\n" +
-        "● LIME\n" +
-        "● ORANGE"
-    )
-    assertThat(
-      formattedHtml
-    ).isEqualTo(
-      "CITRUS FRUITS:" +
-        "LEMON" +
-        "LIME" +
-        "ORANGE"
-    )
+
+    /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
+    val bulletSpans = htmlResult.getSpans<LeadingMarginSpan.Standard>(0, htmlResult.length, LeadingMarginSpan.Standard::class.java)
+    assertThat(bulletSpans.size.toLong()).isEqualTo(2)
+
+    val bulletSpan0 = bulletSpans[0] as LeadingMarginSpan.Standard
+    assertThat(bulletSpan0).isNotNull()
+
+    val bulletSpan1 = bulletSpans[1] as LeadingMarginSpan.Standard
+    assertThat(bulletSpan1).isNotNull()
+
+    assertThat(htmlResult.getSpanEnd(bulletSpan0)).isEqualTo(htmlResult.getSpanStart(bulletSpan1))
+  }
+
+  @Test
+  fun getLeadingMargin() {
+    // Given a span with a certain gap width
+    val span = BulletSpanWithRadius(ApplicationProvider.getApplicationContext<Context>(),GAP_WIDTH)
+
+    // Check that the margin is set correctly
+    val expectedMargin = (2 * BULLET_RADIUS +  GAP_WIDTH)
+    assertThat(expectedMargin.toLong()).isEqualTo(span.getLeadingMargin(true).toLong())
   }
 
   @Qualifier
