@@ -21,10 +21,13 @@ class AudioFragmentTestActivityPresenter @Inject constructor(
 
       val audioFragment: AudioFragment = AudioFragment.newInstance(internalProfileId)
 
-      activity.supportFragmentManager.beginTransaction().add(
-        R.id.audio_fragment_placeholder,
-        audioFragment
-      ).commitNow()
+      activity
+        .supportFragmentManager
+        .beginTransaction()
+        .add(
+          R.id.audio_fragment_placeholder,
+          audioFragment
+        ).commitNow()
       val state = State.newBuilder()
         .setContent(SubtitledHtml.newBuilder().setContentId("content"))
         .putRecordedVoiceovers(
