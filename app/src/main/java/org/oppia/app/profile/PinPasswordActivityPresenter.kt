@@ -133,7 +133,8 @@ class PinPasswordActivityPresenter @Inject constructor(
 
   fun handleRouteToSuccessDialog() {
     (
-      activity.supportFragmentManager
+      activity
+        .supportFragmentManager
         .findFragmentByTag(
           TAG_RESET_PIN_DIALOG
         ) as DialogFragment
