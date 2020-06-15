@@ -12,10 +12,15 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.MockitoAnnotations
 import org.oppia.app.model.EventLog
 import org.oppia.testing.FakeEventLogger
 import org.oppia.testing.TestLogReportingModule
+import org.oppia.util.logging.EXPLORATION_ID_KEY
+import org.oppia.util.logging.PRIORITY_KEY
+import org.oppia.util.logging.QUESTION_ID_KEY
+import org.oppia.util.logging.STORY_ID_KEY
+import org.oppia.util.logging.TIMESTAMP_KEY
+import org.oppia.util.logging.TOPIC_ID_KEY
 import org.robolectric.annotation.Config
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -74,7 +79,6 @@ class FirebaseEventLoggerTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    MockitoAnnotations.initMocks(this);
   }
 
   @Test

@@ -12,6 +12,7 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
 import org.oppia.app.model.EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT
 import org.oppia.app.model.EventLog.Context.ActivityContextCase.QUESTION_CONTEXT
 import org.oppia.app.model.EventLog.EventAction
@@ -40,10 +41,8 @@ class AnalyticsControllerTest {
       ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      TEST_TOPIC_ID,
-      TEST_STORY_ID,
-      TEST_EXPLORATION_ID,
-      TEST_QUESTION_ID
+      null,
+      analyticsController.questionContext(TEST_TOPIC_ID, TEST_QUESTION_ID)
     )
 
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
@@ -62,9 +61,11 @@ class AnalyticsControllerTest {
       ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      TEST_TOPIC_ID,
-      TEST_STORY_ID,
-      TEST_EXPLORATION_ID,
+      analyticsController.explorationContext(
+        TEST_TOPIC_ID,
+        TEST_STORY_ID,
+        TEST_EXPLORATION_ID
+      ),
       null
     )
 
@@ -77,6 +78,26 @@ class AnalyticsControllerTest {
   }
 
   @Test
+  fun testController_LogTransitionEvent_withNoContext_checkLogsEvent() {
+    fakeEventLogger.clearAllEvents()
+
+    analyticsController.logTransitionEvent(
+      ApplicationProvider.getApplicationContext(),
+      TEST_TIMESTAMP,
+      EventAction.EVENT_ACTION_UNSPECIFIED,
+      null,
+      null
+    )
+
+    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
+      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
+    assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
+    assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
+    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
+      .isEqualTo(ACTIVITYCONTEXT_NOT_SET)
+  }
+
+  @Test
   fun testController_LogClickEvent_withQuestionContext_checkLogsEvent() {
     fakeEventLogger.clearAllEvents()
 
@@ -84,10 +105,8 @@ class AnalyticsControllerTest {
       ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      TEST_TOPIC_ID,
-      TEST_STORY_ID,
-      TEST_EXPLORATION_ID,
-      TEST_QUESTION_ID
+      null,
+      analyticsController.questionContext(TEST_TOPIC_ID, TEST_QUESTION_ID)
     )
 
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
@@ -106,9 +125,11 @@ class AnalyticsControllerTest {
       ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      TEST_TOPIC_ID,
-      TEST_STORY_ID,
-      TEST_EXPLORATION_ID,
+      analyticsController.explorationContext(
+        TEST_TOPIC_ID,
+        TEST_STORY_ID,
+        TEST_EXPLORATION_ID
+      ),
       null
     )
 
@@ -118,6 +139,26 @@ class AnalyticsControllerTest {
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
     assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
       .isEqualTo(EXPLORATION_CONTEXT)
+  }
+
+  @Test
+  fun testController_LogClickEvent_withNoContext_checkLogsEvent() {
+    fakeEventLogger.clearAllEvents()
+
+    analyticsController.logClickEvent(
+      ApplicationProvider.getApplicationContext(),
+      TEST_TIMESTAMP,
+      EventAction.EVENT_ACTION_UNSPECIFIED,
+      null,
+      null
+    )
+
+    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
+      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
+    assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
+    assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
+    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
+      .isEqualTo(ACTIVITYCONTEXT_NOT_SET)
   }
 
   @Before

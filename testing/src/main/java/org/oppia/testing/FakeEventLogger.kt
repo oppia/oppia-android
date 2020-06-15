@@ -5,19 +5,13 @@ import android.os.Bundle
 import org.oppia.app.model.EventLog
 import org.oppia.util.logging.EventBundleCreator
 import org.oppia.util.logging.EventLogger
-import org.oppia.util.logging.firebase.EXPLORATION_ID_KEY
-import org.oppia.util.logging.firebase.PRIORITY_KEY
-import org.oppia.util.logging.firebase.QUESTION_ID_KEY
-import org.oppia.util.logging.firebase.STORY_ID_KEY
-import org.oppia.util.logging.firebase.TIMESTAMP_KEY
-import org.oppia.util.logging.firebase.TOPIC_ID_KEY
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**  A test specific fake for the event logger. */
 @Singleton
-class FakeEventLogger @Inject constructor() : EventLogger, EventBundleCreator {
+class FakeEventLogger @Inject constructor() : EventLogger {
   private val eventList = ArrayList<EventLog>()
   private var bundle = Bundle()
 
@@ -26,37 +20,11 @@ class FakeEventLogger @Inject constructor() : EventLogger, EventBundleCreator {
     bundle =
       when (eventLog.context.activityContextCase) {
         EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT ->
-          createExplorationContextBundle(eventLog)
+          EventBundleCreator().createExplorationContextBundle(eventLog)
         EventLog.Context.ActivityContextCase.QUESTION_CONTEXT ->
-          createQuestionContextBundle(eventLog)
-        else -> defaultBundle(eventLog)
+          EventBundleCreator().createQuestionContextBundle(eventLog)
+        else -> EventBundleCreator().defaultBundle(eventLog)
       }
-  }
-
-  override fun createExplorationContextBundle(eventLog: EventLog): Bundle {
-    val bundle = Bundle()
-    bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
-    bundle.putString(TOPIC_ID_KEY, eventLog.context.explorationContext.topicId)
-    bundle.putString(STORY_ID_KEY, eventLog.context.explorationContext.storyId)
-    bundle.putString(EXPLORATION_ID_KEY, eventLog.context.explorationContext.explorationId)
-    bundle.putString(PRIORITY_KEY, eventLog.priority.toString())
-    return bundle
-  }
-
-  override fun createQuestionContextBundle(eventLog: EventLog): Bundle {
-    val bundle = Bundle()
-    bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
-    bundle.putString(TOPIC_ID_KEY, eventLog.context.questionContext.topicId)
-    bundle.putString(QUESTION_ID_KEY, eventLog.context.questionContext.questionId)
-    bundle.putString(PRIORITY_KEY, eventLog.priority.toString())
-    return bundle
-  }
-
-  override fun defaultBundle(eventLog: EventLog): Bundle {
-    val bundle = Bundle()
-    bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
-    bundle.putString(PRIORITY_KEY, eventLog.priority.toString())
-    return bundle
   }
 
   /** Returns the most recently logged event. */
@@ -73,5 +41,4 @@ class FakeEventLogger @Inject constructor() : EventLogger, EventBundleCreator {
 
   /** Returns the most recently logged event bundle. */
   fun getMostRecentEventBundle(): Bundle = bundle
-
 }

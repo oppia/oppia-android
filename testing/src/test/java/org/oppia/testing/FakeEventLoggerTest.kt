@@ -16,7 +16,7 @@ import org.junit.runner.RunWith
 import org.oppia.app.model.EventLog
 import org.oppia.app.model.EventLog.Priority
 import org.oppia.util.logging.EventLogger
-import org.oppia.util.logging.firebase.PRIORITY_KEY
+import org.oppia.util.logging.PRIORITY_KEY
 import org.robolectric.annotation.Config
 import javax.inject.Inject
 import javax.inject.Singleton
