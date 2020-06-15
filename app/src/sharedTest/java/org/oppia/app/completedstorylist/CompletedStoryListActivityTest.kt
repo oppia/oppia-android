@@ -64,8 +64,12 @@ import javax.inject.Singleton
 class CompletedStoryListActivityTest {
 
   private val internalProfileId = 0
-  @Inject lateinit var context: Context
-  @Inject lateinit var storyProfileTestHelper: StoryProgressTestHelper
+
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var storyProfileTestHelper: StoryProgressTestHelper
 
   @Before
   fun setUp() {
@@ -75,8 +79,14 @@ class CompletedStoryListActivityTest {
     FirebaseApp.initializeApp(context)
 
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    storyProfileTestHelper.markFullStoryProgressForFractions(profileId, timestampOlderThanAWeek = false)
-    storyProfileTestHelper.markFullStoryPartialTopicProgressForRatios(profileId, timestampOlderThanAWeek = false)
+    storyProfileTestHelper.markFullStoryProgressForFractions(
+      profileId,
+      timestampOlderThanAWeek = false
+    )
+    storyProfileTestHelper.markFullStoryPartialTopicProgressForRatios(
+      profileId,
+      timestampOlderThanAWeek = false
+    )
   }
 
   @After
@@ -94,10 +104,23 @@ class CompletedStoryListActivityTest {
 
   @Test
   fun testCompletedStoryList_checkItem0_storyThumbnailDescriptionIsCorrect() {
-    launch<CompletedStoryListActivity>(createCompletedStoryListActivityIntent(internalProfileId)).use {
+    launch<CompletedStoryListActivity>(
+      createCompletedStoryListActivityIntent(internalProfileId)
+    ).use {
       waitForTheView(withText(containsString("Matthew Goes to the Bakery")))
-      onView(withId(R.id.completed_story_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
-      onView(atPositionOnView(R.id.completed_story_list, 0, R.id.completed_story_lesson_thumbnail)).check(
+      onView(withId(R.id.completed_story_list))
+        .perform(
+          scrollToPosition<RecyclerView.ViewHolder>(
+            0
+          )
+        )
+      onView(
+        atPositionOnView(
+          R.id.completed_story_list,
+          0,
+          R.id.completed_story_lesson_thumbnail
+        )
+      ).check(
         matches(
           withContentDescription(containsString("Matthew Goes to the Bakery"))
         )
@@ -107,14 +130,24 @@ class CompletedStoryListActivityTest {
 
   @Test
   fun testCompletedStoryList_checkItem0_storyNameIsCorrect() {
-    launch<CompletedStoryListActivity>(createCompletedStoryListActivityIntent(internalProfileId)).use {
+    launch<CompletedStoryListActivity>(
+      createCompletedStoryListActivityIntent(
+        internalProfileId
+      )
+    ).use {
       waitForTheView(withText(containsString("Matthew Goes to the Bakery")))
       onView(withId(R.id.completed_story_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           0
         )
       )
-      onView(atPositionOnView(R.id.completed_story_list, 0, R.id.completed_story_name_text_view)).check(
+      onView(
+        atPositionOnView(
+          R.id.completed_story_list,
+          0,
+          R.id.completed_story_name_text_view
+        )
+      ).check(
         matches(
           withText(containsString("Matthew Goes to the Bakery"))
         )
@@ -124,14 +157,24 @@ class CompletedStoryListActivityTest {
 
   @Test
   fun testCompletedStoryList_checkItem0_titleIsCorrect() {
-    launch<CompletedStoryListActivity>(createCompletedStoryListActivityIntent(internalProfileId)).use {
+    launch<CompletedStoryListActivity>(
+      createCompletedStoryListActivityIntent(
+        internalProfileId
+      )
+    ).use {
       waitForTheView(withText(containsString("Fractions")))
       onView(withId(R.id.completed_story_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           0
         )
       )
-      onView(atPositionOnView(R.id.completed_story_list, 0, R.id.completed_story_topic_name_text_view)).check(
+      onView(
+        atPositionOnView(
+          R.id.completed_story_list,
+          0,
+          R.id.completed_story_topic_name_text_view
+        )
+      ).check(
         matches(
           withText(containsString("Fractions"))
         )
@@ -141,14 +184,24 @@ class CompletedStoryListActivityTest {
 
   @Test
   fun testCompletedStoryList_checkItem1_storyNameIsCorrect() {
-    launch<CompletedStoryListActivity>(createCompletedStoryListActivityIntent(internalProfileId)).use {
+    launch<CompletedStoryListActivity>(
+      createCompletedStoryListActivityIntent(
+        internalProfileId
+      )
+    ).use {
       waitForTheView(withText(containsString("Ratios: Part 1")))
       onView(withId(R.id.completed_story_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
         )
       )
-      onView(atPositionOnView(R.id.completed_story_list, 1, R.id.completed_story_name_text_view)).check(
+      onView(
+        atPositionOnView(
+          R.id.completed_story_list,
+          1,
+          R.id.completed_story_name_text_view
+        )
+      ).check(
         matches(
           withText(containsString("Ratios: Part 1"))
         )
@@ -158,7 +211,11 @@ class CompletedStoryListActivityTest {
 
   @Test
   fun testCompletedStoryList_changeOrientation_checkItem1_storyNameIsCorrect() {
-    launch<CompletedStoryListActivity>(createCompletedStoryListActivityIntent(internalProfileId)).use {
+    launch<CompletedStoryListActivity>(
+      createCompletedStoryListActivityIntent(
+        internalProfileId
+      )
+    ).use {
       onView(isRoot()).perform(orientationLandscape())
       waitForTheView(withText(containsString("Ratios: Part 1")))
       onView(withId(R.id.completed_story_list)).perform(
@@ -166,7 +223,13 @@ class CompletedStoryListActivityTest {
           1
         )
       )
-      onView(atPositionOnView(R.id.completed_story_list, 1, R.id.completed_story_name_text_view)).check(
+      onView(
+        atPositionOnView(
+          R.id.completed_story_list,
+          1,
+          R.id.completed_story_name_text_view
+        )
+      ).check(
         matches(
           withText(containsString("Ratios: Part 1"))
         )
@@ -176,14 +239,24 @@ class CompletedStoryListActivityTest {
 
   @Test
   fun testCompletedStoryList_checkItem1_storyThumbnailDescriptionIsCorrect() {
-    launch<CompletedStoryListActivity>(createCompletedStoryListActivityIntent(internalProfileId)).use {
+    launch<CompletedStoryListActivity>(
+      createCompletedStoryListActivityIntent(
+        internalProfileId
+      )
+    ).use {
       waitForTheView(withText(containsString("Ratios: Part 1")))
       onView(withId(R.id.completed_story_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
         )
       )
-      onView(atPositionOnView(R.id.completed_story_list, 1, R.id.completed_story_lesson_thumbnail)).check(
+      onView(
+        atPositionOnView(
+          R.id.completed_story_list,
+          1,
+          R.id.completed_story_lesson_thumbnail
+        )
+      ).check(
         matches(
           withContentDescription(containsString("Ratios: Part 1"))
         )
@@ -193,7 +266,11 @@ class CompletedStoryListActivityTest {
 
   @Test
   fun testCompletedStoryList_changeOrientation_checkItem1_storyThumbnailDescriptionIsCorrect() {
-    launch<CompletedStoryListActivity>(createCompletedStoryListActivityIntent(internalProfileId)).use {
+    launch<CompletedStoryListActivity>(
+      createCompletedStoryListActivityIntent(
+        internalProfileId
+      )
+    ).use {
       waitForTheView(withText(containsString("Ratios: Part 1")))
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.completed_story_list)).perform(
@@ -201,7 +278,13 @@ class CompletedStoryListActivityTest {
           1
         )
       )
-      onView(atPositionOnView(R.id.completed_story_list, 1, R.id.completed_story_lesson_thumbnail)).check(
+      onView(
+        atPositionOnView(
+          R.id.completed_story_list,
+          1,
+          R.id.completed_story_lesson_thumbnail
+        )
+      ).check(
         matches(
           withContentDescription(containsString("Ratios: Part 1"))
         )
@@ -211,14 +294,24 @@ class CompletedStoryListActivityTest {
 
   @Test
   fun testCompletedStoryList_checkItem1_titleIsCorrect() {
-    launch<CompletedStoryListActivity>(createCompletedStoryListActivityIntent(internalProfileId)).use {
+    launch<CompletedStoryListActivity>(
+      createCompletedStoryListActivityIntent(
+        internalProfileId
+      )
+    ).use {
       waitForTheView(withText(containsString("Ratios and Proportional Reasoning")))
       onView(withId(R.id.completed_story_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
         )
       )
-      onView(atPositionOnView(R.id.completed_story_list, 1, R.id.completed_story_topic_name_text_view)).check(
+      onView(
+        atPositionOnView(
+          R.id.completed_story_list,
+          1,
+          R.id.completed_story_topic_name_text_view
+        )
+      ).check(
         matches(
           withText(containsString("Ratios and Proportional Reasoning"))
         )
@@ -228,7 +321,11 @@ class CompletedStoryListActivityTest {
 
   @Test
   fun testCompletedStoryList_changeOrientation_checkItem1_titleIsCorrect() {
-    launch<CompletedStoryListActivity>(createCompletedStoryListActivityIntent(internalProfileId)).use {
+    launch<CompletedStoryListActivity>(
+      createCompletedStoryListActivityIntent(
+        internalProfileId
+      )
+    ).use {
       waitForTheView(withText(containsString("Ratios and Proportional Reasoning")))
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.completed_story_list)).perform(
@@ -236,7 +333,13 @@ class CompletedStoryListActivityTest {
           1
         )
       )
-      onView(atPositionOnView(R.id.completed_story_list, 1, R.id.completed_story_topic_name_text_view)).check(
+      onView(
+        atPositionOnView(
+          R.id.completed_story_list,
+          1,
+          R.id.completed_story_topic_name_text_view
+        )
+      ).check(
         matches(
           withText(containsString("Ratios and Proportional Reasoning"))
         )
@@ -298,7 +401,8 @@ class CompletedStoryListActivityTest {
     }
   }
 
-  @Qualifier annotation class TestDispatcher
+  @Qualifier
+  annotation class TestDispatcher
 
   @Module
   class TestModule {
@@ -319,14 +423,18 @@ class CompletedStoryListActivityTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
     @Singleton
     @Provides
     @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBlockingDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
@@ -372,7 +480,8 @@ class CompletedStoryListActivityTest {
     override fun isTerminated(): Boolean = false
 
     private val handler = Handler(Looper.getMainLooper())
-    val countingResource = CountingIdlingResource("main_thread_executor_counting_idling_resource")
+    val countingResource =
+      CountingIdlingResource("main_thread_executor_counting_idling_resource")
 
     override fun execute(command: Runnable?) {
       countingResource.increment()
