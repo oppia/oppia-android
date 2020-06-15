@@ -25,14 +25,19 @@ class TopicRevisionFragment : InjectableFragment(), RevisionSubtopicSelector {
     }
   }
 
-  @Inject lateinit var topicReviewFragmentPresenter: TopicRevisionFragmentPresenter
+  @Inject
+  lateinit var topicReviewFragmentPresenter: TopicRevisionFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
     val internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)!!
     val topicId = checkNotNull(arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in arguments for TopicRevisionFragment."

@@ -19,7 +19,12 @@ class RevisionCardFragmentPresenter @Inject constructor(
   private lateinit var subtopicId: String
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val binding = RevisionCardFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    val binding =
+      RevisionCardFragmentBinding.inflate(
+        inflater,
+        container,
+        /* attachToRoot= */ false
+      )
     val viewModel = getReviewCardViewModel()
 
     topicId = fragment.activity!!.intent.getStringExtra(TOPIC_ID_ARGUMENT_KEY)
