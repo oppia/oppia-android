@@ -19,6 +19,10 @@ class RevisionCardActivityPresenter @Inject constructor(private val activity: Ap
   }
 
   private fun getReviewCardFragment(): RevisionCardFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.revision_card_fragment_placeholder) as RevisionCardFragment?
+    return activity
+      .supportFragmentManager
+      .findFragmentById(
+        R.id.revision_card_fragment_placeholder
+      ) as RevisionCardFragment?
   }
 }

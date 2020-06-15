@@ -63,8 +63,11 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class AddProfileActivityTest {
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
 
   @Before
   fun setUp() {
@@ -218,6 +221,7 @@ class AddProfileActivityTest {
     }
   }
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testAddProfileActivity_changeConfiguration_inputName_inputPin_clickCreate_checkOpensProfileActivity() {
     launch(AddProfileActivity::class.java).use {
@@ -268,6 +272,7 @@ class AddProfileActivityTest {
       intended(hasComponent(ProfileActivity::class.java.name))
     }
   }
+  /* ktlint-enable max-line-length */
 
   @Test
   fun testAddProfileActivity_checkCreateIsNotClickable() {
@@ -347,6 +352,7 @@ class AddProfileActivityTest {
     }
   }
 
+  /* ktlint-disable max-line-length */
   @Test
   @ExperimentalCoroutinesApi
   fun testAddProfileActivity_changeConfiguration_inputNotUniqueName_clickCreate_checkNameNotUniqueError() {
@@ -371,6 +377,7 @@ class AddProfileActivityTest {
       ).check(matches(withText(context.getString(R.string.add_profile_error_name_not_unique))))
     }
   }
+  /* ktlint-enable max-line-length */
 
   @Test
   @ExperimentalCoroutinesApi
@@ -404,6 +411,7 @@ class AddProfileActivityTest {
     }
   }
 
+  /* ktlint-disable max-line-length */
   @Test
   @ExperimentalCoroutinesApi
   fun testAddProfileActivity_changeConfiguration_inputNotUniqueName_clickCreate_inputName_checkErrorIsCleared() {
@@ -443,6 +451,7 @@ class AddProfileActivityTest {
       ).check(matches(withText("")))
     }
   }
+  /* ktlint-enable max-line-length */
 
   @Test
   fun testAddProfileActivity_inputNameWithNumbers_clickCreate_checkNameOnlyLettersError() {
@@ -466,6 +475,7 @@ class AddProfileActivityTest {
     }
   }
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testAddProfileActivity_changeConfiguration_inputNameWithNumbers_clickCreate_checkNameOnlyLettersError() {
     launch(AddProfileActivity::class.java).use {
@@ -489,6 +499,7 @@ class AddProfileActivityTest {
       ).check(matches(withText(context.getString(R.string.add_profile_error_name_only_letters))))
     }
   }
+  /* ktlint-enable max-line-length */
 
   @Test
   fun testAddProfileActivity_inputNameWithNumbers_clickCreate_inputName_checkErrorIsCleared() {
@@ -520,6 +531,7 @@ class AddProfileActivityTest {
     }
   }
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testAddProfileActivity_changeConfiguration_inputNameWithNumbers_clickCreate_inputName_checkErrorIsCleared() {
     launch(AddProfileActivity::class.java).use {
@@ -556,6 +568,7 @@ class AddProfileActivityTest {
       ).check(matches(withText("")))
     }
   }
+  /* ktlint-enable max-line-length */
 
   @Test
   fun testAddProfileActivity_inputShortPin_clickCreate_checkPinLengthError() {
@@ -663,6 +676,7 @@ class AddProfileActivityTest {
     }
   }
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testAddProfileActivity_changeConfiguration_inputShortPin_clickCreate_inputPin_checkErrorIsCleared() {
     launch(AddProfileActivity::class.java).use {
@@ -706,6 +720,7 @@ class AddProfileActivityTest {
       )
     }
   }
+  /* ktlint-enable max-line-length */
 
   @Test
   fun testAddProfileActivity_inputWrongConfirmPin_checkConfirmWrongError() {
@@ -885,6 +900,7 @@ class AddProfileActivityTest {
     }
   }
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testAddProfileActivity_changeConfiguration_inputWrongConfirmPin_inputConfirmPin_checkErrorIsCleared() {
     launch(AddProfileActivity::class.java).use {
@@ -934,6 +950,7 @@ class AddProfileActivityTest {
       ).check(matches(withText("")))
     }
   }
+  /* ktlint-enable max-line-length */
 
   @Test
   fun testAddProfileActivity_inputPin_checkAllowDownloadNotClickable() {
@@ -947,7 +964,14 @@ class AddProfileActivityTest {
       ).perform(
         typeText("123"), closeSoftKeyboard()
       )
-      onView(withId(R.id.add_profile_activity_allow_download_switch)).check(matches(not(isClickable())))
+      onView(withId(R.id.add_profile_activity_allow_download_switch))
+        .check(
+          matches(
+            not(
+              isClickable()
+            )
+          )
+        )
     }
   }
 
@@ -965,7 +989,14 @@ class AddProfileActivityTest {
         typeText("123"),
         closeSoftKeyboard()
       )
-      onView(withId(R.id.add_profile_activity_allow_download_switch)).check(matches(not(isClickable())))
+      onView(withId(R.id.add_profile_activity_allow_download_switch))
+        .check(
+          matches(
+            not(
+              isClickable()
+            )
+          )
+        )
     }
   }
 
@@ -997,10 +1028,16 @@ class AddProfileActivityTest {
         typeText("123"),
         closeSoftKeyboard()
       )
-      onView(withId(R.id.add_profile_activity_allow_download_switch)).check(matches(isClickable()))
+      onView(withId(R.id.add_profile_activity_allow_download_switch))
+        .check(
+          matches(
+            isClickable()
+          )
+        )
     }
   }
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testAddProfileActivity_changeConfiguration_inputPin_inputConfirmPin_checkAllowDownloadClickable() {
     launch(AddProfileActivity::class.java).use {
@@ -1040,6 +1077,7 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_allow_download_switch)).check(matches(isClickable()))
     }
   }
+  /* ktlint-enable max-line-length */
 
   @Test
   fun testAddProfileActivity_imageSelectAvatar_checkGalleryIntent() {
@@ -1173,6 +1211,7 @@ class AddProfileActivityTest {
     }
   }
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testAddProfileActivity_inputName_inputPin_inputConfirmPin_changeConfiguration_checkName_checkPin_checkConfirmPin_IsDisplayed() {
     launch(AddProfileActivity::class.java).use {
@@ -1243,7 +1282,9 @@ class AddProfileActivityTest {
       ).check(matches(withText("123")))
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testAddProfileActivity_inputName_inputPin_inputConfirmPin_deselectPIN_clickCreate_checkOpensProfileActivity() {
     launch(AddProfileActivity::class.java).use {
@@ -1280,7 +1321,9 @@ class AddProfileActivityTest {
       intended(hasComponent(ProfileActivity::class.java.name))
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   @ExperimentalCoroutinesApi
   fun testAddProfileActivity_inputNotUniqueName_clickCreate_changeConfiguration_checkErrorMessageDisplayed() {
@@ -1306,6 +1349,7 @@ class AddProfileActivityTest {
       ).check(matches(withText(context.getString(R.string.add_profile_error_name_not_unique))))
     }
   }
+  /* ktlint-enable max-line-length */
 
   @Test
   fun testAddProfileActivity_selectCheckbox_changeConfiguration_checkboxIsSelected() {
@@ -1318,6 +1362,7 @@ class AddProfileActivityTest {
     }
   }
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testAddProfileActivity_inputPin_inputConfirmPin_changeConfiguration_checkPin_checkConfirmPin_IsDisplayed() {
     launch(AddProfileActivity::class.java).use {
@@ -1373,7 +1418,9 @@ class AddProfileActivityTest {
       ).check(matches(withText("123")))
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testAddProfileActivity_inputPin_inputDifferentConfirmPin_clickCreate_changeConfiguration_checkErrorMessageDisplayed() {
     launch(AddProfileActivity::class.java).use {
@@ -1429,7 +1476,9 @@ class AddProfileActivityTest {
       )
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testAddProfileActivity_inputPin_inputConfirmPin_turnOnDownloadAccessSwitch_changeConfiguration_checkDownloadAccessSwitchIsOn() {
     launch(AddProfileActivity::class.java).use {
@@ -1465,12 +1514,18 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_allow_download_switch)).check(matches(isChecked()))
     }
   }
+  /* ktlint-enable max-line-length */
 
   @Test
   fun testAddProfileActivity_clickInfo_checkInfoPopupIsDisplayed() {
     launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.add_profile_activity_info_image_view)).perform(click())
-      onView(withText(context.getString(R.string.add_profile_pin_info))).check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.add_profile_pin_info)))
+        .check(
+          matches(
+            isDisplayed()
+          )
+        )
     }
   }
 
@@ -1479,7 +1534,12 @@ class AddProfileActivityTest {
     launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.add_profile_activity_info_image_view)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
-      onView(withText(context.getString(R.string.add_profile_pin_info))).check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.add_profile_pin_info)))
+        .check(
+          matches(
+            isDisplayed()
+          )
+        )
     }
   }
 
@@ -1496,7 +1556,8 @@ class AddProfileActivityTest {
     return ActivityResult(RESULT_OK, resultIntent)
   }
 
-  @Qualifier annotation class TestDispatcher
+  @Qualifier
+  annotation class TestDispatcher
 
   @Module
   class TestModule {
@@ -1517,14 +1578,18 @@ class AddProfileActivityTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
     @Singleton
     @Provides
     @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBlockingDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 

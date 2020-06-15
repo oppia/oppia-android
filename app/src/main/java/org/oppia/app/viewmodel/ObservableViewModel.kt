@@ -5,7 +5,7 @@ import androidx.databinding.PropertyChangeRegistry
 import androidx.lifecycle.ViewModel
 
 /** A [ViewModel] that behaves the same as [androidx.databinding.BaseObservable]. */
-open class ObservableViewModel: ViewModel(), Observable {
+open class ObservableViewModel : ViewModel(), Observable {
   private val callbacks by lazy {
     PropertyChangeRegistry()
   }

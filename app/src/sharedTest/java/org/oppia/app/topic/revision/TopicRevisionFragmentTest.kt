@@ -33,12 +33,11 @@ import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.topic.TopicTab
 import org.oppia.app.utility.EspressoTestsMatchers.withDrawable
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
-import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
-import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 
 /** Tests for [TopicRevisionFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -48,7 +47,9 @@ class TopicRevisionFragmentTest {
 
   @get:Rule
   var topicActivityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
-    TopicActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+    TopicActivity::class.java,
+    /* initialTouchMode= */ true,
+    /* launchActivity= */ false
   )
 
   @Test
@@ -84,7 +85,7 @@ class TopicRevisionFragmentTest {
   }
 
   @Test
-  fun testTopicRevisionFragment_loadFragment_selectReviewTopics_reviewCardDisplaysCorrectExplanation() {
+  fun testTopicRevisionFragment_loadFragment_selectReviewTopics_reviewCardDisplaysCorrectExplanation() { // ktlint-disable max-line-length
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
@@ -93,7 +94,14 @@ class TopicRevisionFragmentTest {
         )
       ).perform(click())
       onView(atPosition(R.id.revision_recycler_view, 0)).perform(click())
-      onView(withId(R.id.revision_card_explanation_text)).check(matches(withText("Description of subtopic is here.")))
+      onView(withId(R.id.revision_card_explanation_text))
+        .check(
+          matches(
+            withText(
+              "Description of subtopic is here."
+            )
+          )
+        )
     }
   }
 
@@ -106,7 +114,15 @@ class TopicRevisionFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.revision_recycler_view)).check(matches(hasDescendant(withDrawable(subtopicThumbnail))))
+      onView(withId(R.id.revision_recycler_view)).check(
+        matches(
+          hasDescendant(
+            withDrawable(
+              subtopicThumbnail
+            )
+          )
+        )
+      )
     }
   }
 
@@ -119,7 +135,12 @@ class TopicRevisionFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.revision_recycler_view)).check(GridLayoutManagerColumnCountAssertion(2))
+      onView(withId(R.id.revision_recycler_view))
+        .check(
+          GridLayoutManagerColumnCountAssertion(
+            2
+          )
+        )
     }
   }
 
@@ -148,7 +169,15 @@ class TopicRevisionFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.revision_recycler_view)).check(matches(hasDescendant(withDrawable(subtopicThumbnail))))
+      onView(withId(R.id.revision_recycler_view)).check(
+        matches(
+          hasDescendant(
+            withDrawable(
+              subtopicThumbnail
+            )
+          )
+        )
+      )
     }
   }
 
@@ -162,13 +191,25 @@ class TopicRevisionFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.revision_recycler_view)).check(GridLayoutManagerColumnCountAssertion(3))
+      onView(withId(R.id.revision_recycler_view))
+        .check(
+          GridLayoutManagerColumnCountAssertion(
+            3
+          )
+        )
     }
   }
 
-  private fun launchTopicActivityIntent(internalProfileId: Int, topicId: String): ActivityScenario<TopicActivity> {
+  private fun launchTopicActivityIntent(
+    internalProfileId: Int,
+    topicId: String
+  ): ActivityScenario<TopicActivity> {
     val intent =
-      TopicActivity.createTopicActivityIntent(ApplicationProvider.getApplicationContext(), internalProfileId, topicId)
+      TopicActivity.createTopicActivityIntent(
+        ApplicationProvider.getApplicationContext(),
+        internalProfileId,
+        topicId
+      )
     return ActivityScenario.launch(intent)
   }
 
@@ -213,7 +254,9 @@ class TopicRevisionFragmentTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@BlockingDispatcher blockingDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @BlockingDispatcher blockingDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return blockingDispatcher
     }
   }

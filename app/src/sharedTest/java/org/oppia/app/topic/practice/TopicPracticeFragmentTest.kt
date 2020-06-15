@@ -55,7 +55,9 @@ class TopicPracticeFragmentTest {
 
   @get:Rule
   var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
-    TopicActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+    TopicActivity::class.java,
+    /* initialTouchMode= */ true,
+    /* launchActivity= */ false
   )
 
   @Before
@@ -77,7 +79,14 @@ class TopicPracticeFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.master_skills_text_view)).check(matches(withText(R.string.topic_practice_master_these_skills)))
+      onView(withId(R.id.master_skills_text_view))
+        .check(
+          matches(
+            withText(
+              R.string.topic_practice_master_these_skills
+            )
+          )
+        )
       onView(withId(R.id.topic_practice_skill_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           10
@@ -97,10 +106,20 @@ class TopicPracticeFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).perform(
+      onView(
+        atPositionOnView(
+          R.id.topic_practice_skill_list,
+          1, R.id.subtopic_check_box
+        )
+      ).perform(
         click()
       )
-      onView(atPositionOnView(R.id.topic_practice_skill_list, 2, R.id.subtopic_check_box)).perform(
+      onView(
+        atPositionOnView(
+          R.id.topic_practice_skill_list,
+          2, R.id.subtopic_check_box
+        )
+      ).perform(
         click()
       )
     }
@@ -115,7 +134,12 @@ class TopicPracticeFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).perform(
+      onView(
+        atPositionOnView(
+          R.id.topic_practice_skill_list,
+          1, R.id.subtopic_check_box
+        )
+      ).perform(
         click()
       )
       onView(withId(R.id.topic_practice_skill_list)).perform(
@@ -136,17 +160,27 @@ class TopicPracticeFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).perform(
+      onView(
+        atPositionOnView(
+          R.id.topic_practice_skill_list,
+          1, R.id.subtopic_check_box
+        )
+      ).perform(
         click()
       )
-      onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).perform(
+      onView(
+        atPositionOnView(
+          R.id.topic_practice_skill_list,
+          1, R.id.subtopic_check_box
+        )
+      ).perform(
         click()
       )
     }
   }
 
   @Test
-  fun testTopicPracticeFragment_loadFragment_selectSubtopics_deselectsubtopics_startButtonIsInactive() {
+  fun testTopicPracticeFragment_loadFragment_selectSubtopics_deselectsubtopics_startButtonIsInactive() { // ktlint-disable max-line-length
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
@@ -154,10 +188,20 @@ class TopicPracticeFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).perform(
+      onView(
+        atPositionOnView(
+          R.id.topic_practice_skill_list,
+          1, R.id.subtopic_check_box
+        )
+      ).perform(
         click()
       )
-      onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).perform(
+      onView(
+        atPositionOnView(
+          R.id.topic_practice_skill_list,
+          1, R.id.subtopic_check_box
+        )
+      ).perform(
         click()
       )
       onView(withId(R.id.topic_practice_skill_list)).perform(
@@ -170,7 +214,7 @@ class TopicPracticeFragmentTest {
   }
 
   @Test
-  fun testTopicPracticeFragment_loadFragment_selectSubtopics_clickStartButton_skillListTransferSuccessfully() {
+  fun testTopicPracticeFragment_loadFragment_selectSubtopics_clickStartButton_skillListTransferSuccessfully() { // ktlint-disable max-line-length
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)
     onView(
       allOf(
@@ -178,7 +222,12 @@ class TopicPracticeFragmentTest {
         isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())
-    onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).perform(
+    onView(
+      atPositionOnView(
+        R.id.topic_practice_skill_list,
+        1, R.id.subtopic_check_box
+      )
+    ).perform(
       click()
     )
     onView(withId(R.id.topic_practice_skill_list)).perform(
@@ -200,11 +249,21 @@ class TopicPracticeFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).perform(
+      onView(
+        atPositionOnView(
+          R.id.topic_practice_skill_list,
+          1, R.id.subtopic_check_box
+        )
+      ).perform(
         click()
       )
       onView(isRoot()).perform(orientationLandscape())
-      onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).check(
+      onView(
+        atPositionOnView(
+          R.id.topic_practice_skill_list,
+          1, R.id.subtopic_check_box
+        )
+      ).check(
         matches(isChecked())
       )
     }
@@ -236,7 +295,7 @@ class TopicPracticeFragmentTest {
   }
 
   @Test
-  fun testTopicPracticeFragment_loadFragment_selectSkills_configurationChange_startButtonRemainsActive() {
+  fun testTopicPracticeFragment_loadFragment_selectSkills_configurationChange_startButtonRemainsActive() { // ktlint-disable max-line-length
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
@@ -244,7 +303,12 @@ class TopicPracticeFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPositionOnView(R.id.topic_practice_skill_list, 1, R.id.subtopic_check_box)).perform(
+      onView(
+        atPositionOnView(
+          R.id.topic_practice_skill_list,
+          1, R.id.subtopic_check_box
+        )
+      ).perform(
         click()
       )
       onView(isRoot()).perform(orientationLandscape())
@@ -266,15 +330,36 @@ class TopicPracticeFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.master_skills_text_view)).check(matches(withText(R.string.topic_practice_master_these_skills)))
+      onView(withId(R.id.master_skills_text_view))
+        .check(
+          matches(
+            withText(
+              R.string.topic_practice_master_these_skills
+            )
+          )
+        )
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.master_skills_text_view)).check(matches(withText(R.string.topic_practice_master_these_skills)))
+      onView(withId(R.id.master_skills_text_view))
+        .check(
+          matches(
+            withText(
+              R.string.topic_practice_master_these_skills
+            )
+          )
+        )
     }
   }
 
-  private fun launchTopicActivityIntent(internalProfileId: Int, topicId: String): ActivityScenario<TopicActivity> {
+  private fun launchTopicActivityIntent(
+    internalProfileId: Int,
+    topicId: String
+  ): ActivityScenario<TopicActivity> {
     val intent =
-      TopicActivity.createTopicActivityIntent(ApplicationProvider.getApplicationContext(), internalProfileId, topicId)
+      TopicActivity.createTopicActivityIntent(
+        ApplicationProvider.getApplicationContext(),
+        internalProfileId,
+        topicId
+      )
     return ActivityScenario.launch(intent)
   }
 
@@ -298,7 +383,9 @@ class TopicPracticeFragmentTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@BlockingDispatcher blockingDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @BlockingDispatcher blockingDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return blockingDispatcher
     }
   }
