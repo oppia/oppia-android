@@ -64,7 +64,7 @@ class AudioPlayerController @Inject constructor(
     PREPARED, // mediaPlayer in "Prepared" state, ready to play(), pause(), seekTo().
     PLAYING, // mediaPlayer in "Started" state, ready to pause(), seekTo().
     PAUSED, // mediaPlayer in "Paused" state, ready to play(), seekTo().
-    COMPLETED  // mediaPlayer in "PlaybackCompleted" state, ready to play(), seekTo().
+    COMPLETED // mediaPlayer in "PlaybackCompleted" state, ready to play(), seekTo().
   }
 
   /**
@@ -166,7 +166,12 @@ class AudioPlayerController @Inject constructor(
             }
             val availableData = audioFileBuffer.size - intPosition
             val adjustedSize = size.coerceIn(0 until availableData)
-            audioFileBuffer.copyInto(buffer, offset, intPosition, intPosition + adjustedSize)
+            audioFileBuffer.copyInto(
+              buffer,
+              offset,
+              intPosition,
+              intPosition + adjustedSize
+            )
             return adjustedSize
           }
 
