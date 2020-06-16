@@ -42,7 +42,11 @@ class StoryFragmentPresenter @Inject constructor(
     storyId: String
   ): View? {
     val viewModel = getStoryViewModel()
-    binding = StoryFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding = StoryFragmentBinding.inflate(
+      inflater,
+      container,
+      /* attachToRoot= */ false
+    )
     viewModel.setInternalProfileId(internalProfileId)
     viewModel.setTopicId(topicId)
     viewModel.setStoryId(storyId)
@@ -68,8 +72,20 @@ class StoryFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  fun handleSelectExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowScreen: Int?) {
-    routeToExplorationListener.routeToExploration(internalProfileId, topicId, storyId, explorationId, backflowScreen)
+  fun handleSelectExploration(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    backflowScreen: Int?
+  ) {
+    routeToExplorationListener.routeToExploration(
+      internalProfileId,
+      topicId,
+      storyId,
+      explorationId,
+      backflowScreen
+    )
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<StoryItemViewModel> {

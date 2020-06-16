@@ -23,8 +23,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
-        android:layout_marginEnd="28dp"
         android:layout_marginTop="28dp"
+        android:layout_marginEnd="28dp"
         android:fontFamily="sans-serif"
         android:text="@string/question_training_session_finished_header"
         android:textColor="@color/oppiaPrimaryText"
@@ -38,8 +38,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
-        android:layout_marginEnd="28dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="28dp"
         android:fontFamily="sans-serif"
         android:text="@string/question_training_session_finished_message"
         android:textColor="@color/oppiaPrimaryText"
@@ -54,7 +54,6 @@
         android:layout_height="0dp"
         android:divider="@android:color/transparent"
         android:dividerHeight="8dp"
-        android:padding="16dp"
         android:overScrollMode="never"
         app:data="@{viewModel.itemList}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -98,8 +97,8 @@
       android:layout_marginTop="8dp"
       android:layout_marginEnd="28dp"
       android:layout_marginBottom="16dp"
-      android:translationZ="4dp"
-      android:elevation="8dp">
+      android:elevation="8dp"
+      android:translationZ="4dp">
 
       <TextView
         android:id="@+id/congratulations_text_view"
@@ -116,5 +115,11 @@
         android:textSize="20sp"
         android:visibility="invisible" />
     </FrameLayout>
+
+    <View
+      android:id="@+id/question_player_toolbar_shadow_view"
+      android:layout_width="match_parent"
+      android:layout_height="6dp"
+      android:background="@drawable/toolbar_drop_shadow" />
   </FrameLayout>
 </layout>

@@ -21,7 +21,9 @@ class CompletedStoryListViewModel @Inject constructor(
   private var internalProfileId: Int = -1
 
   private val completedStoryListResultLiveData: LiveData<AsyncResult<CompletedStoryList>> by lazy {
-    topicController.getCompletedStoryList(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+    topicController.getCompletedStoryList(
+      ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    )
   }
 
   private val completedStoryLiveData: LiveData<CompletedStoryList> by lazy {
@@ -36,7 +38,9 @@ class CompletedStoryListViewModel @Inject constructor(
     this.internalProfileId = internalProfileId
   }
 
-  private fun processCompletedStoryListResult(completedStoryListResult: AsyncResult<CompletedStoryList>): CompletedStoryList {
+  private fun processCompletedStoryListResult(
+    completedStoryListResult: AsyncResult<CompletedStoryList>
+  ): CompletedStoryList {
     if (completedStoryListResult.isFailure()) {
       logger.e(
         "CompletedStoryListFragment",
@@ -47,11 +51,15 @@ class CompletedStoryListViewModel @Inject constructor(
     return completedStoryListResult.getOrDefault(CompletedStoryList.getDefaultInstance())
   }
 
-  private fun processCompletedStoryList(completedStoryList: CompletedStoryList): List<CompletedStoryItemViewModel> {
+  private fun processCompletedStoryList(
+    completedStoryList: CompletedStoryList
+  ): List<CompletedStoryItemViewModel> {
     val itemViewModelList: MutableList<CompletedStoryItemViewModel> = mutableListOf()
-    itemViewModelList.addAll(completedStoryList.completedStoryList.map { completedStory ->
-      CompletedStoryItemViewModel(completedStory)
-    })
+    itemViewModelList.addAll(
+      completedStoryList.completedStoryList.map { completedStory ->
+        CompletedStoryItemViewModel(completedStory)
+      }
+    )
     return itemViewModelList
   }
 }

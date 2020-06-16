@@ -28,12 +28,17 @@ class StoryViewModel @Inject constructor(
 ) : ViewModel() {
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
+
   /** [storyId] needs to be set before any of the live data members can be accessed. */
   private lateinit var storyId: String
   private val explorationSelectionListener = fragment as ExplorationSelectionListener
 
   private val storyResultLiveData: LiveData<AsyncResult<StorySummary>> by lazy {
-    topicController.getStory(ProfileId.newBuilder().setInternalId(internalProfileId).build(), topicId, storyId)
+    topicController.getStory(
+      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      topicId,
+      storyId
+    )
   }
 
   private val storyLiveData: LiveData<StorySummary> by lazy {
@@ -62,7 +67,11 @@ class StoryViewModel @Inject constructor(
 
   private fun processStoryResult(storyResult: AsyncResult<StorySummary>): StorySummary {
     if (storyResult.isFailure()) {
-      logger.e("StoryFragment", "Failed to retrieve Story: ", storyResult.getErrorOrNull()!!)
+      logger.e(
+        "StoryFragment",
+        "Failed to retrieve Story: ",
+        storyResult.getErrorOrNull()!!
+      )
     }
 
     return storyResult.getOrDefault(StorySummary.getDefaultInstance())
@@ -86,19 +95,21 @@ class StoryViewModel @Inject constructor(
     )
 
     // Add the rest of the list
-    itemViewModelList.addAll(chapterList.mapIndexed { index, chapter ->
-      StoryChapterSummaryViewModel(
-        index,
-        fragment,
-        explorationSelectionListener,
-        explorationDataController,
-        logger,
-        internalProfileId,
-        topicId,
-        storyId,
-        chapter
-      )
-    })
+    itemViewModelList.addAll(
+      chapterList.mapIndexed { index, chapter ->
+        StoryChapterSummaryViewModel(
+          index,
+          fragment,
+          explorationSelectionListener,
+          explorationDataController,
+          logger,
+          internalProfileId,
+          topicId,
+          storyId,
+          chapter
+        )
+      }
+    )
 
     return itemViewModelList
   }

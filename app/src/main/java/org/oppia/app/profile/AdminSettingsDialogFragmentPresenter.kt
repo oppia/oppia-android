@@ -28,7 +28,7 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
     routeDialogInterface: ProfileRouteDialogInterface,
     adminPin: String?
   ): Dialog {
-     val binding: AdminSettingsDialogBinding =
+    val binding: AdminSettingsDialogBinding =
       DataBindingUtil.inflate(
         activity.layoutInflater,
         R.layout.admin_settings_dialog,

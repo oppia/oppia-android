@@ -36,7 +36,11 @@ class TopicFragmentPresenter @Inject constructor(
     topicId: String,
     storyId: String
   ): View? {
-    val binding = TopicFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    val binding = TopicFragmentBinding.inflate(
+      inflater,
+      container,
+      /* attachToRoot= */ false
+    )
     binding.lifecycleOwner = fragment
     this.storyId = storyId
     viewPager = binding.root.findViewById(R.id.topic_tabs_viewpager) as ViewPager
@@ -52,7 +56,8 @@ class TopicFragmentPresenter @Inject constructor(
   }
 
   private fun setUpViewPager(viewPager: ViewPager, topicId: String) {
-    val adapter = ViewPagerAdapter(fragment.childFragmentManager, internalProfileId, topicId, storyId)
+    val adapter =
+      ViewPagerAdapter(fragment.childFragmentManager, internalProfileId, topicId, storyId)
     viewPager.adapter = adapter
     tabLayout.setupWithViewPager(viewPager)
     tabLayout.getTabAt(0)!!.setText(fragment.getString(R.string.info)).setIcon(tabIcons[0])
@@ -61,7 +66,7 @@ class TopicFragmentPresenter @Inject constructor(
     tabLayout.getTabAt(3)!!.setText(fragment.getString(R.string.revision)).setIcon(tabIcons[3])
     if (topicId.isNotEmpty() && storyId.isNotEmpty())
       setCurrentTab(TopicTab.LESSONS)
-    else if(topicId.isNotEmpty() && storyId.isEmpty())
+    else if (topicId.isNotEmpty() && storyId.isEmpty())
       setCurrentTab(TopicTab.INFO)
   }
 }

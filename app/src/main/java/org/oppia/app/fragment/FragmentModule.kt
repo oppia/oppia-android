@@ -4,4 +4,5 @@ import dagger.Module
 import org.oppia.app.view.ViewComponent
 
 /** Root fragment module. */
-@Module(subcomponents = [ViewComponent::class]) class FragmentModule
+@Module(subcomponents = [ViewComponent::class])
+class FragmentModule
