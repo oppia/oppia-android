@@ -22,6 +22,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -61,6 +62,7 @@ class ExplorationActivityTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    FirebaseApp.initializeApp(context)
   }
 
   private fun setUpTestApplicationComponent() {

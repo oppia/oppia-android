@@ -15,17 +15,22 @@ import org.oppia.app.databinding.StoryChapterViewBinding
 import org.oppia.app.databinding.StoryFragmentBinding
 import org.oppia.app.databinding.StoryHeaderViewBinding
 import org.oppia.app.home.RouteToExplorationListener
+import org.oppia.app.model.EventLog
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
 import org.oppia.app.story.storyitemviewmodel.StoryHeaderViewModel
 import org.oppia.app.story.storyitemviewmodel.StoryItemViewModel
 import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.domain.analytics.AnalyticsController
+import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
 /** The presenter for [StoryFragment]. */
 class StoryFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
+  private val analyticsController: AnalyticsController,
+  private val oppiaClock: OppiaClock,
   private val viewModelProvider: ViewModelProvider<StoryViewModel>
 ) {
   private val routeToExplorationListener = activity as RouteToExplorationListener
@@ -50,6 +55,7 @@ class StoryFragmentPresenter @Inject constructor(
     viewModel.setInternalProfileId(internalProfileId)
     viewModel.setTopicId(topicId)
     viewModel.setStoryId(storyId)
+    logStoryAcivityEvent(topicId, storyId)
 
     binding.storyToolbar.setNavigationOnClickListener {
       (activity as StoryActivity).finish()
@@ -151,5 +157,17 @@ class StoryFragmentPresenter @Inject constructor(
       dipValue.toFloat(),
       Resources.getSystem().displayMetrics
     ).toInt()
+  }
+
+  private fun logStoryAcivityEvent(topicId: String, storyId: String){
+    analyticsController.logTransitionEvent(
+      fragment.requireActivity().applicationContext,
+      oppiaClock.getCurrentCalendar().timeInMillis,
+      EventLog.EventAction.OPEN_PRACTICE_TAB,
+      null,
+      null,
+      null,
+      analyticsController.storyContext(topicId, storyId)
+    )
   }
 }

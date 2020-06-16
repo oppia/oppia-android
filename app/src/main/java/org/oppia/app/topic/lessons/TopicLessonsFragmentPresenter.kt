@@ -12,14 +12,17 @@ import org.oppia.app.databinding.TopicLessonsFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.app.model.ChapterSummary
+import org.oppia.app.model.EventLog
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.Topic
 import org.oppia.app.topic.RouteToStoryListener
+import org.oppia.domain.analytics.AnalyticsController
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
+import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
 /** The presenter for [TopicLessonsFragment]. */
@@ -29,7 +32,9 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val logger: Logger,
   private val explorationDataController: ExplorationDataController,
-  private val topicController: TopicController
+  private val topicController: TopicController,
+  private val analyticsController: AnalyticsController,
+  private val oppiaClock: OppiaClock
 ) : StorySummarySelector, ChapterSummarySelector {
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToStoryListener = activity as RouteToStoryListener
@@ -68,6 +73,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       it.lifecycleOwner = fragment
     }
     subscribeToTopicLiveData()
+    logLessonsFragmentEvent(topicId)
     return binding.root
   }
 
@@ -179,5 +185,17 @@ class TopicLessonsFragmentPresenter @Inject constructor(
 
   fun storySummaryClicked(storySummary: StorySummary) {
     routeToStoryListener.routeToStory(internalProfileId, topicId, storySummary.storyId)
+  }
+
+  private fun logLessonsFragmentEvent(topicId: String){
+    analyticsController.logTransitionEvent(
+      fragment.requireActivity().applicationContext,
+      oppiaClock.getCurrentCalendar().timeInMillis,
+      EventLog.EventAction.OPEN_LESSONS_TAB,
+      null,
+      null,
+      analyticsController.topicContext(topicId),
+      null
+    )
   }
 }

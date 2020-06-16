@@ -21,6 +21,6 @@ class LogReportingModule {
   @Singleton
   @Provides
   fun provideEventLogger(): EventLogger {
-    return FirebaseEventLogger(FirebaseAnalytics.getInstance(Application().applicationContext))
+    return FirebaseEventLogger(FirebaseAnalytics.getInstance(Application()))
   }
 }

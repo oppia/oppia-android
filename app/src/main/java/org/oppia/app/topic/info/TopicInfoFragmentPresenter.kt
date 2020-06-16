@@ -63,6 +63,7 @@ class TopicInfoFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
     subscribeToTopicLiveData()
+    logInfoFragmentEvent(topicId)
     binding.let {
       it.lifecycleOwner = fragment
       it.viewModel = topicInfoViewModel
@@ -123,12 +124,14 @@ class TopicInfoFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun logInfoFragmentEvent(){
+  private fun logInfoFragmentEvent(topicId: String){
     analyticsController.logTransitionEvent(
       fragment.requireActivity().applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_INFO_TAB,
       null,
+      null,
+      analyticsController.topicContext(topicId),
       null
     )
   }
