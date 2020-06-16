@@ -106,7 +106,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
    * Updates whether the submit button should be active based on whether the pending answer is in an
    * error state.
    */
-  fun updateSubmitButton(pendingAnswerError: String?) {
+  fun updateSubmitButton(pendingAnswerError: String?, inputAnswerAvailable: Boolean) {
     questionViewModel.setCanSubmitAnswer(pendingAnswerError == null)
   }
 

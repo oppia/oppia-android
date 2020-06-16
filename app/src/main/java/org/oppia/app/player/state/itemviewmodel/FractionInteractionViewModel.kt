@@ -23,6 +23,7 @@ class FractionInteractionViewModel(
 ) : StateItemViewModel(ViewType.FRACTION_INPUT_INTERACTION), InteractionAnswerHandler {
   private var pendingAnswerError: String? = null
   var answerText: CharSequence = ""
+  var isAnswerAvailable = ObservableField<Boolean>(false)
   var errorMessage = ObservableField<String>("")
 
   val hintText: CharSequence = deriveHintText(interaction)
@@ -31,10 +32,11 @@ class FractionInteractionViewModel(
   init {
     val callback: Observable.OnPropertyChangedCallback = object : Observable.OnPropertyChangedCallback() {
       override fun onPropertyChanged(sender: Observable, propertyId: Int) {
-        interactionAnswerErrorReceiver.onPendingAnswerError(pendingAnswerError)
+        interactionAnswerErrorReceiver.onPendingAnswerError(pendingAnswerError, answerText.isNotEmpty())
       }
     }
     errorMessage.addOnPropertyChangedCallback(callback)
+    isAnswerAvailable.addOnPropertyChangedCallback(callback)
   }
 
   override fun getPendingAnswer(): UserAnswer {
@@ -75,6 +77,10 @@ class FractionInteractionViewModel(
 
       override fun onTextChanged(answer: CharSequence, start: Int, before: Int, count: Int) {
         answerText = answer.toString().trim()
+        val isAnswerTextAvailable = answerText.isNotEmpty()
+        if(isAnswerTextAvailable != isAnswerAvailable.get()){
+          isAnswerAvailable.set(isAnswerTextAvailable)
+        }
         checkPendingAnswerError(AnswerErrorCategory.REAL_TIME)
       }
 

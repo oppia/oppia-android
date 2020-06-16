@@ -36,7 +36,8 @@ class InputInteractionViewTestActivity :
   )
 
   val textInputViewModel = TextInputViewModel(
-    interaction = Interaction.getDefaultInstance()
+    interaction = Interaction.getDefaultInstance(),
+    interactionAnswerErrorReceiver = this
   )
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,11 +61,9 @@ class InputInteractionViewTestActivity :
   }
 
   override fun onPendingAnswerError(
-    pendingAnswerError: String?
+    pendingAnswerError: String?,
+    inputAnswerAvailable: Boolean
   ) {
-    if (pendingAnswerError != null)
-      binding.submitButton.isEnabled = false
-    else
-      binding.submitButton.isEnabled = true
+    binding.submitButton.isEnabled = pendingAnswerError == null
   }
 }

@@ -90,8 +90,8 @@ class StateFragment : InjectableFragment(), InteractionAnswerReceiver, Interacti
 
   fun handleKeyboardAction() = stateFragmentPresenter.handleKeyboardAction()
 
-  override fun onPendingAnswerError(pendingAnswerError: String?) {
-    stateFragmentPresenter.updateSubmitButton(pendingAnswerError)
+  override fun onPendingAnswerError(pendingAnswerError: String?, inputAnswerAvailable: Boolean) {
+    stateFragmentPresenter.updateSubmitButton(pendingAnswerError, inputAnswerAvailable)
   }
 
   fun setAudioBarVisibility(visibility: Boolean) = stateFragmentPresenter.setAudioBarVisibility(visibility)

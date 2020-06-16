@@ -11,5 +11,5 @@ interface InteractionAnswerErrorReceiver {
    * submission until the pending answer itself changes. The interaction is responsible for displaying the error provided
    * here, not the implementation.
    */
-  fun onPendingAnswerError(pendingAnswerError: String?) {}
+  fun onPendingAnswerError(pendingAnswerError: String?, inputAnswerAvailable: Boolean) {}
 }

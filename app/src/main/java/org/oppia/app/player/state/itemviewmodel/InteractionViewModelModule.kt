@@ -71,6 +71,6 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("TextInput")
   fun provideTextInputViewModelFactory(): InteractionViewModelFactory {
-    return { _, interaction, _, _, _ -> TextInputViewModel(interaction) }
+    return { _, interaction, _, interactionAnswerErrorReceiver, _ -> TextInputViewModel(interaction, interactionAnswerErrorReceiver) }
   }
 }

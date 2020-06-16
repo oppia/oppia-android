@@ -415,8 +415,12 @@ class StateFragmentPresenter @Inject constructor(
   private fun isAudioShowing(): Boolean = viewModel.isAudioBarVisible.get()!!
 
   /** Updates submit button UI as active if pendingAnswerError null else inactive. */
-  fun updateSubmitButton(pendingAnswerError: String?) {
-    viewModel.setCanSubmitAnswer(pendingAnswerError == null)
+  fun updateSubmitButton(pendingAnswerError: String?, inputAnswerAvailable: Boolean) {
+    if(inputAnswerAvailable){
+      viewModel.setCanSubmitAnswer(pendingAnswerError == null)
+    } else{
+      viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
+    }
   }
 
   private fun markExplorationAsRecentlyPlayed() {
