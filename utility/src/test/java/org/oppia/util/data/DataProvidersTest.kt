@@ -76,7 +76,6 @@ class DataProvidersTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-
   @Inject
   @field:BackgroundDispatcher
   lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
@@ -423,8 +422,8 @@ class DataProvidersTest {
   @InternalCoroutinesApi
   @ExperimentalCoroutinesApi
   fun testInMemoryDataProvider_toLiveData_throwsException_deliversFailure() {
-    val dataProvider = 
-    createThrowingDataProvider<String>(BASE_PROVIDER_ID_0, IllegalStateException("Failed"))
+    val dataProvider =
+      createThrowingDataProvider<String>(BASE_PROVIDER_ID_0, IllegalStateException("Failed"))
     dataProviders.convertToLiveData(dataProvider).observeForever(mockStringLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -3228,7 +3227,12 @@ class DataProvidersTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestDispatcherModule::class, TestModule::class, TestLogReportingModule::class])
+  @Component(
+    modules = [
+      TestDispatcherModule::class, TestModule::class,
+      TestLogReportingModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
