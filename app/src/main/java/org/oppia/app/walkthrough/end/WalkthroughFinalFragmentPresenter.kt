@@ -34,9 +34,17 @@ class WalkthroughFinalFragmentPresenter @Inject constructor(
   private lateinit var topicName: String
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, topicId: String): View? {
-    binding = WalkthroughFinalFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding =
+      WalkthroughFinalFragmentBinding.inflate(
+        inflater,
+        container,
+        /* attachToRoot= */ false
+      )
     this.topicId = topicId
-    val internalProfileId = activity.intent.getIntExtra(WalkthroughActivity.WALKTHROUGH_ACTIVITY_INTERNAL_PROFILE_ID_KEY, -1)
+    val internalProfileId = activity.intent.getIntExtra(
+      WalkthroughActivity.WALKTHROUGH_ACTIVITY_INTERNAL_PROFILE_ID_KEY,
+      -1
+    )
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
     walkthroughFinalViewModel = WalkthroughFinalViewModel()
@@ -53,15 +61,23 @@ class WalkthroughFinalFragmentPresenter @Inject constructor(
   private val topicLiveData: LiveData<Topic> by lazy { getTopic() }
 
   private fun subscribeToTopicLiveData() {
-    topicLiveData.observe(activity, Observer {  result ->
-      topicName = result.name
-      setTopicName()
-    })
+    topicLiveData.observe(
+      activity,
+      Observer { result ->
+        topicName = result.name
+        setTopicName()
+      }
+    )
   }
 
   private fun setTopicName() {
     if (::walkthroughFinalViewModel.isInitialized && ::topicName.isInitialized) {
-      walkthroughFinalViewModel.topicTitle.set(activity.getString(R.string.are_you_interested,topicName))
+      walkthroughFinalViewModel.topicTitle.set(
+        activity.getString(
+          R.string.are_you_interested,
+          topicName
+        )
+      )
     }
   }
 
@@ -75,7 +91,11 @@ class WalkthroughFinalFragmentPresenter @Inject constructor(
 
   private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
     if (topic.isFailure()) {
-      logger.e("WalkthroughFinalFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
+      logger.e(
+        "WalkthroughFinalFragment",
+        "Failed to retrieve topic",
+        topic.getErrorOrNull()!!
+      )
     }
     return topic.getOrDefault(Topic.getDefaultInstance())
   }
