@@ -22,7 +22,7 @@ In Android Studio we have a feature called Macros which helps you convert multip
 There are two major tasks when we talk about style formatting, One is the `Reformat Code` and another one is `Optimize imports`. 
 
 * `Reformat Code` - this will reformat your code with proper indentation and newlines wherever needed.
-* `Optimize imports` - this will remove all the unused import from your file. Also, this will rearrange your imports in lexicographical order and all those imports which are starting with `java`, `javax` or `Kotlinx` will get shifted at the end of the import list which is a correct order. 
+* `Optimize imports` - this will remove all the unused import from your file. Also, this will rearrange your imports in lexicographical order and all those imports which are starting with `java`, `javax` or `Kotlin` will get shifted at the end of the import list which is a correct order. 
 
 ### Steps to create a macro: 
 1. Double shift
