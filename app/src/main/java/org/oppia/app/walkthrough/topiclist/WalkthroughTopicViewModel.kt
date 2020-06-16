@@ -49,12 +49,14 @@ class WalkthroughTopicViewModel @Inject constructor(
     )
 
     // Add the rest of the list
-    itemViewModelList.addAll(topicList.topicSummaryList.map { topic ->
-      WalkthroughTopicSummaryViewModel(
-        topic,
-        fragment as TopicSummaryClickListener
-      )
-    })
+    itemViewModelList.addAll(
+      topicList.topicSummaryList.map { topic ->
+        WalkthroughTopicSummaryViewModel(
+          topic,
+          fragment as TopicSummaryClickListener
+        )
+      }
+    )
     return itemViewModelList
   }
 }

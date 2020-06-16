@@ -8,8 +8,11 @@ import javax.inject.Inject
 
 /** Activity used in [HomeActivityTest] to get certain dependencies. */
 class HomeInjectionActivity : InjectableAppCompatActivity() {
-  @Inject lateinit var profileManagementController: ProfileManagementController
-  @Inject lateinit var oppiaClock: OppiaClock
+  @Inject
+  lateinit var profileManagementController: ProfileManagementController
+
+  @Inject
+  lateinit var oppiaClock: OppiaClock
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

@@ -38,10 +38,15 @@ class HtmlParser private constructor(
     }
 
     if (htmlContent.contains(CUSTOM_IMG_TAG)) {
-      htmlContent = htmlContent.replace(CUSTOM_IMG_TAG, REPLACE_IMG_TAG, /* ignoreCase= */false)
+      htmlContent = htmlContent.replace(
+        CUSTOM_IMG_TAG,
+        REPLACE_IMG_TAG,
+        /* ignoreCase= */ false
+      )
       htmlContent = htmlContent.replace(
         CUSTOM_IMG_FILE_PATH_ATTRIBUTE,
-        REPLACE_IMG_FILE_PATH_ATTRIBUTE, /* ignoreCase= */false
+        REPLACE_IMG_FILE_PATH_ATTRIBUTE,
+        /* ignoreCase= */ false
       )
       htmlContent = htmlContent.replace("&amp;quot;", "")
     }
@@ -50,10 +55,19 @@ class HtmlParser private constructor(
       htmlContentTextView, gcsResourceName, entityType, entityId, imageCenterAlign
     )
 
-    val htmlSpannable = HtmlCompat.fromHtml(htmlContent, HtmlCompat.FROM_HTML_MODE_LEGACY, imageGetter, LiTagHandler()) as Spannable
+    val htmlSpannable = HtmlCompat.fromHtml(
+      htmlContent,
+      HtmlCompat.FROM_HTML_MODE_LEGACY,
+      imageGetter,
+      LiTagHandler()
+    ) as Spannable
 
     val spannableBuilder = SpannableStringBuilder(htmlSpannable)
-    val bulletSpans = spannableBuilder.getSpans(0, spannableBuilder.length, BulletSpan::class.java)
+    val bulletSpans = spannableBuilder.getSpans(
+      /* queryStart= */ 0,
+      spannableBuilder.length,
+      BulletSpan::class.java
+    )
     bulletSpans.forEach {
       val start = spannableBuilder.getSpanStart(it)
       val end = spannableBuilder.getSpanEnd(it)
@@ -88,8 +102,19 @@ class HtmlParser private constructor(
   }
 
   class Factory @Inject constructor(private val urlImageParserFactory: UrlImageParser.Factory) {
-    fun create(gcsResourceName: String, entityType: String, entityId: String, imageCenterAlign: Boolean): HtmlParser {
-      return HtmlParser(urlImageParserFactory, gcsResourceName, entityType, entityId, imageCenterAlign)
+    fun create(
+      gcsResourceName: String,
+      entityType: String,
+      entityId: String,
+      imageCenterAlign: Boolean
+    ): HtmlParser {
+      return HtmlParser(
+        urlImageParserFactory,
+        gcsResourceName,
+        entityType,
+        entityId,
+        imageCenterAlign
+      )
     }
   }
 }
