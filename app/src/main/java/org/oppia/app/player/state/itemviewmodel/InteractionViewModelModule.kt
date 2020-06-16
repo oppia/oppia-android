@@ -31,9 +31,9 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("MultipleChoiceInput")
   fun provideMultipleChoiceInputViewModelFactory(): InteractionViewModelFactory {
-    return { entityId, interaction, interactionAnswerReceiver, _, _ ->
+    return { entityId, interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver, _ ->
       SelectionInteractionViewModel(
-        entityId, interaction, interactionAnswerReceiver
+        entityId, interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver
       )
     }
   }
@@ -42,9 +42,9 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("ItemSelectionInput")
   fun provideItemSelectionInputViewModelFactory(): InteractionViewModelFactory {
-    return { entityId, interaction, interactionAnswerReceiver, _, _ ->
+    return { entityId, interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver, _ ->
       SelectionInteractionViewModel(
-        entityId, interaction, interactionAnswerReceiver
+        entityId, interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver
       )
     }
   }
