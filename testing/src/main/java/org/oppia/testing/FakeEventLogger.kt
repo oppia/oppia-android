@@ -3,10 +3,6 @@ package org.oppia.testing
 import android.content.Context
 import android.os.Bundle
 import org.oppia.app.model.EventLog
-import org.oppia.app.model.EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT
-import org.oppia.app.model.EventLog.Context.ActivityContextCase.QUESTION_CONTEXT
-import org.oppia.app.model.EventLog.Context.ActivityContextCase.STORY_CONTEXT
-import org.oppia.app.model.EventLog.Context.ActivityContextCase.TOPIC_CONTEXT
 import org.oppia.util.logging.EventBundleCreator
 import org.oppia.util.logging.EventLogger
 import java.util.*
@@ -21,18 +17,7 @@ class FakeEventLogger @Inject constructor() : EventLogger {
 
   override fun logEvent(context: Context, eventLog: EventLog) {
     eventList.add(eventLog)
-    bundle =
-      when (eventLog.context.activityContextCase) {
-        EXPLORATION_CONTEXT ->
-          EventBundleCreator().createExplorationContextBundle(eventLog)
-        QUESTION_CONTEXT ->
-          EventBundleCreator().createQuestionContextBundle(eventLog)
-        TOPIC_CONTEXT ->
-          EventBundleCreator().createTopicContextBundle(eventLog)
-        STORY_CONTEXT ->
-          EventBundleCreator().createStoryContextBundle(eventLog)
-        else -> EventBundleCreator().defaultBundle(eventLog)
-      }
+    bundle = EventBundleCreator().assignBundleValue(eventLog)
   }
 
   /** Returns the most recently logged event. */

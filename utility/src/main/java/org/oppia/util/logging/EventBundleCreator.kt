@@ -14,10 +14,28 @@ const val PRIORITY_KEY = "priority"
  * Utility for creating bundles from [EventLog] objects.
  * Note that this utility may later upload them to remote services.
  */
-class EventBundleCreator {
+open class EventBundleCreator {
+  private var bundle = Bundle()
+
+  open fun assignBundleValue(eventLog: EventLog): Bundle {
+    bundle =
+      when (eventLog.context.activityContextCase) {
+        EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT ->
+          createExplorationContextBundle(eventLog)
+        EventLog.Context.ActivityContextCase.QUESTION_CONTEXT ->
+          createQuestionContextBundle(eventLog)
+        EventLog.Context.ActivityContextCase.STORY_CONTEXT ->
+          createStoryContextBundle(eventLog)
+        EventLog.Context.ActivityContextCase.TOPIC_CONTEXT ->
+          createTopicContextBundle(eventLog)
+        EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET ->
+          createNoContextBundle(eventLog)
+      }
+    return bundle
+  }
 
   /** Creates a bundle from event having exploration context. */
-  fun createExplorationContextBundle(eventLog: EventLog): Bundle {
+  open fun createExplorationContextBundle(eventLog: EventLog): Bundle {
     val bundle = Bundle()
     bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(TOPIC_ID_KEY, eventLog.context.explorationContext.topicId)
@@ -28,7 +46,7 @@ class EventBundleCreator {
   }
 
   /** Creates a bundle from event having question context. */
-  fun createQuestionContextBundle(eventLog: EventLog): Bundle {
+  open fun createQuestionContextBundle(eventLog: EventLog): Bundle {
     val bundle = Bundle()
     bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(TOPIC_ID_KEY, eventLog.context.questionContext.topicId)
@@ -38,7 +56,7 @@ class EventBundleCreator {
   }
 
   /** Creates a bundle from event having question context. */
-  fun createTopicContextBundle(eventLog: EventLog): Bundle {
+  open fun createTopicContextBundle(eventLog: EventLog): Bundle {
     val bundle = Bundle()
     bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(TOPIC_ID_KEY, eventLog.context.topicContext.topicId)
@@ -47,7 +65,7 @@ class EventBundleCreator {
   }
 
   /** Creates a bundle from event having question context. */
-  fun createStoryContextBundle(eventLog: EventLog): Bundle {
+  open fun createStoryContextBundle(eventLog: EventLog): Bundle {
     val bundle = Bundle()
     bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(TOPIC_ID_KEY, eventLog.context.storyContext.topicId)
@@ -57,7 +75,7 @@ class EventBundleCreator {
   }
 
   /** Creates a bundle from event having no context. */
-  fun defaultBundle(eventLog: EventLog): Bundle {
+  open fun createNoContextBundle(eventLog: EventLog): Bundle {
     val bundle = Bundle()
     bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(PRIORITY_KEY, eventLog.priority.toString())

@@ -106,7 +106,7 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  fun testBundleCreation_logEvent_withExceptionContext_isSuccessful() {
+  fun testBundleCreation_logEvent_withExplorationContext_isSuccessful() {
     fakeEventLogger
       .logEvent(ApplicationProvider.getApplicationContext(), eventLogExplorationContext)
     val eventBundle = fakeEventLogger.getMostRecentEventBundle()
