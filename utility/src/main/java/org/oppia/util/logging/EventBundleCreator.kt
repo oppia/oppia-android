@@ -2,6 +2,11 @@ package org.oppia.util.logging
 
 import android.os.Bundle
 import org.oppia.app.model.EventLog
+import org.oppia.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
+import org.oppia.app.model.EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT
+import org.oppia.app.model.EventLog.Context.ActivityContextCase.QUESTION_CONTEXT
+import org.oppia.app.model.EventLog.Context.ActivityContextCase.STORY_CONTEXT
+import org.oppia.app.model.EventLog.Context.ActivityContextCase.TOPIC_CONTEXT
 
 const val TIMESTAMP_KEY = "timestamp"
 const val TOPIC_ID_KEY = "topicId"
@@ -14,28 +19,23 @@ const val PRIORITY_KEY = "priority"
  * Utility for creating bundles from [EventLog] objects.
  * Note that this utility may later upload them to remote services.
  */
-open class EventBundleCreator {
+class EventBundleCreator {
   private var bundle = Bundle()
 
-  open fun assignBundleValue(eventLog: EventLog): Bundle {
+  fun createEventBundle(eventLog: EventLog): Bundle {
     bundle =
       when (eventLog.context.activityContextCase) {
-        EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT ->
-          createExplorationContextBundle(eventLog)
-        EventLog.Context.ActivityContextCase.QUESTION_CONTEXT ->
-          createQuestionContextBundle(eventLog)
-        EventLog.Context.ActivityContextCase.STORY_CONTEXT ->
-          createStoryContextBundle(eventLog)
-        EventLog.Context.ActivityContextCase.TOPIC_CONTEXT ->
-          createTopicContextBundle(eventLog)
-        EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET ->
-          createNoContextBundle(eventLog)
+        EXPLORATION_CONTEXT -> createExplorationContextBundle(eventLog)
+        QUESTION_CONTEXT -> createQuestionContextBundle(eventLog)
+        STORY_CONTEXT -> createStoryContextBundle(eventLog)
+        TOPIC_CONTEXT -> createTopicContextBundle(eventLog)
+        ACTIVITYCONTEXT_NOT_SET -> createNoContextBundle(eventLog)
       }
     return bundle
   }
 
   /** Creates a bundle from event having exploration context. */
-  open fun createExplorationContextBundle(eventLog: EventLog): Bundle {
+  private fun createExplorationContextBundle(eventLog: EventLog): Bundle {
     val bundle = Bundle()
     bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(TOPIC_ID_KEY, eventLog.context.explorationContext.topicId)
@@ -46,7 +46,7 @@ open class EventBundleCreator {
   }
 
   /** Creates a bundle from event having question context. */
-  open fun createQuestionContextBundle(eventLog: EventLog): Bundle {
+  private fun createQuestionContextBundle(eventLog: EventLog): Bundle {
     val bundle = Bundle()
     bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(TOPIC_ID_KEY, eventLog.context.questionContext.topicId)
@@ -56,7 +56,7 @@ open class EventBundleCreator {
   }
 
   /** Creates a bundle from event having question context. */
-  open fun createTopicContextBundle(eventLog: EventLog): Bundle {
+  private fun createTopicContextBundle(eventLog: EventLog): Bundle {
     val bundle = Bundle()
     bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(TOPIC_ID_KEY, eventLog.context.topicContext.topicId)
@@ -65,7 +65,7 @@ open class EventBundleCreator {
   }
 
   /** Creates a bundle from event having question context. */
-  open fun createStoryContextBundle(eventLog: EventLog): Bundle {
+  private fun createStoryContextBundle(eventLog: EventLog): Bundle {
     val bundle = Bundle()
     bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(TOPIC_ID_KEY, eventLog.context.storyContext.topicId)
@@ -75,7 +75,7 @@ open class EventBundleCreator {
   }
 
   /** Creates a bundle from event having no context. */
-  open fun createNoContextBundle(eventLog: EventLog): Bundle {
+  private fun createNoContextBundle(eventLog: EventLog): Bundle {
     val bundle = Bundle()
     bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(PRIORITY_KEY, eventLog.priority.toString())

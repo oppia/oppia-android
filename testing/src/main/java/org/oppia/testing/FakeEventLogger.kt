@@ -17,7 +17,7 @@ class FakeEventLogger @Inject constructor() : EventLogger {
 
   override fun logEvent(context: Context, eventLog: EventLog) {
     eventList.add(eventLog)
-    bundle = EventBundleCreator().assignBundleValue(eventLog)
+    bundle = EventBundleCreator().createEventBundle(eventLog)
   }
 
   /** Returns the most recently logged event. */
@@ -31,7 +31,4 @@ class FakeEventLogger @Inject constructor() : EventLogger {
 
   /** Returns true if there are no events logged. */
   fun noEventsPresent(): Boolean = eventList.isEmpty()
-
-  /** Returns the most recently logged event bundle. */
-  fun getMostRecentEventBundle(): Bundle = bundle
 }

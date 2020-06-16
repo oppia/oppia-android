@@ -17,7 +17,7 @@ class FirebaseEventLogger(
 
   /** Logs an event to Firebase Analytics. */
   override fun logEvent(context: Context, eventLog: EventLog) {
-    bundle = EventBundleCreator().assignBundleValue(eventLog)
+    bundle = EventBundleCreator().createEventBundle(eventLog)
     firebaseAnalytics.logEvent(eventLog.actionName.toString(), bundle)
   }
 }
