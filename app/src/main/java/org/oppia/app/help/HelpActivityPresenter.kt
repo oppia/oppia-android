@@ -29,8 +29,11 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
     val toolbar = activity.findViewById<View>(R.id.help_activity_toolbar) as Toolbar
     activity.setSupportActionBar(toolbar)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
-    navigationDrawerFragment =
-      activity.supportFragmentManager.findFragmentById(R.id.help_activity_fragment_navigation_drawer) as NavigationDrawerFragment
+    navigationDrawerFragment = activity
+      .supportFragmentManager
+      .findFragmentById(
+        R.id.help_activity_fragment_navigation_drawer
+      ) as NavigationDrawerFragment
     navigationDrawerFragment.setUpDrawer(
       activity.findViewById<View>(R.id.help_activity_drawer_layout) as DrawerLayout,
       toolbar, R.id.nav_help
@@ -38,6 +41,8 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
   }
 
   private fun getHelpFragment(): HelpFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.help_fragment_placeholder) as HelpFragment?
+    return activity
+      .supportFragmentManager
+      .findFragmentById(R.id.help_fragment_placeholder) as HelpFragment?
   }
 }

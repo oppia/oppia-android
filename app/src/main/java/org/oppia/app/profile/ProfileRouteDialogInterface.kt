@@ -4,6 +4,7 @@ package org.oppia.app.profile
 interface ProfileRouteDialogInterface {
   /** Shows [ResetPinDialogFragment]. */
   fun routeToResetPinDialog()
+
   /** Shows Success Dialog. */
   fun routeToSuccessDialog()
 }

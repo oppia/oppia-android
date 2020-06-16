@@ -43,8 +43,11 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class AppVersionActivityTest {
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var oppiaDateTimeFormatter: OppiaDateTimeFormatter
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var oppiaDateTimeFormatter: OppiaDateTimeFormatter
   private lateinit var lastUpdateDate: String
 
   @Before
@@ -52,7 +55,11 @@ class AppVersionActivityTest {
     Intents.init()
     setUpTestApplicationComponent()
 
-    val lastUpdateDateTime = context.packageManager.getPackageInfo(context.packageName, /* flags= */ 0).lastUpdateTime
+    val lastUpdateDateTime =
+      context.packageManager.getPackageInfo(
+        context.packageName,
+        /* flags= */ 0
+      ).lastUpdateTime
     lastUpdateDate = getDateTime(lastUpdateDateTime)!!
   }
 
@@ -74,14 +81,21 @@ class AppVersionActivityTest {
           )
         )
       ).check(matches(isDisplayed()))
-      onView(withText(String.format(context.resources.getString(R.string.app_last_update_date), lastUpdateDate))).check(
+      onView(
+        withText(
+          String.format(
+            context.resources.getString(R.string.app_last_update_date),
+            lastUpdateDate
+          )
+        )
+      ).check(
         matches(isDisplayed())
       )
     }
   }
 
   @Test
-  fun testAppVersionActivity_configurationChange_appVersionIsDisplayedCorrectly(){
+  fun testAppVersionActivity_configurationChange_appVersionIsDisplayedCorrectly() {
     launchAppVersionActivityIntent().use {
       onView(isRoot()).perform(orientationLandscape())
       onView(
@@ -117,8 +131,16 @@ class AppVersionActivityTest {
 
   @Test
   fun testAppVersionActivity_loadFragment_onBackPressed_displaysAdministratorControlsActivity() {
-    ActivityScenario.launch<AdministratorControlsActivity>(launchAdministratorControlsActivityIntent(0)).use {
-      onView(withId(R.id.administrator_controls_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
+    ActivityScenario.launch<AdministratorControlsActivity>(
+      launchAdministratorControlsActivityIntent(
+        0
+      )
+    ).use {
+      onView(withId(R.id.administrator_controls_list)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          3
+        )
+      )
       onView(withText(R.string.administrator_controls_app_version)).perform(click())
       intended(hasComponent(AppVersionActivity::class.java.name))
       onView(isRoot()).perform(pressBack())
@@ -168,7 +190,9 @@ class AppVersionActivityTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@BlockingDispatcher blockingDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @BlockingDispatcher blockingDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return blockingDispatcher
     }
   }

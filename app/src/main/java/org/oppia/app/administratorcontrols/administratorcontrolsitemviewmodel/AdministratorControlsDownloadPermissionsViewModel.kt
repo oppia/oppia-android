@@ -17,22 +17,41 @@ class AdministratorControlsDownloadPermissionsViewModel(
   deviceSettings: DeviceSettings
 ) : AdministratorControlsItemViewModel() {
 
-  var isTopicWifiUpdatePermission = ObservableField<Boolean>(deviceSettings.allowDownloadAndUpdateOnlyOnWifi)
-  var isTopicAutoUpdatePermission = ObservableField<Boolean>(deviceSettings.automaticallyUpdateTopics)
+  var isTopicWifiUpdatePermission =
+    ObservableField<Boolean>(deviceSettings.allowDownloadAndUpdateOnlyOnWifi)
+  var isTopicAutoUpdatePermission =
+    ObservableField<Boolean>(deviceSettings.automaticallyUpdateTopics)
 
   fun onTopicWifiUpdatePermissionChanged(checked: Boolean) {
-    profileManagementController.updateWifiPermissionDeviceSettings(userProfileId, checked).observe(fragment, Observer {
-      if (it.isFailure()) {
-        logger.e("AdministratorControlsFragment", "Failed to update topic update on wifi permission", it.getErrorOrNull()!!)
+    profileManagementController.updateWifiPermissionDeviceSettings(userProfileId, checked).observe(
+      fragment,
+      Observer {
+        if (it.isFailure()) {
+          logger.e(
+            "AdministratorControlsFragment",
+            "Failed to update topic update on wifi permission",
+            it.getErrorOrNull()!!
+          )
+        }
       }
-    })
+    )
   }
 
   fun onTopicAutoUpdatePermissionChanged(checked: Boolean) {
-    profileManagementController.updateTopicAutomaticallyPermissionDeviceSettings(userProfileId, checked).observe(fragment, Observer {
-      if (it.isFailure()) {
-        logger.e("AdministratorControlsFragment", "Failed to update topic auto update permission", it.getErrorOrNull()!!)
+    profileManagementController.updateTopicAutomaticallyPermissionDeviceSettings(
+      userProfileId,
+      checked
+    ).observe(
+      fragment,
+      Observer {
+        if (it.isFailure()) {
+          logger.e(
+            "AdministratorControlsFragment",
+            "Failed to update topic auto update permission",
+            it.getErrorOrNull()!!
+          )
+        }
       }
-    })
+    )
   }
 }
