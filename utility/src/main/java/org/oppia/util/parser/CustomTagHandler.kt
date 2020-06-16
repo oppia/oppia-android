@@ -77,27 +77,6 @@ class CustomTagHandler(private val context: Context) : Html.TagHandler {
       }
     }
   }
-//  override fun handleTag(
-//    opening: Boolean,
-//    tag: String,
-//    output: Editable,
-//    xmlReader: XMLReader?
-//  ) {
-//    when {
-//      tag == UL_TAG || tag == OL_TAG -> {
-//        if (opening) {
-//          listParents.add(listParents.size, tag)
-//          listCounter.add(listCounter.size, 0)
-//        } else {
-//          listParents.removeAt(listParents.size - 1)
-//          listCounter.removeAt(listCounter.size - 1)
-//        }
-//      }
-//      tag == LI_TAG && opening -> {
-//        handleListTag(output)
-//      }
-//    }
-//  }
 
   /**
    * Abstract super class for [Ul] and [Ol].
@@ -159,7 +138,7 @@ class CustomTagHandler(private val context: Context) : Html.TagHandler {
     override fun getReplaces(
       text: Editable?,
       indentation: Int
-    ): Array<Any> {
+    ): Array<Any> { // Nested BulletSpans increases distance between BULLET_SPAN and text, so we must prevent it.
       var bulletMargin: Int = INDENT_PX
       if (indentation > 1) {
         bulletMargin = INDENT_PX - BULLET_SPAN.getLeadingMargin(true)
@@ -170,7 +149,7 @@ class CustomTagHandler(private val context: Context) : Html.TagHandler {
       }
       return arrayOf(
         LeadingMarginSpan.Standard(LIST_ITEM_INDENT_PX * (indentation - 1)),
-        BulletSpanWithRadius(context, bulletMargin)
+        BulletSpanWithRadius(context,bulletMargin)
       )
     }
   }
@@ -180,14 +159,17 @@ class CustomTagHandler(private val context: Context) : Html.TagHandler {
    */
   private inner class Ol
   /**
-   * Creates a new `<ol>` with start index of 1.
+   * Creates a new `<ul>` with start index of 1.
    */ @JvmOverloads constructor(private var nextIdx: Int = 1) : ListTag() {
     override fun openItem(text: Editable) {
       super.openItem(text)
       text.append(Integer.toString(nextIdx++)).append(". ")
     }
 
-    override fun getReplaces(text: Editable?, indentation: Int): Array<Any> {
+    override fun getReplaces(
+      text: Editable?,
+      indentation: Int
+    ): Array<Any> {
       var numberMargin: Int = LIST_ITEM_INDENT_PX * (indentation - 1)
       if (indentation > 2) { // Same as in ordered lists: counter the effect of nested Spans
         numberMargin -= (indentation - 2) * LIST_ITEM_INDENT_PX

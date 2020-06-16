@@ -136,68 +136,22 @@ class HtmlParserTest {
     onView(withId(R.id.test_html_content_text_view)).check(matches(not(textView.text.toString())))
   }
 
-//  @Test
-//  fun testHtmlContent_handleSingleUnorderedList_parsedHtmlDisplaysBulletList() {
-//    val textView =
-//      activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
-//    val source = "<html>CITRUS FRUITS:<ul><li>LEMON</li><li>LIME</li><li>ORANGE</li></ul></html>"
-//    val htmlParser = htmlParserFactory.create(
-//      resourceBucketName, /* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true
-//    )
-//    val formattedHtml = htmlParser.parseOppiaHtml(source, textView).toString()
-//
-//    assertThat(
-//      formattedHtml
-//    ).isEqualTo(
-//      "CITRUS FRUITS:\n" +
-//        "● LEMON\n" +
-//        "● LIME\n" +
-//        "● ORANGE"
-//    )
-//  }
+  @Test
+  fun testHtmlContent_doesNotStartWithOLorULTag_parsedHtmlDisplaysRegularText() {
+    val textView =
+      activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
+    val source = "<html>CITRUS FRUITS:<li>LEMON</li><li>LIME</li><li>ORANGE</li></html>"
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName, /* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true
+    )
+    val formattedHtml = htmlParser.parseOppiaHtml(source, textView).toString()
 
-//  @Test
-//  fun testHtmlContent_handleSingleOrderedList_parsedHtmlDisplaysNumberedList() {
-//    val textView =
-//      activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
-//    val source = "CITRUS FRUITS:<ol><li>LEMON</li><li>LIME</li><li>ORANGE</li></ol>"
-//    val htmlParser = htmlParserFactory.create(
-//      resourceBucketName, /* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true
-//    )
-//    val formattedHtml = htmlParser.parseOppiaHtml(source, textView).toString()
-//
-//    assertThat(
-//      formattedHtml
-//    ).isEqualTo(
-//      "CITRUS FRUITS:" +
-//        "\n1. LEMON" +
-//        "\n2. LIME" +
-//        "\n3. ORANGE"
-//    )
-//  }
-
-//  @Test
-//  fun testHtmlContent_handleUnorderedAndOrderedList_parsedHtmlShowsBulletAndNumberedList() {
-//    val textView =
-//      activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
-//    val source =
-//      "Mixed List:<ul><li>Item 1</li><li>Item 2</li><li>Numbered list:</li></ul><ol><li>Item 1</li><li>Item 2</li></ol"
-//    val htmlParser = htmlParserFactory.create(
-//      resourceBucketName, /* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true
-//    )
-//    val formattedHtml = htmlParser.parseOppiaHtml(source, textView).toString()
-//
-//    assertThat(
-//      formattedHtml
-//    ).isEqualTo(
-//      "Mixed List:" +
-//        "\n● Item 1" +
-//        "\n● Item 2" +
-//        "\n● Numbered list:" +
-//        "\n1. Item 1" +
-//        "\n2. Item 2"
-//    )
-//  }
+    assertThat(
+      formattedHtml
+    ).isEqualTo(
+      "CITRUS FRUITS:LEMONLIMEORANGE"
+    )
+  }
 
   @Test
   fun testHtmlContent_handleNestedList_parsedHtmlDisplaysNestedList() {
@@ -271,6 +225,7 @@ class HtmlParserTest {
 
     assertThat(htmlResult.getSpanEnd(bulletSpan0)).isEqualTo(htmlResult.getSpanStart(bulletSpan1))
   }
+  
   @Test
   fun testHtmlContent_numberedLeadingMarginSpan_isAdded() {
     val textView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView

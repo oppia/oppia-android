@@ -2,10 +2,12 @@ package org.oppia.app.testing
 
 import android.os.Bundle
 import android.text.Spannable
+import android.util.Log
 import android.widget.TextView
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.util.gcsresource.DefaultResourceBucketName
+import org.oppia.util.parser.BulletSpanWithRadius
 import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
 
@@ -39,28 +41,28 @@ class HtmlParserTestActivity : InjectableAppCompatActivity() {
                 <li>Item 1</li>
                 <li>Item 2</li>
                 <li>Item 3
-                    <ul>
+                    <ol>
                         <li>Nested item 1</li>
                         <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
                         Nulla et tellus eu magna facilisis eleifend. Vestibulum faucibus pulvinar tincidunt. 
                         Nullam non mauris nisi.</li>
-                    </ul>
+                    </ol>
                 </li>
                 <li>Item 4</li>
                 <li>Item 5
-                    <ol>
+                    <ul>
                         <li>Nested item 1</li>
                         <li>Nested item 2
-                            <ul>
+                            <ol>
                                 <li>Double nested item 1</li>
                                 <li>Double nested item 2</li>
-                            </ul>
+                            </ol>
                         </li>
                         <li>Nested item 3</li>
-                    </ol>
+                    </ul>
                 </li>
                 <li>Item 6</li>
-           </ul>
+            </ul>
         """
     val htmlResult2: Spannable =
       htmlParserFactory.create(
@@ -70,16 +72,15 @@ class HtmlParserTestActivity : InjectableAppCompatActivity() {
         testHtmlContentOrderedListTextView
       )
     testHtmlContentOrderedListTextView.text = htmlResult2
-//    val bulletSpans = htmlResult2.getSpans<BulletSpanWithRadius>(0, htmlResult2.length, BulletSpanWithRadius::class.java)
-//    val bulletSpan0 = bulletSpans[0] as BulletSpanWithRadius
-//    val bulletSpan1 = bulletSpans[1] as BulletSpanWithRadius
-//    val bulletSpan2 = bulletSpans[2] as BulletSpanWithRadius
-//    Log.d("Bullet start  span", " " +htmlResult2.getSpanStart(bulletSpan0).toLong())
-//    Log.d("Bullet end  span", " " +htmlResult2.getSpanEnd(bulletSpan0).toLong())
-//    Log.d("Bullet start  span", " " +htmlResult2.getSpanStart(bulletSpan1).toLong())
-//    Log.d("Bullet end  span", " " +htmlResult2.getSpanEnd(bulletSpan1).toLong())
-//    Log.d("Bullet start  span", " " +htmlResult2.getSpanStart(bulletSpan2).toLong())
-//    Log.d("Bullet end  span", " " +htmlResult2.getSpanEnd(bulletSpan2).toLong())
-
+    val bulletSpans = htmlResult2.getSpans<BulletSpanWithRadius>(0, htmlResult2.length, BulletSpanWithRadius::class.java)
+    val bulletSpan0 = bulletSpans[0] as BulletSpanWithRadius
+    val bulletSpan1 = bulletSpans[1] as BulletSpanWithRadius
+    val bulletSpan2 = bulletSpans[2] as BulletSpanWithRadius
+    Log.d("Bullet start  span", " " +htmlResult2.getSpanStart(bulletSpan0).toLong())
+    Log.d("Bullet end  span", " " +htmlResult2.getSpanEnd(bulletSpan0).toLong())
+    Log.d("Bullet start  span", " " +htmlResult2.getSpanStart(bulletSpan1).toLong())
+    Log.d("Bullet end  span", " " +htmlResult2.getSpanEnd(bulletSpan1).toLong())
+    Log.d("Bullet start  span", " " +htmlResult2.getSpanStart(bulletSpan2).toLong())
+    Log.d("Bullet end  span", " " +htmlResult2.getSpanEnd(bulletSpan2).toLong())
   }
 }
