@@ -46,7 +46,7 @@ class HtmlParser private constructor(
       htmlContent = htmlContent.replace(
         CUSTOM_IMG_FILE_PATH_ATTRIBUTE,
         REPLACE_IMG_FILE_PATH_ATTRIBUTE,
-        /* ignoreCase= */false
+        /* ignoreCase= */ false
       )
       htmlContent = htmlContent.replace("&amp;quot;", "")
     }
