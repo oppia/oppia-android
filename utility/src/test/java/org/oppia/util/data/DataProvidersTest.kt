@@ -70,7 +70,8 @@ class DataProvidersTest {
   @Inject
   lateinit var asyncDataSubscriptionManager: AsyncDataSubscriptionManager
 
-  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
+  @Inject
+  lateinit var fakeExceptionLogger: FakeExceptionLogger
 
   @InternalCoroutinesApi
   @Inject
