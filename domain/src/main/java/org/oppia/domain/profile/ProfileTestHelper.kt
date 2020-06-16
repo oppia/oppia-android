@@ -47,7 +47,9 @@ class ProfileTestHelper @Inject constructor(
       appLanguage = AppLanguage.CHINESE_APP_LANGUAGE,
       audioLanguage = AudioLanguage.CHINESE_AUDIO_LANGUAGE
     )
-    return profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(0).build())
+    return profileManagementController.loginToProfile(
+      ProfileId.newBuilder().setInternalId(0).build()
+    )
   }
 
   /** Creates one admin profile and logs in to admin profile. */
@@ -63,7 +65,9 @@ class ProfileTestHelper @Inject constructor(
       appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
       audioLanguage = AudioLanguage.HINDI_AUDIO_LANGUAGE
     )
-    return profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(0).build())
+    return profileManagementController.loginToProfile(
+      ProfileId.newBuilder().setInternalId(0).build()
+    )
   }
 
   /** Create [numProfiles] number of user profiles. */
@@ -90,6 +94,7 @@ class ProfileTestHelper @Inject constructor(
   /** Login to user profile. */
   fun loginToUser() =
     profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(1).build())
+
   /** Login to user profile. */
   fun loginToUser2() =
     profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(2).build())
