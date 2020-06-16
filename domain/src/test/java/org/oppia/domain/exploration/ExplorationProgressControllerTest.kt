@@ -46,6 +46,7 @@ import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.util.toAnswerString
+import org.oppia.testing.FakeExceptionLogger
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
@@ -86,6 +87,8 @@ class ExplorationProgressControllerTest {
   @Inject lateinit var explorationProgressController: ExplorationProgressController
 
   @Inject lateinit var explorationRetriever: ExplorationRetriever
+
+  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
 
   @ExperimentalCoroutinesApi
   @Inject
@@ -1238,6 +1241,67 @@ class ExplorationProgressControllerTest {
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
     assertThat(currentState.state.name).isEqualTo("End Card") // This state is not in the other test exp.
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testMoveToNext_beforePlaying_failsWithError_logsException()
+    = runBlockingTest(coroutineContext) {
+    val moveToStateResult = explorationProgressController.moveToNextState()
+    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
+    val exception = fakeExceptionLogger.getMostRecentException()
+
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat()
+      .contains("Cannot navigate to a next state if an exploration is not being played.")
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testMoveToPrevious_navigatedForwardThenBackToInitial_failsWithError_logsException()
+    = runBlockingTest(coroutineContext) {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(TEST_EXPLORATION_ID_5)
+    submitMultipleChoiceAnswerAndMoveToNextState(0)
+    moveToPreviousState()
+
+    val moveToStateResult = explorationProgressController.moveToPreviousState()
+    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
+    advanceUntilIdle()
+    val exception = fakeExceptionLogger.getMostRecentException()
+
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat()
+      .contains("Cannot navigate to previous state; at initial state.")
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testSubmitAnswer_beforePlaying_failsWithError_logsException()
+    = runBlockingTest(coroutineContext) {
+    val result = explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
+    result.observeForever(mockAsyncAnswerOutcomeObserver)
+    advanceUntilIdle()
+    val exception = fakeExceptionLogger.getMostRecentException()
+
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat()
+      .contains("Cannot submit an answer if an exploration is not being played.")
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testGetCurrentState_playInvalidExploration_returnsFailure_logsException()
+    = runBlockingTest(coroutineContext) {
+    val currentStateLiveData = explorationProgressController.getCurrentState()
+    currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
+
+    playExploration("invalid_exp_id")
+    val exception = fakeExceptionLogger.getMostRecentException()
+
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat()
+      .contains("Invalid exploration ID: invalid_exp_id")
   }
 
   private suspend fun getTestExploration5(): Exploration {

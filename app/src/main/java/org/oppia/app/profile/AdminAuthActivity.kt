@@ -13,11 +13,15 @@ const val KEY_ADMIN_AUTH_PROFILE_ID = "ADMIN_AUTH_PROFILE_ID"
 
 /** Activity that authenticates by checking for admin's PIN. */
 class AdminAuthActivity : InjectableAppCompatActivity() {
-  @Inject lateinit var adminAuthFragmentPresenter: AdminAuthActivityPresenter
+  @Inject
+  lateinit var adminAuthFragmentPresenter: AdminAuthActivityPresenter
 
   companion object {
     fun createAdminAuthActivityIntent(
-      context: Context, adminPin: String, profileId: Int, colorRgb: Int,
+      context: Context,
+      adminPin: String,
+      profileId: Int,
+      colorRgb: Int,
       adminPinEnum: Int
     ): Intent {
       val intent = Intent(context, AdminAuthActivity::class.java)
