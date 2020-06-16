@@ -37,6 +37,7 @@
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/margin_0"
       android:paddingStart="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_24}"
+      android:paddingEnd="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_24}"
       android:gravity="@{presenter.wasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER}"
       android:orientation="@{presenter.wasProfileEverBeenAddedValue ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL}"
       app:profileChooserMarginEnd="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_0}"
@@ -73,13 +74,15 @@
           android:id="@+id/add_profile_description_text"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_gravity="center"
+          android:maxWidth="280dp"
+          android:layout_gravity="left"
           android:layout_marginTop="4dp"
           android:fontFamily="sans-serif"
           android:text="@string/set_up_multiple_profiles_description"
           android:textColor="@color/white"
           android:textSize="16sp"
-          android:visibility="@{presenter.wasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
+          android:visibility="@{presenter.wasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}"
+          tools:ignore="RtlHardcoded" />
       </LinearLayout>
     </LinearLayout>
   </LinearLayout>
