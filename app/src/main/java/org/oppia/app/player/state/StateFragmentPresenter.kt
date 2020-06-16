@@ -392,6 +392,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun moveToNextState() {
+    viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
     explorationProgressController.moveToNextState().observe(fragment, Observer {
       recyclerViewAssembler.collapsePreviousResponses()
     })
