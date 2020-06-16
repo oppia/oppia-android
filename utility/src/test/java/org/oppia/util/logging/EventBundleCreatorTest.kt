@@ -1,4 +1,4 @@
-package org.oppia.util.logging.firebase
+package org.oppia.util.logging
 
 import android.app.Application
 import android.content.Context
@@ -15,12 +15,6 @@ import org.junit.runner.RunWith
 import org.oppia.app.model.EventLog
 import org.oppia.testing.FakeEventLogger
 import org.oppia.testing.TestLogReportingModule
-import org.oppia.util.logging.EXPLORATION_ID_KEY
-import org.oppia.util.logging.PRIORITY_KEY
-import org.oppia.util.logging.QUESTION_ID_KEY
-import org.oppia.util.logging.STORY_ID_KEY
-import org.oppia.util.logging.TIMESTAMP_KEY
-import org.oppia.util.logging.TOPIC_ID_KEY
 import org.robolectric.annotation.Config
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -33,8 +27,7 @@ const val TEST_QUESTION_ID = "test_questionId"
 
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
-class FirebaseEventLoggerTest {
-
+class EventBundleCreatorTest {
   @Inject
   lateinit var fakeEventLogger: FakeEventLogger
 
@@ -171,7 +164,7 @@ class FirebaseEventLoggerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerFirebaseEventLoggerTest_TestApplicationComponent.builder()
+    DaggerEventBundleCreatorTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -199,6 +192,6 @@ class FirebaseEventLoggerTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(firebaseEventLoggerTest: FirebaseEventLoggerTest)
+    fun inject(eventBundleCreatorTest: EventBundleCreatorTest)
   }
 }

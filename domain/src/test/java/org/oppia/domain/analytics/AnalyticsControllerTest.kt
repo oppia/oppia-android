@@ -43,10 +43,7 @@ class AnalyticsControllerTest {
       ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      null,
-      analyticsController.questionContext(TEST_TOPIC_ID, TEST_QUESTION_ID),
-      null,
-      null
+      analyticsController.createQuestionContext(TEST_TOPIC_ID, TEST_QUESTION_ID)
     )
 
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
@@ -65,14 +62,11 @@ class AnalyticsControllerTest {
       ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      analyticsController.explorationContext(
+      analyticsController.createExplorationContext(
         TEST_TOPIC_ID,
         TEST_STORY_ID,
         TEST_EXPLORATION_ID
-      ),
-      null,
-      null,
-      null
+      )
     )
 
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
@@ -91,10 +85,7 @@ class AnalyticsControllerTest {
       ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      null,
-      null,
-      analyticsController.topicContext(TEST_TOPIC_ID),
-      null
+      analyticsController.createTopicContext(TEST_TOPIC_ID)
     )
 
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
@@ -113,10 +104,7 @@ class AnalyticsControllerTest {
       ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      null,
-      null,
-      null,
-      analyticsController.storyContext(TEST_TOPIC_ID, TEST_STORY_ID)
+      analyticsController.createStoryContext(TEST_TOPIC_ID, TEST_STORY_ID)
     )
 
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
@@ -135,9 +123,6 @@ class AnalyticsControllerTest {
       ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      null,
-      null,
-      null,
       null
     )
 
@@ -157,10 +142,7 @@ class AnalyticsControllerTest {
       ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      null,
-      analyticsController.questionContext(TEST_TOPIC_ID, TEST_QUESTION_ID),
-      null,
-      null
+      analyticsController.createQuestionContext(TEST_TOPIC_ID, TEST_QUESTION_ID)
     )
 
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
@@ -179,14 +161,11 @@ class AnalyticsControllerTest {
       ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      analyticsController.explorationContext(
+      analyticsController.createExplorationContext(
         TEST_TOPIC_ID,
         TEST_STORY_ID,
         TEST_EXPLORATION_ID
-      ),
-      null,
-      null,
-      null
+      )
     )
 
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
@@ -205,10 +184,7 @@ class AnalyticsControllerTest {
       ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      null,
-      null,
-      analyticsController.topicContext(TEST_TOPIC_ID),
-      null
+      analyticsController.createTopicContext(TEST_TOPIC_ID)
     )
 
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
@@ -227,10 +203,7 @@ class AnalyticsControllerTest {
       ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      null,
-      null,
-      null,
-      analyticsController.storyContext(TEST_TOPIC_ID, TEST_STORY_ID)
+      analyticsController.createStoryContext(TEST_TOPIC_ID, TEST_STORY_ID)
     )
 
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
@@ -249,9 +222,6 @@ class AnalyticsControllerTest {
       ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      null,
-      null,
-      null,
       null
     )
 
