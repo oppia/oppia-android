@@ -1,4 +1,4 @@
-package org.oppia.util.logging.firebase
+package org.oppia.util.logging
 
 import android.app.Application
 import android.content.Context
@@ -13,16 +13,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.model.EventLog
-import org.oppia.testing.FakeEventLogger
-import org.oppia.testing.TestLogReportingModule
-import org.oppia.util.logging.EXPLORATION_ID_KEY
-import org.oppia.util.logging.PRIORITY_KEY
-import org.oppia.util.logging.QUESTION_ID_KEY
-import org.oppia.util.logging.STORY_ID_KEY
-import org.oppia.util.logging.TIMESTAMP_KEY
-import org.oppia.util.logging.TOPIC_ID_KEY
 import org.robolectric.annotation.Config
-import javax.inject.Inject
 import javax.inject.Singleton
 
 const val TEST_TIMESTAMP = 1556094120000
@@ -33,11 +24,9 @@ const val TEST_QUESTION_ID = "test_questionId"
 
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
-class FirebaseEventLoggerTest {
+class EventBundleCreatorTest {
 
-  @Inject
-  lateinit var fakeEventLogger: FakeEventLogger
-
+  private val eventBundleCreator = EventBundleCreator()
   private val eventLogExplorationContext = EventLog.newBuilder()
     .setActionName(EventLog.EventAction.EVENT_ACTION_UNSPECIFIED)
     .setContext(
@@ -113,10 +102,8 @@ class FirebaseEventLoggerTest {
   }
 
   @Test
-  fun testBundleCreation_logEvent_withExceptionContext_isSuccessful() {
-    fakeEventLogger
-      .logEvent(ApplicationProvider.getApplicationContext(), eventLogExplorationContext)
-    val eventBundle = fakeEventLogger.getMostRecentEventBundle()
+  fun testBundleCreation_logEvent_withExplorationContext_isSuccessful() {
+    val eventBundle = eventBundleCreator.createEventBundle(eventLogExplorationContext)
 
     assertThat(eventBundle.get(TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
     assertThat(eventBundle.get(PRIORITY_KEY)).isEqualTo(EventLog.Priority.ESSENTIAL.toString())
@@ -127,9 +114,7 @@ class FirebaseEventLoggerTest {
 
   @Test
   fun testBundleCreation_logEvent_withQuestionContext_isSuccessful() {
-    fakeEventLogger
-      .logEvent(ApplicationProvider.getApplicationContext(), eventLogQuestionContext)
-    val eventBundle = fakeEventLogger.getMostRecentEventBundle()
+    val eventBundle = eventBundleCreator.createEventBundle(eventLogQuestionContext)
 
     assertThat(eventBundle.get(TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
     assertThat(eventBundle.get(PRIORITY_KEY)).isEqualTo(EventLog.Priority.ESSENTIAL.toString())
@@ -139,9 +124,7 @@ class FirebaseEventLoggerTest {
 
   @Test
   fun testBundleCreation_logEvent_withTopicContext_isSuccessful() {
-    fakeEventLogger
-      .logEvent(ApplicationProvider.getApplicationContext(), eventLogTopicContext)
-    val eventBundle = fakeEventLogger.getMostRecentEventBundle()
+    val eventBundle = eventBundleCreator.createEventBundle(eventLogTopicContext)
 
     assertThat(eventBundle.get(TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
     assertThat(eventBundle.get(PRIORITY_KEY)).isEqualTo(EventLog.Priority.ESSENTIAL.toString())
@@ -150,9 +133,7 @@ class FirebaseEventLoggerTest {
 
   @Test
   fun testBundleCreation_logEvent_withStoryContext_isSuccessful() {
-    fakeEventLogger
-      .logEvent(ApplicationProvider.getApplicationContext(), eventLogStoryContext)
-    val eventBundle = fakeEventLogger.getMostRecentEventBundle()
+    val eventBundle = eventBundleCreator.createEventBundle(eventLogStoryContext)
 
     assertThat(eventBundle.get(TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
     assertThat(eventBundle.get(PRIORITY_KEY)).isEqualTo(EventLog.Priority.ESSENTIAL.toString())
@@ -162,16 +143,14 @@ class FirebaseEventLoggerTest {
 
   @Test
   fun testBundleCreation_logEvent_withNoContext_isSuccessful() {
-    fakeEventLogger
-      .logEvent(ApplicationProvider.getApplicationContext(), eventLogNoContext)
-    val eventBundle = fakeEventLogger.getMostRecentEventBundle()
+    val eventBundle = eventBundleCreator.createEventBundle(eventLogNoContext)
 
     assertThat(eventBundle.get(TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
     assertThat(eventBundle.get(PRIORITY_KEY)).isEqualTo(EventLog.Priority.ESSENTIAL.toString())
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerFirebaseEventLoggerTest_TestApplicationComponent.builder()
+    DaggerEventBundleCreatorTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -189,7 +168,7 @@ class FirebaseEventLoggerTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class, TestLogReportingModule::class])
+  @Component(modules = [TestModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
@@ -199,6 +178,6 @@ class FirebaseEventLoggerTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(firebaseEventLoggerTest: FirebaseEventLoggerTest)
+    fun inject(eventBundleCreatorTest: EventBundleCreatorTest)
   }
 }

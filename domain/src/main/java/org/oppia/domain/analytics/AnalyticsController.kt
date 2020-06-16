@@ -29,20 +29,14 @@ class AnalyticsController @Inject constructor(
     context: Context,
     timestamp: Long,
     eventAction: EventAction,
-    explorationContext: EventLog.ExplorationContext?,
-    questionContext: EventLog.QuestionContext?,
-    topicContext: EventLog.TopicContext?,
-    storyContext: EventLog.StoryContext?
+    eventContext: EventLog.Context?
   ) {
     eventLogger.logEvent(
       context,
       createEventLog(
         timestamp,
         eventAction,
-        explorationContext,
-        questionContext,
-        topicContext,
-        storyContext,
+        eventContext,
         Priority.ESSENTIAL
       )
     )
@@ -56,20 +50,14 @@ class AnalyticsController @Inject constructor(
     context: Context,
     timestamp: Long,
     eventAction: EventAction,
-    explorationContext: EventLog.ExplorationContext?,
-    questionContext: EventLog.QuestionContext?,
-    topicContext: EventLog.TopicContext?,
-    storyContext: EventLog.StoryContext?
+    eventContext: EventLog.Context?
   ) {
     eventLogger.logEvent(
       context,
       createEventLog(
         timestamp,
         eventAction,
-        explorationContext,
-        questionContext,
-        topicContext,
-        storyContext,
+        eventContext,
         Priority.OPTIONAL
       )
     )
@@ -79,106 +67,77 @@ class AnalyticsController @Inject constructor(
   private fun createEventLog(
     timestamp: Long,
     eventAction: EventAction,
-    explorationContext: EventLog.ExplorationContext?,
-    questionContext: EventLog.QuestionContext?,
-    topicContext: EventLog.TopicContext?,
-    storyContext: EventLog.StoryContext?,
+    eventContext: EventLog.Context?,
     priority: Priority
   ): EventLog {
-
     val event: EventLog.Builder = EventLog.newBuilder()
     event.timestamp = timestamp
     event.actionName = eventAction
     event.priority = priority
 
-    if (
-      explorationContext != null ||
-      questionContext != null ||
-      topicContext != null ||
-      storyContext != null
-    )
-      event.context = contextCreation(
-        explorationContext,
-        questionContext,
-        topicContext,
-        storyContext
-      )
+    if (eventContext != null)
+      event.context = eventContext
 
     return event.build()
   }
 
-  /** Returns the activity context of an event. */
-  private fun contextCreation(
-    explorationContext: EventLog.ExplorationContext?,
-    questionContext: EventLog.QuestionContext?,
-    topicContext: EventLog.TopicContext?,
-    storyContext: EventLog.StoryContext?
-  ): EventLog.Context {
-    return when {
-      explorationContext != null -> {
-        EventLog.Context.newBuilder()
-          .setExplorationContext(explorationContext)
-          .build()
-      }
-      questionContext != null -> {
-        EventLog.Context.newBuilder()
-          .setQuestionContext(questionContext)
-          .build()
-      }
-      storyContext != null -> {
-        EventLog.Context.newBuilder()
-          .setStoryContext(storyContext)
-          .build()
-      }
-      else -> {
-        EventLog.Context.newBuilder()
-          .setTopicContext(topicContext)
-          .build()
-      }
-    }
-  }
-
   /** Returns the context of an event related to exploration. */
-  fun explorationContext(
-    topicId: String?,
-    storyId: String?,
-    explorationId: String?
-  ): EventLog.ExplorationContext? {
-    return EventLog.ExplorationContext.newBuilder()
-      .setTopicId(topicId)
-      .setStoryId(storyId)
-      .setExplorationId(explorationId)
+  fun createExplorationContext(
+    topicId: String,
+    storyId: String,
+    explorationId: String
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder()
+      .setExplorationContext(
+        EventLog.ExplorationContext.newBuilder()
+          .setTopicId(topicId)
+          .setStoryId(storyId)
+          .setExplorationId(explorationId)
+          .build()
+      )
       .build()
   }
 
   /** Returns the context of an event related to question. */
-  fun questionContext(
-    topicId: String?,
-    questionId: String?
-  ): EventLog.QuestionContext? {
-    return EventLog.QuestionContext.newBuilder()
-      .setTopicId(topicId)
-      .setQuestionId(questionId)
+  fun createQuestionContext(
+    topicId: String,
+    questionId: String
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder()
+      .setQuestionContext(
+        EventLog.QuestionContext.newBuilder()
+          .setTopicId(topicId)
+          .setQuestionId(questionId)
+          .build()
+      )
       .build()
   }
 
   /** Returns the context of an event related to topic. */
-  fun topicContext(
-    topicId: String?
-  ): EventLog.TopicContext? {
-    return EventLog.TopicContext.newBuilder()
-      .setTopicId(topicId)
+  fun createTopicContext(
+    topicId: String
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder()
+      .setTopicContext(
+        EventLog.TopicContext.newBuilder()
+          .setTopicId(topicId)
+          .build()
+      )
       .build()
   }
 
   /** Returns the context of an event related to topic. */
-  fun storyContext(
-    topicId: String?,
-    storyId: String?
-  ): EventLog.StoryContext? {
-    return EventLog.StoryContext.newBuilder()
-      .setTopicId(topicId)
-      .setStoryId(storyId)
+  fun createStoryContext(
+    topicId: String,
+    storyId: String
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder()
+      .setStoryContext(
+        EventLog.StoryContext.newBuilder()
+          .setTopicId(topicId)
+          .setStoryId(storyId)
+          .build()
+      )
       .build()
   }
 }
