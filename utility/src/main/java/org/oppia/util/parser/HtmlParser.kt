@@ -45,7 +45,8 @@ class HtmlParser private constructor(
       )
       htmlContent = htmlContent.replace(
         CUSTOM_IMG_FILE_PATH_ATTRIBUTE,
-        REPLACE_IMG_FILE_PATH_ATTRIBUTE, /* ignoreCase= */false
+        REPLACE_IMG_FILE_PATH_ATTRIBUTE,
+        /* ignoreCase= */false
       )
       htmlContent = htmlContent.replace("&amp;quot;", "")
     }
@@ -63,7 +64,7 @@ class HtmlParser private constructor(
 
     val spannableBuilder = SpannableStringBuilder(htmlSpannable)
     val bulletSpans = spannableBuilder.getSpans(
-      /* queryStart= */0,
+      /* queryStart= */ 0,
       spannableBuilder.length,
       BulletSpan::class.java
     )
