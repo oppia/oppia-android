@@ -2,6 +2,8 @@ package org.oppia.util.parser
 
 import android.text.Spannable
 import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.BulletSpan
 import android.widget.TextView
 import androidx.core.text.HtmlCompat
 import javax.inject.Inject
@@ -36,10 +38,15 @@ class HtmlParser private constructor(
     }
 
     if (htmlContent.contains(CUSTOM_IMG_TAG)) {
-      htmlContent = htmlContent.replace(CUSTOM_IMG_TAG, REPLACE_IMG_TAG, /* ignoreCase= */false)
+      htmlContent = htmlContent.replace(
+        CUSTOM_IMG_TAG,
+        REPLACE_IMG_TAG,
+        /* ignoreCase= */ false
+      )
       htmlContent = htmlContent.replace(
         CUSTOM_IMG_FILE_PATH_ATTRIBUTE,
-        REPLACE_IMG_FILE_PATH_ATTRIBUTE, /* ignoreCase= */false
+        REPLACE_IMG_FILE_PATH_ATTRIBUTE,
+        /* ignoreCase= */ false
       )
       htmlContent = htmlContent.replace("&amp;quot;", "")
     }
@@ -47,7 +54,6 @@ class HtmlParser private constructor(
     val imageGetter = urlImageParserFactory.create(
       htmlContentTextView, gcsResourceName, entityType, entityId, imageCenterAlign
     )
-
     val formattedHtml = htmlContent
       .replace("(?i)<ul[^>]*>".toRegex(), "<${StringUtils.UL_TAG}>")
       .replace("(?i)</ul>".toRegex(), "</${StringUtils.UL_TAG}>")
@@ -87,8 +93,19 @@ class HtmlParser private constructor(
   }
 
   class Factory @Inject constructor(private val urlImageParserFactory: UrlImageParser.Factory) {
-    fun create(gcsResourceName: String, entityType: String, entityId: String, imageCenterAlign: Boolean): HtmlParser {
-      return HtmlParser(urlImageParserFactory, gcsResourceName, entityType, entityId, imageCenterAlign)
+    fun create(
+      gcsResourceName: String,
+      entityType: String,
+      entityId: String,
+      imageCenterAlign: Boolean
+    ): HtmlParser {
+      return HtmlParser(
+        urlImageParserFactory,
+        gcsResourceName,
+        entityType,
+        entityId,
+        imageCenterAlign
+      )
     }
   }
 }

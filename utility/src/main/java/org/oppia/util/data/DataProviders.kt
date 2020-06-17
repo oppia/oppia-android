@@ -36,7 +36,11 @@ class DataProviders @Inject constructor(
    * it may be called on different background threads at different times. It should perform no UI operations or
    * otherwise interact with UI components.
    */
-  fun <T1, T2> transform(newId: Any, dataProvider: DataProvider<T1>, function: (T1) -> T2): DataProvider<T2> {
+  fun <T1, T2> transform(
+    newId: Any,
+    dataProvider: DataProvider<T1>,
+    function: (T1) -> T2
+  ): DataProvider<T2> {
     asyncDataSubscriptionManager.associateIds(newId, dataProvider.getId())
     return object : DataProvider<T2> {
       override fun getId(): Any {
@@ -179,7 +183,10 @@ class DataProviders @Inject constructor(
    * Returns a new in-memory [DataProvider] in the same way as [createInMemoryDataProvider] except the load function can
    * be blocking.
    */
-  fun <T> createInMemoryDataProviderAsync(id: Any, loadFromMemoryAsync: suspend () -> AsyncResult<T>): DataProvider<T> {
+  fun <T> createInMemoryDataProviderAsync(
+    id: Any,
+    loadFromMemoryAsync: suspend () -> AsyncResult<T>
+  ): DataProvider<T> {
     return object : DataProvider<T> {
       override fun getId(): Any {
         return id
