@@ -62,25 +62,44 @@ class ProfileManagementControllerTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Inject lateinit var context: Context
+  @Inject
+  lateinit var context: Context
 
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var profileManagementController: ProfileManagementController
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
 
-  @Mock lateinit var mockProfilesObserver: Observer<AsyncResult<List<Profile>>>
-  @Captor lateinit var profilesResultCaptor: ArgumentCaptor<AsyncResult<List<Profile>>>
+  @Inject
+  lateinit var profileManagementController: ProfileManagementController
 
-  @Mock lateinit var mockProfileObserver: Observer<AsyncResult<Profile>>
-  @Captor lateinit var profileResultCaptor: ArgumentCaptor<AsyncResult<Profile>>
+  @Mock
+  lateinit var mockProfilesObserver: Observer<AsyncResult<List<Profile>>>
 
-  @Mock lateinit var mockUpdateResultObserver: Observer<AsyncResult<Any?>>
-  @Captor lateinit var updateResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
+  @Captor
+  lateinit var profilesResultCaptor: ArgumentCaptor<AsyncResult<List<Profile>>>
 
-  @Mock lateinit var mockWasProfileAddedResultObserver: Observer<AsyncResult<Boolean>>
-  @Captor lateinit var wasProfileAddedResultCaptor: ArgumentCaptor<AsyncResult<Boolean>>
+  @Mock
+  lateinit var mockProfileObserver: Observer<AsyncResult<Profile>>
 
-  @Mock lateinit var mockDeviceSettingsObserver: Observer<AsyncResult<DeviceSettings>>
-  @Captor lateinit var deviceSettingsResultCaptor: ArgumentCaptor<AsyncResult<DeviceSettings>>
+  @Captor
+  lateinit var profileResultCaptor: ArgumentCaptor<AsyncResult<Profile>>
+
+  @Mock
+  lateinit var mockUpdateResultObserver: Observer<AsyncResult<Any?>>
+
+  @Captor
+  lateinit var updateResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
+
+  @Mock
+  lateinit var mockWasProfileAddedResultObserver: Observer<AsyncResult<Boolean>>
+
+  @Captor
+  lateinit var wasProfileAddedResultCaptor: ArgumentCaptor<AsyncResult<Boolean>>
+
+  @Mock
+  lateinit var mockDeviceSettingsObserver: Observer<AsyncResult<DeviceSettings>>
+
+  @Captor
+  lateinit var deviceSettingsResultCaptor: ArgumentCaptor<AsyncResult<DeviceSettings>>
 
   private val PROFILES_LIST = listOf<Profile>(
     Profile.newBuilder().setName("James").setPin("123").setAllowDownloadAccess(true).build(),
@@ -228,7 +247,9 @@ class ProfileManagementControllerTest {
       profileManagementController.getProfiles().observeForever(mockProfilesObserver)
 
       verifyGetMultipleProfilesSucceeded()
-      val profiles = profilesResultCaptor.value.getOrThrow().sortedBy { it.id.internalId }
+      val profiles = profilesResultCaptor.value.getOrThrow().sortedBy {
+        it.id.internalId
+      }
       assertThat(profiles.size).isEqualTo(PROFILES_LIST.size)
       checkTestProfilesArePresent(profiles)
     }
@@ -256,7 +277,9 @@ class ProfileManagementControllerTest {
       profileManagementController.getProfiles().observeForever(mockProfilesObserver)
 
       verifyGetMultipleProfilesSucceeded()
-      val profiles = profilesResultCaptor.value.getOrThrow().sortedBy { it.id.internalId }
+      val profiles = profilesResultCaptor.value.getOrThrow().sortedBy {
+        it.id.internalId
+      }
       assertThat(profiles.size).isEqualTo(PROFILES_LIST.size + 1)
       checkTestProfilesArePresent(profiles)
     }
@@ -321,14 +344,20 @@ class ProfileManagementControllerTest {
       advanceUntilIdle()
 
       val profileId = ProfileId.newBuilder().setInternalId(2).build()
-      profileManagementController.updateProfileAvatar(profileId, /* avatarImagePath = */ null, colorRgb = -10710042)
+      profileManagementController
+        .updateProfileAvatar(
+          profileId,
+          /* avatarImagePath = */ null,
+          colorRgb = -10710042
+        )
         .observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
       profileManagementController.getProfile(profileId).observeForever(mockProfileObserver)
 
       verifyUpdateSucceeded()
       verifyGetProfileSucceeded()
-      assertThat(profileResultCaptor.value.getOrThrow().avatar.avatarColorRgb).isEqualTo(-10710042)
+      assertThat(profileResultCaptor.value.getOrThrow().avatar.avatarColorRgb)
+        .isEqualTo(-10710042)
     }
 
   @Test
@@ -381,7 +410,8 @@ class ProfileManagementControllerTest {
 
       verifyUpdateSucceeded()
       verifyGetProfileSucceeded()
-      assertThat(profileResultCaptor.value.getOrThrow().allowDownloadAccess).isEqualTo(false)
+      assertThat(profileResultCaptor.value.getOrThrow().allowDownloadAccess)
+        .isEqualTo(false)
     }
 
   @Test
@@ -416,7 +446,8 @@ class ProfileManagementControllerTest {
 
       verifyUpdateSucceeded()
       verifyGetProfileSucceeded()
-      assertThat(profileResultCaptor.value.getOrThrow().storyTextSize).isEqualTo(StoryTextSize.MEDIUM_TEXT_SIZE)
+      assertThat(profileResultCaptor.value.getOrThrow().storyTextSize)
+        .isEqualTo(StoryTextSize.MEDIUM_TEXT_SIZE)
     }
 
   @Test
@@ -434,7 +465,8 @@ class ProfileManagementControllerTest {
 
       verifyUpdateSucceeded()
       verifyGetProfileSucceeded()
-      assertThat(profileResultCaptor.value.getOrThrow().appLanguage).isEqualTo(AppLanguage.CHINESE_APP_LANGUAGE)
+      assertThat(profileResultCaptor.value.getOrThrow().appLanguage)
+        .isEqualTo(AppLanguage.CHINESE_APP_LANGUAGE)
     }
 
   @Test
@@ -445,14 +477,16 @@ class ProfileManagementControllerTest {
       advanceUntilIdle()
 
       val profileId = ProfileId.newBuilder().setInternalId(2).build()
-      profileManagementController.updateAudioLanguage(profileId, AudioLanguage.FRENCH_AUDIO_LANGUAGE)
+      profileManagementController
+        .updateAudioLanguage(profileId, AudioLanguage.FRENCH_AUDIO_LANGUAGE)
         .observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
       profileManagementController.getProfile(profileId).observeForever(mockProfileObserver)
 
       verifyUpdateSucceeded()
       verifyGetProfileSucceeded()
-      assertThat(profileResultCaptor.value.getOrThrow().audioLanguage).isEqualTo(AudioLanguage.FRENCH_AUDIO_LANGUAGE)
+      assertThat(profileResultCaptor.value.getOrThrow().audioLanguage)
+        .isEqualTo(AudioLanguage.FRENCH_AUDIO_LANGUAGE)
     }
 
   @Test
@@ -499,7 +533,9 @@ class ProfileManagementControllerTest {
       profileManagementController.getProfiles().observeForever(mockProfilesObserver)
 
       verifyGetMultipleProfilesSucceeded()
-      val profiles = profilesResultCaptor.value.getOrThrow().sortedBy { it.id.internalId }
+      val profiles = profilesResultCaptor.value.getOrThrow().sortedBy {
+        it.id.internalId
+      }
       assertThat(profiles.size).isEqualTo(4)
       assertThat(profiles[profiles.size - 2].name).isEqualTo("Ben")
       assertThat(profiles.last().name).isEqualTo("John")
@@ -549,8 +585,10 @@ class ProfileManagementControllerTest {
 
       verifyUpdateSucceeded()
       verifyGetProfileSucceeded()
-      assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(2)
-      assertThat(profileResultCaptor.value.getOrThrow().lastLoggedInTimestampMs).isNotEqualTo(0)
+      assertThat(profileManagementController.getCurrentProfileId().internalId)
+        .isEqualTo(2)
+      assertThat(profileResultCaptor.value.getOrThrow().lastLoggedInTimestampMs)
+        .isNotEqualTo(0)
     }
 
   @Test
@@ -568,31 +606,32 @@ class ProfileManagementControllerTest {
       assertThat(updateResultCaptor.value.getErrorOrNull()).hasMessageThat()
         .contains(
           "org.oppia.domain.profile.ProfileManagementController\$ProfileNotFoundException: " +
-              "ProfileId 6 is not associated with an existing profile"
+            "ProfileId 6 is not associated with an existing profile"
         )
     }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testWasProfileEverAdded_addAdminProfile_checkIfProfileEverAdded() = runBlockingTest(coroutineContext) {
-    profileManagementController.addProfile(
-      name = "James",
-      pin = "123",
-      avatarImagePath = null,
-      allowDownloadAccess = true,
-      colorRgb = -10710042,
-      isAdmin = true,
-      storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-      appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-      audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
-    ).observeForever(mockUpdateResultObserver)
-    advanceUntilIdle()
+  fun testWasProfileEverAdded_addAdminProfile_checkIfProfileEverAdded() =
+    runBlockingTest(coroutineContext) {
+      profileManagementController.addProfile(
+        name = "James",
+        pin = "123",
+        avatarImagePath = null,
+        allowDownloadAccess = true,
+        colorRgb = -10710042,
+        isAdmin = true,
+        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
+        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
+        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+      ).observeForever(mockUpdateResultObserver)
+      advanceUntilIdle()
 
-    val profileDatabase = readProfileDatabase()
+      val profileDatabase = readProfileDatabase()
 
-    verifyUpdateSucceeded()
-    assertThat(profileDatabase.wasProfileEverAdded).isEqualTo(false)
-  }
+      verifyUpdateSucceeded()
+      assertThat(profileDatabase.wasProfileEverAdded).isEqualTo(false)
+    }
 
   @Test
   @ExperimentalCoroutinesApi
@@ -697,7 +736,7 @@ class ProfileManagementControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testWasProfileEverAdded_addAdminProfile_addUserProfile_deleteUserProfile_checkIfProfileEverAdded() =
+  fun testWasProfileEverAdded_addAdminProfile_addUserProfile_deleteUserProfile_checkIfProfileEverAdded() = // ktlint-disable max-line-length
     runBlockingTest(coroutineContext) {
       profileManagementController.addProfile(
         name = "James",
@@ -737,7 +776,7 @@ class ProfileManagementControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testWasProfileEverAdded_addAdminProfile_addUserProfile_deleteUserProfile_getWasProfileEverAdded() =
+  fun testWasProfileEverAdded_addAdminProfile_addUserProfile_deleteUserProfile_getWasProfileEverAdded() = // ktlint-disable max-line-length
     runBlockingTest(coroutineContext) {
       profileManagementController.addProfile(
         name = "James",
@@ -840,7 +879,7 @@ class ProfileManagementControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testDeviceSettings_addAdminProfile_updateTopicsAutomaticallyDeviceSettings_getDeviceSettings_isSuccessful() =
+  fun testDeviceSettings_addAdminProfile_updateTopicsAutomaticallyDeviceSettings_getDeviceSettings_isSuccessful() = // ktlint-disable max-line-length
     runBlockingTest(coroutineContext) {
       profileManagementController.addProfile(
         name = "James",
@@ -856,10 +895,11 @@ class ProfileManagementControllerTest {
       advanceUntilIdle()
 
       val adminProfileId = ProfileId.newBuilder().setInternalId(0).build()
-      profileManagementController.updateTopicAutomaticallyPermissionDeviceSettings(
-        adminProfileId, /* automaticallyUpdateTopics = */
-        true
-      )
+      profileManagementController
+        .updateTopicAutomaticallyPermissionDeviceSettings(
+          adminProfileId,
+          /* automaticallyUpdateTopics = */ true
+        )
         .observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
 
@@ -868,7 +908,10 @@ class ProfileManagementControllerTest {
       profileManagementController.getDeviceSettings().observeForever(mockDeviceSettingsObserver)
       advanceUntilIdle()
 
-      verify(mockDeviceSettingsObserver, atLeastOnce()).onChanged(deviceSettingsResultCaptor.capture())
+      verify(
+        mockDeviceSettingsObserver,
+        atLeastOnce()
+      ).onChanged(deviceSettingsResultCaptor.capture())
       assertThat(deviceSettingsResultCaptor.value.isSuccess()).isTrue()
 
       val deviceSettings = deviceSettingsResultCaptor.value.getOrThrow()
@@ -878,7 +921,7 @@ class ProfileManagementControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testDeviceSettings_addAdminProfile_updateDeviceWifiSettings_updateTopicsAutomaticallyDeviceSettings_getDeviceSettings_isSuccessful() =
+  fun testDeviceSettings_addAdminProfile_updateDeviceWifiSettings_updateTopicsAutomaticallyDeviceSettings_getDeviceSettings_isSuccessful() = // ktlint-disable max-line-length
     runBlockingTest(coroutineContext) {
       profileManagementController.addProfile(
         name = "James",
@@ -996,7 +1039,10 @@ class ProfileManagementControllerTest {
     }
 
   private fun verifyGetDeviceSettingsSucceeded() {
-    verify(mockDeviceSettingsObserver, atLeastOnce()).onChanged(deviceSettingsResultCaptor.capture())
+    verify(
+      mockDeviceSettingsObserver,
+      atLeastOnce()
+    ).onChanged(deviceSettingsResultCaptor.capture())
     assertThat(deviceSettingsResultCaptor.value.isSuccess()).isTrue()
   }
 
@@ -1021,7 +1067,10 @@ class ProfileManagementControllerTest {
   }
 
   private fun verifyWasProfileEverAddedSucceeded() {
-    verify(mockWasProfileAddedResultObserver, atLeastOnce()).onChanged(wasProfileAddedResultCaptor.capture())
+    verify(
+      mockWasProfileAddedResultObserver,
+      atLeastOnce()
+    ).onChanged(wasProfileAddedResultCaptor.capture())
     assertThat(wasProfileAddedResultCaptor.value.isSuccess()).isTrue()
   }
 
@@ -1092,14 +1141,18 @@ class ProfileManagementControllerTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
     @Singleton
     @Provides
     @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBlockingDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
