@@ -82,6 +82,7 @@ import javax.inject.Singleton
 
 /** Tests for [ProfileProgressFragment]. */
 @LooperMode(LooperMode.Mode.PAUSED)
+@Config(qualifiers = "port-xxhdpi")
 @RunWith(AndroidJUnit4::class)
 class ProfileProgressFragmentTest {
 
@@ -153,7 +154,7 @@ class ProfileProgressFragmentTest {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText("Sean"))
       onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.profile_edit_image)).perform(click())
-      onView(withText(R.string.profile_progress_edit_dialog_title)).check(matches(isDisplayed()))
+      onView(withText(R.string.profile_progress_edit_dialog_title)).inRoot(isDialog()).check(matches(isDisplayed()))
     }
   }
 
@@ -179,7 +180,7 @@ class ProfileProgressFragmentTest {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText("Sean"))
       onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.profile_edit_image)).perform(click())
-      onView(withText(R.string.profile_progress_edit_dialog_title)).check(matches(isDisplayed()))
+      onView(withText(R.string.profile_progress_edit_dialog_title)).inRoot(isDialog()).check(matches(isDisplayed()))
       onView(withText(R.string.profile_picture_edit_alert_dialog_choose_from_library)).perform(click())
       intended(expectedIntent)
     }
@@ -333,6 +334,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
+  @Config(qualifiers = "port-xxhdpi")
   fun testProfileProgressActivity_changeConfiguration_recyclerViewItem1_chapterNameIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       onView(isRoot()).perform(orientationLandscape())
