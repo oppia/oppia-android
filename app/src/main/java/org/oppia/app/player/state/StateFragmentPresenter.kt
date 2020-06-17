@@ -37,7 +37,7 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.Logger
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY = "STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY"
@@ -330,6 +330,8 @@ class StateFragmentPresenter @Inject constructor(
           recyclerViewAssembler.stopHintsFromShowing()
           viewModel.setHintBulbVisibility(false)
           recyclerViewAssembler.showCongratulationMessageOnCorrectAnswer()
+        } else{
+          viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
         }
         recyclerViewAssembler.readOutAnswerFeedback(result.feedback)
       }

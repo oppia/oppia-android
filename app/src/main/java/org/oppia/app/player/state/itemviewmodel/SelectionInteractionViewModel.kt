@@ -1,6 +1,5 @@
 package org.oppia.app.player.state.itemviewmodel
 
-import android.util.Log
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
@@ -8,9 +7,8 @@ import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.StringList
 import org.oppia.app.model.UserAnswer
-import org.oppia.app.parser.StringToFractionParser
 import org.oppia.app.player.state.SelectionItemInputType
-import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
+import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.viewmodel.ObservableArrayList
@@ -20,7 +18,7 @@ class SelectionInteractionViewModel(
   val entityId: String,
   interaction: Interaction,
   private val interactionAnswerReceiver: InteractionAnswerReceiver,
-  private val interactionAnswerErrorReceiver: InteractionAnswerErrorReceiver
+  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver
 ) : StateItemViewModel(ViewType.SELECTION_INTERACTION), InteractionAnswerHandler {
   private val interactionId: String = interaction.id
 
@@ -43,8 +41,7 @@ class SelectionInteractionViewModel(
   init {
     val callback: Observable.OnPropertyChangedCallback = object : Observable.OnPropertyChangedCallback() {
       override fun onPropertyChanged(sender: Observable, propertyId: Int) {
-        Log.d("TAG", "onPropertyChanged: " + selectedItems.size)
-        interactionAnswerErrorReceiver.onPendingAnswerError(
+        interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
           pendingAnswerError = null,
           inputAnswerAvailable = selectedItems.isNotEmpty()
         )
@@ -93,16 +90,22 @@ class SelectionInteractionViewModel(
 
   /** Catalogs an item being clicked by the user and returns whether the item should be considered selected. */
   fun updateSelection(itemIndex: Int, isCurrentlySelected: Boolean): Boolean {
-
-    Log.d("TAG", "updateSelection: " + selectedItems.size)
     if (areCheckboxesBound()) {
       if (isCurrentlySelected) {
         selectedItems -= itemIndex
+        val wasSelectedItemListEmpty = isAnswerAvailable.get()
+        if(selectedItems.isNotEmpty() != wasSelectedItemListEmpty){
+          isAnswerAvailable.set(selectedItems.isNotEmpty())
+        }
         return false
       } else if (selectedItems.size < maxAllowableSelectionCount) {
         // TODO(#32): Add warning to user when they exceed the number of allowable selections or are under the minimum
         //  number required.
         selectedItems += itemIndex
+        val wasSelectedItemListEmpty = isAnswerAvailable.get()
+        if(selectedItems.isNotEmpty() != wasSelectedItemListEmpty){
+          isAnswerAvailable.set(selectedItems.isNotEmpty())
+        }
         return true
       }
     } else {
@@ -110,16 +113,14 @@ class SelectionInteractionViewModel(
       choiceItems.forEach { item -> item.isAnswerSelected.set(false) }
       selectedItems.clear()
       selectedItems += itemIndex
-
+      val wasSelectedItemListEmpty = isAnswerAvailable.get()
+      if(selectedItems.isNotEmpty() != wasSelectedItemListEmpty){
+        isAnswerAvailable.set(selectedItems.isNotEmpty())
+      }
       // Only push the answer if explicit submission isn't required.
       if (maxAllowableSelectionCount == 1) {
         interactionAnswerReceiver.onAnswerReadyForSubmission(getPendingAnswer())
       }
-      val isSelectedItemListNotEmpty = selectedItems.isNotEmpty()
-      interactionAnswerErrorReceiver.onPendingAnswerError(
-        pendingAnswerError = null,
-        inputAnswerAvailable = selectedItems.isNotEmpty()
-      )
       return true
     }
     // Do not change the current status if it isn't valid to do so.

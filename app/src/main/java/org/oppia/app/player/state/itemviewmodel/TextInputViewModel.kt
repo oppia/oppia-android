@@ -8,15 +8,13 @@ import androidx.databinding.ObservableField
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.UserAnswer
-import org.oppia.app.parser.StringToNumberParser
-import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
-import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
+import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 
 /** [StateItemViewModel] for the text input interaction. */
 class TextInputViewModel(
   interaction: Interaction,
-  private val interactionAnswerErrorReceiver: InteractionAnswerErrorReceiver
+  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver
 ) : StateItemViewModel(ViewType.TEXT_INPUT_INTERACTION), InteractionAnswerHandler {
   var answerText: CharSequence = ""
   val hintText: CharSequence = deriveHintText(interaction)
@@ -26,7 +24,7 @@ class TextInputViewModel(
   init {
     val callback: Observable.OnPropertyChangedCallback = object : Observable.OnPropertyChangedCallback() {
       override fun onPropertyChanged(sender: Observable, propertyId: Int) {
-        interactionAnswerErrorReceiver.onPendingAnswerError( /* pendingAnswerError= */ null, answerText.isNotEmpty())
+        interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck( /* pendingAnswerError= */ null, answerText.isNotEmpty())
       }
     }
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
