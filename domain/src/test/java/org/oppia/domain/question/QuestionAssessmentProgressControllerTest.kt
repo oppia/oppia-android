@@ -35,6 +35,7 @@ import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.UserAnswer
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
@@ -44,6 +45,8 @@ import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.topic.TEST_SKILL_ID_0
 import org.oppia.domain.topic.TEST_SKILL_ID_1
 import org.oppia.domain.topic.TEST_SKILL_ID_2
+import org.oppia.testing.FakeExceptionLogger
+import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -73,6 +76,8 @@ class QuestionAssessmentProgressControllerTest {
   @Inject lateinit var questionTrainingController: QuestionTrainingController
 
   @Inject lateinit var questionAssessmentProgressController: QuestionAssessmentProgressController
+
+  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
 
   @ExperimentalCoroutinesApi
   @Inject
@@ -735,6 +740,41 @@ class QuestionAssessmentProgressControllerTest {
     assertThat(currentQuestion.ephemeralState.state.content.html).contains("What fraction does 'half'")
   }
 
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testMoveToNext_onFinalQuestion_failsWithError_logsException()
+    = runBlockingTest(coroutineContext) {
+    subscribeToCurrentQuestionToAllowSessionToLoad()
+    startTrainingSession(TEST_SKILL_ID_LIST_2)
+    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
+    submitNumericInputAnswerAndMoveToNextQuestion(5.0)
+    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+
+    val moveToStateResult = questionAssessmentProgressController.moveToNextQuestion()
+    moveToStateResult.observeForever(mockAsyncNullableResultLiveDataObserver)
+    advanceUntilIdle()
+    val exception = fakeExceptionLogger.getMostRecentException()
+
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat()
+      .contains("Cannot navigate to next state; at most recent state.")
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testSubmitAnswer_beforePlaying_failsWithError_logsException()
+    = runBlockingTest(coroutineContext) {
+    val result = questionAssessmentProgressController.submitAnswer(createMultipleChoiceAnswer(0))
+    result.observeForever(mockAsyncAnswerOutcomeObserver)
+    advanceUntilIdle()
+    val exception = fakeExceptionLogger.getMostRecentException()
+
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception)
+      .hasMessageThat()
+      .contains("Cannot submit an answer if a training session has not yet begun.")
+  }
+
   private fun setUpTestApplicationWithSeed(questionSeed: Long) {
     TestQuestionModule.questionSeed = questionSeed
     DaggerQuestionAssessmentProgressControllerTest_TestApplicationComponent.builder()
@@ -907,7 +947,8 @@ class QuestionAssessmentProgressControllerTest {
   @Component(modules = [
     TestModule::class, TestQuestionModule::class, ContinueModule::class, FractionInputModule::class,
     ItemSelectionInputModule::class, MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
-    NumericInputRuleModule::class, TextInputRuleModule::class, InteractionsModule::class
+    NumericInputRuleModule::class, TextInputRuleModule::class, InteractionsModule::class, DragDropSortInputModule::class,
+    TestLogReportingModule::class
   ])
   interface TestApplicationComponent {
     @Component.Builder

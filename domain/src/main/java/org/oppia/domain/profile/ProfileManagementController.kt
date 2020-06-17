@@ -22,6 +22,7 @@ import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
+import org.oppia.util.logging.ExceptionLogger
 import org.oppia.util.logging.Logger
 import org.oppia.util.profile.DirectoryManagementUtil
 import java.io.File
@@ -29,6 +30,7 @@ import java.io.FileOutputStream
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.math.sign
 
 private const val TRANSFORMED_GET_PROFILES_PROVIDER_ID = "transformed_get_profiles_provider_id"
 private const val TRANSFORMED_GET_PROFILE_PROVIDER_ID = "transformed_get_profile_provider_id"
@@ -56,7 +58,8 @@ class ProfileManagementController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
   private val dataProviders: DataProviders,
   private val context: Context,
-  private val directoryManagementUtil: DirectoryManagementUtil
+  private val directoryManagementUtil: DirectoryManagementUtil,
+  private val exceptionLogger: ExceptionLogger
 ) {
   private var currentProfileId: Int = -1
   private val profileDataStore = cacheStoreFactory.create("profile_database", ProfileDatabase.getDefaultInstance())
@@ -216,7 +219,7 @@ class ProfileManagementController @Inject constructor(
         newProfileBuilder.avatar = ProfileAvatar.newBuilder().setAvatarColorRgb(colorRgb).build()
       }
 
-      val wasProfileEverAdded = !it.wasProfileEverAdded && !isAdmin
+      val wasProfileEverAdded = it.profilesCount >0
 
       val profileDatabaseBuilder =
         it.toBuilder()
@@ -583,6 +586,7 @@ class ProfileManagementController @Inject constructor(
           .compress(Bitmap.CompressFormat.PNG, /* quality= */ 100, fos)
       }
     } catch (e: Exception) {
+      exceptionLogger.logException(e)
       logger.e("ProfileManagementController", "Failed to store user submitted avatar image", e)
       return null
     }

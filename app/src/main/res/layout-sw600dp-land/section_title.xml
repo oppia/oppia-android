@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.home.recentlyplayed.SectionTitleViewModel" />
+  </data>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <View
+      android:id="@+id/divider_view"
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:layout_marginTop="28dp"
+      android:background="@color/divider"
+      android:visibility="@{viewModel.isDividerVisible? View.VISIBLE : View.GONE}" />
+
+    <TextView
+      android:id="@+id/section_title_text_view"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="96dp"
+      android:layout_marginTop="28dp"
+      android:layout_marginEnd="96dp"
+      android:fontFamily="sans-serif-medium"
+      android:text="@{viewModel.sectionTitleText}"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textSize="18sp" />
+  </LinearLayout>
+</layout>

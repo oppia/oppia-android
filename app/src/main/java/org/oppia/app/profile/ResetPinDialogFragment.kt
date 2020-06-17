@@ -22,7 +22,9 @@ class ResetPinDialogFragment : InjectableDialogFragment() {
       return resetPinDialogFragment
     }
   }
-  @Inject lateinit var resetPinDialogFragmentPresenter: ResetPinDialogFragmentPresenter
+
+  @Inject
+  lateinit var resetPinDialogFragmentPresenter: ResetPinDialogFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)

@@ -41,6 +41,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -65,6 +66,7 @@ import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.domain.topic.StoryProgressTestHelper
+import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -88,8 +90,10 @@ class ProfileProgressFragmentTest {
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
+
   @Inject
   lateinit var storyProgressTestHelper: StoryProgressTestHelper
+
   @Inject
   lateinit var context: Context
 
@@ -105,6 +109,7 @@ class ProfileProgressFragmentTest {
     IdlingRegistry.getInstance().register(MainThreadExecutor.countingResource)
     profileTestHelper.initializeProfiles()
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    FirebaseApp.initializeApp(context)
   }
 
   @After
@@ -168,6 +173,7 @@ class ProfileProgressFragmentTest {
     }
   }
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileProgressFragment_openProfilePictureEditDialog_configurationChange_dialogIsStillOpen() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
@@ -185,6 +191,7 @@ class ProfileProgressFragmentTest {
       onView(withText(R.string.profile_progress_edit_dialog_title)).check(matches(isDisplayed()))
     }
   }
+  /* ktlint-enable max-line-length */
 
   @Test
   fun testAddProfileActivity_imageSelectAvatar_checkGalleryIntent() {
@@ -210,6 +217,7 @@ class ProfileProgressFragmentTest {
     }
   }
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkOngoingTopicsCount_countIsZero() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
@@ -221,7 +229,9 @@ class ProfileProgressFragmentTest {
       )
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileProgressFragmentWithProgress_recyclerViewItem0_checkOngoingTopicsCount_countIsTwo() {
     storyProgressTestHelper.markPartialTopicProgressForFractions(
@@ -241,7 +251,9 @@ class ProfileProgressFragmentTest {
       )
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileProgressFragmentWithProgress_change_configuration_recyclerViewItem0_checkOngoingTopicsCount_countIsTwo() {
     storyProgressTestHelper.markPartialTopicProgressForFractions(
@@ -262,19 +274,26 @@ class ProfileProgressFragmentTest {
       )
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkOngoingTopicsString_descriptionIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText(R.string.topics_in_progress))
       onView(
-        atPositionOnView(R.id.profile_progress_list, 0, R.id.ongoing_topics_description_text_view)
+        atPositionOnView(
+          R.id.profile_progress_list,
+          0, R.id.ongoing_topics_description_text_view
+        )
       ).check(
         matches(withText(R.string.topics_in_progress))
       )
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileProgressFragmentWithProgress_recyclerViewItem0_checkOngoingTopicsString_descriptionIsCorrect() {
     storyProgressTestHelper.markPartialTopicProgressForFractions(
@@ -288,13 +307,18 @@ class ProfileProgressFragmentTest {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText(R.string.topics_in_progress))
       onView(
-        atPositionOnView(R.id.profile_progress_list, 0, R.id.ongoing_topics_description_text_view)
+        atPositionOnView(
+          R.id.profile_progress_list,
+          0, R.id.ongoing_topics_description_text_view
+        )
       ).check(
         matches(withText(R.string.topics_in_progress))
       )
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileProgressFragmentWithProgress_changeConfiguration_recyclerViewItem0_checkOngoingTopicsString_descriptionIsCorrect() {
     storyProgressTestHelper.markPartialTopicProgressForFractions(
@@ -309,13 +333,18 @@ class ProfileProgressFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       waitForTheView(withText(R.string.topics_in_progress))
       onView(
-        atPositionOnView(R.id.profile_progress_list, 0, R.id.ongoing_topics_description_text_view)
+        atPositionOnView(
+          R.id.profile_progress_list,
+          0, R.id.ongoing_topics_description_text_view
+        )
       ).check(
         matches(withText(R.string.topics_in_progress))
       )
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkCompletedStoriesCount_countIsZero() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
@@ -327,7 +356,9 @@ class ProfileProgressFragmentTest {
       )
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileProgressFragmentWithProgress_recyclerViewItem0_checkCompletedStoriesCount_countIsTwo() {
     storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
@@ -347,7 +378,9 @@ class ProfileProgressFragmentTest {
       )
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkCompletedStoriesString_descriptionIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
@@ -363,7 +396,9 @@ class ProfileProgressFragmentTest {
       )
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileProgressFragmentWithProgress_recyclerViewItem0_checkCompletedStoriesString_descriptionIsCorrect() {
     storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
@@ -387,14 +422,22 @@ class ProfileProgressFragmentTest {
       )
     }
   }
+  /* ktlint-enable max-line-length */
 
   @Test
   fun testProfileProgressActivity_recyclerViewItem1_chapterNameIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
-      onView(withId(R.id.profile_progress_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(withId(R.id.profile_progress_list)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
       waitForTheView(withText("What is a Fraction?"))
       onView(
-        atPositionOnView(R.id.profile_progress_list, 1, R.id.chapter_name_text_view)
+        atPositionOnView(
+          R.id.profile_progress_list,
+          1, R.id.chapter_name_text_view
+        )
       ).check(
         matches(withText(containsString("What is a Fraction?")))
       )
@@ -419,10 +462,17 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressActivity_recyclerViewItem1_storyNameIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
-      onView(withId(R.id.profile_progress_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(withId(R.id.profile_progress_list)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
       waitForTheView(withText("Matthew Goes to the Bakery"))
       onView(
-        atPositionOnView(R.id.profile_progress_list, 1, R.id.story_name_text_view)
+        atPositionOnView(
+          R.id.profile_progress_list,
+          1, R.id.story_name_text_view
+        )
       ).check(
         matches(withText(containsString("Matthew Goes to the Bakery")))
       )
@@ -432,10 +482,17 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressActivity_recyclerViewItem1_topicNameIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
-      onView(withId(R.id.profile_progress_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(withId(R.id.profile_progress_list)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
       waitForTheView(withText("FRACTIONS"))
       onView(
-        atPositionOnView(R.id.profile_progress_list, 1, R.id.topic_name_text_view)
+        atPositionOnView(
+          R.id.profile_progress_list,
+          1, R.id.topic_name_text_view
+        )
       ).check(
         matches(withText(containsString("FRACTIONS")))
       )
@@ -443,7 +500,6 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  @Config(qualifiers = "port-xxhdpi")
   fun testProfileProgressActivity_recyclerViewIndex0_clickViewAll_opensRecentlyPlayedActivity() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText("Sean"))
@@ -467,7 +523,10 @@ class ProfileProgressFragmentTest {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText(R.string.topics_in_progress))
       onView(
-        atPositionOnView(R.id.profile_progress_list, 0, R.id.ongoing_topics_container)
+        atPositionOnView(
+          R.id.profile_progress_list,
+          0, R.id.ongoing_topics_container
+        )
       ).check(
         matches(not(isClickable()))
       )
@@ -479,26 +538,35 @@ class ProfileProgressFragmentTest {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText(R.string.stories_completed))
       onView(
-        atPositionOnView(R.id.profile_progress_list, 0, R.id.completed_stories_container)
+        atPositionOnView(
+          R.id.profile_progress_list,
+          0, R.id.completed_stories_container
+        )
       ).check(
         matches(not(isClickable()))
       )
     }
   }
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileProgressActivityNoProgress_recyclerViewIndex0_changeConfiguration_clickStoryCount_isNotClickable() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       onView(isRoot()).perform(orientationLandscape())
       waitForTheView(withText(R.string.stories_completed))
       onView(
-        atPositionOnView(R.id.profile_progress_list, 0, R.id.completed_stories_container)
+        atPositionOnView(
+          R.id.profile_progress_list,
+          0, R.id.completed_stories_container
+        )
       ).check(
         matches(not(isClickable()))
       )
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileProgressActivityWithProgress_recyclerViewIndex0_clickTopicCount_opensOngoingTopicListActivity() {
     storyProgressTestHelper.markPartialTopicProgressForFractions(
@@ -527,7 +595,9 @@ class ProfileProgressFragmentTest {
       )
     }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileProgressActivityWithProgress_recyclerViewIndex0_clickStoryCount_opensCompletedStoryListActivity() {
     storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
@@ -556,6 +626,7 @@ class ProfileProgressFragmentTest {
       )
     }
   }
+  /* ktlint-enable max-line-length */
 
   private fun createGalleryPickActivityResultStub(): Instrumentation.ActivityResult {
     val resources: Resources = context.resources
@@ -639,14 +710,18 @@ class ProfileProgressFragmentTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
     @Singleton
     @Provides
     @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBlockingDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
@@ -666,7 +741,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Singleton
-  @Component(modules = [TestModule::class])
+  @Component(modules = [TestModule::class, TestLogReportingModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
@@ -692,7 +767,8 @@ class ProfileProgressFragmentTest {
     override fun isTerminated(): Boolean = false
 
     private val handler = Handler(Looper.getMainLooper())
-    val countingResource = CountingIdlingResource("main_thread_executor_counting_idling_resource")
+    val countingResource =
+      CountingIdlingResource("main_thread_executor_counting_idling_resource")
 
     override fun execute(command: Runnable?) {
       countingResource.increment()

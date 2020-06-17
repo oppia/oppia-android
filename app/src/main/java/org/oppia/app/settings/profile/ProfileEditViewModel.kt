@@ -23,10 +23,13 @@ class ProfileEditViewModel @Inject constructor(
 ) : ObservableViewModel() {
   private lateinit var profileId: ProfileId
 
-  lateinit var profileName : String
+  lateinit var profileName: String
 
   val profile: LiveData<Profile> by lazy {
-    Transformations.map(profileManagementController.getProfile(profileId), ::processGetProfileResult)
+    Transformations.map(
+      profileManagementController.getProfile(profileId),
+      ::processGetProfileResult
+    )
   }
 
   var isAdmin = false

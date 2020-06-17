@@ -35,6 +35,7 @@ import org.mockito.junit.MockitoRule
 import org.oppia.app.model.Exploration
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
@@ -47,6 +48,9 @@ import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_1
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_2
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_3
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_3
+import org.oppia.testing.FakeExceptionLogger
+import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -73,6 +77,8 @@ class ExplorationDataControllerTest {
   val executorRule = InstantTaskExecutorRule()
 
   @Inject lateinit var explorationDataController: ExplorationDataController
+
+  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
 
   @Mock
   lateinit var mockExplorationObserver: Observer<AsyncResult<Exploration>>
@@ -263,6 +269,45 @@ class ExplorationDataControllerTest {
     assertThat(explorationResultCaptor.value.isFailure()).isTrue()
   }
 
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testController_returnsNull_logsException() = runBlockingTest(coroutineContext) {
+    val explorationLiveData = explorationDataController.getExplorationById("NON_EXISTENT_TEST")
+    advanceUntilIdle()
+    explorationLiveData.observeForever(mockExplorationObserver)
+    val exception = fakeExceptionLogger.getMostRecentException()
+
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat().contains("Invalid exploration ID: NON_EXISTENT_TEST")
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testStopPlayingExploration_withoutStartingSession_fails() = runBlockingTest(coroutineContext) {
+    explorationDataController.stopPlayingExploration()
+    advanceUntilIdle()
+
+    val exception = fakeExceptionLogger.getMostRecentException()
+
+    assertThat(exception).isInstanceOf(java.lang.IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat()
+      .contains("Cannot finish playing an exploration that hasn't yet been started")
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testStartPlayingExploration_withoutStoppingSession_fails() = runBlockingTest(coroutineContext) {
+    explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_3)
+    explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_7)
+    advanceUntilIdle()
+
+    val exception = fakeExceptionLogger.getMostRecentException()
+
+    assertThat(exception).isInstanceOf(java.lang.IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat()
+      .contains("Expected to finish previous exploration before starting a new one.")
+  }
+
   @Qualifier
   annotation class TestDispatcher
 
@@ -318,7 +363,8 @@ class ExplorationDataControllerTest {
     modules = [
       TestModule::class, ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
       MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
-      TextInputRuleModule::class, InteractionsModule::class
+      TextInputRuleModule::class, DragDropSortInputModule::class, InteractionsModule::class,
+      TestLogReportingModule::class
     ]
   )
   interface TestApplicationComponent {

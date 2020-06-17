@@ -36,6 +36,7 @@
   <color name="oppiaTextShadow">#1F000000</color>
   <color name="oppiaGreyBorder">#DDDDDD</color>
   <color name="oppiaDashedDivider">#80707070</color>
+  <color name="oppiaSubmittedAnswerTextColor">#777777</color>
   <color name="oppiaBackgroundYellowIvory">#FFFFF0</color>
   <color name="oppiaFAQDivider">#707070</color>
   <color name="oppiaProfileChooserDivider">#707070</color>
@@ -109,6 +110,8 @@
   <color name="green_shade_40">#6644A85A</color>
   <color name="green_shade_10">#1A44A85A</color>
   <color name="light_green">#D9F3E7</color>
+  <!-- QUESTION COMPONENT -->
+  <color name="question_player_background">#F0FFFF</color>
   <!-- AVATAR BACKGROUND COLORS -->
   <color name="avatar_background_1">#E65C5C</color>
   <color name="avatar_background_2">#E6935C</color>
