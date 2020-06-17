@@ -71,6 +71,7 @@ import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
+import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.concurrent.AbstractExecutorService
 import java.util.concurrent.TimeUnit
@@ -372,10 +373,12 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
+  @Config(qualifiers = "port-xxhdpi")
   fun testProfileProgressActivity_recyclerViewIndex0_clickViewAll_opensRecentlyPlayedActivity() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText("Sean"))
-      onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.view_all_text_view)).perform(click())
+      onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.view_all_text_view)).check(matches(
+        withText("View All"))).perform(click())
       intended(hasComponent(RecentlyPlayedActivity::class.java.name))
       intended(hasExtra(RecentlyPlayedActivity.RECENTLY_PLAYED_ACTIVITY_INTERNAL_PROFILE_ID_KEY, internalProfileId))
     }
