@@ -243,12 +243,44 @@ Both frameworks can create the same kinds of tests, the difference is how theyâ€
 
 Sometimes it may happen that testcases pass in Expresso but fail in Roboelectric. Direct dependencies on Robolectric causes build failures when trying to build the test with Espresso.
 
-For **Performance Exception** where at least 90 percent of the view should be visible to handle click
-() event.
-Make ScrollView as a parent in XML file and use scrollTo() while performing click() in the test.
+### Performance Exception/Runtime Exception Failure:
 
-Example: 
+```
+androidx.test.espresso.PerformException: Error performing 'single click' on view 'with id: org.oppia.app:id/profile_progress_list'.
+
+Caused by: java.lang.RuntimeException: Action will not be performed because the target view does not match one or more of the following constraints:
+at least 90 percent of the view's area is displayed to the user.
+````
+1. Make ScrollView as a parent in XML file and use scrollTo() while performing click() in the test.
+
+   **Example:** 
 `onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())`
+
+2. Sometimes test is rejected on small screen devices. Use Robolectric `qualifiers` property that sets up the Android simulation environment with a corresponding configuration. The systemâ€™s Configuration, Display and DisplayMetrics objects will all reflect the specified configuration, the locale will be set, and appropriate resources will be selected. 
+
+   Apply the `@Config(qualifiers = "port-xxhdpi")` annotation to your test package/class/method [reference](http://robolectric.org/device-configuration/).
+
+```
+  @Test
+  @Config(qualifiers = "port-xxhdpi")
+  fun testProfileProgressActivity_recyclerViewIndex0_clickViewAll_opensRecentlyPlayedActivity() {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      waitForTheView(withText("Sean"))
+      onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.view_all_text_view)).check(
+        matches(
+          withText("View All")
+        )
+      ).perform(click())
+      intended(hasComponent(RecentlyPlayedActivity::class.java.name))
+      intended(
+        hasExtra(
+          RecentlyPlayedActivity.RECENTLY_PLAYED_ACTIVITY_INTERNAL_PROFILE_ID_KEY,
+          internalProfileId
+        )
+      )
+    }
+  }
+```
 
 ### Assertion Failure :
 1. Unlike on a real device, Robolectric shares a single thread for both UI operations and Test code. By default, Robolectric will execute tasks posted to Loopers synchronously inline. This causes Robolectric to execute tasks earlier than they would be on a real device. 
