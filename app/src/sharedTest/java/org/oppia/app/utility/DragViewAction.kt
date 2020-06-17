@@ -5,6 +5,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import androidx.annotation.Nullable
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
@@ -170,4 +171,34 @@ class DragViewAction(
     }
   }
 
+}
+
+class RecyclerViewCoordinatesProvider(private val position: Int, private val childItemCoordinatesProvider: CoordinatesProvider) : CoordinatesProvider {
+  override fun calculateCoordinates(view: View): FloatArray {
+    return childItemCoordinatesProvider.calculateCoordinates((view as RecyclerView).layoutManager!!.findViewByPosition(position)!!)
+  }
+}
+
+class ChildViewCoordinatesProvider(private val childViewId: Int, private val insideChildViewCoordinatesProvider: CoordinatesProvider) : CoordinatesProvider {
+  override fun calculateCoordinates(view: View): FloatArray {
+    return insideChildViewCoordinatesProvider.calculateCoordinates(view.findViewById<View>(childViewId))
+  }
+}
+
+enum class CustomGeneralLocation : CoordinatesProvider {
+  UNDER_RIGHT {
+    override fun calculateCoordinates(view: View): FloatArray {
+      val screenLocation = IntArray(2)
+      view.getLocationOnScreen(screenLocation)
+      return floatArrayOf(screenLocation[0] + view.width - 1f, screenLocation[1] + view.height * 1.5f)
+    }
+  },
+  ABOVE_RIGHT {
+    override fun calculateCoordinates(view: View): FloatArray {
+      val screenLocation = IntArray(2)
+      view.getLocationOnScreen(screenLocation)
+      return floatArrayOf(screenLocation[0] + view.width - 1f, screenLocation[1] - view.height * 0.5f)
+    }
+
+  }
 }
