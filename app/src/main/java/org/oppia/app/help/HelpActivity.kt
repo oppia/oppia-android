@@ -11,7 +11,8 @@ import javax.inject.Inject
 
 /** The help page activity for FAQs and feedback. */
 class HelpActivity : InjectableAppCompatActivity(), RouteToFAQListListener {
-  @Inject lateinit var helpActivityPresenter: HelpActivityPresenter
+  @Inject
+  lateinit var helpActivityPresenter: HelpActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

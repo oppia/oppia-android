@@ -31,6 +31,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -52,6 +53,7 @@ import org.oppia.domain.exploration.TEST_EXPLORATION_ID_5
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -79,6 +81,7 @@ class StateFragmentTest {
     Intents.init()
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
+    FirebaseApp.initializeApp(context)
   }
 
   @After
@@ -648,7 +651,7 @@ class StateFragmentTest {
   }
 
   @Singleton
-  @Component(modules = [TestModule::class])
+  @Component(modules = [TestModule::class, TestLogReportingModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

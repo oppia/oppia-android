@@ -21,6 +21,10 @@ class OngoingTopicListActivityPresenter @Inject constructor(
   }
 
   private fun getOngoingTopicListFragment(): OngoingTopicListFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.ongoing_topic_list_fragment_placeholder) as OngoingTopicListFragment?
+    return activity
+      .supportFragmentManager
+      .findFragmentById(
+        R.id.ongoing_topic_list_fragment_placeholder
+      ) as OngoingTopicListFragment?
   }
 }

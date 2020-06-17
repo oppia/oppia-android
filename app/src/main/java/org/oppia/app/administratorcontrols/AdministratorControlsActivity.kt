@@ -12,8 +12,12 @@ import org.oppia.app.settings.profile.ProfileListActivity
 import javax.inject.Inject
 
 /** Activity for Administrator Controls. */
-class AdministratorControlsActivity : InjectableAppCompatActivity(), RouteToProfileListListener, RouteToAppVersionListener {
-  @Inject lateinit var administratorControlsActivityPresenter: AdministratorControlsActivityPresenter
+class AdministratorControlsActivity :
+  InjectableAppCompatActivity(),
+  RouteToProfileListListener,
+  RouteToAppVersionListener {
+  @Inject
+  lateinit var administratorControlsActivityPresenter: AdministratorControlsActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

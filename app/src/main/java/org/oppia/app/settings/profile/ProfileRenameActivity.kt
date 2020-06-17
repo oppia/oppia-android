@@ -10,7 +10,8 @@ const val KEY_PROFILE_RENAME_PROFILE_ID = "KEY_PROFILE_RENAME_PROFILE_ID"
 
 /** Activity that allows user to rename a profile. */
 class ProfileRenameActivity : InjectableAppCompatActivity() {
-  @Inject lateinit var profileRenameActivityPresenter: ProfileRenameActivityPresenter
+  @Inject
+  lateinit var profileRenameActivityPresenter: ProfileRenameActivityPresenter
 
   companion object {
     fun createProfileRenameActivity(context: Context, profileId: Int): Intent {

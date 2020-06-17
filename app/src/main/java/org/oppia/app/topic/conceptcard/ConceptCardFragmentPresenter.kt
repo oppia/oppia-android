@@ -23,14 +23,20 @@ class ConceptCardFragmentPresenter @Inject constructor(
    * Host activity must inherit ConceptCardListener to dismiss this fragment.
    */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, id: String): View? {
-    val binding = ConceptCardFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    val binding = ConceptCardFragmentBinding.inflate(
+      inflater,
+      container,
+      /* attachToRoot= */ false
+    )
     val viewModel = getConceptCardViewModel()
 
     skillId = id
     viewModel.setSkillIdAndBinding(skillId, binding)
 
     binding.conceptCardToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
-    binding.conceptCardToolbar.setNavigationContentDescription(R.string.concept_card_close_icon_description)
+    binding.conceptCardToolbar.setNavigationContentDescription(
+      R.string.concept_card_close_icon_description
+    )
     binding.conceptCardToolbar.setNavigationOnClickListener {
       (fragment.requireActivity() as? ConceptCardListener)?.dismiss()
     }

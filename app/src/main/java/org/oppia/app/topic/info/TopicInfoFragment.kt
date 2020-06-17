@@ -24,14 +24,19 @@ class TopicInfoFragment : InjectableFragment() {
     }
   }
 
-  @Inject lateinit var topicInfoFragmentPresenter: TopicInfoFragmentPresenter
+  @Inject
+  lateinit var topicInfoFragmentPresenter: TopicInfoFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
     val internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)!!
     val topicId = checkNotNull(arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in arguments for TopicInfoFragment."
