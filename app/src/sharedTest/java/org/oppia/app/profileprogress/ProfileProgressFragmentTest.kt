@@ -255,6 +255,7 @@ class ProfileProgressFragmentTest {
 
   /* ktlint-disable max-line-length */
   @Test
+  @Config(qualifiers = "port-xxhdpi")
   fun testProfileProgressFragmentWithProgress_change_configuration_recyclerViewItem0_checkOngoingTopicsCount_countIsTwo() {
     storyProgressTestHelper.markPartialTopicProgressForFractions(
       profileId,
