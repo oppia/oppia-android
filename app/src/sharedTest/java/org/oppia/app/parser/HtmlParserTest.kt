@@ -252,7 +252,7 @@ class HtmlParserTest {
   }
 
   @Test
-  fun getLeadingMargin() {
+  fun testHtmlContent_getLeadingMargin_isCorrect() {
     // Given a span with a certain gap width
     val span = BulletSpanWithRadius(ApplicationProvider.getApplicationContext<Context>(),GAP_WIDTH)
 
