@@ -7,7 +7,9 @@ import javax.inject.Inject
 private const val EIGHT_DAYS_IN_MS = 8 * 24 * 60 * 60 * 1000
 
 /** This helper allows tests to easily create dummy progress per profile-basis. */
-class StoryProgressTestHelper @Inject constructor(private val storyProgressController: StoryProgressController) {
+class StoryProgressTestHelper @Inject constructor(
+  private val storyProgressController: StoryProgressController
+) {
 
   private fun getCurrentTimestamp(): Long {
     return Date().time
@@ -99,7 +101,10 @@ class StoryProgressTestHelper @Inject constructor(private val storyProgressContr
   }
 
   /** Marks one story progress full in ratios exploration for a particular profile. */
-  fun markFullStoryPartialTopicProgressForRatios(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
+  fun markFullStoryPartialTopicProgressForRatios(
+    profileId: ProfileId,
+    timestampOlderThanAWeek: Boolean
+  ) {
     val timestamp = if (!timestampOlderThanAWeek) {
       getCurrentTimestamp()
     } else {
@@ -147,7 +152,10 @@ class StoryProgressTestHelper @Inject constructor(private val storyProgressContr
   }
 
   /** Marks exploration [FRACTIONS_EXPLORATION_ID_0] as recently played for a particular profile. */
-  fun markRecentlyPlayedForFractionsStory0Exploration0(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
+  fun markRecentlyPlayedForFractionsStory0Exploration0(
+    profileId: ProfileId,
+    timestampOlderThanAWeek: Boolean
+  ) {
     val timestamp = if (!timestampOlderThanAWeek) {
       getCurrentTimestamp()
     } else {
@@ -163,7 +171,10 @@ class StoryProgressTestHelper @Inject constructor(private val storyProgressContr
   }
 
   /** Marks exploration [RATIOS_EXPLORATION_ID_0] as recently played for a particular profile. */
-  fun markRecentlyPlayedForRatiosStory0Exploration0(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
+  fun markRecentlyPlayedForRatiosStory0Exploration0(
+    profileId: ProfileId,
+    timestampOlderThanAWeek: Boolean
+  ) {
     val timestamp = if (!timestampOlderThanAWeek) {
       getCurrentTimestamp()
     } else {
