@@ -253,10 +253,10 @@ class ProfileProgressFragmentTest {
   }
   /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
+
   @Test
   @Config(qualifiers = "port-xxhdpi")
-  fun testProfileProgressFragmentWithProgress_change_configuration_recyclerViewItem0_checkOngoingTopicsCount_countIsTwo() {
+  fun testProfileProgressFragmentWithProgress_change_configuration_recyclerViewItem0_checkOngoingTopicsCount_countIsTwo() { // ktlint-disable max-line-length
     storyProgressTestHelper.markPartialTopicProgressForFractions(
       profileId,
       timestampOlderThanAWeek = false
@@ -275,7 +275,6 @@ class ProfileProgressFragmentTest {
       )
     }
   }
-  /* ktlint-enable max-line-length */
 
   /* ktlint-disable max-line-length */
   @Test
@@ -319,9 +318,9 @@ class ProfileProgressFragmentTest {
   }
   /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
+
   @Test
-  fun testProfileProgressFragmentWithProgress_changeConfiguration_recyclerViewItem0_checkOngoingTopicsString_descriptionIsCorrect() {
+  fun testProfileProgressFragmentWithProgress_changeConfiguration_recyclerViewItem0_checkOngoingTopicsString_descriptionIsCorrect() { // ktlint-disable max-line-length
     storyProgressTestHelper.markPartialTopicProgressForFractions(
       profileId,
       timestampOlderThanAWeek = false
@@ -343,7 +342,6 @@ class ProfileProgressFragmentTest {
       )
     }
   }
-  /* ktlint-enable max-line-length */
 
   /* ktlint-disable max-line-length */
   @Test
