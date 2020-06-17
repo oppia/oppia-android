@@ -24,7 +24,8 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class NetworkInterceptorTest {
 
-  @Inject lateinit var networkInterceptor: NetworkInterceptor
+  @Inject
+  lateinit var networkInterceptor: NetworkInterceptor
 
   @Before
   fun setUp() {
@@ -38,17 +39,33 @@ class NetworkInterceptorTest {
   @Test
   fun testNetworkInterceptor_withXssiPrefix_removesXssiPrefix() {
     val rawJson: String =
-      networkInterceptor.removeXSSIPrefix(ApiUtils.getFakeJson("dummy_response_with_xssi_prefix.json")).trim()
+      networkInterceptor.removeXSSIPrefix(
+        ApiUtils.getFakeJson(
+          "dummy_response_with_xssi_prefix.json"
+        )
+      ).trim()
 
-    assertThat(removeSpaces(rawJson)).isEqualTo(ApiUtils.getFakeJson("dummy_response_without_xssi_prefix.json"))
+    assertThat(removeSpaces(rawJson)).isEqualTo(
+      ApiUtils.getFakeJson(
+        "dummy_response_without_xssi_prefix.json"
+      )
+    )
   }
 
   @Test
   fun testNetworkInterceptor_withoutXssiPrefix_removesXssiPrefix() {
     val rawJson: String =
-      networkInterceptor.removeXSSIPrefix(ApiUtils.getFakeJson("dummy_response_without_xssi_prefix.json"))
+      networkInterceptor.removeXSSIPrefix(
+        ApiUtils.getFakeJson(
+          "dummy_response_without_xssi_prefix.json"
+        )
+      )
 
-    assertThat(rawJson).isEqualTo(ApiUtils.getFakeJson("dummy_response_without_xssi_prefix.json"))
+    assertThat(rawJson).isEqualTo(
+      ApiUtils.getFakeJson(
+        "dummy_response_without_xssi_prefix.json"
+      )
+    )
   }
 
   private fun setUpTestApplicationComponent() {
@@ -58,7 +75,8 @@ class NetworkInterceptorTest {
       .inject(this)
   }
 
-  @Qualifier annotation class OppiaRetrofit
+  @Qualifier
+  annotation class OppiaRetrofit
 
   // TODO(#89): Move this to a common test application component.
   @Module
