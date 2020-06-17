@@ -169,6 +169,7 @@ class StateFragmentTest {
         typeText("1/2"),
         closeSoftKeyboard()
       )
+      onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
       onView(withId(R.id.submit_answer_button)).perform(click())
       onView(withId(R.id.continue_navigation_button)).check(matches(withText(R.string.state_continue_button)))
     }
@@ -185,7 +186,7 @@ class StateFragmentTest {
         typeText("1/2"),
         closeSoftKeyboard()
       )
-      onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
       onView(withId(R.id.submit_answer_button)).perform(click())
       onView(withId(R.id.continue_navigation_button)).check(matches(withText(R.string.state_continue_button)))
     }
@@ -220,6 +221,7 @@ class StateFragmentTest {
 
       // Attempt to submit an invalid answer.
       onView(withId(R.id.fraction_input_interaction_view)).perform(typeText("1/"), closeSoftKeyboard())
+      onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
       onView(withId(R.id.submit_answer_button)).perform(click())
 
       // The submission button should now be disabled and there should be an error.
@@ -237,6 +239,7 @@ class StateFragmentTest {
         typeText("1/"),
         closeSoftKeyboard()
       )
+      onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
       onView(withId(R.id.submit_answer_button)).perform(click())
 
       // Add another '2' to change the pending input text.
@@ -260,6 +263,7 @@ class StateFragmentTest {
         typeText("1/"),
         closeSoftKeyboard()
       )
+      onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
       onView(withId(R.id.submit_answer_button)).perform(click())
 
       // Add another '2' to change the pending input text.
@@ -301,6 +305,7 @@ class StateFragmentTest {
 
       onView(withId(R.id.continue_button)).perform(click())
 
+      onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(withId(R.id.previous_state_navigation_button)).check(matches(isDisplayed()))
     }
   }
@@ -312,6 +317,7 @@ class StateFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.continue_button)).perform(click())
 
+      onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
       onView(withId(R.id.previous_state_navigation_button)).check(matches(isDisplayed()))
     }
   }
@@ -322,6 +328,7 @@ class StateFragmentTest {
       startPlayingExploration()
       onView(withId(R.id.continue_button)).perform(click())
 
+      onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(withId(R.id.previous_state_navigation_button)).perform(click())
 
       // Since we navigated back to the first state, only the next navigation button is visible.
@@ -337,6 +344,7 @@ class StateFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.continue_button)).perform(click())
 
+      onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
       onView(withId(R.id.previous_state_navigation_button)).perform(click())
 
       // Since we navigated back to the first state, only the next navigation button is visible.
@@ -351,6 +359,7 @@ class StateFragmentTest {
       startPlayingExploration()
       onView(withId(R.id.continue_button)).perform(click())
 
+      onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(withId(R.id.previous_state_navigation_button)).perform(click())
       onView(withId(R.id.next_state_navigation_button)).perform(click())
 
@@ -367,6 +376,7 @@ class StateFragmentTest {
       startPlayingExploration()
       onView(withId(R.id.continue_button)).perform(click())
 
+      onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(withId(R.id.previous_state_navigation_button)).perform(click())
       onView(withId(R.id.next_state_navigation_button)).perform(click())
 
@@ -490,6 +500,7 @@ class StateFragmentTest {
       typeText("1/2"),
       closeSoftKeyboard()
     )
+    onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
     onView(withId(R.id.submit_answer_button)).perform(click())
     onView(withId(R.id.continue_navigation_button)).perform(click())
 
@@ -535,6 +546,7 @@ class StateFragmentTest {
         targetViewId = R.id.item_selection_checkbox
       )
     ).perform(click())
+    onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
     onView(withId(R.id.submit_answer_button)).perform(click())
     onView(withId(R.id.continue_navigation_button)).perform(click())
 
