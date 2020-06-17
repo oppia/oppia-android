@@ -196,9 +196,6 @@ class HomeFragmentPresenter @Inject constructor(
       activity.applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_HOME,
-      null,
-      null,
-      null,
       null
       )
   }

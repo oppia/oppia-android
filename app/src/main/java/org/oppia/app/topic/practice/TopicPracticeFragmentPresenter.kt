@@ -174,10 +174,7 @@ class TopicPracticeFragmentPresenter @Inject constructor(
       fragment.requireActivity().applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_PRACTICE_TAB,
-      null,
-      null,
-      analyticsController.topicContext(topicId),
-      null
+      analyticsController.createTopicContext(topicId)
     )
   }
 }

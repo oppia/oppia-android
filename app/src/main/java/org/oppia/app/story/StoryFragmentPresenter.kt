@@ -164,10 +164,7 @@ class StoryFragmentPresenter @Inject constructor(
       fragment.requireActivity().applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_PRACTICE_TAB,
-      null,
-      null,
-      null,
-      analyticsController.storyContext(topicId, storyId)
+      analyticsController.createStoryContext(topicId, storyId)
     )
   }
 }

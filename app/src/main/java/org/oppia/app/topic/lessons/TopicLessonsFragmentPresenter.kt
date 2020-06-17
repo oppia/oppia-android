@@ -192,10 +192,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       fragment.requireActivity().applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_LESSONS_TAB,
-      null,
-      null,
-      analyticsController.topicContext(topicId),
-      null
+      analyticsController.createTopicContext(topicId)
     )
   }
 }

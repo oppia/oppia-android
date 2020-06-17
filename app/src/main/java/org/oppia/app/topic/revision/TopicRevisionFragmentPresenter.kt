@@ -95,10 +95,7 @@ class TopicRevisionFragmentPresenter @Inject constructor(
       fragment.requireActivity().applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_REVISION_TAB,
-      null,
-      null,
-      analyticsController.topicContext(topicId),
-      null
+      analyticsController.createTopicContext(topicId)
     )
   }
 }

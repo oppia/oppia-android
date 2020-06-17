@@ -68,11 +68,8 @@ class ExplorationFragmentPresenter @Inject constructor(
     analyticsController.logTransitionEvent(
       fragment.context!!.applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,
-      EventLog.EventAction.OPEN_PRACTICE_TAB,
-      analyticsController.explorationContext(topicId, storyId, explorationId),
-      null,
-      null,
-      null
+      EventLog.EventAction.EVENT_ACTION_UNSPECIFIED,
+      analyticsController.createExplorationContext(topicId, storyId, explorationId)
     )
   }
 }
