@@ -25,6 +25,12 @@ import org.robolectric.annotation.Config
 import javax.inject.Inject
 import javax.inject.Singleton
 
+const val TEST_TIMESTAMP = 1556094120000
+const val TEST_TOPIC_ID = "test_topicId"
+const val TEST_STORY_ID = "test_storyId"
+const val TEST_EXPLORATION_ID = "test_explorationId"
+const val TEST_QUESTION_ID = "test_questionId"
+
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
 class AnalyticsControllerTest {
@@ -214,7 +220,7 @@ class AnalyticsControllerTest {
   }
 
   @Test
-  fun testController_createExplorationContext_isSuccessful() {
+  fun testController_createExplorationContext_returnsCorrectExplorationContext() {
     val eventContext = analyticsController.createExplorationContext(
       TEST_TOPIC_ID,
       TEST_STORY_ID,
@@ -228,7 +234,7 @@ class AnalyticsControllerTest {
   }
 
   @Test
-  fun testController_createQuestionContext_isSuccessful() {
+  fun testController_createQuestionContext_returnsCorrectQuestionContext() {
     val eventContext = analyticsController.createQuestionContext(TEST_TOPIC_ID, TEST_QUESTION_ID)
 
     assertThat(eventContext.activityContextCase).isEqualTo(QUESTION_CONTEXT)
@@ -237,7 +243,7 @@ class AnalyticsControllerTest {
   }
 
   @Test
-  fun testController_createStoryContext_isSuccessful() {
+  fun testController_createStoryContext_returnsCorrectStoryContext() {
     val eventContext = analyticsController.createStoryContext(TEST_TOPIC_ID, TEST_STORY_ID)
 
     assertThat(eventContext.activityContextCase).isEqualTo(STORY_CONTEXT)
@@ -246,7 +252,7 @@ class AnalyticsControllerTest {
   }
 
   @Test
-  fun testController_createTopicContext_isSuccessful() {
+  fun testController_createTopicContext_returnsCorrectTopicContext() {
     val eventContext = analyticsController.createTopicContext(TEST_TOPIC_ID)
 
     assertThat(eventContext.activityContextCase).isEqualTo(TOPIC_CONTEXT)

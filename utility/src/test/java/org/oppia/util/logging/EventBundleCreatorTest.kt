@@ -103,7 +103,7 @@ class EventBundleCreatorTest {
 
   @Test
   fun testBundleCreation_logEvent_withExplorationContext_isSuccessful() {
-    val eventBundle = eventBundleCreator.createEventBundle(eventLogExplorationContext)
+    val eventBundle = EventBundleCreator().createEventBundle(eventLogExplorationContext)
 
     assertThat(eventBundle.get(TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
     assertThat(eventBundle.get(PRIORITY_KEY)).isEqualTo(EventLog.Priority.ESSENTIAL.toString())

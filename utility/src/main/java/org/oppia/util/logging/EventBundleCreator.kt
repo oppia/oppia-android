@@ -34,7 +34,7 @@ class EventBundleCreator {
     return bundle
   }
 
-  /** Creates a bundle from event having exploration context. */
+  /** Returns a bundle from event having exploration context. */
   private fun createExplorationContextBundle(eventLog: EventLog): Bundle {
     val bundle = Bundle()
     bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
@@ -45,7 +45,7 @@ class EventBundleCreator {
     return bundle
   }
 
-  /** Creates a bundle from event having question context. */
+  /** Returns a bundle from event having question context. */
   private fun createQuestionContextBundle(eventLog: EventLog): Bundle {
     val bundle = Bundle()
     bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
@@ -55,7 +55,7 @@ class EventBundleCreator {
     return bundle
   }
 
-  /** Creates a bundle from event having question context. */
+  /** Returns a bundle from event having question context. */
   private fun createTopicContextBundle(eventLog: EventLog): Bundle {
     val bundle = Bundle()
     bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
@@ -64,7 +64,7 @@ class EventBundleCreator {
     return bundle
   }
 
-  /** Creates a bundle from event having question context. */
+  /** Returns a bundle from event having question context. */
   private fun createStoryContextBundle(eventLog: EventLog): Bundle {
     val bundle = Bundle()
     bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
@@ -74,7 +74,7 @@ class EventBundleCreator {
     return bundle
   }
 
-  /** Creates a bundle from event having no context. */
+  /** Returns a bundle from event having no context. */
   private fun createNoContextBundle(eventLog: EventLog): Bundle {
     val bundle = Bundle()
     bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
