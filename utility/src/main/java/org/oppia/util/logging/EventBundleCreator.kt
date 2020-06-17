@@ -19,10 +19,12 @@ const val PRIORITY_KEY = "priority"
  * Utility for creating bundles from [EventLog] objects.
  * Note that this utility may later upload them to remote services.
  */
-class EventBundleCreator {
+class EventBundleCreator(
+  private val eventLog: EventLog
+) {
   private var bundle = Bundle()
 
-  fun createEventBundle(eventLog: EventLog): Bundle {
+  fun createEventBundle(): Bundle {
     bundle =
       when (eventLog.context.activityContextCase) {
         EXPLORATION_CONTEXT -> createExplorationContextBundle(eventLog)
@@ -34,7 +36,7 @@ class EventBundleCreator {
     return bundle
   }
 
-  /** Creates a bundle from event having exploration context. */
+  /** Returns a bundle from event having exploration context. */
   private fun createExplorationContextBundle(eventLog: EventLog): Bundle {
     val bundle = Bundle()
     bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
@@ -45,7 +47,7 @@ class EventBundleCreator {
     return bundle
   }
 
-  /** Creates a bundle from event having question context. */
+  /** Returns a bundle from event having question context. */
   private fun createQuestionContextBundle(eventLog: EventLog): Bundle {
     val bundle = Bundle()
     bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
@@ -55,7 +57,7 @@ class EventBundleCreator {
     return bundle
   }
 
-  /** Creates a bundle from event having question context. */
+  /** Returns a bundle from event having question context. */
   private fun createTopicContextBundle(eventLog: EventLog): Bundle {
     val bundle = Bundle()
     bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
@@ -64,7 +66,7 @@ class EventBundleCreator {
     return bundle
   }
 
-  /** Creates a bundle from event having question context. */
+  /** Returns a bundle from event having question context. */
   private fun createStoryContextBundle(eventLog: EventLog): Bundle {
     val bundle = Bundle()
     bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
@@ -74,7 +76,7 @@ class EventBundleCreator {
     return bundle
   }
 
-  /** Creates a bundle from event having no context. */
+  /** Returns a bundle from event having no context. */
   private fun createNoContextBundle(eventLog: EventLog): Bundle {
     val bundle = Bundle()
     bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)

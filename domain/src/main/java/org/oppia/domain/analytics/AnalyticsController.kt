@@ -7,12 +7,6 @@ import org.oppia.app.model.EventLog.Priority
 import org.oppia.util.logging.EventLogger
 import javax.inject.Inject
 
-const val TEST_TIMESTAMP = 1556094120000
-const val TEST_TOPIC_ID = "test_topicId"
-const val TEST_STORY_ID = "test_storyId"
-const val TEST_EXPLORATION_ID = "test_explorationId"
-const val TEST_QUESTION_ID = "test_questionId"
-
 /**
  * Controller for handling analytics event logging.
  * [logTransitionEvent] should be used to log screen transition events.

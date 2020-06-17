@@ -1,9 +1,7 @@
 package org.oppia.testing
 
 import android.content.Context
-import android.os.Bundle
 import org.oppia.app.model.EventLog
-import org.oppia.util.logging.EventBundleCreator
 import org.oppia.util.logging.EventLogger
 import java.util.*
 import javax.inject.Inject
@@ -13,11 +11,9 @@ import javax.inject.Singleton
 @Singleton
 class FakeEventLogger @Inject constructor() : EventLogger {
   private val eventList = ArrayList<EventLog>()
-  private var bundle = Bundle()
 
   override fun logEvent(context: Context, eventLog: EventLog) {
     eventList.add(eventLog)
-    bundle = EventBundleCreator().createEventBundle(eventLog)
   }
 
   /** Returns the most recently logged event. */
