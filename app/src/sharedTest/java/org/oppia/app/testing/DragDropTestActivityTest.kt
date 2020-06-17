@@ -6,17 +6,14 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.CoordinatesProvider
 import androidx.test.espresso.action.GeneralLocation
-import androidx.test.espresso.action.GeneralSwipeAction
 import androidx.test.espresso.action.Press
-import androidx.test.espresso.action.Swipe
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.utility.DragViewAction
 
 @RunWith(AndroidJUnit4::class)
 class DragDropTestActivityTest {
@@ -29,8 +26,8 @@ class DragDropTestActivityTest {
 
       onView(withId(R.id.drag_drop_recycler_View)).perform(
         RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,
-          GeneralSwipeAction(
-            Swipe.FAST,
+          DragViewAction(
+            DragViewAction.Drag.LONG_PRESS,
             GeneralLocation.CENTER,
             CoordinatesProvider { floatArrayOf(0F, 0F) },
             Press.FINGER
