@@ -12,6 +12,7 @@
     android:roundIcon="@mipmap/ic_launcher_round"
     android:supportsRtl="true"
     android:theme="@style/OppiaTheme">
+    <meta-data android:name="expiration_date" android:value="2020-09-01" />
     <activity
       android:name=".administratorcontrols.AdministratorControlsActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />

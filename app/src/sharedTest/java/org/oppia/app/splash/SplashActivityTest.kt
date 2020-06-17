@@ -29,7 +29,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.onboarding.OnboardingActivity
 import org.oppia.app.profile.ProfileActivity
-import org.oppia.domain.onboarding.OnboardingFlowController
+import org.oppia.domain.onboarding.AppStartupStateController
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -159,7 +159,7 @@ class SplashActivityTest {
       fun build(): TestApplicationComponent
     }
 
-    fun getOnboardingFlowController(): OnboardingFlowController
+    fun getOnboardingFlowController(): AppStartupStateController
     fun inject(splashActivityTest: SplashActivityTest)
   }
 
