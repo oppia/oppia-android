@@ -82,7 +82,6 @@
           android:paddingBottom="@{presenter.wasProfileEverBeenAddedValue ? @dimen/padding_296dp : @dimen/bottom_white_space}"
           android:requiresFadingEdge="vertical"
           android:scrollbars="none"
-          android:tag="profile_recycler_view"
           app:data="@{viewModel.profiles}"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"

@@ -32,12 +32,10 @@
     <LinearLayout
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:paddingStart="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_24}"
-      android:paddingEnd="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_24}"
       android:gravity="@{presenter.wasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER}"
       android:orientation="@{presenter.wasProfileEverBeenAddedValue ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL}"
-      app:profileChooserMarginEnd="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_0}"
-      app:profileChooserMarginStart="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_0}"
+      app:profileChooserMarginEnd="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_24}"
+      app:profileChooserMarginStart="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_24}"
       app:profileChooserMarginTop="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_24}"
       profile:ignore="RtlSymmetry">
 
