@@ -78,14 +78,8 @@ message EventLog {
     OPEN_REVISION_TAB = 5;
     // Opening of story activity.
     OPEN_STORY_ACTIVITY= 6;
-    // Opening of question player activity.
-    OPEN_QUESTION_PLAYER_ACTIVITY = 7;
     // Opening of exploration activity.
-    OPEN_EXPLORATION_ACTIVITY = 8;
-    // Click on audio button.
-    CLICK_AUDIO_BUTTON = 9;
-    // Click on submit button.
-    CLICK_SUBMIT_BUTTON = 10;
+    OPEN_EXPLORATION_ACTIVITY = 7;
   }
 
   // Supported priority of events for event logging
