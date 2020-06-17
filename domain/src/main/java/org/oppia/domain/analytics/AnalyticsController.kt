@@ -7,11 +7,7 @@ import org.oppia.app.model.EventLog.Priority
 import org.oppia.util.logging.EventLogger
 import javax.inject.Inject
 
-/**
- * Controller for handling analytics event logging.
- * [logTransitionEvent] should be used to log screen transition events.
- * [logClickEvent] should be used to log button click events.
- */
+/** Controller for handling analytics event logging. */
 class AnalyticsController @Inject constructor(
   private val eventLogger: EventLogger
 ) {

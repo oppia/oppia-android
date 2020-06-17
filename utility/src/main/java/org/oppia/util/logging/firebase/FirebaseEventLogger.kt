@@ -11,13 +11,14 @@ import javax.inject.Singleton
 /** Logger for event logging to Firebase Analytics. */
 @Singleton
 class FirebaseEventLogger(
-  private val firebaseAnalytics: FirebaseAnalytics
+  private val firebaseAnalytics: FirebaseAnalytics,
+  private val eventBundleCreator: EventBundleCreator
 ) : EventLogger {
   private var bundle = Bundle()
 
   /** Logs an event to Firebase Analytics. */
   override fun logEvent(context: Context, eventLog: EventLog) {
-    bundle = EventBundleCreator(eventLog).createEventBundle()
+    bundle = eventBundleCreator.createEventBundle(eventLog)
     firebaseAnalytics.logEvent(eventLog.actionName.toString(), bundle)
   }
 }

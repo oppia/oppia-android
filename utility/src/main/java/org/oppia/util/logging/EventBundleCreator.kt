@@ -19,12 +19,10 @@ const val PRIORITY_KEY = "priority"
  * Utility for creating bundles from [EventLog] objects.
  * Note that this utility may later upload them to remote services.
  */
-class EventBundleCreator(
-  private val eventLog: EventLog
-) {
+class EventBundleCreator {
   private var bundle = Bundle()
 
-  fun createEventBundle(): Bundle {
+  fun createEventBundle(eventLog: EventLog): Bundle {
     bundle =
       when (eventLog.context.activityContextCase) {
         EXPLORATION_CONTEXT -> createExplorationContextBundle(eventLog)
