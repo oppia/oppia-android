@@ -145,6 +145,9 @@ class TopicListAdapter(
       promotedStoryList: MutableList<PromotedStoryViewModel>
     ) {
       binding.viewModel = promotedStoryListViewModel
+      if (activity.resources.getBoolean(R.bool.isTablet)) {
+        binding.itemCount = promotedStoryList.size
+      }
       val promotedStoryAdapter = PromotedStoryListAdapter(activity, promotedStoryList)
       val horizontalLayoutManager =
         LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, /* reverseLayout= */ false)
@@ -162,15 +165,31 @@ class TopicListAdapter(
       binding.promotedStoryListRecyclerView.setOnFlingListener(null)
       snapHelper.attachToRecyclerView(binding.promotedStoryListRecyclerView)
 
-      val paddingEnd = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-        (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_44)
+      val paddingEnd = if (activity.resources.getBoolean(R.bool.isTablet)) {
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+          (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_128)
+        } else {
+          (activity as Context).resources.getDimensionPixelSize(R.dimen.home_tablet_land_outer_margin)
+        }
       } else {
-        (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_72)
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+          (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_44)
+        } else {
+          (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_72)
+        }
       }
-      val paddingStart = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-        (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_20)
+      val paddingStart = if (activity.resources.getBoolean(R.bool.isTablet)) {
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+          (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_128)
+        } else {
+          (activity as Context).resources.getDimensionPixelSize(R.dimen.home_tablet_land_outer_margin)
+        }
       } else {
-        (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_72)
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+          (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_20)
+        } else {
+          (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_72)
+        }
       }
       if (promotedStoryList.size > 1) {
         binding.promotedStoryListRecyclerView.setPadding(paddingStart, 0, paddingEnd, 0)
@@ -197,7 +216,7 @@ class TopicListAdapter(
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
           (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_120)
         } else {
-          (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_152)
+          (activity as Context).resources.getDimensionPixelSize(R.dimen.home_tablet_land_outer_margin)
         }
       } else {
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
