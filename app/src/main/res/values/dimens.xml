@@ -42,4 +42,5 @@
   <dimen name="enter_text_view_padding_end">60dp</dimen>
   <dimen name="promoted_story_card_width">280dp</dimen>
   <dimen name="home_tablet_land_outer_margin">96dp</dimen>
+  <dimen name="home_tablet_port_outer_margin">120dp</dimen>
 </resources>
