@@ -139,7 +139,7 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".topic.questionplayer.QuestionPlayerActivity"
-      android:screenOrientation="portrait" />
+      android:label="@string/question_player_title" />
     <activity
       android:name=".topic.revisioncard.RevisionCardActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />

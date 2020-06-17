@@ -17,12 +17,17 @@ private const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id
 private const val TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY = "TopicActivity.story_id"
 
 /** The activity for displaying [TopicFragment]. */
-class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListener,
-  RouteToStoryListener, RouteToExplorationListener, RouteToRevisionCardListener {
+class TopicActivity :
+  InjectableAppCompatActivity(),
+  RouteToQuestionPlayerListener,
+  RouteToStoryListener,
+  RouteToExplorationListener,
+  RouteToRevisionCardListener {
 
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
   private var storyId: String? = null
+
   @Inject
   lateinit var topicActivityPresenter: TopicActivityPresenter
 
@@ -38,18 +43,42 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
   }
 
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
-    startActivity(QuestionPlayerActivity.createQuestionPlayerActivityIntent(this, skillIdList))
+    startActivity(
+      QuestionPlayerActivity.createQuestionPlayerActivityIntent(
+        this,
+        skillIdList
+      )
+    )
   }
 
   override fun routeToStory(internalProfileId: Int, topicId: String, storyId: String) {
-    startActivity(StoryActivity.createStoryActivityIntent(this, internalProfileId, topicId, storyId))
+    startActivity(
+      StoryActivity.createStoryActivityIntent(
+        this,
+        internalProfileId,
+        topicId,
+        storyId
+      )
+    )
   }
 
   override fun routeToRevisionCard(topicId: String, subtopicId: String) {
-    startActivity(RevisionCardActivity.createRevisionCardActivityIntent(this, topicId, subtopicId))
+    startActivity(
+      RevisionCardActivity.createRevisionCardActivityIntent(
+        this,
+        topicId,
+        subtopicId
+      )
+    )
   }
 
-  override fun routeToExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowScreen: Int?) {
+  override fun routeToExploration(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    backflowScreen: Int?
+  ) {
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
         this,
@@ -86,7 +115,11 @@ class TopicActivity : InjectableAppCompatActivity(), RouteToQuestionPlayerListen
     }
 
     /** Returns a new [Intent] to route to [TopicActivity] for a specified topic ID. */
-    fun createTopicActivityIntent(context: Context, internalProfileId: Int, topicId: String): Intent {
+    fun createTopicActivityIntent(
+      context: Context,
+      internalProfileId: Int,
+      topicId: String
+    ): Intent {
       val intent = Intent(context, TopicActivity::class.java)
       intent.putExtra(KEY_NAVIGATION_PROFILE_ID, internalProfileId)
       intent.putExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)

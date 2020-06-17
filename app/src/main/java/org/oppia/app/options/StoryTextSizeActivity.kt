@@ -22,11 +22,13 @@ class StoryTextSizeActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     prefKey = intent.getStringExtra(KEY_STORY_TEXT_SIZE_PREFERENCE_TITLE)
-    prefSummaryValue = (if (savedInstanceState != null) {
-      savedInstanceState.get(KEY_STORY_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE)
-    } else {
-      intent.getStringExtra(KEY_STORY_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE)
-    }) as String
+    prefSummaryValue = (
+      if (savedInstanceState != null) {
+        savedInstanceState.get(KEY_STORY_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE)
+      } else {
+        intent.getStringExtra(KEY_STORY_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE)
+      }
+      ) as String
     storyTextSizeActivityPresenter.handleOnCreate(prefSummaryValue)
   }
 

@@ -70,7 +70,9 @@ class StorySummaryAdapter(
       is StorySummaryViewModel -> {
         VIEW_TYPE_STORY_ITEM
       }
-      else -> throw IllegalArgumentException("Invalid type of data $position with item ${itemList[position]}")
+      else -> throw IllegalArgumentException(
+        "Invalid type of data $position with item ${itemList[position]}"
+      )
     }
   }
 
@@ -94,34 +96,47 @@ class StorySummaryAdapter(
       binding.isListExpanded = isChapterListVisible
       binding.viewModel = storySummaryViewModel
 
-      val chapterSummaries = storySummaryViewModel.storySummary.chapterList
+      val chapterSummaries = storySummaryViewModel
+        .storySummary.chapterList
       val completedChapterCount =
         chapterSummaries.map(ChapterSummary::getChapterPlayState)
           .filter {
             it == ChapterPlayState.COMPLETED
           }
           .size
-      val storyPercentage: Int = (completedChapterCount * 100) / storySummaryViewModel.storySummary.chapterCount
+      val storyPercentage: Int =
+        (completedChapterCount * 100) / storySummaryViewModel.storySummary.chapterCount
       binding.storyPercentage = storyPercentage
       binding.storyProgressView.setStoryChapterDetails(
         storySummaryViewModel.storySummary.chapterCount,
         completedChapterCount
       )
-      binding.topicPlayStoryDashedLineView.setLayerType(View.LAYER_TYPE_SOFTWARE, /* paint= */ null)
+      binding.topicPlayStoryDashedLineView.setLayerType(
+        View.LAYER_TYPE_SOFTWARE,
+        /* paint= */ null
+      )
       val chapterList = storySummaryViewModel.storySummary.chapterList
       binding.chapterRecyclerView.adapter =
-        ChapterSummaryAdapter(storySummaryViewModel.storySummary.storyId, chapterList, chapterSummarySelector)
+        ChapterSummaryAdapter(
+          storySummaryViewModel.storySummary.storyId,
+          chapterList,
+          chapterSummarySelector
+        )
 
       binding.root.setOnClickListener {
         val previousIndex: Int? = currentExpandedChapterListIndex
         currentExpandedChapterListIndex =
-          if (currentExpandedChapterListIndex != null && currentExpandedChapterListIndex == position) {
+          if (currentExpandedChapterListIndex != null &&
+            currentExpandedChapterListIndex == position
+          ) {
             null
           } else {
             position
           }
         expandedChapterListIndexListener.onExpandListIconClicked(currentExpandedChapterListIndex)
-        if (previousIndex != null && currentExpandedChapterListIndex != null && previousIndex == currentExpandedChapterListIndex) {
+        if (previousIndex != null && currentExpandedChapterListIndex != null &&
+          previousIndex == currentExpandedChapterListIndex
+        ) {
           notifyItemChanged(currentExpandedChapterListIndex!!)
         } else {
           if (previousIndex != null) {

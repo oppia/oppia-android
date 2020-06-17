@@ -28,7 +28,11 @@ class OnboardingFragmentPresenter @Inject constructor(
   private lateinit var binding: OnboardingFragmentBinding
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    binding = OnboardingFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding = OnboardingFragmentBinding.inflate(
+      inflater,
+      container,
+      /* attachToRoot= */ false
+    )
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
     binding.let {
@@ -45,34 +49,62 @@ class OnboardingFragmentPresenter @Inject constructor(
     onboardingPagerAdapter =
       OnboardingPagerAdapter(fragment.requireContext(), getOnboardingSlideFinalViewModel())
     binding.onboardingSlideViewPager.adapter = onboardingPagerAdapter
-    binding.onboardingSlideViewPager.addOnPageChangeListener(object :
-      ViewPager.OnPageChangeListener {
-      override fun onPageScrollStateChanged(state: Int) {
-      }
-
-      override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-      }
-
-      override fun onPageSelected(position: Int) {
-        if (position == TOTAL_NUMBER_OF_SLIDES - 1) {
-          binding.onboardingSlideViewPager.currentItem = TOTAL_NUMBER_OF_SLIDES - 1
-          getOnboardingViewModel().slideChanged(TOTAL_NUMBER_OF_SLIDES - 1)
-        } else {
-          getOnboardingViewModel().slideChanged(ViewPagerSlide.getSlideForPosition(position).ordinal)
+    binding.onboardingSlideViewPager.addOnPageChangeListener(
+      object :
+        ViewPager.OnPageChangeListener {
+        override fun onPageScrollStateChanged(state: Int) {
         }
-        selectDot(position)
-        onboardingStatusBarColorUpdate(position)
-      }
-    })
+
+        override fun onPageScrolled(
+          position: Int,
+          positionOffset: Float,
+          positionOffsetPixels: Int
+        ) {
+        }
+
+        override fun onPageSelected(position: Int) {
+          if (position == TOTAL_NUMBER_OF_SLIDES - 1) {
+            binding.onboardingSlideViewPager.currentItem = TOTAL_NUMBER_OF_SLIDES - 1
+            getOnboardingViewModel().slideChanged(TOTAL_NUMBER_OF_SLIDES - 1)
+          } else {
+            getOnboardingViewModel().slideChanged(
+              ViewPagerSlide.getSlideForPosition(position)
+                .ordinal
+            )
+          }
+          selectDot(position)
+          onboardingStatusBarColorUpdate(position)
+        }
+      })
   }
 
   private fun onboardingStatusBarColorUpdate(position: Int) {
     when (position) {
-      0 -> StatusBarColor.statusBarColorUpdate(R.color.onboarding1StatusBar, activity, false)
-      1 -> StatusBarColor.statusBarColorUpdate(R.color.onboarding2StatusBar, activity, false)
-      2 -> StatusBarColor.statusBarColorUpdate(R.color.onboarding3StatusBar, activity, false)
-      3 -> StatusBarColor.statusBarColorUpdate(R.color.onboarding4StatusBar, activity, false)
-      else -> StatusBarColor.statusBarColorUpdate(R.color.colorPrimaryDark, activity, false)
+      0 -> StatusBarColor.statusBarColorUpdate(
+        R.color.onboarding1StatusBar,
+        activity,
+        false
+      )
+      1 -> StatusBarColor.statusBarColorUpdate(
+        R.color.onboarding2StatusBar,
+        activity,
+        false
+      )
+      2 -> StatusBarColor.statusBarColorUpdate(
+        R.color.onboarding3StatusBar,
+        activity,
+        false
+      )
+      3 -> StatusBarColor.statusBarColorUpdate(
+        R.color.onboarding4StatusBar,
+        activity,
+        false
+      )
+      else -> StatusBarColor.statusBarColorUpdate(
+        R.color.colorPrimaryDark,
+        activity,
+        false
+      )
     }
   }
 

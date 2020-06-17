@@ -8,6 +8,7 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.ConceptCard
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.Logger
 import org.oppia.util.parser.ConceptCardHtmlParserEntityType
 import org.oppia.util.parser.HtmlParser
@@ -19,7 +20,8 @@ class ConceptCardViewModel @Inject constructor(
   private val topicController: TopicController,
   private val logger: Logger,
   private val htmlParserFactory: HtmlParser.Factory,
-  @ConceptCardHtmlParserEntityType private val entityType: String
+  @ConceptCardHtmlParserEntityType private val entityType: String,
+  @DefaultResourceBucketName private val resourceBucketName: String
 ) : ViewModel() {
   private lateinit var skillId: String
   private lateinit var binding: ConceptCardFragmentBinding
@@ -52,17 +54,26 @@ class ConceptCardViewModel @Inject constructor(
 
   private fun processConceptCardResult(conceptCardResult: AsyncResult<ConceptCard>): ConceptCard {
     if (conceptCardResult.isFailure()) {
-      logger.e("ConceptCardFragment", "Failed to retrieve Concept Card", conceptCardResult.getErrorOrNull()!!)
+      logger.e(
+        "ConceptCardFragment",
+        "Failed to retrieve Concept Card",
+        conceptCardResult.getErrorOrNull()!!
+      )
     }
     return conceptCardResult.getOrDefault(ConceptCard.getDefaultInstance())
   }
 
   private fun processExplanationResult(conceptCardResult: AsyncResult<ConceptCard>): CharSequence {
     if (conceptCardResult.isFailure()) {
-      logger.e("ConceptCardFragment", "Failed to retrieve Concept Card", conceptCardResult.getErrorOrNull()!!)
+      logger.e(
+        "ConceptCardFragment",
+        "Failed to retrieve Concept Card",
+        conceptCardResult.getErrorOrNull()!!
+      )
     }
     val conceptCard = conceptCardResult.getOrDefault(ConceptCard.getDefaultInstance())
-    return htmlParserFactory.create(entityType, skillId, /* imageCenterAlign= */ true)
+    return htmlParserFactory
+      .create(resourceBucketName, entityType, skillId, /* imageCenterAlign= */true)
       .parseOppiaHtml(conceptCard.explanation.html, binding.conceptCardExplanationText)
   }
 }

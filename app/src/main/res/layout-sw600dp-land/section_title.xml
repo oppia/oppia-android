@@ -19,7 +19,7 @@
       android:id="@+id/divider_view"
       android:layout_width="match_parent"
       android:layout_height="1dp"
-      android:layout_marginTop="32dp"
+      android:layout_marginTop="48dp"
       android:background="@color/divider"
       android:visibility="@{viewModel.isDividerVisible? View.VISIBLE : View.GONE}" />
 
