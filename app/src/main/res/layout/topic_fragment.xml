@@ -2,6 +2,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.topic.TopicViewModel" />
+  </data>
+
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -10,11 +17,24 @@
       android:id="@+id/topic_app_bar_layout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
       app:layout_constraintBottom_toTopOf="@+id/topic_tabs_viewpager_container"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
+
+      <androidx.appcompat.widget.Toolbar
+        android:id="@+id/topic_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:fontFamily="sans-serif"
+        android:minHeight="?attr/actionBarSize"
+        app:navigationContentDescription="@string/go_to_previous_page"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:title="@{viewModel.topicNameLiveData}"
+        app:titleTextAppearance="@style/ToolbarTextAppearance"
+        app:titleTextColor="@color/white" />
 
       <com.google.android.material.tabs.TabLayout
         android:id="@+id/topic_tabs_container"
@@ -22,6 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="14sp"
+        app:layout_constraintTop_toTopOf="parent"
         app:tabBackground="@color/oppiaPrimaryDark"
         app:tabGravity="fill"
         app:tabIconTint="@color/tab_icon_color_selector"
@@ -29,9 +50,7 @@
         app:tabIndicatorHeight="2dp"
         app:tabMode="fixed"
         app:tabTextAppearance="@style/AppTabTextAppearance"
-        app:tabTextColor="@color/tab_icon_color_selector"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        app:tabTextColor="@color/tab_icon_color_selector" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
