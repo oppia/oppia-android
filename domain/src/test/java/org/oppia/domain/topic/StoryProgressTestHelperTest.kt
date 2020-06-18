@@ -150,8 +150,8 @@ class StoryProgressTestHelperTest {
     runBlockingTest(coroutineContext) {
 
       storyProgressTestHelper.markPartialStoryProgressForFractions(
-        profileId, /* timestampOlderThanAWeek= */
-        false
+        profileId,
+        /* timestampOlderThanAWeek= */ false
       )
       advanceUntilIdle()
 
@@ -174,8 +174,8 @@ class StoryProgressTestHelperTest {
     runBlockingTest(coroutineContext) {
 
       storyProgressTestHelper.markPartialStoryProgressForFractions(
-        profileId, /* timestampOlderThanAWeek= */
-        false
+        profileId,
+        /* timestampOlderThanAWeek= */ false
       )
       advanceUntilIdle()
 
@@ -199,8 +199,8 @@ class StoryProgressTestHelperTest {
     runBlockingTest(coroutineContext) {
 
       storyProgressTestHelper.markPartialStoryProgressForFractions(
-        profileId, /* timestampOlderThanAWeek= */
-        false
+        profileId,
+        /* timestampOlderThanAWeek= */ false
       )
       advanceUntilIdle()
 
@@ -220,8 +220,8 @@ class StoryProgressTestHelperTest {
     runBlockingTest(coroutineContext) {
 
       storyProgressTestHelper.markPartialStoryProgressForFractions(
-        profileId, /* timestampOlderThanAWeek= */
-        false
+        profileId,
+        /* timestampOlderThanAWeek= */ false
       )
       advanceUntilIdle()
 
@@ -241,8 +241,8 @@ class StoryProgressTestHelperTest {
     runBlockingTest(coroutineContext) {
 
       storyProgressTestHelper.markPartialTopicProgressForFractions(
-        profileId, /* timestampOlderThanAWeek= */
-        false
+        profileId,
+        /* timestampOlderThanAWeek= */ false
       )
       advanceUntilIdle()
 
@@ -265,8 +265,8 @@ class StoryProgressTestHelperTest {
     runBlockingTest(coroutineContext) {
 
       storyProgressTestHelper.markPartialTopicProgressForFractions(
-        profileId, /* timestampOlderThanAWeek= */
-        false
+        profileId,
+        /* timestampOlderThanAWeek= */ false
       )
       advanceUntilIdle()
 
@@ -290,8 +290,8 @@ class StoryProgressTestHelperTest {
     runBlockingTest(coroutineContext) {
 
       storyProgressTestHelper.markPartialTopicProgressForFractions(
-        profileId, /* timestampOlderThanAWeek= */
-        false
+        profileId,
+        /* timestampOlderThanAWeek= */ false
       )
       advanceUntilIdle()
 
@@ -311,8 +311,8 @@ class StoryProgressTestHelperTest {
     runBlockingTest(coroutineContext) {
 
       storyProgressTestHelper.markPartialTopicProgressForFractions(
-        profileId, /* timestampOlderThanAWeek= */
-        false
+        profileId,
+        /* timestampOlderThanAWeek= */ false
       )
       advanceUntilIdle()
 
@@ -332,8 +332,8 @@ class StoryProgressTestHelperTest {
     runBlockingTest(coroutineContext) {
 
       storyProgressTestHelper.markFullStoryProgressForFractions(
-        profileId, /* timestampOlderThanAWeek= */
-        false
+        profileId,
+        /* timestampOlderThanAWeek= */ false
       )
       advanceUntilIdle()
 
@@ -356,8 +356,8 @@ class StoryProgressTestHelperTest {
     runBlockingTest(coroutineContext) {
 
       storyProgressTestHelper.markFullStoryProgressForFractions(
-        profileId, /* timestampOlderThanAWeek= */
-        false
+        profileId,
+        /* timestampOlderThanAWeek= */ false
       )
       advanceUntilIdle()
 
@@ -379,8 +379,8 @@ class StoryProgressTestHelperTest {
     runBlockingTest(coroutineContext) {
 
       storyProgressTestHelper.markFullStoryProgressForFractions(
-        profileId, /* timestampOlderThanAWeek= */
-        false
+        profileId,
+        /* timestampOlderThanAWeek= */ false
       )
       advanceUntilIdle()
 
@@ -399,8 +399,8 @@ class StoryProgressTestHelperTest {
     runBlockingTest(coroutineContext) {
 
       storyProgressTestHelper.markFullStoryProgressForFractions(
-        profileId, /* timestampOlderThanAWeek= */
-        false
+        profileId,
+        /* timestampOlderThanAWeek= */ false
       )
       advanceUntilIdle()
 
@@ -421,8 +421,8 @@ class StoryProgressTestHelperTest {
     runBlockingTest(coroutineContext) {
 
       storyProgressTestHelper.markFullTopicProgressForFractions(
-        profileId, /* timestampOlderThanAWeek= */
-        false
+        profileId,
+        /* timestampOlderThanAWeek= */ false
       )
       advanceUntilIdle()
 
@@ -445,8 +445,8 @@ class StoryProgressTestHelperTest {
     runBlockingTest(coroutineContext) {
 
       storyProgressTestHelper.markFullTopicProgressForFractions(
-        profileId, /* timestampOlderThanAWeek= */
-        false
+        profileId,
+        /* timestampOlderThanAWeek= */ false
       )
       advanceUntilIdle()
 
@@ -468,8 +468,8 @@ class StoryProgressTestHelperTest {
     runBlockingTest(coroutineContext) {
 
       storyProgressTestHelper.markFullTopicProgressForFractions(
-        profileId, /* timestampOlderThanAWeek= */
-        false
+        profileId,
+        /* timestampOlderThanAWeek= */ false
       )
       advanceUntilIdle()
 
@@ -488,8 +488,8 @@ class StoryProgressTestHelperTest {
     runBlockingTest(coroutineContext) {
 
       storyProgressTestHelper.markFullTopicProgressForFractions(
-        profileId, /* timestampOlderThanAWeek= */
-        false
+        profileId,
+        /* timestampOlderThanAWeek= */ false
       )
       advanceUntilIdle()
 
@@ -510,8 +510,8 @@ class StoryProgressTestHelperTest {
     runBlockingTest(coroutineContext) {
 
       storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
-        profileId, /* timestampOlderThanAWeek= */
-        false
+        profileId,
+        /* timestampOlderThanAWeek= */ false
       )
       advanceUntilIdle()
 
@@ -539,8 +539,8 @@ class StoryProgressTestHelperTest {
     runBlockingTest(coroutineContext) {
 
       storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
-        profileId, /* timestampOlderThanAWeek= */
-        false
+        profileId,
+        /* timestampOlderThanAWeek= */ false
       )
       advanceUntilIdle()
 
@@ -562,8 +562,8 @@ class StoryProgressTestHelperTest {
     runBlockingTest(coroutineContext) {
 
       storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
-        profileId, /* timestampOlderThanAWeek= */
-        false
+        profileId,
+        /* timestampOlderThanAWeek= */ false
       )
       advanceUntilIdle()
 
@@ -583,8 +583,8 @@ class StoryProgressTestHelperTest {
     runBlockingTest(coroutineContext) {
 
       storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
-        profileId, /* timestampOlderThanAWeek= */
-        false
+        profileId,
+        /* timestampOlderThanAWeek= */ false
       )
       advanceUntilIdle()
 
@@ -605,8 +605,8 @@ class StoryProgressTestHelperTest {
     runBlockingTest(coroutineContext) {
 
       storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
-        profileId, /* timestampOlderThanAWeek= */
-        false
+        profileId,
+        /* timestampOlderThanAWeek= */ false
       )
       advanceUntilIdle()
 
@@ -633,8 +633,8 @@ class StoryProgressTestHelperTest {
     runBlockingTest(coroutineContext) {
 
       storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
-        profileId, /* timestampOlderThanAWeek= */
-        false
+        profileId,
+        /* timestampOlderThanAWeek= */ false
       )
       advanceUntilIdle()
 
@@ -659,8 +659,8 @@ class StoryProgressTestHelperTest {
     runBlockingTest(coroutineContext) {
 
       storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
-        profileId, /* timestampOlderThanAWeek= */
-        false
+        profileId,
+        /* timestampOlderThanAWeek= */ false
       )
       advanceUntilIdle()
 
@@ -680,8 +680,8 @@ class StoryProgressTestHelperTest {
     runBlockingTest(coroutineContext) {
 
       storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
-        profileId, /* timestampOlderThanAWeek= */
-        false
+        profileId,
+        /* timestampOlderThanAWeek= */ false
       )
       advanceUntilIdle()
 
@@ -701,7 +701,8 @@ class StoryProgressTestHelperTest {
     runBlockingTest(coroutineContext) {
 
       storyProgressTestHelper.markRecentlyPlayedForFractionsStory0Exploration0(
-        profileId, /* timestampOlderThanAWeek= */false
+        profileId,
+        /* timestampOlderThanAWeek= */ false
       )
       advanceUntilIdle()
 
@@ -726,7 +727,8 @@ class StoryProgressTestHelperTest {
     runBlockingTest(coroutineContext) {
 
       storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0(
-        profileId, /* timestampOlderThanAWeek= */false
+        profileId,
+        /* timestampOlderThanAWeek= */ false
       )
       advanceUntilIdle()
 
@@ -751,7 +753,8 @@ class StoryProgressTestHelperTest {
     runBlockingTest(coroutineContext) {
 
       storyProgressTestHelper.markRecentlyPlayedForRatiosStory0Exploration0AndStory1Exploration2(
-        profileId, /* timestampOlderThanAWeek= */false
+        profileId,
+        /* timestampOlderThanAWeek= */ false
       )
       advanceUntilIdle()
 
@@ -781,7 +784,8 @@ class StoryProgressTestHelperTest {
     runBlockingTest(coroutineContext) {
 
       storyProgressTestHelper.markRecentlyPlayedForFirstExplorationInAllStoriesInFractionsAndRatios(
-        profileId, /* timestampOlderThanAWeek= */true
+        profileId,
+        /* timestampOlderThanAWeek= */ true
       )
       advanceUntilIdle()
 
