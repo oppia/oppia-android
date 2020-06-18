@@ -90,14 +90,14 @@ class AnalyticsController @Inject constructor(
 
   /** Returns the context of an event related to question. */
   fun createQuestionContext(
-    topicId: String,
-    questionId: String
+    questionId: String,
+    skillId: String
   ): EventLog.Context {
     return EventLog.Context.newBuilder()
       .setQuestionContext(
         EventLog.QuestionContext.newBuilder()
-          .setTopicId(topicId)
           .setQuestionId(questionId)
+          .setSkillId(skillId)
           .build()
       )
       .build()
@@ -116,7 +116,7 @@ class AnalyticsController @Inject constructor(
       .build()
   }
 
-  /** Returns the context of an event related to topic. */
+  /** Returns the context of an event related to story. */
   fun createStoryContext(
     topicId: String,
     storyId: String
@@ -126,6 +126,34 @@ class AnalyticsController @Inject constructor(
         EventLog.StoryContext.newBuilder()
           .setTopicId(topicId)
           .setStoryId(storyId)
+          .build()
+      )
+      .build()
+  }
+
+  /** Returns the context of an event related to concept card. */
+  fun createConceptCardContext(
+    skillId: String
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder()
+      .setConceptCardContext(
+        EventLog.ConceptCardContext.newBuilder()
+          .setSkillId(skillId)
+          .build()
+      )
+      .build()
+  }
+
+  /** Returns the context of an event related to revision card. */
+  fun createRevisionCardContext(
+    topicId: String,
+    subTopicId: String
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder()
+      .setRevisionCardContext(
+        EventLog.RevisionCardContext.newBuilder()
+          .setTopicId(topicId)
+          .setSubTopicId(subTopicId)
           .build()
       )
       .build()

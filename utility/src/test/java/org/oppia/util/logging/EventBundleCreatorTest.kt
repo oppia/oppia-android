@@ -21,6 +21,8 @@ const val TEST_TOPIC_ID = "test_topicId"
 const val TEST_STORY_ID = "test_storyId"
 const val TEST_EXPLORATION_ID = "test_explorationId"
 const val TEST_QUESTION_ID = "test_questionId"
+const val TEST_SKILL_ID = "test_skillId"
+const val TEST_SUB_TOPIC_ID = "test_subTopicId"
 
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
@@ -50,8 +52,8 @@ class EventBundleCreatorTest {
       EventLog.Context.newBuilder()
         .setQuestionContext(
           EventLog.QuestionContext.newBuilder()
-            .setTopicId(TEST_TOPIC_ID)
             .setQuestionId(TEST_QUESTION_ID)
+            .setSkillId(TEST_SKILL_ID)
             .build()
         )
         .build()
@@ -91,6 +93,37 @@ class EventBundleCreatorTest {
     .setPriority(EventLog.Priority.ESSENTIAL)
     .build()
 
+  private val eventLogConceptCardContext = EventLog.newBuilder()
+    .setActionName(EventLog.EventAction.EVENT_ACTION_UNSPECIFIED)
+    .setContext(
+      EventLog.Context.newBuilder()
+        .setConceptCardContext(
+          EventLog.ConceptCardContext.newBuilder()
+            .setSkillId(TEST_SKILL_ID)
+            .build()
+        )
+        .build()
+    )
+    .setTimestamp(TEST_TIMESTAMP)
+    .setPriority(EventLog.Priority.ESSENTIAL)
+    .build()
+
+  private val eventLogRevisionCardContext = EventLog.newBuilder()
+    .setActionName(EventLog.EventAction.EVENT_ACTION_UNSPECIFIED)
+    .setContext(
+      EventLog.Context.newBuilder()
+        .setRevisionCardContext(
+          EventLog.RevisionCardContext.newBuilder()
+            .setTopicId(TEST_TOPIC_ID)
+            .setSubTopicId(TEST_SUB_TOPIC_ID)
+            .build()
+        )
+        .build()
+    )
+    .setTimestamp(TEST_TIMESTAMP)
+    .setPriority(EventLog.Priority.ESSENTIAL)
+    .build()
+
   private val eventLogNoContext = EventLog.newBuilder()
     .setTimestamp(TEST_TIMESTAMP)
     .setPriority(EventLog.Priority.ESSENTIAL)
@@ -118,8 +151,9 @@ class EventBundleCreatorTest {
 
     assertThat(eventBundle.get(TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
     assertThat(eventBundle.get(PRIORITY_KEY)).isEqualTo(EventLog.Priority.ESSENTIAL.toString())
-    assertThat(eventBundle.get(TOPIC_ID_KEY)).isEqualTo(TEST_TOPIC_ID)
     assertThat(eventBundle.get(QUESTION_ID_KEY)).isEqualTo(TEST_QUESTION_ID)
+    assertThat(eventBundle.get(SKILL_ID_KEY)).isEqualTo(TEST_SKILL_ID)
+
   }
 
   @Test
@@ -139,6 +173,25 @@ class EventBundleCreatorTest {
     assertThat(eventBundle.get(PRIORITY_KEY)).isEqualTo(EventLog.Priority.ESSENTIAL.toString())
     assertThat(eventBundle.get(TOPIC_ID_KEY)).isEqualTo(TEST_TOPIC_ID)
     assertThat(eventBundle.get(STORY_ID_KEY)).isEqualTo(TEST_STORY_ID)
+  }
+
+  @Test
+  fun testBundleCreation_logEvent_withConceptCardContext_isSuccessful() {
+    val eventBundle = eventBundleCreator.createEventBundle(eventLogConceptCardContext)
+
+    assertThat(eventBundle.get(TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
+    assertThat(eventBundle.get(PRIORITY_KEY)).isEqualTo(EventLog.Priority.ESSENTIAL.toString())
+    assertThat(eventBundle.get(SKILL_ID_KEY)).isEqualTo(TEST_SKILL_ID)
+  }
+
+  @Test
+  fun testBundleCreation_logEvent_withRevisionCardContext_isSuccessful() {
+    val eventBundle = eventBundleCreator.createEventBundle(eventLogRevisionCardContext)
+
+    assertThat(eventBundle.get(TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
+    assertThat(eventBundle.get(PRIORITY_KEY)).isEqualTo(EventLog.Priority.ESSENTIAL.toString())
+    assertThat(eventBundle.get(TOPIC_ID_KEY)).isEqualTo(TEST_TOPIC_ID)
+    assertThat(eventBundle.get(SUB_TOPIC_ID_KEY)).isEqualTo(TEST_SUB_TOPIC_ID)
   }
 
   @Test

@@ -55,7 +55,7 @@ class StoryFragmentPresenter @Inject constructor(
     viewModel.setInternalProfileId(internalProfileId)
     viewModel.setTopicId(topicId)
     viewModel.setStoryId(storyId)
-    logStoryAcivityEvent(topicId, storyId)
+    logStoryActivityEvent(topicId, storyId)
 
     binding.storyToolbar.setNavigationOnClickListener {
       (activity as StoryActivity).finish()
@@ -159,7 +159,7 @@ class StoryFragmentPresenter @Inject constructor(
     ).toInt()
   }
 
-  private fun logStoryAcivityEvent(topicId: String, storyId: String){
+  private fun logStoryActivityEvent(topicId: String, storyId: String){
     analyticsController.logTransitionEvent(
       fragment.requireActivity().applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,

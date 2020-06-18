@@ -16,15 +16,18 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.AnsweredQuestionOutcome
 import org.oppia.app.model.EphemeralQuestion
 import org.oppia.app.model.EphemeralState
+import org.oppia.app.model.EventLog
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.StatePlayerRecyclerViewAssembler
 import org.oppia.app.player.stopplaying.RestartPlayingSessionListener
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.domain.analytics.AnalyticsController
 import org.oppia.domain.question.QuestionAssessmentProgressController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.QuestionResourceBucketName
 import org.oppia.util.logging.Logger
+import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
 /** The presenter for [QuestionPlayerFragment]. */
@@ -34,6 +37,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<QuestionPlayerViewModel>,
   private val questionAssessmentProgressController: QuestionAssessmentProgressController,
+  private val analyticsController: AnalyticsController,
+  private val oppiaClock: OppiaClock,
   private val logger: Logger,
   @QuestionResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory
@@ -136,8 +141,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     // TODO(#497): Update this to properly link to question assets.
     val skillId = ephemeralQuestion.question.linkedSkillIdsList.firstOrNull() ?: ""
     updateProgress(ephemeralQuestion.currentQuestionIndex, ephemeralQuestion.totalQuestionCount)
+    logQuestionPlayerEvent(ephemeralQuestion.question.questionId, skillId)
     updateEndSessionMessage(ephemeralQuestion.ephemeralState)
-
     questionViewModel.itemList.clear()
     questionViewModel.itemList += recyclerViewAssembler.compute(
       ephemeralQuestion.ephemeralState,
@@ -231,5 +236,17 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
   private fun getQuestionPlayerViewModel(): QuestionPlayerViewModel {
     return viewModelProvider.getForFragment(fragment, QuestionPlayerViewModel::class.java)
+  }
+
+  private fun logQuestionPlayerEvent(questionId: String, skillId: String){
+    analyticsController.logTransitionEvent(
+      activity.applicationContext,
+      oppiaClock.getCurrentCalendar().timeInMillis,
+      EventLog.EventAction.OPEN_QUESTION_PLAYER,
+      analyticsController.createQuestionContext(
+        questionId,
+        skillId
+      )
+    )
   }
 }

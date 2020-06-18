@@ -27,6 +27,10 @@ message EventLog {
       TopicContext topic_context = 3;
       // The event being logged is related to the story activity.
       StoryContext story_context = 4;
+      // The event being logged is related to the concept card.
+      ConceptCardContext concept_card_context = 5;
+      // The event being logged is related to the revision card.
+      RevisionCardContext revision_card_context = 6;
     }
   }
 
@@ -42,24 +46,38 @@ message EventLog {
 
   // Structure of a question context.
   message QuestionContext {
-    // The active topic ID when the event is logged.
-    string topic_id = 1;
     // The active question ID when the event is logged.
-    string question_id = 2;
+    string question_id = 1;
+    // The active skill ID when the event is logged.
+    string skill_id = 2;
   }
 
-  // Structure of an topic context.
+  // Structure of a topic context.
   message TopicContext {
     // The active topic ID when the event is logged.
     string topic_id = 1;
   }
 
-  // Structure of an story context.
+  // Structure of a story context.
   message StoryContext {
     // The active topic ID when the event is logged.
     string topic_id = 1;
     // The active story ID when the event is logged.
     string story_id = 2;
+  }
+
+  // Structure of a concept card context.
+  message ConceptCardContext {
+    // The active skill ID when the event is logged.
+    string skill_id = 1;
+  }
+
+  // Structure of a revision card context.
+  message RevisionCardContext {
+    // The active topic ID when the event is logged.
+    string topic_id = 1;
+    // The active sub topic ID when the event is logged.
+    string sub_topic_id = 2;
   }
 
   // Supported event actions for event logging.
@@ -80,6 +98,12 @@ message EventLog {
     OPEN_STORY_ACTIVITY= 6;
     // Opening of exploration activity.
     OPEN_EXPLORATION_ACTIVITY = 7;
+    // Opening of question player.
+    OPEN_QUESTION_PLAYER = 8;
+    // Opening of concept card.
+    OPEN_CONCEPT_CARD = 9;
+    // Opening of revision card.
+    OPEN_REVISION_CARD = 10;
   }
 
   // Supported priority of events for event logging
