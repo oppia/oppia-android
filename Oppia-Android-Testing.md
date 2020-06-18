@@ -241,7 +241,9 @@ The project contains two kinds of tests, unit tests using Robolectric and instru
 
 Both frameworks can create the same kinds of tests, the difference is how they’re executed. Robolectric tests are run on a standard JVM, which makes them very fast to run, but there are some limitations on what can be tested. Espresso tests are run on a device (either actual or virtual) so they more closely resemble the actual running system, but they are a lot slower to run. 
 
-Sometimes it may happen that testcases pass in Expresso but fail in Roboelectric. Direct dependencies on Robolectric causes build failures when trying to build the test with Espresso.
+Sometimes it may happen that testcases pass in Expresso but fail in Roboelectric. Direct dependencies on Robolectric causes build failures when trying to build the test with Espresso. 
+
+Following are the different ways you can try to pass the testcases.
 
 ### Performance Exception/Runtime Exception Failure:
 
