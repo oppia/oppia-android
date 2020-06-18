@@ -9,7 +9,7 @@ import org.oppia.domain.classify.rules.DragDropSortInputRules
 
 /** Module that binds rule classifiers corresponding to the drag drop sort input interaction. */
 @Module
-class DragDropSortInputModule{
+class DragDropSortInputModule {
   @Provides
   @IntoMap
   @StringKey("HasElementXAtPositionY")

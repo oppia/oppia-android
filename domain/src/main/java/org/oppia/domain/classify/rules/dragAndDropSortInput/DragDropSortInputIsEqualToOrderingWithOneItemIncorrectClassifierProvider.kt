@@ -14,7 +14,8 @@ import org.oppia.domain.classify.rules.RuleClassifierProvider
  *
  * https://github.com/oppia/oppia/blob/132b9d8f059253548ea1efadf1ff76416dfa2832/extensions/interactions/DragAndDropSortInput/directives/drag-and-drop-sort-input-rules.service.ts#L72
  */
-internal class DragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProvider @Inject constructor(
+internal class DragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProvider
+@Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
 ) : RuleClassifierProvider,
   GenericRuleClassifier.SingleInputMatcher<ListOfSetsOfHtmlStrings> {
@@ -31,8 +32,18 @@ internal class DragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierP
     val answerStringSets = answer.setOfHtmlStringsList
     val inputStringSets = input.setOfHtmlStringsList
     return (answerStringSets zip inputStringSets).map { (first, second) ->
-       (unionOfSetsOfHtmlStrings(first, second) subtract intersectOfSetsOfHtmlStrings(first, second)).size
+      checkEqualityWithIncorrectPositions(first, second).size
     }.reduce(Int::plus) == 1
+  }
+
+  private fun checkEqualityWithIncorrectPositions(
+    first: StringList,
+    second: StringList
+  ): Set<String> {
+    return (unionOfSetsOfHtmlStrings(first, second) subtract intersectOfSetsOfHtmlStrings(
+      first,
+      second
+    ))
   }
 
   private fun unionOfSetsOfHtmlStrings(first: StringList, second: StringList): Set<String> {
@@ -40,6 +51,6 @@ internal class DragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierP
   }
 
   private fun intersectOfSetsOfHtmlStrings(first: StringList, second: StringList): Set<String> {
-    return HashSet(first.htmlList) intersect  HashSet(second.htmlList)
+    return HashSet(first.htmlList) intersect HashSet(second.htmlList)
   }
 }
