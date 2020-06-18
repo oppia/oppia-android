@@ -861,8 +861,8 @@ class ProfileManagementControllerTest {
 
       val adminProfileId = ProfileId.newBuilder().setInternalId(0).build()
       profileManagementController.updateWifiPermissionDeviceSettings(
-        adminProfileId, /* downloadAndUpdateOnWifiOnly = */
-        true
+        adminProfileId,
+        /* downloadAndUpdateOnWifiOnly = */ true
       ).observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
 
@@ -938,15 +938,15 @@ class ProfileManagementControllerTest {
 
       val adminProfileId = ProfileId.newBuilder().setInternalId(0).build()
       profileManagementController.updateWifiPermissionDeviceSettings(
-        adminProfileId, /* downloadAndUpdateOnWifiOnly = */
-        true
+        adminProfileId,
+        /* downloadAndUpdateOnWifiOnly = */ true
       ).observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
       verifyUpdateSucceeded()
 
       profileManagementController.updateTopicAutomaticallyPermissionDeviceSettings(
-        adminProfileId, /* automaticallyUpdateTopics = */
-        true
+        adminProfileId,
+        /* automaticallyUpdateTopics = */ true
       ).observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
       verifyUpdateSucceeded()
@@ -992,8 +992,8 @@ class ProfileManagementControllerTest {
 
       val userProfileId = ProfileId.newBuilder().setInternalId(1).build()
       profileManagementController.updateWifiPermissionDeviceSettings(
-        userProfileId, /* downloadAndUpdateOnWifiOnly = */
-        true
+        userProfileId,
+        /* downloadAndUpdateOnWifiOnly = */ true
       ).observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
       verifyUpdateFailed()
@@ -1031,8 +1031,8 @@ class ProfileManagementControllerTest {
 
       val userProfileId = ProfileId.newBuilder().setInternalId(1).build()
       profileManagementController.updateTopicAutomaticallyPermissionDeviceSettings(
-        userProfileId, /* automaticallyUpdateTopics = */
-        true
+        userProfileId,
+        /* automaticallyUpdateTopics = */ true
       ).observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
       verifyUpdateFailed()

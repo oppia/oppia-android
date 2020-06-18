@@ -769,13 +769,13 @@ class ProfileManagementController @Inject constructor(
     val matrix = Matrix()
     matrix.postRotate(rotate.toFloat())
     return Bitmap.createBitmap(
-      croppedBitmap, /* x= */
-      0, /* y= */
-      0,
+      croppedBitmap,
+      /* x= */ 0,
+      /* y= */ 0,
       cropSize,
       cropSize,
-      matrix, /* filter= */
-      true
+      matrix,
+      /* filter= */ true
     )
   }
 }
