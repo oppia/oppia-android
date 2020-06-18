@@ -1,11 +1,11 @@
 package org.oppia.domain.classify.rules.dragAndDropSortInput
 
-import javax.inject.Inject
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.ListOfSetsOfHtmlStrings
 import org.oppia.domain.classify.RuleClassifier
 import org.oppia.domain.classify.rules.GenericRuleClassifier
 import org.oppia.domain.classify.rules.RuleClassifierProvider
+import javax.inject.Inject
 
 /**
  * Provider for a classifier that determines whether an element of [ListOfSetsOfHtmlStrings] at a particular position is equal to the specified value per the
