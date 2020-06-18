@@ -21,6 +21,7 @@ class TopicInfoViewModel @Inject constructor(
   var downloadStatusIndicatorDrawableResourceId =
     ObservableField(R.drawable.ic_available_offline_primary_24dp)
   val isDescriptionExpanded = ObservableField<Boolean>(true)
+  val isSeeMoreVisible = ObservableField<Boolean>(true)
 
   fun calculateTopicSizeWithUnit() {
     val sizeWithUnit = topic.get()?.let { topic ->
@@ -37,8 +38,6 @@ class TopicInfoViewModel @Inject constructor(
     } ?: context.getString(R.string.unknown_size)
     topicSize.set(sizeWithUnit)
   }
-
-  val isSeeMoreVisible = ObservableField<Boolean>(true)
 
   private fun roundUpToHundreds(intValue: Int): Int {
     return ((intValue + 9) / 10) * 10
