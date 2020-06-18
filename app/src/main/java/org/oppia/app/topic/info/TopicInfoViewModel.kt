@@ -16,15 +16,15 @@ class TopicInfoViewModel @Inject constructor(
 ) : ObservableViewModel() {
 
   val topic = ObservableField<Topic>(Topic.getDefaultInstance())
+  val topicSize = ObservableField<String>("")
   val topicDescription = ObservableField<CharSequence>("")
   var downloadStatusIndicatorDrawableResourceId =
     ObservableField(R.drawable.ic_available_offline_primary_24dp)
   val isDescriptionExpanded = ObservableField<Boolean>(true)
   val isSeeMoreVisible = ObservableField<Boolean>(true)
 
-  /** Returns the space this topic requires on disk, formatted for display. */
-  fun getTopicSizeWithUnit(): String {
-    return topic.get()?.let { topic ->
+  fun calculateTopicSizeWithUnit() {
+    val sizeWithUnit = topic.get()?.let { topic ->
       val sizeInBytes: Int = topic.diskSizeBytes.toInt()
       val sizeInKb = sizeInBytes / 1024
       val sizeInMb = sizeInKb / 1024
@@ -36,6 +36,7 @@ class TopicInfoViewModel @Inject constructor(
         else -> context.getString(R.string.size_bytes, roundUpToHundreds(sizeInBytes))
       }
     } ?: context.getString(R.string.unknown_size)
+    topicSize.set(sizeWithUnit)
   }
 
   private fun roundUpToHundreds(intValue: Int): Int {
