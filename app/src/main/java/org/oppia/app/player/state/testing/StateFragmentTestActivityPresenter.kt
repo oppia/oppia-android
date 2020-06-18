@@ -25,7 +25,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val explorationDataController: ExplorationDataController,
   private val logger: Logger,
-  private val viewModelProvider: ViewModelProvider<StateFragmentTesViewModel>
+  private val viewModelProvider: ViewModelProvider<StateFragmentTestViewModel>
 ) {
   fun handleOnCreate() {
     val binding = DataBindingUtil.setContentView<StateFragmentTestActivityBinding>(
@@ -101,7 +101,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     return activity.supportFragmentManager.findFragmentById(R.id.state_fragment_placeholder) as? StateFragment
   }
 
-  private fun getStateFragmentTestViewModel(): StateFragmentTesViewModel {
-    return viewModelProvider.getForActivity(activity, StateFragmentTesViewModel::class.java)
+  private fun getStateFragmentTestViewModel(): StateFragmentTestViewModel {
+    return viewModelProvider.getForActivity(activity, StateFragmentTestViewModel::class.java)
   }
 }

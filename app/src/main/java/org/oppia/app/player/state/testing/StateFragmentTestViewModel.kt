@@ -8,6 +8,6 @@ import javax.inject.Inject
 
 /** [ViewModel] for [StateFragmentTestActivity]. */
 @ActivityScope
-class StateFragmentTesViewModel @Inject constructor() : ObservableViewModel() {
+class StateFragmentTestViewModel @Inject constructor() : ObservableViewModel() {
   val hasExplorationStarted = ObservableField<Boolean>(false)
 }

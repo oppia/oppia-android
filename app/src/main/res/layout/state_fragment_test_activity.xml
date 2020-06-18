@@ -9,7 +9,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.player.state.testing.StateFragmentTesViewModel" />
+      type="org.oppia.app.player.state.testing.StateFragmentTestViewModel" />
   </data>
 
   <FrameLayout
