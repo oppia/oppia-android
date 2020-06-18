@@ -34,8 +34,8 @@ internal class DragDropSortInputIsEqualToOrderingClassifierProvider @Inject cons
    * It returns true if all the list items are equal and are at correct position otherwise false
    */
   private fun areListOfSetsOfHtmlStringsEqual(answer: ListOfSetsOfHtmlStrings, input: ListOfSetsOfHtmlStrings): Boolean {
-    /**
-     *For Ex - list1 = [a, b, c] & list2 = [1, 2, 3]
+    /*
+     * For Ex - list1 = [a, b, c] & list2 = [1, 2, 3]
      *          list1 zip list2 => [{a, 1}, {b, 2}, {b, 3}]
      *          then two items are checked using areSetsOfHtmlStringsEqual which gives a boolean value
      *          then reduce operator on a list of boolean for ex [false, true, false, false, false]
