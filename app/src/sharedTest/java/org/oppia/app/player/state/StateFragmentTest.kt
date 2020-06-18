@@ -207,8 +207,8 @@ class StateFragmentTest {
       onView(withId(R.id.submit_answer_button)).perform(click())
 
       // The submission button should now be disabled and there should be an error.
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())));
-      onView(withId(R.id.fraction_input_error)).check(matches(isDisplayed()));
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+      onView(withId(R.id.fraction_input_error)).check(matches(isDisplayed()))
     }
   }
 
@@ -227,8 +227,8 @@ class StateFragmentTest {
       onView(withId(R.id.submit_answer_button)).perform(click())
 
       // The submission button should now be disabled and there should be an error.
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())));
-      onView(withId(R.id.fraction_input_error)).check(matches(isDisplayed()));
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+      onView(withId(R.id.fraction_input_error)).check(matches(isDisplayed()))
     }
   }
 
@@ -251,7 +251,7 @@ class StateFragmentTest {
       )
 
       // The submit button should be re-enabled since the text view changed.
-      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()));
+      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
     }
   }
 
@@ -275,7 +275,7 @@ class StateFragmentTest {
       )
 
       // The submit button should be re-enabled since the text view changed.
-      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()));
+      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
     }
   }
 
