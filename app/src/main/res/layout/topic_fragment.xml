@@ -29,10 +29,10 @@
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:fontFamily="sans-serif"
+        app:title="@{String.format(@string/topic_name, viewModel.topicNameLiveData)}"
         android:minHeight="?attr/actionBarSize"
         app:navigationContentDescription="@string/go_to_previous_page"
         app:navigationIcon="?attr/homeAsUpIndicator"
-        app:title="@{viewModel.topicNameLiveData}"
         app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:titleTextColor="@color/white" />
 
