@@ -276,9 +276,8 @@ class ProfileProgressFragmentTest {
     }
   }
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkOngoingTopicsString_descriptionIsCorrect() {
+  fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkOngoingTopicsString_descriptionIsCorrect() {  // ktlint-disable max-line-length
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText(R.string.topics_in_progress))
       onView(
@@ -291,7 +290,6 @@ class ProfileProgressFragmentTest {
       )
     }
   }
-  /* ktlint-enable max-line-length */
 
   /* ktlint-disable max-line-length */
   @Test
@@ -343,9 +341,8 @@ class ProfileProgressFragmentTest {
     }
   }
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkCompletedStoriesCount_countIsZero() {
+  fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkCompletedStoriesCount_countIsZero() { // ktlint-disable max-line-length
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText("0"))
       onView(
@@ -355,7 +352,6 @@ class ProfileProgressFragmentTest {
       )
     }
   }
-  /* ktlint-enable max-line-length */
 
   /* ktlint-disable max-line-length */
   @Test
