@@ -3,18 +3,18 @@ package org.oppia.util.logging
 import android.os.Bundle
 import org.oppia.app.model.EventLog
 import org.oppia.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
+import org.oppia.app.model.EventLog.Context.ActivityContextCase.CONCEPT_CARD_CONTEXT
 import org.oppia.app.model.EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT
 import org.oppia.app.model.EventLog.Context.ActivityContextCase.QUESTION_CONTEXT
+import org.oppia.app.model.EventLog.Context.ActivityContextCase.REVISION_CARD_CONTEXT
 import org.oppia.app.model.EventLog.Context.ActivityContextCase.STORY_CONTEXT
 import org.oppia.app.model.EventLog.Context.ActivityContextCase.TOPIC_CONTEXT
-import org.oppia.app.model.EventLog.Context.ActivityContextCase.CONCEPT_CARD_CONTEXT
-import org.oppia.app.model.EventLog.Context.ActivityContextCase.REVISION_CARD_CONTEXT
-import java.util.ArrayList
 
 const val TIMESTAMP_KEY = "timestamp"
 const val TOPIC_ID_KEY = "topicId"
 const val STORY_ID_KEY = "storyId"
 const val SKILL_ID_KEY = "skillId"
+const val SKILL_LIST_ID_KEY = "skillListId"
 const val SUB_TOPIC_ID_KEY = "subTopicId"
 const val QUESTION_ID_KEY = "questionId"
 const val EXPLORATION_ID_KEY = "explorationId"
@@ -57,7 +57,10 @@ class EventBundleCreator {
     val bundle = Bundle()
     bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(QUESTION_ID_KEY, eventLog.context.questionContext.questionId)
-    bundle.putString(SKILL_ID_KEY, eventLog.context.questionContext.skillId)
+    bundle.putStringArray(
+      SKILL_LIST_ID_KEY,
+      eventLog.context.questionContext.skillIdList.toTypedArray()
+    )
     bundle.putString(PRIORITY_KEY, eventLog.priority.toString())
     return bundle
   }

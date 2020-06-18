@@ -13,12 +13,12 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
+import org.oppia.app.model.EventLog.Context.ActivityContextCase.CONCEPT_CARD_CONTEXT
 import org.oppia.app.model.EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT
 import org.oppia.app.model.EventLog.Context.ActivityContextCase.QUESTION_CONTEXT
+import org.oppia.app.model.EventLog.Context.ActivityContextCase.REVISION_CARD_CONTEXT
 import org.oppia.app.model.EventLog.Context.ActivityContextCase.STORY_CONTEXT
 import org.oppia.app.model.EventLog.Context.ActivityContextCase.TOPIC_CONTEXT
-import org.oppia.app.model.EventLog.Context.ActivityContextCase.CONCEPT_CARD_CONTEXT
-import org.oppia.app.model.EventLog.Context.ActivityContextCase.REVISION_CARD_CONTEXT
 import org.oppia.app.model.EventLog.EventAction
 import org.oppia.app.model.EventLog.Priority
 import org.oppia.testing.FakeEventLogger
@@ -33,6 +33,7 @@ const val TEST_STORY_ID = "test_storyId"
 const val TEST_EXPLORATION_ID = "test_explorationId"
 const val TEST_QUESTION_ID = "test_questionId"
 const val TEST_SKILL_ID = "test_skillId"
+const val TEST_SKILL_LIST_ID = "test_skillListId"
 const val TEST_SUB_TOPIC_ID = "test_subTopicId"
 
 @RunWith(AndroidJUnit4::class)
@@ -56,7 +57,12 @@ class AnalyticsControllerTest {
       ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      analyticsController.createQuestionContext(TEST_TOPIC_ID, TEST_QUESTION_ID)
+      analyticsController.createQuestionContext(
+        TEST_QUESTION_ID
+        , listOf(
+          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
+        )
+      )
     )
 
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
@@ -179,7 +185,12 @@ class AnalyticsControllerTest {
       ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      analyticsController.createQuestionContext(TEST_TOPIC_ID, TEST_QUESTION_ID)
+      analyticsController.createQuestionContext(
+        TEST_QUESTION_ID
+        , listOf(
+          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
+        )
+      )
     )
 
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
@@ -312,11 +323,15 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_createQuestionContext_returnsCorrectQuestionContext() {
-    val eventContext = analyticsController.createQuestionContext(TEST_QUESTION_ID, TEST_SKILL_ID)
+    val eventContext = analyticsController.createQuestionContext(
+      TEST_QUESTION_ID,
+      listOf(TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID)
+    )
 
     assertThat(eventContext.activityContextCase).isEqualTo(QUESTION_CONTEXT)
     assertThat(eventContext.questionContext.questionId).matches(TEST_QUESTION_ID)
-    assertThat(eventContext.questionContext.skillId).matches(TEST_SKILL_ID)
+    assertThat(eventContext.questionContext.skillIdList)
+      .containsAllIn(arrayOf(TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID))
   }
 
   @Test
@@ -346,7 +361,8 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_createRevisionCardContext_returnsCorrectRevisionCardContext() {
-    val eventContext = analyticsController.createRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
+    val eventContext =
+      analyticsController.createRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
 
     assertThat(eventContext.activityContextCase).isEqualTo(REVISION_CARD_CONTEXT)
     assertThat(eventContext.revisionCardContext.topicId).matches(TEST_TOPIC_ID)

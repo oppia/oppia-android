@@ -141,7 +141,10 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     // TODO(#497): Update this to properly link to question assets.
     val skillId = ephemeralQuestion.question.linkedSkillIdsList.firstOrNull() ?: ""
     updateProgress(ephemeralQuestion.currentQuestionIndex, ephemeralQuestion.totalQuestionCount)
-    logQuestionPlayerEvent(ephemeralQuestion.question.questionId, skillId)
+    logQuestionPlayerEvent(
+      ephemeralQuestion.question.questionId,
+      ephemeralQuestion.question.linkedSkillIdsList
+    )
     updateEndSessionMessage(ephemeralQuestion.ephemeralState)
     questionViewModel.itemList.clear()
     questionViewModel.itemList += recyclerViewAssembler.compute(
@@ -238,14 +241,14 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     return viewModelProvider.getForFragment(fragment, QuestionPlayerViewModel::class.java)
   }
 
-  private fun logQuestionPlayerEvent(questionId: String, skillId: String){
+  private fun logQuestionPlayerEvent(questionId: String, skillIds: List<String>) {
     analyticsController.logTransitionEvent(
       activity.applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_QUESTION_PLAYER,
       analyticsController.createQuestionContext(
         questionId,
-        skillId
+        skillIds
       )
     )
   }

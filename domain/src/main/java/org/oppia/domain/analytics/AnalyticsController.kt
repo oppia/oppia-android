@@ -91,13 +91,13 @@ class AnalyticsController @Inject constructor(
   /** Returns the context of an event related to question. */
   fun createQuestionContext(
     questionId: String,
-    skillId: String
+    skillId: List<String>
   ): EventLog.Context {
     return EventLog.Context.newBuilder()
       .setQuestionContext(
         EventLog.QuestionContext.newBuilder()
           .setQuestionId(questionId)
-          .setSkillId(skillId)
+          .addAllSkillId(skillId)
           .build()
       )
       .build()

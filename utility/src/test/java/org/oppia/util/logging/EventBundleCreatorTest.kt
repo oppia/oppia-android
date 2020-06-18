@@ -53,7 +53,7 @@ class EventBundleCreatorTest {
         .setQuestionContext(
           EventLog.QuestionContext.newBuilder()
             .setQuestionId(TEST_QUESTION_ID)
-            .setSkillId(TEST_SKILL_ID)
+            .addAllSkillId(listOf(TEST_SKILL_ID, TEST_SKILL_ID))
             .build()
         )
         .build()
@@ -152,7 +152,7 @@ class EventBundleCreatorTest {
     assertThat(eventBundle.get(TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
     assertThat(eventBundle.get(PRIORITY_KEY)).isEqualTo(EventLog.Priority.ESSENTIAL.toString())
     assertThat(eventBundle.get(QUESTION_ID_KEY)).isEqualTo(TEST_QUESTION_ID)
-    assertThat(eventBundle.get(SKILL_ID_KEY)).isEqualTo(TEST_SKILL_ID)
+    assertThat(eventBundle.get(SKILL_LIST_ID_KEY)).isEqualTo(arrayOf(TEST_SKILL_ID, TEST_SKILL_ID))
 
   }
 

@@ -48,8 +48,8 @@ message EventLog {
   message QuestionContext {
     // The active question ID when the event is logged.
     string question_id = 1;
-    // The active skill ID when the event is logged.
-    string skill_id = 2;
+    // The IDs of skills to which this question is associated.
+    repeated string skill_id = 2;
   }
 
   // Structure of a topic context.
