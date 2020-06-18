@@ -1,6 +1,5 @@
 package org.oppia.app.topic
 
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
