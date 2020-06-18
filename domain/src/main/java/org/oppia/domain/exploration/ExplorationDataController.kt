@@ -1,6 +1,5 @@
 package org.oppia.domain.exploration
 
-
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.oppia.app.model.Exploration
@@ -25,7 +24,9 @@ class ExplorationDataController @Inject constructor(
 ) {
   /** Returns an [Exploration] given an ID. */
   fun getExplorationById(id: String): LiveData<AsyncResult<Exploration>> {
-    val dataProvider = dataProviders.createInMemoryDataProviderAsync(EXPLORATION_DATA_PROVIDER_ID) {
+    val dataProvider = dataProviders.createInMemoryDataProviderAsync(
+      EXPLORATION_DATA_PROVIDER_ID
+    ) {
       retrieveExplorationById(id)
     }
     return dataProviders.convertToLiveData(dataProvider)
@@ -66,7 +67,8 @@ class ExplorationDataController @Inject constructor(
     }
   }
 
-  @Suppress("RedundantSuspendModifier") // DataProviders expects this function to be a suspend function.
+  // DataProviders expects this function to be a suspend function.
+  @Suppress("RedundantSuspendModifier")
   private suspend fun retrieveExplorationById(explorationId: String): AsyncResult<Exploration> {
     return try {
       AsyncResult.success(explorationRetriever.loadExploration(explorationId))

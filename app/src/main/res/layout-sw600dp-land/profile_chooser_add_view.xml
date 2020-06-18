@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <import type="android.widget.LinearLayout" />
+
+    <import type="android.view.Gravity" />
+
+    <import type="android.view.View" />
+
+    <variable
+      name="presenter"
+      type="org.oppia.app.profile.ProfileChooserFragmentPresenter" />
+  </data>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    app:profileChooserMarginStart="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_298}"
+    app:profileChooserMarginEnd="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_298}"
+    android:orientation="vertical">
+
+    <View
+      android:id="@+id/add_profile_divider_view"
+      android:layout_width="match_parent"
+      android:layout_height="0.5dp"
+      android:layout_marginBottom="40dp"
+      android:background="@color/oppiaProfileChooserDivider"
+      android:visibility="@{presenter.wasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/margin_0"
+      android:gravity="@{presenter.wasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER}"
+      android:orientation="@{presenter.wasProfileEverBeenAddedValue ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL}"
+      app:profileChooserMarginEnd="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_24}"
+      app:profileChooserMarginStart="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_24}"
+      tools:ignore="RtlSymmetry">
+
+      <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_add_button"
+        android:layout_width="108dp"
+        android:layout_height="108dp"
+        android:src="@drawable/ic_add_profile"
+        app:profileChooserMarginTop="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_48 : @dimen/margin_0}"
+        app:civ_border_color="@color/avatarBorder"
+        app:civ_border_width="1dp" />
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="@{presenter.wasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
+        android:orientation="vertical"
+        app:profileChooserMarginTop="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_8 : @dimen/margin_0}"
+        app:profileChooserMarginStart="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_32}">
+
+        <TextView
+          android:id="@+id/add_profile_text"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:fontFamily="sans-serif-medium"
+          android:text="@{presenter.wasProfileEverBeenAddedValue ? @string/profile_chooser_add : @string/set_up_multiple_profiles}"
+          android:textColor="@color/white"
+          android:textSize="20sp" />
+
+        <TextView
+          android:id="@+id/add_profile_description_text"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:maxWidth="280dp"
+          android:layout_gravity="left"
+          android:layout_marginTop="4dp"
+          android:fontFamily="sans-serif"
+          android:text="@string/set_up_multiple_profiles_description"
+          android:textColor="@color/white"
+          android:textSize="16sp"
+          android:visibility="@{presenter.wasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}"
+          tools:ignore="RtlHardcoded" />
+      </LinearLayout>
+    </LinearLayout>
+  </LinearLayout>
+</layout>
