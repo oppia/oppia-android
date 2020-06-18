@@ -10,6 +10,8 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
+const val TAG_QUESTION_PLAYER_FRAGMENT = "TAG_QUESTION_PLAYER_FRAGMENT"
+
 /** The presenter for [QuestionPlayerActivity]. */
 @ActivityScope
 class QuestionPlayerActivityPresenter @Inject constructor(
@@ -23,7 +25,8 @@ class QuestionPlayerActivityPresenter @Inject constructor(
       startTrainingSessionWithCallback {
         activity.supportFragmentManager.beginTransaction().add(
           R.id.question_player_fragment_placeholder,
-          QuestionPlayerFragment()
+          QuestionPlayerFragment(),
+          TAG_QUESTION_PLAYER_FRAGMENT
         ).commitNow()
       }
     }
@@ -44,7 +47,8 @@ class QuestionPlayerActivityPresenter @Inject constructor(
         // Re-add the player fragment when the new session is ready.
         activity.supportFragmentManager.beginTransaction().add(
           R.id.question_player_fragment_placeholder,
-          QuestionPlayerFragment()
+          QuestionPlayerFragment(),
+          TAG_QUESTION_PLAYER_FRAGMENT
         ).commitNow()
       }
     }
@@ -119,5 +123,17 @@ class QuestionPlayerActivityPresenter @Inject constructor(
     return activity.supportFragmentManager.findFragmentById(
       R.id.question_player_fragment_placeholder
     ) as QuestionPlayerFragment?
+  }
+
+  fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
+    val questionPlayerFragment =
+      activity.supportFragmentManager.findFragmentByTag(TAG_QUESTION_PLAYER_FRAGMENT) as QuestionPlayerFragment
+    questionPlayerFragment.revealHint(saveUserChoice, hintIndex)
+  }
+
+  fun revealSolution(saveUserChoice: Boolean) {
+    val questionPlayerFragment =
+      activity.supportFragmentManager.findFragmentByTag(TAG_QUESTION_PLAYER_FRAGMENT) as QuestionPlayerFragment
+    questionPlayerFragment.revealSolution(saveUserChoice)
   }
 }

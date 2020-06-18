@@ -10,36 +10,40 @@ import org.oppia.app.fragment.InjectableDialogFragment
 import javax.inject.Inject
 
 private const val KEY_CURRENT_EXPANDED_LIST_INDEX = "CURRENT_EXPANDED_LIST_INDEX"
-private const val KEY_EXPLORATION_ID = "EXPLORATION_ID"
+private const val KEY_ID = "ID"
 private const val KEY_NEW_AVAILABLE_HINT_INDEX = "NEW_AVAILABLE_HINT_INDEX"
 private const val KEY_ALL_HINTS_EXHAUSTED = "ALL_HINTS_EXHAUSTED"
+private const val KEY_IS_IN_TRAIN_MODE = "IS_IN_TRAIN_MODE"
 
 /* Fragment that displays a fullscreen dialog for Hints and Solutions. */
 class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListIndexListener,
   RevealSolutionInterface {
 
-  @Inject lateinit var hintsAndSolutionFragmentPresenter: HintsAndSolutionFragmentPresenter
+  @Inject
+  lateinit var hintsAndSolutionFragmentPresenter: HintsAndSolutionFragmentPresenter
 
   private var currentExpandedHintListIndex: Int? = null
 
   companion object {
     /**
      * Creates a new instance of a DialogFragment to display hints and solution
-     * @param explorationId Used in ExplorationController to get current state data.
+     * @param id Used in ExplorationController/QuestionAssessmentProgressController to get current state data.
      * @param newAvailableHintIndex Index of new available hint.
      * @param allHintsExhausted Boolean set to true when all hints are exhausted.
      * @return [HintsAndSolutionFragment]: DialogFragment
      */
     fun newInstance(
-      explorationId: String,
+      id: String,
       newAvailableHintIndex: Int,
-      allHintsExhausted: Boolean
+      allHintsExhausted: Boolean,
+      isInTrainMode: Boolean
     ): HintsAndSolutionFragment {
       val hintsAndSolutionFrag = HintsAndSolutionFragment()
       val args = Bundle()
-      args.putString(KEY_EXPLORATION_ID, explorationId)
+      args.putString(KEY_ID, id)
       args.putInt(KEY_NEW_AVAILABLE_HINT_INDEX, newAvailableHintIndex)
       args.putBoolean(KEY_ALL_HINTS_EXHAUSTED, allHintsExhausted)
+      args.putBoolean(KEY_IS_IN_TRAIN_MODE, isInTrainMode)
       hintsAndSolutionFrag.arguments = args
       return hintsAndSolutionFrag
     }
@@ -68,19 +72,22 @@ class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListInd
     }
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to HintsAndSolutionFragment" }
-    val explorationId =
-      checkNotNull(args.getString(KEY_EXPLORATION_ID)) { "Expected explorationId to be passed to HintsAndSolutionFragment" }
+    val id =
+      checkNotNull(args.getString(KEY_ID)) { "Expected id to be passed to HintsAndSolutionFragment" }
     val newAvailableHintIndex =
-      checkNotNull(args.getInt(KEY_NEW_AVAILABLE_HINT_INDEX)) { "Expected explorationId to be passed to HintsAndSolutionFragment" }
+      checkNotNull(args.getInt(KEY_NEW_AVAILABLE_HINT_INDEX)) { "Expected hint index to be passed to HintsAndSolutionFragment" }
     val allHintsExhausted =
-      checkNotNull(args.getBoolean(KEY_ALL_HINTS_EXHAUSTED)) { "Expected explorationId to be passed to HintsAndSolutionFragment" }
+      checkNotNull(args.getBoolean(KEY_ALL_HINTS_EXHAUSTED)) { "Expected if hints exhausted to be passed to HintsAndSolutionFragment" }
+    val isInTrainMode =
+      checkNotNull(args.getBoolean(KEY_IS_IN_TRAIN_MODE)) { "Expected if it is in Train mode to be passed to HintsAndSolutionFragment" }
     return hintsAndSolutionFragmentPresenter.handleCreateView(
       inflater,
       container,
-      explorationId,
+      id,
       currentExpandedHintListIndex,
       newAvailableHintIndex,
       allHintsExhausted,
+      isInTrainMode,
       this as ExpandedHintListIndexListener
     )
   }
