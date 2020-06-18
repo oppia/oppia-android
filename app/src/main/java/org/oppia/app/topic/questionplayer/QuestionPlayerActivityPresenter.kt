@@ -51,43 +51,66 @@ class QuestionPlayerActivityPresenter @Inject constructor(
   }
 
   private fun startTrainingSessionWithCallback(callback: () -> Unit) {
-    val skillIds = activity.intent.getStringArrayListExtra(QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY)
-    questionTrainingController.startQuestionTrainingSession(skillIds).observe(activity, Observer {
-      when {
-        it.isPending() -> logger.d("QuestionPlayerActivity", "Starting training session")
-        it.isFailure() -> {
-          logger.e("QuestionPlayerActivity", "Failed to start training session", it.getErrorOrNull()!!)
-          activity.finish() // Can't recover from the session failing to start.
-        }
-        else -> {
-          logger.d("QuestionPlayerActivity", "Successfully started training session")
-          callback()
+    val skillIds =
+      activity.intent.getStringArrayListExtra(QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY)
+    questionTrainingController.startQuestionTrainingSession(skillIds).observe(
+      activity,
+      Observer {
+        when {
+          it.isPending() -> logger.d(
+            "QuestionPlayerActivity",
+            "Starting training session"
+          )
+          it.isFailure() -> {
+            logger.e(
+              "QuestionPlayerActivity",
+              "Failed to start training session",
+              it.getErrorOrNull()!!
+            )
+            activity.finish() // Can't recover from the session failing to start.
+          }
+          else -> {
+            logger.d("QuestionPlayerActivity", "Successfully started training session")
+            callback()
+          }
         }
       }
-    })
+    )
   }
 
   private fun stopTrainingSessionWithCallback(callback: () -> Unit) {
-    questionTrainingController.stopQuestionTrainingSession().observe(activity, Observer<AsyncResult<Any?>> {
-      when {
-        it.isPending() -> logger.d("QuestionPlayerActivity", "Stopping training session")
-        it.isFailure() -> {
-          logger.e("QuestionPlayerActivity", "Failed to stop training session", it.getErrorOrNull()!!)
-          activity.finish() // Can't recover from the session failing to stop.
-        }
-        else -> {
-          logger.d("QuestionPlayerActivity", "Successfully stopped training session")
-          callback()
+    questionTrainingController.stopQuestionTrainingSession().observe(
+      activity,
+      Observer<AsyncResult<Any?>> {
+        when {
+          it.isPending() -> logger.d(
+            "QuestionPlayerActivity",
+            "Stopping training session"
+          )
+          it.isFailure() -> {
+            logger.e(
+              "QuestionPlayerActivity",
+              "Failed to stop training session",
+              it.getErrorOrNull()!!
+            )
+            activity.finish() // Can't recover from the session failing to stop.
+          }
+          else -> {
+            logger.d("QuestionPlayerActivity", "Successfully stopped training session")
+            callback()
+          }
         }
       }
-    })
+    )
   }
 
   fun onKeyboardAction(actionCode: Int) {
     if (actionCode == EditorInfo.IME_ACTION_DONE) {
-      val questionPlayerFragment = activity.supportFragmentManager.findFragmentById(
-        R.id.question_player_fragment_placeholder
-      ) as? QuestionPlayerFragment
+      val questionPlayerFragment = activity
+        .supportFragmentManager
+        .findFragmentById(
+          R.id.question_player_fragment_placeholder
+        ) as? QuestionPlayerFragment
       questionPlayerFragment?.handleKeyboardAction()
     }
   }

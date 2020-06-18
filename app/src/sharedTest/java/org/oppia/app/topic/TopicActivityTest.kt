@@ -38,7 +38,12 @@ class TopicActivityTest {
   @Test
   fun testTopicActivity_toolbarTitle_isDisplayedSuccessfully() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      onView(allOf(instanceOf(TextView::class.java), withParent(withId(R.id.topic_activity_toolbar))))
+      onView(
+        allOf(
+          instanceOf(TextView::class.java),
+          withParent(withId(R.id.topic_activity_toolbar))
+        )
+      )
         .check(matches(withText("Topic: Fractions")))
     }
   }
@@ -52,9 +57,16 @@ class TopicActivityTest {
     }
   }
 
-  private fun launchTopicActivityIntent(internalProfileId: Int, topicId: String): ActivityScenario<TopicActivity> {
+  private fun launchTopicActivityIntent(
+    internalProfileId: Int,
+    topicId: String
+  ): ActivityScenario<TopicActivity> {
     val intent =
-      TopicActivity.createTopicActivityIntent(ApplicationProvider.getApplicationContext(), internalProfileId, topicId)
+      TopicActivity.createTopicActivityIntent(
+        ApplicationProvider.getApplicationContext(),
+        internalProfileId,
+        topicId
+      )
     return launch(intent)
   }
 
@@ -73,7 +85,9 @@ class TopicActivityTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@BlockingDispatcher blockingDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @BlockingDispatcher blockingDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return blockingDispatcher
     }
   }

@@ -78,12 +78,16 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
           return@setOnClickListener
         }
         if (input.length == 3) {
-          profileManagementController.updatePin(ProfileId.newBuilder().setInternalId(profileId).build(), input)
-            .observe(fragment, Observer {
-              if (it.isSuccess()) {
-                routeDialogInterface.routeToSuccessDialog()
+          profileManagementController
+            .updatePin(ProfileId.newBuilder().setInternalId(profileId).build(), input)
+            .observe(
+              fragment,
+              Observer {
+                if (it.isSuccess()) {
+                  routeDialogInterface.routeToSuccessDialog()
+                }
               }
-            })
+            )
         } else {
           resetViewModel.errorMessage.set(fragment.resources.getString(R.string.add_profile_error_pin_length))
         }

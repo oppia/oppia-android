@@ -18,7 +18,11 @@ class AppVersionFragmentPresenter @Inject constructor(
   private lateinit var binding: AppVersionFragmentBinding
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    binding = AppVersionFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding = AppVersionFragmentBinding.inflate(
+      inflater,
+      container,
+      /* attachToRoot= */ false
+    )
     binding.let {
       it.lifecycleOwner = fragment
       it.viewModel = getAppVersionViewModel()
