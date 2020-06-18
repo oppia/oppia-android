@@ -50,7 +50,8 @@ class ExplorationRetriever @Inject constructor(
   // Returns an exploration given an assetName
   private fun loadExplorationFromAsset(assetName: String): Exploration {
     try {
-      val explorationObject = jsonAssetRetriever.loadJsonFromAsset(assetName) ?: return Exploration.getDefaultInstance()
+      val explorationObject =
+        jsonAssetRetriever.loadJsonFromAsset(assetName) ?: return Exploration.getDefaultInstance()
       return Exploration.newBuilder()
         .setId(explorationObject.getString("exploration_id"))
         .setTitle(explorationObject.getString("title"))
