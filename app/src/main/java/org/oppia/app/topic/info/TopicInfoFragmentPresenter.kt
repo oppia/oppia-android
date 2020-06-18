@@ -88,6 +88,7 @@ class TopicInfoFragmentPresenter @Inject constructor(
             fragment.requireView().findViewById(R.id.topic_description_text_view)
           )
         )
+        topicInfoViewModel.calculateTopicSizeWithUnit()
         controlSeeMoreTextVisibility()
       }
     )

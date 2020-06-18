@@ -43,8 +43,10 @@ class PersistentCacheStore<T : MessageLite> private constructor(
   private val failureLock = ReentrantLock()
 
   private val cacheFile = File(directory, cacheFileName)
-  @GuardedBy("failureLock") private var deferredLoadCacheFailure: Throwable? = null
-  private val cache = cacheFactory.create(CachePayload(state = CacheState.UNLOADED, value = initialValue))
+  @GuardedBy("failureLock")
+  private var deferredLoadCacheFailure: Throwable? = null
+  private val cache =
+    cacheFactory.create(CachePayload(state = CacheState.UNLOADED, value = initialValue))
 
   init {
     cache.observeChanges {
@@ -146,10 +148,16 @@ class PersistentCacheStore<T : MessageLite> private constructor(
   }
 
   /** See [storeDataAsync]. Stores data and allows for a custom deferred result. */
-  fun <V> storeDataWithCustomChannelAsync(updateInMemoryCache: Boolean = true, update: (T) -> Pair<T, V>): Deferred<V> {
+  fun <V> storeDataWithCustomChannelAsync(
+    updateInMemoryCache: Boolean = true,
+    update: (T) -> Pair<T, V>
+  ): Deferred<V> {
     return cache.updateWithCustomChannelIfPresentAsync { cachedPayload ->
       val (updatedPayload, customResult) = storeFileCacheWithCustomChannel(cachedPayload, update)
-      if (updateInMemoryCache) Pair(updatedPayload, customResult) else Pair(cachedPayload, customResult)
+      if (updateInMemoryCache) Pair(updatedPayload, customResult) else Pair(
+        cachedPayload,
+        customResult
+      )
     }
   }
 
@@ -222,10 +230,16 @@ class PersistentCacheStore<T : MessageLite> private constructor(
   }
 
   /** See [storeFileCache]. Returns payload and custom result. */
-  private fun <V> storeFileCacheWithCustomChannel(currentPayload: CachePayload<T>, update: (T) -> Pair<T, V>): Pair<CachePayload<T>, V> {
+  private fun <V> storeFileCacheWithCustomChannel(
+    currentPayload: CachePayload<T>,
+    update: (T) -> Pair<T, V>
+  ): Pair<CachePayload<T>, V> {
     val (updatedCacheValue, customResult) = update(currentPayload.value)
     FileOutputStream(cacheFile).use { updatedCacheValue.writeTo(it) }
-    return Pair(CachePayload(state = CacheState.IN_MEMORY_AND_ON_DISK, value = updatedCacheValue), customResult)
+    return Pair(
+      CachePayload(state = CacheState.IN_MEMORY_AND_ON_DISK, value = updatedCacheValue),
+      customResult
+    )
   }
 
   private data class PersistentCacheStoreId(private val id: String)
@@ -268,16 +282,33 @@ class PersistentCacheStore<T : MessageLite> private constructor(
      * Use this method when data is shared by all profiles.
      */
     fun <T : MessageLite> create(cacheName: String, initialValue: T): PersistentCacheStore<T> {
-      return PersistentCacheStore(context, cacheFactory, asyncDataSubscriptionManager, cacheName, initialValue)
+      return PersistentCacheStore(
+        context,
+        cacheFactory,
+        asyncDataSubscriptionManager,
+        cacheName,
+        initialValue
+      )
     }
 
     /**
      * Returns a new [PersistentCacheStore] with the specified cache name and initial value under the directory specified by profileId.
      * Use this method when data is unique to each profile.
      */
-    fun <T : MessageLite> createPerProfile(cacheName: String, initialValue: T, profileId: ProfileId): PersistentCacheStore<T> {
+    fun <T : MessageLite> createPerProfile(
+      cacheName: String,
+      initialValue: T,
+      profileId: ProfileId
+    ): PersistentCacheStore<T> {
       val profileDirectory = directoryManagementUtil.getOrCreateDir(profileId.internalId.toString())
-      return PersistentCacheStore(context, cacheFactory, asyncDataSubscriptionManager, cacheName, initialValue, profileDirectory)
+      return PersistentCacheStore(
+        context,
+        cacheFactory,
+        asyncDataSubscriptionManager,
+        cacheName,
+        initialValue,
+        profileDirectory
+      )
     }
   }
 }
