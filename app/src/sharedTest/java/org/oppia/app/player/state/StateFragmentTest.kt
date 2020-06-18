@@ -156,6 +156,7 @@ class StateFragmentTest {
       startPlayingExploration()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.continue_button)).perform(click())
+      onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
       onView(withId(R.id.submit_answer_button)).check(matches(withText(R.string.state_submit_button)))
     }
   }
@@ -220,6 +221,7 @@ class StateFragmentTest {
       onView(withId(R.id.continue_button)).perform(click())
 
       // Attempt to submit an invalid answer.
+      onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(withId(R.id.fraction_input_interaction_view)).perform(typeText("1/"), closeSoftKeyboard())
       onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
       onView(withId(R.id.submit_answer_button)).perform(click())
