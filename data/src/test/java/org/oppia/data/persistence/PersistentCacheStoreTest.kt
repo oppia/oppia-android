@@ -669,12 +669,19 @@ class PersistentCacheStoreTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestDispatcherModule::class, TestModule::class, TestLogReportingModule::class])
+  @Component(
+    modules = [
+      TestDispatcherModule::class,
+      TestModule::class,
+      TestLogReportingModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
