@@ -37,7 +37,7 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.Logger
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY = "STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY"
@@ -330,6 +330,8 @@ class StateFragmentPresenter @Inject constructor(
           recyclerViewAssembler.stopHintsFromShowing()
           viewModel.setHintBulbVisibility(false)
           recyclerViewAssembler.showCongratulationMessageOnCorrectAnswer()
+        } else{
+          viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
         }
         recyclerViewAssembler.readOutAnswerFeedback(result.feedback)
       }
@@ -392,6 +394,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun moveToNextState() {
+    viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
     explorationProgressController.moveToNextState().observe(fragment, Observer {
       recyclerViewAssembler.collapsePreviousResponses()
     })
@@ -415,8 +418,12 @@ class StateFragmentPresenter @Inject constructor(
   private fun isAudioShowing(): Boolean = viewModel.isAudioBarVisible.get()!!
 
   /** Updates submit button UI as active if pendingAnswerError null else inactive. */
-  fun updateSubmitButton(pendingAnswerError: String?) {
-    viewModel.setCanSubmitAnswer(pendingAnswerError == null)
+  fun updateSubmitButton(pendingAnswerError: String?, inputAnswerAvailable: Boolean) {
+    if(inputAnswerAvailable){
+      viewModel.setCanSubmitAnswer(pendingAnswerError == null)
+    } else{
+      viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
+    }
   }
 
   private fun markExplorationAsRecentlyPlayed() {
