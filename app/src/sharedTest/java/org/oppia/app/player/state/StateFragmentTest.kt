@@ -147,6 +147,7 @@ class StateFragmentTest {
       startPlayingExploration()
       onView(withId(R.id.continue_button)).perform(click())
       onView(withId(R.id.submit_answer_button)).check(matches(withText(R.string.state_submit_button)))
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
     }
   }
 
@@ -171,6 +172,7 @@ class StateFragmentTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
+      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
       onView(withId(R.id.submit_answer_button)).perform(click())
       onView(withId(R.id.continue_navigation_button)).check(matches(withText(R.string.state_continue_button)))
     }
@@ -244,6 +246,7 @@ class StateFragmentTest {
       onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
       onView(withId(R.id.submit_answer_button)).perform(click())
 
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
       // Add another '2' to change the pending input text.
       onView(withId(R.id.fraction_input_interaction_view)).perform(
         typeText("2"),
