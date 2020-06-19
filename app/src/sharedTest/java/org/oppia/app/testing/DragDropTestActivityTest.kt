@@ -107,9 +107,7 @@ class DragDropTestActivityTest {
   }
 
   private fun createDragCallback(activity: DragDropTestActivity): ItemTouchHelper.Callback {
-    return DragAndDropItemFacilitator(
-        ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0, activity as OnItemDragListener
-      )
+    return DragAndDropItemFacilitator(activity as OnItemDragListener)
   }
 
 }

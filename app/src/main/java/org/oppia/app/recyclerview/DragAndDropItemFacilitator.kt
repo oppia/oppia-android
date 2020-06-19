@@ -5,20 +5,10 @@ import androidx.recyclerview.widget.RecyclerView
 
 private const val ALPHA_FULL = 1.0f
 
-/**
- * This is used to enable functionality like drag up and down to the RecyclerView.
- */
+/** A [ItemTouchHelper.SimpleCallback] that provides drag & drop functionality to [RecyclerView]s. */
 class DragAndDropItemFacilitator(
-  dragDirs: Int,
-  swipeDirs: Int,
   private val onItemDragListener: OnItemDragListener
-) :
-  ItemTouchHelper.SimpleCallback(dragDirs, swipeDirs) {
-  private var dragEnabled = true
-
-  override fun isLongPressDragEnabled(): Boolean {
-    return dragEnabled
-  }
+) : ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0) {
 
   override fun onMove(
     recyclerView: RecyclerView,
