@@ -153,7 +153,6 @@ class EventBundleCreatorTest {
     assertThat(eventBundle.get(PRIORITY_KEY)).isEqualTo(EventLog.Priority.ESSENTIAL.toString())
     assertThat(eventBundle.get(QUESTION_ID_KEY)).isEqualTo(TEST_QUESTION_ID)
     assertThat(eventBundle.get(SKILL_LIST_ID_KEY)).isEqualTo(arrayOf(TEST_SKILL_ID, TEST_SKILL_ID))
-
   }
 
   @Test
