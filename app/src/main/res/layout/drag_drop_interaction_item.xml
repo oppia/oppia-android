@@ -7,7 +7,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.player.state.itemviewmodel.DragAndDropSortInputViewModel" />
+      type="org.oppia.app.player.state.itemviewmodel.DragAndDropSortInteractionViewModel" />
   </data>
 
   <LinearLayout

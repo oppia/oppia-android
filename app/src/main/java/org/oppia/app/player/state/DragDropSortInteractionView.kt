@@ -12,7 +12,7 @@ import org.oppia.app.databinding.DragDropInteractionItemsBinding
 import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.app.recyclerview.BindableAdapter
-import org.oppia.app.recyclerview.DragItemTouchHelperCallback
+import org.oppia.app.recyclerview.DragAndDropItemFacilitator
 import org.oppia.app.recyclerview.OnItemDragListener
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
@@ -81,11 +81,7 @@ fun setItemDragToRecyclerView(
   onItemDrag: OnItemDragListener
 ) {
   val dragCallback: ItemTouchHelper.Callback =
-    DragItemTouchHelperCallback.Builder(
-      ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0
-    )
-      .onItemDragListener(onItemDrag)
-      .build()
+    DragAndDropItemFacilitator(onItemDrag)
 
   val itemTouchHelper = ItemTouchHelper(dragCallback)
   itemTouchHelper.attachToRecyclerView(dragDropSortInteractionView)

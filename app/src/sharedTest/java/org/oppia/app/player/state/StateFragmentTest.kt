@@ -327,6 +327,10 @@ class StateFragmentTest {
     onView(withId(R.id.text_input_interaction_view)).perform(typeText("finnish"))
     onView(withId(R.id.submit_answer_button)).perform(click())
     onView(withId(R.id.continue_navigation_button)).perform(click())
+
+    // Seventh state: Drag Drop Sort. Correct answer: Default Ordering.
+    onView(withId(R.id.submit_answer_button)).perform(click())
+    onView(withId(R.id.continue_navigation_button)).perform(click())
   }
 
   private fun waitForTheView(viewMatcher: Matcher<View>): ViewInteraction {
