@@ -124,6 +124,7 @@ class StateFragmentTest {
       onView(withId(R.id.continue_button)).perform(click())
 
       onView(withId(R.id.submit_answer_button)).check(matches(withText(R.string.state_submit_button)))
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
     }
   }
 
@@ -132,8 +133,10 @@ class StateFragmentTest {
     launchForExploration(TEST_EXPLORATION_ID_30).use {
       startPlayingExploration()
       onView(withId(R.id.continue_button)).perform(click())
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
 
       onView(withId(R.id.fraction_input_interaction_view)).perform(typeText("1/2"))
+      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
       onView(withId(R.id.submit_answer_button)).perform(click())
 
       onView(withId(R.id.continue_navigation_button)).check(matches(withText(R.string.state_continue_button)))
@@ -164,11 +167,12 @@ class StateFragmentTest {
       onView(withId(R.id.fraction_input_interaction_view)).perform(typeText("1/"))
       onView(withId(R.id.submit_answer_button)).perform(click())
 
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
       // Add another '2' to change the pending input text.
       onView(withId(R.id.fraction_input_interaction_view)).perform(typeText("2"))
 
       // The submit button should be re-enabled since the text view changed.
-      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()));
+      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
     }
   }
 
