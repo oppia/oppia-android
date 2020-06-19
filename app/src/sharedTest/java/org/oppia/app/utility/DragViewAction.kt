@@ -36,7 +36,7 @@ private const val WAIT_BEFORE_SENDING_UP = 400
 /**
  * A custom [ViewAction] that can be replicate the long press & drag action for espresso.
  *
- * https://android.googlesource.com/platform/frameworks/base/+/2ff41d4/core/tests/coretests/src/android/widget/espresso/DragAction.java
+ * Reference: https://android.googlesource.com/platform/frameworks/base/+/2ff41d4/core/tests/coretests/src/android/widget/espresso/DragAction.java
  */
 class DragViewAction(
   private val dragger: Dragger,

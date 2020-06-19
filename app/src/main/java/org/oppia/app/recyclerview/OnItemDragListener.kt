@@ -2,15 +2,14 @@ package org.oppia.app.recyclerview
 
 import androidx.recyclerview.widget.RecyclerView
 
-/** Listener for handling action of [DragAndDropItemFacilitator]. */
+/** Listener for items being dragged and dropped in [RecyclerView]s that have a [DragAndDropItemFacilitator]. */
 interface OnItemDragListener {
   /**
-   * This method notifies the class about the change when [DragAndDropItemFacilitator] performs the
-   * drag action on any item of recyclerview.
+   * Called when an item is dragged & dropped to a new position.
    *
-   * @param indexFrom a position integer on which item was originally on.
-   * @param indexTo   a position integer to which item is been moved to.
-   * @param adapter   a adapter reference of the current recyclerview.
+   * @param indexFrom the original position of the item within the adapter item list
+   * @param indexTo the new position of the item within the adapter item list
+   * @param adapter the adapter of the [RecyclerView] whose item was recently dragged
    */
   fun onItemDragged(indexFrom: Int, indexTo: Int, adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>)
 }
