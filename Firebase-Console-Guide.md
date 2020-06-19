@@ -1,4 +1,4 @@
-## Index 
+## Table of Contents 
 * [Viewing the Console](#viewing-the-console) 
   * [Crashlytics](#crashlytics)
   * [Analytics](#analytics)
