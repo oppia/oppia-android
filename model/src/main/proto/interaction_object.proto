@@ -54,7 +54,7 @@ message Fraction {
 
 // Structure for a ListOfString object.
 message ListOfSetsOfHtmlStrings {
-  StringList set_of_html_strings = 1;
+  repeated StringList set_of_html_strings = 1;
 }
 
 // An image overlaid with labeled regions.
@@ -63,14 +63,15 @@ message ImageWithRegions {
   string image_path = 1;
 
   // A region of an image, including its shape and coordinates.
-  message LabelRegion {
-    // A name for a particular region.
+  message LabeledRegion {
+    // The name for the region.
     string label = 1;
 
     message Region {
       // A shape value for a particular region.
       string region_type = 1;
 
+      //A rectangle normalized so that the coordinates are within the range [0,1].
       message NormalizedRectangle2d {
         message Point2d {
           float x = 1;
@@ -87,5 +88,5 @@ message ImageWithRegions {
     Region region = 2;
 
   }
-  repeated LabelRegion label_regions = 2;
+  repeated LabeledRegion label_regions = 2;
 }
