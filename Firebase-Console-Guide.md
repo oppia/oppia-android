@@ -2,7 +2,8 @@
 * [Viewing the Console](#viewing-the-console) 
   * [Crashlytics](#crashlytics)
   * [Analytics](#analytics)
-* Setting up your own Firebase Project 
+* [Your own Firebase Project](#your-own-firebase-project) 
+  * [Setting it up](#setting-it-up) 
 ## Viewing the Console 
 * Go to the [Firebase Console](https://console.firebase.google.com) -> Log in to your gmail account (if you haven't) -> Select Oppia Android Dev Project. 
 * You will be welcomed by the following screen :
@@ -32,3 +33,11 @@
 * We can also view these things under their own specific dashboards. For example the event dashboard looks like: 
 > <img src= "https://user-images.githubusercontent.com/53938155/85137774-55d6d000-b25f-11ea-939d-bc6149533362.png" height="400"> 
 * This dashboard consists of all the predefined events along with the custom logged events as you can see in the image above. We can see detailed stats related to an event by clicking on its event name.  
+
+## Your own Firebase Project
+### Setting it up
+* Go to the [Firebase Console](https://console.firebase.google.com) -> Log in to your gmail account -> Click on "Add Project" 
+* Enter your project name -> Enable/Disabe Google Analytics and move forward. 
+* If you enabled Google Analytics then accept the terms and select a project location and click create project.
+* If you disabled Google Analytics then simply click on create project. 
+* Click continue on completion of the progress bar and the Project Console (like the one shown above) will open. 
