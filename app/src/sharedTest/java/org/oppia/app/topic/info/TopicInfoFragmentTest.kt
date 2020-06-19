@@ -20,11 +20,13 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.google.firebase.FirebaseApp
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.TypeSafeMatcher
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
@@ -56,6 +58,11 @@ private const val DUMMY_TOPIC_DESCRIPTION_LONG =
 class TopicInfoFragmentTest {
   private val topicThumbnail = R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework
   private val internalProfileId = 0
+
+  @Before
+  fun setUp(){
+    FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
+  }
 
   @Test
   fun testTopicInfoFragment_loadFragment_checkTopicName_isCorrect() {
