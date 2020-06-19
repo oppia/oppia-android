@@ -6,6 +6,8 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import org.oppia.app.model.EventLog
 import org.oppia.util.logging.EventBundleCreator
 import org.oppia.util.logging.EventLogger
+import org.oppia.util.logging.ExceptionLogger
+import java.lang.Exception
 import javax.inject.Singleton
 
 /** Logger for event logging to Firebase Analytics. */
@@ -21,4 +23,13 @@ class FirebaseEventLogger(
     bundle = eventBundleCreator.createEventBundle(eventLog)
     firebaseAnalytics.logEvent(eventLog.actionName.toString(), bundle)
   }
+}
+
+class TempEventLogger: EventLogger, ExceptionLogger{
+  override fun logEvent(context: Context, eventLog: EventLog) {
+  }
+
+  override fun logException(exception: Exception) {
+  }
+
 }

@@ -10,3 +10,5 @@ import javax.inject.Qualifier
 
 /** Corresponds to a singleton [LogLevel] determining the minimum severity of logs that should be kept. */
 @Qualifier annotation class GlobalLogLevel
+
+@Qualifier annotation class EnableAnalytics
