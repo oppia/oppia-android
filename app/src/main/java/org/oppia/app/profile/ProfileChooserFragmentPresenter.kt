@@ -87,6 +87,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     binding.apply {
       viewModel = chooserViewModel
       lifecycleOwner = fragment
+      presenter = this@ProfileChooserFragmentPresenter
     }
     binding.profileRecyclerView.isNestedScrollingEnabled = false
     subscribeToWasProfileEverBeenAdded()
@@ -105,7 +106,11 @@ class ProfileChooserFragmentPresenter @Inject constructor(
           val spanCount = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             activity.resources.getInteger(R.integer.profile_chooser_span_count)
           } else {
-            /* spanCount= */ 2
+            if (activity.resources.getBoolean(R.bool.isTablet)) {
+              3
+            } else {
+              /* spanCount= */ 2
+            }
           }
           GridLayoutManager(activity, spanCount)
         } else {
