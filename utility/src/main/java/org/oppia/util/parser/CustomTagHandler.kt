@@ -7,6 +7,7 @@ import android.text.Spanned
 import android.text.style.LeadingMarginSpan
 import android.util.Log
 import org.oppia.util.R
+import org.oppia.util.parser.CustomTagHandler.ListItemTag
 import org.oppia.util.parser.StringUtils.LI_TAG
 import org.oppia.util.parser.StringUtils.OL_TAG
 import org.oppia.util.parser.StringUtils.UL_TAG
@@ -16,72 +17,57 @@ import java.util.*
 // TODO(#562): Add screenshot tests to check whether the drawing logic works correctly on all devices.
 /**
  * Implements support for ordered ({@code <ol>}) and unordered ({@code <ul>}) lists in to Android TextView.
- *
- * <ul> and <ol> tags are added to the [listParents] array and removed when the closing tag is reached.
- *
- * <li> tags are handled corresponding to the parent tag.
- *
+ * <ul> and <ol> tags are added to the [listParents] Stack and removed when the closing tag is reached.
+ * <li> tags are handled [ListItemTag] instance corresponding to the parent tag.
  * Reference: https://github.com/daphliu/android-spannable-list-sample/tree/master/app/src/main/java/com/daphneliu/sample/listspansample
  */
 class CustomTagHandler(private val context: Context) : Html.TagHandler {
-  private val INDENT_PX = context.resources.getDimensionPixelSize(R.dimen.bullet_leading_margin)
-  private val LIST_ITEM_INDENT_PX = INDENT_PX * 2
-  private val BULLET_SPAN = BulletSpanWithRadius(context, INDENT_PX)
+  private val indent = context.resources.getDimensionPixelSize(R.dimen.bullet_leading_margin)
+  private val listItemIndent = indent * 2
+  private val bulletSpan = BulletSpanWithRadius(context, indent)
 
-  private val lists: Stack<ListTag> = Stack<ListTag>()
+  private val listParents: Stack<ListItemTag> = Stack<ListItemTag>()
 
-  /**
-   * @see android.text.Html.TagHandler.handleTag
-   */
   override fun handleTag(
     opening: Boolean,
     tag: String,
     output: Editable,
     xmlReader: XMLReader?
   ) {
-    when {
-      UL_TAG == tag -> {
+    when (tag) {
+      UL_TAG -> {
         if (opening) {
-          // handle <ul>
-          lists.push(Ul())
+          listParents.push(UnorderedListTag())
         } else {
-          // handle </ul>
-          lists.pop()
+          listParents.pop()
         }
       }
-      OL_TAG == tag -> {
+      OL_TAG -> {
         if (opening) {
-          // handle <ol>
-          lists.push(Ol())
-          // use default start index of 1
+          listParents.push(OrderedListTag())
         } else {
-          // handle </ol>
-          lists.pop()
+          listParents.pop()
         }
       }
-      LI_TAG == tag -> {
+      LI_TAG -> {
         try {
           if (opening) {
-            // handle <li>
-            lists.peek().openItem(output)
+            listParents.peek().openItem(output)
           } else {
-            // handle </li>
-            lists.peek().closeItem(output, lists.size)
+            listParents.peek().closeItem(output, listParents.size)
           }
         } catch (e: EmptyStackException) {
-          Log.d("HtmlTagHandler", "No Such Element Found" + lists.isEmpty())
+          Log.d("CustomTagHandler", "No Such Element Found" + listParents.isEmpty())
         }
       }
       else -> {
-        Log.d("TagHandler", "Found an unsupported tag $tag")
+        Log.d("CustomTagHandler", "Found an unsupported tag $tag")
       }
     }
   }
 
-  /**
-   * Abstract super class for [Ul] and [Ol].
-   */
-  private abstract class ListTag {
+  /** Abstract super class for [UnorderedListTag] and [OrderedListTag]. */
+  private abstract class ListItemTag {
     /**
      * Opens a new list item.
      *
@@ -118,49 +104,39 @@ class CustomTagHandler(private val context: Context) : Html.TagHandler {
     }
 
     protected abstract fun getReplaces(text: Editable?, indentation: Int): Array<Any>
-    /**
-     * Note: This knows that the last returned object from getSpans() will be the most recently added.
-     *
-     * @see Html
-     */
-    private fun getLast(text: Spanned): ListTag? {
-      val listTags = text.getSpans(0, text.length, ListTag::class.java)
+    /** Note: This knows that the last returned object from getSpans() will be the most recently added. */
+    private fun getLast(text: Spanned): ListItemTag? {
+      val listTags = text.getSpans(0, text.length, ListItemTag::class.java)
       return if (listTags.size == 0) {
         null
       } else listTags[listTags.size - 1]
     }
   }
 
-  /**
-   * Class representing the unordered list (`<ul>`) HTML tag.
-   */
-  private inner class Ul : ListTag() {
+  /** Class representing the unordered list (`<ul>`) HTML tag. */
+  private inner class UnorderedListTag : ListItemTag() {
     override fun getReplaces(
       text: Editable?,
       indentation: Int
-    ): Array<Any> { // Nested BulletSpans increases distance between BULLET_SPAN and text, so we must prevent it.
-      var bulletMargin: Int = INDENT_PX
+    ): Array<Any> {
+      var bulletMargin: Int = indent
       if (indentation > 1) {
-        bulletMargin = INDENT_PX - BULLET_SPAN.getLeadingMargin(true)
-        if (indentation > 2) { // This get's more complicated when we add a LeadingMarginSpan into the same line:
-// we have also counter it's effect to BulletSpan
-          bulletMargin -= (indentation - 2) * LIST_ITEM_INDENT_PX
+        bulletMargin = indent - bulletSpan.getLeadingMargin(true)
+        if (indentation > 2) {
+          bulletMargin -= (indentation - 2) * listItemIndent
         }
       }
       return arrayOf(
-        LeadingMarginSpan.Standard(LIST_ITEM_INDENT_PX * (indentation - 1)),
-        BulletSpanWithRadius(context,bulletMargin)
+        LeadingMarginSpan.Standard(listItemIndent * (indentation - 1)),
+        BulletSpanWithRadius(context, bulletMargin)
       )
     }
   }
 
-  /**
-   * Class representing the ordered list (`<ol>`) HTML tag.
-   */
-  private inner class Ol
-  /**
-   * Creates a new `<ul>` with start index of 1.
-   */ @JvmOverloads constructor(private var nextIdx: Int = 1) : ListTag() {
+  /** Class representing the ordered list (`<ol>`) HTML tag. */
+  private inner class OrderedListTag
+  /** Creates a new `<ol>` with start index of 1. */
+  @JvmOverloads constructor(private var nextIdx: Int = 1) : ListItemTag() {
     override fun openItem(text: Editable) {
       super.openItem(text)
       text.append(Integer.toString(nextIdx++)).append(". ")
@@ -170,9 +146,9 @@ class CustomTagHandler(private val context: Context) : Html.TagHandler {
       text: Editable?,
       indentation: Int
     ): Array<Any> {
-      var numberMargin: Int = LIST_ITEM_INDENT_PX * (indentation - 1)
-      if (indentation > 2) { // Same as in ordered lists: counter the effect of nested Spans
-        numberMargin -= (indentation - 2) * LIST_ITEM_INDENT_PX
+      var numberMargin: Int = listItemIndent * (indentation - 1)
+      if (indentation > 2) {
+        numberMargin -= (indentation - 2) * listItemIndent
       }
       return arrayOf(LeadingMarginSpan.Standard(numberMargin))
     }
