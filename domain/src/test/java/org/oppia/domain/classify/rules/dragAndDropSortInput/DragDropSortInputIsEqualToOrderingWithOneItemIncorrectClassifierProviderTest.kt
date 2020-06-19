@@ -98,7 +98,7 @@ class DragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProviderTe
   }
 
   @Test
-  fun testAnswer_testLisOfSetsOfHtmlString_differByOneElement_differentOrder_bothValuesDoNotMatch_failsCorrectly() {  /* ktlint-disable max-line-length */
+  fun testAnswer_testLisOfSetsOfHtmlString_differByOneElement_differentOrder_bothValuesDoNotMatch_failsCorrectly() {/* ktlint-disable max-line-length */
     val inputs = mapOf("x" to SET_LIST_ITEM_2_ITEM_3_ITEMS_AB)
 
     val matches =
@@ -111,7 +111,7 @@ class DragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProviderTe
   }
 
   @Test
-  fun testAnswer_testLisOfSetsOfHtmlString_differByTwoElements_bothValuesDoNotMatch_failsCorrectly() {  /* ktlint-disable max-line-length */
+  fun testAnswer_testLisOfSetsOfHtmlString_differByTwoElements_bothValuesDoNotMatch_failsCorrectly() {/* ktlint-disable max-line-length */
     val inputs = mapOf("x" to SET_LIST_ITEMS_ABC_ITEM_2_ITEM_3)
 
     val matches =
@@ -156,7 +156,7 @@ class DragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProviderTe
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerDragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProviderTest_TestApplicationComponent.builder() /* ktlint-disable max-line-length */
+    DaggerDragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProviderTest_TestApplicationComponent.builder()/* ktlint-disable max-line-length */
       .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
   }
 

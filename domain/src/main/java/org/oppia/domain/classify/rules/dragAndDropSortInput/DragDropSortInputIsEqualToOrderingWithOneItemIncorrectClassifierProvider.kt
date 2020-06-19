@@ -32,18 +32,17 @@ internal class DragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierP
     val answerStringSets = answer.setOfHtmlStringsList
     val inputStringSets = input.setOfHtmlStringsList
     return (answerStringSets zip inputStringSets).map { (first, second) ->
-      checkEqualityWithIncorrectPositions(first, second).size
+      computeSymmetricDifference(first, second).size
     }.reduce(Int::plus) == 1
   }
 
-  private fun checkEqualityWithIncorrectPositions(
+  private fun computeSymmetricDifference(
     first: StringList,
     second: StringList
   ): Set<String> {
-    return (unionOfSetsOfHtmlStrings(first, second) subtract intersectOfSetsOfHtmlStrings(
-      first,
-      second
-    ))
+    val unionOfSetsOfHtmlStrings = unionOfSetsOfHtmlStrings(first, second)
+    val intersectOfSetsOfHtmlStrings = intersectOfSetsOfHtmlStrings(first, second)
+    return unionOfSetsOfHtmlStrings subtract intersectOfSetsOfHtmlStrings
   }
 
   private fun unionOfSetsOfHtmlStrings(first: StringList, second: StringList): Set<String> {
