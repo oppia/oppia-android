@@ -4,6 +4,7 @@
   * [Analytics](#analytics)
 * [Your own Firebase Project](#your-own-firebase-project) 
   * [Setting it up](#setting-it-up) 
+  * [App registration](#app-registration)
 ## Viewing the Console 
 * Go to the [Firebase Console](https://console.firebase.google.com) -> Log in to your gmail account (if you haven't) -> Select Oppia Android Dev Project. 
 * You will be welcomed by the following screen :
@@ -40,4 +41,12 @@
 * Enter your project name -> Enable/Disabe Google Analytics and move forward. 
 * If you enabled Google Analytics then accept the terms and select a project location and click create project.
 * If you disabled Google Analytics then simply click on create project. 
-* Click continue on completion of the progress bar and the Project Console (like the one shown above) will open. 
+* Click continue on completion of the progress bar and the Project Console (like the one shown above) will open.
+### App Registration
+* Once your Project Console opens up, click on 'Add an App' from the centre. This will open up : 
+> <img src="https://user-images.githubusercontent.com/53938155/85153089-62fdba00-b273-11ea-821f-43231b22f8fc.png" height="400"> 
+* Add the required info and click on Register App. 
+* Then in the next step you would be required to add a config file to your repo. In our case we have to add it under our app module. 
+* Then click next, add the said plugins (if not already added).
+* In the next step build & run the app so that the Firebase servers sync to it and click on Go to Console.
+* You can check the details of your project and the apps registered to it by clicking on the settings button (present on the top of the nav bar) and then selecting 'Project settings' from it. A new page will open up with all the necessary details. 
