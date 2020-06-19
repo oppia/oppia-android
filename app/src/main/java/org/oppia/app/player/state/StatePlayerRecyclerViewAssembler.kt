@@ -48,7 +48,7 @@ import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.app.player.state.itemviewmodel.ContinueInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.ContinueNavigationButtonViewModel
-import org.oppia.app.player.state.itemviewmodel.DragAndDropSortInputViewModel
+import org.oppia.app.player.state.itemviewmodel.DragAndDropSortInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.FeedbackViewModel
 import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.InteractionViewModelFactory
@@ -614,7 +614,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
           viewType = StateItemViewModel.ViewType.DRAG_DROP_SORT_INTERACTION,
           inflateDataBinding = DragDropInteractionItemBinding::inflate,
           setViewModel = DragDropInteractionItemBinding::setViewModel,
-          transformViewModel = { it as DragAndDropSortInputViewModel }
+          transformViewModel = { it as DragAndDropSortInteractionViewModel }
       ).registerViewDataBinder(
         viewType = StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION,
         inflateDataBinding = NumericInputInteractionItemBinding::inflate,

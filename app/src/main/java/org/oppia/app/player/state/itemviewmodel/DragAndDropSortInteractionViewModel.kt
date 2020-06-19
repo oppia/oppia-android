@@ -10,7 +10,7 @@ import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.recyclerview.OnItemDragListener
 
 /** [StateItemViewModel] for drag drop & sort choice list. */
-class DragAndDropSortInputViewModel(
+class DragAndDropSortInteractionViewModel(
   val entityId: String,
   interaction: Interaction
 ) : StateItemViewModel(ViewType.DRAG_DROP_SORT_INTERACTION), InteractionAnswerHandler,
@@ -50,7 +50,7 @@ class DragAndDropSortInputViewModel(
 
   /** Returns an HTML list containing all of the HTML string elements as items in the list. */
   private fun convertSelectedItemsToHtmlString(htmlItems: Collection<String>): String {
-    return "<li>${htmlItems.joinToString(separator = "</li><li>")}</li>"
+    return htmlItems.joinToString(separator = "<br>")
   }
 
   /** Returns whether the grouping is allowed or not for [DragAndDropSortInputViewModel]. */
