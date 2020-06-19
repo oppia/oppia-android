@@ -196,10 +196,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     val skillId = ephemeralQuestion.question.linkedSkillIdsList.firstOrNull() ?: ""
 
     questionId = ephemeralQuestion.question.questionId
-    logger.e(
-      "question id",
-      "==" + ephemeralQuestion.question.questionState.interaction.hintList[0]
-    )
+
     updateProgress(ephemeralQuestion.currentQuestionIndex, ephemeralQuestion.totalQuestionCount)
     updateEndSessionMessage(ephemeralQuestion.ephemeralState)
 

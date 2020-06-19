@@ -31,7 +31,9 @@ import org.oppia.app.model.EphemeralQuestion
 import org.oppia.app.model.EphemeralState.StateTypeCase.COMPLETED_STATE
 import org.oppia.app.model.EphemeralState.StateTypeCase.PENDING_STATE
 import org.oppia.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
+import org.oppia.app.model.Hint
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.Solution
 import org.oppia.app.model.UserAnswer
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
@@ -42,6 +44,7 @@ import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputMo
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.domain.exploration.TEST_EXPLORATION_ID_5
 import org.oppia.domain.topic.TEST_SKILL_ID_0
 import org.oppia.domain.topic.TEST_SKILL_ID_1
 import org.oppia.domain.topic.TEST_SKILL_ID_2
@@ -83,6 +86,7 @@ class QuestionAssessmentProgressControllerTest {
   @Inject
   lateinit var fakeExceptionLogger: FakeExceptionLogger
 
+
   @ExperimentalCoroutinesApi
   @Inject
   @field:TestDispatcher
@@ -99,6 +103,12 @@ class QuestionAssessmentProgressControllerTest {
 
   @Mock
   lateinit var mockAsyncAnswerOutcomeObserver: Observer<AsyncResult<AnsweredQuestionOutcome>>
+
+  @Mock
+  lateinit var mockAsyncHintObserver: Observer<AsyncResult<Hint>>
+
+  @Mock
+  lateinit var mockAsyncSolutionObserver: Observer<AsyncResult<Solution>>
 
   @Captor
   lateinit var currentQuestionResultCaptor: ArgumentCaptor<AsyncResult<EphemeralQuestion>>
@@ -925,6 +935,160 @@ class QuestionAssessmentProgressControllerTest {
         .hasMessageThat()
         .contains("Cannot submit an answer if a training session has not yet begun.")
     }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testSubmitAnswer_forTextInput_wrongAnswer_returnsDefaultOutcome_showHint() = runBlockingTest(
+    coroutineContext
+  ) {
+    subscribeToCurrentQuestionToAllowSessionToLoad()
+    startTrainingSession(TEST_SKILL_ID_LIST_2)
+
+    val result =
+      questionAssessmentProgressController.submitAnswer(createNumericInputAnswer(2.0))
+    result.observeForever(mockAsyncAnswerOutcomeObserver)
+    advanceUntilIdle()
+
+   // Verify that the answer submission failed as expected.
+    verify(
+      mockAsyncAnswerOutcomeObserver,
+      atLeastOnce()
+    ).onChanged(asyncAnswerOutcomeCaptor.capture())
+    val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
+    assertThat(answerOutcome.isCorrectAnswer).isFalse()
+    assertThat(answerOutcome.feedback.html).isEmpty()
+
+    val currentQuestionLiveData =
+      questionAssessmentProgressController.getCurrentQuestion()
+    currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
+    advanceUntilIdle()
+
+    verify(
+      mockCurrentQuestionLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentQuestionResultCaptor.capture())
+    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
+    val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
+
+    assertThat(ephemeralQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
+    assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount).isEqualTo(1)
+
+    val hintAndSolution = ephemeralQuestion.ephemeralState.state.interaction.getHint(0)
+    assertThat(hintAndSolution.hintContent.html).contains("Hint text will appear here")
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testRevealHint_forWrongAnswer_showHint_returnHintIsRevealed() = runBlockingTest(
+    coroutineContext
+  ) {
+    val currentQuestionLiveData =
+      questionAssessmentProgressController.getCurrentQuestion()
+    currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
+    playThroughSessionWithSkillList2()
+
+    startTrainingSession(TEST_SKILL_ID_LIST_01)
+    submitTextInputAnswerAndMoveToNextQuestion("1/4") // question 0
+    submitMultipleChoiceAnswerAndMoveToNextQuestion(2) // question 1
+
+    // Verify that we're on the second-to-last state of the second session.
+    verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(
+      currentQuestionResultCaptor.capture()
+    )
+    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
+    val currentQuestion = currentQuestionResultCaptor.value.getOrThrow()
+    assertThat(currentQuestion.currentQuestionIndex).isEqualTo(1)
+    assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
+    // This question is not in the other test session.
+    assertThat(currentQuestion.ephemeralState.state.content.html)
+      .contains("If we talk about wanting")
+
+    verify(
+      mockCurrentQuestionLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentQuestionResultCaptor.capture())
+    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
+    val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
+
+    assertThat(ephemeralQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
+    assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount).isEqualTo(1)
+
+    val hintAndSolution = ephemeralQuestion.ephemeralState.state.interaction.getHint(0)
+    assertThat(hintAndSolution.hintContent.html).contains("Hint text will appear here")
+
+    val result = questionAssessmentProgressController.submitHintIsRevealed(
+      ephemeralQuestion.ephemeralState.state,
+      true,
+      0
+    )
+    result.observeForever(mockAsyncHintObserver)
+    advanceUntilIdle()
+
+    // Verify that the current state updates. Hint revealed is true.
+    verify(
+      mockCurrentQuestionLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentQuestionResultCaptor.capture())
+    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
+    val updatedState = currentQuestionResultCaptor.value.getOrThrow()
+    assertThat(updatedState.ephemeralState.state.interaction.getHint(0).hintIsRevealed).isTrue()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testRevealSolution_forWrongAnswer_showSolution_returnSolutionIsRevealed() = runBlockingTest(
+    coroutineContext
+  ) {
+    val currentQuestionLiveData =
+      questionAssessmentProgressController.getCurrentQuestion()
+    currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
+    playThroughSessionWithSkillList2()
+
+    startTrainingSession(TEST_SKILL_ID_LIST_01)
+    submitTextInputAnswerAndMoveToNextQuestion("1/4") // question 0
+    submitMultipleChoiceAnswerAndMoveToNextQuestion(2) // question 1
+
+    // Verify that we're on the second-to-last state of the second session.
+    verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(
+      currentQuestionResultCaptor.capture()
+    )
+    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
+    val currentQuestion = currentQuestionResultCaptor.value.getOrThrow()
+    assertThat(currentQuestion.currentQuestionIndex).isEqualTo(1)
+    assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
+    // This question is not in the other test session.
+    assertThat(currentQuestion.ephemeralState.state.content.html)
+      .contains("If we talk about wanting")
+
+    verify(
+      mockCurrentQuestionLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentQuestionResultCaptor.capture())
+    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
+    val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
+
+    assertThat(ephemeralQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
+    assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount).isEqualTo(1)
+
+    val hintAndSolution = ephemeralQuestion.ephemeralState.state.interaction.solution
+    assertThat(hintAndSolution.correctAnswer.correctAnswer).contains("<p>The number of pieces of cake I want.</p>")
+
+    val result = questionAssessmentProgressController.submitSolutionIsRevealed(
+      ephemeralQuestion.ephemeralState.state,
+      true
+    )
+    result.observeForever(mockAsyncSolutionObserver)
+    advanceUntilIdle()
+
+    // Verify that the current state updates. Hint revealed is true.
+    verify(
+      mockCurrentQuestionLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentQuestionResultCaptor.capture())
+    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
+    val updatedState = currentQuestionResultCaptor.value.getOrThrow()
+    assertThat(updatedState.ephemeralState.state.interaction.solution.solutionIsRevealed).isTrue()
+  }
 
   private fun setUpTestApplicationWithSeed(questionSeed: Long) {
     TestQuestionModule.questionSeed = questionSeed
