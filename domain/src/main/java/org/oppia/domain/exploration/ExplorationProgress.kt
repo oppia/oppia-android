@@ -36,27 +36,35 @@ internal class ExplorationProgress {
     when (nextPlayStage) {
       PlayStage.NOT_PLAYING -> {
         // All transitions to NOT_PLAYING are valid except itself. Stopping playing can happen at any time.
-        check(playStage != PlayStage.NOT_PLAYING) { "Cannot transition to NOT_PLAYING from NOT_PLAYING" }
+        check(playStage != PlayStage.NOT_PLAYING) {
+          "Cannot transition to NOT_PLAYING from NOT_PLAYING"
+        }
         playStage = nextPlayStage
       }
       PlayStage.LOADING_EXPLORATION -> {
         // An exploration can only be requested to be loaded from the initial NOT_PLAYING stage.
-        check(playStage == PlayStage.NOT_PLAYING) { "Cannot transition to LOADING_EXPLORATION from $playStage" }
+        check(playStage == PlayStage.NOT_PLAYING) {
+          "Cannot transition to LOADING_EXPLORATION from $playStage"
+        }
         playStage = nextPlayStage
       }
       PlayStage.VIEWING_STATE -> {
         // A state can be viewed after loading an exploration, after viewing another state, or after submitting an
         // answer. It cannot be viewed without a loaded exploration.
-        check(playStage == PlayStage.LOADING_EXPLORATION
-            || playStage == PlayStage.VIEWING_STATE
-            || playStage == PlayStage.SUBMITTING_ANSWER) {
+        check(
+          playStage == PlayStage.LOADING_EXPLORATION ||
+            playStage == PlayStage.VIEWING_STATE ||
+            playStage == PlayStage.SUBMITTING_ANSWER
+        ) {
           "Cannot transition to VIEWING_STATE from $playStage"
         }
         playStage = nextPlayStage
       }
       PlayStage.SUBMITTING_ANSWER -> {
         // An answer can only be submitted after viewing a stage.
-        check(playStage == PlayStage.VIEWING_STATE) { "Cannot transition to SUBMITTING_ANSWER from $playStage" }
+        check(playStage == PlayStage.VIEWING_STATE) {
+          "Cannot transition to SUBMITTING_ANSWER from $playStage"
+        }
         playStage = nextPlayStage
       }
     }

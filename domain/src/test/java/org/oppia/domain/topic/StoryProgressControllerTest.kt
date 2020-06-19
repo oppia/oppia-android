@@ -62,14 +62,20 @@ class StoryProgressControllerTest {
   @field:TestDispatcher
   lateinit var testDispatcher: CoroutineDispatcher
 
-  @Inject lateinit var context: Context
+  @Inject
+  lateinit var context: Context
 
-  @Inject lateinit var storyProgressController: StoryProgressController
+  @Inject
+  lateinit var storyProgressController: StoryProgressController
 
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
 
-  @Mock lateinit var mockRecordProgressObserver: Observer<AsyncResult<Any?>>
-  @Captor lateinit var recordProgressResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
+  @Mock
+  lateinit var mockRecordProgressObserver: Observer<AsyncResult<Any?>>
+
+  @Captor
+  lateinit var recordProgressResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
 
   private lateinit var profileId: ProfileId
 
@@ -80,7 +86,8 @@ class StoryProgressControllerTest {
   }
 
   // https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/
-  @ObsoleteCoroutinesApi private val testThread = newSingleThreadContext("TestMain")
+  @ObsoleteCoroutinesApi
+  private val testThread = newSingleThreadContext("TestMain")
 
   @Before
   @ExperimentalCoroutinesApi
@@ -139,11 +146,15 @@ class StoryProgressControllerTest {
     }
 
   private fun verifyRecordProgressSucceeded() {
-    verify(mockRecordProgressObserver, atLeastOnce()).onChanged(recordProgressResultCaptor.capture())
+    verify(
+      mockRecordProgressObserver,
+      atLeastOnce()
+    ).onChanged(recordProgressResultCaptor.capture())
     assertThat(recordProgressResultCaptor.value.isSuccess()).isTrue()
   }
 
-  @Qualifier annotation class TestDispatcher
+  @Qualifier
+  annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module
@@ -165,14 +176,18 @@ class StoryProgressControllerTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
     @Singleton
     @Provides
     @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBlockingDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 

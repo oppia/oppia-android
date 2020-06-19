@@ -173,22 +173,26 @@ class TopicController @Inject constructor(
         TEST_SKILL_ID_2 -> AsyncResult.success(createTestConceptCardForSkill2())
         FRACTIONS_SKILL_ID_0 -> AsyncResult.success(
           createConceptCardFromJson(
-            "fractions_skills.json", /* index= */ 0
+            "fractions_skills.json",
+            /* index= */ 0
           )
         )
         FRACTIONS_SKILL_ID_1 -> AsyncResult.success(
           createConceptCardFromJson(
-            "fractions_skills.json", /* index= */ 1
+            "fractions_skills.json",
+            /* index= */ 1
           )
         )
         FRACTIONS_SKILL_ID_2 -> AsyncResult.success(
           createConceptCardFromJson(
-            "fractions_skills.json", /* index= */ 2
+            "fractions_skills.json",
+            /* index= */ 2
           )
         )
         RATIOS_SKILL_ID_0 -> AsyncResult.success(
           createConceptCardFromJson(
-            "ratios_skills.json", /* index= */ 0
+            "ratios_skills.json",
+            /* index= */ 0
           )
         )
         else -> AsyncResult.failed(IllegalArgumentException("Invalid skill ID: $skillId"))
@@ -219,7 +223,8 @@ class TopicController @Inject constructor(
         it.forEach { topicProgress ->
           val topicName = retrieveTopic(topicProgress.topicId).name
           val storyProgressList = mutableListOf<StoryProgress>()
-          val transformedStoryProgressList = topicProgress.storyProgressMap.values.toList()
+          val transformedStoryProgressList = topicProgress
+            .storyProgressMap.values.toList()
           storyProgressList.addAll(transformedStoryProgressList)
 
           completedStoryListBuilder.addAllCompletedStory(
@@ -253,7 +258,9 @@ class TopicController @Inject constructor(
     }
   }
 
-  private fun createOngoingTopicListFromProgress(topicProgressList: List<TopicProgress>): OngoingTopicList {
+  private fun createOngoingTopicListFromProgress(
+    topicProgressList: List<TopicProgress>
+  ): OngoingTopicList {
     val ongoingTopicListBuilder = OngoingTopicList.newBuilder()
     topicProgressList.forEach { topicProgress ->
       val topic = retrieveTopic(topicProgress.topicId)
@@ -270,8 +277,20 @@ class TopicController @Inject constructor(
     val completedChapterProgressList = ArrayList<ChapterProgress>()
     val startedChapterProgressList = ArrayList<ChapterProgress>()
     topicProgress.storyProgressMap.values.toList().forEach { storyProgress ->
-      completedChapterProgressList.addAll(storyProgress.chapterProgressMap.values.filter { chapterProgress -> chapterProgress.chapterPlayState == ChapterPlayState.COMPLETED })
-      startedChapterProgressList.addAll(storyProgress.chapterProgressMap.values.filter { chapterProgress -> chapterProgress.chapterPlayState == ChapterPlayState.STARTED_NOT_COMPLETED })
+      completedChapterProgressList.addAll(
+        storyProgress.chapterProgressMap.values
+          .filter { chapterProgress ->
+            chapterProgress.chapterPlayState ==
+              ChapterPlayState.COMPLETED
+          }
+      )
+      startedChapterProgressList.addAll(
+        storyProgress.chapterProgressMap.values
+          .filter { chapterProgress ->
+            chapterProgress.chapterPlayState ==
+              ChapterPlayState.STARTED_NOT_COMPLETED
+          }
+      )
     }
 
     // If there is no completed chapter, it cannot be an ongoing-topic.
@@ -284,7 +303,9 @@ class TopicController @Inject constructor(
       return true
     }
 
-    if (topic.storyCount != topicProgress.storyProgressCount && topicProgress.storyProgressMap.isNotEmpty()) {
+    if (topic.storyCount != topicProgress.storyProgressCount &&
+      topicProgress.storyProgressMap.isNotEmpty()
+    ) {
       return true
     }
 
@@ -308,8 +329,9 @@ class TopicController @Inject constructor(
     storyProgressList.forEach { storyProgress ->
       val storySummary = retrieveStory(storyProgress.storyId)
       val lastChapterSummary = storySummary.chapterList.last()
-      if (storyProgress.chapterProgressMap.containsKey(lastChapterSummary.explorationId)
-        && storyProgress.chapterProgressMap[lastChapterSummary.explorationId]!!.chapterPlayState == ChapterPlayState.COMPLETED
+      if (storyProgress.chapterProgressMap.containsKey(lastChapterSummary.explorationId) &&
+        storyProgress.chapterProgressMap[lastChapterSummary.explorationId]!!.chapterPlayState ==
+        ChapterPlayState.COMPLETED
       ) {
         val completedStoryBuilder = CompletedStory.newBuilder()
           .setStoryId(storySummary.storyId)
@@ -361,7 +383,9 @@ class TopicController @Inject constructor(
             storyProgress.chapterProgressMap[chapterSummary.explorationId]!!.chapterPlayState
           storyBuilder.setChapter(chapterIndex, chapterBuilder)
         } else {
-          if (storyBuilder.getChapter(chapterIndex - 1).chapterPlayState == ChapterPlayState.COMPLETED) {
+          if (storyBuilder.getChapter(chapterIndex - 1).chapterPlayState ==
+            ChapterPlayState.COMPLETED
+          ) {
             val chapterBuilder = chapterSummary.toBuilder()
             chapterBuilder.chapterPlayState = ChapterPlayState.NOT_STARTED
             storyBuilder.setChapter(chapterIndex, chapterBuilder)
@@ -384,10 +408,14 @@ class TopicController @Inject constructor(
       TEST_TOPIC_ID_0 -> createTestTopic0()
       TEST_TOPIC_ID_1 -> createTestTopic1()
       FRACTIONS_TOPIC_ID -> createTopicFromJson(
-        "fractions_topic.json", "fractions_skills.json", "fractions_stories.json"
+        "fractions_topic.json",
+        "fractions_skills.json",
+        "fractions_stories.json"
       )
       RATIOS_TOPIC_ID -> createTopicFromJson(
-        "ratios_topic.json", "ratios_skills.json", "ratios_stories.json"
+        "ratios_topic.json",
+        "ratios_skills.json",
+        "ratios_stories.json"
       )
       else -> throw IllegalArgumentException("Invalid topic ID: $topicId")
     }
@@ -398,9 +426,18 @@ class TopicController @Inject constructor(
       TEST_STORY_ID_0 -> createTestTopic0Story0()
       TEST_STORY_ID_1 -> createTestTopic0Story1()
       TEST_STORY_ID_2 -> createTestTopic1Story2()
-      FRACTIONS_STORY_ID_0 -> createStoryFromJsonFile("fractions_stories.json", /* index= */ 0)
-      RATIOS_STORY_ID_0 -> createStoryFromJsonFile("ratios_stories.json", /* index= */ 0)
-      RATIOS_STORY_ID_1 -> createStoryFromJsonFile("ratios_stories.json", /* index= */ 1)
+      FRACTIONS_STORY_ID_0 -> createStoryFromJsonFile(
+        "fractions_stories.json",
+        /* index= */ 0
+      )
+      RATIOS_STORY_ID_0 -> createStoryFromJsonFile(
+        "ratios_stories.json",
+        /* index= */ 0
+      )
+      RATIOS_STORY_ID_1 -> createStoryFromJsonFile(
+        "ratios_stories.json",
+        /* index= */ 1
+      )
       else -> throw IllegalArgumentException("Invalid story ID: $storyId")
     }
   }
@@ -521,7 +558,11 @@ class TopicController @Inject constructor(
           "question", questionJson.getJSONObject("question_state_data")
         )
       )
-      .addAllLinkedSkillIds(jsonAssetRetriever.getStringsFromJSONArray(questionJson.getJSONArray("linked_skill_ids")))
+      .addAllLinkedSkillIds(
+        jsonAssetRetriever.getStringsFromJSONArray(
+          questionJson.getJSONArray("linked_skill_ids")
+        )
+      )
       .build()
   }
 
@@ -617,10 +658,12 @@ class TopicController @Inject constructor(
       .setTopicId(TEST_TOPIC_ID_1)
       .setName("Second Test Topic")
       .setDescription(
-        "A topic considering the various implications of having especially long topic descriptions. " +
-          "These descriptions almost certainly need to wrap, which should be interesting in the UI (especially on " +
-          "small screens). Consider also that there may even be multiple points pertaining to a topic, some of which " +
-          "may require expanding the description section in order to read the whole topic description."
+        "A topic considering the various implications of having especially long " +
+          "topic descriptions. These descriptions almost certainly need to wrap, which " +
+          "should be interesting in the UI (especially on small screens). " +
+          "Consider also that there may even be multiple points pertaining to a topic, " +
+          "some of which may require expanding the description section in order " +
+          "to read the whole topic description."
       )
       .addStory(createTestTopic1Story2())
       .addSkill(createTestTopic1Skill0())
@@ -637,7 +680,9 @@ class TopicController @Inject constructor(
     skillFileName: String,
     storyFileName: String
   ): Topic {
-    val topicData = jsonAssetRetriever.loadJsonFromAsset(topicFileName)?.getJSONObject("topic")!!
+    val topicData = jsonAssetRetriever.loadJsonFromAsset(topicFileName)?.getJSONObject(
+      "topic"
+    )!!
     val subtopicList: List<Subtopic> =
       createSubtopicListFromJsonArray(topicData.optJSONArray("subtopics"))
     val topicId = topicData.getString("id")
@@ -664,7 +709,12 @@ class TopicController @Inject constructor(
       .setPageContents(
         SubtitledHtml.newBuilder()
           .setHtml(subtopicData.getJSONObject("subtitled_html").getString("html"))
-          .setContentId(subtopicData.getJSONObject("subtitled_html").getString("content_id")).build()
+          .setContentId(
+            subtopicData.getJSONObject("subtitled_html").getString(
+              "content_id"
+            )
+          )
+          .build()
       )
       .build()
   }
@@ -685,9 +735,15 @@ class TopicController @Inject constructor(
       for (j in 0 until skillJsonArray.length()) {
         skillIdList.add(skillJsonArray.optString(j))
       }
-      val subtopic = Subtopic.newBuilder().setSubtopicId(currentSubtopicJsonObject.optString("id"))
+      val subtopic = Subtopic.newBuilder()
+        .setSubtopicId(currentSubtopicJsonObject.optString("id"))
         .setTitle(currentSubtopicJsonObject.optString("title"))
-        .setSubtopicThumbnail(createSubtopicThumbnail(currentSubtopicJsonObject.optString("id")))
+        .setSubtopicThumbnail(
+          createSubtopicThumbnail(
+            currentSubtopicJsonObject
+              .optString("id")
+          )
+        )
         .addAllSkillIds(skillIdList).build()
       subtopicList.add(subtopic)
     }
@@ -707,9 +763,17 @@ class TopicController @Inject constructor(
    */
   private fun createSkillsFromJson(fileName: String): List<SkillSummary> {
     val skillList = mutableListOf<SkillSummary>()
-    val skillData = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray("skill_list")!!
+    val skillData = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray(
+      "skill_list"
+    )!!
     for (i in 0 until skillData.length()) {
-      skillList.add(createSkillFromJson(skillData.getJSONObject(i).getJSONObject("skill")))
+      skillList.add(
+        createSkillFromJson(
+          skillData.getJSONObject(i).getJSONObject(
+            "skill"
+          )
+        )
+      )
     }
     return skillList
   }
@@ -728,16 +792,26 @@ class TopicController @Inject constructor(
    */
   private fun createStoriesFromJson(fileName: String): List<StorySummary> {
     val storyList = mutableListOf<StorySummary>()
-    val storyData = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray("story_list")!!
+    val storyData = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray(
+      "story_list"
+    )!!
     for (i in 0 until storyData.length()) {
-      storyList.add(createStoryFromJson(storyData.getJSONObject(i).getJSONObject("story")))
+      storyList.add(
+        createStoryFromJson(
+          storyData.getJSONObject(i).getJSONObject(
+            "story"
+          )
+        )
+      )
     }
     return storyList
   }
 
   /** Creates a list of [StorySummary]s for topic given its json representation and the index of the story in json. */
   private fun createStoryFromJsonFile(fileName: String, index: Int): StorySummary {
-    val storyData = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray("story_list")!!
+    val storyData = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray(
+      "story_list"
+    )!!
     if (storyData.length() < index) {
       return StorySummary.getDefaultInstance()
     }
@@ -750,7 +824,11 @@ class TopicController @Inject constructor(
       .setStoryId(storyId)
       .setStoryName(storyData.getString("title"))
       .setStoryThumbnail(STORY_THUMBNAILS.getValue(storyId))
-      .addAllChapter(createChaptersFromJson(storyData.getJSONObject("story_contents").getJSONArray("nodes")))
+      .addAllChapter(
+        createChaptersFromJson(
+          storyData.getJSONObject("story_contents").getJSONArray("nodes")
+        )
+      )
       .build()
   }
 
@@ -891,7 +969,9 @@ class TopicController @Inject constructor(
   }
 
   private fun createConceptCardFromJson(fileName: String, index: Int): ConceptCard {
-    val skillList = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray("skill_list")!!
+    val skillList = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray(
+      "skill_list"
+    )!!
     if (skillList.length() < index) {
       return ConceptCard.getDefaultInstance()
     }
@@ -903,9 +983,19 @@ class TopicController @Inject constructor(
       .setExplanation(
         SubtitledHtml.newBuilder()
           .setHtml(skillContents.getJSONObject("explanation").getString("html"))
-          .setContentId(skillContents.getJSONObject("explanation").getString("content_id")).build()
+          .setContentId(
+            skillContents.getJSONObject("explanation").getString(
+              "content_id"
+            )
+          ).build()
       )
-      .addAllWorkedExample(createWorkedExamplesFromJson(skillContents.getJSONArray("worked_examples")))
+      .addAllWorkedExample(
+        createWorkedExamplesFromJson(
+          skillContents.getJSONArray(
+            "worked_examples"
+          )
+        )
+      )
       .build()
   }
 
@@ -937,26 +1027,32 @@ class TopicController @Inject constructor(
         ).build()
       )
       .putRecordedVoiceover(
-        TEST_SKILL_CONTENT_ID_0, VoiceoverMapping.newBuilder().putVoiceoverMapping(
+        TEST_SKILL_CONTENT_ID_0,
+        VoiceoverMapping.newBuilder().putVoiceoverMapping(
           "es",
-          Voiceover.newBuilder().setFileName("fake_spanish_xlated_explanation.mp3").setFileSizeBytes(
-            456
-          ).build()
+          Voiceover.newBuilder().setFileName("fake_spanish_xlated_explanation.mp3")
+            .setFileSizeBytes(
+              456
+            ).build()
         ).build()
       )
       .putRecordedVoiceover(
-        TEST_SKILL_CONTENT_ID_1, VoiceoverMapping.newBuilder().putVoiceoverMapping(
+        TEST_SKILL_CONTENT_ID_1,
+        VoiceoverMapping.newBuilder().putVoiceoverMapping(
           "es",
-          Voiceover.newBuilder().setFileName("fake_spanish_xlated_example.mp3").setFileSizeBytes(123).build()
+          Voiceover.newBuilder().setFileName("fake_spanish_xlated_example.mp3")
+            .setFileSizeBytes(123).build()
         ).build()
       )
       .putWrittenTranslation(
-        TEST_SKILL_CONTENT_ID_0, TranslationMapping.newBuilder().putTranslationMapping(
+        TEST_SKILL_CONTENT_ID_0,
+        TranslationMapping.newBuilder().putTranslationMapping(
           "es", Translation.newBuilder().setHtml("Hola. Bienvenidos a Oppia.").build()
         ).build()
       )
       .putWrittenTranslation(
-        TEST_SKILL_CONTENT_ID_1, TranslationMapping.newBuilder().putTranslationMapping(
+        TEST_SKILL_CONTENT_ID_1,
+        TranslationMapping.newBuilder().putTranslationMapping(
           "es", Translation.newBuilder().setHtml("Este es el primer ejemplo trabajado.").build()
         ).build()
       )
@@ -967,8 +1063,12 @@ class TopicController @Inject constructor(
     return ConceptCard.newBuilder()
       .setSkillId(TEST_SKILL_ID_1)
       .setSkillDescription(createTestTopic0Skill1().description)
-      .setExplanation(SubtitledHtml.newBuilder().setHtml("Explanation with <b>rich text</b>.").build())
-      .addWorkedExample(SubtitledHtml.newBuilder().setHtml("Worked example with <i>rich text</i>.").build())
+      .setExplanation(
+        SubtitledHtml.newBuilder().setHtml("Explanation with <b>rich text</b>.").build()
+      )
+      .addWorkedExample(
+        SubtitledHtml.newBuilder().setHtml("Worked example with <i>rich text</i>.").build()
+      )
       .build()
   }
 
@@ -977,48 +1077,60 @@ class TopicController @Inject constructor(
       .setSkillId(TEST_SKILL_ID_2)
       .setSkillDescription(createTestTopic1Skill0().description)
       .setExplanation(SubtitledHtml.newBuilder().setHtml("Explanation without rich text.").build())
-      .addWorkedExample(SubtitledHtml.newBuilder().setHtml("Worked example without rich text.").build())
+      .addWorkedExample(
+        SubtitledHtml.newBuilder().setHtml("Worked example without rich text.").build()
+      )
       .addWorkedExample(SubtitledHtml.newBuilder().setHtml("Second worked example.").build())
       .build()
   }
 
   private fun createSkillThumbnail(skillId: String): LessonThumbnail {
     return when (skillId) {
-      FRACTIONS_SKILL_ID_0 -> LessonThumbnail.newBuilder()
-        .setThumbnailGraphic(LessonThumbnailGraphic.IDENTIFYING_THE_PARTS_OF_A_FRACTION)
-        .build()
-      FRACTIONS_SKILL_ID_1 -> LessonThumbnail.newBuilder()
-        .setThumbnailGraphic(LessonThumbnailGraphic.WRITING_FRACTIONS)
-        .build()
-      FRACTIONS_SKILL_ID_2 -> LessonThumbnail.newBuilder()
-        .setThumbnailGraphic(LessonThumbnailGraphic.MIXED_NUMBERS_AND_IMPROPER_FRACTIONS)
-        .build()
-      RATIOS_SKILL_ID_0 -> LessonThumbnail.newBuilder()
-        .setThumbnailGraphic(LessonThumbnailGraphic.DERIVE_A_RATIO)
-        .build()
-      else -> LessonThumbnail.newBuilder()
-        .setThumbnailGraphic(LessonThumbnailGraphic.IDENTIFYING_THE_PARTS_OF_A_FRACTION)
-        .build()
+      FRACTIONS_SKILL_ID_0 ->
+        LessonThumbnail.newBuilder()
+          .setThumbnailGraphic(LessonThumbnailGraphic.IDENTIFYING_THE_PARTS_OF_A_FRACTION)
+          .build()
+      FRACTIONS_SKILL_ID_1 ->
+        LessonThumbnail.newBuilder()
+          .setThumbnailGraphic(LessonThumbnailGraphic.WRITING_FRACTIONS)
+          .build()
+      FRACTIONS_SKILL_ID_2 ->
+        LessonThumbnail.newBuilder()
+          .setThumbnailGraphic(LessonThumbnailGraphic.MIXED_NUMBERS_AND_IMPROPER_FRACTIONS)
+          .build()
+      RATIOS_SKILL_ID_0 ->
+        LessonThumbnail.newBuilder()
+          .setThumbnailGraphic(LessonThumbnailGraphic.DERIVE_A_RATIO)
+          .build()
+      else ->
+        LessonThumbnail.newBuilder()
+          .setThumbnailGraphic(LessonThumbnailGraphic.IDENTIFYING_THE_PARTS_OF_A_FRACTION)
+          .build()
     }
   }
 
   private fun createSubtopicThumbnail(subtopicId: String): LessonThumbnail {
     return when (subtopicId) {
-      FRACTIONS_SUBTOPIC_ID_1 -> LessonThumbnail.newBuilder()
-        .setThumbnailGraphic(LessonThumbnailGraphic.WHAT_IS_A_FRACTION)
-        .build()
-      FRACTIONS_SUBTOPIC_ID_2 -> LessonThumbnail.newBuilder()
-        .setThumbnailGraphic(LessonThumbnailGraphic.FRACTION_OF_A_GROUP)
-        .build()
-      FRACTIONS_SUBTOPIC_ID_3 -> LessonThumbnail.newBuilder()
-        .setThumbnailGraphic(LessonThumbnailGraphic.MIXED_NUMBERS)
-        .build()
-      FRACTIONS_SUBTOPIC_ID_4 -> LessonThumbnail.newBuilder()
-        .setThumbnailGraphic(LessonThumbnailGraphic.ADDING_FRACTIONS)
-        .build()
-      else -> LessonThumbnail.newBuilder()
-        .setThumbnailGraphic(LessonThumbnailGraphic.THE_NUMBER_LINE)
-        .build()
+      FRACTIONS_SUBTOPIC_ID_1 ->
+        LessonThumbnail.newBuilder()
+          .setThumbnailGraphic(LessonThumbnailGraphic.WHAT_IS_A_FRACTION)
+          .build()
+      FRACTIONS_SUBTOPIC_ID_2 ->
+        LessonThumbnail.newBuilder()
+          .setThumbnailGraphic(LessonThumbnailGraphic.FRACTION_OF_A_GROUP)
+          .build()
+      FRACTIONS_SUBTOPIC_ID_3 ->
+        LessonThumbnail.newBuilder()
+          .setThumbnailGraphic(LessonThumbnailGraphic.MIXED_NUMBERS)
+          .build()
+      FRACTIONS_SUBTOPIC_ID_4 ->
+        LessonThumbnail.newBuilder()
+          .setThumbnailGraphic(LessonThumbnailGraphic.ADDING_FRACTIONS)
+          .build()
+      else ->
+        LessonThumbnail.newBuilder()
+          .setThumbnailGraphic(LessonThumbnailGraphic.THE_NUMBER_LINE)
+          .build()
     }
   }
 }

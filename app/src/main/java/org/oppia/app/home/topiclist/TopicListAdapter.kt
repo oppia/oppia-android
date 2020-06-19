@@ -167,7 +167,7 @@ class TopicListAdapter(
 
       val paddingEnd = if (activity.resources.getBoolean(R.bool.isTablet)) {
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-          (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_128)
+          (activity as Context).resources.getDimensionPixelSize(R.dimen.home_tablet_port_outer_margin)
         } else {
           (activity as Context).resources.getDimensionPixelSize(R.dimen.home_tablet_land_outer_margin)
         }
@@ -180,7 +180,7 @@ class TopicListAdapter(
       }
       val paddingStart = if (activity.resources.getBoolean(R.bool.isTablet)) {
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-          (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_128)
+          (activity as Context).resources.getDimensionPixelSize(R.dimen.home_tablet_port_outer_margin)
         } else {
           (activity as Context).resources.getDimensionPixelSize(R.dimen.home_tablet_land_outer_margin)
         }
@@ -214,7 +214,7 @@ class TopicListAdapter(
 
       val marginMax = if (activity.resources.getBoolean(R.bool.isTablet)) {
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-          (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_120)
+          (activity as Context).resources.getDimensionPixelSize(R.dimen.home_tablet_port_outer_margin)
         } else {
           (activity as Context).resources.getDimensionPixelSize(R.dimen.home_tablet_land_outer_margin)
         }
