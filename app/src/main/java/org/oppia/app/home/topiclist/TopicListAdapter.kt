@@ -165,19 +165,7 @@ class TopicListAdapter(
       binding.promotedStoryListRecyclerView.setOnFlingListener(null)
       snapHelper.attachToRecyclerView(binding.promotedStoryListRecyclerView)
 
-      val paddingEnd = if (activity.resources.getBoolean(R.bool.isTablet)) {
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-          (activity as Context).resources.getDimensionPixelSize(R.dimen.home_tablet_port_outer_margin)
-        } else {
-          (activity as Context).resources.getDimensionPixelSize(R.dimen.home_tablet_land_outer_margin)
-        }
-      } else {
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-          (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_44)
-        } else {
-          (activity as Context).resources.getDimensionPixelSize(R.dimen.padding_72)
-        }
-      }
+      val paddingEnd = (activity as Context).resources.getDimensionPixelSize(R.dimen.home_padding_end)
       val paddingStart = if (activity.resources.getBoolean(R.bool.isTablet)) {
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
           (activity as Context).resources.getDimensionPixelSize(R.dimen.home_tablet_port_outer_margin)
