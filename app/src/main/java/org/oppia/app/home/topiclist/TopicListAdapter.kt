@@ -1,9 +1,6 @@
 package org.oppia.app.home.topiclist
 
 import android.content.Context
-import android.content.res.Configuration
-import android.content.res.Resources
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -31,14 +28,7 @@ class TopicListAdapter(
 ) :
   RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-  private val orientation = Resources.getSystem().configuration.orientation
-  private val metrics = DisplayMetrics()
-  private var screenWidth = 0
-
-  init {
-    activity.windowManager.defaultDisplay.getMetrics(metrics)
-    screenWidth = metrics.widthPixels
-  }
+  var spanCount = 0
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
@@ -165,8 +155,10 @@ class TopicListAdapter(
       binding.promotedStoryListRecyclerView.setOnFlingListener(null)
       snapHelper.attachToRecyclerView(binding.promotedStoryListRecyclerView)
 
-      val paddingEnd = (activity as Context).resources.getDimensionPixelSize(R.dimen.home_padding_end)
-      val paddingStart = (activity as Context).resources.getDimensionPixelSize(R.dimen.home_padding_start)
+      val paddingEnd =
+        (activity as Context).resources.getDimensionPixelSize(R.dimen.home_padding_end)
+      val paddingStart =
+        (activity as Context).resources.getDimensionPixelSize(R.dimen.home_padding_start)
       if (promotedStoryList.size > 1) {
         binding.promotedStoryListRecyclerView.setPadding(paddingStart, 0, paddingEnd, 0)
       } else {
@@ -194,36 +186,10 @@ class TopicListAdapter(
 
       val marginMin = (activity as Context).resources.getDimensionPixelSize(R.dimen.home_margin_min)
 
-      if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-        val maxItemsInARow = if (activity.resources.getBoolean(R.bool.isTablet)) {
-          3
-        } else {
-          2
-        }
-        if (activity.resources.getBoolean(R.bool.isTablet)) {
+      when (spanCount) {
+        2 -> {
           when {
-            position % maxItemsInARow == 0 -> marginLayoutParams.setMargins(
-              marginMax,
-              marginTopBottom,
-              0,
-              marginTopBottom
-            )
-            position % maxItemsInARow == 1 -> marginLayoutParams.setMargins(
-              marginMin,
-              marginTopBottom,
-              marginMin,
-              marginTopBottom
-            )
-            else -> marginLayoutParams.setMargins(
-              0,
-              marginTopBottom,
-              marginMax,
-              marginTopBottom
-            )
-          }
-        } else {
-          when {
-            position % maxItemsInARow == 0 -> marginLayoutParams.setMargins(
+            position % spanCount == 0 -> marginLayoutParams.setMargins(
               marginMin,
               marginTopBottom,
               marginMax,
@@ -237,55 +203,50 @@ class TopicListAdapter(
             )
           }
         }
-      } else {
-        val maxItemsInARow = if (activity.resources.getBoolean(R.bool.isTablet)) {
-          4
-        } else {
-          3
-        }
-        if (activity.resources.getBoolean(R.bool.isTablet)) {
+        3 -> {
           when {
-            (position + 1) % maxItemsInARow == 0 -> marginLayoutParams.setMargins(
-              marginMax,
-              marginTopBottom,
-              0,
-              marginTopBottom
-            )
-            (position + 1) % maxItemsInARow == 1 -> marginLayoutParams.setMargins(
-              marginMin,
-              marginTopBottom,
-              marginMin / 2,
-              marginTopBottom
-            )
-            (position + 1) % maxItemsInARow == 2 -> marginLayoutParams.setMargins(
-              marginMin / 2,
-              marginTopBottom,
-              marginMin,
-              marginTopBottom
-            )
-            (position + 1) % maxItemsInARow == 3 -> marginLayoutParams.setMargins(
-              0,
-              marginTopBottom,
-              marginMax,
-              marginTopBottom
-            )
-          }
-        } else {
-          when {
-            position % maxItemsInARow == 0 -> marginLayoutParams.setMargins(
+            position % spanCount == 0 -> marginLayoutParams.setMargins(
               marginMax,
               marginTopBottom,
               /* right= */ 0,
               marginTopBottom
             )
-            position % maxItemsInARow == 1 -> marginLayoutParams.setMargins(
+            position % spanCount == 1 -> marginLayoutParams.setMargins(
               marginMin,
               marginTopBottom,
               marginMin,
               marginTopBottom
             )
-            position % maxItemsInARow == 2 -> marginLayoutParams.setMargins(
+            position % spanCount == 2 -> marginLayoutParams.setMargins(
               /* left= */ 0,
+              marginTopBottom,
+              marginMax,
+              marginTopBottom
+            )
+          }
+        }
+        4 -> {
+          when {
+            (position + 1) % spanCount == 0 -> marginLayoutParams.setMargins(
+              marginMax,
+              marginTopBottom,
+              0,
+              marginTopBottom
+            )
+            (position + 1) % spanCount == 1 -> marginLayoutParams.setMargins(
+              marginMin,
+              marginTopBottom,
+              marginMin / 2,
+              marginTopBottom
+            )
+            (position + 1) % spanCount == 2 -> marginLayoutParams.setMargins(
+              marginMin / 2,
+              marginTopBottom,
+              marginMin,
+              marginTopBottom
+            )
+            (position + 1) % spanCount == 3 -> marginLayoutParams.setMargins(
+              0,
               marginTopBottom,
               marginMax,
               marginTopBottom

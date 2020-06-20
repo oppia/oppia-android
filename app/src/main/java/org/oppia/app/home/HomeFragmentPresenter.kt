@@ -1,7 +1,5 @@
 package org.oppia.app.home
 
-import android.content.res.Configuration
-import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -59,8 +57,6 @@ class HomeFragmentPresenter @Inject constructor(
   private lateinit var profileId: ProfileId
   private lateinit var profileName: String
 
-  private val orientation = Resources.getSystem().configuration.orientation
-
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
@@ -79,6 +75,7 @@ class HomeFragmentPresenter @Inject constructor(
     topicListAdapter = TopicListAdapter(activity, itemList, promotedStoryList)
 
     val spanCount = activity.resources.getInteger(R.integer.home_span_count)
+    topicListAdapter.spanCount = spanCount
 
     val homeLayoutManager = GridLayoutManager(activity.applicationContext, spanCount)
     homeLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
