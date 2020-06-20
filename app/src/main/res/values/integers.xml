@@ -4,4 +4,5 @@
   <integer name="topic_description_expanded">12</integer>
   <integer name="topic_description_collapsed">5</integer>
   <integer name="home_span_count">2</integer>
+  <integer name="promoted_story_list_limit">3</integer>
 </resources>
