@@ -5,7 +5,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.Module
 import dagger.Provides
-import org.oppia.util.logging.EnableAnalytics
+import org.oppia.util.logging.EnableDataCollection
 import org.oppia.util.logging.EventBundleCreator
 import org.oppia.util.logging.EventLogger
 import org.oppia.util.logging.ExceptionLogger
@@ -16,16 +16,16 @@ import javax.inject.Singleton
 class LogReportingModule {
 
   @Provides
-  @EnableAnalytics
+  @EnableDataCollection
   @Singleton
-  fun provideAnalytics(): Boolean{
+  fun provideDataCollection(): Boolean{
     return false
   }
 
   @Singleton
   @Provides
   fun provideCrashLogger(): ExceptionLogger {
-    return if(provideAnalytics()){
+    return if(provideDataCollection()){
       FirebaseExceptionLogger(FirebaseCrashlytics.getInstance())
     } else{
       TempEventLogger()
@@ -35,7 +35,7 @@ class LogReportingModule {
   @Singleton
   @Provides
   fun provideEventLogger(): EventLogger {
-    return if(provideAnalytics()){
+    return if(provideDataCollection()){
       FirebaseEventLogger(
         FirebaseAnalytics.getInstance(Application()),
         EventBundleCreator()

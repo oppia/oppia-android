@@ -25,11 +25,11 @@ class FirebaseEventLogger(
   }
 }
 
-class TempEventLogger: EventLogger, ExceptionLogger{
+/** Temporary logger class that performs no action when called upon.*/
+class TempEventLogger : EventLogger, ExceptionLogger {
   override fun logEvent(context: Context, eventLog: EventLog) {
   }
 
   override fun logException(exception: Exception) {
   }
-
 }

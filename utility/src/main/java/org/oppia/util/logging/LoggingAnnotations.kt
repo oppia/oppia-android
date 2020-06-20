@@ -11,4 +11,5 @@ import javax.inject.Qualifier
 /** Corresponds to a singleton [LogLevel] determining the minimum severity of logs that should be kept. */
 @Qualifier annotation class GlobalLogLevel
 
-@Qualifier annotation class EnableAnalytics
+/** Corresponds to a singleton boolean of whether collected data is sent to remote services. */
+@Qualifier annotation class EnableDataCollection
