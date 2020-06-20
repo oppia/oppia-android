@@ -192,21 +192,7 @@ class TopicListAdapter(
 
       val marginTopBottom = (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_12)
 
-      val marginMin = if (activity.resources.getBoolean(R.bool.isTablet)) {
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-          val singleItemWidth = (screenWidth / 3) - marginMax
-          (screenWidth / 6) - (singleItemWidth / 2)
-        } else {
-          val singleItemWidth = (screenWidth / 4) - marginMax
-          (screenWidth - 4 * singleItemWidth) / 6
-        }
-      } else {
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-          (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_8)
-        } else {
-          (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_36)
-        }
-      }
+      val marginMin = (activity as Context).resources.getDimensionPixelSize(R.dimen.home_margin_min)
 
       if (orientation == Configuration.ORIENTATION_PORTRAIT) {
         val maxItemsInARow = if (activity.resources.getBoolean(R.bool.isTablet)) {

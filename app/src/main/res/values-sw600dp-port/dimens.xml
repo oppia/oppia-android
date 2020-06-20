@@ -3,4 +3,5 @@
   <dimen name="home_padding_end">120dp</dimen>
   <dimen name="home_padding_start">120dp</dimen>
   <dimen name="home_margin_max">120dp</dimen>
+  <dimen name="home_margin_min">60dp</dimen>
 </resources>
