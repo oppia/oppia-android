@@ -78,19 +78,7 @@ class HomeFragmentPresenter @Inject constructor(
     itemList.add(allTopicsViewModel)
     topicListAdapter = TopicListAdapter(activity, itemList, promotedStoryList)
 
-    val spanCount = if (activity.resources.getBoolean(R.bool.isTablet)) {
-      if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-        4
-      } else {
-        3
-      }
-    } else {
-      if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-        2
-      } else {
-        3
-      }
-    }
+    val spanCount = activity.resources.getInteger(R.integer.home_span_count)
 
     val homeLayoutManager = GridLayoutManager(activity.applicationContext, spanCount)
     homeLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
