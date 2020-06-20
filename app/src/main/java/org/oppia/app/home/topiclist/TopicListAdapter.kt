@@ -188,19 +188,7 @@ class TopicListAdapter(
 
       val marginLayoutParams = binding.topicContainer.layoutParams as ViewGroup.MarginLayoutParams
 
-      val marginMax = if (activity.resources.getBoolean(R.bool.isTablet)) {
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-          (activity as Context).resources.getDimensionPixelSize(R.dimen.home_tablet_port_outer_margin)
-        } else {
-          (activity as Context).resources.getDimensionPixelSize(R.dimen.home_tablet_land_outer_margin)
-        }
-      } else {
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-          (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
-        } else {
-          (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_72)
-        }
-      }
+      val marginMax = (activity as Context).resources.getDimensionPixelSize(R.dimen.home_margin_max)
 
       val marginTopBottom = (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_12)
 

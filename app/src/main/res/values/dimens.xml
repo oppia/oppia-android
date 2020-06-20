@@ -47,6 +47,7 @@
   <dimen name="promoted_story_card_width">280dp</dimen>
   <dimen name="home_padding_end">44dp</dimen>
   <dimen name="home_padding_start">20dp</dimen>
+  <dimen name="home_margin_max">28dp</dimen>
   <dimen name="home_tablet_land_outer_margin">96dp</dimen>
   <dimen name="home_tablet_port_outer_margin">120dp</dimen>
   <dimen name="recently_played_tablet_land_outer_margin">96dp</dimen>
