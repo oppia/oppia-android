@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <dimen name="home_padding_end">96dp</dimen>
+  <dimen name="home_padding_start">96dp</dimen>
 </resources>
