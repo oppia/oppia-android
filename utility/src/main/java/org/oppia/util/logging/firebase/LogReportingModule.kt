@@ -18,16 +18,16 @@ class LogReportingModule {
   @Provides
   @EnableDataCollection
   @Singleton
-  fun provideDataCollection(): Boolean{
+  fun provideDataCollection(): Boolean {
     return false
   }
 
   @Singleton
   @Provides
   fun provideCrashLogger(): ExceptionLogger {
-    return if(provideDataCollection()){
+    return if (provideDataCollection()) {
       FirebaseExceptionLogger(FirebaseCrashlytics.getInstance())
-    } else{
+    } else {
       TempEventLogger()
     }
   }
@@ -35,7 +35,7 @@ class LogReportingModule {
   @Singleton
   @Provides
   fun provideEventLogger(): EventLogger {
-    return if(provideDataCollection()){
+    return if (provideDataCollection()) {
       FirebaseEventLogger(
         FirebaseAnalytics.getInstance(Application()),
         EventBundleCreator()
