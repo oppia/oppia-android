@@ -673,13 +673,15 @@ class PersistentCacheStoreTest {
     modules = [
       TestDispatcherModule::class,
       TestModule::class,
-      TestLogReportingModule::class]
+      TestLogReportingModule::class
+    ]
   )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 

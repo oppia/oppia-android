@@ -2,12 +2,15 @@ package org.oppia.app.topic.questionplayer
 
 import android.app.Application
 import android.content.Context
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.util.threading.BackgroundDispatcher
@@ -18,6 +21,11 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class QuestionPlayerActivityTest {
   // TODO(#503): add tests for QuestionPlayerActivity (use StateFragmentTest for a reference).
+
+  @Before
+  fun setUp(){
+    FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
+  }
 
   @Test
   fun tempTest() {
