@@ -27,45 +27,83 @@ message EventLog {
       TopicContext topic_context = 3;
       // The event being logged is related to the story activity.
       StoryContext story_context = 4;
+      // The event being logged is related to the concept card.
+      ConceptCardContext concept_card_context = 5;
+      // The event being logged is related to the revision card.
+      RevisionCardContext revision_card_context = 6;
     }
   }
 
   // Structure of an exploration context.
   message ExplorationContext {
-    // The active topic ID when the event is logged
+    // The active topic ID when the event is logged.
     string topic_id = 1;
-    // The active story ID when the event is logged
+    // The active story ID when the event is logged.
     string story_id = 2;
-    // The active exploration ID when the event is logged
+    // The active exploration ID when the event is logged.
     string exploration_id = 3;
   }
 
   // Structure of a question context.
   message QuestionContext {
-    // The active topic ID when the event is logged
-    string topic_id = 1;
-    // The active question ID when the event is logged
-    string question_id = 2;
+    // The active question ID when the event is logged.
+    string question_id = 1;
+    // The IDs of skills to which this question is associated.
+    repeated string skill_id = 2;
   }
 
-  // Structure of an topic context.
+  // Structure of a topic context.
   message TopicContext {
-    // The active topic ID when the event is logged
+    // The active topic ID when the event is logged.
     string topic_id = 1;
   }
 
-  // Structure of an story context.
+  // Structure of a story context.
   message StoryContext {
-    // The active topic ID when the event is logged
+    // The active topic ID when the event is logged.
     string topic_id = 1;
-    // The active story ID when the event is logged
+    // The active story ID when the event is logged.
     string story_id = 2;
   }
 
-  // Supported event actions for event logging
+  // Structure of a concept card context.
+  message ConceptCardContext {
+    // The active skill ID when the event is logged.
+    string skill_id = 1;
+  }
+
+  // Structure of a revision card context.
+  message RevisionCardContext {
+    // The active topic ID when the event is logged.
+    string topic_id = 1;
+    // The active sub topic ID when the event is logged.
+    string sub_topic_id = 2;
+  }
+
+  // Supported event actions for event logging.
   enum EventAction {
-    // The undefined user action of an event
+    // The undefined user action of an event.
     EVENT_ACTION_UNSPECIFIED = 0;
+    // Opening of home activity.
+    OPEN_HOME = 1;
+    // Opening of info tab under topic activity.
+    OPEN_INFO_TAB = 2;
+    // Opening of lessons tab under topic activity.
+    OPEN_LESSONS_TAB = 3;
+    // Opening of practice tab under topic activity.
+    OPEN_PRACTICE_TAB = 4;
+    // Opening of revision tab under topic activity.
+    OPEN_REVISION_TAB = 5;
+    // Opening of story activity.
+    OPEN_STORY_ACTIVITY= 6;
+    // Opening of exploration activity.
+    OPEN_EXPLORATION_ACTIVITY = 7;
+    // Opening of question player.
+    OPEN_QUESTION_PLAYER = 8;
+    // Opening of concept card.
+    OPEN_CONCEPT_CARD = 9;
+    // Opening of revision card.
+    OPEN_REVISION_CARD = 10;
   }
 
   // Supported priority of events for event logging

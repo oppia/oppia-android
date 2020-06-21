@@ -23,7 +23,7 @@ class LogReportingModule {
   @Provides
   fun provideEventLogger(): EventLogger {
     return FirebaseEventLogger(
-      FirebaseAnalytics.getInstance(Application().applicationContext),
+      FirebaseAnalytics.getInstance(Application()),
       EventBundleCreator()
     )
   }
