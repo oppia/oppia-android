@@ -54,19 +54,24 @@ class ProfileTestHelperTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Inject lateinit var context: Context
+  @Inject
+  lateinit var context: Context
 
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
 
-  @Inject lateinit var profileManagementController: ProfileManagementController
+  @Inject
+  lateinit var profileManagementController: ProfileManagementController
 
   @Mock
   lateinit var mockProfilesObserver: Observer<AsyncResult<List<Profile>>>
+
   @Captor
   lateinit var profilesResultCaptor: ArgumentCaptor<AsyncResult<List<Profile>>>
 
   @Mock
   lateinit var mockUpdateResultObserver: Observer<AsyncResult<Any?>>
+
   @Captor
   lateinit var updateResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
 
@@ -186,7 +191,8 @@ class ProfileTestHelperTest {
       assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(1)
     }
 
-  @Qualifier annotation class TestDispatcher
+  @Qualifier
+  annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module
@@ -208,14 +214,18 @@ class ProfileTestHelperTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
     @Singleton
     @Provides
     @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBlockingDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 

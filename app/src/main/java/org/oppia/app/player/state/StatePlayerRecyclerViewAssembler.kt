@@ -44,7 +44,7 @@ import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.audio.AudioUiManager
 import org.oppia.app.player.state.StatePlayerRecyclerViewAssembler.Builder.Factory
-import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
+import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
@@ -231,7 +231,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       gcsEntityId,
       interaction,
       fragment as InteractionAnswerReceiver,
-      fragment as InteractionAnswerErrorReceiver,
+      fragment as InteractionAnswerErrorOrAvailabilityCheckReceiver,
       hasPreviousButton
     )
   }
