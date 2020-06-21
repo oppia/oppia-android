@@ -17,7 +17,8 @@ import org.oppia.app.model.UserAnswer
  * progress like a deck of cards to simplify forward/backward navigation.
  */
 internal class StateDeck internal constructor(
-  initialState: State, private val isTopOfDeckTerminalChecker: (State) -> Boolean
+  initialState: State,
+  private val isTopOfDeckTerminalChecker: (State) -> Boolean
 ) {
   private var pendingTopState: State = initialState
   private val previousStates: MutableList<EphemeralState> = ArrayList()
@@ -83,11 +84,19 @@ internal class StateDeck internal constructor(
    * @param prohibitSameStateName whether to enable a sanity check to ensure the same state isn't routed to twice
    */
   internal fun pushState(state: State, prohibitSameStateName: Boolean) {
-    check(isCurrentStateTopOfDeck()) { "Cannot push a new state unless the learner is at the most recent state." }
-    check(!isCurrentStateTerminal()) { "Cannot push another state after reaching a terminal state." }
-    check(currentDialogInteractions.size != 0) { "Cannot push another state without an answer." }
+    check(isCurrentStateTopOfDeck()) {
+      "Cannot push a new state unless the learner is at the most recent state."
+    }
+    check(!isCurrentStateTerminal()) {
+      "Cannot push another state after reaching a terminal state."
+    }
+    check(currentDialogInteractions.size != 0) {
+      "Cannot push another state without an answer."
+    }
     if (prohibitSameStateName) {
-      check(state.name != pendingTopState.name) { "Cannot route from the same state to itself as a new card." }
+      check(state.name != pendingTopState.name) {
+        "Cannot route from the same state to itself as a new card."
+      }
     }
     // NB: This technically has a 'next' state, but it's not marked until it's first navigated away since the new state
     // doesn't become fully realized until navigated to.
@@ -102,12 +111,17 @@ internal class StateDeck internal constructor(
   }
 
   internal fun pushStateForHint(state: State, hintIndex: Int): EphemeralState {
-    val interactionBuilder = state.interaction.toBuilder().setHint(hintIndex, hintList.get(0))
+    val interactionBuilder = state.interaction.toBuilder().setHint(
+      hintIndex,
+      hintList.get(0)
+    )
     val newState = state.toBuilder().setInteraction(interactionBuilder).build()
     val ephemeralState = EphemeralState.newBuilder()
       .setState(newState)
       .setHasPreviousState(!isCurrentStateInitial())
-      .setPendingState(PendingState.newBuilder().addAllWrongAnswer(currentDialogInteractions).addAllHint(hintList))
+      .setPendingState(
+        PendingState.newBuilder().addAllWrongAnswer(currentDialogInteractions).addAllHint(hintList)
+      )
       .build()
     pendingTopState = newState
     hintList.clear()
@@ -120,7 +134,9 @@ internal class StateDeck internal constructor(
     val ephemeralState = EphemeralState.newBuilder()
       .setState(newState)
       .setHasPreviousState(!isCurrentStateInitial())
-      .setPendingState(PendingState.newBuilder().addAllWrongAnswer(currentDialogInteractions).addAllHint(hintList))
+      .setPendingState(
+        PendingState.newBuilder().addAllWrongAnswer(currentDialogInteractions).addAllHint(hintList)
+      )
       .build()
     pendingTopState = newState
     return ephemeralState
@@ -160,7 +176,9 @@ internal class StateDeck internal constructor(
     return EphemeralState.newBuilder()
       .setState(pendingTopState)
       .setHasPreviousState(!isCurrentStateInitial())
-      .setPendingState(PendingState.newBuilder().addAllWrongAnswer(currentDialogInteractions).addAllHint(hintList))
+      .setPendingState(
+        PendingState.newBuilder().addAllWrongAnswer(currentDialogInteractions).addAllHint(hintList)
+      )
       .build()
   }
 
