@@ -63,11 +63,15 @@ class ObservableArrayList<T> : ArrayList<T>(), ObservableList<T> {
     notifyRemove(fromIndex, toIndex - fromIndex)
   }
 
-  override fun addOnListChangedCallback(callback: ObservableList.OnListChangedCallback<out ObservableList<T>>?) {
+  override fun addOnListChangedCallback(
+    callback: ObservableList.OnListChangedCallback<out ObservableList<T>>?
+  ) {
     listeners.add(callback)
   }
 
-  override fun removeOnListChangedCallback(callback: ObservableList.OnListChangedCallback<out ObservableList<T>>?) {
+  override fun removeOnListChangedCallback(
+    callback: ObservableList.OnListChangedCallback<out ObservableList<T>>?
+  ) {
     listeners.remove(callback)
   }
 

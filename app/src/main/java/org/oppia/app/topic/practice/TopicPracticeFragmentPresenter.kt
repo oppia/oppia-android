@@ -11,6 +11,7 @@ import org.oppia.app.databinding.TopicPracticeFragmentBinding
 import org.oppia.app.databinding.TopicPracticeHeaderViewBinding
 import org.oppia.app.databinding.TopicPracticeSubtopicBinding
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.model.EventLog
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.topic.RouteToQuestionPlayerListener
 import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeFooterViewModel
@@ -18,7 +19,9 @@ import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeHeaderVie
 import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeItemViewModel
 import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeSubtopicViewModel
 import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.domain.analytics.AnalyticsController
 import org.oppia.util.logging.Logger
+import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
 /** The presenter for [TopicPracticeFragment]. */
@@ -27,6 +30,8 @@ class TopicPracticeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val logger: Logger,
+  private val analyticsController: AnalyticsController,
+  private val oppiaClock: OppiaClock,
   private val viewModelProvider: ViewModelProvider<TopicPracticeViewModel>
 ) : SubtopicSelector {
   private lateinit var binding: TopicPracticeFragmentBinding
@@ -48,9 +53,14 @@ class TopicPracticeFragmentPresenter @Inject constructor(
     this.topicId = topicId
     viewModel.setTopicId(this.topicId)
     viewModel.setInternalProfileId(internalProfileId)
+    logPracticeFragmentEvent(topicId)
 
     selectedSkillIdList = skillList
-    binding = TopicPracticeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding = TopicPracticeFragmentBinding.inflate(
+      inflater,
+      container,
+      /* attachToRoot= */ false
+    )
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
 
@@ -97,7 +107,10 @@ class TopicPracticeFragmentPresenter @Inject constructor(
       .build()
   }
 
-  private fun bindSkillView(binding: TopicPracticeSubtopicBinding, model: TopicPracticeSubtopicViewModel) {
+  private fun bindSkillView(
+    binding: TopicPracticeSubtopicBinding,
+    model: TopicPracticeSubtopicViewModel
+  ) {
     binding.viewModel = model
     binding.isChecked = selectedSkillIdList.contains(model.subtopic.subtopicId)
     binding.subtopicCheckBox.setOnCheckedChangeListener { _, isChecked ->
@@ -109,14 +122,19 @@ class TopicPracticeFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun bindFooterView(binding: TopicPracticeFooterViewBinding, model: TopicPracticeFooterViewModel) {
+  private fun bindFooterView(
+    binding: TopicPracticeFooterViewBinding,
+    model: TopicPracticeFooterViewModel
+  ) {
     topicPracticeFooterViewBinding = binding
     binding.viewModel = model
     binding.isSubmitButtonActive = selectedSkillIdList.isNotEmpty()
     binding.topicPracticeStartButton.setOnClickListener {
       val skillIdList = ArrayList(skillIdHashMap.values)
       logger.d("TopicPracticeFragmentPresenter", "Skill Ids = " + skillIdList.flatten())
-      routeToQuestionPlayerListener.routeToQuestionPlayer(skillIdList.flatten() as ArrayList<String>)
+      routeToQuestionPlayerListener.routeToQuestionPlayer(
+        skillIdList.flatten() as ArrayList<String>
+      )
     }
   }
 
@@ -149,5 +167,14 @@ class TopicPracticeFragmentPresenter @Inject constructor(
     if (::topicPracticeFooterViewBinding.isInitialized) {
       topicPracticeFooterViewBinding.isSubmitButtonActive = skillIdHashMap.isNotEmpty()
     }
+  }
+
+  private fun logPracticeFragmentEvent(topicId: String){
+    analyticsController.logTransitionEvent(
+      fragment.requireActivity().applicationContext,
+      oppiaClock.getCurrentCalendar().timeInMillis,
+      EventLog.EventAction.OPEN_PRACTICE_TAB,
+      analyticsController.createTopicContext(topicId)
+    )
   }
 }

@@ -9,5 +9,7 @@ import org.oppia.domain.classify.rules.ContinueRules
 @Module
 abstract class ContinueModule {
   // No rules are bound since tapping the continue button for this interaction should always succeed.
-  @Multibinds @ContinueRules abstract fun provideContinueInteractionRules(): Map<String, RuleClassifier>
+  @Multibinds
+  @ContinueRules
+  abstract fun provideContinueInteractionRules(): Map<String, RuleClassifier>
 }

@@ -21,8 +21,17 @@ class ProfileProgressFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<ProfileProgressViewModel>
 ) {
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, internalProfileId: Int): View? {
-    val binding = ProfileProgressFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    internalProfileId: Int
+  ): View? {
+    val binding =
+      ProfileProgressFragmentBinding.inflate(
+        inflater,
+        container,
+        /* attachToRoot= */ false
+      )
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
     binding.lifecycleOwner = fragment

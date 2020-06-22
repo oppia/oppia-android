@@ -16,13 +16,18 @@ class OnboardingFlowController @Inject constructor(
   private val dataProviders: DataProviders,
   private val logger: Logger
 ) {
-  private val onboardingFlowStore = cacheStoreFactory.create("on_boarding_flow", OnboardingFlow.getDefaultInstance())
+  private val onboardingFlowStore =
+    cacheStoreFactory.create("on_boarding_flow", OnboardingFlow.getDefaultInstance())
 
   init {
     // Prime the cache ahead of time so that any existing history is read prior to any calls to markOnboardingFlowCompleted().
     onboardingFlowStore.primeCacheAsync().invokeOnCompletion {
       it?.let {
-        logger.e("DOMAIN", "Failed to prime cache ahead of LiveData conversion for user onboarding data.", it)
+        logger.e(
+          "DOMAIN",
+          "Failed to prime cache ahead of LiveData conversion for user onboarding data.",
+          it
+        )
       }
     }
   }
@@ -36,7 +41,11 @@ class OnboardingFlowController @Inject constructor(
       it.toBuilder().setAlreadyOnboardedApp(true).build()
     }.invokeOnCompletion {
       it?.let {
-        logger.e("DOMAIN", "Failed when storing that the user already onboarded the app.", it)
+        logger.e(
+          "DOMAIN",
+          "Failed when storing that the user already onboarded the app.",
+          it
+        )
       }
     }
   }

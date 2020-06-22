@@ -43,28 +43,48 @@ fun setImageDrawable(imageView: ImageView, @DrawableRes drawableResourceId: Int)
 @BindingAdapter("android:src")
 fun setImageDrawable(imageView: ImageView, thumbnailGraphic: LessonThumbnailGraphic) {
   setImageDrawable(
-    imageView, when (thumbnailGraphic) {
-      LessonThumbnailGraphic.BAKER -> R.drawable.lesson_thumbnail_graphic_baker
-      LessonThumbnailGraphic.CHILD_WITH_BOOK -> R.drawable.lesson_thumbnail_graphic_child_with_book
-      LessonThumbnailGraphic.CHILD_WITH_CUPCAKES -> R.drawable.lesson_thumbnail_graphic_child_with_cupcakes
+    imageView,
+    when (thumbnailGraphic) {
+      LessonThumbnailGraphic.BAKER ->
+        R.drawable.lesson_thumbnail_graphic_baker
+      LessonThumbnailGraphic.CHILD_WITH_BOOK ->
+        R.drawable.lesson_thumbnail_graphic_child_with_book
+      LessonThumbnailGraphic.CHILD_WITH_CUPCAKES ->
+        R.drawable.lesson_thumbnail_graphic_child_with_cupcakes
       LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK ->
         R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework
-      LessonThumbnailGraphic.DUCK_AND_CHICKEN -> R.drawable.lesson_thumbnail_graphic_duck_and_chicken
-      LessonThumbnailGraphic.PERSON_WITH_PIE_CHART -> R.drawable.lesson_thumbnail_graphic_person_with_pie_chart
-      LessonThumbnailGraphic.IDENTIFYING_THE_PARTS_OF_A_FRACTION -> R.drawable.topic_fractions_01
-      LessonThumbnailGraphic.WRITING_FRACTIONS -> R.drawable.topic_fractions_02
-      LessonThumbnailGraphic.EQUIVALENT_FRACTIONS -> R.drawable.topic_fractions_03
-      LessonThumbnailGraphic.MIXED_NUMBERS_AND_IMPROPER_FRACTIONS -> R.drawable.topic_fractions_04
-      LessonThumbnailGraphic.COMPARING_FRACTIONS -> R.drawable.topic_fractions_05
-      LessonThumbnailGraphic.ADDING_AND_SUBTRACTING_FRACTIONS -> R.drawable.topic_fractions_06
-      LessonThumbnailGraphic.MULTIPLYING_FRACTIONS -> R.drawable.topic_fractions_07
-      LessonThumbnailGraphic.DIVIDING_FRACTIONS -> R.drawable.topic_fractions_08
-      LessonThumbnailGraphic.DERIVE_A_RATIO -> R.drawable.topic_ratios_01
-      LessonThumbnailGraphic.WHAT_IS_A_FRACTION -> R.drawable.topic_fractions_01
-      LessonThumbnailGraphic.FRACTION_OF_A_GROUP -> R.drawable.topic_fractions_02
-      LessonThumbnailGraphic.ADDING_FRACTIONS -> R.drawable.topic_fractions_03
-      LessonThumbnailGraphic.MIXED_NUMBERS -> R.drawable.topic_fractions_04
-      else -> R.drawable.topic_fractions_01
+      LessonThumbnailGraphic.DUCK_AND_CHICKEN ->
+        R.drawable.lesson_thumbnail_graphic_duck_and_chicken
+      LessonThumbnailGraphic.PERSON_WITH_PIE_CHART ->
+        R.drawable.lesson_thumbnail_graphic_person_with_pie_chart
+      LessonThumbnailGraphic.IDENTIFYING_THE_PARTS_OF_A_FRACTION ->
+        R.drawable.topic_fractions_01
+      LessonThumbnailGraphic.WRITING_FRACTIONS ->
+        R.drawable.topic_fractions_02
+      LessonThumbnailGraphic.EQUIVALENT_FRACTIONS ->
+        R.drawable.topic_fractions_03
+      LessonThumbnailGraphic.MIXED_NUMBERS_AND_IMPROPER_FRACTIONS ->
+        R.drawable.topic_fractions_04
+      LessonThumbnailGraphic.COMPARING_FRACTIONS ->
+        R.drawable.topic_fractions_05
+      LessonThumbnailGraphic.ADDING_AND_SUBTRACTING_FRACTIONS ->
+        R.drawable.topic_fractions_06
+      LessonThumbnailGraphic.MULTIPLYING_FRACTIONS ->
+        R.drawable.topic_fractions_07
+      LessonThumbnailGraphic.DIVIDING_FRACTIONS ->
+        R.drawable.topic_fractions_08
+      LessonThumbnailGraphic.DERIVE_A_RATIO ->
+        R.drawable.topic_ratios_01
+      LessonThumbnailGraphic.WHAT_IS_A_FRACTION ->
+        R.drawable.topic_fractions_01
+      LessonThumbnailGraphic.FRACTION_OF_A_GROUP ->
+        R.drawable.topic_fractions_02
+      LessonThumbnailGraphic.ADDING_FRACTIONS ->
+        R.drawable.topic_fractions_03
+      LessonThumbnailGraphic.MIXED_NUMBERS ->
+        R.drawable.topic_fractions_04
+      else ->
+        R.drawable.topic_fractions_01
     }
   )
 }
@@ -105,7 +125,6 @@ fun setProfileImage(imageView: ImageView, profileAvatar: ProfileAvatar?) {
         }
       })
       .into(imageView)
-
   } else {
     Glide.with(imageView.context)
       .load(profileAvatar.avatarImageUri)

@@ -11,7 +11,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.model.InteractionObject
 import org.robolectric.annotation.Config
-import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass
@@ -43,7 +42,10 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
   fun testNonNegativeAnswer_nonNegativeInput_sameValue_bothValuesMatch() {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_0)
 
-    val matches = inputEqualsRuleClassifier.matches(answer = NON_NEGATIVE_VALUE_0, inputs = inputs)
+    val matches = inputEqualsRuleClassifier.matches(
+      answer = NON_NEGATIVE_VALUE_0,
+      inputs = inputs
+    )
 
     assertThat(matches).isTrue()
   }
@@ -52,7 +54,10 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
   fun testNonNegativeAnswer_nonNegativeInput_differentValue_bothValuesDoNotMatch() {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_0)
 
-    val matches = inputEqualsRuleClassifier.matches(answer = NON_NEGATIVE_VALUE_1, inputs = inputs)
+    val matches = inputEqualsRuleClassifier.matches(
+      answer = NON_NEGATIVE_VALUE_1,
+      inputs = inputs
+    )
 
     assertThat(matches).isFalse()
   }
@@ -62,7 +67,10 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
     val inputs = mapOf("y" to NON_NEGATIVE_VALUE_0)
 
     val exception = assertThrows(IllegalStateException::class) {
-      inputEqualsRuleClassifier.matches(answer = NON_NEGATIVE_VALUE_0, inputs = inputs)
+      inputEqualsRuleClassifier.matches(
+        answer = NON_NEGATIVE_VALUE_0,
+        inputs = inputs
+      )
     }
 
     assertThat(exception)
@@ -75,7 +83,10 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_0)
 
     val exception = assertThrows(IllegalStateException::class) {
-      inputEqualsRuleClassifier.matches(answer = STRING_VALUE_2, inputs = inputs)
+      inputEqualsRuleClassifier.matches(
+        answer = STRING_VALUE_2,
+        inputs = inputs
+      )
     }
 
     assertThat(exception)
@@ -88,7 +99,10 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
     val inputs = mapOf("x" to STRING_VALUE_2)
 
     val exception = assertThrows(IllegalStateException::class) {
-      inputEqualsRuleClassifier.matches(answer = NON_NEGATIVE_VALUE_0, inputs = inputs)
+      inputEqualsRuleClassifier.matches(
+        answer = NON_NEGATIVE_VALUE_0,
+        inputs = inputs
+      )
     }
 
     assertThat(exception)
@@ -112,7 +126,7 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
   }
 
   // TODO(#89): Move to a common test library.
-  private fun <T: Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
+  private fun <T : Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
     try {
       operation()
       fail("Expected to encounter exception of $type")

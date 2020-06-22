@@ -80,7 +80,7 @@ jobs:
             chmod +x /home/circleci/oppia-android/buf
       - run:
           name: Kotlin tests - Data, Utility
-          command: ./ktlint utility/**/*.kt data/**/*.kt && echo "Lint completed successfully"
+          command: ./ktlint --android utility/src/**/*.kt data/src/**/*.kt && echo "Lint completed successfully"
       - run:
           name: Protobuf lint check
           command: ./buf check lint --input=model/src/main/proto --input-config buf.yaml && echo "Protobuf lint check completed successfully"
@@ -133,9 +133,9 @@ jobs:
       - restore_cache:
           <<: *restore_cache
       - run:
-          name: App -  FAQ, Help, Mydownloads, Parser, RecyclerView, Story, Utility tests, Walkthrough
+          name: App -  FAQ, Help, Mydownloads, Parser, RecyclerView, Story, Utility tests
           command: ./.circleci/gradle/gradlew -i :app:testDebugUnitTest --tests org.oppia.app.faq* --tests org.oppia.app.help* --tests org.oppia.app.mydownloads*
-            --tests org.oppia.app.parser* --tests org.oppia.app.recyclerview* --tests org.oppia.app.story* --tests org.oppia.app.utility* --tests org.oppia.app.walkthrough*
+            --tests org.oppia.app.parser* --tests org.oppia.app.recyclerview* --tests org.oppia.app.story* --tests org.oppia.app.utility*
       - run:
           name: Save test results
           command: |

@@ -11,11 +11,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import java.util.Date
-import javax.inject.Inject
-import javax.inject.Qualifier
-import javax.inject.Singleton
-import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -46,6 +41,8 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Question
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.Topic
+import org.oppia.testing.FakeExceptionLogger
+import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
@@ -56,6 +53,11 @@ import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
+import java.util.Date
+import javax.inject.Inject
+import javax.inject.Qualifier
+import javax.inject.Singleton
+import kotlin.coroutines.EmptyCoroutineContext
 
 private const val INVALID_STORY_ID_1 = "INVALID_STORY_ID_1"
 private const val INVALID_TOPIC_ID_1 = "INVALID_TOPIC_ID_1"
@@ -65,8 +67,14 @@ private const val INVALID_TOPIC_ID_1 = "INVALID_TOPIC_ID_1"
 @Config(manifest = Config.NONE)
 class TopicControllerTest {
 
-  @Inject lateinit var storyProgressController: StoryProgressController
-  @Inject lateinit var topicController: TopicController
+  @Inject
+  lateinit var storyProgressController: StoryProgressController
+
+  @Inject
+  lateinit var topicController: TopicController
+
+  @Inject
+  lateinit var fakeExceptionLogger: FakeExceptionLogger
 
   @Rule
   @JvmField
@@ -76,28 +84,48 @@ class TopicControllerTest {
   @JvmField
   val executorRule = InstantTaskExecutorRule()
 
-  @Mock lateinit var mockCompletedStoryListObserver: Observer<AsyncResult<CompletedStoryList>>
-  @Captor lateinit var completedStoryListResultCaptor: ArgumentCaptor<AsyncResult<CompletedStoryList>>
+  @Mock
+  lateinit var mockCompletedStoryListObserver: Observer<AsyncResult<CompletedStoryList>>
 
-  @Mock lateinit var mockOngoingTopicListObserver: Observer<AsyncResult<OngoingTopicList>>
-  @Captor lateinit var ongoingTopicListResultCaptor: ArgumentCaptor<AsyncResult<OngoingTopicList>>
+  @Captor
+  lateinit var completedStoryListResultCaptor: ArgumentCaptor<AsyncResult<CompletedStoryList>>
 
-  @Mock lateinit var mockQuestionListObserver: Observer<AsyncResult<List<Question>>>
-  @Captor lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<List<Question>>>
+  @Mock
+  lateinit var mockOngoingTopicListObserver: Observer<AsyncResult<OngoingTopicList>>
 
-  @Mock lateinit var mockRecordProgressObserver: Observer<AsyncResult<Any?>>
-  @Captor lateinit var recordProgressResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
+  @Captor
+  lateinit var ongoingTopicListResultCaptor: ArgumentCaptor<AsyncResult<OngoingTopicList>>
 
-  @Mock lateinit var mockStorySummaryObserver: Observer<AsyncResult<StorySummary>>
-  @Captor lateinit var storySummaryResultCaptor: ArgumentCaptor<AsyncResult<StorySummary>>
+  @Mock
+  lateinit var mockQuestionListObserver: Observer<AsyncResult<List<Question>>>
 
-  @Mock lateinit var mockTopicObserver: Observer<AsyncResult<Topic>>
-  @Captor lateinit var topicResultCaptor: ArgumentCaptor<AsyncResult<Topic>>
+  @Captor
+  lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<List<Question>>>
 
-  @Inject lateinit var dataProviders: DataProviders
+  @Mock
+  lateinit var mockRecordProgressObserver: Observer<AsyncResult<Any?>>
+
+  @Captor
+  lateinit var recordProgressResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
+
+  @Mock
+  lateinit var mockStorySummaryObserver: Observer<AsyncResult<StorySummary>>
+
+  @Captor
+  lateinit var storySummaryResultCaptor: ArgumentCaptor<AsyncResult<StorySummary>>
+
+  @Mock
+  lateinit var mockTopicObserver: Observer<AsyncResult<Topic>>
+
+  @Captor
+  lateinit var topicResultCaptor: ArgumentCaptor<AsyncResult<Topic>>
 
   @Inject
-  @field:TestDispatcher lateinit var testDispatcher: CoroutineDispatcher
+  lateinit var dataProviders: DataProviders
+
+  @Inject
+  @field:TestDispatcher
+  lateinit var testDispatcher: CoroutineDispatcher
 
   private lateinit var profileId1: ProfileId
   private lateinit var profileId2: ProfileId
@@ -151,7 +179,8 @@ class TopicControllerTest {
 
       verifyGetTopicSucceeded()
       val topic = topicResultCaptor.value!!.getOrThrow()
-      assertThat(topic.topicThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
+      assertThat(topic.topicThumbnail.thumbnailGraphic)
+        .isEqualTo(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
     }
 
   @Test
@@ -205,7 +234,9 @@ class TopicControllerTest {
       verifyGetTopicSucceeded()
       val topic = topicResultCaptor.value!!.getOrThrow()
       assertThat(topic.topicId).isEqualTo(RATIOS_TOPIC_ID)
-      assertThat(topic.description).contains("Many everyday problems involve thinking about proportions")
+      assertThat(topic.description).contains(
+        "Many everyday problems involve thinking about proportions"
+      )
     }
 
   @Test
@@ -438,9 +469,12 @@ class TopicControllerTest {
 
       verifyGetStorySucceeded()
       val story = storySummaryResultCaptor.value!!.getOrThrow()
-      assertThat(story.getChapter(0).chapterPlayState).isEqualTo(ChapterPlayState.NOT_STARTED)
-      assertThat(story.getChapter(1).chapterPlayState).isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
-      assertThat(story.getChapter(2).chapterPlayState).isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+      assertThat(story.getChapter(0).chapterPlayState)
+        .isEqualTo(ChapterPlayState.NOT_STARTED)
+      assertThat(story.getChapter(1).chapterPlayState)
+        .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+      assertThat(story.getChapter(2).chapterPlayState)
+        .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
     }
 
   @Test
@@ -457,7 +491,8 @@ class TopicControllerTest {
 
   @Test
   fun testGetConceptCard_validSkill_isSuccessful() {
-    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_0)
+    val conceptCardLiveData = topicController
+      .getConceptCard(TEST_SKILL_ID_0)
 
     val conceptCardResult = conceptCardLiveData.value
     assertThat(conceptCardResult).isNotNull()
@@ -466,7 +501,8 @@ class TopicControllerTest {
 
   @Test
   fun testGetConceptCard_validSkill_returnsCorrectConceptCard() {
-    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_0)
+    val conceptCardLiveData = topicController
+      .getConceptCard(TEST_SKILL_ID_0)
 
     val conceptCard = conceptCardLiveData.value!!.getOrThrow()
     assertThat(conceptCard.skillId).isEqualTo(TEST_SKILL_ID_0)
@@ -474,7 +510,8 @@ class TopicControllerTest {
 
   @Test
   fun testGetConceptCard_validSkill_returnsCardWithCorrectDescription() {
-    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_0)
+    val conceptCardLiveData = topicController
+      .getConceptCard(TEST_SKILL_ID_0)
 
     val conceptCard = conceptCardLiveData.value!!.getOrThrow()
     assertThat(conceptCard.skillDescription).isEqualTo("An important skill")
@@ -482,7 +519,8 @@ class TopicControllerTest {
 
   @Test
   fun testGetConceptCard_validSkill_returnsCardWithCorrectExplanation() {
-    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_0)
+    val conceptCardLiveData = topicController
+      .getConceptCard(TEST_SKILL_ID_0)
 
     val conceptCard = conceptCardLiveData.value!!.getOrThrow()
     assertThat(conceptCard.explanation.html).isEqualTo("Hello. Welcome to Oppia.")
@@ -490,64 +528,80 @@ class TopicControllerTest {
 
   @Test
   fun testGetConceptCard_validSkill_returnsCardWithCorrectWorkedExample() {
-    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_0)
+    val conceptCardLiveData = topicController
+      .getConceptCard(TEST_SKILL_ID_0)
 
     val conceptCard = conceptCardLiveData.value!!.getOrThrow()
     assertThat(conceptCard.workedExampleCount).isEqualTo(1)
-    assertThat(conceptCard.getWorkedExample(0).html).isEqualTo("This is the first example.")
+    assertThat(conceptCard.getWorkedExample(0).html)
+      .isEqualTo("This is the first example.")
   }
 
   @Test
   fun getConceptCard_validSkill_returnsCardWithSpanishTranslationForExplanation() {
-    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_0)
+    val conceptCardLiveData = topicController
+      .getConceptCard(TEST_SKILL_ID_0)
 
     val conceptCard = conceptCardLiveData.value!!.getOrThrow()
     val contentId = conceptCard.explanation.contentId
     assertThat(conceptCard.writtenTranslationMap).containsKey(contentId)
-    val translations = conceptCard.writtenTranslationMap.getValue(contentId).translationMappingMap
+    val translations = conceptCard.writtenTranslationMap
+      .getValue(contentId).translationMappingMap
     assertThat(translations).containsKey("es")
-    assertThat(translations.getValue("es").html).isEqualTo("Hola. Bienvenidos a Oppia.")
+    assertThat(translations.getValue("es").html).isEqualTo(
+      "Hola. Bienvenidos a Oppia."
+    )
   }
 
   @Test
   fun getConceptCard_validSkill_returnsCardWithSpanishTranslationForWorkedExample() {
-    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_0)
+    val conceptCardLiveData = topicController
+      .getConceptCard(TEST_SKILL_ID_0)
 
     val conceptCard = conceptCardLiveData.value!!.getOrThrow()
     val contentId = conceptCard.getWorkedExample(0).contentId
     assertThat(conceptCard.writtenTranslationMap).containsKey(contentId)
-    val translations = conceptCard.writtenTranslationMap.getValue(contentId).translationMappingMap
+    val translations = conceptCard.writtenTranslationMap
+      .getValue(contentId).translationMappingMap
     assertThat(translations).containsKey("es")
-    assertThat(translations.getValue("es").html).isEqualTo("Este es el primer ejemplo trabajado.")
+    assertThat(translations.getValue("es").html)
+      .isEqualTo("Este es el primer ejemplo trabajado.")
   }
 
   @Test
   fun getConceptCard_validSkill_returnsCardWithSpanishVoiceoverForExplanation() {
-    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_0)
+    val conceptCardLiveData = topicController
+      .getConceptCard(TEST_SKILL_ID_0)
 
     val conceptCard = conceptCardLiveData.value!!.getOrThrow()
     val contentId = conceptCard.explanation.contentId
     assertThat(conceptCard.recordedVoiceoverMap).containsKey(contentId)
-    val voiceovers = conceptCard.recordedVoiceoverMap.getValue(contentId).voiceoverMappingMap
+    val voiceovers = conceptCard.recordedVoiceoverMap
+      .getValue(contentId).voiceoverMappingMap
     assertThat(voiceovers).containsKey("es")
-    assertThat(voiceovers.getValue("es").fileName).isEqualTo("fake_spanish_xlated_explanation.mp3")
+    assertThat(voiceovers.getValue("es").fileName)
+      .isEqualTo("fake_spanish_xlated_explanation.mp3")
   }
 
   @Test
   fun getConceptCard_validSkill_returnsCardWithSpanishVoiceoverForWorkedExample() {
-    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_0)
+    val conceptCardLiveData = topicController
+      .getConceptCard(TEST_SKILL_ID_0)
 
     val conceptCard = conceptCardLiveData.value!!.getOrThrow()
     val contentId = conceptCard.getWorkedExample(0).contentId
     assertThat(conceptCard.recordedVoiceoverMap).containsKey(contentId)
-    val voiceovers = conceptCard.recordedVoiceoverMap.getValue(contentId).voiceoverMappingMap
+    val voiceovers = conceptCard.recordedVoiceoverMap
+      .getValue(contentId).voiceoverMappingMap
     assertThat(voiceovers).containsKey("es")
-    assertThat(voiceovers.getValue("es").fileName).isEqualTo("fake_spanish_xlated_example.mp3")
+    assertThat(voiceovers.getValue("es").fileName)
+      .isEqualTo("fake_spanish_xlated_example.mp3")
   }
 
   @Test
   fun testGetConceptCard_validSecondSkill_isSuccessful() {
-    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_1)
+    val conceptCardLiveData = topicController
+      .getConceptCard(TEST_SKILL_ID_1)
 
     val conceptCardResult = conceptCardLiveData.value
     assertThat(conceptCardResult).isNotNull()
@@ -556,7 +610,8 @@ class TopicControllerTest {
 
   @Test
   fun testGetConceptCard_validSecondSkill_returnsCorrectConceptCard() {
-    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_1)
+    val conceptCardLiveData = topicController
+      .getConceptCard(TEST_SKILL_ID_1)
 
     val conceptCard = conceptCardLiveData.value!!.getOrThrow()
     assertThat(conceptCard.skillId).isEqualTo(TEST_SKILL_ID_1)
@@ -564,7 +619,8 @@ class TopicControllerTest {
 
   @Test
   fun testGetConceptCard_validSecondSkill_returnsCardWithCorrectDescription() {
-    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_1)
+    val conceptCardLiveData = topicController
+      .getConceptCard(TEST_SKILL_ID_1)
 
     val conceptCard = conceptCardLiveData.value!!.getOrThrow()
     assertThat(conceptCard.skillDescription).isEqualTo("Another important skill")
@@ -572,24 +628,30 @@ class TopicControllerTest {
 
   @Test
   fun testGetConceptCard_validSecondSkill_returnsCardWithRichTextExplanation() {
-    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_1)
+    val conceptCardLiveData = topicController
+      .getConceptCard(TEST_SKILL_ID_1)
 
     val conceptCard = conceptCardLiveData.value!!.getOrThrow()
-    assertThat(conceptCard.explanation.html).isEqualTo("Explanation with <b>rich text</b>.")
+    assertThat(conceptCard.explanation.html).isEqualTo(
+      "Explanation with <b>rich text</b>."
+    )
   }
 
   @Test
   fun testGetConceptCard_validSecondSkill_returnsCardWithRichTextWorkedExample() {
-    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_1)
+    val conceptCardLiveData = topicController
+      .getConceptCard(TEST_SKILL_ID_1)
 
     val conceptCard = conceptCardLiveData.value!!.getOrThrow()
     assertThat(conceptCard.workedExampleCount).isEqualTo(1)
-    assertThat(conceptCard.getWorkedExample(0).html).isEqualTo("Worked example with <i>rich text</i>.")
+    assertThat(conceptCard.getWorkedExample(0).html)
+      .isEqualTo("Worked example with <i>rich text</i>.")
   }
 
   @Test
   fun testGetConceptCard_validThirdSkillDifferentTopic_isSuccessful() {
-    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_2)
+    val conceptCardLiveData = topicController
+      .getConceptCard(TEST_SKILL_ID_2)
 
     val conceptCardResult = conceptCardLiveData.value
     assertThat(conceptCardResult).isNotNull()
@@ -598,7 +660,8 @@ class TopicControllerTest {
 
   @Test
   fun testGetConceptCard_validThirdSkillDifferentTopic_returnsCorrectConceptCard() {
-    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_2)
+    val conceptCardLiveData = topicController
+      .getConceptCard(TEST_SKILL_ID_2)
 
     val conceptCard = conceptCardLiveData.value!!.getOrThrow()
     assertThat(conceptCard.skillId).isEqualTo(TEST_SKILL_ID_2)
@@ -606,15 +669,18 @@ class TopicControllerTest {
 
   @Test
   fun testGetConceptCard_validThirdSkillDifferentTopic_returnsCardWithCorrectDescription() {
-    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_2)
+    val conceptCardLiveData = topicController
+      .getConceptCard(TEST_SKILL_ID_2)
 
     val conceptCard = conceptCardLiveData.value!!.getOrThrow()
-    assertThat(conceptCard.skillDescription).isEqualTo("A different skill in a different topic")
+    assertThat(conceptCard.skillDescription)
+      .isEqualTo("A different skill in a different topic")
   }
 
   @Test
   fun testGetConceptCard_validThirdSkillDifferentTopic_returnsCardWithCorrectExplanation() {
-    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_2)
+    val conceptCardLiveData = topicController
+      .getConceptCard(TEST_SKILL_ID_2)
 
     val conceptCard = conceptCardLiveData.value!!.getOrThrow()
     assertThat(conceptCard.explanation.html).isEqualTo("Explanation without rich text.")
@@ -622,17 +688,21 @@ class TopicControllerTest {
 
   @Test
   fun testGetConceptCard_validThirdSkillDifferentTopic_returnsCardWithMultipleWorkedExamples() {
-    val conceptCardLiveData = topicController.getConceptCard(TEST_SKILL_ID_2)
+    val conceptCardLiveData = topicController
+      .getConceptCard(TEST_SKILL_ID_2)
 
     val conceptCard = conceptCardLiveData.value!!.getOrThrow()
     assertThat(conceptCard.workedExampleCount).isEqualTo(2)
-    assertThat(conceptCard.getWorkedExample(0).html).isEqualTo("Worked example without rich text.")
-    assertThat(conceptCard.getWorkedExample(1).html).isEqualTo("Second worked example.")
+    assertThat(conceptCard.getWorkedExample(0).html)
+      .isEqualTo("Worked example without rich text.")
+    assertThat(conceptCard.getWorkedExample(1).html)
+      .isEqualTo("Second worked example.")
   }
 
   @Test
   fun testGetConceptCard_fractionsSkill0_isSuccessful() {
-    val conceptCardLiveData = topicController.getConceptCard(FRACTIONS_SKILL_ID_0)
+    val conceptCardLiveData = topicController
+      .getConceptCard(FRACTIONS_SKILL_ID_0)
 
     val conceptCardResult = conceptCardLiveData.value
     assertThat(conceptCardResult).isNotNull()
@@ -641,7 +711,8 @@ class TopicControllerTest {
 
   @Test
   fun testGetConceptCard_fractionsSkill0_returnsCorrectConceptCard() {
-    val conceptCardLiveData = topicController.getConceptCard(FRACTIONS_SKILL_ID_0)
+    val conceptCardLiveData = topicController
+      .getConceptCard(FRACTIONS_SKILL_ID_0)
 
     val conceptCard = conceptCardLiveData.value!!.getOrThrow()
     assertThat(conceptCard.skillId).isEqualTo(FRACTIONS_SKILL_ID_0)
@@ -655,7 +726,8 @@ class TopicControllerTest {
 
   @Test
   fun testGetConceptCard_ratiosSkill0_isSuccessful() {
-    val conceptCardLiveData = topicController.getConceptCard(RATIOS_SKILL_ID_0)
+    val conceptCardLiveData = topicController
+      .getConceptCard(RATIOS_SKILL_ID_0)
 
     val conceptCardResult = conceptCardLiveData.value
     assertThat(conceptCardResult).isNotNull()
@@ -664,7 +736,8 @@ class TopicControllerTest {
 
   @Test
   fun testGetConceptCard_ratiosSkill0_returnsCorrectConceptCard() {
-    val conceptCardLiveData = topicController.getConceptCard(RATIOS_SKILL_ID_0)
+    val conceptCardLiveData = topicController
+      .getConceptCard(RATIOS_SKILL_ID_0)
 
     val conceptCard = conceptCardLiveData.value!!.getOrThrow()
     assertThat(conceptCard.skillId).isEqualTo(RATIOS_SKILL_ID_0)
@@ -678,18 +751,21 @@ class TopicControllerTest {
 
   @Test
   fun testGetConceptCard_invalidSkillId_returnsFailure() {
-    val conceptCardLiveData = topicController.getConceptCard("invalid_skill_id")
+    val conceptCardLiveData = topicController
+      .getConceptCard("invalid_skill_id")
 
     assertThat(conceptCardLiveData.value!!.isFailure()).isTrue()
   }
 
   @Test
   fun testGetReviewCard_fractionSubtopicId1_isSuccessful() {
-    val reviewCardLiveData = topicController.getRevisionCard(FRACTIONS_TOPIC_ID, SUBTOPIC_TOPIC_ID)
+    val reviewCardLiveData = topicController
+      .getRevisionCard(FRACTIONS_TOPIC_ID, SUBTOPIC_TOPIC_ID)
     val reviewCardResult = reviewCardLiveData.value
     assertThat(reviewCardResult).isNotNull()
     assertThat(reviewCardResult!!.isSuccess()).isTrue()
-    assertThat(reviewCardResult.getOrThrow().pageContents.html).isEqualTo("<p>Description of subtopic is here.</p>")
+    assertThat(reviewCardResult.getOrThrow().pageContents.html)
+      .isEqualTo("<p>Description of subtopic is here.</p>")
   }
 
   @Test
@@ -722,9 +798,10 @@ class TopicControllerTest {
   @Test
   @ExperimentalCoroutinesApi
   fun testRetrieveQuestionsForSkillIds_returnsAllQuestions() = runBlockingTest(coroutineContext) {
-    val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
-      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
-    )
+    val questionsListProvider = topicController
+      .retrieveQuestionsForSkillIds(
+        listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
+      )
     dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
     verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
 
@@ -744,9 +821,10 @@ class TopicControllerTest {
   @ExperimentalCoroutinesApi
   fun testRetrieveQuestionsForFractionsSkillId0_returnsAllQuestions() =
     runBlockingTest(coroutineContext) {
-      val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
-        listOf(FRACTIONS_SKILL_ID_0)
-      )
+      val questionsListProvider = topicController
+        .retrieveQuestionsForSkillIds(
+          listOf(FRACTIONS_SKILL_ID_0)
+        )
       dataProviders.convertToLiveData(questionsListProvider)
         .observeForever(mockQuestionListObserver)
       verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
@@ -767,9 +845,10 @@ class TopicControllerTest {
   @ExperimentalCoroutinesApi
   fun testRetrieveQuestionsForFractionsSkillId1_returnsAllQuestions() =
     runBlockingTest(coroutineContext) {
-      val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
-        listOf(FRACTIONS_SKILL_ID_1)
-      )
+      val questionsListProvider = topicController
+        .retrieveQuestionsForSkillIds(
+          listOf(FRACTIONS_SKILL_ID_1)
+        )
       dataProviders.convertToLiveData(questionsListProvider)
         .observeForever(mockQuestionListObserver)
       verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
@@ -790,9 +869,10 @@ class TopicControllerTest {
   @ExperimentalCoroutinesApi
   fun testRetrieveQuestionsForFractionsSkillId2_returnsAllQuestions() =
     runBlockingTest(coroutineContext) {
-      val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
-        listOf(FRACTIONS_SKILL_ID_2)
-      )
+      val questionsListProvider = topicController
+        .retrieveQuestionsForSkillIds(
+          listOf(FRACTIONS_SKILL_ID_2)
+        )
       dataProviders.convertToLiveData(questionsListProvider)
         .observeForever(mockQuestionListObserver)
       verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
@@ -813,9 +893,10 @@ class TopicControllerTest {
   @ExperimentalCoroutinesApi
   fun testRetrieveQuestionsForRatiosSkillId0_returnsAllQuestions() =
     runBlockingTest(coroutineContext) {
-      val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
-        listOf(RATIOS_SKILL_ID_0)
-      )
+      val questionsListProvider = topicController
+        .retrieveQuestionsForSkillIds(
+          listOf(RATIOS_SKILL_ID_0)
+        )
       dataProviders.convertToLiveData(questionsListProvider)
         .observeForever(mockQuestionListObserver)
       verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
@@ -834,9 +915,10 @@ class TopicControllerTest {
   @Test
   @ExperimentalCoroutinesApi
   fun testRetrieveQuestionsForInvalidSkillIds_returnsFailure() = runBlockingTest(coroutineContext) {
-    val questionsListProvider = topicController.retrieveQuestionsForSkillIds(
-      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, "NON_EXISTENT_SKILL_ID")
-    )
+    val questionsListProvider = topicController
+      .retrieveQuestionsForSkillIds(
+        listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, "NON_EXISTENT_SKILL_ID")
+      )
     dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
     verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
 
@@ -863,8 +945,10 @@ class TopicControllerTest {
       verifyGetTopicSucceeded()
       val topic = topicResultCaptor.value.getOrThrow()
       assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
-      assertThat(topic.storyList[0].chapterList[0].chapterPlayState).isEqualTo(ChapterPlayState.NOT_STARTED)
-      assertThat(topic.storyList[0].chapterList[1].chapterPlayState).isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+      assertThat(topic.storyList[0].chapterList[0].chapterPlayState)
+        .isEqualTo(ChapterPlayState.NOT_STARTED)
+      assertThat(topic.storyList[0].chapterList[1].chapterPlayState)
+        .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
     }
 
   @Test
@@ -880,8 +964,10 @@ class TopicControllerTest {
       verifyGetTopicSucceeded()
       val topic = topicResultCaptor.value.getOrThrow()
       assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
-      assertThat(topic.storyList[0].chapterList[0].chapterPlayState).isEqualTo(ChapterPlayState.COMPLETED)
-      assertThat(topic.storyList[0].chapterList[1].chapterPlayState).isEqualTo(ChapterPlayState.NOT_STARTED)
+      assertThat(topic.storyList[0].chapterList[0].chapterPlayState)
+        .isEqualTo(ChapterPlayState.COMPLETED)
+      assertThat(topic.storyList[0].chapterList[1].chapterPlayState)
+        .isEqualTo(ChapterPlayState.NOT_STARTED)
     }
 
   @Test
@@ -906,8 +992,10 @@ class TopicControllerTest {
       verifyGetStorySucceeded()
       val storySummary = storySummaryResultCaptor.value.getOrThrow()
       assertThat(storySummary.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
-      assertThat(storySummary.chapterList[0].chapterPlayState).isEqualTo(ChapterPlayState.NOT_STARTED)
-      assertThat(storySummary.chapterList[1].chapterPlayState).isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+      assertThat(storySummary.chapterList[0].chapterPlayState)
+        .isEqualTo(ChapterPlayState.NOT_STARTED)
+      assertThat(storySummary.chapterList[1].chapterPlayState)
+        .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
     }
 
   @Test
@@ -924,8 +1012,10 @@ class TopicControllerTest {
       verifyGetTopicSucceeded()
       val topic = topicResultCaptor.value.getOrThrow()
       assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
-      assertThat(topic.storyList[0].chapterList[0].chapterPlayState).isEqualTo(ChapterPlayState.COMPLETED)
-      assertThat(topic.storyList[0].chapterList[1].chapterPlayState).isEqualTo(ChapterPlayState.NOT_STARTED)
+      assertThat(topic.storyList[0].chapterList[0].chapterPlayState)
+        .isEqualTo(ChapterPlayState.COMPLETED)
+      assertThat(topic.storyList[0].chapterList[1].chapterPlayState)
+        .isEqualTo(ChapterPlayState.NOT_STARTED)
     }
 
   @Test
@@ -976,7 +1066,7 @@ class TopicControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testOngoingTopicList_finishOneEntireTopicAndOneChapterInAnotherTopic_ongoingTopicListIsCorrect() =
+  fun testOngoingTopicList_finishOneEntireTopicAndOneChapterInAnotherTopic_ongoingTopicListIsCorrect() = // ktlint-disable max-line-length
     runBlockingTest(coroutineContext) {
       // Mark entire FRACTIONS topic as finished.
       markFractionsStory0Chapter0AsCompleted()
@@ -1070,7 +1160,7 @@ class TopicControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testCompletedStoryList_finishOneEntireStoryAndOneChapterInAnotherStory_completedStoryListIsCorrect() =
+  fun testCompletedStoryList_finishOneEntireStoryAndOneChapterInAnotherStory_completedStoryListIsCorrect() = // ktlint-disable max-line-length
     runBlockingTest(coroutineContext) {
       markFractionsStory0Chapter0AsCompleted()
       advanceUntilIdle()
@@ -1117,6 +1207,17 @@ class TopicControllerTest {
       assertThat(completedStoryList.completedStoryList[0].storyId).isEqualTo(FRACTIONS_STORY_ID_0)
       assertThat(completedStoryList.completedStoryList[1].storyId).isEqualTo(RATIOS_STORY_ID_0)
     }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testGetRevisionCard_noTopicAndSubtopicId_returnsFailure_logsException() {
+    topicController.getRevisionCard("", "")
+
+    val exception = fakeExceptionLogger.getMostRecentException()
+
+    assertThat(exception).isInstanceOf(IllegalArgumentException::class.java)
+    assertThat(exception).hasMessageThat().contains("Invalid topic Name: ")
+  }
 
   private fun setUpTestApplicationComponent() {
     DaggerTopicControllerTest_TestApplicationComponent.builder()
@@ -1213,7 +1314,8 @@ class TopicControllerTest {
     return story.chapterList.map(ChapterSummary::getExplorationId)
   }
 
-  @Qualifier annotation class TestDispatcher
+  @Qualifier
+  annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module
@@ -1235,14 +1337,18 @@ class TopicControllerTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
     @Singleton
     @Provides
     @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBlockingDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
@@ -1267,7 +1373,7 @@ class TopicControllerTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class])
+  @Component(modules = [TestModule::class, TestLogReportingModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

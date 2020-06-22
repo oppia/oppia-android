@@ -32,6 +32,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -62,6 +63,7 @@ import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.domain.topic.RATIOS_STORY_ID_0
 import org.oppia.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.domain.topic.StoryProgressTestHelper
+import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -79,9 +81,14 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class TopicLessonsFragmentTest {
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var storyProgressTestHelper: StoryProgressTestHelper
 
   private val internalProfileId = 0
 
@@ -95,6 +102,7 @@ class TopicLessonsFragmentTest {
     IdlingRegistry.getInstance().register(MainThreadExecutor.countingResource)
     profileTestHelper.initializeProfiles()
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    FirebaseApp.initializeApp(context)
   }
 
   @After
@@ -156,7 +164,10 @@ class TopicLessonsFragmentTest {
 
   @Test
   fun testLessonsPlayFragment_loadRatiosTopic_completeStoryProgress_isDisplayed() {
-    storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(profileId, /* timestampOlderThanAWeek= */ false)
+    storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
+      profileId,
+      /* timestampOlderThanAWeek= */ false
+    )
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       waitForTheView(withText("100%"))
       onView(
@@ -176,7 +187,10 @@ class TopicLessonsFragmentTest {
 
   @Test
   fun testLessonsPlayFragment_loadRatiosTopic_partialStoryProgress_isDisplayed() {
-    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(profileId, /* timestampOlderThanAWeek= */ false)
+    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
+      profileId,
+      /* timestampOlderThanAWeek= */ false
+    )
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       onView(
         allOf(
@@ -221,7 +235,13 @@ class TopicLessonsFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPositionOnView(R.id.story_summary_recycler_view, 1, R.id.story_name_text_view)).perform(click())
+      onView(
+        atPositionOnView(
+          R.id.story_summary_recycler_view,
+          1,
+          R.id.story_name_text_view
+        )
+      ).perform(click())
       intended(hasComponent(StoryActivity::class.java.name))
       intended(hasExtra(StoryActivity.STORY_ACTIVITY_INTENT_EXTRA_STORY_ID, RATIOS_STORY_ID_0))
     }
@@ -247,7 +267,13 @@ class TopicLessonsFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPositionOnView(R.id.story_summary_recycler_view, 1, R.id.chapter_list_drop_down_icon)).check(
+      onView(
+        atPositionOnView(
+          R.id.story_summary_recycler_view,
+          1,
+          R.id.chapter_list_drop_down_icon
+        )
+      ).check(
         matches(
           withDrawable(R.drawable.ic_arrow_drop_down_black_24dp)
         )
@@ -297,7 +323,11 @@ class TopicLessonsFragmentTest {
           R.id.chapter_list_drop_down_icon
         )
       ).perform(click())
-      onView(withId(R.id.story_summary_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(withId(R.id.story_summary_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
@@ -306,9 +336,24 @@ class TopicLessonsFragmentTest {
         )
       ).check(matches(hasDescendant(withId(R.id.chapter_container)))).perform(click())
       intended(hasComponent(ExplorationActivity::class.java.name))
-      intended(hasExtra(ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, internalProfileId))
-      intended(hasExtra(ExplorationActivity.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, RATIOS_TOPIC_ID))
-      intended(hasExtra(ExplorationActivity.EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY, RATIOS_STORY_ID_0))
+      intended(
+        hasExtra(
+          ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY,
+          internalProfileId
+        )
+      )
+      intended(
+        hasExtra(
+          ExplorationActivity.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY,
+          RATIOS_TOPIC_ID
+        )
+      )
+      intended(
+        hasExtra(
+          ExplorationActivity.EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY,
+          RATIOS_STORY_ID_0
+        )
+      )
       intended(
         hasExtra(
           ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY,
@@ -319,7 +364,7 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_clickExpandListIconIndex2_chapterListForIndex1IsNotDisplayed() {
+  fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_clickExpandListIconIndex2_chapterListForIndex1IsNotDisplayed() { // ktlint-disable max-line-length
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       onView(
         allOf(
@@ -327,7 +372,11 @@ class TopicLessonsFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.story_summary_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(withId(R.id.story_summary_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
@@ -335,7 +384,11 @@ class TopicLessonsFragmentTest {
           R.id.chapter_list_drop_down_icon
         )
       ).perform(click())
-      onView(withId(R.id.story_summary_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
+      onView(withId(R.id.story_summary_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          2
+        )
+      )
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
@@ -343,7 +396,11 @@ class TopicLessonsFragmentTest {
           R.id.chapter_list_drop_down_icon
         )
       ).perform(click())
-      onView(withId(R.id.story_summary_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(withId(R.id.story_summary_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
@@ -355,7 +412,7 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_clickExpandListIconIndex0_chapterListForIndex0IsNotDisplayed() {
+  fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_clickExpandListIconIndex0_chapterListForIndex0IsNotDisplayed() { // ktlint-disable max-line-length
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       onView(
         allOf(
@@ -363,7 +420,11 @@ class TopicLessonsFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.story_summary_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
+      onView(withId(R.id.story_summary_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          2
+        )
+      )
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
@@ -371,7 +432,11 @@ class TopicLessonsFragmentTest {
           R.id.chapter_list_drop_down_icon
         )
       ).perform(click())
-      onView(withId(R.id.story_summary_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(withId(R.id.story_summary_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
@@ -379,7 +444,11 @@ class TopicLessonsFragmentTest {
           R.id.chapter_list_drop_down_icon
         )
       ).perform(click())
-      onView(withId(R.id.story_summary_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
+      onView(withId(R.id.story_summary_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          2
+        )
+      )
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
@@ -391,7 +460,7 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_configurationChange_chapterListIsVisible() {
+  fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_configurationChange_chapterListIsVisible() { // ktlint-disable max-line-length
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       onView(
         allOf(
@@ -399,8 +468,18 @@ class TopicLessonsFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPositionOnView(R.id.story_summary_recycler_view, 1, R.id.chapter_list_drop_down_icon)).perform(click())
-      onView(withId(R.id.story_summary_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(
+        atPositionOnView(
+          R.id.story_summary_recycler_view,
+          1,
+          R.id.chapter_list_drop_down_icon
+        )
+      ).perform(click())
+      onView(withId(R.id.story_summary_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
       onView(isRoot()).perform(orientationLandscape())
       onView(
         atPositionOnView(
@@ -460,7 +539,8 @@ class TopicLessonsFragmentTest {
     }
   }
 
-  @Qualifier annotation class TestDispatcher
+  @Qualifier
+  annotation class TestDispatcher
 
   @Module
   class TestModule {
@@ -481,14 +561,18 @@ class TopicLessonsFragmentTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
     @Singleton
     @Provides
     @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBlockingDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
@@ -508,7 +592,7 @@ class TopicLessonsFragmentTest {
   }
 
   @Singleton
-  @Component(modules = [TestModule::class])
+  @Component(modules = [TestModule::class, TestLogReportingModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
@@ -535,7 +619,8 @@ class TopicLessonsFragmentTest {
     override fun isTerminated(): Boolean = false
 
     private val handler = Handler(Looper.getMainLooper())
-    val countingResource = CountingIdlingResource("main_thread_executor_counting_idling_resource")
+    val countingResource =
+      CountingIdlingResource("main_thread_executor_counting_idling_resource")
 
     override fun execute(command: Runnable?) {
       countingResource.increment()

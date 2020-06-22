@@ -144,7 +144,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="32dp"
         android:fontFamily="sans-serif"
-        android:text="@{String.format(@string/topic_download_text, viewModel.getTopicSizeWithUnit())}"
+        android:text="@{String.format(@string/topic_download_text, viewModel.topicSize)}"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="18sp"
         android:textStyle="italic"

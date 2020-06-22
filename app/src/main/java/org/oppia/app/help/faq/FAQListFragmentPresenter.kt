@@ -29,7 +29,11 @@ class FAQListFragmentPresenter @Inject constructor(
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val viewModel = getFAQListViewModel()
 
-    binding = FaqListFragmentBinding.inflate(inflater, container, /* attachToRoot = */ false)
+    binding = FaqListFragmentBinding.inflate(
+      inflater,
+      container,
+      /* attachToRoot= */ false
+    )
 
     binding.faqFragmentRecyclerView.apply {
       layoutManager = LinearLayoutManager(activity.applicationContext)
