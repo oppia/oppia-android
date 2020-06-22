@@ -1,16 +1,23 @@
 package org.oppia.app.recyclerview
 
-import android.annotation.SuppressLint
 import androidx.recyclerview.widget.DiffUtil
 
-class RecyclerDataDiffCallback<T> : DiffUtil.ItemCallback<T>() {
+class RecyclerDataDiffCallback<T>(var oldList: List<T>, var newList: List<T>) :
+  DiffUtil.Callback() {
 
-  override fun areItemsTheSame(oldItem: T, newItem: T): Boolean {
-    return oldItem == newItem
+  override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+    return oldList[oldItemPosition]!!.equals(newList[newItemPosition])
   }
 
-  @SuppressLint("DiffUtilEquals")
-  override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
-    return oldItem == newItem
+  override fun getOldListSize(): Int {
+    return oldList.size
+  }
+
+  override fun getNewListSize(): Int {
+    return newList.size
+  }
+
+  override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+    return oldList[oldItemPosition]!!.equals(newList[newItemPosition])
   }
 }

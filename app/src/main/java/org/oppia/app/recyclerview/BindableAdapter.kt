@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
-import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.recyclerview.BindableAdapter.MultiTypeBuilder.Companion.newBuilder
 import org.oppia.app.recyclerview.BindableAdapter.SingleTypeBuilder.Companion.newBuilder
@@ -33,40 +33,17 @@ class BindableAdapter<T : Any> internal constructor(
   private val viewHolderFactoryMap: Map<Int, ViewHolderFactory<T>>,
   private val dataClassType: KClass<T>
 ) : RecyclerView.Adapter<BindableAdapter.BindableViewHolder<T>>() {
-  //private val dataList: MutableList<T> = ArrayList()
-
-  private val differ = AsyncListDiffer(this, RecyclerDataDiffCallback<T>())
-
-  private var dataList: List<T> = emptyList()
-    set(value) {
-      field = value
-      differ.submitList(buildMergedList(sessionSpeakers = value))
-    }
+  private var dataList: MutableList<T> = ArrayList()
 
   // TODO(#170): Introduce support for stable IDs.
 
-  init {
-    differ.submitList(buildMergedList())
-  }
-
   /** Sets the data of this adapter. This is expected to be called by Android via data-binding. */
   private fun setData(newDataList: List<T>) {
-    differ.submitList(buildMergedList(sessionSpeakers = newDataList))
-    // dataList.clear()
-    //dataList += newDataList
+    val result = DiffUtil.calculateDiff(RecyclerDataDiffCallback(dataList, newDataList), false)
+    dataList = newDataList.toMutableList()
+    result.dispatchUpdatesTo(this)
     // TODO(#171): Introduce diffing to notify subsets of the view to properly support animations
     //  rather than re-binding the entire list upon any change.
-    //notifyDataSetChanged()
-  }
-
-  private fun buildMergedList(
-    sessionSpeakers: List<T> = dataList
-  ): List<T> {
-    val merged = mutableListOf<T>()
-    if (sessionSpeakers.isNotEmpty()) {
-      merged.addAll(sessionSpeakers)
-    }
-    return merged
   }
 
   /**
@@ -90,8 +67,6 @@ class BindableAdapter<T : Any> internal constructor(
     }
     @Suppress("UNCHECKED_CAST")
     setData(newDataList as List<T>)
-    /*@Suppress("UNCHECKED_CAST") // This is safe. See the above check.
-    setData(newDataList as List<T>)*/
   }
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BindableViewHolder<T> {
@@ -101,15 +76,15 @@ class BindableAdapter<T : Any> internal constructor(
   }
 
   override fun getItemCount(): Int {
-    return differ.currentList.size
+    return dataList.size
   }
 
   override fun getItemViewType(position: Int): Int {
-    return computeIntViewType(differ.currentList[position])
+    return computeIntViewType(dataList[position])
   }
 
   override fun onBindViewHolder(holder: BindableViewHolder<T>, position: Int) {
-    holder.bind(differ.currentList[position])
+    holder.bind(dataList[position])
   }
 
   /** A generic [RecyclerView.ViewHolder] that generically binds data to the specified view. */
