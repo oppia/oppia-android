@@ -6,7 +6,8 @@
 
   <integer name="fade_in_duration_ms">1000</integer>
   <integer name="fade_out_duration_ms">1000</integer>
-  <integer name="profile_chooser_span_count">4</integer>
+  <integer name="profile_chooser_span_count">2</integer>
+  <integer name="profile_chooser_first_time_span_count">1</integer>
   <dimen name="audio_fragment_corner_radius">8dp</dimen>
   <dimen name="audio_fragment_margin">28dp</dimen>
   <dimen name="cellular_data_dialog_padding">24dp</dimen>

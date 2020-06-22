@@ -4,4 +4,5 @@
   <dimen name="home_padding_start">120dp</dimen>
   <dimen name="home_margin_max">120dp</dimen>
   <dimen name="home_margin_min">60dp</dimen>
+  <integer name="profile_chooser_span_count">3</integer>
 </resources>
