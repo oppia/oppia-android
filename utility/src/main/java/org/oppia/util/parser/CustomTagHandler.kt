@@ -5,7 +5,6 @@ import android.text.Editable
 import android.text.Html
 import android.text.Spanned
 import android.text.style.LeadingMarginSpan
-import android.util.Log
 import org.oppia.util.R
 import org.oppia.util.parser.CustomTagHandler.ListItemTag
 import org.oppia.util.parser.StringUtils.LI_TAG
@@ -21,7 +20,9 @@ import java.util.*
  * <li> tags are handled [ListItemTag] instance corresponding to the parent tag.
  * Reference: https://github.com/daphliu/android-spannable-list-sample/tree/master/app/src/main/java/com/daphneliu/sample/listspansample
  */
-class CustomTagHandler(private val context: Context) : Html.TagHandler {
+class CustomTagHandler(
+  private val context: Context
+) : Html.TagHandler {
   private val indent = context.resources.getDimensionPixelSize(R.dimen.bullet_leading_margin)
   private val listItemIndent = indent * 2
   private val bulletSpan = BulletSpanWithRadius(context, indent)
@@ -57,11 +58,11 @@ class CustomTagHandler(private val context: Context) : Html.TagHandler {
             listParents.peek().closeItem(output, listParents.size)
           }
         } catch (e: EmptyStackException) {
-          Log.d("CustomTagHandler", "No Such Element Found" + listParents.isEmpty())
+          throw EmptyStackException()
         }
       }
       else -> {
-        Log.d("CustomTagHandler", "Found an unsupported tag $tag")
+        // Found an unsupported tag $tag
       }
     }
   }
