@@ -13,7 +13,6 @@ import org.oppia.app.model.InteractionObject
 import org.oppia.domain.classify.rules.numericinput.NumericInputEqualsRuleClassifierProvider
 import org.oppia.domain.util.FLOAT_EQUALITY_INTERVAL
 import org.robolectric.annotation.Config
-import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass
@@ -48,7 +47,8 @@ class NumericInputEqualsRuleClassifierProviderTest {
   fun testPositiveRealAnswer_positiveRealInput_sameExactValue_bothValuesMatch() {
     val inputs = mapOf("x" to POSITIVE_REAL_VALUE_1_5)
 
-    val matches = inputEqualsRuleClassifier.matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
+    val matches =
+      inputEqualsRuleClassifier.matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
 
     assertThat(matches).isTrue()
   }
@@ -57,16 +57,24 @@ class NumericInputEqualsRuleClassifierProviderTest {
   fun testNegativeRealAnswer_negativeRealInput_sameExactValue_bothValuesMatch() {
     val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_1_5)
 
-    val matches = inputEqualsRuleClassifier.matches(answer = NEGATIVE_REAL_VALUE_1_5, inputs = inputs)
+    val matches =
+      inputEqualsRuleClassifier.matches(answer = NEGATIVE_REAL_VALUE_1_5, inputs = inputs)
 
     assertThat(matches).isTrue()
   }
 
   @Test
   fun testPositiveRealAnswer_positiveRealInput_valuesInRange_bothValuesMatch() {
-    val inputs = mapOf("x" to createReal(value = 5 * FLOAT_EQUALITY_INTERVAL))
+    val inputs = mapOf(
+      "x" to createReal(
+        value = 5 * FLOAT_EQUALITY_INTERVAL
+      )
+    )
 
-    val matches = inputEqualsRuleClassifier.matches(answer = createReal(value = 5 * FLOAT_EQUALITY_INTERVAL + FLOAT_EQUALITY_INTERVAL / 10), inputs = inputs)
+    val matches = inputEqualsRuleClassifier.matches(
+      answer = createReal(value = 5 * FLOAT_EQUALITY_INTERVAL + FLOAT_EQUALITY_INTERVAL / 10),
+      inputs = inputs
+    )
 
     assertThat(matches).isTrue()
   }
@@ -75,7 +83,8 @@ class NumericInputEqualsRuleClassifierProviderTest {
   fun testPositiveRealAnswer_positiveRealInput_valueOutOfRange_valuesDoNotMatch() {
     val inputs = mapOf("x" to POSITIVE_REAL_VALUE_1_5)
 
-    val matches = inputEqualsRuleClassifier.matches(answer = POSITIVE_REAL_VALUE_3_5, inputs = inputs)
+    val matches =
+      inputEqualsRuleClassifier.matches(answer = POSITIVE_REAL_VALUE_3_5, inputs = inputs)
 
     assertThat(matches).isFalse()
   }
@@ -84,7 +93,8 @@ class NumericInputEqualsRuleClassifierProviderTest {
   fun testNegativeRealAnswer_negativeRealInput_valueOutOfRange_valuesDoNotMatch() {
     val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_1_5)
 
-    val matches = inputEqualsRuleClassifier.matches(answer = NEGATIVE_REAL_VALUE_3_5, inputs = inputs)
+    val matches =
+      inputEqualsRuleClassifier.matches(answer = NEGATIVE_REAL_VALUE_3_5, inputs = inputs)
 
     assertThat(matches).isFalse()
   }
@@ -93,16 +103,24 @@ class NumericInputEqualsRuleClassifierProviderTest {
   fun testNegativeRealAnswer_positiveRealInput_valueOutOfRange_valuesDoNotMatch() {
     val inputs = mapOf("x" to POSITIVE_REAL_VALUE_3_5)
 
-    val matches = inputEqualsRuleClassifier.matches(answer = NEGATIVE_REAL_VALUE_3_5, inputs = inputs)
+    val matches =
+      inputEqualsRuleClassifier.matches(answer = NEGATIVE_REAL_VALUE_3_5, inputs = inputs)
 
     assertThat(matches).isFalse()
   }
 
   @Test
   fun testPositiveRealAnswer_positiveRealInput_valueAtRange_valuesDoNotMatch() {
-    val inputs = mapOf("x" to createReal(value = 5 * FLOAT_EQUALITY_INTERVAL))
+    val inputs = mapOf(
+      "x" to createReal(
+        value = 5 * FLOAT_EQUALITY_INTERVAL
+      )
+    )
 
-    val matches = inputEqualsRuleClassifier.matches(answer = createReal(value = 6 * FLOAT_EQUALITY_INTERVAL), inputs = inputs)
+    val matches = inputEqualsRuleClassifier.matches(
+      answer = createReal(value = 6 * FLOAT_EQUALITY_INTERVAL),
+      inputs = inputs
+    )
 
     assertThat(matches).isFalse()
   }
