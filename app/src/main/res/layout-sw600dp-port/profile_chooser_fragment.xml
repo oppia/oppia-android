@@ -79,7 +79,7 @@
           android:fadingEdgeLength="72dp"
           android:orientation="vertical"
           android:overScrollMode="never"
-          android:paddingBottom="@{presenter.wasProfileEverBeenAddedValue ? @dimen/padding_296dp : @dimen/bottom_white_space}"
+          android:paddingBottom="@{presenter.wasProfileEverBeenAddedValue ? @dimen/padding_224dp : @dimen/bottom_white_space}"
           android:requiresFadingEdge="vertical"
           android:scrollbars="none"
           app:data="@{viewModel.profiles}"
