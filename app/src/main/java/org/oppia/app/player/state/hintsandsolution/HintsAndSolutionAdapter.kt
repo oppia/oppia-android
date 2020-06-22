@@ -1,8 +1,10 @@
 package org.oppia.app.player.state.hintsandsolution
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.databinding.HintsSummaryBinding
@@ -93,7 +95,7 @@ class HintsAndSolutionAdapter(
       binding.isListExpanded = isHintListVisible
       binding.viewModel = hintsViewModel
 
-      if (hintsViewModel.isHintRevealed.get()!!) {
+      if (!hintsViewModel.isHintRevealed.get()!!) {
         binding.root.visibility = View.VISIBLE
       } else {
         binding.root.visibility = View.GONE

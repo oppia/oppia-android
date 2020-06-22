@@ -20,6 +20,7 @@ import org.oppia.app.options.OptionsFragment
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.exploration.ExplorationFragment
 import org.oppia.app.player.state.StateFragment
+import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionExplorationManagerFragment
 import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionFragment
 import org.oppia.app.player.state.itemviewmodel.InteractionViewModelModule
 import org.oppia.app.profile.AdminSettingsDialogFragment
@@ -33,6 +34,7 @@ import org.oppia.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.app.topic.info.TopicInfoFragment
 import org.oppia.app.topic.lessons.TopicLessonsFragment
 import org.oppia.app.topic.practice.TopicPracticeFragment
+import org.oppia.app.topic.questionplayer.HintsAndSolutionQuestionManagerFragment
 import org.oppia.app.topic.questionplayer.QuestionPlayerFragment
 import org.oppia.app.topic.revision.TopicRevisionFragment
 import org.oppia.app.topic.revisioncard.RevisionCardFragment
@@ -68,6 +70,8 @@ interface FragmentComponent {
   fun inject(faqListFragment: FAQListFragment)
   fun inject(helpFragment: HelpFragment)
   fun inject(hintsAndSolutionFragment: HintsAndSolutionFragment)
+  fun inject(hintsAndSolutionExplorationManagerFragment: HintsAndSolutionExplorationManagerFragment)
+  fun inject(hintsAndSolutionQuestionManagerFragment: HintsAndSolutionQuestionManagerFragment)
   fun inject(homeFragment: HomeFragment)
   fun inject(myDownloadsFragment: MyDownloadsFragment)
   fun inject(navigationDrawerFragment: NavigationDrawerFragment)

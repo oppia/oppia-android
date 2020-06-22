@@ -3,7 +3,9 @@ package org.oppia.app.topic.questionplayer
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.app.model.State
 import org.oppia.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionFragment
 import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionListener
@@ -19,6 +21,7 @@ import javax.inject.Inject
 const val QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY =
   "QuestionPlayerActivity.skill_id_list"
 private const val TAG_STOP_TRAINING_SESSION_DIALOG = "STOP_TRAINING_SESSION_DIALOG"
+private const val TAG_HINTS_AND_SOLUTION_QUESTION_MANAGER = "HINTS_AND_SOLUTION_QUESTION_MANAGER"
 
 /** Activity for QuestionPlayer in train mode. */
 class QuestionPlayerActivity :
@@ -29,7 +32,8 @@ class QuestionPlayerActivity :
   HintsAndSolutionListener,
   RouteToHintsAndSolutionListener,
   RevealHintListener,
-  RevealSolutionInterface {
+  RevealSolutionInterface,
+  HintsAndSolutionQuestionManagerListener {
 
   @Inject
   lateinit var questionPlayerActivityPresenter: QuestionPlayerActivityPresenter
@@ -95,18 +99,42 @@ class QuestionPlayerActivity :
     newAvailableHintIndex: Int,
     allHintsExhausted: Boolean
   ) {
-    if (getHintsAndSolution() == null) {
-      val hintsAndSolutionFragment = HintsAndSolutionFragment.newInstance(
-        questionId,
-        newAvailableHintIndex,
-        allHintsExhausted,
-        isInTrainMode = true
-      )
-      hintsAndSolutionFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
+    if (getHintsAndSolutionExplorationManagerFragment() == null) {
+      supportFragmentManager.beginTransaction().add(
+        R.id.question_player_fragment_placeholder,
+        HintsAndSolutionQuestionManagerFragment.newInstance(
+          questionId,
+          newAvailableHintIndex,
+          allHintsExhausted
+        )
+      ).commitNow()
     }
+  }
+
+  private fun getHintsAndSolutionExplorationManagerFragment(): HintsAndSolutionQuestionManagerFragment? {
+    return supportFragmentManager.findFragmentByTag(TAG_HINTS_AND_SOLUTION_QUESTION_MANAGER) as HintsAndSolutionQuestionManagerFragment?
   }
 
   override fun dismiss() {
     getHintsAndSolution()?.dismiss()
   }
+
+  override fun onQuestionStateLoaded(
+    state: State,
+    explorationId: String,
+    newAvailableHintIndex: Int,
+    allHintsExhausted: Boolean
+  ) {
+    if (getHintsAndSolution() == null) {
+      val hintsAndSolutionFragment =
+        HintsAndSolutionFragment.newInstance(
+          explorationId,
+          newAvailableHintIndex,
+          allHintsExhausted
+        )
+      hintsAndSolutionFragment.loadState(state)
+      hintsAndSolutionFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
+    }
+  }
+
 }
