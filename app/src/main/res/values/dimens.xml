@@ -26,6 +26,8 @@
   <dimen name="padding_72">72dp</dimen>
   <dimen name="padding_128">128dp</dimen>
   <dimen name="margin_298">298dp</dimen>
+  <dimen name="margin_170">170dp</dimen>
+  <dimen name="margin_124">124dp</dimen>
   <dimen name="margin_120">120dp</dimen>
   <dimen name="margin_84">84dp</dimen>
   <dimen name="margin_72">72dp</dimen>
