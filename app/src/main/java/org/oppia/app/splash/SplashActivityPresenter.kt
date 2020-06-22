@@ -25,29 +25,43 @@ class SplashActivityPresenter @Inject constructor(
 
   fun handleOnCreate() {
     activity.setContentView(R.layout.splash_activity)
-    activity.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+    activity.window.setFlags(
+      WindowManager.LayoutParams.FLAG_FULLSCREEN,
+      WindowManager.LayoutParams.FLAG_FULLSCREEN
+    )
     subscribeToOnboardingFlow()
   }
 
   private fun subscribeToOnboardingFlow() {
-    getOnboardingFlow().observe(activity, Observer<OnboardingFlow> { result ->
-      if (result.alreadyOnboardedApp) {
-        activity.startActivity(ProfileActivity.createProfileActivity(activity))
-      } else {
-        activity.startActivity(OnboardingActivity.createOnboardingActivity(activity))
+    getOnboardingFlow().observe(
+      activity,
+      Observer<OnboardingFlow> { result ->
+        if (result.alreadyOnboardedApp) {
+          activity.startActivity(ProfileActivity.createProfileActivity(activity))
+        } else {
+          activity.startActivity(OnboardingActivity.createOnboardingActivity(activity))
+        }
+        activity.finish()
       }
-      activity.finish()
-    })
+    )
   }
 
   private fun getOnboardingFlow(): LiveData<OnboardingFlow> {
     // If there's an error loading the data, assume the default.
-    return Transformations.map(onboardingFlowController.getOnboardingFlow(), ::processOnboardingFlowResult)
+    return Transformations.map(
+      onboardingFlowController.getOnboardingFlow(),
+      ::processOnboardingFlowResult
+    )
   }
 
-  private fun processOnboardingFlowResult(onboardingResult: AsyncResult<OnboardingFlow>): OnboardingFlow {
+  private fun processOnboardingFlowResult(
+    onboardingResult: AsyncResult<OnboardingFlow>
+  ): OnboardingFlow {
     if (onboardingResult.isFailure()) {
-      logger.e("SplashActivity", "Failed to retrieve onboarding flow " + onboardingResult.getErrorOrNull())
+      logger.e(
+        "SplashActivity",
+        "Failed to retrieve onboarding flow " + onboardingResult.getErrorOrNull()
+      )
     }
     return onboardingResult.getOrDefault(OnboardingFlow.getDefaultInstance())
   }

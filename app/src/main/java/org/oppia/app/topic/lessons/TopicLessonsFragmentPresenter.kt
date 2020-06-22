@@ -12,14 +12,17 @@ import org.oppia.app.databinding.TopicLessonsFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.app.model.ChapterSummary
+import org.oppia.app.model.EventLog
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.Topic
 import org.oppia.app.topic.RouteToStoryListener
+import org.oppia.domain.analytics.AnalyticsController
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
+import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
 /** The presenter for [TopicLessonsFragment]. */
@@ -29,7 +32,9 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val logger: Logger,
   private val explorationDataController: ExplorationDataController,
-  private val topicController: TopicController
+  private val topicController: TopicController,
+  private val analyticsController: AnalyticsController,
+  private val oppiaClock: OppiaClock
 ) : StorySummarySelector, ChapterSummarySelector {
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToStoryListener = activity as RouteToStoryListener
@@ -59,47 +64,60 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     this.storyId = storyId
     this.currentExpandedChapterListIndex = currentExpandedChapterListIndex
     this.expandedChapterListIndexListener = expandedChapterListIndexListener
-    binding = TopicLessonsFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding = TopicLessonsFragmentBinding.inflate(
+      inflater,
+      container,
+      /* attachToRoot= */ false
+    )
     binding.let {
       it.lifecycleOwner = fragment
     }
     subscribeToTopicLiveData()
+    logLessonsFragmentEvent(topicId)
     return binding.root
   }
 
   private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
 
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
-    topicController.getTopic(ProfileId.newBuilder().setInternalId(internalProfileId).build(), topicId)
+    topicController.getTopic(
+      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      topicId
+    )
   }
 
   private fun subscribeToTopicLiveData() {
-    topicLiveData.observe(fragment, Observer<Topic> {
-      if (it.storyList.isNotEmpty()) {
-        it.storyList!!.forEach { storySummary ->
-          if (storySummary.storyId == storyId) {
-            val index = it.storyList.indexOf(storySummary)
-            currentExpandedChapterListIndex = index + 1
+    topicLiveData.observe(
+      fragment,
+      Observer<Topic> {
+        if (it.storyList.isNotEmpty()) {
+          it.storyList!!.forEach { storySummary ->
+            if (storySummary.storyId == storyId) {
+              val index = it.storyList.indexOf(storySummary)
+              currentExpandedChapterListIndex = index + 1
+            }
           }
+          itemList.add(TopicLessonsTitleViewModel())
+          for (storySummary in it.storyList) {
+            itemList.add(StorySummaryViewModel(storySummary, fragment as StorySummarySelector))
+          }
+          val storySummaryAdapter =
+            StorySummaryAdapter(
+              itemList,
+              this as ChapterSummarySelector,
+              expandedChapterListIndexListener,
+              currentExpandedChapterListIndex
+            )
+          binding.storySummaryRecyclerView.apply {
+            adapter = storySummaryAdapter
+          }
+          if (storyId.isNotEmpty())
+            binding.storySummaryRecyclerView.layoutManager!!.scrollToPosition(
+              currentExpandedChapterListIndex!!
+            )
         }
-        itemList.add(TopicLessonsTitleViewModel())
-        for (storySummary in it.storyList) {
-          itemList.add(StorySummaryViewModel(storySummary, fragment as StorySummarySelector))
-        }
-        val storySummaryAdapter =
-          StorySummaryAdapter(
-            itemList,
-            this as ChapterSummarySelector,
-            expandedChapterListIndexListener,
-            currentExpandedChapterListIndex
-          )
-        binding.storySummaryRecyclerView.apply {
-          adapter = storySummaryAdapter
-        }
-        if (storyId.isNotEmpty())
-          binding.storySummaryRecyclerView.layoutManager!!.scrollToPosition(currentExpandedChapterListIndex!!)
       }
-    })
+    )
   }
 
   private fun getTopicList(): LiveData<Topic> {
@@ -108,7 +126,11 @@ class TopicLessonsFragmentPresenter @Inject constructor(
 
   private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
     if (topic.isFailure()) {
-      logger.e("TopicLessonsFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
+      logger.e(
+        "TopicLessonsFragment",
+        "Failed to retrieve topic",
+        topic.getErrorOrNull()!!
+      )
     }
     return topic.getOrDefault(Topic.getDefaultInstance())
   }
@@ -118,25 +140,59 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   }
 
   override fun selectChapterSummary(storyId: String, chapterSummary: ChapterSummary) {
-    playExploration(internalProfileId, topicId, storyId, chapterSummary.explorationId, /* backflowScreen= */ 0)
+    playExploration(
+      internalProfileId,
+      topicId,
+      storyId,
+      chapterSummary.explorationId, /* backflowScreen= */
+      0
+    )
   }
 
-  private fun playExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowScreen: Int?) {
+  private fun playExploration(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    backflowScreen: Int?
+  ) {
     explorationDataController.startPlayingExploration(
       explorationId
-    ).observe(fragment, Observer<AsyncResult<Any?>> { result ->
-      when {
-        result.isPending() -> logger.d("TopicLessonsFragment", "Loading exploration")
-        result.isFailure() -> logger.e("TopicLessonsFragment", "Failed to load exploration", result.getErrorOrNull()!!)
-        else -> {
-          logger.d("TopicLessonsFragment", "Successfully loaded exploration")
-          routeToExplorationListener.routeToExploration(internalProfileId, topicId, storyId, explorationId, backflowScreen)
+    ).observe(
+      fragment,
+      Observer<AsyncResult<Any?>> { result ->
+        when {
+          result.isPending() -> logger.d("TopicLessonsFragment", "Loading exploration")
+          result.isFailure() -> logger.e(
+            "TopicLessonsFragment",
+            "Failed to load exploration",
+            result.getErrorOrNull()!!
+          )
+          else -> {
+            logger.d("TopicLessonsFragment", "Successfully loaded exploration")
+            routeToExplorationListener.routeToExploration(
+              internalProfileId,
+              topicId,
+              storyId,
+              explorationId,
+              backflowScreen
+            )
+          }
         }
       }
-    })
+    )
   }
 
   fun storySummaryClicked(storySummary: StorySummary) {
     routeToStoryListener.routeToStory(internalProfileId, topicId, storySummary.storyId)
+  }
+
+  private fun logLessonsFragmentEvent(topicId: String){
+    analyticsController.logTransitionEvent(
+      fragment.requireActivity().applicationContext,
+      oppiaClock.getCurrentCalendar().timeInMillis,
+      EventLog.EventAction.OPEN_LESSONS_TAB,
+      analyticsController.createTopicContext(topicId)
+    )
   }
 }

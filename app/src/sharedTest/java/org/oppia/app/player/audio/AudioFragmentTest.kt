@@ -25,6 +25,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -44,6 +45,7 @@ import org.oppia.app.testing.AudioFragmentTestActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.audio.AudioPlayerController
 import org.oppia.domain.profile.ProfileTestHelper
+import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -88,6 +90,7 @@ class AudioFragmentTest {
     addMediaInfo()
     shadowMediaPlayer = shadowOf(audioPlayerController.getTestMediaPlayer())
     setDataSource(shadowMediaPlayer, toDataSource(context, Uri.parse(TEST_URL)))
+    FirebaseApp.initializeApp(context)
   }
 
   @After
@@ -343,7 +346,7 @@ class AudioFragmentTest {
   }
 
   @Singleton
-  @Component(modules = [TestModule::class])
+  @Component(modules = [TestModule::class, TestLogReportingModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

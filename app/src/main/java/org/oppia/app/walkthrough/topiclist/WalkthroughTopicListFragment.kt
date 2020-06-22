@@ -12,14 +12,19 @@ import javax.inject.Inject
 
 /** The second slide for [WalkthroughActivity]. */
 class WalkthroughTopicListFragment : InjectableFragment(), TopicSummaryClickListener {
-  @Inject lateinit var walkthroughTopicListFragmentPresenter: WalkthroughTopicListFragmentPresenter
+  @Inject
+  lateinit var walkthroughTopicListFragmentPresenter: WalkthroughTopicListFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
     return walkthroughTopicListFragmentPresenter.handleCreateView(inflater, container)
   }
 

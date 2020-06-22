@@ -11,7 +11,7 @@ import org.oppia.app.customview.interaction.TextInputInteractionView
 import org.oppia.app.databinding.ActivityInputInteractionViewTestBinding
 import org.oppia.app.model.Interaction
 import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
-import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
+import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.app.player.state.itemviewmodel.TextInputViewModel
@@ -21,8 +21,10 @@ import org.oppia.app.player.state.listener.StateKeyboardButtonListener
  * This is a dummy activity to test input interaction views.
  * It contains [FractionInputInteractionView], [NumericInputInteractionView],and [TextInputInteractionView].
  */
-class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButtonListener,
-  InteractionAnswerErrorReceiver {
+class InputInteractionViewTestActivity :
+  AppCompatActivity(),
+  StateKeyboardButtonListener,
+  InteractionAnswerErrorOrAvailabilityCheckReceiver {
   override fun onEditorAction(actionCode: Int) {
   }
 
@@ -30,11 +32,12 @@ class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButto
   lateinit var fractionInteractionViewModel: FractionInteractionViewModel
   val numericInputViewModel = NumericInputViewModel(
     context = this,
-    interactionAnswerErrorReceiver = this
+    interactionAnswerErrorOrAvailabilityCheckReceiver = this
   )
 
   val textInputViewModel = TextInputViewModel(
-    interaction = Interaction.getDefaultInstance()
+    interaction = Interaction.getDefaultInstance(),
+    interactionAnswerErrorOrAvailabilityCheckReceiver = this
   )
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +48,7 @@ class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButto
     fractionInteractionViewModel = FractionInteractionViewModel(
       interaction = Interaction.getDefaultInstance(),
       context = this,
-      interactionAnswerErrorReceiver = this
+      interactionAnswerErrorOrAvailabilityCheckReceiver = this
     )
     binding.numericInputViewModel = numericInputViewModel
     binding.textInputViewModel = textInputViewModel
@@ -57,12 +60,10 @@ class InputInteractionViewTestActivity : AppCompatActivity(), StateKeyboardButto
     numericInputViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
   }
 
-  override fun onPendingAnswerError(
-    pendingAnswerError: String?
+  override fun onPendingAnswerErrorOrAvailabilityCheck(
+    pendingAnswerError: String?,
+    inputAnswerAvailable: Boolean
   ) {
-    if (pendingAnswerError != null)
-      binding.submitButton.isEnabled = false
-    else
-      binding.submitButton.isEnabled = true
+    binding.submitButton.isEnabled = pendingAnswerError == null
   }
 }

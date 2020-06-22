@@ -31,7 +31,9 @@ class SegmentedCircularProgressView : View {
   private var totalChapters: Int = 0
 
   fun setStoryChapterDetails(totalChaptersCount: Int, chaptersFinishedCount: Int) {
-    if (this.totalChapters != totalChaptersCount || this.chaptersFinished != chaptersFinishedCount) {
+    if (this.totalChapters != totalChaptersCount ||
+      this.chaptersFinished != chaptersFinishedCount
+    ) {
       this.totalChapters = totalChaptersCount
       this.chaptersFinished = chaptersFinishedCount
       this.chaptersNotFinished = totalChaptersCount - chaptersFinishedCount
@@ -41,7 +43,11 @@ class SegmentedCircularProgressView : View {
 
   constructor(context: Context) : super(context)
   constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
-  constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+  constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
+    context,
+    attrs,
+    defStyleAttr
+  )
 
   private fun initialise() {
     chaptersNotFinished = totalChapters - chaptersFinished
@@ -52,14 +58,16 @@ class SegmentedCircularProgressView : View {
     chapterFinishedArcPaint.style = Paint.Style.STROKE
     chapterFinishedArcPaint.strokeCap = Paint.Cap.ROUND
     chapterFinishedArcPaint.strokeWidth = strokeWidth
-    chapterFinishedArcPaint.color = ContextCompat.getColor(context, R.color.oppiaProgressChapterFinished)
+    chapterFinishedArcPaint.color =
+      ContextCompat.getColor(context, R.color.oppiaProgressChapterFinished)
 
     chapterNotFinishedArcPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     chapterNotFinishedArcPaint.style = Paint.Style.STROKE
     chapterNotFinishedArcPaint.strokeCap = Paint.Cap.ROUND
     chapterNotFinishedArcPaint.strokeWidth = strokeWidth
     if (chaptersFinished != 0) {
-      chapterNotFinishedArcPaint.color = ContextCompat.getColor(context, R.color.oppiaProgressChapterNotFinished)
+      chapterNotFinishedArcPaint.color =
+        ContextCompat.getColor(context, R.color.oppiaProgressChapterNotFinished)
     } else {
       chapterNotFinishedArcPaint.color = ContextCompat.getColor(context, R.color.grey_shade_20)
     }
@@ -79,7 +87,8 @@ class SegmentedCircularProgressView : View {
       val endRight = 2 * radius - startTop
 
       // baseRect will define the drawing space for drawArc().
-      baseRect = RectF(startLeft.toFloat(), startTop.toFloat(), endRight.toFloat(), endBottom.toFloat())
+      baseRect =
+        RectF(startLeft.toFloat(), startTop.toFloat(), endRight.toFloat(), endBottom.toFloat())
     }
 
     var angleStartPoint = -90f
@@ -88,22 +97,36 @@ class SegmentedCircularProgressView : View {
       // Draws arc for every finished chapter.
       for (i in 0 until chaptersFinished) {
         val startAngle =
-          angleStartPoint + i * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE) + STROKE_DASH_GAP_IN_DEGREE / 2
+          angleStartPoint + i * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE) +
+            STROKE_DASH_GAP_IN_DEGREE / 2
         canvas.drawArc(baseRect!!, startAngle, sweepAngle, false, chapterFinishedArcPaint)
       }
       angleStartPoint += chaptersFinished * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE)
       // Draws arc for every unfinished chapter.
       for (i in 0 until chaptersNotFinished) {
         val startAngle =
-          angleStartPoint + i * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE) + STROKE_DASH_GAP_IN_DEGREE / 2
+          angleStartPoint + i * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE) +
+            STROKE_DASH_GAP_IN_DEGREE / 2
         canvas.drawArc(baseRect!!, startAngle, sweepAngle, false, chapterNotFinishedArcPaint)
       }
     } else if (totalChapters == 1) {
       // Draws entire circle for finished an unfinished chapter.
       if (chaptersFinished == 1) {
-        canvas.drawArc(baseRect!!, angleStartPoint, 360f, false, chapterFinishedArcPaint)
+        canvas.drawArc(
+          baseRect!!,
+          angleStartPoint,
+          360f,
+          false,
+          chapterFinishedArcPaint
+        )
       } else {
-        canvas.drawArc(baseRect!!, angleStartPoint, 360f, false, chapterNotFinishedArcPaint)
+        canvas.drawArc(
+          baseRect!!,
+          angleStartPoint,
+          360f,
+          false,
+          chapterNotFinishedArcPaint
+        )
       }
     }
   }
@@ -114,6 +137,10 @@ class SegmentedCircularProgressView : View {
   }
 
   private fun dpToPx(dp: Int): Float {
-    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), resources.displayMetrics)
+    return TypedValue.applyDimension(
+      TypedValue.COMPLEX_UNIT_DIP,
+      dp.toFloat(),
+      resources.displayMetrics
+    )
   }
 }

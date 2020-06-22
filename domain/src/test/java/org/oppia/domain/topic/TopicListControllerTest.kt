@@ -36,6 +36,7 @@ import org.oppia.app.model.LessonThumbnailGraphic
 import org.oppia.app.model.OngoingStoryList
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.PromotedStory
+import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.DefaultResourceBucketName
@@ -65,14 +66,20 @@ class TopicListControllerTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Inject lateinit var context: Context
+  @Inject
+  lateinit var context: Context
 
-  @Inject lateinit var topicListController: TopicListController
+  @Inject
+  lateinit var topicListController: TopicListController
 
-  @Inject lateinit var storyProgressController: StoryProgressController
+  @Inject
+  lateinit var storyProgressController: StoryProgressController
 
-  @Mock lateinit var mockOngoingStoryListObserver: Observer<AsyncResult<OngoingStoryList>>
-  @Captor lateinit var ongoingStoryListResultCaptor: ArgumentCaptor<AsyncResult<OngoingStoryList>>
+  @Mock
+  lateinit var mockOngoingStoryListObserver: Observer<AsyncResult<OngoingStoryList>>
+
+  @Captor
+  lateinit var ongoingStoryListResultCaptor: ArgumentCaptor<AsyncResult<OngoingStoryList>>
 
   @Inject
   @field:TestDispatcher
@@ -149,7 +156,8 @@ class TopicListControllerTest {
 
     val topicList = topicListLiveData.value!!.getOrThrow()
     val firstTopic = topicList.getTopicSummary(0)
-    assertThat(firstTopic.topicThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
+    assertThat(firstTopic.topicThumbnail.thumbnailGraphic)
+      .isEqualTo(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
   }
 
   @Test
@@ -177,7 +185,8 @@ class TopicListControllerTest {
 
     val topicList = topicListLiveData.value!!.getOrThrow()
     val secondTopic = topicList.getTopicSummary(1)
-    assertThat(secondTopic.topicThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
+    assertThat(secondTopic.topicThumbnail.thumbnailGraphic)
+      .isEqualTo(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
   }
 
   @Test
@@ -251,7 +260,8 @@ class TopicListControllerTest {
   @ExperimentalCoroutinesApi
   fun testRetrieveOngoingStoryList_defaultLesson_hasCorrectInfo() =
     runBlockingTest(coroutineContext) {
-      topicListController.getOngoingStoryList(profileId0).observeForever(mockOngoingStoryListObserver)
+      topicListController.getOngoingStoryList(profileId0)
+        .observeForever(mockOngoingStoryListObserver)
       advanceUntilIdle()
 
       verifyGetOngoingStoryListSucceeded()
@@ -261,7 +271,7 @@ class TopicListControllerTest {
   @Test
   @Ignore("Failing on Circle CI.")
   @ExperimentalCoroutinesApi
-  fun testRetrieveOngoingStoryList_markRecentlyPlayedFractionStory0Exploration0_ongoingStoryListIsCorrect() =
+  fun testRetrieveOngoingStoryList_markRecentlyPlayedFractionStory0Exploration0_ongoingStoryListIsCorrect() = // ktlint-disable max-line-length
     runBlockingTest(coroutineContext) {
       storyProgressController.recordRecentlyPlayedChapter(
         profileId0,
@@ -272,7 +282,8 @@ class TopicListControllerTest {
       )
       advanceUntilIdle()
 
-      topicListController.getOngoingStoryList(profileId0).observeForever(mockOngoingStoryListObserver)
+      topicListController.getOngoingStoryList(profileId0)
+        .observeForever(mockOngoingStoryListObserver)
       advanceUntilIdle()
 
       verifyGetOngoingStoryListSucceeded()
@@ -284,7 +295,7 @@ class TopicListControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testRetrieveOngoingStoryList_markChapterCompletedFractionStory0Exploration0_ongoingStoryListIsCorrect() =
+  fun testRetrieveOngoingStoryList_markChapterCompletedFractionStory0Exploration0_ongoingStoryListIsCorrect() = // ktlint-disable max-line-length
     runBlockingTest(coroutineContext) {
       storyProgressController.recordCompletedChapter(
         profileId0,
@@ -295,7 +306,8 @@ class TopicListControllerTest {
       )
       advanceUntilIdle()
 
-      topicListController.getOngoingStoryList(profileId0).observeForever(mockOngoingStoryListObserver)
+      topicListController.getOngoingStoryList(profileId0)
+        .observeForever(mockOngoingStoryListObserver)
       advanceUntilIdle()
 
       verifyGetOngoingStoryListSucceeded()
@@ -307,7 +319,7 @@ class TopicListControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testRetrieveOngoingStoryList_markChapterCompletedFractionStory0Exploration0_markRecentlyPlayedFractionStory0Exploration1_ongoingStoryListIsCorrect() =
+  fun testRetrieveOngoingStoryList_markChapterCompletedFractionStory0Exploration0_markRecentlyPlayedFractionStory0Exploration1_ongoingStoryListIsCorrect() = // ktlint-disable max-line-length
     runBlockingTest(coroutineContext) {
       storyProgressController.recordCompletedChapter(
         profileId0,
@@ -327,7 +339,8 @@ class TopicListControllerTest {
       )
       advanceUntilIdle()
 
-      topicListController.getOngoingStoryList(profileId0).observeForever(mockOngoingStoryListObserver)
+      topicListController.getOngoingStoryList(profileId0)
+        .observeForever(mockOngoingStoryListObserver)
       advanceUntilIdle()
 
       verifyGetOngoingStoryListSucceeded()
@@ -360,7 +373,8 @@ class TopicListControllerTest {
       )
       advanceUntilIdle()
 
-      topicListController.getOngoingStoryList(profileId0).observeForever(mockOngoingStoryListObserver)
+      topicListController.getOngoingStoryList(profileId0)
+        .observeForever(mockOngoingStoryListObserver)
       advanceUntilIdle()
 
       verifyGetOngoingStoryListSucceeded()
@@ -372,7 +386,7 @@ class TopicListControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testRetrieveOngoingStoryList_markRecentPlayedFirstChaptersInAllStoriesInRatios_ongoingStoryListIsCorrect() =
+  fun testRetrieveOngoingStoryList_markRecentPlayedFirstChaptersInAllStoriesInRatios_ongoingStoryListIsCorrect() = // ktlint-disable max-line-length
     runBlockingTest(coroutineContext) {
       storyProgressController.recordRecentlyPlayedChapter(
         profileId0,
@@ -392,7 +406,8 @@ class TopicListControllerTest {
       )
       advanceUntilIdle()
 
-      topicListController.getOngoingStoryList(profileId0).observeForever(mockOngoingStoryListObserver)
+      topicListController.getOngoingStoryList(profileId0)
+        .observeForever(mockOngoingStoryListObserver)
       advanceUntilIdle()
 
       verifyGetOngoingStoryListSucceeded()
@@ -405,7 +420,7 @@ class TopicListControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testRetrieveOngoingStoryList_markExploration0CompletedAndExploration2AsRecentlyPlayedInRatios_ongoingStoryListIsCorrect() =
+  fun testRetrieveOngoingStoryList_markExploration0CompletedAndExploration2AsRecentlyPlayedInRatios_ongoingStoryListIsCorrect() = // ktlint-disable max-line-length
     runBlockingTest(coroutineContext) {
       storyProgressController.recordCompletedChapter(
         profileId0,
@@ -425,7 +440,8 @@ class TopicListControllerTest {
       )
       advanceUntilIdle()
 
-      topicListController.getOngoingStoryList(profileId0).observeForever(mockOngoingStoryListObserver)
+      topicListController.getOngoingStoryList(profileId0)
+        .observeForever(mockOngoingStoryListObserver)
       advanceUntilIdle()
 
       verifyGetOngoingStoryListSucceeded()
@@ -438,7 +454,7 @@ class TopicListControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testRetrieveOngoingStoryList_markFirstExplorationOfEveryStoryCompletedWithinLastSevenDays_ongoingStoryListIsCorrect() =
+  fun testRetrieveOngoingStoryList_markFirstExplorationOfEveryStoryCompletedWithinLastSevenDays_ongoingStoryListIsCorrect() = // ktlint-disable max-line-length
     runBlockingTest(coroutineContext) {
       storyProgressController.recordCompletedChapter(
         profileId0,
@@ -467,7 +483,8 @@ class TopicListControllerTest {
       )
       advanceUntilIdle()
 
-      topicListController.getOngoingStoryList(profileId0).observeForever(mockOngoingStoryListObserver)
+      topicListController.getOngoingStoryList(profileId0)
+        .observeForever(mockOngoingStoryListObserver)
       advanceUntilIdle()
 
       verifyGetOngoingStoryListSucceeded()
@@ -481,7 +498,7 @@ class TopicListControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testRetrieveOngoingStoryList_markFirstExplorationOfEveryStoryCompletedWithinLastMonth_ongoingStoryListIsCorrect() =
+  fun testRetrieveOngoingStoryList_markFirstExplorationOfEveryStoryCompletedWithinLastMonth_ongoingStoryListIsCorrect() = // ktlint-disable max-line-length
     runBlockingTest(coroutineContext) {
       storyProgressController.recordCompletedChapter(
         profileId0,
@@ -510,7 +527,8 @@ class TopicListControllerTest {
       )
       advanceUntilIdle()
 
-      topicListController.getOngoingStoryList(profileId0).observeForever(mockOngoingStoryListObserver)
+      topicListController.getOngoingStoryList(profileId0)
+        .observeForever(mockOngoingStoryListObserver)
       advanceUntilIdle()
 
       verifyGetOngoingStoryListSucceeded()
@@ -524,7 +542,10 @@ class TopicListControllerTest {
     }
 
   private fun verifyGetOngoingStoryListSucceeded() {
-    verify(mockOngoingStoryListObserver, atLeastOnce()).onChanged(ongoingStoryListResultCaptor.capture())
+    verify(
+      mockOngoingStoryListObserver,
+      atLeastOnce()
+    ).onChanged(ongoingStoryListResultCaptor.capture())
     assertThat(ongoingStoryListResultCaptor.value.isSuccess()).isTrue()
   }
 
@@ -541,7 +562,8 @@ class TopicListControllerTest {
     assertThat(promotedStory.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
     assertThat(promotedStory.topicName).isEqualTo("Fractions")
     assertThat(promotedStory.nextChapterName).isEqualTo("What is a Fraction?")
-    assertThat(promotedStory.lessonThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
+    assertThat(promotedStory.lessonThumbnail.thumbnailGraphic)
+      .isEqualTo(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
     assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
@@ -552,7 +574,8 @@ class TopicListControllerTest {
     assertThat(promotedStory.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
     assertThat(promotedStory.topicName).isEqualTo("Fractions")
     assertThat(promotedStory.nextChapterName).isEqualTo("The Meaning of Equal Parts")
-    assertThat(promotedStory.lessonThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
+    assertThat(promotedStory.lessonThumbnail.thumbnailGraphic)
+      .isEqualTo(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
     assertThat(promotedStory.completedChapterCount).isEqualTo(1)
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
@@ -563,7 +586,8 @@ class TopicListControllerTest {
     assertThat(promotedStory.topicId).isEqualTo(RATIOS_TOPIC_ID)
     assertThat(promotedStory.nextChapterName).isEqualTo("What is a Ratio?")
     assertThat(promotedStory.topicName).isEqualTo("Ratios and Proportional Reasoning")
-    assertThat(promotedStory.lessonThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
+    assertThat(promotedStory.lessonThumbnail.thumbnailGraphic)
+      .isEqualTo(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
     assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
@@ -574,7 +598,8 @@ class TopicListControllerTest {
     assertThat(promotedStory.topicId).isEqualTo(RATIOS_TOPIC_ID)
     assertThat(promotedStory.nextChapterName).isEqualTo("Order is important")
     assertThat(promotedStory.topicName).isEqualTo("Ratios and Proportional Reasoning")
-    assertThat(promotedStory.lessonThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
+    assertThat(promotedStory.lessonThumbnail.thumbnailGraphic)
+      .isEqualTo(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
     assertThat(promotedStory.completedChapterCount).isEqualTo(1)
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
@@ -585,7 +610,8 @@ class TopicListControllerTest {
     assertThat(promotedStory.topicId).isEqualTo(RATIOS_TOPIC_ID)
     assertThat(promotedStory.nextChapterName).isEqualTo("Equivalent Ratios")
     assertThat(promotedStory.topicName).isEqualTo("Ratios and Proportional Reasoning")
-    assertThat(promotedStory.lessonThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.CHILD_WITH_CUPCAKES)
+    assertThat(promotedStory.lessonThumbnail.thumbnailGraphic)
+      .isEqualTo(LessonThumbnailGraphic.CHILD_WITH_CUPCAKES)
     assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
@@ -596,7 +622,8 @@ class TopicListControllerTest {
     assertThat(promotedStory.topicId).isEqualTo(RATIOS_TOPIC_ID)
     assertThat(promotedStory.nextChapterName).isEqualTo("Writing Ratios in Simplest Form")
     assertThat(promotedStory.topicName).isEqualTo("Ratios and Proportional Reasoning")
-    assertThat(promotedStory.lessonThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.CHILD_WITH_CUPCAKES)
+    assertThat(promotedStory.lessonThumbnail.thumbnailGraphic)
+      .isEqualTo(LessonThumbnailGraphic.CHILD_WITH_CUPCAKES)
     assertThat(promotedStory.completedChapterCount).isEqualTo(1)
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
@@ -610,7 +637,8 @@ class TopicListControllerTest {
     return Date().time - NINE_DAYS_IN_MS
   }
 
-  @Qualifier annotation class TestDispatcher
+  @Qualifier
+  annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module
@@ -632,14 +660,18 @@ class TopicListControllerTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
     @Singleton
     @Provides
     @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBlockingDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
@@ -683,7 +715,7 @@ class TopicListControllerTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class])
+  @Component(modules = [TestModule::class, TestLogReportingModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
