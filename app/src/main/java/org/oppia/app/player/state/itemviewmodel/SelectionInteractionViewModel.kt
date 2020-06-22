@@ -1,22 +1,24 @@
 package org.oppia.app.player.state.itemviewmodel
 
+import androidx.databinding.Observable
+import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.StringList
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.SelectionItemInputType
-import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
+import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.viewmodel.ObservableArrayList
 
 /** [StateItemViewModel] for multiple or item-selection input choice list. */
 class SelectionInteractionViewModel(
-  val explorationId: String,
+  val entityId: String,
   interaction: Interaction,
   private val interactionAnswerReceiver: InteractionAnswerReceiver,
-  interactionAnswerErrorReceiver: InteractionAnswerErrorReceiver
+  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver
 ) : StateItemViewModel(ViewType.SELECTION_INTERACTION), InteractionAnswerHandler {
   private val interactionId: String = interaction.id
 
@@ -33,6 +35,20 @@ class SelectionInteractionViewModel(
   }
   private val selectedItems: MutableList<Int> = mutableListOf()
   val choiceItems: ObservableList<SelectionInteractionContentViewModel> = computeChoiceItems(choiceStrings, this)
+
+  private val isAnswerAvailable = ObservableField<Boolean>(false)
+
+  init {
+    val callback: Observable.OnPropertyChangedCallback = object : Observable.OnPropertyChangedCallback() {
+      override fun onPropertyChanged(sender: Observable, propertyId: Int) {
+        interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
+          pendingAnswerError = null,
+          inputAnswerAvailable = selectedItems.isNotEmpty()
+        )
+      }
+    }
+    isAnswerAvailable.addOnPropertyChangedCallback(callback)
+  }
 
   override fun isExplicitAnswerSubmissionRequired(): Boolean {
     // If more than one answer is allowed, then a submission button is needed.
@@ -77,11 +93,19 @@ class SelectionInteractionViewModel(
     if (areCheckboxesBound()) {
       if (isCurrentlySelected) {
         selectedItems -= itemIndex
+        val wasSelectedItemListEmpty = isAnswerAvailable.get()
+        if(selectedItems.isNotEmpty() != wasSelectedItemListEmpty){
+          isAnswerAvailable.set(selectedItems.isNotEmpty())
+        }
         return false
       } else if (selectedItems.size < maxAllowableSelectionCount) {
         // TODO(#32): Add warning to user when they exceed the number of allowable selections or are under the minimum
         //  number required.
         selectedItems += itemIndex
+        val wasSelectedItemListEmpty = isAnswerAvailable.get()
+        if(selectedItems.isNotEmpty() != wasSelectedItemListEmpty){
+          isAnswerAvailable.set(selectedItems.isNotEmpty())
+        }
         return true
       }
     } else {
@@ -89,14 +113,16 @@ class SelectionInteractionViewModel(
       choiceItems.forEach { item -> item.isAnswerSelected.set(false) }
       selectedItems.clear()
       selectedItems += itemIndex
-
+      val wasSelectedItemListEmpty = isAnswerAvailable.get()
+      if(selectedItems.isNotEmpty() != wasSelectedItemListEmpty){
+        isAnswerAvailable.set(selectedItems.isNotEmpty())
+      }
       // Only push the answer if explicit submission isn't required.
       if (maxAllowableSelectionCount == 1) {
         interactionAnswerReceiver.onAnswerReadyForSubmission(getPendingAnswer())
       }
       return true
     }
-
     // Do not change the current status if it isn't valid to do so.
     return isCurrentlySelected
   }

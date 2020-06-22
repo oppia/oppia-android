@@ -14,10 +14,15 @@ import javax.inject.Inject
  */
 internal class NumericInputIsWithinToleranceRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
-): RuleClassifierProvider, GenericRuleClassifier.DoubleInputMatcher<Double> {
+) : RuleClassifierProvider, GenericRuleClassifier.DoubleInputMatcher<Double> {
 
   override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createDoubleInputClassifier(InteractionObject.ObjectTypeCase.REAL, "x", "tol", this)
+    return classifierFactory.createDoubleInputClassifier(
+      InteractionObject.ObjectTypeCase.REAL,
+      "x",
+      "tol",
+      this
+    )
   }
 
   // TODO(#210): Add tests for this classifier.

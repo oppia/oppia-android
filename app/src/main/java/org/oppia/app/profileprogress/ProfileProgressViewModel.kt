@@ -55,14 +55,21 @@ class ProfileProgressViewModel @Inject constructor(
   }
 
   private fun subscribeToProfileLiveData() {
-    getProfileData().observe(fragment, Observer<Profile> {
-      headerViewModel.setProfile(it)
-    })
+    getProfileData().observe(
+      fragment,
+      Observer<Profile> {
+        headerViewModel.setProfile(it)
+      }
+    )
   }
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
     if (profileResult.isFailure()) {
-      logger.e("ProfileProgressFragment", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
+      logger.e(
+        "ProfileProgressFragment",
+        "Failed to retrieve profile",
+        profileResult.getErrorOrNull()!!
+      )
     }
     return profileResult.getOrDefault(Profile.getDefaultInstance())
   }
@@ -79,7 +86,9 @@ class ProfileProgressViewModel @Inject constructor(
     Transformations.map(ongoingStoryListLiveData, ::processOngoingStoryList)
   }
 
-  private fun processOngoingStoryResult(ongoingStoryListResult: AsyncResult<OngoingStoryList>): OngoingStoryList {
+  private fun processOngoingStoryResult(
+    ongoingStoryListResult: AsyncResult<OngoingStoryList>
+  ): OngoingStoryList {
     if (ongoingStoryListResult.isFailure()) {
       logger.e(
         "ProfileProgressFragment",
@@ -90,29 +99,41 @@ class ProfileProgressViewModel @Inject constructor(
     return ongoingStoryListResult.getOrDefault(OngoingStoryList.getDefaultInstance())
   }
 
-  private fun processOngoingStoryList(ongoingStoryList: OngoingStoryList): List<ProfileProgressItemViewModel> {
+  private fun processOngoingStoryList(
+    ongoingStoryList: OngoingStoryList
+  ): List<ProfileProgressItemViewModel> {
     val itemList = if (ongoingStoryList.recentStoryList.size > 3) {
       ongoingStoryList.recentStoryList.subList(0, 2)
     } else {
       ongoingStoryList.recentStoryList
     }
-    itemViewModelList.addAll(itemList.map { story ->
-      RecentlyPlayedStorySummaryViewModel(story) as ProfileProgressItemViewModel
-    })
+    itemViewModelList.addAll(
+      itemList.map { story ->
+        RecentlyPlayedStorySummaryViewModel(story) as ProfileProgressItemViewModel
+      }
+    )
     return itemViewModelList
   }
 
   private fun subscribeToCompletedStoryListLiveData() {
-    getCompletedStoryListCount().observe(fragment, Observer<CompletedStoryList> {
-      headerViewModel.setCompletedStoryCount(it.completedStoryCount)
-    })
+    getCompletedStoryListCount().observe(
+      fragment,
+      Observer<CompletedStoryList> {
+        headerViewModel.setCompletedStoryCount(it.completedStoryCount)
+      }
+    )
   }
 
   private fun getCompletedStoryListCount(): LiveData<CompletedStoryList> {
-    return Transformations.map(topicController.getCompletedStoryList(profileId), ::processGetCompletedStoryListResult)
+    return Transformations.map(
+      topicController.getCompletedStoryList(profileId),
+      ::processGetCompletedStoryListResult
+    )
   }
 
-  private fun processGetCompletedStoryListResult(completedStoryListResult: AsyncResult<CompletedStoryList>): CompletedStoryList {
+  private fun processGetCompletedStoryListResult(
+    completedStoryListResult: AsyncResult<CompletedStoryList>
+  ): CompletedStoryList {
     if (completedStoryListResult.isFailure()) {
       logger.e(
         "ProfileProgressFragment",
@@ -124,16 +145,24 @@ class ProfileProgressViewModel @Inject constructor(
   }
 
   private fun subscribeToOngoingTopicListLiveData() {
-    getOngoingTopicListCount().observe(fragment, Observer<OngoingTopicList> {
-      headerViewModel.setOngoingTopicCount(it.topicCount)
-    })
+    getOngoingTopicListCount().observe(
+      fragment,
+      Observer<OngoingTopicList> {
+        headerViewModel.setOngoingTopicCount(it.topicCount)
+      }
+    )
   }
 
   private fun getOngoingTopicListCount(): LiveData<OngoingTopicList> {
-    return Transformations.map(topicController.getOngoingTopicList(profileId), ::processGetOngoingTopicListResult)
+    return Transformations.map(
+      topicController.getOngoingTopicList(profileId),
+      ::processGetOngoingTopicListResult
+    )
   }
 
-  private fun processGetOngoingTopicListResult(ongoingTopicListResult: AsyncResult<OngoingTopicList>): OngoingTopicList {
+  private fun processGetOngoingTopicListResult(
+    ongoingTopicListResult: AsyncResult<OngoingTopicList>
+  ): OngoingTopicList {
     if (ongoingTopicListResult.isFailure()) {
       logger.e(
         "ProfileProgressFragment",

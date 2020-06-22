@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <integer name="home_span_count">3</integer>
+  <integer name="promoted_story_list_limit">3</integer>
+</resources>

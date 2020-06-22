@@ -39,6 +39,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -70,6 +71,7 @@ import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -107,6 +109,7 @@ class HomeActivityTest {
     setUpTestApplicationComponent()
     IdlingRegistry.getInstance().register(MainThreadExecutor.countingResource)
     profileTestHelper.initializeProfiles()
+    FirebaseApp.initializeApp(context)
   }
 
   @After
@@ -411,9 +414,13 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_checkSpanForItem0_spanSizeIsTwo() {
+  fun testHomeActivity_checkSpanForItem0_spanSizeIsTwoOrThree() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
-      onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(2, 0))
+      if (context.resources.getBoolean(R.bool.isTablet)) {
+        onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(3, 0))
+      } else {
+        onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(2, 0))
+      }
     }
   }
 
@@ -425,10 +432,14 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_configurationChange_checkSpanForItem0_spanSizeIsTwo() {
+  fun testHomeActivity_configurationChange_checkSpanForItem0_spanSizeIsThreeOrFour() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(3, 0))
+      if (context.resources.getBoolean(R.bool.isTablet)) {
+        onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(4, 0))
+      } else {
+        onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(3, 0))
+      }
     }
   }
 
@@ -538,7 +549,7 @@ class HomeActivityTest {
   }
 
   @Singleton
-  @Component(modules = [TestModule::class])
+  @Component(modules = [TestModule::class, TestLogReportingModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

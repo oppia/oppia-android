@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:profile="http://schemas.android.com/tools">
+
+  <data>
+
+    <import type="android.widget.LinearLayout" />
+
+    <import type="android.view.Gravity" />
+
+    <import type="android.view.View" />
+
+    <variable
+      name="presenter"
+      type="org.oppia.app.profile.ProfileChooserFragmentPresenter" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.model.ProfileChooserUiModel" />
+  </data>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="@{presenter.wasProfileEverBeenAddedValue ? Gravity.TOP|Gravity.CENTER : Gravity.START}"
+    android:orientation="vertical"
+    app:profileChooserMarginStart="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_298}"
+    app:profileChooserMarginEnd="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_298}"
+    app:profileChooserMarginBottom="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_0}">
+
+    <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:gravity="@{presenter.wasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER}"
+      android:orientation="@{presenter.wasProfileEverBeenAddedValue ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL}"
+      app:profileChooserMarginEnd="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_24}"
+      app:profileChooserMarginStart="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_24}"
+      app:profileChooserMarginTop="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_24}"
+      profile:ignore="RtlSymmetry">
+
+      <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_avatar_img"
+        android:layout_width="108dp"
+        android:layout_height="108dp"
+        app:profileChooserMarginTop="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_48 : @dimen/margin_0}"
+        app:civ_border_color="@color/avatarBorder"
+        app:civ_border_width="1dp"
+        profile:src="@{viewModel.profile.avatar}" />
+
+      <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="@{presenter.wasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
+        android:orientation="vertical"
+        app:profileChooserMarginTop="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_8 : @dimen/margin_0}"
+        app:profileChooserMarginStart="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_32}">
+
+        <TextView
+          android:id="@+id/profile_name_text"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:ellipsize="end"
+          android:fontFamily="sans-serif-medium"
+          android:gravity="center"
+          android:maxLines="2"
+          android:singleLine="false"
+          android:text="@{viewModel.profile.name}"
+          android:textColor="@color/white"
+          android:textSize="20sp" />
+
+        <TextView
+          android:id="@+id/profile_last_visited"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:fontFamily="sans-serif-light"
+          android:textColor="@color/white"
+          android:textSize="16sp"
+          android:layout_marginTop="4dp"
+          android:textStyle="italic"
+          android:visibility="@{viewModel.profile.lastLoggedInTimestampMs > 0 ? View.VISIBLE : View.GONE}"
+          profile:lastVisited="@{viewModel.profile.lastLoggedInTimestampMs}" />
+
+        <TextView
+          android:id="@+id/profile_is_admin_text"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:fontFamily="sans-serif-light"
+          android:gravity="center"
+          android:text="@string/profile_chooser_admin"
+          android:textColor="@color/white"
+          android:textSize="16sp"
+          android:layout_marginTop="4dp"
+          android:textStyle="italic"
+          android:visibility="@{viewModel.profile.isAdmin &amp;&amp; presenter.wasProfileEverBeenAddedValue ? View.VISIBLE : View.GONE}" />
+      </LinearLayout>
+    </LinearLayout>
+
+    <View
+      android:id="@+id/add_profile_divider_view"
+      android:layout_width="match_parent"
+      android:layout_height="0.5dp"
+      android:layout_marginTop="40dp"
+      android:background="@color/oppiaProfileChooserDivider"
+      android:visibility="@{presenter.wasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
+  </LinearLayout>
+</layout>

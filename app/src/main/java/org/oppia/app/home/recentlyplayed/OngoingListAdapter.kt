@@ -1,8 +1,14 @@
 package org.oppia.app.home.recentlyplayed
 
+import android.content.Context
+import android.content.res.Configuration
+import android.content.res.Resources
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.app.R
 import org.oppia.app.databinding.OngoingStoryCardBinding
 import org.oppia.app.databinding.SectionTitleBinding
 
@@ -11,8 +17,20 @@ private const val VIEW_TYPE_SECTION_STORY_ITEM = 2
 
 /** Adapter to inflate different items/views inside [RecyclerView] for Ongoing Story List. */
 class OngoingListAdapter(
+  private val activity: AppCompatActivity,
   private val itemList: MutableList<RecentlyPlayedItemViewModel>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+  private val orientation = Resources.getSystem().configuration.orientation
+  private var titleIndex: Int = 0
+  private var storyGridPosition: Int = 0
+  private val metrics = DisplayMetrics()
+  private var screenWidth = 0
+
+  init {
+    activity.windowManager.defaultDisplay.getMetrics(metrics)
+    screenWidth = metrics.widthPixels
+  }
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
@@ -41,17 +59,107 @@ class OngoingListAdapter(
     }
   }
 
-  override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+  override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
     when (holder.itemViewType) {
       VIEW_TYPE_SECTION_TITLE_TEXT -> {
+        titleIndex = position + 1
         (holder as SectionTitleViewHolder).bind(itemList[position] as SectionTitleViewModel)
       }
       VIEW_TYPE_SECTION_STORY_ITEM -> {
+        storyGridPosition = position - titleIndex
         (holder as OngoingStoryViewHolder).bind(itemList[position] as OngoingStoryViewModel)
+        val marginEnd = if (activity.resources.getBoolean(R.bool.isTablet)) {
+          if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            when (storyGridPosition % 3) {
+              0 -> 0
+              1 -> {
+                val singleItemWidth = (screenWidth / 3) - (activity as Context).resources.getDimensionPixelSize(R.dimen.recently_played_tablet_port_outer_margin)
+                (screenWidth / 6) - (singleItemWidth / 2)
+              }
+              else -> (activity as Context).resources.getDimensionPixelSize(R.dimen.recently_played_tablet_port_outer_margin)
+            }
+          } else {
+            when (storyGridPosition % 4) {
+              0 -> 0
+              1 -> {
+                val singleItemWidth = (screenWidth / 4) - (activity as Context).resources.getDimensionPixelSize(R.dimen.recently_played_tablet_land_outer_margin)
+                ((screenWidth - 4 * singleItemWidth) / 6) / 2
+              }
+              2 -> {
+                val singleItemWidth = (screenWidth / 4) - (activity as Context).resources.getDimensionPixelSize(R.dimen.recently_played_tablet_land_outer_margin)
+                (screenWidth - 4 * singleItemWidth) / 6
+              }
+              else -> (activity as Context).resources.getDimensionPixelSize(R.dimen.recently_played_tablet_land_outer_margin)
+            }
+          }
+        } else {
+          if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if (storyGridPosition % 2 == 1)
+              (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
+            else {
+              (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_8)
+            }
+          } else {
+            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)//this will be updated in next PR
+          }
+        }
+        val marginStart = if (activity.resources.getBoolean(R.bool.isTablet)) {
+          if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            when (storyGridPosition % 3) {
+              0 -> (activity as Context).resources.getDimensionPixelSize(R.dimen.recently_played_tablet_port_outer_margin)
+              1 -> {
+                val singleItemWidth = (screenWidth / 3) - (activity as Context).resources.getDimensionPixelSize(R.dimen.recently_played_tablet_port_outer_margin)
+                (screenWidth / 6) - (singleItemWidth / 2)
+              }
+              else -> 0
+            }
+          } else {
+            when (storyGridPosition % 4) {
+              0 -> (activity as Context).resources.getDimensionPixelSize(R.dimen.recently_played_tablet_land_outer_margin)
+              1 -> {
+                val singleItemWidth = (screenWidth / 4) - (activity as Context).resources.getDimensionPixelSize(R.dimen.recently_played_tablet_land_outer_margin)
+                (screenWidth - 4 * singleItemWidth) / 6
+              }
+              2 -> {
+                val singleItemWidth = (screenWidth / 4) - (activity as Context).resources.getDimensionPixelSize(R.dimen.recently_played_tablet_land_outer_margin)
+                ((screenWidth - 4 * singleItemWidth) / 6) / 2
+              }
+              else -> 0
+            }
+          }
+        } else {
+          if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if (storyGridPosition % 2 == 1)
+              (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_8)
+            else {
+              (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
+            }
+          } else {
+            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)//this will be updated in next PR
+          }
+        }
+        val params =
+          holder.binding.ongoingStoryCardView.layoutParams as (ViewGroup.MarginLayoutParams)
+        val marginTop = if (activity.resources.getBoolean(R.bool.isTablet)) {
+          (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
+        } else {
+          if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if (storyGridPosition > 1) {
+              (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_16)
+            } else {
+              (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
+            }
+          } else {
+            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)//this will be updated in next PR
+          }
+        }
+        val marginBottom = 0
+        params.setMargins(marginStart, marginTop, marginEnd, marginBottom)
+        holder.binding.ongoingStoryCardView.layoutParams = params
+        holder.binding.ongoingStoryCardView.requestLayout()
       }
       else -> throw IllegalArgumentException("Invalid item view type: ${holder.itemViewType}")
     }
-  }
 
   override fun getItemViewType(position: Int): Int {
     return when (itemList[position]) {

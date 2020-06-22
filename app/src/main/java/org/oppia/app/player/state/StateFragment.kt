@@ -6,21 +6,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
+import org.oppia.app.model.HelpIndex
 import org.oppia.app.model.UserAnswer
-import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
+import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.player.state.listener.ContinueNavigationButtonListener
 import org.oppia.app.player.state.listener.NextNavigationButtonListener
 import org.oppia.app.player.state.listener.PreviousNavigationButtonListener
+import org.oppia.app.player.state.listener.PreviousResponsesHeaderClickListener
 import org.oppia.app.player.state.listener.ReturnToTopicNavigationButtonListener
+import org.oppia.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.app.player.state.listener.SubmitNavigationButtonListener
 import javax.inject.Inject
 
 /** Fragment that represents the current state of an exploration. */
 class StateFragment : InjectableFragment(), InteractionAnswerReceiver, InteractionAnswerHandler,
-  InteractionAnswerErrorReceiver, ContinueNavigationButtonListener, NextNavigationButtonListener,
-  PreviousNavigationButtonListener, ReturnToTopicNavigationButtonListener, SubmitNavigationButtonListener {
+  InteractionAnswerErrorOrAvailabilityCheckReceiver, ContinueNavigationButtonListener, NextNavigationButtonListener,
+  PreviousNavigationButtonListener, ReturnToTopicNavigationButtonListener, SubmitNavigationButtonListener,
+  PreviousResponsesHeaderClickListener, ShowHintAvailabilityListener {
   companion object {
     /**
      * Creates a new instance of a StateFragment.
@@ -78,12 +82,16 @@ class StateFragment : InjectableFragment(), InteractionAnswerReceiver, Interacti
 
   override fun onSubmitButtonClicked() = stateFragmentPresenter.onSubmitButtonClicked()
 
+  override fun onResponsesHeaderClicked() = stateFragmentPresenter.onResponsesHeaderClicked()
+
+  override fun onHintAvailable(helpIndex: HelpIndex) = stateFragmentPresenter.onHintAvailable(helpIndex)
+
   fun handlePlayAudio() = stateFragmentPresenter.handleAudioClick()
 
   fun handleKeyboardAction() = stateFragmentPresenter.handleKeyboardAction()
 
-  override fun onPendingAnswerError(pendingAnswerError: String?) {
-    stateFragmentPresenter.updateSubmitButton(pendingAnswerError)
+  override fun onPendingAnswerErrorOrAvailabilityCheck(pendingAnswerError: String?, inputAnswerAvailable: Boolean) {
+    stateFragmentPresenter.updateSubmitButton(pendingAnswerError, inputAnswerAvailable)
   }
 
   fun setAudioBarVisibility(visibility: Boolean) = stateFragmentPresenter.setAudioBarVisibility(visibility)

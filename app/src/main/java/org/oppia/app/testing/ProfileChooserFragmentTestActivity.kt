@@ -7,7 +7,9 @@ import javax.inject.Inject
 /** Test Activity used for testing [ProfileChooserFragment] */
 class ProfileChooserFragmentTestActivity : InjectableAppCompatActivity() {
 
-  @Inject lateinit var profileChooserFragmentTestActivityPresenter: ProfileChooserFragmentTestActivityPresenter
+  @Inject
+  lateinit var profileChooserFragmentTestActivityPresenter:
+    ProfileChooserFragmentTestActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

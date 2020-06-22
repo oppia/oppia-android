@@ -29,6 +29,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -53,6 +54,7 @@ import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.domain.topic.StoryProgressTestHelper
+import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -72,9 +74,14 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class StoryFragmentTest {
 
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
-  @Inject lateinit var context: Context
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var storyProgressTestHelper: StoryProgressTestHelper
+
+  @Inject
+  lateinit var context: Context
 
   private val internalProfileId = 0
 
@@ -87,8 +94,12 @@ class StoryFragmentTest {
     setUpTestApplicationComponent()
     IdlingRegistry.getInstance().register(MainThreadExecutor.countingResource)
     profileTestHelper.initializeProfiles()
+    FirebaseApp.initializeApp(context)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    storyProgressTestHelper.markPartialStoryProgressForFractions(profileId, /* timestampOlderThanAWeek= */ false)
+    storyProgressTestHelper.markPartialStoryProgressForFractions(
+      profileId, /* timestampOlderThanAWeek= */
+      false
+    )
   }
 
   @After
@@ -136,10 +147,21 @@ class StoryFragmentTest {
   @Test
   fun testStoryFragment_correctStoryCountLoadedInHeader() {
     launch<StoryFragmentTestActivity>(createStoryActivityIntent()).use {
-      val headerString: String = getResources().getQuantityString(R.plurals.story_total_chapters, 2, 1, 2)
+      val headerString: String =
+        getResources().getQuantityString(R.plurals.story_total_chapters, 2, 1, 2)
       waitForTheView(withText("Chapter 1: What is a Fraction?"))
-      onView(withId(R.id.story_chapter_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
-      onView(atPositionOnView(R.id.story_chapter_list, 0, R.id.story_progress_chapter_completed_text)).check(
+      onView(withId(R.id.story_chapter_list)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          0
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.story_chapter_list,
+          0,
+          R.id.story_progress_chapter_completed_text
+        )
+      ).check(
         matches(
           withText(headerString)
         )
@@ -160,7 +182,11 @@ class StoryFragmentTest {
     launch<StoryFragmentTestActivity>(createStoryActivityIntent()).use {
       onView(isRoot()).perform(orientationLandscape())
       waitForTheView(withText("Chapter 1: What is a Fraction?"))
-      onView(allOf(withId(R.id.story_chapter_list))).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
       onView(atPositionOnView(R.id.story_chapter_list, 1, R.id.chapter_title)).check(
         matches(
           withText("Chapter 1: What is a Fraction?")
@@ -173,11 +199,26 @@ class StoryFragmentTest {
   fun testStoryFragment_changeConfiguration_correctStoryCountInHeader() {
     launch<StoryFragmentTestActivity>(createStoryActivityIntent()).use {
       onView(isRoot()).perform(orientationLandscape())
-      val headerString: String = getResources().getQuantityString(R.plurals.story_total_chapters, 2, 1, 2)
-      onView(withId(R.id.story_chapter_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
+      val headerString: String =
+        getResources().getQuantityString(R.plurals.story_total_chapters, 2, 1, 2)
+      onView(withId(R.id.story_chapter_list)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          0
+        )
+      )
       waitForTheView(withText(headerString))
-      onView(withId(R.id.story_chapter_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
-      onView(atPositionOnView(R.id.story_chapter_list, 0, R.id.story_progress_chapter_completed_text)).check(
+      onView(withId(R.id.story_chapter_list)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          0
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.story_chapter_list,
+          0,
+          R.id.story_progress_chapter_completed_text
+        )
+      ).check(
         matches(
           withText(headerString)
         )
@@ -237,7 +278,8 @@ class StoryFragmentTest {
     }
   }
 
-  @Qualifier annotation class TestDispatcher
+  @Qualifier
+  annotation class TestDispatcher
 
   @Module
   class TestModule {
@@ -258,14 +300,18 @@ class StoryFragmentTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
     @Singleton
     @Provides
     @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBlockingDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
@@ -285,7 +331,7 @@ class StoryFragmentTest {
   }
 
   @Singleton
-  @Component(modules = [TestModule::class])
+  @Component(modules = [TestModule::class, TestLogReportingModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
@@ -312,7 +358,8 @@ class StoryFragmentTest {
     override fun isTerminated(): Boolean = false
 
     private val handler = Handler(Looper.getMainLooper())
-    val countingResource = CountingIdlingResource("main_thread_executor_counting_idling_resource")
+    val countingResource =
+      CountingIdlingResource("main_thread_executor_counting_idling_resource")
 
     override fun execute(command: Runnable?) {
       countingResource.increment()
@@ -340,4 +387,3 @@ class StoryFragmentTest {
     }
   }
 }
-

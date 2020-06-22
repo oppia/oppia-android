@@ -37,9 +37,11 @@ class TopicRevisionViewModel @Inject constructor(
   }
 
   private fun processTopic(topic: Topic): List<TopicRevisionItemViewModel> {
-    subtopicList.addAll(topic.subtopicList.map {
-      TopicRevisionItemViewModel(it, revisionSubtopicSelector)
-    })
+    subtopicList.addAll(
+      topic.subtopicList.map {
+        TopicRevisionItemViewModel(it, revisionSubtopicSelector)
+      }
+    )
     return subtopicList
   }
 
@@ -49,7 +51,11 @@ class TopicRevisionViewModel @Inject constructor(
 
   private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
     if (topic.isFailure()) {
-      logger.e("TopicRevisionFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
+      logger.e(
+        "TopicRevisionFragment",
+        "Failed to retrieve topic",
+        topic.getErrorOrNull()!!
+      )
     }
     return topic.getOrDefault(Topic.getDefaultInstance())
   }

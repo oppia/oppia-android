@@ -13,8 +13,10 @@ class AsyncResult<T> private constructor(
   enum class Status {
     /** Indicates that the asynchronous operation is not yet completed. */
     PENDING,
+
     /** Indicates that the asynchronous operation completed successfully and has a result. */
     SUCCEEDED,
+
     /** Indicates that the asynchronous operation failed and has an error. */
     FAILED
   }
@@ -101,7 +103,10 @@ class AsyncResult<T> private constructor(
    *
    * Note also that the specified combine function should have no side effects, and be non-blocking.
    */
-  fun <O, T2> combineWith(otherResult: AsyncResult<T2>, combineFunction: (T, T2) -> O): AsyncResult<O> {
+  fun <O, T2> combineWith(
+    otherResult: AsyncResult<T2>,
+    combineFunction: (T, T2) -> O
+  ): AsyncResult<O> {
     return transformWithResult { value1 ->
       otherResult.transformWithResult { value2 ->
         success(combineFunction(value1, value2))
@@ -133,7 +138,9 @@ class AsyncResult<T> private constructor(
     }
   }
 
-  private suspend fun <O> transformWithResultAsync(transformFunction: suspend (T) -> AsyncResult<O>): AsyncResult<O> {
+  private suspend fun <O> transformWithResultAsync(
+    transformFunction: suspend (T) -> AsyncResult<O>
+  ): AsyncResult<O> {
     return when (status) {
       Status.PENDING -> pending()
       Status.FAILED -> failed(ChainedFailureException(error!!))
@@ -176,12 +183,20 @@ class AsyncResult<T> private constructor(
 
     /** Returns a successful result with the specified payload. */
     fun <T> success(value: T): AsyncResult<T> {
-      return AsyncResult(status = Status.SUCCEEDED, resultTimeMillis = SystemClock.uptimeMillis(), value = value)
+      return AsyncResult(
+        status = Status.SUCCEEDED,
+        resultTimeMillis = SystemClock.uptimeMillis(),
+        value = value
+      )
     }
 
     /** Returns a failed result with the specified error. */
     fun <T> failed(error: Throwable): AsyncResult<T> {
-      return AsyncResult(status = Status.FAILED, resultTimeMillis = SystemClock.uptimeMillis(), error = error)
+      return AsyncResult(
+        status = Status.FAILED,
+        resultTimeMillis = SystemClock.uptimeMillis(),
+        error = error
+      )
     }
   }
 

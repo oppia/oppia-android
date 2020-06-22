@@ -14,8 +14,8 @@ import org.oppia.app.player.state.hintsandsolution.RevealHintListener
 import org.oppia.app.player.state.hintsandsolution.RevealSolutionInterface
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.state.listener.StateKeyboardButtonListener
-import org.oppia.app.player.stopexploration.StopExplorationDialogFragment
-import org.oppia.app.player.stopexploration.StopExplorationInterface
+import org.oppia.app.player.stopplaying.StopExplorationDialogFragment
+import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
 import javax.inject.Inject
 
 private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
@@ -23,7 +23,7 @@ const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
 
 /** The starting point for exploration. */
 class ExplorationActivity : InjectableAppCompatActivity(),
-  StopExplorationInterface,
+  StopStatePlayingSessionListener,
   StateKeyboardButtonListener,
   AudioButtonListener,
   HintsAndSolutionListener,
@@ -32,7 +32,8 @@ class ExplorationActivity : InjectableAppCompatActivity(),
   RevealSolutionInterface,
   DefaultFontSizeStateListener {
 
-  @Inject lateinit var explorationActivityPresenter: ExplorationActivityPresenter
+  @Inject
+  lateinit var explorationActivityPresenter: ExplorationActivityPresenter
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
   private lateinit var storyId: String
@@ -102,7 +103,7 @@ class ExplorationActivity : InjectableAppCompatActivity(),
     dialogFragment.showNow(supportFragmentManager, TAG_STOP_EXPLORATION_DIALOG)
   }
 
-  override fun stopExploration() {
+  override fun stopSession() {
     explorationActivityPresenter.stopExploration()
   }
 
