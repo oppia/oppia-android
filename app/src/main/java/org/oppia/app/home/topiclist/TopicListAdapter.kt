@@ -28,7 +28,7 @@ class TopicListAdapter(
 ) :
   RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-  var spanCount = 0
+  private var spanCount = 0
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
@@ -118,6 +118,10 @@ class TopicListAdapter(
 
   override fun getItemCount(): Int {
     return itemList.size
+  }
+
+  fun setSpanCount(spanCount: Int) {
+    this.spanCount = spanCount
   }
 
   private class WelcomeViewHolder(val binding: WelcomeBinding) :
@@ -230,7 +234,7 @@ class TopicListAdapter(
             (position + 1) % spanCount == 0 -> marginLayoutParams.setMargins(
               marginMax,
               marginTopBottom,
-              0,
+              /* right= */ 0,
               marginTopBottom
             )
             (position + 1) % spanCount == 1 -> marginLayoutParams.setMargins(
@@ -246,7 +250,7 @@ class TopicListAdapter(
               marginTopBottom
             )
             (position + 1) % spanCount == 3 -> marginLayoutParams.setMargins(
-              0,
+              /* left= */ 0,
               marginTopBottom,
               marginMax,
               marginTopBottom

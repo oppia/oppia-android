@@ -75,7 +75,7 @@ class HomeFragmentPresenter @Inject constructor(
     topicListAdapter = TopicListAdapter(activity, itemList, promotedStoryList)
 
     val spanCount = activity.resources.getInteger(R.integer.home_span_count)
-    topicListAdapter.spanCount = spanCount
+    topicListAdapter.setSpanCount(spanCount)
 
     val homeLayoutManager = GridLayoutManager(activity.applicationContext, spanCount)
     homeLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
