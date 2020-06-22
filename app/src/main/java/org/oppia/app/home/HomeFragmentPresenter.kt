@@ -1,7 +1,5 @@
 package org.oppia.app.home
 
-import android.content.res.Configuration
-import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -59,8 +57,6 @@ class HomeFragmentPresenter @Inject constructor(
   private lateinit var profileId: ProfileId
   private lateinit var profileName: String
 
-  private val orientation = Resources.getSystem().configuration.orientation
-
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
@@ -78,19 +74,8 @@ class HomeFragmentPresenter @Inject constructor(
     itemList.add(allTopicsViewModel)
     topicListAdapter = TopicListAdapter(activity, itemList, promotedStoryList)
 
-    val spanCount = if (activity.resources.getBoolean(R.bool.isTablet)) {
-      if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-        4
-      } else {
-        3
-      }
-    } else {
-      if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-        2
-      } else {
-        3
-      }
-    }
+    val spanCount = activity.resources.getInteger(R.integer.home_span_count)
+    topicListAdapter.setSpanCount(spanCount)
 
     val homeLayoutManager = GridLayoutManager(activity.applicationContext, spanCount)
     homeLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -172,15 +157,7 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   private fun subscribeToOngoingStoryList() {
-    val limit = if (activity.resources.getBoolean(R.bool.isTablet)) {
-      if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-        3
-      } else {
-        4
-      }
-    } else {
-      3
-    }
+    val limit = activity.resources.getInteger(R.integer.promoted_story_list_limit)
     getAssumedSuccessfulOngoingStoryList().observe(fragment, Observer<OngoingStoryList> {
       it.recentStoryList.take(limit).forEach { promotedStory ->
         val recentStory = PromotedStoryViewModel(activity, internalProfileId)
