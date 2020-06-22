@@ -11,15 +11,18 @@ import javax.inject.Inject
 
 /** Fragment that contains displays single exploration. */
 class ExplorationFragment : InjectableFragment() {
-  @Inject lateinit var explorationFragmentPresenter: ExplorationFragmentPresenter
+  @Inject
+  lateinit var explorationFragmentPresenter: ExplorationFragmentPresenter
+  @Inject
+  lateinit var fontScaleConfigurationUtil: FontScaleConfigurationUtil
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
+    fragmentComponent.inject(this)
     val storyTextSize =
       arguments!!.getString(ExplorationActivity.EXPLORATION_ACTIVITY_STORY_DEFAULT_FONT_SIZE_ARGUMENT_KEY)
     checkNotNull(storyTextSize) { "ExplorationFragment must be created with a story text size" }
-    FontScaleConfigurationUtil(context, storyTextSize).adjustFontScale()
-    fragmentComponent.inject(this)
+    fontScaleConfigurationUtil.adjustFontScale(context, storyTextSize)
   }
 
   override fun onCreateView(

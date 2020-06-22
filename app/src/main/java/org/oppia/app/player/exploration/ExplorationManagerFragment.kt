@@ -10,7 +10,8 @@ import javax.inject.Inject
  * text size.
  */
 class ExplorationManagerFragment : InjectableFragment() {
-  @Inject lateinit var explorationManagerFragmentPresenter: ExplorationManagerFragmentPresenter
+  @Inject
+  lateinit var explorationManagerFragmentPresenter: ExplorationManagerFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -25,6 +26,5 @@ class ExplorationManagerFragment : InjectableFragment() {
         /* defaultValue= */ -1
       )
     explorationManagerFragmentPresenter.handleCreate(internalProfileId)
-    retainInstance = true
   }
 }

@@ -32,6 +32,7 @@ class ExplorationActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val explorationDataController: ExplorationDataController,
   private val viewModelProvider: ViewModelProvider<ExplorationViewModel>,
+  private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
   private val logger: Logger
 ) {
   private lateinit var explorationToolbar: Toolbar
@@ -100,7 +101,7 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   fun loadExplorationFragment(result: StoryTextSize) {
-    if (getExplorationManagerFragment() != null) {
+    if (getExplorationFragment() == null) {
       val explorationFragment = ExplorationFragment()
       val args = Bundle()
       args.putInt(
@@ -118,7 +119,7 @@ class ExplorationActivityPresenter @Inject constructor(
         explorationId
       )
       explorationFragment.arguments = args
-      activity.supportFragmentManager.beginTransaction().replace(
+      activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_fragment_placeholder,
         explorationFragment,
         TAG_EXPLORATION_FRAGMENT
@@ -142,17 +143,17 @@ class ExplorationActivityPresenter @Inject constructor(
   private fun getExplorationManagerFragment(): ExplorationManagerFragment? {
     return activity.supportFragmentManager.findFragmentByTag(
       TAG_EXPLORATION_MANAGER_FRAGMENT
-    ) as ExplorationManagerFragment?
+    ) as? ExplorationManagerFragment
   }
 
   private fun getExplorationFragment(): ExplorationFragment? {
     return activity.supportFragmentManager.findFragmentById(
       R.id.exploration_fragment_placeholder
-    ) as ExplorationFragment?
+    ) as? ExplorationFragment
   }
 
   fun stopExploration() {
-    FontScaleConfigurationUtil(activity, StoryTextSize.MEDIUM_TEXT_SIZE.name).adjustFontScale()
+    fontScaleConfigurationUtil.adjustFontScale(activity, StoryTextSize.MEDIUM_TEXT_SIZE.name)
     explorationDataController.stopPlayingExploration()
       .observe(activity, Observer<AsyncResult<Any?>> {
         when {

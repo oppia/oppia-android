@@ -1,6 +1,7 @@
 package org.oppia.app.player.exploration
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
@@ -18,18 +19,19 @@ import javax.inject.Inject
 class ExplorationManagerFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val logger: Logger,
-  private val activity: AppCompatActivity
+  private val activity: AppCompatActivity,
+  private val fragment: Fragment
 ) {
   private lateinit var profileId: ProfileId
 
   fun handleCreate(internalProfileId: Int) {
     this.profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    getProfileData().observe(activity, Observer<StoryTextSize> { result ->
+    retrieveStoryTextSize().observe(fragment, Observer<StoryTextSize> { result ->
       (activity as DefaultFontSizeStateListener).onDefaultFontSizeLoaded(result)
     })
   }
 
-  private fun getProfileData(): LiveData<StoryTextSize> {
+  private fun retrieveStoryTextSize(): LiveData<StoryTextSize> {
     return Transformations.map(
       profileManagementController.getProfile(profileId),
       ::processGetProfileResult
