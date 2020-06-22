@@ -15,10 +15,14 @@ import javax.inject.Inject
  */
 internal class TextInputStartsWithRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
-): RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<String> {
+) : RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<String> {
 
   override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createSingleInputClassifier(InteractionObject.ObjectTypeCase.NORMALIZED_STRING, "x", this)
+    return classifierFactory.createSingleInputClassifier(
+      InteractionObject.ObjectTypeCase.NORMALIZED_STRING,
+      "x",
+      this
+    )
   }
 
   // TODO(#210): Add tests for this classifier.

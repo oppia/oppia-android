@@ -49,7 +49,7 @@
         android:onClick="@{() -> viewModel.clickOnViewAll()}"
         android:text="@string/view_all"
         android:textAllCaps="true"
-        android:visibility="@{itemCount > 3 ? View.VISIBLE : View.INVISIBLE}"
+        android:visibility="@{itemCount > 2 ? View.VISIBLE : View.INVISIBLE}"
         android:textColor="@color/oppiaPrimaryDark"
         android:textSize="14sp" />
     </LinearLayout>
