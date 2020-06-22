@@ -64,7 +64,7 @@ class AudioPlayerController @Inject constructor(
     PREPARED, // mediaPlayer in "Prepared" state, ready to play(), pause(), seekTo().
     PLAYING, // mediaPlayer in "Started" state, ready to pause(), seekTo().
     PAUSED, // mediaPlayer in "Paused" state, ready to play(), seekTo().
-    COMPLETED  // mediaPlayer in "PlaybackCompleted" state, ready to play(), seekTo().
+    COMPLETED // mediaPlayer in "PlaybackCompleted" state, ready to play(), seekTo().
   }
 
   /**
@@ -143,7 +143,8 @@ class AudioPlayerController @Inject constructor(
         )
       releaseMediaPlayer()
       initializeMediaPlayer()
-      return@setOnErrorListener true // Indicates that error was handled and to not invoke completion listener.
+      // Indicates that error was handled and to not invoke completion listener.
+      return@setOnErrorListener true
     }
   }
 

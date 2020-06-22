@@ -12,10 +12,14 @@ import javax.inject.Singleton
 /** Controller for persisting and retrieving the cellular data preference. */
 @Singleton
 class CellularAudioDialogController @Inject constructor(
-  cacheStoreFactory: PersistentCacheStore.Factory, private val dataProviders: DataProviders,
+  cacheStoreFactory: PersistentCacheStore.Factory,
+  private val dataProviders: DataProviders,
   private val logger: Logger
 ) {
-  private val cellularDataStore = cacheStoreFactory.create("cellular_data_preference", CellularDataPreference.getDefaultInstance())
+  private val cellularDataStore = cacheStoreFactory.create(
+    "cellular_data_preference",
+    CellularDataPreference.getDefaultInstance()
+  )
 
   fun setNeverUseCellularDataPreference() {
     setHideDialogPreference(true)
@@ -33,7 +37,11 @@ class CellularAudioDialogController @Inject constructor(
       it.toBuilder().setHideDialog(hideDialog).build()
     }.invokeOnCompletion {
       it?.let {
-        logger.e("DOMAIN", "Failed when storing the user's preference to hide cellular data dialog.", it)
+        logger.e(
+          "DOMAIN",
+          "Failed when storing the user's preference to hide cellular data dialog.",
+          it
+        )
       }
     }
   }
@@ -44,7 +52,11 @@ class CellularAudioDialogController @Inject constructor(
       it.toBuilder().setUseCellularData(useData).build()
     }.invokeOnCompletion {
       it?.let {
-        logger.e("DOMAIN", "Failed when storing the user's preference to use cellular data.", it)
+        logger.e(
+          "DOMAIN",
+          "Failed when storing the user's preference to use cellular data.",
+          it
+        )
       }
     }
   }
