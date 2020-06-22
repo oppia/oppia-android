@@ -140,6 +140,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
   /** The most recent content ID read by the audio system. */
   private var audioPlaybackContentId: String? = null
 
+  private lateinit var stateContentId: String
+  private var contentViewModel: ContentViewModel? = null
+  private var feedbackViewModel: FeedbackViewModel? = null
+
   /**
    * An ever-present [PreviousNavigationButtonListener] that can exist even if backward navigation
    * is disabled. This listener no-ops if backward navigation is enabled. This serves to allows the
@@ -161,6 +165,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
    */
   fun compute(ephemeralState: EphemeralState, gcsEntityId: String): List<StateItemViewModel> {
     val hasPreviousState = ephemeralState.hasPreviousState
+
+    stateContentId = ephemeralState.state.content.contentId
 
     previousAnswerViewModels.clear()
     val pendingItemList = mutableListOf<StateItemViewModel>()
@@ -204,6 +210,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         audioPlaybackContentId = null
         currentStateName?.set(processedStateName)
         if (isAudioPlaybackEnabled()) {
+          handleContentCardHighlighting(audioPlaybackContentId ?: stateContentId, true)
           audioManager?.loadMainContentAudio(!canContinueToNextState)
         }
       }
@@ -242,7 +249,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     gcsEntityId: String
   ) {
     val contentSubtitledHtml: SubtitledHtml = ephemeralState.state.content
-    pendingItemList += ContentViewModel(contentSubtitledHtml.html, gcsEntityId)
+    contentViewModel = ContentViewModel(contentSubtitledHtml.contentId, contentSubtitledHtml.html, gcsEntityId)
+    pendingItemList += contentViewModel!!
   }
 
   private fun addPreviousAnswers(
@@ -376,9 +384,20 @@ class StatePlayerRecyclerViewAssembler private constructor(
       val audioUiManager = getAudioUiManager()
       if (!isAudioPlaybackEnabled()) {
         audioUiManager?.enableAudioPlayback(audioPlaybackContentId)
+        handleContentCardHighlighting(audioPlaybackContentId?: stateContentId, true)
       } else {
         audioUiManager?.disableAudioPlayback()
+        handleContentCardHighlighting(audioPlaybackContentId?: stateContentId, false)
       }
+    }
+  }
+
+  fun handleContentCardHighlighting(contentId: String, playing: Boolean) {
+    if(contentViewModel!=null && contentViewModel!!.contentId == contentId){
+      contentViewModel!!.updateIsAudioPlaying(playing)
+    }
+    if(feedbackViewModel!=null && feedbackViewModel!!.contentId == contentId){
+      feedbackViewModel!!.updateIsAudioPlaying(playing)
     }
   }
 
@@ -389,6 +408,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   fun readOutAnswerFeedback(feedback: SubtitledHtml) {
     if (playerFeatureSet.supportAudioVoiceovers && isAudioPlaybackEnabled()) {
       audioPlaybackContentId = feedback.contentId
+      handleContentCardHighlighting(feedback.contentId, true)
       getAudioUiManager()?.loadFeedbackAudio(feedback.contentId, allowAutoPlay = true)
     }
   }
@@ -420,7 +440,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private fun createFeedbackItem(feedback: SubtitledHtml, gcsEntityId: String): FeedbackViewModel? {
     // Only show feedback if there's some to show.
     if (feedback.html.isNotEmpty()) {
-      return FeedbackViewModel(feedback.html, gcsEntityId)
+      feedbackViewModel = FeedbackViewModel(feedback.contentId, feedback.html, gcsEntityId)
+      return feedbackViewModel
     }
     return null
   }
@@ -587,6 +608,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
               ).parseOppiaHtml(
                 contentViewModel.htmlContent.toString(), binding.contentTextView
               )
+            binding.viewModel = contentViewModel
           }
         )
       }
@@ -644,6 +666,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
                 feedbackViewModel.htmlContent.toString(),
                 binding.feedbackTextView
               )
+            binding.viewModel = feedbackViewModel
           }
         )
       }

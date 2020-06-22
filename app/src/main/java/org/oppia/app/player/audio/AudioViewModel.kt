@@ -27,11 +27,14 @@ class AudioViewModel @Inject constructor(
 
   private lateinit var state: State
   private lateinit var explorationId: String
+  private lateinit var contentId: String
   private var voiceoverMap = mapOf<String, Voiceover>()
   private val defaultLanguage = "en"
   private var languageSelectionShown = false
   private var autoPlay = false
   private var hasFeedback = false
+
+  private lateinit var audioContentIdListener: AudioContentIdListener
 
   var selectedLanguageCode: String = ""
   var languages = listOf<String>()
@@ -63,6 +66,10 @@ class AudioViewModel @Inject constructor(
     explorationId = id
   }
 
+  fun setContentIdListener(audioContentIdListener: AudioContentIdListener) {
+    this.audioContentIdListener = audioContentIdListener
+  }
+
   fun loadMainContentAudio(allowAutoPlay: Boolean) {
     hasFeedback = false
     loadAudio(null, allowAutoPlay)
@@ -70,6 +77,7 @@ class AudioViewModel @Inject constructor(
 
   fun loadFeedbackAudio(contentId: String, allowAutoPlay: Boolean) {
     hasFeedback = true
+    this.contentId = contentId
     loadAudio(contentId, allowAutoPlay)
   }
 
@@ -80,6 +88,7 @@ class AudioViewModel @Inject constructor(
    * @param allowAutoPlay If false, audio is guaranteed not to be autoPlayed.
    */
   private fun loadAudio(contentId: String?, allowAutoPlay: Boolean) {
+    this.contentId = contentId ?: state.content.contentId
     autoPlay = allowAutoPlay
     voiceoverMap = (state.recordedVoiceoversMap[contentId ?: state.content.contentId]
       ?: VoiceoverMapping.getDefaultInstance()).voiceoverMappingMap
@@ -111,8 +120,14 @@ class AudioViewModel @Inject constructor(
   fun togglePlayPause(type: UiAudioPlayStatus?) {
     if (type == UiAudioPlayStatus.PLAYING) {
       audioPlayerController.pause()
+      if (::audioContentIdListener.isInitialized) {
+        audioContentIdListener.contentIdForCurrentAudio(contentId, isPlaying = false)
+      }
     } else {
       audioPlayerController.play()
+      if (::audioContentIdListener.isInitialized) {
+        audioContentIdListener.contentIdForCurrentAudio(contentId, isPlaying = true)
+      }
     }
   }
 

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.model.HelpIndex
 import org.oppia.app.model.UserAnswer
+import org.oppia.app.player.audio.AudioContentIdListener
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
@@ -24,7 +25,7 @@ import javax.inject.Inject
 class StateFragment : InjectableFragment(), InteractionAnswerReceiver, InteractionAnswerHandler,
   InteractionAnswerErrorOrAvailabilityCheckReceiver, ContinueNavigationButtonListener, NextNavigationButtonListener,
   PreviousNavigationButtonListener, ReturnToTopicNavigationButtonListener, SubmitNavigationButtonListener,
-  PreviousResponsesHeaderClickListener, ShowHintAvailabilityListener {
+  PreviousResponsesHeaderClickListener, ShowHintAvailabilityListener, AudioContentIdListener {
   companion object {
     /**
      * Creates a new instance of a StateFragment.
@@ -85,6 +86,10 @@ class StateFragment : InjectableFragment(), InteractionAnswerReceiver, Interacti
   override fun onResponsesHeaderClicked() = stateFragmentPresenter.onResponsesHeaderClicked()
 
   override fun onHintAvailable(helpIndex: HelpIndex) = stateFragmentPresenter.onHintAvailable(helpIndex)
+
+  override fun contentIdForCurrentAudio(contentId: String, isPlaying: Boolean) {
+    stateFragmentPresenter.handleContentCardHighlighting(contentId, isPlaying)
+  }
 
   fun handlePlayAudio() = stateFragmentPresenter.handleAudioClick()
 

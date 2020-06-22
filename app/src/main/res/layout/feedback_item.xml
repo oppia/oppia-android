@@ -3,6 +3,10 @@
   <data>
 
     <variable
+      name="viewModel"
+      type="org.oppia.app.player.state.itemviewmodel.FeedbackViewModel" />
+
+    <variable
       name="htmlContent"
       type="CharSequence" />
   </data>
@@ -14,7 +18,7 @@
     android:layout_marginTop="@dimen/divider_margin_top"
     android:layout_marginEnd="28dp"
     android:layout_marginBottom="@dimen/divider_margin_bottom"
-    android:background="@drawable/content_blue_background">
+    android:background="@{viewModel.isAudioPlaying ? @drawable/content_yellow_background : @drawable/content_blue_background}">
 
     <TextView
       android:id="@+id/feedback_text_view"

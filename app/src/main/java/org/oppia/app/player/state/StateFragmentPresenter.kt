@@ -25,6 +25,7 @@ import org.oppia.app.model.Solution
 import org.oppia.app.model.State
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.audio.AudioButtonListener
+import org.oppia.app.player.audio.AudioContentIdListener
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.AudioUiManager
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
@@ -202,6 +203,10 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
+  fun handleContentCardHighlighting(contentId: String, playing: Boolean) {
+    recyclerViewAssembler.handleContentCardHighlighting(contentId, playing)
+  }
+
   private fun createRecyclerViewAssembler(
     builder: StatePlayerRecyclerViewAssembler.Builder,
     congratulationsTextView: TextView
@@ -243,6 +248,8 @@ class StateFragmentPresenter @Inject constructor(
       val audioFragment: AudioFragment = AudioFragment.newInstance(profileId.internalId)
       fragment.childFragmentManager.beginTransaction()
         .add(R.id.audio_fragment_placeholder, audioFragment, TAG_AUDIO_FRAGMENT).commitNow()
+
+      (getAudioFragment() as AudioFragment).setContentIdListener(fragment as AudioContentIdListener)
     }
     return getAudioFragment() as? AudioUiManager
   }

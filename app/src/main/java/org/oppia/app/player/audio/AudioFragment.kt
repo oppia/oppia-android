@@ -75,6 +75,9 @@ class AudioFragment : InjectableFragment(), LanguageInterface, AudioUiManager,
   override fun setStateAndExplorationId(newState: State, explorationId: String) =
     audioFragmentPresenter.setStateAndExplorationId(newState, explorationId)
 
+  fun setContentIdListener(audioContentIdListener: AudioContentIdListener) =
+    audioFragmentPresenter.setContentIdListener(audioContentIdListener)
+
   override fun loadMainContentAudio(allowAutoPlay: Boolean) =
     audioFragmentPresenter.loadMainContentAudio(allowAutoPlay)
 

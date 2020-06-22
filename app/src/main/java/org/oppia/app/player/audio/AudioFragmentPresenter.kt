@@ -172,6 +172,10 @@ class AudioFragmentPresenter @Inject constructor(
   fun setStateAndExplorationId(newState: State, explorationId: String) =
     viewModel.setStateAndExplorationId(newState, explorationId)
 
+  fun setContentIdListener(audioContentIdListener: AudioContentIdListener) {
+    viewModel.setContentIdListener(audioContentIdListener)
+  }
+
   fun loadMainContentAudio(allowAutoPlay: Boolean) = viewModel.loadMainContentAudio(allowAutoPlay)
 
   fun loadFeedbackAudio(contentId: String, allowAutoPlay: Boolean) =
