@@ -43,7 +43,7 @@ class HintsAndSolutionQuestionManagerFragment : InjectableFragment() {
 
   companion object {
 
-    internal const val QUESTION_ID_ARGUMENT_KEY = "EXPLORATION_ID"
+    internal const val QUESTION_ID_ARGUMENT_KEY = "QUESTION_ID"
     internal const val NEW_AVAILABLE_HINT_INDEX_ARGUMENT_KEY = "NEW_AVAILABLE_HINT_INDEX"
     internal const val ALL_HINTS_EXHAUSTED_ARGUMENT_KEY = "ALL_HINTS_EXHAUSTED"
     
