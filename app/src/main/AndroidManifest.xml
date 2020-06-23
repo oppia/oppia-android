@@ -123,6 +123,9 @@
     <activity android:name=".testing.HomeTestActivity" />
     <activity android:name=".testing.InputInteractionViewTestActivity" />
     <activity
+      android:name=".testing.FontScaleTestActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
       android:name=".testing.NavigationDrawerTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity

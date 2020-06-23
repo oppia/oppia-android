@@ -1,18 +1,29 @@
 package org.oppia.app.testing
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import org.oppia.app.activity.InjectableAppCompatActivity
-import javax.inject.Inject
+import androidx.appcompat.app.AppCompatActivity
+import org.oppia.app.R
+import org.oppia.app.utility.FontScaleConfigurationUtil
 
-/** Test Activity used for testing AudioFragment */
-class FontScaleTestActivity : InjectableAppCompatActivity() {
+private const val FONT_SCALE_EXTRA_KEY = "FONT_SCALE_EXTRA_KEY"
 
-  @Inject
-  lateinit var fontScaleTestActivityPresenter: FontScaleTestActivityPresenter
+/** Test Activity used for testing Font Scale */
+class FontScaleTestActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
-    fontScaleTestActivityPresenter.handleOnCreate()
+    val storyTextSize = intent.getStringExtra(FONT_SCALE_EXTRA_KEY)
+    FontScaleConfigurationUtil().adjustFontScale(this, storyTextSize)
+    setContentView(R.layout.font_scale_test_activity)
+  }
+
+  companion object {
+    fun createFontScaleTestActivity(context: Context, storyTextSize: String): Intent {
+      val intent = Intent(context, FontScaleTestActivity::class.java)
+      intent.putExtra(FONT_SCALE_EXTRA_KEY, storyTextSize)
+      return intent
+    }
   }
 }

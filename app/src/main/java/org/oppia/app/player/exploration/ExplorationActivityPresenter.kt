@@ -102,26 +102,12 @@ class ExplorationActivityPresenter @Inject constructor(
 
   fun loadExplorationFragment(result: StoryTextSize) {
     if (getExplorationFragment() == null) {
-      val explorationFragment = ExplorationFragment()
-      val args = Bundle()
-      args.putInt(
-        ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY,
-        internalProfileId
-      )
-      args.putString(ExplorationActivity.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
-      args.putString(ExplorationActivity.EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
-      args.putString(
-        ExplorationActivity.EXPLORATION_ACTIVITY_STORY_DEFAULT_FONT_SIZE_ARGUMENT_KEY,
-        result.name
-      )
-      args.putString(
-        ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY,
-        explorationId
-      )
-      explorationFragment.arguments = args
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_fragment_placeholder,
-        explorationFragment,
+        ExplorationFragment.newInstance(
+          topicId = topicId, internalProfileId = internalProfileId,
+          storyId = storyId, storyTextSize = result.name, explorationId = explorationId
+        ),
         TAG_EXPLORATION_FRAGMENT
       ).commitNow()
     }
