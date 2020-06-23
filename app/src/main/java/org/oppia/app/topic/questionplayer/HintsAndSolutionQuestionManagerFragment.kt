@@ -8,10 +8,6 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-private const val KEY_QUESTION_ID = "QUESTION_ID"
-private const val KEY_NEW_AVAILABLE_HINT_INDEX = "NEW_AVAILABLE_HINT_INDEX"
-private const val KEY_ALL_HINTS_EXHAUSTED = "ALL_HINTS_EXHAUSTED"
-
 /**
  * ManagerFragment of [QuestionFragment] that observes data provider that retrieve Question State.
  */
@@ -32,11 +28,11 @@ class HintsAndSolutionQuestionManagerFragment : InjectableFragment() {
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to HintsAndSolutionFragment" }
     val id =
-      checkNotNull(args.getString(KEY_QUESTION_ID)) { "Expected id to be passed to HintsAndSolutionFragment" }
+      checkNotNull(args.getString(QUESTION_ID_ARGUMENT_KEY)) { "Expected id to be passed to HintsAndSolutionFragment" }
     val newAvailableHintIndex =
-      checkNotNull(args.getInt(KEY_NEW_AVAILABLE_HINT_INDEX)) { "Expected hint index to be passed to HintsAndSolutionFragment" }
+      checkNotNull(args.getInt(NEW_AVAILABLE_HINT_INDEX_ARGUMENT_KEY)) { "Expected hint index to be passed to HintsAndSolutionFragment" }
     val allHintsExhausted =
-      checkNotNull(args.getBoolean(KEY_ALL_HINTS_EXHAUSTED)) { "Expected if hints exhausted to be passed to HintsAndSolutionFragment" }
+      checkNotNull(args.getBoolean(ALL_HINTS_EXHAUSTED_ARGUMENT_KEY)) { "Expected if hints exhausted to be passed to HintsAndSolutionFragment" }
 
     return hintsAndSolutionQuestionManagerFragmentPresenter.handleCreateView(
       id,
@@ -47,6 +43,10 @@ class HintsAndSolutionQuestionManagerFragment : InjectableFragment() {
 
   companion object {
 
+    internal const val QUESTION_ID_ARGUMENT_KEY = "EXPLORATION_ID"
+    internal const val NEW_AVAILABLE_HINT_INDEX_ARGUMENT_KEY = "NEW_AVAILABLE_HINT_INDEX"
+    internal const val ALL_HINTS_EXHAUSTED_ARGUMENT_KEY = "ALL_HINTS_EXHAUSTED"
+    
     fun newInstance(
       QuestionId: String,
       newAvailableHintIndex: Int,
@@ -54,9 +54,9 @@ class HintsAndSolutionQuestionManagerFragment : InjectableFragment() {
     ): HintsAndSolutionQuestionManagerFragment {
       val questionManagerFragment = HintsAndSolutionQuestionManagerFragment()
       val args = Bundle()
-      args.putString(KEY_QUESTION_ID, QuestionId)
-      args.putInt(KEY_NEW_AVAILABLE_HINT_INDEX, newAvailableHintIndex)
-      args.putBoolean(KEY_ALL_HINTS_EXHAUSTED, allHintsExhausted)
+      args.putString(QUESTION_ID_ARGUMENT_KEY, QuestionId)
+      args.putInt(NEW_AVAILABLE_HINT_INDEX_ARGUMENT_KEY, newAvailableHintIndex)
+      args.putBoolean(ALL_HINTS_EXHAUSTED_ARGUMENT_KEY, allHintsExhausted)
       questionManagerFragment.arguments = args
       return questionManagerFragment
     }

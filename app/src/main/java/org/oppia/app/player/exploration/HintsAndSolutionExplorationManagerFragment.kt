@@ -8,10 +8,6 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-private const val KEY_EXPLORATION_ID = "EXPLORATION_ID"
-private const val KEY_NEW_AVAILABLE_HINT_INDEX = "NEW_AVAILABLE_HINT_INDEX"
-private const val KEY_ALL_HINTS_EXHAUSTED = "ALL_HINTS_EXHAUSTED"
-
 /**
  * ManagerFragment of [ExplorationFragment] that observes data provider that retrieve Exploration State.
  */
@@ -32,11 +28,11 @@ class HintsAndSolutionExplorationManagerFragment : InjectableFragment() {
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to HintsAndSolutionFragment" }
     val id =
-      checkNotNull(args.getString(KEY_EXPLORATION_ID)) { "Expected id to be passed to HintsAndSolutionFragment" }
+      checkNotNull(args.getString(EXPLORATION_ID_ARGUMENT_KEY)) { "Expected id to be passed to HintsAndSolutionFragment" }
     val newAvailableHintIndex =
-      checkNotNull(args.getInt(KEY_NEW_AVAILABLE_HINT_INDEX)) { "Expected hint index to be passed to HintsAndSolutionFragment" }
+      checkNotNull(args.getInt(NEW_AVAILABLE_HINT_INDEX_ARGUMENT_KEY)) { "Expected hint index to be passed to HintsAndSolutionFragment" }
     val allHintsExhausted =
-      checkNotNull(args.getBoolean(KEY_ALL_HINTS_EXHAUSTED)) { "Expected if hints exhausted to be passed to HintsAndSolutionFragment" }
+      checkNotNull(args.getBoolean(ALL_HINTS_EXHAUSTED_ARGUMENT_KEY)) { "Expected if hints exhausted to be passed to HintsAndSolutionFragment" }
 
     return hintsAndSolutionExplorationManagerFragmentPresenter.handleCreateView(
       id,
@@ -47,6 +43,10 @@ class HintsAndSolutionExplorationManagerFragment : InjectableFragment() {
 
   companion object {
 
+    internal const val EXPLORATION_ID_ARGUMENT_KEY = "EXPLORATION_ID"
+    internal const val NEW_AVAILABLE_HINT_INDEX_ARGUMENT_KEY = "NEW_AVAILABLE_HINT_INDEX"
+    internal const val ALL_HINTS_EXHAUSTED_ARGUMENT_KEY = "ALL_HINTS_EXHAUSTED"
+
     fun newInstance(
       explorationId: String,
       newAvailableHintIndex: Int,
@@ -54,10 +54,11 @@ class HintsAndSolutionExplorationManagerFragment : InjectableFragment() {
     ): HintsAndSolutionExplorationManagerFragment {
       val explorationManagerFragment =
         HintsAndSolutionExplorationManagerFragment()
+
       val args = Bundle()
-      args.putString(KEY_EXPLORATION_ID, explorationId)
-      args.putInt(KEY_NEW_AVAILABLE_HINT_INDEX, newAvailableHintIndex)
-      args.putBoolean(KEY_ALL_HINTS_EXHAUSTED, allHintsExhausted)
+      args.putString(EXPLORATION_ID_ARGUMENT_KEY, explorationId)
+      args.putInt(NEW_AVAILABLE_HINT_INDEX_ARGUMENT_KEY, newAvailableHintIndex)
+      args.putBoolean(ALL_HINTS_EXHAUSTED_ARGUMENT_KEY, allHintsExhausted)
       explorationManagerFragment.arguments = args
       return explorationManagerFragment
     }
