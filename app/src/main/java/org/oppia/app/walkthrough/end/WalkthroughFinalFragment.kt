@@ -22,17 +22,28 @@ class WalkthroughFinalFragment : InjectableFragment() {
       return storyFragment
     }
   }
-  @Inject lateinit var walkthroughFinalFragmentPresenter: WalkthroughFinalFragmentPresenter
+
+  @Inject
+  lateinit var walkthroughFinalFragmentPresenter: WalkthroughFinalFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    val args = checkNotNull(arguments) { "Expected arguments to be passed to WalkthroughFinalFragment" }
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
+    val args =
+      checkNotNull(arguments) {
+        "Expected arguments to be passed to WalkthroughFinalFragment"
+      }
     val topicId =
-      checkNotNull(args.getString(KEY_TOPIC_ID_ARGUMENT)) { "Expected topicId to be passed to WalkthroughFinalFragment" }
-    return walkthroughFinalFragmentPresenter.handleCreateView(inflater, container,topicId)
+      checkNotNull(args.getString(KEY_TOPIC_ID_ARGUMENT)) {
+        "Expected topicId to be passed to WalkthroughFinalFragment"
+      }
+    return walkthroughFinalFragmentPresenter.handleCreateView(inflater, container, topicId)
   }
 }

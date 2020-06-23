@@ -1,12 +1,12 @@
 package org.oppia.domain.classify.rules.dragAndDropSortInput
 
-import javax.inject.Inject
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.ListOfSetsOfHtmlStrings
 import org.oppia.app.model.StringList
 import org.oppia.domain.classify.RuleClassifier
 import org.oppia.domain.classify.rules.GenericRuleClassifier
 import org.oppia.domain.classify.rules.RuleClassifierProvider
+import javax.inject.Inject
 
 /**
  * Provider for a classifier that determines whether two objects of [ListOfSetsOfHtmlStrings] are equal by checking their every list of both objects at every index
@@ -19,23 +19,30 @@ internal class DragDropSortInputIsEqualToOrderingClassifierProvider @Inject cons
 
   override fun createRuleClassifier(): RuleClassifier {
     return classifierFactory.createSingleInputClassifier(
-      InteractionObject.ObjectTypeCase.LIST_OF_SETS_OF_HTML_STRING, "x", this
+      InteractionObject.ObjectTypeCase.LIST_OF_SETS_OF_HTML_STRING,
+      "x",
+      this
     )
   }
 
   override fun matches(answer: ListOfSetsOfHtmlStrings, input: ListOfSetsOfHtmlStrings): Boolean {
-    return answer.setOfHtmlStringsCount == input.setOfHtmlStringsCount && (areListOfSetsOfHtmlStringsEqual(
-      answer, input
-    ))
+    return answer.setOfHtmlStringsCount == input.setOfHtmlStringsCount && (
+      areListOfSetsOfHtmlStringsEqual(
+        answer, input
+      )
+      )
   }
 
   /**
    * This functions checks the equality of two nested lists irrespective of positions of nested list only ordering of first list matters
    * It returns true if all the list items are equal and are at correct position otherwise false
    */
-  private fun areListOfSetsOfHtmlStringsEqual(answer: ListOfSetsOfHtmlStrings, input: ListOfSetsOfHtmlStrings): Boolean {
-    /**
-     *For Ex - list1 = [a, b, c] & list2 = [1, 2, 3]
+  private fun areListOfSetsOfHtmlStringsEqual(
+    answer: ListOfSetsOfHtmlStrings,
+    input: ListOfSetsOfHtmlStrings
+  ): Boolean {
+    /*
+     * For Ex - list1 = [a, b, c] & list2 = [1, 2, 3]
      *          list1 zip list2 => [{a, 1}, {b, 2}, {b, 3}]
      *          then two items are checked using areSetsOfHtmlStringsEqual which gives a boolean value
      *          then reduce operator on a list of boolean for ex [false, true, false, false, false]

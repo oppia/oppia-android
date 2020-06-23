@@ -3,18 +3,22 @@ package org.oppia.app.topic
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import org.oppia.app.R
 import org.oppia.app.databinding.TopicFragmentBinding
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
 /** The presenter for [TopicFragment]. */
 @FragmentScope
 class TopicFragmentPresenter @Inject constructor(
-  private val fragment: Fragment
+  private val activity: AppCompatActivity,
+  private val fragment: Fragment,
+  private val viewModelProvider: ViewModelProvider<TopicViewModel>
 ) {
   private lateinit var tabLayout: TabLayout
   private var internalProfileId: Int = -1
@@ -47,6 +51,16 @@ class TopicFragmentPresenter @Inject constructor(
     tabLayout = binding.root.findViewById(R.id.topic_tabs_container) as TabLayout
     this.internalProfileId = internalProfileId
     this.topicId = topicId
+
+    binding.topicToolbar.setNavigationOnClickListener {
+      (activity as TopicActivity).finish()
+    }
+
+    val viewModel = getTopicViewModel()
+    viewModel.setInternalProfileId(internalProfileId)
+    viewModel.setTopicId(topicId)
+    binding.viewModel = viewModel
+
     setUpViewPager(viewPager, topicId)
     return binding.root
   }
@@ -68,5 +82,9 @@ class TopicFragmentPresenter @Inject constructor(
       setCurrentTab(TopicTab.LESSONS)
     else if (topicId.isNotEmpty() && storyId.isEmpty())
       setCurrentTab(TopicTab.INFO)
+  }
+
+  private fun getTopicViewModel(): TopicViewModel {
+    return viewModelProvider.getForFragment(fragment, TopicViewModel::class.java)
   }
 }

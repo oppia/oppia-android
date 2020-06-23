@@ -42,15 +42,28 @@ class ExplorationTestActivityPresenter @Inject constructor(
     explorationDataController.stopPlayingExploration()
     explorationDataController.startPlayingExploration(
       EXPLORATION_ID
-    ).observe(activity, Observer<AsyncResult<Any?>> { result ->
-      when {
-        result.isPending() -> logger.d(TAG_EXPLORATION_TEST_ACTIVITY, "Loading exploration")
-        result.isFailure() -> logger.e(TAG_EXPLORATION_TEST_ACTIVITY, "Failed to load exploration", result.getErrorOrNull()!!)
-        else -> {
-          logger.d(TAG_EXPLORATION_TEST_ACTIVITY, "Successfully loaded exploration")
-          routeToExplorationListener.routeToExploration(INTERNAL_PROFILE_ID, TOPIC_ID, STORY_ID, EXPLORATION_ID, /* backflowScreen= */ null)
+    ).observe(
+      activity,
+      Observer<AsyncResult<Any?>> { result ->
+        when {
+          result.isPending() -> logger.d(TAG_EXPLORATION_TEST_ACTIVITY, "Loading exploration")
+          result.isFailure() -> logger.e(
+            TAG_EXPLORATION_TEST_ACTIVITY,
+            "Failed to load exploration",
+            result.getErrorOrNull()!!
+          )
+          else -> {
+            logger.d(TAG_EXPLORATION_TEST_ACTIVITY, "Successfully loaded exploration")
+            routeToExplorationListener.routeToExploration(
+              INTERNAL_PROFILE_ID,
+              TOPIC_ID,
+              STORY_ID,
+              EXPLORATION_ID, /* backflowScreen= */
+              null
+            )
+          }
         }
       }
-    })
+    )
   }
 }

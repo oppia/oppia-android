@@ -17,6 +17,10 @@ class RepositoryGlideModule : AppGlideModule() {
     // TODO(#1039): Introduce custom type OppiaImage for rendering Bitmap and Svg.
     registry.register(SVG::class.java, Picture::class.java, SvgDrawableTranscoder())
       .append(InputStream::class.java, SVG::class.java, SvgDecoder())
-      .append(ImageAssetFetcher::class.java, InputStream::class.java, RepositoryModelLoader.Factory())
+      .append(
+        ImageAssetFetcher::class.java,
+        InputStream::class.java,
+        RepositoryModelLoader.Factory()
+      )
   }
 }

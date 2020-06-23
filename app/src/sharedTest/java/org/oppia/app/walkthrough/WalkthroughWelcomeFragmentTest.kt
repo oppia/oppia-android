@@ -3,12 +3,15 @@ package org.oppia.app.walkthrough
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import androidx.test.core.app.ActivityScenario.*
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.*
-import androidx.test.espresso.assertion.ViewAssertions.*
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
@@ -18,7 +21,7 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
-import org.hamcrest.CoreMatchers.*
+import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -43,8 +46,11 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class WalkthroughWelcomeFragmentTest {
 
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var context: Context
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var context: Context
   private val internalProfileId = 0
   private lateinit var profileId: ProfileId
 
@@ -79,23 +85,43 @@ class WalkthroughWelcomeFragmentTest {
   @Test
   fun testWalkthroughWelcomeFragment_checkDescription_isCorrect() {
     launch<OnboardingActivity>(createWalkthroughActivityIntent(0)).use {
-      onView(allOf(withId(R.id.walkthrough_welcome_description_text_view), isCompletelyDisplayed())).check(matches(withText(R.string.walkthrough_welcome_description)))
+      onView(
+        allOf(
+          withId(R.id.walkthrough_welcome_description_text_view),
+          isCompletelyDisplayed()
+        )
+      ).check(matches(withText(R.string.walkthrough_welcome_description)))
     }
   }
 
   @Test
   fun testWalkthroughWelcomeFragment_checkProfileName_isCorrect() {
     launch<OnboardingActivity>(createWalkthroughActivityIntent(0)).use {
-      onView(allOf(withId(R.id.walkthrough_welcome_title_text_view), isCompletelyDisplayed())).check(matches(withText("Welcome Sean!")))
+      onView(
+        allOf(
+          withId(R.id.walkthrough_welcome_title_text_view),
+          isCompletelyDisplayed()
+        )
+      ).check(matches(withText("Welcome Sean!")))
     }
   }
 
   @Test
   fun testWalkthroughWelcomeFragment_checkProfileName_configurationChanged_isCorrect() {
     launch<OnboardingActivity>(createWalkthroughActivityIntent(0)).use {
-      onView(allOf(withId(R.id.walkthrough_welcome_title_text_view), isCompletelyDisplayed())).check(matches(withText("Welcome Sean!")))
+      onView(
+        allOf(
+          withId(R.id.walkthrough_welcome_title_text_view),
+          isCompletelyDisplayed()
+        )
+      ).check(matches(withText("Welcome Sean!")))
       onView(isRoot()).perform(orientationLandscape())
-      onView(allOf(withId(R.id.walkthrough_welcome_title_text_view), isCompletelyDisplayed())).check(matches(withText("Welcome Sean!")))
+      onView(
+        allOf(
+          withId(R.id.walkthrough_welcome_title_text_view),
+          isCompletelyDisplayed()
+        )
+      ).check(matches(withText("Welcome Sean!")))
     }
   }
 
@@ -121,14 +147,18 @@ class WalkthroughWelcomeFragmentTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
     @Singleton
     @Provides
     @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBlockingDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 

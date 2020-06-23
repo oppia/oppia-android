@@ -19,12 +19,14 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.Matchers.allOf
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -51,6 +53,11 @@ class TopicRevisionFragmentTest {
     /* initialTouchMode= */ true,
     /* launchActivity= */ false
   )
+
+  @Before
+  fun setUp(){
+    FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
+  }
 
   @Test
   fun testTopicRevisionFragment_loadFragment_displayReviewTopics_isSuccessful() {

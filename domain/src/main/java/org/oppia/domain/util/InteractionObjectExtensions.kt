@@ -39,7 +39,8 @@ private fun NumberWithUnits.toAnswerString(): String {
   val suffixedUnits = unitList.filterNot(::isPrefixUnit)
 
   val prefixString = prefixedUnits.joinToString(separator = " ")
-  val suffixedString = suffixedUnits.joinToString(separator = " ", transform = NumberUnit::toAnswerStringPart)
+  val suffixedString =
+    suffixedUnits.joinToString(separator = " ", transform = NumberUnit::toAnswerStringPart)
   val valueString = if (numberTypeCase == NumberWithUnits.NumberTypeCase.REAL) {
     real.toString()
   } else {
