@@ -102,28 +102,12 @@ class ProfileChooserFragmentPresenter @Inject constructor(
       activity,
       Observer<Boolean> {
         wasProfileEverBeenAddedValue.set(it)
-        val layoutManager = if (it) {
-          val spanCount = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            activity.resources.getInteger(R.integer.profile_chooser_span_count)
-          } else {
-            if (activity.resources.getBoolean(R.bool.isTablet)) {
-              3
-            } else {
-              /* spanCount= */ 2
-            }
-          }
-          GridLayoutManager(activity, spanCount)
+        val spanCount = if (it) {
+          activity.resources.getInteger(R.integer.profile_chooser_span_count)
         } else {
-          if (activity.resources.getBoolean(R.bool.isTablet)) {
-            GridLayoutManager(activity, /* spanCount= */ 1)
-          } else {
-            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-              GridLayoutManager(activity, /* spanCount= */ 2)
-            } else {
-              LinearLayoutManager(activity)
-            }
-          }
+          activity.resources.getInteger(R.integer.profile_chooser_first_time_span_count)
         }
+        val layoutManager = GridLayoutManager(activity, spanCount)
         binding.profileRecyclerView.layoutManager = layoutManager
       }
     )
