@@ -1,4 +1,4 @@
-package org.oppia.app.player.state.hintsandsolution
+package org.oppia.app.hintsandsolution
 
 import android.content.Context
 import android.os.Bundle
@@ -10,40 +10,41 @@ import org.oppia.app.fragment.InjectableDialogFragment
 import org.oppia.app.model.State
 import javax.inject.Inject
 
-private const val KEY_CURRENT_EXPANDED_LIST_INDEX = "CURRENT_EXPANDED_LIST_INDEX"
-private const val KEY_ID = "ID"
-private const val KEY_NEW_AVAILABLE_HINT_INDEX = "NEW_AVAILABLE_HINT_INDEX"
-private const val KEY_ALL_HINTS_EXHAUSTED = "ALL_HINTS_EXHAUSTED"
+private const val CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY = "CURRENT_EXPANDED_LIST_INDEX"
 
 /* Fragment that displays a fullscreen dialog for Hints and Solutions. */
-class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListIndexListener,
+class HintsAndSolutionDialogFragment : InjectableDialogFragment(), ExpandedHintListIndexListener,
   RevealSolutionInterface {
 
   @Inject
-  lateinit var hintsAndSolutionFragmentPresenter: HintsAndSolutionFragmentPresenter
+  lateinit var hintsAndSolutionDialogFragmentPresenter: HintsAndSolutionDialogFragmentPresenter
 
   private lateinit var state: State
 
   private var currentExpandedHintListIndex: Int? = null
 
   companion object {
+
+    internal const val ID_ARGUMENT_KEY = "ID"
+    internal const val NEW_AVAILABLE_HINT_INDEX_ARGUMENT_KEY = "NEW_AVAILABLE_HINT_INDEX"
+    internal const val ALL_HINTS_EXHAUSTED_ARGUMENT_KEY= "ALL_HINTS_EXHAUSTED"
     /**
      * Creates a new instance of a DialogFragment to display hints and solution
      * @param id Used in ExplorationController/QuestionAssessmentProgressController to get current state data.
      * @param newAvailableHintIndex Index of new available hint.
      * @param allHintsExhausted Boolean set to true when all hints are exhausted.
-     * @return [HintsAndSolutionFragment]: DialogFragment
+     * @return [HintsAndSolutionDialogFragment]: DialogFragment
      */
     fun newInstance(
       id: String,
       newAvailableHintIndex: Int,
       allHintsExhausted: Boolean
-    ): HintsAndSolutionFragment {
-      val hintsAndSolutionFrag = HintsAndSolutionFragment()
+    ): HintsAndSolutionDialogFragment {
+      val hintsAndSolutionFrag = HintsAndSolutionDialogFragment()
       val args = Bundle()
-      args.putString(KEY_ID, id)
-      args.putInt(KEY_NEW_AVAILABLE_HINT_INDEX, newAvailableHintIndex)
-      args.putBoolean(KEY_ALL_HINTS_EXHAUSTED, allHintsExhausted)
+      args.putString(ID_ARGUMENT_KEY, id)
+      args.putInt(NEW_AVAILABLE_HINT_INDEX_ARGUMENT_KEY, newAvailableHintIndex)
+      args.putBoolean(ALL_HINTS_EXHAUSTED_ARGUMENT_KEY, allHintsExhausted)
       hintsAndSolutionFrag.arguments = args
       return hintsAndSolutionFrag
     }
@@ -65,7 +66,7 @@ class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListInd
     savedInstanceState: Bundle?
   ): View? {
     if (savedInstanceState != null) {
-      currentExpandedHintListIndex = savedInstanceState.getInt(KEY_CURRENT_EXPANDED_LIST_INDEX, -1)
+      currentExpandedHintListIndex = savedInstanceState.getInt(CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY, -1)
       if (currentExpandedHintListIndex == -1) {
         currentExpandedHintListIndex = null
       }
@@ -73,13 +74,13 @@ class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListInd
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to HintsAndSolutionFragment" }
     val id =
-      checkNotNull(args.getString(KEY_ID)) { "Expected id to be passed to HintsAndSolutionFragment" }
+      checkNotNull(args.getString(ID_ARGUMENT_KEY)) { "Expected id to be passed to HintsAndSolutionFragment" }
     val newAvailableHintIndex =
-      checkNotNull(args.getInt(KEY_NEW_AVAILABLE_HINT_INDEX)) { "Expected hint index to be passed to HintsAndSolutionFragment" }
+      checkNotNull(args.getInt(NEW_AVAILABLE_HINT_INDEX_ARGUMENT_KEY)) { "Expected hint index to be passed to HintsAndSolutionFragment" }
     val allHintsExhausted =
-      checkNotNull(args.getBoolean(KEY_ALL_HINTS_EXHAUSTED)) { "Expected if hints exhausted to be passed to HintsAndSolutionFragment" }
+      checkNotNull(args.getBoolean(ALL_HINTS_EXHAUSTED_ARGUMENT_KEY)) { "Expected if hints exhausted to be passed to HintsAndSolutionFragment" }
 
-    return hintsAndSolutionFragmentPresenter.handleCreateView(
+    return hintsAndSolutionDialogFragmentPresenter.handleCreateView(
       inflater,
       container,
       state,
@@ -99,17 +100,17 @@ class HintsAndSolutionFragment : InjectableDialogFragment(), ExpandedHintListInd
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
     if (currentExpandedHintListIndex != null) {
-      outState.putInt(KEY_CURRENT_EXPANDED_LIST_INDEX, currentExpandedHintListIndex!!)
+      outState.putInt(CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY, currentExpandedHintListIndex!!)
     }
   }
 
   override fun onExpandListIconClicked(index: Int?) {
     currentExpandedHintListIndex = index
-    hintsAndSolutionFragmentPresenter.onExpandClicked(index)
+    hintsAndSolutionDialogFragmentPresenter.onExpandClicked(index)
   }
 
   override fun revealSolution(saveUserChoice: Boolean) {
-    hintsAndSolutionFragmentPresenter.handleRevealSolution(saveUserChoice)
+    hintsAndSolutionDialogFragmentPresenter.handleRevealSolution(saveUserChoice)
   }
 
   fun loadState(state: State) {

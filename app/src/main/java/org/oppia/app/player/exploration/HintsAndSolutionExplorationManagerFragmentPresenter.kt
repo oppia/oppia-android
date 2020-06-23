@@ -1,4 +1,4 @@
-package org.oppia.app.player.state.hintsandsolution
+package org.oppia.app.player.exploration
 
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity

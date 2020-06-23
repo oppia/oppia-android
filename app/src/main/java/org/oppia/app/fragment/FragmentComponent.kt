@@ -20,8 +20,8 @@ import org.oppia.app.options.OptionsFragment
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.exploration.ExplorationFragment
 import org.oppia.app.player.state.StateFragment
-import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionExplorationManagerFragment
-import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionFragment
+import org.oppia.app.player.exploration.HintsAndSolutionExplorationManagerFragment
+import org.oppia.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.app.player.state.itemviewmodel.InteractionViewModelModule
 import org.oppia.app.profile.AdminSettingsDialogFragment
 import org.oppia.app.profile.ProfileChooserFragment
@@ -69,7 +69,7 @@ interface FragmentComponent {
   fun inject(explorationFragment: ExplorationFragment)
   fun inject(faqListFragment: FAQListFragment)
   fun inject(helpFragment: HelpFragment)
-  fun inject(hintsAndSolutionFragment: HintsAndSolutionFragment)
+  fun inject(hintsAndSolutionFragment: HintsAndSolutionDialogFragment)
   fun inject(hintsAndSolutionExplorationManagerFragment: HintsAndSolutionExplorationManagerFragment)
   fun inject(hintsAndSolutionQuestionManagerFragment: HintsAndSolutionQuestionManagerFragment)
   fun inject(homeFragment: HomeFragment)

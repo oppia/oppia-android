@@ -7,10 +7,10 @@ import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.model.State
 import org.oppia.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
-import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionFragment
-import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionListener
-import org.oppia.app.player.state.hintsandsolution.RevealHintListener
-import org.oppia.app.player.state.hintsandsolution.RevealSolutionInterface
+import org.oppia.app.hintsandsolution.HintsAndSolutionDialogFragment
+import org.oppia.app.hintsandsolution.HintsAndSolutionListener
+import org.oppia.app.hintsandsolution.RevealHintListener
+import org.oppia.app.hintsandsolution.RevealSolutionInterface
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.app.player.stopplaying.RestartPlayingSessionListener
@@ -90,8 +90,8 @@ class QuestionPlayerActivity :
     questionPlayerActivityPresenter.revealSolution(saveUserChoice)
   }
 
-  private fun getHintsAndSolution(): HintsAndSolutionFragment? {
-    return supportFragmentManager.findFragmentByTag(TAG_HINTS_AND_SOLUTION_DIALOG) as HintsAndSolutionFragment?
+  private fun getHintsAndSolution(): HintsAndSolutionDialogFragment? {
+    return supportFragmentManager.findFragmentByTag(TAG_HINTS_AND_SOLUTION_DIALOG) as HintsAndSolutionDialogFragment?
   }
 
   override fun routeToHintsAndSolution(
@@ -127,7 +127,7 @@ class QuestionPlayerActivity :
   ) {
     if (getHintsAndSolution() == null) {
       val hintsAndSolutionFragment =
-        HintsAndSolutionFragment.newInstance(
+        HintsAndSolutionDialogFragment.newInstance(
           explorationId,
           newAvailableHintIndex,
           allHintsExhausted

@@ -1,4 +1,4 @@
-package org.oppia.app.player.state.hintsandsolution
+package org.oppia.app.hintsandsolution
 
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
@@ -7,7 +7,7 @@ import org.oppia.app.model.Hint
 import org.oppia.app.model.Solution
 import javax.inject.Inject
 
-/** [ViewModel] for Hints in [HintsAndSolutionFragment]. */
+/** [ViewModel] for Hints in [HintsAndSolutionDialogFragment]. */
 @FragmentScope
 class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
 

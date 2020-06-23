@@ -1,4 +1,4 @@
-package org.oppia.app.player.state.hintsandsolution
+package org.oppia.app.player.exploration
 
 import android.content.Context
 import android.os.Bundle
@@ -52,7 +52,8 @@ class HintsAndSolutionExplorationManagerFragment : InjectableFragment() {
       newAvailableHintIndex: Int,
       allHintsExhausted: Boolean
     ): HintsAndSolutionExplorationManagerFragment {
-      val explorationManagerFragment = HintsAndSolutionExplorationManagerFragment()
+      val explorationManagerFragment =
+        HintsAndSolutionExplorationManagerFragment()
       val args = Bundle()
       args.putString(KEY_EXPLORATION_ID, explorationId)
       args.putInt(KEY_NEW_AVAILABLE_HINT_INDEX, newAvailableHintIndex)

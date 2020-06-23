@@ -1,10 +1,8 @@
-package org.oppia.app.player.state.hintsandsolution
+package org.oppia.app.hintsandsolution
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.databinding.HintsSummaryBinding
@@ -17,7 +15,7 @@ private const val TAG_REVEAL_SOLUTION_DIALOG = "REVEAL_SOLUTION_DIALOG"
 private const val VIEW_TYPE_HINT_ITEM = 1
 private const val VIEW_TYPE_SOLUTION_ITEM = 2
 
-/** Adapter to bind Hints to [RecyclerView] inside [HintsAndSolutionFragment]. */
+/** Adapter to bind Hints to [RecyclerView] inside [HintsAndSolutionDialogFragment]. */
 class HintsAndSolutionAdapter(
   private val fragment: Fragment,
   private val itemList: List<HintsAndSolutionItemViewModel>,

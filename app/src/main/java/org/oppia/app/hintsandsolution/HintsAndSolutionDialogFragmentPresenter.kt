@@ -1,4 +1,4 @@
-package org.oppia.app.player.state.hintsandsolution
+package org.oppia.app.hintsandsolution
 
 import android.view.LayoutInflater
 import android.view.View
@@ -15,9 +15,9 @@ import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
 
-/** Presenter for [HintsAndSolutionFragment], sets up bindings from ViewModel. */
+/** Presenter for [HintsAndSolutionDialogFragment], sets up bindings from ViewModel. */
 @FragmentScope
-class HintsAndSolutionFragmentPresenter @Inject constructor(
+class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<HintsViewModel>,
   private val htmlParserFactory: HtmlParser.Factory,

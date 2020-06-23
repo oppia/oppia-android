@@ -1,4 +1,4 @@
-package org.oppia.app.player.state.hintsandsolution
+package org.oppia.app.player.exploration
 
 import org.oppia.app.model.State
 
