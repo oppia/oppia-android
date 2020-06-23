@@ -33,17 +33,19 @@ class BindableAdapter<T : Any> internal constructor(
   private val viewHolderFactoryMap: Map<Int, ViewHolderFactory<T>>,
   private val dataClassType: KClass<T>
 ) : RecyclerView.Adapter<BindableAdapter.BindableViewHolder<T>>() {
-  private var dataList: MutableList<T> = ArrayList()
+  private val dataList: MutableList<T> = ArrayList()
 
   // TODO(#170): Introduce support for stable IDs.
 
   /** Sets the data of this adapter. This is expected to be called by Android via data-binding. */
   private fun setData(newDataList: List<T>) {
-    val result = DiffUtil.calculateDiff(RecyclerDataDiffCallback(dataList, newDataList), false)
-    dataList = newDataList.toMutableList()
+    val result = DiffUtil.calculateDiff(
+      RecyclerDataDiffCallback(dataList, newDataList),
+      false
+    )
+    dataList.clear()
+    dataList += newDataList.toMutableList()
     result.dispatchUpdatesTo(this)
-    // TODO(#171): Introduce diffing to notify subsets of the view to properly support animations
-    //  rather than re-binding the entire list upon any change.
   }
 
   /**
@@ -65,7 +67,7 @@ class BindableAdapter<T : Any> internal constructor(
           "expected adapter class type: $dataClassType."
       }
     }
-    @Suppress("UNCHECKED_CAST")
+    @Suppress("UNCHECKED_CAST") // This is safe. See the above check.
     setData(newDataList as List<T>)
   }
 

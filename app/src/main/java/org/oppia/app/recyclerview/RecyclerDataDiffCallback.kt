@@ -2,11 +2,14 @@ package org.oppia.app.recyclerview
 
 import androidx.recyclerview.widget.DiffUtil
 
-class RecyclerDataDiffCallback<T>(var oldList: List<T>, var newList: List<T>) :
-  DiffUtil.Callback() {
+class RecyclerDataDiffCallback<T : Any>(
+  var oldList: MutableList<T>,
+  var newList: List<T>
+) : DiffUtil.Callback() {
 
   override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-    return oldList[oldItemPosition]!!.equals(newList[newItemPosition])
+    return (oldList[oldItemPosition]::class)
+      .equals((newList[newItemPosition]::class))
   }
 
   override fun getOldListSize(): Int {
@@ -18,6 +21,6 @@ class RecyclerDataDiffCallback<T>(var oldList: List<T>, var newList: List<T>) :
   }
 
   override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-    return oldList[oldItemPosition]!!.equals(newList[newItemPosition])
+    return oldList[oldItemPosition].equals(newList[newItemPosition])
   }
 }
