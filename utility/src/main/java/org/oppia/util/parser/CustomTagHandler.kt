@@ -18,6 +18,7 @@ import java.util.*
  * Implements support for ordered ({@code <ol>}) and unordered ({@code <ul>}) lists in to Android TextView.
  * <ul> and <ol> tags are added to the [listParents] Stack and removed when the closing tag is reached.
  * <li> tags are handled [ListItemTag] instance corresponding to the parent tag.
+ *
  * Reference: https://github.com/daphliu/android-spannable-list-sample/tree/master/app/src/main/java/com/daphneliu/sample/listspansample
  */
 class CustomTagHandler(
