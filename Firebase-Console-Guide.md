@@ -2,6 +2,7 @@
 * [Viewing the Console](#viewing-the-console) 
   * [Crashlytics](#crashlytics)
   * [Analytics](#analytics)
+  * [DebugView](#debugview)
 * [Your own Firebase Project](#your-own-firebase-project) 
   * [Setting it up](#setting-it-up) 
   * [App registration](#app-registration)
@@ -34,6 +35,15 @@
 * We can also view these things under their own specific dashboards. For example the event dashboard looks like: 
 > <img src= "https://user-images.githubusercontent.com/53938155/85137774-55d6d000-b25f-11ea-939d-bc6149533362.png" height="400"> 
 * This dashboard consists of all the predefined events along with the custom logged events as you can see in the image above. We can see detailed stats related to an event by clicking on its event name.  
+### DebugView
+* DebugView enables you to see the raw event data logged by your app on development devices in near real-time.
+> <img src= "https://user-images.githubusercontent.com/53938155/85352058-bc3f4500-b522-11ea-9567-8841e0777da3.png" height="400">
+* _To run this, you must have ADB set up in your system._
+* To enable DebugView, write `adb shell setprop debug.firebase.analytics.app package_name` in your command line while the app runs on your emulator/device. 
+* Now as you play around with the app you'll see various events being logged to the console. To get more details about an event, just click on it and you'll see something like this : 
+> <img src= "https://user-images.githubusercontent.com/53938155/85353011-ec87e300-b524-11ea-82f1-bb1c09ef81b5.png" height="400">
+* In the above case, we can see that the logged event : `OPEN_LESSONS_TAB` has custom parameters like `priority`, `timestamp` and `topicId` along with predefined Firebase event parameters.
+* To get more specific details about the logged event, you can click on its parameters and see their values as well. 
 
 ## Your own Firebase Project
 ### Setting it up
