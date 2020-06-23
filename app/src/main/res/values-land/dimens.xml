@@ -4,5 +4,6 @@
   <dimen name="home_padding_start">72dp</dimen>
   <dimen name="home_margin_max">72dp</dimen>
   <dimen name="home_margin_min">36dp</dimen>
-  <integer name="profile_chooser_first_time_span_count">2</integer>
+  <dimen name="recently_played_margin_max">28dp</dimen>
+  <dimen name="recently_played_margin_min">28dp</dimen>
 </resources>
