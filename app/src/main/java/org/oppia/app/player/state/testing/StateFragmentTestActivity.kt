@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
-import org.oppia.app.model.HelpIndex
 import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionFragment
@@ -12,7 +11,6 @@ import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionListener
 import org.oppia.app.player.state.hintsandsolution.RevealHintListener
 import org.oppia.app.player.state.hintsandsolution.RevealSolutionInterface
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
-import org.oppia.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
 import javax.inject.Inject

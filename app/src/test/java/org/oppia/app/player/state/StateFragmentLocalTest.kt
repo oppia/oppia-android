@@ -27,6 +27,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import dagger.Module
+import dagger.Provides
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import org.hamcrest.BaseMatcher
@@ -48,11 +50,13 @@ import org.oppia.app.player.state.hintsandsolution.TAG_REVEAL_SOLUTION_DIALOG
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.data.backends.gae.NetworkModule
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
@@ -66,7 +70,8 @@ import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
-import org.oppia.util.caching.CachingModule
+import org.oppia.testing.TestLogReportingModule
+import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.gcsresource.GcsResourceModule
 import org.oppia.util.logging.LoggerModule
 import org.oppia.util.parser.GlideImageLoaderModule
@@ -74,6 +79,9 @@ import org.oppia.util.parser.HtmlParserEntityTypeModule
 import org.oppia.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import org.robolectric.shadows.ShadowMediaPlayer
+import org.robolectric.shadows.util.DataSource
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -86,6 +94,10 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = StateFragmentLocalTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class StateFragmentLocalTest {
+  private val AUDIO_URL_1 =
+    createAudioUrl(explorationId = "MjZzEVOG47_1", audioFileName = "content-en-ouqm7j21vt8.mp3")
+  private val audioDataSource1 = DataSource.toDataSource(AUDIO_URL_1, /* headers= */ null)
+
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @InternalCoroutinesApi @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject @field:ApplicationContext lateinit var context: Context
@@ -96,6 +108,7 @@ class StateFragmentLocalTest {
   fun setUp() {
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
+    ShadowMediaPlayer.addException(audioDataSource1, IOException("Test does not have networking"))
   }
 
   @Test
@@ -117,6 +130,7 @@ class StateFragmentLocalTest {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
 
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SELECTION_INTERACTION))
       onView(withSubstring("the pieces must be the same size.")).perform(click())
       testCoroutineDispatchers.advanceUntilIdle()
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_NAVIGATION_BUTTON))
@@ -687,6 +701,11 @@ class StateFragmentLocalTest {
     }
   }
 
+  private fun createAudioUrl(explorationId: String, audioFileName: String): String {
+    return "https://storage.googleapis.com/oppiaserver-resources/" +
+      "exploration/$explorationId/assets/audio/$audioFileName"
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
@@ -711,6 +730,7 @@ class StateFragmentLocalTest {
   @InternalCoroutinesApi
   @ExperimentalCoroutinesApi
   private fun playThroughState1() {
+    onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SELECTION_INTERACTION))
     onView(withSubstring("the pieces must be the same size.")).perform(click())
     testCoroutineDispatchers.runCurrent()
     clickContinueButton()
@@ -1032,16 +1052,24 @@ class StateFragmentLocalTest {
     }
   }
 
+  @Module
+  class TestModule {
+    // Do not use caching to ensure URLs are always used as the main data source when loading audio.
+    @Provides
+    @CacheAssetsLocally
+    fun provideCacheAssetsLocally(): Boolean = false
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(modules = [
-    TestDispatcherModule::class, ApplicationModule::class, NetworkModule::class,
+    TestModule::class, TestDispatcherModule::class, ApplicationModule::class, NetworkModule::class,
     LoggerModule::class, ContinueModule::class, FractionInputModule::class,
     ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
     NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-    InteractionsModule::class, GcsResourceModule::class, GlideImageLoaderModule::class,
-    ImageParsingModule::class, HtmlParserEntityTypeModule::class, CachingModule::class,
-    QuestionModule::class
+    DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
+    GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
+    QuestionModule::class, TestLogReportingModule::class
   ])
   interface TestApplicationComponent: ApplicationComponent {
     @Component.Builder
