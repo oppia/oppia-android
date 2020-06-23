@@ -9,8 +9,10 @@ import org.oppia.app.model.ImageWithRegions.LabeledRegion
 import org.oppia.app.model.ImageWithRegions.LabeledRegion.Region
 import org.oppia.app.model.ImageWithRegions.LabeledRegion.Region.NormalizedRectangle2d
 import org.oppia.app.model.ImageWithRegions.LabeledRegion.Region.NormalizedRectangle2d.Point2d
+import org.oppia.app.model.ImageWithRegions.LabeledRegion.Region.RegionType.*
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.ListOfSetsOfHtmlStrings
+import org.oppia.app.model.RegionType
 import org.oppia.app.model.StringList
 import org.robolectric.annotation.Config
 
@@ -42,17 +44,17 @@ class InteractionObjectExtensionsTest {
       .addLabelRegions(
         createLabelRegion(
           "Region 1",
-          Pair(createPoint2dPoint(0.0f, 0.0f), (createPoint2dPoint(0.5f, 0.5f)))
+          createPoint2d(0.1f, 0.0f) to createPoint2d(0.4f, 0.5f)
         )
       ).build()
 
     val interactionObject =
       InteractionObject.newBuilder().setImageWithRegions(imageWithRegions).build()
 
-    assertThat(interactionObject.toAnswerString()).isEqualTo("[(0.0,0.0), (0.5,0.5)]")
+    assertThat(interactionObject.toAnswerString()).isEqualTo("[$RECTANGLE Region 1 (0.1, 0.0), (0.4, 0.5)]")
   }
 
-  private fun createPoint2dPoint(x: Float, y: Float): Point2d {
+  private fun createPoint2d(x: Float, y: Float): Point2d {
     return Point2d.newBuilder().setX(x).setY(y).build()
   }
 
@@ -61,7 +63,7 @@ class InteractionObjectExtensionsTest {
     points: Pair<Point2d, Point2d>
   ): LabeledRegion {
     return LabeledRegion.newBuilder().setLabel(label).setRegion(
-        Region.newBuilder().setRegionType("Rectangle").setArea(
+        Region.newBuilder().setRegionType(RECTANGLE).setArea(
           NormalizedRectangle2d.newBuilder().setUpperLeft(points.first).setLowerRight(points.second)
         )
       )

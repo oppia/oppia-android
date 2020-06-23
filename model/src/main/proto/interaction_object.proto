@@ -68,10 +68,15 @@ message ImageWithRegions {
     string label = 1;
 
     message Region {
-      // A shape value for a particular region.
-      string region_type = 1;
+      // Represents the different Region Types.
+      enum RegionType {
+        RECTANGLE = 0;
+      }
 
-      //A rectangle normalized so that the coordinates are within the range [0,1].
+      // A shape value for a particular region.
+      RegionType region_type = 1;
+
+      // A rectangle normalized so that the coordinates are within the range [0,1].
       message NormalizedRectangle2d {
         message Point2d {
           float x = 1;
