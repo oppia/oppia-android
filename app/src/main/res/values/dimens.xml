@@ -25,6 +25,7 @@
   <dimen name="padding_44">44dp</dimen>
   <dimen name="padding_72">72dp</dimen>
   <dimen name="padding_128">128dp</dimen>
+  <dimen name="padding_224">224dp</dimen>
   <dimen name="margin_298">298dp</dimen>
   <dimen name="margin_170">170dp</dimen>
   <dimen name="margin_124">124dp</dimen>
