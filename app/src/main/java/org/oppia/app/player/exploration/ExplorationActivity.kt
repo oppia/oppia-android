@@ -61,16 +61,11 @@ class ExplorationActivity : InjectableAppCompatActivity(),
   companion object {
     /** Returns a new [Intent] to route to [ExplorationActivity] for a specified exploration. */
 
-    internal const val EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY =
-      "ExplorationActivity.profile_id"
+    internal const val EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY = "ExplorationActivity.profile_id"
     internal const val EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "ExplorationActivity.topic_id"
     internal const val EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY = "ExplorationActivity.story_id"
-    internal const val EXPLORATION_ACTIVITY_STORY_DEFAULT_FONT_SIZE_ARGUMENT_KEY =
-      "ExplorationActivity.story_default_font_size"
-    internal const val EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY =
-      "ExplorationActivity.exploration_id"
-    internal const val EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY =
-      "ExplorationActivity.backflow_screen"
+    internal const val EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY = "ExplorationActivity.exploration_id"
+    internal const val EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY = "ExplorationActivity.backflow_screen"
 
     fun createExplorationActivityIntent(
       context: Context,
@@ -150,11 +145,7 @@ class ExplorationActivity : InjectableAppCompatActivity(),
     allHintsExhausted: Boolean
   ) {
     if (getHintsAndSolution() == null) {
-      val hintsAndSolutionFragment = HintsAndSolutionFragment.newInstance(
-        explorationId,
-        newAvailableHintIndex,
-        allHintsExhausted
-      )
+      val hintsAndSolutionFragment = HintsAndSolutionFragment.newInstance(explorationId, newAvailableHintIndex, allHintsExhausted)
       hintsAndSolutionFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }
   }
