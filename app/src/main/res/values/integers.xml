@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <integer name="fade_in_duration_ms">1000</integer>
-  <integer name="fade_out_duration_ms">1000</integer>
   <integer name="profile_chooser_span_count">2</integer>
   <integer name="profile_chooser_first_time_span_count">1</integer>
   <integer name="duration_anim_300_ms">300</integer>
