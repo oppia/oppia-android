@@ -6,11 +6,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.reflect.KClass
-import kotlin.reflect.full.cast
-import kotlin.test.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,6 +14,11 @@ import org.oppia.app.model.ListOfSetsOfHtmlStrings
 import org.oppia.app.model.StringList
 import org.oppia.domain.classify.RuleClassifier
 import org.robolectric.annotation.Config
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.reflect.KClass
+import kotlin.reflect.full.cast
+import kotlin.test.fail
 
 /** Tests for [DragDropSortInputHasElementXAtPositionYClassifierProvider]. */
 @RunWith(AndroidJUnit4::class)
@@ -31,7 +31,8 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
   private val LIST_OF_SETS_OF_HTML_STRING_VALUE = createListOfSetsOfHtmlStrings()
 
   @Inject
-  internal lateinit var dragDropSortInputHasElementXAtPositionYClassifierProvider: DragDropSortInputHasElementXAtPositionYClassifierProvider
+  internal lateinit var dragDropSortInputHasElementXAtPositionYClassifierProvider:
+    DragDropSortInputHasElementXAtPositionYClassifierProvider
 
   private val hasElementXAtPositionYRuleClassifier: RuleClassifier by lazy {
     dragDropSortInputHasElementXAtPositionYClassifierProvider.createRuleClassifier()
@@ -48,7 +49,10 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_1, "y" to STRING_VALUE_2)
 
     val exception = assertThrows(IllegalStateException::class) {
-      hasElementXAtPositionYRuleClassifier.matches(answer = LIST_OF_SETS_OF_HTML_STRING_VALUE, inputs = inputs)
+      hasElementXAtPositionYRuleClassifier.matches(
+        answer = LIST_OF_SETS_OF_HTML_STRING_VALUE,
+        inputs = inputs
+      )
     }
 
     assertThat(exception)
@@ -58,10 +62,16 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
 
   @Test
   fun testAnswer_nonNegativeInput_testString_xInputWithIncorrectType_throwsException() {
-    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_1, "y" to NON_NEGATIVE_VALUE_1)
+    val inputs = mapOf(
+      "x" to NON_NEGATIVE_VALUE_1,
+      "y" to NON_NEGATIVE_VALUE_1
+    )
 
     val exception = assertThrows(IllegalStateException::class) {
-      hasElementXAtPositionYRuleClassifier.matches(answer = LIST_OF_SETS_OF_HTML_STRING_VALUE, inputs = inputs)
+      hasElementXAtPositionYRuleClassifier.matches(
+        answer = LIST_OF_SETS_OF_HTML_STRING_VALUE,
+        inputs = inputs
+      )
     }
 
     assertThat(exception)
@@ -74,7 +84,10 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
     val inputs = mapOf("x" to STRING_VALUE_2, "y" to STRING_VALUE_2)
 
     val exception = assertThrows(IllegalStateException::class) {
-      hasElementXAtPositionYRuleClassifier.matches(answer = LIST_OF_SETS_OF_HTML_STRING_VALUE, inputs = inputs)
+      hasElementXAtPositionYRuleClassifier.matches(
+        answer = LIST_OF_SETS_OF_HTML_STRING_VALUE,
+        inputs = inputs
+      )
     }
 
     assertThat(exception)
@@ -87,7 +100,10 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
     val inputs = mapOf("y" to STRING_VALUE_2)
 
     val exception = assertThrows(IllegalStateException::class) {
-      hasElementXAtPositionYRuleClassifier.matches(answer = LIST_OF_SETS_OF_HTML_STRING_VALUE, inputs = inputs)
+      hasElementXAtPositionYRuleClassifier.matches(
+        answer = LIST_OF_SETS_OF_HTML_STRING_VALUE,
+        inputs = inputs
+      )
     }
 
     assertThat(exception)
@@ -100,7 +116,10 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
     val inputs = mapOf("x" to STRING_VALUE_2)
 
     val exception = assertThrows(IllegalStateException::class) {
-      hasElementXAtPositionYRuleClassifier.matches(answer = LIST_OF_SETS_OF_HTML_STRING_VALUE, inputs = inputs)
+      hasElementXAtPositionYRuleClassifier.matches(
+        answer = LIST_OF_SETS_OF_HTML_STRING_VALUE,
+        inputs = inputs
+      )
     }
 
     assertThat(exception)
@@ -113,7 +132,10 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
     val inputs = mapOf("z" to STRING_VALUE_2)
 
     val exception = assertThrows(IllegalStateException::class) {
-      hasElementXAtPositionYRuleClassifier.matches(answer = LIST_OF_SETS_OF_HTML_STRING_VALUE, inputs = inputs)
+      hasElementXAtPositionYRuleClassifier.matches(
+        answer = LIST_OF_SETS_OF_HTML_STRING_VALUE,
+        inputs = inputs
+      )
     }
 
     assertThat(exception)
@@ -126,7 +148,10 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
     val inputs = mapOf("y" to NON_NEGATIVE_VALUE_0, "x" to STRING_VALUE_3)
 
     val matches =
-      hasElementXAtPositionYRuleClassifier.matches(answer = LIST_OF_SETS_OF_HTML_STRING_VALUE, inputs = inputs)
+      hasElementXAtPositionYRuleClassifier.matches(
+        answer = LIST_OF_SETS_OF_HTML_STRING_VALUE,
+        inputs = inputs
+      )
 
     assertThat(matches).isFalse()
   }
@@ -136,7 +161,10 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
     val inputs = mapOf("y" to NON_NEGATIVE_VALUE_1, "x" to STRING_VALUE_3)
 
     val matches =
-      hasElementXAtPositionYRuleClassifier.matches(answer = LIST_OF_SETS_OF_HTML_STRING_VALUE, inputs = inputs)
+      hasElementXAtPositionYRuleClassifier.matches(
+        answer = LIST_OF_SETS_OF_HTML_STRING_VALUE,
+        inputs = inputs
+      )
 
     assertThat(matches).isFalse()
   }
@@ -146,7 +174,10 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
     val inputs = mapOf("y" to NON_NEGATIVE_VALUE_0, "x" to STRING_VALUE_2)
 
     val matches =
-      hasElementXAtPositionYRuleClassifier.matches(answer = LIST_OF_SETS_OF_HTML_STRING_VALUE, inputs = inputs)
+      hasElementXAtPositionYRuleClassifier.matches(
+        answer = LIST_OF_SETS_OF_HTML_STRING_VALUE,
+        inputs = inputs
+      )
 
     assertThat(matches).isFalse()
   }
@@ -156,7 +187,10 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
     val inputs = mapOf("y" to NON_NEGATIVE_VALUE_1, "x" to STRING_VALUE_2)
 
     val matches =
-      hasElementXAtPositionYRuleClassifier.matches(answer = LIST_OF_SETS_OF_HTML_STRING_VALUE, inputs = inputs)
+      hasElementXAtPositionYRuleClassifier.matches(
+        answer = LIST_OF_SETS_OF_HTML_STRING_VALUE,
+        inputs = inputs
+      )
 
     assertThat(matches).isTrue()
   }
@@ -171,7 +205,7 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
         listOf<StringList>(
           createHtmlStringList("1", "2"),
           createHtmlStringList("test item 1", "test item 2", "test item 3")
-          )
+        )
       )
       .build()
 
@@ -187,7 +221,8 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerDragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest_TestApplicationComponent.builder()
+    DaggerDragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
   }
 

@@ -34,6 +34,7 @@ import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -51,6 +52,7 @@ import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.testing.ExplorationInjectionActivity
 import org.oppia.app.utility.EspressoTestsMatchers.withDrawable
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.TEST_EXPLORATION_ID_30
 import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_0
@@ -83,6 +85,7 @@ class ExplorationActivityTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    FirebaseApp.initializeApp(context)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -127,6 +130,25 @@ class ExplorationActivityTest {
   }
 
   @Test
+  fun testExploration_configurationChange_toolbarTitle_isDisplayedSuccessfully() {
+    getApplicationDependencies(TEST_EXPLORATION_ID_30)
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_30
+      )
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
+      waitForTheView(withText("Prototype Exploration"))
+      onView(allOf(instanceOf(TextView::class.java), withParent(withId(R.id.exploration_toolbar))))
+        .check(matches(withText("Prototype Exploration")))
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
   fun testAudioWithNoVoiceover_openPrototypeExploration_checkAudioButtonIsHidden() {
     getApplicationDependencies(TEST_EXPLORATION_ID_30)
     launch<ExplorationActivity>(
@@ -137,6 +159,23 @@ class ExplorationActivityTest {
         TEST_EXPLORATION_ID_30
       )
     ).use {
+      onView(withId(R.id.action_audio_player)).check(matches(not(isDisplayed())))
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
+  fun testAudioWithNoVoiceover_openPrototypeExploration_configurationChange_checkAudioButtonIsHidden() {
+    getApplicationDependencies(TEST_EXPLORATION_ID_30)
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_30
+      )
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.action_audio_player)).check(matches(not(isDisplayed())))
     }
     explorationDataController.stopPlayingExploration()
@@ -177,6 +216,28 @@ class ExplorationActivityTest {
     ).use {
       waitForTheView(withText("What is a Ratio?"))
       onView(withId(R.id.action_audio_player)).perform(click())
+      onView(withText(context.getString(R.string.cellular_data_alert_dialog_title))).check(
+        matches(
+          isDisplayed()
+        )
+      )
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
+  fun testAudioWithCellular_openRatioExploration_clickAudioIcon_changeConfiguration_checkOpensCellularAudioDialog() {
+    getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
+    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId, RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0
+      )
+    ).use {
+      waitForTheView(withText("What is a Ratio?"))
+      onView(withId(R.id.action_audio_player)).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title))).check(
         matches(
           isDisplayed()

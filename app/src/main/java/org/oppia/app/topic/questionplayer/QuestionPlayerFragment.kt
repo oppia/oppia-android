@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.model.HelpIndex
 import org.oppia.app.model.UserAnswer
-import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
+import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.player.state.listener.ContinueNavigationButtonListener
 import org.oppia.app.player.state.listener.NextNavigationButtonListener
@@ -23,7 +23,7 @@ import javax.inject.Inject
 class QuestionPlayerFragment :
   InjectableFragment(),
   InteractionAnswerReceiver,
-  InteractionAnswerErrorReceiver,
+  InteractionAnswerErrorOrAvailabilityCheckReceiver,
   ContinueNavigationButtonListener,
   NextNavigationButtonListener,
   ReplayButtonListener,
@@ -66,8 +66,8 @@ class QuestionPlayerFragment :
   override fun onResponsesHeaderClicked() =
     questionPlayerFragmentPresenter.onResponsesHeaderClicked()
 
-  override fun onPendingAnswerError(pendingAnswerError: String?) =
-    questionPlayerFragmentPresenter.updateSubmitButton(pendingAnswerError)
+  override fun onPendingAnswerErrorOrAvailabilityCheck(pendingAnswerError: String?, inputAnswerAvailable: Boolean) =
+    questionPlayerFragmentPresenter.updateSubmitButton(pendingAnswerError, inputAnswerAvailable)
 
   fun handleKeyboardAction() = questionPlayerFragmentPresenter.handleKeyboardAction()
 
