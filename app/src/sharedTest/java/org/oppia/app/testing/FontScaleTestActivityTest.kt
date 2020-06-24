@@ -40,7 +40,7 @@ class FontScaleTestActivityTest {
   }
 
   @Test
-  fun testFontScaleTestActivity_smallTextSizeIsVerifiedSucessfully() {
+  fun testFontScaleTestActivity_smallTextSizeIsVerifiedSuccessfully() {
     launch<FontScaleTestActivity>(createHomeActivityIntent(StoryTextSize.SMALL_TEXT_SIZE.name)).use {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
@@ -53,7 +53,7 @@ class FontScaleTestActivityTest {
   }
 
   @Test
-  fun testFontScaleTestActivity_mediumTextSizeIsVerifiedSucessfully() {
+  fun testFontScaleTestActivity_mediumTextSizeIsVerifiedSuccessfully() {
     launch<FontScaleTestActivity>(createHomeActivityIntent(StoryTextSize.MEDIUM_TEXT_SIZE.name)).use {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
@@ -66,7 +66,7 @@ class FontScaleTestActivityTest {
   }
 
   @Test
-  fun testFontScaleTestActivity_largeTextSizeIsVerifiedSucessfully() {
+  fun testFontScaleTestActivity_largeTextSizeIsVerifiedSuccessfully() {
     launch<FontScaleTestActivity>(createHomeActivityIntent(StoryTextSize.LARGE_TEXT_SIZE.name)).use {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
@@ -79,7 +79,7 @@ class FontScaleTestActivityTest {
   }
 
   @Test
-  fun testFontScaleTestActivity_extraLargeTextSizeIsVerifiedSucessfully() {
+  fun testFontScaleTestActivity_extraLargeTextSizeIsVerifiedSuccessfully() {
     launch<FontScaleTestActivity>(createHomeActivityIntent(StoryTextSize.EXTRA_LARGE_TEXT_SIZE.name)).use {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(

@@ -9,7 +9,7 @@ import org.oppia.app.utility.FontScaleConfigurationUtil
 
 private const val FONT_SCALE_EXTRA_KEY = "FONT_SCALE_EXTRA_KEY"
 
-/** Test Activity used for testing Font Scale */
+/** Test activity used for testing font scale. */
 class FontScaleTestActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
