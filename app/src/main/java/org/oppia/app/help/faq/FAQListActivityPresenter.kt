@@ -16,7 +16,8 @@ class FAQListActivityPresenter @Inject constructor(
   private lateinit var faqListActivityToolbar: Toolbar
 
   fun handleOnCreate() {
-    val binding = DataBindingUtil.setContentView<FaqListActivityBinding>(activity, R.layout.faq_list_activity)
+    val binding =
+      DataBindingUtil.setContentView<FaqListActivityBinding>(activity, R.layout.faq_list_activity)
     binding.apply {
       lifecycleOwner = activity
     }
@@ -40,6 +41,8 @@ class FAQListActivityPresenter @Inject constructor(
   }
 
   private fun getFAQListFragment(): FAQListFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.faq_list_fragment_placeholder) as FAQListFragment?
+    return activity
+      .supportFragmentManager
+      .findFragmentById(R.id.faq_list_fragment_placeholder) as FAQListFragment?
   }
 }

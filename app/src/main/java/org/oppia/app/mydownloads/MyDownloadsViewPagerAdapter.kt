@@ -6,7 +6,8 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 
 /** Adapter to bind fragments to [FragmentStatePagerAdapter] inside [MyDownloadsFragment]. */
 @Suppress("DEPRECATION")
-class MyDownloadsViewPagerAdapter(fragmentManager: FragmentManager) : FragmentStatePagerAdapter(fragmentManager) {
+class MyDownloadsViewPagerAdapter(fragmentManager: FragmentManager) :
+  FragmentStatePagerAdapter(fragmentManager) {
 
   override fun getItem(position: Int): Fragment {
     return when (MyDownloadsTab.getTabForPosition(position)) {

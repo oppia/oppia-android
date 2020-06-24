@@ -12,17 +12,18 @@ import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.parser.StringToFractionParser
 import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
-import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
+import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 
 /** [StateItemViewModel] for the fraction input interaction. */
 class FractionInteractionViewModel(
   interaction: Interaction,
   private val context: Context,
-  private val interactionAnswerErrorReceiver: InteractionAnswerErrorReceiver
+  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver
 ) : StateItemViewModel(ViewType.FRACTION_INPUT_INTERACTION), InteractionAnswerHandler {
   private var pendingAnswerError: String? = null
   var answerText: CharSequence = ""
+  var isAnswerAvailable = ObservableField<Boolean>(false)
   var errorMessage = ObservableField<String>("")
 
   val hintText: CharSequence = deriveHintText(interaction)
@@ -31,10 +32,11 @@ class FractionInteractionViewModel(
   init {
     val callback: Observable.OnPropertyChangedCallback = object : Observable.OnPropertyChangedCallback() {
       override fun onPropertyChanged(sender: Observable, propertyId: Int) {
-        interactionAnswerErrorReceiver.onPendingAnswerError(pendingAnswerError)
+        interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(pendingAnswerError, answerText.isNotEmpty())
       }
     }
     errorMessage.addOnPropertyChangedCallback(callback)
+    isAnswerAvailable.addOnPropertyChangedCallback(callback)
   }
 
   override fun getPendingAnswer(): UserAnswer {
@@ -75,6 +77,10 @@ class FractionInteractionViewModel(
 
       override fun onTextChanged(answer: CharSequence, start: Int, before: Int, count: Int) {
         answerText = answer.toString().trim()
+        val isAnswerTextAvailable = answerText.isNotEmpty()
+        if(isAnswerTextAvailable != isAnswerAvailable.get()){
+          isAnswerAvailable.set(isAnswerTextAvailable)
+        }
         checkPendingAnswerError(AnswerErrorCategory.REAL_TIME)
       }
 

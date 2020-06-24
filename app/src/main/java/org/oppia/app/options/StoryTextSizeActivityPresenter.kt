@@ -19,7 +19,10 @@ class StoryTextSizeActivityPresenter @Inject constructor(
 
   fun handleOnCreate(prefSummaryValue: String) {
     val binding =
-      DataBindingUtil.setContentView<StoryTextSizeActivityBinding>(activity, R.layout.story_text_size_activity)
+      DataBindingUtil.setContentView<StoryTextSizeActivityBinding>(
+        activity,
+        R.layout.story_text_size_activity
+      )
 
     fontSize = prefSummaryValue
 
@@ -45,45 +48,52 @@ class StoryTextSizeActivityPresenter @Inject constructor(
       }
       getStoryTextSize(StoryTextSize.EXTRA_LARGE_TEXT_SIZE) -> {
         binding.storyTextSizeSeekBar.progress = 15
-        binding.previewTextview.textSize = getStoryTextSizeInFloat(StoryTextSize.EXTRA_LARGE_TEXT_SIZE)
+        binding.previewTextview.textSize =
+          getStoryTextSizeInFloat(StoryTextSize.EXTRA_LARGE_TEXT_SIZE)
       }
     }
 
     binding.storyTextSizeSeekBar.max = 15
 
-    binding.storyTextSizeSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-      override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-        var progressValue = progress
-        progressValue /= 5
-        progressValue *= 5
+    binding.storyTextSizeSeekBar.setOnSeekBarChangeListener(
+      object :
+        SeekBar.OnSeekBarChangeListener {
+        override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+          var progressValue = progress
+          progressValue /= 5
+          progressValue *= 5
 
-        when (progressValue) {
-          0 -> {
-            fontSize = getStoryTextSize(StoryTextSize.SMALL_TEXT_SIZE)
-            binding.previewTextview.textSize = getStoryTextSizeInFloat(StoryTextSize.SMALL_TEXT_SIZE)
+          when (progressValue) {
+            0 -> {
+              fontSize = getStoryTextSize(StoryTextSize.SMALL_TEXT_SIZE)
+              binding.previewTextview.textSize =
+                getStoryTextSizeInFloat(StoryTextSize.SMALL_TEXT_SIZE)
+            }
+            5 -> {
+              fontSize = getStoryTextSize(StoryTextSize.MEDIUM_TEXT_SIZE)
+              binding.previewTextview.textSize =
+                getStoryTextSizeInFloat(StoryTextSize.MEDIUM_TEXT_SIZE)
+            }
+            10 -> {
+              fontSize = getStoryTextSize(StoryTextSize.LARGE_TEXT_SIZE)
+              binding.previewTextview.textSize =
+                getStoryTextSizeInFloat(StoryTextSize.LARGE_TEXT_SIZE)
+            }
+            else -> {
+              fontSize = getStoryTextSize(StoryTextSize.EXTRA_LARGE_TEXT_SIZE)
+              binding.previewTextview.textSize =
+                getStoryTextSizeInFloat(StoryTextSize.EXTRA_LARGE_TEXT_SIZE)
+            }
           }
-          5 -> {
-            fontSize = getStoryTextSize(StoryTextSize.MEDIUM_TEXT_SIZE)
-            binding.previewTextview.textSize = getStoryTextSizeInFloat(StoryTextSize.MEDIUM_TEXT_SIZE)
-          }
-          10 -> {
-            fontSize = getStoryTextSize(StoryTextSize.LARGE_TEXT_SIZE)
-            binding.previewTextview.textSize = getStoryTextSizeInFloat(StoryTextSize.LARGE_TEXT_SIZE)
-          }
-          else -> {
-            fontSize = getStoryTextSize(StoryTextSize.EXTRA_LARGE_TEXT_SIZE)
-            binding.previewTextview.textSize = getStoryTextSizeInFloat(StoryTextSize.EXTRA_LARGE_TEXT_SIZE)
-          }
+          seekBar.progress = progressValue
         }
-        seekBar.progress = progressValue
-      }
 
-      override fun onStartTrackingTouch(seekBar: SeekBar) {
-      }
+        override fun onStartTrackingTouch(seekBar: SeekBar) {
+        }
 
-      override fun onStopTrackingTouch(seekBar: SeekBar) {
-      }
-    })
+        override fun onStopTrackingTouch(seekBar: SeekBar) {
+        }
+      })
   }
 
   fun geSelectedStoryTextSize(): String {
@@ -107,5 +117,4 @@ class StoryTextSizeActivityPresenter @Inject constructor(
       else -> "Extra Large"
     }
   }
-
 }

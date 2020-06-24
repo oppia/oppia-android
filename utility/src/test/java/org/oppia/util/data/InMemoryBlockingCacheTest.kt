@@ -38,7 +38,8 @@ private const val UPDATED_ASYNC_VALUE = "updated async value"
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
 class InMemoryBlockingCacheTest {
-  @Inject lateinit var cacheFactory: InMemoryBlockingCache.Factory
+  @Inject
+  lateinit var cacheFactory: InMemoryBlockingCache.Factory
 
   @ExperimentalCoroutinesApi
   @Inject
@@ -131,13 +132,14 @@ class InMemoryBlockingCacheTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testCreateIfAbsent_withoutInitialValue_returnsCreatedValue() = runBlockingTest(testDispatcher) {
-    val cache = cacheFactory.create<String>()
+  fun testCreateIfAbsent_withoutInitialValue_returnsCreatedValue() =
+    runBlockingTest(testDispatcher) {
+      val cache = cacheFactory.create<String>()
 
-    val createResult = cache.createIfAbsentAsync { CREATED_ASYNC_VALUE }
+      val createResult = cache.createIfAbsentAsync { CREATED_ASYNC_VALUE }
 
-    assertThat(awaitCompletion(createResult)).isEqualTo(CREATED_ASYNC_VALUE)
-  }
+      assertThat(awaitCompletion(createResult)).isEqualTo(CREATED_ASYNC_VALUE)
+    }
 
   @Test
   @ExperimentalCoroutinesApi
@@ -151,54 +153,60 @@ class InMemoryBlockingCacheTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testCreateIfAbsent_withInitialValue_returnsCurrentCacheValue() = runBlockingTest(testDispatcher) {
-    val cache = cacheFactory.create(INITIALIZED_CACHE_VALUE)
+  fun testCreateIfAbsent_withInitialValue_returnsCurrentCacheValue() =
+    runBlockingTest(testDispatcher) {
+      val cache = cacheFactory.create(INITIALIZED_CACHE_VALUE)
 
-    val createResult = cache.createIfAbsentAsync { CREATED_ASYNC_VALUE }
+      val createResult = cache.createIfAbsentAsync { CREATED_ASYNC_VALUE }
 
-    // Because the cache is already initialized, it's not recreated.
-    assertThat(awaitCompletion(createResult)).isEqualTo(INITIALIZED_CACHE_VALUE)
-  }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testCreateIfAbsent_withInitialValue_doesNotChangeCacheValue() = runBlockingTest(testDispatcher) {
-    val cache = cacheFactory.create(INITIALIZED_CACHE_VALUE)
-
-    doNotAwaitCompletion(cache.createIfAbsentAsync { CREATED_ASYNC_VALUE })
-
-    // Because the cache is already initialized, it's not recreated.
-    assertThat(awaitCompletion(cache.readAsync())).isEqualTo(INITIALIZED_CACHE_VALUE)
-  }
+      // Because the cache is already initialized, it's not recreated.
+      assertThat(awaitCompletion(createResult)).isEqualTo(INITIALIZED_CACHE_VALUE)
+    }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testCreateIfAbsent_emptyCache_blockingFunction_createIsNotComplete() = runBlockingTest(testDispatcher) {
-    testDispatcher.resumeDispatcher() // Keep the test dispatcher active since this test is verifying blocking behavior.
-    val cache = cacheFactory.create<String>()
-    backgroundTestCoroutineDispatcher.pauseDispatcher()
+  fun testCreateIfAbsent_withInitialValue_doesNotChangeCacheValue() =
+    runBlockingTest(testDispatcher) {
+      val cache = cacheFactory.create(INITIALIZED_CACHE_VALUE)
 
-    val blockingOperation = backgroundTestCoroutineScope.async { CREATED_ASYNC_VALUE }
-    val createOperation = cache.createIfAbsentAsync { blockingOperation.await() }
+      doNotAwaitCompletion(cache.createIfAbsentAsync { CREATED_ASYNC_VALUE })
 
-    // The blocking operation should also block creation.
-    assertThat(createOperation.isCompleted).isFalse()
-  }
+      // Because the cache is already initialized, it's not recreated.
+      assertThat(awaitCompletion(cache.readAsync())).isEqualTo(INITIALIZED_CACHE_VALUE)
+    }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testCreateIfAbsent_emptyCache_blockingFunction_completed_createCompletes() = runBlockingTest(testDispatcher) {
-    testDispatcher.resumeDispatcher() // Keep the test dispatcher active since this test is verifying blocking behavior.
-    val cache = cacheFactory.create<String>()
-    backgroundTestCoroutineDispatcher.pauseDispatcher()
-    val blockingOperation = backgroundTestCoroutineScope.async { CREATED_ASYNC_VALUE }
-    val createOperation = cache.createIfAbsentAsync { blockingOperation.await() }
+  fun testCreateIfAbsent_emptyCache_blockingFunction_createIsNotComplete() =
+    runBlockingTest(testDispatcher) {
+      // Keep the test dispatcher active since this test is verifying blocking behavior.
+      testDispatcher.resumeDispatcher()
+      val cache = cacheFactory.create<String>()
+      backgroundTestCoroutineDispatcher.pauseDispatcher()
 
-    backgroundTestCoroutineDispatcher.advanceUntilIdle()
+      val blockingOperation = backgroundTestCoroutineScope.async { CREATED_ASYNC_VALUE }
+      val createOperation = cache.createIfAbsentAsync { blockingOperation.await() }
 
-    // Completing the blocking operation should complete creation.
-    assertThat(createOperation.isCompleted).isTrue()
-  }
+      // The blocking operation should also block creation.
+      assertThat(createOperation.isCompleted).isFalse()
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testCreateIfAbsent_emptyCache_blockingFunction_completed_createCompletes() =
+    runBlockingTest(testDispatcher) {
+      // Keep the test dispatcher active since this test is verifying blocking behavior.
+      testDispatcher.resumeDispatcher()
+      val cache = cacheFactory.create<String>()
+      backgroundTestCoroutineDispatcher.pauseDispatcher()
+      val blockingOperation = backgroundTestCoroutineScope.async { CREATED_ASYNC_VALUE }
+      val createOperation = cache.createIfAbsentAsync { blockingOperation.await() }
+
+      backgroundTestCoroutineDispatcher.advanceUntilIdle()
+
+      // Completing the blocking operation should complete creation.
+      assertThat(createOperation.isCompleted).isTrue()
+    }
 
   @Test
   @ExperimentalCoroutinesApi
@@ -228,8 +236,10 @@ class InMemoryBlockingCacheTest {
 
     val deferredRead = cache.readIfPresentAsync()
 
-    val exception = assertThrowsAsync(IllegalStateException::class) { awaitCompletion(deferredRead) }
-    assertThat(exception).hasMessageThat().contains("Expected to read the cache only after it's been created")
+    val exception =
+      assertThrowsAsync(IllegalStateException::class) { awaitCompletion(deferredRead) }
+    assertThat(exception).hasMessageThat()
+      .contains("Expected to read the cache only after it's been created")
   }
 
   @Test
@@ -275,7 +285,8 @@ class InMemoryBlockingCacheTest {
   @Test
   @ExperimentalCoroutinesApi
   fun testUpdateCache_blockingFunction_blocksUpdate() = runBlockingTest(testDispatcher) {
-    testDispatcher.resumeDispatcher() // Keep the test dispatcher active since this test is verifying blocking behavior.
+    // Keep the test dispatcher active since this test is verifying blocking behavior.
+    testDispatcher.resumeDispatcher()
     val cache = cacheFactory.create<String>()
     backgroundTestCoroutineDispatcher.pauseDispatcher()
 
@@ -288,18 +299,20 @@ class InMemoryBlockingCacheTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testUpdateCache_blockingFunction_completed_updateCompletes() = runBlockingTest(testDispatcher) {
-    testDispatcher.resumeDispatcher() // Keep the test dispatcher active since this test is verifying blocking behavior.
-    val cache = cacheFactory.create<String>()
-    backgroundTestCoroutineDispatcher.pauseDispatcher()
-    val blockingOperation = backgroundTestCoroutineScope.async { UPDATED_ASYNC_VALUE }
-    val updateOperation = cache.updateAsync { blockingOperation.await() }
+  fun testUpdateCache_blockingFunction_completed_updateCompletes() =
+    runBlockingTest(testDispatcher) {
+      // Keep the test dispatcher active since this test is verifying blocking behavior.
+      testDispatcher.resumeDispatcher()
+      val cache = cacheFactory.create<String>()
+      backgroundTestCoroutineDispatcher.pauseDispatcher()
+      val blockingOperation = backgroundTestCoroutineScope.async { UPDATED_ASYNC_VALUE }
+      val updateOperation = cache.updateAsync { blockingOperation.await() }
 
-    backgroundTestCoroutineDispatcher.advanceUntilIdle()
+      backgroundTestCoroutineDispatcher.advanceUntilIdle()
 
-    // Completing the blocking operation should complete updating.
-    assertThat(updateOperation.isCompleted).isTrue()
-  }
+      // Completing the blocking operation should complete updating.
+      assertThat(updateOperation.isCompleted).isTrue()
+    }
 
   @Test
   @ExperimentalCoroutinesApi
@@ -331,38 +344,44 @@ class InMemoryBlockingCacheTest {
     val deferredUpdate = cache.updateIfPresentAsync { UPDATED_ASYNC_VALUE }
 
     // The operation should fail since the method expects the cache to be initialized.
-    val exception = assertThrowsAsync(IllegalStateException::class) { awaitCompletion(deferredUpdate) }
-    assertThat(exception).hasMessageThat().contains("Expected to update the cache only after it's been created")
+    val exception =
+      assertThrowsAsync(IllegalStateException::class) { awaitCompletion(deferredUpdate) }
+    assertThat(exception).hasMessageThat()
+      .contains("Expected to update the cache only after it's been created")
   }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testUpdateIfPresent_initedCache_blockingFunction_blocksUpdate() = runBlockingTest(testDispatcher) {
-    testDispatcher.resumeDispatcher() // Keep the test dispatcher active since this test is verifying blocking behavior.
-    val cache = cacheFactory.create(INITIALIZED_CACHE_VALUE)
-    backgroundTestCoroutineDispatcher.pauseDispatcher()
+  fun testUpdateIfPresent_initedCache_blockingFunction_blocksUpdate() =
+    runBlockingTest(testDispatcher) {
+      // Keep the test dispatcher active since this test is verifying blocking behavior.
+      testDispatcher.resumeDispatcher()
+      val cache = cacheFactory.create(INITIALIZED_CACHE_VALUE)
+      backgroundTestCoroutineDispatcher.pauseDispatcher()
 
-    val blockingOperation = backgroundTestCoroutineScope.async { UPDATED_ASYNC_VALUE }
-    val updateOperation = cache.updateIfPresentAsync { blockingOperation.await() }
+      val blockingOperation = backgroundTestCoroutineScope.async { UPDATED_ASYNC_VALUE }
+      val updateOperation = cache.updateIfPresentAsync { blockingOperation.await() }
 
-    // The blocking operation should also block updating.
-    assertThat(updateOperation.isCompleted).isFalse()
-  }
+      // The blocking operation should also block updating.
+      assertThat(updateOperation.isCompleted).isFalse()
+    }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testUpdateIfPresent_initedCache_blockingFunction_completed_updateCompletes() = runBlockingTest(testDispatcher) {
-    testDispatcher.resumeDispatcher() // Keep the test dispatcher active since this test is verifying blocking behavior.
-    val cache = cacheFactory.create(INITIALIZED_CACHE_VALUE)
-    backgroundTestCoroutineDispatcher.pauseDispatcher()
-    val blockingOperation = backgroundTestCoroutineScope.async { UPDATED_ASYNC_VALUE }
-    val updateOperation = cache.updateIfPresentAsync { blockingOperation.await() }
+  fun testUpdateIfPresent_initedCache_blockingFunction_completed_updateCompletes() =
+    runBlockingTest(testDispatcher) {
+      // Keep the test dispatcher active since this test is verifying blocking behavior.
+      testDispatcher.resumeDispatcher()
+      val cache = cacheFactory.create(INITIALIZED_CACHE_VALUE)
+      backgroundTestCoroutineDispatcher.pauseDispatcher()
+      val blockingOperation = backgroundTestCoroutineScope.async { UPDATED_ASYNC_VALUE }
+      val updateOperation = cache.updateIfPresentAsync { blockingOperation.await() }
 
-    backgroundTestCoroutineDispatcher.advanceUntilIdle()
+      backgroundTestCoroutineDispatcher.advanceUntilIdle()
 
-    // Completing the blocking operation should complete updating.
-    assertThat(updateOperation.isCompleted).isTrue()
-  }
+      // Completing the blocking operation should complete updating.
+      assertThat(updateOperation.isCompleted).isTrue()
+    }
 
   @Test
   @ExperimentalCoroutinesApi
@@ -461,8 +480,10 @@ class InMemoryBlockingCacheTest {
     val deferredRead = cache.readIfPresentAsync()
 
     // Deleting the cache should result in readIfPresent()'s expectations to fail.
-    val exception = assertThrowsAsync(IllegalStateException::class) { awaitCompletion(deferredRead) }
-    assertThat(exception).hasMessageThat().contains("Expected to read the cache only after it's been created")
+    val exception =
+      assertThrowsAsync(IllegalStateException::class) { awaitCompletion(deferredRead) }
+    assertThat(exception).hasMessageThat()
+      .contains("Expected to read the cache only after it's been created")
   }
 
   @Test
@@ -496,8 +517,10 @@ class InMemoryBlockingCacheTest {
     val deferredUpdate = cache.updateIfPresentAsync { UPDATED_ASYNC_VALUE }
 
     // The operation should fail since the method expects the cache to be initialized.
-    val exception = assertThrowsAsync(IllegalStateException::class) { awaitCompletion(deferredUpdate) }
-    assertThat(exception).hasMessageThat().contains("Expected to update the cache only after it's been created")
+    val exception =
+      assertThrowsAsync(IllegalStateException::class) { awaitCompletion(deferredUpdate) }
+    assertThat(exception).hasMessageThat()
+      .contains("Expected to update the cache only after it's been created")
   }
 
   @Test
@@ -535,25 +558,27 @@ class InMemoryBlockingCacheTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testMaybeDelete_nonEmptyCache_falsePredicate_returnsFalse() = runBlockingTest(testDispatcher) {
-    val cache = cacheFactory.create(INITIALIZED_CACHE_VALUE)
+  fun testMaybeDelete_nonEmptyCache_falsePredicate_returnsFalse() =
+    runBlockingTest(testDispatcher) {
+      val cache = cacheFactory.create(INITIALIZED_CACHE_VALUE)
 
-    val maybeDeleteResult = cache.maybeDeleteAsync { false }
+      val maybeDeleteResult = cache.maybeDeleteAsync { false }
 
-    // The predicate's false return value should be piped up to the deletion result.
-    assertThat(awaitCompletion(maybeDeleteResult)).isFalse()
-  }
+      // The predicate's false return value should be piped up to the deletion result.
+      assertThat(awaitCompletion(maybeDeleteResult)).isFalse()
+    }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testMaybeDelete_nonEmptyCache_falsePredicate_keepsCacheNonEmpty() = runBlockingTest(testDispatcher) {
-    val cache = cacheFactory.create(INITIALIZED_CACHE_VALUE)
+  fun testMaybeDelete_nonEmptyCache_falsePredicate_keepsCacheNonEmpty() =
+    runBlockingTest(testDispatcher) {
+      val cache = cacheFactory.create(INITIALIZED_CACHE_VALUE)
 
-    doNotAwaitCompletion(cache.maybeDeleteAsync { false })
+      doNotAwaitCompletion(cache.maybeDeleteAsync { false })
 
-    // The cache should retain its value since the deletion predicate indicated it shouldn't be cleared.
-    assertThat(awaitCompletion(cache.readAsync())).isEqualTo(INITIALIZED_CACHE_VALUE)
-  }
+      // The cache should retain its value since the deletion predicate indicated it shouldn't be cleared.
+      assertThat(awaitCompletion(cache.readAsync())).isEqualTo(INITIALIZED_CACHE_VALUE)
+    }
 
   @Test
   @ExperimentalCoroutinesApi
@@ -580,7 +605,8 @@ class InMemoryBlockingCacheTest {
   @Test
   @ExperimentalCoroutinesApi
   fun testMaybeDelete_blockingFunction_blocksDeletion() = runBlockingTest(testDispatcher) {
-    testDispatcher.resumeDispatcher() // Keep the test dispatcher active since this test is verifying blocking behavior.
+    // Keep the test dispatcher active since this test is verifying blocking behavior.
+    testDispatcher.resumeDispatcher()
     val cache = cacheFactory.create(INITIALIZED_CACHE_VALUE)
     backgroundTestCoroutineDispatcher.pauseDispatcher()
 
@@ -593,41 +619,45 @@ class InMemoryBlockingCacheTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testMaybeDelete_blockingFunction_completed_deletionCompletes() = runBlockingTest(testDispatcher) {
-    testDispatcher.resumeDispatcher() // Keep the test dispatcher active since this test is verifying blocking behavior.
-    val cache = cacheFactory.create(INITIALIZED_CACHE_VALUE)
-    backgroundTestCoroutineDispatcher.pauseDispatcher()
-    val blockingOperation = backgroundTestCoroutineScope.async { true }
-    val deleteOperation = cache.maybeDeleteAsync { blockingOperation.await() }
+  fun testMaybeDelete_blockingFunction_completed_deletionCompletes() =
+    runBlockingTest(testDispatcher) {
+      // Keep the test dispatcher active since this test is verifying blocking behavior.
+      testDispatcher.resumeDispatcher()
+      val cache = cacheFactory.create(INITIALIZED_CACHE_VALUE)
+      backgroundTestCoroutineDispatcher.pauseDispatcher()
+      val blockingOperation = backgroundTestCoroutineScope.async { true }
+      val deleteOperation = cache.maybeDeleteAsync { blockingOperation.await() }
 
-    backgroundTestCoroutineDispatcher.advanceUntilIdle()
+      backgroundTestCoroutineDispatcher.advanceUntilIdle()
 
-    // Completing the blocking operation should complete deletion.
-    assertThat(deleteOperation.isCompleted).isTrue()
-  }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testMaybeForceDelete_emptyCache_falsePredicate_returnsFalse() = runBlockingTest(testDispatcher) {
-    val cache = cacheFactory.create<String>()
-
-    val maybeDeleteResult = cache.maybeForceDeleteAsync { false }
-
-    // An empty cache cannot be deleted.
-    assertThat(awaitCompletion(maybeDeleteResult)).isFalse()
-  }
+      // Completing the blocking operation should complete deletion.
+      assertThat(deleteOperation.isCompleted).isTrue()
+    }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testMaybeForceDelete_emptyCache_truePredicate_returnsTrue() = runBlockingTest(testDispatcher) {
-    val cache = cacheFactory.create<String>()
+  fun testMaybeForceDelete_emptyCache_falsePredicate_returnsFalse() =
+    runBlockingTest(testDispatcher) {
+      val cache = cacheFactory.create<String>()
 
-    val maybeDeleteResult = cache.maybeForceDeleteAsync { true }
+      val maybeDeleteResult = cache.maybeForceDeleteAsync { false }
 
-    // An empty cache cannot be deleted, but with force deletion the state of the cache is not checked. It's assumed
-    // that the cache was definitely cleared.
-    assertThat(awaitCompletion(maybeDeleteResult)).isTrue()
-  }
+      // An empty cache cannot be deleted.
+      assertThat(awaitCompletion(maybeDeleteResult)).isFalse()
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testMaybeForceDelete_emptyCache_truePredicate_returnsTrue() =
+    runBlockingTest(testDispatcher) {
+      val cache = cacheFactory.create<String>()
+
+      val maybeDeleteResult = cache.maybeForceDeleteAsync { true }
+
+      // An empty cache cannot be deleted, but with force deletion the state of the cache is not checked. It's assumed
+      // that the cache was definitely cleared.
+      assertThat(awaitCompletion(maybeDeleteResult)).isTrue()
+    }
 
   @Test
   @ExperimentalCoroutinesApi
@@ -642,82 +672,93 @@ class InMemoryBlockingCacheTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testMaybeForceDelete_nonEmptyCache_falsePredicate_returnsFalse() = runBlockingTest(testDispatcher) {
-    val cache = cacheFactory.create(INITIALIZED_CACHE_VALUE)
+  fun testMaybeForceDelete_nonEmptyCache_falsePredicate_returnsFalse() =
+    runBlockingTest(testDispatcher) {
+      val cache = cacheFactory.create(INITIALIZED_CACHE_VALUE)
 
-    val maybeDeleteResult = cache.maybeForceDeleteAsync { false }
+      val maybeDeleteResult = cache.maybeForceDeleteAsync { false }
 
-    // The predicate's false return value should be piped up to the deletion result.
-    assertThat(awaitCompletion(maybeDeleteResult)).isFalse()
-  }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testMaybeForceDelete_nonEmptyCache_falsePredicate_keepsCacheNonEmpty() = runBlockingTest(testDispatcher) {
-    val cache = cacheFactory.create(INITIALIZED_CACHE_VALUE)
-
-    doNotAwaitCompletion(cache.maybeForceDeleteAsync { false })
-
-    // The cache should retain its value since the deletion predicate indicated it shouldn't be cleared.
-    assertThat(awaitCompletion(cache.readAsync())).isEqualTo(INITIALIZED_CACHE_VALUE)
-  }
+      // The predicate's false return value should be piped up to the deletion result.
+      assertThat(awaitCompletion(maybeDeleteResult)).isFalse()
+    }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testMaybeForceDelete_nonEmptyCache_truePredicate_returnsTrue() = runBlockingTest(testDispatcher) {
-    val cache = cacheFactory.create(INITIALIZED_CACHE_VALUE)
+  fun testMaybeForceDelete_nonEmptyCache_falsePredicate_keepsCacheNonEmpty() =
+    runBlockingTest(testDispatcher) {
+      val cache = cacheFactory.create(INITIALIZED_CACHE_VALUE)
 
-    val maybeDeleteResult = cache.maybeForceDeleteAsync { true }
+      doNotAwaitCompletion(cache.maybeForceDeleteAsync { false })
 
-    // The predicate's true return value should be piped up to the deletion result.
-    assertThat(awaitCompletion(maybeDeleteResult)).isTrue()
-  }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testMaybeForceDelete_nonEmptyCache_truePredicate_emptiesCache() = runBlockingTest(testDispatcher) {
-    val cache = cacheFactory.create(INITIALIZED_CACHE_VALUE)
-
-    doNotAwaitCompletion(cache.maybeForceDeleteAsync { true })
-
-    // The cache should be emptied as indicated by the deletion predicate.
-    assertThat(awaitCompletion(cache.readAsync())).isNull()
-  }
+      // The cache should retain its value since the deletion predicate indicated it shouldn't be cleared.
+      assertThat(awaitCompletion(cache.readAsync())).isEqualTo(INITIALIZED_CACHE_VALUE)
+    }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testMaybeForceDelete_blockingFunction_blocksDeletion() = runBlockingTest(testDispatcher) {
-    testDispatcher.resumeDispatcher() // Keep the test dispatcher active since this test is verifying blocking behavior.
-    val cache = cacheFactory.create(INITIALIZED_CACHE_VALUE)
-    backgroundTestCoroutineDispatcher.pauseDispatcher()
+  fun testMaybeForceDelete_nonEmptyCache_truePredicate_returnsTrue() =
+    runBlockingTest(testDispatcher) {
+      val cache = cacheFactory.create(INITIALIZED_CACHE_VALUE)
 
-    val blockingOperation = backgroundTestCoroutineScope.async { true }
-    val deleteOperation = cache.maybeForceDeleteAsync { blockingOperation.await() }
+      val maybeDeleteResult = cache.maybeForceDeleteAsync { true }
 
-    // The blocking operation should also block deletion.
-    assertThat(deleteOperation.isCompleted).isFalse()
-  }
+      // The predicate's true return value should be piped up to the deletion result.
+      assertThat(awaitCompletion(maybeDeleteResult)).isTrue()
+    }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testMaybeForceDelete_blockingFunction_completed_deletionCompletes() = runBlockingTest(testDispatcher) {
-    testDispatcher.resumeDispatcher() // Keep the test dispatcher active since this test is verifying blocking behavior.
-    val cache = cacheFactory.create(INITIALIZED_CACHE_VALUE)
-    backgroundTestCoroutineDispatcher.pauseDispatcher()
-    val blockingOperation = backgroundTestCoroutineScope.async { true }
-    val deleteOperation = cache.maybeForceDeleteAsync { blockingOperation.await() }
+  fun testMaybeForceDelete_nonEmptyCache_truePredicate_emptiesCache() =
+    runBlockingTest(testDispatcher) {
+      val cache = cacheFactory.create(INITIALIZED_CACHE_VALUE)
 
-    backgroundTestCoroutineDispatcher.advanceUntilIdle()
+      doNotAwaitCompletion(cache.maybeForceDeleteAsync { true })
 
-    // Completing the blocking operation should complete deletion.
-    assertThat(deleteOperation.isCompleted).isTrue()
-  }
+      // The cache should be emptied as indicated by the deletion predicate.
+      assertThat(awaitCompletion(cache.readAsync())).isNull()
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testMaybeForceDelete_blockingFunction_blocksDeletion() =
+    runBlockingTest(testDispatcher) {
+      // Keep the test dispatcher active since this test is verifying blocking behavior.
+      testDispatcher.resumeDispatcher()
+      val cache = cacheFactory.create(INITIALIZED_CACHE_VALUE)
+      backgroundTestCoroutineDispatcher.pauseDispatcher()
+
+      val blockingOperation = backgroundTestCoroutineScope.async { true }
+      val deleteOperation = cache.maybeForceDeleteAsync { blockingOperation.await() }
+
+      // The blocking operation should also block deletion.
+      assertThat(deleteOperation.isCompleted).isFalse()
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testMaybeForceDelete_blockingFunction_completed_deletionCompletes() =
+    runBlockingTest(testDispatcher) {
+      // Keep the test dispatcher active since this test is verifying blocking behavior.
+      testDispatcher.resumeDispatcher()
+      val cache = cacheFactory.create(INITIALIZED_CACHE_VALUE)
+      backgroundTestCoroutineDispatcher.pauseDispatcher()
+      val blockingOperation = backgroundTestCoroutineScope.async { true }
+      val deleteOperation = cache.maybeForceDeleteAsync { blockingOperation.await() }
+
+      backgroundTestCoroutineDispatcher.advanceUntilIdle()
+
+      // Completing the blocking operation should complete deletion.
+      assertThat(deleteOperation.isCompleted).isTrue()
+    }
 
   /**
    * Silences the warning that [Deferred] is unused. This is okay for tests that ensure await() is called at the end of
    * the test since the cache guarantees sequential execution.
    */
-  private fun <T> doNotAwaitCompletion(@Suppress("UNUSED_PARAMETER") deferred: Deferred<T>) {}
+  private fun <T> doNotAwaitCompletion(
+    @Suppress("UNUSED_PARAMETER") deferred: Deferred<T>
+  ) {
+  }
 
   /**
    * Waits for the specified deferred to execute after advancing test dispatcher. Without this function, results cannot
@@ -731,7 +772,10 @@ class InMemoryBlockingCacheTest {
 
   // TODO(#89): Move to a common test library.
   /** A replacement to JUnit5's assertThrows() with Kotlin suspend coroutine support. */
-  private suspend fun <T : Throwable> assertThrowsAsync(type: KClass<T>, operation: suspend () -> Unit): T {
+  private suspend fun <T : Throwable> assertThrowsAsync(
+    type: KClass<T>,
+    operation: suspend () -> Unit
+  ): T {
     try {
       operation()
       fail("Expected to encounter exception of $type")
@@ -751,7 +795,8 @@ class InMemoryBlockingCacheTest {
       .inject(this)
   }
 
-  @Qualifier annotation class TestDispatcher
+  @Qualifier
+  annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module
@@ -774,7 +819,9 @@ class InMemoryBlockingCacheTest {
     @Singleton
     @Provides
     @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: TestCoroutineDispatcher): CoroutineDispatcher {
+    fun provideBlockingDispatcher(
+      @TestDispatcher testDispatcher: TestCoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
   }

@@ -8,7 +8,7 @@ import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 
 /** The ViewModel for [ProfileListActivity]. */

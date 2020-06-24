@@ -38,6 +38,7 @@ import org.oppia.app.model.AppStartupState.StartupMode.USER_IS_ONBOARDED
 import org.oppia.app.model.AppStartupState.StartupMode.USER_NOT_YET_ONBOARDED
 import org.oppia.app.model.OnboardingState
 import org.oppia.data.persistence.PersistentCacheStore
+import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -65,6 +66,7 @@ class AppStartupStateControllerTest {
 
   @Inject
   lateinit var appStartupStateController: AppStartupStateController
+
   @Inject
   lateinit var cacheFactory: PersistentCacheStore.Factory
 
@@ -76,12 +78,15 @@ class AppStartupStateControllerTest {
     EmptyCoroutineContext + testDispatcher
   }
 
-  @Mock lateinit var mockOnboardingObserver: Observer<AsyncResult<AppStartupState>>
+  @Mock
+  lateinit var mockOnboardingObserver: Observer<AsyncResult<AppStartupState>>
 
-  @Captor lateinit var appStartupStateCaptor: ArgumentCaptor<AsyncResult<AppStartupState>>
+  @Captor
+  lateinit var appStartupStateCaptor: ArgumentCaptor<AsyncResult<AppStartupState>>
 
   // https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/
-  @ObsoleteCoroutinesApi private val testThread = newSingleThreadContext("TestMain")
+  @ObsoleteCoroutinesApi
+  private val testThread = newSingleThreadContext("TestMain")
 
   @Before
   @ExperimentalCoroutinesApi
@@ -121,7 +126,7 @@ class AppStartupStateControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testControllerObserver_observedAfterSettingAppOnboarded_providesLiveData_userDidNotOnboardApp() =
+  fun testControllerObserver_observedAfterSettingAppOnboarded_providesLiveData_userDidNotOnboardApp() = // ktlint-disable max-line-length
     runBlockingTest(coroutineContext) {
       val appStartupState = appStartupStateController.getAppStartupState()
 
@@ -138,21 +143,24 @@ class AppStartupStateControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_settingAppOnboarded_observedNewController_userOnboardedApp() = runBlockingTest(coroutineContext) {
-    appStartupStateController.markOnboardingFlowCompleted()
-    advanceUntilIdle()
+  fun testController_settingAppOnboarded_observedNewController_userOnboardedApp() =
+    runBlockingTest(coroutineContext) {
+      appStartupStateController.markOnboardingFlowCompleted()
+      advanceUntilIdle()
 
-    // Create the controller by creating another singleton graph and injecting it (simulating the app being recreated).
-    setUpTestApplicationComponent()
-    val appStartupState = appStartupStateController.getAppStartupState()
-    appStartupState.observeForever(mockOnboardingObserver)
-    advanceUntilIdle()
+      // Create the controller by creating another singleton graph and injecting it (simulating the
+      // app being recreated).
+      setUpTestApplicationComponent()
+      val appStartupState = appStartupStateController.getAppStartupState()
+      appStartupState.observeForever(mockOnboardingObserver)
+      advanceUntilIdle()
 
-    // The app should be considered onboarded since a new LiveData instance was observed after marking the app as onboarded.
-    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
-    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
-    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_IS_ONBOARDED)
-  }
+      // The app should be considered onboarded since a new LiveData instance was observed after
+      // marking the app as onboarded.
+      verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
+      assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
+      assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_IS_ONBOARDED)
+    }
 
   @Test
   @ExperimentalCoroutinesApi
@@ -182,7 +190,8 @@ class AppStartupStateControllerTest {
     return value.getOrThrow().startupMode
   }
 
-  @Qualifier annotation class TestDispatcher
+  @Qualifier
+  annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module
@@ -204,14 +213,18 @@ class AppStartupStateControllerTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
     @Singleton
     @Provides
     @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBlockingDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
@@ -232,7 +245,7 @@ class AppStartupStateControllerTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class])
+  @Component(modules = [TestModule::class, TestLogReportingModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

@@ -19,7 +19,9 @@ class AdminSettingsDialogFragment : InjectableDialogFragment() {
       return adminSettingDialogFragment
     }
   }
-  @Inject lateinit var adminSettingsDialogFragmentPresenter: AdminSettingsDialogFragmentPresenter
+
+  @Inject
+  lateinit var adminSettingsDialogFragmentPresenter: AdminSettingsDialogFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)

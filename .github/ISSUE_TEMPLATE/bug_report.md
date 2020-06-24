@@ -2,8 +2,8 @@
 name: Bug report
 about: Create a report to help us improve
 title: ''
-labels: ''
-assignees: BenHenning
+labels: 'Type: Bug, Status: Not started'
+assignees: ''
 
 ---
 

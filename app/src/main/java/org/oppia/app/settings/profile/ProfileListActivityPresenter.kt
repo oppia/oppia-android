@@ -22,7 +22,10 @@ class ProfileListActivityPresenter @Inject constructor(
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
 
-    val binding = DataBindingUtil.setContentView<ProfileListActivityBinding>(activity, R.layout.profile_list_activity)
+    val binding = DataBindingUtil.setContentView<ProfileListActivityBinding>(
+      activity,
+      R.layout.profile_list_activity
+    )
     binding.profileListToolbar.setNavigationOnClickListener {
       (activity as ProfileListActivity).finish()
     }
@@ -52,7 +55,12 @@ class ProfileListActivityPresenter @Inject constructor(
   ) {
     binding.profile = profile
     binding.root.setOnClickListener {
-      activity.startActivity(ProfileEditActivity.createProfileEditActivity(activity, profile.id.internalId))
+      activity.startActivity(
+        ProfileEditActivity.createProfileEditActivity(
+          activity,
+          profile.id.internalId
+        )
+      )
     }
   }
 

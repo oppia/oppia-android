@@ -11,14 +11,19 @@ import javax.inject.Inject
 /* Fragment that displays revision card */
 class RevisionCardFragment : InjectableDialogFragment() {
 
-  @Inject lateinit var revisionCardFragmentPresenter: RevisionCardFragmentPresenter
+  @Inject
+  lateinit var revisionCardFragmentPresenter: RevisionCardFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
     super.onCreateView(inflater, container, savedInstanceState)
     return revisionCardFragmentPresenter.handleCreateView(inflater, container)
   }

@@ -17,6 +17,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -34,6 +35,7 @@ import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.profile.ProfileTestHelper
+import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -47,14 +49,18 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class ProfileListActivityTest {
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
 
   @Before
   @ExperimentalCoroutinesApi
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
+    FirebaseApp.initializeApp(context)
   }
 
   @After
@@ -73,7 +79,11 @@ class ProfileListActivityTest {
   fun testProfileListActivity_initializeProfiles_checkProfilesAreShown() {
     profileTestHelper.initializeProfiles()
     launch(ProfileListActivity::class.java).use {
-      onView(withId(R.id.profile_list_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
+      onView(withId(R.id.profile_list_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          0
+        )
+      )
       onView(
         atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)
       ).check(
@@ -84,7 +94,11 @@ class ProfileListActivityTest {
       ).check(
         matches(withText(context.getString(R.string.profile_chooser_admin)))
       )
-      onView(withId(R.id.profile_list_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(withId(R.id.profile_list_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
       onView(
         atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)
       ).check(
@@ -103,7 +117,11 @@ class ProfileListActivityTest {
     profileTestHelper.initializeProfiles()
     launch(ProfileListActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.profile_list_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
+      onView(withId(R.id.profile_list_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          0
+        )
+      )
       onView(
         atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)
       ).check(
@@ -114,7 +132,11 @@ class ProfileListActivityTest {
       ).check(
         matches(withText(context.getString(R.string.profile_chooser_admin)))
       )
-      onView(withId(R.id.profile_list_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(withId(R.id.profile_list_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
       onView(
         atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)
       ).check(
@@ -133,43 +155,71 @@ class ProfileListActivityTest {
     profileTestHelper.initializeProfiles()
     profileTestHelper.addMoreProfiles(5)
     launch(ProfileListActivity::class.java).use {
-      onView(withId(R.id.profile_list_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
+      onView(withId(R.id.profile_list_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          0
+        )
+      )
       onView(
         atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)
       ).check(
         matches(withText("Sean"))
       )
-      onView(withId(R.id.profile_list_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(withId(R.id.profile_list_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
       onView(
         atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)
       ).check(
         matches(withText("A"))
       )
-      onView(withId(R.id.profile_list_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
+      onView(withId(R.id.profile_list_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          2
+        )
+      )
       onView(
         atPositionOnView(R.id.profile_list_recycler_view, 2, R.id.profile_list_name)
       ).check(
         matches(withText("B"))
       )
-      onView(withId(R.id.profile_list_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
+      onView(withId(R.id.profile_list_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          3
+        )
+      )
       onView(
         atPositionOnView(R.id.profile_list_recycler_view, 3, R.id.profile_list_name)
       ).check(
         matches(withText("Ben"))
       )
-      onView(withId(R.id.profile_list_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(4))
+      onView(withId(R.id.profile_list_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          4
+        )
+      )
       onView(
         atPositionOnView(R.id.profile_list_recycler_view, 4, R.id.profile_list_name)
       ).check(
         matches(withText("C"))
       )
-      onView(withId(R.id.profile_list_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(5))
+      onView(withId(R.id.profile_list_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          5
+        )
+      )
       onView(
         atPositionOnView(R.id.profile_list_recycler_view, 5, R.id.profile_list_name)
       ).check(
         matches(withText("D"))
       )
-      onView(withId(R.id.profile_list_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(6))
+      onView(withId(R.id.profile_list_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          6
+        )
+      )
       onView(
         atPositionOnView(R.id.profile_list_recycler_view, 6, R.id.profile_list_name)
       ).check(
@@ -187,7 +237,8 @@ class ProfileListActivityTest {
     }
   }
 
-  @Qualifier annotation class TestDispatcher
+  @Qualifier
+  annotation class TestDispatcher
 
   @Module
   class TestModule {
@@ -208,14 +259,18 @@ class ProfileListActivityTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
     @Singleton
     @Provides
     @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBlockingDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
@@ -235,7 +290,7 @@ class ProfileListActivityTest {
   }
 
   @Singleton
-  @Component(modules = [TestModule::class])
+  @Component(modules = [TestModule::class, TestLogReportingModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

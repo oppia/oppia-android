@@ -13,6 +13,7 @@ import org.oppia.domain.classify.AnswerClassificationController
 import org.oppia.util.data.AsyncDataSubscriptionManager
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
+import org.oppia.util.logging.ExceptionLogger
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -34,7 +35,8 @@ class ExplorationProgressController @Inject constructor(
   private val dataProviders: DataProviders,
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
   private val explorationRetriever: ExplorationRetriever,
-  private val answerClassificationController: AnswerClassificationController
+  private val answerClassificationController: AnswerClassificationController,
+  private val exceptionLogger: ExceptionLogger
 ) {
   // TODO(#180): Add support for hints.
   // TODO(#179): Add support for parameters.
@@ -48,7 +50,10 @@ class ExplorationProgressController @Inject constructor(
   // implementation detail to tests.
 
   private val currentStateDataProvider =
-    dataProviders.createInMemoryDataProviderAsync(CURRENT_STATE_DATA_PROVIDER_ID, this::retrieveCurrentStateAsync)
+    dataProviders.createInMemoryDataProviderAsync(
+      CURRENT_STATE_DATA_PROVIDER_ID,
+      this::retrieveCurrentStateAsync
+    )
   private val explorationProgress = ExplorationProgress()
   private val explorationProgressLock = ReentrantLock()
 
@@ -104,13 +109,22 @@ class ExplorationProgressController @Inject constructor(
   fun submitAnswer(userAnswer: UserAnswer): LiveData<AsyncResult<AnswerOutcome>> {
     try {
       explorationProgressLock.withLock {
-        check(explorationProgress.playStage != ExplorationProgress.PlayStage.NOT_PLAYING) {
+        check(
+          explorationProgress.playStage !=
+            ExplorationProgress.PlayStage.NOT_PLAYING
+        ) {
           "Cannot submit an answer if an exploration is not being played."
         }
-        check(explorationProgress.playStage != ExplorationProgress.PlayStage.LOADING_EXPLORATION) {
+        check(
+          explorationProgress.playStage !=
+            ExplorationProgress.PlayStage.LOADING_EXPLORATION
+        ) {
           "Cannot submit an answer while the exploration is being loaded."
         }
-        check(explorationProgress.playStage != ExplorationProgress.PlayStage.SUBMITTING_ANSWER) {
+        check(
+          explorationProgress.playStage !=
+            ExplorationProgress.PlayStage.SUBMITTING_ANSWER
+        ) {
           "Cannot submit an answer while another answer is pending."
         }
 
@@ -121,8 +135,10 @@ class ExplorationProgressController @Inject constructor(
         lateinit var answerOutcome: AnswerOutcome
         try {
           val topPendingState = explorationProgress.stateDeck.getPendingTopState()
-          val outcome = answerClassificationController.classify(topPendingState.interaction, userAnswer.answer)
-          answerOutcome = explorationProgress.stateGraph.computeAnswerOutcomeForResult(topPendingState, outcome)
+          val outcome =
+            answerClassificationController.classify(topPendingState.interaction, userAnswer.answer)
+          answerOutcome =
+            explorationProgress.stateGraph.computeAnswerOutcomeForResult(topPendingState, outcome)
           explorationProgress.stateDeck.submitAnswer(userAnswer, answerOutcome.feedback)
           // Follow the answer's outcome to another part of the graph if it's different.
           if (answerOutcome.destinationCase == AnswerOutcome.DestinationCase.STATE_NAME) {
@@ -142,20 +158,34 @@ class ExplorationProgressController @Inject constructor(
         return MutableLiveData(AsyncResult.success(answerOutcome))
       }
     } catch (e: Exception) {
+      exceptionLogger.logException(e)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
 
-  fun submitHintIsRevealed(state: State, hintIsRevealed: Boolean, hintIndex: Int): LiveData<AsyncResult<Hint>> {
+  fun submitHintIsRevealed(
+    state: State,
+    hintIsRevealed: Boolean,
+    hintIndex: Int
+  ): LiveData<AsyncResult<Hint>> {
     try {
       explorationProgressLock.withLock {
-        check(explorationProgress.playStage != ExplorationProgress.PlayStage.NOT_PLAYING) {
+        check(
+          explorationProgress.playStage !=
+            ExplorationProgress.PlayStage.NOT_PLAYING
+        ) {
           "Cannot submit an answer if an exploration is not being played."
         }
-        check(explorationProgress.playStage != ExplorationProgress.PlayStage.LOADING_EXPLORATION) {
+        check(
+          explorationProgress.playStage !=
+            ExplorationProgress.PlayStage.LOADING_EXPLORATION
+        ) {
           "Cannot submit an answer while the exploration is being loaded."
         }
-        check(explorationProgress.playStage != ExplorationProgress.PlayStage.SUBMITTING_ANSWER) {
+        check(
+          explorationProgress.playStage !=
+            ExplorationProgress.PlayStage.SUBMITTING_ANSWER
+        ) {
           "Cannot submit an answer while another answer is pending."
         }
         lateinit var hint: Hint
@@ -167,7 +197,6 @@ class ExplorationProgressController @Inject constructor(
             hintIndex
           )
           explorationProgress.stateDeck.pushStateForHint(state, hintIndex)
-
         } finally {
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always
           // showing hint' situation. This can specifically happen if hint throws an exception.
@@ -177,20 +206,33 @@ class ExplorationProgressController @Inject constructor(
         return MutableLiveData(AsyncResult.success(hint))
       }
     } catch (e: Exception) {
+      exceptionLogger.logException(e)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
 
-  fun submitSolutionIsRevealed(state: State, solutionIsRevealed: Boolean): LiveData<AsyncResult<Solution>> {
+  fun submitSolutionIsRevealed(
+    state: State,
+    solutionIsRevealed: Boolean
+  ): LiveData<AsyncResult<Solution>> {
     try {
       explorationProgressLock.withLock {
-        check(explorationProgress.playStage != ExplorationProgress.PlayStage.NOT_PLAYING) {
+        check(
+          explorationProgress.playStage !=
+            ExplorationProgress.PlayStage.NOT_PLAYING
+        ) {
           "Cannot submit an answer if an exploration is not being played."
         }
-        check(explorationProgress.playStage != ExplorationProgress.PlayStage.LOADING_EXPLORATION) {
+        check(
+          explorationProgress.playStage !=
+            ExplorationProgress.PlayStage.LOADING_EXPLORATION
+        ) {
           "Cannot submit an answer while the exploration is being loaded."
         }
-        check(explorationProgress.playStage != ExplorationProgress.PlayStage.SUBMITTING_ANSWER) {
+        check(
+          explorationProgress.playStage !=
+            ExplorationProgress.PlayStage.SUBMITTING_ANSWER
+        ) {
           "Cannot submit an answer while another answer is pending."
         }
         lateinit var solution: Solution
@@ -202,7 +244,6 @@ class ExplorationProgressController @Inject constructor(
             solutionIsRevealed
           )
           explorationProgress.stateDeck.pushStateForSolution(state)
-
         } finally {
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always
           // showing solution' situation. This can specifically happen if solution throws an exception.
@@ -213,6 +254,7 @@ class ExplorationProgressController @Inject constructor(
         return MutableLiveData(AsyncResult.success(solution))
       }
     } catch (e: Exception) {
+      exceptionLogger.logException(e)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -230,13 +272,22 @@ class ExplorationProgressController @Inject constructor(
   fun moveToPreviousState(): LiveData<AsyncResult<Any?>> {
     try {
       explorationProgressLock.withLock {
-        check(explorationProgress.playStage != ExplorationProgress.PlayStage.NOT_PLAYING) {
+        check(
+          explorationProgress.playStage !=
+            ExplorationProgress.PlayStage.NOT_PLAYING
+        ) {
           "Cannot navigate to a previous state if an exploration is not being played."
         }
-        check(explorationProgress.playStage != ExplorationProgress.PlayStage.LOADING_EXPLORATION) {
+        check(
+          explorationProgress.playStage !=
+            ExplorationProgress.PlayStage.LOADING_EXPLORATION
+        ) {
           "Cannot navigate to a previous state if an exploration is being loaded."
         }
-        check(explorationProgress.playStage != ExplorationProgress.PlayStage.SUBMITTING_ANSWER) {
+        check(
+          explorationProgress.playStage !=
+            ExplorationProgress.PlayStage.SUBMITTING_ANSWER
+        ) {
           "Cannot navigate to a previous state if an answer submission is pending."
         }
         explorationProgress.stateDeck.navigateToPreviousState()
@@ -244,6 +295,7 @@ class ExplorationProgressController @Inject constructor(
       }
       return MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
+      exceptionLogger.logException(e)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -265,13 +317,22 @@ class ExplorationProgressController @Inject constructor(
   fun moveToNextState(): LiveData<AsyncResult<Any?>> {
     try {
       explorationProgressLock.withLock {
-        check(explorationProgress.playStage != ExplorationProgress.PlayStage.NOT_PLAYING) {
+        check(
+          explorationProgress.playStage !=
+            ExplorationProgress.PlayStage.NOT_PLAYING
+        ) {
           "Cannot navigate to a next state if an exploration is not being played."
         }
-        check(explorationProgress.playStage != ExplorationProgress.PlayStage.LOADING_EXPLORATION) {
+        check(
+          explorationProgress.playStage !=
+            ExplorationProgress.PlayStage.LOADING_EXPLORATION
+        ) {
           "Cannot navigate to a next state if an exploration is being loaded."
         }
-        check(explorationProgress.playStage != ExplorationProgress.PlayStage.SUBMITTING_ANSWER) {
+        check(
+          explorationProgress.playStage !=
+            ExplorationProgress.PlayStage.SUBMITTING_ANSWER
+        ) {
           "Cannot navigate to a next state if an answer submission is pending."
         }
         explorationProgress.stateDeck.navigateToNextState()
@@ -279,6 +340,7 @@ class ExplorationProgressController @Inject constructor(
       }
       return MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
+      exceptionLogger.logException(e)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -310,6 +372,7 @@ class ExplorationProgressController @Inject constructor(
     return try {
       retrieveCurrentStateWithinCacheAsync()
     } catch (e: Exception) {
+      exceptionLogger.logException(e)
       AsyncResult.failed(e)
     }
   }
@@ -328,7 +391,10 @@ class ExplorationProgressController @Inject constructor(
       // way to ensure the exploration is loaded since suspended functions cannot be called within a mutex. Note that
       // it's also possible for the stage to change between critical sections, sometimes due to this suspend function
       // being called multiple times and a former call finishing the exploration load.
-      check(exploration == null || explorationProgress.currentExplorationId == explorationId) {
+      check(
+        exploration == null ||
+          explorationProgress.currentExplorationId == explorationId
+      ) {
         "Encountered race condition when retrieving exploration. ID changed from $explorationId" +
           " to ${explorationProgress.currentExplorationId}"
       }
@@ -340,6 +406,7 @@ class ExplorationProgressController @Inject constructor(
             finishLoadExploration(exploration!!, explorationProgress)
             AsyncResult.success(explorationProgress.stateDeck.getCurrentEphemeralState())
           } catch (e: Exception) {
+            exceptionLogger.logException(e)
             AsyncResult.failed<EphemeralState>(e)
           }
         }

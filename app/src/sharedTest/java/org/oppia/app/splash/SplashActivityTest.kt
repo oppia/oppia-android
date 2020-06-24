@@ -14,6 +14,7 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -30,6 +31,7 @@ import org.junit.runner.RunWith
 import org.oppia.app.onboarding.OnboardingActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.domain.onboarding.AppStartupStateController
+import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -38,6 +40,7 @@ import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import java.util.concurrent.AbstractExecutorService
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -47,11 +50,15 @@ import javax.inject.Singleton
  */
 @RunWith(AndroidJUnit4::class)
 class SplashActivityTest {
+
+  @Inject lateinit var context: Context
+
   @Before
   fun setUp() {
     Intents.init()
     IdlingRegistry.getInstance().register(MainThreadExecutor.countingResource)
     simulateNewAppInstance()
+    FirebaseApp.initializeApp(context)
   }
 
   @After
@@ -64,7 +71,9 @@ class SplashActivityTest {
   // disabled to launch Activity explicitly within each test case.
   @get:Rule
   var activityTestRule: ActivityTestRule<SplashActivity> = ActivityTestRule(
-    SplashActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+    SplashActivity::class.java,
+    /* initialTouchMode= */ true,
+    /* launchActivity= */ false
   )
 
   @Test
@@ -122,7 +131,9 @@ class SplashActivityTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
@@ -149,7 +160,7 @@ class SplashActivityTest {
   }
 
   @Singleton
-  @Component(modules = [TestModule::class])
+  @Component(modules = [TestModule::class, TestLogReportingModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
@@ -176,7 +187,8 @@ class SplashActivityTest {
     override fun isTerminated(): Boolean = false
 
     private val handler = Handler(Looper.getMainLooper())
-    val countingResource = CountingIdlingResource("main_thread_executor_counting_idling_resource")
+    val countingResource =
+      CountingIdlingResource("main_thread_executor_counting_idling_resource")
 
     override fun execute(command: Runnable?) {
       countingResource.increment()

@@ -1,7 +1,6 @@
 package org.oppia.app.splash
 
 import android.view.WindowManager
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -30,7 +29,10 @@ class SplashActivityPresenter @Inject constructor(
 
   fun handleOnCreate() {
     activity.setContentView(R.layout.splash_activity)
-    activity.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+    activity.window.setFlags(
+      WindowManager.LayoutParams.FLAG_FULLSCREEN,
+      WindowManager.LayoutParams.FLAG_FULLSCREEN
+    )
     subscribeToOnboardingFlow()
   }
 
