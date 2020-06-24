@@ -90,13 +90,14 @@ class DragAndDropSortInteractionViewModel(
     val item = choiceItems[itemIndex]
     choiceItems.removeAt(itemIndex)
     item.htmlContent.htmlList.asReversed().forEach {
-      choiceItems.add(0, DragDropInteractionContentViewModel(StringList.newBuilder()
-        .addHtml(it)
-        .build()
-      ,0
-      ,0
-      ,this
-      ))
+      choiceItems.add(
+        0, DragDropInteractionContentViewModel(
+          StringList.newBuilder()
+            .addHtml(it)
+            .build(),
+          0, 0, this
+        )
+      )
     }
 
     choiceItems.forEachIndexed { index, dragDropInteractionContentViewModel ->

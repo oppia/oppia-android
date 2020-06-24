@@ -54,7 +54,8 @@
       android:enabled="@{viewModel.itemIndex != viewModel.listSize-1}"
       android:focusable="true"
       android:onClick="@{(v) -> viewModel.handleGrouping(adapter)}"
-      android:src="@drawable/ic_merge_icon_state"
+      android:src="@drawable/ic_merge_icon_24"
+      android:tint="@{dragDropContentGroupItem.enabled? @color/iconDefault : @color/iconDisabled}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/drag_drop_content_unlink_items" />

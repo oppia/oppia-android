@@ -152,4 +152,7 @@
   <color name="onboarding3StatusBar">#AD8500</color>
   <color name="onboarding4StatusBar">#3B5893</color>
   <color name="registrationStatusBar">#9CB1BE</color>
+  <!-- ICON COLORS -->
+  <color name="iconDefault">#FF000000</color>
+  <color name="iconDisabled">#999999</color>
 </resources>
