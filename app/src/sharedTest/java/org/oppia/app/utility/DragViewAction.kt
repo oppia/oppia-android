@@ -1,6 +1,5 @@
 package org.oppia.app.utility
 
-import android.os.SystemClock
 import android.view.View
 import android.view.ViewConfiguration
 import androidx.recyclerview.widget.RecyclerView
