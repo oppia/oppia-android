@@ -58,8 +58,8 @@ class AnalyticsControllerTest {
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
       analyticsController.createQuestionContext(
-        TEST_QUESTION_ID
-        , listOf(
+        TEST_QUESTION_ID,
+        listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
         )
       )
@@ -186,8 +186,8 @@ class AnalyticsControllerTest {
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
       analyticsController.createQuestionContext(
-        TEST_QUESTION_ID
-        , listOf(
+        TEST_QUESTION_ID,
+        listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
         )
       )
@@ -336,7 +336,10 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_createStoryContext_returnsCorrectStoryContext() {
-    val eventContext = analyticsController.createStoryContext(TEST_TOPIC_ID, TEST_STORY_ID)
+    val eventContext = analyticsController.createStoryContext(
+      TEST_TOPIC_ID,
+      TEST_STORY_ID
+    )
 
     assertThat(eventContext.activityContextCase).isEqualTo(STORY_CONTEXT)
     assertThat(eventContext.storyContext.topicId).matches(TEST_TOPIC_ID)

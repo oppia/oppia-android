@@ -17,10 +17,14 @@ import javax.inject.Inject
  */
 internal class FractionInputIsEquivalentToRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
-): RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<Fraction> {
+) : RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<Fraction> {
 
   override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createSingleInputClassifier(InteractionObject.ObjectTypeCase.FRACTION, "f", this)
+    return classifierFactory.createSingleInputClassifier(
+      InteractionObject.ObjectTypeCase.FRACTION,
+      "f",
+      this
+    )
   }
 
   // TODO(#210): Add tests for this classifier.
