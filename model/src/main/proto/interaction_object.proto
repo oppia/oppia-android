@@ -70,7 +70,8 @@ message ImageWithRegions {
     message Region {
       // Represents the different Region Types.
       enum RegionType {
-        RECTANGLE = 0;
+        UNSPECIFIED_REGION_TYPE = 0;
+        RECTANGLE = 1;
       }
 
       // A shape value for a particular region.

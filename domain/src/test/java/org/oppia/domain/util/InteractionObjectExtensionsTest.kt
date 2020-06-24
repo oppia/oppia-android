@@ -12,7 +12,6 @@ import org.oppia.app.model.ImageWithRegions.LabeledRegion.Region.NormalizedRecta
 import org.oppia.app.model.ImageWithRegions.LabeledRegion.Region.RegionType.*
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.ListOfSetsOfHtmlStrings
-import org.oppia.app.model.RegionType
 import org.oppia.app.model.StringList
 import org.robolectric.annotation.Config
 
