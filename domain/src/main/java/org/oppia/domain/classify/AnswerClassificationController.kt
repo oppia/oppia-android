@@ -22,33 +22,49 @@ class AnswerClassificationController @Inject constructor(
    * matches the learner's answer.
    */
   internal fun classify(interaction: Interaction, answer: InteractionObject): Outcome {
-    val interactionClassifier = checkNotNull(interactionClassifiers[interaction.id]) {
-      "Encountered unknown interaction type: ${interaction.id}, expected one of: ${interactionClassifiers.keys}"
+    val interactionClassifier = checkNotNull(
+      interactionClassifiers[interaction.id]
+    ) {
+      "Encountered unknown interaction type: ${interaction.id}, " +
+        "expected one of: ${interactionClassifiers.keys}"
     }
     // TODO(#207): Add support for additional classification types.
     return classifyAnswer(
-      answer, interaction.answerGroupsList, interaction.defaultOutcome, interactionClassifier, interaction.id)
+      answer,
+      interaction.answerGroupsList,
+      interaction.defaultOutcome,
+      interactionClassifier,
+      interaction.id
+    )
   }
 
   // Based on the Oppia web version:
   // https://github.com/oppia/oppia/blob/edb62f/core/templates/dev/head/pages/exploration-player-page/services/answer-classification.service.ts#L57.
   private fun classifyAnswer(
-    answer: InteractionObject, answerGroups: List<AnswerGroup>, defaultOutcome: Outcome,
-    interactionClassifier: InteractionClassifier, interactionId: String
+    answer: InteractionObject,
+    answerGroups: List<AnswerGroup>,
+    defaultOutcome: Outcome,
+    interactionClassifier: InteractionClassifier,
+    interactionId: String
   ): Outcome {
     for (answerGroup in answerGroups) {
       for (ruleSpec in answerGroup.ruleSpecsList) {
-        val ruleClassifier = checkNotNull(interactionClassifier.getRuleClassifier(ruleSpec.ruleType)) {
-          "Expected interaction $interactionId to have classifier for rule type: ${ruleSpec.ruleType}, but only" +
+        val ruleClassifier =
+          checkNotNull(interactionClassifier.getRuleClassifier(ruleSpec.ruleType)) {
+            "Expected interaction $interactionId to have classifier for " +
+              "rule type: ${ruleSpec.ruleType}, but only" +
               " has: ${interactionClassifier.getRuleTypes()}"
-        }
+          }
         try {
           if (ruleClassifier.matches(answer, ruleSpec.inputMap)) {
             // Explicit classification matched.
             return answerGroup.outcome
           }
         } catch (e: Exception) {
-          throw IllegalStateException("Failed when classifying answer $answer for interaction $interactionId", e)
+          throw IllegalStateException(
+            "Failed when classifying answer $answer for interaction $interactionId",
+            e
+          )
         }
       }
     }

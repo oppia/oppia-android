@@ -1,7 +1,5 @@
 package org.oppia.domain.question
 
-import org.oppia.domain.topic.TopicController
-import org.oppia.util.data.DataProviders
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -9,8 +7,7 @@ const val QUESTION_COUNT_PER_TRAINING_SESSION = 10
 
 /** Provider to return any constants required during the training session. */
 @Singleton
-class QuestionTrainingConstantsProvider @Inject constructor(
-) {
+class QuestionTrainingConstantsProvider @Inject constructor() {
   fun getQuestionCountPerTrainingSession(): Int {
     return QUESTION_COUNT_PER_TRAINING_SESSION
   }

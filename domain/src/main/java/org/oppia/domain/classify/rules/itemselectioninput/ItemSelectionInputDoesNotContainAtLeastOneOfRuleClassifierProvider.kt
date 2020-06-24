@@ -13,12 +13,17 @@ import javax.inject.Inject
  *
  * https://github.com/oppia/oppia/blob/37285a/extensions/interactions/ItemSelectionInput/directives/item-selection-input-rules.service.ts#L41
  */
-internal class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProvider @Inject constructor(
+internal class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProvider
+@Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
-): RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<StringList> {
+) : RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<StringList> {
 
   override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createSingleInputClassifier(InteractionObject.ObjectTypeCase.SET_OF_HTML_STRING, "x", this)
+    return classifierFactory.createSingleInputClassifier(
+      InteractionObject.ObjectTypeCase.SET_OF_HTML_STRING,
+      "x",
+      this
+    )
   }
 
   // TODO(#210): Add tests for this classifier.
