@@ -38,7 +38,7 @@ class DragAndDropSortInteractionViewModel(
       choiceItems[indexFrom].itemIndex = indexFrom
       choiceItems[indexTo].itemIndex = indexTo
       (adapter as BindableAdapter<*>).setDataUnchecked(choiceItems)
-    }else{
+    } else {
       (adapter as BindableAdapter<*>).notifyItemMoved(indexFrom, indexTo)
     }
   }
@@ -83,6 +83,27 @@ class DragAndDropSortInteractionViewModel(
       dragDropInteractionContentViewModel.listSize = choiceItems.size
     }
     //to update the content of grouped item
+    (adapter as BindableAdapter<*>).setDataUnchecked(choiceItems)
+  }
+
+  fun unlinkElement(itemIndex: Int, adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
+    val item = choiceItems[itemIndex]
+    choiceItems.removeAt(itemIndex)
+    item.htmlContent.htmlList.asReversed().forEach {
+      choiceItems.add(0, DragDropInteractionContentViewModel(StringList.newBuilder()
+        .addHtml(it)
+        .build()
+      ,0
+      ,0
+      ,this
+      ))
+    }
+
+    choiceItems.forEachIndexed { index, dragDropInteractionContentViewModel ->
+      dragDropInteractionContentViewModel.itemIndex = index
+      dragDropInteractionContentViewModel.listSize = choiceItems.size
+    }
+    //to update the list
     (adapter as BindableAdapter<*>).setDataUnchecked(choiceItems)
   }
 

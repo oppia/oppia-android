@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.databinding.DragDropInteractionItemsBinding
+import org.oppia.app.databinding.DragDropSingleItemBinding
 import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.app.recyclerview.BindableAdapter
@@ -72,14 +73,32 @@ class DragDropSortInteractionView @JvmOverloads constructor(
         },
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<DragDropInteractionItemsBinding>(view)!!
+          binding.dragDropInteractionRecyclerview.adapter = createNestedAdapter()
+          binding.adapter = adapter
+          binding.dragDropContentGroupItem.isVisible = isMultipleItemsInSamePositionAllowed
+          binding.dragDropContentUnlinkItems.isVisible = viewModel.htmlContent.htmlList.size > 1
+          binding.viewModel = viewModel
+        }
+      )
+      .build()
+  }
+
+  private fun createNestedAdapter(): BindableAdapter<String> {
+    return BindableAdapter.SingleTypeBuilder
+      .newBuilder<String>()
+      .registerViewBinder(
+        inflateView = { parent ->
+          DragDropSingleItemBinding.inflate(
+            LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
+          ).root
+        },
+        bindView = { view, viewModel ->
+          val binding = DataBindingUtil.findBinding<DragDropSingleItemBinding>(view)!!
           binding.htmlContent =
             htmlParserFactory.create(resourceBucketName, entityType, entityId, /* imageCenterAlign= */ false)
               .parseOppiaHtml(
-                viewModel.htmlContent.htmlList.joinToString(separator = "<br>"), binding.dragDropContentTextView
+                viewModel, binding.dragDropContentTextView
               )
-          binding.adapter = adapter
-          binding.dragDropContentGroupItem.isVisible = isMultipleItemsInSamePositionAllowed
-          binding.viewModel = viewModel
         }
       )
       .build()
