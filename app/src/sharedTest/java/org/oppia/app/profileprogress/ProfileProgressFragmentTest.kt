@@ -173,9 +173,8 @@ class ProfileProgressFragmentTest {
     }
   }
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testProfileProgressFragment_openProfilePictureEditDialog_configurationChange_dialogIsStillOpen() {
+  fun testProfileProgressFragment_openProfilePictureEditDialog_configurationChange_dialogIsStillOpen() { // ktlint-disable max-line-length
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText("Sean"))
       onView(
@@ -191,7 +190,6 @@ class ProfileProgressFragmentTest {
       onView(withText(R.string.profile_progress_edit_dialog_title)).check(matches(isDisplayed()))
     }
   }
-  /* ktlint-enable max-line-length */
 
   @Test
   fun testAddProfileActivity_imageSelectAvatar_checkGalleryIntent() {
@@ -346,9 +344,8 @@ class ProfileProgressFragmentTest {
     }
   }
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testProfileProgressFragmentWithProgress_recyclerViewItem0_checkCompletedStoriesCount_countIsTwo() {
+  fun testProfileProgressFragmentWithProgress_recyclerViewItem0_checkCompletedStoriesCount_countIsTwo() { // ktlint-disable max-line-length
     storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
       profileId,
       timestampOlderThanAWeek = false
@@ -366,7 +363,6 @@ class ProfileProgressFragmentTest {
       )
     }
   }
-  /* ktlint-enable max-line-length */
 
   @Test
   fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkCompletedStoriesString_descriptionIsCorrect() { // ktlint-disable max-line-length
