@@ -5,6 +5,8 @@
 
   <data>
 
+    <import type="android.view.View" />
+
     <variable
       name="viewModel"
       type="org.oppia.app.player.state.itemviewmodel.DragAndDropSortInteractionViewModel" />
@@ -25,15 +27,19 @@
     app:layout_constraintTop_toTopOf="parent"
     tools:layout_editor_absoluteX="8dp">
 
+    <TextView
+      android:id="@+id/drag_drop_grouping_hint_text_view"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:visibility="@{viewModel.getGroupingStatus()? View.VISIBLE : View.GONE}"
+      android:text="@string/if_two_items_are_equal_merge_them"
+      android:textSize="14sp"
+      android:textStyle="italic" />
+
     <org.oppia.app.player.state.DragDropSortInteractionView
       android:id="@+id/drag_drop_interaction_recyclerview"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginStart="20dp"
-      android:layout_marginTop="@dimen/divider_margin_top"
-      android:layout_marginEnd="20dp"
-      android:layout_marginBottom="@dimen/divider_margin_bottom"
-      android:divider="@android:color/transparent"
       app:allowMultipleItemsInSamePosition="@{viewModel.getGroupingStatus()}"
       app:list="@{viewModel.choiceItems}"
       app:onItemDrag="@{(indexFrom, indexTo, adapter) -> viewModel.onItemDragged(indexFrom, indexTo, adapter)}"

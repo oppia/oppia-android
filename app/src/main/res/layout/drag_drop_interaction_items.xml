@@ -20,6 +20,7 @@
     android:layout_margin="4dp"
     android:orientation="horizontal">
 
+
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/drag_drop_interaction_recyclerview"
       android:layout_width="0dp"
@@ -29,16 +30,16 @@
       android:layout_marginEnd="8dp"
       android:layout_weight="1"
       android:background="@drawable/rounded_rect_grey_border_white_background"
-      android:divider="@color/blue_shade"
-      android:padding="8dp"
-      app:itemDecorator="@{@drawable/divider_dotted}"
+      android:paddingStart="16dp"
+      android:paddingEnd="16dp"
+      app:itemDecorator="@{@drawable/divider}"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toStartOf="@+id/drag_drop_content_group_item"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       app:list="@{viewModel.htmlContent.htmlList}"
-      tools:itemCount="2"
+      tools:itemCount="3"
       tools:listitem="@layout/drag_drop_single_item" />
 
     <ImageButton

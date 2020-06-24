@@ -12,13 +12,12 @@
     android:id="@+id/drag_drop_content_text_view"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginStart="4dp"
     android:fontFamily="sans-serif"
     tools:text="Hello"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp"
     android:gravity="center_vertical"
-    android:padding="8dp"
-    android:paddingTop="4dp"
     android:text="@{htmlContent}"
-    android:textColor="@color/oppiaDarkBlue"
+    android:textColor="@color/oppiaPrimaryText"
     android:textSize="16sp" />
 </layout>
