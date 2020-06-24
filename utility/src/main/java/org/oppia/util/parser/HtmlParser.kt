@@ -2,10 +2,9 @@ package org.oppia.util.parser
 
 import android.text.Spannable
 import android.text.SpannableStringBuilder
-import android.text.Spanned
-import android.text.style.BulletSpan
 import android.widget.TextView
 import androidx.core.text.HtmlCompat
+import org.oppia.util.logging.ExceptionLogger
 import javax.inject.Inject
 
 private const val CUSTOM_IMG_TAG = "oppia-noninteractive-image"
@@ -16,6 +15,7 @@ private const val REPLACE_IMG_FILE_PATH_ATTRIBUTE = "src"
 /** Html Parser to parse custom Oppia tags with Android-compatible versions. */
 class HtmlParser private constructor(
   private val urlImageParserFactory: UrlImageParser.Factory,
+  private val exceptionLogger: ExceptionLogger,
   private val gcsResourceName: String,
   private val entityType: String,
   private val entityId: String,
@@ -66,7 +66,7 @@ class HtmlParser private constructor(
       formattedHtml,
       HtmlCompat.FROM_HTML_MODE_LEGACY,
       imageGetter,
-      CustomTagHandler(htmlContentTextView.context)
+      CustomTagHandler(htmlContentTextView.context, exceptionLogger)
     ) as Spannable
 
     val spannableBuilder = SpannableStringBuilder(htmlSpannable)
@@ -92,7 +92,10 @@ class HtmlParser private constructor(
     return spannable.delete(0, trimStart).delete(spannable.length - trimEnd, spannable.length)
   }
 
-  class Factory @Inject constructor(private val urlImageParserFactory: UrlImageParser.Factory) {
+  class Factory @Inject constructor(
+    private val urlImageParserFactory: UrlImageParser.Factory,
+    private val exceptionLogger: ExceptionLogger
+  ) {
     fun create(
       gcsResourceName: String,
       entityType: String,
@@ -101,6 +104,7 @@ class HtmlParser private constructor(
     ): HtmlParser {
       return HtmlParser(
         urlImageParserFactory,
+        exceptionLogger,
         gcsResourceName,
         entityType,
         entityId,

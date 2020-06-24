@@ -6,6 +6,7 @@ import android.text.Html
 import android.text.Spanned
 import android.text.style.LeadingMarginSpan
 import org.oppia.util.R
+import org.oppia.util.logging.ExceptionLogger
 import org.oppia.util.parser.CustomTagHandler.ListItemTag
 import org.oppia.util.parser.StringUtils.LI_TAG
 import org.oppia.util.parser.StringUtils.OL_TAG
@@ -21,8 +22,9 @@ import java.util.*
  *
  * Reference: https://github.com/daphliu/android-spannable-list-sample/tree/master/app/src/main/java/com/daphneliu/sample/listspansample
  */
-class CustomTagHandler(
-  private val context: Context
+class CustomTagHandler (
+  private val context: Context,
+  private val exceptionLogger: ExceptionLogger
 ) : Html.TagHandler {
   private val indent = context.resources.getDimensionPixelSize(R.dimen.bullet_leading_margin)
   private val listItemIndent = indent * 2
@@ -54,16 +56,13 @@ class CustomTagHandler(
       LI_TAG -> {
         try {
           if (opening) {
-            listParents.peek().openItem(output)
+            listParents.peek().openListItem(output)
           } else {
-            listParents.peek().closeItem(output, listParents.size)
+            listParents.peek().closeListItem(output, listParents.size)
           }
         } catch (e: EmptyStackException) {
-          throw EmptyStackException()
+          exceptionLogger.logException(e)
         }
-      }
-      else -> {
-        // Found an unsupported tag $tag
       }
     }
   }
@@ -75,7 +74,7 @@ class CustomTagHandler(
      *
      * @param text
      */
-    open fun openItem(text: Editable) {
+    open fun openListItem(text: Editable) {
       if (text.length > 0 && text[text.length - 1] != '\n') {
         text.append("\n")
       }
@@ -89,7 +88,7 @@ class CustomTagHandler(
      * @param text
      * @param indentation
      */
-    fun closeItem(text: Editable, indentation: Int) {
+    fun closeListItem(text: Editable, indentation: Int) {
       if (text.length > 0 && text[text.length - 1] != '\n') {
         text.append("\n")
       }
@@ -140,7 +139,7 @@ class CustomTagHandler(
   /** Creates a new `<ol>` with start index of 1. */
   @JvmOverloads constructor(private var nextIdx: Int = 1) : ListItemTag() {
     override fun openItem(text: Editable) {
-      super.openItem(text)
+      super.openListItem(text)
       text.append(Integer.toString(nextIdx++)).append(". ")
     }
 
