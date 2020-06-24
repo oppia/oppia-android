@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import org.oppia.app.application.ActivityComponentFactory
 import org.oppia.app.application.OppiaApplication
 import org.oppia.app.fragment.FragmentComponent
 
@@ -34,7 +35,7 @@ abstract class InjectableAppCompatActivity : AppCompatActivity() {
   }
 
   private fun initializeActivityComponent() {
-    activityComponent = (application as OppiaApplication).createActivityComponent(this)
+    activityComponent = (application as ActivityComponentFactory).createActivityComponent(this)
   }
 
   fun createFragmentComponent(fragment: Fragment): FragmentComponent {
