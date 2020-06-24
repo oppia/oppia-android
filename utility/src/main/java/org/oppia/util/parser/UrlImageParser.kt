@@ -13,6 +13,7 @@ import android.view.ViewTreeObserver
 import android.widget.TextView
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import org.oppia.util.R
 import javax.inject.Inject
 
 // TODO(#169): Replace this with exploration asset downloader.
@@ -69,8 +70,18 @@ class UrlImageParser private constructor(
       val drawable = drawableFactory(resource)
       htmlContentTextView.post {
         htmlContentTextView.width {
-          val drawableHeight = drawable.intrinsicHeight
-          val drawableWidth = drawable.intrinsicWidth
+          var drawableHeight = drawable.intrinsicHeight
+          var drawableWidth = drawable.intrinsicWidth
+          val minimumImageSize = context.resources.getDimensionPixelSize(R.dimen.minimum_image_size)
+          if (drawableHeight <= minimumImageSize || drawableWidth <= minimumImageSize) {
+            val multipleFactor = if (drawableHeight <= drawableWidth) {
+              (minimumImageSize.toDouble() / drawableHeight.toDouble())
+            } else {
+              (minimumImageSize.toDouble() / drawableWidth.toDouble())
+            }
+            drawableHeight = (drawableHeight.toDouble() * multipleFactor).toInt()
+            drawableWidth = (drawableWidth.toDouble() * multipleFactor).toInt()
+          }
           val initialDrawableMargin = if (imageCenterAlign) {
             calculateInitialMargin(it, drawableWidth)
           } else {
