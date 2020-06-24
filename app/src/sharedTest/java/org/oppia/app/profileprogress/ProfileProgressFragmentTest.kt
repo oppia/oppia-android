@@ -212,7 +212,8 @@ class ProfileProgressFragmentTest {
       ).perform(click())
       onView(withText(R.string.profile_progress_edit_dialog_title)).inRoot(isDialog())
         .check(matches(isDisplayed()))
-      onView(withText(R.string.profile_picture_edit_alert_dialog_choose_from_library)).perform(click())
+      onView(withText(R.string.profile_picture_edit_alert_dialog_choose_from_library))
+        .perform(click())
       intended(expectedIntent)
     }
   }
@@ -230,7 +231,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressFragmentWithProgress_recyclerViewItem0_checkOngoingTopicsCount_countIsTwo() {  // ktlint-disable max-line-length */
+  fun testProfileProgressFragmentWithProgress_recyclerViewItem0_checkOngoingTopicsCount_countIsTwo() { // ktlint-disable max-line-length */
     storyProgressTestHelper.markPartialTopicProgressForFractions(
       profileId,
       timestampOlderThanAWeek = false
@@ -272,7 +273,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkOngoingTopicsString_descriptionIsCorrect() {  // ktlint-disable max-line-length
+  fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkOngoingTopicsString_descriptionIsCorrect() { // ktlint-disable max-line-length
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText(R.string.topics_in_progress))
       onView(
@@ -489,7 +490,8 @@ class ProfileProgressFragmentTest {
       waitForTheView(withText("Sean"))
       onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.view_all_text_view))
         .check(
-          matches(withText("View All")))
+          matches(withText("View All"))
+        )
         .perform(click())
       intended(hasComponent(RecentlyPlayedActivity::class.java.name))
       intended(
