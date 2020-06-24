@@ -27,7 +27,8 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : RecyclerView(context, attrs, defStyleAttr) {
 
-  @Inject lateinit var htmlParserFactory: HtmlParser.Factory
+  @Inject
+  lateinit var htmlParserFactory: HtmlParser.Factory
 
   @Inject
   @field:ExplorationHtmlParserEntityType
@@ -71,7 +72,6 @@ class DragDropSortInteractionView @JvmOverloads constructor(
       )
       .build()
   }
-
 }
 
 /** Bind ItemTouchHelper.SimpleCallback with RecyclerView for a [DragDropSortInteractionView] via data-binding. */
