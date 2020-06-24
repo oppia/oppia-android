@@ -1,7 +1,5 @@
 package org.oppia.app.topic.info
 
-import android.text.SpannedString
-import android.text.style.StyleSpan
 import android.view.View
 import android.widget.TextView
 import androidx.test.core.app.ActivityScenario
@@ -19,7 +17,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Description
@@ -83,22 +80,6 @@ class TopicInfoFragmentTest {
           )
         )
       )
-    }
-  }
-
-  @Test
-  fun testTopicInfoFragment_loadFragmentWithTestTopicId1_checkTopicDescription_hasRichText() {
-    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use { scenario ->
-      scenario.onActivity { activity ->
-        val descriptionTextView: TextView = activity.findViewById(R.id.topic_description_text_view)
-        val descriptionText = descriptionTextView.text as SpannedString
-        val spans = descriptionText.getSpans(
-          0,
-          descriptionText.length,
-          StyleSpan::class.java
-        )
-        assertThat(spans).isNotEmpty()
-      }
     }
   }
 
