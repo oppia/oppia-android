@@ -1,6 +1,5 @@
 package org.oppia.util.parser
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -15,23 +14,18 @@ import org.oppia.util.R
  * Custom Bullet Span implementation (based on [BulletSpan])
  * Default implementation doesn't allow for radius modification
  */
-class BulletSpanWithRadius(private val context: Context,gapWidth: Int) : LeadingMarginSpan {
+class BulletSpanWithRadius(private val context: Context, gapWidth: Int) : LeadingMarginSpan {
   private val gapWidth: Int = gapWidth
   private val bulletRadius: Int
-  private val wantColor: Boolean
-  private val color: Int
 
   init {
     bulletRadius = context.resources.getDimensionPixelSize(R.dimen.bullet_radius)
-    wantColor = false
-    color = 0
   }
 
   override fun getLeadingMargin(first: Boolean): Int {
     return 2 * bulletRadius + gapWidth
   }
 
-  @SuppressLint("NewApi")
   override fun drawLeadingMargin(
     c: Canvas,
     p: Paint,
@@ -48,11 +42,6 @@ class BulletSpanWithRadius(private val context: Context,gapWidth: Int) : Leading
   ) {
     if ((text as Spanned).getSpanStart(this) == start) {
       val style = p.style
-      var oldcolor = 0
-      if (wantColor) {
-        oldcolor = p.color
-        p.color = color
-      }
       p.style = Paint.Style.FILL
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB && c.isHardwareAccelerated) {
         if (bulletPath == null) {
@@ -76,9 +65,6 @@ class BulletSpanWithRadius(private val context: Context,gapWidth: Int) : Leading
           bulletRadius.toFloat(),
           p
         )
-      }
-      if (wantColor) {
-        p.color = oldcolor
       }
       p.style = style
     }

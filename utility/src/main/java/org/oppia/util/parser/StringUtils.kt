@@ -10,9 +10,9 @@ package org.oppia.util.parser
  */
 object StringUtils {
   /** Custom tag name for creating ordered lists. This replaces <ol>. */
-  const val OL_TAG = "ordered"
-  /** Custom tag name for creating ordered lists. This replaces <ul>. */
-  const val UL_TAG = "unordered"
-  /** Custom tag name for creating ordered lists. This replaces <li>. */
-  const val LI_TAG = "listitem"
+  const val OL_TAG = "ordered_list"
+  /** Custom tag name for creating unordered lists. This replaces <ul>. */
+  const val UL_TAG = "unordered_list"
+  /** Custom tag name for creating list items. This replaces <li>. */
+  const val LI_TAG = "list_item"
 }

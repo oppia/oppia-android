@@ -2,12 +2,10 @@ package org.oppia.app.testing
 
 import android.os.Bundle
 import android.text.Spannable
-import android.util.Log
 import android.widget.TextView
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.util.gcsresource.DefaultResourceBucketName
-import org.oppia.util.parser.BulletSpanWithRadius
 import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
 
@@ -39,9 +37,10 @@ class HtmlParserTestActivity : InjectableAppCompatActivity() {
         testHtmlContentTextView
       )
     testHtmlContentTextView.text = htmlResult
+
     val testHtmlContentOrderedListTextView: TextView =
       findViewById(R.id.test_html_content_with_ordered_list_text_view)
-    val rawDummyString2 ="""<ul>
+    val rawDummyString2 = """<ul>
                 <li>Item 1</li>
                 <li>Item 2</li>
                 <li>Item 3
@@ -70,21 +69,14 @@ class HtmlParserTestActivity : InjectableAppCompatActivity() {
         """
     val htmlResult2: Spannable =
       htmlParserFactory.create(
-        resourceBucketName, /* entityType= */ "exploration", /* entityId= */ "oppia", /* imageCenterAlign= */ false
+        resourceBucketName, /* entityType= */
+        "exploration", /* entityId= */
+        "oppia", /* imageCenterAlign= */
+        false
       ).parseOppiaHtml(
         rawDummyString2,
         testHtmlContentOrderedListTextView
       )
     testHtmlContentOrderedListTextView.text = htmlResult2
-    val bulletSpans = htmlResult2.getSpans<BulletSpanWithRadius>(0, htmlResult2.length, BulletSpanWithRadius::class.java)
-    val bulletSpan0 = bulletSpans[0] as BulletSpanWithRadius
-    val bulletSpan1 = bulletSpans[1] as BulletSpanWithRadius
-    val bulletSpan2 = bulletSpans[2] as BulletSpanWithRadius
-    Log.d("Bullet start  span", " " +htmlResult2.getSpanStart(bulletSpan0).toLong())
-    Log.d("Bullet end  span", " " +htmlResult2.getSpanEnd(bulletSpan0).toLong())
-    Log.d("Bullet start  span", " " +htmlResult2.getSpanStart(bulletSpan1).toLong())
-    Log.d("Bullet end  span", " " +htmlResult2.getSpanEnd(bulletSpan1).toLong())
-    Log.d("Bullet start  span", " " +htmlResult2.getSpanStart(bulletSpan2).toLong())
-    Log.d("Bullet end  span", " " +htmlResult2.getSpanEnd(bulletSpan2).toLong())
   }
 }
