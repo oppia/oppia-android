@@ -74,9 +74,15 @@ class UrlImageParser private constructor(
           var drawableWidth = drawable.intrinsicWidth
           val minimumImageSize = context.resources.getDimensionPixelSize(R.dimen.minimum_image_size)
           if (drawableHeight <= minimumImageSize || drawableWidth <= minimumImageSize) {
+            // The multipleFactor value is used to make sure that the aspect ratio of the image remains the same.
+            // Example: Height is 90, width is 60 and minimumImageSize is 120.
+            // Then multipleFactor will be 2 (120/60).
+            // The new height will be 180 and new width will be 120.
             val multipleFactor = if (drawableHeight <= drawableWidth) {
+              // If height is less then the multipleFactor, value is determined by height.
               (minimumImageSize.toDouble() / drawableHeight.toDouble())
             } else {
+              // If width is less then the multipleFactor, value is determined by width.
               (minimumImageSize.toDouble() / drawableWidth.toDouble())
             }
             drawableHeight = (drawableHeight.toDouble() * multipleFactor).toInt()
