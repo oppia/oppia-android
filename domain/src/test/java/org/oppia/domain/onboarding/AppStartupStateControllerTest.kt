@@ -2,9 +2,12 @@ package org.oppia.domain.onboarding
 
 import android.app.Application
 import android.content.Context
+import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.core.content.pm.ApplicationInfoBuilder
+import androidx.test.core.content.pm.PackageInfoBuilder
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
@@ -46,6 +49,7 @@ import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import javax.inject.Inject
 import javax.inject.Qualifier
@@ -63,6 +67,9 @@ class AppStartupStateControllerTest {
   @Rule
   @JvmField
   val executorRule = InstantTaskExecutorRule()
+
+  @Inject
+  lateinit var context: Context
 
   @Inject
   lateinit var appStartupStateController: AppStartupStateController
@@ -94,6 +101,9 @@ class AppStartupStateControllerTest {
   fun setUp() {
     Dispatchers.setMain(testThread)
     setUpTestApplicationComponent()
+
+    // By default, set up the application to never expire.
+    setUpOppiaApplication(expirationDate = "9999-12-31")
   }
 
   @After
@@ -185,6 +195,23 @@ class AppStartupStateControllerTest {
       assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
       assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_NOT_YET_ONBOARDED)
     }
+
+  private fun setUpOppiaApplication(expirationDate: String) {
+    val packageManager = shadowOf(context.packageManager)
+    val applicationInfo =
+      ApplicationInfoBuilder.newBuilder()
+        .setPackageName("org.oppia.app")
+        .setName("Oppia")
+        .build()
+    applicationInfo.metaData = Bundle()
+    applicationInfo.metaData.putString("expiration_date", expirationDate)
+    val packageInfo =
+      PackageInfoBuilder.newBuilder()
+        .setPackageName("org.oppia.app")
+        .setApplicationInfo(applicationInfo)
+        .build()
+    packageManager.installPackage(packageInfo)
+  }
 
   private fun ArgumentCaptor<AsyncResult<AppStartupState>>.getStartupMode(): StartupMode {
     return value.getOrThrow().startupMode

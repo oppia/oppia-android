@@ -84,7 +84,7 @@ class AppStartupStateController @Inject constructor(
 
   private fun hasAppExpired(): Boolean {
     val expirationDateString = getApplicationMetaData()?.getString("expiration_date")
-    val expirationDate: Date? = parseDate(expirationDateString)
+    val expirationDate = expirationDateString?.let { parseDate(it) }
     // Assume the app is in an expired state if something fails when comparing the date.
     return expirationDate?.before(Date()) ?: true
   }
@@ -96,7 +96,7 @@ class AppStartupStateController @Inject constructor(
     ).metaData
   }
 
-  private fun parseDate(dateString: String?): Date? {
+  private fun parseDate(dateString: String): Date? {
     return try {
       expirationDateFormat.parse(dateString)
     } catch (e: ParseException) {
