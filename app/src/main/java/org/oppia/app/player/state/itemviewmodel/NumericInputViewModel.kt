@@ -10,26 +10,28 @@ import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.parser.StringToNumberParser
 import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
-import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorReceiver
+import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 
 /** [StateItemViewModel] for the numeric input interaction. */
 class NumericInputViewModel(
   private val context: Context,
-  private val interactionAnswerErrorReceiver: InteractionAnswerErrorReceiver
+  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver
 ) : StateItemViewModel(ViewType.NUMERIC_INPUT_INTERACTION), InteractionAnswerHandler {
   var answerText: CharSequence = ""
   private var pendingAnswerError: String? = null
   val errorMessage = ObservableField<String>("")
+  var isAnswerAvailable = ObservableField<Boolean>(false)
   private val stringToNumberParser: StringToNumberParser = StringToNumberParser()
 
   init {
     val callback: Observable.OnPropertyChangedCallback = object : Observable.OnPropertyChangedCallback() {
       override fun onPropertyChanged(sender: Observable, propertyId: Int) {
-        interactionAnswerErrorReceiver.onPendingAnswerError(pendingAnswerError)
+        interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(pendingAnswerError, answerText.isNotEmpty())
       }
     }
     errorMessage.addOnPropertyChangedCallback(callback)
+    isAnswerAvailable.addOnPropertyChangedCallback(callback)
   }
 
   /** It checks the pending error for the current numeric input, and correspondingly updates the error string based on the specified error category. */
@@ -56,6 +58,10 @@ class NumericInputViewModel(
 
       override fun onTextChanged(answer: CharSequence, start: Int, before: Int, count: Int) {
         answerText = answer.toString().trim()
+        val isAnswerTextAvailable = answerText.isNotEmpty()
+        if(isAnswerTextAvailable != isAnswerAvailable.get()){
+          isAnswerAvailable.set(isAnswerTextAvailable)
+        }
         checkPendingAnswerError(AnswerErrorCategory.REAL_TIME)
       }
 

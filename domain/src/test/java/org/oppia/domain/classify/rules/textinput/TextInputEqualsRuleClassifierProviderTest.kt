@@ -11,7 +11,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.model.InteractionObject
 import org.robolectric.annotation.Config
-import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass
@@ -47,7 +46,8 @@ class TextInputEqualsRuleClassifierProviderTest {
   fun testStringAnswer_stringInput_sameExactString_bothValuesMatch() {
     val inputs = mapOf("x" to STRING_VALUE_TEST_UPPERCASE)
 
-    val matches = inputEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_UPPERCASE, inputs = inputs)
+    val matches =
+      inputEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_UPPERCASE, inputs = inputs)
 
     assertThat(matches).isTrue()
   }
@@ -56,7 +56,8 @@ class TextInputEqualsRuleClassifierProviderTest {
   fun testCapitalStringAnswer_lowercaseStringInput_sameCaseInsensitiveString_bothValuesMatch() {
     val inputs = mapOf("x" to STRING_VALUE_TEST_LOWERCASE)
 
-    val matches = inputEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_UPPERCASE, inputs = inputs)
+    val matches =
+      inputEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_UPPERCASE, inputs = inputs)
 
     assertThat(matches).isTrue()
   }
@@ -65,7 +66,8 @@ class TextInputEqualsRuleClassifierProviderTest {
   fun testLowercaseStringAnswer_capitalStringInput_sameCaseInsensitiveString_bothValuesMatch() {
     val inputs = mapOf("x" to STRING_VALUE_TEST_UPPERCASE)
 
-    val matches = inputEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_LOWERCASE, inputs = inputs)
+    val matches =
+      inputEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_LOWERCASE, inputs = inputs)
 
     assertThat(matches).isTrue()
   }
@@ -74,7 +76,8 @@ class TextInputEqualsRuleClassifierProviderTest {
   fun testStringAnswer_stringInput_sameStringDifferentSpaces_bothValuesMatch() {
     val inputs = mapOf("x" to STRING_VALUE_TEST_EXTRA_SPACES)
 
-    val matches = inputEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_SINGLE_SPACES, inputs = inputs)
+    val matches =
+      inputEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_SINGLE_SPACES, inputs = inputs)
 
     assertThat(matches).isTrue()
   }
@@ -92,7 +95,8 @@ class TextInputEqualsRuleClassifierProviderTest {
   fun testStringAnswer_stringNoSpacesInput_differentStrings_bothValuesDoNotMatch() {
     val inputs = mapOf("x" to STRING_VALUE_TEST_NO_SPACES)
 
-    val matches = inputEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_SINGLE_SPACES, inputs = inputs)
+    val matches =
+      inputEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_SINGLE_SPACES, inputs = inputs)
 
     assertThat(matches).isFalse()
   }

@@ -13,8 +13,10 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
+import org.oppia.app.model.EventLog.Context.ActivityContextCase.CONCEPT_CARD_CONTEXT
 import org.oppia.app.model.EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT
 import org.oppia.app.model.EventLog.Context.ActivityContextCase.QUESTION_CONTEXT
+import org.oppia.app.model.EventLog.Context.ActivityContextCase.REVISION_CARD_CONTEXT
 import org.oppia.app.model.EventLog.Context.ActivityContextCase.STORY_CONTEXT
 import org.oppia.app.model.EventLog.Context.ActivityContextCase.TOPIC_CONTEXT
 import org.oppia.app.model.EventLog.EventAction
@@ -30,6 +32,9 @@ const val TEST_TOPIC_ID = "test_topicId"
 const val TEST_STORY_ID = "test_storyId"
 const val TEST_EXPLORATION_ID = "test_explorationId"
 const val TEST_QUESTION_ID = "test_questionId"
+const val TEST_SKILL_ID = "test_skillId"
+const val TEST_SKILL_LIST_ID = "test_skillListId"
+const val TEST_SUB_TOPIC_ID = "test_subTopicId"
 
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
@@ -41,13 +46,23 @@ class AnalyticsControllerTest {
   @Inject
   lateinit var fakeEventLogger: FakeEventLogger
 
+  @Before
+  fun setUp() {
+    setUpTestApplicationComponent()
+  }
+
   @Test
   fun testController_logTransitionEvent_withQuestionContext_checkLogsEvent() {
     analyticsController.logTransitionEvent(
       ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      analyticsController.createQuestionContext(TEST_TOPIC_ID, TEST_QUESTION_ID)
+      analyticsController.createQuestionContext(
+        TEST_QUESTION_ID,
+        listOf(
+          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
+        )
+      )
     )
 
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
@@ -114,6 +129,40 @@ class AnalyticsControllerTest {
   }
 
   @Test
+  fun testController_logTransitionEvent_withRevisionContext_checkLogsEvent() {
+    analyticsController.logTransitionEvent(
+      ApplicationProvider.getApplicationContext(),
+      TEST_TIMESTAMP,
+      EventAction.EVENT_ACTION_UNSPECIFIED,
+      analyticsController.createRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
+    )
+
+    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
+      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
+    assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
+    assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
+    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
+      .isEqualTo(REVISION_CARD_CONTEXT)
+  }
+
+  @Test
+  fun testController_logTransitionEvent_withConceptCardContext_checkLogsEvent() {
+    analyticsController.logTransitionEvent(
+      ApplicationProvider.getApplicationContext(),
+      TEST_TIMESTAMP,
+      EventAction.EVENT_ACTION_UNSPECIFIED,
+      analyticsController.createConceptCardContext(TEST_SKILL_ID)
+    )
+
+    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
+      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
+    assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
+    assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
+    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
+      .isEqualTo(CONCEPT_CARD_CONTEXT)
+  }
+
+  @Test
   fun testController_logTransitionEvent_withNoContext_checkLogsEvent() {
     analyticsController.logTransitionEvent(
       ApplicationProvider.getApplicationContext(),
@@ -136,7 +185,12 @@ class AnalyticsControllerTest {
       ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      analyticsController.createQuestionContext(TEST_TOPIC_ID, TEST_QUESTION_ID)
+      analyticsController.createQuestionContext(
+        TEST_QUESTION_ID,
+        listOf(
+          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
+        )
+      )
     )
 
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
@@ -203,6 +257,40 @@ class AnalyticsControllerTest {
   }
 
   @Test
+  fun testController_logClickEvent_withRevisionContext_checkLogsEvent() {
+    analyticsController.logClickEvent(
+      ApplicationProvider.getApplicationContext(),
+      TEST_TIMESTAMP,
+      EventAction.EVENT_ACTION_UNSPECIFIED,
+      analyticsController.createRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
+    )
+
+    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
+      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
+    assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
+    assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
+    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
+      .isEqualTo(REVISION_CARD_CONTEXT)
+  }
+
+  @Test
+  fun testController_logClickEvent_withConceptCardContext_checkLogsEvent() {
+    analyticsController.logClickEvent(
+      ApplicationProvider.getApplicationContext(),
+      TEST_TIMESTAMP,
+      EventAction.EVENT_ACTION_UNSPECIFIED,
+      analyticsController.createConceptCardContext(TEST_SKILL_ID)
+    )
+
+    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
+      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
+    assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
+    assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
+    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
+      .isEqualTo(CONCEPT_CARD_CONTEXT)
+  }
+
+  @Test
   fun testController_logClickEvent_withNoContext_checkLogsEvent() {
     analyticsController.logClickEvent(
       ApplicationProvider.getApplicationContext(),
@@ -235,16 +323,23 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_createQuestionContext_returnsCorrectQuestionContext() {
-    val eventContext = analyticsController.createQuestionContext(TEST_TOPIC_ID, TEST_QUESTION_ID)
+    val eventContext = analyticsController.createQuestionContext(
+      TEST_QUESTION_ID,
+      listOf(TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID)
+    )
 
     assertThat(eventContext.activityContextCase).isEqualTo(QUESTION_CONTEXT)
-    assertThat(eventContext.questionContext.topicId).matches(TEST_TOPIC_ID)
     assertThat(eventContext.questionContext.questionId).matches(TEST_QUESTION_ID)
+    assertThat(eventContext.questionContext.skillIdList)
+      .containsAllIn(arrayOf(TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID))
   }
 
   @Test
   fun testController_createStoryContext_returnsCorrectStoryContext() {
-    val eventContext = analyticsController.createStoryContext(TEST_TOPIC_ID, TEST_STORY_ID)
+    val eventContext = analyticsController.createStoryContext(
+      TEST_TOPIC_ID,
+      TEST_STORY_ID
+    )
 
     assertThat(eventContext.activityContextCase).isEqualTo(STORY_CONTEXT)
     assertThat(eventContext.storyContext.topicId).matches(TEST_TOPIC_ID)
@@ -259,9 +354,22 @@ class AnalyticsControllerTest {
     assertThat(eventContext.topicContext.topicId).matches(TEST_TOPIC_ID)
   }
 
-  @Before
-  fun setUp() {
-    setUpTestApplicationComponent()
+  @Test
+  fun testController_createConceptCardContext_returnsCorrectConceptCardContext() {
+    val eventContext = analyticsController.createConceptCardContext(TEST_SKILL_ID)
+
+    assertThat(eventContext.activityContextCase).isEqualTo(CONCEPT_CARD_CONTEXT)
+    assertThat(eventContext.conceptCardContext.skillId).matches(TEST_SKILL_ID)
+  }
+
+  @Test
+  fun testController_createRevisionCardContext_returnsCorrectRevisionCardContext() {
+    val eventContext =
+      analyticsController.createRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
+
+    assertThat(eventContext.activityContextCase).isEqualTo(REVISION_CARD_CONTEXT)
+    assertThat(eventContext.revisionCardContext.topicId).matches(TEST_TOPIC_ID)
+    assertThat(eventContext.revisionCardContext.subTopicId).matches(TEST_SUB_TOPIC_ID)
   }
 
   private fun setUpTestApplicationComponent() {

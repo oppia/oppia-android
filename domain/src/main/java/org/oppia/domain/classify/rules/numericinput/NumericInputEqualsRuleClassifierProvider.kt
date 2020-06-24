@@ -14,10 +14,14 @@ import javax.inject.Inject
  */
 internal class NumericInputEqualsRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
-): RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<Double> {
+) : RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<Double> {
 
   override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createSingleInputClassifier(InteractionObject.ObjectTypeCase.REAL, "x", this)
+    return classifierFactory.createSingleInputClassifier(
+      InteractionObject.ObjectTypeCase.REAL,
+      "x",
+      this
+    )
   }
 
   override fun matches(answer: Double, input: Double): Boolean {
