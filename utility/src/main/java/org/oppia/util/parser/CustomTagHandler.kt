@@ -41,14 +41,14 @@ class CustomTagHandler (
     when (tag) {
       UL_TAG -> {
         if (opening) {
-          listParents.push(UnorderedListTag())
+          listParents.push(ListItemTag.UnorderedListTag)
         } else {
           listParents.pop()
         }
       }
       OL_TAG -> {
         if (opening) {
-          listParents.push(OrderedListTag())
+          listParents.push(ListItemTag.OrderedListTag())
         } else {
           listParents.pop()
         }
@@ -68,7 +68,7 @@ class CustomTagHandler (
   }
 
   /** Abstract super class for [UnorderedListTag] and [OrderedListTag]. */
-  private abstract class ListItemTag {
+  sealed class ListItemTag {
     /**
      * Opens a new list item.
      *
@@ -112,46 +112,46 @@ class CustomTagHandler (
         null
       } else listTags[listTags.size - 1]
     }
-  }
 
-  /** Class representing the unordered list (`<ul>`) HTML tag. */
-  private inner class UnorderedListTag : ListItemTag() {
-    override fun getReplaces(
-      text: Editable?,
-      indentation: Int
-    ): Array<Any> {
-      var bulletMargin: Int = indent
-      if (indentation > 1) {
-        bulletMargin = indent - bulletSpan.getLeadingMargin(true)
-        if (indentation > 2) {
-          bulletMargin -= (indentation - 2) * listItemIndent
+    /** Class representing the unordered list (`<ul>`) HTML tag. */
+    object UnorderedListTag : ListItemTag() {
+      override fun getReplaces(
+        text: Editable?,
+        indentation: Int
+      ): Array<Any> {
+        var bulletMargin: Int = indent
+        if (indentation > 1) {
+          bulletMargin = indent - bulletSpan.getLeadingMargin(true)
+          if (indentation > 2) {
+            bulletMargin -= (indentation - 2) * listItemIndent
+          }
         }
+        return arrayOf(
+          LeadingMarginSpan.Standard(listItemIndent * (indentation - 1)),
+          BulletSpanWithRadius(context, bulletMargin)
+        )
       }
-      return arrayOf(
-        LeadingMarginSpan.Standard(listItemIndent * (indentation - 1)),
-        BulletSpanWithRadius(context, bulletMargin)
-      )
-    }
-  }
-
-  /** Class representing the ordered list (`<ol>`) HTML tag. */
-  private inner class OrderedListTag
-  /** Creates a new `<ol>` with start index of 1. */
-  @JvmOverloads constructor(private var nextIdx: Int = 1) : ListItemTag() {
-    override fun openItem(text: Editable) {
-      super.openListItem(text)
-      text.append(Integer.toString(nextIdx++)).append(". ")
     }
 
-    override fun getReplaces(
-      text: Editable?,
-      indentation: Int
-    ): Array<Any> {
-      var numberMargin: Int = listItemIndent * (indentation - 1)
-      if (indentation > 2) {
-        numberMargin -= (indentation - 2) * listItemIndent
+    /** Class representing the ordered list (`<ol>`) HTML tag. */
+     data class OrderedListTag
+    /** Creates a new `<ol>` with start index of 1. */
+    @JvmOverloads constructor(private var nextIdx: Int = 1) : ListItemTag() {
+       override fun openItem(text: Editable) {
+        super.openListItem(text)
+        text.append(Integer.toString(nextIdx++)).append(". ")
       }
-      return arrayOf(LeadingMarginSpan.Standard(numberMargin))
+
+      override fun getReplaces(
+        text: Editable?,
+        indentation: Int
+      ): Array<Any> {
+        var numberMargin: Int = listItemIndent * (indentation - 1)
+        if (indentation > 2) {
+          numberMargin -= (indentation - 2) * listItemIndent
+        }
+        return arrayOf(LeadingMarginSpan.Standard(numberMargin))
+      }
     }
   }
 }
