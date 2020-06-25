@@ -79,8 +79,8 @@ jobs:
 
             chmod +x /home/circleci/oppia-android/buf
       - run:
-          name: Kotlin tests - Data, Utility
-          command: ./ktlint --android utility/src/**/*.kt data/src/**/*.kt && echo "Lint completed successfully"
+          name: Kotlin tests - Data, Utility, Domain
+          command: ./ktlint --android utility/src/**/*.kt data/src/**/*.kt domain/src/**/*.kt && echo "Lint completed successfully"
       - run:
           name: Protobuf lint check
           command: ./buf check lint --input=model/src/main/proto --input-config buf.yaml && echo "Protobuf lint check completed successfully"

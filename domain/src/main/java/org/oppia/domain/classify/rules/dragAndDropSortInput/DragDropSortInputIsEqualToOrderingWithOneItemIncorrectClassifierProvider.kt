@@ -1,12 +1,12 @@
 package org.oppia.domain.classify.rules.dragAndDropSortInput
 
-import javax.inject.Inject
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.ListOfSetsOfHtmlStrings
 import org.oppia.app.model.StringList
 import org.oppia.domain.classify.RuleClassifier
 import org.oppia.domain.classify.rules.GenericRuleClassifier
 import org.oppia.domain.classify.rules.RuleClassifierProvider
+import javax.inject.Inject
 
 /**
  * Provider for a classifier that determines whether two objects of [ListOfSetsOfHtmlStrings] differ by
