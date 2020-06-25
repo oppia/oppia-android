@@ -50,8 +50,7 @@ class DragAndDropSortInteractionViewModel(
   override fun getPendingAnswer(): UserAnswer {
     val userAnswerBuilder = UserAnswer.newBuilder()
     val listItems = choiceItems.map { it.htmlContent }
-    val listItemsHtml = choiceItems.map { it.htmlContent.htmlList.joinToString() }
-    userAnswerBuilder.htmlAnswer = convertSelectedItemsToHtmlString(listItemsHtml)
+    userAnswerBuilder.listOfAnswer = convertItemsToAnswer(listItems)
     userAnswerBuilder.answer =
       InteractionObject.newBuilder().setListOfSetsOfHtmlString(
         ListOfSetsOfHtmlStrings.newBuilder().addAllSetOfHtmlStrings(listItems).build()
@@ -60,8 +59,9 @@ class DragAndDropSortInteractionViewModel(
   }
 
   /** Returns an HTML list containing all of the HTML string elements as items in the list. */
-  private fun convertSelectedItemsToHtmlString(htmlItems: Collection<String>): String {
-    return htmlItems.joinToString(separator = "<br>")
+  private fun convertItemsToAnswer(htmlItems: List<StringList>): ListOfSetsOfHtmlStrings {
+    return ListOfSetsOfHtmlStrings.newBuilder()
+      .addAllSetOfHtmlStrings((htmlItems)).build()
   }
 
   /** Returns whether the grouping is allowed or not for [DragAndDropSortInteractionViewModel]. */

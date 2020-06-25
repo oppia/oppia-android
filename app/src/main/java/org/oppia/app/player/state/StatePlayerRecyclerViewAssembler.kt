@@ -7,6 +7,7 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.AnimationSet
 import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
@@ -18,7 +19,6 @@ import org.oppia.app.databinding.ContentItemBinding
 import org.oppia.app.databinding.ContinueInteractionItemBinding
 import org.oppia.app.databinding.ContinueNavigationButtonItemBinding
 import org.oppia.app.databinding.DragDropInteractionItemBinding
-import org.oppia.app.databinding.DragDropInteractionItemsBinding
 import org.oppia.app.databinding.FeedbackItemBinding
 import org.oppia.app.databinding.FractionInteractionItemBinding
 import org.oppia.app.databinding.NextButtonItemBinding
@@ -30,6 +30,8 @@ import org.oppia.app.databinding.ReturnToTopicButtonItemBinding
 import org.oppia.app.databinding.SelectionInteractionItemBinding
 import org.oppia.app.databinding.SubmitButtonItemBinding
 import org.oppia.app.databinding.SubmittedAnswerItemBinding
+import org.oppia.app.databinding.SubmittedAnswerListItemBinding
+import org.oppia.app.databinding.SubmittedAnswerSingleItemBinding
 import org.oppia.app.databinding.TextInputInteractionItemBinding
 import org.oppia.app.model.AnswerAndResponse
 import org.oppia.app.model.EphemeralState
@@ -38,6 +40,7 @@ import org.oppia.app.model.HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.PendingState
 import org.oppia.app.model.State
+import org.oppia.app.model.StringList
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.audio.AudioUiManager
@@ -662,12 +665,65 @@ class StatePlayerRecyclerViewAssembler private constructor(
                 binding.submittedAnswerTextView
               )
             }
-            else -> binding.submittedAnswer = userAnswer.plainAnswer
+            UserAnswer.TextualAnswerCase.LIST_OF_ANSWER -> {
+              toggleVisibility(binding, true)
+              binding.submittedListAnswer = userAnswer.listOfAnswer
+              binding.submittedAnswerRecyclerView.isVisible = true
+              binding.submittedAnswerRecyclerView.adapter = createListAnswerAdapter(submittedAnswerViewModel.gcsEntityId)
+            }
+            else -> {
+              toggleVisibility(binding, false)
+              binding.submittedAnswer = userAnswer.plainAnswer
+            }
           }
         }
       )
       featureSets += PlayerFeatureSet(pastAnswerSupport = true)
       return this
+    }
+
+    private fun createListAnswerAdapter(gcsEntityId: String): BindableAdapter<StringList> {
+      return BindableAdapter.SingleTypeBuilder
+        .newBuilder<StringList>()
+        .registerViewBinder(
+          inflateView = { parent ->
+            SubmittedAnswerListItemBinding.inflate(
+              LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
+            ).root
+          },
+          bindView = { view, viewModel ->
+            val binding = DataBindingUtil.findBinding<SubmittedAnswerListItemBinding>(view)!!
+            binding.answerItem = viewModel
+            binding.submittedAnswerListItemRecyclerview.adapter = createNestedAdapter(gcsEntityId)
+          }
+        )
+        .build()
+    }
+
+    private fun createNestedAdapter(gcsEntityId: String): BindableAdapter<String> {
+      return BindableAdapter.SingleTypeBuilder
+        .newBuilder<String>()
+        .registerViewBinder(
+          inflateView = { parent ->
+            SubmittedAnswerSingleItemBinding.inflate(
+              LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
+            ).root
+          },
+          bindView = { view, viewModel ->
+            val binding = DataBindingUtil.findBinding<SubmittedAnswerSingleItemBinding>(view)!!
+            binding.htmlContent =
+              htmlParserFactory.create(resourceBucketName, entityType, gcsEntityId, /* imageCenterAlign= */ false)
+                .parseOppiaHtml(
+                  viewModel, binding.submittedAnswerContentTextView
+                )
+          }
+        )
+        .build()
+    }
+
+    private fun toggleVisibility(binding: SubmittedAnswerItemBinding, isVisible: Boolean) {
+      binding.submittedAnswerRecyclerView.isVisible = isVisible
+      binding.submittedAnswerTextView.isVisible = !isVisible
     }
 
     /**

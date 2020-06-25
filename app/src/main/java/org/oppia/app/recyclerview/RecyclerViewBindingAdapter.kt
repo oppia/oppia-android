@@ -24,8 +24,9 @@ fun <T : Any> bindToRecyclerViewAdapterWithLiveData(recyclerView: RecyclerView, 
  * https://android.jlelse.eu/1bd08b4796b4.
  */
 @BindingAdapter("list")
-fun <T : Any> bindToRecyclerViewAdapterWithoutLiveData(recyclerView: RecyclerView, itemList: List<T>) {
-  bindToRecyclerViewAdapter(recyclerView, itemList)
+fun <T : Any> bindToRecyclerViewAdapterWithoutLiveData(recyclerView: RecyclerView, itemList: List<T>?) {
+  if(!itemList.isNullOrEmpty())
+    bindToRecyclerViewAdapter(recyclerView, itemList)
 }
 
 /** A variant of [bindToRecyclerViewAdapterWithLiveData] that instead uses an observable list. */
