@@ -31,15 +31,19 @@ class DragAndDropSortInteractionViewModel(
     indexTo: Int,
     adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
   ) {
-    val item = choiceItems[indexFrom]
-    choiceItems.removeAt(indexFrom)
-    choiceItems.add(indexTo, item)
-    if (allowMultipleItemsInSamePosition) {
-      choiceItems[indexFrom].itemIndex = indexFrom
-      choiceItems[indexTo].itemIndex = indexTo
+    if (indexFrom == -1 && indexTo == -1 && allowMultipleItemsInSamePosition) {
       (adapter as BindableAdapter<*>).setDataUnchecked(choiceItems)
     } else {
-      (adapter as BindableAdapter<*>).notifyItemMoved(indexFrom, indexTo)
+      val item = choiceItems[indexFrom]
+      choiceItems.removeAt(indexFrom)
+      choiceItems.add(indexTo, item)
+      if (allowMultipleItemsInSamePosition) {
+        choiceItems[indexFrom].itemIndex = indexFrom
+        choiceItems[indexTo].itemIndex = indexTo
+        (adapter as BindableAdapter<*>).notifyItemMoved(indexFrom, indexTo)
+      } else {
+        (adapter as BindableAdapter<*>).notifyItemMoved(indexFrom, indexTo)
+      }
     }
   }
 
@@ -95,7 +99,7 @@ class DragAndDropSortInteractionViewModel(
           StringList.newBuilder()
             .addHtml(it)
             .build(),
-          0, 0, this
+          /* itemIndex= */ 0,  /* listSize= */ 0, this
         )
       )
     }

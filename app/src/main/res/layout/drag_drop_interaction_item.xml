@@ -32,7 +32,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:visibility="@{viewModel.getGroupingStatus()? View.VISIBLE : View.GONE}"
-      android:text="@string/if_two_items_are_equal_merge_them"
+      android:text="@string/drag_and_drop_interaction_group_merge_hint"
       android:textSize="14sp"
       android:textStyle="italic" />
 

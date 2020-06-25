@@ -34,6 +34,11 @@ class DragAndDropItemFacilitator(
 
   override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
     viewHolder.itemView.alpha = ALPHA_FULL
+    onItemDragListener.onItemDragged(
+      -1,
+      -1,
+      recyclerView.adapter!!
+    )
     super.clearView(recyclerView, viewHolder)
   }
 }
