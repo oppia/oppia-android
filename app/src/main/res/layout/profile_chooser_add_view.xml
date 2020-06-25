@@ -30,6 +30,7 @@
       android:visibility="@{presenter.wasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
 
     <LinearLayout
+      android:id="@+id/add_profile_item"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:gravity="@{presenter.wasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
