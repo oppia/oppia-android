@@ -119,7 +119,7 @@
     <activity android:name=".testing.ExplorationInjectionActivity" />
     <activity android:name=".testing.ExplorationTestActivity" />
     <activity
-      android:name=".testing.FontScaleTestActivity"
+      android:name=".testing.FontScaleConfigurationUtilActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".testing.HomeInjectionActivity" />
     <activity android:name=".testing.HtmlParserTestActivity" />

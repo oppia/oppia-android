@@ -15,11 +15,11 @@ class FontSizeMatcher(private val expectedSize: Float) :
     if (target !is TextView) {
       return false
     }
-    return target.textSize == expectedSize
+    return target.textSize.equals(expectedSize)
   }
 
   override fun describeTo(description: Description) {
-    description.appendText("with fontSize: ")
+    description.appendText("with font size: ")
     description.appendValue(expectedSize)
   }
 

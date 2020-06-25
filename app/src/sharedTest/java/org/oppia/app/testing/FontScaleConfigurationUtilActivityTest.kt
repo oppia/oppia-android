@@ -17,10 +17,11 @@ import org.oppia.app.R
 import org.oppia.app.model.StoryTextSize
 import org.oppia.app.utility.FontSizeMatcher
 
-/** Tests for [FontScaleTestActivity]. */
+/** Tests for [FontScaleConfigurationUtilActivity]. */
 @RunWith(AndroidJUnit4::class)
-class FontScaleTestActivityTest {
+class FontScaleConfigurationUtilActivityTest {
   lateinit var context: Context
+
   @Before
   fun setUp() {
     Intents.init()
@@ -32,8 +33,8 @@ class FontScaleTestActivityTest {
     Intents.release()
   }
 
-  private fun createHomeActivityIntent(storyTextSize: String): Intent {
-    return FontScaleTestActivity.createFontScaleTestActivity(
+  private fun createFontScaleTestActivityIntent(storyTextSize: String): Intent {
+    return FontScaleConfigurationUtilActivity.createFontScaleTestActivity(
       context,
       storyTextSize
     )
@@ -41,7 +42,7 @@ class FontScaleTestActivityTest {
 
   @Test
   fun testFontScaleTestActivity_smallTextSizeIsVerifiedSuccessfully() {
-    launch<FontScaleTestActivity>(createHomeActivityIntent(StoryTextSize.SMALL_TEXT_SIZE.name)).use {
+    launch<FontScaleConfigurationUtilActivity>(createFontScaleTestActivityIntent(StoryTextSize.SMALL_TEXT_SIZE.name)).use {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
           FontSizeMatcher.withFontSize(
@@ -54,7 +55,7 @@ class FontScaleTestActivityTest {
 
   @Test
   fun testFontScaleTestActivity_mediumTextSizeIsVerifiedSuccessfully() {
-    launch<FontScaleTestActivity>(createHomeActivityIntent(StoryTextSize.MEDIUM_TEXT_SIZE.name)).use {
+    launch<FontScaleConfigurationUtilActivity>(createFontScaleTestActivityIntent(StoryTextSize.MEDIUM_TEXT_SIZE.name)).use {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
           FontSizeMatcher.withFontSize(
@@ -67,7 +68,7 @@ class FontScaleTestActivityTest {
 
   @Test
   fun testFontScaleTestActivity_largeTextSizeIsVerifiedSuccessfully() {
-    launch<FontScaleTestActivity>(createHomeActivityIntent(StoryTextSize.LARGE_TEXT_SIZE.name)).use {
+    launch<FontScaleConfigurationUtilActivity>(createFontScaleTestActivityIntent(StoryTextSize.LARGE_TEXT_SIZE.name)).use {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
           FontSizeMatcher.withFontSize(
@@ -80,7 +81,7 @@ class FontScaleTestActivityTest {
 
   @Test
   fun testFontScaleTestActivity_extraLargeTextSizeIsVerifiedSuccessfully() {
-    launch<FontScaleTestActivity>(createHomeActivityIntent(StoryTextSize.EXTRA_LARGE_TEXT_SIZE.name)).use {
+    launch<FontScaleConfigurationUtilActivity>(createFontScaleTestActivityIntent(StoryTextSize.EXTRA_LARGE_TEXT_SIZE.name)).use {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
           FontSizeMatcher.withFontSize(

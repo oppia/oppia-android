@@ -29,7 +29,8 @@ class FontScaleConfigurationUtil @Inject constructor() {
       StoryTextSize.SMALL_TEXT_SIZE.name -> .8f
       StoryTextSize.MEDIUM_TEXT_SIZE.name -> 1.0f
       StoryTextSize.LARGE_TEXT_SIZE.name -> 1.2f
-      else -> 1.4f
+      StoryTextSize.EXTRA_LARGE_TEXT_SIZE.name -> 1.4f
+      else -> 1.0f
     }
   }
 }
