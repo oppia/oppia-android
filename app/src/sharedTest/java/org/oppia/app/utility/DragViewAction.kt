@@ -35,6 +35,8 @@ class DragViewAction(
   private val endCoordinatesProvider: CoordinatesProvider,
   private val precisionDescriber: PrecisionDescriber
 ) : ViewAction {
+  // Factor 1.5 is needed, otherwise a long press is not safely detected.
+  private val longPressTimeout = (ViewConfiguration.getLongPressTimeout() * 1.5f).toLong()
 
   override fun getDescription(): String = "long press and drag"
 
@@ -48,8 +50,6 @@ class DragViewAction(
     var status: Swiper.Status
 
     try {
-      // Factor 1.5 is needed, otherwise a long press is not safely detected.
-      val longPressTimeout = (ViewConfiguration.getLongPressTimeout() * 1.5f).toLong()
       uiController.loopMainThreadForAtLeast(longPressTimeout)
 
       val steps = interpolate(startCoordinates, endCoordinates)
@@ -70,6 +70,8 @@ class DragViewAction(
         Swiper.Status.SUCCESS
       }
     } catch (re: RuntimeException) {
+      // Using a RuntimeException because of the swiper class which generally throws a
+      // Runtime Exception.
       throw PerformException.Builder()
         .withActionDescription(description)
         .withViewDescription(HumanReadables.describe(view))
