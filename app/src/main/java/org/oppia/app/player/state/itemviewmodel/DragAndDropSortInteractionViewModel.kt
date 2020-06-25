@@ -32,9 +32,9 @@ class DragAndDropSortInteractionViewModel(
     indexTo: Int,
     adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
   ) {
-    if ((indexFrom == NO_ITEM && indexTo == NO_ITEM) && !allowMultipleItemsInSamePosition) {
+    if (indexFrom == NO_ITEM && indexTo == NO_ITEM && allowMultipleItemsInSamePosition) {
       (adapter as BindableAdapter<*>).setDataUnchecked(choiceItems)
-    } else {
+    } else if (indexFrom != NO_ITEM && indexTo != NO_ITEM) {
       val item = choiceItems[indexFrom]
       choiceItems.removeAt(indexFrom)
       choiceItems.add(indexTo, item)
