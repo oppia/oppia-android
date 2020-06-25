@@ -8,6 +8,7 @@ import org.oppia.app.model.StringList
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.recyclerview.BindableAdapter
+import org.oppia.app.recyclerview.NO_ITEM
 import org.oppia.app.recyclerview.OnItemDragListener
 
 /** [StateItemViewModel] for drag drop & sort choice list. */
@@ -31,7 +32,7 @@ class DragAndDropSortInteractionViewModel(
     indexTo: Int,
     adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
   ) {
-    if (indexFrom == -1 && indexTo == -1 && allowMultipleItemsInSamePosition) {
+    if ((indexFrom == NO_ITEM && indexTo == NO_ITEM) && !allowMultipleItemsInSamePosition) {
       (adapter as BindableAdapter<*>).setDataUnchecked(choiceItems)
     } else {
       val item = choiceItems[indexFrom]
@@ -40,10 +41,8 @@ class DragAndDropSortInteractionViewModel(
       if (allowMultipleItemsInSamePosition) {
         choiceItems[indexFrom].itemIndex = indexFrom
         choiceItems[indexTo].itemIndex = indexTo
-        (adapter as BindableAdapter<*>).notifyItemMoved(indexFrom, indexTo)
-      } else {
-        (adapter as BindableAdapter<*>).notifyItemMoved(indexFrom, indexTo)
       }
+      adapter.notifyItemMoved(indexFrom, indexTo)
     }
   }
 
