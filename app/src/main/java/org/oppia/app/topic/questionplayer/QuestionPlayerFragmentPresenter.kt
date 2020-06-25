@@ -81,7 +81,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       adapter = recyclerViewAssembler.adapter
     }
 
-    binding.hintsAndSolutionFragmentContainer!!.setOnClickListener {
+    binding.hintsAndSolutionFragmentContainer.setOnClickListener {
       routeToHintsAndSolutionListener.routeToHintsAndSolution(
         questionId,
         questionViewModel.newAvailableHintIndex,
