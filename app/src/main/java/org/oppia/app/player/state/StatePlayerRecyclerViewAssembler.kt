@@ -2,13 +2,11 @@ package org.oppia.app.player.state
 
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewDebug
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.AnimationSet
 import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
-import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
@@ -856,14 +854,13 @@ class StatePlayerRecyclerViewAssembler private constructor(
             val binding = DataBindingUtil.findBinding<SubmittedHtmlAnswerItemBinding>(view)!!
             binding.htmlContent =
               htmlParserFactory.create(
-                  resourceBucketName,
-                  entityType,
-                  gcsEntityId, /* imageCenterAlign= */
-                  false
-                )
-                .parseOppiaHtml(
-                  viewModel, binding.submittedAnswerContentTextView
-                )
+                resourceBucketName,
+                entityType,
+                gcsEntityId,
+                /* imageCenterAlign= */ false
+              ).parseOppiaHtml(
+                viewModel, binding.submittedAnswerContentTextView
+              )
           }
         )
         .build()
