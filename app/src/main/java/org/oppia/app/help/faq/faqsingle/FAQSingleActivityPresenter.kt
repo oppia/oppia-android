@@ -19,7 +19,10 @@ class FAQSingleActivityPresenter @Inject constructor(
   private lateinit var faqSingleActivityToolbar: Toolbar
 
   fun handleOnCreate(question: String, answer: String) {
-    val binding = DataBindingUtil.setContentView<FaqSingleActivityBinding>(activity, R.layout.faq_single_activity)
+    val binding = DataBindingUtil.setContentView<FaqSingleActivityBinding>(
+      activity,
+      R.layout.faq_single_activity
+    )
     binding.apply {
       lifecycleOwner = activity
     }

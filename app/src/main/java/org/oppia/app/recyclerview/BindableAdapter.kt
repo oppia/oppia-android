@@ -5,6 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.app.recyclerview.BindableAdapter.MultiTypeBuilder.Companion.newBuilder
+import org.oppia.app.recyclerview.BindableAdapter.SingleTypeBuilder.Companion.newBuilder
 import kotlin.reflect.KClass
 
 /** A function that returns the integer-based type of view that can bind the specified data object. */
@@ -59,7 +61,7 @@ class BindableAdapter<T : Any> internal constructor(
     newDataList.firstOrNull()?.let {
       check(dataClassType.java.isAssignableFrom(it.javaClass)) {
         "Trying to bind incompatible data to adapter. Data class type: ${it.javaClass}, " +
-            "expected adapter class type: $dataClassType."
+          "expected adapter class type: $dataClassType."
       }
     }
     @Suppress("UNCHECKED_CAST") // This is safe. See the above check.
@@ -96,7 +98,7 @@ class BindableAdapter<T : Any> internal constructor(
    *
    * Instances of [MultiTypeBuilder] should be instantiated using [newBuilder].
    */
-  class SingleTypeBuilder<T: Any>(private val dataClassType: KClass<T>) {
+  class SingleTypeBuilder<T : Any>(private val dataClassType: KClass<T>) {
     private lateinit var viewHolderFactory: ViewHolderFactory<T>
 
     /**
@@ -110,7 +112,10 @@ class BindableAdapter<T : Any> internal constructor(
      *     to it
      * @return this
      */
-    fun <V : View> registerViewBinder(inflateView: (ViewGroup) -> V, bindView: (V, T) -> Unit): SingleTypeBuilder<T> {
+    fun <V : View> registerViewBinder(
+      inflateView: (ViewGroup) -> V,
+      bindView: (V, T) -> Unit
+    ): SingleTypeBuilder<T> {
       check(!::viewHolderFactory.isInitialized) { "A view binder is already initialized" }
       viewHolderFactory = { viewGroup ->
         // This is lifecycle-safe since it will become dereferenced when the factory method returns.
@@ -133,7 +138,9 @@ class BindableAdapter<T : Any> internal constructor(
       setViewModel: (DB, T) -> Unit
     ): SingleTypeBuilder<T> {
       return registerViewDataBinder(
-        inflateDataBinding = inflateDataBinding, setViewModel = setViewModel, transformViewModel = { it }
+        inflateDataBinding = inflateDataBinding,
+        setViewModel = setViewModel,
+        transformViewModel = { it }
       )
     }
 
@@ -177,17 +184,20 @@ class BindableAdapter<T : Any> internal constructor(
     /** Returns a new [BindableAdapter]. */
     fun build(): BindableAdapter<T> {
       check(::viewHolderFactory.isInitialized) { "A view binder must be initialized" }
-      return BindableAdapter({ DEFAULT_VIEW_TYPE }, mapOf(DEFAULT_VIEW_TYPE to viewHolderFactory), dataClassType)
+      return BindableAdapter(
+        { DEFAULT_VIEW_TYPE },
+        mapOf(DEFAULT_VIEW_TYPE to viewHolderFactory),
+        dataClassType
+      )
     }
 
     companion object {
       /** Returns a new [SingleTypeBuilder]. */
-      inline fun <reified T: Any> newBuilder(): SingleTypeBuilder<T> {
+      inline fun <reified T : Any> newBuilder(): SingleTypeBuilder<T> {
         return SingleTypeBuilder(T::class)
       }
     }
   }
-
 
   /**
    * Constructs a new [BindableAdapter] that supports multiple view types. Each type returned by the computer should
@@ -195,8 +205,9 @@ class BindableAdapter<T : Any> internal constructor(
    *
    * Instances of [Builder] should be instantiated using [newBuilder].
    */
-  class MultiTypeBuilder<T: Any, E: Enum<E>>(
-    private val dataClassType: KClass<T>, private val computeViewType: ComputeViewType<T, E>
+  class MultiTypeBuilder<T : Any, E : Enum<E>>(
+    private val dataClassType: KClass<T>,
+    private val computeViewType: ComputeViewType<T, E>
   ) {
     private var viewHolderFactoryMap: MutableMap<E, ViewHolderFactory<T>> = HashMap()
 
@@ -290,7 +301,7 @@ class BindableAdapter<T : Any> internal constructor(
     private fun checkViewTypeIsUnique(viewType: E) {
       check(!viewHolderFactoryMap.containsKey(viewType)) {
         "Cannot register a second view binder for view type: $viewType (current binder: " +
-            "${viewHolderFactoryMap[viewType]}."
+          "${viewHolderFactoryMap[viewType]}."
       }
     }
 

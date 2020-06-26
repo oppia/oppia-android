@@ -15,10 +15,22 @@ import javax.inject.Inject
 @FragmentScope
 class MyDownloadsFragmentPresenter @Inject constructor(private val fragment: Fragment) {
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val binding = MyDownloadsFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    val binding = MyDownloadsFragmentBinding.inflate(
+      inflater,
+      container,
+      /* attachToRoot= */ false
+    )
     binding.lifecycleOwner = fragment
-    val tabLayout = binding.root.findViewById(R.id.my_downloads_tabs_container) as TabLayout
-    val viewPager = binding.root.findViewById(R.id.my_downloads_tabs_viewpager) as ViewPager
+    val tabLayout = binding
+      .root
+      .findViewById(
+        R.id.my_downloads_tabs_container
+      ) as TabLayout
+    val viewPager = binding
+      .root
+      .findViewById(
+        R.id.my_downloads_tabs_viewpager
+      ) as ViewPager
     setUpViewPager(tabLayout, viewPager)
     return binding.root
   }

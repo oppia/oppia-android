@@ -14,7 +14,12 @@ internal class QuestionAssessmentProgress {
   internal var trainStage = TrainStage.NOT_IN_TRAINING_SESSION
   private var questionsList: List<Question> = listOf()
   internal val stateList: StateList by lazy { StateList(questionsList) }
-  internal val stateDeck: StateDeck by lazy { StateDeck(stateList.getFirstState(), this::isTopStateTerminal) }
+  internal val stateDeck: StateDeck by lazy {
+    StateDeck(
+      stateList.getFirstState(),
+      this::isTopStateTerminal
+    )
+  }
   private var isTopQuestionCompleted: Boolean = false
 
   /** Initialize the assessment with the specified list of questions. */
@@ -63,16 +68,20 @@ internal class QuestionAssessmentProgress {
       TrainStage.VIEWING_STATE -> {
         // A state can be viewed after loading a training session, after viewing another state, or after submitting an
         // answer. It cannot be viewed without a loaded session.
-        check(trainStage == TrainStage.LOADING_TRAINING_SESSION
-            || trainStage == TrainStage.VIEWING_STATE
-            || trainStage == TrainStage.SUBMITTING_ANSWER) {
+        check(
+          trainStage == TrainStage.LOADING_TRAINING_SESSION ||
+            trainStage == TrainStage.VIEWING_STATE ||
+            trainStage == TrainStage.SUBMITTING_ANSWER
+        ) {
           "Cannot transition to VIEWING_STATE from $trainStage"
         }
         trainStage = nextTrainStage
       }
       TrainStage.SUBMITTING_ANSWER -> {
         // An answer can only be submitted after viewing a stage.
-        check(trainStage == TrainStage.VIEWING_STATE) { "Cannot transition to SUBMITTING_ANSWER from $trainStage" }
+        check(trainStage == TrainStage.VIEWING_STATE) {
+          "Cannot transition to SUBMITTING_ANSWER from $trainStage"
+        }
         trainStage = nextTrainStage
       }
     }
@@ -105,7 +114,8 @@ internal class QuestionAssessmentProgress {
 
   private fun isTopStateTerminal(@Suppress("UNUSED_PARAMETER") state: State): Boolean {
     // There's a synthetic card at the end of the assessment to represent the terminal state.
-    return stateDeck.isCurrentStateTopOfDeck() && getCurrentQuestionIndex() == getTotalQuestionCount()
+    return stateDeck.isCurrentStateTopOfDeck() &&
+      getCurrentQuestionIndex() == getTotalQuestionCount()
   }
 
   /** Different stages in which the progress controller can exist. */

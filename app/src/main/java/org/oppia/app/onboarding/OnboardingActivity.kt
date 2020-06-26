@@ -9,7 +9,8 @@ import javax.inject.Inject
 
 /** Activity that contains the onboarding flow for learners. */
 class OnboardingActivity : InjectableAppCompatActivity(), RouteToProfileListListener {
-  @Inject lateinit var onboardingActivityPresenter: OnboardingActivityPresenter
+  @Inject
+  lateinit var onboardingActivityPresenter: OnboardingActivityPresenter
 
   companion object {
     fun createOnboardingActivity(context: Context): Intent {

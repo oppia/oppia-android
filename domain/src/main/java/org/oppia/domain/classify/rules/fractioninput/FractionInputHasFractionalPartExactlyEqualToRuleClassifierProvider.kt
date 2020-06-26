@@ -13,12 +13,17 @@ import javax.inject.Inject
  *
  * https://github.com/oppia/oppia/blob/37285a/extensions/interactions/FractionInput/directives/fraction-input-rules.service.ts#L61
  */
-internal class FractionInputHasFractionalPartExactlyEqualToRuleClassifierProvider @Inject constructor(
+internal class FractionInputHasFractionalPartExactlyEqualToRuleClassifierProvider
+@Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
-): RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<Fraction> {
+) : RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<Fraction> {
 
   override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createSingleInputClassifier(InteractionObject.ObjectTypeCase.FRACTION, "f", this)
+    return classifierFactory.createSingleInputClassifier(
+      InteractionObject.ObjectTypeCase.FRACTION,
+      "f",
+      this
+    )
   }
 
   // TODO(#210): Add tests for this classifier.

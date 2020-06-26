@@ -9,7 +9,8 @@ import javax.inject.Inject
 /** The FAQ page activity for placement of single FAQ. */
 class FAQSingleActivity : InjectableAppCompatActivity() {
 
-  @Inject lateinit var faqSingleActivityPresenter: FAQSingleActivityPresenter
+  @Inject
+  lateinit var faqSingleActivityPresenter: FAQSingleActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

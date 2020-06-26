@@ -1,6 +1,5 @@
 package org.oppia.app.utility
 
-import android.os.SystemClock
 import android.view.View
 import android.view.ViewConfiguration
 import androidx.recyclerview.widget.RecyclerView
@@ -22,14 +21,9 @@ import org.hamcrest.core.AllOf.allOf
 private const val DRAG_STEP_COUNT = 10
 
 /**
- * Length of time a drag should last for, in milliseconds.
- */
-private const val DRAG_DURATION = 1500
-
-/**
  * Duration between the last move event and the up event, in milliseconds.
  */
-private const val WAIT_BEFORE_SENDING_UP = 400
+private const val WAIT_BEFORE_SENDING_UP_MS = 400
 
 /**
  * A custom [ViewAction] that can be replicate the long press & drag action for espresso.
@@ -41,6 +35,8 @@ class DragViewAction(
   private val endCoordinatesProvider: CoordinatesProvider,
   private val precisionDescriber: PrecisionDescriber
 ) : ViewAction {
+  // Factor 1.5 is needed, otherwise a long press is not safely detected.
+  private val longPressTimeout = (ViewConfiguration.getLongPressTimeout() * 1.5f).toLong()
 
   override fun getDescription(): String = "long press and drag"
 
@@ -54,29 +50,19 @@ class DragViewAction(
     var status: Swiper.Status
 
     try {
-      // Factor 1.5 is needed, otherwise a long press is not safely detected.
-      val longPressTimeout = (ViewConfiguration.getLongPressTimeout() * 1.5f).toLong()
       uiController.loopMainThreadForAtLeast(longPressTimeout)
 
       val steps = interpolate(startCoordinates, endCoordinates)
-      val delayBetweenMovements = DRAG_DURATION / steps.size
 
-      steps.forEachIndexed { index, step ->
+      steps.forEachIndexed { _, step ->
         if (!MotionEvents.sendMovement(uiController, downEvent, step)) {
           MotionEvents.sendCancel(uiController, downEvent)
           status = Swiper.Status.FAILURE
         }
-        val desiredTime: Long = downEvent.downTime + delayBetweenMovements * index
-        val timeUntilDesired = desiredTime - SystemClock.uptimeMillis()
-        if (timeUntilDesired > 10) {
-          // If the wait time until the next event isn't long enough, skip the wait
-          // and execute the next event.
-          uiController.loopMainThreadForAtLeast(timeUntilDesired)
-        }
       }
       // Wait before sending up because some drag handling logic may discard move events
-      // that has been sent immediately before the up event. e.g. HandleView.
-      uiController.loopMainThreadForAtLeast(WAIT_BEFORE_SENDING_UP.toLong())
+      // that has been sent immediately before the up event.
+      uiController.loopMainThreadForAtLeast(WAIT_BEFORE_SENDING_UP_MS.toLong())
       status = if (!MotionEvents.sendUp(uiController, downEvent, endCoordinates)) {
         MotionEvents.sendCancel(uiController, downEvent)
         Swiper.Status.FAILURE
@@ -84,6 +70,8 @@ class DragViewAction(
         Swiper.Status.SUCCESS
       }
     } catch (re: RuntimeException) {
+      // Using a RuntimeException because of the swiper class which generally throws a
+      // Runtime Exception.
       throw PerformException.Builder()
         .withActionDescription(description)
         .withViewDescription(HumanReadables.describe(view))

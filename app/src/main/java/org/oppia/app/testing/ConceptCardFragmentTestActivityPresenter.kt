@@ -10,7 +10,9 @@ import org.oppia.domain.topic.TEST_SKILL_ID_1
 import javax.inject.Inject
 
 /** The presenter for [ConceptCardFragmentTestActivity] */
-class ConceptCardFragmentTestActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
+class ConceptCardFragmentTestActivityPresenter @Inject constructor(
+  private val activity: AppCompatActivity
+) {
   fun handleOnCreate() {
     activity.setContentView(R.layout.concept_card_fragment_test_activity)
     activity.open_dialog_0.setOnClickListener {
