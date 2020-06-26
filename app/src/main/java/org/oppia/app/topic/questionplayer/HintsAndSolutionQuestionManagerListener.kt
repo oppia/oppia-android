@@ -5,10 +5,5 @@ import org.oppia.app.model.State
 /** Listener for fetching current Question state data. */
 interface HintsAndSolutionQuestionManagerListener {
 
-  fun onQuestionStateLoaded(
-    state: State,
-    explorationId: String,
-    newAvailableHintIndex: Int,
-    allHintsExhausted: Boolean
-  )
+  fun onQuestionStateLoaded(state: State)
 }

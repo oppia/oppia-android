@@ -11,6 +11,7 @@ import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
 const val TAG_QUESTION_PLAYER_FRAGMENT = "TAG_QUESTION_PLAYER_FRAGMENT"
+private const val TAG_HINTS_AND_SOLUTION_QUESTION_MANAGER = "HINTS_AND_SOLUTION_QUESTION_MANAGER"
 
 /** The presenter for [QuestionPlayerActivity]. */
 @ActivityScope
@@ -30,6 +31,17 @@ class QuestionPlayerActivityPresenter @Inject constructor(
         ).commitNow()
       }
     }
+
+    if (getHintsAndSolutionExplorationManagerFragment() == null) {
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.question_player_fragment_placeholder,
+        HintsAndSolutionQuestionManagerFragment()
+      ).commitNow()
+    }
+  }
+
+  private fun getHintsAndSolutionExplorationManagerFragment(): HintsAndSolutionQuestionManagerFragment? {
+    return activity.supportFragmentManager.findFragmentByTag(TAG_HINTS_AND_SOLUTION_QUESTION_MANAGER) as HintsAndSolutionQuestionManagerFragment?
   }
 
   fun stopTrainingSession() {

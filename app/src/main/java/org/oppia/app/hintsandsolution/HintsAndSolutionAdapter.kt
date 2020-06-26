@@ -93,7 +93,7 @@ class HintsAndSolutionAdapter(
       binding.isListExpanded = isHintListVisible
       binding.viewModel = hintsViewModel
 
-      if (!hintsViewModel.isHintRevealed.get()!!) {
+      if (hintsViewModel.isHintRevealed.get()!!) {
         binding.root.visibility = View.VISIBLE
       } else {
         binding.root.visibility = View.GONE
@@ -204,7 +204,8 @@ class HintsAndSolutionAdapter(
   }
 
   private fun showRevealSolutionDialogFragment() {
-    val previousFragment = fragment.childFragmentManager.findFragmentByTag(TAG_REVEAL_SOLUTION_DIALOG)
+    val previousFragment =
+      fragment.childFragmentManager.findFragmentByTag(TAG_REVEAL_SOLUTION_DIALOG)
     if (previousFragment != null) {
       fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }

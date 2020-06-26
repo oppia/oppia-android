@@ -6,12 +6,12 @@ import android.os.Bundle
 import android.view.Menu
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
-import org.oppia.app.model.State
-import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.app.hintsandsolution.HintsAndSolutionListener
 import org.oppia.app.hintsandsolution.RevealHintListener
 import org.oppia.app.hintsandsolution.RevealSolutionInterface
+import org.oppia.app.model.State
+import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.app.player.stopplaying.StopExplorationDialogFragment
@@ -20,7 +20,6 @@ import javax.inject.Inject
 
 private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
 const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
-const val TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER = "HINTS_AND_SOLUTION_EXPLORATION_MANAGER"
 
 /** The starting point for exploration. */
 class ExplorationActivity : InjectableAppCompatActivity(), StopStatePlayingSessionListener,
@@ -146,33 +145,6 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopStatePlayingSessi
     newAvailableHintIndex: Int,
     allHintsExhausted: Boolean
   ) {
-    if (getHintsAndSolutionExplorationManagerFragment() == null) {
-      supportFragmentManager.beginTransaction().add(
-        R.id.exploration_fragment_placeholder,
-        HintsAndSolutionExplorationManagerFragment.newInstance(
-          explorationId,
-          newAvailableHintIndex,
-          allHintsExhausted
-        )
-      ).commitNow()
-    }
-  }
-
-  private fun getHintsAndSolutionExplorationManagerFragment(): HintsAndSolutionExplorationManagerFragment? {
-    return supportFragmentManager.findFragmentByTag(TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER) as HintsAndSolutionExplorationManagerFragment?
-  }
-
-  override fun dismiss() {
-    getHintsAndSolution()?.dismiss()
-  }
-
-  override fun onExplorationStateLoaded(
-    state: State,
-    explorationId: String,
-    newAvailableHintIndex: Int,
-    allHintsExhausted: Boolean
-  ) {
-    this.state = state
     if (getHintsAndSolution() == null) {
       val hintsAndSolutionFragment = HintsAndSolutionDialogFragment.newInstance(
         explorationId,
@@ -182,5 +154,16 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopStatePlayingSessi
       hintsAndSolutionFragment.loadState(state)
       hintsAndSolutionFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }
+  }
+
+  override fun dismiss() {
+    getHintsAndSolution()?.dismiss()
+  }
+
+  override fun onExplorationStateLoaded(
+    state: State
+  ) {
+    this.state = state
+
   }
 }

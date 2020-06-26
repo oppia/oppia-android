@@ -18,22 +18,12 @@ class HintsAndSolutionExplorationManagerFragmentPresenter @Inject constructor(
   private val logger: Logger,
   private val explorationProgressController: ExplorationProgressController
 ) {
-  private var explorationId = ""
-  private var newAvailableHintIndex = 0
-  private var allHintsExhausted = false
 
   private val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
     explorationProgressController.getCurrentState()
   }
 
-  fun handleCreateView(
-    id: String,
-    newAvailableHintIndex: Int,
-    allHintsExhausted: Boolean
-  ): View? {
-    this.explorationId = id
-    this.newAvailableHintIndex = newAvailableHintIndex
-    this.allHintsExhausted = allHintsExhausted
+  fun handleCreateView(): View? {
     subscribeToCurrentState()
 
     return null // Headless fragment.
@@ -47,7 +37,7 @@ class HintsAndSolutionExplorationManagerFragmentPresenter @Inject constructor(
 
   private fun processEphemeralStateResult(result: AsyncResult<EphemeralState>) {
     if (result.isFailure()) {
-      logger.e("StateFragment", "Failed to retrieve ephemeral state", result.getErrorOrNull()!!)
+      logger.e("HintsAndSolutionExplorationManagerFragmentPresenter", "Failed to retrieve ephemeral state", result.getErrorOrNull()!!)
       return
     } else if (result.isPending()) {
       // Display nothing until a valid result is available.
@@ -59,7 +49,7 @@ class HintsAndSolutionExplorationManagerFragmentPresenter @Inject constructor(
     // Check if hints are available for this state.
     if (ephemeralState.state.interaction.hintList.size != 0) {
       (activity as HintsAndSolutionExplorationManagerListener).onExplorationStateLoaded(
-        ephemeralState.state, explorationId, newAvailableHintIndex, allHintsExhausted
+        ephemeralState.state
       )
     }
   }

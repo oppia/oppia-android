@@ -18,22 +18,12 @@ class HintsAndSolutionQuestionManagerFragmentPresenter @Inject constructor(
   private val logger: Logger,
   private val questionProgressController: QuestionAssessmentProgressController
 ) {
-  private var questionId = ""
-  private var newAvailableHintIndex = 0
-  private var allHintsExhausted = false
 
   private val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralQuestion>> by lazy {
     questionProgressController.getCurrentQuestion()
   }
 
-  fun handleCreateView(
-    id: String,
-    newAvailableHintIndex: Int,
-    allHintsExhausted: Boolean
-  ): View? {
-    this.questionId = id
-    this.newAvailableHintIndex = newAvailableHintIndex
-    this.allHintsExhausted = allHintsExhausted
+  fun handleCreateView(): View? {
     subscribeToCurrentQuestionState()
 
     return null // Headless fragment.
@@ -47,7 +37,7 @@ class HintsAndSolutionQuestionManagerFragmentPresenter @Inject constructor(
 
   private fun processEphemeralStateResult(result: AsyncResult<EphemeralQuestion>) {
     if (result.isFailure()) {
-      logger.e("StateFragment", "Failed to retrieve ephemeral state", result.getErrorOrNull()!!)
+      logger.e("HintsAndSolutionQuestionManagerFragmentPresenter", "Failed to retrieve ephemeral state", result.getErrorOrNull()!!)
       return
     } else if (result.isPending()) {
       // Display nothing until a valid result is available.
@@ -59,11 +49,7 @@ class HintsAndSolutionQuestionManagerFragmentPresenter @Inject constructor(
     // Check if hints are available for this state.
     if (ephemeralQuestionState.ephemeralState.state.interaction.hintList.size != 0) {
       (activity as HintsAndSolutionQuestionManagerListener).onQuestionStateLoaded(
-        ephemeralQuestionState.ephemeralState.state,
-        questionId,
-        newAvailableHintIndex,
-        allHintsExhausted
-      )
+        ephemeralQuestionState.ephemeralState.state)
     }
   }
 }
