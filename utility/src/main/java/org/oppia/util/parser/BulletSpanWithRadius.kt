@@ -1,6 +1,5 @@
 package org.oppia.util.parser
 
-import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
@@ -8,19 +7,14 @@ import android.os.Build
 import android.text.Layout
 import android.text.Spanned
 import android.text.style.LeadingMarginSpan
-import org.oppia.util.R
 
 /**
  * Custom Bullet Span implementation (based on [BulletSpan])
  * Default implementation doesn't allow for radius modification
  */
-class BulletSpanWithRadius(private val context: Context, gapWidth: Int) : LeadingMarginSpan {
+class BulletSpanWithRadius(bulletRadius: Int, gapWidth: Int) : LeadingMarginSpan {
   private val gapWidth: Int = gapWidth
-  private val bulletRadius: Int
-
-  init {
-    bulletRadius = context.resources.getDimensionPixelSize(R.dimen.bullet_radius)
-  }
+  private val bulletRadius: Int = bulletRadius
 
   override fun getLeadingMargin(first: Boolean): Int {
     return 2 * bulletRadius + gapWidth

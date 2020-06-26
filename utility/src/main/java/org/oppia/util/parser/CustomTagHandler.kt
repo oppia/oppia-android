@@ -8,6 +8,8 @@ import android.text.style.LeadingMarginSpan
 import org.oppia.util.R
 import org.oppia.util.logging.ExceptionLogger
 import org.oppia.util.parser.CustomTagHandler.ListItemTag
+import org.oppia.util.parser.CustomTagHandler.ListItemTag.OrderedListTag
+import org.oppia.util.parser.CustomTagHandler.ListItemTag.UnorderedListTag
 import org.oppia.util.parser.StringUtils.LI_TAG
 import org.oppia.util.parser.StringUtils.OL_TAG
 import org.oppia.util.parser.StringUtils.UL_TAG
@@ -26,9 +28,6 @@ class CustomTagHandler (
   private val context: Context,
   private val exceptionLogger: ExceptionLogger
 ) : Html.TagHandler {
-  private val indent = context.resources.getDimensionPixelSize(R.dimen.bullet_leading_margin)
-  private val listItemIndent = indent * 2
-  private val bulletSpan = BulletSpanWithRadius(context, indent)
 
   private val listParents: Stack<ListItemTag> = Stack<ListItemTag>()
 
@@ -41,14 +40,14 @@ class CustomTagHandler (
     when (tag) {
       UL_TAG -> {
         if (opening) {
-          listParents.push(ListItemTag.UnorderedListTag)
+          listParents.push(UnorderedListTag())
         } else {
           listParents.pop()
         }
       }
       OL_TAG -> {
         if (opening) {
-          listParents.push(ListItemTag.OrderedListTag())
+          listParents.push(OrderedListTag())
         } else {
           listParents.pop()
         }
@@ -56,6 +55,7 @@ class CustomTagHandler (
       LI_TAG -> {
         try {
           if (opening) {
+            listParents.peek().setIndentation(context)
             listParents.peek().openListItem(output)
           } else {
             listParents.peek().closeListItem(output, listParents.size)
@@ -67,13 +67,22 @@ class CustomTagHandler (
     }
   }
 
-  /** Abstract super class for [UnorderedListTag] and [OrderedListTag]. */
+  /** Sealed super class for [UnorderedListTag] and [OrderedListTag]. */
   sealed class ListItemTag {
-    /**
-     * Opens a new list item.
-     *
-     * @param text
-     */
+      var indent = 0
+     var listItemIndent = 0
+     var bulletRadius = 0
+     var bulletSpan : BulletSpanWithRadius? = null
+
+    fun setIndentation(
+      context: Context
+    ) {
+      indent = context.resources.getDimensionPixelSize(R.dimen.bullet_leading_margin)
+      listItemIndent = indent * 2
+      bulletRadius = context.resources.getDimensionPixelSize(R.dimen.bullet_radius)
+      bulletSpan = BulletSpanWithRadius(bulletRadius, indent)
+    }
+
     open fun openListItem(text: Editable) {
       if (text.length > 0 && text[text.length - 1] != '\n') {
         text.append("\n")
@@ -82,12 +91,6 @@ class CustomTagHandler (
       text.setSpan(this, len, len, Spanned.SPAN_MARK_MARK)
     }
 
-    /**
-     * Closes a list item.
-     *
-     * @param text
-     * @param indentation
-     */
     fun closeListItem(text: Editable, indentation: Int) {
       if (text.length > 0 && text[text.length - 1] != '\n') {
         text.append("\n")
@@ -114,30 +117,30 @@ class CustomTagHandler (
     }
 
     /** Class representing the unordered list (`<ul>`) HTML tag. */
-    object UnorderedListTag : ListItemTag() {
+     class UnorderedListTag : ListItemTag() {
       override fun getReplaces(
         text: Editable?,
         indentation: Int
       ): Array<Any> {
         var bulletMargin: Int = indent
         if (indentation > 1) {
-          bulletMargin = indent - bulletSpan.getLeadingMargin(true)
+          bulletMargin = indent - bulletSpan!!.getLeadingMargin(true)
           if (indentation > 2) {
             bulletMargin -= (indentation - 2) * listItemIndent
           }
         }
         return arrayOf(
           LeadingMarginSpan.Standard(listItemIndent * (indentation - 1)),
-          BulletSpanWithRadius(context, bulletMargin)
+          BulletSpanWithRadius(bulletRadius, bulletMargin)
         )
       }
     }
 
     /** Class representing the ordered list (`<ol>`) HTML tag. */
-     data class OrderedListTag
+     data class OrderedListTag(private var nextIdx: Int = 1): ListItemTag() {
     /** Creates a new `<ol>` with start index of 1. */
-    @JvmOverloads constructor(private var nextIdx: Int = 1) : ListItemTag() {
-       override fun openItem(text: Editable) {
+//    @JvmOverloads constructor(private var nextIdx: Int = 1) : ListItemTag() {
+    override fun openListItem(text: Editable) {
         super.openListItem(text)
         text.append(Integer.toString(nextIdx++)).append(". ")
       }
