@@ -7,13 +7,6 @@ workflows:
   circleci_tests:
     jobs:
       - install_android_dependencies
-      - linters
-      - utility_tests:
-          requires:
-            - install_android_dependencies
-      - domain_tests:
-          requires:
-            - install_android_dependencies
       - non_flaky_tests:
           requires:
             - install_android_dependencies
