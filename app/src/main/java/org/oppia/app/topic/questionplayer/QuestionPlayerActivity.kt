@@ -117,5 +117,4 @@ class QuestionPlayerActivity :
   override fun onQuestionStateLoaded(state: State) {
     this.state = state
   }
-
 }

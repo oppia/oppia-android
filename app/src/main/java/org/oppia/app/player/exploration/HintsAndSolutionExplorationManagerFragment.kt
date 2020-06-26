@@ -25,9 +25,6 @@ class HintsAndSolutionExplorationManagerFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-
     return hintsAndSolutionExplorationManagerFragmentPresenter.handleCreateView()
-
   }
-
 }

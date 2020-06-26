@@ -314,7 +314,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private fun processSolution(solutionResult: AsyncResult<Solution>): Solution {
     if (solutionResult.isFailure()) {
       logger.e(
-        "StateFragment",
+        "QuestionPlayerFragment",
         "Failed to retrieve Solution",
         solutionResult.getErrorOrNull()!!
       )
@@ -328,7 +328,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   ): AnsweredQuestionOutcome {
     if (answeredQuestionOutcomeResult.isFailure()) {
       logger.e(
-        "StateFragment",
+        "QuestionPlayerFragment",
         "Failed to retrieve answer outcome",
         answeredQuestionOutcomeResult.getErrorOrNull()!!
       )

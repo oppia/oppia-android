@@ -160,10 +160,7 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopStatePlayingSessi
     getHintsAndSolution()?.dismiss()
   }
 
-  override fun onExplorationStateLoaded(
-    state: State
-  ) {
+  override fun onExplorationStateLoaded(state: State) {
     this.state = state
-
   }
 }
