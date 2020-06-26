@@ -24,14 +24,7 @@ class OngoingListAdapter(
   private val orientation = Resources.getSystem().configuration.orientation
   private var titleIndex: Int = 0
   private var storyGridPosition: Int = 0
-  private val metrics = DisplayMetrics()
-  private var screenWidth = 0
   private var spanCount = 0
-
-  init {
-    activity.windowManager.defaultDisplay.getMetrics(metrics)
-    screenWidth = metrics.widthPixels
-  }
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
@@ -63,7 +56,7 @@ class OngoingListAdapter(
   override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
     when (holder.itemViewType) {
       VIEW_TYPE_SECTION_TITLE_TEXT -> {
-        titleIndex = position + 1
+        titleIndex = position
         (holder as SectionTitleViewHolder).bind(itemList[position] as SectionTitleViewModel)
       }
       VIEW_TYPE_SECTION_STORY_ITEM -> {
@@ -92,7 +85,7 @@ class OngoingListAdapter(
         when (spanCount) {
           2 -> {
             when {
-              position % spanCount == 0 -> params.setMargins(
+              storyGridPosition % spanCount == 0 -> params.setMargins(
                 marginMin,
                 marginTop,
                 marginMax,
@@ -108,19 +101,19 @@ class OngoingListAdapter(
           }
           3 -> {
             when {
-              position % spanCount == 1 -> params.setMargins(
+              storyGridPosition % spanCount == 1 -> params.setMargins(
                 marginMax,
                 marginTop,
                 /* right= */ 0,
                 marginBottom
               )
-              position % spanCount == 2 -> params.setMargins(
+              storyGridPosition % spanCount == 2 -> params.setMargins(
                 marginMin,
                 marginTop,
                 marginMin,
                 marginBottom
               )
-              position % spanCount == 0 -> params.setMargins(
+              storyGridPosition % spanCount == 0 -> params.setMargins(
                 /* left= */ 0,
                 marginTop,
                 marginMax,
@@ -130,25 +123,25 @@ class OngoingListAdapter(
           }
           4 -> {
             when {
-              (position) % spanCount == 1 -> params.setMargins(
+              (storyGridPosition) % spanCount == 1 -> params.setMargins(
                 marginMax,
                 marginTop,
                 /* right= */ 0,
                 marginBottom
               )
-              (position) % spanCount == 2 -> params.setMargins(
+              (storyGridPosition) % spanCount == 2 -> params.setMargins(
                 marginMin,
                 marginTop,
                 marginMin / 2,
                 marginBottom
               )
-              (position) % spanCount == 3 -> params.setMargins(
+              (storyGridPosition) % spanCount == 3 -> params.setMargins(
                 marginMin / 2,
                 marginTop,
                 marginMin,
                 marginBottom
               )
-              (position) % spanCount == 0 -> params.setMargins(
+              (storyGridPosition) % spanCount == 0 -> params.setMargins(
                 /* left= */ 0,
                 marginTop,
                 marginMax,
