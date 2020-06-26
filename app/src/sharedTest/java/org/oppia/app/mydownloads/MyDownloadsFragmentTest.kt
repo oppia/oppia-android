@@ -36,7 +36,12 @@ class MyDownloadsFragmentTest {
   @Test
   fun testMyDownloadsFragment_toolbarTitle_isDisplayedSuccessfully() {
     launch(MyDownloadsActivity::class.java).use {
-      onView(allOf(instanceOf(TextView::class.java), withParent(withId(R.id.my_downloads_toolbar)))).check(
+      onView(
+        allOf(
+          instanceOf(TextView::class.java),
+          withParent(withId(R.id.my_downloads_toolbar))
+        )
+      ).check(
         matches(
           withText("My Downloads")
         )
@@ -47,7 +52,8 @@ class MyDownloadsFragmentTest {
   @Test
   fun testMyDownloadsFragment_showsMyDownloadsFragmentWithMultipleTabs() {
     launch(MyDownloadsActivity::class.java).use {
-      onView(withId(R.id.my_downloads_tabs_container)).perform(click()).check(matches(isDisplayed()))
+      onView(withId(R.id.my_downloads_tabs_container)).perform(click())
+        .check(matches(isDisplayed()))
     }
   }
 
@@ -139,7 +145,9 @@ class MyDownloadsFragmentTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@BlockingDispatcher blockingDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @BlockingDispatcher blockingDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return blockingDispatcher
     }
   }

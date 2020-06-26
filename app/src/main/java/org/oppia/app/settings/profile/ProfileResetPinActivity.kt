@@ -11,7 +11,8 @@ const val KEY_PROFILE_RESET_PIN_IS_ADMIN = "KEY_PROFILE_RESET_PIN_IS_ADMIN"
 
 /** Activity that allows user to change a profile's PIN. */
 class ProfileResetPinActivity : InjectableAppCompatActivity() {
-  @Inject lateinit var profileResetPinActivityPresenter: ProfileResetPinActivityPresenter
+  @Inject
+  lateinit var profileResetPinActivityPresenter: ProfileResetPinActivityPresenter
 
   companion object {
     fun createProfileResetPinActivity(context: Context, profileId: Int, isAdmin: Boolean): Intent {

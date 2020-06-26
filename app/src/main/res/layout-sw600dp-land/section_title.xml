@@ -19,7 +19,7 @@
       android:id="@+id/divider_view"
       android:layout_width="match_parent"
       android:layout_height="1dp"
-      android:layout_marginTop="28dp"
+      android:layout_marginTop="36dp"
       android:background="@color/divider"
       android:visibility="@{viewModel.isDividerVisible? View.VISIBLE : View.GONE}" />
 
@@ -27,9 +27,9 @@
       android:id="@+id/section_title_text_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginStart="96dp"
-      android:layout_marginTop="28dp"
-      android:layout_marginEnd="96dp"
+      android:layout_marginStart="@dimen/recently_played_tablet_land_outer_margin"
+      android:layout_marginTop="32dp"
+      android:layout_marginEnd="@dimen/recently_played_tablet_land_outer_margin"
       android:fontFamily="sans-serif-medium"
       android:text="@{viewModel.sectionTitleText}"
       android:textColor="@color/oppiaPrimaryText"

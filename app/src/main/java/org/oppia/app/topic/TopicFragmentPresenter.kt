@@ -3,18 +3,22 @@ package org.oppia.app.topic
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import org.oppia.app.R
 import org.oppia.app.databinding.TopicFragmentBinding
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
 /** The presenter for [TopicFragment]. */
 @FragmentScope
 class TopicFragmentPresenter @Inject constructor(
-  private val fragment: Fragment
+  private val activity: AppCompatActivity,
+  private val fragment: Fragment,
+  private val viewModelProvider: ViewModelProvider<TopicViewModel>
 ) {
   private lateinit var tabLayout: TabLayout
   private var internalProfileId: Int = -1
@@ -36,13 +40,27 @@ class TopicFragmentPresenter @Inject constructor(
     topicId: String,
     storyId: String
   ): View? {
-    val binding = TopicFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    val binding = TopicFragmentBinding.inflate(
+      inflater,
+      container,
+      /* attachToRoot= */ false
+    )
     binding.lifecycleOwner = fragment
     this.storyId = storyId
     viewPager = binding.root.findViewById(R.id.topic_tabs_viewpager) as ViewPager
     tabLayout = binding.root.findViewById(R.id.topic_tabs_container) as TabLayout
     this.internalProfileId = internalProfileId
     this.topicId = topicId
+
+    binding.topicToolbar.setNavigationOnClickListener {
+      (activity as TopicActivity).finish()
+    }
+
+    val viewModel = getTopicViewModel()
+    viewModel.setInternalProfileId(internalProfileId)
+    viewModel.setTopicId(topicId)
+    binding.viewModel = viewModel
+
     setUpViewPager(viewPager, topicId)
     return binding.root
   }
@@ -52,7 +70,8 @@ class TopicFragmentPresenter @Inject constructor(
   }
 
   private fun setUpViewPager(viewPager: ViewPager, topicId: String) {
-    val adapter = ViewPagerAdapter(fragment.childFragmentManager, internalProfileId, topicId, storyId)
+    val adapter =
+      ViewPagerAdapter(fragment.childFragmentManager, internalProfileId, topicId, storyId)
     viewPager.adapter = adapter
     tabLayout.setupWithViewPager(viewPager)
     tabLayout.getTabAt(0)!!.setText(fragment.getString(R.string.info)).setIcon(tabIcons[0])
@@ -61,7 +80,11 @@ class TopicFragmentPresenter @Inject constructor(
     tabLayout.getTabAt(3)!!.setText(fragment.getString(R.string.revision)).setIcon(tabIcons[3])
     if (topicId.isNotEmpty() && storyId.isNotEmpty())
       setCurrentTab(TopicTab.LESSONS)
-    else if(topicId.isNotEmpty() && storyId.isEmpty())
+    else if (topicId.isNotEmpty() && storyId.isEmpty())
       setCurrentTab(TopicTab.INFO)
+  }
+
+  private fun getTopicViewModel(): TopicViewModel {
+    return viewModelProvider.getForFragment(fragment, TopicViewModel::class.java)
   }
 }

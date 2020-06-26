@@ -126,19 +126,8 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       recentStoryCount + 1
     }
 
-    val spanCount = if (activity.resources.getBoolean(R.bool.isTablet)) {
-      if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-        3
-      } else {
-        4
-      }
-    } else {
-      if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-        2
-      } else {
-        3
-      }
-    }
+    val spanCount = activity.resources.getInteger(R.integer.recently_played_span_count)
+    ongoingListAdapter.setSpanCount(spanCount)
 
     val layoutManager = GridLayoutManager(activity.applicationContext, spanCount)
     layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {

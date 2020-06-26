@@ -24,11 +24,18 @@ class ProfilePictureEditDialogFragment : DialogFragment() {
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    val view = View.inflate(context, R.layout.profile_picture_edit_dialog, /* root= */ null)
-    val viewProfilePicture = view.findViewById<TextView>(R.id.profile_picture_edit_dialog_view_picture)
-    val chooseFromGallery = view.findViewById<TextView>(R.id.profile_picture_edit_dialog_change_picture)
+    val view = View.inflate(
+      context,
+      R.layout.profile_picture_edit_dialog,
+      /* root= */ null
+    )
+    val viewProfilePicture =
+      view.findViewById<TextView>(R.id.profile_picture_edit_dialog_view_picture)
+    val chooseFromGallery =
+      view.findViewById<TextView>(R.id.profile_picture_edit_dialog_change_picture)
 
-    val profilePictureEditDialogInterface: ProfilePictureDialogInterface = activity as ProfilePictureDialogInterface
+    val profilePictureEditDialogInterface: ProfilePictureDialogInterface =
+      activity as ProfilePictureDialogInterface
 
     viewProfilePicture.setOnClickListener {
       profilePictureEditDialogInterface.showProfilePicture()
@@ -38,7 +45,8 @@ class ProfilePictureEditDialogFragment : DialogFragment() {
       profilePictureEditDialogInterface.showGalleryForProfilePicture()
       dialog?.dismiss()
     }
-    return AlertDialog.Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
+    return AlertDialog
+      .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
       .setTitle(R.string.profile_progress_edit_dialog_title)
       .setView(view)
       .setNegativeButton(R.string.profile_picture_edit_alert_dialog_cancel_button) { _, _ ->

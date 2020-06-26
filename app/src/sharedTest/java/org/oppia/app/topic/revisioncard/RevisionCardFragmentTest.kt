@@ -14,6 +14,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.firebase.FirebaseApp
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.instanceOf
 import org.hamcrest.Matchers.not
@@ -39,6 +40,7 @@ class RevisionCardFragmentTest {
 
   @Before
   fun setUp() {
+    FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
     Intents.init()
   }
 
@@ -69,13 +71,27 @@ class RevisionCardFragmentTest {
         SUBTOPIC_TOPIC_ID
       )
     ).use {
-      onView(withId(R.id.revision_card_explanation_text)).check(matches(withText("Description of subtopic is here.")))
-      onView(withId(R.id.revision_card_explanation_text)).check(matches(not(containsRichText())))
+      onView(withId(R.id.revision_card_explanation_text))
+        .check(
+          matches(
+            withText(
+              "Description of subtopic is here."
+            )
+          )
+        )
+      onView(withId(R.id.revision_card_explanation_text))
+        .check(
+          matches(
+            not(
+              containsRichText()
+            )
+          )
+        )
     }
   }
 
   @Test
-  fun testRevisionCardTestActivity_fractionSubtopicId1_checkReturnToTopicButtonIsDisplayedSuccessfully() {
+  fun testRevisionCardTestActivity_fractionSubtopicId1_checkReturnToTopicButtonIsDisplayedSuccessfully() { // ktlint-disable max-line-length
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
@@ -83,12 +99,19 @@ class RevisionCardFragmentTest {
         SUBTOPIC_TOPIC_ID
       )
     ).use {
-      onView(withId(R.id.revision_card_return_button)).check(matches(withText(R.string.return_to_topic)))
+      onView(withId(R.id.revision_card_return_button))
+        .check(
+          matches(
+            withText(
+              R.string.return_to_topic
+            )
+          )
+        )
     }
   }
 
   @Test
-  fun testRevisionCardTestActivity_fractionSubtopicId1_checkReturnToTopicButtonIsWorkingCorrectly() {
+  fun testRevisionCardTestActivity_fractionSubtopicId1_checkReturnToTopicButtonIsWorkingCorrectly() { // ktlint-disable max-line-length
     launch<TopicActivity>(
       createTopicActivityIntent(
         ApplicationProvider.getApplicationContext(),
@@ -110,7 +133,7 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  fun testRevisionCardTestActivity_configurationChange_toolbarTitle_fractionSubtopicId1_isDisplayedCorrectly() {
+  fun testRevisionCardTestActivity_configurationChange_toolbarTitle_fractionSubtopicId1_isDisplayedCorrectly() { // ktlint-disable max-line-length
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
@@ -129,7 +152,7 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  fun testRevisionCardTestActivity_configurationChange_fractionSubtopicId1_checkExplanationAreDisplayedSuccessfully() {
+  fun testRevisionCardTestActivity_configurationChange_fractionSubtopicId1_checkExplanationAreDisplayedSuccessfully() { // ktlint-disable max-line-length
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
@@ -138,13 +161,27 @@ class RevisionCardFragmentTest {
       )
     ).use {
       onView(ViewMatchers.isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.revision_card_explanation_text)).check(matches(withText("Description of subtopic is here.")))
-      onView(withId(R.id.revision_card_explanation_text)).check(matches(not(containsRichText())))
+      onView(withId(R.id.revision_card_explanation_text))
+        .check(
+          matches(
+            withText(
+              "Description of subtopic is here."
+            )
+          )
+        )
+      onView(withId(R.id.revision_card_explanation_text))
+        .check(
+          matches(
+            not(
+              containsRichText()
+            )
+          )
+        )
     }
   }
 
   @Test
-  fun testRevisionCardTestActivity_configurationChange_fractionSubtopicId1_checkReturnToTopicButtonIsDisplayedSuccessfully() {
+  fun testRevisionCardTestActivity_configurationChange_fractionSubtopicId1_checkReturnToTopicButtonIsDisplayedSuccessfully() { // ktlint-disable max-line-length
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
@@ -153,12 +190,19 @@ class RevisionCardFragmentTest {
       )
     ).use {
       onView(ViewMatchers.isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.revision_card_return_button)).check(matches(withText(R.string.return_to_topic)))
+      onView(withId(R.id.revision_card_return_button))
+        .check(
+          matches(
+            withText(
+              R.string.return_to_topic
+            )
+          )
+        )
     }
   }
 
   @Test
-  fun testRevisionCardTestActivity_configurationChange_fractionSubtopicId1_checkReturnToTopicButtonIsWorkingCorrectly() {
+  fun testRevisionCardTestActivity_configurationChange_fractionSubtopicId1_checkReturnToTopicButtonIsWorkingCorrectly() { // ktlint-disable max-line-length
     launch<TopicActivity>(
       createTopicActivityIntent(
         ApplicationProvider.getApplicationContext(),

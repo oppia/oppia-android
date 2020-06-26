@@ -6,11 +6,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.reflect.KClass
-import kotlin.reflect.full.cast
-import kotlin.test.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,6 +14,11 @@ import org.oppia.app.model.ListOfSetsOfHtmlStrings
 import org.oppia.app.model.StringList
 import org.oppia.domain.classify.RuleClassifier
 import org.robolectric.annotation.Config
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.reflect.KClass
+import kotlin.reflect.full.cast
+import kotlin.test.fail
 
 /** Tests for [DragDropSortInputIsEqualToOrderingClassifierProvider]. */
 @RunWith(AndroidJUnit4::class)
@@ -29,15 +29,19 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
   private val ITEM_SET_2_ITEM_2 = listOf("item 2")
   private val ITEM_SET_3_ITEM_3 = listOf("item 3")
   private val ITEM_SET_4_INVALID_AB = listOf("item invalid a", "item invalid b")
-  private val LIST_OF_SETS_OF_HTML_STRING_VALUE_1 = createListOfSetsOfHtmlStrings(ITEM_SET_1_AB, ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3)
-  private val LIST_OF_SETS_OF_HTML_STRING_VALUE_2 = createListOfSetsOfHtmlStrings(ITEM_SET_2_ITEM_2, ITEM_SET_1_AB, ITEM_SET_3_ITEM_3)
-  private val LIST_OF_SETS_OF_HTML_STRING_VALUE_3 = createListOfSetsOfHtmlStrings(ITEM_SET_2_ITEM_2, ITEM_SET_4_INVALID_AB, ITEM_SET_3_ITEM_3)
-  private val LIST_OF_SETS_OF_HTML_STRING_VALUE_4 = createListOfSetsOfHtmlStrings(ITEM_SET_2_ITEM_2, ITEM_SET_1_AB)
-  private val LIST_OF_SETS_OF_HTML_STRING_VALUE_5 = createListOfSetsOfHtmlStrings(ITEM_SET_1_A, ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3)
-
+  private val LIST_OF_SETS_123 =
+    createListOfSetsOfHtmlStrings(ITEM_SET_1_AB, ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3)
+  private val LIST_OF_SETS_213 =
+    createListOfSetsOfHtmlStrings(ITEM_SET_2_ITEM_2, ITEM_SET_1_AB, ITEM_SET_3_ITEM_3)
+  private val LIST_OF_SETS_243 =
+    createListOfSetsOfHtmlStrings(ITEM_SET_2_ITEM_2, ITEM_SET_4_INVALID_AB, ITEM_SET_3_ITEM_3)
+  private val LIST_OF_SETS_21 = createListOfSetsOfHtmlStrings(ITEM_SET_2_ITEM_2, ITEM_SET_1_AB)
+  private val LIST_OF_SETS_1A23 =
+    createListOfSetsOfHtmlStrings(ITEM_SET_1_A, ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3)
 
   @Inject
-  internal lateinit var dragDropSortInputIsEqualToOrderingClassifierProvider: DragDropSortInputIsEqualToOrderingClassifierProvider
+  internal lateinit var dragDropSortInputIsEqualToOrderingClassifierProvider:
+    DragDropSortInputIsEqualToOrderingClassifierProvider
 
   private val isEqualToOrderingClassifierProvider: RuleClassifier by lazy {
     dragDropSortInputIsEqualToOrderingClassifierProvider.createRuleClassifier()
@@ -50,59 +54,60 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
 
   @Test
   fun testAnswer_testLisOfSetsOfHtmlString_sameValue_bothValuesMatch() {
-    val inputs = mapOf("x" to LIST_OF_SETS_OF_HTML_STRING_VALUE_1)
+    val inputs = mapOf("x" to LIST_OF_SETS_123)
 
     val matches =
-      isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_OF_HTML_STRING_VALUE_1, inputs = inputs)
+      isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_123, inputs = inputs)
 
     assertThat(matches).isTrue()
   }
 
   @Test
   fun testAnswer_testLisOfSetsOfHtmlString_differentOrder_bothValuesDoNotMatch() {
-    val inputs = mapOf("x" to LIST_OF_SETS_OF_HTML_STRING_VALUE_2)
+    val inputs = mapOf("x" to LIST_OF_SETS_213)
 
     val matches =
-      isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_OF_HTML_STRING_VALUE_1, inputs = inputs)
+      isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_123, inputs = inputs)
 
     assertThat(matches).isFalse()
   }
 
   @Test
   fun testAnswer_testLisOfSetsOfHtmlString_differentList_bothValuesDoNotMatch() {
-    val inputs = mapOf("x" to LIST_OF_SETS_OF_HTML_STRING_VALUE_3)
+    val inputs = mapOf("x" to LIST_OF_SETS_243)
 
     val matches =
-      isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_OF_HTML_STRING_VALUE_1, inputs = inputs)
+      isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_123, inputs = inputs)
 
     assertThat(matches).isFalse()
   }
 
   @Test
   fun testAnswer_testLisOfSetsOfHtmlString_differentLength_bothValuesDoNotMatch() {
-    val inputs = mapOf("x" to LIST_OF_SETS_OF_HTML_STRING_VALUE_4)
+    val inputs = mapOf("x" to LIST_OF_SETS_21)
 
     val matches =
-      isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_OF_HTML_STRING_VALUE_1, inputs = inputs)
+      isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_123, inputs = inputs)
 
     assertThat(matches).isFalse()
   }
+
   @Test
   fun testAnswer_testLisOfSetsOfHtmlString_elementDifferentLength_bothValuesDoNotMatch() {
-    val inputs = mapOf("x" to LIST_OF_SETS_OF_HTML_STRING_VALUE_5)
+    val inputs = mapOf("x" to LIST_OF_SETS_1A23)
 
     val matches =
-      isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_OF_HTML_STRING_VALUE_1, inputs = inputs)
+      isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_123, inputs = inputs)
 
     assertThat(matches).isFalse()
   }
 
   @Test
   fun testAnswer_testLisOfSetsOfHtmlString_incorrectInputMap_throwsException() {
-    val inputs = mapOf("y" to LIST_OF_SETS_OF_HTML_STRING_VALUE_1)
+    val inputs = mapOf("y" to LIST_OF_SETS_123)
 
     val exception = assertThrows(IllegalStateException::class) {
-      isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_OF_HTML_STRING_VALUE_1, inputs = inputs)
+      isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_123, inputs = inputs)
     }
 
     assertThat(exception)
@@ -123,7 +128,8 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerDragDropSortInputIsEqualToOrderingClassifierProviderTest_TestApplicationComponent.builder()
+    DaggerDragDropSortInputIsEqualToOrderingClassifierProviderTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
   }
 

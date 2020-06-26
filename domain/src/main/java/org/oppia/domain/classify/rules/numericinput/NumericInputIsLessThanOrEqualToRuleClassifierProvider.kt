@@ -13,10 +13,14 @@ import javax.inject.Inject
  */
 internal class NumericInputIsLessThanOrEqualToRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
-): RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<Double> {
+) : RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<Double> {
 
   override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createSingleInputClassifier(InteractionObject.ObjectTypeCase.REAL, "x", this)
+    return classifierFactory.createSingleInputClassifier(
+      InteractionObject.ObjectTypeCase.REAL,
+      "x",
+      this
+    )
   }
 
   // TODO(#210): Add tests for this classifier.

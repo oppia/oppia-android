@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.home.WelcomeViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+      android:id="@+id/welcome_text_view"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/home_tablet_port_outer_margin"
+      android:fontFamily="sans-serif"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textSize="24sp"
+      android:text="@{viewModel.greeting}"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+      android:id="@+id/profile_name_textview"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:layout_marginStart="8dp"
+      android:layout_marginEnd="72dp"
+      android:ellipsize="end"
+      android:maxLines="1"
+      android:fontFamily="sans-serif"
+      android:text="@{String.format(@string/welcome_profile_name, viewModel.profileName)}"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textSize="24sp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@+id/welcome_text_view"
+      app:layout_constraintBottom_toBottomOf="@id/welcome_text_view"
+      app:layout_constraintTop_toTopOf="@+id/welcome_text_view" />
+
+    <View
+      android:layout_width="0dp"
+      android:layout_height="6dp"
+      android:layout_marginTop="4dp"
+      android:background="@color/oppiaBrownDark"
+      app:layout_constraintEnd_toEndOf="@+id/welcome_text_view"
+      app:layout_constraintStart_toStartOf="@+id/welcome_text_view"
+      app:layout_constraintTop_toBottomOf="@+id/welcome_text_view" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

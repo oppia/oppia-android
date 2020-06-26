@@ -16,15 +16,18 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.AnsweredQuestionOutcome
 import org.oppia.app.model.EphemeralQuestion
 import org.oppia.app.model.EphemeralState
+import org.oppia.app.model.EventLog
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.StatePlayerRecyclerViewAssembler
 import org.oppia.app.player.stopplaying.RestartPlayingSessionListener
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.domain.analytics.AnalyticsController
 import org.oppia.domain.question.QuestionAssessmentProgressController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.QuestionResourceBucketName
 import org.oppia.util.logging.Logger
+import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
 /** The presenter for [QuestionPlayerFragment]. */
@@ -34,6 +37,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<QuestionPlayerViewModel>,
   private val questionAssessmentProgressController: QuestionAssessmentProgressController,
+  private val analyticsController: AnalyticsController,
+  private val oppiaClock: OppiaClock,
   private val logger: Logger,
   @QuestionResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory
@@ -48,7 +53,11 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private lateinit var recyclerViewAssembler: StatePlayerRecyclerViewAssembler
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    binding = QuestionPlayerFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding = QuestionPlayerFragmentBinding.inflate(
+      inflater,
+      container,
+      /* attachToRoot= */ false
+    )
 
     recyclerViewAssembler = createRecyclerViewAssembler(
       assemblerBuilderFactory.create(resourceBucketName, "skill"),
@@ -102,21 +111,28 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
    * Updates whether the submit button should be active based on whether the pending answer is in an
    * error state.
    */
-  fun updateSubmitButton(pendingAnswerError: String?) {
+  fun updateSubmitButton(pendingAnswerError: String?, inputAnswerAvailable: Boolean) {
     questionViewModel.setCanSubmitAnswer(pendingAnswerError == null)
   }
 
   fun handleKeyboardAction() = onSubmitButtonClicked()
 
   private fun subscribeToCurrentQuestion() {
-    ephemeralQuestionLiveData.observe(fragment, Observer {
-      processEphemeralQuestionResult(it)
-    })
+    ephemeralQuestionLiveData.observe(
+      fragment,
+      Observer {
+        processEphemeralQuestionResult(it)
+      }
+    )
   }
 
   private fun processEphemeralQuestionResult(result: AsyncResult<EphemeralQuestion>) {
     if (result.isFailure()) {
-      logger.e("QuestionPlayerFragment", "Failed to retrieve ephemeral question", result.getErrorOrNull()!!)
+      logger.e(
+        "QuestionPlayerFragment",
+        "Failed to retrieve ephemeral question",
+        result.getErrorOrNull()!!
+      )
     } else if (result.isPending()) {
       // Display nothing until a valid result is available.
       return
@@ -125,21 +141,30 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     // TODO(#497): Update this to properly link to question assets.
     val skillId = ephemeralQuestion.question.linkedSkillIdsList.firstOrNull() ?: ""
     updateProgress(ephemeralQuestion.currentQuestionIndex, ephemeralQuestion.totalQuestionCount)
+    logQuestionPlayerEvent(
+      ephemeralQuestion.question.questionId,
+      ephemeralQuestion.question.linkedSkillIdsList
+    )
     updateEndSessionMessage(ephemeralQuestion.ephemeralState)
-
     questionViewModel.itemList.clear()
-    questionViewModel.itemList += recyclerViewAssembler.compute(ephemeralQuestion.ephemeralState, skillId)
+    questionViewModel.itemList += recyclerViewAssembler.compute(
+      ephemeralQuestion.ephemeralState,
+      skillId
+    )
   }
 
   private fun updateProgress(currentQuestionIndex: Int, questionCount: Int) {
     questionViewModel.currentQuestion.set(currentQuestionIndex + 1)
     questionViewModel.questionCount.set(questionCount)
-    questionViewModel.progressPercentage.set((((currentQuestionIndex + 1) / questionCount.toDouble()) * 100).toInt())
+    questionViewModel.progressPercentage.set(
+      (((currentQuestionIndex + 1) / questionCount.toDouble()) * 100).toInt()
+    )
     questionViewModel.isAtEndOfSession.set(currentQuestionIndex == questionCount)
   }
 
   private fun updateEndSessionMessage(ephemeralState: EphemeralState) {
-    val isStateTerminal = ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE
+    val isStateTerminal =
+      ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE
     val endSessionViewsVisibility = if (isStateTerminal) View.VISIBLE else View.GONE
     binding.endSessionHeaderTextView.visibility = endSessionViewsVisibility
     binding.endSessionBodyTextView.visibility = endSessionViewsVisibility
@@ -150,13 +175,20 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   /** This function listens to and processes the result of submitAnswer from QuestionAssessmentProgressController. */
-  private fun subscribeToAnswerOutcome(answerOutcomeResultLiveData: LiveData<AsyncResult<AnsweredQuestionOutcome>>) {
-    val answerOutcomeLiveData = Transformations.map(answerOutcomeResultLiveData, ::processAnsweredQuestionOutcome)
-    answerOutcomeLiveData.observe(fragment, Observer<AnsweredQuestionOutcome> { result ->
-      if (result.isCorrectAnswer) {
-        recyclerViewAssembler.showCongratulationMessageOnCorrectAnswer()
+  private fun subscribeToAnswerOutcome(
+    answerOutcomeResultLiveData: LiveData<AsyncResult<AnsweredQuestionOutcome>>
+  ) {
+    val answerOutcomeLiveData =
+      Transformations.map(answerOutcomeResultLiveData, ::processAnsweredQuestionOutcome)
+    answerOutcomeLiveData.observe(
+      fragment,
+      Observer<AnsweredQuestionOutcome> { result ->
+        recyclerViewAssembler.isCorrectAnswer.set(result.isCorrectAnswer)
+        if (result.isCorrectAnswer) {
+          recyclerViewAssembler.showCongratulationMessageOnCorrectAnswer()
+        }
       }
-    })
+    )
   }
 
   /** Helper for subscribeToAnswerOutcome. */
@@ -164,7 +196,11 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     answeredQuestionOutcomeResult: AsyncResult<AnsweredQuestionOutcome>
   ): AnsweredQuestionOutcome {
     if (answeredQuestionOutcomeResult.isFailure()) {
-      logger.e("StateFragment", "Failed to retrieve answer outcome", answeredQuestionOutcomeResult.getErrorOrNull()!!)
+      logger.e(
+        "StateFragment",
+        "Failed to retrieve answer outcome",
+        answeredQuestionOutcomeResult.getErrorOrNull()!!
+      )
     }
     return answeredQuestionOutcomeResult.getOrDefault(AnsweredQuestionOutcome.getDefaultInstance())
   }
@@ -174,8 +210,12 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   private fun hideKeyboard() {
-    val inputManager: InputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    inputManager.hideSoftInputFromWindow(fragment.view!!.windowToken, InputMethodManager.SHOW_FORCED)
+    val inputManager: InputMethodManager =
+      activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputManager.hideSoftInputFromWindow(
+      fragment.view!!.windowToken,
+      InputMethodManager.SHOW_FORCED
+    )
   }
 
   private fun createRecyclerViewAssembler(
@@ -199,5 +239,17 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
   private fun getQuestionPlayerViewModel(): QuestionPlayerViewModel {
     return viewModelProvider.getForFragment(fragment, QuestionPlayerViewModel::class.java)
+  }
+
+  private fun logQuestionPlayerEvent(questionId: String, skillIds: List<String>) {
+    analyticsController.logTransitionEvent(
+      activity.applicationContext,
+      oppiaClock.getCurrentCalendar().timeInMillis,
+      EventLog.EventAction.OPEN_QUESTION_PLAYER,
+      analyticsController.createQuestionContext(
+        questionId,
+        skillIds
+      )
+    )
   }
 }

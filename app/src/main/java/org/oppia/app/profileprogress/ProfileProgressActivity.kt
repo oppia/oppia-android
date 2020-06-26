@@ -11,10 +11,16 @@ import org.oppia.app.ongoingtopiclist.OngoingTopicListActivity
 import javax.inject.Inject
 
 /** Activity to display profile progress. */
-class ProfileProgressActivity : InjectableAppCompatActivity(), RouteToCompletedStoryListListener,
-  RouteToOngoingTopicListListener, RouteToRecentlyPlayedListener, ProfilePictureClickListener, ProfilePictureDialogInterface {
+class ProfileProgressActivity :
+  InjectableAppCompatActivity(),
+  RouteToCompletedStoryListListener,
+  RouteToOngoingTopicListListener,
+  RouteToRecentlyPlayedListener,
+  ProfilePictureClickListener,
+  ProfilePictureDialogInterface {
 
-  @Inject lateinit var profileProgressActivityPresenter: ProfileProgressActivityPresenter
+  @Inject
+  lateinit var profileProgressActivityPresenter: ProfileProgressActivityPresenter
   private var internalProfileId = -1
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,19 +31,35 @@ class ProfileProgressActivity : InjectableAppCompatActivity(), RouteToCompletedS
   }
 
   override fun routeToRecentlyPlayed() {
-    startActivity(RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(this, internalProfileId))
+    startActivity(
+      RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
+        this,
+        internalProfileId
+      )
+    )
   }
 
   override fun routeToCompletedStory() {
-    startActivity(CompletedStoryListActivity.createCompletedStoryListActivityIntent(this, internalProfileId))
+    startActivity(
+      CompletedStoryListActivity.createCompletedStoryListActivityIntent(
+        this,
+        internalProfileId
+      )
+    )
   }
 
   override fun routeToOngoingTopic() {
-    startActivity(OngoingTopicListActivity.createOngoingTopicListActivityIntent(this, internalProfileId))
+    startActivity(
+      OngoingTopicListActivity.createOngoingTopicListActivityIntent(
+        this,
+        internalProfileId
+      )
+    )
   }
 
   companion object {
-    internal const val PROFILE_PROGRESS_ACTIVITY_PROFILE_ID_KEY = "ProfileProgressActivity.internal_profile_id"
+    internal const val PROFILE_PROGRESS_ACTIVITY_PROFILE_ID_KEY =
+      "ProfileProgressActivity.internal_profile_id"
 
     fun createProfileProgressActivityIntent(context: Context, internalProfileId: Int): Intent {
       val intent = Intent(context, ProfileProgressActivity::class.java)
@@ -51,7 +73,12 @@ class ProfileProgressActivity : InjectableAppCompatActivity(), RouteToCompletedS
   }
 
   override fun showProfilePicture() {
-    startActivity(ProfilePictureActivity.createProfilePictureActivityIntent(this, internalProfileId))
+    startActivity(
+      ProfilePictureActivity.createProfilePictureActivityIntent(
+        this,
+        internalProfileId
+      )
+    )
   }
 
   override fun showGalleryForProfilePicture() {

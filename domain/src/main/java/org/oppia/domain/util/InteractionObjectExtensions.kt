@@ -1,9 +1,11 @@
 package org.oppia.domain.util
 
 import org.oppia.app.model.Fraction
+import org.oppia.app.model.ImageWithRegions
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.InteractionObject.ObjectTypeCase.BOOL_VALUE
 import org.oppia.app.model.InteractionObject.ObjectTypeCase.FRACTION
+import org.oppia.app.model.InteractionObject.ObjectTypeCase.IMAGE_WITH_REGIONS
 import org.oppia.app.model.InteractionObject.ObjectTypeCase.LIST_OF_SETS_OF_HTML_STRING
 import org.oppia.app.model.InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT
 import org.oppia.app.model.InteractionObject.ObjectTypeCase.NORMALIZED_STRING
@@ -29,6 +31,7 @@ fun InteractionObject.toAnswerString(): String {
     SET_OF_HTML_STRING -> setOfHtmlString.toAnswerString()
     FRACTION -> fraction.toAnswerString()
     LIST_OF_SETS_OF_HTML_STRING -> listOfSetsOfHtmlString.toAnswerString()
+    IMAGE_WITH_REGIONS -> imageWithRegions.toAnswerString()
     OBJECTTYPE_NOT_SET -> "" // The default InteractionObject should be an empty string.
   }
 }
@@ -39,7 +42,8 @@ private fun NumberWithUnits.toAnswerString(): String {
   val suffixedUnits = unitList.filterNot(::isPrefixUnit)
 
   val prefixString = prefixedUnits.joinToString(separator = " ")
-  val suffixedString = suffixedUnits.joinToString(separator = " ", transform = NumberUnit::toAnswerStringPart)
+  val suffixedString =
+    suffixedUnits.joinToString(separator = " ", transform = NumberUnit::toAnswerStringPart)
   val valueString = if (numberTypeCase == NumberWithUnits.NumberTypeCase.REAL) {
     real.toString()
   } else {
@@ -66,6 +70,12 @@ private fun StringList.toAnswerString(): String {
 private fun ListOfSetsOfHtmlStrings.toAnswerString(): String {
   return setOfHtmlStringsList.joinToString { "[${it.toAnswerString()}]" }
 }
+
+private fun ImageWithRegions.toAnswerString(): String =
+  labelRegionsOrBuilderList.joinToString {
+    "[${it.region.regionType} ${it.label} (${it.region.area.upperLeft.x}, ${it.region.area.upperLeft.y}), " +
+      "(${it.region.area.lowerRight.x}, ${it.region.area.lowerRight.y})]"
+  }
 
 // https://github.com/oppia/oppia/blob/37285a/core/templates/dev/head/domain/objects/FractionObjectFactory.ts#L47
 private fun Fraction.toAnswerString(): String {

@@ -8,7 +8,8 @@ import javax.inject.Inject
 
 /** Activity that allows users to select a profile to edit from settings. */
 class ProfileListActivity : InjectableAppCompatActivity() {
-  @Inject lateinit var profileListActivityPresenter: ProfileListActivityPresenter
+  @Inject
+  lateinit var profileListActivityPresenter: ProfileListActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
