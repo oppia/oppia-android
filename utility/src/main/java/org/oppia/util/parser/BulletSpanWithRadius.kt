@@ -3,7 +3,6 @@ package org.oppia.util.parser
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
-import android.os.Build
 import android.text.Layout
 import android.text.Spanned
 import android.text.style.LeadingMarginSpan
@@ -20,51 +19,45 @@ class BulletSpanWithRadius(bulletRadius: Int, gapWidth: Int) : LeadingMarginSpan
     return 2 * bulletRadius + gapWidth
   }
 
-  override fun drawLeadingMargin(
-    c: Canvas,
-    p: Paint,
-    x: Int,
-    dir: Int,
-    top: Int,
-    baseline: Int,
-    bottom: Int,
-    text: CharSequence,
-    start: Int,
-    end: Int,
-    first: Boolean,
-    l: Layout
-  ) {
-    if ((text as Spanned).getSpanStart(this) == start) {
-      val style = p.style
-      p.style = Paint.Style.FILL
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB && c.isHardwareAccelerated) {
-        if (bulletPath == null) {
-          bulletPath = Path()
-          // Bullet is slightly better to avoid aliasing artifacts on mdpi devices.
-          bulletPath!!.addCircle(
-            0.0f,
-            0.0f,
-            1.2f * bulletRadius,
-            Path.Direction.CW
-          )
-        }
-        c.save()
-        c.translate(x + dir * (bulletRadius * 1.2f + 1), (top + bottom) / 2.0f)
-        c.drawPath(bulletPath, p)
-        c.restore()
-      } else {
-        c.drawCircle(
-          x + dir * (bulletRadius + 1).toFloat(),
-          (top + bottom) / 2.0f,
-          bulletRadius.toFloat(),
-          p
-        )
-      }
-      p.style = style
-    }
-  }
-
   companion object {
     private var bulletPath: Path? = null
+  }
+
+  override fun drawLeadingMargin(
+    canvas: Canvas, paint: Paint, x: Int, dir: Int,
+    top: Int, baseline: Int, bottom: Int,
+    text: CharSequence, start: Int, end: Int,
+    first: Boolean,
+    layout: Layout?
+  ) {
+    val bottom = bottom
+    if ((text as Spanned).getSpanStart(this) == start) {
+      val style = paint.style
+      paint.style = Paint.Style.FILL
+
+      val yPosition = if (layout != null) {
+        val line = layout.getLineForOffset(start)
+        layout.getLineBaseline(line).toFloat() - bulletRadius * 2f
+      } else {
+        (top + bottom) / 2f
+      }
+
+      val xPosition = (x + dir * bulletRadius).toFloat()
+
+      if (canvas.isHardwareAccelerated) {
+        if (bulletPath == null) {
+          bulletPath = Path()
+          bulletPath!!.addCircle(0.0f, 0.0f, bulletRadius.toFloat(), Path.Direction.CW)
+        }
+        canvas.save()
+        canvas.translate(xPosition, yPosition)
+        canvas.drawPath(bulletPath!!, paint)
+        canvas.restore()
+      } else {
+        canvas.drawCircle(xPosition, yPosition, bulletRadius.toFloat(), paint)
+      }
+
+      paint.style = style
+    }
   }
 }
