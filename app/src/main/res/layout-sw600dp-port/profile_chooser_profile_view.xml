@@ -30,7 +30,7 @@
     app:profileChooserMarginBottom="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_0}">
 
     <LinearLayout
-      android:id="@+id/profile_item"
+      android:id="@+id/profile_chooser_item"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:gravity="@{presenter.wasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER}"

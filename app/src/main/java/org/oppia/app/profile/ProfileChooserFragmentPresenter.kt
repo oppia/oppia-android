@@ -13,8 +13,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
-import kotlinx.android.synthetic.main.profile_chooser_add_view.view.add_profile_item
-import kotlinx.android.synthetic.main.profile_chooser_profile_view.view.profile_item
 import org.oppia.app.R
 import org.oppia.app.databinding.ProfileChooserAddViewBinding
 import org.oppia.app.databinding.ProfileChooserFragmentBinding
@@ -168,7 +166,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   ) {
     binding.viewModel = model
     binding.presenter = this
-    binding.root.profile_item.setOnClickListener {
+    binding.profileChooserItem.setOnClickListener {
       if (model.profile.pin.isEmpty()) {
         profileManagementController.loginToProfile(model.profile.id).observe(
           fragment,
@@ -201,7 +199,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     @Suppress("UNUSED_PARAMETER") model: ProfileChooserUiModel
   ) {
     binding.presenter = this
-    binding.root.add_profile_item.setOnClickListener {
+    binding.addProfileItem.setOnClickListener {
       if (chooserViewModel.adminPin.isEmpty()) {
         activity.startActivity(
           AdminPinActivity.createAdminPinActivityIntent(
