@@ -133,9 +133,9 @@ jobs:
       - restore_cache:
           <<: *restore_cache
       - run:
-          name: App -  FAQ, Help, Mydownloads, Parser, RecyclerView, Story, Utility tests
+          name: App -  FAQ, Help, Mydownloads, Parser, Profileprogress, RecyclerView, Story, Utility tests
           command: ./.circleci/gradle/gradlew -i :app:testDebugUnitTest --tests org.oppia.app.faq* --tests org.oppia.app.help* --tests org.oppia.app.mydownloads*
-            --tests org.oppia.app.parser* --tests org.oppia.app.recyclerview* --tests org.oppia.app.story* --tests org.oppia.app.utility*
+            --tests org.oppia.app.parser* --tests org.oppia.app.profileprogress* --tests org.oppia.app.recyclerview* --tests org.oppia.app.story* --tests org.oppia.app.utility*
       - run:
           name: Save test results
           command: |
