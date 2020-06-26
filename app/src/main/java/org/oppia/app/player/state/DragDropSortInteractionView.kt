@@ -1,8 +1,10 @@
 package org.oppia.app.player.state
 
 import android.content.Context
+import android.content.Context.ACCESSIBILITY_SERVICE
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.accessibility.AccessibilityManager
 import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
@@ -30,6 +32,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
 ) : RecyclerView(context, attrs, defStyleAttr) {
   // Default to grouping is disabled.
   private var isMultipleItemsInSamePositionAllowed: Boolean = false
+  private var isAccessibilityEnabled: Boolean = false
 
   @Inject
   lateinit var htmlParserFactory: HtmlParser.Factory
@@ -37,6 +40,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   @Inject
   @field:ExplorationHtmlParserEntityType
   lateinit var entityType: String
+
   @Inject
   @field:DefaultResourceBucketName
   lateinit var resourceBucketName: String
@@ -46,6 +50,9 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
     FragmentManager.findFragment<InjectableFragment>(this).createViewComponent(this).inject(this)
+    val accessibilityManager =
+      context.getSystemService(ACCESSIBILITY_SERVICE) as AccessibilityManager
+    isAccessibilityEnabled = accessibilityManager.isEnabled
   }
 
   fun allowMultipleItemsInSamePosition(isAllowed: Boolean) {
@@ -78,6 +85,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
           binding.adapter = adapter
           binding.dragDropContentGroupItem.isVisible = isMultipleItemsInSamePositionAllowed
           binding.dragDropContentUnlinkItems.isVisible = viewModel.htmlContent.htmlList.size > 1
+          binding.dragDropAccessibleContainer.isVisible = isAccessibilityEnabled
           binding.viewModel = viewModel
         }
       )
@@ -96,7 +104,12 @@ class DragDropSortInteractionView @JvmOverloads constructor(
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<DragDropSingleItemBinding>(view)!!
           binding.htmlContent =
-            htmlParserFactory.create(resourceBucketName, entityType, entityId, /* imageCenterAlign= */ false)
+            htmlParserFactory.create(
+                resourceBucketName,
+                entityType,
+                entityId, /* imageCenterAlign= */
+                false
+              )
               .parseOppiaHtml(
                 viewModel, binding.dragDropContentTextView
               )

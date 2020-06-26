@@ -69,6 +69,22 @@ class DragAndDropSortInteractionViewModel(
     }
   }
 
+  fun onItemMoved(
+    indexFrom: Int,
+    indexTo: Int,
+    adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
+  ) {
+
+    val item = choiceItems[indexFrom]
+    choiceItems.removeAt(indexFrom)
+    choiceItems.add(indexTo, item)
+
+    choiceItems[indexFrom].itemIndex = indexFrom
+    choiceItems[indexTo].itemIndex = indexTo
+
+    (adapter as BindableAdapter<*>).setDataUnchecked(choiceItems)
+  }
+
   override fun getPendingAnswer(): UserAnswer {
     val userAnswerBuilder = UserAnswer.newBuilder()
     val listItems = choiceItems.map { it.htmlContent }
