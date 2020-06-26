@@ -20,7 +20,10 @@ import kotlin.concurrent.withLock
  * quickly and synchronously.
  */
 @Singleton
-class AssetRepository @Inject constructor(private val context: Context, private val logger: Logger) {
+class AssetRepository @Inject constructor(
+  private val context: Context,
+  private val logger: Logger
+) {
   private val repositoryLock = ReentrantLock()
 
   /** Map of asset names to file contents for text file assets. */
@@ -39,7 +42,9 @@ class AssetRepository @Inject constructor(private val context: Context, private 
     repositoryLock.withLock {
       if (assetName !in textFileAssets) {
         logger.d("AssetRepo", "Caching local text asset: $assetName")
-        textFileAssets[assetName] = context.assets.open(assetName).bufferedReader().use { it.readText() }
+        textFileAssets[assetName] = context.assets.open(assetName).bufferedReader().use {
+          it.readText()
+        }
       }
     }
   }

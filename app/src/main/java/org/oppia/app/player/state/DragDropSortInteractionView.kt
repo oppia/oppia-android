@@ -31,7 +31,8 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   // Default to grouping is disabled.
   private var isMultipleItemsInSamePositionAllowed: Boolean = false
 
-  @Inject lateinit var htmlParserFactory: HtmlParser.Factory
+  @Inject
+  lateinit var htmlParserFactory: HtmlParser.Factory
 
   @Inject
   @field:ExplorationHtmlParserEntityType
@@ -103,7 +104,6 @@ class DragDropSortInteractionView @JvmOverloads constructor(
       )
       .build()
   }
-
 }
 
 /** Bind ItemTouchHelper.SimpleCallback with RecyclerView for a [DragDropSortInteractionView] via data-binding. */

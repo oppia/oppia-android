@@ -14,10 +14,15 @@ import javax.inject.Inject
  */
 internal class NumericInputIsInclusivelyBetweenRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
-): RuleClassifierProvider, GenericRuleClassifier.DoubleInputMatcher<Double> {
+) : RuleClassifierProvider, GenericRuleClassifier.DoubleInputMatcher<Double> {
 
   override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createDoubleInputClassifier(InteractionObject.ObjectTypeCase.REAL, "a", "b", this)
+    return classifierFactory.createDoubleInputClassifier(
+      InteractionObject.ObjectTypeCase.REAL,
+      "a",
+      "b",
+      this
+    )
   }
 
   // TODO(#210): Add tests for this classifier.

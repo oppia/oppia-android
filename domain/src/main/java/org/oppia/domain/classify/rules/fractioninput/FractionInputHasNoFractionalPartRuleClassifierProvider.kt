@@ -15,10 +15,13 @@ import javax.inject.Inject
  */
 internal class FractionInputHasNoFractionalPartRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
-): RuleClassifierProvider, GenericRuleClassifier.NoInputInputMatcher<Fraction> {
+) : RuleClassifierProvider, GenericRuleClassifier.NoInputInputMatcher<Fraction> {
 
   override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createNoInputClassifier(InteractionObject.ObjectTypeCase.FRACTION, this)
+    return classifierFactory.createNoInputClassifier(
+      InteractionObject.ObjectTypeCase.FRACTION,
+      this
+    )
   }
 
   // TODO(#210): Add tests for this classifier.

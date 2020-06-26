@@ -22,17 +22,30 @@ class CompletedStoryListFragmentPresenter @Inject constructor(
 
   private lateinit var binding: CompletedStoryListFragmentBinding
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, internalProfileId: Int): View? {
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    internalProfileId: Int
+  ): View? {
     val viewModel = getCompletedStoryListViewModel()
     viewModel.setProfileId(internalProfileId)
 
-    binding = CompletedStoryListFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding = CompletedStoryListFragmentBinding
+      .inflate(
+        inflater,
+        container,
+        /* attachToRoot= */ false
+      )
     binding.completedStoryListToolbar.setNavigationOnClickListener {
       (activity as CompletedStoryListActivity).finish()
     }
     binding.completedStoryList.apply {
       val spanCount =
-        if (fragment.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 3 else 2
+        if (fragment.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+          3
+        } else {
+          2
+        }
       layoutManager = GridLayoutManager(context, spanCount)
       adapter = createRecyclerViewAdapter()
     }

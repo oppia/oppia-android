@@ -10,7 +10,8 @@ import javax.inject.Inject
 
 /** The activity for displaying [MyDownloadsFragment]. */
 class MyDownloadsActivity : InjectableAppCompatActivity() {
-  @Inject lateinit var myDownloadsActivityPresenter: MyDownloadsActivityPresenter
+  @Inject
+  lateinit var myDownloadsActivityPresenter: MyDownloadsActivityPresenter
   private var internalProfileId: Int = -1
 
   override fun onCreate(savedInstanceState: Bundle?) {

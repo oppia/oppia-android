@@ -10,14 +10,19 @@ import javax.inject.Inject
 
 /** Fragment that contains an onboarding flow of the app. */
 class OnboardingFragment : InjectableFragment() {
-  @Inject lateinit var onboardingFragmentPresenter: OnboardingFragmentPresenter
+  @Inject
+  lateinit var onboardingFragmentPresenter: OnboardingFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
     return onboardingFragmentPresenter.handleCreateView(inflater, container)
   }
 }

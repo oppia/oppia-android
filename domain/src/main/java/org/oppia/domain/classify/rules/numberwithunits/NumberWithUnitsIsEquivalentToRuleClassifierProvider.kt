@@ -17,10 +17,14 @@ import javax.inject.Inject
  */
 internal class NumberWithUnitsIsEquivalentToRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
-): RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<NumberWithUnits> {
+) : RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<NumberWithUnits> {
 
   override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createSingleInputClassifier(InteractionObject.ObjectTypeCase.NUMBER_WITH_UNITS, "f", this)
+    return classifierFactory.createSingleInputClassifier(
+      InteractionObject.ObjectTypeCase.NUMBER_WITH_UNITS,
+      "f",
+      this
+    )
   }
 
   // TODO(#209): Determine whether additional normalization of the input is necessary here.

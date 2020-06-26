@@ -11,7 +11,8 @@ const val KEY_AUDIO_FRAGMENT_TEST_PROFILE_ID = "KEY_AUDIO_FRAGMENT_TEST_PROFILE_
 /** Test Activity used for testing AudioFragment */
 class AudioFragmentTestActivity : InjectableAppCompatActivity() {
 
-  @Inject lateinit var audioFragmentTestActivityController: AudioFragmentTestActivityPresenter
+  @Inject
+  lateinit var audioFragmentTestActivityController: AudioFragmentTestActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

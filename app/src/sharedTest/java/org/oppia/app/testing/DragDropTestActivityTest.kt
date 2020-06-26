@@ -32,7 +32,6 @@ class DragDropTestActivityTest {
       }
       onView(withId(R.id.drag_drop_recycler_view)).perform(
         DragViewAction(
-          DragViewAction.Dragger(),
           RecyclerViewCoordinatesProvider(
             0,
             ChildViewCoordinatesProvider(
@@ -57,7 +56,6 @@ class DragDropTestActivityTest {
       }
       onView(withId(R.id.drag_drop_recycler_view)).perform(
         DragViewAction(
-          DragViewAction.Dragger(),
           RecyclerViewCoordinatesProvider(
             1,
             ChildViewCoordinatesProvider(
@@ -83,7 +81,6 @@ class DragDropTestActivityTest {
       onView(withId(R.id.drag_drop_recycler_view))
       onView(withId(R.id.drag_drop_recycler_view)).perform(
         DragViewAction(
-          DragViewAction.Dragger(),
           RecyclerViewCoordinatesProvider(
             3,
             ChildViewCoordinatesProvider(

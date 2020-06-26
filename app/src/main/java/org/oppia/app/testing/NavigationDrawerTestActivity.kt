@@ -12,7 +12,8 @@ import org.oppia.app.topic.TopicActivity
 import javax.inject.Inject
 
 class NavigationDrawerTestActivity : InjectableAppCompatActivity(), RouteToTopicListener {
-  @Inject lateinit var homeActivityPresenter: HomeActivityPresenter
+  @Inject
+  lateinit var homeActivityPresenter: HomeActivityPresenter
   private var internalProfileId: Int = -1
 
   companion object {

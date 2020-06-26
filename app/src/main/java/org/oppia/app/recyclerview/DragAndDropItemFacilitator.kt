@@ -12,7 +12,7 @@ const val NO_ITEM = -1
 /** A [ItemTouchHelper.SimpleCallback] that provides drag & drop functionality to [RecyclerView]s. */
 class DragAndDropItemFacilitator(
   private val onItemDragListener: OnItemDragListener
-) : ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0) {
+) : ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, /* swipeDirs= */ 0) { // ktlint-disable max-line-length
 
   override fun onMove(
     recyclerView: RecyclerView,
