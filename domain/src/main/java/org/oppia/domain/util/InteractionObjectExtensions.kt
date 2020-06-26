@@ -73,8 +73,9 @@ private fun ListOfSetsOfHtmlStrings.toAnswerString(): String {
 
 private fun ImageWithRegions.toAnswerString(): String =
   labelRegionsOrBuilderList.joinToString {
-    "[${it.region.regionType} ${it.label} (${it.region.area.upperLeft.x}, ${it.region.area.upperLeft.y}), " +
-      "(${it.region.area.lowerRight.x}, ${it.region.area.lowerRight.y})]"
+    "[${it.region.regionType} ${it.label} (${it.region.area.upperLeft.x}, " +
+      "${it.region.area.upperLeft.y}), (${it.region.area.lowerRight.x}, " +
+      "${it.region.area.lowerRight.y})]"
   }
 
 // https://github.com/oppia/oppia/blob/37285a/core/templates/dev/head/domain/objects/FractionObjectFactory.ts#L47
