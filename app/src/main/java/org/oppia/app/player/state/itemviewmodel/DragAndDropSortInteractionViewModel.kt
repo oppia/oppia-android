@@ -37,9 +37,9 @@ class DragAndDropSortInteractionViewModel(
     val callback: Observable.OnPropertyChangedCallback =
       object : Observable.OnPropertyChangedCallback() {
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
-          interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck( /* pendingAnswerError= */
-            null,
-            true
+          interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
+            /* pendingAnswerError= */null,
+            /* inputAnswerAvailable= */ true
           )
         }
       }
