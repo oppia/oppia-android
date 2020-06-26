@@ -18,6 +18,7 @@ import org.oppia.app.player.state.itemviewmodel.DragDropInteractionContentViewMo
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.recyclerview.DragAndDropItemFacilitator
 import org.oppia.app.recyclerview.OnItemDragListener
+import org.oppia.util.accessibility.CustomAccessibilityManager
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.util.parser.HtmlParser
@@ -38,6 +39,9 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   lateinit var htmlParserFactory: HtmlParser.Factory
 
   @Inject
+  lateinit var accessibilityManager: CustomAccessibilityManager
+
+  @Inject
   @field:ExplorationHtmlParserEntityType
   lateinit var entityType: String
 
@@ -50,9 +54,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
     FragmentManager.findFragment<InjectableFragment>(this).createViewComponent(this).inject(this)
-    val accessibilityManager =
-      context.getSystemService(ACCESSIBILITY_SERVICE) as AccessibilityManager
-    isAccessibilityEnabled = accessibilityManager.isEnabled
+    isAccessibilityEnabled = accessibilityManager.isScreenReaderEnabled()
   }
 
   fun allowMultipleItemsInSamePosition(isAllowed: Boolean) {
