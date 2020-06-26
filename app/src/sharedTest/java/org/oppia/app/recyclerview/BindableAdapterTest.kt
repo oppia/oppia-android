@@ -91,6 +91,20 @@ class BindableAdapterTest {
   }
 
   @Test
+  fun testBindableAdapter_withOneViewType_nullData_bindsNoViews() {
+    // Set up the adapter to be used for this test.
+    BindableAdapterTestFragmentPresenter.testBindableAdapter =
+      createSingleViewTypeNoDataBindingBindableAdapter()
+
+    ActivityScenario.launch(BindableAdapterTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        val recyclerView: RecyclerView = getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view_non_live_data)
+        assertThat(recyclerView.childCount).isEqualTo(0)
+      }
+    }
+  }
+
+  @Test
   fun testBindableAdapter_withOneViewType_setMultipleItems_automaticallyBinds() {
     // Set up the adapter to be used for this test.
     BindableAdapterTestFragmentPresenter.testBindableAdapter =

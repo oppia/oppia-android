@@ -592,6 +592,13 @@ class StateFragmentTest {
       )
     )
     onView(withId(R.id.submit_answer_button)).perform(click())
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.submitted_answer_recycler_view,
+        position = 0,
+        targetViewId = R.id.submitted_answer_content_text_view
+      )
+    ).check(matches(withText("3/5")))
     onView(withId(R.id.continue_navigation_button)).perform(click())
 
     // Eighth state: Drag Drop Sort with grouping. Correct answer: Merge First Two.
@@ -617,6 +624,13 @@ class StateFragmentTest {
       )
     ).perform(click())
     onView(withId(R.id.submit_answer_button)).perform(click())
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.submitted_answer_recycler_view,
+        position = 0,
+        targetViewId = R.id.submitted_answer_content_text_view
+      )
+    ).check(matches(withText("0.6")))
     onView(withId(R.id.continue_navigation_button)).perform(click())
   }
 

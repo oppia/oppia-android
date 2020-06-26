@@ -772,7 +772,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
               UserAnswer.TextualAnswerCase.LIST_OF_HTML_ANSWERS -> {
                 showListOfAnswers(binding)
                 binding.submittedListAnswer = userAnswer.listOfHtmlAnswers
-                binding.questionPlayerSubmittedAnswerRecyclerView.isVisible = true
                 binding.questionPlayerSubmittedAnswerRecyclerView.adapter =
                   createListAnswerAdapter(submittedAnswerViewModel.gcsEntityId)
               }
@@ -811,7 +810,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
               UserAnswer.TextualAnswerCase.LIST_OF_HTML_ANSWERS -> {
                 showListOfAnswers(binding)
                 binding.submittedListAnswer = userAnswer.listOfHtmlAnswers
-                binding.submittedAnswerRecyclerView.isVisible = true
                 binding.submittedAnswerRecyclerView.adapter =
                   createListAnswerAdapter(submittedAnswerViewModel.gcsEntityId)
               }
