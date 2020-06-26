@@ -707,6 +707,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
           setViewModel = FractionInteractionItemBinding::setViewModel,
           transformViewModel = { it as FractionInteractionViewModel }
         ).registerViewDataBinder(
+            viewType = StateItemViewModel.ViewType.DRAG_DROP_SORT_INTERACTION,
+            inflateDataBinding = DragDropInteractionItemBinding::inflate,
+            setViewModel = DragDropInteractionItemBinding::setViewModel,
+            transformViewModel = { it as DragAndDropSortInteractionViewModel }
+        ).registerViewDataBinder(
           viewType = StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION,
           inflateDataBinding = NumericInputInteractionItemBinding::inflate,
           setViewModel = NumericInputInteractionItemBinding::setViewModel,

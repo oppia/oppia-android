@@ -1,11 +1,14 @@
 package org.oppia.app.player.state.itemviewmodel
 
+import androidx.databinding.Observable
+import androidx.databinding.ObservableField
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.ListOfSetsOfHtmlStrings
 import org.oppia.app.model.StringList
 import org.oppia.app.model.UserAnswer
+import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.recyclerview.NO_ITEM
@@ -14,7 +17,8 @@ import org.oppia.app.recyclerview.OnItemDragListener
 /** [StateItemViewModel] for drag drop & sort choice list. */
 class DragAndDropSortInteractionViewModel(
   val entityId: String,
-  interaction: Interaction
+  interaction: Interaction,
+  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver
 ) : StateItemViewModel(ViewType.DRAG_DROP_SORT_INTERACTION), InteractionAnswerHandler,
   OnItemDragListener {
   private val allowMultipleItemsInSamePosition: Boolean by lazy {
@@ -27,6 +31,17 @@ class DragAndDropSortInteractionViewModel(
   val choiceItems: ArrayList<DragDropInteractionContentViewModel> =
     computeChoiceItems(choiceStrings, this)
 
+  var isAnswerAvailable = ObservableField<Boolean>(false)
+
+  init {
+    val callback: Observable.OnPropertyChangedCallback = object : Observable.OnPropertyChangedCallback() {
+      override fun onPropertyChanged(sender: Observable, propertyId: Int) {
+        interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck( /* pendingAnswerError= */ null, true)
+      }
+    }
+    isAnswerAvailable.addOnPropertyChangedCallback(callback)
+    isAnswerAvailable.set(true) // For Drag Drop Button will be enabled by default.
+  }
   override fun onItemDragged(
     indexFrom: Int,
     indexTo: Int,

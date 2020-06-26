@@ -78,9 +78,9 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("DragAndDropSortInput")
   fun provideDragAndDropSortInputViewModelFactory(): InteractionViewModelFactory {
-    return { entityId, interaction, _, _, _ ->
+    return { entityId, interaction, _, interactionAnswerErrorReceiver, _ ->
       DragAndDropSortInteractionViewModel(
-        entityId, interaction
+        entityId, interaction, interactionAnswerErrorReceiver
       )
     }
   }
