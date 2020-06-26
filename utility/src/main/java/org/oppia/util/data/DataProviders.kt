@@ -5,6 +5,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import org.oppia.util.logging.ExceptionLogger
 import org.oppia.util.threading.BackgroundDispatcher
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
@@ -20,8 +21,10 @@ import javax.inject.Singleton
 @Singleton
 class DataProviders @Inject constructor(
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
-  private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager
+  private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
+  private val exceptionLogger: ExceptionLogger
 ) {
+
   /**
    * Returns a new [DataProvider] that applies the specified function each time new data is available to it, and
    * provides it to its own subscribers.
@@ -33,7 +36,11 @@ class DataProviders @Inject constructor(
    * it may be called on different background threads at different times. It should perform no UI operations or
    * otherwise interact with UI components.
    */
-  fun <T1, T2> transform(newId: Any, dataProvider: DataProvider<T1>, function: (T1) -> T2): DataProvider<T2> {
+  fun <T1, T2> transform(
+    newId: Any,
+    dataProvider: DataProvider<T1>,
+    function: (T1) -> T2
+  ): DataProvider<T2> {
     asyncDataSubscriptionManager.associateIds(newId, dataProvider.getId())
     return object : DataProvider<T2> {
       override fun getId(): Any {
@@ -43,8 +50,9 @@ class DataProviders @Inject constructor(
       override suspend fun retrieveData(): AsyncResult<T2> {
         return try {
           dataProvider.retrieveData().transform(function)
-        } catch (t: Throwable) {
-          AsyncResult.failed(t)
+        } catch (e: Exception) {
+          exceptionLogger.logException(e)
+          AsyncResult.failed(e)
         }
       }
     }
@@ -113,8 +121,9 @@ class DataProviders @Inject constructor(
       override suspend fun retrieveData(): AsyncResult<O> {
         return try {
           dataProvider1.retrieveData().combineWith(dataProvider2.retrieveData(), function)
-        } catch (t: Throwable) {
-          AsyncResult.failed(t)
+        } catch (e: Exception) {
+          exceptionLogger.logException(e)
+          AsyncResult.failed(e)
         }
       }
     }
@@ -162,8 +171,9 @@ class DataProviders @Inject constructor(
       override suspend fun retrieveData(): AsyncResult<T> {
         return try {
           AsyncResult.success(loadFromMemory())
-        } catch (t: Throwable) {
-          AsyncResult.failed(t)
+        } catch (e: Exception) {
+          exceptionLogger.logException(e)
+          AsyncResult.failed(e)
         }
       }
     }
@@ -173,7 +183,10 @@ class DataProviders @Inject constructor(
    * Returns a new in-memory [DataProvider] in the same way as [createInMemoryDataProvider] except the load function can
    * be blocking.
    */
-  fun <T> createInMemoryDataProviderAsync(id: Any, loadFromMemoryAsync: suspend () -> AsyncResult<T>): DataProvider<T> {
+  fun <T> createInMemoryDataProviderAsync(
+    id: Any,
+    loadFromMemoryAsync: suspend () -> AsyncResult<T>
+  ): DataProvider<T> {
     return object : DataProvider<T> {
       override fun getId(): Any {
         return id

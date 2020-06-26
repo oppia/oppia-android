@@ -18,10 +18,10 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginStart="68dp"
     android:layout_marginTop="@dimen/divider_margin_top"
-    android:layout_marginBottom="@dimen/divider_margin_bottom"
     android:layout_marginEnd="18dp"
-    android:layout_marginStart="68dp">
+    android:layout_marginBottom="@dimen/divider_margin_bottom">
 
     <TextView
       android:id="@+id/submitted_answer_text_view"
@@ -35,6 +35,7 @@
       android:paddingBottom="8dp"
       android:text="@{submittedAnswer}"
       android:textSize="16sp"
+      android:visibility="gone"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
@@ -46,6 +47,7 @@
       android:background="@drawable/submitted_answer_background"
       android:paddingStart="8dp"
       android:paddingEnd="8dp"
+      android:visibility="gone"
       app:itemDecorator="@{@drawable/divider}"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
       app:layout_constraintStart_toStartOf="parent"

@@ -12,7 +12,10 @@ import androidx.recyclerview.widget.RecyclerView
  * https://android.jlelse.eu/1bd08b4796b4.
  */
 @BindingAdapter("data")
-fun <T : Any> bindToRecyclerViewAdapterWithLiveData(recyclerView: RecyclerView, liveData: LiveData<List<T>>) {
+fun <T : Any> bindToRecyclerViewAdapterWithLiveData(
+  recyclerView: RecyclerView,
+  liveData: LiveData<List<T>>
+) {
   liveData.value?.let { data ->
     bindToRecyclerViewAdapter(recyclerView, data)
   }
@@ -24,14 +27,20 @@ fun <T : Any> bindToRecyclerViewAdapterWithLiveData(recyclerView: RecyclerView, 
  * https://android.jlelse.eu/1bd08b4796b4.
  */
 @BindingAdapter("list")
-fun <T : Any> bindToRecyclerViewAdapterWithoutLiveData(recyclerView: RecyclerView, itemList: List<T>?) {
-  if(!itemList.isNullOrEmpty())
+fun <T : Any> bindToRecyclerViewAdapterWithoutLiveData(
+  recyclerView: RecyclerView,
+  itemList: List<T>?
+) {
+  if (!itemList.isNullOrEmpty())
     bindToRecyclerViewAdapter(recyclerView, itemList)
 }
 
 /** A variant of [bindToRecyclerViewAdapterWithLiveData] that instead uses an observable list. */
 @BindingAdapter("data")
-fun <T : Any> bindToRecyclerViewAdapterWithObservableList(recyclerView: RecyclerView, dataList: ObservableList<T>) {
+fun <T : Any> bindToRecyclerViewAdapterWithObservableList(
+  recyclerView: RecyclerView,
+  dataList: ObservableList<T>
+) {
   bindToRecyclerViewAdapter(recyclerView, dataList)
 }
 

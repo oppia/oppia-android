@@ -10,12 +10,12 @@
   </data>
 
   <androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/submitted_answer_list__item_recyclerview"
+    android:id="@+id/submitted_html_answer_recycler_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:itemDecorator="@{@drawable/divider_dotted}"
     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
     app:list="@{answerItem.htmlList}"
     tools:itemCount="1"
-    tools:listitem="@layout/submitted_answer_single_item" />
+    tools:listitem="@layout/submitted_html_answer_item" />
 </layout>

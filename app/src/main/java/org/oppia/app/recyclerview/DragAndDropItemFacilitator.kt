@@ -4,11 +4,15 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 
 private const val ALPHA_FULL = 1.0f
+/**
+ * The index value when drag drop action has been completed.
+ */
+const val NO_ITEM = -1
 
 /** A [ItemTouchHelper.SimpleCallback] that provides drag & drop functionality to [RecyclerView]s. */
 class DragAndDropItemFacilitator(
   private val onItemDragListener: OnItemDragListener
-) : ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0) {
+) : ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, /* swipeDirs= */ 0) { // ktlint-disable max-line-length
 
   override fun onMove(
     recyclerView: RecyclerView,
@@ -35,8 +39,8 @@ class DragAndDropItemFacilitator(
   override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
     viewHolder.itemView.alpha = ALPHA_FULL
     onItemDragListener.onItemDragged(
-      -1,
-      -1,
+      NO_ITEM,
+      NO_ITEM,
       recyclerView.adapter!!
     )
     super.clearView(recyclerView, viewHolder)

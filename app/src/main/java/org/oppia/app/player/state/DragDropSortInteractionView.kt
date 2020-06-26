@@ -31,7 +31,8 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   // Default to grouping is disabled.
   private var isMultipleItemsInSamePositionAllowed: Boolean = false
 
-  @Inject lateinit var htmlParserFactory: HtmlParser.Factory
+  @Inject
+  lateinit var htmlParserFactory: HtmlParser.Factory
 
   @Inject
   @field:ExplorationHtmlParserEntityType
@@ -73,7 +74,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
         },
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<DragDropInteractionItemsBinding>(view)!!
-          binding.dragDropInteractionRecyclerview.adapter = createNestedAdapter()
+          binding.dragDropItemRecyclerview.adapter = createNestedAdapter()
           binding.adapter = adapter
           binding.dragDropContentGroupItem.isVisible = isMultipleItemsInSamePositionAllowed
           binding.dragDropContentUnlinkItems.isVisible = viewModel.htmlContent.htmlList.size > 1
@@ -103,7 +104,6 @@ class DragDropSortInteractionView @JvmOverloads constructor(
       )
       .build()
   }
-
 }
 
 /** Bind ItemTouchHelper.SimpleCallback with RecyclerView for a [DragDropSortInteractionView] via data-binding. */

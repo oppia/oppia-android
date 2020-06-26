@@ -10,14 +10,17 @@ import androidx.lifecycle.Transformations
 import org.oppia.app.R
 import org.oppia.app.databinding.TopicInfoFragmentBinding
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.model.EventLog
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Topic
 import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.domain.analytics.AnalyticsController
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.Logger
 import org.oppia.util.parser.HtmlParser
+import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
 /** The presenter for [TopicInfoFragment]. */
@@ -28,6 +31,8 @@ class TopicInfoFragmentPresenter @Inject constructor(
   private val logger: Logger,
   private val topicController: TopicController,
   private val htmlParserFactory: HtmlParser.Factory,
+  private val analyticsController: AnalyticsController,
+  private val oppiaClock: OppiaClock,
   @DefaultResourceBucketName private val resourceBucketName: String
 ) {
   private lateinit var binding: TopicInfoFragmentBinding
@@ -35,9 +40,13 @@ class TopicInfoFragmentPresenter @Inject constructor(
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
   private val htmlParser: HtmlParser by lazy {
-    htmlParserFactory.create(
-      resourceBucketName, /* entityType= */ "topic", topicId, /* imageCenterAlign= */ true
-    )
+    htmlParserFactory
+      .create(
+        resourceBucketName,
+        /* entityType= */ "topic",
+        topicId,
+        /* imageCenterAlign= */ true
+      )
   }
 
   fun handleCreateView(
@@ -48,8 +57,13 @@ class TopicInfoFragmentPresenter @Inject constructor(
   ): View? {
     this.internalProfileId = internalProfileId
     this.topicId = topicId
-    binding = TopicInfoFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding = TopicInfoFragmentBinding.inflate(
+      inflater,
+      container,
+      /* attachToRoot= */ false
+    )
     subscribeToTopicLiveData()
+    logInfoFragmentEvent(topicId)
     binding.let {
       it.lifecycleOwner = fragment
       it.viewModel = topicInfoViewModel
@@ -64,20 +78,27 @@ class TopicInfoFragmentPresenter @Inject constructor(
   private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
 
   private fun subscribeToTopicLiveData() {
-    topicLiveData.observe(fragment, Observer<Topic> { topic ->
-      topicInfoViewModel.topic.set(topic)
-      topicInfoViewModel.topicDescription.set(
-        htmlParser.parseOppiaHtml(
-          topic.description,
-          fragment.requireView().findViewById(R.id.topic_description_text_view)
+    topicLiveData.observe(
+      fragment,
+      Observer<Topic> { topic ->
+        topicInfoViewModel.topic.set(topic)
+        topicInfoViewModel.topicDescription.set(
+          htmlParser.parseOppiaHtml(
+            topic.description,
+            fragment.requireView().findViewById(R.id.topic_description_text_view)
+          )
         )
-      )
-      controlSeeMoreTextVisibility()
-    })
+        topicInfoViewModel.calculateTopicSizeWithUnit()
+        controlSeeMoreTextVisibility()
+      }
+    )
   }
 
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
-    topicController.getTopic(ProfileId.newBuilder().setInternalId(internalProfileId).build(), topicId)
+    topicController.getTopic(
+      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      topicId
+    )
   }
 
   private fun getTopicList(): LiveData<Topic> {
@@ -102,5 +123,14 @@ class TopicInfoFragmentPresenter @Inject constructor(
         getTopicInfoViewModel().isSeeMoreVisible.set(false)
       }
     }
+  }
+
+  private fun logInfoFragmentEvent(topicId: String){
+    analyticsController.logTransitionEvent(
+      fragment.requireActivity().applicationContext,
+      oppiaClock.getCurrentCalendar().timeInMillis,
+      EventLog.EventAction.OPEN_INFO_TAB,
+      analyticsController.createTopicContext(topicId)
+    )
   }
 }

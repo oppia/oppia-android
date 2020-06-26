@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "215533462679",
+    "firebase_url": "https://oppia-android-dev.firebaseio.com",
+    "project_id": "oppia-android-dev",
+    "storage_bucket": "oppia-android-dev.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:215533462679:android:a25a70347460cd014035d2",
+        "android_client_info": {
+          "package_name": "org.oppia.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "215533462679-rjdq4c32s9mh9ouq0vlmo80u83a7kjdr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCI5yOe1vF9g_e3tcIQb64C5i64AUNT1fc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "215533462679-rjdq4c32s9mh9ouq0vlmo80u83a7kjdr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
