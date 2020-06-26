@@ -84,7 +84,7 @@ class CustomTagHandler (
     }
 
     open fun openListItem(text: Editable) {
-      if (text.length > 0 && text[text.length - 1] != '\n') {
+      if (text.isNotEmpty() && text[text.length - 1] != '\n') {
         text.append("\n")
       }
       val len = text.length
@@ -92,7 +92,7 @@ class CustomTagHandler (
     }
 
     fun closeListItem(text: Editable, indentation: Int) {
-      if (text.length > 0 && text[text.length - 1] != '\n') {
+      if (text.isNotEmpty() && text[text.length - 1] != '\n') {
         text.append("\n")
       }
       val replaces = getReplaces(text, indentation)

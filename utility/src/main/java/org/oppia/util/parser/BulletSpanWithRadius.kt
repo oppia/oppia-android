@@ -14,13 +14,10 @@ import android.text.style.LeadingMarginSpan
 class BulletSpanWithRadius(bulletRadius: Int, gapWidth: Int) : LeadingMarginSpan {
   private val gapWidth: Int = gapWidth
   private val bulletRadius: Int = bulletRadius
+  private var bulletPath: Path? = null
 
   override fun getLeadingMargin(first: Boolean): Int {
     return 2 * bulletRadius + gapWidth
-  }
-
-  companion object {
-    private var bulletPath: Path? = null
   }
 
   override fun drawLeadingMargin(
