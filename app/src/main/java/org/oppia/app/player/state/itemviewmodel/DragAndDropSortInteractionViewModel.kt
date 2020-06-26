@@ -47,12 +47,15 @@ class DragAndDropSortInteractionViewModel(
     indexTo: Int,
     adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
   ) {
+    //Update the data list if once drag is complete and merge icons are displayed.
     if (indexFrom == NO_ITEM && indexTo == NO_ITEM && allowMultipleItemsInSamePosition) {
       (adapter as BindableAdapter<*>).setDataUnchecked(choiceItems)
     } else if (indexFrom != NO_ITEM && indexTo != NO_ITEM) {
       val item = choiceItems[indexFrom]
       choiceItems.removeAt(indexFrom)
       choiceItems.add(indexTo, item)
+
+      //Update the data of item moved for every drag if merge icons are displayed.
       if (allowMultipleItemsInSamePosition) {
         choiceItems[indexFrom].itemIndex = indexFrom
         choiceItems[indexTo].itemIndex = indexTo
@@ -107,9 +110,9 @@ class DragAndDropSortInteractionViewModel(
   fun unlinkElement(itemIndex: Int, adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
     val item = choiceItems[itemIndex]
     choiceItems.removeAt(itemIndex)
-    item.htmlContent.htmlList.asReversed().forEach {
+    item.htmlContent.htmlList.forEach {
       choiceItems.add(
-        0, DragDropInteractionContentViewModel(
+        itemIndex, DragDropInteractionContentViewModel(
           StringList.newBuilder()
             .addHtml(it)
             .build(),

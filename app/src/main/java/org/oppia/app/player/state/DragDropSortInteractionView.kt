@@ -74,7 +74,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
         },
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<DragDropInteractionItemsBinding>(view)!!
-          binding.dragDropInteractionRecyclerview.adapter = createNestedAdapter()
+          binding.dragDropItemRecyclerview.adapter = createNestedAdapter()
           binding.adapter = adapter
           binding.dragDropContentGroupItem.isVisible = isMultipleItemsInSamePositionAllowed
           binding.dragDropContentUnlinkItems.isVisible = viewModel.htmlContent.htmlList.size > 1

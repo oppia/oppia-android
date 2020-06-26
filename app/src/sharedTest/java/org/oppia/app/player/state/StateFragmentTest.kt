@@ -405,7 +405,7 @@ class StateFragmentTest {
 
       playThroughPrototypeExploration()
 
-      // Seventh state: end exploration.
+      // Ninth state: end exploration.
       onView(withId(R.id.return_to_topic_button)).check(matches(withText(R.string.state_end_exploration_button)))
     }
   }
@@ -417,7 +417,7 @@ class StateFragmentTest {
 
       playThroughPrototypeExploration()
 
-      // Seventh state: end exploration.
+      // Ninth state: end exploration.
       onView(withId(R.id.return_to_topic_button)).check(matches(withText(R.string.state_end_exploration_button)))
     }
   }
@@ -591,6 +591,31 @@ class StateFragmentTest {
         Press.FINGER
       )
     )
+    onView(withId(R.id.submit_answer_button)).perform(click())
+    onView(withId(R.id.continue_navigation_button)).perform(click())
+
+    // Eighth state: Drag Drop Sort with grouping. Correct answer: Merge First Two.
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.drag_drop_interaction_recyclerview,
+        position = 1,
+        targetViewId = R.id.drag_drop_content_group_item
+      )
+    ).perform(click())
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.drag_drop_interaction_recyclerview,
+        position = 1,
+        targetViewId = R.id.drag_drop_content_unlink_items
+      )
+    ).perform(click())
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.drag_drop_interaction_recyclerview,
+        position = 0,
+        targetViewId = R.id.drag_drop_content_group_item
+      )
+    ).perform(click())
     onView(withId(R.id.submit_answer_button)).perform(click())
     onView(withId(R.id.continue_navigation_button)).perform(click())
   }
