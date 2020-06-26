@@ -32,6 +32,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -72,6 +73,8 @@ import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
+import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 import java.util.concurrent.AbstractExecutorService
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
@@ -80,6 +83,8 @@ import javax.inject.Qualifier
 import javax.inject.Singleton
 
 /** Tests for [ProfileProgressFragment]. */
+@LooperMode(LooperMode.Mode.PAUSED)
+@Config(qualifiers = "port-xxhdpi")
 @RunWith(AndroidJUnit4::class)
 class ProfileProgressFragmentTest {
 
@@ -163,13 +168,13 @@ class ProfileProgressFragmentTest {
           R.id.profile_edit_image
         )
       ).perform(click())
-      onView(withText(R.string.profile_progress_edit_dialog_title)).check(matches(isDisplayed()))
+      onView(withText(R.string.profile_progress_edit_dialog_title)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
   }
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testProfileProgressFragment_openProfilePictureEditDialog_configurationChange_dialogIsStillOpen() {
+  fun testProfileProgressFragment_openProfilePictureEditDialog_configurationChange_dialogIsStillOpen() { // ktlint-disable max-line-length
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText("Sean"))
       onView(
@@ -179,12 +184,12 @@ class ProfileProgressFragmentTest {
           R.id.profile_edit_image
         )
       ).perform(click())
-      onView(withText(R.string.profile_progress_edit_dialog_title)).check(matches(isDisplayed()))
+      onView(withText(R.string.profile_progress_edit_dialog_title)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
       onView(isRoot()).perform(orientationLandscape())
       onView(withText(R.string.profile_progress_edit_dialog_title)).check(matches(isDisplayed()))
     }
   }
-  /* ktlint-enable max-line-length */
 
   @Test
   fun testAddProfileActivity_imageSelectAvatar_checkGalleryIntent() {
@@ -203,15 +208,16 @@ class ProfileProgressFragmentTest {
           R.id.profile_edit_image
         )
       ).perform(click())
-      onView(withText(R.string.profile_progress_edit_dialog_title)).check(matches(isDisplayed()))
-      onView(withText(R.string.profile_picture_edit_alert_dialog_choose_from_library)).perform(click())
+      onView(withText(R.string.profile_progress_edit_dialog_title)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.profile_picture_edit_alert_dialog_choose_from_library))
+        .perform(click())
       intended(expectedIntent)
     }
   }
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkOngoingTopicsCount_countIsZero() {
+  fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkOngoingTopicsCount_countIsZero() { // ktlint-disable max-line-length
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText("0"))
       onView(
@@ -221,11 +227,9 @@ class ProfileProgressFragmentTest {
       )
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testProfileProgressFragmentWithProgress_recyclerViewItem0_checkOngoingTopicsCount_countIsTwo() {
+  fun testProfileProgressFragmentWithProgress_recyclerViewItem0_checkOngoingTopicsCount_countIsTwo() { // ktlint-disable max-line-length */
     storyProgressTestHelper.markPartialTopicProgressForFractions(
       profileId,
       timestampOlderThanAWeek = false
@@ -243,11 +247,10 @@ class ProfileProgressFragmentTest {
       )
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testProfileProgressFragmentWithProgress_change_configuration_recyclerViewItem0_checkOngoingTopicsCount_countIsTwo() {
+  @Config(qualifiers = "port-xxhdpi")
+  fun testProfileProgressFragmentWithProgress_change_configuration_recyclerViewItem0_checkOngoingTopicsCount_countIsTwo() { // ktlint-disable max-line-length
     storyProgressTestHelper.markPartialTopicProgressForFractions(
       profileId,
       timestampOlderThanAWeek = false
@@ -266,11 +269,9 @@ class ProfileProgressFragmentTest {
       )
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkOngoingTopicsString_descriptionIsCorrect() {
+  fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkOngoingTopicsString_descriptionIsCorrect() { // ktlint-disable max-line-length
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText(R.string.topics_in_progress))
       onView(
@@ -283,11 +284,9 @@ class ProfileProgressFragmentTest {
       )
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testProfileProgressFragmentWithProgress_recyclerViewItem0_checkOngoingTopicsString_descriptionIsCorrect() {
+  fun testProfileProgressFragmentWithProgress_recyclerViewItem0_checkOngoingTopicsString_descriptionIsCorrect() { // ktlint-disable max-line-length
     storyProgressTestHelper.markPartialTopicProgressForFractions(
       profileId,
       timestampOlderThanAWeek = false
@@ -308,11 +307,9 @@ class ProfileProgressFragmentTest {
       )
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testProfileProgressFragmentWithProgress_changeConfiguration_recyclerViewItem0_checkOngoingTopicsString_descriptionIsCorrect() {
+  fun testProfileProgressFragmentWithProgress_changeConfiguration_recyclerViewItem0_checkOngoingTopicsString_descriptionIsCorrect() { // ktlint-disable max-line-length
     storyProgressTestHelper.markPartialTopicProgressForFractions(
       profileId,
       timestampOlderThanAWeek = false
@@ -334,11 +331,9 @@ class ProfileProgressFragmentTest {
       )
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkCompletedStoriesCount_countIsZero() {
+  fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkCompletedStoriesCount_countIsZero() { // ktlint-disable max-line-length
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText("0"))
       onView(
@@ -348,11 +343,9 @@ class ProfileProgressFragmentTest {
       )
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testProfileProgressFragmentWithProgress_recyclerViewItem0_checkCompletedStoriesCount_countIsTwo() {
+  fun testProfileProgressFragmentWithProgress_recyclerViewItem0_checkCompletedStoriesCount_countIsTwo() { // ktlint-disable max-line-length
     storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
       profileId,
       timestampOlderThanAWeek = false
@@ -370,11 +363,9 @@ class ProfileProgressFragmentTest {
       )
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkCompletedStoriesString_descriptionIsCorrect() {
+  fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkCompletedStoriesString_descriptionIsCorrect() { // ktlint-disable max-line-length
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText(R.string.stories_completed))
       onView(
@@ -388,11 +379,9 @@ class ProfileProgressFragmentTest {
       )
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testProfileProgressFragmentWithProgress_recyclerViewItem0_checkCompletedStoriesString_descriptionIsCorrect() {
+  fun testProfileProgressFragmentWithProgress_recyclerViewItem0_checkCompletedStoriesString_descriptionIsCorrect() { // ktlint-disable max-line-length
     storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
       profileId,
       timestampOlderThanAWeek = false
@@ -414,7 +403,6 @@ class ProfileProgressFragmentTest {
       )
     }
   }
-  /* ktlint-enable max-line-length */
 
   @Test
   fun testProfileProgressActivity_recyclerViewItem1_chapterNameIsCorrect() {
@@ -437,10 +425,12 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
+  @Config(qualifiers = "port-xxhdpi")
   fun testProfileProgressActivity_changeConfiguration_recyclerViewItem1_chapterNameIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.profile_progress_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(withId(R.id.profile_progress_list))
+        .perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       waitForTheView(withText("What is a Fraction?"))
       onView(
         atPositionOnView(R.id.profile_progress_list, 1, R.id.chapter_name_text_view)
@@ -494,13 +484,11 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressActivity_recyclerViewIndex0_clickViewAll_opensRecentlyPlayedActivity() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       waitForTheView(withText("Sean"))
-      onView(
-        atPositionOnView(
-          R.id.profile_progress_list,
-          0,
-          R.id.view_all_text_view
+      onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.view_all_text_view))
+        .check(
+          matches(withText("View All"))
         )
-      ).perform(click())
+        .perform(click())
       intended(hasComponent(RecentlyPlayedActivity::class.java.name))
       intended(
         hasExtra(
@@ -541,9 +529,8 @@ class ProfileProgressFragmentTest {
     }
   }
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testProfileProgressActivityNoProgress_recyclerViewIndex0_changeConfiguration_clickStoryCount_isNotClickable() {
+  fun testProfileProgressActivityNoProgress_recyclerViewIndex0_changeConfiguration_clickStoryCount_isNotClickable() { // ktlint-disable max-line-length
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       onView(isRoot()).perform(orientationLandscape())
       waitForTheView(withText(R.string.stories_completed))
@@ -557,11 +544,9 @@ class ProfileProgressFragmentTest {
       )
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testProfileProgressActivityWithProgress_recyclerViewIndex0_clickTopicCount_opensOngoingTopicListActivity() {
+  fun testProfileProgressActivityWithProgress_recyclerViewIndex0_clickTopicCount_opensOngoingTopicListActivity() { // ktlint-disable max-line-length
     storyProgressTestHelper.markPartialTopicProgressForFractions(
       profileId,
       timestampOlderThanAWeek = false
@@ -588,11 +573,9 @@ class ProfileProgressFragmentTest {
       )
     }
   }
-  /* ktlint-enable max-line-length */
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testProfileProgressActivityWithProgress_recyclerViewIndex0_clickStoryCount_opensCompletedStoryListActivity() {
+  fun testProfileProgressActivityWithProgress_recyclerViewIndex0_clickStoryCount_opensCompletedStoryListActivity() { // ktlint-disable max-line-length
     storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
       profileId,
       timestampOlderThanAWeek = false
@@ -619,7 +602,6 @@ class ProfileProgressFragmentTest {
       )
     }
   }
-  /* ktlint-enable max-line-length */
 
   private fun createGalleryPickActivityResultStub(): Instrumentation.ActivityResult {
     val resources: Resources = context.resources
@@ -747,6 +729,7 @@ class ProfileProgressFragmentTest {
     fun inject(optionsFragmentTest: ProfileProgressFragmentTest)
   }
 
+  /* ktlint-disable max-line-length */
   // TODO(#59): Move this to a general-purpose testing library that replaces all CoroutineExecutors with an
   //  Espresso-enabled executor service. This service should also allow for background threads to run in both Espresso
   //  and Robolectric to help catch potential race conditions, rather than forcing parallel execution to be sequential
@@ -756,6 +739,7 @@ class ProfileProgressFragmentTest {
    * An executor service that schedules all [Runnable]s to run asynchronously on the main thread. This is based on:
    * https://android.googlesource.com/platform/packages/apps/TV/+/android-live-tv/src/com/android/tv/util/MainThreadExecutor.java.
    */
+  /* ktlint-enable max-line-length */
   private object MainThreadExecutor : AbstractExecutorService() {
     override fun isTerminated(): Boolean = false
 
