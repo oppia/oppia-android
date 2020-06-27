@@ -1,0 +1,39 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <data>
+
+    <variable
+      name="htmlContent"
+      type="CharSequence" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.player.state.itemviewmodel.DragDropInteractionContentViewModel" />
+  </data>
+
+  <LinearLayout
+    android:id="@+id/drag_drop_item_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    android:gravity="center_vertical">
+
+    <TextView
+      android:id="@+id/drag_drop_content_text_view"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:layout_marginStart="4dp"
+      android:background="@drawable/rounded_rect_grey_border_white_background"
+      android:fontFamily="sans-serif"
+      android:gravity="center_vertical"
+      android:minHeight="40dp"
+      android:padding="16dp"
+      android:paddingTop="4dp"
+      android:text="@{htmlContent}"
+      android:textColor="@color/oppiaDarkBlue"
+      android:textSize="16sp" />
+  </LinearLayout>
+</layout>

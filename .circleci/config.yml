@@ -7,13 +7,6 @@ workflows:
   circleci_tests:
     jobs:
       - install_android_dependencies
-      - linters
-      - utility_tests:
-          requires:
-            - install_android_dependencies
-      - domain_tests:
-          requires:
-            - install_android_dependencies
       - non_flaky_tests:
           requires:
             - install_android_dependencies
@@ -51,81 +44,6 @@ jobs:
           paths:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}
-
-  linters:
-    <<: *job_defaults
-    steps:
-      - checkout
-      - run:
-          name: Download Ktlint
-          command: >
-            KTLINT="0.37.0"
-
-            echo Using Ktlint $KTLINT
-
-            curl -sSLO
-            https://github.com/pinterest/ktlint/releases/download/$KTLINT/ktlint
-
-            chmod a+x ktlint
-      - run:
-          name: Download buf
-          command: >
-            BUFVERSION="v0.15.0"
-
-            echo Using Bufbuild version $BUFVERSION
-
-            curl -sSL
-            https://github.com/bufbuild/buf/releases/download/$BUFVERSION/buf-$(uname -s)-$(uname -m) > /home/circleci/oppia-android/buf
-
-            chmod +x /home/circleci/oppia-android/buf
-      - run:
-          name: Kotlin tests - Data, Utility
-          command: ./ktlint --android utility/src/**/*.kt data/src/**/*.kt && echo "Lint completed successfully"
-      - run:
-          name: Protobuf lint check
-          command: ./buf check lint --input=model/src/main/proto --input-config buf.yaml && echo "Protobuf lint check completed successfully"
-      - store_artifacts:
-          path: linter/reports
-      - store_test_results:
-          path: linter/test-results
-  utility_tests:
-    <<: *job_defaults
-    steps:
-      - checkout
-      - restore_cache:
-          <<: *restore_cache
-      - run:
-          name: Utility Robolectric Tests
-          command: ./.circleci/gradle/gradlew -i :utility:testDebugUnitTest
-      - run:
-          name: Save test results
-          command: |
-            mkdir -p ~/utility-test-results/junit/
-            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/utility-test-results/junit/ \;
-          when: always
-      - store_test_results:
-          path: ~/utility-test-results
-      - store_artifacts:
-          path: ~/utility-test-results/junit
-  domain_tests:
-    <<: *job_defaults
-    steps:
-      - checkout
-      - restore_cache:
-          <<: *restore_cache
-      - run:
-          name: Domain Robolectric Tests
-          command: ./.circleci/gradle/gradlew -i :domain:testDebugUnitTest
-      - run:
-          name: Save test results
-          command: |
-            mkdir -p ~/domain-test-results/junit/
-            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/domain-test-results/junit/ \;
-          when: always
-      - store_test_results:
-          path: ~/domain-test-results
-      - store_artifacts:
-          path: ~/domain-test-results/junit
   non_flaky_tests:
     <<: *job_defaults
     steps:
@@ -133,9 +51,9 @@ jobs:
       - restore_cache:
           <<: *restore_cache
       - run:
-          name: App -  FAQ, Help, Mydownloads, Parser, RecyclerView, Story, Utility tests
+          name: App -  FAQ, Help, Mydownloads, Parser, Profileprogress, RecyclerView, Story, Utility tests
           command: ./.circleci/gradle/gradlew -i :app:testDebugUnitTest --tests org.oppia.app.faq* --tests org.oppia.app.help* --tests org.oppia.app.mydownloads*
-            --tests org.oppia.app.parser* --tests org.oppia.app.recyclerview* --tests org.oppia.app.story* --tests org.oppia.app.utility*
+            --tests org.oppia.app.parser* --tests org.oppia.app.profileprogress* --tests org.oppia.app.recyclerview* --tests org.oppia.app.story* --tests org.oppia.app.utility*
       - run:
           name: Save test results
           command: |

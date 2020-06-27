@@ -6,11 +6,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.reflect.KClass
-import kotlin.reflect.full.cast
-import kotlin.test.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,6 +14,11 @@ import org.oppia.app.model.ListOfSetsOfHtmlStrings
 import org.oppia.app.model.StringList
 import org.oppia.domain.classify.RuleClassifier
 import org.robolectric.annotation.Config
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.reflect.KClass
+import kotlin.reflect.full.cast
+import kotlin.test.fail
 
 /** Tests for [DragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProvider]. */
 @RunWith(AndroidJUnit4::class)
