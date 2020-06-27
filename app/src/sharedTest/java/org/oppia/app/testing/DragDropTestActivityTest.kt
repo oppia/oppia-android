@@ -14,6 +14,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.recyclerview.DragAndDropItemFacilitator
+import org.oppia.app.recyclerview.OnDragEndedListener
 import org.oppia.app.recyclerview.OnItemDragListener
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.utility.ChildViewCoordinatesProvider
@@ -104,7 +105,10 @@ class DragDropTestActivityTest {
   }
 
   private fun createDragCallback(activity: DragDropTestActivity): ItemTouchHelper.Callback {
-    return DragAndDropItemFacilitator(activity as OnItemDragListener)
+    return DragAndDropItemFacilitator(
+      activity as OnItemDragListener,
+      activity as OnDragEndedListener
+    )
   }
 
 }

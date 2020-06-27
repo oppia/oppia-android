@@ -25,6 +25,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -56,6 +57,7 @@ import org.oppia.app.utility.DragViewAction
 import org.oppia.app.utility.RecyclerViewCoordinatesProvider
 import org.oppia.domain.exploration.TEST_EXPLORATION_ID_30
 import org.oppia.domain.exploration.TEST_EXPLORATION_ID_5
+import org.oppia.domain.exploration.TEST_EXPLORATION_ID_8
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
@@ -220,7 +222,6 @@ class StateFragmentTest {
     }
   }
 
-
   @Test
   fun testStateFragment_loadExp_changeConfiguration_secondState_submitInvalidAnswer_disablesSubmitAndShowsError() {
     launchForExploration(TEST_EXPLORATION_ID_30).use {
@@ -296,6 +297,116 @@ class StateFragmentTest {
 
       onView(withId(R.id.previous_state_navigation_button)).check(matches(not(isDisplayed())))
       onView(withId(R.id.next_state_navigation_button)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_worksCorrectly() {
+    launchForExploration(TEST_EXPLORATION_ID_8).use {
+      startPlayingExploration()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_content_group_item
+        )
+      ).perform(click())
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_item_recyclerview
+        )
+      ).check(matches(hasChildCount(2)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_invalidAnswer_correctItemCount() {
+    launchForExploration(TEST_EXPLORATION_ID_8).use {
+      startPlayingExploration()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_content_group_item
+        )
+      ).perform(click())
+      onView(withId(R.id.submit_answer_button)).perform(click())
+      onView(withId(R.id.submitted_answer_recycler_view)).check(matches(hasChildCount(3)))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.submitted_answer_recycler_view,
+          position = 0,
+          targetViewId = R.id.submitted_html_answer_recycler_view
+        )
+      ).check(matches(hasChildCount(2)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_dragItem_worksCorrectly() {
+    launchForExploration(TEST_EXPLORATION_ID_8).use {
+      startPlayingExploration()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_content_group_item
+        )
+      ).perform(click())
+      onView(withId(R.id.drag_drop_interaction_recycler_view)).perform(
+        DragViewAction(
+          RecyclerViewCoordinatesProvider(
+            0,
+            ChildViewCoordinatesProvider(
+              R.id.drag_drop_item_container,
+              GeneralLocation.CENTER
+            )
+          ),
+          RecyclerViewCoordinatesProvider(2, CustomGeneralLocation.UNDER_RIGHT),
+          Press.FINGER
+        )
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 2,
+          targetViewId = R.id.drag_drop_content_text_view
+        )
+      ).check(matches(withText("a camera at the store")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_unlinkFirstItem_worksCorrectly() {
+    launchForExploration(TEST_EXPLORATION_ID_8).use {
+      startPlayingExploration()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_content_group_item
+        )
+      ).perform(click())
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_content_unlink_items
+        )
+      ).perform(click())
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_item_recyclerview
+        )
+      ).check(matches(hasChildCount(1)))
     }
   }
 
@@ -577,8 +688,8 @@ class StateFragmentTest {
     onView(withId(R.id.submit_answer_button)).perform(click())
     onView(withId(R.id.continue_navigation_button)).perform(click())
 
-    // Seventh state: Drag Drop Sort. Correct answer: Default Ordering.
-    onView(withId(R.id.drag_drop_interaction_recyclerview)).perform(
+    // Seventh state: Drag Drop Sort. Correct answer: Move 1st item to 3rd position.
+    onView(withId(R.id.drag_drop_interaction_recycler_view)).perform(
       DragViewAction(
         RecyclerViewCoordinatesProvider(
           0,
@@ -604,21 +715,21 @@ class StateFragmentTest {
     // Eighth state: Drag Drop Sort with grouping. Correct answer: Merge First Two.
     onView(
       atPositionOnView(
-        recyclerViewId = R.id.drag_drop_interaction_recyclerview,
+        recyclerViewId = R.id.drag_drop_interaction_recycler_view,
         position = 1,
         targetViewId = R.id.drag_drop_content_group_item
       )
     ).perform(click())
     onView(
       atPositionOnView(
-        recyclerViewId = R.id.drag_drop_interaction_recyclerview,
+        recyclerViewId = R.id.drag_drop_interaction_recycler_view,
         position = 1,
         targetViewId = R.id.drag_drop_content_unlink_items
       )
     ).perform(click())
     onView(
       atPositionOnView(
-        recyclerViewId = R.id.drag_drop_interaction_recyclerview,
+        recyclerViewId = R.id.drag_drop_interaction_recycler_view,
         position = 0,
         targetViewId = R.id.drag_drop_content_group_item
       )

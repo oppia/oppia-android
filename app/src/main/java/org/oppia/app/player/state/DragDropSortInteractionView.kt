@@ -15,6 +15,7 @@ import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.recyclerview.DragAndDropItemFacilitator
+import org.oppia.app.recyclerview.OnDragEndedListener
 import org.oppia.app.recyclerview.OnItemDragListener
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
@@ -37,6 +38,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   @Inject
   @field:ExplorationHtmlParserEntityType
   lateinit var entityType: String
+
   @Inject
   @field:DefaultResourceBucketName
   lateinit var resourceBucketName: String
@@ -96,7 +98,12 @@ class DragDropSortInteractionView @JvmOverloads constructor(
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<DragDropSingleItemBinding>(view)!!
           binding.htmlContent =
-            htmlParserFactory.create(resourceBucketName, entityType, entityId, /* imageCenterAlign= */ false)
+            htmlParserFactory.create(
+                resourceBucketName,
+                entityType,
+                entityId, /* imageCenterAlign= */
+                false
+              )
               .parseOppiaHtml(
                 viewModel, binding.dragDropContentTextView
               )
@@ -106,14 +113,15 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   }
 }
 
-/** Bind ItemTouchHelper.SimpleCallback with RecyclerView for a [DragDropSortInteractionView] via data-binding. */
-@BindingAdapter("onItemDrag")
+/** Bind ItemTouchHelperSimpleCallback with RecyclerView for a [DragDropSortInteractionView] via data-binding. */
+@BindingAdapter(value = ["onDragEnded","onItemDrag"], requireAll = false)
 fun setItemDragToRecyclerView(
   dragDropSortInteractionView: DragDropSortInteractionView,
+  onDragEnd: OnDragEndedListener,
   onItemDrag: OnItemDragListener
 ) {
   val dragCallback: ItemTouchHelper.Callback =
-    DragAndDropItemFacilitator(onItemDrag)
+    DragAndDropItemFacilitator(onItemDrag, onDragEnd)
 
   val itemTouchHelper = ItemTouchHelper(dragCallback)
   itemTouchHelper.attachToRecyclerView(dragDropSortInteractionView)

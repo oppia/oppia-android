@@ -37,12 +37,13 @@
       android:textStyle="italic" />
 
     <org.oppia.app.player.state.DragDropSortInteractionView
-      android:id="@+id/drag_drop_interaction_recyclerview"
+      android:id="@+id/drag_drop_interaction_recycler_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       app:allowMultipleItemsInSamePosition="@{viewModel.getGroupingStatus()}"
       app:list="@{viewModel.choiceItems}"
       app:onItemDrag="@{(indexFrom, indexTo, adapter) -> viewModel.onItemDragged(indexFrom, indexTo, adapter)}"
+      app:onDragEnded="@{(adapter) -> viewModel.onDragEnded(adapter)}"
       app:entityId="@{viewModel.entityId}"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
   </LinearLayout>
