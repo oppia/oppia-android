@@ -578,7 +578,7 @@ class StateFragmentTest {
     onView(withId(R.id.continue_navigation_button)).perform(click())
 
     // Seventh state: Drag Drop Sort. Correct answer: Default Ordering.
-    onView(withId(R.id.drag_drop_interaction_recyclerview)).perform(
+    onView(withId(R.id.drag_drop_interaction_recycler_view)).perform(
       DragViewAction(
         RecyclerViewCoordinatesProvider(
           0,
@@ -597,21 +597,21 @@ class StateFragmentTest {
     // Eighth state: Drag Drop Sort with grouping. Correct answer: Merge First Two.
     onView(
       atPositionOnView(
-        recyclerViewId = R.id.drag_drop_interaction_recyclerview,
+        recyclerViewId = R.id.drag_drop_interaction_recycler_view,
         position = 1,
         targetViewId = R.id.drag_drop_content_group_item
       )
     ).perform(click())
     onView(
       atPositionOnView(
-        recyclerViewId = R.id.drag_drop_interaction_recyclerview,
+        recyclerViewId = R.id.drag_drop_interaction_recycler_view,
         position = 1,
         targetViewId = R.id.drag_drop_content_unlink_items
       )
     ).perform(click())
     onView(
       atPositionOnView(
-        recyclerViewId = R.id.drag_drop_interaction_recyclerview,
+        recyclerViewId = R.id.drag_drop_interaction_recycler_view,
         position = 0,
         targetViewId = R.id.drag_drop_content_group_item
       )
