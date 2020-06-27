@@ -21,13 +21,16 @@ import org.oppia.app.databinding.ProfileChooserFragmentBinding
 import org.oppia.app.databinding.ProfileChooserProfileViewBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.HomeActivity
+import org.oppia.app.model.EventLog
 import org.oppia.app.model.ProfileChooserUiModel
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.domain.analytics.AnalyticsController
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.Logger
 import org.oppia.util.statusbar.StatusBarColor
+import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
 private val COLORS_LIST = listOf(
@@ -65,7 +68,9 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val context: Context,
   private val logger: Logger,
   private val viewModelProvider: ViewModelProvider<ProfileChooserViewModel>,
-  private val profileManagementController: ProfileManagementController
+  private val profileManagementController: ProfileManagementController,
+  private val analyticsController: AnalyticsController,
+  private val oppiaClock: OppiaClock
 ) {
   private lateinit var binding: ProfileChooserFragmentBinding
   private val orientation = Resources.getSystem().configuration.orientation
@@ -89,6 +94,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
       lifecycleOwner = fragment
       presenter = this@ProfileChooserFragmentPresenter
     }
+    logProfileChooserEvent()
     binding.profileRecyclerView.isNestedScrollingEnabled = false
     subscribeToWasProfileEverBeenAdded()
     binding.profileRecyclerView.apply {
@@ -246,5 +252,14 @@ class ProfileChooserFragmentPresenter @Inject constructor(
         )
       )
     }
+  }
+
+  private fun logProfileChooserEvent(){
+    analyticsController.logTransitionEvent(
+      activity.applicationContext,
+      oppiaClock.getCurrentCalendar().timeInMillis,
+      EventLog.EventAction.OPEN_PROFILE,
+      null
+    )
   }
 }
