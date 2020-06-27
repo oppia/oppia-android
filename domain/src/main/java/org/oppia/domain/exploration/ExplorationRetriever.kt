@@ -19,6 +19,8 @@ const val TEST_EXPLORATION_ID_5 = "0"
 const val TEST_EXPLORATION_ID_6 = "1"
 const val TEST_EXPLORATION_ID_30 = "2"
 const val TEST_EXPLORATION_ID_7 = "3"
+const val TEST_EXPLORATION_ID_8 = "4"
+
 
 // TODO(#59): Make this class inaccessible outside of the domain package except for tests. UI code should not be allowed
 //  to depend on this utility.
@@ -37,6 +39,7 @@ class ExplorationRetriever @Inject constructor(
       TEST_EXPLORATION_ID_6 -> loadExplorationFromAsset("about_oppia.json")
       TEST_EXPLORATION_ID_30 -> loadExplorationFromAsset("prototype_exploration.json")
       TEST_EXPLORATION_ID_7 -> loadExplorationFromAsset("oppia_exploration.json")
+      TEST_EXPLORATION_ID_8 -> loadExplorationFromAsset("drag_and_drop_test_exploration.json")
       FRACTIONS_EXPLORATION_ID_0 -> loadExplorationFromAsset("fractions_exploration0.json")
       FRACTIONS_EXPLORATION_ID_1 -> loadExplorationFromAsset("fractions_exploration1.json")
       RATIOS_EXPLORATION_ID_0 -> loadExplorationFromAsset("ratios_exploration0.json")
