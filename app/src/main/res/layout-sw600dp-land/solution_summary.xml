@@ -24,9 +24,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginStart="72dp"
-      android:layout_marginEnd="72dp"
-      android:layout_marginBottom="20dp"
+      android:layout_marginStart="176dp"
+      android:layout_marginEnd="176dp"
+      android:layout_marginBottom="4dp"
       android:orientation="horizontal">
 
       <TextView
@@ -34,8 +34,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginTop="44dp"
+        android:layout_marginBottom="28dp"
         android:fontFamily="sans-serif-medium"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="20sp"
@@ -50,10 +50,8 @@
         android:minHeight="48dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="28dp"
-        android:layout_marginBottom="32dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/reveal_solution_brown_background"
-        android:padding="4dp"
         android:textSize="14sp"
         android:text="@string/reveal_solution"
         android:textColor="@color/white"
@@ -67,26 +65,20 @@
         android:id="@+id/expand_list_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:minWidth="48dp"
-        android:minHeight="48dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="16dp"
+        android:visibility="@{viewModel.isSolutionRevealed? View.VISIBLE : View.GONE}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.966"
-        app:layout_constraintStart_toEndOf="@+id/solution_title"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="@{viewModel.isSolutionRevealed? View.VISIBLE : View.GONE}"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
           android:id="@+id/solution_list_drop_down_icon"
           android:layout_width="48dp"
           android:layout_height="48dp"
-          android:padding="8dp"
           android:layout_gravity="center_vertical"
           android:contentDescription="@{@string/show_hide_solution_list(viewModel.solutionSummary)}"
+          android:padding="8dp"
           android:src="@{isListExpanded? @drawable/ic_arrow_drop_up_black_24dp : @drawable/ic_arrow_drop_down_black_24dp}" />
       </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -95,11 +87,10 @@
       android:id="@+id/solution_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:orientation="vertical"
-      android:layout_marginStart="84dp"
-      android:layout_marginEnd="84dp"
-      android:layout_marginTop="8dp"
+      android:layout_marginStart="176dp"
+      android:layout_marginEnd="176dp"
       android:layout_marginBottom="32dp"
+      android:orientation="vertical"
       android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
 
       <LinearLayout
@@ -122,7 +113,6 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"
-          android:layout_marginStart="8dp"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="16sp" />
       </LinearLayout>
@@ -157,7 +147,6 @@
     <View
       android:layout_width="match_parent"
       android:layout_height="1dp"
-      android:layout_marginBottom="32dp"
-      android:background="@color/grey_shade_29"/>
+      android:background="@color/seekbarDivider"/>
   </LinearLayout>
 </layout>
