@@ -21,7 +21,6 @@ const val TEST_EXPLORATION_ID_30 = "2"
 const val TEST_EXPLORATION_ID_7 = "3"
 const val TEST_EXPLORATION_ID_8 = "4"
 
-
 // TODO(#59): Make this class inaccessible outside of the domain package except for tests. UI code should not be allowed
 //  to depend on this utility.
 
