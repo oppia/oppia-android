@@ -11,7 +11,7 @@ import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.recyclerview.BindableAdapter
-import org.oppia.app.recyclerview.NO_ITEM
+import org.oppia.app.recyclerview.OnDragEndedListener
 import org.oppia.app.recyclerview.OnItemDragListener
 
 /** [StateItemViewModel] for drag drop & sort choice list. */
@@ -20,7 +20,7 @@ class DragAndDropSortInteractionViewModel(
   interaction: Interaction,
   private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver
 ) : StateItemViewModel(ViewType.DRAG_DROP_SORT_INTERACTION), InteractionAnswerHandler,
-  OnItemDragListener {
+  OnItemDragListener, OnDragEndedListener {
   private val allowMultipleItemsInSamePosition: Boolean by lazy {
     interaction.customizationArgsMap["allowMultipleItemsInSamePosition"]?.boolValue ?: false
   }
@@ -39,7 +39,7 @@ class DragAndDropSortInteractionViewModel(
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
           interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
             /* pendingAnswerError= */null,
-            /* inputAnswerAvailable= */ true
+            /* inputAnswerAvailable= */true
           )
         }
       }
@@ -52,20 +52,22 @@ class DragAndDropSortInteractionViewModel(
     indexTo: Int,
     adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
   ) {
-    //Update the data list if once drag is complete and merge icons are displayed.
-    if (indexFrom == NO_ITEM && indexTo == NO_ITEM && allowMultipleItemsInSamePosition) {
-      (adapter as BindableAdapter<*>).setDataUnchecked(choiceItems)
-    } else if (indexFrom != NO_ITEM && indexTo != NO_ITEM) {
-      val item = choiceItems[indexFrom]
-      choiceItems.removeAt(indexFrom)
-      choiceItems.add(indexTo, item)
+    val item = choiceItems[indexFrom]
+    choiceItems.removeAt(indexFrom)
+    choiceItems.add(indexTo, item)
 
-      //Update the data of item moved for every drag if merge icons are displayed.
-      if (allowMultipleItemsInSamePosition) {
-        choiceItems[indexFrom].itemIndex = indexFrom
-        choiceItems[indexTo].itemIndex = indexTo
-      }
-      adapter.notifyItemMoved(indexFrom, indexTo)
+    // Update the data of item moved for every drag if merge icons are displayed.
+    if (allowMultipleItemsInSamePosition) {
+      choiceItems[indexFrom].itemIndex = indexFrom
+      choiceItems[indexTo].itemIndex = indexTo
+    }
+    adapter.notifyItemMoved(indexFrom, indexTo)
+  }
+
+  override fun onDragEnded(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
+    // Update the data list if once drag is complete and merge icons are displayed.
+    if (allowMultipleItemsInSamePosition) {
+      (adapter as BindableAdapter<*>).setDataUnchecked(choiceItems)
     }
   }
 
