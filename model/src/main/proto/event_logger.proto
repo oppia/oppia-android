@@ -104,7 +104,7 @@ message EventLog {
     OPEN_CONCEPT_CARD = 9;
     // Opening of revision card.
     OPEN_REVISION_CARD = 10;
-    // Opening of profile activity
+    // Opening of profile activity.
     OPEN_PROFILE = 11;
   }
 
