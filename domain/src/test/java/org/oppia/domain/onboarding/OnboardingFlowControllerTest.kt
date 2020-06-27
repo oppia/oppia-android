@@ -62,6 +62,7 @@ class OnboardingFlowControllerTest {
 
   @Inject
   lateinit var onboardingFlowController: OnboardingFlowController
+
   @Inject
   lateinit var cacheFactory: PersistentCacheStore.Factory
 
@@ -73,12 +74,15 @@ class OnboardingFlowControllerTest {
     EmptyCoroutineContext + testDispatcher
   }
 
-  @Mock lateinit var mockOnboardingObserver: Observer<AsyncResult<OnboardingFlow>>
+  @Mock
+  lateinit var mockOnboardingObserver: Observer<AsyncResult<OnboardingFlow>>
 
-  @Captor lateinit var onboardingResultCaptor: ArgumentCaptor<AsyncResult<OnboardingFlow>>
+  @Captor
+  lateinit var onboardingResultCaptor: ArgumentCaptor<AsyncResult<OnboardingFlow>>
 
   // https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/
-  @ObsoleteCoroutinesApi private val testThread = newSingleThreadContext("TestMain")
+  @ObsoleteCoroutinesApi
+  private val testThread = newSingleThreadContext("TestMain")
 
   @Before
   @ExperimentalCoroutinesApi
@@ -118,7 +122,7 @@ class OnboardingFlowControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testControllerObserver_observedAfterSettingAppOnboarded_providesLiveData_userDidNotOnboardApp() =
+  fun testControllerObserver_observedAfterSettingAppOnboarded_providesLiveData_userDidNotOnboardApp() = // ktlint-disable max-line-length
     runBlockingTest(coroutineContext) {
       val onboarding = onboardingFlowController.getOnboardingFlow()
 
@@ -135,27 +139,29 @@ class OnboardingFlowControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_settingAppOnboarded_observedNewController_userOnboardedApp() = runBlockingTest(coroutineContext) {
-    onboardingFlowController.markOnboardingFlowCompleted()
-    advanceUntilIdle()
+  fun testController_settingAppOnboarded_observedNewController_userOnboardedApp() =
+    runBlockingTest(coroutineContext) {
+      onboardingFlowController.markOnboardingFlowCompleted()
+      advanceUntilIdle()
 
-    // Create the controller by creating another singleton graph and injecting it (simulating the app being recreated).
-    setUpTestApplicationComponent()
-    val onboarding = onboardingFlowController.getOnboardingFlow()
-    onboarding.observeForever(mockOnboardingObserver)
-    advanceUntilIdle()
+      // Create the controller by creating another singleton graph and injecting it (simulating the app being recreated).
+      setUpTestApplicationComponent()
+      val onboarding = onboardingFlowController.getOnboardingFlow()
+      onboarding.observeForever(mockOnboardingObserver)
+      advanceUntilIdle()
 
-    // The app should be considered onboarded since a new LiveData instance was observed after marking the app as onboarded.
-    verify(mockOnboardingObserver, atLeastOnce()).onChanged(onboardingResultCaptor.capture())
-    assertThat(onboardingResultCaptor.value.isSuccess()).isTrue()
-    assertThat(onboardingResultCaptor.value.getOrThrow().alreadyOnboardedApp).isTrue()
-  }
+      // The app should be considered onboarded since a new LiveData instance was observed after marking the app as onboarded.
+      verify(mockOnboardingObserver, atLeastOnce()).onChanged(onboardingResultCaptor.capture())
+      assertThat(onboardingResultCaptor.value.isSuccess()).isTrue()
+      assertThat(onboardingResultCaptor.value.getOrThrow().alreadyOnboardedApp).isTrue()
+    }
 
   @Test
   @ExperimentalCoroutinesApi
   fun testController_onboardedApp_cleared_observeNewController_userDidNotOnboardApp() =
     runBlockingTest(coroutineContext) {
-      val onboardingFlowStore = cacheFactory.create("on_boarding_flow", OnboardingFlow.getDefaultInstance())
+      val onboardingFlowStore =
+        cacheFactory.create("on_boarding_flow", OnboardingFlow.getDefaultInstance())
       onboardingFlowController.markOnboardingFlowCompleted()
       advanceUntilIdle()
       // Clear, then recreate another controller.
@@ -170,7 +176,8 @@ class OnboardingFlowControllerTest {
       assertThat(onboardingResultCaptor.value.getOrThrow().alreadyOnboardedApp).isFalse()
     }
 
-  @Qualifier annotation class TestDispatcher
+  @Qualifier
+  annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module
@@ -192,14 +199,18 @@ class OnboardingFlowControllerTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
     @Singleton
     @Provides
     @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBlockingDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 

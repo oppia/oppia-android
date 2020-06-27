@@ -47,14 +47,19 @@ class QuestionAssessmentProgressController @Inject constructor(
   private val currentQuestionDataProvider: NestedTransformedDataProvider<EphemeralQuestion> =
     createCurrentQuestionDataProvider(createEmptyQuestionsListDataProvider())
 
-  internal fun beginQuestionTrainingSession(questionsListDataProvider: DataProvider<List<Question>>) {
+  internal fun beginQuestionTrainingSession(
+    questionsListDataProvider: DataProvider<List<Question>>
+  ) {
     progressLock.withLock {
       check(progress.trainStage == TrainStage.NOT_IN_TRAINING_SESSION) {
         "Cannot start a new training session until the previous one is completed."
       }
 
       progress.advancePlayStageTo(TrainStage.LOADING_TRAINING_SESSION)
-      currentQuestionDataProvider.setBaseDataProvider(questionsListDataProvider, this::retrieveCurrentQuestionAsync)
+      currentQuestionDataProvider.setBaseDataProvider(
+        questionsListDataProvider,
+        this::retrieveCurrentQuestionAsync
+      )
       asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_DATA_PROVIDER_ID)
     }
   }
@@ -117,7 +122,8 @@ class QuestionAssessmentProgressController @Inject constructor(
         lateinit var answeredQuestionOutcome: AnsweredQuestionOutcome
         try {
           val topPendingState = progress.stateDeck.getPendingTopState()
-          val outcome = answerClassificationController.classify(topPendingState.interaction, answer.answer)
+          val outcome =
+            answerClassificationController.classify(topPendingState.interaction, answer.answer)
           answeredQuestionOutcome = progress.stateList.computeAnswerOutcomeForResult(outcome)
           progress.stateDeck.submitAnswer(answer, answeredQuestionOutcome.feedback)
           // Do not proceed unless the user submitted the correct answer.
@@ -128,7 +134,10 @@ class QuestionAssessmentProgressController @Inject constructor(
               progress.stateDeck.pushState(progress.getNextState(), prohibitSameStateName = false)
             } else {
               // Otherwise, push a synthetic state for the end of the session.
-              progress.stateDeck.pushState(State.getDefaultInstance(), prohibitSameStateName = false)
+              progress.stateDeck.pushState(
+                State.getDefaultInstance(),
+                prohibitSameStateName = false
+              )
             }
           }
         } finally {
@@ -211,12 +220,16 @@ class QuestionAssessmentProgressController @Inject constructor(
     questionsListDataProvider: DataProvider<List<Question>>
   ): NestedTransformedDataProvider<EphemeralQuestion> {
     return dataProviders.createNestedTransformedDataProvider(
-      CURRENT_QUESTION_DATA_PROVIDER_ID, questionsListDataProvider, this::retrieveCurrentQuestionAsync
+      CURRENT_QUESTION_DATA_PROVIDER_ID,
+      questionsListDataProvider,
+      this::retrieveCurrentQuestionAsync
     )
   }
 
   @Suppress("RedundantSuspendModifier") // 'suspend' expected by DataProviders.
-  private suspend fun retrieveCurrentQuestionAsync(questionsList: List<Question>): AsyncResult<EphemeralQuestion> {
+  private suspend fun retrieveCurrentQuestionAsync(
+    questionsList: List<Question>
+  ): AsyncResult<EphemeralQuestion> {
     progressLock.withLock {
       return try {
         when (progress.trainStage) {
@@ -227,7 +240,11 @@ class QuestionAssessmentProgressController @Inject constructor(
             progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
             AsyncResult.success(retrieveEphemeralQuestionState(questionsList))
           }
-          TrainStage.VIEWING_STATE -> AsyncResult.success(retrieveEphemeralQuestionState(questionsList))
+          TrainStage.VIEWING_STATE -> AsyncResult.success(
+            retrieveEphemeralQuestionState(
+              questionsList
+            )
+          )
           TrainStage.SUBMITTING_ANSWER -> AsyncResult.pending()
         }
       } catch (e: Exception) {
@@ -258,6 +275,8 @@ class QuestionAssessmentProgressController @Inject constructor(
 
   /** Returns a temporary [DataProvider] that always provides an empty list of [Question]s. */
   private fun createEmptyQuestionsListDataProvider(): DataProvider<List<Question>> {
-    return dataProviders.createInMemoryDataProvider(EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID) { listOf<Question>() }
+    return dataProviders.createInMemoryDataProvider(EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID) {
+      listOf<Question>()
+    }
   }
 }

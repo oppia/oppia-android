@@ -17,7 +17,11 @@ internal class TextInputContainsRuleClassifierProvider @Inject constructor(
 ) : RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<String> {
 
   override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createSingleInputClassifier(InteractionObject.ObjectTypeCase.NORMALIZED_STRING, "x", this)
+    return classifierFactory.createSingleInputClassifier(
+      InteractionObject.ObjectTypeCase.NORMALIZED_STRING,
+      "x",
+      this
+    )
   }
 
   override fun matches(answer: String, input: String): Boolean {

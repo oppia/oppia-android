@@ -1,8 +1,8 @@
 package org.oppia.domain.classify.rules
 
-import javax.inject.Inject
 import org.oppia.app.model.InteractionObject
 import org.oppia.domain.classify.RuleClassifier
+import javax.inject.Inject
 
 /**
  * A convenience [RuleClassifier] which performs parameter extraction and sanitation to simplify classifiers, with the
@@ -14,16 +14,20 @@ import org.oppia.domain.classify.RuleClassifier
  */
 internal class GenericRuleClassifier private constructor(
   private val expectedAnswerObjectType: InteractionObject.ObjectTypeCase,
-  private val orderedExpectedParameterTypes: LinkedHashMap<String, InteractionObject.ObjectTypeCase>,
+  private val orderedExpectedParameterTypes: LinkedHashMap<
+    String, InteractionObject.ObjectTypeCase>,
   private val matcherDelegate: MatcherDelegate
 ) : RuleClassifier {
   override fun matches(answer: InteractionObject, inputs: Map<String, InteractionObject>): Boolean {
     check(answer.objectTypeCase == expectedAnswerObjectType) {
-      "Expected answer to be of type ${expectedAnswerObjectType.name} not ${answer.objectTypeCase.name}"
+      "Expected answer to be of type ${expectedAnswerObjectType.name} " +
+        "not ${answer.objectTypeCase.name}"
     }
-    val parameterInputs = orderedExpectedParameterTypes.toList().map { (parameterName, expectedObjectType) ->
-      retrieveInputObject(parameterName, expectedObjectType, inputs)
-    }
+    val parameterInputs =
+      orderedExpectedParameterTypes.toList()
+        .map { (parameterName, expectedObjectType) ->
+          retrieveInputObject(parameterName, expectedObjectType, inputs)
+        }
     return matcherDelegate.matches(answer, parameterInputs)
   }
 
@@ -33,10 +37,12 @@ internal class GenericRuleClassifier private constructor(
     inputs: Map<String, InteractionObject>
   ): InteractionObject {
     val input = checkNotNull(inputs[parameterName]) {
-      "Expected classifier inputs to contain parameter with name '$parameterName' but had: ${inputs.keys}"
+      "Expected classifier inputs to contain parameter with name " +
+        "'$parameterName' but had: ${inputs.keys}"
     }
     check(input.objectTypeCase == expectedObjectType) {
-      "Expected input value to be of type ${expectedObjectType.name} not ${input.objectTypeCase.name}"
+      "Expected input value to be of type ${expectedObjectType.name} " +
+        "not ${input.objectTypeCase.name}"
     }
     return input
   }
@@ -122,7 +128,11 @@ internal class GenericRuleClassifier private constructor(
     ) : MatcherDelegate() {
       override fun matches(answer: InteractionObject, inputs: List<InteractionObject>): Boolean {
         check(inputs.size == 2)
-        return matcher.matches(extractObject(answer), extractObject(inputs[0]), extractObject(inputs[1]))
+        return matcher.matches(
+          extractObject(answer),
+          extractObject(inputs[0]),
+          extractObject(inputs[1])
+        )
       }
     }
 
@@ -135,7 +145,9 @@ internal class GenericRuleClassifier private constructor(
       override fun matches(answer: InteractionObject, inputs: List<InteractionObject>): Boolean {
         check(inputs.size == 2)
         return matcher.matches(
-          extractAnswerObject(answer), extractFirstParamObject(inputs[0]), extractSecondParamObject(inputs[1])
+          extractAnswerObject(answer),
+          extractFirstParamObject(inputs[0]),
+          extractSecondParamObject(inputs[1])
         )
       }
     }
@@ -150,9 +162,13 @@ internal class GenericRuleClassifier private constructor(
       expectedObjectType: InteractionObject.ObjectTypeCase,
       matcher: NoInputInputMatcher<T>
     ): GenericRuleClassifier {
-      val objectExtractor = interactionObjectTypeExtractorRepository.getExtractor<T>(expectedObjectType)
+      val objectExtractor =
+        interactionObjectTypeExtractorRepository.getExtractor<T>(expectedObjectType)
       return GenericRuleClassifier(
-        expectedObjectType, LinkedHashMap(), MatcherDelegate.NoInputMatcherDelegate(matcher, objectExtractor))
+        expectedObjectType,
+        LinkedHashMap(),
+        MatcherDelegate.NoInputMatcherDelegate(matcher, objectExtractor)
+      )
     }
 
     /**
@@ -163,10 +179,12 @@ internal class GenericRuleClassifier private constructor(
       inputParameterName: String,
       matcher: SingleInputMatcher<T>
     ): GenericRuleClassifier {
-      val objectExtractor = interactionObjectTypeExtractorRepository.getExtractor<T>(expectedObjectType)
+      val objectExtractor =
+        interactionObjectTypeExtractorRepository.getExtractor<T>(expectedObjectType)
       return GenericRuleClassifier(
         expectedObjectType, linkedMapOf(inputParameterName to expectedObjectType),
-        MatcherDelegate.SingleInputMatcherDelegate(matcher, objectExtractor))
+        MatcherDelegate.SingleInputMatcherDelegate(matcher, objectExtractor)
+      )
     }
 
     /**
@@ -179,11 +197,18 @@ internal class GenericRuleClassifier private constructor(
       inputParameterName: String,
       matcher: MultiTypeSingleInputMatcher<AT, IT>
     ): GenericRuleClassifier {
-      val answerObjectExtractor = interactionObjectTypeExtractorRepository.getExtractor<AT>(expectedAnswerObjectType)
-      val inputObjectExtractor = interactionObjectTypeExtractorRepository.getExtractor<IT>(expectedInputObjectType)
+      val answerObjectExtractor =
+        interactionObjectTypeExtractorRepository.getExtractor<AT>(expectedAnswerObjectType)
+      val inputObjectExtractor =
+        interactionObjectTypeExtractorRepository.getExtractor<IT>(expectedInputObjectType)
       return GenericRuleClassifier(
         expectedAnswerObjectType, linkedMapOf(inputParameterName to expectedInputObjectType),
-        MatcherDelegate.MultiTypeSingleInputMatcherDelegate(matcher, answerObjectExtractor, inputObjectExtractor))
+        MatcherDelegate.MultiTypeSingleInputMatcherDelegate(
+          matcher,
+          answerObjectExtractor,
+          inputObjectExtractor
+        )
+      )
     }
 
     /**
@@ -211,8 +236,11 @@ internal class GenericRuleClassifier private constructor(
       return GenericRuleClassifier(
         expectedAnswerObjectType,
         parameters,
-        MatcherDelegate.MultiTypeDoubleInputMatcherDelegate(matcher, answerObjectExtractor,
-          objectExtractorFirst, objectExtractorSecond))
+        MatcherDelegate.MultiTypeDoubleInputMatcherDelegate(
+          matcher, answerObjectExtractor,
+          objectExtractorFirst, objectExtractorSecond
+        )
+      )
     }
 
     /** Returns a new [GenericRuleClassifier] for two input values of the same type as the answer it classifies. */
@@ -222,13 +250,17 @@ internal class GenericRuleClassifier private constructor(
       secondInputParameterName: String,
       matcher: DoubleInputMatcher<T>
     ): GenericRuleClassifier {
-      val objectExtractor = interactionObjectTypeExtractorRepository.getExtractor<T>(expectedObjectType)
+      val objectExtractor =
+        interactionObjectTypeExtractorRepository.getExtractor<T>(expectedObjectType)
       val parameters = linkedMapOf(
         firstInputParameterName to expectedObjectType,
         secondInputParameterName to expectedObjectType
       )
       return GenericRuleClassifier(
-        expectedObjectType, parameters, MatcherDelegate.DoubleInputMatcherDelegate(matcher, objectExtractor))
+        expectedObjectType,
+        parameters,
+        MatcherDelegate.DoubleInputMatcherDelegate(matcher, objectExtractor)
+      )
     }
   }
 }

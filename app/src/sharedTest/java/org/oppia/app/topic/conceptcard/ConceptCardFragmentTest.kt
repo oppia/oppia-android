@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.widget.TextView
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -12,6 +13,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -39,6 +41,7 @@ class ConceptCardFragmentTest {
 
   @Before
   fun setUp() {
+    FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
     activityScenario = ActivityScenario.launch(ConceptCardFragmentTestActivity::class.java)
   }
 
