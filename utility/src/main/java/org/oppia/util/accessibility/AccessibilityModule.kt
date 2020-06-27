@@ -15,6 +15,6 @@ class AccessibilityModule {
   @Singleton
   @Provides
   fun provideAccessibilityManager(context: Context): CustomAccessibilityManager {
-    return AndroidAccessibilityManager(context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager)
+    return AndroidAccessibilityManager(context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager) // ktlint-disable max-line-length
   }
 }

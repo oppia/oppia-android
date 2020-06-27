@@ -14,5 +14,4 @@ class FakeAccessibilityManager @Inject constructor() : CustomAccessibilityManage
   fun setTalkbackEnabled(status: Boolean) {
     talkbackEnabled = status
   }
-
 }

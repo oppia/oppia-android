@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
@@ -40,6 +41,8 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.asCoroutineDispatcher
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
@@ -48,6 +51,11 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.activity.ActivityComponent
+import org.oppia.app.application.ActivityComponentFactory
+import org.oppia.app.application.ApplicationComponent
+import org.oppia.app.application.ApplicationContext
+import org.oppia.app.application.ApplicationModule
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -55,19 +63,40 @@ import org.oppia.app.utility.ChildViewCoordinatesProvider
 import org.oppia.app.utility.CustomGeneralLocation
 import org.oppia.app.utility.DragViewAction
 import org.oppia.app.utility.RecyclerViewCoordinatesProvider
+import org.oppia.data.backends.gae.NetworkModule
+import org.oppia.domain.classify.InteractionsModule
+import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
+import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
+import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.exploration.TEST_EXPLORATION_ID_30
 import org.oppia.domain.exploration.TEST_EXPLORATION_ID_5
 import org.oppia.domain.exploration.TEST_EXPLORATION_ID_8
 import org.oppia.domain.profile.ProfileTestHelper
+import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.testing.TestAccessibilityModule
+import org.oppia.testing.TestCoroutineDispatchers
+import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
+import org.oppia.util.caching.CacheAssetsLocally
+import org.oppia.util.gcsresource.GcsResourceModule
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
+import org.oppia.util.logging.LoggerModule
+import org.oppia.util.parser.GlideImageLoaderModule
+import org.oppia.util.parser.HtmlParserEntityTypeModule
+import org.oppia.util.parser.ImageParsingModule
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
+import org.robolectric.annotation.Config
 import java.util.concurrent.AbstractExecutorService
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
@@ -76,25 +105,26 @@ import javax.inject.Singleton
 
 /** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)
+@Config(application = StateFragmentTest.TestApplication::class)
 class StateFragmentTest {
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
+
+  @InternalCoroutinesApi
   @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  @field:ApplicationContext
   lateinit var context: Context
 
   private val internalProfileId: Int = 1
 
   @Before
   fun setUp() {
-    Intents.init()
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
     FirebaseApp.initializeApp(context)
-  }
-
-  @After
-  fun tearDown() {
-    Intents.release()
   }
 
   // TODO(#388): Add more test-cases
@@ -231,7 +261,10 @@ class StateFragmentTest {
 
       // Attempt to submit an invalid answer.
       onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
-      onView(withId(R.id.fraction_input_interaction_view)).perform(typeText("1/"), closeSoftKeyboard())
+      onView(withId(R.id.fraction_input_interaction_view)).perform(
+        typeText("1/"),
+        closeSoftKeyboard()
+      )
       onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
       onView(withId(R.id.submit_answer_button)).perform(click())
 
@@ -288,7 +321,6 @@ class StateFragmentTest {
       onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
     }
   }
-
 
   @Test
   fun testStateFragment_loadExp_firstState_previousAndNextButtonIsNotDisplayed() {
@@ -398,6 +430,27 @@ class StateFragmentTest {
           recyclerViewId = R.id.drag_drop_interaction_recycler_view,
           position = 0,
           targetViewId = R.id.drag_drop_content_unlink_items
+        )
+      ).perform(click())
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_item_recyclerview
+        )
+      ).check(matches(hasChildCount(1)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_moveDownWithAccessibility() {
+    launchForExploration(TEST_EXPLORATION_ID_8).use {
+      startPlayingExploration()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.submitted_answer_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_move_down_item
         )
       ).perform(click())
       onView(
@@ -534,6 +587,8 @@ class StateFragmentTest {
   }
 
   @Test
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
   fun testStateFragment_loadExp_continueToEndExploration_clickReturnToTopic_destroysActivity() {
     launchForExploration(TEST_EXPLORATION_ID_30).use {
       startPlayingExploration()
@@ -750,10 +805,7 @@ class StateFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerStateFragmentTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   // TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.
@@ -801,97 +853,46 @@ class StateFragmentTest {
 
   @Module
   class TestModule {
+    // Do not use caching to ensure URLs are always used as the main data source when loading audio.
     @Provides
-    @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
-
-    // TODO(#89): Introduce a proper IdlingResource for background dispatchers to ensure they all complete before
-    //  proceeding in an Espresso test. This solution should also be interoperative with Robolectric contexts by using a
-    //  test coroutine dispatcher.
-
-    @Singleton
-    @Provides
-    @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@BlockingDispatcher blockingDispatcher: CoroutineDispatcher): CoroutineDispatcher {
-      return blockingDispatcher
-    }
-
-    @Singleton
-    @Provides
-    @BlockingDispatcher
-    fun provideBlockingDispatcher(): CoroutineDispatcher {
-      return MainThreadExecutor.asCoroutineDispatcher()
-    }
-
-    // TODO(#59): Either isolate these to their own shared test module, or use the real logging
-    // module in tests to avoid needing to specify these settings for tests.
-    @EnableConsoleLog
-    @Provides
-    fun provideEnableConsoleLog(): Boolean = true
-
-    @EnableFileLog
-    @Provides
-    fun provideEnableFileLog(): Boolean = false
-
-    @GlobalLogLevel
-    @Provides
-    fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
+    @CacheAssetsLocally
+    fun provideCacheAssetsLocally(): Boolean = false
   }
 
+  // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
-  @Component(modules = [TestModule::class, TestLogReportingModule::class])
-  interface TestApplicationComponent {
+  @Component(
+    modules = [
+      TestModule::class, TestDispatcherModule::class, ApplicationModule::class, NetworkModule::class,
+      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
+      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
+      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
+      DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
+      GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
+      QuestionModule::class, TestLogReportingModule::class, TestAccessibilityModule::class
+    ]
+  )
+  interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder {
-      @BindsInstance
-      fun setApplication(application: Application): Builder
-
-      fun build(): TestApplicationComponent
-    }
+    interface Builder : ApplicationComponent.Builder
 
     fun inject(stateFragmentTest: StateFragmentTest)
+
   }
 
-  // TODO(#59): Move this to a general-purpose testing library that replaces all CoroutineExecutors with an
-  //  Espresso-enabled executor service. This service should also allow for background threads to run in both Espresso
-  //  and Robolectric to help catch potential race conditions, rather than forcing parallel execution to be sequential
-  //  and immediate.
-  //  NB: This also blocks on #59 to be able to actually create a test-only library.
-  /**
-   * An executor service that schedules all [Runnable]s to run asynchronously on the main thread. This is based on:
-   * https://android.googlesource.com/platform/packages/apps/TV/+/android-live-tv/src/com/android/tv/util/MainThreadExecutor.java.
-   */
-  private object MainThreadExecutor : AbstractExecutorService() {
-    override fun isTerminated(): Boolean = false
-
-    private val handler = Handler(Looper.getMainLooper())
-    val countingResource = CountingIdlingResource("main_thread_executor_counting_idling_resource")
-
-    override fun execute(command: Runnable?) {
-      countingResource.increment()
-      handler.post {
-        try {
-          command?.run()
-        } finally {
-          countingResource.decrement()
-        }
-      }
+  class TestApplication : Application(), ActivityComponentFactory {
+    private val component: TestApplicationComponent by lazy {
+      DaggerStateFragmentTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build() as TestApplicationComponent
     }
 
-    override fun shutdown() {
-      throw UnsupportedOperationException()
+    fun inject(stateFragmentTest: StateFragmentTest) {
+      component.inject(stateFragmentTest)
     }
 
-    override fun shutdownNow(): MutableList<Runnable> {
-      throw UnsupportedOperationException()
-    }
-
-    override fun isShutdown(): Boolean = false
-
-    override fun awaitTermination(timeout: Long, unit: TimeUnit?): Boolean {
-      throw UnsupportedOperationException()
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
+      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
     }
   }
 }
