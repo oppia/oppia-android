@@ -44,7 +44,7 @@ class DragAndDropSortInteractionViewModel(
         }
       }
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
-    isAnswerAvailable.set(true) // For Drag Drop Button will be enabled by default.
+    isAnswerAvailable.set(true) // For drag drop submit button will be enabled by default.
   }
 
   override fun onItemDragged(
@@ -123,7 +123,9 @@ class DragAndDropSortInteractionViewModel(
           StringList.newBuilder()
             .addHtml(it)
             .build(),
-          /* itemIndex= */ 0,  /* listSize= */ 0, this
+          /* itemIndex= */ 0,
+          /* listSize= */ 0,
+          /* dragAndDropSortInteractionViewModel= */this
         )
       )
     }

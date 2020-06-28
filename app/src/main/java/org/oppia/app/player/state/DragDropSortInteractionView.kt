@@ -29,7 +29,7 @@ import javax.inject.Inject
 class DragDropSortInteractionView @JvmOverloads constructor(
   context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : RecyclerView(context, attrs, defStyleAttr) {
-  // Default to grouping is disabled.
+  // For disabling grouping of items by default.
   private var isMultipleItemsInSamePositionAllowed: Boolean = false
 
   @Inject
@@ -101,8 +101,8 @@ class DragDropSortInteractionView @JvmOverloads constructor(
             htmlParserFactory.create(
                 resourceBucketName,
                 entityType,
-                entityId, /* imageCenterAlign= */
-                false
+                entityId,
+                /* imageCenterAlign= */false
               )
               .parseOppiaHtml(
                 viewModel, binding.dragDropContentTextView
@@ -114,7 +114,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
 }
 
 /** Bind ItemTouchHelperSimpleCallback with RecyclerView for a [DragDropSortInteractionView] via data-binding. */
-@BindingAdapter(value = ["onDragEnded","onItemDrag"], requireAll = false)
+@BindingAdapter(value = ["onDragEnded", "onItemDrag"], requireAll = false)
 fun setItemDragToRecyclerView(
   dragDropSortInteractionView: DragDropSortInteractionView,
   onDragEnd: OnDragEndedListener,
