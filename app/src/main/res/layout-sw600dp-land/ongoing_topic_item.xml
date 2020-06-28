@@ -17,10 +17,9 @@
     android:id="@+id/topic_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="16dp"
-    android:layout_marginTop="12dp"
-    android:layout_marginEnd="16dp"
-    android:layout_marginBottom="12dp"
+    android:layout_marginStart="32dp"
+    android:layout_marginTop="24dp"
+    android:layout_marginEnd="32dp"
     app:cardElevation="4dp"
     app:cardCornerRadius="4dp">
 
