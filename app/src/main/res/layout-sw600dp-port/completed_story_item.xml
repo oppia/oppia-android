@@ -15,10 +15,10 @@
     android:id="@+id/topic_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="12dp"
-    android:layout_marginEnd="8dp"
-    android:layout_marginBottom="12dp"
+    android:layout_marginStart="24dp"
+    android:layout_marginTop="36dp"
+    android:layout_marginEnd="24dp"
+    app:cardElevation="4dp"
     app:cardCornerRadius="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -61,8 +61,7 @@
           android:ellipsize="end"
           android:fontFamily="sans-serif"
           android:gravity="top"
-          android:maxLines="2"
-          android:minLines="2"
+          android:lines="2"
           android:text="@{viewModel.completedStory.storyName}"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="14sp"
@@ -84,8 +83,7 @@
           android:text="@{viewModel.completedStory.topicName}"
           android:textColor="@color/oppiaStrokeBlack"
           android:textSize="14sp"
-          android:maxLines="1"
-          android:minLines="1"
+          android:lines="1"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/completed_story_name_text_view" />
       </androidx.constraintlayout.widget.ConstraintLayout>
