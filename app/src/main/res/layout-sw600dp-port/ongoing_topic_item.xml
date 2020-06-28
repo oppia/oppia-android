@@ -17,10 +17,9 @@
     android:id="@+id/topic_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="12dp"
-    android:layout_marginEnd="8dp"
-    android:layout_marginBottom="12dp"
+    android:layout_marginStart="24dp"
+    android:layout_marginTop="36dp"
+    android:layout_marginEnd="24dp"
     app:cardCornerRadius="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -62,8 +61,7 @@
           android:ellipsize="end"
           android:fontFamily="sans-serif"
           android:gravity="top"
-          android:maxLines="2"
-          android:minLines="2"
+          android:lines="2"
           android:text="@{viewModel.topic.name}"
           android:textColor="@color/white"
           android:textSize="14sp"
