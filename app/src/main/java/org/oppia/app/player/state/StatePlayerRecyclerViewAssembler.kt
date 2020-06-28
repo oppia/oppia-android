@@ -25,10 +25,10 @@ import org.oppia.app.databinding.NextButtonItemBinding
 import org.oppia.app.databinding.NumericInputInteractionItemBinding
 import org.oppia.app.databinding.PreviousButtonItemBinding
 import org.oppia.app.databinding.PreviousResponsesHeaderItemBinding
+import org.oppia.app.databinding.QuestionPlayerContentItemBinding
 import org.oppia.app.databinding.QuestionPlayerFeedbackItemBinding
 import org.oppia.app.databinding.QuestionPlayerSelectionInteractionItemBinding
 import org.oppia.app.databinding.QuestionPlayerSubmittedAnswerItemBinding
-import org.oppia.app.databinding.QuestionPlayerContentItemBinding
 import org.oppia.app.databinding.ReplayButtonItemBinding
 import org.oppia.app.databinding.ReturnToTopicButtonItemBinding
 import org.oppia.app.databinding.SelectionInteractionItemBinding
@@ -113,8 +113,10 @@ private typealias AudioUiManagerRetriever = () -> AudioUiManager?
  * - [ReturnToTopicNavigationButtonListener] if the return to topic button is enabled
  */
 class StatePlayerRecyclerViewAssembler private constructor(
-  val adapter: BindableAdapter<StateItemViewModel>, private val playerFeatureSet: PlayerFeatureSet,
-  private val fragment: Fragment, private val congratulationsTextView: TextView?,
+  val adapter: BindableAdapter<StateItemViewModel>,
+  private val playerFeatureSet: PlayerFeatureSet,
+  private val fragment: Fragment,
+  private val congratulationsTextView: TextView?,
   private val canSubmitAnswer: ObservableField<Boolean>?,
   private val audioActivityId: String?,
   private val currentStateName: ObservableField<String>?,
@@ -190,8 +192,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     var canContinueToNextState = false
     var hasGeneralContinueButton = false
     if (ephemeralState.stateTypeCase != EphemeralState.StateTypeCase.TERMINAL_STATE) {
-      if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE
-        && !ephemeralState.hasNextState
+      if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE &&
+        !ephemeralState.hasNextState
       ) {
         hasGeneralContinueButton = true
       } else if (ephemeralState.completedState.answerList.size > 0 && ephemeralState.hasNextState) {
@@ -362,10 +364,13 @@ class StatePlayerRecyclerViewAssembler private constructor(
     animation.addAnimation(fadeOut)
     textView.animation = animation
 
-    lifecycleSafeTimerFactory.createTimer(2000).observe(fragment, Observer {
-      textView.clearAnimation()
-      textView.visibility = View.INVISIBLE
-    })
+    lifecycleSafeTimerFactory.createTimer(2000).observe(
+      fragment,
+      Observer {
+        textView.clearAnimation()
+        textView.visibility = View.INVISIBLE
+      }
+    )
   }
 
   /**
@@ -526,8 +531,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
    * using its injectable [Factory].
    */
   class Builder private constructor(
-    private val htmlParserFactory: HtmlParser.Factory, private val resourceBucketName: String,
-    private val entityType: String, private val fragment: Fragment,
+    private val htmlParserFactory: HtmlParser.Factory,
+    private val resourceBucketName: String,
+    private val entityType: String,
+    private val fragment: Fragment,
     private val interactionViewModelFactoryMap: Map<String, InteractionViewModelFactory>,
     private val backgroundCoroutineDispatcher: CoroutineDispatcher
   ) {
@@ -778,7 +785,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
                 binding.submittedAnswer = userAnswer.plainAnswer
               }
             }
-          })
+          }
+        )
       } else {
         adapterBuilder.registerViewBinder(
           viewType = StateItemViewModel.ViewType.SUBMITTED_ANSWER,
@@ -1033,7 +1041,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     /** Fragment injectable factory to create new [Builder]s. */
     class Factory @Inject constructor(
-      private val htmlParserFactory: HtmlParser.Factory, private val fragment: Fragment,
+      private val htmlParserFactory: HtmlParser.Factory,
+      private val fragment: Fragment,
       private val interactionViewModelFactoryMap: Map<
         String, @JvmSuppressWildcards InteractionViewModelFactory>,
       @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
@@ -1085,8 +1094,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
         forwardNavigation = forwardNavigation || other.forwardNavigation,
         replaySupport = replaySupport || other.replaySupport,
         returnToTopicNavigation = returnToTopicNavigation || other.returnToTopicNavigation,
-        showCongratulationsOnCorrectAnswer = showCongratulationsOnCorrectAnswer
-          || other.showCongratulationsOnCorrectAnswer,
+        showCongratulationsOnCorrectAnswer = showCongratulationsOnCorrectAnswer ||
+          other.showCongratulationsOnCorrectAnswer,
         hintsAndSolutionsSupport = hintsAndSolutionsSupport || other.hintsAndSolutionsSupport,
         supportAudioVoiceovers = supportAudioVoiceovers || other.supportAudioVoiceovers
       )
@@ -1132,7 +1141,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
    * available.
    */
   private class HintHandler(
-    private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory, private val fragment: Fragment
+    private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
+    private val fragment: Fragment
   ) {
     private var trackedWrongAnswerCount = 0
     private var previousHelpIndex: HelpIndex = HelpIndex.getDefaultInstance()
@@ -1226,9 +1236,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
      */
     private fun scheduleShowHint(delayMs: Long, helpIndexToShow: HelpIndex) {
       val targetSequenceNumber = ++hintSequenceNumber
-      lifecycleSafeTimerFactory.createTimer(delayMs).observe(fragment, Observer {
-        showHint(targetSequenceNumber, helpIndexToShow)
-      })
+      lifecycleSafeTimerFactory.createTimer(delayMs).observe(
+        fragment,
+        Observer {
+          showHint(targetSequenceNumber, helpIndexToShow)
+        }
+      )
     }
 
     /**

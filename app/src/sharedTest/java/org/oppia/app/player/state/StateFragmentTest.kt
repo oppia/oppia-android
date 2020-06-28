@@ -50,10 +50,10 @@ import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.app.utility.ChildViewCoordinatesProvider
 import org.oppia.app.utility.CustomGeneralLocation
 import org.oppia.app.utility.DragViewAction
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.app.utility.RecyclerViewCoordinatesProvider
 import org.oppia.domain.exploration.TEST_EXPLORATION_ID_30
 import org.oppia.domain.exploration.TEST_EXPLORATION_ID_5
@@ -79,6 +79,7 @@ import javax.inject.Singleton
 class StateFragmentTest {
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
+
   @Inject
   lateinit var context: Context
 
@@ -154,7 +155,9 @@ class StateFragmentTest {
     launchForExploration(TEST_EXPLORATION_ID_30).use {
       startPlayingExploration()
       onView(withId(R.id.continue_button)).perform(click())
-      onView(withId(R.id.submit_answer_button)).check(matches(withText(R.string.state_submit_button)))
+      onView(withId(R.id.submit_answer_button)).check(
+        matches(withText(R.string.state_submit_button))
+      )
       onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
     }
   }
@@ -166,7 +169,9 @@ class StateFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.continue_button)).perform(click())
       onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
-      onView(withId(R.id.submit_answer_button)).check(matches(withText(R.string.state_submit_button)))
+      onView(withId(R.id.submit_answer_button)).check(
+        matches(withText(R.string.state_submit_button))
+      )
     }
   }
 
@@ -182,12 +187,14 @@ class StateFragmentTest {
       onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
       onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
       onView(withId(R.id.submit_answer_button)).perform(click())
-      onView(withId(R.id.continue_navigation_button)).check(matches(withText(R.string.state_continue_button)))
+      onView(withId(R.id.continue_navigation_button)).check(
+        matches(withText(R.string.state_continue_button))
+      )
     }
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfiguration_secondState_submitAnswer_submitChangesToContinueButton() {
+  fun testStateFragment_loadExp_changeConfiguration_secondState_submitAnswer_submitChangesToContinueButton() { // ktlint-disable max-line-length
     launchForExploration(TEST_EXPLORATION_ID_30).use {
       startPlayingExploration()
       onView(isRoot()).perform(orientationLandscape())
@@ -199,7 +206,9 @@ class StateFragmentTest {
       )
       onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
       onView(withId(R.id.submit_answer_button)).perform(click())
-      onView(withId(R.id.continue_navigation_button)).check(matches(withText(R.string.state_continue_button)))
+      onView(withId(R.id.continue_navigation_button)).check(
+        matches(withText(R.string.state_continue_button))
+      )
     }
   }
 
@@ -223,7 +232,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfiguration_secondState_submitInvalidAnswer_disablesSubmitAndShowsError() {
+  fun testStateFragment_loadExp_changeConfiguration_secondState_submitInvalidAnswer_disablesSubmitAndShowsError() { // ktlint-disable max-line-length
     launchForExploration(TEST_EXPLORATION_ID_30).use {
       startPlayingExploration()
       onView(isRoot()).perform(orientationLandscape())
@@ -231,7 +240,10 @@ class StateFragmentTest {
 
       // Attempt to submit an invalid answer.
       onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
-      onView(withId(R.id.fraction_input_interaction_view)).perform(typeText("1/"), closeSoftKeyboard())
+      onView(withId(R.id.fraction_input_interaction_view)).perform(
+        typeText("1/"),
+        closeSoftKeyboard()
+      )
       onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
       onView(withId(R.id.submit_answer_button)).perform(click())
 
@@ -266,7 +278,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfiguration_secondState_invalidAnswer_updated_reenabledSubmitButton() {
+  fun testStateFragment_loadExp_changeConfiguration_secondState_invalidAnswer_updated_reenabledSubmitButton() { // ktlint-disable max-line-length
     launchForExploration(TEST_EXPLORATION_ID_30).use {
       startPlayingExploration()
       onView(isRoot()).perform(orientationLandscape())
@@ -288,7 +300,6 @@ class StateFragmentTest {
       onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
     }
   }
-
 
   @Test
   fun testStateFragment_loadExp_firstState_previousAndNextButtonIsNotDisplayed() {
@@ -411,7 +422,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfiguration_firstState_previousAndNextButtonIsNotDisplayed() {
+  fun testStateFragment_loadExp_changeConfiguration_firstState_previousAndNextButtonIsNotDisplayed() { // ktlint-disable max-line-length
     launchForExploration(TEST_EXPLORATION_ID_30).use {
       startPlayingExploration()
       onView(isRoot()).perform(orientationLandscape())
@@ -433,7 +444,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfiguration_submitAnswer_clickContinueButton_previousButtonIsDisplayed() {
+  fun testStateFragment_loadExp_changeConfiguration_submitAnswer_clickContinueButton_previousButtonIsDisplayed() { // ktlint-disable max-line-length
     launchForExploration(TEST_EXPLORATION_ID_30).use {
       startPlayingExploration()
       onView(isRoot()).perform(orientationLandscape())
@@ -460,7 +471,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfiguration_submitAnswer_clickContinueThenPrevious_onlyNextButtonIsShown() {
+  fun testStateFragment_loadExp_changeConfiguration_submitAnswer_clickContinueThenPrevious_onlyNextButtonIsShown() { // ktlint-disable max-line-length
     launchForExploration(TEST_EXPLORATION_ID_30).use {
       startPlayingExploration()
       onView(isRoot()).perform(orientationLandscape())
@@ -476,7 +487,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_submitAnswer_clickContinueThenPreviousThenNext_prevAndSubmitShown() {
+  fun testStateFragment_loadExp_submitAnswer_clickContinueThenPreviousThenNext_prevAndSubmitShown() { // ktlint-disable max-line-length
     launchForExploration(TEST_EXPLORATION_ID_30).use {
       startPlayingExploration()
       onView(withId(R.id.continue_button)).perform(click())
@@ -493,7 +504,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfiguration_submitAnswer_clickContinueThenPreviousThenNext_prevAndSubmitShown() {
+  fun testStateFragment_loadExp_changeConfiguration_submitAnswer_clickContinueThenPreviousThenNext_prevAndSubmitShown() { // ktlint-disable max-line-length
     launchForExploration(TEST_EXPLORATION_ID_30).use {
       startPlayingExploration()
       onView(withId(R.id.continue_button)).perform(click())
@@ -517,19 +528,23 @@ class StateFragmentTest {
       playThroughPrototypeExploration()
 
       // Ninth state: end exploration.
-      onView(withId(R.id.return_to_topic_button)).check(matches(withText(R.string.state_end_exploration_button)))
+      onView(withId(R.id.return_to_topic_button)).check(
+        matches(withText(R.string.state_end_exploration_button))
+      )
     }
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfiguration_continueToEndExploration_hasReturnToTopicButton() {
+  fun testStateFragment_loadExp_changeConfiguration_continueToEndExploration_hasReturnToTopicButton() { // ktlint-disable max-line-length
     launchForExploration(TEST_EXPLORATION_ID_30).use {
       startPlayingExploration()
 
       playThroughPrototypeExploration()
 
       // Ninth state: end exploration.
-      onView(withId(R.id.return_to_topic_button)).check(matches(withText(R.string.state_end_exploration_button)))
+      onView(withId(R.id.return_to_topic_button)).check(
+        matches(withText(R.string.state_end_exploration_button))
+      )
     }
   }
 
@@ -547,7 +562,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfiguration_continueToEndExploration_clickReturnToTopic_destroysActivity() {
+  fun testStateFragment_loadExp_changeConfiguration_continueToEndExploration_clickReturnToTopic_destroysActivity() { // ktlint-disable max-line-length
     launchForExploration(TEST_EXPLORATION_ID_30).use {
       startPlayingExploration()
       playThroughPrototypeExploration()
@@ -565,8 +580,9 @@ class StateFragmentTest {
       startPlayingExploration()
 
       val htmlResult =
-        "Hi, welcome to Oppia! is a tool that helps you create interactive learning activities that can be " +
-          "continually improved over time.\n\nIncidentally, do you know where the name 'Oppia' comes from?"
+        "Hi, welcome to Oppia! is a tool that helps you create interactive learning " +
+          "activities that can be continually improved over time.\n\nIncidentally, do you " +
+          "know where the name 'Oppia' comes from?"
       onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(
         matches(
           withText(htmlResult)
@@ -576,13 +592,14 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testContentCard_forDemoExploration_changeConfiguration_withCustomOppiaTags_displaysParsedHtml() {
+  fun testContentCard_forDemoExploration_changeConfiguration_withCustomOppiaTags_displaysParsedHtml() { // ktlint-disable max-line-length
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
 
       val htmlResult =
-        "Hi, welcome to Oppia! is a tool that helps you create interactive learning activities that can be " +
-          "continually improved over time.\n\nIncidentally, do you know where the name 'Oppia' comes from?"
+        "Hi, welcome to Oppia! is a tool that helps you create interactive learning activities " +
+          "that can be continually improved over time.\n\nIncidentally, do you know where " +
+          "the name 'Oppia' comes from?"
       onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(
         matches(
           withText(htmlResult)
@@ -814,9 +831,8 @@ class StateFragmentTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@BlockingDispatcher blockingDispatcher: CoroutineDispatcher): CoroutineDispatcher {
-      return blockingDispatcher
-    }
+    fun provideBackgroundDispatcher(@BlockingDispatcher blockingDispatcher: CoroutineDispatcher):
+      CoroutineDispatcher { return blockingDispatcher }
 
     @Singleton
     @Provides

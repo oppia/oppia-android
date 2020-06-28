@@ -18,9 +18,11 @@ import org.oppia.app.recyclerview.OnItemDragListener
 class DragAndDropSortInteractionViewModel(
   val entityId: String,
   interaction: Interaction,
-  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver
-) : StateItemViewModel(ViewType.DRAG_DROP_SORT_INTERACTION), InteractionAnswerHandler,
-  OnItemDragListener, OnDragEndedListener {
+  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver // ktlint-disable max-line-length
+) : StateItemViewModel(ViewType.DRAG_DROP_SORT_INTERACTION),
+  InteractionAnswerHandler,
+  OnItemDragListener,
+  OnDragEndedListener {
   private val allowMultipleItemsInSamePosition: Boolean by lazy {
     interaction.customizationArgsMap["allowMultipleItemsInSamePosition"]?.boolValue ?: false
   }
@@ -44,7 +46,7 @@ class DragAndDropSortInteractionViewModel(
         }
       }
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
-    isAnswerAvailable.set(true) // For Drag Drop Button will be enabled by default.
+    isAnswerAvailable.set(true) // For drag drop submit button will be enabled by default.
   }
 
   override fun onItemDragged(
@@ -111,7 +113,7 @@ class DragAndDropSortInteractionViewModel(
       dragDropInteractionContentViewModel.itemIndex = index
       dragDropInteractionContentViewModel.listSize = choiceItems.size
     }
-    //to update the content of grouped item
+    // to update the content of grouped item
     (adapter as BindableAdapter<*>).setDataUnchecked(choiceItems)
   }
 
@@ -120,11 +122,14 @@ class DragAndDropSortInteractionViewModel(
     choiceItems.removeAt(itemIndex)
     item.htmlContent.htmlList.forEach {
       choiceItems.add(
-        itemIndex, DragDropInteractionContentViewModel(
+        itemIndex,
+        DragDropInteractionContentViewModel(
           StringList.newBuilder()
             .addHtml(it)
             .build(),
-          /* itemIndex= */ 0,  /* listSize= */ 0, this
+          /* itemIndex= */ 0,
+          /* listSize= */ 0,
+          /* dragAndDropSortInteractionViewModel= */this
         )
       )
     }
@@ -133,7 +138,7 @@ class DragAndDropSortInteractionViewModel(
       dragDropInteractionContentViewModel.itemIndex = index
       dragDropInteractionContentViewModel.listSize = choiceItems.size
     }
-    //to update the list
+    // to update the list
     (adapter as BindableAdapter<*>).setDataUnchecked(choiceItems)
   }
 
