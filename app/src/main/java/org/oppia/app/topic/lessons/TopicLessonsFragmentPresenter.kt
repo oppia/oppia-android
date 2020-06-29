@@ -73,7 +73,6 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       it.lifecycleOwner = fragment
     }
     subscribeToTopicLiveData()
-    logLessonsFragmentEvent(topicId)
     return binding.root
   }
 
@@ -185,14 +184,5 @@ class TopicLessonsFragmentPresenter @Inject constructor(
 
   fun storySummaryClicked(storySummary: StorySummary) {
     routeToStoryListener.routeToStory(internalProfileId, topicId, storySummary.storyId)
-  }
-
-  private fun logLessonsFragmentEvent(topicId: String){
-    analyticsController.logTransitionEvent(
-      fragment.requireActivity().applicationContext,
-      oppiaClock.getCurrentCalendar().timeInMillis,
-      EventLog.EventAction.OPEN_LESSONS_TAB,
-      analyticsController.createTopicContext(topicId)
-    )
   }
 }

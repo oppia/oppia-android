@@ -53,7 +53,6 @@ class TopicRevisionFragmentPresenter @Inject constructor(
 
     viewModel.setTopicId(this.topicId)
     viewModel.setInternalProfileId(this.internalProfileId)
-    logRevisionFragmentEvent(topicId)
 
     binding.revisionRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
@@ -88,14 +87,5 @@ class TopicRevisionFragmentPresenter @Inject constructor(
         inflateDataBinding = TopicRevisionSummaryViewBinding::inflate,
         setViewModel = TopicRevisionSummaryViewBinding::setViewModel
       ).build()
-  }
-
-  private fun logRevisionFragmentEvent(topicId: String){
-    analyticsController.logTransitionEvent(
-      fragment.requireActivity().applicationContext,
-      oppiaClock.getCurrentCalendar().timeInMillis,
-      EventLog.EventAction.OPEN_REVISION_TAB,
-      analyticsController.createTopicContext(topicId)
-    )
   }
 }
