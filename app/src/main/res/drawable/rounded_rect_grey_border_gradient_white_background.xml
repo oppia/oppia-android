@@ -5,9 +5,9 @@
     android:color="@color/oppiaSubmittedAnswerTextColor" />
   <gradient
     android:angle="270"
-    android:centerColor="#EFEFEF"
+    android:centerColor="#F7F7F7"
     android:endColor="#DCDCDC"
-    android:startColor="#FEFEFE"
+    android:startColor="#FFFFFF"
     android:type="linear" />
   <corners android:radius="4dp" />
 </shape>
