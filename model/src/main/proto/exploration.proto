@@ -216,6 +216,8 @@ message UserAnswer {
     string html_answer = 2;
     // A plaintext representation of the answer.
     string plain_answer = 3;
+    // A list of HTML textual representation of the answer.
+    ListOfSetsOfHtmlStrings list_of_html_answers = 4;
   }
 }
 
