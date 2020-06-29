@@ -57,7 +57,7 @@ class TopicInfoFragmentTest {
   private val internalProfileId = 0
 
   @Before
-  fun setUp(){
+  fun setUp() {
     FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
   }
 
