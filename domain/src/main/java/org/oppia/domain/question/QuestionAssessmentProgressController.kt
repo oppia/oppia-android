@@ -1,6 +1,5 @@
 package org.oppia.domain.question
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.oppia.app.model.AnsweredQuestionOutcome
@@ -159,7 +158,7 @@ class QuestionAssessmentProgressController @Inject constructor(
     }
   }
 
-  fun submitHintIsRevealed(state: State, hintIsRevealed: Boolean, hintIndex: Int): LiveData<AsyncResult<Hint>> {
+  fun submitHintIsRevealed(state: State, hintIsRevealed: Boolean, hintIndex: Int): LiveData<AsyncResult<Hint>> { // ktlint-disable max-line-length
     try {
       progressLock.withLock {
         check(progress.trainStage != TrainStage.NOT_IN_TRAINING_SESSION) {
@@ -194,6 +193,7 @@ class QuestionAssessmentProgressController @Inject constructor(
     }
   }
 
+  /* ktlint-disable max-line-length */
   fun submitSolutionIsRevealed(state: State, solutionIsRevealed: Boolean): LiveData<AsyncResult<Solution>> {
     try {
       progressLock.withLock {
@@ -230,8 +230,8 @@ class QuestionAssessmentProgressController @Inject constructor(
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
-
-
+  /* ktlint-enable max-line-length */
+  
   /**
    * Navigates to the next question in the assessment. This method is only valid if the current [EphemeralQuestion]
    * reported by [getCurrentQuestion] is a completed question. Calling code is responsible for ensuring this method is
@@ -311,7 +311,8 @@ class QuestionAssessmentProgressController @Inject constructor(
         when (progress.trainStage) {
           TrainStage.NOT_IN_TRAINING_SESSION -> AsyncResult.pending()
           TrainStage.LOADING_TRAINING_SESSION -> {
-            // If the assessment hasn't yet been initialized, initialize it now that a list of questions is available.
+            // If the assessment hasn't yet been initialized, initialize it
+            // now that a list of questions is available.
             initializeAssessment(questionsList)
             progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
             AsyncResult.success(retrieveEphemeralQuestionState(questionsList))
