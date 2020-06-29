@@ -108,6 +108,7 @@ class CustomTagHandler (
     }
 
     protected abstract fun getReplaces(text: Editable?, indentation: Int): Array<Any>
+
     /** Note: This knows that the last returned object from getSpans() will be the most recently added. */
     private fun getLast(text: Spanned): ListItemTag? {
       val listTags = text.getSpans(0, text.length, ListItemTag::class.java)
@@ -138,8 +139,6 @@ class CustomTagHandler (
 
     /** Class representing the ordered list (`<ol>`) HTML tag. */
      data class OrderedListTag(private var nextIdx: Int = 1): ListItemTag() {
-    /** Creates a new `<ol>` with start index of 1. */
-//    @JvmOverloads constructor(private var nextIdx: Int = 1) : ListItemTag() {
     override fun openListItem(text: Editable) {
         super.openListItem(text)
         text.append(Integer.toString(nextIdx++)).append(". ")
