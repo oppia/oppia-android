@@ -11,4 +11,5 @@ import javax.inject.Inject
 @FragmentScope
 class BindableAdapterTestViewModel @Inject constructor() : ViewModel() {
   val dataListLiveData = MutableLiveData<List<TestModel>>()
+  val dataList: List<TestModel>? = null
 }
