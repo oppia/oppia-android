@@ -36,6 +36,7 @@ import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.testing.FakeEventLogger
+import org.oppia.testing.TestAccessibilityModule
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.caching.CacheAssetsLocally
@@ -125,7 +126,7 @@ class TopicLessonsFragmentLocalTest {
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
       GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
-      QuestionModule::class, TestLogReportingModule::class
+      QuestionModule::class, TestLogReportingModule::class, TestAccessibilityModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

@@ -36,6 +36,7 @@ import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.testing.FakeEventLogger
+import org.oppia.testing.TestAccessibilityModule
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.caching.CacheAssetsLocally
@@ -149,7 +150,7 @@ class ExplorationActivityLocalTest {
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
       GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
-      QuestionModule::class, TestLogReportingModule::class
+      QuestionModule::class, TestLogReportingModule::class, TestAccessibilityModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
