@@ -146,13 +146,13 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopStatePlayingSessi
     allHintsExhausted: Boolean
   ) {
     if (getHintsAndSolution() == null) {
-      val hintsAndSolutionFragment = HintsAndSolutionDialogFragment.newInstance(
+      val hintsAndSolutionDialogFragment = HintsAndSolutionDialogFragment.newInstance(
         explorationId,
         newAvailableHintIndex,
         allHintsExhausted
       )
-      hintsAndSolutionFragment.loadState(state)
-      hintsAndSolutionFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
+      hintsAndSolutionDialogFragment.loadState(state)
+      hintsAndSolutionDialogFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }
   }
 

@@ -99,14 +99,14 @@ class QuestionPlayerActivity :
     allHintsExhausted: Boolean
   ) {
     if (getHintsAndSolution() == null) {
-      val hintsAndSolutionFragment =
+      val hintsAndSolutionDialogFragment =
         HintsAndSolutionDialogFragment.newInstance(
           questionId,
           newAvailableHintIndex,
           allHintsExhausted
         )
-      hintsAndSolutionFragment.loadState(state)
-      hintsAndSolutionFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
+      hintsAndSolutionDialogFragment.loadState(state)
+      hintsAndSolutionDialogFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }
   }
 

@@ -72,13 +72,13 @@ class HintsAndSolutionDialogFragment : InjectableDialogFragment(), ExpandedHintL
       }
     }
     val args =
-      checkNotNull(arguments) { "Expected arguments to be passed to HintsAndSolutionFragment" }
+      checkNotNull(arguments) { "Expected arguments to be passed to HintsAndSolutionDialogFragment" }
     val id =
-      checkNotNull(args.getString(ID_ARGUMENT_KEY)) { "Expected id to be passed to HintsAndSolutionFragment" }
+      checkNotNull(args.getString(ID_ARGUMENT_KEY)) { "Expected id to be passed to HintsAndSolutionDialogFragment" }
     val newAvailableHintIndex =
-      checkNotNull(args.getInt(NEW_AVAILABLE_HINT_INDEX_ARGUMENT_KEY)) { "Expected hint index to be passed to HintsAndSolutionFragment" }
+      checkNotNull(args.getInt(NEW_AVAILABLE_HINT_INDEX_ARGUMENT_KEY)) { "Expected hint index to be passed to HintsAndSolutionDialogFragment" }
     val allHintsExhausted =
-      checkNotNull(args.getBoolean(ALL_HINTS_EXHAUSTED_ARGUMENT_KEY)) { "Expected if hints exhausted to be passed to HintsAndSolutionFragment" }
+      checkNotNull(args.getBoolean(ALL_HINTS_EXHAUSTED_ARGUMENT_KEY)) { "Expected if hints exhausted to be passed to HintsAndSolutionDialogFragment" }
 
     return hintsAndSolutionDialogFragmentPresenter.handleCreateView(
       inflater,
