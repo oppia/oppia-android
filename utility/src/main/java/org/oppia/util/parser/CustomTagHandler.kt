@@ -111,10 +111,7 @@ class CustomTagHandler (
 
     /** Note: This knows that the last returned object from getSpans() will be the most recently added. */
     private fun getLast(text: Spanned): ListItemTag? {
-      val listTags = text.getSpans(0, text.length, ListItemTag::class.java)
-      return if (listTags.size == 0) {
-        null
-      } else listTags[listTags.size - 1]
+      return text.getSpans(/* start= */ 0, text.length, ListItemTag::class.java).lastOrNull()
     }
 
     /** Class representing the unordered list (`<ul>`) HTML tag. */
