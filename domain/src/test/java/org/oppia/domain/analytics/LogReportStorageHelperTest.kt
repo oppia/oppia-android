@@ -9,11 +9,12 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import org.junit.Before
-
 import org.junit.Rule
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
@@ -30,8 +31,6 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
 import org.oppia.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
