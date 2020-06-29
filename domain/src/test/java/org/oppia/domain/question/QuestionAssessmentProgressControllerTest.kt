@@ -1019,7 +1019,7 @@ class QuestionAssessmentProgressControllerTest {
     val result = questionAssessmentProgressController.submitHintIsRevealed(
       ephemeralQuestion.ephemeralState.state,
       /* hintIsRevealed= */ true,
-      /* hintIndex= */0
+      /* hintIndex= */ 0
     )
     result.observeForever(mockAsyncHintObserver)
     advanceUntilIdle()

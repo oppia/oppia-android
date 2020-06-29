@@ -302,7 +302,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private fun processHint(hintResult: AsyncResult<Hint>): Hint {
     if (hintResult.isFailure()) {
       logger.e(
-        "StateFragment",
+        "QuestionPlayerFragment",
         "Failed to retrieve Hint",
         hintResult.getErrorOrNull()!!
       )
