@@ -2,10 +2,6 @@ package org.oppia.domain.question
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import java.util.concurrent.locks.ReentrantLock
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.concurrent.withLock
 import org.oppia.app.model.AnsweredQuestionOutcome
 import org.oppia.app.model.EphemeralQuestion
 import org.oppia.app.model.Hint
@@ -21,6 +17,10 @@ import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
 import org.oppia.util.data.DataProviders.NestedTransformedDataProvider
 import org.oppia.util.logging.ExceptionLogger
+import java.util.concurrent.locks.ReentrantLock
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.concurrent.withLock
 
 private const val CURRENT_QUESTION_DATA_PROVIDER_ID = "CurrentQuestionDataProvider"
 private const val EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID = "EmptyQuestionsListDataProvider"
