@@ -1,14 +1,14 @@
 package org.oppia.domain.analytics
 
 import androidx.lifecycle.LiveData
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.oppia.app.model.EventLog
 import org.oppia.app.model.EventLogs
 import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
 import org.oppia.util.logging.Logger
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @Singleton
 class LogReportStorageHelper @Inject constructor(
@@ -49,7 +49,7 @@ class LogReportStorageHelper @Inject constructor(
   private suspend fun removeEvents(eventLogList: MutableList<EventLog>) =
     eventLogStore.readDataAsync().await().eventLogList.removeAll(eventLogList)
 
-  private fun removeAllEvents(){
+  private fun removeAllEvents() {
     eventLogStore.clearCacheAsync().invokeOnCompletion {
       it?.let {
         logger.e(
