@@ -87,8 +87,7 @@ class CustomTagHandler (
       if (text.isNotEmpty() && text[text.length - 1] != '\n') {
         text.append("\n")
       }
-      val len = text.length
-      text.setSpan(this, len, len, Spanned.SPAN_MARK_MARK)
+      text.setSpan(this, text.length, text.length, Spanned.SPAN_MARK_MARK)
     }
 
     fun closeListItem(text: Editable, indentation: Int) {
@@ -96,13 +95,12 @@ class CustomTagHandler (
         text.append("\n")
       }
       val replaces = getReplaces(text, indentation)
-      val len = text.length
       val listTag = getLast(text)
-      val where = text.getSpanStart(listTag)
+      val start = text.getSpanStart(listTag)
       text.removeSpan(listTag)
-      if (where != len) {
+      if (start != text.length) {
         for (replace in replaces) {
-          text.setSpan(replace, where, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+          text.setSpan(replace, start, text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
       }
     }
