@@ -180,23 +180,23 @@ class QuestionAssessmentProgressControllerTest {
   @ExperimentalCoroutinesApi1
   fun testGetCurrentQuestion_playSession_returnsPendingResultFromLoadingSession() =
     runBlockingTest1(
-    coroutineContext
-  ) {
-    val currentQuestionLiveData =
-      questionAssessmentProgressController.getCurrentQuestion()
-    currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
-    advanceUntilIdle()
+      coroutineContext
+    ) {
+      val currentQuestionLiveData =
+        questionAssessmentProgressController.getCurrentQuestion()
+      currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
+      advanceUntilIdle()
 
-    startTrainingSession(TEST_SKILL_ID_LIST_012)
+      startTrainingSession(TEST_SKILL_ID_LIST_012)
 
-    // The second-to-latest result stays pending since the session was loading (the actual result is the fully
-    // loaded session). This is only true if the observer begins before starting to load the session.
-    verify(mockCurrentQuestionLiveDataObserver, Mockito.atLeast(2)).onChanged(
-      currentQuestionResultCaptor.capture()
-    )
-    val results = currentQuestionResultCaptor.allValues
-    assertThat(results[results.size - 2].isPending()).isTrue()
-  }
+      // The second-to-latest result stays pending since the session was loading (the actual result is the fully
+      // loaded session). This is only true if the observer begins before starting to load the session.
+      verify(mockCurrentQuestionLiveDataObserver, Mockito.atLeast(2)).onChanged(
+        currentQuestionResultCaptor.capture()
+      )
+      val results = currentQuestionResultCaptor.allValues
+      assertThat(results[results.size - 2].isPending()).isTrue()
+    }
 
   @Test
   @ExperimentalCoroutinesApi1
