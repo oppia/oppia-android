@@ -26,7 +26,7 @@
       android:layout_height="wrap_content"
       android:layout_marginStart="176dp"
       android:layout_marginEnd="176dp"
-      android:layout_marginBottom="4dp"
+      android:paddingBottom="4dp"
       android:orientation="horizontal">
 
       <TextView
@@ -34,8 +34,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="44dp"
-        android:layout_marginBottom="28dp"
+        android:layout_marginTop="32dp"
+        android:paddingBottom="28dp"
         android:fontFamily="sans-serif-medium"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="20sp"
@@ -49,7 +49,7 @@
         android:minWidth="160dp"
         android:minHeight="48dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginBottom="28dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/reveal_solution_brown_background"
         android:textSize="14sp"
@@ -103,7 +103,8 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="start"
-          android:fontFamily="sans-serif-black"
+          android:fontFamily="sans-serif"
+          android:textStyle="bold"
           android:text="@string/the_only_solution_is"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="16sp" />
@@ -112,6 +113,7 @@
           android:id="@+id/solution_correct_answer"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_marginStart="8dp"
           android:fontFamily="sans-serif"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="16sp" />
@@ -127,8 +129,9 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="start"
-          android:fontFamily="sans-serif-black"
-          android:layout_marginTop="12dp"
+          android:fontFamily="sans-serif"
+          android:textStyle="bold"
+          android:layout_marginTop="16dp"
           android:text="@string/explanation"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="16sp" />
