@@ -18,9 +18,11 @@ import org.oppia.app.recyclerview.OnItemDragListener
 class DragAndDropSortInteractionViewModel(
   val entityId: String,
   interaction: Interaction,
-  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver
-) : StateItemViewModel(ViewType.DRAG_DROP_SORT_INTERACTION), InteractionAnswerHandler,
-  OnItemDragListener, OnDragEndedListener {
+  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver // ktlint-disable max-line-length
+) : StateItemViewModel(ViewType.DRAG_DROP_SORT_INTERACTION),
+  InteractionAnswerHandler,
+  OnItemDragListener,
+  OnDragEndedListener {
   private val allowMultipleItemsInSamePosition: Boolean by lazy {
     interaction.customizationArgsMap["allowMultipleItemsInSamePosition"]?.boolValue ?: false
   }
@@ -74,8 +76,7 @@ class DragAndDropSortInteractionViewModel(
   override fun getPendingAnswer(): UserAnswer {
     val userAnswerBuilder = UserAnswer.newBuilder()
     val listItems = choiceItems.map { it.htmlContent }
-    val listItemsHtml = choiceItems.map { it.htmlContent.htmlList.joinToString() }
-    userAnswerBuilder.htmlAnswer = convertSelectedItemsToHtmlString(listItemsHtml)
+    userAnswerBuilder.listOfHtmlAnswers = convertItemsToAnswer(listItems)
     userAnswerBuilder.answer =
       InteractionObject.newBuilder().setListOfSetsOfHtmlString(
         ListOfSetsOfHtmlStrings.newBuilder().addAllSetOfHtmlStrings(listItems).build()
@@ -84,8 +85,10 @@ class DragAndDropSortInteractionViewModel(
   }
 
   /** Returns an HTML list containing all of the HTML string elements as items in the list. */
-  private fun convertSelectedItemsToHtmlString(htmlItems: Collection<String>): String {
-    return htmlItems.joinToString(separator = "<br>")
+  private fun convertItemsToAnswer(htmlItems: List<StringList>): ListOfSetsOfHtmlStrings {
+    return ListOfSetsOfHtmlStrings.newBuilder()
+      .addAllSetOfHtmlStrings(htmlItems)
+      .build()
   }
 
   /** Returns whether the grouping is allowed or not for [DragAndDropSortInteractionViewModel]. */
@@ -110,7 +113,7 @@ class DragAndDropSortInteractionViewModel(
       dragDropInteractionContentViewModel.itemIndex = index
       dragDropInteractionContentViewModel.listSize = choiceItems.size
     }
-    //to update the content of grouped item
+    // to update the content of grouped item
     (adapter as BindableAdapter<*>).setDataUnchecked(choiceItems)
   }
 
@@ -119,7 +122,8 @@ class DragAndDropSortInteractionViewModel(
     choiceItems.removeAt(itemIndex)
     item.htmlContent.htmlList.forEach {
       choiceItems.add(
-        itemIndex, DragDropInteractionContentViewModel(
+        itemIndex,
+        DragDropInteractionContentViewModel(
           StringList.newBuilder()
             .addHtml(it)
             .build(),
@@ -134,7 +138,7 @@ class DragAndDropSortInteractionViewModel(
       dragDropInteractionContentViewModel.itemIndex = index
       dragDropInteractionContentViewModel.listSize = choiceItems.size
     }
-    //to update the list
+    // to update the list
     (adapter as BindableAdapter<*>).setDataUnchecked(choiceItems)
   }
 

@@ -29,9 +29,10 @@ fun <T : Any> bindToRecyclerViewAdapterWithLiveData(
 @BindingAdapter("list")
 fun <T : Any> bindToRecyclerViewAdapterWithoutLiveData(
   recyclerView: RecyclerView,
-  itemList: List<T>
+  itemList: List<T>? // Nullable inorder to work with optional binding of submitted answer view
 ) {
-  bindToRecyclerViewAdapter(recyclerView, itemList)
+  if (!itemList.isNullOrEmpty())
+    bindToRecyclerViewAdapter(recyclerView, itemList)
 }
 
 /** A variant of [bindToRecyclerViewAdapterWithLiveData] that instead uses an observable list. */

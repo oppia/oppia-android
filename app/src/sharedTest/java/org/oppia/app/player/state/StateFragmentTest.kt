@@ -334,7 +334,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_unlinkFirstItem_worksCorrectly() {
+  fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_invalidAnswer_correctItemCount() {
     launchForExploration(TEST_EXPLORATION_ID_8).use {
       startPlayingExploration()
 
@@ -345,20 +345,15 @@ class StateFragmentTest {
           targetViewId = R.id.drag_drop_content_group_item
         )
       ).perform(click())
+      onView(withId(R.id.submit_answer_button)).perform(click())
+      onView(withId(R.id.submitted_answer_recycler_view)).check(matches(hasChildCount(3)))
       onView(
         atPositionOnView(
-          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          recyclerViewId = R.id.submitted_answer_recycler_view,
           position = 0,
-          targetViewId = R.id.drag_drop_content_unlink_items
+          targetViewId = R.id.submitted_html_answer_recycler_view
         )
-      ).perform(click())
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
-          position = 0,
-          targetViewId = R.id.drag_drop_item_recyclerview
-        )
-      ).check(matches(hasChildCount(1)))
+      ).check(matches(hasChildCount(2)))
     }
   }
 
@@ -394,6 +389,35 @@ class StateFragmentTest {
           targetViewId = R.id.drag_drop_content_text_view
         )
       ).check(matches(withText("a camera at the store")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_unlinkFirstItem_worksCorrectly() {
+    launchForExploration(TEST_EXPLORATION_ID_8).use {
+      startPlayingExploration()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_content_group_item
+        )
+      ).perform(click())
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_content_unlink_items
+        )
+      ).perform(click())
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_item_recyclerview
+        )
+      ).check(matches(hasChildCount(1)))
     }
   }
 
@@ -696,6 +720,13 @@ class StateFragmentTest {
       )
     )
     onView(withId(R.id.submit_answer_button)).perform(click())
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.submitted_answer_recycler_view,
+        position = 0,
+        targetViewId = R.id.submitted_answer_content_text_view
+      )
+    ).check(matches(withText("3/5")))
     onView(withId(R.id.continue_navigation_button)).perform(click())
 
     // Eighth state: Drag Drop Sort with grouping. Correct answer: Merge First Two.
@@ -721,6 +752,13 @@ class StateFragmentTest {
       )
     ).perform(click())
     onView(withId(R.id.submit_answer_button)).perform(click())
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.submitted_answer_recycler_view,
+        position = 0,
+        targetViewId = R.id.submitted_answer_content_text_view
+      )
+    ).check(matches(withText("0.6")))
     onView(withId(R.id.continue_navigation_button)).perform(click())
   }
 
