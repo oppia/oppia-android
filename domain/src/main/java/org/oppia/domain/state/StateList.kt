@@ -38,7 +38,11 @@ internal class StateList(
   }
 
   /** Returns an [Hint] based on the current state and revealed [Hint] from the learner's answer. */
-  internal fun computeHintForResult(currentState: State, hintIsRevealed: Boolean, hintIndex: Int): Hint {
+  internal fun computeHintForResult(
+    currentState: State,
+    hintIsRevealed: Boolean,
+    hintIndex: Int
+  ): Hint {
     return Hint.newBuilder()
       .setHintIsRevealed(hintIsRevealed)
       .setHintContent(currentState.interaction.getHint(hintIndex).hintContent)
@@ -47,7 +51,10 @@ internal class StateList(
   }
 
   /** Returns an [Solution] based on the current state and revealed [Solution] from the learner's answer. */
-  internal fun computeSolutionForResult(currentState: State, solutionIsRevealed: Boolean): Solution {
+  internal fun computeSolutionForResult(
+    currentState: State,
+    solutionIsRevealed: Boolean
+  ): Solution {
     return Solution.newBuilder()
       .setSolutionIsRevealed(solutionIsRevealed)
       .setAnswerIsExclusive(currentState.interaction.solution.answerIsExclusive)
