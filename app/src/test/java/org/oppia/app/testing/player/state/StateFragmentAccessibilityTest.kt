@@ -29,7 +29,6 @@ import org.oppia.app.application.ApplicationModule
 import org.oppia.app.player.state.StateFragment
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher
-import org.oppia.app.testing.DaggerStateFragmentAccessibilityTest_TestApplicationComponent
 import org.oppia.data.backends.gae.NetworkModule
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
