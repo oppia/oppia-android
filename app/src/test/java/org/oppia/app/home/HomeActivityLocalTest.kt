@@ -1,4 +1,4 @@
-package org.oppia.app.profile
+package org.oppia.app.home
 
 import android.app.Application
 import android.content.Intent
@@ -21,9 +21,8 @@ import org.oppia.app.activity.ActivityComponent
 import org.oppia.app.application.ActivityComponentFactory
 import org.oppia.app.application.ApplicationComponent
 import org.oppia.app.application.ApplicationModule
+import org.oppia.app.model.EventLog
 import org.oppia.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
-import org.oppia.app.model.EventLog.EventAction
-import org.oppia.app.model.EventLog.Priority
 import org.oppia.data.backends.gae.NetworkModule
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
@@ -50,13 +49,15 @@ import org.robolectric.annotation.LooperMode
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = ProfileChooserFragmentLocalTest.TestApplication::class,
+  application = HomeActivityLocalTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class ProfileChooserFragmentLocalTest {
+class HomeActivityLocalTest {
 
   @Inject
   lateinit var fakeEventLogger: FakeEventLogger
+
+  private val internalProfileId: Int = 1
 
   @Before
   fun setUp() {
@@ -70,18 +71,18 @@ class ProfileChooserFragmentLocalTest {
   }
 
   @Test
-  fun testProfileChooser_onLaunch_logsEvent() {
-    launch<ProfileActivity>(createProfileActivityIntent()).use {
+  fun testHomeActivity_onLaunch_logsEvent() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       val event = fakeEventLogger.getMostRecentEvent()
 
-      assertThat(event.priority).isEqualTo(Priority.ESSENTIAL)
-      assertThat(event.actionName).isEqualTo(EventAction.OPEN_PROFILE_CHOOSER)
+      assertThat(event.actionName).isEqualTo(EventLog.EventAction.OPEN_HOME)
+      assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
       assertThat(event.context.activityContextCase).isEqualTo(ACTIVITYCONTEXT_NOT_SET)
     }
   }
 
-  private fun createProfileActivityIntent(): Intent {
-    return ProfileActivity.createProfileActivity(ApplicationProvider.getApplicationContext())
+  private fun createHomeActivityIntent(profileId: Int): Intent {
+    return HomeActivity.createHomeActivity(ApplicationProvider.getApplicationContext(), profileId)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -113,18 +114,18 @@ class ProfileChooserFragmentLocalTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(profileChooserFragmentLocalTest: ProfileChooserFragmentLocalTest)
+    fun inject(homeActivityLocalTest: HomeActivityLocalTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory {
     private val component: TestApplicationComponent by lazy {
-      DaggerProfileChooserFragmentLocalTest_TestApplicationComponent.builder()
+      DaggerHomeActivityLocalTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(profileChooserFragmentLocalTest: ProfileChooserFragmentLocalTest) {
-      component.inject(profileChooserFragmentLocalTest)
+    fun inject(homeActivityLocalTest: HomeActivityLocalTest) {
+      component.inject(homeActivityLocalTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

@@ -1,7 +1,6 @@
 package org.oppia.app.profile
 
 import android.content.Context
-import android.content.res.Configuration
 import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +13,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.app.R
 import org.oppia.app.databinding.ProfileChooserAddViewBinding
 import org.oppia.app.databinding.ProfileChooserFragmentBinding
@@ -254,11 +252,11 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun logProfileChooserEvent(){
+  private fun logProfileChooserEvent() {
     analyticsController.logTransitionEvent(
       activity.applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,
-      EventLog.EventAction.OPEN_PROFILE,
+      EventLog.EventAction.OPEN_PROFILE_CHOOSER,
       null
     )
   }
