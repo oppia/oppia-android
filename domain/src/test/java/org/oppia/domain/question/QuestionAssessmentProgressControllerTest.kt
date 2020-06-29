@@ -58,9 +58,8 @@ import javax.inject.Qualifier
 import javax.inject.Singleton
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi as ExperimentalCoroutinesApi1
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.runBlockingTest as runBlockingTest1
 
 /** Tests for [QuestionAssessmentProgressController]. */
@@ -179,7 +178,8 @@ class QuestionAssessmentProgressControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi1
-  fun testGetCurrentQuestion_playSession_returnsPendingResultFromLoadingSession() = runBlockingTest1(
+  fun testGetCurrentQuestion_playSession_returnsPendingResultFromLoadingSession() =
+    runBlockingTest1(
     coroutineContext
   ) {
     val currentQuestionLiveData =
