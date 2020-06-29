@@ -1,8 +1,10 @@
 package org.oppia.app.player.state
 
 import android.content.Context
+import android.content.Context.ACCESSIBILITY_SERVICE
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.accessibility.AccessibilityManager
 import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
@@ -17,6 +19,7 @@ import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.recyclerview.DragAndDropItemFacilitator
 import org.oppia.app.recyclerview.OnDragEndedListener
 import org.oppia.app.recyclerview.OnItemDragListener
+import org.oppia.util.accessibility.CustomAccessibilityManager
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.util.parser.HtmlParser
@@ -33,9 +36,13 @@ class DragDropSortInteractionView @JvmOverloads constructor(
 ) : RecyclerView(context, attrs, defStyleAttr) {
   // For disabling grouping of items by default.
   private var isMultipleItemsInSamePositionAllowed: Boolean = false
+  private var isAccessibilityEnabled: Boolean = false
 
   @Inject
   lateinit var htmlParserFactory: HtmlParser.Factory
+
+  @Inject
+  lateinit var accessibilityManager: CustomAccessibilityManager
 
   @Inject
   @field:ExplorationHtmlParserEntityType
@@ -50,6 +57,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
     FragmentManager.findFragment<InjectableFragment>(this).createViewComponent(this).inject(this)
+    isAccessibilityEnabled = accessibilityManager.isScreenReaderEnabled()
   }
 
   fun allowMultipleItemsInSamePosition(isAllowed: Boolean) {
@@ -82,6 +90,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
           binding.adapter = adapter
           binding.dragDropContentGroupItem.isVisible = isMultipleItemsInSamePositionAllowed
           binding.dragDropContentUnlinkItems.isVisible = viewModel.htmlContent.htmlList.size > 1
+          binding.dragDropAccessibleContainer.isVisible = isAccessibilityEnabled
           binding.viewModel = viewModel
         }
       )

@@ -19,4 +19,12 @@ class DragDropInteractionContentViewModel(
   fun handleUnlinking(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
     dragAndDropSortInteractionViewModel.unlinkElement(itemIndex, adapter)
   }
+
+  fun handleUpMovement(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
+    dragAndDropSortInteractionViewModel.onItemMoved(itemIndex, itemIndex - 1, adapter)
+  }
+
+  fun handleDownMovement(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
+    dragAndDropSortInteractionViewModel.onItemMoved(itemIndex, itemIndex + 1, adapter)
+  }
 }
