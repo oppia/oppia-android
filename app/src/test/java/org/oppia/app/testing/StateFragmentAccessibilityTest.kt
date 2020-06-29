@@ -84,7 +84,7 @@ class StateFragmentAccessibilityTest {
       startPlayingExploration()
       onView(
         RecyclerViewMatcher.atPositionOnView(
-          recyclerViewId = R.id.submitted_answer_recycler_view,
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
           position = 0,
           targetViewId = R.id.drag_drop_move_down_item
         )
@@ -107,7 +107,7 @@ class StateFragmentAccessibilityTest {
       startPlayingExploration()
       onView(
         RecyclerViewMatcher.atPositionOnView(
-          recyclerViewId = R.id.submitted_answer_recycler_view,
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
           position = 1,
           targetViewId = R.id.drag_drop_move_up_item
         )
