@@ -30,9 +30,11 @@ import javax.inject.Inject
  * [DragItemTouchHelperCallback].
  */
 class DragDropSortInteractionView @JvmOverloads constructor(
-  context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+  context: Context,
+  attrs: AttributeSet? = null,
+  defStyleAttr: Int = 0
 ) : RecyclerView(context, attrs, defStyleAttr) {
-  // Default to grouping is disabled.
+  // For disabling grouping of items by default.
   private var isMultipleItemsInSamePositionAllowed: Boolean = false
   private var isAccessibilityEnabled: Boolean = false
 
@@ -106,16 +108,15 @@ class DragDropSortInteractionView @JvmOverloads constructor(
         },
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<DragDropSingleItemBinding>(view)!!
-          binding.htmlContent =
-            htmlParserFactory.create(
-                resourceBucketName,
-                entityType,
-                entityId, /* imageCenterAlign= */
-                false
-              )
-              .parseOppiaHtml(
-                viewModel, binding.dragDropContentTextView
-              )
+          binding.htmlContent = htmlParserFactory.create(
+            resourceBucketName,
+            entityType,
+            entityId,
+            /* imageCenterAlign= */ false
+          )
+            .parseOppiaHtml(
+              viewModel, binding.dragDropContentTextView
+            )
         }
       )
       .build()
@@ -123,7 +124,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
 }
 
 /** Bind ItemTouchHelperSimpleCallback with RecyclerView for a [DragDropSortInteractionView] via data-binding. */
-@BindingAdapter(value = ["onDragEnded","onItemDrag"], requireAll = false)
+@BindingAdapter(value = ["onDragEnded", "onItemDrag"], requireAll = false)
 fun setItemDragToRecyclerView(
   dragDropSortInteractionView: DragDropSortInteractionView,
   onDragEnd: OnDragEndedListener,
@@ -139,11 +140,13 @@ fun setItemDragToRecyclerView(
 /** Sets the exploration ID for a specific [DragDropSortInteractionView] via data-binding. */
 @BindingAdapter("entityId")
 fun setEntityId(
-  dragDropSortInteractionView: DragDropSortInteractionView, entityId: String
+  dragDropSortInteractionView: DragDropSortInteractionView,
+  entityId: String
 ) = dragDropSortInteractionView.setEntityId(entityId)
 
 /** Sets the [SelectionItemInputType] for a specific [SelectionInteractionView] via data-binding. */
 @BindingAdapter("allowMultipleItemsInSamePosition")
 fun setAllowMultipleItemsInSamePosition(
-  dragDropSortInteractionView: DragDropSortInteractionView, isAllowed: Boolean
+  dragDropSortInteractionView: DragDropSortInteractionView,
+  isAllowed: Boolean
 ) = dragDropSortInteractionView.allowMultipleItemsInSamePosition(isAllowed)

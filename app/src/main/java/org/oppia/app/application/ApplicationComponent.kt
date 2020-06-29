@@ -40,7 +40,7 @@ import org.oppia.util.threading.DispatcherModule
     InteractionsModule::class, GcsResourceModule::class,
     GlideImageLoaderModule::class, ImageParsingModule::class,
     HtmlParserEntityTypeModule::class, CachingModule::class,
-    QuestionModule::class, LogReportingModule::class,AccessibilityModule::class
+    QuestionModule::class, LogReportingModule::class, AccessibilityModule::class
   ]
 )
 

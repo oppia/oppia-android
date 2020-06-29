@@ -110,5 +110,4 @@ class DragDropTestActivityTest {
       activity as OnDragEndedListener
     )
   }
-
 }
