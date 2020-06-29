@@ -339,6 +339,7 @@
   <string name="yesterday">yesterday</string>
   <string name="return_to_topic">Return to topic</string>
   <string name="explanation">Explanation:</string>
+  <string name="drag_and_drop_interaction_group_merge_hint">If two items are equal, merge them.</string>
   <plurals name="minutes">
     <item quantity="one">a minute</item>
     <item quantity="other">%d minutes</item>

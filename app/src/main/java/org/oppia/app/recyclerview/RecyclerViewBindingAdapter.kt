@@ -1,5 +1,6 @@
 package org.oppia.app.recyclerview
 
+import android.graphics.drawable.Drawable
 import androidx.databinding.BindingAdapter
 import androidx.databinding.ObservableList
 import androidx.lifecycle.LiveData
@@ -47,4 +48,10 @@ private fun <T : Any> bindToRecyclerViewAdapter(recyclerView: RecyclerView, data
   checkNotNull(adapter) { "Cannot bind data to a RecyclerView missing its adapter." }
   check(adapter is BindableAdapter<*>) { "Can only bind data to a BindableAdapter." }
   adapter.setDataUnchecked(dataList)
+}
+
+@BindingAdapter("itemDecorator")
+fun addItemDecorator(recyclerView: RecyclerView, drawable: Drawable) {
+  val decorator = DividerItemDecorator(drawable)
+  recyclerView.addItemDecoration(decorator)
 }

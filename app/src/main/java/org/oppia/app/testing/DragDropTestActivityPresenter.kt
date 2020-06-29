@@ -54,4 +54,8 @@ class DragDropTestActivityPresenter @Inject constructor(private val activity: Ap
     dataList.add(indexTo, item)
     adapter.notifyItemMoved(indexFrom, indexTo)
   }
+
+  fun onDragEnded(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
+    (adapter as BindableAdapter<*>).setDataUnchecked(dataList)
+  }
 }
