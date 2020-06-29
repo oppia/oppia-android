@@ -14,6 +14,8 @@ import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewInteraction
+import androidx.test.espresso.action.GeneralLocation
+import androidx.test.espresso.action.Press
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.typeText
@@ -48,6 +50,10 @@ import org.oppia.app.R
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.app.utility.ChildViewCoordinatesProvider
+import org.oppia.app.utility.CustomGeneralLocation
+import org.oppia.app.utility.DragViewAction
+import org.oppia.app.utility.RecyclerViewCoordinatesProvider
 import org.oppia.domain.exploration.TEST_EXPLORATION_ID_30
 import org.oppia.domain.exploration.TEST_EXPLORATION_ID_5
 import org.oppia.domain.profile.ProfileTestHelper
@@ -567,6 +573,23 @@ class StateFragmentTest {
     onView(withId(R.id.text_input_interaction_view)).perform(
       typeText("finnish"),
       closeSoftKeyboard()
+    )
+    onView(withId(R.id.submit_answer_button)).perform(click())
+    onView(withId(R.id.continue_navigation_button)).perform(click())
+
+    // Seventh state: Drag Drop Sort. Correct answer: Default Ordering.
+    onView(withId(R.id.drag_drop_interaction_recyclerview)).perform(
+      DragViewAction(
+        RecyclerViewCoordinatesProvider(
+          0,
+          ChildViewCoordinatesProvider(
+            R.id.drag_drop_item_container,
+            GeneralLocation.CENTER
+          )
+        ),
+        RecyclerViewCoordinatesProvider(2, CustomGeneralLocation.UNDER_RIGHT),
+        Press.FINGER
+      )
     )
     onView(withId(R.id.submit_answer_button)).perform(click())
     onView(withId(R.id.continue_navigation_button)).perform(click())
