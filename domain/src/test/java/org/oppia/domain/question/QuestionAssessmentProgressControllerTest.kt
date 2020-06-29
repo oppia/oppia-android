@@ -11,9 +11,7 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi as ExperimentalCoroutinesApi1
 import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.runBlockingTest as runBlockingTest1
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -61,6 +59,8 @@ import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 import kotlin.coroutines.EmptyCoroutineContext
+import kotlinx.coroutines.ExperimentalCoroutinesApi as ExperimentalCoroutinesApi1
+import kotlinx.coroutines.test.runBlockingTest as runBlockingTest1
 
 /** Tests for [QuestionAssessmentProgressController]. */
 @RunWith(AndroidJUnit4::class)
