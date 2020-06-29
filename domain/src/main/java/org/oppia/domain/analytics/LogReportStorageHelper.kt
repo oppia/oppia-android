@@ -33,53 +33,23 @@ class LogReportStorageHelper @Inject constructor(
     }
   }
 
-  suspend fun getOptionalEvents(): MutableList<EventLog>{
-    var eventLogList: MutableList<EventLog> = mutableListOf()
-    val eventList = eventLogStore.readDataAsync().await().eventLogList
-    for (eventLog in eventList){
-      if(eventLog.priority == EventLog.Priority.OPTIONAL){
-        eventLogList.add(eventLog)
-      }
-    }
-    return eventLogList
-  }
+  suspend fun getAllOptionalEvents(): List<EventLog> =
+    eventLogStore.readDataAsync().await().eventLogList
+      .filter { it.priority == EventLog.Priority.OPTIONAL }
 
-  suspend fun getLeastRecentEvent(): EventLog?{
-    var timestamp: Long = 0
-    var event: EventLog? = null
-    val eventList = eventLogStore.readDataAsync().await().eventLogList
-    for (eventLog in eventList){
-      if(eventLog.timestamp > timestamp){
-        timestamp = eventLog.timestamp
-        event = eventLog
-      }
-    }
-    return event
-  }
+  suspend fun getLeastRecentEvent(): EventLog? =
+    eventLogStore.readDataAsync().await().eventLogList.minBy { it.timestamp }
 
-  suspend fun getLeastRecentOptionalEvent(): EventLog?{
-    var timestamp: Long = 0
-    var event: EventLog? = null
-    val eventList = eventLogStore.readDataAsync().await().eventLogList
-    for (eventLog in eventList){
-      if(eventLog.timestamp > timestamp && eventLog.priority == EventLog.Priority.OPTIONAL){
-        timestamp = eventLog.timestamp
-        event = eventLog
-      }
-    }
-    return event
-  }
+  suspend fun getLeastRecentOptionalEvent(): EventLog? =
+    getAllOptionalEvents().minBy { it.timestamp }
 
-  suspend fun removeEvent(eventLog: EventLog?){
-    val eventList = eventLogStore.readDataAsync().await().eventLogList
-    eventLog?.let {eventList.remove(eventLog)}
-  }
+  private suspend fun removeEvent(eventLog: EventLog?) =
+    eventLogStore.readDataAsync().await().eventLogList.remove(eventLog)
 
-  suspend fun removeEvents(eventLogList: MutableList<EventLog>) =
+  private suspend fun removeEvents(eventLogList: MutableList<EventLog>) =
     eventLogStore.readDataAsync().await().eventLogList.removeAll(eventLogList)
 
-
-  suspend fun removeAllEvents(){
+  private fun removeAllEvents(){
     eventLogStore.clearCacheAsync().invokeOnCompletion {
       it?.let {
         logger.e(
