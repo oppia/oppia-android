@@ -34,18 +34,18 @@ class ExplorationManagerFragmentPresenter @Inject constructor(
   private fun retrieveStoryTextSize(): LiveData<StoryTextSize> {
     return Transformations.map(
       profileManagementController.getProfile(profileId),
-      ::processGetProfileResult
+      ::processStoryTextSizeResult
     )
   }
 
-  private fun processGetProfileResult(profileResult: AsyncResult<Profile>): StoryTextSize {
-    if (profileResult.isFailure()) {
+  private fun processStoryTextSizeResult(storyTextSizeResult: AsyncResult<Profile>): StoryTextSize {
+    if (storyTextSizeResult.isFailure()) {
       logger.e(
         "ExplorationManagerFragment",
         "Failed to retrieve profile",
-        profileResult.getErrorOrNull()!!
+        storyTextSizeResult.getErrorOrNull()!!
       )
     }
-    return profileResult.getOrDefault(Profile.getDefaultInstance()).storyTextSize
+    return storyTextSizeResult.getOrDefault(Profile.getDefaultInstance()).storyTextSize
   }
 }
