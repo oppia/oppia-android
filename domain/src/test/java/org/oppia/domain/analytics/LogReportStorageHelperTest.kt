@@ -14,7 +14,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import org.junit.Before
 
-import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
@@ -36,7 +35,7 @@ import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
-class EventStorageHelperTest {
+class LogReportStorageHelperTest {
 
   private companion object {
     private val TEST_MESSAGE_VERSION_1 = TestMessage.newBuilder().setVersion(1).build()
@@ -116,6 +115,6 @@ class EventStorageHelperTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(eventStorageHelperTest: EventStorageHelperTest)
+    fun inject(logReportStorageHelperTest: LogReportStorageHelperTest)
   }
 }
