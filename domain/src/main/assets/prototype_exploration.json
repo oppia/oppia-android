@@ -446,7 +446,7 @@
         "answer_groups": [
           {
             "outcome": {
-              "dest": "End",
+              "dest": "DragDropNoGroup",
               "labelled_as_correct": false,
               "param_changes": [],
               "feedback": {
@@ -590,6 +590,266 @@
       "content": {
         "content_id": "content",
         "html": "<p>What color does the 'G' in 'RGB' correspond to?</p>"
+      }
+    },
+    "DragDropNoGroup": {
+      "param_changes": [],
+      "classifier_model_id": null,
+      "solicit_answer_details": false,
+      "interaction": {
+        "solution": null,
+        "answer_groups": [
+          {
+            "outcome": {
+              "dest": "DragDropGroup",
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>That's correct</p>"
+              },
+              "missing_prerequisite_skill_id": null,
+              "refresher_exploration_id": null
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "IsEqualToOrdering",
+                "inputs": {
+                  "x": [
+                    [
+                      "<p>3/5</p>"
+                    ],
+                    [
+                      "<p>0.5</p>"
+                    ],
+                    [
+                      "<p>0.35</p>"
+                    ],
+                    [
+                      "<p>0.46</p>"
+                    ]
+                  ]
+                }
+              }
+            ],
+            "tagged_skill_misconception_id": null
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>Seems like you did the descending order</p>"
+              },
+              "dest": "DragDropNoGroup",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "HasElementXAtPositionY",
+                "inputs": {
+                  "y": 1,
+                  "x": "<p>0.5/p>"
+                }
+              }
+            ]
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>This does not seem right to me</p>"
+              },
+              "dest": "DragDropNoGroup",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "HasElementXBeforeElementY",
+                "inputs": {
+                  "y": "<p>0.46</p>",
+                  "x": "<p>0.35</p>"
+                }
+              }
+            ]
+          }
+        ],
+        "customization_args": {
+          "allowMultipleItemsInSamePosition": {
+            "value": false
+          },
+          "choices": {
+            "value": [
+              "<p>0.35</p>",
+              "<p>3/5</p>",
+              "<p>0.5</p>",
+              "<p>0.46</p>"
+            ]
+          }
+        },
+        "id": "DragAndDropSortInput",
+        "hints": [],
+        "confirmed_unclassified_answers": [],
+        "default_outcome": {
+          "dest": "DragDropNoGroup",
+          "labelled_as_correct": false,
+          "param_changes": [],
+          "feedback": {
+            "content_id": "default_outcome",
+            "html": "<p>Not quite. Try again.</p>"
+          },
+          "missing_prerequisite_skill_id": null,
+          "refresher_exploration_id": null
+        }
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "content": {},
+          "feedback_2": {},
+          "feedback_3": {},
+          "feedback_1": {},
+          "default_outcome": {}
+        }
+      },
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "content": {},
+          "feedback_2": {},
+          "feedback_3": {},
+          "feedback_1": {},
+          "default_outcome": {}
+        }
+      },
+      "content": {
+        "content_id": "content",
+        "html": "<p>Sort the following in ascending order, putting equal items in the same position.</p>"
+      }
+    },
+    "DragDropGroup": {
+      "param_changes": [],
+      "classifier_model_id": null,
+      "solicit_answer_details": false,
+      "interaction": {
+        "solution": null,
+        "answer_groups": [
+          {
+            "outcome": {
+              "dest": "End",
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>That's correct</p>"
+              },
+              "missing_prerequisite_skill_id": null,
+              "refresher_exploration_id": null
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "IsEqualToOrdering",
+                "inputs": {
+                  "x": [
+                    [
+                      "<p>3/5</p>",
+                      "<p>0.6</p>"
+                    ],
+                    [
+                      "<p>0.35</p>"
+                    ],
+                    [
+                      "<p>0.46</p>"
+                    ]
+                  ]
+                }
+              }
+            ],
+            "tagged_skill_misconception_id": null
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>Seems like you did the descending order</p>"
+              },
+              "dest": "DragDropGroup",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "HasElementXAtPositionY",
+                "inputs": {
+                  "y": 1,
+                  "x": "<p>0.6</p>"
+                }
+              }
+            ]
+          }
+        ],
+        "customization_args": {
+          "allowMultipleItemsInSamePosition": {
+            "value": true
+          },
+          "choices": {
+            "value": [
+              "<p>3/5</p>",
+              "<p>0.6</p>",
+              "<p>0.35</p>",
+              "<p>0.46</p>"
+            ]
+          }
+        },
+        "id": "DragAndDropSortInput",
+        "hints": [],
+        "confirmed_unclassified_answers": [],
+        "default_outcome": {
+          "dest": "DragDropGroup",
+          "labelled_as_correct": false,
+          "param_changes": [],
+          "feedback": {
+            "content_id": "default_outcome",
+            "html": "<p>Not quite. Try again.</p>"
+          },
+          "missing_prerequisite_skill_id": null,
+          "refresher_exploration_id": null
+        }
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "content": {},
+          "feedback_2": {},
+          "feedback_3": {},
+          "feedback_1": {},
+          "default_outcome": {}
+        }
+      },
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "content": {},
+          "feedback_2": {},
+          "feedback_3": {},
+          "feedback_1": {},
+          "default_outcome": {}
+        }
+      },
+      "content": {
+        "content_id": "content",
+        "html": "<p>Sort the following in ascending order, putting equal items in the same position.</p>"
       }
     },
     "End": {
