@@ -10,6 +10,10 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Qualifier
+import javax.inject.Singleton
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -44,7 +48,6 @@ import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputMo
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.domain.exploration.TEST_EXPLORATION_ID_5
 import org.oppia.domain.topic.TEST_SKILL_ID_0
 import org.oppia.domain.topic.TEST_SKILL_ID_1
 import org.oppia.domain.topic.TEST_SKILL_ID_2
@@ -58,10 +61,6 @@ import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
-import javax.inject.Inject
-import javax.inject.Qualifier
-import javax.inject.Singleton
-import kotlin.coroutines.EmptyCoroutineContext
 
 /** Tests for [QuestionAssessmentProgressController]. */
 @RunWith(AndroidJUnit4::class)
@@ -85,7 +84,6 @@ class QuestionAssessmentProgressControllerTest {
 
   @Inject
   lateinit var fakeExceptionLogger: FakeExceptionLogger
-
 
   @ExperimentalCoroutinesApi
   @Inject
@@ -764,7 +762,7 @@ class QuestionAssessmentProgressControllerTest {
       startTrainingSession(TEST_SKILL_ID_LIST_2)
 
       val result =
-        questionAssessmentProgressController.submitAnswer(createNumericInputAnswer(3.0))
+        questionAssessmentProgressController.submitAnswer(createNumericInputAnswer(3.0)) // ktlint-disable max-line-length
       result.observeForever(mockAsyncAnswerOutcomeObserver)
       advanceUntilIdle()
 
@@ -786,7 +784,7 @@ class QuestionAssessmentProgressControllerTest {
       startTrainingSession(TEST_SKILL_ID_LIST_2)
 
       val result =
-        questionAssessmentProgressController.submitAnswer(createNumericInputAnswer(2.0))
+        questionAssessmentProgressController.submitAnswer(createNumericInputAnswer(2.0)) // ktlint-disable max-line-length
       result.observeForever(mockAsyncAnswerOutcomeObserver)
       advanceUntilIdle()
 
@@ -949,7 +947,7 @@ class QuestionAssessmentProgressControllerTest {
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     advanceUntilIdle()
 
-   // Verify that the answer submission failed as expected.
+    // Verify that the answer submission failed as expected.
     verify(
       mockAsyncAnswerOutcomeObserver,
       atLeastOnce()
@@ -1011,7 +1009,8 @@ class QuestionAssessmentProgressControllerTest {
     val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
 
     assertThat(ephemeralQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
-    assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount).isEqualTo(1)
+    assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount)
+      .isEqualTo(1)
 
     val hintAndSolution = ephemeralQuestion.ephemeralState.state.interaction.getHint(0)
     assertThat(hintAndSolution.hintContent.html).contains("Hint text will appear here")
@@ -1031,7 +1030,8 @@ class QuestionAssessmentProgressControllerTest {
     ).onChanged(currentQuestionResultCaptor.capture())
     assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
     val updatedState = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(updatedState.ephemeralState.state.interaction.getHint(0).hintIsRevealed).isTrue()
+    assertThat(updatedState.ephemeralState.state.interaction.getHint(0).hintIsRevealed)
+      .isTrue()
   }
 
   @Test
@@ -1068,10 +1068,12 @@ class QuestionAssessmentProgressControllerTest {
     val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
 
     assertThat(ephemeralQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
-    assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount).isEqualTo(1)
+    assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount)
+      .isEqualTo(1)
 
     val hintAndSolution = ephemeralQuestion.ephemeralState.state.interaction.solution
-    assertThat(hintAndSolution.correctAnswer.correctAnswer).contains("<p>The number of pieces of cake I want.</p>")
+    assertThat(hintAndSolution.correctAnswer.correctAnswer)
+      .contains("<p>The number of pieces of cake I want.</p>")
 
     val result = questionAssessmentProgressController.submitSolutionIsRevealed(
       ephemeralQuestion.ephemeralState.state,

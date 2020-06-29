@@ -2,6 +2,10 @@ package org.oppia.domain.question
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import java.util.concurrent.locks.ReentrantLock
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.concurrent.withLock
 import org.oppia.app.model.AnsweredQuestionOutcome
 import org.oppia.app.model.EphemeralQuestion
 import org.oppia.app.model.Hint
@@ -17,10 +21,6 @@ import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
 import org.oppia.util.data.DataProviders.NestedTransformedDataProvider
 import org.oppia.util.logging.ExceptionLogger
-import java.util.concurrent.locks.ReentrantLock
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.concurrent.withLock
 
 private const val CURRENT_QUESTION_DATA_PROVIDER_ID = "CurrentQuestionDataProvider"
 private const val EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID = "EmptyQuestionsListDataProvider"
@@ -215,7 +215,6 @@ class QuestionAssessmentProgressController @Inject constructor(
             solutionIsRevealed
           )
           progress.stateDeck.pushStateForSolution(state)
-
         } finally {
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always
           // showing solution' situation. This can specifically happen if solution throws an exception.
@@ -231,7 +230,7 @@ class QuestionAssessmentProgressController @Inject constructor(
     }
   }
   /* ktlint-enable max-line-length */
-  
+
   /**
    * Navigates to the next question in the assessment. This method is only valid if the current [EphemeralQuestion]
    * reported by [getCurrentQuestion] is a completed question. Calling code is responsible for ensuring this method is
