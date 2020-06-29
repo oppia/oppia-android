@@ -340,6 +340,10 @@
   <string name="return_to_topic">Return to topic</string>
   <string name="explanation">Explanation:</string>
   <string name="drag_and_drop_interaction_group_merge_hint">If two items are equal, merge them.</string>
+  <string name="link_to_item_below">Link to item below</string>
+  <string name="unlink_items">Unlink Items</string>
+  <string name="move_item_down">Move Item Down</string>
+  <string name="move_item_up">Move Item Up</string>
   <plurals name="minutes">
     <item quantity="one">a minute</item>
     <item quantity="other">%d minutes</item>
