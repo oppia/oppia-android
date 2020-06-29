@@ -5,10 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import javax.inject.Inject
 import org.oppia.app.R
 import org.oppia.app.fragment.InjectableDialogFragment
 import org.oppia.app.model.State
-import javax.inject.Inject
 
 private const val CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY = "CURRENT_EXPANDED_LIST_INDEX"
 
@@ -27,7 +27,7 @@ class HintsAndSolutionDialogFragment : InjectableDialogFragment(), ExpandedHintL
 
     internal const val ID_ARGUMENT_KEY = "ID"
     internal const val NEW_AVAILABLE_HINT_INDEX_ARGUMENT_KEY = "NEW_AVAILABLE_HINT_INDEX"
-    internal const val ALL_HINTS_EXHAUSTED_ARGUMENT_KEY= "ALL_HINTS_EXHAUSTED"
+    internal const val ALL_HINTS_EXHAUSTED_ARGUMENT_KEY = "ALL_HINTS_EXHAUSTED"
     /**
      * Creates a new instance of a DialogFragment to display hints and solution
      * @param id Used in ExplorationController/QuestionAssessmentProgressController to get current state data.

@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import javax.inject.Inject
 import org.oppia.app.R
 import org.oppia.app.databinding.HintsAndSolutionFragmentBinding
 import org.oppia.app.fragment.FragmentScope
@@ -13,7 +14,6 @@ import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.Logger
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.util.parser.HtmlParser
-import javax.inject.Inject
 
 /** Presenter for [HintsAndSolutionDialogFragment], sets up bindings from ViewModel. */
 @FragmentScope
@@ -41,7 +41,8 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
    * Host activity must inherit HintsAndSolutionListener to dismiss this fragment.
    */
   fun handleCreateView(
-    inflater: LayoutInflater, container: ViewGroup?,
+    inflater: LayoutInflater,
+    container: ViewGroup?,
     state: State,
     id: String?,
     currentExpandedHintListIndex: Int?,
