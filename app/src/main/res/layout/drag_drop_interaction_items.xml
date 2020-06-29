@@ -5,35 +5,74 @@
   <data>
 
     <variable
-      name="htmlContent"
-      type="CharSequence" />
+      name="adapter"
+      type="androidx.recyclerview.widget.RecyclerView.Adapter&lt;androidx.recyclerview.widget.RecyclerView.ViewHolder>" />
 
     <variable
       name="viewModel"
       type="org.oppia.app.player.state.itemviewmodel.DragDropInteractionContentViewModel" />
   </data>
 
-  <LinearLayout
+  <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/drag_drop_item_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
-    android:gravity="center_vertical">
+    android:orientation="horizontal">
 
-    <TextView
-      android:id="@+id/drag_drop_content_text_view"
+
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/drag_drop_item_recyclerview"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="@dimen/divider_margin_top"
+      android:layout_marginEnd="8dp"
       android:layout_weight="1"
-      android:layout_marginStart="4dp"
       android:background="@drawable/rounded_rect_grey_border_white_background"
-      android:fontFamily="sans-serif"
-      android:gravity="center_vertical"
-      android:minHeight="40dp"
-      android:padding="16dp"
-      android:paddingTop="4dp"
-      android:text="@{htmlContent}"
-      android:textColor="@color/oppiaDarkBlue"
-      android:textSize="16sp" />
-  </LinearLayout>
+      android:paddingStart="16dp"
+      android:paddingEnd="16dp"
+      app:itemDecorator="@{@drawable/divider}"
+      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toStartOf="@+id/drag_drop_content_group_item"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:list="@{viewModel.htmlContent.htmlList}"
+      tools:itemCount="3"
+      tools:listitem="@layout/drag_drop_single_item" />
+
+    <ImageButton
+      android:id="@+id/drag_drop_content_group_item"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/margin_8"
+      android:layout_marginEnd="8dp"
+      android:layout_marginBottom="8dp"
+      android:background="?attr/selectableItemBackground"
+      android:clickable="true"
+      android:enabled="@{viewModel.itemIndex != viewModel.listSize-1}"
+      android:focusable="true"
+      android:onClick="@{(v) -> viewModel.handleGrouping(adapter)}"
+      android:src="@drawable/ic_merge_icon_24"
+      android:tint="@{dragDropContentGroupItem.enabled? @color/mergeIconEnabled : @color/mergeIconDisabled}"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/drag_drop_content_unlink_items" />
+
+    <ImageButton
+      android:id="@+id/drag_drop_content_unlink_items"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="8dp"
+      android:layout_marginEnd="8dp"
+      android:background="?attr/selectableItemBackground"
+      android:clickable="true"
+      android:focusable="true"
+      android:onClick="@{(v) -> viewModel.handleUnlinking(adapter)}"
+      android:src="@drawable/ic_unlink_icon_24"
+      app:layout_constraintBottom_toTopOf="@+id/drag_drop_content_group_item"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
