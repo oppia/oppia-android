@@ -51,7 +51,7 @@ class FAQListFragmentTest {
         atPositionOnView(
           R.id.faq_fragment_recycler_view, 0, R.id.faq_question_text_view
         )
-      ).check(matches(withText(R.string.featured_questions)))
+      ).check(matches(withText(R.string.faq_question_1)))
     }
   }
 
