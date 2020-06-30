@@ -5,11 +5,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
-import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.activity.ActivityComponent
@@ -66,7 +66,7 @@ class TopicInfoFragmentLocalTest {
   }
 
   @Test
-  fun testTopicInfoFragment_onLaunch_logsEvent(){
+  fun testTopicInfoFragment_onLaunch_logsEvent() {
     launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
       val event = fakeEventLogger.getMostRecentEvent()
 

@@ -4,26 +4,20 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.hamcrest.Matchers
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.R
 import org.oppia.app.activity.ActivityComponent
 import org.oppia.app.application.ActivityComponentFactory
 import org.oppia.app.application.ApplicationComponent
 import org.oppia.app.application.ApplicationModule
 import org.oppia.app.model.EventLog
 import org.oppia.app.topic.TopicActivity
-import org.oppia.app.topic.TopicTab
 import org.oppia.data.backends.gae.NetworkModule
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
@@ -73,12 +67,6 @@ class TopicLessonsFragmentLocalTest {
   @Test
   fun testTopicLessonsFragment_onLaunch_logsEvent() {
     launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID, TEST_STORY_ID).use {
-      Espresso.onView(
-        Matchers.allOf(
-          ViewMatchers.withText(TopicTab.getTabForPosition(1).name),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.topic_tabs_container))
-        )
-      ).perform(ViewActions.click())
       val event = fakeEventLogger.getMostRecentEvent()
 
       assertThat(event.context.activityContextCase)
