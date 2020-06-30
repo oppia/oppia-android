@@ -556,30 +556,30 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     /** Adds support for displaying state content to the learner. */
     fun addContentSupport(): Builder {
-        adapterBuilder.registerViewBinder(
-          viewType = StateItemViewModel.ViewType.CONTENT,
-          inflateView = { parent ->
-            ContentItemBinding.inflate(
-              LayoutInflater.from(parent.context),
-              parent,
-              /* attachToParent= */ false
-            ).root
-          },
-          bindView = { view, viewModel ->
-            val binding = DataBindingUtil.findBinding<ContentItemBinding>(view)!!
-            val contentViewModel = viewModel as ContentViewModel
-            binding.viewModel = explorationContentViewModel
-            binding.htmlContent =
-              htmlParserFactory.create(
-                resourceBucketName,
-                entityType,
-                contentViewModel.gcsEntityId,
-                imageCenterAlign = true
-              ).parseOppiaHtml(
-                contentViewModel.htmlContent.toString(), binding.contentTextView
-              )
-          }
-        )
+      adapterBuilder.registerViewBinder(
+        viewType = StateItemViewModel.ViewType.CONTENT,
+        inflateView = { parent ->
+          ContentItemBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            /* attachToParent= */ false
+          ).root
+        },
+        bindView = { view, viewModel ->
+          val binding = DataBindingUtil.findBinding<ContentItemBinding>(view)!!
+          val contentViewModel = viewModel as ContentViewModel
+          binding.viewModel = explorationContentViewModel
+          binding.htmlContent =
+            htmlParserFactory.create(
+              resourceBucketName,
+              entityType,
+              contentViewModel.gcsEntityId,
+              imageCenterAlign = true
+            ).parseOppiaHtml(
+              contentViewModel.htmlContent.toString(), binding.contentTextView
+            )
+        }
+      )
       featureSets += PlayerFeatureSet(contentSupport = true)
       return this
     }

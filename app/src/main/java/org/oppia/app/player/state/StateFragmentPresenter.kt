@@ -208,7 +208,7 @@ class StateFragmentPresenter @Inject constructor(
     congratulationsTextView: TextView
   ): StatePlayerRecyclerViewAssembler {
     return builder
-      .addUISupport(ExplorationContentViewModel(true,false))
+      .addUISupport(ExplorationContentViewModel(true, false))
       .addContentSupport()
       .addFeedbackSupport()
       .addInteractionSupport(viewModel.getCanSubmitAnswer())

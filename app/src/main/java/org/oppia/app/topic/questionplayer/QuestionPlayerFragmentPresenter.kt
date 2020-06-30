@@ -358,7 +358,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     //  controller & possibly the ephemeral question data model.
     // TODO(#502): Add support for surfacing skills that need to be reviewed by the learner.
     return builder
-      .addUISupport(ExplorationContentViewModel(false,true))
+      .addUISupport(ExplorationContentViewModel(false, true))
       .addContentSupport()
       .addFeedbackSupport()
       .addInteractionSupport(questionViewModel.getCanSubmitAnswer())
