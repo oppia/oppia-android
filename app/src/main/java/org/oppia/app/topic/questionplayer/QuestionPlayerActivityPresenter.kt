@@ -124,16 +124,16 @@ class QuestionPlayerActivityPresenter @Inject constructor(
     if (actionCode == EditorInfo.IME_ACTION_DONE) {
       val questionPlayerFragment = activity
         .supportFragmentManager
-        .findFragmentById(
-          R.id.question_player_fragment_placeholder
+        .findFragmentByTag(
+          TAG_QUESTION_PLAYER_FRAGMENT
         ) as? QuestionPlayerFragment
       questionPlayerFragment?.handleKeyboardAction()
     }
   }
 
   private fun getQuestionPlayerFragment(): QuestionPlayerFragment? {
-    return activity.supportFragmentManager.findFragmentById(
-      R.id.question_player_fragment_placeholder
+    return activity.supportFragmentManager.findFragmentByTag(
+      TAG_QUESTION_PLAYER_FRAGMENT
     ) as QuestionPlayerFragment?
   }
 
