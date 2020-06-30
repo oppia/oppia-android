@@ -1,6 +1,6 @@
 package org.oppia.app.player.exploration
 
-/** [StateItemViewModel] for content-card state. */
+/** [ViewModel] for [StatePlayerRecyclerViewAssembler] items. */
 class ExplorationContentViewModel(hasBlueBackground: Boolean, isCenterAligned: Boolean) {
   var hasBlueBackground: Boolean = false
   var isCenterAligned: Boolean = false
