@@ -21,6 +21,7 @@ message InteractionObject {
     Fraction fraction = 8;
     ListOfSetsOfHtmlStrings list_of_sets_of_html_string = 9;
     ImageWithRegions image_with_regions = 10;
+    ClickOnImage click_on_image = 11;
   }
 }
 
@@ -57,6 +58,11 @@ message ListOfSetsOfHtmlStrings {
   repeated StringList set_of_html_strings = 1;
 }
 
+message Point2d {
+  float x = 1;
+  float y = 2;
+}
+
 // An image overlaid with labeled regions.
 message ImageWithRegions {
   // A string that represents a filepath which will be prefixed with '[exploration_id]/assets.
@@ -79,10 +85,6 @@ message ImageWithRegions {
 
       // A rectangle normalized so that the coordinates are within the range [0,1].
       message NormalizedRectangle2d {
-        message Point2d {
-          float x = 1;
-          float y = 2;
-        }
         // Origin is top-left, increasing x is to the right, increasing y is down.
         Point2d upper_left = 1;
         Point2d lower_right = 2;
@@ -95,4 +97,10 @@ message ImageWithRegions {
 
   }
   repeated LabeledRegion label_regions = 2;
+}
+
+// A click on an image and the clicked regions.
+message ClickOnImage {
+  Point2d click_position = 1;
+  repeated string clicked_regions = 2;
 }

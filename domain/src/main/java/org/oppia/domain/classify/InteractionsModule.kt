@@ -87,4 +87,13 @@ class InteractionsModule {
   ): InteractionClassifier {
     return GenericInteractionClassifier(ruleClassifiers)
   }
+
+  @Provides
+  @IntoMap
+  @StringKey("ImageClickInput")
+  fun provideImageClickInputInteractionClassifier(
+    @DragDropSortInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>
+  ): InteractionClassifier {
+    return GenericInteractionClassifier(ruleClassifiers)
+  }
 }

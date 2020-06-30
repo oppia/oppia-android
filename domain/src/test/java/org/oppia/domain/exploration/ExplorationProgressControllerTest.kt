@@ -40,6 +40,7 @@ import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.domain.classify.rules.imageClickInput.ImageClickInputModule
 import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
@@ -321,7 +322,8 @@ class ExplorationProgressControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testGetCurrentState_playSecondExploration_afterFinishingPrevious_loaded_returnsInitialState() = // ktlint-disable max-line-length
+  fun testGetCurrentState_playSecondExploration_afterFinishingPrevious_loaded_returnsInitialState() =
+    // ktlint-disable max-line-length
     runBlockingTest(coroutineContext) {
       val currentStateLiveData =
         explorationProgressController.getCurrentState()
@@ -457,7 +459,8 @@ class ExplorationProgressControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testSubmitAnswer_forMultipleChoice_wrongAnswer_providesDefaultFeedbackAndNewStateTransition() = // ktlint-disable max-line-length
+  fun testSubmitAnswer_forMultipleChoice_wrongAnswer_providesDefaultFeedbackAndNewStateTransition() =
+    // ktlint-disable max-line-length
     runBlockingTest(
       coroutineContext
     ) {
@@ -1158,7 +1161,8 @@ class ExplorationProgressControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testGetCurrentState_afterMoveToPrevious_onThirdState_newObserver_receivesCompletedSecondState() = // ktlint-disable max-line-length
+  fun testGetCurrentState_afterMoveToPrevious_onThirdState_newObserver_receivesCompletedSecondState() =
+    // ktlint-disable max-line-length
     runBlockingTest(
       coroutineContext
     ) {
@@ -1781,7 +1785,7 @@ class ExplorationProgressControllerTest {
       MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
       NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, InteractionsModule::class,
-      TestLogReportingModule::class
+      TestLogReportingModule::class, ImageClickInputModule::class
     ]
   )
   interface TestApplicationComponent {

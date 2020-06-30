@@ -11,6 +11,7 @@ import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.domain.classify.rules.imageClickInput.ImageClickInputModule
 import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
@@ -36,7 +37,7 @@ import org.oppia.util.threading.DispatcherModule
     ContinueModule::class, FractionInputModule::class,
     ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
     NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
-    TextInputRuleModule::class, DragDropSortInputModule::class,
+    TextInputRuleModule::class, DragDropSortInputModule::class, ImageClickInputModule::class,
     InteractionsModule::class, GcsResourceModule::class,
     GlideImageLoaderModule::class, ImageParsingModule::class,
     HtmlParserEntityTypeModule::class, CachingModule::class,
