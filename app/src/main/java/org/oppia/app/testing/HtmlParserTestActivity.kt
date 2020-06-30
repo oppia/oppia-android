@@ -37,5 +37,46 @@ class HtmlParserTestActivity : InjectableAppCompatActivity() {
         testHtmlContentTextView
       )
     testHtmlContentTextView.text = htmlResult
+
+    val testHtmlContentOrderedListTextView: TextView =
+      findViewById(R.id.test_html_content_with_ordered_list_text_view)
+    val rawDummyString2 = """<ul>
+                <li>Item 1</li>
+                <li>Item 2</li>
+                <li>Item 3
+                    <ol>
+                        <li>Nested item 1</li>
+                        <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+                        Nulla et tellus eu magna facilisis eleifend. Vestibulum faucibus pulvinar tincidunt. 
+                        Nullam non mauris nisi.</li>
+                    </ol>
+                </li>
+                <li>Item 4</li>
+                <li>Item 5
+                    <ul>
+                        <li>Nested item 1</li>
+                        <li>Nested item 2
+                            <ol>
+                                <li>Double nested item 1</li>
+                                <li>Double nested item 2</li>
+                            </ol>
+                        </li>
+                        <li>Nested item 3</li>
+                    </ul>
+                </li>
+                <li>Item 6</li>
+            </ul>
+        """
+    val htmlResult2: Spannable =
+      htmlParserFactory.create(
+        resourceBucketName, /* entityType= */
+        "exploration", /* entityId= */
+        "oppia", /* imageCenterAlign= */
+        false
+      ).parseOppiaHtml(
+        rawDummyString2,
+        testHtmlContentOrderedListTextView
+      )
+    testHtmlContentOrderedListTextView.text = htmlResult2
   }
 }

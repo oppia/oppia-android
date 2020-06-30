@@ -4,9 +4,8 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
-import android.graphics.Bitmap
 import android.text.Spannable
+import android.text.style.LeadingMarginSpan
 import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -17,7 +16,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import com.bumptech.glide.request.target.CustomTarget
 import com.google.common.truth.Truth.assertThat
 import dagger.Binds
 import dagger.BindsInstance
@@ -41,7 +39,7 @@ import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
-import org.oppia.util.parser.CustomBulletSpan
+import org.oppia.util.parser.BulletSpanWithRadius
 import org.oppia.util.parser.DefaultGcsPrefix
 import org.oppia.util.parser.GlideImageLoader
 import org.oppia.util.parser.HtmlParser
@@ -58,8 +56,13 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class HtmlParserTest {
 
+  private val BULLET_RADIUS: Int = ApplicationProvider.getApplicationContext<Context>()
+    .resources.getDimensionPixelSize(org.oppia.util.R.dimen.bullet_radius)
+  private val GAP_WIDTH: Int = ApplicationProvider.getApplicationContext<Context>()
+    .resources.getDimensionPixelSize(org.oppia.util.R.dimen.bullet_gap_width)
   private lateinit var launchedActivity: Activity
-  @Inject lateinit var htmlParserFactory: HtmlParser.Factory
+  @Inject
+  lateinit var htmlParserFactory: HtmlParser.Factory
   @Inject
   @field:DefaultResourceBucketName
   lateinit var resourceBucketName: String
@@ -99,17 +102,21 @@ class HtmlParserTest {
 
   @Test
   fun testHtmlContent_handleCustomOppiaTags_parsedHtmlDisplaysStyledText() {
-    val textView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
+    val textView =
+      activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
     val htmlParser = htmlParserFactory.create(
-      resourceBucketName, /* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true
+      resourceBucketName,
+      /* entityType= */ "",
+      /* entityId= */ "",
+      /* imageCenterAlign= */ true
     )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
       "\u003cp\u003e\"Let's try one last question,\" said Mr. Baker. \"Here's a pineapple cake cut into pieces.\"\u003c/p\u003e\u003coppia-noninteractive-image " +
-          "alt-with-value=\"\u0026amp;quot;Pineapple" +
-          " cake with 7/9 having cherries.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;" +
-          "pineapple_cake_height_479_width_480.png\u0026amp;quot;\"\u003e\u003c/" +
-          "oppia-noninteractive-image\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eQuestion 6\u003c/strong\u003e: What " +
-          "fraction of the cake has big red cherries in the pineapple slices?\u003c/p\u003e",
+        "alt-with-value=\"\u0026amp;quot;Pineapple" +
+        " cake with 7/9 having cherries.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;" +
+        "pineapple_cake_height_479_width_480.png\u0026amp;quot;\"\u003e\u003c/" +
+        "oppia-noninteractive-image\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eQuestion 6\u003c/strong\u003e: What " +
+        "fraction of the cake has big red cherries in the pineapple slices?\u003c/p\u003e",
       textView
     )
     assertThat(textView.text.toString()).isEqualTo(htmlResult.toString())
@@ -119,16 +126,20 @@ class HtmlParserTest {
 
   @Test
   fun testHtmlContent_nonCustomOppiaTags_notParsed() {
-    val textView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
+    val textView =
+      activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
     val htmlParser = htmlParserFactory.create(
-      resourceBucketName, /* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true
+      resourceBucketName,
+      /* entityType= */ "",
+      /* entityId= */ "",
+      /* imageCenterAlign= */ true
     )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
       "\u003cp\u003e\"Let's try one last question,\" said Mr. Baker. \"Here's a pineapple cake cut into pieces.\"\u003c/p\u003e\u003coppia--image " +
-          "alt-with-value=\"\u0026amp;quot;Pineapple cake with 7/9 having cherries.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\"" +
-          " filepath-value=\"\u0026amp;quot;pineapple_cake_height_479_width_480.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image" +
-          "\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003e\u003cstrongQuestion 6\u003c/strong\u003e: What fraction of the cake has big " +
-          "red cherries in the pineapple slices?\u003c/p\u003e",
+        "alt-with-value=\"\u0026amp;quot;Pineapple cake with 7/9 having cherries.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\"" +
+        " filepath-value=\"\u0026amp;quot;pineapple_cake_height_479_width_480.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image" +
+        "\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003e\u003cstrongQuestion 6\u003c/strong\u003e: What fraction of the cake has big " +
+        "red cherries in the pineapple slices?\u003c/p\u003e",
       textView
     )
     // The two strings aren't equal because this HTML contains a Non-Oppia/Non-Html tag e.g. <image> tag and attributes "filepath-value" which isn't parsed.
@@ -137,30 +148,156 @@ class HtmlParserTest {
   }
 
   @Test
-  fun testHtmlContent_customSpan_isAdded() {
-    val textView = activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
+  fun testHtmlContent_doesNotStartWithOLorULTag_parsedHtmlDisplaysRegularText() {
+    val textView =
+      activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
+    val source = "<html>CITRUS FRUITS:<li>LEMON</li><li>LIME</li><li>ORANGE</li></html>"
     val htmlParser = htmlParserFactory.create(
-      resourceBucketName, /* entityType= */ "", /* entityId= */ "", /* imageCenterAlign= */ true
+      resourceBucketName,
+      /* entityType= */ "",
+      /* entityId= */ "",
+      /* imageCenterAlign= */ true
+    )
+    val formattedHtml = htmlParser.parseOppiaHtml(source, textView).toString()
+
+    assertThat(
+      formattedHtml
+    ).isEqualTo(
+      "CITRUS FRUITS:LEMONLIMEORANGE"
+    )
+  }
+
+  @Test
+  fun testHtmlContent_handleNestedList_parsedHtmlDisplaysNestedList() {
+    val textView =
+      activityTestRule.activity.findViewById(R.id.test_html_content_with_ordered_list_text_view) as TextView
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      /* entityType= */ "",
+      /* entityId= */ "",
+      /* imageCenterAlign= */ true
+    )
+    val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+      """<ul>
+                <li>Item 1</li>
+                <li>Item 2</li>
+                <li>Item 3
+                    <ol>
+                        <li>Nested item 1</li>
+                        <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+                        Nulla et tellus eu magna facilisis eleifend. Vestibulum faucibus pulvinar tincidunt. 
+                        Nullam non mauris nisi.</li>
+                    </ol>
+                </li>
+                <li>Item 4</li>
+                <li>Item 5
+                    <ul>
+                        <li>Nested item 1</li>
+                        <li>Nested item 2
+                            <ol>
+                                <li>Double nested item 1</li>
+                                <li>Double nested item 2</li>
+                            </ol>
+                        </li>
+                        <li>Nested item 3</li>
+                    </ul>
+                </li>
+                <li>Item 6</li>
+            </ul>
+        """,
+      textView
+    )
+    assertThat(textView.text.toString()).isEqualTo(htmlResult.toString())
+    onView(withId(R.id.test_html_content_with_ordered_list_text_view)).check(matches(isDisplayed()))
+    onView(withId(R.id.test_html_content_with_ordered_list_text_view)).check(
+      matches(
+        withText(
+          textView.text.toString()
+        )
+      )
+    )
+  }
+
+  @Test
+  fun testHtmlContent_bulletSpanWithRadius_isAdded() {
+    val textView =
+      activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      /* entityType= */ "",
+      /* entityId= */ "",
+      /* imageCenterAlign= */ true
     )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
       "<p>You should know the following before going on:<br></p>" +
-          "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +
-          "<li>How to tell whether one counting number is bigger or smaller than another<br></li></ul>",
+        "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +
+        "<li>How to tell whether one counting number is bigger or smaller than another<br></li></ul>",
       textView
     )
 
     /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
-    val bulletSpans = htmlResult.getSpans<CustomBulletSpan>(0, htmlResult.length, CustomBulletSpan::class.java)
+    val bulletSpans = htmlResult.getSpans<BulletSpanWithRadius>(
+      0,
+      htmlResult.length,
+      BulletSpanWithRadius::class.java
+    )
     assertThat(bulletSpans.size.toLong()).isEqualTo(2)
 
-    val bulletSpan0 = bulletSpans[0] as CustomBulletSpan
+    val bulletSpan0 = bulletSpans[0] as BulletSpanWithRadius
     assertThat(bulletSpan0).isNotNull()
 
-    val bulletSpan1 = bulletSpans[1] as CustomBulletSpan
+    val bulletSpan1 = bulletSpans[1] as BulletSpanWithRadius
     assertThat(bulletSpan1).isNotNull()
+
+    assertThat(htmlResult.getSpanEnd(bulletSpan0)).isEqualTo(htmlResult.getSpanStart(bulletSpan1))
   }
 
-  @Qualifier annotation class TestDispatcher
+  @Test
+  fun testHtmlContent_numberedLeadingMarginSpan_isAdded() {
+    val textView =
+      activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      /* entityType= */ "",
+      /* entityId= */ "",
+      /* imageCenterAlign= */ true
+    )
+    val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+      "<p>You should know the following before going on:<br></p>" +
+        "<ol><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +
+        "<li>How to tell whether one counting number is bigger or smaller than another<br></li></ol>",
+      textView
+    )
+
+    /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
+    val bulletSpans = htmlResult.getSpans<LeadingMarginSpan.Standard>(
+      0,
+      htmlResult.length,
+      LeadingMarginSpan.Standard::class.java
+    )
+    assertThat(bulletSpans.size.toLong()).isEqualTo(2)
+
+    val bulletSpan0 = bulletSpans[0] as LeadingMarginSpan.Standard
+    assertThat(bulletSpan0).isNotNull()
+
+    val bulletSpan1 = bulletSpans[1] as LeadingMarginSpan.Standard
+    assertThat(bulletSpan1).isNotNull()
+
+    assertThat(htmlResult.getSpanEnd(bulletSpan0)).isEqualTo(htmlResult.getSpanStart(bulletSpan1))
+  }
+
+  @Test
+  fun testHtmlContent_getLeadingMargin_isCorrect() {
+    // Given a span with a certain gap width
+    val span = BulletSpanWithRadius(ApplicationProvider.getApplicationContext<Context>(), GAP_WIDTH)
+
+    // Check that the margin is set correctly
+    val expectedMargin = (2 * BULLET_RADIUS + GAP_WIDTH)
+    assertThat(expectedMargin.toLong()).isEqualTo(span.getLeadingMargin(true).toLong())
+  }
+
+  @Qualifier
+  annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module
