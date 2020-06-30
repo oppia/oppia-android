@@ -11,11 +11,10 @@ import android.text.style.LeadingMarginSpan
  * Custom Bullet Span implementation (based on [BulletSpan])
  * Default implementation doesn't allow for radius modification
  */
-class BulletSpanWithRadius(bulletRadius: Int, gapWidth: Int) : LeadingMarginSpan {
-  private val gapWidth: Int = gapWidth
-  private val bulletRadius: Int = bulletRadius
+class BulletSpanWithRadius(private val bulletRadius: Int, private val gapWidth: Int) : LeadingMarginSpan {
 
   private var bulletPath: Path? = null
+
   override fun getLeadingMargin(first: Boolean): Int {
     return 2 * bulletRadius + gapWidth
   }
@@ -30,10 +29,12 @@ class BulletSpanWithRadius(bulletRadius: Int, gapWidth: Int) : LeadingMarginSpan
       val style = p.style
 
       p.style = Paint.Style.FILL
-      // a circle with the correct size is drawn at the correct location
+      // x the current position of the margin
+      // dir Adjust left or right according to the paragraph direction of the line.
+      // x and dir are multiplied with bulletRadius to get the x coordinates
       val xPosition = x + dir * bulletRadius.toFloat()
       val yPosition = (top + bottom) / 2f
-      
+
       if (c.isHardwareAccelerated) {
         if (bulletPath == null) {
           bulletPath = Path()

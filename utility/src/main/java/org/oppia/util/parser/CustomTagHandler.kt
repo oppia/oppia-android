@@ -84,7 +84,7 @@ class CustomTagHandler (
     }
 
     open fun openListItem(text: Editable) {
-      if (text.isNotEmpty() && text[text.length - 1] != '\n') {
+      if (text.isNotEmpty() && text.last() != '\n') {
         text.append("\n")
       }
       text.setSpan(this, text.length, text.length, Spanned.SPAN_MARK_MARK)
@@ -98,6 +98,7 @@ class CustomTagHandler (
       val listTag = getLast(text)
       val start = text.getSpanStart(listTag)
       text.removeSpan(listTag)
+      // Check if there is no span, then add span to the text.
       if (start != text.length) {
         for (replace in replaces) {
           text.setSpan(replace, start, text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -105,6 +106,15 @@ class CustomTagHandler (
       }
     }
 
+    /**
+     * This method calculates the initial margin for the nested list items with different
+     * indentation.
+     * Returns the amount by which to adjust the leading margin
+     * The leading margin is on the right for lines in a right-to-left paragraph
+     *
+     * @param text
+     * @param indentation
+     */
     protected abstract fun getReplaces(text: Editable?, indentation: Int): Array<LeadingMarginSpan>
 
     /** Note: This knows that the last returned object from getSpans() will be the most recently added. */
