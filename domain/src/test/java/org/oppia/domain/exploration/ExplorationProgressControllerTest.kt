@@ -322,8 +322,7 @@ class ExplorationProgressControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testGetCurrentState_playSecondExploration_afterFinishingPrevious_loaded_returnsInitialState() =
-    // ktlint-disable max-line-length
+  fun testGetCurrentState_playSecondExploration_afterFinishingPrevious_loaded_returnsInitialState() = // ktlint-disable max-line-length
     runBlockingTest(coroutineContext) {
       val currentStateLiveData =
         explorationProgressController.getCurrentState()
@@ -459,8 +458,7 @@ class ExplorationProgressControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testSubmitAnswer_forMultipleChoice_wrongAnswer_providesDefaultFeedbackAndNewStateTransition() =
-    // ktlint-disable max-line-length
+  fun testSubmitAnswer_forMultipleChoice_wrongAnswer_providesDefaultFeedbackAndNewStateTransition() = // ktlint-disable max-line-length
     runBlockingTest(
       coroutineContext
     ) {
@@ -1161,8 +1159,7 @@ class ExplorationProgressControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testGetCurrentState_afterMoveToPrevious_onThirdState_newObserver_receivesCompletedSecondState() =
-    // ktlint-disable max-line-length
+  fun testGetCurrentState_afterMoveToPrevious_onThirdState_newObserver_receivesCompletedSecondState() = // ktlint-disable max-line-length
     runBlockingTest(
       coroutineContext
     ) {
