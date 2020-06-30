@@ -641,7 +641,7 @@
               "param_changes": [],
               "feedback": {
                 "content_id": "feedback_2",
-                "html": "<p>Seems like you did the descending order</p>"
+                "html": "<p>Seems like you did the ascending order</p>"
               },
               "dest": "DragDropNoGroup",
               "refresher_exploration_id": null,
@@ -732,7 +732,7 @@
       },
       "content": {
         "content_id": "content",
-        "html": "<p>Sort the following in ascending order, putting equal items in the same position.</p>"
+        "html": "<p>Sort the following in descending order, putting equal items in the same position.</p>"
       }
     },
     "DragDropGroup": {
@@ -782,7 +782,7 @@
               "param_changes": [],
               "feedback": {
                 "content_id": "feedback_2",
-                "html": "<p>Seems like you did the descending order</p>"
+                "html": "<p>Seems like you did the ascending order</p>"
               },
               "dest": "DragDropGroup",
               "refresher_exploration_id": null,
@@ -849,7 +849,7 @@
       },
       "content": {
         "content_id": "content",
-        "html": "<p>Sort the following in ascending order, putting equal items in the same position.</p>"
+        "html": "<p>Sort the following in descending order, putting equal items in the same position.</p>"
       }
     },
     "End": {
