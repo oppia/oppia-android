@@ -1,4 +1,4 @@
-package org.oppia.app.player.state.hintsandsolution
+package org.oppia.app.hintsandsolution
 
 /** Allows parent activity to dismiss the [HintsAndSolutionFragmentt] */
 interface HintsAndSolutionListener {
