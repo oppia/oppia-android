@@ -18,7 +18,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="24dp"
-    android:layout_marginTop="24dp"
     android:layout_marginEnd="24dp"
     android:layout_marginBottom="24dp"
     android:background="@{viewModel.hasBlueBackground ? @drawable/content_blue_background : @drawable/transparent_background}"
@@ -28,15 +27,15 @@
       android:id="@+id/content_text_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginStart="8dp"
       android:layout_marginTop="12dp"
-      android:layout_marginEnd="8dp"
       android:layout_marginBottom="12dp"
       android:breakStrategy="simple"
       android:fontFamily="sans-serif"
       android:text="@{htmlContent}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp"
-      android:visibility="@{htmlContent.length() > 0 ? View.VISIBLE : View.GONE, default=gone}" />
+      android:visibility="@{htmlContent.length() > 0 ? View.VISIBLE : View.GONE, default=gone}"
+      app:layoutMarginEnd="@{viewModel.centerAligned ? @dimen/padding_0 : @dimen/padding_8}"
+      app:layoutMarginStart="@{viewModel.centerAligned ? @dimen/padding_0 : @dimen/padding_8}" />
   </FrameLayout>
 </layout>
