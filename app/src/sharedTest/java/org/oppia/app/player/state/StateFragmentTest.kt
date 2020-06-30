@@ -705,7 +705,7 @@ class StateFragmentTest {
     onView(withId(R.id.submit_answer_button)).perform(click())
     onView(withId(R.id.continue_navigation_button)).perform(click())
 
-    // Seventh state: Drag Drop Sort. Correct answer: Move 1st item to 3rd position.
+    // Seventh state: Drag Drop Sort. Correct answer: Move 1st item to 4rd position.
     onView(withId(R.id.drag_drop_interaction_recycler_view)).perform(
       DragViewAction(
         RecyclerViewCoordinatesProvider(
@@ -715,7 +715,7 @@ class StateFragmentTest {
             GeneralLocation.CENTER
           )
         ),
-        RecyclerViewCoordinatesProvider(2, CustomGeneralLocation.UNDER_RIGHT),
+        RecyclerViewCoordinatesProvider(3, CustomGeneralLocation.UNDER_RIGHT),
         Press.FINGER
       )
     )
@@ -751,6 +751,19 @@ class StateFragmentTest {
         targetViewId = R.id.drag_drop_content_group_item
       )
     ).perform(click())
+    onView(withId(R.id.drag_drop_interaction_recycler_view)).perform(
+      DragViewAction(
+        RecyclerViewCoordinatesProvider(
+          1,
+          ChildViewCoordinatesProvider(
+            R.id.drag_drop_item_container,
+            GeneralLocation.CENTER
+          )
+        ),
+        RecyclerViewCoordinatesProvider(2, CustomGeneralLocation.UNDER_RIGHT),
+        Press.FINGER
+      )
+    )
     onView(withId(R.id.submit_answer_button)).perform(click())
     onView(
       atPositionOnView(
