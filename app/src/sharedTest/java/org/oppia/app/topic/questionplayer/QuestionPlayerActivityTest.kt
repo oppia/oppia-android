@@ -21,6 +21,7 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class QuestionPlayerActivityTest {
   // TODO(#503): add tests for QuestionPlayerActivity (use StateFragmentTest for a reference).
+  // TODO(#1273): add tests for Hints and Solution in Question Player .
 
   @Before
   fun setUp(){

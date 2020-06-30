@@ -1,4 +1,4 @@
-package org.oppia.app.player.state.hintsandsolution
+package org.oppia.app.hintsandsolution
 
 import android.app.Dialog
 import android.content.Context
@@ -26,7 +26,7 @@ class RevealSolutionDialogFragment : DialogFragment() {
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
     val view = View.inflate(context, R.layout.reveal_solution_dialog, /* root= */ null)
-    val revealSolutionInterface: RevealSolutionInterface = parentFragment as HintsAndSolutionFragment
+    val revealSolutionInterface: RevealSolutionInterface = parentFragment as HintsAndSolutionDialogFragment
 
     return AlertDialog.Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
       .setTitle(R.string.reveal_solution)
