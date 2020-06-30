@@ -4,6 +4,8 @@
 
   <data>
 
+    <import type="android.view.View" />
+
     <variable
       name="viewModel"
       type="org.oppia.app.topic.questionplayer.QuestionPlayerViewModel" />
@@ -92,6 +94,36 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <FrameLayout
+      android:id="@+id/hints_and_solution_fragment_placeholder"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"/>
+
+    <FrameLayout
+      android:id="@+id/hints_and_solution_fragment_container"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="bottom|start"
+      android:background="@drawable/hints_background"
+      android:visibility="@{viewModel.isHintBulbVisible() ? View.VISIBLE : View.GONE}">
+
+      <ImageView
+        android:id="@+id/dot_hint"
+        android:layout_width="8dp"
+        android:layout_height="6dp"
+        android:layout_gravity="top|end"
+        android:layout_margin="8dp"
+        android:src="@drawable/ic_dot_yellow_24dp"
+        android:visibility="@{viewModel.isHintOpenedAndUnRevealed() ? View.VISIBLE : View.GONE}" />
+
+      <ImageView
+        android:id="@+id/hint_bulb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:src="@drawable/ic_hintbulb_whilte_24dp" />
+    </FrameLayout>
 
     <FrameLayout
       android:layout_width="match_parent"
