@@ -105,7 +105,7 @@ class CustomTagHandler (
       }
     }
 
-    protected abstract fun getReplaces(text: Editable?, indentation: Int): Array<Any>
+    protected abstract fun getReplaces(text: Editable?, indentation: Int): Array<LeadingMarginSpan>
 
     /** Note: This knows that the last returned object from getSpans() will be the most recently added. */
     private fun getLast(text: Spanned): ListItemTag? {
@@ -117,7 +117,7 @@ class CustomTagHandler (
       override fun getReplaces(
         text: Editable?,
         indentation: Int
-      ): Array<Any> {
+      ): Array<LeadingMarginSpan> {
         var bulletMargin: Int = indent
         if (indentation > 1) {
           bulletMargin = indent - bulletSpan!!.getLeadingMargin(true)
@@ -136,13 +136,13 @@ class CustomTagHandler (
      data class OrderedListTag(private var nextIdx: Int = 1): ListItemTag() {
     override fun openListItem(text: Editable) {
         super.openListItem(text)
-        text.append(Integer.toString(nextIdx++)).append(". ")
+        text.append((nextIdx++).toString()).append(". ")
       }
 
       override fun getReplaces(
         text: Editable?,
         indentation: Int
-      ): Array<Any> {
+      ): Array<LeadingMarginSpan> {
         var numberMargin: Int = listItemIndent * (indentation - 1)
         if (indentation > 2) {
           numberMargin -= (indentation - 2) * listItemIndent
