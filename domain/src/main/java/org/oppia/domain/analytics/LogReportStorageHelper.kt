@@ -45,8 +45,7 @@ class LogReportStorageHelper @Inject constructor(
   private suspend fun checkStoreCacheStatus() {
     val storeSize = persistentCacheStore.readDataAsync().await().serializedSize.toByte()
     if (storeSize / 1048576 > storeSizeLimit) {
-      val eventLog = getLeastRecentOptionalEvent() ?: getLeastRecentEvent()
-      removeEvent(eventLog)
+      removeEvent(getLeastRecentEvent())
       checkStoreCacheStatus()
     }
   }
@@ -56,10 +55,8 @@ class LogReportStorageHelper @Inject constructor(
       .filter { it.priority == EventLog.Priority.OPTIONAL }
 
   private suspend fun getLeastRecentEvent(): EventLog? =
-    eventLogStore.readDataAsync().await().eventLogList.minBy { it.timestamp }
-
-  private suspend fun getLeastRecentOptionalEvent(): EventLog? =
-    getAllOptionalEvents().minBy { it.timestamp }
+    getAllOptionalEvents().minBy { it.timestamp } ?: eventLogStore.readDataAsync()
+      .await().eventLogList.minBy { it.timestamp }
 
   private suspend fun removeEvent(eventLog: EventLog?) =
     eventLogStore.readDataAsync().await().eventLogList.remove(eventLog)
