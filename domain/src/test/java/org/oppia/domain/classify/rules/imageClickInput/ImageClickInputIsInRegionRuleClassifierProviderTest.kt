@@ -28,7 +28,7 @@ class ImageClickInputIsInRegionRuleClassifierProviderTest {
   private val ITEM_REGION_A = "a"
   private val ITEM_REGION_B = "b"
   private val ITEM_REGION_C = "c"
-  private val ITEM_REGION_D = "c"
+  private val ITEM_REGION_D = "d"
   private val ITEM_POINT_1 = createPoint2d(0.5f, 0.5f)
 
   private val IMAGE_REGION_ABC_POSITION_1 =
