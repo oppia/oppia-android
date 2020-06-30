@@ -82,12 +82,7 @@ class TopicInfoFragmentPresenter @Inject constructor(
       fragment,
       Observer<Topic> { topic ->
         topicInfoViewModel.topic.set(topic)
-        topicInfoViewModel.topicDescription.set(
-          htmlParser.parseOppiaHtml(
-            topic.description,
-            fragment.requireView().findViewById(R.id.topic_description_text_view)
-          )
-        )
+        topicInfoViewModel.topicDescription.set(topic.description)
         topicInfoViewModel.calculateTopicSizeWithUnit()
         controlSeeMoreTextVisibility()
       }
@@ -125,7 +120,7 @@ class TopicInfoFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun logInfoFragmentEvent(topicId: String){
+  private fun logInfoFragmentEvent(topicId: String) {
     analyticsController.logTransitionEvent(
       fragment.requireActivity().applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,
