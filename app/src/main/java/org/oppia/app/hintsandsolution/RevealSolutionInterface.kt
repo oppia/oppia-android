@@ -1,6 +1,6 @@
-package org.oppia.app.player.state.hintsandsolution
+package org.oppia.app.hintsandsolution
 
-/** Interface to check the preference regarding alert for [HintsAndSolutionFragment]. */
+/** Interface to check the preference regarding alert for [HintsAndSolutionDialogFragment]. */
 interface RevealSolutionInterface {
   /**
    * If saveUserChoice is true, show solution and save preference do not show dialog again.
