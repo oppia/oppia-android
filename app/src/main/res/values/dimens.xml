@@ -33,6 +33,7 @@
   <dimen name="margin_72">72dp</dimen>
   <dimen name="margin_48">48dp</dimen>
   <dimen name="margin_44">44dp</dimen>
+  <dimen name="margin_40">40dp</dimen>
   <dimen name="margin_36">36dp</dimen>
   <dimen name="margin_32">32dp</dimen>
   <dimen name="margin_28">28dp</dimen>

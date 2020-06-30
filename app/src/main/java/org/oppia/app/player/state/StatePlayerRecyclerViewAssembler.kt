@@ -26,7 +26,6 @@ import org.oppia.app.databinding.PreviousResponsesHeaderItemBinding
 import org.oppia.app.databinding.QuestionPlayerFeedbackItemBinding
 import org.oppia.app.databinding.QuestionPlayerSelectionInteractionItemBinding
 import org.oppia.app.databinding.QuestionPlayerSubmittedAnswerItemBinding
-import org.oppia.app.databinding.QuestionPlayerContentItemBinding
 import org.oppia.app.databinding.ReplayButtonItemBinding
 import org.oppia.app.databinding.ReturnToTopicButtonItemBinding
 import org.oppia.app.databinding.SelectionInteractionItemBinding
@@ -43,6 +42,7 @@ import org.oppia.app.model.State
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.audio.AudioUiManager
+import org.oppia.app.player.exploration.ExplorationContentViewModel
 import org.oppia.app.player.state.StatePlayerRecyclerViewAssembler.Builder.Factory
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
@@ -532,6 +532,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
      */
     private val featureSets = mutableSetOf(PlayerFeatureSet())
     private var congratulationsTextView: TextView? = null
+    private var explorationContentViewModel: ExplorationContentViewModel? = null
     private var canSubmitAnswer: ObservableField<Boolean>? = null
     private var audioActivityId: String? = null
     private var currentStateName: ObservableField<String>? = null
@@ -540,32 +541,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     /** Adds support for displaying state content to the learner. */
     fun addContentSupport(): Builder {
-      if (fragment is QuestionPlayerFragment)
-        adapterBuilder.registerViewBinder(
-          viewType = StateItemViewModel.ViewType.CONTENT,
-          inflateView = { parent ->
-            QuestionPlayerContentItemBinding.inflate(
-              LayoutInflater.from(parent.context),
-              parent,
-              /* attachToParent= */ false
-            ).root
-          },
-          bindView = { view, viewModel ->
-            val binding = DataBindingUtil.findBinding<QuestionPlayerContentItemBinding>(view)!!
-            val contentViewModel = viewModel as ContentViewModel
-            binding.htmlContent =
-              htmlParserFactory.create(
-                resourceBucketName,
-                entityType,
-                contentViewModel.gcsEntityId,
-                imageCenterAlign = true
-              ).parseOppiaHtml(
-                contentViewModel.htmlContent.toString(),
-                binding.questionPlayerContentTextView
-              )
-          }
-        )
-      else {
         adapterBuilder.registerViewBinder(
           viewType = StateItemViewModel.ViewType.CONTENT,
           inflateView = { parent ->
@@ -578,6 +553,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
           bindView = { view, viewModel ->
             val binding = DataBindingUtil.findBinding<ContentItemBinding>(view)!!
             val contentViewModel = viewModel as ContentViewModel
+            binding.viewModel = explorationContentViewModel
             binding.htmlContent =
               htmlParserFactory.create(
                 resourceBucketName,
@@ -589,7 +565,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
               )
           }
         )
-      }
       featureSets += PlayerFeatureSet(contentSupport = true)
       return this
     }
@@ -873,6 +848,15 @@ class StatePlayerRecyclerViewAssembler private constructor(
      */
     fun addCongratulationsForCorrectAnswers(congratulationsTextView: TextView): Builder {
       this.congratulationsTextView = congratulationsTextView
+      featureSets += PlayerFeatureSet(showCongratulationsOnCorrectAnswer = true)
+      return this
+    }
+
+    /**
+     * Adds support for displaying with proper alignment and background.
+     */
+    fun addUISupport(explorationContentViewModel: ExplorationContentViewModel): Builder {
+      this.explorationContentViewModel = explorationContentViewModel
       featureSets += PlayerFeatureSet(showCongratulationsOnCorrectAnswer = true)
       return this
     }

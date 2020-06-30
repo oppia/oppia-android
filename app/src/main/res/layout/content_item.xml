@@ -7,25 +7,29 @@
     <variable
       name="htmlContent"
       type="CharSequence" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.player.exploration.ExplorationContentViewModel" />
   </data>
 
   <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="20dp"
-    android:layout_marginTop="@dimen/divider_margin_top"
-    android:layout_marginEnd="28dp"
-    android:layout_marginBottom="@dimen/divider_margin_bottom"
-    android:background="@drawable/content_blue_background">
+    android:layout_marginStart="24dp"
+    android:layout_marginTop="24dp"
+    android:layout_marginEnd="24dp"
+    android:layout_marginBottom="24dp"
+    android:background="@{viewModel.hasBlueBackground ? @drawable/content_blue_background : @drawable/transparent_background}">
 
     <TextView
       android:id="@+id/content_text_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginStart="12dp"
-      android:layout_marginTop="16dp"
-      android:layout_marginEnd="12dp"
-      android:layout_marginBottom="16dp"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="12dp"
+      android:layout_marginEnd="8dp"
+      android:layout_marginBottom="12dp"
       android:breakStrategy="simple"
       android:fontFamily="sans-serif"
       android:text="@{htmlContent}"
