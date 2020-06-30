@@ -1,8 +1,10 @@
 package org.oppia.domain.state
 
 import org.oppia.app.model.AnsweredQuestionOutcome
+import org.oppia.app.model.Hint
 import org.oppia.app.model.Outcome
 import org.oppia.app.model.Question
+import org.oppia.app.model.Solution
 import org.oppia.app.model.State
 
 /**
@@ -33,5 +35,30 @@ internal class StateList(
       .setFeedback(outcome.feedback)
       .setIsCorrectAnswer(outcome.labelledAsCorrect)
       .build()
+  }
+
+  /** Returns an [Hint] based on the current state and revealed [Hint] from the learner's answer. */
+  internal fun computeHintForResult(
+    currentState: State,
+    hintIsRevealed: Boolean,
+    hintIndex: Int
+  ): Hint {
+    return Hint.newBuilder()
+      .setHintIsRevealed(hintIsRevealed)
+      .setHintContent(currentState.interaction.getHint(hintIndex).hintContent)
+      .setState(currentState)
+      .build()
+  }
+
+  /** Returns an [Solution] based on the current state and revealed [Solution] from the learner's answer. */
+  internal fun computeSolutionForResult(
+    currentState: State,
+    solutionIsRevealed: Boolean
+  ): Solution {
+    return Solution.newBuilder()
+      .setSolutionIsRevealed(solutionIsRevealed)
+      .setAnswerIsExclusive(currentState.interaction.solution.answerIsExclusive)
+      .setCorrectAnswer(currentState.interaction.solution.correctAnswer)
+      .setExplanation(currentState.interaction.solution.explanation).build()
   }
 }
