@@ -94,7 +94,6 @@ class ExplorationActivityLocalTest {
       assertThat(event.context.explorationContext.explorationId).matches(TEST_EXPLORATION_ID_30)
       assertThat(event.context.explorationContext.topicId).matches(TEST_TOPIC_ID_0)
       assertThat(event.context.explorationContext.storyId).matches(TEST_STORY_ID_0)
-
     }
   }
 
@@ -106,10 +105,6 @@ class ExplorationActivityLocalTest {
         explorationDataController.startPlayingExploration(id)
       }
     }
-  }
-
-  private fun launchExplorationActivity(internalProfileId: Int) {
-
   }
 
   private fun createExplorationActivityIntent(

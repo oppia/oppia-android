@@ -11,7 +11,6 @@ import org.oppia.app.databinding.TopicPracticeFragmentBinding
 import org.oppia.app.databinding.TopicPracticeHeaderViewBinding
 import org.oppia.app.databinding.TopicPracticeSubtopicBinding
 import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.EventLog
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.topic.RouteToQuestionPlayerListener
 import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeFooterViewModel

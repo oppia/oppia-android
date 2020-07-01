@@ -94,8 +94,8 @@ class TopicFragmentPresenter @Inject constructor(
     return viewModelProvider.getForFragment(fragment, TopicViewModel::class.java)
   }
 
-  private fun logTopicEvents(tab: TopicTab){
-    when(tab){
+  private fun logTopicEvents(tab: TopicTab) {
+    when (tab) {
       TopicTab.INFO -> logInfoFragmentEvent(topicId)
       TopicTab.LESSONS -> logLessonsFragmentEvent(topicId)
       TopicTab.PRACTICE -> logPracticeFragmentEvent(topicId)
@@ -103,7 +103,7 @@ class TopicFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun logInfoFragmentEvent(topicId: String){
+  private fun logInfoFragmentEvent(topicId: String) {
     analyticsController.logTransitionEvent(
       fragment.requireActivity().applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,
@@ -112,7 +112,7 @@ class TopicFragmentPresenter @Inject constructor(
     )
   }
 
-  private fun logLessonsFragmentEvent(topicId: String){
+  private fun logLessonsFragmentEvent(topicId: String) {
     analyticsController.logTransitionEvent(
       fragment.requireActivity().applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,
@@ -121,7 +121,7 @@ class TopicFragmentPresenter @Inject constructor(
     )
   }
 
-  private fun logPracticeFragmentEvent(topicId: String){
+  private fun logPracticeFragmentEvent(topicId: String) {
     analyticsController.logTransitionEvent(
       fragment.requireActivity().applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,
@@ -130,7 +130,7 @@ class TopicFragmentPresenter @Inject constructor(
     )
   }
 
-  private fun logRevisionFragmentEvent(topicId: String){
+  private fun logRevisionFragmentEvent(topicId: String) {
     analyticsController.logTransitionEvent(
       fragment.requireActivity().applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,

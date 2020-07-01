@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.app.databinding.TopicRevisionFragmentBinding
 import org.oppia.app.databinding.TopicRevisionSummaryViewBinding
 import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.EventLog
 import org.oppia.app.model.Subtopic
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.topic.RouteToRevisionCardListener

@@ -257,7 +257,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
       activity.applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_PROFILE_CHOOSER,
-      null
+      /* Event Context */ null
     )
   }
 }
