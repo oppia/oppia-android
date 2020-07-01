@@ -21,7 +21,7 @@ import org.oppia.domain.analytics.AnalyticsController
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -30,7 +30,7 @@ import javax.inject.Inject
 class TopicLessonsFragmentPresenter @Inject constructor(
   activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val explorationDataController: ExplorationDataController,
   private val topicController: TopicController,
   private val analyticsController: AnalyticsController,

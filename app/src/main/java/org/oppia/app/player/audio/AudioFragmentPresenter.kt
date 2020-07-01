@@ -25,7 +25,7 @@ import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.audio.CellularAudioDialogController
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.networking.NetworkConnectionUtil
 import javax.inject.Inject
 
@@ -43,7 +43,7 @@ class AudioFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val networkConnectionUtil: NetworkConnectionUtil,
   private val viewModelProvider: ViewModelProvider<AudioViewModel>,
-  private val logger: Logger
+  private val logger: ConsoleLogger
 ) {
   var userIsSeeking = false
   var userProgress = 0

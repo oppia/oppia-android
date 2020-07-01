@@ -15,7 +15,7 @@ import org.oppia.util.caching.AssetRepository
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.ExceptionLogger
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.threading.BackgroundDispatcher
 import java.io.IOException
 import java.util.concurrent.TimeUnit
@@ -32,7 +32,7 @@ import kotlin.concurrent.withLock
  */
 @Singleton
 class AudioPlayerController @Inject constructor(
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val assetRepository: AssetRepository,
   private val exceptionLogger: ExceptionLogger,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,

@@ -12,14 +12,14 @@ import org.oppia.app.onboarding.OnboardingActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.domain.onboarding.OnboardingFlowController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The presenter for [SplashActivity]. */
 @ActivityScope
 class SplashActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val onboardingFlowController: OnboardingFlowController
 ) {
 

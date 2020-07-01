@@ -13,7 +13,7 @@ import org.oppia.app.model.ProfileAvatar
 import org.oppia.app.model.ProfileId
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
@@ -22,7 +22,7 @@ import javax.inject.Inject
 class ProfilePictureActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
-  private val logger: Logger
+  private val logger: ConsoleLogger
 ) {
   private lateinit var profilePictureActivityViewModel: ProfilePictureActivityViewModel
   private lateinit var profileId: ProfileId

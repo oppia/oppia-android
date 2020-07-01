@@ -14,7 +14,7 @@ import org.oppia.domain.exploration.TEST_EXPLORATION_ID_30
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 private const val TEST_ACTIVITY_TAG = "TestActivity"
@@ -24,7 +24,7 @@ private const val TEST_ACTIVITY_TAG = "TestActivity"
 class StateFragmentTestActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val explorationDataController: ExplorationDataController,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val viewModelProvider: ViewModelProvider<StateFragmentTestViewModel>
 ) {
   fun handleOnCreate() {
