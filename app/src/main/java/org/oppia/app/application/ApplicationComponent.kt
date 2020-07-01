@@ -37,11 +37,12 @@ import org.oppia.util.threading.DispatcherModule
     ContinueModule::class, FractionInputModule::class,
     ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
     NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
-    TextInputRuleModule::class, DragDropSortInputModule::class, ImageClickInputModule::class,
+    TextInputRuleModule::class, DragDropSortInputModule::class,
     InteractionsModule::class, GcsResourceModule::class,
     GlideImageLoaderModule::class, ImageParsingModule::class,
     HtmlParserEntityTypeModule::class, CachingModule::class,
-    QuestionModule::class, LogReportingModule::class, AccessibilityModule::class
+    QuestionModule::class, LogReportingModule::class,
+    AccessibilityModule::class, ImageClickInputModule::class
   ]
 )
 

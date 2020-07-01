@@ -58,6 +58,7 @@ message ListOfSetsOfHtmlStrings {
   repeated StringList set_of_html_strings = 1;
 }
 
+// Structure for 2-Dimensional Point.
 message Point2d {
   float x = 1;
   float y = 2;
