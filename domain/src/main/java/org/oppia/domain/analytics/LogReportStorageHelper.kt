@@ -1,8 +1,6 @@
 package org.oppia.domain.analytics
 
 import androidx.lifecycle.LiveData
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -19,6 +17,8 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
 import org.oppia.util.logging.Logger
 import org.oppia.util.threading.BackgroundDispatcher
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 class LogReportStorageHelper @Inject constructor(
