@@ -393,7 +393,7 @@ class ExplorationDataControllerTest {
       MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
       NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, InteractionsModule::class,
-      TestLogReportingModule::class,ImageClickInputModule::class
+      TestLogReportingModule::class, ImageClickInputModule::class
     ]
   )
   interface TestApplicationComponent {
