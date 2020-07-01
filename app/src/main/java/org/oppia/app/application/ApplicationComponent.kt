@@ -7,6 +7,7 @@ import javax.inject.Provider
 import javax.inject.Singleton
 import org.oppia.app.activity.ActivityComponent
 import org.oppia.data.backends.gae.NetworkModule
+import org.oppia.domain.analytics.LogStorageModule
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -40,7 +41,8 @@ import org.oppia.util.threading.DispatcherModule
     InteractionsModule::class, GcsResourceModule::class,
     GlideImageLoaderModule::class, ImageParsingModule::class,
     HtmlParserEntityTypeModule::class, CachingModule::class,
-    QuestionModule::class, LogReportingModule::class, AccessibilityModule::class
+    QuestionModule::class, LogReportingModule::class,
+    AccessibilityModule::class, LogStorageModule::class
   ]
 )
 

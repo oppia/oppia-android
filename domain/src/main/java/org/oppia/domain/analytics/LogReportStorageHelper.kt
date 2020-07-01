@@ -8,10 +8,6 @@ import org.oppia.app.model.EventLog
 import org.oppia.app.model.ExceptionLog
 import org.oppia.app.model.OppiaCrashLogs
 import org.oppia.app.model.OppiaEventLogs
-import org.oppia.app.model.OppiaLog
-import org.oppia.app.model.OppiaLog.LogReportCase.EVENT_LOG
-import org.oppia.app.model.OppiaLog.LogReportCase.EXCEPTION_LOG
-import org.oppia.app.model.OppiaLog.LogReportCase.LOGREPORT_NOT_SET
 import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
@@ -25,9 +21,14 @@ class LogReportStorageHelper @Inject constructor(
   private val cacheStoreFactory: PersistentCacheStore.Factory,
   private val dataProviders: DataProviders,
   private val logger: Logger,
-  private val logReportingConstantsProvider: LogReportingConstantsProvider,
-  @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
+  @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
+  @EventLogStorageCacheSize private val eventLogStorageCacheSize: Int,
+  @ExceptionLogStorageCacheSize private val exceptionLogStorageCacheSize: Int
 ) {
+  private enum class LogReportingCase {
+    EVENT_LOG,
+    EXCEPTION_LOG
+  }
   private val eventLogStore =
     cacheStoreFactory.create("event_logs", OppiaEventLogs.getDefaultInstance())
   private val exceptionLogStore =
@@ -38,7 +39,8 @@ class LogReportStorageHelper @Inject constructor(
     coroutineScope.launch {
       checkStoreCacheStatus(
         eventLogStore.readDataAsync().await().serializedSize.toByte(),
-        EVENT_LOG
+        LogReportingCase.EVENT_LOG,
+        eventLogStorageCacheSize
       )
     }
     eventLogStore.storeDataAsync(updateInMemoryCache = true) {
@@ -58,7 +60,8 @@ class LogReportStorageHelper @Inject constructor(
     coroutineScope.launch {
       checkStoreCacheStatus(
         exceptionLogStore.readDataAsync().await().serializedSize.toByte(),
-        EXCEPTION_LOG
+        LogReportingCase.EXCEPTION_LOG,
+        exceptionLogStorageCacheSize
       )
     }
     exceptionLogStore.storeDataAsync(updateInMemoryCache = true) {
@@ -76,11 +79,15 @@ class LogReportStorageHelper @Inject constructor(
 
   private suspend fun checkStoreCacheStatus(
     storeSize: Byte,
-    logReportCase: OppiaLog.LogReportCase
+    logReportCase: LogReportingCase,
+    cacheStorageLimit: Int
   ) {
-    if (storeSize / 1048576 > logReportingConstantsProvider.getLogReportingCacheSize()) {
-      removeEvent(getLeastRecentReport(logReportCase))
-      checkStoreCacheStatus(storeSize, logReportCase)
+    if (storeSize / 1048576 > cacheStorageLimit) {
+      when (logReportCase) {
+        LogReportingCase.EVENT_LOG -> removeEvent(getLeastRecentEvent())
+        LogReportingCase.EXCEPTION_LOG -> removeException(getLeastRecentException())
+      }
+      checkStoreCacheStatus(storeSize, logReportCase, cacheStorageLimit)
     }
   }
 
@@ -90,32 +97,19 @@ class LogReportStorageHelper @Inject constructor(
       .minBy { it.timestamp } ?: eventLogStore.readDataAsync().await().eventLogList
       .minBy { it.timestamp }
 
-  private suspend fun getLeastRecentCrash(): ExceptionLog? =
+  private suspend fun getLeastRecentException(): ExceptionLog? =
     exceptionLogStore.readDataAsync().await().exceptionLogList
       .filter { it.exceptionType == ExceptionLog.ExceptionType.NON_FATAL }
       .minBy { it.timestamp } ?: exceptionLogStore.readDataAsync().await().exceptionLogList
       .minBy { it.timestamp }
 
-  private suspend fun getLeastRecentReport(logReportsCase: OppiaLog.LogReportCase): OppiaLog? {
-    return when (logReportsCase) {
-      EVENT_LOG -> {
-        OppiaLog.newBuilder().setEventLog(getLeastRecentEvent()).build()
-      }
-      EXCEPTION_LOG -> {
-        OppiaLog.newBuilder().setExceptionLog(getLeastRecentCrash()).build()
-      }
-      LOGREPORT_NOT_SET -> null
-    }
-  }
+  private suspend fun removeEvent(eventLog: EventLog?) =
+    eventLog?.let { eventLogStore.readDataAsync().await().eventLogList.remove(eventLog) }
 
-  private suspend fun removeEvent(oppiaLog: OppiaLog?) {
-    oppiaLog?.eventLog?.let {
-      eventLogStore.readDataAsync().await().eventLogList.remove(oppiaLog.eventLog)
+  private suspend fun removeException(exceptionLog: ExceptionLog?) =
+    exceptionLog?.let {
+      exceptionLogStore.readDataAsync().await().exceptionLogList.remove(exceptionLog)
     }
-    oppiaLog?.exceptionLog?.let {
-      exceptionLogStore.readDataAsync().await().exceptionLogList.remove(oppiaLog.exceptionLog)
-    }
-  }
 
   private fun removeAllEvents() {
     eventLogStore.clearCacheAsync().invokeOnCompletion {
