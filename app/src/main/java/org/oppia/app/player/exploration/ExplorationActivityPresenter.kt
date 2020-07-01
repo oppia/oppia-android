@@ -22,6 +22,7 @@ import org.oppia.util.logging.Logger
 import javax.inject.Inject
 
 const val TAG_EXPLORATION_FRAGMENT = "TAG_EXPLORATION_FRAGMENT"
+const val TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER = "HINTS_AND_SOLUTION_EXPLORATION_MANAGER"
 
 /** The Presenter for [ExplorationActivity]. */
 @ActivityScope
@@ -47,8 +48,18 @@ class ExplorationActivityPresenter @Inject constructor(
     getExplorationViewModel()
   }
 
-  fun handleOnCreate(context: Context, internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowScreen: Int?) {
-    val binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(activity, R.layout.exploration_activity)
+  fun handleOnCreate(
+    context: Context,
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    backflowScreen: Int?
+  ) {
+    val binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(
+      activity,
+      R.layout.exploration_activity
+    )
     binding.apply {
       viewModel = exploreViewModel
       lifecycleOwner = activity
@@ -71,10 +82,16 @@ class ExplorationActivityPresenter @Inject constructor(
     if (getExplorationFragment() == null) {
       val explorationFragment = ExplorationFragment()
       val args = Bundle()
-      args.putInt(ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+      args.putInt(
+        ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY,
+        internalProfileId
+      )
       args.putString(ExplorationActivity.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
       args.putString(ExplorationActivity.EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
-      args.putString(ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
+      args.putString(
+        ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY,
+        explorationId
+      )
       explorationFragment.arguments = args
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_fragment_placeholder,
@@ -82,6 +99,20 @@ class ExplorationActivityPresenter @Inject constructor(
         TAG_EXPLORATION_FRAGMENT
       ).commitNow()
     }
+
+    if (getHintsAndSolutionExplorationManagerFragment() == null) {
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.exploration_fragment_placeholder,
+        HintsAndSolutionExplorationManagerFragment()
+      ).commitNow()
+    }
+
+  }
+
+  private fun getHintsAndSolutionExplorationManagerFragment(): HintsAndSolutionExplorationManagerFragment? {
+    return activity.supportFragmentManager.findFragmentByTag(
+      TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
+    ) as HintsAndSolutionExplorationManagerFragment?
   }
 
   fun showAudioButton() = exploreViewModel.showAudioButton.set(true)
@@ -92,28 +123,34 @@ class ExplorationActivityPresenter @Inject constructor(
 
   fun showAudioStreamingOff() = exploreViewModel.isAudioStreamingOn.set(false)
 
-  fun setAudioBarVisibility(isVisible: Boolean) = getExplorationFragment()?.setAudioBarVisibility(isVisible)
+  fun setAudioBarVisibility(isVisible: Boolean) =
+    getExplorationFragment()?.setAudioBarVisibility(isVisible)
 
   fun scrollToTop() = getExplorationFragment()?.scrollToTop()
 
   private fun getExplorationFragment(): ExplorationFragment? {
-    return activity.supportFragmentManager.findFragmentById(
-      R.id.exploration_fragment_placeholder
+    return activity.supportFragmentManager.findFragmentByTag(
+      TAG_EXPLORATION_FRAGMENT
     ) as ExplorationFragment?
   }
 
   fun stopExploration() {
-    explorationDataController.stopPlayingExploration().observe(activity, Observer<AsyncResult<Any?>> {
-      when {
-        it.isPending() -> logger.d("ExplorationActivity", "Stopping exploration")
-        it.isFailure() -> logger.e("ExplorationActivity", "Failed to stop exploration", it.getErrorOrNull()!!)
-        else -> {
-          logger.d("ExplorationActivity", "Successfully stopped exploration")
-          backPressActivitySelector(backflowScreen)
-          (activity as ExplorationActivity).finish()
+    explorationDataController.stopPlayingExploration()
+      .observe(activity, Observer<AsyncResult<Any?>> {
+        when {
+          it.isPending() -> logger.d("ExplorationActivity", "Stopping exploration")
+          it.isFailure() -> logger.e(
+            "ExplorationActivity",
+            "Failed to stop exploration",
+            it.getErrorOrNull()!!
+          )
+          else -> {
+            logger.d("ExplorationActivity", "Successfully stopped exploration")
+            backPressActivitySelector(backflowScreen)
+            (activity as ExplorationActivity).finish()
+          }
         }
-      }
-    })
+      })
   }
 
   fun onKeyboardAction(actionCode: Int) {
@@ -148,16 +185,35 @@ class ExplorationActivityPresenter @Inject constructor(
   /** Helper for subscribeToExploration. */
   private fun processExploration(ephemeralStateResult: AsyncResult<Exploration>): Exploration {
     if (ephemeralStateResult.isFailure()) {
-      logger.e("StateFragment", "Failed to retrieve answer outcome", ephemeralStateResult.getErrorOrNull()!!)
+      logger.e(
+        "StateFragment",
+        "Failed to retrieve answer outcome",
+        ephemeralStateResult.getErrorOrNull()!!
+      )
     }
     return ephemeralStateResult.getOrDefault(Exploration.getDefaultInstance())
   }
 
-  private fun backPressActivitySelector(backflowScreen: Int?){
-    when(backflowScreen){
-      ParentActivityForExploration.BACKFLOW_SCREEN_STORY.value -> activity.startActivity(StoryActivity.createStoryActivityIntent(context, internalProfileId, topicId, storyId))
-      ParentActivityForExploration.BACKFLOW_SCREEN_LESSONS.value -> activity.startActivity(TopicActivity.createTopicPlayStoryActivityIntent(activity, internalProfileId, topicId, storyId))
-      else -> activity.startActivity(TopicActivity.createTopicActivityIntent(context, internalProfileId, topicId))
+  private fun backPressActivitySelector(backflowScreen: Int?) {
+    when (backflowScreen) {
+      ParentActivityForExploration.BACKFLOW_SCREEN_STORY.value -> activity.startActivity(
+        StoryActivity.createStoryActivityIntent(context, internalProfileId, topicId, storyId)
+      )
+      ParentActivityForExploration.BACKFLOW_SCREEN_LESSONS.value -> activity.startActivity(
+        TopicActivity.createTopicPlayStoryActivityIntent(
+          activity,
+          internalProfileId,
+          topicId,
+          storyId
+        )
+      )
+      else -> activity.startActivity(
+        TopicActivity.createTopicActivityIntent(
+          context,
+          internalProfileId,
+          topicId
+        )
+      )
     }
   }
 

@@ -32,8 +32,8 @@
       android:layout_marginEnd="16dp"
       android:gravity="center_horizontal"
       android:orientation="vertical"
-      app:profileChooserMarginBottom="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_16 : @dimen/margin_28}"
-      app:profileChooserMarginTop="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_16 : @dimen/margin_24}">
+      app:layoutMarginBottom="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_16 : @dimen/margin_28}"
+      app:layoutMarginTop="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_16 : @dimen/margin_24}">
 
       <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_avatar_img"

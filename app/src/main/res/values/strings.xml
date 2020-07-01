@@ -324,7 +324,7 @@
   <string name="no">No…</string>
   <string name="pick_a_different_topic">Pick a \ndifferent topic.</string>
   <string name="are_you_interested">Are you interested in:\n%s?</string>
-  <!-- HintsAndSolutionFragment -->
+  <!-- HintsAndSolutionDialogFragment -->
   <string name="hints_toolbar_title">Hints</string>
   <string name="reveal_solution">Reveal Solution</string>
   <string name="reveal_hint">Reveal Hint</string>
