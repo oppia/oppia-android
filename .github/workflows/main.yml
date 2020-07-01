@@ -17,6 +17,9 @@ jobs:
   setup:
     name: Setup
     runs-on:  ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04] 
     steps:
       - uses: technote-space/auto-cancel-redundant-job@v1
   linters:
