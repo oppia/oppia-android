@@ -95,7 +95,7 @@ message EventLog {
     // Opening of revision tab under topic activity.
     OPEN_REVISION_TAB = 5;
     // Opening of story activity.
-    OPEN_STORY_ACTIVITY= 6;
+    OPEN_STORY_ACTIVITY = 6;
     // Opening of exploration activity.
     OPEN_EXPLORATION_ACTIVITY = 7;
     // Opening of question player.
@@ -118,7 +118,45 @@ message EventLog {
   }
 }
 
-// Structure of a container that contains event logs.
-message EventLogs{
+// Structure for an exception log.
+message ExceptionLog {
+  // The timestamp of the exception.
+  int64 timestamp = 1;
+  // The stack trace of the exception.
+  int64 stacktrace = 2;
+  // The message of the exception.
+  string message = 3;
+  // The case of the exception.
+  string cause = 4;
+  // The type of exception.
+  ExceptionType exception_type = 5;
+
+  enum ExceptionType {
+    // The undefined exception type.
+    CRASH_TYPE_UNSPECIFIED = 0;
+    // The exception which is causes the application to close.
+    FATAL = 1;
+    // The exception which does not cause the application to close.
+    NON_FATAL = 2;
+  }
+}
+
+// Structure for a container that contains an event log report.
+message OppiaEventLogs {
   repeated EventLog event_log = 1;
+}
+
+// Structure for a container that contains an exception log report.
+message OppiaCrashLogs {
+  repeated ExceptionLog exception_log = 1;
+}
+
+// Structure for an Oppia log.
+message OppiaLog {
+  oneof log_report {
+    // Log corresponding to an event.
+    EventLog event_log = 1;
+    // Log corresponding to an exception.
+    ExceptionLog exception_log = 2;
+  }
 }
