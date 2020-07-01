@@ -1,6 +1,8 @@
 package org.oppia.domain.analytics
 
 import androidx.lifecycle.LiveData
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -17,14 +19,13 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
 import org.oppia.util.logging.Logger
 import org.oppia.util.threading.BackgroundDispatcher
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @Singleton
 class LogReportStorageHelper @Inject constructor(
   private val cacheStoreFactory: PersistentCacheStore.Factory,
   private val dataProviders: DataProviders,
   private val logger: Logger,
+  private val logReportingConstantsProvider: LogReportingConstantsProvider,
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
 ) {
   private val eventLogStore =
@@ -32,7 +33,6 @@ class LogReportStorageHelper @Inject constructor(
   private val exceptionLogStore =
     cacheStoreFactory.create("crash_logs", OppiaCrashLogs.getDefaultInstance())
   private val coroutineScope = CoroutineScope(backgroundCoroutineDispatcher)
-  private val storeSizeLimit = 10
 
   fun addEventLog(eventLog: EventLog) {
     coroutineScope.launch {
@@ -78,7 +78,7 @@ class LogReportStorageHelper @Inject constructor(
     storeSize: Byte,
     logReportCase: OppiaLog.LogReportCase
   ) {
-    if (storeSize / 1048576 > storeSizeLimit) {
+    if (storeSize / 1048576 > logReportingConstantsProvider.getLogReportingCacheSize()) {
       removeEvent(getLeastRecentReport(logReportCase))
       checkStoreCacheStatus(storeSize, logReportCase)
     }
