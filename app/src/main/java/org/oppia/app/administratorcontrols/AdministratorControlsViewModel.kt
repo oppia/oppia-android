@@ -29,7 +29,7 @@ class AdministratorControlsViewModel @Inject constructor(
   private val profileManagementController: ProfileManagementController
 ) : ObservableViewModel() {
   private val routeToProfileListListener = activity as RouteToProfileListListener
-  private lateinit var userProfileId: ProfileId
+  private lateinit var userProfileId: ProfileIdØ
 
   private val deviceSettingsLiveData: LiveData<DeviceSettings> by lazy {
     Transformations.map(
