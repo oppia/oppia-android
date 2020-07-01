@@ -135,7 +135,8 @@ class HintsAndSolutionAdapter(
               position
             }
           expandedHintListIndexListener.onExpandListIconClicked(currentExpandedHintListIndex)
-          if (previousIndex != null && currentExpandedHintListIndex != null &&
+          if (previousIndex != null &&
+            currentExpandedHintListIndex != null &&
             previousIndex == currentExpandedHintListIndex
           ) {
             notifyItemChanged(currentExpandedHintListIndex!!)
@@ -193,7 +194,8 @@ class HintsAndSolutionAdapter(
               position
             }
           expandedHintListIndexListener.onExpandListIconClicked(currentExpandedHintListIndex)
-          if (previousIndex != null && currentExpandedHintListIndex != null &&
+          if (previousIndex != null &&
+            currentExpandedHintListIndex != null &&
             previousIndex == currentExpandedHintListIndex
           ) {
             notifyItemChanged(currentExpandedHintListIndex!!)

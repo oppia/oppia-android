@@ -77,7 +77,6 @@ class OngoingListAdapter(
               (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
             }
           } else {
-            // this will be updated in next PR
             (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
           }
         }
