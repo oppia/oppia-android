@@ -21,7 +21,7 @@ jobs:
       - uses: technote-space/auto-cancel-redundant-job@v1
   linters:
     name: Lint Tests
-    uses: setup
+    needs: setup
     runs-on:  ${{ matrix.os }}
     strategy:
       matrix:
@@ -52,7 +52,7 @@ jobs:
      
   robolectric_tests:
     name: Robolectric Tests (Non-App Modules)
-    uses: setup
+    needs: setup
     runs-on:  ${{ matrix.os }}
     strategy:
       matrix:
@@ -100,7 +100,7 @@ jobs:
   
   app_tests:
     name: Robolectric Tests - App Module (Non-Flaky)
-    uses: setup
+    needs: setup
     runs-on:  ${{ matrix.os }}
     strategy:
       matrix:
