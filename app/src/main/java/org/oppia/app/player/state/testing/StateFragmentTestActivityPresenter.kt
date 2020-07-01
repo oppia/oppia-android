@@ -52,26 +52,32 @@ class StateFragmentTestActivityPresenter @Inject constructor(
   fun scrollToTop() = getStateFragment()?.scrollToTop()
 
   private fun startPlayingExploration(
-    profileId: Int, topicId: String, storyId: String, explorationId: String
+    profileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String
   ) {
     // TODO(#59): With proper test ordering & isolation, this hacky clean-up should not be necessary since each test
     //  should run with a new application instance.
     explorationDataController.stopPlayingExploration()
     explorationDataController.startPlayingExploration(explorationId)
-      .observe(activity, Observer<AsyncResult<Any?>> { result ->
-        when {
-          result.isPending() -> logger.d(TEST_ACTIVITY_TAG, "Loading exploration")
-          result.isFailure() -> logger.e(
-            TEST_ACTIVITY_TAG,
-            "Failed to load exploration",
-            result.getErrorOrNull()!!
-          )
-          else -> {
-            logger.d(TEST_ACTIVITY_TAG, "Successfully loaded exploration")
-            initializeExploration(profileId, topicId, storyId, explorationId)
+      .observe(
+        activity,
+        Observer<AsyncResult<Any?>> { result ->
+          when {
+            result.isPending() -> logger.d(TEST_ACTIVITY_TAG, "Loading exploration")
+            result.isFailure() -> logger.e(
+              TEST_ACTIVITY_TAG,
+              "Failed to load exploration",
+              result.getErrorOrNull()!!
+            )
+            else -> {
+              logger.d(TEST_ACTIVITY_TAG, "Successfully loaded exploration")
+              initializeExploration(profileId, topicId, storyId, explorationId)
+            }
           }
         }
-      })
+      )
   }
 
   private fun initializeExploration(
@@ -98,7 +104,9 @@ class StateFragmentTestActivityPresenter @Inject constructor(
   }
 
   private fun getStateFragment(): StateFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.state_fragment_placeholder) as? StateFragment
+    return activity.supportFragmentManager.findFragmentById(
+      R.id.state_fragment_placeholder
+    ) as? StateFragment
   }
 
   private fun getStateFragmentTestViewModel(): StateFragmentTestViewModel {

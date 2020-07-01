@@ -58,7 +58,7 @@ class ConceptCardFragmentPresenter @Inject constructor(
     return viewModelProvider.getForFragment(fragment, ConceptCardViewModel::class.java)
   }
 
-  private fun logConceptCardEvent(skillId: String){
+  private fun logConceptCardEvent(skillId: String) {
     analyticsController.logTransitionEvent(
       fragment.requireActivity().applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,

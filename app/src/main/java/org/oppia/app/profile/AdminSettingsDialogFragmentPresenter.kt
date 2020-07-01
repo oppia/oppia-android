@@ -72,7 +72,11 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
         if (binding.inputPin.getInput() == adminPin) {
           routeDialogInterface.routeToResetPinDialog()
         } else {
-          adminViewModel.errorMessage.set(fragment.resources.getString(R.string.admin_settings_incorrect))
+          adminViewModel.errorMessage.set(
+            fragment.resources.getString(
+              R.string.admin_settings_incorrect
+            )
+          )
         }
       }
     }

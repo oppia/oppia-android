@@ -243,15 +243,27 @@ class AddProfileActivityPresenter @Inject constructor(
   private fun checkInputsAreValid(name: String, pin: String, confirmPin: String): Boolean {
     var failed = false
     if (name.isEmpty()) {
-      profileViewModel.nameErrorMsg.set(activity.resources.getString(R.string.add_profile_error_name_empty))
+      profileViewModel.nameErrorMsg.set(
+        activity.resources.getString(
+          R.string.add_profile_error_name_empty
+        )
+      )
       failed = true
     }
     if (pin.isNotEmpty() && pin.length < 3) {
-      profileViewModel.pinErrorMsg.set(activity.resources.getString(R.string.add_profile_error_pin_length))
+      profileViewModel.pinErrorMsg.set(
+        activity.resources.getString(
+          R.string.add_profile_error_pin_length
+        )
+      )
       failed = true
     }
     if (pin != confirmPin) {
-      profileViewModel.confirmPinErrorMsg.set(activity.resources.getString(R.string.add_profile_error_pin_confirm_wrong))
+      profileViewModel.confirmPinErrorMsg.set(
+        activity.resources.getString(
+          R.string.add_profile_error_pin_confirm_wrong
+        )
+      )
       failed = true
     }
     return failed

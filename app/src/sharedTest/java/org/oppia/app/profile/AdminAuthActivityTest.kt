@@ -92,7 +92,8 @@ class AdminAuthActivityTest {
     }
   }
 
-  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView") // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
+  // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
+  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
   fun testAdminAuthActivity_inputCorrectPassword_clickImeActionButton_opensAddProfileActivity() {
     launch<AdminAuthActivity>(
@@ -179,7 +180,8 @@ class AdminAuthActivityTest {
     }
   }
 
-  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView") // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
+  // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
+  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
   fun testAdminAuthActivity_inputIncorrectPassword_clickImeActionButton_checkError() {
     launch<AdminAuthActivity>(
@@ -448,7 +450,8 @@ class AdminAuthActivityTest {
     }
   }
 
-  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView") // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
+  // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
+  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
   fun testAdminAuthActivity_inputIncorrectPasswordLandscape_clickImeActionButton_checkError() {
     launch<AdminAuthActivity>(

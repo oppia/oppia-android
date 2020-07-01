@@ -10,9 +10,13 @@ import org.oppia.app.model.State
 import javax.inject.Inject
 
 /** Fragment that controls audio for a content-card. */
-class AudioFragment : InjectableFragment(), LanguageInterface, AudioUiManager,
+class AudioFragment :
+  InjectableFragment(),
+  LanguageInterface,
+  AudioUiManager,
   CellularDataInterface {
-  @Inject lateinit var audioFragmentPresenter: AudioFragmentPresenter
+  @Inject
+  lateinit var audioFragmentPresenter: AudioFragmentPresenter
 
   companion object {
     /**
@@ -40,7 +44,8 @@ class AudioFragment : InjectableFragment(), LanguageInterface, AudioUiManager,
     savedInstanceState: Bundle?
   ): View? {
     super.onCreateView(inflater, container, savedInstanceState)
-    val internalProfileId = arguments!!.getInt(AUDIO_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, /* defaultValue= */ -1)
+    val internalProfileId =
+      arguments!!.getInt(AUDIO_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, /* defaultValue= */ -1)
     return audioFragmentPresenter.handleCreateView(inflater, container, internalProfileId)
   }
 

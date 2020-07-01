@@ -2,10 +2,10 @@ package org.oppia.app.hintsandsolution
 
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
-import javax.inject.Inject
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Hint
 import org.oppia.app.model.Solution
+import javax.inject.Inject
 
 /** [ViewModel] for Hints in [HintsAndSolutionDialogFragment]. */
 @FragmentScope
