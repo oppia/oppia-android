@@ -31,7 +31,8 @@ class CellularAudioDialogFragment : DialogFragment() {
 
     val cellularDataInterface: CellularDataInterface = parentFragment as AudioFragment
 
-    return AlertDialog.Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
+    return AlertDialog
+      .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
       .setTitle(R.string.cellular_data_alert_dialog_title)
       .setView(view)
       .setMessage(R.string.cellular_data_alert_dialog_description)

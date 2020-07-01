@@ -86,17 +86,29 @@ class ProfileResetPinActivityPresenter @Inject constructor(
       var failed = false
       if (isAdmin) {
         if (pin.length < 5) {
-          resetViewModel.pinErrorMsg.set(activity.resources.getString(R.string.profile_reset_pin_error_admin_pin_length))
+          resetViewModel.pinErrorMsg.set(
+            activity.resources.getString(
+              R.string.profile_reset_pin_error_admin_pin_length
+            )
+          )
           failed = true
         }
       } else {
         if (pin.length < 3) {
-          resetViewModel.pinErrorMsg.set(activity.resources.getString(R.string.profile_reset_pin_error_user_pin_length))
+          resetViewModel.pinErrorMsg.set(
+            activity.resources.getString(
+              R.string.profile_reset_pin_error_user_pin_length
+            )
+          )
           failed = true
         }
       }
       if (pin != confirmPin) {
-        resetViewModel.confirmErrorMsg.set(activity.resources.getString(R.string.add_profile_error_pin_confirm_wrong))
+        resetViewModel.confirmErrorMsg.set(
+          activity.resources.getString(
+            R.string.add_profile_error_pin_confirm_wrong
+          )
+        )
         failed = true
       }
       if (failed) {

@@ -37,12 +37,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import java.util.concurrent.AbstractExecutorService
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
-import javax.inject.Inject
-import javax.inject.Qualifier
-import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -75,14 +69,23 @@ import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
+import java.util.concurrent.AbstractExecutorService
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
+import javax.inject.Inject
+import javax.inject.Qualifier
+import javax.inject.Singleton
 
 /** Tests for [RecentlyPlayedActivity]. */
 @RunWith(AndroidJUnit4::class)
 class RecentlyPlayedFragmentTest {
 
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
-  @Inject lateinit var context: Context
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var storyProgressTestHelper: StoryProgressTestHelper
+  @Inject
+  lateinit var context: Context
 
   private val internalProfileId = 0
 
@@ -357,7 +360,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_changeConfiguration_recyclerViewItem0_doesNotShowSectionDivider() {
+  fun testRecentlyPlayedTestActivity_changeConfiguration_recyclerViewItem0_doesNotShowSectionDivider() { // ktlint-disable max-line-length
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
         internalProfileId
@@ -377,7 +380,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_changeConfiguration_recyclerViewItem0_showsLastWeekSectionTitle() {
+  fun testRecentlyPlayedTestActivity_changeConfiguration_recyclerViewItem0_showsLastWeekSectionTitle() { // ktlint-disable max-line-length
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
         internalProfileId
@@ -443,7 +446,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_changeConfiguration_recyclerViewItem1_lessonThumbnailIsCorrect() {
+  fun testRecentlyPlayedTestActivity_changeConfiguration_recyclerViewItem1_lessonThumbnailIsCorrect() { // ktlint-disable max-line-length
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
         internalProfileId
@@ -465,7 +468,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_changeConfiguration_recyclerViewItem2_showsLastMonthSectionTitle() {
+  fun testRecentlyPlayedTestActivity_changeConfiguration_recyclerViewItem2_showsLastMonthSectionTitle() { // ktlint-disable max-line-length
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
         internalProfileId
@@ -500,9 +503,17 @@ class RecentlyPlayedFragmentTest {
         )
       )
       if (context.resources.getBoolean(R.bool.isTablet)) {
-        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(3, 0))
+        onView(withId(R.id.ongoing_story_recycler_view)).check(
+          hasGridItemCount(
+            3, 0
+          )
+        )
       } else {
-        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(2, 0))
+        onView(withId(R.id.ongoing_story_recycler_view)).check(
+          hasGridItemCount(
+            2, 0
+          )
+        )
       }
     }
   }
@@ -520,7 +531,11 @@ class RecentlyPlayedFragmentTest {
           1
         )
       )
-      onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(1, 1))
+      onView(withId(R.id.ongoing_story_recycler_view)).check(
+        hasGridItemCount(
+          1, 1
+        )
+      )
     }
   }
 
@@ -538,9 +553,17 @@ class RecentlyPlayedFragmentTest {
         )
       )
       if (context.resources.getBoolean(R.bool.isTablet)) {
-        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(3, 2))
+        onView(withId(R.id.ongoing_story_recycler_view)).check(
+          hasGridItemCount(
+            3, 2
+          )
+        )
       } else {
-        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(2, 2))
+        onView(withId(R.id.ongoing_story_recycler_view)).check(
+          hasGridItemCount(
+            2, 2
+          )
+        )
       }
     }
   }
@@ -558,7 +581,11 @@ class RecentlyPlayedFragmentTest {
           3
         )
       )
-      onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(1, 3))
+      onView(withId(R.id.ongoing_story_recycler_view)).check(
+        hasGridItemCount(
+          1, 3
+        )
+      )
     }
   }
 
@@ -577,9 +604,17 @@ class RecentlyPlayedFragmentTest {
         )
       )
       if (context.resources.getBoolean(R.bool.isTablet)) {
-        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(4, 0))
+        onView(withId(R.id.ongoing_story_recycler_view)).check(
+          hasGridItemCount(
+            4, 0
+          )
+        )
       } else {
-        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(3, 0))
+        onView(withId(R.id.ongoing_story_recycler_view)).check(
+          hasGridItemCount(
+            3, 0
+          )
+        )
       }
     }
   }
@@ -598,7 +633,11 @@ class RecentlyPlayedFragmentTest {
           1
         )
       )
-      onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(1, 1))
+      onView(withId(R.id.ongoing_story_recycler_view)).check(
+        hasGridItemCount(
+          1, 1
+        )
+      )
     }
   }
 
@@ -617,9 +656,17 @@ class RecentlyPlayedFragmentTest {
         )
       )
       if (context.resources.getBoolean(R.bool.isTablet)) {
-        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(4, 2))
+        onView(withId(R.id.ongoing_story_recycler_view)).check(
+          hasGridItemCount(
+            4, 2
+          )
+        )
       } else {
-        onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(3, 2))
+        onView(withId(R.id.ongoing_story_recycler_view)).check(
+          hasGridItemCount(
+            3, 2
+          )
+        )
       }
     }
   }
@@ -638,7 +685,11 @@ class RecentlyPlayedFragmentTest {
           3
         )
       )
-      onView(withId(R.id.ongoing_story_recycler_view)).check(hasGridItemCount(1, 3))
+      onView(withId(R.id.ongoing_story_recycler_view)).check(
+        hasGridItemCount(
+          1, 3
+        )
+      )
     }
   }
 
@@ -711,14 +762,18 @@ class RecentlyPlayedFragmentTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
     @Singleton
     @Provides
     @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBlockingDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 

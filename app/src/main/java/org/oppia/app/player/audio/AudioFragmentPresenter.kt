@@ -64,13 +64,16 @@ class AudioFragmentPresenter @Inject constructor(
   ): View? {
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     cellularAudioDialogController.getCellularDataPreference()
-      .observe(fragment, Observer<AsyncResult<CellularDataPreference>> {
-        if (it.isSuccess()) {
-          val prefs = it.getOrDefault(CellularDataPreference.getDefaultInstance())
-          showCellularDataDialog = !(prefs.hideDialog)
-          useCellularData = prefs.useCellularData
+      .observe(
+        fragment,
+        Observer<AsyncResult<CellularDataPreference>> {
+          if (it.isSuccess()) {
+            val prefs = it.getOrDefault(CellularDataPreference.getDefaultInstance())
+            showCellularDataDialog = !(prefs.hideDialog)
+            useCellularData = prefs.useCellularData
+          }
         }
-      })
+      )
 
     val binding = AudioFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.sbAudioProgress.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -89,10 +92,13 @@ class AudioFragmentPresenter @Inject constructor(
         userIsSeeking = false
       }
     })
-    viewModel.playStatusLiveData.observe(fragment, Observer {
-      prepared = it != AudioViewModel.UiAudioPlayStatus.LOADING
-      binding.sbAudioProgress.isEnabled = prepared
-    })
+    viewModel.playStatusLiveData.observe(
+      fragment,
+      Observer {
+        prepared = it != AudioViewModel.UiAudioPlayStatus.LOADING
+        binding.sbAudioProgress.isEnabled = prepared
+      }
+    )
 
     binding.let {
       it.viewModel = viewModel
@@ -111,10 +117,13 @@ class AudioFragmentPresenter @Inject constructor(
   }
 
   private fun subscribeToAudioLanguageLiveData() {
-    getProfileData().observe(activity, Observer<String> { result ->
-      viewModel.selectedLanguageCode = result
-      viewModel.loadMainContentAudio(false)
-    })
+    getProfileData().observe(
+      activity,
+      Observer<String> { result ->
+        viewModel.selectedLanguageCode = result
+        viewModel.loadMainContentAudio(false)
+      }
+    )
   }
 
   /** Gets language code by [AudioLanguage]. */
