@@ -1,6 +1,5 @@
 package org.oppia.app.home.recentlyplayed
 
-import android.content.res.Configuration
 import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
