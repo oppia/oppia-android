@@ -1,32 +1,27 @@
-package org.oppia.app.player.state.hintsandsolution
+package org.oppia.app.hintsandsolution
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import org.oppia.app.R
 import org.oppia.app.databinding.HintsAndSolutionFragmentBinding
 import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.EphemeralState
+import org.oppia.app.model.State
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.exploration.ExplorationProgressController
-import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.Logger
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
 
-/** Presenter for [HintsAndSolutionFragment], sets up bindings from ViewModel. */
+/** Presenter for [HintsAndSolutionDialogFragment], sets up bindings from ViewModel. */
 @FragmentScope
-class HintsAndSolutionFragmentPresenter @Inject constructor(
+class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<HintsViewModel>,
   private val htmlParserFactory: HtmlParser.Factory,
   private val logger: Logger,
-  private val explorationProgressController: ExplorationProgressController,
   @DefaultResourceBucketName private val resourceBucketName: String,
   @ExplorationHtmlParserEntityType private val entityType: String
 ) {
@@ -35,13 +30,10 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
   private lateinit var expandedHintListIndexListener: ExpandedHintListIndexListener
   private lateinit var hintsAndSolutionAdapter: HintsAndSolutionAdapter
   private lateinit var binding: HintsAndSolutionFragmentBinding
+  private lateinit var state: State
 
   val viewModel by lazy {
     getHintsAndSolutionViewModel()
-  }
-
-  private val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
-    explorationProgressController.getCurrentState()
   }
 
   /**
@@ -49,8 +41,10 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
    * Host activity must inherit HintsAndSolutionListener to dismiss this fragment.
    */
   fun handleCreateView(
-    inflater: LayoutInflater, container: ViewGroup?,
-    explorationId: String?,
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    state: State,
+    id: String?,
     currentExpandedHintListIndex: Int?,
     newAvailableHintIndex: Int,
     allHintsExhausted: Boolean,
@@ -69,34 +63,22 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
       it.viewModel = this.viewModel
       it.lifecycleOwner = fragment
     }
-    subscribeToCurrentState()
+
+    this.state = state
     viewModel.newAvailableHintIndex.set(newAvailableHintIndex)
     viewModel.allHintsExhausted.set(allHintsExhausted)
-    viewModel.explorationId.set(explorationId)
+    viewModel.explorationId.set(id)
+
+    loadHintsAndSolution(state)
+
     return binding.root
   }
 
-  private fun subscribeToCurrentState() {
-    ephemeralStateLiveData.observe(fragment, Observer<AsyncResult<EphemeralState>> { result ->
-      processEphemeralStateResult(result)
-    })
-  }
-
-  private fun processEphemeralStateResult(result: AsyncResult<EphemeralState>) {
-    if (result.isFailure()) {
-      logger.e("StateFragment", "Failed to retrieve ephemeral state", result.getErrorOrNull()!!)
-      return
-    } else if (result.isPending()) {
-      // Display nothing until a valid result is available.
-      return
-    }
-
-    val ephemeralState = result.getOrThrow()
-
+  private fun loadHintsAndSolution(state: State) {
     // Check if hints are available for this state.
-    if (ephemeralState.state.interaction.hintList.size != 0) {
-      viewModel.setHintsList(ephemeralState.state.interaction.hintList)
-      viewModel.setSolution(ephemeralState.state.interaction.solution)
+    if (state.interaction.hintList.size != 0) {
+      viewModel.setHintsList(state.interaction.hintList)
+      viewModel.setSolution(state.interaction.solution)
 
       hintsAndSolutionAdapter =
         HintsAndSolutionAdapter(
@@ -113,8 +95,9 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
       binding.hintsAndSolutionRecyclerView.apply {
         adapter = hintsAndSolutionAdapter
       }
-      if (viewModel.newAvailableHintIndex.get() != -1)
-        handleNewAvailableHint(viewModel.newAvailableHintIndex.get()!!)
+      if (viewModel.newAvailableHintIndex.get() != -1) {
+        handleNewAvailableHint(viewModel.newAvailableHintIndex.get())
+      }
       if (viewModel.allHintsExhausted.get()!!) {
         handleAllHintsExhausted(viewModel.allHintsExhausted.get()!!)
       }
@@ -133,8 +116,8 @@ class HintsAndSolutionFragmentPresenter @Inject constructor(
     hintsAndSolutionAdapter.setRevealSolution(saveUserChoice)
   }
 
-  private fun handleNewAvailableHint(hintIndex: Int) {
-    hintsAndSolutionAdapter.setNewHintIsAvailable(hintIndex)
+  private fun handleNewAvailableHint(hintIndex: Int?) {
+    hintsAndSolutionAdapter.setNewHintIsAvailable(hintIndex!!)
   }
 
   fun onExpandClicked(index: Int?) {

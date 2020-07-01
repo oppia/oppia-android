@@ -81,11 +81,17 @@ class AudioViewModel @Inject constructor(
    */
   private fun loadAudio(contentId: String?, allowAutoPlay: Boolean) {
     autoPlay = allowAutoPlay
-    voiceoverMap = (state.recordedVoiceoversMap[contentId ?: state.content.contentId]
-      ?: VoiceoverMapping.getDefaultInstance()).voiceoverMappingMap
+    voiceoverMap = (
+      state.recordedVoiceoversMap[contentId ?: state.content.contentId]
+        ?: VoiceoverMapping.getDefaultInstance()
+      ).voiceoverMappingMap
     languages = voiceoverMap.keys.toList().map { it.toLowerCase(Locale.getDefault()) }
     when {
-      selectedLanguageCode.isEmpty() && languages.any { it == defaultLanguage } -> setAudioLanguageCode(defaultLanguage)
+      selectedLanguageCode.isEmpty() && languages.any {
+        it == defaultLanguage
+      } -> setAudioLanguageCode(
+        defaultLanguage
+      )
       languages.any { it == selectedLanguageCode } -> setAudioLanguageCode(selectedLanguageCode)
       languages.isNotEmpty() -> {
         autoPlay = false
@@ -150,7 +156,9 @@ class AudioViewModel @Inject constructor(
     return playProgressResult.getOrThrow().position
   }
 
-  private fun processPlayStatusResultLiveData(playProgressResult: AsyncResult<PlayProgress>): UiAudioPlayStatus {
+  private fun processPlayStatusResultLiveData(
+    playProgressResult: AsyncResult<PlayProgress>
+  ): UiAudioPlayStatus {
     if (playProgressResult.isPending()) return UiAudioPlayStatus.LOADING
     if (playProgressResult.isFailure()) return UiAudioPlayStatus.FAILED
     return when (playProgressResult.getOrThrow().type) {
@@ -170,6 +178,7 @@ class AudioViewModel @Inject constructor(
   }
 
   private fun voiceOverToUri(voiceover: Voiceover?): String {
-    return "https://storage.googleapis.com/$gcsResource/exploration/$explorationId/assets/audio/${voiceover?.fileName}"
+    return "https://storage.googleapis.com/$gcsResource/exploration/$explorationId/" +
+      "assets/audio/${voiceover?.fileName}"
   }
 }

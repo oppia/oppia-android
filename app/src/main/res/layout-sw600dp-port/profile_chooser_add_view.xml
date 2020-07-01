@@ -20,8 +20,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
-    app:profileChooserMarginStart="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_170}"
-    app:profileChooserMarginEnd="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_170}"
+    app:layoutMarginStart="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_170}"
+    app:layoutMarginEnd="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_170}"
     android:orientation="vertical">
 
     <View
@@ -39,8 +39,8 @@
       android:layout_marginTop="@dimen/margin_0"
       android:gravity="@{presenter.wasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER}"
       android:orientation="@{presenter.wasProfileEverBeenAddedValue ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL}"
-      app:profileChooserMarginEnd="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_24}"
-      app:profileChooserMarginStart="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_24}"
+      app:layoutMarginEnd="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_24}"
+      app:layoutMarginStart="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_24}"
       tools:ignore="RtlSymmetry">
 
       <de.hdodenhof.circleimageview.CircleImageView
@@ -48,7 +48,7 @@
         android:layout_width="108dp"
         android:layout_height="108dp"
         android:src="@drawable/ic_add_profile"
-        app:profileChooserMarginTop="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_48 : @dimen/margin_0}"
+        app:layoutMarginTop="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_48 : @dimen/margin_0}"
         app:civ_border_color="@color/avatarBorder"
         app:civ_border_width="1dp" />
 
@@ -57,8 +57,8 @@
         android:layout_height="wrap_content"
         android:gravity="@{presenter.wasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
         android:orientation="vertical"
-        app:profileChooserMarginTop="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_8 : @dimen/margin_0}"
-        app:profileChooserMarginStart="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_32}">
+        app:layoutMarginTop="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_8 : @dimen/margin_0}"
+        app:layoutMarginStart="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_32}">
 
         <TextView
           android:id="@+id/add_profile_text"

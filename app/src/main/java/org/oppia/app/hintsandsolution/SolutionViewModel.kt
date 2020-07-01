@@ -1,9 +1,9 @@
-package org.oppia.app.player.state.hintsandsolution
+package org.oppia.app.hintsandsolution
 
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
 
-/** [ViewModel] for Solution in [HintsAndSolutionFragment]. */
+/** [ViewModel] for Solution in [HintsAndSolutionDialogFragment]. */
 class SolutionViewModel : HintsAndSolutionItemViewModel() {
   val solutionSummary = ObservableField<String>("")
   val correctAnswer = ObservableField<String>("")

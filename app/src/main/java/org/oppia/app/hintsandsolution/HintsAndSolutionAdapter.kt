@@ -1,4 +1,4 @@
-package org.oppia.app.player.state.hintsandsolution
+package org.oppia.app.hintsandsolution
 
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +15,7 @@ private const val TAG_REVEAL_SOLUTION_DIALOG = "REVEAL_SOLUTION_DIALOG"
 private const val VIEW_TYPE_HINT_ITEM = 1
 private const val VIEW_TYPE_SOLUTION_ITEM = 2
 
-/** Adapter to bind Hints to [RecyclerView] inside [HintsAndSolutionFragment]. */
+/** Adapter to bind Hints to [RecyclerView] inside [HintsAndSolutionDialogFragment]. */
 class HintsAndSolutionAdapter(
   private val fragment: Fragment,
   private val itemList: List<HintsAndSolutionItemViewModel>,
@@ -75,7 +75,10 @@ class HintsAndSolutionAdapter(
       is SolutionViewModel -> {
         VIEW_TYPE_SOLUTION_ITEM
       }
-      else -> throw IllegalArgumentException("Invalid type of data $position with item ${itemList[position]}")
+      else -> throw IllegalArgumentException(
+        "Invalid type of data " +
+          "$position with item ${itemList[position]}"
+      )
     }
   }
 
@@ -132,7 +135,10 @@ class HintsAndSolutionAdapter(
               position
             }
           expandedHintListIndexListener.onExpandListIconClicked(currentExpandedHintListIndex)
-          if (previousIndex != null && currentExpandedHintListIndex != null && previousIndex == currentExpandedHintListIndex) {
+          if (previousIndex != null &&
+            currentExpandedHintListIndex != null &&
+            previousIndex == currentExpandedHintListIndex
+          ) {
             notifyItemChanged(currentExpandedHintListIndex!!)
           } else {
             if (previousIndex != null) {
@@ -188,7 +194,10 @@ class HintsAndSolutionAdapter(
               position
             }
           expandedHintListIndexListener.onExpandListIconClicked(currentExpandedHintListIndex)
-          if (previousIndex != null && currentExpandedHintListIndex != null && previousIndex == currentExpandedHintListIndex) {
+          if (previousIndex != null &&
+            currentExpandedHintListIndex != null &&
+            previousIndex == currentExpandedHintListIndex
+          ) {
             notifyItemChanged(currentExpandedHintListIndex!!)
           } else {
             if (previousIndex != null) {
@@ -204,7 +213,8 @@ class HintsAndSolutionAdapter(
   }
 
   private fun showRevealSolutionDialogFragment() {
-    val previousFragment = fragment.childFragmentManager.findFragmentByTag(TAG_REVEAL_SOLUTION_DIALOG)
+    val previousFragment =
+      fragment.childFragmentManager.findFragmentByTag(TAG_REVEAL_SOLUTION_DIALOG)
     if (previousFragment != null) {
       fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }

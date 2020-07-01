@@ -4,6 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.app.hintsandsolution.HintsAndSolutionDialogFragment
+import org.oppia.app.hintsandsolution.HintsAndSolutionListener
+import org.oppia.app.hintsandsolution.RevealHintListener
+import org.oppia.app.hintsandsolution.RevealSolutionInterface
+import org.oppia.app.model.State
+import org.oppia.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
+import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.app.player.stopplaying.RestartPlayingSessionListener
 import org.oppia.app.player.stopplaying.StopExplorationDialogFragment
@@ -19,10 +26,16 @@ class QuestionPlayerActivity :
   InjectableAppCompatActivity(),
   StopStatePlayingSessionListener,
   RestartPlayingSessionListener,
-  StateKeyboardButtonListener {
+  StateKeyboardButtonListener,
+  HintsAndSolutionListener,
+  RouteToHintsAndSolutionListener,
+  RevealHintListener,
+  RevealSolutionInterface,
+  HintsAndSolutionQuestionManagerListener {
 
   @Inject
   lateinit var questionPlayerActivityPresenter: QuestionPlayerActivityPresenter
+  private lateinit var state: State
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -66,5 +79,44 @@ class QuestionPlayerActivity :
     fun getIntentKey(): String {
       return QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY
     }
+  }
+
+  override fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
+    questionPlayerActivityPresenter.revealHint(saveUserChoice, hintIndex)
+  }
+
+  override fun revealSolution(saveUserChoice: Boolean) {
+    questionPlayerActivityPresenter.revealSolution(saveUserChoice)
+  }
+
+  private fun getHintsAndSolution(): HintsAndSolutionDialogFragment? {
+    return supportFragmentManager.findFragmentByTag(
+      TAG_HINTS_AND_SOLUTION_DIALOG
+    ) as HintsAndSolutionDialogFragment?
+  }
+
+  override fun routeToHintsAndSolution(
+    questionId: String,
+    newAvailableHintIndex: Int,
+    allHintsExhausted: Boolean
+  ) {
+    if (getHintsAndSolution() == null) {
+      val hintsAndSolutionDialogFragment =
+        HintsAndSolutionDialogFragment.newInstance(
+          questionId,
+          newAvailableHintIndex,
+          allHintsExhausted
+        )
+      hintsAndSolutionDialogFragment.loadState(state)
+      hintsAndSolutionDialogFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
+    }
+  }
+
+  override fun dismiss() {
+    getHintsAndSolution()?.dismiss()
+  }
+
+  override fun onQuestionStateLoaded(state: State) {
+    this.state = state
   }
 }
