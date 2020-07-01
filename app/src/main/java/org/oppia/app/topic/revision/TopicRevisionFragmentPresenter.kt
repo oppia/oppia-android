@@ -90,7 +90,7 @@ class TopicRevisionFragmentPresenter @Inject constructor(
       ).build()
   }
 
-  private fun logRevisionFragmentEvent(topicId: String){
+  private fun logRevisionFragmentEvent(topicId: String) {
     analyticsController.logTransitionEvent(
       fragment.requireActivity().applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,

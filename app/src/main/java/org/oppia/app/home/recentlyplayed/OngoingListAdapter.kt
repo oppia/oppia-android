@@ -3,7 +3,6 @@ package org.oppia.app.home.recentlyplayed
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -78,7 +77,7 @@ class OngoingListAdapter(
               (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
             }
           } else {
-            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)//this will be updated in next PR
+            (activity as Context).resources.getDimensionPixelSize(R.dimen.margin_28)
           }
         }
         val marginBottom = 0
@@ -164,7 +163,9 @@ class OngoingListAdapter(
       is OngoingStoryViewModel -> {
         VIEW_TYPE_SECTION_STORY_ITEM
       }
-      else -> throw IllegalArgumentException("Invalid type of data $position with item ${itemList[position]}")
+      else -> throw IllegalArgumentException(
+        "Invalid type of data $position with item ${itemList[position]}"
+      )
     }
   }
 

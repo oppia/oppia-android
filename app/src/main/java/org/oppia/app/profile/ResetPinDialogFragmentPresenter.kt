@@ -89,7 +89,11 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
               }
             )
         } else {
-          resetViewModel.errorMessage.set(fragment.resources.getString(R.string.add_profile_error_pin_length))
+          resetViewModel.errorMessage.set(
+            fragment.resources.getString(
+              R.string.add_profile_error_pin_length
+            )
+          )
         }
       }
     }
