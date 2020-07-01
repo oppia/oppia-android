@@ -3,8 +3,6 @@ package org.oppia.app.application
 import android.app.Application
 import dagger.BindsInstance
 import dagger.Component
-import javax.inject.Provider
-import javax.inject.Singleton
 import org.oppia.app.activity.ActivityComponent
 import org.oppia.data.backends.gae.NetworkModule
 import org.oppia.domain.classify.InteractionsModule
@@ -19,13 +17,15 @@ import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.util.accessibility.AccessibilityModule
 import org.oppia.util.caching.CachingModule
-import org.oppia.util.logging.firebase.LogReportingModule
 import org.oppia.util.gcsresource.GcsResourceModule
 import org.oppia.util.logging.LoggerModule
+import org.oppia.util.logging.firebase.LogReportingModule
 import org.oppia.util.parser.GlideImageLoaderModule
 import org.oppia.util.parser.HtmlParserEntityTypeModule
 import org.oppia.util.parser.ImageParsingModule
 import org.oppia.util.threading.DispatcherModule
+import javax.inject.Provider
+import javax.inject.Singleton
 
 /** Root Dagger component for the application. All application-scoped modules should be included in this component. */
 @Singleton

@@ -63,9 +63,16 @@ import javax.inject.Singleton
 @Config(application = StateFragmentAccessibilityTest.TestApplication::class)
 class StateFragmentAccessibilityTest {
 
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @InternalCoroutinesApi @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject @field:ApplicationContext lateinit var context: Context
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
+  @InternalCoroutinesApi
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  @field:ApplicationContext
+  lateinit var context: Context
 
   private val internalProfileId: Int = 1
 

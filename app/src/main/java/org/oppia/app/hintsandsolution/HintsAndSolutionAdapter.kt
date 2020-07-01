@@ -75,7 +75,10 @@ class HintsAndSolutionAdapter(
       is SolutionViewModel -> {
         VIEW_TYPE_SOLUTION_ITEM
       }
-      else -> throw IllegalArgumentException("Invalid type of data $position with item ${itemList[position]}")
+      else -> throw IllegalArgumentException(
+        "Invalid type of data " +
+          "$position with item ${itemList[position]}"
+      )
     }
   }
 
@@ -132,7 +135,9 @@ class HintsAndSolutionAdapter(
               position
             }
           expandedHintListIndexListener.onExpandListIconClicked(currentExpandedHintListIndex)
-          if (previousIndex != null && currentExpandedHintListIndex != null && previousIndex == currentExpandedHintListIndex) {
+          if (previousIndex != null && currentExpandedHintListIndex != null &&
+            previousIndex == currentExpandedHintListIndex
+          ) {
             notifyItemChanged(currentExpandedHintListIndex!!)
           } else {
             if (previousIndex != null) {
@@ -188,7 +193,9 @@ class HintsAndSolutionAdapter(
               position
             }
           expandedHintListIndexListener.onExpandListIconClicked(currentExpandedHintListIndex)
-          if (previousIndex != null && currentExpandedHintListIndex != null && previousIndex == currentExpandedHintListIndex) {
+          if (previousIndex != null && currentExpandedHintListIndex != null &&
+            previousIndex == currentExpandedHintListIndex
+          ) {
             notifyItemChanged(currentExpandedHintListIndex!!)
           } else {
             if (previousIndex != null) {
