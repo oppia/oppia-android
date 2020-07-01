@@ -37,6 +37,7 @@ import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.domain.classify.rules.imageClickInput.ImageClickInputModule
 import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
@@ -361,7 +362,8 @@ class QuestionTrainingControllerTest {
       MultipleChoiceInputModule::class, DragDropSortInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
       TextInputRuleModule::class, InteractionsModule::class,
-      TestQuestionModule::class, TestLogReportingModule::class
+      TestQuestionModule::class, TestLogReportingModule::class,
+      ImageClickInputModule::class
     ]
   )
   interface TestApplicationComponent {
