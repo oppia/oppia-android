@@ -5,7 +5,7 @@ import dagger.BindsInstance
 import dagger.Component
 import org.oppia.app.activity.ActivityComponent
 import org.oppia.data.backends.gae.NetworkModule
-import org.oppia.domain.analytics.LogStorageModule
+import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule

@@ -1,4 +1,4 @@
-package org.oppia.domain.analytics
+package org.oppia.domain.oppialogger
 
 import dagger.Module
 import dagger.Provides

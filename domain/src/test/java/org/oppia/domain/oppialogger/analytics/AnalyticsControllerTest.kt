@@ -1,4 +1,4 @@
-package org.oppia.domain.analytics
+package org.oppia.domain.oppialogger.analytics
 
 import android.app.Application
 import android.content.Context
