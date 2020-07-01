@@ -6,11 +6,12 @@ import android.os.Bundle
 import android.view.Menu
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.app.hintsandsolution.HintsAndSolutionDialogFragment
+import org.oppia.app.hintsandsolution.HintsAndSolutionListener
+import org.oppia.app.hintsandsolution.RevealHintListener
+import org.oppia.app.hintsandsolution.RevealSolutionInterface
+import org.oppia.app.model.State
 import org.oppia.app.player.audio.AudioButtonListener
-import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionFragment
-import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionListener
-import org.oppia.app.player.state.hintsandsolution.RevealHintListener
-import org.oppia.app.player.state.hintsandsolution.RevealSolutionInterface
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.app.player.stopplaying.StopExplorationDialogFragment
@@ -21,15 +22,20 @@ private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
 const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
 
 /** The starting point for exploration. */
-class ExplorationActivity : InjectableAppCompatActivity(), StopStatePlayingSessionListener, StateKeyboardButtonListener,
-  AudioButtonListener, HintsAndSolutionListener, RouteToHintsAndSolutionListener, RevealHintListener,
-  RevealSolutionInterface {
+class ExplorationActivity : InjectableAppCompatActivity(), StopStatePlayingSessionListener,
+  StateKeyboardButtonListener,
+  AudioButtonListener, HintsAndSolutionListener, RouteToHintsAndSolutionListener,
+  RevealHintListener,
+  RevealSolutionInterface,
+  HintsAndSolutionExplorationManagerListener {
 
-  @Inject lateinit var explorationActivityPresenter: ExplorationActivityPresenter
+  @Inject
+  lateinit var explorationActivityPresenter: ExplorationActivityPresenter
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var explorationId: String
+  private lateinit var state: State
   private var backflowScreen: Int? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,17 +46,27 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopStatePlayingSessi
     storyId = intent.getStringExtra(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY)
     explorationId = intent.getStringExtra(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY)
     backflowScreen = intent.getIntExtra(EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY, -1)
-    explorationActivityPresenter.handleOnCreate(this, internalProfileId, topicId, storyId, explorationId, backflowScreen)
+    explorationActivityPresenter.handleOnCreate(
+      this,
+      internalProfileId,
+      topicId,
+      storyId,
+      explorationId,
+      backflowScreen
+    )
   }
 
   companion object {
     /** Returns a new [Intent] to route to [ExplorationActivity] for a specified exploration. */
 
-    internal const val EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY = "ExplorationActivity.profile_id"
+    internal const val EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY =
+      "ExplorationActivity.profile_id"
     internal const val EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "ExplorationActivity.topic_id"
     internal const val EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY = "ExplorationActivity.story_id"
-    internal const val EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY = "ExplorationActivity.exploration_id"
-    internal const val EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY = "ExplorationActivity.backflow_screen"
+    internal const val EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY =
+      "ExplorationActivity.exploration_id"
+    internal const val EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY =
+      "ExplorationActivity.backflow_screen"
 
     fun createExplorationActivityIntent(
       context: Context,
@@ -120,8 +136,8 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopStatePlayingSessi
     explorationActivityPresenter.revealSolution(saveUserChoice)
   }
 
-  private fun getHintsAndSolution(): HintsAndSolutionFragment? {
-    return supportFragmentManager.findFragmentByTag(TAG_HINTS_AND_SOLUTION_DIALOG) as HintsAndSolutionFragment?
+  private fun getHintsAndSolution(): HintsAndSolutionDialogFragment? {
+    return supportFragmentManager.findFragmentByTag(TAG_HINTS_AND_SOLUTION_DIALOG) as HintsAndSolutionDialogFragment?
   }
 
   override fun routeToHintsAndSolution(
@@ -130,12 +146,21 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopStatePlayingSessi
     allHintsExhausted: Boolean
   ) {
     if (getHintsAndSolution() == null) {
-      val hintsAndSolutionFragment = HintsAndSolutionFragment.newInstance(explorationId, newAvailableHintIndex, allHintsExhausted)
-      hintsAndSolutionFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
+      val hintsAndSolutionDialogFragment = HintsAndSolutionDialogFragment.newInstance(
+        explorationId,
+        newAvailableHintIndex,
+        allHintsExhausted
+      )
+      hintsAndSolutionDialogFragment.loadState(state)
+      hintsAndSolutionDialogFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }
   }
 
   override fun dismiss() {
     getHintsAndSolution()?.dismiss()
+  }
+
+  override fun onExplorationStateLoaded(state: State) {
+    this.state = state
   }
 }
