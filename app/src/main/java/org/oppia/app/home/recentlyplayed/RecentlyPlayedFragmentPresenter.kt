@@ -174,8 +174,8 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
               internalProfileId,
               topicId,
               storyId,
-              explorationId, /* backflowScreen = */
-              null
+              explorationId,
+              /* backflowScreen = */ null
             )
             activity.finish()
           }
