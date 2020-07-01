@@ -27,7 +27,8 @@ import org.oppia.util.logging.ExceptionLogger
 import org.oppia.util.profile.DirectoryManagementUtil
 import java.io.File
 import java.io.FileOutputStream
-import java.util.*
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
