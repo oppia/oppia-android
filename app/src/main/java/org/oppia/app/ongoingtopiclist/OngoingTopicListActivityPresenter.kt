@@ -15,7 +15,8 @@ class OngoingTopicListActivityPresenter @Inject constructor(
     if (getOngoingTopicListFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.ongoing_topic_list_fragment_placeholder,
-        OngoingTopicListFragment.newInstance(internalProfileId)
+        OngoingTopicListFragment.newInstance(internalProfileId),
+        OngoingTopicListFragment.TAG_ONGOING_TOPIC_LIST_FRAGMENT
       ).commitNow()
     }
   }
