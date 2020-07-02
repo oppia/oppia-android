@@ -41,7 +41,7 @@ import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
 import org.oppia.util.gcsresource.DefaultResourceBucketName
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.DefaultGcsPrefix
 import org.oppia.util.parser.ImageDownloadUrlTemplate
 import org.oppia.util.threading.BackgroundDispatcher
@@ -104,7 +104,7 @@ class TopicListController @Inject constructor(
   @DefaultGcsPrefix private val gcsPrefix: String,
   @DefaultResourceBucketName private val gcsResource: String,
   @ImageDownloadUrlTemplate private val imageDownloadUrlTemplate: String,
-  logger: Logger,
+  logger: ConsoleLogger,
   assetRepository: AssetRepository
 ) {
   private val backgroundScope = CoroutineScope(backgroundDispatcher)
