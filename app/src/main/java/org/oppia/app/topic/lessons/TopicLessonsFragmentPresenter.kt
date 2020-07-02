@@ -12,7 +12,6 @@ import org.oppia.app.databinding.TopicLessonsFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.app.model.ChapterSummary
-import org.oppia.app.model.EventLog
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.Topic
@@ -73,7 +72,6 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       it.lifecycleOwner = fragment
     }
     subscribeToTopicLiveData()
-    logLessonsFragmentEvent(topicId)
     return binding.root
   }
 
@@ -185,14 +183,5 @@ class TopicLessonsFragmentPresenter @Inject constructor(
 
   fun storySummaryClicked(storySummary: StorySummary) {
     routeToStoryListener.routeToStory(internalProfileId, topicId, storySummary.storyId)
-  }
-
-  private fun logLessonsFragmentEvent(topicId: String) {
-    analyticsController.logTransitionEvent(
-      fragment.requireActivity().applicationContext,
-      oppiaClock.getCurrentCalendar().timeInMillis,
-      EventLog.EventAction.OPEN_LESSONS_TAB,
-      analyticsController.createTopicContext(topicId)
-    )
   }
 }

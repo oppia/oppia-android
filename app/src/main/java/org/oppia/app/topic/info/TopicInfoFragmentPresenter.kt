@@ -10,7 +10,6 @@ import androidx.lifecycle.Transformations
 import org.oppia.app.R
 import org.oppia.app.databinding.TopicInfoFragmentBinding
 import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.EventLog
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Topic
 import org.oppia.app.viewmodel.ViewModelProvider
@@ -63,7 +62,6 @@ class TopicInfoFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
     subscribeToTopicLiveData()
-    logInfoFragmentEvent(topicId)
     binding.let {
       it.lifecycleOwner = fragment
       it.viewModel = topicInfoViewModel
@@ -118,14 +116,5 @@ class TopicInfoFragmentPresenter @Inject constructor(
         getTopicInfoViewModel().isSeeMoreVisible.set(false)
       }
     }
-  }
-
-  private fun logInfoFragmentEvent(topicId: String) {
-    analyticsController.logTransitionEvent(
-      fragment.requireActivity().applicationContext,
-      oppiaClock.getCurrentCalendar().timeInMillis,
-      EventLog.EventAction.OPEN_INFO_TAB,
-      analyticsController.createTopicContext(topicId)
-    )
   }
 }
