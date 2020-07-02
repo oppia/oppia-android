@@ -30,7 +30,7 @@ import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.datetime.DateTimeUtil
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -42,7 +42,7 @@ class HomeFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val topicListController: TopicListController,
   private val oppiaClock: OppiaClock,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val analyticsController: AnalyticsController
 ) {
   private val routeToTopicListener = activity as RouteToTopicListener

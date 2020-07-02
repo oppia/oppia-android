@@ -31,7 +31,7 @@ import org.oppia.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.domain.question.QuestionAssessmentProgressController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.QuestionResourceBucketName
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -44,7 +44,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private val questionAssessmentProgressController: QuestionAssessmentProgressController,
   private val analyticsController: AnalyticsController,
   private val oppiaClock: OppiaClock,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   @QuestionResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory
 ) {

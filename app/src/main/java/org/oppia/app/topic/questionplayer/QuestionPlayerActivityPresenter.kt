@@ -7,7 +7,7 @@ import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.domain.question.QuestionTrainingController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 const val TAG_QUESTION_PLAYER_FRAGMENT = "TAG_QUESTION_PLAYER_FRAGMENT"
@@ -18,7 +18,7 @@ private const val TAG_HINTS_AND_SOLUTION_QUESTION_MANAGER = "HINTS_AND_SOLUTION_
 class QuestionPlayerActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val questionTrainingController: QuestionTrainingController,
-  private val logger: Logger
+  private val logger: ConsoleLogger
 ) {
   fun handleOnCreate() {
     activity.setContentView(R.layout.question_player_activity)

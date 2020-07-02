@@ -11,7 +11,6 @@ import org.oppia.app.databinding.TopicPracticeFragmentBinding
 import org.oppia.app.databinding.TopicPracticeHeaderViewBinding
 import org.oppia.app.databinding.TopicPracticeSubtopicBinding
 import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.EventLog
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.topic.RouteToQuestionPlayerListener
 import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeFooterViewModel
@@ -20,7 +19,7 @@ import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeItemViewM
 import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeSubtopicViewModel
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.oppialogger.analytics.AnalyticsController
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -29,7 +28,7 @@ import javax.inject.Inject
 class TopicPracticeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val analyticsController: AnalyticsController,
   private val oppiaClock: OppiaClock,
   private val viewModelProvider: ViewModelProvider<TopicPracticeViewModel>
@@ -53,7 +52,6 @@ class TopicPracticeFragmentPresenter @Inject constructor(
     this.topicId = topicId
     viewModel.setTopicId(this.topicId)
     viewModel.setInternalProfileId(internalProfileId)
-    logPracticeFragmentEvent(topicId)
 
     selectedSkillIdList = skillList
     binding = TopicPracticeFragmentBinding.inflate(
@@ -167,14 +165,5 @@ class TopicPracticeFragmentPresenter @Inject constructor(
     if (::topicPracticeFooterViewBinding.isInitialized) {
       topicPracticeFooterViewBinding.isSubmitButtonActive = skillIdHashMap.isNotEmpty()
     }
-  }
-
-  private fun logPracticeFragmentEvent(topicId: String) {
-    analyticsController.logTransitionEvent(
-      fragment.requireActivity().applicationContext,
-      oppiaClock.getCurrentCalendar().timeInMillis,
-      EventLog.EventAction.OPEN_PRACTICE_TAB,
-      analyticsController.createTopicContext(topicId)
-    )
   }
 }
