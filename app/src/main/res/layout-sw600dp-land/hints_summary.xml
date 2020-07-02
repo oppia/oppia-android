@@ -83,7 +83,8 @@
           android:padding="8dp"
           android:layout_gravity="center_vertical"
           android:contentDescription="@{@string/show_hide_hint_list(viewModel.hintsAndSolutionSummary)}"
-          android:src="@{isListExpanded? @drawable/ic_arrow_drop_up_black_24dp : @drawable/ic_arrow_drop_down_black_24dp}" />
+          app:expand_rotation_anim="@{isListExpanded}"
+          android:src="@drawable/ic_arrow_drop_down_black_24dp" />
       </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
