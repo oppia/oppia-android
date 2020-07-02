@@ -6,7 +6,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.oppia.app.model.EventLog
 import org.oppia.app.model.ExceptionLog
-import org.oppia.app.model.OppiaCrashLogs
 import org.oppia.app.model.OppiaEventLogs
 import org.oppia.app.model.OppiaExceptionLogs
 import org.oppia.data.persistence.PersistentCacheStore
@@ -140,7 +139,7 @@ class LogReportStorageHelper @Inject constructor(
     return dataProviders.convertToLiveData(eventLogStore)
   }
 
-  fun getCrashLogs(): LiveData<AsyncResult<OppiaCrashLogs>> {
+  fun getCrashLogs(): LiveData<AsyncResult<OppiaExceptionLogs>> {
     return dataProviders.convertToLiveData(exceptionLogStore)
   }
 }
