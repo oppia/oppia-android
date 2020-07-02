@@ -19,7 +19,7 @@ import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeItemViewM
 import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeSubtopicViewModel
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.analytics.AnalyticsController
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -28,7 +28,7 @@ import javax.inject.Inject
 class TopicPracticeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val analyticsController: AnalyticsController,
   private val oppiaClock: OppiaClock,
   private val viewModelProvider: ViewModelProvider<TopicPracticeViewModel>

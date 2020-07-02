@@ -21,7 +21,7 @@ import org.oppia.app.model.PromotedStory
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The presenter for [RecentlyPlayedFragment]. */
@@ -29,7 +29,7 @@ import javax.inject.Inject
 class RecentlyPlayedFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val explorationDataController: ExplorationDataController,
   private val topicListController: TopicListController
 ) {

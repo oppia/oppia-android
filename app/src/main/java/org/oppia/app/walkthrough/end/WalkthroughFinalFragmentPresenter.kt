@@ -16,7 +16,7 @@ import org.oppia.app.model.Topic
 import org.oppia.app.walkthrough.WalkthroughActivity
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The presenter for [WalkthroughFinalFragment]. */
@@ -24,7 +24,7 @@ import javax.inject.Inject
 class WalkthroughFinalFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val topicController: TopicController
 ) {
   private lateinit var binding: WalkthroughFinalFragmentBinding

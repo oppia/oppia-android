@@ -17,7 +17,7 @@ import org.oppia.domain.analytics.AnalyticsController
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.DefaultResourceBucketName
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.HtmlParser
 import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
@@ -27,7 +27,7 @@ import javax.inject.Inject
 class TopicInfoFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<TopicInfoViewModel>,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val topicController: TopicController,
   private val htmlParserFactory: HtmlParser.Factory,
   private val analyticsController: AnalyticsController,

@@ -8,14 +8,14 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.EphemeralState
 import org.oppia.domain.exploration.ExplorationProgressController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The presenter for [HintsAndSolutionExplorationManagerFragment]. */
 @FragmentScope
 class HintsAndSolutionExplorationManagerFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val explorationProgressController: ExplorationProgressController
 ) {
 
