@@ -7,6 +7,7 @@ import dagger.multibindings.StringKey
 import org.oppia.domain.classify.rules.ContinueRules
 import org.oppia.domain.classify.rules.DragDropSortInputRules
 import org.oppia.domain.classify.rules.FractionInputRules
+import org.oppia.domain.classify.rules.ImageClickInputRules
 import org.oppia.domain.classify.rules.ItemSelectionInputRules
 import org.oppia.domain.classify.rules.MultipleChoiceInputRules
 import org.oppia.domain.classify.rules.NumberWithUnitsRules
@@ -84,6 +85,15 @@ class InteractionsModule {
   @StringKey("DragAndDropSortInput")
   fun provideDragAndDropSortInputInteractionClassifier(
     @DragDropSortInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>
+  ): InteractionClassifier {
+    return GenericInteractionClassifier(ruleClassifiers)
+  }
+
+  @Provides
+  @IntoMap
+  @StringKey("ImageClickInput")
+  fun provideImageClickInputInteractionClassifier(
+    @ImageClickInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>
   ): InteractionClassifier {
     return GenericInteractionClassifier(ruleClassifiers)
   }

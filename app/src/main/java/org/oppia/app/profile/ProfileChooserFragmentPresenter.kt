@@ -166,7 +166,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   ) {
     binding.viewModel = model
     binding.presenter = this
-    binding.root.setOnClickListener {
+    binding.profileChooserItem.setOnClickListener {
       if (model.profile.pin.isEmpty()) {
         profileManagementController.loginToProfile(model.profile.id).observe(
           fragment,
@@ -199,7 +199,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     @Suppress("UNUSED_PARAMETER") model: ProfileChooserUiModel
   ) {
     binding.presenter = this
-    binding.root.setOnClickListener {
+    binding.addProfileItem.setOnClickListener {
       if (chooserViewModel.adminPin.isEmpty()) {
         activity.startActivity(
           AdminPinActivity.createAdminPinActivityIntent(

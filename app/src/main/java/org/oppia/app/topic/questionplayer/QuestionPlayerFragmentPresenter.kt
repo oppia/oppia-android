@@ -265,12 +265,15 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
    */
   private fun subscribeToHint(hintResultLiveData: LiveData<AsyncResult<Hint>>) {
     val hintLiveData = getHintIsRevealed(hintResultLiveData)
-    hintLiveData.observe(fragment, Observer { result ->
-      // If the hint was revealed remove dot and radar.
-      if (result.hintIsRevealed) {
-        questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
+    hintLiveData.observe(
+      fragment,
+      Observer { result ->
+        // If the hint was revealed remove dot and radar.
+        if (result.hintIsRevealed) {
+          questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
+        }
       }
-    })
+    )
   }
 
   /**
@@ -280,12 +283,15 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
    */
   private fun subscribeToSolution(solutionResultLiveData: LiveData<AsyncResult<Solution>>) {
     val solutionLiveData = getSolutionIsRevealed(solutionResultLiveData)
-    solutionLiveData.observe(fragment, Observer { result ->
-      // If the hint was revealed remove dot and radar.
-      if (result.solutionIsRevealed) {
-        questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
+    solutionLiveData.observe(
+      fragment,
+      Observer { result ->
+        // If the hint was revealed remove dot and radar.
+        if (result.solutionIsRevealed) {
+          questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
+        }
       }
-    })
+    )
   }
 
   /** Helper for [subscribeToSolution]. */

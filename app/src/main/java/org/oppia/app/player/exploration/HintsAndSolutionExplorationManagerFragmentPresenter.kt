@@ -30,14 +30,21 @@ class HintsAndSolutionExplorationManagerFragmentPresenter @Inject constructor(
   }
 
   private fun subscribeToCurrentState() {
-    ephemeralStateLiveData.observe(activity, Observer<AsyncResult<EphemeralState>> { result ->
-      processEphemeralStateResult(result)
-    })
+    ephemeralStateLiveData.observe(
+      activity,
+      Observer<AsyncResult<EphemeralState>> { result ->
+        processEphemeralStateResult(result)
+      }
+    )
   }
 
   private fun processEphemeralStateResult(result: AsyncResult<EphemeralState>) {
     if (result.isFailure()) {
-      logger.e("HintsAndSolutionExplorationManagerFragmentPresenter", "Failed to retrieve ephemeral state", result.getErrorOrNull()!!)
+      logger.e(
+        "HintsAndSolutionExplorationManagerFragmentPresenter",
+        "Failed to retrieve ephemeral state",
+        result.getErrorOrNull()!!
+      )
       return
     } else if (result.isPending()) {
       // Display nothing until a valid result is available.

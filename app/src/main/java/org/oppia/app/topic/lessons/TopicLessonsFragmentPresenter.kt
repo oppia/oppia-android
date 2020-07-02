@@ -187,7 +187,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     routeToStoryListener.routeToStory(internalProfileId, topicId, storySummary.storyId)
   }
 
-  private fun logLessonsFragmentEvent(topicId: String){
+  private fun logLessonsFragmentEvent(topicId: String) {
     analyticsController.logTransitionEvent(
       fragment.requireActivity().applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,

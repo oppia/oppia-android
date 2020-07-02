@@ -40,8 +40,10 @@ class QuestionPlayerActivityPresenter @Inject constructor(
     }
   }
 
-  private fun getHintsAndSolutionExplorationManagerFragment(): HintsAndSolutionQuestionManagerFragment? {
-    return activity.supportFragmentManager.findFragmentByTag(TAG_HINTS_AND_SOLUTION_QUESTION_MANAGER) as HintsAndSolutionQuestionManagerFragment?
+  private fun getHintsAndSolutionExplorationManagerFragment(): HintsAndSolutionQuestionManagerFragment? { // ktlint-disable max-line-length
+    return activity.supportFragmentManager.findFragmentByTag(
+      TAG_HINTS_AND_SOLUTION_QUESTION_MANAGER
+    ) as HintsAndSolutionQuestionManagerFragment?
   }
 
   fun stopTrainingSession() {
@@ -139,13 +141,17 @@ class QuestionPlayerActivityPresenter @Inject constructor(
 
   fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
     val questionPlayerFragment =
-      activity.supportFragmentManager.findFragmentByTag(TAG_QUESTION_PLAYER_FRAGMENT) as QuestionPlayerFragment
+      activity.supportFragmentManager.findFragmentByTag(
+        TAG_QUESTION_PLAYER_FRAGMENT
+      ) as QuestionPlayerFragment
     questionPlayerFragment.revealHint(saveUserChoice, hintIndex)
   }
 
   fun revealSolution(saveUserChoice: Boolean) {
     val questionPlayerFragment =
-      activity.supportFragmentManager.findFragmentByTag(TAG_QUESTION_PLAYER_FRAGMENT) as QuestionPlayerFragment
+      activity.supportFragmentManager.findFragmentByTag(
+        TAG_QUESTION_PLAYER_FRAGMENT
+      ) as QuestionPlayerFragment
     questionPlayerFragment.revealSolution(saveUserChoice)
   }
 }

@@ -169,7 +169,7 @@ class TopicPracticeFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun logPracticeFragmentEvent(topicId: String){
+  private fun logPracticeFragmentEvent(topicId: String) {
     analyticsController.logTransitionEvent(
       fragment.requireActivity().applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,

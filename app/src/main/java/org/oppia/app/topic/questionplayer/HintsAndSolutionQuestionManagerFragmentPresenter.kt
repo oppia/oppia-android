@@ -30,14 +30,20 @@ class HintsAndSolutionQuestionManagerFragmentPresenter @Inject constructor(
   }
 
   private fun subscribeToCurrentQuestionState() {
-    ephemeralStateLiveData.observe(activity, Observer<AsyncResult<EphemeralQuestion>> { result ->
-      processEphemeralStateResult(result)
-    })
+    ephemeralStateLiveData.observe(
+      activity,
+      Observer<AsyncResult<EphemeralQuestion>> { result ->
+        processEphemeralStateResult(result)
+      }
+    )
   }
 
   private fun processEphemeralStateResult(result: AsyncResult<EphemeralQuestion>) {
     if (result.isFailure()) {
-      logger.e("HintsAndSolutionQuestionManagerFragmentPresenter", "Failed to retrieve ephemeral state", result.getErrorOrNull()!!)
+      logger.e(
+        "HintsAndSolutionQuestionManagerFragmentPresenter",
+        "Failed to retrieve ephemeral state", result.getErrorOrNull()!!
+      )
       return
     } else if (result.isPending()) {
       // Display nothing until a valid result is available.
@@ -49,7 +55,8 @@ class HintsAndSolutionQuestionManagerFragmentPresenter @Inject constructor(
     // Check if hints are available for this state.
     if (ephemeralQuestionState.ephemeralState.state.interaction.hintList.size != 0) {
       (activity as HintsAndSolutionQuestionManagerListener).onQuestionStateLoaded(
-        ephemeralQuestionState.ephemeralState.state)
+        ephemeralQuestionState.ephemeralState.state
+      )
     }
   }
 }

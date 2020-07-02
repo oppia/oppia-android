@@ -55,7 +55,7 @@ class TopicRevisionFragmentTest {
   )
 
   @Before
-  fun setUp(){
+  fun setUp() {
     FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
   }
 
