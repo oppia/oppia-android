@@ -47,7 +47,6 @@ import org.oppia.app.model.StringList
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.audio.AudioUiManager
-import org.oppia.app.player.exploration.ExplorationContentViewModel
 import org.oppia.app.player.state.StatePlayerRecyclerViewAssembler.Builder.Factory
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
@@ -61,6 +60,7 @@ import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.InteractionViewModelFactory
 import org.oppia.app.player.state.itemviewmodel.NextButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
+import org.oppia.app.player.state.itemviewmodel.PlayerRecyclerViewAssemblerViewModel
 import org.oppia.app.player.state.itemviewmodel.PreviousButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.PreviousResponsesHeaderViewModel
 import org.oppia.app.player.state.itemviewmodel.ReplayButtonViewModel
@@ -547,7 +547,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
      */
     private val featureSets = mutableSetOf(PlayerFeatureSet())
     private var congratulationsTextView: TextView? = null
-    private var explorationContentViewModel: ExplorationContentViewModel? = null
+    private var playerRecyclerViewAssemblerViewModel: PlayerRecyclerViewAssemblerViewModel? = null
     private var canSubmitAnswer: ObservableField<Boolean>? = null
     private var audioActivityId: String? = null
     private var currentStateName: ObservableField<String>? = null
@@ -568,7 +568,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<ContentItemBinding>(view)!!
           val contentViewModel = viewModel as ContentViewModel
-          binding.viewModel = explorationContentViewModel
+          binding.viewModel = playerRecyclerViewAssemblerViewModel
           binding.htmlContent =
             htmlParserFactory.create(
               resourceBucketName,
@@ -968,8 +968,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     /**
      * Adds support for displaying with proper alignment and background.
      */
-    fun addUISupport(explorationContentViewModel: ExplorationContentViewModel): Builder {
-      this.explorationContentViewModel = explorationContentViewModel
+    fun addUISupport(playerRecyclerViewAssemblerViewModel: PlayerRecyclerViewAssemblerViewModel): Builder {
+      this.playerRecyclerViewAssemblerViewModel = playerRecyclerViewAssemblerViewModel
       featureSets += PlayerFeatureSet(showCongratulationsOnCorrectAnswer = true)
       return this
     }

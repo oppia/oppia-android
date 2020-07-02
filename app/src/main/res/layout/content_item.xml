@@ -11,7 +11,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.player.exploration.ExplorationContentViewModel" />
+      type="org.oppia.app.player.state.itemviewmodel.PlayerRecyclerViewAssemblerViewModel" />
   </data>
 
   <FrameLayout
