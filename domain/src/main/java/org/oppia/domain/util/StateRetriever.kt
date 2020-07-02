@@ -333,6 +333,9 @@ class StateRetriever @Inject constructor(
           .setFraction(parseFraction(inputJson.getJSONObject(keyName)))
           .build()
       "DragAndDropSortInput" -> createExactInputForDragDropAndSort(inputJson, keyName, ruleType)
+      "ImageClickInput" -> InteractionObject.newBuilder()
+        .setNormalizedString(inputJson.getString(keyName))
+        .build()
       else -> throw IllegalStateException("Encountered unexpected interaction ID: $interactionId")
     }
   }
