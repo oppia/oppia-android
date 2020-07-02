@@ -233,10 +233,10 @@ class StateRetrieverTest {
 
     val regionString = "Region1"
 
-    val dragDropInputIsEqualToOrderingValue =
+    val imageRegionSelectionIsInRegionValue =
       InteractionObject.newBuilder().setNormalizedString(regionString).build()
 
-    assertThat(ruleSpecMap.inputMap["x"]).isEqualTo(dragDropInputIsEqualToOrderingValue)
+    assertThat(ruleSpecMap.inputMap["x"]).isEqualTo(imageRegionSelectionIsInRegionValue)
   }
 
   private fun lookUpRuleSpec(state: State, ruleSpecName: String): RuleSpec {
