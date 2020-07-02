@@ -159,6 +159,6 @@ message OppiaEventLogs {
 }
 
 // Structure for a container that contains an exception log report.
-message OppiaCrashLogs {
+message OppiaExceptionLogs {
   repeated ExceptionLog exception_log = 1;
 }

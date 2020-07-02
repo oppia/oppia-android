@@ -8,6 +8,7 @@ import org.oppia.app.model.EventLog
 import org.oppia.app.model.ExceptionLog
 import org.oppia.app.model.OppiaCrashLogs
 import org.oppia.app.model.OppiaEventLogs
+import org.oppia.app.model.OppiaExceptionLogs
 import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
@@ -32,7 +33,7 @@ class LogReportStorageHelper @Inject constructor(
   private val eventLogStore =
     cacheStoreFactory.create("event_logs", OppiaEventLogs.getDefaultInstance())
   private val exceptionLogStore =
-    cacheStoreFactory.create("crash_logs", OppiaCrashLogs.getDefaultInstance())
+    cacheStoreFactory.create("exception_logs", OppiaExceptionLogs.getDefaultInstance())
   private val coroutineScope = CoroutineScope(backgroundCoroutineDispatcher)
 
   fun addEventLog(eventLog: EventLog) {
