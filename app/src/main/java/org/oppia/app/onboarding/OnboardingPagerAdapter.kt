@@ -49,7 +49,7 @@ class OnboardingPagerAdapter(
   }
 
   override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-    if(`object` is ConstraintLayout){
+    if (`object` is ConstraintLayout) {
       container.removeView(`object`)
     } else if (`object` is ScrollView) {
       container.removeView(`object`)
