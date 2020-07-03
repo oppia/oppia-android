@@ -54,6 +54,7 @@ dependencies {
       'com.google.firebase:firebase-core:17.4.2',
       'com.google.firebase:firebase-crashlytics:17.0.0',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
+      "com.github.chrisbanes:PhotoView:2.3.0"
   )
   testImplementation(
       'androidx.test.ext:junit:1.1.1',
@@ -78,6 +79,9 @@ dependencies {
   // sufficiently visible for generated Dagger code. This can be done more cleanly via Bazel since dependencies can be
   // controlled more directly than in Gradle.
   implementation project(':model')
+}
+repositories {
+  maven { url "https://jitpack.io" }
 }
 // The GeneratedMessageLite implementations of protobufs are depending on protobuf-java
 // instead of protobuf-lite after Android Studio 3.5,
