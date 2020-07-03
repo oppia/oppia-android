@@ -124,8 +124,8 @@ message EventLog {
 message ExceptionLog {
   // The timestamp of the exception.
   int64 timestamp = 1;
-  // The stack trace element of the exception.
-  StackTraceElement stacktrace = 2;
+  // The stacktrace of the exception which contains multiple stacktrace elements.
+  repeated StackTraceElement stacktrace = 2;
   // The message of the exception.
   string message = 3;
   // The case of the exception.
