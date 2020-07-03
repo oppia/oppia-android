@@ -381,7 +381,6 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
   private fun logQuestionPlayerEvent(questionId: String, skillIds: List<String>) {
     analyticsController.logTransitionEvent(
-      activity.applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_QUESTION_PLAYER,
       analyticsController.createQuestionContext(

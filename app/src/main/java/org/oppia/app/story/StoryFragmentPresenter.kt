@@ -161,7 +161,6 @@ class StoryFragmentPresenter @Inject constructor(
 
   private fun logStoryActivityEvent(topicId: String, storyId: String) {
     analyticsController.logTransitionEvent(
-      fragment.requireActivity().applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_STORY_ACTIVITY,
       analyticsController.createStoryContext(topicId, storyId)
