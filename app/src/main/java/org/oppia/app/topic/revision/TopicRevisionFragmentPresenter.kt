@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.app.databinding.TopicRevisionFragmentBinding
 import org.oppia.app.databinding.TopicRevisionSummaryViewBinding
 import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.EventLog
 import org.oppia.app.model.Subtopic
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.topic.RouteToRevisionCardListener
@@ -53,7 +52,6 @@ class TopicRevisionFragmentPresenter @Inject constructor(
 
     viewModel.setTopicId(this.topicId)
     viewModel.setInternalProfileId(this.internalProfileId)
-    logRevisionFragmentEvent(topicId)
 
     binding.revisionRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
@@ -88,14 +86,5 @@ class TopicRevisionFragmentPresenter @Inject constructor(
         inflateDataBinding = TopicRevisionSummaryViewBinding::inflate,
         setViewModel = TopicRevisionSummaryViewBinding::setViewModel
       ).build()
-  }
-
-  private fun logRevisionFragmentEvent(topicId: String) {
-    analyticsController.logTransitionEvent(
-      fragment.requireActivity().applicationContext,
-      oppiaClock.getCurrentCalendar().timeInMillis,
-      EventLog.EventAction.OPEN_REVISION_TAB,
-      analyticsController.createTopicContext(topicId)
-    )
   }
 }
