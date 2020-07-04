@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ScrollView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewpager.widget.PagerAdapter
 import org.oppia.app.databinding.OnboardingSlideBinding
 import org.oppia.app.databinding.OnboardingSlideFinalBinding
