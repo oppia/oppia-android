@@ -135,7 +135,7 @@ fun setProfileImage(imageView: ImageView, profileAvatar: ProfileAvatar?) {
 }
 
 @BindingAdapter("app:expand_rotation_anim")
-fun setAnimation(imageView: ImageView, isExpanded: Boolean) {
+fun setExpandRotationAnimation(imageView: ImageView, isExpanded: Boolean) {
   if (isExpanded) {
     val valueAnimator = ValueAnimator.ofFloat(0f, 180f)
     valueAnimator.duration = 300

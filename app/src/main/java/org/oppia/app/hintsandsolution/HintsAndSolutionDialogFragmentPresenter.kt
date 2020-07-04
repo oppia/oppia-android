@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.SimpleItemAnimator
 import javax.inject.Inject
 import org.oppia.app.R
 import org.oppia.app.databinding.HintsAndSolutionFragmentBinding
@@ -94,6 +95,8 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
 
       binding.hintsAndSolutionRecyclerView.apply {
         adapter = hintsAndSolutionAdapter
+        //this line removes the blink from the recyclerView
+        (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
       }
       if (viewModel.newAvailableHintIndex.get() != -1) {
         handleNewAvailableHint(viewModel.newAvailableHintIndex.get())

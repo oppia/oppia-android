@@ -21,6 +21,12 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <View
+      android:id="@+id/top_divider"
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:background="@color/seekbarDivider" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -79,7 +85,8 @@
           android:layout_gravity="center_vertical"
           android:contentDescription="@{@string/show_hide_solution_list(viewModel.solutionSummary)}"
           android:padding="8dp"
-          android:src="@{isListExpanded? @drawable/ic_arrow_drop_up_black_24dp : @drawable/ic_arrow_drop_down_black_24dp}" />
+          app:expand_rotation_anim="@{isListExpanded}"
+          android:src="@drawable/ic_arrow_drop_down_black_24dp" />
       </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -89,9 +96,9 @@
       android:layout_height="wrap_content"
       android:layout_marginStart="128dp"
       android:layout_marginEnd="128dp"
-      android:layout_marginBottom="32dp"
+      android:paddingBottom="32dp"
       android:orientation="vertical"
-      android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
+      android:visibility="gone">
 
       <LinearLayout
         android:layout_width="match_parent"
@@ -148,8 +155,9 @@
     </LinearLayout>
 
     <View
+      android:id="@+id/bottom_divider"
       android:layout_width="match_parent"
       android:layout_height="1dp"
-      android:background="@color/seekbarDivider"/>
+      android:background="@color/seekbarDivider" />
   </LinearLayout>
 </layout>

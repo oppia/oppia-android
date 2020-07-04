@@ -1,8 +1,12 @@
 package org.oppia.app.hintsandsolution
 
+import android.animation.ValueAnimator
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.core.animation.addListener
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.databinding.HintsSummaryBinding
@@ -27,6 +31,8 @@ class HintsAndSolutionAdapter(
   private val entityType: String
 ) :
   RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+  private var lastAvailableHintIndex = -1
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
@@ -99,6 +105,78 @@ class HintsAndSolutionAdapter(
         binding.root.visibility = View.GONE
       }
 
+      if (position == 0) {
+        binding.topDivider?.visibility = View.GONE
+      }
+
+      if (position == lastAvailableHintIndex) {
+        if (isHintListVisible) {
+          binding.hintListContainer.visibility = View.INVISIBLE
+          Handler().postDelayed({
+            binding.hintListContainer.alpha = 0f
+            binding.hintListContainer.visibility = View.VISIBLE
+            val valueAnimator = ValueAnimator.ofFloat(0f, 1f)
+            valueAnimator.duration = 200
+            valueAnimator.addUpdateListener {
+              binding.hintListContainer.alpha = it.animatedValue as Float
+            }
+            valueAnimator.start()
+          },100)
+          binding.hintListContainer
+            .measure(
+              LinearLayout.LayoutParams.MATCH_PARENT,
+              LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+          val height = binding.hintListContainer.measuredHeight
+          val dividerAnimator = ValueAnimator.ofInt(-(height), 0)
+          dividerAnimator.duration = 300
+          dividerAnimator.addUpdateListener {
+            binding.bottomDivider?.translationY = (it.animatedValue as Int).toFloat()
+          }
+          dividerAnimator.start()
+        } else {
+          if (hintsViewModel.isHintRevealed.get()!!) {
+            val valueAnimator = ValueAnimator.ofFloat(1f, 0f)
+            valueAnimator.duration = 100
+            valueAnimator.addUpdateListener {
+              binding.hintListContainer.alpha = it.animatedValue as Float
+            }
+            valueAnimator.start()
+            binding.hintListContainer
+              .measure(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+              )
+            val height = binding.hintListContainer.measuredHeight
+            val dividerAnimator = ValueAnimator.ofInt(0, -(height))
+            dividerAnimator.duration = 300
+            dividerAnimator.addUpdateListener {
+              binding.bottomDivider?.translationY = (it.animatedValue as Int).toFloat()
+            }
+            dividerAnimator.addListener {
+              binding.hintListContainer.visibility = View.GONE
+            }
+            dividerAnimator.start()
+          }
+        }
+      } else {
+        if (isHintListVisible) {
+          binding.hintListContainer.visibility = View.INVISIBLE
+          Handler().postDelayed({
+            binding.hintListContainer.alpha = 0f
+            binding.hintListContainer.visibility = View.VISIBLE
+            val valueAnimator = ValueAnimator.ofFloat(0f, 1f)
+            valueAnimator.duration = 200
+            valueAnimator.addUpdateListener {
+              binding.hintListContainer.alpha = it.animatedValue as Float
+            }
+            valueAnimator.start()
+          },100)
+        } else {
+          binding.hintListContainer.visibility = View.GONE
+        }
+      }
+
       binding.hintTitle.text = hintsViewModel.title.get()!!.replace("_", " ").capitalize()
       binding.hintsAndSolutionSummary.text =
         htmlParserFactory.create(
@@ -108,6 +186,7 @@ class HintsAndSolutionAdapter(
         )
 
       if (hintsViewModel.hintCanBeRevealed.get()!!) {
+        binding.bottomDivider?.visibility = View.VISIBLE
         binding.root.visibility = View.VISIBLE
         binding.revealHintButton.setOnClickListener {
           hintsViewModel.isHintRevealed.set(true)
@@ -120,6 +199,12 @@ class HintsAndSolutionAdapter(
             }
           expandedHintListIndexListener.onExpandListIconClicked(currentExpandedHintListIndex)
         }
+      } else {
+        binding.bottomDivider?.visibility = View.GONE
+      }
+
+      if (lastAvailableHintIndex == itemList.size - 1) {
+        binding.bottomDivider?.visibility = View.GONE
       }
 
       binding.root.setOnClickListener {
@@ -156,7 +241,13 @@ class HintsAndSolutionAdapter(
       }
       binding.isListExpanded = isHintListVisible
       binding.viewModel = solutionViewModel
-      binding.root.visibility = View.GONE
+
+      if (solutionViewModel.isSolutionRevealed.get()!!) {
+        binding.root.visibility = View.VISIBLE
+      } else {
+        binding.root.visibility = View.GONE
+      }
+
       binding.solutionTitle.text = solutionViewModel.title.get()!!.capitalize()
       // TODO(#1050): Update to display answers for any answer type.
       if (solutionViewModel.correctAnswer.get().isNullOrEmpty()) {
@@ -170,6 +261,56 @@ class HintsAndSolutionAdapter(
       ).parseOppiaHtml(
         solutionViewModel.solutionSummary.get()!!, binding.solutionSummary
       )
+
+      if (isHintListVisible) {
+        binding.solutionContainer.visibility = View.INVISIBLE
+        Handler().postDelayed({
+          binding.solutionContainer.alpha = 0f
+          binding.solutionContainer.visibility = View.VISIBLE
+          val valueAnimator = ValueAnimator.ofFloat(0f, 1f)
+          valueAnimator.duration = 200
+          valueAnimator.addUpdateListener {
+            binding.solutionContainer.alpha = it.animatedValue as Float
+          }
+          valueAnimator.start()
+        },100)
+        binding.solutionContainer
+          .measure(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+          )
+        val height = binding.solutionContainer.measuredHeight
+        val dividerAnimator = ValueAnimator.ofInt(-(height), 0)
+        dividerAnimator.duration = 300
+        dividerAnimator.addUpdateListener {
+          binding.bottomDivider?.translationY = (it.animatedValue as Int).toFloat()
+        }
+        dividerAnimator.start()
+      } else {
+        if (solutionViewModel.isSolutionRevealed.get()!!) {
+          val valueAnimator = ValueAnimator.ofFloat(1f, 0f)
+          valueAnimator.duration = 100
+          valueAnimator.addUpdateListener {
+            binding.solutionContainer.alpha = it.animatedValue as Float
+          }
+          valueAnimator.start()
+          binding.solutionContainer
+            .measure(
+              LinearLayout.LayoutParams.MATCH_PARENT,
+              LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+          val height = binding.solutionContainer.measuredHeight
+          val dividerAnimator = ValueAnimator.ofInt(0, -(height))
+          dividerAnimator.duration = 300
+          dividerAnimator.addUpdateListener {
+            binding.bottomDivider?.translationY = (it.animatedValue as Int).toFloat()
+          }
+          dividerAnimator.addListener {
+            binding.solutionContainer.visibility = View.GONE
+          }
+          dividerAnimator.start()
+        }
+      }
 
       if (solutionViewModel.solutionCanBeRevealed.get()!!) {
         binding.root.visibility = View.VISIBLE
@@ -216,8 +357,18 @@ class HintsAndSolutionAdapter(
   fun setRevealSolution(saveUserChoice: Boolean) {
     if (itemList[itemList.size - 1] is SolutionViewModel) {
       val solutionViewModel = itemList[itemList.size - 1] as SolutionViewModel
-      solutionViewModel.isSolutionRevealed.set(saveUserChoice)
-      (fragment.requireActivity() as? RevealSolutionInterface)?.revealSolution(saveUserChoice)
+      val position = itemList.size - 1
+      if (saveUserChoice) {
+        solutionViewModel.isSolutionRevealed.set(saveUserChoice)
+        (fragment.requireActivity() as? RevealSolutionInterface)?.revealSolution(saveUserChoice)
+        currentExpandedHintListIndex =
+        if (currentExpandedHintListIndex != null && currentExpandedHintListIndex == position) {
+          null
+        } else {
+          position
+        }
+        expandedHintListIndexListener.onExpandListIconClicked(currentExpandedHintListIndex)
+      }
       notifyItemChanged(itemList.size - 1)
     }
   }
@@ -226,6 +377,7 @@ class HintsAndSolutionAdapter(
     if (itemList[hintIndex] is HintsViewModel) {
       val hintsViewModel = itemList[hintIndex] as HintsViewModel
       hintsViewModel.hintCanBeRevealed.set(true)
+      lastAvailableHintIndex = hintIndex
       notifyItemChanged(hintIndex)
     }
   }
@@ -234,6 +386,7 @@ class HintsAndSolutionAdapter(
     if (itemList[itemList.size - 1] is SolutionViewModel) {
       val solutionViewModel = itemList[itemList.size - 1] as SolutionViewModel
       solutionViewModel.solutionCanBeRevealed.set(allHintsExhausted)
+      lastAvailableHintIndex = itemList.size - 1
       notifyItemChanged(itemList.size - 1)
     }
   }
