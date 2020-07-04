@@ -20,6 +20,12 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <View
+      android:id="@+id/top_divider"
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:background="@color/seekbarDivider" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -97,7 +103,7 @@
       android:layout_marginTop="8dp"
       android:layout_marginBottom="32dp"
       android:orientation="vertical"
-      android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
+      android:visibility="gone">
 
       <TextView
         android:id="@+id/hints_and_solution_summary"
@@ -110,9 +116,11 @@
     </LinearLayout>
 
     <View
+      android:id="@+id/bottom_divider"
       android:layout_width="match_parent"
       android:layout_height="1dp"
       android:layout_marginBottom="32dp"
+      android:visibility="gone"
       android:background="@color/grey_shade_29"/>
   </LinearLayout>
 </layout>
