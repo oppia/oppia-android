@@ -117,16 +117,19 @@ class HintsAndSolutionAdapter(
       if (position == lastAvailableHintIndex) {
         if (isHintListVisible) {
           binding.hintListContainer.visibility = View.INVISIBLE
-          Handler().postDelayed({
-            binding.hintListContainer.alpha = 0f
-            binding.hintListContainer.visibility = View.VISIBLE
-            val valueAnimator = ValueAnimator.ofFloat(0f, 1f)
-            valueAnimator.duration = 200
-            valueAnimator.addUpdateListener {
-              binding.hintListContainer.alpha = it.animatedValue as Float
-            }
-            valueAnimator.start()
-          }, 100)
+          Handler().postDelayed(
+            {
+              binding.hintListContainer.alpha = 0f
+              binding.hintListContainer.visibility = View.VISIBLE
+              val valueAnimator = ValueAnimator.ofFloat(0f, 1f)
+              valueAnimator.duration = 200
+              valueAnimator.addUpdateListener {
+                binding.hintListContainer.alpha = it.animatedValue as Float
+              }
+              valueAnimator.start()
+            },
+            100
+          )
           val matchParentMeasureSpec = View.MeasureSpec.makeMeasureSpec(
             (binding.hintListContainer.parent as View).width,
             View.MeasureSpec.EXACTLY
@@ -199,16 +202,19 @@ class HintsAndSolutionAdapter(
       } else {
         if (isHintListVisible) {
           binding.hintListContainer.visibility = View.INVISIBLE
-          Handler().postDelayed({
-            binding.hintListContainer.alpha = 0f
-            binding.hintListContainer.visibility = View.VISIBLE
-            val valueAnimator = ValueAnimator.ofFloat(0f, 1f)
-            valueAnimator.duration = 200
-            valueAnimator.addUpdateListener {
-              binding.hintListContainer.alpha = it.animatedValue as Float
-            }
-            valueAnimator.start()
-          }, 100)
+          Handler().postDelayed(
+            {
+              binding.hintListContainer.alpha = 0f
+              binding.hintListContainer.visibility = View.VISIBLE
+              val valueAnimator = ValueAnimator.ofFloat(0f, 1f)
+              valueAnimator.duration = 200
+              valueAnimator.addUpdateListener {
+                binding.hintListContainer.alpha = it.animatedValue as Float
+              }
+              valueAnimator.start()
+            },
+            100
+          )
         } else {
           binding.hintListContainer.visibility = View.GONE
         }
@@ -304,16 +310,19 @@ class HintsAndSolutionAdapter(
 
       if (isHintListVisible) {
         binding.solutionContainer.visibility = View.INVISIBLE
-        Handler().postDelayed({
-          binding.solutionContainer.alpha = 0f
-          binding.solutionContainer.visibility = View.VISIBLE
-          val valueAnimator = ValueAnimator.ofFloat(0f, 1f)
-          valueAnimator.duration = 200
-          valueAnimator.addUpdateListener {
-            binding.solutionContainer.alpha = it.animatedValue as Float
-          }
-          valueAnimator.start()
-        }, 100)
+        Handler().postDelayed(
+          {
+            binding.solutionContainer.alpha = 0f
+            binding.solutionContainer.visibility = View.VISIBLE
+            val valueAnimator = ValueAnimator.ofFloat(0f, 1f)
+            valueAnimator.duration = 200
+            valueAnimator.addUpdateListener {
+              binding.solutionContainer.alpha = it.animatedValue as Float
+            }
+            valueAnimator.start()
+          },
+          100
+        )
         val matchParentMeasureSpec = View.MeasureSpec.makeMeasureSpec(
           (binding.solutionContainer.parent as View).width,
           View.MeasureSpec.EXACTLY

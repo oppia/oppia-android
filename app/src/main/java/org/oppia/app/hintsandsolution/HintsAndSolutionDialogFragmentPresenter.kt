@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.SimpleItemAnimator
-import javax.inject.Inject
 import org.oppia.app.R
 import org.oppia.app.databinding.HintsAndSolutionFragmentBinding
 import org.oppia.app.fragment.FragmentScope
@@ -15,6 +14,7 @@ import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.util.parser.HtmlParser
+import javax.inject.Inject
 
 /** Presenter for [HintsAndSolutionDialogFragment], sets up bindings from ViewModel. */
 @FragmentScope
@@ -95,7 +95,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
 
       binding.hintsAndSolutionRecyclerView.apply {
         adapter = hintsAndSolutionAdapter
-        //this line removes the blink from the recyclerView
+        // this line removes the blink from the recyclerView
         (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
       }
       if (viewModel.newAvailableHintIndex.get() != -1) {
