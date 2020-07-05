@@ -4,17 +4,17 @@ Install `Ktlint` from [here](https://github.com/pinterest/ktlint#installation)
 # Commands 
 * `ktlint --version` - Check the version of your installed ktlint. As of now on CircleCI we are using `0.37.0`.
 
-* `ktlint "path/of/your/kotlin/file"` - To check any specific kotlin file or all the kotlin file under a directory you can use this command.
-   
-   * Examples <br>
-       * Specific File - <br>`ktlint "app/src/sharedTest/java/org/oppia/app/walkthrough/WalkthroughWelcomeFragmentTest.kt"`<br>
-       * Specific Directory - `ktlint utility/src/**/*.kt`
-
 * `ktlint --android "path/of/your/kotlin/file"` - Android Kotlin Style Guide using `--android`
 
    * Examples <br>
        * Specific File - <br>`ktlint --android "app/src/sharedTest/java/org/oppia/app/walkthrough/WalkthroughWelcomeFragmentTest.kt"`<br>
        * Specific Directory - `ktlint --android "utility/src/**/*.kt"`
+
+* `ktlint -F --android "path/of/your/kotlin/file"` - Android Kotlin Style Guide using `--android` with Ktlint Auto Formatter `-F`. This will fix some of the issues automatically. 
+
+   * Examples <br>
+       * Specific File - <br>`ktlint -F --android "app/src/sharedTest/java/org/oppia/app/walkthrough/WalkthroughWelcomeFragmentTest.kt"`<br>
+       * Specific Directory - `ktlint -F --android "utility/src/**/*.kt"`
 
 # Macros
 In Android Studio we have a feature called Macros which helps you convert multiple tasks in one shortcut.
