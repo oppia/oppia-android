@@ -1,14 +1,16 @@
 package org.oppia.app.hintsandsolution
 
 import android.animation.ValueAnimator
+import android.content.Context
 import android.os.Handler
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.core.animation.addListener
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.app.R
 import org.oppia.app.databinding.HintsSummaryBinding
 import org.oppia.app.databinding.SolutionSummaryBinding
 import org.oppia.util.parser.HtmlParser
@@ -106,7 +108,7 @@ class HintsAndSolutionAdapter(
       }
 
       if (position == 0) {
-        binding.topDivider?.visibility = View.GONE
+        binding.topDivider.visibility = View.GONE
       }
 
       if (position == lastAvailableHintIndex) {
@@ -121,17 +123,33 @@ class HintsAndSolutionAdapter(
               binding.hintListContainer.alpha = it.animatedValue as Float
             }
             valueAnimator.start()
-          },100)
-          binding.hintListContainer
-            .measure(
-              LinearLayout.LayoutParams.MATCH_PARENT,
-              LinearLayout.LayoutParams.WRAP_CONTENT
-            )
+          }, 100)
+          val matchParentMeasureSpec = View.MeasureSpec.makeMeasureSpec(
+            (binding.hintListContainer.parent as View).width,
+            View.MeasureSpec.EXACTLY
+          )
+          val wrapContentMeasureSpec = View.MeasureSpec.makeMeasureSpec(
+            0,
+            View.MeasureSpec.UNSPECIFIED
+          )
+          binding.hintListContainer.measure(matchParentMeasureSpec, wrapContentMeasureSpec)
           val height = binding.hintListContainer.measuredHeight
-          val dividerAnimator = ValueAnimator.ofInt(-(height), 0)
+          val resources = (fragment.activity as Context).resources
+          val marginTop = resources.getDimensionPixelSize(R.dimen.hint_container_top)
+          val marginBottom = resources.getDimensionPixelSize(R.dimen.hint_container_bottom)
+          val transitionValue = height + TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            marginTop.toFloat(),
+            resources.displayMetrics
+          ) + TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            marginBottom.toFloat(),
+            resources.displayMetrics
+          )
+          val dividerAnimator = ValueAnimator.ofInt(-(transitionValue.toInt()), 0)
           dividerAnimator.duration = 300
           dividerAnimator.addUpdateListener {
-            binding.bottomDivider?.translationY = (it.animatedValue as Int).toFloat()
+            binding.bottomDivider.translationY = (it.animatedValue as Int).toFloat()
           }
           dividerAnimator.start()
         } else {
@@ -142,16 +160,32 @@ class HintsAndSolutionAdapter(
               binding.hintListContainer.alpha = it.animatedValue as Float
             }
             valueAnimator.start()
-            binding.hintListContainer
-              .measure(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-              )
+            val matchParentMeasureSpec = View.MeasureSpec.makeMeasureSpec(
+              (binding.hintListContainer.parent as View).width,
+              View.MeasureSpec.EXACTLY
+            )
+            val wrapContentMeasureSpec = View.MeasureSpec.makeMeasureSpec(
+              0,
+              View.MeasureSpec.UNSPECIFIED
+            )
+            binding.hintListContainer.measure(matchParentMeasureSpec, wrapContentMeasureSpec)
             val height = binding.hintListContainer.measuredHeight
-            val dividerAnimator = ValueAnimator.ofInt(0, -(height))
+            val resources = (fragment.activity as Context).resources
+            val marginTop = resources.getDimensionPixelSize(R.dimen.hint_container_top)
+            val marginBottom = resources.getDimensionPixelSize(R.dimen.hint_container_bottom)
+            val transitionValue = height + TypedValue.applyDimension(
+              TypedValue.COMPLEX_UNIT_DIP,
+              marginTop.toFloat(),
+              resources.displayMetrics
+            ) + TypedValue.applyDimension(
+              TypedValue.COMPLEX_UNIT_DIP,
+              marginBottom.toFloat(),
+              resources.displayMetrics
+            )
+            val dividerAnimator = ValueAnimator.ofInt(0, -(transitionValue.toInt()))
             dividerAnimator.duration = 300
             dividerAnimator.addUpdateListener {
-              binding.bottomDivider?.translationY = (it.animatedValue as Int).toFloat()
+              binding.bottomDivider.translationY = (it.animatedValue as Int).toFloat()
             }
             dividerAnimator.addListener {
               binding.hintListContainer.visibility = View.GONE
@@ -171,7 +205,7 @@ class HintsAndSolutionAdapter(
               binding.hintListContainer.alpha = it.animatedValue as Float
             }
             valueAnimator.start()
-          },100)
+          }, 100)
         } else {
           binding.hintListContainer.visibility = View.GONE
         }
@@ -186,7 +220,7 @@ class HintsAndSolutionAdapter(
         )
 
       if (hintsViewModel.hintCanBeRevealed.get()!!) {
-        binding.bottomDivider?.visibility = View.VISIBLE
+        binding.bottomDivider.visibility = View.VISIBLE
         binding.root.visibility = View.VISIBLE
         binding.revealHintButton.setOnClickListener {
           hintsViewModel.isHintRevealed.set(true)
@@ -200,11 +234,11 @@ class HintsAndSolutionAdapter(
           expandedHintListIndexListener.onExpandListIconClicked(currentExpandedHintListIndex)
         }
       } else {
-        binding.bottomDivider?.visibility = View.GONE
+        binding.bottomDivider.visibility = View.GONE
       }
 
       if (lastAvailableHintIndex == itemList.size - 1) {
-        binding.bottomDivider?.visibility = View.GONE
+        binding.bottomDivider.visibility = View.GONE
       }
 
       binding.root.setOnClickListener {
@@ -273,17 +307,33 @@ class HintsAndSolutionAdapter(
             binding.solutionContainer.alpha = it.animatedValue as Float
           }
           valueAnimator.start()
-        },100)
-        binding.solutionContainer
-          .measure(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-          )
+        }, 100)
+        val matchParentMeasureSpec = View.MeasureSpec.makeMeasureSpec(
+          (binding.solutionContainer.parent as View).width,
+          View.MeasureSpec.EXACTLY
+        )
+        val wrapContentMeasureSpec = View.MeasureSpec.makeMeasureSpec(
+          0,
+          View.MeasureSpec.UNSPECIFIED
+        )
+        binding.solutionContainer.measure(matchParentMeasureSpec, wrapContentMeasureSpec)
         val height = binding.solutionContainer.measuredHeight
-        val dividerAnimator = ValueAnimator.ofInt(-(height), 0)
+        val resources = (fragment.activity as Context).resources
+        val marginTop = resources.getDimensionPixelSize(R.dimen.solution_container_top)
+        val marginBottom = resources.getDimensionPixelSize(R.dimen.solution_container_bottom)
+        val transitionValue = height + TypedValue.applyDimension(
+          TypedValue.COMPLEX_UNIT_DIP,
+          marginTop.toFloat(),
+          resources.displayMetrics
+        ) + TypedValue.applyDimension(
+          TypedValue.COMPLEX_UNIT_DIP,
+          marginBottom.toFloat(),
+          resources.displayMetrics
+        )
+        val dividerAnimator = ValueAnimator.ofInt(-(transitionValue.toInt()), 0)
         dividerAnimator.duration = 300
         dividerAnimator.addUpdateListener {
-          binding.bottomDivider?.translationY = (it.animatedValue as Int).toFloat()
+          binding.bottomDivider.translationY = (it.animatedValue as Int).toFloat()
         }
         dividerAnimator.start()
       } else {
@@ -294,16 +344,32 @@ class HintsAndSolutionAdapter(
             binding.solutionContainer.alpha = it.animatedValue as Float
           }
           valueAnimator.start()
-          binding.solutionContainer
-            .measure(
-              LinearLayout.LayoutParams.MATCH_PARENT,
-              LinearLayout.LayoutParams.WRAP_CONTENT
-            )
+          val matchParentMeasureSpec = View.MeasureSpec.makeMeasureSpec(
+            (binding.solutionContainer.parent as View).width,
+            View.MeasureSpec.EXACTLY
+          )
+          val wrapContentMeasureSpec = View.MeasureSpec.makeMeasureSpec(
+            0,
+            View.MeasureSpec.UNSPECIFIED
+          )
+          binding.solutionContainer.measure(matchParentMeasureSpec, wrapContentMeasureSpec)
           val height = binding.solutionContainer.measuredHeight
-          val dividerAnimator = ValueAnimator.ofInt(0, -(height))
+          val resources = (fragment.activity as Context).resources
+          val marginTop = resources.getDimensionPixelSize(R.dimen.solution_container_top)
+          val marginBottom = resources.getDimensionPixelSize(R.dimen.solution_container_bottom)
+          val transitionValue = height + TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            marginTop.toFloat(),
+            resources.displayMetrics
+          ) + TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            marginBottom.toFloat(),
+            resources.displayMetrics
+          )
+          val dividerAnimator = ValueAnimator.ofInt(0, -(transitionValue.toInt()))
           dividerAnimator.duration = 300
           dividerAnimator.addUpdateListener {
-            binding.bottomDivider?.translationY = (it.animatedValue as Int).toFloat()
+            binding.bottomDivider.translationY = (it.animatedValue as Int).toFloat()
           }
           dividerAnimator.addListener {
             binding.solutionContainer.visibility = View.GONE
@@ -362,11 +428,11 @@ class HintsAndSolutionAdapter(
         solutionViewModel.isSolutionRevealed.set(saveUserChoice)
         (fragment.requireActivity() as? RevealSolutionInterface)?.revealSolution(saveUserChoice)
         currentExpandedHintListIndex =
-        if (currentExpandedHintListIndex != null && currentExpandedHintListIndex == position) {
-          null
-        } else {
-          position
-        }
+          if (currentExpandedHintListIndex != null && currentExpandedHintListIndex == position) {
+            null
+          } else {
+            position
+          }
         expandedHintListIndexListener.onExpandListIconClicked(currentExpandedHintListIndex)
       }
       notifyItemChanged(itemList.size - 1)

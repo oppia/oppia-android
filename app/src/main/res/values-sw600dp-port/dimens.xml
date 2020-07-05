@@ -6,4 +6,8 @@
   <dimen name="home_margin_min">60dp</dimen>
   <dimen name="recently_played_margin_max">120dp</dimen>
   <dimen name="recently_played_margin_min">60dp</dimen>
+  <dimen name="hint_container_top">0dp</dimen>
+  <dimen name="hint_container_bottom">32dp</dimen>
+  <dimen name="solution_container_top">0dp</dimen>
+  <dimen name="solution_container_bottom">32dp</dimen>
 </resources>

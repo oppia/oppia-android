@@ -95,7 +95,8 @@
       android:layout_height="wrap_content"
       android:layout_marginStart="128dp"
       android:layout_marginEnd="128dp"
-      android:paddingBottom="32dp"
+      android:layout_marginTop="@dimen/hint_container_top"
+      android:layout_marginBottom="@dimen/hint_container_bottom"
       android:orientation="vertical"
       android:visibility="gone">
 
