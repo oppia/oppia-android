@@ -66,7 +66,10 @@ class QuestionPlayerFragment :
   override fun onResponsesHeaderClicked() =
     questionPlayerFragmentPresenter.onResponsesHeaderClicked()
 
-  override fun onPendingAnswerErrorOrAvailabilityCheck(pendingAnswerError: String?, inputAnswerAvailable: Boolean) =
+  override fun onPendingAnswerErrorOrAvailabilityCheck(
+    pendingAnswerError: String?,
+    inputAnswerAvailable: Boolean
+  ) =
     questionPlayerFragmentPresenter.updateSubmitButton(pendingAnswerError, inputAnswerAvailable)
 
   fun handleKeyboardAction() = questionPlayerFragmentPresenter.handleKeyboardAction()

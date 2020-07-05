@@ -12,7 +12,7 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.State
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.util.gcsresource.DefaultResourceBucketName
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.util.parser.HtmlParser
 
@@ -22,7 +22,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<HintsViewModel>,
   private val htmlParserFactory: HtmlParser.Factory,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   @DefaultResourceBucketName private val resourceBucketName: String,
   @ExplorationHtmlParserEntityType private val entityType: String
 ) {
