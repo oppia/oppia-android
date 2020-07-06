@@ -42,7 +42,7 @@ class LogReportStorageHelper @Inject constructor(
   fun addEventLog(eventLog: EventLog) {
     coroutineScope.launch {
       checkStoreCacheStatus(
-        eventLogStore.readDataAsync().await().eventLogList.size,
+        eventLogStore.readDataAsync().await().eventLogList.size + 1,
         LogReportingCase.EVENT_LOG,
         eventLogStorageCacheSize
       )
@@ -64,7 +64,7 @@ class LogReportStorageHelper @Inject constructor(
   fun addExceptionLog(exceptionLog: ExceptionLog) {
     coroutineScope.launch {
       checkStoreCacheStatus(
-        exceptionLogStore.readDataAsync().await().exceptionLogList.size,
+        exceptionLogStore.readDataAsync().await().exceptionLogList.size + 1,
         LogReportingCase.EXCEPTION_LOG,
         exceptionLogStorageCacheSize
       )
@@ -88,10 +88,13 @@ class LogReportStorageHelper @Inject constructor(
     logReportCase: LogReportingCase,
     cacheStorageLimit: Int
   ) {
-    if (storeSize + 1 > cacheStorageLimit) {
-      when (logReportCase) {
-        LogReportingCase.EVENT_LOG -> removeEvent(getLeastRecentEvent())
-        LogReportingCase.EXCEPTION_LOG -> removeException(getLeastRecentException())
+    if (storeSize > cacheStorageLimit) {
+      val recordsToBeRemoved = storeSize - cacheStorageLimit
+      for (i in 1..recordsToBeRemoved){
+        when (logReportCase) {
+          LogReportingCase.EVENT_LOG -> removeEvent(getLeastRecentEvent())
+          LogReportingCase.EXCEPTION_LOG -> removeException(getLeastRecentException())
+        }
       }
     }
   }
@@ -166,7 +169,7 @@ class LogReportStorageHelper @Inject constructor(
    * Returns a [LiveData] result which can be used to get [OppiaExceptionLogs]
    * for the purpose of uploading in the presence of network connectivity.
    */
-  fun getCrashLogs(): LiveData<AsyncResult<OppiaExceptionLogs>> {
+  fun getExceptionLogs(): LiveData<AsyncResult<OppiaExceptionLogs>> {
     return dataProviders.convertToLiveData(exceptionLogStore)
   }
 }
