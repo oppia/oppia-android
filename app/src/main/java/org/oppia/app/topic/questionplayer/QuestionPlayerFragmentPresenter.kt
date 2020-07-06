@@ -171,9 +171,9 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
    * error state.
    */
   fun updateSubmitButton(pendingAnswerError: String?, inputAnswerAvailable: Boolean) {
-    if(inputAnswerAvailable){
+    if (inputAnswerAvailable) {
       questionViewModel.setCanSubmitAnswer(pendingAnswerError == null)
-    } else{
+    } else {
       questionViewModel.setCanSubmitAnswer(canSubmitAnswer = false)
     }
   }
@@ -257,7 +257,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
           recyclerViewAssembler.stopHintsFromShowing()
           questionViewModel.setHintBulbVisibility(false)
           recyclerViewAssembler.showCongratulationMessageOnCorrectAnswer()
-        } else{
+        } else {
           questionViewModel.setCanSubmitAnswer(canSubmitAnswer = false)
         }
       }
