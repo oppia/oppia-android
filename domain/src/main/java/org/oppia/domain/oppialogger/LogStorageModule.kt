@@ -14,10 +14,14 @@ annotation class ExceptionLogStorageCacheSize
 @Module
 class LogStorageModule {
 
-  /** Provides the number of records that can be stored in EventLog's cache storage.*/
+  /**
+   * Provides the number of records that can be stored in EventLog's cache storage.
+   * The current [EventLogStorageCacheSize] is set to be 5000 records.
+   * Taking 70 bytes per record, it is expected to occupy around 350000 bytes of disk space.
+   */
   @Provides
   @EventLogStorageCacheSize
-  fun provideEventLogStorageCacheSize(): Int = 25
+  fun provideEventLogStorageCacheSize(): Int = 5000
 
   /** Provides the number of records that can be stored in ExceptionLog's cache storage.*/
   @Provides
