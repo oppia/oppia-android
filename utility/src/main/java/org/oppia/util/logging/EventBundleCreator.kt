@@ -14,7 +14,6 @@ const val TIMESTAMP_KEY = "timestamp"
 const val TOPIC_ID_KEY = "topicId"
 const val STORY_ID_KEY = "storyId"
 const val SKILL_ID_KEY = "skillId"
-const val SKILL_LIST_ID_KEY = "skillListId"
 const val SUB_TOPIC_ID_KEY = "subTopicId"
 const val QUESTION_ID_KEY = "questionId"
 const val EXPLORATION_ID_KEY = "explorationId"
@@ -55,12 +54,12 @@ class EventBundleCreator {
   /** Returns a bundle from event having question context. */
   private fun createQuestionContextBundle(eventLog: EventLog): Bundle {
     val bundle = Bundle()
+    val skillIdList = eventLog.context.questionContext.skillIdList
     bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(QUESTION_ID_KEY, eventLog.context.questionContext.questionId)
-    bundle.putStringArray(
-      SKILL_LIST_ID_KEY,
-      eventLog.context.questionContext.skillIdList.toTypedArray()
-    )
+    for (skillId in skillIdList) {
+      bundle.putString(SKILL_ID_KEY + skillIdList.indexOf(skillId), skillId)
+    }
     bundle.putString(PRIORITY_KEY, eventLog.priority.toString())
     return bundle
   }
