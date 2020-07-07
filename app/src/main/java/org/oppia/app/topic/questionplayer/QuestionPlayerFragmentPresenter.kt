@@ -171,7 +171,11 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
    * error state.
    */
   fun updateSubmitButton(pendingAnswerError: String?, inputAnswerAvailable: Boolean) {
-    questionViewModel.setCanSubmitAnswer(pendingAnswerError == null)
+    if (inputAnswerAvailable) {
+      questionViewModel.setCanSubmitAnswer(pendingAnswerError == null)
+    } else {
+      questionViewModel.setCanSubmitAnswer(canSubmitAnswer = false)
+    }
   }
 
   fun handleKeyboardAction() = onSubmitButtonClicked()
@@ -253,6 +257,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
           recyclerViewAssembler.stopHintsFromShowing()
           questionViewModel.setHintBulbVisibility(false)
           recyclerViewAssembler.showCongratulationMessageOnCorrectAnswer()
+        } else {
+          questionViewModel.setCanSubmitAnswer(canSubmitAnswer = false)
         }
       }
     )
@@ -343,6 +349,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   private fun moveToNextState() {
+    questionViewModel.setCanSubmitAnswer(canSubmitAnswer = false)
     questionAssessmentProgressController.moveToNextQuestion()
   }
 
