@@ -9,7 +9,8 @@ import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
 /** Fragment that displays profile progress in the app. */
-class ProfileProgressFragment : InjectableFragment(),
+class ProfileProgressFragment :
+  InjectableFragment(),
   ProfilePictureClickListener {
   companion object {
     internal const val PROFILE_PROGRESS_FRAGMENT_PROFILE_ID_KEY =
