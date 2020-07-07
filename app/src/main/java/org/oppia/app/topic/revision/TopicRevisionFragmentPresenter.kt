@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import org.oppia.app.R
 import org.oppia.app.databinding.TopicRevisionFragmentBinding
 import org.oppia.app.databinding.TopicRevisionSummaryViewBinding
 import org.oppia.app.fragment.FragmentScope
@@ -56,12 +57,7 @@ class TopicRevisionFragmentPresenter @Inject constructor(
     binding.revisionRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
       // https://stackoverflow.com/a/50075019/3689782
-      val spanCount =
-        if (fragment.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-          3
-        } else {
-          2
-        }
+      val spanCount = fragment.resources.getInteger(R.integer.topic_revision_span_count)
       layoutManager = GridLayoutManager(context, spanCount)
     }
     binding.apply {
