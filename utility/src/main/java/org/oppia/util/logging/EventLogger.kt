@@ -1,6 +1,5 @@
 package org.oppia.util.logging
 
-import android.content.Context
 import org.oppia.app.model.EventLog
 
 /**

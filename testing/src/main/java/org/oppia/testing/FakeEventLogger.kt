@@ -1,9 +1,7 @@
 package org.oppia.testing
 
-import android.content.Context
 import org.oppia.app.model.EventLog
 import org.oppia.util.logging.EventLogger
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 

@@ -1,6 +1,5 @@
 package org.oppia.util.logging.firebase
 
-import android.content.Context
 import android.os.Bundle
 import com.google.firebase.analytics.FirebaseAnalytics
 import org.oppia.app.model.EventLog
