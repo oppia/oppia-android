@@ -90,7 +90,7 @@ class LogReportStorageHelper @Inject constructor(
   ) {
     if (storeSize > cacheStorageLimit) {
       val recordsToBeRemoved = storeSize - cacheStorageLimit
-      for (i in 1..recordsToBeRemoved){
+      for (i in 1..recordsToBeRemoved) {
         when (logReportCase) {
           LogReportingCase.EVENT_LOG -> removeEvent(getLeastRecentEvent())
           LogReportingCase.EXCEPTION_LOG -> removeException(getLeastRecentException())
