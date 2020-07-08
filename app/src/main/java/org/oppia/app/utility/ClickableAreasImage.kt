@@ -79,8 +79,7 @@ class ClickableAreasImage(
     return (x * rect.height()) + rect.top
   }
 
-  public fun setClickableAreas(clickableAreas: List<LabeledRegion>) {
+  fun setClickableAreas(clickableAreas: List<LabeledRegion>) {
     this.clickableAreas = clickableAreas
   }
-
 }

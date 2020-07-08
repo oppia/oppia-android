@@ -2,8 +2,8 @@ package org.oppia.app.testing
 
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
-import org.oppia.app.utility.OnClickableAreaClickedListener
 import org.oppia.app.utility.ClickableAreasImage
+import org.oppia.app.utility.OnClickableAreaClickedListener
 import javax.inject.Inject
 
 /** Test Activity used for testing [ClickableAreasImage] functionality */
@@ -19,7 +19,5 @@ class ImageRegionSelectionTestActivity :
     imageRegionSelectionTestActivityPresenter.handleOnCreate()
   }
 
-  override fun onClickableAreaTouched(region: String) {
-
-  }
+  override fun onClickableAreaTouched(region: String) {}
 }

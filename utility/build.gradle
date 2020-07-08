@@ -53,7 +53,7 @@ dependencies {
       'com.google.firebase:firebase-analytics-ktx:17.4.2',
       'com.google.firebase:firebase-core:17.4.2',
       'com.google.firebase:firebase-crashlytics:17.0.0',
-      "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+      "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
   )
   testImplementation(
       'androidx.test.ext:junit:1.1.1',

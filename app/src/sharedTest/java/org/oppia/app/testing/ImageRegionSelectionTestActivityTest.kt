@@ -22,7 +22,7 @@ class ImageRegionSelectionTestActivityTest {
   fun testImageRegionSelectionTestActivity_clickonRegion3() {
     launch(ImageRegionSelectionTestActivity::class.java).use { scenario ->
       onView(withId(R.id.clickable_image_view)).perform(
-        clickAtXY(0.3f,0.3f)
+        clickAtXY(0.3f, 0.3f)
       )
       onView(withId(R.id.selected_region_view)).check(
         matches(isDisplayed())
@@ -50,5 +50,4 @@ class ImageRegionSelectionTestActivityTest {
       Press.FINGER, /* inputDevice= */ 0, /* deviceState= */ 0
     )
   }
-
 }

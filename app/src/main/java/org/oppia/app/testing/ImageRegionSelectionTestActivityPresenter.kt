@@ -3,7 +3,7 @@ package org.oppia.app.testing
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.image_region_selection_test_activity.*
 import org.oppia.app.R
-import org.oppia.app.model.ImageWithRegions.*
+import org.oppia.app.model.ImageWithRegions.LabeledRegion
 import org.oppia.app.model.Point2d
 import org.oppia.app.utility.ClickableAreasImage
 import org.oppia.app.utility.OnClickableAreaClickedListener
@@ -67,5 +67,4 @@ class ImageRegionSelectionTestActivityPresenter @Inject constructor(
   private fun createPoint2d(x: Float, y: Float): Point2d {
     return Point2d.newBuilder().setX(x).setY(y).build()
   }
-
 }
