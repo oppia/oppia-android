@@ -29,7 +29,7 @@ class ClickableAreasImage(
    * @param y the relative y coordinate according to image
    */
   override fun onPhotoTap(view: ImageView, x: Float, y: Float) {
-    val clickableArea = getClickAbleAreas(x, y)
+    val clickableArea = getClickableAreaOrDefault(x, y)
     if (clickableArea.hasRegion()) {
       val imageRect = RectF(
         getXCoordinate(clickableArea.region.area.upperLeft.x),
@@ -51,15 +51,12 @@ class ClickableAreasImage(
     }
   }
 
-  private fun getClickAbleAreas(x: Float, y: Float): LabeledRegion {
-    for (ca in clickableAreas) {
-      if (isBetween(ca.region.area.upperLeft.x, ca.region.area.lowerRight.x, x)) {
-        if (isBetween(ca.region.area.upperLeft.y, ca.region.area.lowerRight.y, y)) {
-          return ca
-        }
-      }
-    }
-    return LabeledRegion.getDefaultInstance()
+  private fun getClickableAreaOrDefault(x: Float, y: Float): LabeledRegion {
+    val area = clickableAreas.filter {
+      isBetween(it.region.area.upperLeft.x, it.region.area.lowerRight.x, x) &&
+        isBetween(it.region.area.upperLeft.y, it.region.area.lowerRight.y, y)
+    }.firstOrNull()
+    return area ?: LabeledRegion.getDefaultInstance()
   }
 
   /* Return whether a point lies between two points.*/
