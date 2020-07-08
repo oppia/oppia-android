@@ -28,7 +28,7 @@ class LogReportStorageHelper @Inject constructor(
   @EventLogStorageCacheSize private val eventLogStorageCacheSize: Int,
   @ExceptionLogStorageCacheSize private val exceptionLogStorageCacheSize: Int
 ) {
-  private enum class LogReportingCase {
+  private enum class LogReportType {
     EVENT_LOG,
     EXCEPTION_LOG
   }
@@ -43,7 +43,7 @@ class LogReportStorageHelper @Inject constructor(
     coroutineScope.launch {
       checkStoreCacheStatus(
         eventLogStore.readDataAsync().await().eventLogList.size + 1,
-        LogReportingCase.EVENT_LOG,
+        LogReportType.EVENT_LOG,
         eventLogStorageCacheSize
       )
     }
@@ -65,7 +65,7 @@ class LogReportStorageHelper @Inject constructor(
     coroutineScope.launch {
       checkStoreCacheStatus(
         exceptionLogStore.readDataAsync().await().exceptionLogList.size + 1,
-        LogReportingCase.EXCEPTION_LOG,
+        LogReportType.EXCEPTION_LOG,
         exceptionLogStorageCacheSize
       )
     }
@@ -85,16 +85,13 @@ class LogReportStorageHelper @Inject constructor(
   /** Checks the [storeSize] and removes an element from the corresponding store if the [cacheStorageLimit] is exceeded. */
   private suspend fun checkStoreCacheStatus(
     storeSize: Int,
-    logReportCase: LogReportingCase,
+    logReportCase: LogReportType,
     cacheStorageLimit: Int
   ) {
     if (storeSize > cacheStorageLimit) {
-      val recordsToBeRemoved = storeSize - cacheStorageLimit
-      for (i in 1..recordsToBeRemoved) {
-        when (logReportCase) {
-          LogReportingCase.EVENT_LOG -> removeEvent(getLeastRecentEvent())
-          LogReportingCase.EXCEPTION_LOG -> removeException(getLeastRecentException())
-        }
+      when (logReportCase) {
+        LogReportType.EVENT_LOG -> removeEvent(getLeastRecentEvent())
+        LogReportType.EXCEPTION_LOG -> removeException(getLeastRecentException())
       }
     }
   }

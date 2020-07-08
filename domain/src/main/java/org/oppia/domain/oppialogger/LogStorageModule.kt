@@ -24,6 +24,7 @@ class LogStorageModule {
   fun provideEventLogStorageCacheSize(): Int = 5000
 
   /** Provides the number of records that can be stored in ExceptionLog's cache storage.*/
+  // TODO (#1104): Add correct number of records and size calculations for exceptions.
   @Provides
   @ExceptionLogStorageCacheSize
   fun provideExceptionLogStorageCacheSize(): Int = 25
