@@ -1,4 +1,4 @@
-package org.oppia.util.image
+package org.oppia.app.utility
 
 /** Listener for an image when it is clicked which have a [ClickableAreasImage] attached to the view. */
 interface OnClickableAreaClickedListener {

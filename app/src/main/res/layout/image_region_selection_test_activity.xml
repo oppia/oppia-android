@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  tools:context=".testing.ImageRegionSelectionTestActivity">
+  
+  <ImageView
+    android:src="@drawable/testing_fraction"
+    android:id="@+id/clickable_image_view"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:adjustViewBounds="true"/>
+
+  <View
+    android:background="@drawable/selected_region_background"
+    android:visibility="gone"
+    android:id="@+id/selected_region_view"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" />
+  
+</FrameLayout>

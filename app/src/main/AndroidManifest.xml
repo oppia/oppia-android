@@ -125,6 +125,7 @@
     <activity android:name=".testing.HtmlParserTestActivity" />
     <activity android:name=".testing.HomeTestActivity" />
     <activity android:name=".testing.InputInteractionViewTestActivity" />
+    <activity android:name=".testing.ImageRegionSelectionTestActivity" />
     <activity
       android:name=".testing.NavigationDrawerTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />

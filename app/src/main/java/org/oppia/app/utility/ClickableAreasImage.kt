@@ -1,4 +1,4 @@
-package org.oppia.util.image
+package org.oppia.app.utility
 
 import android.graphics.RectF
 import android.view.View
@@ -10,10 +10,11 @@ import org.oppia.app.model.ImageWithRegions.LabeledRegion
 import kotlin.math.roundToInt
 
 class ClickableAreasImage(
-  private val attacher: PhotoViewAttacher,
+  imageView: ImageView,
   private val overlayView: View,
   private val listener: OnClickableAreaClickedListener
 ) : OnPhotoTapListener {
+  private val attacher: PhotoViewAttacher = PhotoViewAttacher(imageView)
   private var clickableAreas: List<LabeledRegion> = emptyList()
 
   init {
@@ -31,21 +32,19 @@ class ClickableAreasImage(
     val clickableArea = getClickAbleAreas(x, y)
     if (clickableArea.hasRegion()) {
       val imageRect = RectF(
-        getXCoordinate(clickableArea.region.area.lowerRight.x),
-        getYCoordinate(clickableArea.region.area.lowerRight.y),
         getXCoordinate(clickableArea.region.area.upperLeft.x),
-        getYCoordinate(clickableArea.region.area.upperLeft.y)
+        getYCoordinate(clickableArea.region.area.upperLeft.y),
+        getXCoordinate(clickableArea.region.area.lowerRight.x),
+        getYCoordinate(clickableArea.region.area.lowerRight.y)
       )
       val overlayViewParams = FrameLayout.LayoutParams(
         imageRect.width().roundToInt(),
         imageRect.height().roundToInt()
       )
-      overlayView.apply {
-        this.x = imageRect.left
-        this.y = imageRect.top
-        layoutParams = overlayViewParams
-        visibility = View.GONE
-      }
+      overlayView.layoutParams = overlayViewParams
+      overlayView.x = imageRect.left
+      overlayView.y = imageRect.top
+      overlayView.visibility = View.VISIBLE
       listener.onClickableAreaTouched(clickableArea.label)
     } else {
       overlayView.visibility = View.GONE
@@ -54,8 +53,8 @@ class ClickableAreasImage(
 
   private fun getClickAbleAreas(x: Float, y: Float): LabeledRegion {
     for (ca in clickableAreas) {
-      if (isBetween(ca.region.area.lowerRight.x, ca.region.area.upperLeft.x, x)) {
-        if (isBetween(ca.region.area.lowerRight.y, ca.region.area.upperLeft.y, y)) {
+      if (isBetween(ca.region.area.upperLeft.x, ca.region.area.lowerRight.x, x)) {
+        if (isBetween(ca.region.area.upperLeft.y, ca.region.area.lowerRight.y, y)) {
           return ca
         }
       }
@@ -80,7 +79,7 @@ class ClickableAreasImage(
     return (x * rect.height()) + rect.top
   }
 
-  fun setClickableAreas(clickableAreas: List<LabeledRegion>) {
+  public fun setClickableAreas(clickableAreas: List<LabeledRegion>) {
     this.clickableAreas = clickableAreas
   }
 
