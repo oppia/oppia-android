@@ -5,7 +5,7 @@ import org.oppia.app.model.OnboardingFlow
 import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -14,15 +14,20 @@ import javax.inject.Singleton
 class OnboardingFlowController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
   private val dataProviders: DataProviders,
-  private val logger: Logger
+  private val logger: ConsoleLogger
 ) {
-  private val onboardingFlowStore = cacheStoreFactory.create("on_boarding_flow", OnboardingFlow.getDefaultInstance())
+  private val onboardingFlowStore =
+    cacheStoreFactory.create("on_boarding_flow", OnboardingFlow.getDefaultInstance())
 
   init {
     // Prime the cache ahead of time so that any existing history is read prior to any calls to markOnboardingFlowCompleted().
     onboardingFlowStore.primeCacheAsync().invokeOnCompletion {
       it?.let {
-        logger.e("DOMAIN", "Failed to prime cache ahead of LiveData conversion for user onboarding data.", it)
+        logger.e(
+          "DOMAIN",
+          "Failed to prime cache ahead of LiveData conversion for user onboarding data.",
+          it
+        )
       }
     }
   }
@@ -36,7 +41,11 @@ class OnboardingFlowController @Inject constructor(
       it.toBuilder().setAlreadyOnboardedApp(true).build()
     }.invokeOnCompletion {
       it?.let {
-        logger.e("DOMAIN", "Failed when storing that the user already onboarded the app.", it)
+        logger.e(
+          "DOMAIN",
+          "Failed when storing that the user already onboarded the app.",
+          it
+        )
       }
     }
   }

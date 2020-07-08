@@ -1,6 +1,5 @@
 package org.oppia.domain.util
 
-import javax.inject.Inject
 import org.json.JSONArray
 import org.json.JSONObject
 import org.oppia.app.model.AnswerGroup
@@ -20,6 +19,7 @@ import org.oppia.app.model.StringList
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.Voiceover
 import org.oppia.app.model.VoiceoverMapping
+import javax.inject.Inject
 
 /** Utility that helps create a [State] object given its JSON representation. */
 class StateRetriever @Inject constructor(
@@ -231,7 +231,8 @@ class StateRetriever @Inject constructor(
     recordedVoiceovers: JSONObject,
     stateBuilder: State.Builder
   ) {
-    val voiceoverMappingJson = recordedVoiceovers.getJSONObject("voiceovers_mapping")
+    val voiceoverMappingJson = recordedVoiceovers
+      .getJSONObject("voiceovers_mapping")
     voiceoverMappingJson?.let {
       for (key in it.keys()) {
         val voiceoverMapping = VoiceoverMapping.newBuilder()
@@ -307,25 +308,35 @@ class StateRetriever @Inject constructor(
       return InteractionObject.getDefaultInstance()
     }
     return when (interactionId) {
-      "MultipleChoiceInput" -> InteractionObject.newBuilder()
-        .setNonNegativeInt(inputJson.getInt(keyName))
-        .build()
-      "ItemSelectionInput" -> InteractionObject.newBuilder()
-        .setSetOfHtmlString(parseStringList(inputJson.getJSONArray(keyName)))
-        .build()
-      "TextInput" -> InteractionObject.newBuilder()
-        .setNormalizedString(inputJson.getString(keyName))
-        .build()
-      "NumberWithUnits" -> InteractionObject.newBuilder()
-        .setNumberWithUnits(parseNumberWithUnitsObject(inputJson.getJSONObject(keyName)))
-        .build()
-      "NumericInput" -> InteractionObject.newBuilder()
-        .setReal(inputJson.getDouble(keyName))
-        .build()
-      "FractionInput" -> InteractionObject.newBuilder()
-        .setFraction(parseFraction(inputJson.getJSONObject(keyName)))
-        .build()
+      "MultipleChoiceInput" ->
+        InteractionObject.newBuilder()
+          .setNonNegativeInt(inputJson.getInt(keyName))
+          .build()
+      "ItemSelectionInput" ->
+        InteractionObject.newBuilder()
+          .setSetOfHtmlString(parseStringList(inputJson.getJSONArray(keyName)))
+          .build()
+      "TextInput" ->
+        InteractionObject.newBuilder()
+          .setNormalizedString(inputJson.getString(keyName))
+          .build()
+      "NumberWithUnits" ->
+        InteractionObject.newBuilder()
+          .setNumberWithUnits(parseNumberWithUnitsObject(inputJson.getJSONObject(keyName)))
+          .build()
+      "NumericInput" ->
+        InteractionObject.newBuilder()
+          .setReal(inputJson.getDouble(keyName))
+          .build()
+      "FractionInput" ->
+        InteractionObject.newBuilder()
+          .setFraction(parseFraction(inputJson.getJSONObject(keyName)))
+          .build()
       "DragAndDropSortInput" -> createExactInputForDragDropAndSort(inputJson, keyName, ruleType)
+      "ImageClickInput" ->
+        InteractionObject.newBuilder()
+          .setNormalizedString(inputJson.getString(keyName))
+          .build()
       else -> throw IllegalStateException("Encountered unexpected interaction ID: $interactionId")
     }
   }
@@ -344,26 +355,33 @@ class StateRetriever @Inject constructor(
     }
     return when (ruleType) {
       "HasElementXAtPositionY" -> return when (keyName) {
-        "x" -> InteractionObject.newBuilder()
-          .setNormalizedString(inputJson.getString(keyName))
-          .build()
-        "y" -> InteractionObject.newBuilder()
-          .setNonNegativeInt(inputJson.getInt(keyName))
-          .build()
+        "x" ->
+          InteractionObject.newBuilder()
+            .setNormalizedString(inputJson.getString(keyName))
+            .build()
+        "y" ->
+          InteractionObject.newBuilder()
+            .setNonNegativeInt(inputJson.getInt(keyName))
+            .build()
         else -> throw IllegalStateException("Encountered unexpected key name: $keyName")
       }
 
-      "HasElementXBeforeElementY" -> InteractionObject.newBuilder()
-        .setNormalizedString(inputJson.getString(keyName))
-        .build()
-      else -> InteractionObject.newBuilder()
-        .setListOfSetsOfHtmlString(parseListOfSetsOfHtmlStrings(inputJson.getJSONArray(keyName)))
-        .build()
+      "HasElementXBeforeElementY" ->
+        InteractionObject.newBuilder()
+          .setNormalizedString(inputJson.getString(keyName))
+          .build()
+      else ->
+        InteractionObject.newBuilder()
+          .setListOfSetsOfHtmlString(parseListOfSetsOfHtmlStrings(inputJson.getJSONArray(keyName)))
+          .build()
     }
   }
 
-  private fun parseListOfSetsOfHtmlStrings(listOfSetsOfHtmlStringsAnswer: JSONArray): ListOfSetsOfHtmlStrings {
-    val listOfSetsOfHtmlStringsBuilder = ListOfSetsOfHtmlStrings.newBuilder()
+  private fun parseListOfSetsOfHtmlStrings(
+    listOfSetsOfHtmlStringsAnswer: JSONArray
+  ): ListOfSetsOfHtmlStrings {
+    val listOfSetsOfHtmlStringsBuilder =
+      ListOfSetsOfHtmlStrings.newBuilder()
     for (i in 0 until listOfSetsOfHtmlStringsAnswer.length()) {
       listOfSetsOfHtmlStringsBuilder.addSetOfHtmlStrings(
         parseStringList(
@@ -386,8 +404,9 @@ class StateRetriever @Inject constructor(
     val numberWithUnitsBuilder = NumberWithUnits.newBuilder()
     when (numberWithUnitsAnswer.getString("type")) {
       "real" -> numberWithUnitsBuilder.real = numberWithUnitsAnswer.getDouble("real")
-      "fraction" -> numberWithUnitsBuilder.fraction =
-        parseFraction(numberWithUnitsAnswer.getJSONObject("fraction"))
+      "fraction" ->
+        numberWithUnitsBuilder.fraction =
+          parseFraction(numberWithUnitsAnswer.getJSONObject("fraction"))
     }
     val unitsArray = numberWithUnitsAnswer.getJSONArray("units")
     for (i in 0 until unitsArray.length()) {
@@ -418,7 +437,8 @@ class StateRetriever @Inject constructor(
     if (customizationArgsJson == null) {
       return customizationArgsMap
     }
-    val customizationArgsKeys = customizationArgsJson.keys() ?: return customizationArgsMap
+    val customizationArgsKeys =
+      customizationArgsJson.keys() ?: return customizationArgsMap
     val customizationArgsIterator = customizationArgsKeys.iterator()
     while (customizationArgsIterator.hasNext()) {
       val key = customizationArgsIterator.next()
@@ -433,8 +453,9 @@ class StateRetriever @Inject constructor(
   private fun createCustomizationArgValueFromJson(customizationArgValue: Any): InteractionObject {
     val interactionObjectBuilder = InteractionObject.newBuilder()
     when (customizationArgValue) {
-      is String -> return interactionObjectBuilder.setNormalizedString(customizationArgValue)
-        .build()
+      is String ->
+        return interactionObjectBuilder.setNormalizedString(customizationArgValue)
+          .build()
       is Int -> return interactionObjectBuilder.setSignedInt(customizationArgValue).build()
       is Double -> return interactionObjectBuilder.setReal(customizationArgValue).build()
       is Boolean -> return interactionObjectBuilder.setBoolValue(customizationArgValue).build()

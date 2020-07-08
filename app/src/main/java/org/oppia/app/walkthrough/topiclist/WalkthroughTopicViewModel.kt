@@ -10,14 +10,14 @@ import org.oppia.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicHe
 import org.oppia.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicSummaryViewModel
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The ViewModel for [WalkthroughTopicListFragment]. */
 class WalkthroughTopicViewModel @Inject constructor(
   private val fragment: Fragment,
   private val topicListController: TopicListController,
-  private val logger: Logger
+  private val logger: ConsoleLogger
 ) : ViewModel() {
   val walkthroughTopicViewModelLiveData: LiveData<List<WalkthroughTopicItemViewModel>> by lazy {
     Transformations.map(topicListSummaryLiveData, ::processCompletedTopicList)
@@ -49,12 +49,14 @@ class WalkthroughTopicViewModel @Inject constructor(
     )
 
     // Add the rest of the list
-    itemViewModelList.addAll(topicList.topicSummaryList.map { topic ->
-      WalkthroughTopicSummaryViewModel(
-        topic,
-        fragment as TopicSummaryClickListener
-      )
-    })
+    itemViewModelList.addAll(
+      topicList.topicSummaryList.map { topic ->
+        WalkthroughTopicSummaryViewModel(
+          topic,
+          fragment as TopicSummaryClickListener
+        )
+      }
+    )
     return itemViewModelList
   }
 }

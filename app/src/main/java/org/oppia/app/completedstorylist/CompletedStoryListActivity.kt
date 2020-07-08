@@ -8,17 +8,20 @@ import javax.inject.Inject
 
 /** Activity for completed stories. */
 class CompletedStoryListActivity : InjectableAppCompatActivity() {
-  @Inject lateinit var completedStoryListActivityPresenter: CompletedStoryListActivityPresenter
+  @Inject
+  lateinit var completedStoryListActivityPresenter: CompletedStoryListActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    val internalProfileId: Int = intent.getIntExtra(COMPLETED_STORY_LIST_ACTIVITY_PROFILE_ID_KEY, -1)
+    val internalProfileId: Int =
+      intent.getIntExtra(COMPLETED_STORY_LIST_ACTIVITY_PROFILE_ID_KEY, -1)
     completedStoryListActivityPresenter.handleOnCreate(internalProfileId)
   }
 
   companion object {
-    internal const val COMPLETED_STORY_LIST_ACTIVITY_PROFILE_ID_KEY = "CompletedStoryListActivity.profile_id"
+    internal const val COMPLETED_STORY_LIST_ACTIVITY_PROFILE_ID_KEY =
+      "CompletedStoryListActivity.profile_id"
 
     /** Returns a new [Intent] to route to [CompletedStoryListActivity] for a specified profile ID. */
     fun createCompletedStoryListActivityIntent(context: Context, internalProfileId: Int): Intent {

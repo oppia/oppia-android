@@ -11,22 +11,25 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The ViewModel for [ProfileEditActivity]. */
 @ActivityScope
 class ProfileEditViewModel @Inject constructor(
   private val activity: AppCompatActivity,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val profileManagementController: ProfileManagementController
 ) : ObservableViewModel() {
   private lateinit var profileId: ProfileId
 
-  lateinit var profileName : String
+  lateinit var profileName: String
 
   val profile: LiveData<Profile> by lazy {
-    Transformations.map(profileManagementController.getProfile(profileId), ::processGetProfileResult)
+    Transformations.map(
+      profileManagementController.getProfile(profileId),
+      ::processGetProfileResult
+    )
   }
 
   var isAdmin = false

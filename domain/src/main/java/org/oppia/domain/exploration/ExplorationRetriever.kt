@@ -11,6 +11,7 @@ import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_2
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_3
 import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.domain.util.StateRetriever
+import org.oppia.util.logging.ExceptionLogger
 import java.io.IOException
 import javax.inject.Inject
 
@@ -18,6 +19,7 @@ const val TEST_EXPLORATION_ID_5 = "0"
 const val TEST_EXPLORATION_ID_6 = "1"
 const val TEST_EXPLORATION_ID_30 = "2"
 const val TEST_EXPLORATION_ID_7 = "3"
+const val TEST_EXPLORATION_ID_8 = "4"
 
 // TODO(#59): Make this class inaccessible outside of the domain package except for tests. UI code should not be allowed
 //  to depend on this utility.
@@ -25,7 +27,8 @@ const val TEST_EXPLORATION_ID_7 = "3"
 /** Internal class for actually retrieving an exploration object for uses in domain controllers. */
 class ExplorationRetriever @Inject constructor(
   private val jsonAssetRetriever: JsonAssetRetriever,
-  private val stateRetriever: StateRetriever
+  private val stateRetriever: StateRetriever,
+  private val exceptionLogger: ExceptionLogger
 ) {
   // TODO(#169): Force callers of this method on a background thread.
   /** Loads and returns an exploration for the specified exploration ID, or fails. */
@@ -35,6 +38,7 @@ class ExplorationRetriever @Inject constructor(
       TEST_EXPLORATION_ID_6 -> loadExplorationFromAsset("about_oppia.json")
       TEST_EXPLORATION_ID_30 -> loadExplorationFromAsset("prototype_exploration.json")
       TEST_EXPLORATION_ID_7 -> loadExplorationFromAsset("oppia_exploration.json")
+      TEST_EXPLORATION_ID_8 -> loadExplorationFromAsset("drag_and_drop_test_exploration.json")
       FRACTIONS_EXPLORATION_ID_0 -> loadExplorationFromAsset("fractions_exploration0.json")
       FRACTIONS_EXPLORATION_ID_1 -> loadExplorationFromAsset("fractions_exploration1.json")
       RATIOS_EXPLORATION_ID_0 -> loadExplorationFromAsset("ratios_exploration0.json")
@@ -48,7 +52,8 @@ class ExplorationRetriever @Inject constructor(
   // Returns an exploration given an assetName
   private fun loadExplorationFromAsset(assetName: String): Exploration {
     try {
-      val explorationObject = jsonAssetRetriever.loadJsonFromAsset(assetName) ?: return Exploration.getDefaultInstance()
+      val explorationObject =
+        jsonAssetRetriever.loadJsonFromAsset(assetName) ?: return Exploration.getDefaultInstance()
       return Exploration.newBuilder()
         .setId(explorationObject.getString("exploration_id"))
         .setTitle(explorationObject.getString("title"))
@@ -58,6 +63,7 @@ class ExplorationRetriever @Inject constructor(
         .putAllStates(createStatesFromJsonObject(explorationObject.getJSONObject("states")))
         .build()
     } catch (e: IOException) {
+      exceptionLogger.logException(e)
       throw(Throwable("Failed to load and parse the json asset file. %s", e))
     }
   }

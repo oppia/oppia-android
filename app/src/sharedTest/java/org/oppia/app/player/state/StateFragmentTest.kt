@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -13,20 +14,27 @@ import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewInteraction
+import androidx.test.espresso.action.GeneralLocation
+import androidx.test.espresso.action.Press
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -42,11 +50,18 @@ import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.app.utility.ChildViewCoordinatesProvider
+import org.oppia.app.utility.CustomGeneralLocation
+import org.oppia.app.utility.DragViewAction
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.app.utility.RecyclerViewCoordinatesProvider
 import org.oppia.domain.exploration.TEST_EXPLORATION_ID_30
 import org.oppia.domain.exploration.TEST_EXPLORATION_ID_5
+import org.oppia.domain.exploration.TEST_EXPLORATION_ID_8
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -62,8 +77,11 @@ import javax.inject.Singleton
 /** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)
 class StateFragmentTest {
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var context: Context
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var context: Context
 
   private val internalProfileId: Int = 1
 
@@ -72,6 +90,7 @@ class StateFragmentTest {
     Intents.init()
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
+    FirebaseApp.initializeApp(context)
   }
 
   @After
@@ -91,47 +110,105 @@ class StateFragmentTest {
   //  9. Testing all possible invalid/error input cases for each interaction.
   //  10. Testing interactions with custom Oppia tags (including images) render correctly (when manually inspected) and are correctly functional.
   //  11. Update the tests to work properly on Robolectric (requires idling resource + replacing the dispatchers to leverage a coordinated test dispatcher library).
+  //  12. Add tests for hints & solutions.
+  //  13. Add tests for audio states.
   // TODO(#56): Add support for testing that previous/next button states are properly retained on config changes.
 
   @Test
-  fun testStateFragment_loadExploration_explorationLoads() {
+  fun testStateFragment_loadExp_explorationLoads() {
     launchForExploration(TEST_EXPLORATION_ID_30).use {
       startPlayingExploration()
-
       // Due to the exploration activity loading, the play button should no longer be visible.
       onView(withId(R.id.play_test_exploration_button)).check(matches(not(isDisplayed())))
     }
   }
 
   @Test
-  fun testStateFragment_loadExploration_explorationHasContinueButton() {
+  fun testStateFragment_loadExp_explorationLoads_changeConfiguration_buttonIsNotVisible() {
     launchForExploration(TEST_EXPLORATION_ID_30).use {
       startPlayingExploration()
+      onView(isRoot()).perform(orientationLandscape())
+      // Due to the exploration activity loading, the play button should no longer be visible.
+      onView(withId(R.id.play_test_exploration_button)).check(matches(not(isDisplayed())))
+    }
+  }
 
+  @Test
+  fun testStateFragment_loadExp_explorationHasContinueButton() {
+    launchForExploration(TEST_EXPLORATION_ID_30).use {
+      startPlayingExploration()
       onView(withId(R.id.continue_button)).check(matches(isDisplayed()))
     }
   }
 
   @Test
-  fun testStateFragment_loadExploration_secondState_hasSubmitButton() {
+  fun testStateFragment_loadExp_changeConfiguration_explorationHasContinueButton() {
     launchForExploration(TEST_EXPLORATION_ID_30).use {
       startPlayingExploration()
-      onView(withId(R.id.continue_button)).perform(click())
-
-      onView(withId(R.id.submit_answer_button)).check(matches(withText(R.string.state_submit_button)))
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.continue_button)).check(matches(isDisplayed()))
     }
   }
 
   @Test
-  fun testStateFragment_loadExploration_secondState_submitAnswer_submitChangesToContinueButton() {
+  fun testStateFragment_loadExp_secondState_hasSubmitButton() {
     launchForExploration(TEST_EXPLORATION_ID_30).use {
       startPlayingExploration()
       onView(withId(R.id.continue_button)).perform(click())
+      onView(withId(R.id.submit_answer_button)).check(
+        matches(withText(R.string.state_submit_button))
+      )
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+    }
+  }
 
-      onView(withId(R.id.fraction_input_interaction_view)).perform(typeText("1/2"))
+  @Test
+  fun testStateFragment_loadExp_changeConfiguration_secondState_hasSubmitButton() {
+    launchForExploration(TEST_EXPLORATION_ID_30).use {
+      startPlayingExploration()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.continue_button)).perform(click())
+      onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
+      onView(withId(R.id.submit_answer_button)).check(
+        matches(withText(R.string.state_submit_button))
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_secondState_submitAnswer_submitChangesToContinueButton() {
+    launchForExploration(TEST_EXPLORATION_ID_30).use {
+      startPlayingExploration()
+      onView(withId(R.id.continue_button)).perform(click())
+      onView(withId(R.id.fraction_input_interaction_view)).perform(
+        typeText("1/2"),
+        closeSoftKeyboard()
+      )
+      onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
+      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
       onView(withId(R.id.submit_answer_button)).perform(click())
+      onView(withId(R.id.continue_navigation_button)).check(
+        matches(withText(R.string.state_continue_button))
+      )
+    }
+  }
 
-      onView(withId(R.id.continue_navigation_button)).check(matches(withText(R.string.state_continue_button)))
+  @Test
+  fun testStateFragment_loadExp_changeConfiguration_secondState_submitAnswer_submitChangesToContinueButton() { // ktlint-disable max-line-length
+    launchForExploration(TEST_EXPLORATION_ID_30).use {
+      startPlayingExploration()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(withId(R.id.continue_button)).perform(click())
+      onView(withId(R.id.fraction_input_interaction_view)).perform(
+        typeText("1/2"),
+        closeSoftKeyboard()
+      )
+      onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
+      onView(withId(R.id.submit_answer_button)).perform(click())
+      onView(withId(R.id.continue_navigation_button)).check(
+        matches(withText(R.string.state_continue_button))
+      )
     }
   }
 
@@ -142,12 +219,37 @@ class StateFragmentTest {
       onView(withId(R.id.continue_button)).perform(click())
 
       // Attempt to submit an invalid answer.
-      onView(withId(R.id.fraction_input_interaction_view)).perform(typeText("1/"))
+      onView(withId(R.id.fraction_input_interaction_view)).perform(
+        typeText("1/"),
+        closeSoftKeyboard()
+      )
       onView(withId(R.id.submit_answer_button)).perform(click())
 
       // The submission button should now be disabled and there should be an error.
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())));
-      onView(withId(R.id.fraction_input_error)).check(matches(isDisplayed()));
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+      onView(withId(R.id.fraction_input_error)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_changeConfiguration_secondState_submitInvalidAnswer_disablesSubmitAndShowsError() { // ktlint-disable max-line-length
+    launchForExploration(TEST_EXPLORATION_ID_30).use {
+      startPlayingExploration()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.continue_button)).perform(click())
+
+      // Attempt to submit an invalid answer.
+      onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(withId(R.id.fraction_input_interaction_view)).perform(
+        typeText("1/"),
+        closeSoftKeyboard()
+      )
+      onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
+      onView(withId(R.id.submit_answer_button)).perform(click())
+
+      // The submission button should now be disabled and there should be an error.
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+      onView(withId(R.id.fraction_input_error)).check(matches(isDisplayed()))
     }
   }
 
@@ -156,19 +258,51 @@ class StateFragmentTest {
     launchForExploration(TEST_EXPLORATION_ID_30).use {
       startPlayingExploration()
       onView(withId(R.id.continue_button)).perform(click())
-      onView(withId(R.id.fraction_input_interaction_view)).perform(typeText("1/"))
+      onView(withId(R.id.fraction_input_interaction_view)).perform(
+        typeText("1/"),
+        closeSoftKeyboard()
+      )
+      onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
       onView(withId(R.id.submit_answer_button)).perform(click())
 
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
       // Add another '2' to change the pending input text.
-      onView(withId(R.id.fraction_input_interaction_view)).perform(typeText("2"))
+      onView(withId(R.id.fraction_input_interaction_view)).perform(
+        typeText("2"),
+        closeSoftKeyboard()
+      )
 
       // The submit button should be re-enabled since the text view changed.
-      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()));
+      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
     }
   }
 
   @Test
-  fun testStateFragment_loadExploration_firstState_previousAndNextButtonIsNotDisplayed() {
+  fun testStateFragment_loadExp_changeConfiguration_secondState_invalidAnswer_updated_reenabledSubmitButton() { // ktlint-disable max-line-length
+    launchForExploration(TEST_EXPLORATION_ID_30).use {
+      startPlayingExploration()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.continue_button)).perform(click())
+      onView(withId(R.id.fraction_input_interaction_view)).perform(
+        typeText("1/"),
+        closeSoftKeyboard()
+      )
+      onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
+      onView(withId(R.id.submit_answer_button)).perform(click())
+
+      // Add another '2' to change the pending input text.
+      onView(withId(R.id.fraction_input_interaction_view)).perform(
+        typeText("2"),
+        closeSoftKeyboard()
+      )
+
+      // The submit button should be re-enabled since the text view changed.
+      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_firstState_previousAndNextButtonIsNotDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_30).use {
       startPlayingExploration()
 
@@ -178,22 +312,156 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExploration_submitAnswer_clickContinueButton_previousButtonIsDisplayed() {
+  fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_worksCorrectly() {
+    launchForExploration(TEST_EXPLORATION_ID_8).use {
+      startPlayingExploration()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_content_group_item
+        )
+      ).perform(click())
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_item_recyclerview
+        )
+      ).check(matches(hasChildCount(2)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_invalidAnswer_correctItemCount() {
+    launchForExploration(TEST_EXPLORATION_ID_8).use {
+      startPlayingExploration()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_content_group_item
+        )
+      ).perform(click())
+      onView(withId(R.id.submit_answer_button)).perform(click())
+      onView(withId(R.id.submitted_answer_recycler_view)).check(matches(hasChildCount(3)))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.submitted_answer_recycler_view,
+          position = 0,
+          targetViewId = R.id.submitted_html_answer_recycler_view
+        )
+      ).check(matches(hasChildCount(2)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_dragItem_worksCorrectly() {
+    launchForExploration(TEST_EXPLORATION_ID_8).use {
+      startPlayingExploration()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_content_group_item
+        )
+      ).perform(click())
+      onView(withId(R.id.drag_drop_interaction_recycler_view)).perform(
+        DragViewAction(
+          RecyclerViewCoordinatesProvider(
+            0,
+            ChildViewCoordinatesProvider(
+              R.id.drag_drop_item_container,
+              GeneralLocation.CENTER
+            )
+          ),
+          RecyclerViewCoordinatesProvider(2, CustomGeneralLocation.UNDER_RIGHT),
+          Press.FINGER
+        )
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 2,
+          targetViewId = R.id.drag_drop_content_text_view
+        )
+      ).check(matches(withText("a camera at the store")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_unlinkFirstItem_worksCorrectly() {
+    launchForExploration(TEST_EXPLORATION_ID_8).use {
+      startPlayingExploration()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_content_group_item
+        )
+      ).perform(click())
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_content_unlink_items
+        )
+      ).perform(click())
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_item_recyclerview
+        )
+      ).check(matches(hasChildCount(1)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_changeConfiguration_firstState_previousAndNextButtonIsNotDisplayed() { // ktlint-disable max-line-length
+    launchForExploration(TEST_EXPLORATION_ID_30).use {
+      startPlayingExploration()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.previous_state_navigation_button)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.next_state_navigation_button)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_submitAnswer_clickContinueButton_previousButtonIsDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_30).use {
       startPlayingExploration()
 
       onView(withId(R.id.continue_button)).perform(click())
 
+      onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(withId(R.id.previous_state_navigation_button)).check(matches(isDisplayed()))
     }
   }
 
   @Test
-  fun testStateFragment_loadExploration_submitAnswer_clickContinueThenPrevious_onlyNextButtonIsShown() {
+  fun testStateFragment_loadExp_changeConfiguration_submitAnswer_clickContinueButton_previousButtonIsDisplayed() { // ktlint-disable max-line-length
+    launchForExploration(TEST_EXPLORATION_ID_30).use {
+      startPlayingExploration()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.continue_button)).perform(click())
+
+      onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
+      onView(withId(R.id.previous_state_navigation_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_submitAnswer_clickContinueThenPrevious_onlyNextButtonIsShown() {
     launchForExploration(TEST_EXPLORATION_ID_30).use {
       startPlayingExploration()
       onView(withId(R.id.continue_button)).perform(click())
 
+      onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(withId(R.id.previous_state_navigation_button)).perform(click())
 
       // Since we navigated back to the first state, only the next navigation button is visible.
@@ -203,11 +471,28 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExploration_submitAnswer_clickContinueThenPreviousThenNext_prevAndSubmitShown() {
+  fun testStateFragment_loadExp_changeConfiguration_submitAnswer_clickContinueThenPrevious_onlyNextButtonIsShown() { // ktlint-disable max-line-length
+    launchForExploration(TEST_EXPLORATION_ID_30).use {
+      startPlayingExploration()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.continue_button)).perform(click())
+
+      onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
+      onView(withId(R.id.previous_state_navigation_button)).perform(click())
+
+      // Since we navigated back to the first state, only the next navigation button is visible.
+      onView(withId(R.id.previous_state_navigation_button)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.next_state_navigation_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_submitAnswer_clickContinueThenPreviousThenNext_prevAndSubmitShown() { // ktlint-disable max-line-length
     launchForExploration(TEST_EXPLORATION_ID_30).use {
       startPlayingExploration()
       onView(withId(R.id.continue_button)).perform(click())
 
+      onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(withId(R.id.previous_state_navigation_button)).perform(click())
       onView(withId(R.id.next_state_navigation_button)).perform(click())
 
@@ -219,19 +504,65 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExploration_continueToEndExploration_hasReturnToTopicButton() {
+  fun testStateFragment_loadExp_changeConfiguration_submitAnswer_clickContinueThenPreviousThenNext_prevAndSubmitShown() { // ktlint-disable max-line-length
+    launchForExploration(TEST_EXPLORATION_ID_30).use {
+      startPlayingExploration()
+      onView(withId(R.id.continue_button)).perform(click())
+
+      onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(withId(R.id.previous_state_navigation_button)).perform(click())
+      onView(withId(R.id.next_state_navigation_button)).perform(click())
+
+      // Navigating back to the second state should show the previous & submit buttons, but not the next button.
+      onView(withId(R.id.previous_state_navigation_button)).check(matches(isDisplayed()))
+      onView(withId(R.id.submit_answer_button)).check(matches(isDisplayed()))
+      onView(withId(R.id.next_state_navigation_button)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_continueToEndExploration_hasReturnToTopicButton() {
     launchForExploration(TEST_EXPLORATION_ID_30).use {
       startPlayingExploration()
 
       playThroughPrototypeExploration()
 
-      // Seventh state: end exploration.
-      onView(withId(R.id.return_to_topic_button)).check(matches(withText(R.string.state_end_exploration_button)))
+      // Ninth state: end exploration.
+      onView(withId(R.id.return_to_topic_button)).check(
+        matches(withText(R.string.state_end_exploration_button))
+      )
     }
   }
 
   @Test
-  fun testStateFragment_loadExploration_continueToEndExploration_clickReturnToTopic_destroysActivity() {
+  fun testStateFragment_loadExp_changeConfiguration_continueToEndExploration_hasReturnToTopicButton() { // ktlint-disable max-line-length
+    launchForExploration(TEST_EXPLORATION_ID_30).use {
+      startPlayingExploration()
+
+      playThroughPrototypeExploration()
+
+      // Ninth state: end exploration.
+      onView(withId(R.id.return_to_topic_button)).check(
+        matches(withText(R.string.state_end_exploration_button))
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_continueToEndExploration_clickReturnToTopic_destroysActivity() {
+    launchForExploration(TEST_EXPLORATION_ID_30).use {
+      startPlayingExploration()
+      playThroughPrototypeExploration()
+
+      onView(withId(R.id.return_to_topic_button)).perform(click())
+
+      // Due to the exploration activity finishing, the play button should be visible again.
+      onView(withId(R.id.play_test_exploration_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_changeConfiguration_continueToEndExploration_clickReturnToTopic_destroysActivity() { // ktlint-disable max-line-length
     launchForExploration(TEST_EXPLORATION_ID_30).use {
       startPlayingExploration()
       playThroughPrototypeExploration()
@@ -249,9 +580,31 @@ class StateFragmentTest {
       startPlayingExploration()
 
       val htmlResult =
-        "Hi, welcome to Oppia! is a tool that helps you create interactive learning activities that can be " +
-            "continually improved over time.\n\nIncidentally, do you know where the name 'Oppia' comes from?"
-      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(matches(withText(htmlResult)))
+        "Hi, welcome to Oppia! is a tool that helps you create interactive learning " +
+          "activities that can be continually improved over time.\n\nIncidentally, do you " +
+          "know where the name 'Oppia' comes from?"
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(
+        matches(
+          withText(htmlResult)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testContentCard_forDemoExploration_changeConfiguration_withCustomOppiaTags_displaysParsedHtml() { // ktlint-disable max-line-length
+    launchForExploration(TEST_EXPLORATION_ID_5).use {
+      startPlayingExploration()
+
+      val htmlResult =
+        "Hi, welcome to Oppia! is a tool that helps you create interactive learning activities " +
+          "that can be continually improved over time.\n\nIncidentally, do you know where " +
+          "the name 'Oppia' comes from?"
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(
+        matches(
+          withText(htmlResult)
+        )
+      )
     }
   }
 
@@ -282,48 +635,130 @@ class StateFragmentTest {
     onView(withId(R.id.continue_button)).perform(click())
 
     // Second state: Fraction input. Correct answer: 1/2.
-    onView(withId(R.id.fraction_input_interaction_view)).perform(typeText("1/2"))
+    onView(withId(R.id.fraction_input_interaction_view)).perform(
+      typeText("1/2"),
+      closeSoftKeyboard()
+    )
+    onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
     onView(withId(R.id.submit_answer_button)).perform(click())
     onView(withId(R.id.continue_navigation_button)).perform(click())
 
     // Third state: Multiple choice. Correct answer: Eagle.
-    onView(atPositionOnView(
-      recyclerViewId = R.id.selection_interaction_recyclerview,
-      position = 2,
-      targetViewId = R.id.multiple_choice_radio_button)).perform(click())
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_interaction_recyclerview,
+        position = 2,
+        targetViewId = R.id.multiple_choice_radio_button
+      )
+    ).perform(click())
     onView(withId(R.id.continue_navigation_button)).perform(click())
 
     // Fourth state: Item selection (radio buttons). Correct answer: Green.
-    onView(atPositionOnView(
-      recyclerViewId = R.id.selection_interaction_recyclerview,
-      position = 0,
-      targetViewId = R.id.multiple_choice_radio_button)).perform(click())
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_interaction_recyclerview,
+        position = 0,
+        targetViewId = R.id.multiple_choice_radio_button
+      )
+    ).perform(click())
     onView(withId(R.id.continue_navigation_button)).perform(click())
 
     // Fourth state: Item selection (checkboxes). Correct answer: {Red, Green, Blue}.
-    onView(atPositionOnView(
-      recyclerViewId = R.id.selection_interaction_recyclerview,
-      position = 0,
-      targetViewId = R.id.item_selection_checkbox)).perform(click())
-    onView(atPositionOnView(
-      recyclerViewId = R.id.selection_interaction_recyclerview,
-      position = 2,
-      targetViewId = R.id.item_selection_checkbox)).perform(click())
-    onView(atPositionOnView(
-      recyclerViewId = R.id.selection_interaction_recyclerview,
-      position = 3,
-      targetViewId = R.id.item_selection_checkbox)).perform(click())
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_interaction_recyclerview,
+        position = 0,
+        targetViewId = R.id.item_selection_checkbox
+      )
+    ).perform(click())
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_interaction_recyclerview,
+        position = 2,
+        targetViewId = R.id.item_selection_checkbox
+      )
+    ).perform(click())
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_interaction_recyclerview,
+        position = 3,
+        targetViewId = R.id.item_selection_checkbox
+      )
+    ).perform(click())
+    onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
     onView(withId(R.id.submit_answer_button)).perform(click())
     onView(withId(R.id.continue_navigation_button)).perform(click())
 
     // Fifth state: Numeric input. Correct answer: 121.
-    onView(withId(R.id.numeric_input_interaction_view)).perform(typeText("121"))
+    onView(withId(R.id.numeric_input_interaction_view)).perform(
+      typeText("121"),
+      closeSoftKeyboard()
+    )
     onView(withId(R.id.submit_answer_button)).perform(click())
     onView(withId(R.id.continue_navigation_button)).perform(click())
 
     // Sixth state: Text input. Correct answer: finnish.
-    onView(withId(R.id.text_input_interaction_view)).perform(typeText("finnish"))
+    onView(withId(R.id.text_input_interaction_view)).perform(
+      typeText("finnish"),
+      closeSoftKeyboard()
+    )
     onView(withId(R.id.submit_answer_button)).perform(click())
+    onView(withId(R.id.continue_navigation_button)).perform(click())
+
+    // Seventh state: Drag Drop Sort. Correct answer: Move 1st item to 3rd position.
+    onView(withId(R.id.drag_drop_interaction_recycler_view)).perform(
+      DragViewAction(
+        RecyclerViewCoordinatesProvider(
+          0,
+          ChildViewCoordinatesProvider(
+            R.id.drag_drop_item_container,
+            GeneralLocation.CENTER
+          )
+        ),
+        RecyclerViewCoordinatesProvider(2, CustomGeneralLocation.UNDER_RIGHT),
+        Press.FINGER
+      )
+    )
+    onView(withId(R.id.submit_answer_button)).perform(click())
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.submitted_answer_recycler_view,
+        position = 0,
+        targetViewId = R.id.submitted_answer_content_text_view
+      )
+    ).check(matches(withText("3/5")))
+    onView(withId(R.id.continue_navigation_button)).perform(click())
+
+    // Eighth state: Drag Drop Sort with grouping. Correct answer: Merge First Two.
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+        position = 1,
+        targetViewId = R.id.drag_drop_content_group_item
+      )
+    ).perform(click())
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+        position = 1,
+        targetViewId = R.id.drag_drop_content_unlink_items
+      )
+    ).perform(click())
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+        position = 0,
+        targetViewId = R.id.drag_drop_content_group_item
+      )
+    ).perform(click())
+    onView(withId(R.id.submit_answer_button)).perform(click())
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.submitted_answer_recycler_view,
+        position = 0,
+        targetViewId = R.id.submitted_answer_content_text_view
+      )
+    ).check(matches(withText("0.6")))
     onView(withId(R.id.continue_navigation_button)).perform(click())
   }
 
@@ -381,7 +816,6 @@ class StateFragmentTest {
     }
   }
 
-
   @Module
   class TestModule {
     @Provides
@@ -397,9 +831,8 @@ class StateFragmentTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@BlockingDispatcher blockingDispatcher: CoroutineDispatcher): CoroutineDispatcher {
-      return blockingDispatcher
-    }
+    fun provideBackgroundDispatcher(@BlockingDispatcher blockingDispatcher: CoroutineDispatcher):
+      CoroutineDispatcher { return blockingDispatcher }
 
     @Singleton
     @Provides
@@ -424,7 +857,7 @@ class StateFragmentTest {
   }
 
   @Singleton
-  @Component(modules = [TestModule::class])
+  @Component(modules = [TestModule::class, TestLogReportingModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

@@ -9,9 +9,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
-import javax.inject.Qualifier
-import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -32,8 +29,13 @@ import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
+import javax.inject.Inject
+import javax.inject.Qualifier
+import javax.inject.Singleton
 
 const val DRAG_DROP_TEST_EXPLORATION_NAME = "drag_and_drop_test_exploration.json"
+const val IMAGE_REGION_SELECTION_TEST_EXPLORATION_NAME =
+  "image_region_selection_test_exploration.json"
 
 /** Tests for [StateRetriever]. */
 @RunWith(AndroidJUnit4::class)
@@ -53,7 +55,10 @@ class StateRetrieverTest {
 
   @Test
   fun testParseState_withDragAndDropInteraction_parsesRuleWithIsEqualToOrderingRuleSpec() {
-    val state = createStateFromJson("DragDropSortInput", DRAG_DROP_TEST_EXPLORATION_NAME)
+    val state = createStateFromJson(
+      "DragDropSortInput",
+      DRAG_DROP_TEST_EXPLORATION_NAME
+    )
     val ruleSpecMap = state.interaction.answerGroupsList
       .flatMap(AnswerGroup::getRuleSpecsList)
       .associateBy(RuleSpec::getRuleType)
@@ -62,7 +67,10 @@ class StateRetrieverTest {
 
   @Test
   fun testParseState_withDragAndDropInteraction_parsesRuleWithIsEqualToOrderingWithValueAtX() {
-    val state = createStateFromJson("DragDropSortInput", DRAG_DROP_TEST_EXPLORATION_NAME)
+    val state = createStateFromJson(
+      "DragDropSortInput",
+      DRAG_DROP_TEST_EXPLORATION_NAME
+    )
     val ruleSpecMap = lookUpRuleSpec(state, "IsEqualToOrdering")
 
     val listOfSetsOfHtmlStrings = ListOfSetsOfHtmlStrings.newBuilder()
@@ -83,7 +91,10 @@ class StateRetrieverTest {
 
   @Test
   fun testParseState_withDragAndDropInteraction_parsesRuleWithHasElementXAtPositionYRuleSpec() {
-    val state = createStateFromJson("DragDropSortInput", DRAG_DROP_TEST_EXPLORATION_NAME)
+    val state = createStateFromJson(
+      "DragDropSortInput",
+      DRAG_DROP_TEST_EXPLORATION_NAME
+    )
     val ruleSpecMap = state.interaction.answerGroupsList
       .flatMap(AnswerGroup::getRuleSpecsList)
       .associateBy(RuleSpec::getRuleType)
@@ -92,7 +103,10 @@ class StateRetrieverTest {
 
   @Test
   fun testParseState_withDragAndDropInteraction_parsesRuleWithHasElementXAtPositionYWithValueAtY() {
-    val state = createStateFromJson("DragDropSortInput", DRAG_DROP_TEST_EXPLORATION_NAME)
+    val state = createStateFromJson(
+      "DragDropSortInput",
+      DRAG_DROP_TEST_EXPLORATION_NAME
+    )
     val ruleSpecMap = lookUpRuleSpec(state, "HasElementXAtPositionY")
 
     val dragDropInputHasElementXAtPositionYValue =
@@ -103,7 +117,10 @@ class StateRetrieverTest {
 
   @Test
   fun testParseState_withDragAndDropInteraction_parsesRuleWithHasElementXAtPositionYWithValueAtX() {
-    val state = createStateFromJson("DragDropSortInput", DRAG_DROP_TEST_EXPLORATION_NAME)
+    val state = createStateFromJson(
+      "DragDropSortInput",
+      DRAG_DROP_TEST_EXPLORATION_NAME
+    )
     val ruleSpecMap = lookUpRuleSpec(state, "HasElementXAtPositionY")
 
     val dragDropInputHasElementXAtPositionYValue =
@@ -113,8 +130,11 @@ class StateRetrieverTest {
   }
 
   @Test
-  fun testParseState_withDragAndDropInteraction_parsesRuleWithIsEqualToOrderingWithOneItemAtIncorrectPositionRuleSpec() {
-    val state = createStateFromJson("DragDropSortInput", DRAG_DROP_TEST_EXPLORATION_NAME)
+  fun testParseState_withDragAndDropInteraction_parsesRuleWithIsEqualToOrderingWithOneItemAtIncorrectPositionRuleSpec() { // ktlint-disable max-line-length
+    val state = createStateFromJson(
+      "DragDropSortInput",
+      DRAG_DROP_TEST_EXPLORATION_NAME
+    )
     val ruleSpecMap = state.interaction.answerGroupsList
       .flatMap(AnswerGroup::getRuleSpecsList)
       .associateBy(RuleSpec::getRuleType)
@@ -122,9 +142,15 @@ class StateRetrieverTest {
   }
 
   @Test
-  fun testParseState_withDragAndDropInteraction_parsesRuleWithIsEqualToOrderingWithOneItemAtIncorrectPositionWithValueAtX() {
-    val state = createStateFromJson("DragDropSortInput", DRAG_DROP_TEST_EXPLORATION_NAME)
-    val ruleSpecMap = lookUpRuleSpec(state, "IsEqualToOrderingWithOneItemAtIncorrectPosition")
+  fun testParseState_withDragAndDropInteraction_parsesRuleWithIsEqualToOrderingWithOneItemAtIncorrectPositionWithValueAtX() { // ktlint-disable max-line-length
+    val state = createStateFromJson(
+      "DragDropSortInput",
+      DRAG_DROP_TEST_EXPLORATION_NAME
+    )
+    val ruleSpecMap = lookUpRuleSpec(
+      state,
+      "IsEqualToOrderingWithOneItemAtIncorrectPosition"
+    )
 
     val listOfSetsOfHtmlStrings = ListOfSetsOfHtmlStrings.newBuilder()
       .addAllSetOfHtmlStrings(
@@ -140,12 +166,17 @@ class StateRetrieverTest {
     val dragDropInputIsEqualToOrderingWithOneItemAtIncorrectPositionValue =
       InteractionObject.newBuilder().setListOfSetsOfHtmlString(listOfSetsOfHtmlStrings).build()
 
-    assertThat(ruleSpecMap.inputMap["x"]).isEqualTo(dragDropInputIsEqualToOrderingWithOneItemAtIncorrectPositionValue)
+    assertThat(ruleSpecMap.inputMap["x"]).isEqualTo(
+      dragDropInputIsEqualToOrderingWithOneItemAtIncorrectPositionValue
+    )
   }
 
   @Test
   fun testParseState_withDragAndDropInteraction_parsesRuleWithHasElementXBeforeElementYRuleSpec() {
-    val state = createStateFromJson("DragDropSortInput", DRAG_DROP_TEST_EXPLORATION_NAME)
+    val state = createStateFromJson(
+      "DragDropSortInput",
+      DRAG_DROP_TEST_EXPLORATION_NAME
+    )
     val ruleSpecMap = state.interaction.answerGroupsList
       .flatMap(AnswerGroup::getRuleSpecsList)
       .associateBy(RuleSpec::getRuleType)
@@ -153,8 +184,11 @@ class StateRetrieverTest {
   }
 
   @Test
-  fun testParseState_withDragAndDropInteraction_parsesRuleWithHasElementXBeforeElementWithValueAtX() {
-    val state = createStateFromJson("DragDropSortInput", DRAG_DROP_TEST_EXPLORATION_NAME)
+  fun testParseState_withDragAndDropInteraction_parsesRuleWithHasElementXBeforeElementWithValueAtX() { // ktlint-disable max-line-length
+    val state = createStateFromJson(
+      "DragDropSortInput",
+      DRAG_DROP_TEST_EXPLORATION_NAME
+    )
     val ruleSpecMap = lookUpRuleSpec(state, "HasElementXBeforeElementY")
 
     val dragDropInputHasElementXAtPositionYValue =
@@ -164,14 +198,45 @@ class StateRetrieverTest {
   }
 
   @Test
-  fun testParseState_withDragAndDropInteraction_parsesRuleWithHasElementXBeforeElementWithValueAtY() {
-    val state = createStateFromJson("DragDropSortInput", DRAG_DROP_TEST_EXPLORATION_NAME)
+  fun testParseState_withDragAndDropInteraction_parsesRuleWithHasElementXBeforeElementWithValueAtY() { // ktlint-disable max-line-length
+    val state = createStateFromJson(
+      "DragDropSortInput",
+      DRAG_DROP_TEST_EXPLORATION_NAME
+    )
     val ruleSpecMap = lookUpRuleSpec(state, "HasElementXBeforeElementY")
 
     val dragDropInputHasElementXAtPositionYValue =
       InteractionObject.newBuilder().setNormalizedString("<p>to photograph the parade.</p>").build()
 
     assertThat(ruleSpecMap.inputMap["y"]).isEqualTo(dragDropInputHasElementXAtPositionYValue)
+  }
+
+  @Test
+  fun testParseState_withImageRegionSelectionInteraction_parsesRuleIsInRegionRuleSpec() {
+    val state = createStateFromJson(
+      "ImageClickInput",
+      IMAGE_REGION_SELECTION_TEST_EXPLORATION_NAME
+    )
+    val ruleSpecMap = state.interaction.answerGroupsList
+      .flatMap(AnswerGroup::getRuleSpecsList)
+      .associateBy(RuleSpec::getRuleType)
+    assertThat(ruleSpecMap).containsKey("IsInRegion")
+  }
+
+  @Test
+  fun testParseState_withImageRegionSelectioInteraction_parsesRuleWithIsInRegionWithValueAtX() {
+    val state = createStateFromJson(
+      "ImageClickInput",
+      IMAGE_REGION_SELECTION_TEST_EXPLORATION_NAME
+    )
+    val ruleSpecMap = lookUpRuleSpec(state, "IsInRegion")
+
+    val regionString = "Region1"
+
+    val imageRegionSelectionIsInRegionValue =
+      InteractionObject.newBuilder().setNormalizedString(regionString).build()
+
+    assertThat(ruleSpecMap.inputMap["x"]).isEqualTo(imageRegionSelectionIsInRegionValue)
   }
 
   private fun lookUpRuleSpec(state: State, ruleSpecName: String): RuleSpec {
@@ -221,14 +286,18 @@ class StateRetrieverTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
     @Singleton
     @Provides
     @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBlockingDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 

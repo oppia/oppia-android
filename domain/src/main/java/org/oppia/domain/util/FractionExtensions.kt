@@ -20,7 +20,8 @@ fun Fraction.toFloat(): Float {
  */
 fun Fraction.toSimplestForm(): Fraction {
   val commonDenominator = gcd(numerator, denominator)
-  return toBuilder().setNumerator(numerator / commonDenominator).setDenominator(denominator / commonDenominator).build()
+  return toBuilder().setNumerator(numerator / commonDenominator)
+    .setDenominator(denominator / commonDenominator).build()
 }
 
 /** Returns the greatest common divisor between two integers. */

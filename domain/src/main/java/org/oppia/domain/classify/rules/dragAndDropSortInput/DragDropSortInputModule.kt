@@ -9,7 +9,7 @@ import org.oppia.domain.classify.rules.DragDropSortInputRules
 
 /** Module that binds rule classifiers corresponding to the drag drop sort input interaction. */
 @Module
-class DragDropSortInputModule{
+class DragDropSortInputModule {
   @Provides
   @IntoMap
   @StringKey("HasElementXAtPositionY")
@@ -18,5 +18,27 @@ class DragDropSortInputModule{
     classifierProvider: DragDropSortInputHasElementXAtPositionYClassifierProvider
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
-}
+  @Provides
+  @IntoMap
+  @StringKey("IsEqualToOrdering")
+  @DragDropSortInputRules
+  internal fun provideDragDropSortInputIsEqualToOrderingRuleClassifier(
+    classifierProvider: DragDropSortInputIsEqualToOrderingClassifierProvider
+  ): RuleClassifier = classifierProvider.createRuleClassifier()
 
+  @Provides
+  @IntoMap
+  @StringKey("HasElementXBeforeElementY")
+  @DragDropSortInputRules
+  internal fun provideDragDropSortInputHasElementXBeforeElementYRuleClassifier(
+    classifierProvider: DragDropSortInputHasElementXBeforeElementYClassifierProvider
+  ): RuleClassifier = classifierProvider.createRuleClassifier()
+
+  @Provides
+  @IntoMap
+  @StringKey("IsEqualToOrderingWithOneItemIncorrect")
+  @DragDropSortInputRules
+  internal fun provideDragDropSortInputIsEqualToOrderingWithOneItemIncorrectRuleClassifier(
+    classifierProvider: DragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProvider
+  ): RuleClassifier = classifierProvider.createRuleClassifier()
+}

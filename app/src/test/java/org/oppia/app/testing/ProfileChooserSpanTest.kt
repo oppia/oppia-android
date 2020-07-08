@@ -4,9 +4,11 @@ import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.google.firebase.FirebaseApp
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
 import org.junit.Before
@@ -29,6 +31,7 @@ class ProfileChooserSpanTest {
   @ExperimentalCoroutinesApi
   fun setUp() {
     Intents.init()
+    FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
   }
 
   @After
@@ -36,19 +39,24 @@ class ProfileChooserSpanTest {
     Intents.release()
   }
 
-  private fun getProfileRecyclerViewGridLayoutManager(activity: ProfileChooserFragmentTestActivity): GridLayoutManager {
+  private fun getProfileRecyclerViewGridLayoutManager(
+    activity: ProfileChooserFragmentTestActivity
+  ): GridLayoutManager {
     return getProfileRecyclerView(activity).layoutManager as GridLayoutManager
   }
 
   private fun getProfileRecyclerView(activity: ProfileChooserFragmentTestActivity): RecyclerView {
-    return getProfileChooserFragment(activity).view?.findViewWithTag<View>(TAG_PROFILE_CHOOSER_FRAGMENT_RECYCLER_VIEW)!! as RecyclerView
+    return getProfileChooserFragment(activity).view?.findViewWithTag<View>(
+      TAG_PROFILE_CHOOSER_FRAGMENT_RECYCLER_VIEW
+    )!! as RecyclerView
   }
 
   @Test
   fun testProfileChooserFragmentRecyclerView_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(2)
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(2)
       }
     }
   }
@@ -58,7 +66,8 @@ class ProfileChooserSpanTest {
   fun testProfileChooserFragmentRecyclerView_ldpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(2)
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(2)
       }
     }
   }
@@ -68,7 +77,8 @@ class ProfileChooserSpanTest {
   fun testProfileChooserFragmentRecyclerView_mdpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(2)
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(2)
       }
     }
   }
@@ -78,7 +88,8 @@ class ProfileChooserSpanTest {
   fun testProfileChooserFragmentRecyclerView_hdpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(2)
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(2)
       }
     }
   }
@@ -88,7 +99,8 @@ class ProfileChooserSpanTest {
   fun testProfileChooserFragmentRecyclerView_xhdpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(2)
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(2)
       }
     }
   }
@@ -98,7 +110,8 @@ class ProfileChooserSpanTest {
   fun testProfileChooserFragmentRecyclerView_xxhdpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(2)
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(2)
       }
     }
   }
@@ -108,7 +121,8 @@ class ProfileChooserSpanTest {
   fun testProfileChooserFragmentRecyclerView_xxxhdpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(2)
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(2)
       }
     }
   }
@@ -118,7 +132,8 @@ class ProfileChooserSpanTest {
   fun testProfileChooserFragmentRecyclerView_landscape_ldpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(3)
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(3)
       }
     }
   }
@@ -128,7 +143,8 @@ class ProfileChooserSpanTest {
   fun testProfileChooserFragmentRecyclerView_landscape_mdpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(3)
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(3)
       }
     }
   }
@@ -138,7 +154,8 @@ class ProfileChooserSpanTest {
   fun testProfileChooserFragmentRecyclerView_landscape_hdpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(4)
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(4)
       }
     }
   }
@@ -148,7 +165,8 @@ class ProfileChooserSpanTest {
   fun testProfileChooserFragmentRecyclerView_landscape_xhdpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(5)
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(5)
       }
     }
   }
@@ -158,7 +176,8 @@ class ProfileChooserSpanTest {
   fun testProfileChooserFragmentRecyclerView_landscape_xxhdpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(5)
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(5)
       }
     }
   }
@@ -168,12 +187,19 @@ class ProfileChooserSpanTest {
   fun testProfileChooserFragmentRecyclerView_landscape_xxxhdpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(5)
+        assertThat(getProfileRecyclerViewGridLayoutManager(activity).spanCount)
+          .isEqualTo(5)
       }
     }
   }
 
-  private fun getProfileChooserFragment(activity: ProfileChooserFragmentTestActivity): ProfileChooserFragment {
-    return activity.supportFragmentManager.findFragmentByTag(ProfileChooserFragmentTestActivity.TAG_PROFILE_CHOOSER_FRAGMENT) as ProfileChooserFragment
+  private fun getProfileChooserFragment(
+    activity: ProfileChooserFragmentTestActivity
+  ): ProfileChooserFragment {
+    return activity
+      .supportFragmentManager
+      .findFragmentByTag(
+        ProfileChooserFragmentTestActivity.TAG_PROFILE_CHOOSER_FRAGMENT
+      ) as ProfileChooserFragment
   }
 }

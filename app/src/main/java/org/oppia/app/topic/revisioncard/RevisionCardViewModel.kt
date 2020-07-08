@@ -10,7 +10,8 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.RevisionCard
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.gcsresource.DefaultResourceBucketName
+import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.HtmlParser
 import org.oppia.util.parser.RevisionCardHtmlParserEntityType
 import javax.inject.Inject
@@ -20,14 +21,16 @@ import javax.inject.Inject
 class RevisionCardViewModel @Inject constructor(
   activity: AppCompatActivity,
   private val topicController: TopicController,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val htmlParserFactory: HtmlParser.Factory,
+  @DefaultResourceBucketName private val resourceBucketName: String,
   @RevisionCardHtmlParserEntityType private val entityType: String
 ) : ViewModel() {
   private lateinit var topicId: String
   private lateinit var subtopicId: String
   private lateinit var binding: RevisionCardFragmentBinding
-  private val returnToTopicClickListener: ReturnToTopicClickListener = activity as ReturnToTopicClickListener
+  private val returnToTopicClickListener: ReturnToTopicClickListener =
+    activity as ReturnToTopicClickListener
 
   var subtopicTitle: String = ""
 
@@ -47,20 +50,29 @@ class RevisionCardViewModel @Inject constructor(
   }
 
   private val revisionCardResultLiveData: LiveData<AsyncResult<RevisionCard>> by lazy {
-    topicController.getRevisionCard(topicId,subtopicId)
+    topicController.getRevisionCard(topicId, subtopicId)
   }
 
   private fun processExplanationLiveData(): LiveData<CharSequence> {
     return Transformations.map(revisionCardResultLiveData, ::processExplanationResult)
   }
 
-  private fun processExplanationResult(revisionCardResult: AsyncResult<RevisionCard>): CharSequence {
+  private fun processExplanationResult(
+    revisionCardResult: AsyncResult<RevisionCard>
+  ): CharSequence {
     if (revisionCardResult.isFailure()) {
-      logger.e("RevisionCardFragment", "Failed to retrieve Revision Card", revisionCardResult.getErrorOrNull()!!)
+      logger.e(
+        "RevisionCardFragment",
+        "Failed to retrieve Revision Card",
+        revisionCardResult.getErrorOrNull()!!
+      )
     }
-    val revisionCard = revisionCardResult.getOrDefault(RevisionCard.getDefaultInstance())
+    val revisionCard = revisionCardResult.getOrDefault(
+      RevisionCard.getDefaultInstance()
+    )
     subtopicTitle = revisionCard.subtopicTitle
-    return htmlParserFactory.create(entityType, subtopicId, /* imageCenterAlign= */ true)
-      .parseOppiaHtml(revisionCard.pageContents.html, binding.revisionCardExplanationText)
+    return htmlParserFactory.create(
+      resourceBucketName, entityType, subtopicId, /* imageCenterAlign= */ true
+    ).parseOppiaHtml(revisionCard.pageContents.html, binding.revisionCardExplanationText)
   }
 }

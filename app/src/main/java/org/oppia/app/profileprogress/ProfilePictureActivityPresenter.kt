@@ -13,7 +13,7 @@ import org.oppia.app.model.ProfileAvatar
 import org.oppia.app.model.ProfileId
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
@@ -22,14 +22,18 @@ import javax.inject.Inject
 class ProfilePictureActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
-  private val logger: Logger
+  private val logger: ConsoleLogger
 ) {
   private lateinit var profilePictureActivityViewModel: ProfilePictureActivityViewModel
   private lateinit var profileId: ProfileId
 
   fun handleOnCreate(internalProfileId: Int) {
     StatusBarColor.statusBarColorUpdate(R.color.profileStatusBar, activity, false)
-    val binding = DataBindingUtil.setContentView<ProfilePictureActivityBinding>(activity, R.layout.profile_picture_activity)
+    val binding = DataBindingUtil
+      .setContentView<ProfilePictureActivityBinding>(
+        activity,
+        R.layout.profile_picture_activity
+      )
     profilePictureActivityViewModel = ProfilePictureActivityViewModel()
 
     binding.apply {
@@ -53,9 +57,12 @@ class ProfilePictureActivityPresenter @Inject constructor(
   }
 
   private fun subscribeToProfileLiveData() {
-    profileLiveData.observe(activity, Observer<Profile> { result ->
-      setProfileAvatar(result.avatar)
-    })
+    profileLiveData.observe(
+      activity,
+      Observer<Profile> { result ->
+        setProfileAvatar(result.avatar)
+      }
+    )
   }
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {

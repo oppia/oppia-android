@@ -9,14 +9,14 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The ViewModel for [PinPasswordActivity]. */
 @ActivityScope
 class PinPasswordViewModel @Inject constructor(
   private val profileManagementController: ProfileManagementController,
-  private val logger: Logger
+  private val logger: ConsoleLogger
 ) : ObservableViewModel() {
   private lateinit var profileId: ProfileId
   val showError = ObservableField(false)
@@ -27,7 +27,10 @@ class PinPasswordViewModel @Inject constructor(
   val showAdminPinForgotPasswordPopUp = ObservableField<Boolean>(false)
 
   val profile: LiveData<Profile> by lazy {
-    Transformations.map(profileManagementController.getProfile(profileId), ::processGetProfileResult)
+    Transformations.map(
+      profileManagementController.getProfile(profileId),
+      ::processGetProfileResult
+    )
   }
 
   fun setProfileId(id: Int) {
@@ -36,7 +39,11 @@ class PinPasswordViewModel @Inject constructor(
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
     if (profileResult.isFailure()) {
-      logger.e("PinPasswordActivity", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
+      logger.e(
+        "PinPasswordActivity",
+        "Failed to retrieve profile",
+        profileResult.getErrorOrNull()!!
+      )
     }
     val profile = profileResult.getOrDefault(Profile.getDefaultInstance())
     correctPin.set(profile.pin)

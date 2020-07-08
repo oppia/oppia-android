@@ -24,11 +24,14 @@ internal class InteractionObjectTypeExtractorRepository @Inject constructor() {
    * check failure.
    */
   inline fun <reified T> getExtractor(objectTypeCase: ObjectTypeCase): (InteractionObject) -> T {
-    val (extractionType, genericExtractor) = checkNotNull(extractors[objectTypeCase]) {
-      "No mapping found for interaction object type: ${objectTypeCase.name}. Was it not yet registered?"
-    }
+    val (extractionType, genericExtractor) =
+      checkNotNull(extractors[objectTypeCase]) {
+        "No mapping found for interaction object type: ${objectTypeCase.name}. " +
+          "Was it not yet registered?"
+      }
     check(extractionType.java.isAssignableFrom(T::class.java)) {
-      "Trying to retrieve incompatible extractor type: ${T::class.java} expected: ${extractionType.java}"
+      "Trying to retrieve incompatible extractor type: ${T::class.java} " +
+        "expected: ${extractionType.java}"
     }
     // Note that a new conversion method is returned since it's not clear whether it's safe to simply cast the
     // extractor.
@@ -37,7 +40,7 @@ internal class InteractionObjectTypeExtractorRepository @Inject constructor() {
     }
   }
 
-  internal data class ExtractorMapping<T: Any>(
+  internal data class ExtractorMapping<T : Any>(
     val extractionType: KClass<T>,
     val genericExtractor: (InteractionObject) -> T
   )
@@ -45,19 +48,43 @@ internal class InteractionObjectTypeExtractorRepository @Inject constructor() {
   private companion object {
     private fun computeExtractorMap(): Map<ObjectTypeCase, ExtractorMapping<*>> {
       return mapOf(
-        ObjectTypeCase.NORMALIZED_STRING to createMapping(InteractionObject::getNormalizedString),
-        ObjectTypeCase.SIGNED_INT to createMapping(InteractionObject::getSignedInt),
-        ObjectTypeCase.NON_NEGATIVE_INT to createMapping(InteractionObject::getNonNegativeInt),
-        ObjectTypeCase.REAL to createMapping(InteractionObject::getReal),
-        ObjectTypeCase.BOOL_VALUE to createMapping(InteractionObject::getBoolValue),
-        ObjectTypeCase.NUMBER_WITH_UNITS to createMapping(InteractionObject::getNumberWithUnits),
-        ObjectTypeCase.SET_OF_HTML_STRING to createMapping(InteractionObject::getSetOfHtmlString),
-        ObjectTypeCase.FRACTION to createMapping(InteractionObject::getFraction),
-        ObjectTypeCase.LIST_OF_SETS_OF_HTML_STRING to createMapping(InteractionObject::getListOfSetsOfHtmlString)
+        ObjectTypeCase.NORMALIZED_STRING to createMapping(
+          InteractionObject::getNormalizedString
+        ),
+        ObjectTypeCase.SIGNED_INT to createMapping(
+          InteractionObject::getSignedInt
+        ),
+        ObjectTypeCase.NON_NEGATIVE_INT to createMapping(
+          InteractionObject::getNonNegativeInt
+        ),
+        ObjectTypeCase.REAL to createMapping(
+          InteractionObject::getReal
+        ),
+        ObjectTypeCase.BOOL_VALUE to createMapping(
+          InteractionObject::getBoolValue
+        ),
+        ObjectTypeCase.NUMBER_WITH_UNITS to createMapping(
+          InteractionObject::getNumberWithUnits
+        ),
+        ObjectTypeCase.SET_OF_HTML_STRING to createMapping(
+          InteractionObject::getSetOfHtmlString
+        ),
+        ObjectTypeCase.FRACTION to createMapping(
+          InteractionObject::getFraction
+        ),
+        ObjectTypeCase.LIST_OF_SETS_OF_HTML_STRING to createMapping(
+          InteractionObject::getListOfSetsOfHtmlString
+        ),
+        ObjectTypeCase.IMAGE_WITH_REGIONS to createMapping(
+          InteractionObject::getImageWithRegions
+        ),
+        ObjectTypeCase.CLICK_ON_IMAGE to createMapping(
+          InteractionObject::getClickOnImage
+        )
       )
     }
 
-    private inline fun <reified T: Any> createMapping(
+    private inline fun <reified T : Any> createMapping(
       noinline extractor: (InteractionObject) -> T
     ): ExtractorMapping<T> {
       return ExtractorMapping(T::class, extractor)

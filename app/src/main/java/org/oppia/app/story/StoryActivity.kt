@@ -11,7 +11,8 @@ import javax.inject.Inject
 
 /** Activity for stories. */
 class StoryActivity : InjectableAppCompatActivity(), RouteToExplorationListener {
-  @Inject lateinit var storyActivityPresenter: StoryActivityPresenter
+  @Inject
+  lateinit var storyActivityPresenter: StoryActivityPresenter
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
   private lateinit var storyId: String
@@ -29,7 +30,13 @@ class StoryActivity : InjectableAppCompatActivity(), RouteToExplorationListener 
     storyActivityPresenter.handleOnCreate(internalProfileId, topicId, storyId)
   }
 
-  override fun routeToExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowScreen: Int?) {
+  override fun routeToExploration(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    backflowScreen: Int?
+  ) {
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
         this,
@@ -43,7 +50,14 @@ class StoryActivity : InjectableAppCompatActivity(), RouteToExplorationListener 
   }
 
   override fun onBackPressed() {
-    startActivity(TopicActivity.createTopicPlayStoryActivityIntent(this, internalProfileId, topicId, storyId))
+    startActivity(
+      TopicActivity.createTopicPlayStoryActivityIntent(
+        this,
+        internalProfileId,
+        topicId,
+        storyId
+      )
+    )
   }
 
   companion object {
@@ -52,7 +66,12 @@ class StoryActivity : InjectableAppCompatActivity(), RouteToExplorationListener 
     const val STORY_ACTIVITY_INTENT_EXTRA_STORY_ID = "StoryActivity.story_id"
 
     /** Returns a new [Intent] to route to [StoryActivity] for a specified story. */
-    fun createStoryActivityIntent(context: Context, internalProfileId: Int, topicId: String, storyId: String): Intent {
+    fun createStoryActivityIntent(
+      context: Context,
+      internalProfileId: Int,
+      topicId: String,
+      storyId: String
+    ): Intent {
       val intent = Intent(context, StoryActivity::class.java)
       intent.putExtra(STORY_ACTIVITY_INTENT_EXTRA_INTERNAL_PROFILE_ID, internalProfileId)
       intent.putExtra(STORY_ACTIVITY_INTENT_EXTRA_TOPIC_ID, topicId)

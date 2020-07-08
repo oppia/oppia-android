@@ -13,7 +13,7 @@ import org.oppia.domain.audio.AudioPlayerController
 import org.oppia.domain.audio.AudioPlayerController.PlayProgress
 import org.oppia.domain.audio.AudioPlayerController.PlayStatus
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.gcsresource.DefaultResource
+import org.oppia.util.gcsresource.DefaultResourceBucketName
 import java.util.Locale
 import javax.inject.Inject
 
@@ -22,7 +22,7 @@ import javax.inject.Inject
 class AudioViewModel @Inject constructor(
   private val audioPlayerController: AudioPlayerController,
   private val fragment: Fragment,
-  @DefaultResource private val gcsResource: String
+  @DefaultResourceBucketName private val gcsResource: String
 ) : ViewModel() {
 
   private lateinit var state: State
@@ -81,11 +81,17 @@ class AudioViewModel @Inject constructor(
    */
   private fun loadAudio(contentId: String?, allowAutoPlay: Boolean) {
     autoPlay = allowAutoPlay
-    voiceoverMap = (state.recordedVoiceoversMap[contentId ?: state.content.contentId]
-      ?: VoiceoverMapping.getDefaultInstance()).voiceoverMappingMap
+    voiceoverMap = (
+      state.recordedVoiceoversMap[contentId ?: state.content.contentId]
+        ?: VoiceoverMapping.getDefaultInstance()
+      ).voiceoverMappingMap
     languages = voiceoverMap.keys.toList().map { it.toLowerCase(Locale.getDefault()) }
     when {
-      selectedLanguageCode.isEmpty() && languages.any { it == defaultLanguage } -> setAudioLanguageCode(defaultLanguage)
+      selectedLanguageCode.isEmpty() && languages.any {
+        it == defaultLanguage
+      } -> setAudioLanguageCode(
+        defaultLanguage
+      )
       languages.any { it == selectedLanguageCode } -> setAudioLanguageCode(selectedLanguageCode)
       languages.isNotEmpty() -> {
         autoPlay = false
@@ -96,7 +102,6 @@ class AudioViewModel @Inject constructor(
           languages.first()
         }
         setAudioLanguageCode(languageCode)
-        (fragment as LanguageInterface).languageSelectionClicked()
       }
     }
   }
@@ -151,7 +156,9 @@ class AudioViewModel @Inject constructor(
     return playProgressResult.getOrThrow().position
   }
 
-  private fun processPlayStatusResultLiveData(playProgressResult: AsyncResult<PlayProgress>): UiAudioPlayStatus {
+  private fun processPlayStatusResultLiveData(
+    playProgressResult: AsyncResult<PlayProgress>
+  ): UiAudioPlayStatus {
     if (playProgressResult.isPending()) return UiAudioPlayStatus.LOADING
     if (playProgressResult.isFailure()) return UiAudioPlayStatus.FAILED
     return when (playProgressResult.getOrThrow().type) {
@@ -171,6 +178,7 @@ class AudioViewModel @Inject constructor(
   }
 
   private fun voiceOverToUri(voiceover: Voiceover?): String {
-    return "https://storage.googleapis.com/$gcsResource/exploration/$explorationId/assets/audio/${voiceover?.fileName}"
+    return "https://storage.googleapis.com/$gcsResource/exploration/$explorationId/" +
+      "assets/audio/${voiceover?.fileName}"
   }
 }

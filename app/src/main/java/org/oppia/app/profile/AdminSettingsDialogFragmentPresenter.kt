@@ -28,7 +28,7 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
     routeDialogInterface: ProfileRouteDialogInterface,
     adminPin: String?
   ): Dialog {
-     val binding: AdminSettingsDialogBinding =
+    val binding: AdminSettingsDialogBinding =
       DataBindingUtil.inflate(
         activity.layoutInflater,
         R.layout.admin_settings_dialog,
@@ -72,7 +72,11 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
         if (binding.inputPin.getInput() == adminPin) {
           routeDialogInterface.routeToResetPinDialog()
         } else {
-          adminViewModel.errorMessage.set(fragment.resources.getString(R.string.admin_settings_incorrect))
+          adminViewModel.errorMessage.set(
+            fragment.resources.getString(
+              R.string.admin_settings_incorrect
+            )
+          )
         }
       }
     }

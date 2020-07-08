@@ -4,7 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.oppia.app.model.AnsweredQuestionOutcome
 import org.oppia.app.model.EphemeralQuestion
+import org.oppia.app.model.Hint
 import org.oppia.app.model.Question
+import org.oppia.app.model.Solution
 import org.oppia.app.model.State
 import org.oppia.app.model.UserAnswer
 import org.oppia.domain.classify.AnswerClassificationController
@@ -14,6 +16,7 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
 import org.oppia.util.data.DataProviders.NestedTransformedDataProvider
+import org.oppia.util.logging.ExceptionLogger
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -35,7 +38,8 @@ private const val EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID = "EmptyQuestionsListDat
 class QuestionAssessmentProgressController @Inject constructor(
   private val dataProviders: DataProviders,
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
-  private val answerClassificationController: AnswerClassificationController
+  private val answerClassificationController: AnswerClassificationController,
+  private val exceptionLogger: ExceptionLogger
 ) {
   // TODO(#247): Add support for populating the list of skill IDs to review at the end of the training session.
   // TODO(#248): Add support for the assessment ending prematurely due to learner demonstrating sufficient proficiency.
@@ -45,14 +49,19 @@ class QuestionAssessmentProgressController @Inject constructor(
   private val currentQuestionDataProvider: NestedTransformedDataProvider<EphemeralQuestion> =
     createCurrentQuestionDataProvider(createEmptyQuestionsListDataProvider())
 
-  internal fun beginQuestionTrainingSession(questionsListDataProvider: DataProvider<List<Question>>) {
+  internal fun beginQuestionTrainingSession(
+    questionsListDataProvider: DataProvider<List<Question>>
+  ) {
     progressLock.withLock {
       check(progress.trainStage == TrainStage.NOT_IN_TRAINING_SESSION) {
         "Cannot start a new training session until the previous one is completed."
       }
 
       progress.advancePlayStageTo(TrainStage.LOADING_TRAINING_SESSION)
-      currentQuestionDataProvider.setBaseDataProvider(questionsListDataProvider, this::retrieveCurrentQuestionAsync)
+      currentQuestionDataProvider.setBaseDataProvider(
+        questionsListDataProvider,
+        this::retrieveCurrentQuestionAsync
+      )
       asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_DATA_PROVIDER_ID)
     }
   }
@@ -115,7 +124,8 @@ class QuestionAssessmentProgressController @Inject constructor(
         lateinit var answeredQuestionOutcome: AnsweredQuestionOutcome
         try {
           val topPendingState = progress.stateDeck.getPendingTopState()
-          val outcome = answerClassificationController.classify(topPendingState.interaction, answer.answer)
+          val outcome =
+            answerClassificationController.classify(topPendingState.interaction, answer.answer)
           answeredQuestionOutcome = progress.stateList.computeAnswerOutcomeForResult(outcome)
           progress.stateDeck.submitAnswer(answer, answeredQuestionOutcome.feedback)
           // Do not proceed unless the user submitted the correct answer.
@@ -126,7 +136,10 @@ class QuestionAssessmentProgressController @Inject constructor(
               progress.stateDeck.pushState(progress.getNextState(), prohibitSameStateName = false)
             } else {
               // Otherwise, push a synthetic state for the end of the session.
-              progress.stateDeck.pushState(State.getDefaultInstance(), prohibitSameStateName = false)
+              progress.stateDeck.pushState(
+                State.getDefaultInstance(),
+                prohibitSameStateName = false
+              )
             }
           }
         } finally {
@@ -140,9 +153,83 @@ class QuestionAssessmentProgressController @Inject constructor(
         return MutableLiveData(AsyncResult.success(answeredQuestionOutcome))
       }
     } catch (e: Exception) {
+      exceptionLogger.logException(e)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
+
+  fun submitHintIsRevealed(state: State, hintIsRevealed: Boolean, hintIndex: Int): LiveData<AsyncResult<Hint>> { // ktlint-disable max-line-length
+    try {
+      progressLock.withLock {
+        check(progress.trainStage != TrainStage.NOT_IN_TRAINING_SESSION) {
+          "Cannot submit an answer if a training session has not yet begun."
+        }
+        check(progress.trainStage != TrainStage.LOADING_TRAINING_SESSION) {
+          "Cannot submit an answer while the training session is being loaded."
+        }
+        check(progress.trainStage != TrainStage.SUBMITTING_ANSWER) {
+          "Cannot submit an answer while another answer is pending."
+        }
+        lateinit var hint: Hint
+        try {
+          progress.stateDeck.submitHintRevealed(state, hintIsRevealed, hintIndex)
+          hint = progress.stateList.computeHintForResult(
+            state,
+            hintIsRevealed,
+            hintIndex
+          )
+          progress.stateDeck.pushStateForHint(state, hintIndex)
+        } finally {
+          // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always
+          // showing hint' situation. This can specifically happen if hint throws an exception.
+          progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
+        }
+        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_DATA_PROVIDER_ID)
+        return MutableLiveData(AsyncResult.success(hint))
+      }
+    } catch (e: Exception) {
+      exceptionLogger.logException(e)
+      return MutableLiveData(AsyncResult.failed(e))
+    }
+  }
+
+  /* ktlint-disable max-line-length */
+  fun submitSolutionIsRevealed(state: State, solutionIsRevealed: Boolean): LiveData<AsyncResult<Solution>> {
+    try {
+      progressLock.withLock {
+        check(progress.trainStage != TrainStage.NOT_IN_TRAINING_SESSION) {
+          "Cannot submit an answer if a training session has not yet begun."
+        }
+        check(progress.trainStage != TrainStage.LOADING_TRAINING_SESSION) {
+          "Cannot submit an answer while the training session is being loaded."
+        }
+        check(progress.trainStage != TrainStage.SUBMITTING_ANSWER) {
+          "Cannot submit an answer while another answer is pending."
+        }
+        lateinit var solution: Solution
+        try {
+
+          progress.stateDeck.submitSolutionRevealed(state, solutionIsRevealed)
+          solution = progress.stateList.computeSolutionForResult(
+            state,
+            solutionIsRevealed
+          )
+          progress.stateDeck.pushStateForSolution(state)
+        } finally {
+          // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always
+          // showing solution' situation. This can specifically happen if solution throws an exception.
+          progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
+        }
+
+        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_DATA_PROVIDER_ID)
+        return MutableLiveData(AsyncResult.success(solution))
+      }
+    } catch (e: Exception) {
+      exceptionLogger.logException(e)
+      return MutableLiveData(AsyncResult.failed(e))
+    }
+  }
+  /* ktlint-enable max-line-length */
 
   /**
    * Navigates to the next question in the assessment. This method is only valid if the current [EphemeralQuestion]
@@ -175,6 +262,7 @@ class QuestionAssessmentProgressController @Inject constructor(
       }
       return MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
+      exceptionLogger.logException(e)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -207,26 +295,36 @@ class QuestionAssessmentProgressController @Inject constructor(
     questionsListDataProvider: DataProvider<List<Question>>
   ): NestedTransformedDataProvider<EphemeralQuestion> {
     return dataProviders.createNestedTransformedDataProvider(
-      CURRENT_QUESTION_DATA_PROVIDER_ID, questionsListDataProvider, this::retrieveCurrentQuestionAsync
+      CURRENT_QUESTION_DATA_PROVIDER_ID,
+      questionsListDataProvider,
+      this::retrieveCurrentQuestionAsync
     )
   }
 
   @Suppress("RedundantSuspendModifier") // 'suspend' expected by DataProviders.
-  private suspend fun retrieveCurrentQuestionAsync(questionsList: List<Question>): AsyncResult<EphemeralQuestion> {
+  private suspend fun retrieveCurrentQuestionAsync(
+    questionsList: List<Question>
+  ): AsyncResult<EphemeralQuestion> {
     progressLock.withLock {
       return try {
         when (progress.trainStage) {
           TrainStage.NOT_IN_TRAINING_SESSION -> AsyncResult.pending()
           TrainStage.LOADING_TRAINING_SESSION -> {
-            // If the assessment hasn't yet been initialized, initialize it now that a list of questions is available.
+            // If the assessment hasn't yet been initialized, initialize it
+            // now that a list of questions is available.
             initializeAssessment(questionsList)
             progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
             AsyncResult.success(retrieveEphemeralQuestionState(questionsList))
           }
-          TrainStage.VIEWING_STATE -> AsyncResult.success(retrieveEphemeralQuestionState(questionsList))
+          TrainStage.VIEWING_STATE -> AsyncResult.success(
+            retrieveEphemeralQuestionState(
+              questionsList
+            )
+          )
           TrainStage.SUBMITTING_ANSWER -> AsyncResult.pending()
         }
       } catch (e: Exception) {
+        exceptionLogger.logException(e)
         AsyncResult.failed(e)
       }
     }
@@ -253,6 +351,8 @@ class QuestionAssessmentProgressController @Inject constructor(
 
   /** Returns a temporary [DataProvider] that always provides an empty list of [Question]s. */
   private fun createEmptyQuestionsListDataProvider(): DataProvider<List<Question>> {
-    return dataProviders.createInMemoryDataProvider(EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID) { listOf<Question>() }
+    return dataProviders.createInMemoryDataProvider(EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID) {
+      listOf<Question>()
+    }
   }
 }

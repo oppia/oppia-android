@@ -1,6 +1,5 @@
 package org.oppia.app.topic
 
-import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -19,32 +18,18 @@ class ViewPagerAdapter(
   FragmentStatePagerAdapter(fragmentManager) {
 
   override fun getItem(position: Int): Fragment {
-    val args = Bundle()
-    args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
-    args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-    when (TopicTab.getTabForPosition(position)) {
+    return when (TopicTab.getTabForPosition(position)) {
       TopicTab.INFO -> {
-        val topicInfoTab = TopicInfoFragment()
-        topicInfoTab.arguments = args
-        return topicInfoTab
+        TopicInfoFragment.newInstance(internalProfileId, topicId)
       }
       TopicTab.LESSONS -> {
-        val topicPlayTab = TopicLessonsFragment()
-
-        if (storyId.isNotEmpty())
-          args.putString(STORY_ID_ARGUMENT_KEY, storyId)
-        topicPlayTab.arguments = args
-        return topicPlayTab
+        TopicLessonsFragment.newInstance(internalProfileId, topicId, storyId)
       }
       TopicTab.PRACTICE -> {
-        val topicPracticeTab = TopicPracticeFragment()
-        topicPracticeTab.arguments = args
-        return topicPracticeTab
+        TopicPracticeFragment.newInstance(internalProfileId, topicId)
       }
       TopicTab.REVISION -> {
-        val topicReviewTab = TopicRevisionFragment()
-        topicReviewTab.arguments = args
-        return topicReviewTab
+        TopicRevisionFragment.newInstance(internalProfileId, topicId)
       }
     }
   }

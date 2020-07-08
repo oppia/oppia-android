@@ -114,7 +114,6 @@ class AddProfileActivityPresenter @Inject constructor(
           )
           return false
         }
-
       })
       .into(uploadImageView)
 
@@ -150,9 +149,15 @@ class AddProfileActivityPresenter @Inject constructor(
       }
     }
 
-    binding.addProfileActivityUserNameProfileInputView.setInput(profileViewModel.inputName.get().toString())
-    binding.addProfileActivityPinProfileInputView.setInput(profileViewModel.inputPin.get().toString())
-    binding.addProfileActivityConfirmPinProfileInputView.setInput(profileViewModel.inputConfirmPin.get().toString())
+    binding.addProfileActivityUserNameProfileInputView.setInput(
+      profileViewModel.inputName.get().toString()
+    )
+    binding.addProfileActivityPinProfileInputView.setInput(
+      profileViewModel.inputPin.get().toString()
+    )
+    binding.addProfileActivityConfirmPinProfileInputView.setInput(
+      profileViewModel.inputConfirmPin.get().toString()
+    )
     if (profileViewModel.showInfoAlertPopup.get()!!) {
       showInfoDialog()
     }
@@ -191,7 +196,9 @@ class AddProfileActivityPresenter @Inject constructor(
     binding.addProfileActivityCreateButton.setOnClickListener {
       profileViewModel.clearAllErrorMessages()
 
-      val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+      val imm = activity.getSystemService(
+        Context.INPUT_METHOD_SERVICE
+      ) as? InputMethodManager
       imm?.hideSoftInputFromWindow(activity.currentFocus?.windowToken, 0)
 
       val name = binding.addProfileActivityUserNameProfileInputView.getInput()
@@ -207,20 +214,24 @@ class AddProfileActivityPresenter @Inject constructor(
         return@setOnClickListener
       }
 
-      profileManagementController.addProfile(
-        name = name,
-        pin = pin,
-        avatarImagePath = selectedImage,
-        allowDownloadAccess = allowDownloadAccess,
-        colorRgb = activity.intent.getIntExtra(KEY_ADD_PROFILE_COLOR_RGB, -10710042),
-        isAdmin = false,
-        storyTextSize = DEFAULT_STORY_TEXT_SIZE,
-        appLanguage = DEFAULT_APP_LANGUAGE,
-        audioLanguage = DEFAULT_AUDIO_LANGUAGE
-      )
-        .observe(activity, Observer {
-          handleAddProfileResult(it, binding)
-        })
+      profileManagementController
+        .addProfile(
+          name = name,
+          pin = pin,
+          avatarImagePath = selectedImage,
+          allowDownloadAccess = allowDownloadAccess,
+          colorRgb = activity.intent.getIntExtra(KEY_ADD_PROFILE_COLOR_RGB, -10710042),
+          isAdmin = false,
+          storyTextSize = DEFAULT_STORY_TEXT_SIZE,
+          appLanguage = DEFAULT_APP_LANGUAGE,
+          audioLanguage = DEFAULT_AUDIO_LANGUAGE
+        )
+        .observe(
+          activity,
+          Observer {
+            handleAddProfileResult(it, binding)
+          }
+        )
     }
   }
 
@@ -232,15 +243,27 @@ class AddProfileActivityPresenter @Inject constructor(
   private fun checkInputsAreValid(name: String, pin: String, confirmPin: String): Boolean {
     var failed = false
     if (name.isEmpty()) {
-      profileViewModel.nameErrorMsg.set(activity.resources.getString(R.string.add_profile_error_name_empty))
+      profileViewModel.nameErrorMsg.set(
+        activity.resources.getString(
+          R.string.add_profile_error_name_empty
+        )
+      )
       failed = true
     }
     if (pin.isNotEmpty() && pin.length < 3) {
-      profileViewModel.pinErrorMsg.set(activity.resources.getString(R.string.add_profile_error_pin_length))
+      profileViewModel.pinErrorMsg.set(
+        activity.resources.getString(
+          R.string.add_profile_error_pin_length
+        )
+      )
       failed = true
     }
     if (pin != confirmPin) {
-      profileViewModel.confirmPinErrorMsg.set(activity.resources.getString(R.string.add_profile_error_pin_confirm_wrong))
+      profileViewModel.confirmPinErrorMsg.set(
+        activity.resources.getString(
+          R.string.add_profile_error_pin_confirm_wrong
+        )
+      )
       failed = true
     }
     return failed
@@ -256,16 +279,18 @@ class AddProfileActivityPresenter @Inject constructor(
       activity.startActivity(intent)
     } else if (result.isFailure()) {
       when (result.getErrorOrNull()) {
-        is ProfileManagementController.ProfileNameNotUniqueException -> profileViewModel.nameErrorMsg.set(
-          activity.resources.getString(
-            R.string.add_profile_error_name_not_unique
+        is ProfileManagementController.ProfileNameNotUniqueException ->
+          profileViewModel.nameErrorMsg.set(
+            activity.resources.getString(
+              R.string.add_profile_error_name_not_unique
+            )
           )
-        )
-        is ProfileManagementController.ProfileNameOnlyLettersException -> profileViewModel.nameErrorMsg.set(
-          activity.resources.getString(
-            R.string.add_profile_error_name_only_letters
+        is ProfileManagementController.ProfileNameOnlyLettersException ->
+          profileViewModel.nameErrorMsg.set(
+            activity.resources.getString(
+              R.string.add_profile_error_name_only_letters
+            )
           )
-        )
       }
       binding.addProfileActivityScrollView.smoothScrollTo(0, 0)
     }

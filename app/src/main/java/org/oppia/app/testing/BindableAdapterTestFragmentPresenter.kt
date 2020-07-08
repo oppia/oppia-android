@@ -16,7 +16,8 @@ class BindableAdapterTestFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<BindableAdapterTestViewModel>
 ) {
-  @VisibleForTesting val viewModel: BindableAdapterTestViewModel by lazy {
+  @VisibleForTesting
+  val viewModel: BindableAdapterTestViewModel by lazy {
     getBindableAdapterTestViewModel()
   }
 
@@ -27,8 +28,14 @@ class BindableAdapterTestFragmentPresenter @Inject constructor(
   }
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val binding = TestFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
-    checkNotNull(testBindableAdapter) { "Expected a bindable adapter to be provided in a test module" }
+    val binding = TestFragmentBinding.inflate(
+      inflater,
+      container,
+      /* attachToRoot= */ false
+    )
+    checkNotNull(testBindableAdapter) {
+      "Expected a bindable adapter to be provided in a test module"
+    }
     binding.testRecyclerView.apply {
       adapter = testBindableAdapter
     }

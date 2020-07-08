@@ -10,14 +10,14 @@ import org.oppia.app.model.Topic
 import org.oppia.app.topic.revision.revisionitemviewmodel.TopicRevisionItemViewModel
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** [ViewModel] for [TopicRevisionFragment]. */
 @FragmentScope
 class TopicRevisionViewModel @Inject constructor(
   private val topicController: TopicController,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   val fragment: Fragment
 ) : ViewModel() {
   private lateinit var profileId: ProfileId
@@ -37,9 +37,11 @@ class TopicRevisionViewModel @Inject constructor(
   }
 
   private fun processTopic(topic: Topic): List<TopicRevisionItemViewModel> {
-    subtopicList.addAll(topic.subtopicList.map {
-      TopicRevisionItemViewModel(it, revisionSubtopicSelector)
-    })
+    subtopicList.addAll(
+      topic.subtopicList.map {
+        TopicRevisionItemViewModel(it, revisionSubtopicSelector)
+      }
+    )
     return subtopicList
   }
 
@@ -49,7 +51,11 @@ class TopicRevisionViewModel @Inject constructor(
 
   private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
     if (topic.isFailure()) {
-      logger.e("TopicRevisionFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
+      logger.e(
+        "TopicRevisionFragment",
+        "Failed to retrieve topic",
+        topic.getErrorOrNull()!!
+      )
     }
     return topic.getOrDefault(Topic.getDefaultInstance())
   }
