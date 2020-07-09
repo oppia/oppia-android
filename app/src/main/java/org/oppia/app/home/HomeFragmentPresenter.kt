@@ -25,7 +25,7 @@ import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.TopicList
 import org.oppia.app.model.TopicSummary
-import org.oppia.domain.analytics.AnalyticsController
+import org.oppia.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
