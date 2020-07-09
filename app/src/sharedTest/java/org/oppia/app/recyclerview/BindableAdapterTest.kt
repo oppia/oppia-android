@@ -93,6 +93,21 @@ class BindableAdapterTest {
   }
 
   @Test
+  fun testBindableAdapter_withOneViewType_nullData_bindsNoViews() {
+    // Set up the adapter to be used for this test.
+    BindableAdapterTestFragmentPresenter.testBindableAdapter =
+      createSingleViewTypeNoDataBindingBindableAdapter()
+
+    ActivityScenario.launch(BindableAdapterTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        val recyclerView: RecyclerView =
+          getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view_non_live_data)
+        assertThat(recyclerView.childCount).isEqualTo(0)
+      }
+    }
+  }
+
+  @Test
   fun testBindableAdapter_withOneViewType_setMultipleItems_automaticallyBinds() {
     // Set up the adapter to be used for this test.
     BindableAdapterTestFragmentPresenter.testBindableAdapter =
@@ -366,28 +381,20 @@ class BindableAdapterTest {
     textView.text = "Value: " + data.intValue
   }
 
-  private fun getRecyclerViewListLiveData(
-    activity: BindableAdapterTestActivity
-  ): MutableLiveData<List<TestModel>> {
+  private fun getRecyclerViewListLiveData(activity: BindableAdapterTestActivity): MutableLiveData<List<TestModel>> { // ktlint-disable max-line-length
     return getTestViewModel(activity).dataListLiveData
   }
 
-  private fun getTestViewModel(
-    activity: BindableAdapterTestActivity
-  ): BindableAdapterTestViewModel {
+  private fun getTestViewModel(activity: BindableAdapterTestActivity): BindableAdapterTestViewModel { // ktlint-disable max-line-length
     return getTestFragmentPresenter(activity).viewModel
   }
 
-  private fun getTestFragmentPresenter(
-    activity: BindableAdapterTestActivity
-  ): BindableAdapterTestFragmentPresenter {
+  private fun getTestFragmentPresenter(activity: BindableAdapterTestActivity): BindableAdapterTestFragmentPresenter { // ktlint-disable max-line-length
     return getTestFragment(activity).bindableAdapterTestFragmentPresenter
   }
 
   private fun getTestFragment(activity: BindableAdapterTestActivity): BindableAdapterTestFragment {
-    return activity.supportFragmentManager.findFragmentByTag(
-      BINDABLE_TEST_FRAGMENT_TAG
-    ) as BindableAdapterTestFragment
+    return activity.supportFragmentManager.findFragmentByTag(BINDABLE_TEST_FRAGMENT_TAG) as BindableAdapterTestFragment // ktlint-disable max-line-length
   }
 
   private fun safelyWaitUntilIdle() {

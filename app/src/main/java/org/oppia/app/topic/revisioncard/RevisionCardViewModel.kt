@@ -11,7 +11,7 @@ import org.oppia.app.model.RevisionCard
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.DefaultResourceBucketName
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.HtmlParser
 import org.oppia.util.parser.RevisionCardHtmlParserEntityType
 import javax.inject.Inject
@@ -21,7 +21,7 @@ import javax.inject.Inject
 class RevisionCardViewModel @Inject constructor(
   activity: AppCompatActivity,
   private val topicController: TopicController,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val htmlParserFactory: HtmlParser.Factory,
   @DefaultResourceBucketName private val resourceBucketName: String,
   @RevisionCardHtmlParserEntityType private val entityType: String

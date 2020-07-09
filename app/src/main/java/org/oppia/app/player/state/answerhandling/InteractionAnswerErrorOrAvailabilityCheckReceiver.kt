@@ -11,5 +11,8 @@ interface InteractionAnswerErrorOrAvailabilityCheckReceiver {
    * Implementations are recommended to prevent further answer submission until the pending answer itself changes.
    * The interaction is responsible for displaying the error provided here, not the implementation.
    */
-  fun onPendingAnswerErrorOrAvailabilityCheck(pendingAnswerError: String?, inputAnswerAvailable: Boolean) {}
+  fun onPendingAnswerErrorOrAvailabilityCheck(
+    pendingAnswerError: String?,
+    inputAnswerAvailable: Boolean
+  ) {}
 }

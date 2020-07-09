@@ -1,0 +1,23 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <data>
+
+    <variable
+      name="htmlContent"
+      type="CharSequence" />
+  </data>
+
+  <TextView
+    android:id="@+id/drag_drop_content_text_view"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:fontFamily="sans-serif"
+    tools:text="Hello"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp"
+    android:gravity="center_vertical"
+    android:text="@{htmlContent}"
+    android:textColor="@color/oppiaPrimaryText"
+    android:textSize="16sp" />
+</layout>

@@ -4,37 +4,54 @@
 
   <data>
 
+    <import type="android.view.View" />
+
     <variable
       name="submittedAnswer"
       type="CharSequence" />
+
+    <variable
+      name="submittedListAnswer"
+      type="org.oppia.app.model.ListOfSetsOfHtmlStrings" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginStart="68dp"
     android:layout_marginTop="@dimen/divider_margin_top"
-    android:layout_marginBottom="@dimen/divider_margin_bottom"
     android:layout_marginEnd="18dp"
-    android:layout_marginStart="68dp">
+    android:layout_marginBottom="@dimen/divider_margin_bottom">
 
-    <FrameLayout
+    <TextView
+      android:id="@+id/submitted_answer_text_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:background="@drawable/submitted_answer_background"
+      android:fontFamily="sans-serif"
+      android:paddingStart="16dp"
+      android:paddingTop="8dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="8dp"
+      android:text="@{submittedAnswer}"
+      android:textSize="16sp"
+      android:visibility="gone"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toTopOf="parent">
+      app:layout_constraintTop_toTopOf="parent" />
 
-      <TextView
-        android:id="@+id/submitted_answer_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:paddingStart="16dp"
-        android:paddingTop="8dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="8dp"
-        android:text="@{submittedAnswer}"
-        android:textSize="16sp" />
-    </FrameLayout>
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/submitted_answer_recycler_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="end"
+      android:background="@drawable/submitted_answer_background"
+      android:paddingStart="8dp"
+      android:paddingEnd="8dp"
+      android:visibility="gone"
+      app:itemDecorator="@{@drawable/divider}"
+      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:list="@{submittedListAnswer.setOfHtmlStringsList}" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -112,7 +112,9 @@ class TopicListAdapter(
       is TopicSummaryViewModel -> {
         VIEW_TYPE_TOPIC_LIST
       }
-      else -> throw IllegalArgumentException("Invalid type of data $position with item ${itemList[position]}")
+      else -> throw IllegalArgumentException(
+        "Invalid type of data $position with item ${itemList[position]}"
+      )
     }
   }
 

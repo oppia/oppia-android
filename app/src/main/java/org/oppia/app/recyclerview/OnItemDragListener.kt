@@ -11,5 +11,9 @@ interface OnItemDragListener {
    * @param indexTo the new position of the item within the adapter item list
    * @param adapter the adapter of the [RecyclerView] whose item was recently dragged
    */
-  fun onItemDragged(indexFrom: Int, indexTo: Int, adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>)
+  fun onItemDragged(
+    indexFrom: Int,
+    indexTo: Int,
+    adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
+  )
 }

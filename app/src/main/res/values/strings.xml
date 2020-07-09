@@ -324,7 +324,7 @@
   <string name="no">No…</string>
   <string name="pick_a_different_topic">Pick a \ndifferent topic.</string>
   <string name="are_you_interested">Are you interested in:\n%s?</string>
-  <!-- HintsAndSolutionFragment -->
+  <!-- HintsAndSolutionDialogFragment -->
   <string name="hints_toolbar_title">Hints</string>
   <string name="reveal_solution">Reveal Solution</string>
   <string name="reveal_hint">Reveal Hint</string>
@@ -339,6 +339,11 @@
   <string name="yesterday">yesterday</string>
   <string name="return_to_topic">Return to topic</string>
   <string name="explanation">Explanation:</string>
+  <string name="drag_and_drop_interaction_group_merge_hint">If two items are equal, merge them.</string>
+  <string name="link_to_item_below">Link to item below</string>
+  <string name="unlink_items">Unlink Items</string>
+  <string name="move_item_down">Move Item Down</string>
+  <string name="move_item_up">Move Item Up</string>
   <plurals name="minutes">
     <item quantity="one">a minute</item>
     <item quantity="other">%d minutes</item>
