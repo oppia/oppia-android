@@ -195,17 +195,13 @@ class TopicListController @Inject constructor(
 
   private fun createFractionsTopicSummary(): TopicSummary {
     val fractionsJson =
-      jsonAssetRetriever.loadJsonFromAsset("fractions_topic.json")?.getJSONObject(
-        "topic"
-      )!!
+      jsonAssetRetriever.loadJsonFromAsset("fractions_topic.json")!!
     return createTopicSummaryFromJson(FRACTIONS_TOPIC_ID, fractionsJson)
   }
 
   private fun createRatiosTopicSummary(): TopicSummary {
     val ratiosJson =
-      jsonAssetRetriever.loadJsonFromAsset("ratios_topic.json")?.getJSONObject(
-        "topic"
-      )!!
+      jsonAssetRetriever.loadJsonFromAsset("ratios_topic.json")!!
     return createTopicSummaryFromJson(RATIOS_TOPIC_ID, ratiosJson)
   }
 
