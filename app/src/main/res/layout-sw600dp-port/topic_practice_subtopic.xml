@@ -16,11 +16,10 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="40dp"
-    android:layout_marginEnd="48dp"
-    android:layout_marginBottom="26dp"
-    app:barrierDirection="right"
-    app:constraint_referenced_ids="button_example,text_view_status">
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="12dp"
+    android:layout_marginBottom="12dp"
+    app:barrierDirection="right">
 
     <androidx.constraintlayout.widget.Barrier
       android:id="@+id/topic_practice_subtopic_barrier"
