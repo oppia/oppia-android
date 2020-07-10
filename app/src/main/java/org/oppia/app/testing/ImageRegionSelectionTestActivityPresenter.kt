@@ -23,8 +23,9 @@ class ImageRegionSelectionTestActivityPresenter @Inject constructor(
       activity as OnClickableAreaClickedListener
     )
 
+
     val clickableAreas: List<LabeledRegion> = getClickableAreas()
-    clickableAreasImage.setClickableAreas(clickableAreas)
+    activity.clickable_image_view.setClickableAreas(clickableAreas)
   }
 
   private fun getClickableAreas(): List<LabeledRegion> {

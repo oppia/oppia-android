@@ -97,7 +97,7 @@ dependencies {
       'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1',
       'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.1',
       'org.mockito:mockito-core:2.7.22',
-      "com.github.chrisbanes:PhotoView:2.3.0"
+      'com.github.chrisbanes:PhotoView:2.3.0'
   )
   testImplementation(
       'androidx.test:core:1.2.0',

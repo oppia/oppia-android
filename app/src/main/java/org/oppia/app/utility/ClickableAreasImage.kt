@@ -7,15 +7,15 @@ import android.widget.ImageView
 import com.github.chrisbanes.photoview.OnPhotoTapListener
 import com.github.chrisbanes.photoview.PhotoViewAttacher
 import org.oppia.app.model.ImageWithRegions.LabeledRegion
+import org.oppia.app.player.state.ImageRegionSelectionInteractionView
 import kotlin.math.roundToInt
 
 class ClickableAreasImage(
-  imageView: ImageView,
+  private val imageView: ImageRegionSelectionInteractionView,
   private val overlayView: View,
   private val listener: OnClickableAreaClickedListener
 ) : OnPhotoTapListener {
   private val attacher: PhotoViewAttacher = PhotoViewAttacher(imageView)
-  private var clickableAreas: List<LabeledRegion> = emptyList()
 
   init {
     attacher.setOnPhotoTapListener(this)
@@ -52,31 +52,27 @@ class ClickableAreasImage(
   }
 
   private fun getClickableAreaOrDefault(x: Float, y: Float): LabeledRegion {
-    val area = clickableAreas.filter {
+    val area = imageView.getClickableAreas().firstOrNull {
       isBetween(it.region.area.upperLeft.x, it.region.area.lowerRight.x, x) &&
         isBetween(it.region.area.upperLeft.y, it.region.area.lowerRight.y, y)
-    }.firstOrNull()
+    }
     return area ?: LabeledRegion.getDefaultInstance()
   }
 
-  /* Return whether a point lies between two points.*/
+  /** Return whether a point lies between two points.*/
   private fun isBetween(start: Float, end: Float, actual: Float): Boolean {
     return actual in start..end
   }
 
-  /* Get X co-ordinate scaled according to image.*/
+  /** Get X co-ordinate scaled according to image.*/
   private fun getXCoordinate(x: Float): Float {
     val rect = attacher.displayRect
     return (x * rect.width()) + rect.left
   }
 
-  /* Get Y co-ordinate scaled according to image.*/
-  private fun getYCoordinate(x: Float): Float {
+  /** Get Y co-ordinate scaled according to image.*/
+  private fun getYCoordinate(y: Float): Float {
     val rect = attacher.displayRect
-    return (x * rect.height()) + rect.top
-  }
-
-  fun setClickableAreas(clickableAreas: List<LabeledRegion>) {
-    this.clickableAreas = clickableAreas
+    return (y * rect.height()) + rect.top
   }
 }
