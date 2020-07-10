@@ -21,7 +21,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:paddingBottom="24dp">
+      android:paddingBottom="112dp">
 
       <ImageView
         android:id="@+id/topic_thumbnail_image_view"
@@ -29,6 +29,9 @@
         android:layout_height="0dp"
         android:src="@{viewModel.topic.topicThumbnail.thumbnailGraphic}"
         android:background="@color/topicThumbnailBackground"
+        android:paddingTop="76dp"
+        android:paddingStart="98dp"
+        android:paddingEnd="98dp"
         app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -47,9 +50,9 @@
         android:id="@+id/topic_name_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginStart="120dp"
+        android:layout_marginEnd="120dp"
+        android:layout_marginTop="12dp"
         android:fontFamily="sans-serif"
         android:text="@{viewModel.topic.name}"
         android:textColor="@color/oppiaPrimaryText"
@@ -62,9 +65,9 @@
         android:id="@+id/story_count_text_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="120dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="120dp"
         android:fontFamily="sans-serif"
         android:text="@{@plurals/story_count(viewModel.topic.storyCount, viewModel.topic.storyCount)}"
         android:textColor="@color/oppiaPrimaryText"
@@ -77,9 +80,9 @@
         android:id="@+id/topic_description_text_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="120dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="120dp"
         android:ellipsize="end"
         android:fontFamily="sans-serif"
         android:gravity="start"
@@ -95,8 +98,8 @@
         android:id="@+id/see_more_text_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginStart="120dp"
+        android:layout_marginEnd="120dp"
         android:fontFamily="sans-serif"
         android:gravity="start"
         android:minHeight="48dp"
@@ -113,13 +116,11 @@
 
       <ImageView
         android:id="@+id/download_status_image_view"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginStart="32dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="120dp"
         android:layout_marginTop="24dp"
-        android:layout_marginBottom="32dp"
         android:src="@{viewModel.downloadStatusIndicatorDrawableResourceId, default=@drawable/ic_available_offline_primary_24dp}"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/see_more_text_view" />
 
