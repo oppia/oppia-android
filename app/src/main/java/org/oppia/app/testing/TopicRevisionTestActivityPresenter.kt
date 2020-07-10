@@ -14,7 +14,7 @@ class TopicRevisionTestActivityPresenter @Inject constructor(
 
   fun handleOnCreate() {
     activity.setContentView(R.layout.activity_topic_revision_test)
-    val topicRevisionFragment = TopicRevisionFragment.newInstance(0, FRACTIONS_TOPIC_ID)
+    val topicRevisionFragment = TopicRevisionFragment.newInstance(0, "")
     activity.supportFragmentManager.beginTransaction()
       .add(
         R.id.topic_revision_container,
