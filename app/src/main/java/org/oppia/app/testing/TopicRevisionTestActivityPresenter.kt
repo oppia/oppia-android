@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.topic.revision.TopicRevisionFragment
-import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import javax.inject.Inject
 
 @ActivityScope
