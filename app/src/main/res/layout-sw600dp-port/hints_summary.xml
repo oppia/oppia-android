@@ -86,8 +86,8 @@
       android:id="@+id/hint_list_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginStart="176dp"
-      android:layout_marginEnd="176dp"
+      android:layout_marginStart="128dp"
+      android:layout_marginEnd="128dp"
       android:layout_marginBottom="32dp"
       android:orientation="vertical"
       android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
