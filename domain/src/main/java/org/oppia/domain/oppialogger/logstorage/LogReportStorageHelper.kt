@@ -21,7 +21,7 @@ import javax.inject.Singleton
 /** Helper class for storing log reports in absence of network connectivity. */
 @Singleton
 class LogReportStorageHelper @Inject constructor(
-  private val cacheStoreFactory: PersistentCacheStore.Factory,
+  cacheStoreFactory: PersistentCacheStore.Factory,
   private val dataProviders: DataProviders,
   private val consoleLogger: ConsoleLogger,
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
