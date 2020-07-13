@@ -1,13 +1,11 @@
 package org.oppia.app.player.state
 
 import android.content.Context
-import android.gesture.GestureOverlayView
+import android.os.Handler
 import android.util.AttributeSet
-import android.view.View
+import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.databinding.BindingAdapter
-import androidx.fragment.app.FragmentManager
-import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.model.ImageWithRegions
 import org.oppia.app.utility.ClickableAreasImage
 import org.oppia.app.utility.OnClickableAreaClickedListener
@@ -49,6 +47,10 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   fun getClickableAreas(): List<ImageWithRegions.LabeledRegion> {
     return clickableAreas
   }
+
+  fun isAccessibilityEnabled(): Boolean{
+    return isAccessibilityEnabled
+  }
 //
 //  override fun onAttachedToWindow() {
 //    super.onAttachedToWindow()
@@ -62,12 +64,17 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
 fun setRegionClickToImageView(
   imageRegionSelectionInteractionView: ImageRegionSelectionInteractionView,
   onClickableAreaClickedListener: OnClickableAreaClickedListener,
-  overlayView: View
-) = ClickableAreasImage(
-  imageRegionSelectionInteractionView,
-  overlayView,
-  onClickableAreaClickedListener
-)
+  parentView: FrameLayout
+) {
+  val area = ClickableAreasImage(
+    imageRegionSelectionInteractionView,
+    parentView,
+    onClickableAreaClickedListener
+  )
+  Handler().postDelayed({
+    area.addViews(imageRegionSelectionInteractionView.isAccessibilityEnabled())
+  }, 100)
+}
 
 /** Sets the exploration ID for a specific [ImageRegionSelectionInteractionView] via data-binding. */
 @BindingAdapter("entityId")

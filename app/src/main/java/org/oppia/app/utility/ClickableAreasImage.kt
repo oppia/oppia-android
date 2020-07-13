@@ -4,15 +4,17 @@ import android.graphics.RectF
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.core.view.forEachIndexed
+import androidx.core.view.isVisible
 import com.github.chrisbanes.photoview.OnPhotoTapListener
 import com.github.chrisbanes.photoview.PhotoViewAttacher
-import org.oppia.app.model.ImageWithRegions.LabeledRegion
+import org.oppia.app.R
 import org.oppia.app.player.state.ImageRegionSelectionInteractionView
 import kotlin.math.roundToInt
 
 class ClickableAreasImage(
   private val imageView: ImageRegionSelectionInteractionView,
-  private val overlayView: View,
+  private val parentView: FrameLayout,
   private val listener: OnClickableAreaClickedListener
 ) : OnPhotoTapListener {
   private val attacher: PhotoViewAttacher = PhotoViewAttacher(imageView)
@@ -29,34 +31,22 @@ class ClickableAreasImage(
    * @param y the relative y coordinate according to image
    */
   override fun onPhotoTap(view: ImageView, x: Float, y: Float) {
-    val clickableArea = getClickableAreaOrDefault(x, y)
-    if (clickableArea.hasRegion()) {
-      val imageRect = RectF(
-        getXCoordinate(clickableArea.region.area.upperLeft.x),
-        getYCoordinate(clickableArea.region.area.upperLeft.y),
-        getXCoordinate(clickableArea.region.area.lowerRight.x),
-        getYCoordinate(clickableArea.region.area.lowerRight.y)
-      )
-      val overlayViewParams = FrameLayout.LayoutParams(
-        imageRect.width().roundToInt(),
-        imageRect.height().roundToInt()
-      )
-      overlayView.layoutParams = overlayViewParams
-      overlayView.x = imageRect.left
-      overlayView.y = imageRect.top
-      overlayView.visibility = View.VISIBLE
-      listener.onClickableAreaTouched(clickableArea.label)
-    } else {
-      overlayView.visibility = View.GONE
+    val clickableAreaIndex = getClickableAreaOrDefault(x, y)
+    parentView.forEachIndexed { index: Int, tappedView: View ->
+      if (index > 0) {
+        tappedView.isVisible = index == clickableAreaIndex + 1
+        listener.onClickableAreaTouched(
+          imageView.getClickableAreas()[clickableAreaIndex].label
+        )
+      }
     }
   }
 
-  private fun getClickableAreaOrDefault(x: Float, y: Float): LabeledRegion {
-    val area = imageView.getClickableAreas().firstOrNull {
+  private fun getClickableAreaOrDefault(x: Float, y: Float): Int {
+    return imageView.getClickableAreas().indexOfFirst {
       isBetween(it.region.area.upperLeft.x, it.region.area.lowerRight.x, x) &&
         isBetween(it.region.area.upperLeft.y, it.region.area.lowerRight.y, y)
     }
-    return area ?: LabeledRegion.getDefaultInstance()
   }
 
   /** Return whether a point lies between two points.*/
@@ -74,5 +64,38 @@ class ClickableAreasImage(
   private fun getYCoordinate(y: Float): Float {
     val rect = attacher.displayRect
     return (y * rect.height()) + rect.top
+  }
+
+  fun addViews(isAccessible: Boolean) {
+    parentView.let {
+      for (clickableArea in imageView.getClickableAreas()) {
+        val imageRect = RectF(
+          getXCoordinate(clickableArea.region.area.upperLeft.x),
+          getYCoordinate(clickableArea.region.area.upperLeft.y),
+          getXCoordinate(clickableArea.region.area.lowerRight.x),
+          getYCoordinate(clickableArea.region.area.lowerRight.y)
+        )
+        val layoutParams = FrameLayout.LayoutParams(
+          imageRect.width().roundToInt(),
+          imageRect.height().roundToInt()
+        )
+        val newView = View(it.context)
+
+        newView.x = imageRect.left
+        newView.y = imageRect.top
+        newView.isClickable = true
+        newView.isFocusableInTouchMode = true
+        newView.isFocusable = true
+        if (!isAccessible) {
+          newView.isVisible = false
+          newView.setBackgroundResource(R.drawable.selected_region_background)
+        }
+
+        newView.layoutParams = layoutParams
+        newView.contentDescription = clickableArea.label
+        it.addView(newView)
+
+      }
+    }
   }
 }

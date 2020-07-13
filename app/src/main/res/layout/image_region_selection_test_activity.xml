@@ -3,6 +3,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="wrap_content"
   android:layout_height="wrap_content"
+  android:id="@+id/image_parent_view"
   tools:context=".testing.ImageRegionSelectionTestActivity">
   
   <org.oppia.app.player.state.ImageRegionSelectionInteractionView
@@ -11,12 +12,4 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:adjustViewBounds="true"/>
-
-  <View
-    android:background="@drawable/selected_region_background"
-    android:visibility="gone"
-    android:id="@+id/selected_region_view"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content" />
-  
 </FrameLayout>

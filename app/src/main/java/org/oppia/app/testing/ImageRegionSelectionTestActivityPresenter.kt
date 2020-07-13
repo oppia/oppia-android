@@ -1,5 +1,6 @@
 package org.oppia.app.testing
 
+import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.image_region_selection_test_activity.*
 import org.oppia.app.R
@@ -16,16 +17,20 @@ class ImageRegionSelectionTestActivityPresenter @Inject constructor(
 
   fun handleOnCreate() {
     activity.setContentView(R.layout.image_region_selection_test_activity)
-    activity
-    val clickableAreasImage = ClickableAreasImage(
-      activity.clickable_image_view,
-      activity.selected_region_view,
-      activity as OnClickableAreaClickedListener
-    )
-
 
     val clickableAreas: List<LabeledRegion> = getClickableAreas()
     activity.clickable_image_view.setClickableAreas(clickableAreas)
+
+    val clickableAreasImage = ClickableAreasImage(
+      activity.clickable_image_view,
+      activity.image_parent_view,
+      activity as OnClickableAreaClickedListener
+    )
+
+    Handler().postDelayed({
+      clickableAreasImage.addViews(activity.clickable_image_view.isAccessibilityEnabled())
+    }, 100)
+
   }
 
   private fun getClickableAreas(): List<LabeledRegion> {
