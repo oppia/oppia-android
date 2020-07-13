@@ -1,5 +1,6 @@
 package org.oppia.app.topic.info
 
+import android.content.Context
 import android.view.View
 import android.widget.TextView
 import androidx.test.core.app.ActivityScenario
@@ -55,6 +56,7 @@ private const val DUMMY_TOPIC_DESCRIPTION_LONG =
 class TopicInfoFragmentTest {
   private val topicThumbnail = R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework
   private val internalProfileId = 0
+  private val context = ApplicationProvider.getApplicationContext<Context>()
 
   @Before
   fun setUp() {
@@ -125,84 +127,96 @@ class TopicInfoFragmentTest {
 
   @Test
   fun testTopicInfoFragment_loadFragment_checkDefaultTopicDescriptionLines_fiveLinesVisible() {
-    launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
-      onView(withId(R.id.topic_description_text_view))
-        .check(
-          matches(
-            maxLines(
-              /* lineCount= */ 5
+    if (!context.resources.getBoolean(R.bool.isTablet)) {
+      launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
+        onView(withId(R.id.topic_description_text_view))
+          .check(
+            matches(
+              maxLines(
+                /* lineCount= */ 5
+              )
             )
           )
-        )
+      }
     }
   }
 
   @Test
   fun testTopicInfoFragment_loadFragment_moreThanFiveLines_seeMoreIsVisible() {
-    launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
-      onView(withId(R.id.topic_description_text_view)).perform(
-        setTextInTextView(
-          DUMMY_TOPIC_DESCRIPTION_LONG
+    if (!context.resources.getBoolean(R.bool.isTablet)) {
+      launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
+        onView(withId(R.id.topic_description_text_view)).perform(
+          setTextInTextView(
+            DUMMY_TOPIC_DESCRIPTION_LONG
+          )
         )
-      )
-      onView(withId(R.id.see_more_text_view)).perform(scrollTo())
-      onView(withId(R.id.see_more_text_view)).check(matches(isDisplayed()))
-      onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.see_more)))
+        onView(withId(R.id.see_more_text_view)).perform(scrollTo())
+        onView(withId(R.id.see_more_text_view)).check(matches(isDisplayed()))
+        onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.see_more)))
+      }
     }
   }
 
   @Test
   fun testTopicInfoFragment_loadFragment_seeMoreIsVisible_and_fiveLinesVisible() {
-    launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
-      onView(withId(R.id.topic_description_text_view)).perform(
-        setTextInTextView(
-          DUMMY_TOPIC_DESCRIPTION_LONG
-        )
-      )
-      onView(withId(R.id.see_more_text_view)).perform(scrollTo())
-      onView(withId(R.id.see_more_text_view)).check(matches(isDisplayed()))
-      onView(withId(R.id.topic_description_text_view))
-        .check(
-          matches(
-            maxLines(
-              /* lineCount= */ 5
-            )
+    if (!context.resources.getBoolean(R.bool.isTablet)) {
+      launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
+        onView(withId(R.id.topic_description_text_view)).perform(
+          setTextInTextView(
+            DUMMY_TOPIC_DESCRIPTION_LONG
           )
         )
+        onView(withId(R.id.see_more_text_view)).perform(scrollTo())
+        onView(withId(R.id.see_more_text_view)).check(matches(isDisplayed()))
+        onView(withId(R.id.topic_description_text_view))
+          .check(
+            matches(
+              maxLines(
+                /* lineCount= */ 5
+              )
+            )
+          )
+      }
     }
   }
 
   @Test
   fun testTopicInfoFragment_loadFragment_clickSeeMore_seeLessVisible() {
-    launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
-      onView(withId(R.id.topic_description_text_view)).perform(
-        setTextInTextView(
-          DUMMY_TOPIC_DESCRIPTION_LONG
+    if (!context.resources.getBoolean(R.bool.isTablet)) {
+      launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
+        onView(withId(R.id.topic_description_text_view)).perform(
+          setTextInTextView(
+            DUMMY_TOPIC_DESCRIPTION_LONG
+          )
         )
-      )
-      onView(withId(R.id.see_more_text_view)).perform(scrollTo())
-      onView(withId(R.id.see_more_text_view)).perform(click())
-      onView(withId(R.id.see_more_text_view)).perform(scrollTo())
-      onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.see_less)))
+        onView(withId(R.id.see_more_text_view)).perform(scrollTo())
+        onView(withId(R.id.see_more_text_view)).perform(click())
+        onView(withId(R.id.see_more_text_view)).perform(scrollTo())
+        onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.see_less)))
+      }
     }
   }
 
   @Test
   fun testTopicInfoFragment_loadFragment_seeMoreIsVisible() {
-    launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
-      onView(withId(R.id.see_more_text_view)).perform(scrollTo())
-      onView(withId(R.id.see_more_text_view)).check(matches(isDisplayed()))
-      onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.see_more)))
+    if (!context.resources.getBoolean(R.bool.isTablet)) {
+      launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
+        onView(withId(R.id.see_more_text_view)).perform(scrollTo())
+        onView(withId(R.id.see_more_text_view)).check(matches(isDisplayed()))
+        onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.see_more)))
+      }
     }
   }
 
   @Test
   fun testTopicInfoFragment_loadFragment_clickSeeMore_textChangesToSeeLess() {
-    launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
-      onView(withId(R.id.see_more_text_view)).perform(scrollTo())
-      onView(withId(R.id.see_more_text_view)).perform(click())
-      onView(withId(R.id.see_more_text_view)).perform(scrollTo())
-      onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.see_less)))
+    if (!context.resources.getBoolean(R.bool.isTablet)) {
+      launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
+        onView(withId(R.id.see_more_text_view)).perform(scrollTo())
+        onView(withId(R.id.see_more_text_view)).perform(click())
+        onView(withId(R.id.see_more_text_view)).perform(scrollTo())
+        onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.see_less)))
+      }
     }
   }
 
