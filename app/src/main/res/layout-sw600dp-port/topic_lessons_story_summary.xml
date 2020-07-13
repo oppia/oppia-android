@@ -27,6 +27,7 @@
     android:layout_marginTop="12dp"
     android:layout_marginEnd="20dp"
     android:layout_marginBottom="12dp"
+    app:rippleColor="@color/transparent"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp">
