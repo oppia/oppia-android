@@ -10,7 +10,10 @@ import com.google.android.material.tabs.TabLayout
 import org.oppia.app.R
 import org.oppia.app.databinding.TopicFragmentBinding
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.model.EventLog
 import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.domain.analytics.AnalyticsController
+import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
 /** The presenter for [TopicFragment]. */
@@ -18,7 +21,9 @@ import javax.inject.Inject
 class TopicFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<TopicViewModel>
+  private val viewModelProvider: ViewModelProvider<TopicViewModel>,
+  private val analyticsController: AnalyticsController,
+  private val oppiaClock: OppiaClock
 ) {
   private lateinit var tabLayout: TabLayout
   private var internalProfileId: Int = -1
@@ -67,6 +72,7 @@ class TopicFragmentPresenter @Inject constructor(
 
   private fun setCurrentTab(tab: TopicTab) {
     viewPager.setCurrentItem(tab.ordinal, true)
+    logTopicEvents(tab)
   }
 
   private fun setUpViewPager(viewPager: ViewPager, topicId: String) {
@@ -86,5 +92,50 @@ class TopicFragmentPresenter @Inject constructor(
 
   private fun getTopicViewModel(): TopicViewModel {
     return viewModelProvider.getForFragment(fragment, TopicViewModel::class.java)
+  }
+
+  private fun logTopicEvents(tab: TopicTab) {
+    when (tab) {
+      TopicTab.INFO -> logInfoFragmentEvent(topicId)
+      TopicTab.LESSONS -> logLessonsFragmentEvent(topicId)
+      TopicTab.PRACTICE -> logPracticeFragmentEvent(topicId)
+      TopicTab.REVISION -> logRevisionFragmentEvent(topicId)
+    }
+  }
+
+  private fun logInfoFragmentEvent(topicId: String) {
+    analyticsController.logTransitionEvent(
+      fragment.requireActivity().applicationContext,
+      oppiaClock.getCurrentCalendar().timeInMillis,
+      EventLog.EventAction.OPEN_INFO_TAB,
+      analyticsController.createTopicContext(topicId)
+    )
+  }
+
+  private fun logLessonsFragmentEvent(topicId: String) {
+    analyticsController.logTransitionEvent(
+      fragment.requireActivity().applicationContext,
+      oppiaClock.getCurrentCalendar().timeInMillis,
+      EventLog.EventAction.OPEN_LESSONS_TAB,
+      analyticsController.createTopicContext(topicId)
+    )
+  }
+
+  private fun logPracticeFragmentEvent(topicId: String) {
+    analyticsController.logTransitionEvent(
+      fragment.requireActivity().applicationContext,
+      oppiaClock.getCurrentCalendar().timeInMillis,
+      EventLog.EventAction.OPEN_PRACTICE_TAB,
+      analyticsController.createTopicContext(topicId)
+    )
+  }
+
+  private fun logRevisionFragmentEvent(topicId: String) {
+    analyticsController.logTransitionEvent(
+      fragment.requireActivity().applicationContext,
+      oppiaClock.getCurrentCalendar().timeInMillis,
+      EventLog.EventAction.OPEN_REVISION_TAB,
+      analyticsController.createTopicContext(topicId)
+    )
   }
 }

@@ -5,7 +5,7 @@ import org.oppia.app.model.CellularDataPreference
 import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -14,7 +14,7 @@ import javax.inject.Singleton
 class CellularAudioDialogController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
   private val dataProviders: DataProviders,
-  private val logger: Logger
+  private val logger: ConsoleLogger
 ) {
   private val cellularDataStore = cacheStoreFactory.create(
     "cellular_data_preference",

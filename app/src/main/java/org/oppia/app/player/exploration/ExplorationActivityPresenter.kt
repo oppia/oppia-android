@@ -18,7 +18,7 @@ import org.oppia.app.topic.TopicActivity
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 const val TAG_EXPLORATION_FRAGMENT = "TAG_EXPLORATION_FRAGMENT"
@@ -30,7 +30,7 @@ class ExplorationActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val explorationDataController: ExplorationDataController,
   private val viewModelProvider: ViewModelProvider<ExplorationViewModel>,
-  private val logger: Logger
+  private val logger: ConsoleLogger
 ) {
   private lateinit var explorationToolbar: Toolbar
   private var internalProfileId: Int = -1
@@ -106,10 +106,9 @@ class ExplorationActivityPresenter @Inject constructor(
         HintsAndSolutionExplorationManagerFragment()
       ).commitNow()
     }
-
   }
 
-  private fun getHintsAndSolutionExplorationManagerFragment(): HintsAndSolutionExplorationManagerFragment? {
+  private fun getHintsAndSolutionExplorationManagerFragment(): HintsAndSolutionExplorationManagerFragment? { // ktlint-disable max-line-length
     return activity.supportFragmentManager.findFragmentByTag(
       TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
     ) as HintsAndSolutionExplorationManagerFragment?
@@ -129,28 +128,31 @@ class ExplorationActivityPresenter @Inject constructor(
   fun scrollToTop() = getExplorationFragment()?.scrollToTop()
 
   private fun getExplorationFragment(): ExplorationFragment? {
-    return activity.supportFragmentManager.findFragmentById(
-      R.id.exploration_fragment_placeholder
+    return activity.supportFragmentManager.findFragmentByTag(
+      TAG_EXPLORATION_FRAGMENT
     ) as ExplorationFragment?
   }
 
   fun stopExploration() {
     explorationDataController.stopPlayingExploration()
-      .observe(activity, Observer<AsyncResult<Any?>> {
-        when {
-          it.isPending() -> logger.d("ExplorationActivity", "Stopping exploration")
-          it.isFailure() -> logger.e(
-            "ExplorationActivity",
-            "Failed to stop exploration",
-            it.getErrorOrNull()!!
-          )
-          else -> {
-            logger.d("ExplorationActivity", "Successfully stopped exploration")
-            backPressActivitySelector(backflowScreen)
-            (activity as ExplorationActivity).finish()
+      .observe(
+        activity,
+        Observer<AsyncResult<Any?>> {
+          when {
+            it.isPending() -> logger.d("ExplorationActivity", "Stopping exploration")
+            it.isFailure() -> logger.e(
+              "ExplorationActivity",
+              "Failed to stop exploration",
+              it.getErrorOrNull()!!
+            )
+            else -> {
+              logger.d("ExplorationActivity", "Successfully stopped exploration")
+              backPressActivitySelector(backflowScreen)
+              (activity as ExplorationActivity).finish()
+            }
           }
         }
-      })
+      )
   }
 
   fun onKeyboardAction(actionCode: Int) {
@@ -166,11 +168,16 @@ class ExplorationActivityPresenter @Inject constructor(
     subscribeToExploration(explorationDataController.getExplorationById(explorationId))
   }
 
-  private fun subscribeToExploration(explorationResultLiveData: LiveData<AsyncResult<Exploration>>) {
+  private fun subscribeToExploration(
+    explorationResultLiveData: LiveData<AsyncResult<Exploration>>
+  ) {
     val explorationLiveData = getExploration(explorationResultLiveData)
-    explorationLiveData.observe(activity, Observer<Exploration> {
-      explorationToolbar.title = it.title
-    })
+    explorationLiveData.observe(
+      activity,
+      Observer<Exploration> {
+        explorationToolbar.title = it.title
+      }
+    )
   }
 
   private fun getExplorationViewModel(): ExplorationViewModel {
@@ -178,7 +185,9 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   /** Helper for subscribeToExploration. */
-  private fun getExploration(exploration: LiveData<AsyncResult<Exploration>>): LiveData<Exploration> {
+  private fun getExploration(
+    exploration: LiveData<AsyncResult<Exploration>>
+  ): LiveData<Exploration> {
     return Transformations.map(exploration, ::processExploration)
   }
 
@@ -219,13 +228,17 @@ class ExplorationActivityPresenter @Inject constructor(
 
   fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
     val explorationFragment =
-      activity.supportFragmentManager.findFragmentByTag(TAG_EXPLORATION_FRAGMENT) as ExplorationFragment
+      activity.supportFragmentManager.findFragmentByTag(
+        TAG_EXPLORATION_FRAGMENT
+      ) as ExplorationFragment
     explorationFragment.revealHint(saveUserChoice, hintIndex)
   }
 
   fun revealSolution(saveUserChoice: Boolean) {
     val explorationFragment =
-      activity.supportFragmentManager.findFragmentByTag(TAG_EXPLORATION_FRAGMENT) as ExplorationFragment
+      activity.supportFragmentManager.findFragmentByTag(
+        TAG_EXPLORATION_FRAGMENT
+      ) as ExplorationFragment
     explorationFragment.revealSolution(saveUserChoice)
   }
 }

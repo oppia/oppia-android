@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.widget.ScrollView
 import androidx.viewpager.widget.PagerAdapter
 import org.oppia.app.databinding.OnboardingSlideBinding
 import org.oppia.app.databinding.OnboardingSlideFinalBinding
@@ -48,6 +48,6 @@ class OnboardingPagerAdapter(
   }
 
   override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-    container.removeView(`object` as ConstraintLayout)
+    container.removeView(`object` as ScrollView)
   }
 }

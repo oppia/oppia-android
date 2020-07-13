@@ -13,7 +13,8 @@ import javax.inject.Inject
  */
 class HintsAndSolutionExplorationManagerFragment : InjectableFragment() {
   @Inject
-  lateinit var hintsAndSolutionExplorationManagerFragmentPresenter: HintsAndSolutionExplorationManagerFragmentPresenter
+  lateinit var hintsAndSolutionExplorationManagerFragmentPresenter:
+    HintsAndSolutionExplorationManagerFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
