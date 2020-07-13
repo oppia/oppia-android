@@ -124,7 +124,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private val audioUiManagerRetriever: AudioUiManagerRetriever?,
   private val interactionViewModelFactoryMap: Map<
     String, @JvmSuppressWildcards InteractionViewModelFactory>,
-  backgroundCoroutineDispatcher: CoroutineDispatcher
+  backgroundCoroutineDispatcher: CoroutineDispatcher,
+  private val playerRecyclerViewAssemblerViewModel: PlayerRecyclerViewAssemblerViewModel?
 ) {
   /**
    * A list of view models corresponding to past view models that are hidden by default. These are
@@ -251,7 +252,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
     gcsEntityId: String
   ) {
     val contentSubtitledHtml: SubtitledHtml = ephemeralState.state.content
-    pendingItemList += ContentViewModel(contentSubtitledHtml.html, gcsEntityId)
+    pendingItemList += ContentViewModel(
+      contentSubtitledHtml.html,
+      gcsEntityId,
+      playerRecyclerViewAssemblerViewModel!!.hasBlueBackground,
+      playerRecyclerViewAssemblerViewModel!!.isCenterAligned
+    )
   }
 
   private fun addPreviousAnswers(
@@ -568,8 +574,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<ContentItemBinding>(view)!!
           val contentViewModel = viewModel as ContentViewModel
-          contentViewModel.hasBlueBackground.set(playerRecyclerViewAssemblerViewModel!!.hasBlueBackground)
-          contentViewModel.isCenterAligned.set(playerRecyclerViewAssemblerViewModel!!.isCenterAligned)
           binding.viewModel = contentViewModel
           binding.htmlContent =
             htmlParserFactory.create(
@@ -1019,9 +1023,18 @@ class StatePlayerRecyclerViewAssembler private constructor(
     fun build(): StatePlayerRecyclerViewAssembler {
       val playerFeatureSet = featureSets.reduce(PlayerFeatureSet::union)
       return StatePlayerRecyclerViewAssembler(
-        adapterBuilder.build(), playerFeatureSet, fragment, congratulationsTextView,
-        canSubmitAnswer, audioActivityId, currentStateName, isAudioPlaybackEnabled,
-        audioUiManagerRetriever, interactionViewModelFactoryMap, backgroundCoroutineDispatcher
+        adapterBuilder.build(),
+        playerFeatureSet,
+        fragment,
+        congratulationsTextView,
+        canSubmitAnswer,
+        audioActivityId,
+        currentStateName,
+        isAudioPlaybackEnabled,
+        audioUiManagerRetriever,
+        interactionViewModelFactoryMap,
+        backgroundCoroutineDispatcher,
+        playerRecyclerViewAssemblerViewModel
       )
     }
 

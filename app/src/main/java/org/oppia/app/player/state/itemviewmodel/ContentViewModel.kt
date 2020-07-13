@@ -1,12 +1,17 @@
 package org.oppia.app.player.state.itemviewmodel
 
-import androidx.databinding.ObservableField
-
 /** [StateItemViewModel] for content-card state. */
 class ContentViewModel(
   val htmlContent: CharSequence,
-  val gcsEntityId: String
+  val gcsEntityId: String,
+  hasBlueBackground: Boolean,
+  isCenterAligned: Boolean
 ) : StateItemViewModel(ViewType.CONTENT) {
-  var hasBlueBackground = ObservableField<Boolean>(false)
-  var isCenterAligned = ObservableField<Boolean>(false)
+  var hasBlueBackground: Boolean = false
+  var isCenterAligned: Boolean = false
+
+  init {
+    this.hasBlueBackground = hasBlueBackground
+    this.isCenterAligned = isCenterAligned
+  }
 }
