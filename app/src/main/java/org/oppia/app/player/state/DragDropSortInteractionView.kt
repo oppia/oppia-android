@@ -1,10 +1,8 @@
 package org.oppia.app.player.state
 
 import android.content.Context
-import android.content.Context.ACCESSIBILITY_SERVICE
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.accessibility.AccessibilityManager
 import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil

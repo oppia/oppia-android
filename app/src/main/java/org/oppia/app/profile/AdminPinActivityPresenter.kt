@@ -86,11 +86,19 @@ class AdminPinActivityPresenter @Inject constructor(
       val confirmPin = binding.inputConfirmPin.getInput()
       var failed = false
       if (inputPin.length < 5) {
-        adminViewModel.pinErrorMsg.set(activity.getString(R.string.admin_pin_error_pin_length))
+        adminViewModel.pinErrorMsg.set(
+          activity.getString(
+            R.string.admin_pin_error_pin_length
+          )
+        )
         failed = true
       }
       if (inputPin != confirmPin) {
-        adminViewModel.confirmPinErrorMsg.set(activity.getString(R.string.admin_pin_error_pin_confirm_wrong))
+        adminViewModel.confirmPinErrorMsg.set(
+          activity.getString(
+            R.string.admin_pin_error_pin_confirm_wrong
+          )
+        )
         failed = true
       }
       if (failed) {

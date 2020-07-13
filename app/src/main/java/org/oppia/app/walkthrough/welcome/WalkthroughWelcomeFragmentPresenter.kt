@@ -18,7 +18,7 @@ import org.oppia.app.walkthrough.WalkthroughFragmentChangeListener
 import org.oppia.app.walkthrough.WalkthroughPages
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The presenter for [WalkthroughWelcomeFragment]. */
@@ -27,7 +27,7 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
-  private val logger: Logger
+  private val logger: ConsoleLogger
 ) {
   private lateinit var binding: WalkthroughWelcomeFragmentBinding
   private val routeToNextPage = activity as WalkthroughFragmentChangeListener

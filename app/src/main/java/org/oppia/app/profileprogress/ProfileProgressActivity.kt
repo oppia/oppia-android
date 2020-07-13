@@ -16,7 +16,6 @@ class ProfileProgressActivity :
   RouteToCompletedStoryListListener,
   RouteToOngoingTopicListListener,
   RouteToRecentlyPlayedListener,
-  ProfilePictureClickListener,
   ProfilePictureDialogInterface {
 
   @Inject
@@ -66,10 +65,6 @@ class ProfileProgressActivity :
       intent.putExtra(PROFILE_PROGRESS_ACTIVITY_PROFILE_ID_KEY, internalProfileId)
       return intent
     }
-  }
-
-  override fun onProfilePictureClicked() {
-    profileProgressActivityPresenter.showPictureEditDialog()
   }
 
   override fun showProfilePicture() {
