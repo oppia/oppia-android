@@ -33,7 +33,7 @@ class ProfileProgressViewModel @Inject constructor(
   private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
 
-  private val headerViewModel = ProfileProgressHeaderViewModel(activity)
+  private val headerViewModel = ProfileProgressHeaderViewModel(activity, fragment)
 
   private val itemViewModelList: MutableList<ProfileProgressItemViewModel> = mutableListOf(
     headerViewModel as ProfileProgressItemViewModel
