@@ -307,6 +307,24 @@ class BindableAdapterTest {
     assertThat(diffObj.areContentsTheSame(0, 0)).isEqualTo(false)
   }
 
+  @Test
+  fun testBindableAdapter_incomingNewData_correctUpdateListLogic() {
+    BindableAdapterTestFragmentPresenter.testBindableAdapter =
+      createMultiViewTypeWithDataBindingBindableAdapter()
+
+    val oldList = listOf(STR_VALUE_1, STR_VALUE_0, INT_VALUE_0).toMutableList()
+    BindableAdapterTestFragmentPresenter.testBindableAdapter?.setDataUnchecked(oldList)
+
+    val newList = listOf(STR_VALUE_1, INT_VALUE_0).toMutableList()
+    BindableAdapterTestFragmentPresenter.testBindableAdapter?.setDataUnchecked(newList)
+
+    assertThat(
+      newList
+    ).isEqualTo(
+      BindableAdapterTestFragmentPresenter.testBindableAdapter?.getDataList()
+    )
+  }
+
   private fun createSingleViewTypeNoDataBindingBindableAdapter(): BindableAdapter<TestModel> {
     return BindableAdapter.SingleTypeBuilder
       .newBuilder<TestModel>()

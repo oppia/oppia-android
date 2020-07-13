@@ -3,6 +3,7 @@ package org.oppia.app.recyclerview
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.VisibleForTesting
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -41,12 +42,15 @@ class BindableAdapter<T : Any> internal constructor(
   private fun setData(newDataList: List<T>) {
     val result = DiffUtil.calculateDiff(
       RecyclerDataDiffCallback(dataList, newDataList),
-      false
+      /* detectMoves*/ false
     )
     dataList.clear()
     dataList += newDataList.toMutableList()
     result.dispatchUpdatesTo(this)
   }
+
+  @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+  fun getDataList(): MutableList<T> = dataList
 
   /**
    * Sets the data of this adapter in the same way as [setData], except with a different type.
