@@ -14,7 +14,7 @@ import javax.inject.Inject
 /** Fragment that card for topic revision. */
 class TopicRevisionFragment : InjectableFragment(), RevisionSubtopicSelector {
   companion object {
-    const val TOPIC_REVISION_FRAGMENT_TAG = "TOPIC_REVISION_FRAGMENT_TAG"
+    internal const val TOPIC_REVISION_FRAGMENT_TAG = "TOPIC_REVISION_FRAGMENT_TAG"
     /** Returns a new [TopicRevisionFragment]. */
     fun newInstance(internalProfileId: Int, topicId: String): TopicRevisionFragment {
       val topicRevisionFragment = TopicRevisionFragment()
