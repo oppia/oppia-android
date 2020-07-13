@@ -134,7 +134,8 @@
               android:layout_height="wrap_content"
               android:layout_gravity="center_horizontal|bottom"
               android:contentDescription="@{@string/show_hide_chapter_list(viewModel.storySummary.storyName)}"
-              android:src="@{isListExpanded? @drawable/ic_arrow_drop_up_black_24dp : @drawable/ic_arrow_drop_down_black_24dp}" />
+              android:src="@drawable/ic_arrow_drop_down_black_24dp"
+              app:expand_rotation_anim="@{isListExpanded}" />
           </FrameLayout>
         </LinearLayout>
       </LinearLayout>

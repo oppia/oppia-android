@@ -1,5 +1,6 @@
 package org.oppia.app.databinding
 
+import android.animation.ValueAnimator
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
@@ -130,5 +131,24 @@ fun setProfileImage(imageView: ImageView, profileAvatar: ProfileAvatar?) {
       .load(profileAvatar.avatarImageUri)
       .placeholder(R.drawable.ic_default_avatar)
       .into(imageView)
+  }
+}
+
+@BindingAdapter("app:expand_rotation_anim")
+fun setExpandRotationAnimation(imageView: ImageView, isExpanded: Boolean) {
+  if (isExpanded) {
+    val valueAnimator = ValueAnimator.ofFloat(0f, 180f)
+    valueAnimator.duration = 300
+    valueAnimator.addUpdateListener {
+      imageView.rotation = it.animatedValue as Float
+    }
+    valueAnimator.start()
+  } else {
+    val valueAnimator = ValueAnimator.ofFloat(180f, 0f)
+    valueAnimator.duration = 300
+    valueAnimator.addUpdateListener {
+      imageView.rotation = it.animatedValue as Float
+    }
+    valueAnimator.start()
   }
 }
