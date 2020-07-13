@@ -568,7 +568,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<ContentItemBinding>(view)!!
           val contentViewModel = viewModel as ContentViewModel
-          binding.viewModel = playerRecyclerViewAssemblerViewModel
+          contentViewModel.hasBlueBackground.set(playerRecyclerViewAssemblerViewModel!!.hasBlueBackground)
+          contentViewModel.isCenterAligned.set(playerRecyclerViewAssemblerViewModel!!.isCenterAligned)
+          binding.viewModel = contentViewModel
           binding.htmlContent =
             htmlParserFactory.create(
               resourceBucketName,
