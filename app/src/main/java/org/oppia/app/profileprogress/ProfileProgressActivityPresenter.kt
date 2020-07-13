@@ -12,8 +12,6 @@ import org.oppia.app.profile.GALLERY_INTENT_RESULT_CODE
 import org.oppia.domain.profile.ProfileManagementController
 import javax.inject.Inject
 
-private const val TAG_PROFILE_PICTURE_EDIT_DIALOG = "PROFILE_PICTURE_EDIT_DIALOG"
-
 /** The presenter for [ProfileProgressActivity]. */
 @ActivityScope
 class ProfileProgressActivityPresenter @Inject constructor(
@@ -51,16 +49,6 @@ class ProfileProgressActivityPresenter @Inject constructor(
     return activity.supportFragmentManager.findFragmentById(
       R.id.profile_progress_fragment_placeholder
     ) as ProfileProgressFragment?
-  }
-
-  fun showPictureEditDialog() {
-    val previousFragment =
-      activity.supportFragmentManager.findFragmentByTag(TAG_PROFILE_PICTURE_EDIT_DIALOG)
-    if (previousFragment != null) {
-      activity.supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
-    }
-    val dialogFragment = ProfilePictureEditDialogFragment.newInstance()
-    dialogFragment.showNow(activity.supportFragmentManager, TAG_PROFILE_PICTURE_EDIT_DIALOG)
   }
 
   fun openGalleryIntent() {
