@@ -146,6 +146,7 @@
     <activity
       android:name=".testing.TopicTestActivityForStory"
       android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity android:name=".testing.TopicRevisionTestActivity" />
     <activity
       android:name=".topic.questionplayer.QuestionPlayerActivity"
       android:label="@string/question_player_title" />

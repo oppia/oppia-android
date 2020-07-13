@@ -87,7 +87,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_required_heading_text_view"
-            profile:error="@{viewModel.nameErrorMsg}" />
+            profile:error="@{viewModel.nameErrorMsg}"
+            profile:singleLine="@{true}" />
 
           <CheckBox
             android:id="@+id/add_profile_activity_pin_check_box"
