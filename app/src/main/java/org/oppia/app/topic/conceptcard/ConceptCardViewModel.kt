@@ -9,7 +9,7 @@ import org.oppia.app.model.ConceptCard
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.DefaultResourceBucketName
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.ConceptCardHtmlParserEntityType
 import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
@@ -18,7 +18,7 @@ import javax.inject.Inject
 @FragmentScope
 class ConceptCardViewModel @Inject constructor(
   private val topicController: TopicController,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val htmlParserFactory: HtmlParser.Factory,
   @ConceptCardHtmlParserEntityType private val entityType: String,
   @DefaultResourceBucketName private val resourceBucketName: String

@@ -47,8 +47,7 @@ class PromotedStoryListAdapter(
       layoutParams.width = if (itemCount > 1) {
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
           ViewGroup.LayoutParams.MATCH_PARENT
-        }
-        else{
+        } else {
           (activity as Context).resources.getDimensionPixelSize(R.dimen.promoted_story_card_width)
         }
       } else {
