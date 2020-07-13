@@ -6,7 +6,7 @@ import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
@@ -46,7 +46,7 @@ class TopicRevisionSpanTest {
   fun testTopicRevisionFragmentRecyclerView_hasCorrectSpanCount() {
     launch(TopicRevisionTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        Truth.assertThat(getRevisionSpanCount(activity)).isEqualTo(2)
+        assertThat(getRevisionSpanCount(activity)).isEqualTo(2)
       }
     }
   }
@@ -56,7 +56,7 @@ class TopicRevisionSpanTest {
   fun testTopicRevisionFragmentRecyclerView_land_hasCorrectSpanCount() {
     launch(TopicRevisionTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        Truth.assertThat(getRevisionSpanCount(activity)).isEqualTo(3)
+        assertThat(getRevisionSpanCount(activity)).isEqualTo(3)
       }
     }
   }
@@ -66,7 +66,7 @@ class TopicRevisionSpanTest {
   fun testTopicRevisionFragmentRecyclerView_tabletPort_hasCorrectSpanCount() {
     launch(TopicRevisionTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        Truth.assertThat(getRevisionSpanCount(activity)).isEqualTo(3)
+        assertThat(getRevisionSpanCount(activity)).isEqualTo(3)
       }
     }
   }
@@ -76,7 +76,7 @@ class TopicRevisionSpanTest {
   fun testTopicRevisionFragmentRecyclerView_tabletLand_hasCorrectSpanCount() {
     launch(TopicRevisionTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        Truth.assertThat(getRevisionSpanCount(activity)).isEqualTo(4)
+        assertThat(getRevisionSpanCount(activity)).isEqualTo(4)
       }
     }
   }
