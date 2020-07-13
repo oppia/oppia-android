@@ -8,8 +8,7 @@ class RecyclerDataDiffCallback<T : Any>(
 ) : DiffUtil.Callback() {
 
   override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-    return (oldList[oldItemPosition]::class
-      == newList[newItemPosition]::class)
+    return oldList[oldItemPosition]::class == newList[newItemPosition]::class
   }
 
   override fun getOldListSize(): Int {
