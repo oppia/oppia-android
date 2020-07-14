@@ -106,7 +106,6 @@ class DragViewAction(
     }
     return res
   }
-
 }
 
 /** Class to find coordinates of an item within your RecyclerView.*/
@@ -156,6 +155,5 @@ enum class CustomGeneralLocation : CoordinatesProvider {
         screenLocation[1] - view.height * 0.5f
       )
     }
-
   }
 }

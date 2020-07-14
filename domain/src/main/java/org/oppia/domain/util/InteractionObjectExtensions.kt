@@ -1,9 +1,11 @@
 package org.oppia.domain.util
 
+import org.oppia.app.model.ClickOnImage
 import org.oppia.app.model.Fraction
 import org.oppia.app.model.ImageWithRegions
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.InteractionObject.ObjectTypeCase.BOOL_VALUE
+import org.oppia.app.model.InteractionObject.ObjectTypeCase.CLICK_ON_IMAGE
 import org.oppia.app.model.InteractionObject.ObjectTypeCase.FRACTION
 import org.oppia.app.model.InteractionObject.ObjectTypeCase.IMAGE_WITH_REGIONS
 import org.oppia.app.model.InteractionObject.ObjectTypeCase.LIST_OF_SETS_OF_HTML_STRING
@@ -32,6 +34,7 @@ fun InteractionObject.toAnswerString(): String {
     FRACTION -> fraction.toAnswerString()
     LIST_OF_SETS_OF_HTML_STRING -> listOfSetsOfHtmlString.toAnswerString()
     IMAGE_WITH_REGIONS -> imageWithRegions.toAnswerString()
+    CLICK_ON_IMAGE -> clickOnImage.toAnswerString()
     OBJECTTYPE_NOT_SET -> "" // The default InteractionObject should be an empty string.
   }
 }
@@ -77,6 +80,9 @@ private fun ImageWithRegions.toAnswerString(): String =
       "${it.region.area.upperLeft.y}), (${it.region.area.lowerRight.x}, " +
       "${it.region.area.lowerRight.y})]"
   }
+
+private fun ClickOnImage.toAnswerString(): String =
+  "[(${clickedRegionsList.joinToString()}), (${clickPosition.x}, ${clickPosition.y})]"
 
 // https://github.com/oppia/oppia/blob/37285a/core/templates/dev/head/domain/objects/FractionObjectFactory.ts#L47
 private fun Fraction.toAnswerString(): String {

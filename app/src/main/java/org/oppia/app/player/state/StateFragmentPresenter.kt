@@ -35,7 +35,7 @@ import org.oppia.domain.exploration.ExplorationProgressController
 import org.oppia.domain.topic.StoryProgressController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.DefaultResourceBucketName
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import java.util.Date
 import javax.inject.Inject
@@ -55,7 +55,7 @@ class StateFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<StateViewModel>,
   private val explorationProgressController: ExplorationProgressController,
   private val storyProgressController: StoryProgressController,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   @DefaultResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
   private var lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
@@ -111,9 +111,12 @@ class StateFragmentPresenter @Inject constructor(
 
     binding.stateRecyclerView.addOnLayoutChangeListener { _, _, _, _, bottom, _, _, _, oldBottom ->
       if (bottom < oldBottom) {
-        binding.stateRecyclerView.postDelayed({
-          binding.stateRecyclerView.scrollToPosition(stateRecyclerViewAdapter.itemCount - 1)
-        }, 100)
+        binding.stateRecyclerView.postDelayed(
+          {
+            binding.stateRecyclerView.scrollToPosition(stateRecyclerViewAdapter.itemCount - 1)
+          },
+          100
+        )
       }
     }
 
@@ -223,11 +226,22 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
-    subscribeToHint(explorationProgressController.submitHintIsRevealed(currentState, saveUserChoice, hintIndex))
+    subscribeToHint(
+      explorationProgressController.submitHintIsRevealed(
+        currentState,
+        saveUserChoice,
+        hintIndex
+      )
+    )
   }
 
   fun revealSolution(saveUserChoice: Boolean) {
-    subscribeToSolution(explorationProgressController.submitSolutionIsRevealed(currentState, saveUserChoice))
+    subscribeToSolution(
+      explorationProgressController.submitSolutionIsRevealed(
+        currentState,
+        saveUserChoice
+      )
+    )
   }
 
   private fun getStateViewModel(): StateViewModel {
@@ -248,9 +262,12 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun subscribeToCurrentState() {
-    ephemeralStateLiveData.observe(fragment, Observer { result ->
-      processEphemeralStateResult(result)
-    })
+    ephemeralStateLiveData.observe(
+      fragment,
+      Observer { result ->
+        processEphemeralStateResult(result)
+      }
+    )
   }
 
   private fun processEphemeralStateResult(result: AsyncResult<EphemeralState>) {
@@ -289,12 +306,15 @@ class StateFragmentPresenter @Inject constructor(
    */
   private fun subscribeToHint(hintResultLiveData: LiveData<AsyncResult<Hint>>) {
     val hintLiveData = getHintIsRevealed(hintResultLiveData)
-    hintLiveData.observe(fragment, Observer { result ->
-      // If the hint was revealed remove dot and radar.
-      if (result.hintIsRevealed) {
-        viewModel.setHintOpenedAndUnRevealedVisibility(false)
+    hintLiveData.observe(
+      fragment,
+      Observer { result ->
+        // If the hint was revealed remove dot and radar.
+        if (result.hintIsRevealed) {
+          viewModel.setHintOpenedAndUnRevealedVisibility(false)
+        }
       }
-    })
+    )
   }
 
   /**
@@ -304,12 +324,15 @@ class StateFragmentPresenter @Inject constructor(
    */
   private fun subscribeToSolution(solutionResultLiveData: LiveData<AsyncResult<Solution>>) {
     val solutionLiveData = getSolutionIsRevealed(solutionResultLiveData)
-    solutionLiveData.observe(fragment, Observer { result ->
-      // If the hint was revealed remove dot and radar.
-      if (result.solutionIsRevealed) {
-        viewModel.setHintOpenedAndUnRevealedVisibility(false)
+    solutionLiveData.observe(
+      fragment,
+      Observer { result ->
+        // If the hint was revealed remove dot and radar.
+        if (result.solutionIsRevealed) {
+          viewModel.setHintOpenedAndUnRevealedVisibility(false)
+        }
       }
-    })
+    )
   }
 
   /**
@@ -317,25 +340,30 @@ class StateFragmentPresenter @Inject constructor(
    * Whenever an answer is submitted using ExplorationProgressController.submitAnswer function,
    * this function will wait for the response from that function and based on which we can move to next state.
    */
-  private fun subscribeToAnswerOutcome(answerOutcomeResultLiveData: LiveData<AsyncResult<AnswerOutcome>>) {
+  private fun subscribeToAnswerOutcome(
+    answerOutcomeResultLiveData: LiveData<AsyncResult<AnswerOutcome>>
+  ) {
     val answerOutcomeLiveData = getAnswerOutcome(answerOutcomeResultLiveData)
-    answerOutcomeLiveData.observe(fragment, Observer { result ->
-      // If the answer was submitted on behalf of the Continue interaction, automatically continue to the next state.
-      if (result.state.interaction.id == "Continue") {
-        recyclerViewAssembler.stopHintsFromShowing()
-        viewModel.setHintBulbVisibility(false)
-        moveToNextState()
-      } else {
-        if (result.labelledAsCorrectAnswer) {
+    answerOutcomeLiveData.observe(
+      fragment,
+      Observer { result ->
+        // If the answer was submitted on behalf of the Continue interaction, automatically continue to the next state.
+        if (result.state.interaction.id == "Continue") {
           recyclerViewAssembler.stopHintsFromShowing()
           viewModel.setHintBulbVisibility(false)
-          recyclerViewAssembler.showCongratulationMessageOnCorrectAnswer()
-        } else{
-          viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
+          moveToNextState()
+        } else {
+          if (result.labelledAsCorrectAnswer) {
+            recyclerViewAssembler.stopHintsFromShowing()
+            viewModel.setHintBulbVisibility(false)
+            recyclerViewAssembler.showCongratulationMessageOnCorrectAnswer()
+          } else {
+            viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
+          }
+          recyclerViewAssembler.readOutAnswerFeedback(result.feedback)
         }
-        recyclerViewAssembler.readOutAnswerFeedback(result.feedback)
       }
-    })
+    )
   }
 
   /** Helper for [subscribeToSolution]. */
@@ -349,12 +377,16 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   /** Helper for subscribeToAnswerOutcome. */
-  private fun getAnswerOutcome(answerOutcome: LiveData<AsyncResult<AnswerOutcome>>): LiveData<AnswerOutcome> {
+  private fun getAnswerOutcome(
+    answerOutcome: LiveData<AsyncResult<AnswerOutcome>>
+  ): LiveData<AnswerOutcome> {
     return Transformations.map(answerOutcome, ::processAnswerOutcome)
   }
 
   /** Helper for [subscribeToAnswerOutcome]. */
-  private fun processAnswerOutcome(ephemeralStateResult: AsyncResult<AnswerOutcome>): AnswerOutcome {
+  private fun processAnswerOutcome(
+    ephemeralStateResult: AsyncResult<AnswerOutcome>
+  ): AnswerOutcome {
     if (ephemeralStateResult.isFailure()) {
       logger.e(
         "StateFragment",
@@ -395,9 +427,12 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun moveToNextState() {
     viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
-    explorationProgressController.moveToNextState().observe(fragment, Observer {
-      recyclerViewAssembler.collapsePreviousResponses()
-    })
+    explorationProgressController.moveToNextState().observe(
+      fragment,
+      Observer {
+        recyclerViewAssembler.collapsePreviousResponses()
+      }
+    )
   }
 
   private fun hideKeyboard() {
@@ -409,7 +444,8 @@ class StateFragmentPresenter @Inject constructor(
     )
   }
 
-  fun setAudioBarVisibility(visibility: Boolean) = getStateViewModel().setAudioBarVisibility(visibility)
+  fun setAudioBarVisibility(visibility: Boolean) =
+    getStateViewModel().setAudioBarVisibility(visibility)
 
   fun scrollToTop() {
     binding.stateRecyclerView.smoothScrollToPosition(0)
@@ -419,18 +455,30 @@ class StateFragmentPresenter @Inject constructor(
 
   /** Updates submit button UI as active if pendingAnswerError null else inactive. */
   fun updateSubmitButton(pendingAnswerError: String?, inputAnswerAvailable: Boolean) {
-    if(inputAnswerAvailable){
+    if (inputAnswerAvailable) {
       viewModel.setCanSubmitAnswer(pendingAnswerError == null)
-    } else{
+    } else {
       viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
     }
   }
 
   private fun markExplorationAsRecentlyPlayed() {
-    storyProgressController.recordRecentlyPlayedChapter(profileId, topicId, storyId, explorationId, Date().time)
+    storyProgressController.recordRecentlyPlayedChapter(
+      profileId,
+      topicId,
+      storyId,
+      explorationId,
+      Date().time
+    )
   }
 
   private fun markExplorationCompleted() {
-    storyProgressController.recordCompletedChapter(profileId, topicId, storyId, explorationId, Date().time)
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      topicId,
+      storyId,
+      explorationId,
+      Date().time
+    )
   }
 }

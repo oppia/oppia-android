@@ -149,7 +149,14 @@
           }
         ],
         "id": "MultipleChoiceInput",
-        "solution": null
+        "solution": {
+          "answer_is_exclusive": false,
+          "correct_answer": "<p>The number of pieces of cake I want.</p>",
+          "explanation": {
+            "html":  "<p>The number of pieces of cake I want.</p>",
+            "content_id": "solution"
+          }
+        }
       },
       "param_changes": [],
       "solicit_answer_details": false

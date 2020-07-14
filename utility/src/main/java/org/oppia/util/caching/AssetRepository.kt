@@ -1,7 +1,7 @@
 package org.oppia.util.caching
 
 import android.content.Context
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
@@ -22,7 +22,7 @@ import kotlin.concurrent.withLock
 @Singleton
 class AssetRepository @Inject constructor(
   private val context: Context,
-  private val logger: Logger
+  private val logger: ConsoleLogger
 ) {
   private val repositoryLock = ReentrantLock()
 
