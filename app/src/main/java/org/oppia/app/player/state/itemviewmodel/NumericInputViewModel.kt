@@ -16,7 +16,7 @@ import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 /** [StateItemViewModel] for the numeric input interaction. */
 class NumericInputViewModel(
   private val context: Context,
-  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver
+  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver // ktlint-disable max-line-length
 ) : StateItemViewModel(ViewType.NUMERIC_INPUT_INTERACTION), InteractionAnswerHandler {
   var answerText: CharSequence = ""
   private var pendingAnswerError: String? = null
@@ -25,11 +25,15 @@ class NumericInputViewModel(
   private val stringToNumberParser: StringToNumberParser = StringToNumberParser()
 
   init {
-    val callback: Observable.OnPropertyChangedCallback = object : Observable.OnPropertyChangedCallback() {
-      override fun onPropertyChanged(sender: Observable, propertyId: Int) {
-        interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(pendingAnswerError, answerText.isNotEmpty())
+    val callback: Observable.OnPropertyChangedCallback =
+      object : Observable.OnPropertyChangedCallback() {
+        override fun onPropertyChanged(sender: Observable, propertyId: Int) {
+          interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
+            pendingAnswerError,
+            answerText.isNotEmpty()
+          )
+        }
       }
-    }
     errorMessage.addOnPropertyChangedCallback(callback)
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
   }
@@ -38,12 +42,12 @@ class NumericInputViewModel(
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
     if (answerText.isNotEmpty()) {
       pendingAnswerError = when (category) {
-        AnswerErrorCategory.REAL_TIME -> stringToNumberParser.getRealTimeAnswerError(answerText.toString()).getErrorMessageFromStringRes(
-          context
-        )
-        AnswerErrorCategory.SUBMIT_TIME -> stringToNumberParser.getSubmitTimeError(answerText.toString()).getErrorMessageFromStringRes(
-          context
-        )
+        AnswerErrorCategory.REAL_TIME ->
+          stringToNumberParser.getRealTimeAnswerError(answerText.toString())
+            .getErrorMessageFromStringRes(context)
+        AnswerErrorCategory.SUBMIT_TIME ->
+          stringToNumberParser.getSubmitTimeError(answerText.toString())
+            .getErrorMessageFromStringRes(context)
       }
     }
     errorMessage.set(pendingAnswerError)
@@ -59,7 +63,7 @@ class NumericInputViewModel(
       override fun onTextChanged(answer: CharSequence, start: Int, before: Int, count: Int) {
         answerText = answer.toString().trim()
         val isAnswerTextAvailable = answerText.isNotEmpty()
-        if(isAnswerTextAvailable != isAnswerAvailable.get()){
+        if (isAnswerTextAvailable != isAnswerAvailable.get()) {
           isAnswerAvailable.set(isAnswerTextAvailable)
         }
         checkPendingAnswerError(AnswerErrorCategory.REAL_TIME)
@@ -74,7 +78,8 @@ class NumericInputViewModel(
     val userAnswerBuilder = UserAnswer.newBuilder()
     if (answerText.isNotEmpty()) {
       val answerTextString = answerText.toString()
-      userAnswerBuilder.answer = InteractionObject.newBuilder().setReal(answerTextString.toDouble()).build()
+      userAnswerBuilder.answer =
+        InteractionObject.newBuilder().setReal(answerTextString.toDouble()).build()
       userAnswerBuilder.plainAnswer = answerTextString
     }
     return userAnswerBuilder.build()

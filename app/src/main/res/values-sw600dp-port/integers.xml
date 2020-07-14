@@ -4,5 +4,6 @@
   <integer name="promoted_story_list_limit">3</integer>
   <integer name="recently_played_span_count">3</integer>
   <integer name="profile_chooser_span_count">3</integer>
+  <integer name="topic_revision_span_count">3</integer>
   <integer name="completed_story_span_count">3</integer>
 </resources>
