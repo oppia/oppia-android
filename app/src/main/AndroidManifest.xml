@@ -12,6 +12,8 @@
     android:roundIcon="@mipmap/ic_launcher_round"
     android:supportsRtl="true"
     android:theme="@style/OppiaTheme">
+    <meta-data android:name="firebase_analytics_collection_deactivated" android:value="true" />
+    <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="false" />
     <activity
       android:name=".administratorcontrols.AdministratorControlsActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
@@ -116,6 +118,7 @@
     <activity android:name=".testing.AudioFragmentTestActivity" />
     <activity android:name=".testing.BindableAdapterTestActivity" />
     <activity android:name=".testing.ConceptCardFragmentTestActivity" />
+    <activity android:name=".testing.DragDropTestActivity" />
     <activity android:name=".testing.ExplorationInjectionActivity" />
     <activity android:name=".testing.ExplorationTestActivity" />
     <activity
@@ -140,6 +143,7 @@
     <activity
       android:name=".testing.TopicTestActivityForStory"
       android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity android:name=".testing.TopicRevisionTestActivity" />
     <activity
       android:name=".topic.questionplayer.QuestionPlayerActivity"
       android:label="@string/question_player_title" />

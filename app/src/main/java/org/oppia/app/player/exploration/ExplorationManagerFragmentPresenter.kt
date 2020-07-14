@@ -11,14 +11,14 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.model.StoryTextSize
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The presenter for [ExplorationManagerFragment]. */
 @FragmentScope
 class ExplorationManagerFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val activity: AppCompatActivity,
   private val fragment: Fragment
 ) {

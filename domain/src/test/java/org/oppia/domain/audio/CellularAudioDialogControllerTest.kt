@@ -46,7 +46,8 @@ class CellularAudioDialogControllerTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Inject lateinit var cellularAudioDialogController: CellularAudioDialogController
+  @Inject
+  lateinit var cellularAudioDialogController: CellularAudioDialogController
 
   @Inject
   @InternalCoroutinesApi
@@ -76,7 +77,8 @@ class CellularAudioDialogControllerTest {
   @ExperimentalCoroutinesApi
   @InternalCoroutinesApi
   fun testController_providesInitialLiveData_indicatesToNotHideDialogAndNotUseCellularData() {
-    val cellularDataPreference = cellularAudioDialogController.getCellularDataPreference()
+    val cellularDataPreference =
+      cellularAudioDialogController.getCellularDataPreference()
     cellularDataPreference.observeForever(mockCellularDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -89,8 +91,9 @@ class CellularAudioDialogControllerTest {
   @Test
   @ExperimentalCoroutinesApi
   @InternalCoroutinesApi
-  fun testController_setNeverUseCellularDataPref_providesLiveData_indicatesToHideDialogAndNotUseCellularData() {
-    val appHistory = cellularAudioDialogController.getCellularDataPreference()
+  fun testController_setNeverUseCellularDataPref_providesLiveData_indicatesToHideDialogAndNotUseCellularData() { // ktlint-disable max-line-length
+    val appHistory =
+      cellularAudioDialogController.getCellularDataPreference()
 
     appHistory.observeForever(mockCellularDataObserver)
     cellularAudioDialogController.setNeverUseCellularDataPreference()
@@ -105,8 +108,9 @@ class CellularAudioDialogControllerTest {
   @Test
   @ExperimentalCoroutinesApi
   @InternalCoroutinesApi
-  fun testController_setAlwaysUseCellularDataPref_providesLiveData_indicatesToHideDialogAndUseCellularData() {
-    val appHistory = cellularAudioDialogController.getCellularDataPreference()
+  fun testController_setAlwaysUseCellularDataPref_providesLiveData_indicatesToHideDialogAndUseCellularData() { // ktlint-disable max-line-length
+    val appHistory =
+      cellularAudioDialogController.getCellularDataPreference()
 
     appHistory.observeForever(mockCellularDataObserver)
     cellularAudioDialogController.setAlwaysUseCellularDataPreference()
@@ -120,13 +124,14 @@ class CellularAudioDialogControllerTest {
   @Test
   @ExperimentalCoroutinesApi
   @InternalCoroutinesApi
-  fun testController_setNeverUseCellularDataPref_observedNewController_indicatesToHideDialogAndNotUseCellularData() {
+  fun testController_setNeverUseCellularDataPref_observedNewController_indicatesToHideDialogAndNotUseCellularData() { // ktlint-disable max-line-length
     // Pause immediate dispatching to avoid an infinite loop within the provider pipeline.
     cellularAudioDialogController.setNeverUseCellularDataPreference()
     testCoroutineDispatchers.advanceUntilIdle()
 
     setUpTestApplicationComponent()
-    val appHistory = cellularAudioDialogController.getCellularDataPreference()
+    val appHistory =
+      cellularAudioDialogController.getCellularDataPreference()
     appHistory.observeForever(mockCellularDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -139,12 +144,13 @@ class CellularAudioDialogControllerTest {
   @Test
   @ExperimentalCoroutinesApi
   @InternalCoroutinesApi
-  fun testController_setAlwaysUseCellularDataPref_observedNewController_indicatesToHideDialogAndUseCellularData() {
+  fun testController_setAlwaysUseCellularDataPref_observedNewController_indicatesToHideDialogAndUseCellularData() { // ktlint-disable max-line-length
     cellularAudioDialogController.setAlwaysUseCellularDataPreference()
     testCoroutineDispatchers.advanceUntilIdle()
 
     setUpTestApplicationComponent()
-    val appHistory = cellularAudioDialogController.getCellularDataPreference()
+    val appHistory =
+      cellularAudioDialogController.getCellularDataPreference()
     appHistory.observeForever(mockCellularDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -180,7 +186,13 @@ class CellularAudioDialogControllerTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestDispatcherModule::class, TestModule::class, TestLogReportingModule::class])
+  @Component(
+    modules = [
+      TestDispatcherModule::class,
+      TestModule::class,
+      TestLogReportingModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

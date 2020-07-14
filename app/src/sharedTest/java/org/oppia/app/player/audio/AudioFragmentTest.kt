@@ -71,16 +71,22 @@ private const val PROFILE_ID_INVALID_AUDIO_LANGUAGE = 2
 @RunWith(AndroidJUnit4::class)
 class AudioFragmentTest {
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var context: Context
 
-  @Inject lateinit var audioPlayerController: AudioPlayerController
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var audioPlayerController: AudioPlayerController
   private lateinit var shadowMediaPlayer: Any
 
   private val TEST_URL =
-    "https://storage.googleapis.com/oppiaserver-resources/exploration/2mzzFVDLuAj8/assets/audio/content-en-057j51i2es.mp3"
+    "https://storage.googleapis.com/oppiaserver-resources/exploration/" +
+      "2mzzFVDLuAj8/assets/audio/content-en-057j51i2es.mp3"
   private val TEST_URL2 =
-    "https://storage.googleapis.com/oppiaserver-resources/exploration/2mzzFVDLuAj8/assets/audio/content-es-i0nhu49z0q.mp3"
+    "https://storage.googleapis.com/oppiaserver-resources/exploration/" +
+      "2mzzFVDLuAj8/assets/audio/content-es-i0nhu49z0q.mp3"
 
   @Before
   fun setUp() {
@@ -107,82 +113,124 @@ class AudioFragmentTest {
 
   @Test
   fun testAudioFragment_openFragment_profileWithEnglishAudioLanguage_showsEnglishAudioLanguage() {
-    launch<AudioFragmentTestActivity>(createHomeActivityIntent(PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH)).use {
+    launch<AudioFragmentTestActivity>(
+      createHomeActivityIntent(
+        PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
+      )
+    ).use {
       onView(withId(R.id.tvAudioLanguage)).check(matches(withText("EN")))
     }
   }
 
   @Test
   fun testAudioFragment_openFragment_showsDefaultAudioLanguageAsHindi() {
-    launch<AudioFragmentTestActivity>(createHomeActivityIntent(PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_HINDI)).use {
+    launch<AudioFragmentTestActivity>(
+      createHomeActivityIntent(
+        PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_HINDI
+      )
+    ).use {
       onView(withId(R.id.tvAudioLanguage)).check(matches(withText("HI")))
     }
   }
 
   @Test
-  fun testAudioFragment_openFragment_showsEnglishAudioLanguageWhenDefaultAudioLanguageNotAvailable() {
-    launch<AudioFragmentTestActivity>(createHomeActivityIntent(PROFILE_ID_INVALID_AUDIO_LANGUAGE)).use {
+  fun testAudioFragment_openFragment_showsEnglishAudioLanguageWhenDefaultAudioLanguageNotAvailable() { // ktlint-disable max-line-length
+    launch<AudioFragmentTestActivity>(
+      createHomeActivityIntent(
+        PROFILE_ID_INVALID_AUDIO_LANGUAGE
+      )
+    ).use {
       onView(withId(R.id.tvAudioLanguage)).check(matches(withText("EN")))
     }
   }
 
   @Test
   fun testAudioFragment_openFragment_showsFragment() {
-    launch<AudioFragmentTestActivity>(createHomeActivityIntent(PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH)).use {
-      onView(withId(R.id.ivPlayPauseAudio)).check(matches(isDisplayed()))
-      onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(context.getString(R.string.audio_play_description))))
+    launch<AudioFragmentTestActivity>(
+      createHomeActivityIntent(
+        PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
+      )
+    ).use {
+      onView(withId(R.id.ivPlayPauseAudio))
+        .check(matches(isDisplayed()))
+      onView(withId(R.id.ivPlayPauseAudio))
+        .check(matches(withContentDescription(context.getString(R.string.audio_play_description))))
     }
   }
 
   @Test
   fun testAudioFragment_invokePrepared_clickPlayButton_showsPauseButton() {
-    launch<AudioFragmentTestActivity>(createHomeActivityIntent(PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH)).use {
+    launch<AudioFragmentTestActivity>(
+      createHomeActivityIntent(
+        PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
+      )
+    ).use {
       invokePreparedListener(shadowMediaPlayer)
 
       onView(withId(R.id.ivPlayPauseAudio)).perform(click())
 
-      onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
+      onView(withId(R.id.ivPlayPauseAudio))
+        .check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
     }
   }
 
   @Test
   fun testAudioFragment_invokePrepared_touchSeekBar_checkStillPaused() {
-    launch<AudioFragmentTestActivity>(createHomeActivityIntent(PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH)).use {
+    launch<AudioFragmentTestActivity>(
+      createHomeActivityIntent(
+        PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
+      )
+    ).use {
       invokePreparedListener(shadowMediaPlayer)
 
       onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
 
-      onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(context.getString(R.string.audio_play_description))))
+      onView(withId(R.id.ivPlayPauseAudio))
+        .check(matches(withContentDescription(context.getString(R.string.audio_play_description))))
     }
   }
 
   @Test
   fun testAudioFragment_invokePrepared_clickPlay_touchSeekBar_checkStillPlaying() {
-    launch<AudioFragmentTestActivity>(createHomeActivityIntent(PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH)).use {
+    launch<AudioFragmentTestActivity>(
+      createHomeActivityIntent(
+        PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
+      )
+    ).use {
       invokePreparedListener(shadowMediaPlayer)
 
       onView(withId(R.id.ivPlayPauseAudio)).perform(click())
       onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
 
-      onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
+      onView(withId(R.id.ivPlayPauseAudio))
+        .check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
     }
   }
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testAudioFragment_invokePrepared_playAudio_configurationChange_checkStillPlaying() {
-    launch<AudioFragmentTestActivity>(createHomeActivityIntent(PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH)).use {
+    launch<AudioFragmentTestActivity>(
+      createHomeActivityIntent(
+        PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
+      )
+    ).use {
       invokePreparedListener(shadowMediaPlayer)
       onView(withId(R.id.ivPlayPauseAudio)).perform(click())
       onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
+      onView(withId(R.id.ivPlayPauseAudio))
+        .check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
     }
   }
 
   @Test
   fun testAudioFragment_invokePrepared_changeDifferentLanguage_checkResetSeekBarAndPaused() {
-    launch<AudioFragmentTestActivity>(createHomeActivityIntent(PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH)).use {
+    launch<AudioFragmentTestActivity>(
+      createHomeActivityIntent(
+        PROFILE_ID_DEFAULT_AUDIO_LANGUAGE_ENGLISH
+      )
+    ).use {
       invokePreparedListener(shadowMediaPlayer)
       onView(withId(R.id.ivPlayPauseAudio)).perform(click())
       onView(withId(R.id.sbAudioProgress)).perform(clickSeekBar(100))
@@ -192,7 +240,8 @@ class AudioFragmentTest {
       onView(withText(locale.getDisplayLanguage(locale))).inRoot(isDialog()).perform(click())
       onView(withText("OK")).inRoot(isDialog()).perform(click())
 
-      onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(context.getString(R.string.audio_play_description))))
+      onView(withId(R.id.ivPlayPauseAudio))
+        .check(matches(withContentDescription(context.getString(R.string.audio_play_description))))
       onView(withId(R.id.sbAudioProgress)).check(matches(withSeekBarPosition(0)))
     }
   }
@@ -208,22 +257,26 @@ class AudioFragmentTest {
   }
 
   private fun clickSeekBar(position: Int): ViewAction {
-    return GeneralClickAction(Tap.SINGLE, object : CoordinatesProvider {
-      override fun calculateCoordinates(view: View?): FloatArray {
-        val seekBar = view as SeekBar
-        val screenPos = IntArray(2)
-        seekBar.getLocationInWindow(screenPos)
-        val trueWith = seekBar.width - seekBar.paddingLeft - seekBar.paddingRight
+    return GeneralClickAction(
+      Tap.SINGLE,
+      object : CoordinatesProvider {
+        override fun calculateCoordinates(view: View?): FloatArray {
+          val seekBar = view as SeekBar
+          val screenPos = IntArray(2)
+          seekBar.getLocationInWindow(screenPos)
+          val trueWith = seekBar.width - seekBar.paddingLeft - seekBar.paddingRight
 
-        val percentagePos = (position.toFloat() / seekBar.max)
-        val screenX = trueWith * percentagePos + screenPos[0] + seekBar.paddingLeft
-        val screenY = seekBar.height / 2f + screenPos[1]
-        val coordinates = FloatArray(2)
-        coordinates[0] = screenX
-        coordinates[1] = screenY
-        return coordinates
-      }
-    }, Press.FINGER, /* inputDevice= */ 0, /* deviceState= */ 0)
+          val percentagePos = (position.toFloat() / seekBar.max)
+          val screenX = trueWith * percentagePos + screenPos[0] + seekBar.paddingLeft
+          val screenY = seekBar.height / 2f + screenPos[1]
+          val coordinates = FloatArray(2)
+          coordinates[0] = screenX
+          coordinates[1] = screenY
+          return coordinates
+        }
+      },
+      Press.FINGER, /* inputDevice= */ 0, /* deviceState= */ 0
+    )
   }
 
   private fun setUpTestApplicationComponent() {
@@ -236,7 +289,10 @@ class AudioFragmentTest {
   private fun addMediaInfo() {
     val dataSource = toDataSource(context, Uri.parse(TEST_URL))
     val dataSource2 = toDataSource(context, Uri.parse(TEST_URL2))
-    val mediaInfo = createMediaInfo(/* duration= */ 1000,/* preparationDelay= */ 0)
+    val mediaInfo = createMediaInfo(
+      /* duration= */ 1000,
+      /* preparationDelay= */ 0
+    )
     addMediaInfo(dataSource, mediaInfo)
     addMediaInfo(dataSource2, mediaInfo)
   }
@@ -269,16 +325,24 @@ class AudioFragmentTest {
 
   /** Returns a new ShadowMediaPlayer.MediaInfo using reflection. */
   private fun createMediaInfo(duration: Int, preparationDelay: Int): Any {
-    val mediaInfoClass = Class.forName("org.robolectric.shadows.ShadowMediaPlayer\$MediaInfo")
+    val mediaInfoClass = Class.forName(
+      "org.robolectric.shadows.ShadowMediaPlayer\$MediaInfo"
+    )
     return mediaInfoClass.getConstructor(Int::class.java, Int::class.java)
       .newInstance(duration, preparationDelay)
   }
 
   /** Calls ShadowMediaPlayer.addMediaInfo() using reflection. */
   private fun addMediaInfo(dataSource: Any, mediaInfo: Any) {
-    val shadowMediaPlayerClass = Class.forName("org.robolectric.shadows.ShadowMediaPlayer")
-    val dataSourceClass = Class.forName("org.robolectric.shadows.util.DataSource")
-    val mediaInfoClass = Class.forName("org.robolectric.shadows.ShadowMediaPlayer\$MediaInfo")
+    val shadowMediaPlayerClass = Class.forName(
+      "org.robolectric.shadows.ShadowMediaPlayer"
+    )
+    val dataSourceClass = Class.forName(
+      "org.robolectric.shadows.util.DataSource"
+    )
+    val mediaInfoClass = Class.forName(
+      "org.robolectric.shadows.ShadowMediaPlayer\$MediaInfo"
+    )
     val addMediaInfoMethod =
       shadowMediaPlayerClass.getMethod("addMediaInfo", dataSourceClass, mediaInfoClass)
     addMediaInfoMethod.invoke(/* obj= */ null, dataSource, mediaInfo)
@@ -315,14 +379,18 @@ class AudioFragmentTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
     @Singleton
     @Provides
     @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBlockingDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 

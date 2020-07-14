@@ -20,11 +20,12 @@ import org.oppia.app.utility.FontScaleConfigurationUtil
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
-private const val TAG_EXPLORATION_FRAGMENT = "TAG_EXPLORATION_FRAGMENT"
-private const val TAG_EXPLORATION_MANAGER_FRAGMENT = "TAG_EXPLORATION_MANAGER_FRAGMENT"
+const val TAG_EXPLORATION_FRAGMENT = "TAG_EXPLORATION_FRAGMENT"
+const val TAG_EXPLORATION_MANAGER_FRAGMENT = "TAG_EXPLORATION_MANAGER_FRAGMENT"
+const val TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER = "HINTS_AND_SOLUTION_EXPLORATION_MANAGER"
 
 /** The Presenter for [ExplorationActivity]. */
 @ActivityScope
@@ -33,7 +34,7 @@ class ExplorationActivityPresenter @Inject constructor(
   private val explorationDataController: ExplorationDataController,
   private val viewModelProvider: ViewModelProvider<ExplorationViewModel>,
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
-  private val logger: Logger
+  private val logger: ConsoleLogger
 ) {
   private lateinit var explorationToolbar: Toolbar
   private var internalProfileId: Int = -1
@@ -105,12 +106,28 @@ class ExplorationActivityPresenter @Inject constructor(
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_fragment_placeholder,
         ExplorationFragment.newInstance(
-          topicId = topicId, internalProfileId = internalProfileId,
-          storyId = storyId, storyTextSize = result.name, explorationId = explorationId
+          topicId = topicId,
+          internalProfileId = internalProfileId,
+          storyId = storyId,
+          storyTextSize = result.name,
+          explorationId = explorationId
         ),
         TAG_EXPLORATION_FRAGMENT
       ).commitNow()
     }
+
+    if (getHintsAndSolutionExplorationManagerFragment() == null) {
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.exploration_fragment_placeholder,
+        HintsAndSolutionExplorationManagerFragment()
+      ).commitNow()
+    }
+  }
+
+  private fun getHintsAndSolutionExplorationManagerFragment(): HintsAndSolutionExplorationManagerFragment? { // ktlint-disable max-line-length
+    return activity.supportFragmentManager.findFragmentByTag(
+      TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
+    ) as HintsAndSolutionExplorationManagerFragment?
   }
 
   fun showAudioButton() = exploreViewModel.showAudioButton.set(true)
@@ -171,11 +188,16 @@ class ExplorationActivityPresenter @Inject constructor(
     subscribeToExploration(explorationDataController.getExplorationById(explorationId))
   }
 
-  private fun subscribeToExploration(explorationResultLiveData: LiveData<AsyncResult<Exploration>>) {
+  private fun subscribeToExploration(
+    explorationResultLiveData: LiveData<AsyncResult<Exploration>>
+  ) {
     val explorationLiveData = getExploration(explorationResultLiveData)
-    explorationLiveData.observe(activity, Observer<Exploration> {
-      explorationToolbar.title = it.title
-    })
+    explorationLiveData.observe(
+      activity,
+      Observer<Exploration> {
+        explorationToolbar.title = it.title
+      }
+    )
   }
 
   private fun getExplorationViewModel(): ExplorationViewModel {
@@ -183,7 +205,9 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   /** Helper for subscribeToExploration. */
-  private fun getExploration(exploration: LiveData<AsyncResult<Exploration>>): LiveData<Exploration> {
+  private fun getExploration(
+    exploration: LiveData<AsyncResult<Exploration>>
+  ): LiveData<Exploration> {
     return Transformations.map(exploration, ::processExploration)
   }
 
@@ -191,7 +215,7 @@ class ExplorationActivityPresenter @Inject constructor(
   private fun processExploration(ephemeralStateResult: AsyncResult<Exploration>): Exploration {
     if (ephemeralStateResult.isFailure()) {
       logger.e(
-        "ExplorationActivity",
+        "StateFragment",
         "Failed to retrieve answer outcome",
         ephemeralStateResult.getErrorOrNull()!!
       )
@@ -224,13 +248,17 @@ class ExplorationActivityPresenter @Inject constructor(
 
   fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
     val explorationFragment =
-      activity.supportFragmentManager.findFragmentByTag(TAG_EXPLORATION_FRAGMENT) as ExplorationFragment
+      activity.supportFragmentManager.findFragmentByTag(
+        TAG_EXPLORATION_FRAGMENT
+      ) as ExplorationFragment
     explorationFragment.revealHint(saveUserChoice, hintIndex)
   }
 
   fun revealSolution(saveUserChoice: Boolean) {
     val explorationFragment =
-      activity.supportFragmentManager.findFragmentByTag(TAG_EXPLORATION_FRAGMENT) as ExplorationFragment
+      activity.supportFragmentManager.findFragmentByTag(
+        TAG_EXPLORATION_FRAGMENT
+      ) as ExplorationFragment
     explorationFragment.revealSolution(saveUserChoice)
   }
 }

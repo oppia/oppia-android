@@ -22,8 +22,8 @@ import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
+import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.logging.ExceptionLogger
-import org.oppia.util.logging.Logger
 import org.oppia.util.profile.DirectoryManagementUtil
 import java.io.File
 import java.io.FileOutputStream
@@ -55,12 +55,10 @@ private const val UPDATE_APP_LANGUAGE_TRANSFORMED_PROVIDER_ID = "update_app_lang
 private const val UPDATE_AUDIO_LANGUAGE_TRANSFORMED_PROVIDER_ID =
   "update_audio_language_transformed_id"
 
-const val PROFILE_AVATAR_FILE_NAME = "profile_avatar.png"
-
 /** Controller for retrieving, adding, updating, and deleting profiles. */
 @Singleton
 class ProfileManagementController @Inject constructor(
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   cacheStoreFactory: PersistentCacheStore.Factory,
   private val dataProviders: DataProviders,
   private val context: Context,
@@ -731,7 +729,8 @@ class ProfileManagementController @Inject constructor(
 
   private fun saveImageToInternalStorage(avatarImagePath: Uri, profileDir: File): String? {
     val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, avatarImagePath)
-    val imageFile = File(profileDir, PROFILE_AVATAR_FILE_NAME)
+    val fileName = avatarImagePath.pathSegments.last()
+    val imageFile = File(profileDir, fileName)
     try {
       FileOutputStream(imageFile).use { fos ->
         rotateAndCompressBitmap(avatarImagePath, bitmap, /* cropSize= */ 300)

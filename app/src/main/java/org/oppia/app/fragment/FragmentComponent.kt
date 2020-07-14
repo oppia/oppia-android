@@ -9,6 +9,7 @@ import org.oppia.app.completedstorylist.CompletedStoryListFragment
 import org.oppia.app.drawer.NavigationDrawerFragment
 import org.oppia.app.help.HelpFragment
 import org.oppia.app.help.faq.FAQListFragment
+import org.oppia.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.app.home.HomeFragment
 import org.oppia.app.home.recentlyplayed.RecentlyPlayedFragment
 import org.oppia.app.mydownloads.DownloadsTabFragment
@@ -20,8 +21,8 @@ import org.oppia.app.options.OptionsFragment
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.exploration.ExplorationFragment
 import org.oppia.app.player.exploration.ExplorationManagerFragment
+import org.oppia.app.player.exploration.HintsAndSolutionExplorationManagerFragment
 import org.oppia.app.player.state.StateFragment
-import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionFragment
 import org.oppia.app.player.state.itemviewmodel.InteractionViewModelModule
 import org.oppia.app.profile.AdminSettingsDialogFragment
 import org.oppia.app.profile.ProfileChooserFragment
@@ -34,6 +35,7 @@ import org.oppia.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.app.topic.info.TopicInfoFragment
 import org.oppia.app.topic.lessons.TopicLessonsFragment
 import org.oppia.app.topic.practice.TopicPracticeFragment
+import org.oppia.app.topic.questionplayer.HintsAndSolutionQuestionManagerFragment
 import org.oppia.app.topic.questionplayer.QuestionPlayerFragment
 import org.oppia.app.topic.revision.TopicRevisionFragment
 import org.oppia.app.topic.revisioncard.RevisionCardFragment
@@ -69,7 +71,9 @@ interface FragmentComponent {
   fun inject(explorationManagerFragment: ExplorationManagerFragment)
   fun inject(faqListFragment: FAQListFragment)
   fun inject(helpFragment: HelpFragment)
-  fun inject(hintsAndSolutionFragment: HintsAndSolutionFragment)
+  fun inject(hintsAndSolutionDialogFragment: HintsAndSolutionDialogFragment)
+  fun inject(hintsAndSolutionExplorationManagerFragment: HintsAndSolutionExplorationManagerFragment)
+  fun inject(hintsAndSolutionQuestionManagerFragment: HintsAndSolutionQuestionManagerFragment)
   fun inject(homeFragment: HomeFragment)
   fun inject(myDownloadsFragment: MyDownloadsFragment)
   fun inject(navigationDrawerFragment: NavigationDrawerFragment)

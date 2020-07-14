@@ -15,8 +15,10 @@ class RichTextViewMatcher {
         override fun describeTo(description: Description) {
           description.appendText("Checks if view contains rich text")
         }
+
         override fun matchesSafely(view: View): Boolean {
-          return view is TextView && view.text.toSpannable().getSpans(0, view.text.length, CharacterStyle::class.java).isNotEmpty()
+          return view is TextView && view.text.toSpannable()
+            .getSpans(0, view.text.length, CharacterStyle::class.java).isNotEmpty()
         }
       }
     }

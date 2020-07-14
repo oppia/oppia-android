@@ -13,6 +13,7 @@ import javax.inject.Inject
 class ExplorationFragment : InjectableFragment() {
   @Inject
   lateinit var explorationFragmentPresenter: ExplorationFragmentPresenter
+
   @Inject
   lateinit var fontScaleConfigurationUtil: FontScaleConfigurationUtil
 

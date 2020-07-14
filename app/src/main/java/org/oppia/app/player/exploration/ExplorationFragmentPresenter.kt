@@ -63,10 +63,14 @@ class ExplorationFragmentPresenter @Inject constructor(
   }
 
   private fun getStateFragment(): StateFragment? {
-    return fragment.childFragmentManager.findFragmentById(R.id.state_fragment_placeholder) as StateFragment?
+    return fragment
+      .childFragmentManager
+      .findFragmentById(
+        R.id.state_fragment_placeholder
+      ) as StateFragment?
   }
 
-  private fun logPracticeFragmentEvent(topicId: String, storyId: String, explorationId: String){
+  private fun logPracticeFragmentEvent(topicId: String, storyId: String, explorationId: String) {
     analyticsController.logTransitionEvent(
       fragment.context!!.applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,
