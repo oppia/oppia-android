@@ -140,7 +140,8 @@ class ExplorationActivityPresenter @Inject constructor(
             TAG_EXPLORATION_FRAGMENT
           ).commitNow()
         }
-      })
+      }
+    )
   }
 
   private fun getHintsAndSolutionExplorationManagerFragment(): HintsAndSolutionExplorationManagerFragment? { // ktlint-disable max-line-length
