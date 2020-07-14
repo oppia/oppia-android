@@ -258,7 +258,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     gcsEntityId: String
   ) {
     val contentSubtitledHtml: SubtitledHtml = ephemeralState.state.content
-    contentViewModel = ContentViewModel(contentSubtitledHtml.contentId, contentSubtitledHtml.html, gcsEntityId)
+    contentViewModel =
+      ContentViewModel(contentSubtitledHtml.contentId, contentSubtitledHtml.html, gcsEntityId)
     pendingItemList += contentViewModel!!
   }
 
@@ -396,19 +397,19 @@ class StatePlayerRecyclerViewAssembler private constructor(
       val audioUiManager = getAudioUiManager()
       if (!isAudioPlaybackEnabled()) {
         audioUiManager?.enableAudioPlayback(audioPlaybackContentId)
-        handleContentCardHighlighting(audioPlaybackContentId?: stateContentId, true)
+        handleContentCardHighlighting(audioPlaybackContentId ?: stateContentId, true)
       } else {
         audioUiManager?.disableAudioPlayback()
-        handleContentCardHighlighting(audioPlaybackContentId?: stateContentId, false)
+        handleContentCardHighlighting(audioPlaybackContentId ?: stateContentId, false)
       }
     }
   }
 
   fun handleContentCardHighlighting(contentId: String, playing: Boolean) {
-    if(contentViewModel!=null && contentViewModel!!.contentId == contentId){
+    if (contentViewModel != null && contentViewModel!!.contentId == contentId) {
       contentViewModel!!.updateIsAudioPlaying(playing)
     }
-    if(feedbackViewModel!=null && feedbackViewModel!!.contentId == contentId){
+    if (feedbackViewModel != null && feedbackViewModel!!.contentId == contentId) {
       feedbackViewModel!!.updateIsAudioPlaying(playing)
     }
   }
