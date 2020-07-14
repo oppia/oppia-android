@@ -16,8 +16,6 @@
     android:clipToPadding="false"
     android:overScrollMode="never"
     android:background="@color/oppiaBackground"
-    android:paddingStart="332dp"
-    android:paddingEnd="332dp"
     android:paddingBottom="112dp"
     android:scrollbars="none"
     app:data="@{viewModel.topicPracticeSkillLiveData}"
