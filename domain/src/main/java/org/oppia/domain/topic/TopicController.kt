@@ -46,7 +46,6 @@ const val FRACTIONS_SKILL_ID_2 = "B39yK4cbHZYI"
 const val FRACTIONS_SUBTOPIC_ID_1 = "1"
 const val FRACTIONS_SUBTOPIC_ID_2 = "2"
 const val FRACTIONS_SUBTOPIC_ID_3 = "3"
-const val FRACTIONS_SUBTOPIC_ID_4 = "4"
 const val RATIOS_SKILL_ID_0 = "NGZ89uMw0IGV"
 const val TEST_SKILL_CONTENT_ID_0 = "test_skill_content_id_0"
 const val TEST_SKILL_CONTENT_ID_1 = "test_skill_content_id_1"
@@ -446,15 +445,19 @@ class TopicController @Inject constructor(
   private fun retrieveReviewCard(topicId: String, subtopicId: String): RevisionCard {
     return when (subtopicId) {
       FRACTIONS_SUBTOPIC_ID_1 -> createSubtopicFromJson(
-        "fractions_subtopics.json"
+        "fractions_subtopic_0.json"
       )
       FRACTIONS_SUBTOPIC_ID_2 -> createSubtopicFromJson(
-        "fractions_subtopics.json"
+        "test_0_subtopic_0.json"
       )
       FRACTIONS_SUBTOPIC_ID_3 -> createSubtopicFromJson(
-        "fractions_subtopics.json"
+        "test_1_subtopic_0.json"
       )
-      else -> throw IllegalArgumentException("Invalid topic Name: $topicId")
+      else -> {
+        createSubtopicFromJson(
+          "test_0_subtopic_0.json"
+        )
+      }
     }
   }
 
@@ -1120,10 +1123,6 @@ class TopicController @Inject constructor(
       FRACTIONS_SUBTOPIC_ID_3 ->
         LessonThumbnail.newBuilder()
           .setThumbnailGraphic(LessonThumbnailGraphic.MIXED_NUMBERS)
-          .build()
-      FRACTIONS_SUBTOPIC_ID_4 ->
-        LessonThumbnail.newBuilder()
-          .setThumbnailGraphic(LessonThumbnailGraphic.ADDING_FRACTIONS)
           .build()
       else ->
         LessonThumbnail.newBuilder()

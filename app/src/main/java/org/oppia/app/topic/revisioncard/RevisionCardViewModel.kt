@@ -72,7 +72,7 @@ class RevisionCardViewModel @Inject constructor(
     )
     subtopicTitle = revisionCard.subtopicTitle
     return htmlParserFactory.create(
-      resourceBucketName, entityType, subtopicId, /* imageCenterAlign= */ true
+      resourceBucketName, entityType, "iX9kYCjnouWN", /* imageCenterAlign= */ true
     ).parseOppiaHtml(revisionCard.pageContents.html, binding.revisionCardExplanationText)
   }
 }
