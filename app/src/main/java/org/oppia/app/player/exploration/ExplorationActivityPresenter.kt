@@ -117,29 +117,30 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   fun subscribeToAudioLanguageLiveData(profileId: ProfileId) {
-    getProfileData(profileId).observe(activity, Observer<StoryTextSize> { result ->
-      if (getExplorationFragment() == null) {
-        val explorationFragment = ExplorationFragment()
-        val args = Bundle()
-        args.putInt(
-          ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY,
-          internalProfileId
-        )
-        args.putString(ExplorationActivity.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
-        args.putString(ExplorationActivity.EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
-        args.putString(ExplorationActivity.EXPLORATION_ACTIVITY_STORY_TEXT_SIZE, result.name)
-        args.putString(
-          ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY,
-          explorationId
-        )
-        explorationFragment.arguments = args
-        activity.supportFragmentManager.beginTransaction().add(
-          R.id.exploration_fragment_placeholder,
-          explorationFragment,
-          TAG_EXPLORATION_FRAGMENT
-        ).commitNow()
-      }
-    })
+    getProfileData(profileId).observe(
+      activity, Observer<StoryTextSize> { result ->
+        if (getExplorationFragment() == null) {
+          val explorationFragment = ExplorationFragment()
+          val args = Bundle()
+          args.putInt(
+            ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY,
+            internalProfileId
+          )
+          args.putString(ExplorationActivity.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
+          args.putString(ExplorationActivity.EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
+          args.putString(ExplorationActivity.EXPLORATION_ACTIVITY_STORY_TEXT_SIZE, result.name)
+          args.putString(
+            ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY,
+            explorationId
+          )
+          explorationFragment.arguments = args
+          activity.supportFragmentManager.beginTransaction().add(
+            R.id.exploration_fragment_placeholder,
+            explorationFragment,
+            TAG_EXPLORATION_FRAGMENT
+          ).commitNow()
+        }
+      })
   }
 
   private fun getHintsAndSolutionExplorationManagerFragment(): HintsAndSolutionExplorationManagerFragment? { // ktlint-disable max-line-length
