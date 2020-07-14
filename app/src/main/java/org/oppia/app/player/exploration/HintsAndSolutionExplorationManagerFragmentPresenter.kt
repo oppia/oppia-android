@@ -8,14 +8,14 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.EphemeralState
 import org.oppia.domain.exploration.ExplorationProgressController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The presenter for [HintsAndSolutionExplorationManagerFragment]. */
 @FragmentScope
 class HintsAndSolutionExplorationManagerFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val explorationProgressController: ExplorationProgressController
 ) {
 
@@ -30,14 +30,21 @@ class HintsAndSolutionExplorationManagerFragmentPresenter @Inject constructor(
   }
 
   private fun subscribeToCurrentState() {
-    ephemeralStateLiveData.observe(activity, Observer<AsyncResult<EphemeralState>> { result ->
-      processEphemeralStateResult(result)
-    })
+    ephemeralStateLiveData.observe(
+      activity,
+      Observer<AsyncResult<EphemeralState>> { result ->
+        processEphemeralStateResult(result)
+      }
+    )
   }
 
   private fun processEphemeralStateResult(result: AsyncResult<EphemeralState>) {
     if (result.isFailure()) {
-      logger.e("HintsAndSolutionExplorationManagerFragmentPresenter", "Failed to retrieve ephemeral state", result.getErrorOrNull()!!)
+      logger.e(
+        "HintsAndSolutionExplorationManagerFragmentPresenter",
+        "Failed to retrieve ephemeral state",
+        result.getErrorOrNull()!!
+      )
       return
     } else if (result.isPending()) {
       // Display nothing until a valid result is available.

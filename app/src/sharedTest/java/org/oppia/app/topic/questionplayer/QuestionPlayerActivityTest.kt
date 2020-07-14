@@ -24,7 +24,7 @@ class QuestionPlayerActivityTest {
   // TODO(#1273): add tests for Hints and Solution in Question Player .
 
   @Before
-  fun setUp(){
+  fun setUp() {
     FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
   }
 

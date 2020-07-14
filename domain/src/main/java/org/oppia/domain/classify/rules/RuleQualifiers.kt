@@ -33,3 +33,7 @@ annotation class NumericInputRules
 /** Corresponds to [org.oppia.domain.classify.RuleClassifier]s that can be used by the drag drop sort input interaction. */
 @Qualifier
 annotation class DragDropSortInputRules
+
+/** Corresponds to [org.oppia.domain.classify.RuleClassifier]s that can be used by the image click input interaction. */
+@Qualifier
+annotation class ImageClickInputRules
