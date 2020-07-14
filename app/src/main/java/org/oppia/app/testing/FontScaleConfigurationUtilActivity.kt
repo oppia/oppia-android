@@ -10,7 +10,7 @@ import javax.inject.Inject
 class FontScaleConfigurationUtilActivity : InjectableAppCompatActivity() {
 
   @Inject
-  lateinit var fontScaleConfigurationUtilActivityPresenter: FontScaleConfigurationUtilActivityPresenter
+  lateinit var fontScaleConfigurationUtilActivityPresenter: FontScaleConfigurationUtilActivityPresenter // ktlint-disable max-line-length
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
