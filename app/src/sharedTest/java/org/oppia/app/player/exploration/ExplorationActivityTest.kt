@@ -77,6 +77,7 @@ import javax.inject.Singleton
 class ExplorationActivityTest {
   private lateinit var networkConnectionUtil: NetworkConnectionUtil
   private lateinit var explorationDataController: ExplorationDataController
+
   @Inject
   lateinit var context: Context
 
@@ -165,7 +166,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithNoVoiceover_openPrototypeExploration_configurationChange_checkAudioButtonIsHidden() {
+  fun testAudioWithNoVoiceover_openPrototypeExploration_configurationChange_checkAudioButtonIsHidden() { // ktlint-disable max-line-length
     getApplicationDependencies(TEST_EXPLORATION_ID_30)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -207,7 +208,9 @@ class ExplorationActivityTest {
   @Test
   fun testAudioWithCellular_openRatioExploration_clickAudioIcon_checkOpensCellularAudioDialog() {
     getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
-    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
+    networkConnectionUtil.setCurrentConnectionStatus(
+      NetworkConnectionUtil.ConnectionStatus.CELLULAR
+    )
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
@@ -226,9 +229,11 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithCellular_openRatioExploration_clickAudioIcon_changeConfiguration_checkOpensCellularAudioDialog() {
+  fun testAudioWithCellular_openRatioExploration_clickAudioIcon_changeConfiguration_checkOpensCellularAudioDialog() { // ktlint-disable max-line-length
     getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
-    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
+    networkConnectionUtil.setCurrentConnectionStatus(
+      NetworkConnectionUtil.ConnectionStatus.CELLULAR
+    )
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
@@ -248,9 +253,11 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithCellular_openRatioExploration_clickAudioIcon_clickNegative_checkAudioFragmentIsHidden() {
+  fun testAudioWithCellular_openRatioExploration_clickAudioIcon_clickNegative_checkAudioFragmentIsHidden() { // ktlint-disable max-line-length
     getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
-    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
+    networkConnectionUtil.setCurrentConnectionStatus(
+      NetworkConnectionUtil.ConnectionStatus.CELLULAR
+    )
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
@@ -277,9 +284,11 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithCellular_openRatioExploration_clickAudioIcon_clickPositive_checkAudioFragmentIsVisible() {
+  fun testAudioWithCellular_openRatioExploration_clickAudioIcon_clickPositive_checkAudioFragmentIsVisible() { // ktlint-disable max-line-length
     getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
-    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
+    networkConnectionUtil.setCurrentConnectionStatus(
+      NetworkConnectionUtil.ConnectionStatus.CELLULAR
+    )
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -315,9 +324,11 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithCellular_openRatioExploration_clickCheckboxAndNegative_clickAudioIcon_checkAudioFragmentIsHiddenAndDialogIsNotDisplayed() {
+  fun testAudioWithCellular_openRatioExploration_clickCheckboxAndNegative_clickAudioIcon_checkAudioFragmentIsHiddenAndDialogIsNotDisplayed() { // ktlint-disable max-line-length
     getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
-    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
+    networkConnectionUtil.setCurrentConnectionStatus(
+      NetworkConnectionUtil.ConnectionStatus.CELLULAR
+    )
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
@@ -332,9 +343,10 @@ class ExplorationActivityTest {
         )
       )
       onView(withId(R.id.cellular_data_dialog_checkbox)).perform(click())
-      onView(withText(context.getString(R.string.audio_language_select_dialog_cancel_button))).perform(
-        click()
-      )
+      onView(withText(context.getString(R.string.audio_language_select_dialog_cancel_button)))
+        .perform(
+          click()
+        )
 
       onView(withId(R.id.action_audio_player)).perform(click())
 
@@ -347,9 +359,11 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithCellular_openRatioExploration_clickCheckboxAndPositive_clickAudioIconTwice_checkAudioFragmentIsVisibleAndDialogIsNotDisplayed() {
+  fun testAudioWithCellular_openRatioExploration_clickCheckboxAndPositive_clickAudioIconTwice_checkAudioFragmentIsVisibleAndDialogIsNotDisplayed() { // ktlint-disable max-line-length
     getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
-    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
+    networkConnectionUtil.setCurrentConnectionStatus(
+      NetworkConnectionUtil.ConnectionStatus.CELLULAR
+    )
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
@@ -364,9 +378,10 @@ class ExplorationActivityTest {
         )
       )
       onView(withId(R.id.cellular_data_dialog_checkbox)).perform(click())
-      onView(withText(context.getString(R.string.audio_language_select_dialog_okay_button))).perform(
-        click()
-      )
+      onView(withText(context.getString(R.string.audio_language_select_dialog_okay_button)))
+        .perform(
+          click()
+        )
 
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withId(R.id.action_audio_player)).perform(click())
@@ -380,7 +395,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithWifi_openRatioExploration_clickAudioIcon_checkAudioFragmentHasDefaultLanguageAndAutoPlays() {
+  fun testAudioWithWifi_openRatioExploration_clickAudioIcon_checkAudioFragmentHasDefaultLanguageAndAutoPlays() { // ktlint-disable max-line-length
     getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
     launch<ExplorationActivity>(
@@ -401,13 +416,19 @@ class ExplorationActivityTest {
       )
       onView(allOf(withText("EN"), withEffectiveVisibility(Visibility.VISIBLE)))
       waitForTheView(withDrawable(R.drawable.ic_pause_circle_filled_white_24dp))
-      onView(withId(R.id.ivPlayPauseAudio)).check(matches(withDrawable(R.drawable.ic_pause_circle_filled_white_24dp)))
+      onView(withId(R.id.ivPlayPauseAudio)).check(
+        matches(
+          withDrawable(
+            R.drawable.ic_pause_circle_filled_white_24dp
+          )
+        )
+      )
     }
     explorationDataController.stopPlayingExploration()
   }
 
   @Test
-  fun testAudioWithWifi_openFractionsExploration_changeLanguage_clickNext_checkLanguageIsHinglish() {
+  fun testAudioWithWifi_openFractionsExploration_changeLanguage_clickNext_checkLanguageIsHinglish() { // ktlint-disable max-line-length
     getApplicationDependencies(FRACTIONS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
     launch<ExplorationActivity>(
@@ -433,9 +454,10 @@ class ExplorationActivityTest {
         )
       ).perform(click())
       onView(withText("Hinglish")).perform(click())
-      onView(withText(context.getString(R.string.audio_language_select_dialog_okay_button))).perform(
-        click()
-      )
+      onView(withText(context.getString(R.string.audio_language_select_dialog_okay_button)))
+        .perform(
+          click()
+        )
       onView(withId(R.id.continue_button)).perform(click())
       onView(withText("HI-EN")).check(matches(isDisplayed()))
     }
@@ -444,7 +466,7 @@ class ExplorationActivityTest {
 
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
-  fun testAudioWithWifi_openRatioExploration_continueToInteraction_clickAudioButton_submitAnswer_checkFeedbackAudioPlays() {
+  fun testAudioWithWifi_openRatioExploration_continueToInteraction_clickAudioButton_submitAnswer_checkFeedbackAudioPlays() { // ktlint-disable max-line-length
     getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
     launch<ExplorationActivity>(
@@ -469,7 +491,8 @@ class ExplorationActivityTest {
       onView(withId(R.id.submit_answer_button)).perform(click())
       Thread.sleep(1000)
 
-      onView(withId(R.id.ivPlayPauseAudio)).check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
+      onView(withId(R.id.ivPlayPauseAudio))
+        .check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
     }
     explorationDataController.stopPlayingExploration()
   }
@@ -506,7 +529,7 @@ class ExplorationActivityTest {
 
   // TODO(#89): Check this test case too. It works in pair with below test case.
   @Test
-  fun testExplorationActivity_onBackPressed_showsStopExplorationDialog_clickCancel_dismissesDialog() {
+  fun testExplorationActivity_onBackPressed_showsStopExplorationDialog_clickCancel_dismissesDialog() { // ktlint-disable max-line-length
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
@@ -524,7 +547,7 @@ class ExplorationActivityTest {
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
-  fun testExplorationActivity_onBackPressed_showsStopExplorationDialog_clickLeave_closesExplorationActivity() {
+  fun testExplorationActivity_onBackPressed_showsStopExplorationDialog_clickLeave_closesExplorationActivity() { // ktlint-disable max-line-length
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
@@ -617,7 +640,9 @@ class ExplorationActivityTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@BlockingDispatcher blockingDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @BlockingDispatcher blockingDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return blockingDispatcher
     }
   }

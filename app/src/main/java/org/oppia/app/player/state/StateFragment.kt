@@ -22,10 +22,19 @@ import org.oppia.app.player.state.listener.SubmitNavigationButtonListener
 import javax.inject.Inject
 
 /** Fragment that represents the current state of an exploration. */
-class StateFragment : InjectableFragment(), InteractionAnswerReceiver, InteractionAnswerHandler,
-  InteractionAnswerErrorOrAvailabilityCheckReceiver, ContinueNavigationButtonListener, NextNavigationButtonListener,
-  PreviousNavigationButtonListener, ReturnToTopicNavigationButtonListener, SubmitNavigationButtonListener,
-  PreviousResponsesHeaderClickListener, ShowHintAvailabilityListener, AudioContentIdListener {
+class StateFragment :
+  InjectableFragment(),
+  InteractionAnswerReceiver,
+  InteractionAnswerHandler,
+  InteractionAnswerErrorOrAvailabilityCheckReceiver,
+  ContinueNavigationButtonListener,
+  NextNavigationButtonListener,
+  PreviousNavigationButtonListener,
+  ReturnToTopicNavigationButtonListener,
+  SubmitNavigationButtonListener,
+  PreviousResponsesHeaderClickListener,
+  ShowHintAvailabilityListener,
+  AudioContentIdListener {
   companion object {
     /**
      * Creates a new instance of a StateFragment.
@@ -35,7 +44,12 @@ class StateFragment : InjectableFragment(), InteractionAnswerReceiver, Interacti
      * @param explorationId used by StateFragment to mark progress and manage exploration.
      * @return a new instance of [StateFragment].
      */
-    fun newInstance(internalProfileId: Int, topicId: String, storyId: String, explorationId: String): StateFragment {
+    fun newInstance(
+      internalProfileId: Int,
+      topicId: String,
+      storyId: String,
+      explorationId: String
+    ): StateFragment {
       val stateFragment = StateFragment()
       val args = Bundle()
       args.putInt(STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
@@ -47,14 +61,19 @@ class StateFragment : InjectableFragment(), InteractionAnswerReceiver, Interacti
     }
   }
 
-  @Inject lateinit var stateFragmentPresenter: StateFragmentPresenter
+  @Inject
+  lateinit var stateFragmentPresenter: StateFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
     val internalProfileId = arguments!!.getInt(STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, -1)
     val topicId = arguments!!.getString(STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY)!!
     val storyId = arguments!!.getString(STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY)!!
@@ -79,13 +98,15 @@ class StateFragment : InjectableFragment(), InteractionAnswerReceiver, Interacti
 
   override fun onPreviousButtonClicked() = stateFragmentPresenter.onPreviousButtonClicked()
 
-  override fun onReturnToTopicButtonClicked() = stateFragmentPresenter.onReturnToTopicButtonClicked()
+  override fun onReturnToTopicButtonClicked() =
+    stateFragmentPresenter.onReturnToTopicButtonClicked()
 
   override fun onSubmitButtonClicked() = stateFragmentPresenter.onSubmitButtonClicked()
 
   override fun onResponsesHeaderClicked() = stateFragmentPresenter.onResponsesHeaderClicked()
 
-  override fun onHintAvailable(helpIndex: HelpIndex) = stateFragmentPresenter.onHintAvailable(helpIndex)
+  override fun onHintAvailable(helpIndex: HelpIndex) =
+    stateFragmentPresenter.onHintAvailable(helpIndex)
 
   override fun contentIdForCurrentAudio(contentId: String, isPlaying: Boolean) {
     stateFragmentPresenter.handleContentCardHighlighting(contentId, isPlaying)
@@ -95,11 +116,15 @@ class StateFragment : InjectableFragment(), InteractionAnswerReceiver, Interacti
 
   fun handleKeyboardAction() = stateFragmentPresenter.handleKeyboardAction()
 
-  override fun onPendingAnswerErrorOrAvailabilityCheck(pendingAnswerError: String?, inputAnswerAvailable: Boolean) {
+  override fun onPendingAnswerErrorOrAvailabilityCheck(
+    pendingAnswerError: String?,
+    inputAnswerAvailable: Boolean
+  ) {
     stateFragmentPresenter.updateSubmitButton(pendingAnswerError, inputAnswerAvailable)
   }
 
-  fun setAudioBarVisibility(visibility: Boolean) = stateFragmentPresenter.setAudioBarVisibility(visibility)
+  fun setAudioBarVisibility(visibility: Boolean) =
+    stateFragmentPresenter.setAudioBarVisibility(visibility)
 
   fun scrollToTop() = stateFragmentPresenter.scrollToTop()
 

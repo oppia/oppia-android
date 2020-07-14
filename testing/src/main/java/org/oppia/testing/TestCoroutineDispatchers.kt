@@ -1,11 +1,12 @@
 package org.oppia.testing
 
-import android.os.SystemClock
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import org.robolectric.shadows.ShadowLooper
+import java.util.TreeSet
+import javax.inject.Inject
+
+// TODO(#1274): Add thorough testing for this class.
 
 /**
  * Helper class to coordinate execution between all threads currently running in a test environment,
@@ -15,7 +16,8 @@ import org.robolectric.shadows.ShadowLooper
  * This class should be used at any point in a test where the test should ensure that a clean thread
  * synchronization point is needed (such as after an async operation is kicked off). This class can
  * guarantee that all threads enter a truly idle state (e.g. even in cases where execution "ping
- * pongs" across multiple threads will still be resolved with a single call to [advanceUntilIdle]).
+ * pongs" across multiple threads will still be resolved with a single call to [runCurrent],
+ * [advanceTimeBy], or [advanceUntilIdle]).
  *
  * Note that it's recommended all Robolectric tests that utilize this class run in a PAUSED looper
  * mode so that clock coordination is consistent between Robolectric's scheduler and this utility
@@ -38,9 +40,9 @@ class TestCoroutineDispatchers @Inject constructor(
    * Runs all current tasks pending, but does not follow up with executing any tasks that are
    * scheduled after this method finishes.
    *
-   * Note that it's generally not recommended to use this method since it may result in
-   * unanticipated dependencies on the order in which this class processes tasks for each handled
-   * thread and coroutine dispatcher.
+   * It's recommended to always use this method when trying to bring a test to a reasonable idle
+   * state since it doesn't change the clock time. If a test needs to advance time to complete some
+   * operation, it should use [advanceTimeBy].
    */
   @ExperimentalCoroutinesApi
   fun runCurrent() {
@@ -54,12 +56,28 @@ class TestCoroutineDispatchers @Inject constructor(
    * that were scheduled are fully executed before proceeding. This does not guarantee the
    * dispatchers enter an idle state, but it should guarantee that any tasks previously not executed
    * due to it not yet being the time for them to be executed may now run if the clock was
-   * sufficiently forwarded.
+   * sufficiently forwarded. That is, running [runCurrent] after this method returns will do
+   * nothing.
+   *
+   * It's recommended to always use this method when a test needs to wait for a specific future task
+   * to complete. If a test doesn't require time to change to reach an idle state, [runCurrent]
+   * should be used, instead. [advanceUntilIdle] should be reserved for cases when the test needs to
+   * wait for a future operation, but doesn't know how long.
    */
   @ExperimentalCoroutinesApi
   fun advanceTimeBy(delayTimeMillis: Long) {
-    fakeSystemClock.advanceTime(delayTimeMillis)
-    runCurrent()
+    var remainingDelayMillis = delayTimeMillis
+    while (remainingDelayMillis > 0) {
+      val currentTimeMillis = fakeSystemClock.getTimeMillis()
+      val taskDelayMillis =
+        advanceToNextFutureTask(currentTimeMillis, maxDelayMs = remainingDelayMillis)
+      if (taskDelayMillis == null) {
+        // If there are no delayed tasks, advance by the full time requested.
+        fakeSystemClock.advanceTime(remainingDelayMillis)
+        runCurrent()
+      }
+      remainingDelayMillis -= taskDelayMillis ?: remainingDelayMillis
+    }
   }
 
   /**
@@ -67,12 +85,50 @@ class TestCoroutineDispatchers @Inject constructor(
    * However, tasks that require the clock to be advanced will likely not be run (depending on
    * whether the test under question is using a paused execution model, which is recommended for
    * Robolectric tests).
+   *
+   * It's only recommended to use this method in cases when a test needs to wait for a future task
+   * to complete, but is unaware how long it needs to wait. [advanceTimeBy] and [runCurrent] are
+   * preferred methods for synchronizing execution with tests since this method may have the
+   * unintentional side effect of executing future tasks before the test anticipates it.
    */
   @ExperimentalCoroutinesApi
   fun advanceUntilIdle() {
-    do {
-      flushAllTasks()
-    } while (hasPendingTasks())
+    // First, run through all tasks that are currently pending and can be run immediately.
+    runCurrent()
+
+    // Now, the dispatchers can't proceed until time moves forward. Execute the next most recent
+    // task schedule, and everything subsequently scheduled until the dispatchers are in a waiting
+    // state again. Repeat until all tasks have been executed (and thus the dispatchers enter an
+    // idle state).
+    while (hasPendingTasks()) {
+      val currentTimeMillis = fakeSystemClock.getTimeMillis()
+      val taskDelayMillis = checkNotNull(advanceToNextFutureTask(currentTimeMillis)) {
+        "Expected to find task with delay for waiting dispatchers with non-empty task queues"
+      }
+      fakeSystemClock.advanceTime(taskDelayMillis)
+      runCurrent()
+    }
+  }
+
+  /**
+   * Advances the clock to the next most recently scheduled task, then runs all tasks until the
+   * dispatcher enters a waiting state (meaning they cannot execute anything until the clock is
+   * advanced). If a task was executed, returns the delay added to the current system time in order
+   * to execute it. Returns null if the time to the next task is beyond the specified maximum delay,
+   * if any.
+   */
+  @ExperimentalCoroutinesApi
+  private fun advanceToNextFutureTask(
+    currentTimeMillis: Long, maxDelayMs: Long = Long.MAX_VALUE
+  ): Long? {
+    val nextFutureTimeMillis = getNextFutureTaskTimeMillis(currentTimeMillis)
+    val timeToTaskMillis = nextFutureTimeMillis?.let { it - currentTimeMillis }
+    val timeToAdvanceBy = timeToTaskMillis?.takeIf { it < maxDelayMs }
+    return timeToAdvanceBy?.let {
+      fakeSystemClock.advanceTime(it)
+      runCurrent()
+      return@let it
+    }
   }
 
   @ExperimentalCoroutinesApi
@@ -88,29 +144,39 @@ class TestCoroutineDispatchers @Inject constructor(
     }
   }
 
-  @ExperimentalCoroutinesApi
-  private fun flushAllTasks() {
-    val currentTimeMillis = fakeSystemClock.getTimeMillis()
-    if (backgroundTestDispatcher.hasPendingCompletableTasks()) {
-      backgroundTestDispatcher.advanceUntilIdle()
-    }
-    if (blockingTestDispatcher.hasPendingCompletableTasks()) {
-      blockingTestDispatcher.advanceUntilIdle()
-    }
-    shadowUiLooper.idleFor(currentTimeMillis, TimeUnit.MILLISECONDS)
-    SystemClock.setCurrentTimeMillis(currentTimeMillis)
-  }
-
+  /** Returns whether any of the dispatchers have any tasks to run, including in the future. */
   private fun hasPendingTasks(): Boolean {
-    // TODO(#89): Ensure the check for pending UI thread tasks is actually correct.
     return backgroundTestDispatcher.hasPendingTasks() ||
         blockingTestDispatcher.hasPendingTasks() ||
-        !shadowUiLooper.isIdle
+        getNextUiThreadFutureTaskTimeMillis(fakeSystemClock.getTimeMillis()) != null
   }
 
+  /** Returns whether any of the dispatchers have tasks that can be run now. */
   private fun hasPendingCompletableTasks(): Boolean {
     return backgroundTestDispatcher.hasPendingCompletableTasks() ||
         blockingTestDispatcher.hasPendingCompletableTasks() ||
         !shadowUiLooper.isIdle
+  }
+
+  private fun getNextFutureTaskTimeMillis(timeMillis: Long): Long? {
+    val nextBackgroundFutureTaskTimeMills =
+      backgroundTestDispatcher.getNextFutureTaskCompletionTimeMillis(timeMillis)
+    val nextBlockingFutureTaskTimeMills =
+      backgroundTestDispatcher.getNextFutureTaskCompletionTimeMillis(timeMillis)
+    val nextUiFutureTaskTimeMills = getNextUiThreadFutureTaskTimeMillis(timeMillis)
+    val futureTimes: TreeSet<Long> = sortedSetOf()
+    nextBackgroundFutureTaskTimeMills?.let { futureTimes.add(it) }
+    nextBlockingFutureTaskTimeMills?.let { futureTimes.add(it) }
+    nextUiFutureTaskTimeMills?.let { futureTimes.add(it) }
+    return futureTimes.firstOrNull()
+  }
+
+  private fun getNextUiThreadFutureTaskTimeMillis(timeMillis: Long): Long? {
+    val delayMs = shadowUiLooper.nextScheduledTaskTime.toMillis()
+    if (delayMs == 0L && shadowUiLooper.isIdle) {
+      // If there's no delay and the looper is idle, that means there are no scheduled tasks.
+      return null
+    }
+    return timeMillis + delayMs
   }
 }

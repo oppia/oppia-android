@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <integer name="profile_chooser_span_count">2</integer>
+  <integer name="profile_chooser_first_time_span_count">1</integer>
   <integer name="duration_anim_300_ms">300</integer>
   <integer name="topic_description_expanded">12</integer>
   <integer name="topic_description_collapsed">5</integer>
   <integer name="home_span_count">2</integer>
   <integer name="promoted_story_list_limit">3</integer>
+  <integer name="recently_played_span_count">2</integer>
+  <integer name="topic_revision_span_count">2</integer>
 </resources>

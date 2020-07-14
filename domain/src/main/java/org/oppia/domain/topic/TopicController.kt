@@ -680,9 +680,7 @@ class TopicController @Inject constructor(
     skillFileName: String,
     storyFileName: String
   ): Topic {
-    val topicData = jsonAssetRetriever.loadJsonFromAsset(topicFileName)?.getJSONObject(
-      "topic"
-    )!!
+    val topicData = jsonAssetRetriever.loadJsonFromAsset(topicFileName)!!
     val subtopicList: List<Subtopic> =
       createSubtopicListFromJsonArray(topicData.optJSONArray("subtopics"))
     val topicId = topicData.getString("id")

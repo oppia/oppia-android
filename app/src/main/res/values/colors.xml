@@ -154,4 +154,7 @@
   <color name="onboarding4StatusBar">#3B5893</color>
   <color name="registrationStatusBar">#9CB1BE</color>
   <color name="oppiaContentHighlighting">#F2D140</color>
+  <!-- ICON COLORS -->
+  <color name="mergeIconEnabled">#FF000000</color>
+  <color name="mergeIconDisabled">#999999</color>
 </resources>

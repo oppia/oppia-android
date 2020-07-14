@@ -6,7 +6,7 @@ import androidx.multidex.MultiDexApplication
 import org.oppia.app.activity.ActivityComponent
 
 /** The root [Application] of the Oppia app. */
-class OppiaApplication : MultiDexApplication() {
+class OppiaApplication : MultiDexApplication(), ActivityComponentFactory {
   /** The root [ApplicationComponent]. */
   private val component: ApplicationComponent by lazy {
     DaggerApplicationComponent.builder()
@@ -14,11 +14,7 @@ class OppiaApplication : MultiDexApplication() {
       .build()
   }
 
-  /**
-   * Returns a new [ActivityComponent] for the specified activity. This should only be used by
-   * [org.oppia.app.activity.InjectableAppCompatActivity].
-   */
-  fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
+  override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
     return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
   }
 }
