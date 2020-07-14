@@ -732,7 +732,7 @@
       },
       "content": {
         "content_id": "content",
-        "html": "<p>Sort the following in descending order, putting equal items in the same position.</p>"
+        "html": "<p>Sort the following in descending order.</p>"
       }
     },
     "DragDropGroup": {

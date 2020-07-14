@@ -705,7 +705,7 @@ class StateFragmentTest {
     onView(withId(R.id.submit_answer_button)).perform(click())
     onView(withId(R.id.continue_navigation_button)).perform(click())
 
-    // Seventh state: Drag Drop Sort. Correct answer: Move 1st item to 4rd position.
+    // Seventh state: Drag Drop Sort. Correct answer: Move 1st item to 4th position.
     onView(withId(R.id.drag_drop_interaction_recycler_view)).perform(
       DragViewAction(
         RecyclerViewCoordinatesProvider(
@@ -729,7 +729,7 @@ class StateFragmentTest {
     ).check(matches(withText("3/5")))
     onView(withId(R.id.continue_navigation_button)).perform(click())
 
-    // Eighth state: Drag Drop Sort with grouping. Correct answer: Merge First Two.
+    // Eighth state: Drag Drop Sort with grouping. Correct answer: Merge First Two and after merging move 2nd item to 3rd position .
     onView(
       atPositionOnView(
         recyclerViewId = R.id.drag_drop_interaction_recycler_view,
