@@ -29,9 +29,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginStart="72dp"
-      android:layout_marginEnd="72dp"
-      android:layout_marginBottom="20dp"
+      android:layout_marginStart="176dp"
+      android:layout_marginEnd="176dp"
+      android:paddingBottom="4dp"
       android:orientation="horizontal">
 
       <TextView
@@ -39,8 +39,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginTop="44dp"
+        android:paddingBottom="28dp"
         android:fontFamily="sans-serif-medium"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="20sp"
@@ -54,8 +54,7 @@
         android:minWidth="160dp"
         android:minHeight="48dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="28dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/reveal_hint_button_blue_background"
         android:textSize="14sp"
@@ -71,16 +70,12 @@
         android:id="@+id/expand_list_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="16dp"
+        android:visibility="@{viewModel.isHintRevealed? View.VISIBLE : View.GONE}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.966"
-        app:layout_constraintStart_toEndOf="@+id/hint_title"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        android:visibility="@{viewModel.isHintRevealed? View.VISIBLE : View.GONE}">
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
           android:id="@+id/hint_list_drop_down_icon"
@@ -98,10 +93,10 @@
       android:id="@+id/hint_list_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginStart="84dp"
-      android:layout_marginEnd="84dp"
       android:layout_marginTop="@dimen/hint_container_top"
       android:layout_marginBottom="@dimen/hint_container_bottom"
+      android:layout_marginStart="176dp"
+      android:layout_marginEnd="176dp"
       android:orientation="vertical"
       android:visibility="gone">
 
