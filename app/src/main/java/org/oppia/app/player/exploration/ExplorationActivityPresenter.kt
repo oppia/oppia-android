@@ -118,7 +118,8 @@ class ExplorationActivityPresenter @Inject constructor(
 
   fun subscribeToAudioLanguageLiveData(profileId: ProfileId) {
     getProfileData(profileId).observe(
-      activity, Observer<StoryTextSize> { result ->
+      activity,
+      Observer<StoryTextSize> { result ->
         if (getExplorationFragment() == null) {
           val explorationFragment = ExplorationFragment()
           val args = Bundle()
