@@ -11,7 +11,8 @@ import javax.inject.Inject
 
 /** Fragment that contains displays single exploration. */
 class ExplorationFragment : InjectableFragment() {
-  @Inject lateinit var explorationFragmentPresenter: ExplorationFragmentPresenter
+  @Inject
+  lateinit var explorationFragmentPresenter: ExplorationFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)

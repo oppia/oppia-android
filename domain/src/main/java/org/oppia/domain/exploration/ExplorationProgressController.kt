@@ -2,29 +2,22 @@ package org.oppia.domain.exploration
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import org.oppia.app.model.AnswerAndResponse
 import org.oppia.app.model.AnswerOutcome
-import org.oppia.app.model.CompletedState
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.Exploration
 import org.oppia.app.model.Hint
-import org.oppia.app.model.Outcome
-import org.oppia.app.model.PendingState
 import org.oppia.app.model.Solution
 import org.oppia.app.model.State
-import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.UserAnswer
 import org.oppia.domain.classify.AnswerClassificationController
 import org.oppia.util.data.AsyncDataSubscriptionManager
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
+import org.oppia.util.logging.ExceptionLogger
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
-
-// TODO(#186): Use an interaction repository to retrieve whether a specific ID corresponds to a terminal interaction.
-private const val TERMINAL_INTERACTION_ID = "EndExploration"
 
 private const val CURRENT_STATE_DATA_PROVIDER_ID = "CurrentStateDataProvider"
 
@@ -42,7 +35,8 @@ class ExplorationProgressController @Inject constructor(
   private val dataProviders: DataProviders,
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
   private val explorationRetriever: ExplorationRetriever,
-  private val answerClassificationController: AnswerClassificationController
+  private val answerClassificationController: AnswerClassificationController,
+  private val exceptionLogger: ExceptionLogger
 ) {
   // TODO(#180): Add support for hints.
   // TODO(#179): Add support for parameters.
@@ -56,19 +50,22 @@ class ExplorationProgressController @Inject constructor(
   // implementation detail to tests.
 
   private val currentStateDataProvider =
-    dataProviders.createInMemoryDataProviderAsync(CURRENT_STATE_DATA_PROVIDER_ID, this::retrieveCurrentStateAsync)
+    dataProviders.createInMemoryDataProviderAsync(
+      CURRENT_STATE_DATA_PROVIDER_ID,
+      this::retrieveCurrentStateAsync
+    )
   private val explorationProgress = ExplorationProgress()
   private val explorationProgressLock = ReentrantLock()
 
   /** Resets this controller to begin playing the specified [Exploration]. */
   internal fun beginExplorationAsync(explorationId: String) {
     explorationProgressLock.withLock {
-      check(explorationProgress.playStage == PlayStage.NOT_PLAYING) {
+      check(explorationProgress.playStage == ExplorationProgress.PlayStage.NOT_PLAYING) {
         "Expected to finish previous exploration before starting a new one."
       }
 
       explorationProgress.currentExplorationId = explorationId
-      explorationProgress.advancePlayStageTo(PlayStage.LOADING_EXPLORATION)
+      explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.LOADING_EXPLORATION)
       asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
     }
   }
@@ -76,10 +73,10 @@ class ExplorationProgressController @Inject constructor(
   /** Indicates that the current exploration being played is now completed. */
   internal fun finishExplorationAsync() {
     explorationProgressLock.withLock {
-      check(explorationProgress.playStage != PlayStage.NOT_PLAYING) {
+      check(explorationProgress.playStage != ExplorationProgress.PlayStage.NOT_PLAYING) {
         "Cannot finish playing an exploration that hasn't yet been started"
       }
-      explorationProgress.advancePlayStageTo(PlayStage.NOT_PLAYING)
+      explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.NOT_PLAYING)
     }
   }
 
@@ -112,34 +109,48 @@ class ExplorationProgressController @Inject constructor(
   fun submitAnswer(userAnswer: UserAnswer): LiveData<AsyncResult<AnswerOutcome>> {
     try {
       explorationProgressLock.withLock {
-        check(explorationProgress.playStage != PlayStage.NOT_PLAYING) {
+        check(
+          explorationProgress.playStage !=
+            ExplorationProgress.PlayStage.NOT_PLAYING
+        ) {
           "Cannot submit an answer if an exploration is not being played."
         }
-        check(explorationProgress.playStage != PlayStage.LOADING_EXPLORATION) {
+        check(
+          explorationProgress.playStage !=
+            ExplorationProgress.PlayStage.LOADING_EXPLORATION
+        ) {
           "Cannot submit an answer while the exploration is being loaded."
         }
-        check(explorationProgress.playStage != PlayStage.SUBMITTING_ANSWER) {
+        check(
+          explorationProgress.playStage !=
+            ExplorationProgress.PlayStage.SUBMITTING_ANSWER
+        ) {
           "Cannot submit an answer while another answer is pending."
         }
 
         // Notify observers that the submitted answer is currently pending.
-        explorationProgress.advancePlayStageTo(PlayStage.SUBMITTING_ANSWER)
+        explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.SUBMITTING_ANSWER)
         asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
 
         lateinit var answerOutcome: AnswerOutcome
         try {
           val topPendingState = explorationProgress.stateDeck.getPendingTopState()
-          val outcome = answerClassificationController.classify(topPendingState.interaction, userAnswer.answer)
-          answerOutcome = explorationProgress.stateGraph.computeAnswerOutcomeForResult(topPendingState, outcome)
+          val outcome =
+            answerClassificationController.classify(topPendingState.interaction, userAnswer.answer)
+          answerOutcome =
+            explorationProgress.stateGraph.computeAnswerOutcomeForResult(topPendingState, outcome)
           explorationProgress.stateDeck.submitAnswer(userAnswer, answerOutcome.feedback)
           // Follow the answer's outcome to another part of the graph if it's different.
           if (answerOutcome.destinationCase == AnswerOutcome.DestinationCase.STATE_NAME) {
-            explorationProgress.stateDeck.pushState(explorationProgress.stateGraph.getState(answerOutcome.stateName))
+            explorationProgress.stateDeck.pushState(
+              explorationProgress.stateGraph.getState(answerOutcome.stateName),
+              prohibitSameStateName = true
+            )
           }
         } finally {
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always
           // submitting answer' situation. This can specifically happen if answer classification throws an exception.
-          explorationProgress.advancePlayStageTo(PlayStage.VIEWING_STATE)
+          explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.VIEWING_STATE)
         }
 
         asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
@@ -147,20 +158,34 @@ class ExplorationProgressController @Inject constructor(
         return MutableLiveData(AsyncResult.success(answerOutcome))
       }
     } catch (e: Exception) {
+      exceptionLogger.logException(e)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
 
-  fun submitHintIsRevealed(state: State, hintIsRevealed: Boolean, hintIndex: Int): LiveData<AsyncResult<Hint>> {
+  fun submitHintIsRevealed(
+    state: State,
+    hintIsRevealed: Boolean,
+    hintIndex: Int
+  ): LiveData<AsyncResult<Hint>> {
     try {
       explorationProgressLock.withLock {
-        check(explorationProgress.playStage != PlayStage.NOT_PLAYING) {
+        check(
+          explorationProgress.playStage !=
+            ExplorationProgress.PlayStage.NOT_PLAYING
+        ) {
           "Cannot submit an answer if an exploration is not being played."
         }
-        check(explorationProgress.playStage != PlayStage.LOADING_EXPLORATION) {
+        check(
+          explorationProgress.playStage !=
+            ExplorationProgress.PlayStage.LOADING_EXPLORATION
+        ) {
           "Cannot submit an answer while the exploration is being loaded."
         }
-        check(explorationProgress.playStage != PlayStage.SUBMITTING_ANSWER) {
+        check(
+          explorationProgress.playStage !=
+            ExplorationProgress.PlayStage.SUBMITTING_ANSWER
+        ) {
           "Cannot submit an answer while another answer is pending."
         }
         lateinit var hint: Hint
@@ -172,30 +197,42 @@ class ExplorationProgressController @Inject constructor(
             hintIndex
           )
           explorationProgress.stateDeck.pushStateForHint(state, hintIndex)
-
         } finally {
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always
           // showing hint' situation. This can specifically happen if hint throws an exception.
-          explorationProgress.advancePlayStageTo(PlayStage.VIEWING_STATE)
+          explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.VIEWING_STATE)
         }
         asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
         return MutableLiveData(AsyncResult.success(hint))
       }
     } catch (e: Exception) {
+      exceptionLogger.logException(e)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
 
-  fun submitSolutionIsRevealed(state: State, solutionIsRevealed: Boolean): LiveData<AsyncResult<Solution>> {
+  fun submitSolutionIsRevealed(
+    state: State,
+    solutionIsRevealed: Boolean
+  ): LiveData<AsyncResult<Solution>> {
     try {
       explorationProgressLock.withLock {
-        check(explorationProgress.playStage != PlayStage.NOT_PLAYING) {
+        check(
+          explorationProgress.playStage !=
+            ExplorationProgress.PlayStage.NOT_PLAYING
+        ) {
           "Cannot submit an answer if an exploration is not being played."
         }
-        check(explorationProgress.playStage != PlayStage.LOADING_EXPLORATION) {
+        check(
+          explorationProgress.playStage !=
+            ExplorationProgress.PlayStage.LOADING_EXPLORATION
+        ) {
           "Cannot submit an answer while the exploration is being loaded."
         }
-        check(explorationProgress.playStage != PlayStage.SUBMITTING_ANSWER) {
+        check(
+          explorationProgress.playStage !=
+            ExplorationProgress.PlayStage.SUBMITTING_ANSWER
+        ) {
           "Cannot submit an answer while another answer is pending."
         }
         lateinit var solution: Solution
@@ -207,17 +244,17 @@ class ExplorationProgressController @Inject constructor(
             solutionIsRevealed
           )
           explorationProgress.stateDeck.pushStateForSolution(state)
-
         } finally {
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always
           // showing solution' situation. This can specifically happen if solution throws an exception.
-          explorationProgress.advancePlayStageTo(PlayStage.VIEWING_STATE)
+          explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.VIEWING_STATE)
         }
 
         asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
         return MutableLiveData(AsyncResult.success(solution))
       }
     } catch (e: Exception) {
+      exceptionLogger.logException(e)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -235,13 +272,22 @@ class ExplorationProgressController @Inject constructor(
   fun moveToPreviousState(): LiveData<AsyncResult<Any?>> {
     try {
       explorationProgressLock.withLock {
-        check(explorationProgress.playStage != PlayStage.NOT_PLAYING) {
+        check(
+          explorationProgress.playStage !=
+            ExplorationProgress.PlayStage.NOT_PLAYING
+        ) {
           "Cannot navigate to a previous state if an exploration is not being played."
         }
-        check(explorationProgress.playStage != PlayStage.LOADING_EXPLORATION) {
+        check(
+          explorationProgress.playStage !=
+            ExplorationProgress.PlayStage.LOADING_EXPLORATION
+        ) {
           "Cannot navigate to a previous state if an exploration is being loaded."
         }
-        check(explorationProgress.playStage != PlayStage.SUBMITTING_ANSWER) {
+        check(
+          explorationProgress.playStage !=
+            ExplorationProgress.PlayStage.SUBMITTING_ANSWER
+        ) {
           "Cannot navigate to a previous state if an answer submission is pending."
         }
         explorationProgress.stateDeck.navigateToPreviousState()
@@ -249,6 +295,7 @@ class ExplorationProgressController @Inject constructor(
       }
       return MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
+      exceptionLogger.logException(e)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -270,13 +317,22 @@ class ExplorationProgressController @Inject constructor(
   fun moveToNextState(): LiveData<AsyncResult<Any?>> {
     try {
       explorationProgressLock.withLock {
-        check(explorationProgress.playStage != PlayStage.NOT_PLAYING) {
+        check(
+          explorationProgress.playStage !=
+            ExplorationProgress.PlayStage.NOT_PLAYING
+        ) {
           "Cannot navigate to a next state if an exploration is not being played."
         }
-        check(explorationProgress.playStage != PlayStage.LOADING_EXPLORATION) {
+        check(
+          explorationProgress.playStage !=
+            ExplorationProgress.PlayStage.LOADING_EXPLORATION
+        ) {
           "Cannot navigate to a next state if an exploration is being loaded."
         }
-        check(explorationProgress.playStage != PlayStage.SUBMITTING_ANSWER) {
+        check(
+          explorationProgress.playStage !=
+            ExplorationProgress.PlayStage.SUBMITTING_ANSWER
+        ) {
           "Cannot navigate to a next state if an answer submission is pending."
         }
         explorationProgress.stateDeck.navigateToNextState()
@@ -284,6 +340,7 @@ class ExplorationProgressController @Inject constructor(
       }
       return MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
+      exceptionLogger.logException(e)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -315,13 +372,14 @@ class ExplorationProgressController @Inject constructor(
     return try {
       retrieveCurrentStateWithinCacheAsync()
     } catch (e: Exception) {
+      exceptionLogger.logException(e)
       AsyncResult.failed(e)
     }
   }
 
   private suspend fun retrieveCurrentStateWithinCacheAsync(): AsyncResult<EphemeralState> {
     val explorationId: String? = explorationProgressLock.withLock {
-      return@withLock if (explorationProgress.playStage == PlayStage.LOADING_EXPLORATION) {
+      if (explorationProgress.playStage == ExplorationProgress.PlayStage.LOADING_EXPLORATION) {
         explorationProgress.currentExplorationId
       } else null
     }
@@ -333,23 +391,28 @@ class ExplorationProgressController @Inject constructor(
       // way to ensure the exploration is loaded since suspended functions cannot be called within a mutex. Note that
       // it's also possible for the stage to change between critical sections, sometimes due to this suspend function
       // being called multiple times and a former call finishing the exploration load.
-      check(exploration == null || explorationProgress.currentExplorationId == explorationId) {
+      check(
+        exploration == null ||
+          explorationProgress.currentExplorationId == explorationId
+      ) {
         "Encountered race condition when retrieving exploration. ID changed from $explorationId" +
           " to ${explorationProgress.currentExplorationId}"
       }
       return when (explorationProgress.playStage) {
-        PlayStage.NOT_PLAYING -> AsyncResult.pending()
-        PlayStage.LOADING_EXPLORATION -> {
+        ExplorationProgress.PlayStage.NOT_PLAYING -> AsyncResult.pending()
+        ExplorationProgress.PlayStage.LOADING_EXPLORATION -> {
           try {
             // The exploration must be available for this stage since it was loaded above.
             finishLoadExploration(exploration!!, explorationProgress)
             AsyncResult.success(explorationProgress.stateDeck.getCurrentEphemeralState())
           } catch (e: Exception) {
+            exceptionLogger.logException(e)
             AsyncResult.failed<EphemeralState>(e)
           }
         }
-        PlayStage.VIEWING_STATE -> AsyncResult.success(explorationProgress.stateDeck.getCurrentEphemeralState())
-        PlayStage.SUBMITTING_ANSWER -> AsyncResult.pending()
+        ExplorationProgress.PlayStage.VIEWING_STATE ->
+          AsyncResult.success(explorationProgress.stateDeck.getCurrentEphemeralState())
+        ExplorationProgress.PlayStage.SUBMITTING_ANSWER -> AsyncResult.pending()
       }
     }
   }
@@ -357,312 +420,10 @@ class ExplorationProgressController @Inject constructor(
   private fun finishLoadExploration(exploration: Exploration, progress: ExplorationProgress) {
     // The exploration must be initialized first since other lazy fields depend on it being inited.
     progress.currentExploration = exploration
-    progress.stateGraph.resetStateGraph(exploration.statesMap)
+    progress.stateGraph.reset(exploration.statesMap)
     progress.stateDeck.resetDeck(progress.stateGraph.getState(exploration.initStateName))
 
     // Advance the stage, but do not notify observers since the current state can be reported immediately to the UI.
-    progress.advancePlayStageTo(PlayStage.VIEWING_STATE)
-  }
-
-  /** Different stages in which the progress controller can exist. */
-  private enum class PlayStage {
-    /** No exploration is currently being played. */
-    NOT_PLAYING,
-
-    /** An exploration is being prepared to be played. */
-    LOADING_EXPLORATION,
-
-    /** The controller is currently viewing a State. */
-    VIEWING_STATE,
-
-    /** The controller is in the process of submitting an answer. */
-    SUBMITTING_ANSWER
-  }
-
-  /**
-   * Private class that encapsulates the mutable state of the progress controller. This class is thread-safe. This class
-   * can exist across multiple exploration instances, but calling code is responsible for ensuring it is properly reset.
-   */
-  private class ExplorationProgress {
-    internal lateinit var currentExplorationId: String
-    internal lateinit var currentExploration: Exploration
-    internal var playStage = PlayStage.NOT_PLAYING
-    internal val stateGraph: StateGraph by lazy {
-      StateGraph(
-        currentExploration.statesMap
-      )
-    }
-    internal val stateDeck: StateDeck by lazy {
-      StateDeck(
-        stateGraph.getState(currentExploration.initStateName)
-      )
-    }
-
-    /**
-     * Advances the current play stage to the specified stage, verifying that the transition is correct.
-     *
-     * Calling code should prevent this method from failing by checking state ahead of calling this method and providing
-     * more useful errors to UI calling code since errors thrown by this method will be more obscure. This method aims to
-     * ensure the internal state of the controller remains correct. This method is not meant to be covered in unit tests
-     * since none of the failures here should ever be exposed to controller callers.
-     */
-    internal fun advancePlayStageTo(nextPlayStage: PlayStage) {
-      when (nextPlayStage) {
-        PlayStage.NOT_PLAYING -> {
-          // All transitions to NOT_PLAYING are valid except itself. Stopping playing can happen at any time.
-          check(playStage != PlayStage.NOT_PLAYING) { "Cannot transition to NOT_PLAYING from NOT_PLAYING" }
-          playStage = nextPlayStage
-        }
-        PlayStage.LOADING_EXPLORATION -> {
-          // An exploration can only be requested to be loaded from the initial NOT_PLAYING stage.
-          check(playStage == PlayStage.NOT_PLAYING) { "Cannot transition to LOADING_EXPLORATION from $playStage" }
-          playStage = nextPlayStage
-        }
-        PlayStage.VIEWING_STATE -> {
-          // A state can be viewed after loading an exploration, after viewing another state, or after submitting an
-          // answer. It cannot be viewed without a loaded exploration.
-          check(
-            playStage == PlayStage.LOADING_EXPLORATION
-              || playStage == PlayStage.VIEWING_STATE
-              || playStage == PlayStage.SUBMITTING_ANSWER
-          ) {
-            "Cannot transition to VIEWING_STATE from $playStage"
-          }
-          playStage = nextPlayStage
-        }
-        PlayStage.SUBMITTING_ANSWER -> {
-          // An answer can only be submitted after viewing a stage.
-          check(playStage == PlayStage.VIEWING_STATE) { "Cannot transition to SUBMITTING_ANSWER from $playStage" }
-          playStage = nextPlayStage
-        }
-      }
-    }
-  }
-
-  /**
-   * Graph that provides lookup access for [State]s and functionality for processing the outcome of a submitted learner
-   * answer.
-   */
-  private class StateGraph internal constructor(private var stateGraph: Map<String, State>) {
-    /** Resets this graph to the new graph represented by the specified [Map]. */
-    internal fun resetStateGraph(stateGraph: Map<String, State>) {
-      this.stateGraph = stateGraph
-    }
-
-    /** Returns the [State] corresponding to the specified name. */
-    internal fun getState(stateName: String): State {
-      return stateGraph.getValue(stateName)
-    }
-
-    /** Returns an [AnswerOutcome] based on the current state and resulting [Outcome] from the learner's answer. */
-    internal fun computeAnswerOutcomeForResult(currentState: State, outcome: Outcome): AnswerOutcome {
-      val answerOutcomeBuilder = AnswerOutcome.newBuilder()
-        .setFeedback(outcome.feedback)
-        .setLabelledAsCorrectAnswer(outcome.labelledAsCorrect)
-        .setState(currentState)
-      when {
-        outcome.refresherExplorationId.isNotEmpty() ->
-          answerOutcomeBuilder.refresherExplorationId = outcome.refresherExplorationId
-        outcome.missingPrerequisiteSkillId.isNotEmpty() ->
-          answerOutcomeBuilder.missingPrerequisiteSkillId = outcome.missingPrerequisiteSkillId
-        outcome.destStateName == currentState.name -> answerOutcomeBuilder.sameState = true
-        else -> answerOutcomeBuilder.stateName = outcome.destStateName
-      }
-      return answerOutcomeBuilder.build()
-    }
-
-    /** Returns an [Hint] based on the current state and revealed [Hint] from the learner's answer. */
-    internal fun computeHintForResult(currentState: State, hintIsRevealed: Boolean, hintIndex: Int): Hint {
-      return Hint.newBuilder()
-        .setHintIsRevealed(hintIsRevealed)
-        .setHintContent(currentState.interaction.getHint(hintIndex).hintContent)
-        .setState(currentState)
-        .build()
-    }
-
-    /** Returns an [Solution] based on the current state and revealed [Solution] from the learner's answer. */
-    internal fun computeSolutionForResult(currentState: State, solutionIsRevealed: Boolean): Solution {
-      return Solution.newBuilder()
-        .setSolutionIsRevealed(solutionIsRevealed)
-        .setAnswerIsExclusive(currentState.interaction.solution.answerIsExclusive)
-        .setCorrectAnswer(currentState.interaction.solution.correctAnswer)
-        .setExplanation(currentState.interaction.solution.explanation).build()
-    }
-  }
-
-  private class StateDeck internal constructor(initialState: State) {
-    private var pendingTopState: State = initialState
-    private val previousStates: MutableList<EphemeralState> = ArrayList()
-    private val currentDialogInteractions: MutableList<AnswerAndResponse> = ArrayList()
-    private val hintList: MutableList<Hint> = ArrayList()
-    private lateinit var solution: Solution
-    private var stateIndex: Int = 0
-
-    /** Resets this deck to a new, specified initial [State]. */
-    internal fun resetDeck(initialState: State) {
-      pendingTopState = initialState
-      previousStates.clear()
-      currentDialogInteractions.clear()
-      hintList.clear()
-      stateIndex = 0
-    }
-
-    /** Navigates to the previous State in the deck, or fails if this isn't possible. */
-    internal fun navigateToPreviousState() {
-      check(!isCurrentStateInitial()) { "Cannot navigate to previous state; at initial state." }
-      stateIndex--
-    }
-
-    /** Navigates to the next State in the deck, or fails if this isn't possible. */
-    internal fun navigateToNextState() {
-      check(!isCurrentStateTopOfDeck()) { "Cannot navigate to next state; at most recent state." }
-      val previousState = previousStates[stateIndex]
-      stateIndex++
-      if (!previousState.hasNextState) {
-        // Update the previous state to indicate that it has a next state now that its next state has actually been
-        // 'created' by navigating to it.
-        previousStates[stateIndex - 1] = previousState.toBuilder().setHasNextState(true).build()
-      }
-    }
-
-    /**
-     * Returns the [State] corresponding to the latest card in the deck, regardless of whichever State the learner is
-     * currently viewing.
-     */
-    internal fun getPendingTopState(): State {
-      return pendingTopState
-    }
-
-    /** Returns the current [EphemeralState] the learner is viewing. */
-    internal fun getCurrentEphemeralState(): EphemeralState {
-      // Note that the terminal state is evaluated first since it can only return true if the current state is the top
-      // of the deck, and that state is the terminal one. Otherwise the terminal check would never be triggered since
-      // the second case assumes the top of the deck must be pending.
-      return when {
-        isCurrentStateTerminal() -> getCurrentTerminalState()
-        stateIndex == previousStates.size -> getCurrentPendingState()
-        else -> getPreviousState()
-      }
-    }
-
-    /**
-     * Pushes a new State onto the deck. This cannot happen if the learner isn't at the most recent State, if the
-     * current State is not terminal, or if the learner hasn't submitted an answer to the most recent State. This
-     * operation implies that the most recently submitted answer was the correct answer to the previously current State.
-     * This does NOT change the user's position in the deck, it just marks the current state as completed.
-     */
-    internal fun pushState(state: State) {
-      check(isCurrentStateTopOfDeck()) { "Cannot push a new state unless the learner is at the most recent state." }
-      check(!isCurrentStateTerminal()) { "Cannot push another state after reaching a terminal state." }
-      check(currentDialogInteractions.size != 0) { "Cannot push another state without an answer." }
-      check(state.name != pendingTopState.name) { "Cannot route from the same state to itself as a new card." }
-      // NB: This technically has a 'next' state, but it's not marked until it's first navigated away since the new
-      // state doesn't become fully realized until navigated to.
-      previousStates += EphemeralState.newBuilder()
-        .setState(pendingTopState)
-        .setHasPreviousState(!isCurrentStateInitial())
-        .setCompletedState(CompletedState.newBuilder().addAllAnswer(currentDialogInteractions))
-        .build()
-      currentDialogInteractions.clear()
-      hintList.clear()
-      pendingTopState = state
-    }
-
-    internal fun pushStateForHint(state: State, hintIndex: Int): EphemeralState {
-      val interactionBuilder = state.interaction.toBuilder().setHint(hintIndex, hintList.get(0))
-      val newState = state.toBuilder().setInteraction(interactionBuilder).build()
-      val ephemeralState = EphemeralState.newBuilder()
-        .setState(newState)
-        .setHasPreviousState(!isCurrentStateInitial())
-        .setPendingState(PendingState.newBuilder().addAllWrongAnswer(currentDialogInteractions).addAllHint(hintList))
-        .build()
-      pendingTopState = newState
-      hintList.clear()
-      return ephemeralState
-    }
-
-    internal fun pushStateForSolution(state: State): EphemeralState {
-      val interactionBuilder = state.interaction.toBuilder().setSolution(solution)
-      val newState = state.toBuilder().setInteraction(interactionBuilder).build()
-      val ephemeralState = EphemeralState.newBuilder()
-        .setState(newState)
-        .setHasPreviousState(!isCurrentStateInitial())
-        .setPendingState(PendingState.newBuilder().addAllWrongAnswer(currentDialogInteractions).addAllHint(hintList))
-        .build()
-      pendingTopState = newState
-      return ephemeralState
-    }
-
-    /**
-     * Submits an answer & feedback dialog the learner experience in the current State. This fails if the user is not at
-     * the most recent State in the deck, or if the most recent State is terminal (since no answer can be submitted to a
-     * terminal interaction).
-     */
-    internal fun submitAnswer(userAnswer: UserAnswer, feedback: SubtitledHtml) {
-      check(isCurrentStateTopOfDeck()) { "Cannot submit an answer except to the most recent state." }
-      check(!isCurrentStateTerminal()) { "Cannot submit an answer to a terminal state." }
-      currentDialogInteractions += AnswerAndResponse.newBuilder()
-        .setUserAnswer(userAnswer)
-        .setFeedback(feedback)
-        .build()
-    }
-
-    internal fun submitHintRevealed(state: State, hintIsRevealed: Boolean, hintIndex: Int) {
-      hintList += Hint.newBuilder()
-        .setHintIsRevealed(hintIsRevealed)
-        .setHintContent(state.interaction.getHint(hintIndex).hintContent)
-        .build()
-    }
-
-    internal fun submitSolutionRevealed(state: State, solutionIsRevealed: Boolean) {
-      solution = Solution.newBuilder()
-        .setSolutionIsRevealed(solutionIsRevealed)
-        .setAnswerIsExclusive(state.interaction.solution.answerIsExclusive)
-        .setCorrectAnswer(state.interaction.solution.correctAnswer)
-        .setExplanation(state.interaction.solution.explanation)
-        .build()
-    }
-
-    private fun getCurrentPendingState(): EphemeralState {
-      return EphemeralState.newBuilder()
-        .setState(pendingTopState)
-        .setHasPreviousState(!isCurrentStateInitial())
-        .setPendingState(PendingState.newBuilder().addAllWrongAnswer(currentDialogInteractions).addAllHint(hintList))
-        .build()
-    }
-
-    private fun getCurrentTerminalState(): EphemeralState {
-      return EphemeralState.newBuilder()
-        .setState(pendingTopState)
-        .setHasPreviousState(!isCurrentStateInitial())
-        .setTerminalState(true)
-        .build()
-    }
-
-    private fun getPreviousState(): EphemeralState {
-      return previousStates[stateIndex]
-    }
-
-    /** Returns whether the current scrolled State is the first State of the exploration. */
-    private fun isCurrentStateInitial(): Boolean {
-      return stateIndex == 0
-    }
-
-    /** Returns whether the current scrolled State is the most recent State played by the learner. */
-    private fun isCurrentStateTopOfDeck(): Boolean {
-      return stateIndex == previousStates.size
-    }
-
-    /** Returns whether the current State is terminal. */
-    private fun isCurrentStateTerminal(): Boolean {
-      // Cards not on top of the deck cannot be terminal/the terminal card must be the last card in the deck, if it's
-      // present.
-      return isCurrentStateTopOfDeck() && isTopOfDeckTerminal()
-    }
-
-    /** Returns whether the most recent card on the deck is terminal. */
-    private fun isTopOfDeckTerminal(): Boolean {
-      return pendingTopState.interaction.id == TERMINAL_INTERACTION_ID
-    }
+    progress.advancePlayStageTo(ExplorationProgress.PlayStage.VIEWING_STATE)
   }
 }

@@ -1,5 +1,6 @@
 package org.oppia.app.player.exploration
 
+import android.content.Context
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
@@ -15,25 +16,27 @@ import org.oppia.app.model.Exploration
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.StoryTextSize
+import org.oppia.app.story.StoryActivity
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.utility.FontScaleConfigurationUtil
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 const val TAG_EXPLORATION_FRAGMENT = "TAG_EXPLORATION_FRAGMENT"
+const val TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER = "HINTS_AND_SOLUTION_EXPLORATION_MANAGER"
 
 /** The Presenter for [ExplorationActivity]. */
 @ActivityScope
 class ExplorationActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val explorationDataController: ExplorationDataController,
-  private val viewModelProvider: ViewModelProvider<ExplorationViewModel>,
   private val profileManagementController: ProfileManagementController,
-  private val logger: Logger
+  private val viewModelProvider: ViewModelProvider<ExplorationViewModel>,
+  private val logger: ConsoleLogger
 ) {
   private lateinit var explorationToolbar: Toolbar
   private var internalProfileId: Int = -1
@@ -42,16 +45,25 @@ class ExplorationActivityPresenter @Inject constructor(
   private lateinit var explorationId: String
   private lateinit var profileId: ProfileId
   private lateinit var storyTextSize: StoryTextSize
+  private lateinit var context: Context
+  private var backflowScreen: Int? = null
+
+  enum class ParentActivityForExploration(val value: Int) {
+    BACKFLOW_SCREEN_LESSONS(0),
+    BACKFLOW_SCREEN_STORY(1);
+  }
 
   private val exploreViewModel by lazy {
     getExplorationViewModel()
   }
 
   fun handleOnCreate(
+    context: Context,
     internalProfileId: Int,
     topicId: String,
     storyId: String,
-    explorationId: String
+    explorationId: String,
+    backflowScreen: Int?
   ) {
     val binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(
       activity,
@@ -61,8 +73,7 @@ class ExplorationActivityPresenter @Inject constructor(
       viewModel = exploreViewModel
       lifecycleOwner = activity
     }
-    this.explorationId = explorationId
-    this.storyId = storyId
+
     explorationToolbar = binding.explorationToolbar
     activity.setSupportActionBar(explorationToolbar)
 
@@ -71,9 +82,20 @@ class ExplorationActivityPresenter @Inject constructor(
     }
 
     updateToolbarTitle(explorationId)
+    this.context = context
     this.internalProfileId = internalProfileId
     this.topicId = topicId
+    this.storyId = storyId
+    this.explorationId = explorationId
+    this.backflowScreen = backflowScreen
     this.profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+
+    if (getHintsAndSolutionExplorationManagerFragment() == null) {
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.exploration_fragment_placeholder,
+        HintsAndSolutionExplorationManagerFragment()
+      ).commitNow()
+    }
   }
 
   private fun getProfileData(profileId: ProfileId): LiveData<StoryTextSize> {
@@ -81,6 +103,17 @@ class ExplorationActivityPresenter @Inject constructor(
       profileManagementController.getProfile(profileId),
       ::processGetProfileResult
     )
+  }
+
+  private fun processGetProfileResult(profileResult: AsyncResult<Profile>): StoryTextSize {
+    if (profileResult.isFailure()) {
+      logger.e(
+        "ExplorationActivity",
+        "Failed to retrieve profile",
+        profileResult.getErrorOrNull()!!
+      )
+    }
+    return profileResult.getOrDefault(Profile.getDefaultInstance()).storyTextSize
   }
 
   fun subscribeToAudioLanguageLiveData(profileId: ProfileId) {
@@ -109,15 +142,10 @@ class ExplorationActivityPresenter @Inject constructor(
     })
   }
 
-  private fun processGetProfileResult(profileResult: AsyncResult<Profile>): StoryTextSize {
-    if (profileResult.isFailure()) {
-      logger.e(
-        "ExplorationActivity",
-        "Failed to retrieve profile",
-        profileResult.getErrorOrNull()!!
-      )
-    }
-    return profileResult.getOrDefault(Profile.getDefaultInstance()).storyTextSize
+  private fun getHintsAndSolutionExplorationManagerFragment(): HintsAndSolutionExplorationManagerFragment? { // ktlint-disable max-line-length
+    return activity.supportFragmentManager.findFragmentByTag(
+      TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
+    ) as HintsAndSolutionExplorationManagerFragment?
   }
 
   fun showAudioButton() = exploreViewModel.showAudioButton.set(true)
@@ -134,46 +162,57 @@ class ExplorationActivityPresenter @Inject constructor(
   fun scrollToTop() = getExplorationFragment()?.scrollToTop()
 
   private fun getExplorationFragment(): ExplorationFragment? {
-    return activity.supportFragmentManager.findFragmentById(
-      R.id.exploration_fragment_placeholder
+    return activity.supportFragmentManager.findFragmentByTag(
+      TAG_EXPLORATION_FRAGMENT
     ) as ExplorationFragment?
   }
 
   fun stopExploration() {
     FontScaleConfigurationUtil(activity, StoryTextSize.MEDIUM_TEXT_SIZE.name).adjustFontScale()
     explorationDataController.stopPlayingExploration()
-      .observe(activity, Observer<AsyncResult<Any?>> {
-        when {
-          it.isPending() -> logger.d("ExplorationActivity", "Stopping exploration")
-          it.isFailure() -> logger.e(
-            "ExplorationActivity",
-            "Failed to stop exploration",
-            it.getErrorOrNull()!!
-          )
-          else -> {
-            logger.d("ExplorationActivity", "Successfully stopped exploration")
-            activity.startActivity(
-              TopicActivity.createTopicActivityIntent(
-                activity,
-                internalProfileId,
-                topicId
-              )
+      .observe(
+        activity,
+        Observer<AsyncResult<Any?>> {
+          when {
+            it.isPending() -> logger.d("ExplorationActivity", "Stopping exploration")
+            it.isFailure() -> logger.e(
+              "ExplorationActivity",
+              "Failed to stop exploration",
+              it.getErrorOrNull()!!
             )
-            (activity as ExplorationActivity).finish()
+            else -> {
+              logger.d("ExplorationActivity", "Successfully stopped exploration")
+              backPressActivitySelector(backflowScreen)
+              (activity as ExplorationActivity).finish()
+            }
           }
         }
-      })
+      )
+  }
+
+  fun onKeyboardAction(actionCode: Int) {
+    if (actionCode == EditorInfo.IME_ACTION_DONE) {
+      val explorationFragment = activity.supportFragmentManager.findFragmentByTag(
+        TAG_EXPLORATION_FRAGMENT
+      ) as? ExplorationFragment
+      explorationFragment?.onKeyboardAction()
+    }
   }
 
   private fun updateToolbarTitle(explorationId: String) {
     subscribeToExploration(explorationDataController.getExplorationById(explorationId))
   }
 
-  private fun subscribeToExploration(explorationResultLiveData: LiveData<AsyncResult<Exploration>>) {
+  private fun subscribeToExploration(
+    explorationResultLiveData: LiveData<AsyncResult<Exploration>>
+  ) {
     val explorationLiveData = getExploration(explorationResultLiveData)
-    explorationLiveData.observe(activity, Observer<Exploration> {
-      explorationToolbar.title = it.title
-    })
+    explorationLiveData.observe(
+      activity,
+      Observer<Exploration> {
+        explorationToolbar.title = it.title
+      }
+    )
   }
 
   private fun getExplorationViewModel(): ExplorationViewModel {
@@ -181,7 +220,9 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   /** Helper for subscribeToExploration. */
-  private fun getExploration(exploration: LiveData<AsyncResult<Exploration>>): LiveData<Exploration> {
+  private fun getExploration(
+    exploration: LiveData<AsyncResult<Exploration>>
+  ): LiveData<Exploration> {
     return Transformations.map(exploration, ::processExploration)
   }
 
@@ -197,23 +238,42 @@ class ExplorationActivityPresenter @Inject constructor(
     return ephemeralStateResult.getOrDefault(Exploration.getDefaultInstance())
   }
 
-  fun onKeyboardAction(actionCode: Int) {
-    if (actionCode == EditorInfo.IME_ACTION_DONE) {
-      val explorationFragment =
-        activity.supportFragmentManager.findFragmentByTag(TAG_EXPLORATION_FRAGMENT) as ExplorationFragment
-      explorationFragment.onKeyboardAction()
+  private fun backPressActivitySelector(backflowScreen: Int?) {
+    when (backflowScreen) {
+      ParentActivityForExploration.BACKFLOW_SCREEN_STORY.value -> activity.startActivity(
+        StoryActivity.createStoryActivityIntent(context, internalProfileId, topicId, storyId)
+      )
+      ParentActivityForExploration.BACKFLOW_SCREEN_LESSONS.value -> activity.startActivity(
+        TopicActivity.createTopicPlayStoryActivityIntent(
+          activity,
+          internalProfileId,
+          topicId,
+          storyId
+        )
+      )
+      else -> activity.startActivity(
+        TopicActivity.createTopicActivityIntent(
+          context,
+          internalProfileId,
+          topicId
+        )
+      )
     }
   }
 
   fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
     val explorationFragment =
-      activity.supportFragmentManager.findFragmentByTag(TAG_EXPLORATION_FRAGMENT) as ExplorationFragment
+      activity.supportFragmentManager.findFragmentByTag(
+        TAG_EXPLORATION_FRAGMENT
+      ) as ExplorationFragment
     explorationFragment.revealHint(saveUserChoice, hintIndex)
   }
 
   fun revealSolution(saveUserChoice: Boolean) {
     val explorationFragment =
-      activity.supportFragmentManager.findFragmentByTag(TAG_EXPLORATION_FRAGMENT) as ExplorationFragment
+      activity.supportFragmentManager.findFragmentByTag(
+        TAG_EXPLORATION_FRAGMENT
+      ) as ExplorationFragment
     explorationFragment.revealSolution(saveUserChoice)
   }
 }

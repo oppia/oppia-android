@@ -13,7 +13,8 @@ const val STORY_ID_TEST_INTENT_EXTRA = "StoryFragmentTestActivity.story_id"
 
 /** Test activity used for story fragment. */
 class StoryFragmentTestActivity : InjectableAppCompatActivity(), RouteToExplorationListener {
-  @Inject lateinit var storyFragmentTestActivityPresenter: StoryFragmentTestActivityPresenter
+  @Inject
+  lateinit var storyFragmentTestActivityPresenter: StoryFragmentTestActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -21,13 +22,24 @@ class StoryFragmentTestActivity : InjectableAppCompatActivity(), RouteToExplorat
     storyFragmentTestActivityPresenter.handleOnCreate()
   }
 
-  override fun routeToExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String) {
+  override fun routeToExploration(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    backflowScreen: Int?
+  ) {
     // Do nothing since routing should be tested at the StoryActivity level.
   }
 
   companion object {
     /** Returns an [Intent] to create new [StoryFragmentTestActivity]s. */
-    fun createTestActivityIntent(context: Context, internalProfileId: Int, topicId: String, storyId: String): Intent {
+    fun createTestActivityIntent(
+      context: Context,
+      internalProfileId: Int,
+      topicId: String,
+      storyId: String
+    ): Intent {
       val intent = Intent(context, StoryFragmentTestActivity::class.java)
       intent.putExtra(INTERNAL_PROFILE_ID_TEST_INTENT_EXTRA, internalProfileId)
       intent.putExtra(TOPIC_ID_TEST_INTENT_EXTRA, topicId)

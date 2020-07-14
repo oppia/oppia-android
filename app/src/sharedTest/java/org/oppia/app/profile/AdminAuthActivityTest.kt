@@ -48,7 +48,8 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class AdminAuthActivityTest {
 
-  @Inject lateinit var context: Context
+  @Inject
+  lateinit var context: Context
 
   private val internalProfileId: Int = 0
 
@@ -91,7 +92,8 @@ class AdminAuthActivityTest {
     }
   }
 
-  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView") // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
+  // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
+  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
   fun testAdminAuthActivity_inputCorrectPassword_clickImeActionButton_opensAddProfileActivity() {
     launch<AdminAuthActivity>(
@@ -131,6 +133,7 @@ class AdminAuthActivityTest {
     }
   }
 
+  /* ktlint-disable max-line-length */
   @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView") // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Test
   fun testAdminAuthActivity_inputCorrectPassword_clickImeActionButton_opensAddAdministratorControlsActivity() {
@@ -150,6 +153,7 @@ class AdminAuthActivityTest {
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
     }
   }
+  /* ktlint-enable max-line-length */
 
   @Test
   fun testAdminAuthActivity_inputIncorrectPassword_checkError() {
@@ -176,7 +180,8 @@ class AdminAuthActivityTest {
     }
   }
 
-  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView") // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
+  // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
+  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
   fun testAdminAuthActivity_inputIncorrectPassword_clickImeActionButton_checkError() {
     launch<AdminAuthActivity>(
@@ -221,10 +226,16 @@ class AdminAuthActivityTest {
         typeText("4"),
         closeSoftKeyboard()
       )
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).check(matches(withText("")))
+      onView(
+        allOf(
+          withId(R.id.error_text),
+          isDescendantOfA(withId(R.id.admin_auth_input_pin))
+        )
+      ).check(matches(withText("")))
     }
   }
 
+  /* ktlint-disable max-line-length */
   @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView") // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
   @Test
   fun testAdminAuthActivity_inputIncorrectPassword_inputAgain_clickImeActionButton_checkErrorIsGone() {
@@ -245,9 +256,15 @@ class AdminAuthActivityTest {
         typeText("4"),
         closeSoftKeyboard()
       )
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).check(matches(withText("")))
+      onView(
+        allOf(
+          withId(R.id.error_text),
+          isDescendantOfA(withId(R.id.admin_auth_input_pin))
+        )
+      ).check(matches(withText("")))
     }
   }
+  /* ktlint-enable max-line-length */
 
   @Test
   fun testAdminAuthActivity_buttonState_configurationChanged_buttonStateIsPreserved() {
@@ -269,6 +286,7 @@ class AdminAuthActivityTest {
     }
   }
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testAdminAuthActivity_openedFromAdminControls_configurationChanged_checkHeadingSubHeadingIsPreserved() {
     launch<AdminAuthActivity>(
@@ -280,14 +298,48 @@ class AdminAuthActivityTest {
         AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
     ).use {
-      onView(withId(R.id.admin_auth_heading_textview)).check(matches(withText(context.resources.getString(R.string.admin_auth_heading))))
-      onView(withId(R.id.admin_auth_sub_text)).check(matches(withText(context.resources.getString(R.string.admin_auth_admin_controls_sub))))
+      onView(withId(R.id.admin_auth_heading_textview)).check(
+        matches(
+          withText(
+            context.resources.getString(
+              R.string.admin_auth_heading
+            )
+          )
+        )
+      )
+      onView(withId(R.id.admin_auth_sub_text))
+        .check(
+          matches(
+            withText(
+              context.resources.getString(
+                R.string.admin_auth_admin_controls_sub
+              )
+            )
+          )
+        )
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.admin_auth_sub_text)).check(matches(withText(context.resources.getString(R.string.admin_auth_admin_controls_sub))))
-      onView(withId(R.id.admin_auth_heading_textview)).check(matches(withText(context.resources.getString(R.string.admin_auth_heading))))
-     }
+      onView(withId(R.id.admin_auth_sub_text))
+        .check(
+          matches(
+            withText(
+              context.resources.getString(R.string.admin_auth_admin_controls_sub)
+            )
+          )
+        )
+      onView(withId(R.id.admin_auth_heading_textview)).check(
+        matches(
+          withText(
+            context.resources.getString(
+              R.string.admin_auth_heading
+            )
+          )
+        )
+      )
+    }
   }
+  /* ktlint-enable max-line-length */
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testAdminAuthActivity_openedFromProfile_configurationChanged_checkHeadingSubHeadingIsPreserved() {
     launch<AdminAuthActivity>(
@@ -299,13 +351,48 @@ class AdminAuthActivityTest {
         AdminAuthEnum.PROFILE_ADD_PROFILE.value
       )
     ).use {
-      onView(withId(R.id.admin_auth_heading_textview)).check(matches(withText(context.resources.getString(R.string.admin_auth_heading))))
-      onView(withId(R.id.admin_auth_sub_text)).check(matches(withText(context.resources.getString(R.string.admin_auth_sub))))
+      onView(withId(R.id.admin_auth_heading_textview)).check(
+        matches(
+          withText(
+            context.resources.getString(
+              R.string.admin_auth_heading
+            )
+          )
+        )
+      )
+      onView(withId(R.id.admin_auth_sub_text))
+        .check(
+          matches(
+            withText(
+              context.resources.getString(
+                R.string.admin_auth_sub
+              )
+            )
+          )
+        )
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.admin_auth_sub_text)).check(matches(withText(context.resources.getString(R.string.admin_auth_sub))))
-      onView(withId(R.id.admin_auth_heading_textview)).check(matches(withText(context.resources.getString(R.string.admin_auth_heading))))
-     }
+      onView(withId(R.id.admin_auth_sub_text))
+        .check(
+          matches(
+            withText(
+              context.resources.getString(
+                R.string.admin_auth_sub
+              )
+            )
+          )
+        )
+      onView(withId(R.id.admin_auth_heading_textview)).check(
+        matches(
+          withText(
+            context.resources.getString(
+              R.string.admin_auth_heading
+            )
+          )
+        )
+      )
+    }
   }
+  /* ktlint-enable max-line-length */
 
   @Test
   fun testAdminAuthActivity_inputText_configurationChanged_inputTextIsPreserved() {
@@ -363,7 +450,8 @@ class AdminAuthActivityTest {
     }
   }
 
-  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView") // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
+  // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
+  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
   fun testAdminAuthActivity_inputIncorrectPasswordLandscape_clickImeActionButton_checkError() {
     launch<AdminAuthActivity>(
@@ -417,14 +505,18 @@ class AdminAuthActivityTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
     @Singleton
     @Provides
     @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBlockingDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 

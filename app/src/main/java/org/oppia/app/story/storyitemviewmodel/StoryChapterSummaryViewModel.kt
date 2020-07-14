@@ -8,7 +8,7 @@ import org.oppia.app.story.ExplorationSelectionListener
 import org.oppia.app.story.StoryFragment
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 
 private const val STORY_VIEWER_TAG = "StoryViewer"
 
@@ -18,7 +18,7 @@ class StoryChapterSummaryViewModel(
   private val fragment: Fragment,
   private val explorationSelectionListener: ExplorationSelectionListener,
   private val explorationDataController: ExplorationDataController,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   val internalProfileId: Int,
   val topicId: String,
   val storyId: String,
@@ -33,15 +33,28 @@ class StoryChapterSummaryViewModel(
     explorationDataController.stopPlayingExploration()
     explorationDataController.startPlayingExploration(
       explorationId
-    ).observe(fragment, Observer<AsyncResult<Any?>> { result ->
-      when {
-        result.isPending() -> logger.d(STORY_VIEWER_TAG, "Loading exploration")
-        result.isFailure() -> logger.e(STORY_VIEWER_TAG, "Failed to load exploration", result.getErrorOrNull()!!)
-        else -> {
-          logger.d(STORY_VIEWER_TAG, "Successfully loaded exploration: $explorationId")
-          explorationSelectionListener.selectExploration(internalProfileId, topicId, storyId, explorationId)
+    ).observe(
+      fragment,
+      Observer<AsyncResult<Any?>> { result ->
+        when {
+          result.isPending() -> logger.d(STORY_VIEWER_TAG, "Loading exploration")
+          result.isFailure() -> logger.e(
+            STORY_VIEWER_TAG,
+            "Failed to load exploration",
+            result.getErrorOrNull()!!
+          )
+          else -> {
+            logger.d(STORY_VIEWER_TAG, "Successfully loaded exploration: $explorationId")
+            explorationSelectionListener.selectExploration(
+              internalProfileId,
+              topicId,
+              storyId,
+              explorationId, /* backflowScreen= */
+              1
+            )
+          }
         }
       }
-    })
+    )
   }
 }

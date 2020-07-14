@@ -50,6 +50,9 @@ dependencies {
       'com.caverock:androidsvg-aar:1.4',
       'com.github.bumptech.glide:glide:4.9.0',
       'com.google.dagger:dagger:2.24',
+      'com.google.firebase:firebase-analytics-ktx:17.4.2',
+      'com.google.firebase:firebase-core:17.4.2',
+      'com.google.firebase:firebase-crashlytics:17.0.0',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
   )
   testImplementation(
@@ -62,6 +65,7 @@ dependencies {
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
       'org.mockito:mockito-core:2.19.0',
       'org.robolectric:robolectric:4.3',
+      project(":testing"),
   )
   kapt(
       'com.github.bumptech.glide:compiler:4.9.0',
@@ -70,4 +74,14 @@ dependencies {
   kaptTest(
       'com.google.dagger:dagger-compiler:2.24'
   )
+  // TODO (#59): Remove this once Bazel is introduced
+  // sufficiently visible for generated Dagger code. This can be done more cleanly via Bazel since dependencies can be
+  // controlled more directly than in Gradle.
+  implementation project(':model')
+}
+// The GeneratedMessageLite implementations of protobufs are depending on protobuf-java
+// instead of protobuf-lite after Android Studio 3.5,
+// The below command stops that from happening: https://github.com/google/tink/issues/282
+configurations {
+  all*.exclude module: 'protobuf-java'
 }

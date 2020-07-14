@@ -12,13 +12,13 @@ import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeItemViewM
 import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeSubtopicViewModel
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** [ViewModel] for [TopicPracticeFragment]. */
 @FragmentScope
 class TopicPracticeViewModel @Inject constructor(
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val topicController: TopicController
 ) : ViewModel() {
   private val itemViewModelList: MutableList<TopicPracticeItemViewModel> = ArrayList()
@@ -26,7 +26,10 @@ class TopicPracticeViewModel @Inject constructor(
   private var internalProfileId: Int = -1
 
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
-    topicController.getTopic(ProfileId.newBuilder().setInternalId(internalProfileId).build(), topicId)
+    topicController.getTopic(
+      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      topicId
+    )
   }
 
   private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
@@ -49,7 +52,11 @@ class TopicPracticeViewModel @Inject constructor(
 
   private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
     if (topic.isFailure()) {
-      logger.e("TopicPracticeFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
+      logger.e(
+        "TopicPracticeFragment",
+        "Failed to retrieve topic",
+        topic.getErrorOrNull()!!
+      )
     }
     return topic.getOrDefault(Topic.getDefaultInstance())
   }
@@ -57,13 +64,14 @@ class TopicPracticeViewModel @Inject constructor(
   private fun processTopicPracticeSkillList(topic: Topic): List<TopicPracticeItemViewModel> {
     itemViewModelList.add(TopicPracticeHeaderViewModel() as TopicPracticeItemViewModel)
 
-    itemViewModelList.addAll(topic.subtopicList.map { subtopic ->
-      TopicPracticeSubtopicViewModel(subtopic) as TopicPracticeItemViewModel
-    })
+    itemViewModelList.addAll(
+      topic.subtopicList.map { subtopic ->
+        TopicPracticeSubtopicViewModel(subtopic) as TopicPracticeItemViewModel
+      }
+    )
 
     itemViewModelList.add(TopicPracticeFooterViewModel() as TopicPracticeItemViewModel)
 
     return itemViewModelList
   }
-
 }

@@ -4,13 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.app.hintsandsolution.HintsAndSolutionListener
+import org.oppia.app.hintsandsolution.RevealHintListener
+import org.oppia.app.hintsandsolution.RevealSolutionInterface
+import org.oppia.app.model.HelpIndex
 import org.oppia.app.player.audio.AudioButtonListener
-import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionListener
-import org.oppia.app.player.state.hintsandsolution.RevealHintListener
-import org.oppia.app.player.state.hintsandsolution.RevealSolutionInterface
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
+import org.oppia.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.app.player.state.listener.StateKeyboardButtonListener
-import org.oppia.app.player.stopexploration.StopExplorationInterface
+import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
 import javax.inject.Inject
 
 internal const val TEST_ACTIVITY_PROFILE_ID_EXTRA = "StateFragmentTestActivity.profile_id"
@@ -20,9 +22,15 @@ internal const val TEST_ACTIVITY_EXPLORATION_ID_EXTRA = "StateFragmentTestActivi
 
 /** Test Activity used for testing StateFragment */
 class StateFragmentTestActivity :
-  InjectableAppCompatActivity(), StopExplorationInterface, StateKeyboardButtonListener,
-  AudioButtonListener, HintsAndSolutionListener, RouteToHintsAndSolutionListener,
-  RevealHintListener, RevealSolutionInterface {
+  InjectableAppCompatActivity(),
+  StopStatePlayingSessionListener,
+  StateKeyboardButtonListener,
+  AudioButtonListener,
+  HintsAndSolutionListener,
+  RouteToHintsAndSolutionListener,
+  RevealHintListener,
+  RevealSolutionInterface,
+  ShowHintAvailabilityListener {
   @Inject lateinit var stateFragmentTestActivityPresenter: StateFragmentTestActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,13 +39,17 @@ class StateFragmentTestActivity :
     stateFragmentTestActivityPresenter.handleOnCreate()
   }
 
-  override fun stopExploration() = stateFragmentTestActivityPresenter.stopExploration()
+  override fun stopSession() = stateFragmentTestActivityPresenter.stopExploration()
 
   override fun onEditorAction(actionCode: Int) {}
 
   companion object {
     fun createTestActivityIntent(
-      context: Context, profileId: Int, topicId: String, storyId: String, explorationId: String
+      context: Context,
+      profileId: Int,
+      topicId: String,
+      storyId: String,
+      explorationId: String
     ): Intent {
       val intent = Intent(context, StateFragmentTestActivity::class.java)
       intent.putExtra(TEST_ACTIVITY_PROFILE_ID_EXTRA, profileId)
@@ -73,4 +85,6 @@ class StateFragmentTestActivity :
   override fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {}
 
   override fun revealSolution(saveUserChoice: Boolean) {}
+
+  override fun onHintAvailable(helpIndex: HelpIndex) {}
 }

@@ -7,14 +7,14 @@ import org.oppia.app.model.Profile
 import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
-import java.util.*
+import org.oppia.util.logging.ConsoleLogger
+import java.util.Locale
 import javax.inject.Inject
 
 /** The ViewModel for [ProfileListActivity]. */
 @ActivityScope
 class ProfileListViewModel @Inject constructor(
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val profileManagementController: ProfileManagementController
 ) : ObservableViewModel() {
   val profiles: LiveData<List<Profile>> by lazy {

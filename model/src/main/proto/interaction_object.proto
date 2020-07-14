@@ -20,6 +20,8 @@ message InteractionObject {
     StringList set_of_html_string = 7;
     Fraction fraction = 8;
     ListOfSetsOfHtmlStrings list_of_sets_of_html_string = 9;
+    ImageWithRegions image_with_regions = 10;
+    ClickOnImage click_on_image = 11;
   }
 }
 
@@ -56,12 +58,50 @@ message ListOfSetsOfHtmlStrings {
   repeated StringList set_of_html_strings = 1;
 }
 
-// Structure for a DragAndDropHtmlString object.
-message DragAndDropHtmlString {
-  string html = 1;
+// Structure for 2-Dimensional Point.
+message Point2d {
+  float x = 1;
+  float y = 2;
 }
 
-// Structure for a DragAndDropPositiveInt object.
-message DragAndDropPositiveInt {
-  uint32 non_negative_int = 1;
+// An image overlaid with labeled regions.
+message ImageWithRegions {
+  // A string that represents a filepath which will be prefixed with '[exploration_id]/assets.
+  string image_path = 1;
+
+  // A region of an image, including its shape and coordinates.
+  message LabeledRegion {
+    // The name for the region.
+    string label = 1;
+
+    message Region {
+      // Represents the different Region Types.
+      enum RegionType {
+        REGION_TYPE_UNSPECIFIED = 0;
+        RECTANGLE = 1;
+      }
+
+      // A shape value for a particular region.
+      RegionType region_type = 1;
+
+      // A rectangle normalized so that the coordinates are within the range [0,1].
+      message NormalizedRectangle2d {
+        // Origin is top-left, increasing x is to the right, increasing y is down.
+        Point2d upper_left = 1;
+        Point2d lower_right = 2;
+      }
+
+      NormalizedRectangle2d area = 2;
+    }
+
+    Region region = 2;
+
+  }
+  repeated LabeledRegion label_regions = 2;
+}
+
+// A click on an image and the clicked regions.
+message ClickOnImage {
+  Point2d click_position = 1;
+  repeated string clicked_regions = 2;
 }

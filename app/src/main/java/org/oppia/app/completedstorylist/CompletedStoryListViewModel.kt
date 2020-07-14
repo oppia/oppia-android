@@ -8,20 +8,22 @@ import org.oppia.app.model.CompletedStoryList
 import org.oppia.app.model.ProfileId
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The ViewModel for [CompletedStoryListFragment]. */
 @FragmentScope
 class CompletedStoryListViewModel @Inject constructor(
   private val topicController: TopicController,
-  private val logger: Logger
+  private val logger: ConsoleLogger
 ) : ViewModel() {
   /** [internalProfileId] needs to be set before any of the live data members can be accessed. */
   private var internalProfileId: Int = -1
 
   private val completedStoryListResultLiveData: LiveData<AsyncResult<CompletedStoryList>> by lazy {
-    topicController.getCompletedStoryList(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+    topicController.getCompletedStoryList(
+      ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    )
   }
 
   private val completedStoryLiveData: LiveData<CompletedStoryList> by lazy {
@@ -36,7 +38,9 @@ class CompletedStoryListViewModel @Inject constructor(
     this.internalProfileId = internalProfileId
   }
 
-  private fun processCompletedStoryListResult(completedStoryListResult: AsyncResult<CompletedStoryList>): CompletedStoryList {
+  private fun processCompletedStoryListResult(
+    completedStoryListResult: AsyncResult<CompletedStoryList>
+  ): CompletedStoryList {
     if (completedStoryListResult.isFailure()) {
       logger.e(
         "CompletedStoryListFragment",
@@ -47,11 +51,15 @@ class CompletedStoryListViewModel @Inject constructor(
     return completedStoryListResult.getOrDefault(CompletedStoryList.getDefaultInstance())
   }
 
-  private fun processCompletedStoryList(completedStoryList: CompletedStoryList): List<CompletedStoryItemViewModel> {
+  private fun processCompletedStoryList(
+    completedStoryList: CompletedStoryList
+  ): List<CompletedStoryItemViewModel> {
     val itemViewModelList: MutableList<CompletedStoryItemViewModel> = mutableListOf()
-    itemViewModelList.addAll(completedStoryList.completedStoryList.map { completedStory ->
-      CompletedStoryItemViewModel(completedStory)
-    })
+    itemViewModelList.addAll(
+      completedStoryList.completedStoryList.map { completedStory ->
+        CompletedStoryItemViewModel(completedStory)
+      }
+    )
     return itemViewModelList
   }
 }

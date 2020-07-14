@@ -17,30 +17,69 @@ import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import javax.inject.Inject
 
 /** The test activity for [TopicFragment] to test displaying story by storyId. */
-class TopicTestActivityForStory : InjectableAppCompatActivity(), RouteToQuestionPlayerListener,
-  RouteToStoryListener, RouteToExplorationListener, RouteToRevisionCardListener {
+class TopicTestActivityForStory :
+  InjectableAppCompatActivity(),
+  RouteToQuestionPlayerListener,
+  RouteToStoryListener,
+  RouteToExplorationListener,
+  RouteToRevisionCardListener {
 
-  @Inject lateinit var topicActivityPresenter: TopicActivityPresenter
+  @Inject
+  lateinit var topicActivityPresenter: TopicActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    topicActivityPresenter.handleOnCreate(internalProfileId = 0, topicId = TEST_TOPIC_ID_0, storyId = TEST_STORY_ID_1)
+    topicActivityPresenter.handleOnCreate(
+      internalProfileId = 0,
+      topicId = TEST_TOPIC_ID_0,
+      storyId = TEST_STORY_ID_1
+    )
   }
 
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
-    startActivity(QuestionPlayerActivity.createQuestionPlayerActivityIntent(this, skillIdList))
+    startActivity(
+      QuestionPlayerActivity.createQuestionPlayerActivityIntent(
+        this, skillIdList
+      )
+    )
   }
 
   override fun routeToStory(internalProfileId: Int, topicId: String, storyId: String) {
-    startActivity(StoryActivity.createStoryActivityIntent(this, internalProfileId, topicId, storyId))
+    startActivity(
+      StoryActivity.createStoryActivityIntent(
+        this,
+        internalProfileId,
+        topicId,
+        storyId
+      )
+    )
   }
 
-  override fun routeToExploration(profileId: Int, topicId: String, storyId: String, explorationId: String) {
-    startActivity(ExplorationActivity.createExplorationActivityIntent(this, profileId, topicId, storyId, explorationId))
+  override fun routeToExploration(
+    profileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    backflowScreen: Int?
+  ) {
+    startActivity(
+      ExplorationActivity.createExplorationActivityIntent(
+        this,
+        profileId,
+        topicId,
+        storyId,
+        explorationId,
+        backflowScreen
+      )
+    )
   }
 
   override fun routeToRevisionCard(topicId: String, subtopicId: String) {
-    startActivity(RevisionCardActivity.createRevisionCardActivityIntent(this, topicId, subtopicId))
+    startActivity(
+      RevisionCardActivity.createRevisionCardActivityIntent(
+        this, topicId, subtopicId
+      )
+    )
   }
 }

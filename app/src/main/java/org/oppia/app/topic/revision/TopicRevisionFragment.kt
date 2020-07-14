@@ -13,14 +13,32 @@ import javax.inject.Inject
 
 /** Fragment that card for topic revision. */
 class TopicRevisionFragment : InjectableFragment(), RevisionSubtopicSelector {
-  @Inject lateinit var topicReviewFragmentPresenter: TopicRevisionFragmentPresenter
+  companion object {
+    internal const val TOPIC_REVISION_FRAGMENT_TAG = "TOPIC_REVISION_FRAGMENT_TAG"
+    /** Returns a new [TopicRevisionFragment]. */
+    fun newInstance(internalProfileId: Int, topicId: String): TopicRevisionFragment {
+      val topicRevisionFragment = TopicRevisionFragment()
+      val args = Bundle()
+      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+      args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
+      topicRevisionFragment.arguments = args
+      return topicRevisionFragment
+    }
+  }
+
+  @Inject
+  lateinit var topicReviewFragmentPresenter: TopicRevisionFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
     val internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)!!
     val topicId = checkNotNull(arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in arguments for TopicRevisionFragment."

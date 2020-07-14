@@ -15,11 +15,15 @@ import javax.inject.Inject
  */
 internal class FractionInputHasIntegerPartEqualToRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
-): RuleClassifierProvider, GenericRuleClassifier.MultiTypeSingleInputMatcher<Fraction, Int> {
+) : RuleClassifierProvider, GenericRuleClassifier.MultiTypeSingleInputMatcher<Fraction, Int> {
 
   override fun createRuleClassifier(): RuleClassifier {
     return classifierFactory.createMultiTypeSingleInputClassifier(
-      InteractionObject.ObjectTypeCase.FRACTION, InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT, "x", this)
+      InteractionObject.ObjectTypeCase.FRACTION,
+      InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT,
+      "x",
+      this
+    )
   }
 
   // TODO(#210): Add tests for this classifier.

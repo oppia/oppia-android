@@ -9,81 +9,96 @@
       type="org.oppia.app.onboarding.OnboardingSlideFinalViewModel" />
   </data>
 
-  <androidx.constraintlayout.widget.ConstraintLayout
+  <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:clipToPadding="false"
+    android:fillViewport="true"
+    android:overScrollMode="never"
+    android:scrollbars="none">
 
-    <ImageView
-      android:id="@+id/slide_image_view"
-      android:layout_width="0dp"
-      android:layout_height="0dp"
-      android:contentDescription="@string/onboarding_slide_3_title"
-      android:adjustViewBounds="true"
-      android:scaleType="fitXY"
-      android:src="@drawable/ic_landscape_onboarding_3"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintDimensionRatio="H, 10:9"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-      android:id="@+id/slide_title_text_view"
-      android:layout_width="0dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginStart="8dp"
-      android:layout_marginEnd="28dp"
-      android:layout_marginBottom="12dp"
-      android:fontFamily="sans-serif-medium"
-      android:gravity="center_horizontal"
-      android:text="@string/onboarding_slide_3_title"
-      android:textColor="@color/oppiaPrimaryText"
-      android:textSize="24sp"
-      app:layout_constraintBottom_toTopOf="@+id/guideline2"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="1.0"
-      app:layout_constraintStart_toEndOf="@+id/slide_image_view" />
+      android:orientation="horizontal">
 
-    <TextView
-      android:id="@+id/slide_description_text_view"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:layout_marginStart="20dp"
-      android:layout_marginTop="12dp"
-      android:layout_marginEnd="40dp"
-      android:fontFamily="sans-serif"
-      android:gravity="center_horizontal"
-      android:text="@string/onboarding_slide_3_description"
-      android:textColor="@color/oppiaPrimaryText"
-      android:textSize="16sp"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="0.0"
-      app:layout_constraintStart_toEndOf="@+id/slide_image_view"
-      app:layout_constraintTop_toTopOf="@+id/guideline2" />
+      <ImageView
+        android:id="@+id/slide_image_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/onboarding_slide_3_title"
+        android:src="@drawable/ic_landscape_onboarding_3_tablet"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="40:39"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-      android:id="@+id/get_started_button"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:layout_marginStart="28dp"
-      android:layout_marginTop="24dp"
-      android:layout_marginEnd="52dp"
-      android:background="@drawable/primary_rounded_button"
-      android:fontFamily="sans-serif-medium"
-      android:minHeight="48dp"
-      android:onClick="@{(v) -> viewModel.clickOnGetStarted()}"
-      android:text="@string/get_started"
-      android:textColor="@color/white"
-      android:textSize="14sp"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toEndOf="@+id/slide_image_view"
-      app:layout_constraintTop_toBottomOf="@id/slide_description_text_view" />
+      <TextView
+        android:id="@+id/slide_title_text_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center_horizontal"
+        android:text="@string/onboarding_slide_3_title"
+        android:textColor="@color/oppiaPrimaryText"
+        android:textSize="32sp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        app:layout_constraintEnd_toEndOf="@+id/slide_description_text_view"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/slide_description_text_view" />
 
-    <androidx.constraintlayout.widget.Guideline
-      android:id="@+id/guideline2"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      app:layout_constraintGuide_percent="0.5" />
-  </androidx.constraintlayout.widget.ConstraintLayout>
+      <TextView
+        android:id="@+id/slide_description_text_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:fontFamily="sans-serif"
+        android:gravity="center_horizontal"
+        android:text="@string/onboarding_slide_3_description"
+        android:textColor="@color/oppiaPrimaryText"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+        app:layout_constraintStart_toStartOf="@+id/guideline4"
+        app:layout_constraintTop_toTopOf="@+id/guideline2" />
+
+      <Button
+        android:id="@+id/get_started_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/primary_rounded_button"
+        android:fontFamily="sans-serif-medium"
+        android:minHeight="48dp"
+        android:onClick="@{(v) -> viewModel.clickOnGetStarted()}"
+        android:text="@string/get_started"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@+id/slide_title_text_view"
+        app:layout_constraintStart_toStartOf="@+id/slide_title_text_view"
+        app:layout_constraintTop_toBottomOf="@id/slide_description_text_view" />
+
+      <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
+      <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.90625" />
+
+      <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5546" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+  </ScrollView>
 </layout>

@@ -61,7 +61,8 @@ class BindableAdapterTest {
 
     ActivityScenario.launch(BindableAdapterTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        val recyclerView: RecyclerView = getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
+        val recyclerView: RecyclerView =
+          getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
 
         assertThat(recyclerView.childCount).isEqualTo(0)
       }
@@ -82,11 +83,27 @@ class BindableAdapterTest {
       safelyWaitUntilIdle()
 
       scenario.onActivity { activity ->
-        val recyclerView: RecyclerView = getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
+        val recyclerView: RecyclerView =
+          getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
         assertThat(recyclerView.childCount).isEqualTo(1)
       }
       // Perform onView() verification off the the main thread to avoid deadlocking.
       onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText(STR_VALUE_0.strValue)))
+    }
+  }
+
+  @Test
+  fun testBindableAdapter_withOneViewType_nullData_bindsNoViews() {
+    // Set up the adapter to be used for this test.
+    BindableAdapterTestFragmentPresenter.testBindableAdapter =
+      createSingleViewTypeNoDataBindingBindableAdapter()
+
+    ActivityScenario.launch(BindableAdapterTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        val recyclerView: RecyclerView =
+          getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view_non_live_data)
+        assertThat(recyclerView.childCount).isEqualTo(0)
+      }
     }
   }
 
@@ -104,7 +121,8 @@ class BindableAdapterTest {
       safelyWaitUntilIdle()
 
       scenario.onActivity { activity ->
-        val recyclerView: RecyclerView = getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
+        val recyclerView: RecyclerView =
+          getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
       onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText(STR_VALUE_1.strValue)))
@@ -128,13 +146,24 @@ class BindableAdapterTest {
 
       // Verify that all three values are bound in the correct order and with the correct values.
       scenario.onActivity { activity ->
-        val recyclerView: RecyclerView = getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
+        val recyclerView: RecyclerView =
+          getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
 
       onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText(STR_VALUE_1.strValue)))
-      onView(atPosition(R.id.test_recycler_view, 1)).check(matches(withSubstring(INT_VALUE_0.intValue.toString())))
-      onView(atPosition(R.id.test_recycler_view, 2)).check(matches(withSubstring(INT_VALUE_1.intValue.toString())))
+      onView(
+        atPosition(
+          R.id.test_recycler_view,
+          1
+        )
+      ).check(matches(withSubstring(INT_VALUE_0.intValue.toString())))
+      onView(
+        atPosition(
+          R.id.test_recycler_view,
+          2
+        )
+      ).check(matches(withSubstring(INT_VALUE_1.intValue.toString())))
     }
   }
 
@@ -152,7 +181,8 @@ class BindableAdapterTest {
       safelyWaitUntilIdle()
 
       scenario.onActivity { activity ->
-        val recyclerView: RecyclerView = getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
+        val recyclerView: RecyclerView =
+          getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
         assertThat(recyclerView.childCount).isEqualTo(1)
       }
       // Perform onView() verification off the the main thread to avoid deadlocking.
@@ -174,7 +204,8 @@ class BindableAdapterTest {
       safelyWaitUntilIdle()
 
       scenario.onActivity { activity ->
-        val recyclerView: RecyclerView = getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
+        val recyclerView: RecyclerView =
+          getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
 
@@ -199,13 +230,24 @@ class BindableAdapterTest {
 
       // Verify that all three values are bound in the correct order and with the correct values.
       scenario.onActivity { activity ->
-        val recyclerView: RecyclerView = getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
+        val recyclerView: RecyclerView =
+          getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
 
       onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText(STR_VALUE_1.strValue)))
-      onView(atPosition(R.id.test_recycler_view, 1)).check(matches(withSubstring(INT_VALUE_0.intValue.toString())))
-      onView(atPosition(R.id.test_recycler_view, 2)).check(matches(withSubstring(INT_VALUE_1.intValue.toString())))
+      onView(
+        atPosition(
+          R.id.test_recycler_view,
+          1
+        )
+      ).check(matches(withSubstring(INT_VALUE_0.intValue.toString())))
+      onView(
+        atPosition(
+          R.id.test_recycler_view,
+          2
+        )
+      ).check(matches(withSubstring(INT_VALUE_1.intValue.toString())))
     }
   }
 
@@ -283,20 +325,20 @@ class BindableAdapterTest {
     textView.text = "Value: " + data.intValue
   }
 
-  private fun getRecyclerViewListLiveData(activity: BindableAdapterTestActivity): MutableLiveData<List<TestModel>> {
+  private fun getRecyclerViewListLiveData(activity: BindableAdapterTestActivity): MutableLiveData<List<TestModel>> { // ktlint-disable max-line-length
     return getTestViewModel(activity).dataListLiveData
   }
 
-  private fun getTestViewModel(activity: BindableAdapterTestActivity): BindableAdapterTestViewModel {
+  private fun getTestViewModel(activity: BindableAdapterTestActivity): BindableAdapterTestViewModel { // ktlint-disable max-line-length
     return getTestFragmentPresenter(activity).viewModel
   }
 
-  private fun getTestFragmentPresenter(activity: BindableAdapterTestActivity): BindableAdapterTestFragmentPresenter {
+  private fun getTestFragmentPresenter(activity: BindableAdapterTestActivity): BindableAdapterTestFragmentPresenter { // ktlint-disable max-line-length
     return getTestFragment(activity).bindableAdapterTestFragmentPresenter
   }
 
   private fun getTestFragment(activity: BindableAdapterTestActivity): BindableAdapterTestFragment {
-    return activity.supportFragmentManager.findFragmentByTag(BINDABLE_TEST_FRAGMENT_TAG) as BindableAdapterTestFragment
+    return activity.supportFragmentManager.findFragmentByTag(BINDABLE_TEST_FRAGMENT_TAG) as BindableAdapterTestFragment // ktlint-disable max-line-length
   }
 
   private fun safelyWaitUntilIdle() {

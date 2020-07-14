@@ -14,7 +14,8 @@ import kotlinx.coroutines.launch
 import org.oppia.util.caching.AssetRepository
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
+import org.oppia.util.logging.ExceptionLogger
 import org.oppia.util.threading.BackgroundDispatcher
 import java.io.IOException
 import java.util.concurrent.TimeUnit
@@ -31,8 +32,9 @@ import kotlin.concurrent.withLock
  */
 @Singleton
 class AudioPlayerController @Inject constructor(
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val assetRepository: AssetRepository,
+  private val exceptionLogger: ExceptionLogger,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
   @CacheAssetsLocally private val cacheAssetsLocally: Boolean
 ) {
@@ -62,7 +64,7 @@ class AudioPlayerController @Inject constructor(
     PREPARED, // mediaPlayer in "Prepared" state, ready to play(), pause(), seekTo().
     PLAYING, // mediaPlayer in "Started" state, ready to pause(), seekTo().
     PAUSED, // mediaPlayer in "Paused" state, ready to play(), seekTo().
-    COMPLETED  // mediaPlayer in "PlaybackCompleted" state, ready to play(), seekTo().
+    COMPLETED // mediaPlayer in "PlaybackCompleted" state, ready to play(), seekTo().
   }
 
   /**
@@ -141,7 +143,8 @@ class AudioPlayerController @Inject constructor(
         )
       releaseMediaPlayer()
       initializeMediaPlayer()
-      return@setOnErrorListener true // Indicates that error was handled and to not invoke completion listener.
+      // Indicates that error was handled and to not invoke completion listener.
+      return@setOnErrorListener true
     }
   }
 
@@ -180,6 +183,7 @@ class AudioPlayerController @Inject constructor(
       }
       mediaPlayer.prepareAsync()
     } catch (e: IOException) {
+      exceptionLogger.logException(e)
       logger.e("AudioPlayerController", "Failed to set data source for media player", e)
     }
     playProgress?.value = AsyncResult.pending()

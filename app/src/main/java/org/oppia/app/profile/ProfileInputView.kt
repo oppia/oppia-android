@@ -51,10 +51,17 @@ class ProfileInputView @JvmOverloads constructor(
         profileInputView.setErrorText(errMessage)
       }
     }
+
     /** Binding adapter for setting a [TextWatcher] as a change listener for an [EditText]. */
     @BindingAdapter("android:addTextChangedListener")
     fun bindTextWatcher(editText: EditText, textWatcher: TextWatcher) {
       editText.addTextChangedListener(textWatcher)
+    }
+
+    @JvmStatic
+    @BindingAdapter("profile:singleLine")
+    fun setSingleLine(profileInputView: ProfileInputView, type: Boolean) {
+      profileInputView.input.setSingleLine(type)
     }
   }
 
@@ -74,7 +81,12 @@ class ProfileInputView @JvmOverloads constructor(
     input = binding.input
     errorText = binding.errorText
     orientation = VERTICAL
-    if (attributes.getBoolean(R.styleable.ProfileInputView_isPasswordInput, /** defVal= */ false)) {
+    if (
+      attributes.getBoolean(
+        R.styleable.ProfileInputView_isPasswordInput,
+        /** defVal= */ false
+      )
+    ) {
       input.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
     }
     val inputLength = attributes.getInt(R.styleable.ProfileInputView_inputLength, -1)

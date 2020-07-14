@@ -1,7 +1,6 @@
 package org.oppia.app.profile
 
 import android.content.Context
-import android.content.res.Configuration
 import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
@@ -14,20 +13,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.app.R
 import org.oppia.app.databinding.ProfileChooserAddViewBinding
 import org.oppia.app.databinding.ProfileChooserFragmentBinding
 import org.oppia.app.databinding.ProfileChooserProfileViewBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.HomeActivity
+import org.oppia.app.model.EventLog
 import org.oppia.app.model.ProfileChooserUiModel
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.domain.analytics.AnalyticsController
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.statusbar.StatusBarColor
+import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
 private val COLORS_LIST = listOf(
@@ -63,9 +64,11 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val activity: AppCompatActivity,
   private val context: Context,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val viewModelProvider: ViewModelProvider<ProfileChooserViewModel>,
-  private val profileManagementController: ProfileManagementController
+  private val profileManagementController: ProfileManagementController,
+  private val analyticsController: AnalyticsController,
+  private val oppiaClock: OppiaClock
 ) {
   private lateinit var binding: ProfileChooserFragmentBinding
   private val orientation = Resources.getSystem().configuration.orientation
@@ -79,11 +82,17 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   /** Binds ViewModel and sets up RecyclerView Adapter. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     StatusBarColor.statusBarColorUpdate(R.color.profileStatusBar, activity, false)
-    binding = ProfileChooserFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding = ProfileChooserFragmentBinding.inflate(
+      inflater,
+      container,
+      /* attachToRoot= */ false
+    )
     binding.apply {
       viewModel = chooserViewModel
       lifecycleOwner = fragment
+      presenter = this@ProfileChooserFragmentPresenter
     }
+    logProfileChooserEvent()
     binding.profileRecyclerView.isNestedScrollingEnabled = false
     subscribeToWasProfileEverBeenAdded()
     binding.profileRecyclerView.apply {
@@ -93,24 +102,19 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   private fun subscribeToWasProfileEverBeenAdded() {
-    wasProfileEverBeenAdded.observe(activity, Observer<Boolean> {
-      wasProfileEverBeenAddedValue.set(it)
-      val layoutManager = if (it) {
-        val spanCount = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+    wasProfileEverBeenAdded.observe(
+      activity,
+      Observer<Boolean> {
+        wasProfileEverBeenAddedValue.set(it)
+        val spanCount = if (it) {
           activity.resources.getInteger(R.integer.profile_chooser_span_count)
         } else {
-          /* spanCount= */ 2
+          activity.resources.getInteger(R.integer.profile_chooser_first_time_span_count)
         }
-        GridLayoutManager(activity, spanCount)
-      } else {
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-          GridLayoutManager(activity, /* spanCount= */ 2)
-        } else {
-          LinearLayoutManager(activity)
-        }
+        val layoutManager = GridLayoutManager(activity, spanCount)
+        binding.profileRecyclerView.layoutManager = layoutManager
       }
-      binding.profileRecyclerView.layoutManager = layoutManager
-    })
+    )
   }
 
   private val wasProfileEverBeenAdded: LiveData<Boolean> by lazy {
@@ -120,7 +124,9 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     )
   }
 
-  private fun processWasProfileEverBeenAddedResult(wasProfileEverBeenAddedResult: AsyncResult<Boolean>): Boolean {
+  private fun processWasProfileEverBeenAddedResult(
+    wasProfileEverBeenAddedResult: AsyncResult<Boolean>
+  ): Boolean {
     if (wasProfileEverBeenAddedResult.isFailure()) {
       logger.e(
         "ProfileChooserFragment",
@@ -144,7 +150,9 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAdapter(): BindableAdapter<ProfileChooserUiModel> {
     return BindableAdapter.MultiTypeBuilder
-      .newBuilder<ProfileChooserUiModel, ProfileChooserUiModel.ModelTypeCase>(ProfileChooserUiModel::getModelTypeCase)
+      .newBuilder<ProfileChooserUiModel, ProfileChooserUiModel.ModelTypeCase>(
+        ProfileChooserUiModel::getModelTypeCase
+      )
       .registerViewDataBinderWithSameModelType(
         viewType = ProfileChooserUiModel.ModelTypeCase.PROFILE,
         inflateDataBinding = ProfileChooserProfileViewBinding::inflate,
@@ -164,18 +172,23 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   ) {
     binding.viewModel = model
     binding.presenter = this
-    binding.root.setOnClickListener {
+    binding.profileChooserItem.setOnClickListener {
       if (model.profile.pin.isEmpty()) {
-        profileManagementController.loginToProfile(model.profile.id).observe(fragment, Observer {
-          if (it.isSuccess()) {
-            activity.startActivity(
-              (HomeActivity.createHomeActivity(
-                activity,
-                model.profile.id.internalId
-              ))
-            )
+        profileManagementController.loginToProfile(model.profile.id).observe(
+          fragment,
+          Observer {
+            if (it.isSuccess()) {
+              activity.startActivity(
+                (
+                  HomeActivity.createHomeActivity(
+                    activity,
+                    model.profile.id.internalId
+                  )
+                  )
+              )
+            }
           }
-        })
+        )
       } else {
         val pinPasswordIntent = PinPasswordActivity.createPinPasswordActivityIntent(
           activity,
@@ -187,9 +200,12 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun bindAddView(binding: ProfileChooserAddViewBinding, @Suppress("UNUSED_PARAMETER") model: ProfileChooserUiModel) {
+  private fun bindAddView(
+    binding: ProfileChooserAddViewBinding,
+    @Suppress("UNUSED_PARAMETER") model: ProfileChooserUiModel
+  ) {
     binding.presenter = this
-    binding.root.setOnClickListener {
+    binding.addProfileItem.setOnClickListener {
       if (chooserViewModel.adminPin.isEmpty()) {
         activity.startActivity(
           AdminPinActivity.createAdminPinActivityIntent(
@@ -234,5 +250,14 @@ class ProfileChooserFragmentPresenter @Inject constructor(
         )
       )
     }
+  }
+
+  private fun logProfileChooserEvent() {
+    analyticsController.logTransitionEvent(
+      activity.applicationContext,
+      oppiaClock.getCurrentCalendar().timeInMillis,
+      EventLog.EventAction.OPEN_PROFILE_CHOOSER,
+      /* Event Context */ null
+    )
   }
 }

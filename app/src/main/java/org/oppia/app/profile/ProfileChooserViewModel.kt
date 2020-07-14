@@ -5,13 +5,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Profile
-import org.oppia.app.model.ProfileId
 import org.oppia.app.model.ProfileAvatar
 import org.oppia.app.model.ProfileChooserUiModel
+import org.oppia.app.model.ProfileId
 import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import java.util.Locale
 import javax.inject.Inject
 
@@ -19,7 +19,7 @@ import javax.inject.Inject
 @FragmentScope
 class ProfileChooserViewModel @Inject constructor(
   fragment: Fragment,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val profileManagementController: ProfileManagementController
 ) : ObservableViewModel() {
 
@@ -35,7 +35,9 @@ class ProfileChooserViewModel @Inject constructor(
   val usedColors = mutableListOf<Int>()
 
   /** Sorts profiles alphabetically by name and put Admin in front. */
-  private fun processGetProfilesResult(profilesResult: AsyncResult<List<Profile>>): List<ProfileChooserUiModel> {
+  private fun processGetProfilesResult(
+    profilesResult: AsyncResult<List<Profile>>
+  ): List<ProfileChooserUiModel> {
     if (profilesResult.isFailure()) {
       logger.e(
         "ProfileChooserViewModel",

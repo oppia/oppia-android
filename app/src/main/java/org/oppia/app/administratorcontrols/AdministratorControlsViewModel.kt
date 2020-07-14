@@ -17,7 +17,7 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** [ViewModel] for [AdministratorControlsFragment]. */
@@ -25,34 +25,52 @@ import javax.inject.Inject
 class AdministratorControlsViewModel @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val profileManagementController: ProfileManagementController
 ) : ObservableViewModel() {
   private val routeToProfileListListener = activity as RouteToProfileListListener
   private lateinit var userProfileId: ProfileId
 
   private val deviceSettingsLiveData: LiveData<DeviceSettings> by lazy {
-    Transformations.map(profileManagementController.getDeviceSettings(), ::processGetDeviceSettingsResult)
+    Transformations.map(
+      profileManagementController.getDeviceSettings(),
+      ::processGetDeviceSettingsResult
+    )
   }
 
   val administratorControlsLiveData: LiveData<List<AdministratorControlsItemViewModel>> by lazy {
     Transformations.map(deviceSettingsLiveData, ::processAdministratorControlsList)
   }
 
-  private fun processGetDeviceSettingsResult(deviceSettingsResult: AsyncResult<DeviceSettings>): DeviceSettings {
+  private fun processGetDeviceSettingsResult(
+    deviceSettingsResult: AsyncResult<DeviceSettings>
+  ): DeviceSettings {
     if (deviceSettingsResult.isFailure()) {
-      logger.e("AdministratorControlsFragment", "Failed to retrieve profile", deviceSettingsResult.getErrorOrNull()!!)
+      logger.e(
+        "AdministratorControlsFragment",
+        "Failed to retrieve profile",
+        deviceSettingsResult.getErrorOrNull()!!
+      )
     }
     return deviceSettingsResult.getOrDefault(DeviceSettings.getDefaultInstance())
   }
 
-  private fun processAdministratorControlsList(deviceSettings: DeviceSettings): List<AdministratorControlsItemViewModel> {
+  private fun processAdministratorControlsList(
+    deviceSettings: DeviceSettings
+  ): List<AdministratorControlsItemViewModel> {
     val itemViewModelList: MutableList<AdministratorControlsItemViewModel> = mutableListOf(
       AdministratorControlsGeneralViewModel()
     )
     itemViewModelList.add(AdministratorControlsProfileViewModel(routeToProfileListListener))
-    itemViewModelList.add(AdministratorControlsDownloadPermissionsViewModel(fragment, logger, profileManagementController,
-      userProfileId, deviceSettings))
+    itemViewModelList.add(
+      AdministratorControlsDownloadPermissionsViewModel(
+        fragment,
+        logger,
+        profileManagementController,
+        userProfileId,
+        deviceSettings
+      )
+    )
     itemViewModelList.add(AdministratorControlsAppInformationViewModel(activity))
     itemViewModelList.add(AdministratorControlsAccountActionsViewModel(fragment))
 
