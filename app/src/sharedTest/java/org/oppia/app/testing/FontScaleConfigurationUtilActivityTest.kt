@@ -42,7 +42,9 @@ class FontScaleConfigurationUtilActivityTest {
 
   @Test
   fun testFontScaleTestActivity_smallTextSizeIsVerifiedSuccessfully() {
-    launch<FontScaleConfigurationUtilActivity>(createFontScaleTestActivityIntent(StoryTextSize.SMALL_TEXT_SIZE.name)).use {
+    launch<FontScaleConfigurationUtilActivity>(
+      createFontScaleTestActivityIntent(StoryTextSize.SMALL_TEXT_SIZE.name)
+    ).use {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
           FontSizeMatcher.withFontSize(
@@ -55,7 +57,9 @@ class FontScaleConfigurationUtilActivityTest {
 
   @Test
   fun testFontScaleTestActivity_mediumTextSizeIsVerifiedSuccessfully() {
-    launch<FontScaleConfigurationUtilActivity>(createFontScaleTestActivityIntent(StoryTextSize.MEDIUM_TEXT_SIZE.name)).use {
+    launch<FontScaleConfigurationUtilActivity>(
+      createFontScaleTestActivityIntent(StoryTextSize.MEDIUM_TEXT_SIZE.name)
+    ).use {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
           FontSizeMatcher.withFontSize(
@@ -68,7 +72,9 @@ class FontScaleConfigurationUtilActivityTest {
 
   @Test
   fun testFontScaleTestActivity_largeTextSizeIsVerifiedSuccessfully() {
-    launch<FontScaleConfigurationUtilActivity>(createFontScaleTestActivityIntent(StoryTextSize.LARGE_TEXT_SIZE.name)).use {
+    launch<FontScaleConfigurationUtilActivity>(
+      createFontScaleTestActivityIntent(StoryTextSize.LARGE_TEXT_SIZE.name)
+    ).use {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
           FontSizeMatcher.withFontSize(
@@ -81,7 +87,9 @@ class FontScaleConfigurationUtilActivityTest {
 
   @Test
   fun testFontScaleTestActivity_extraLargeTextSizeIsVerifiedSuccessfully() {
-    launch<FontScaleConfigurationUtilActivity>(createFontScaleTestActivityIntent(StoryTextSize.EXTRA_LARGE_TEXT_SIZE.name)).use {
+    launch<FontScaleConfigurationUtilActivity>(
+      createFontScaleTestActivityIntent(StoryTextSize.EXTRA_LARGE_TEXT_SIZE.name)
+    ).use {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
           FontSizeMatcher.withFontSize(

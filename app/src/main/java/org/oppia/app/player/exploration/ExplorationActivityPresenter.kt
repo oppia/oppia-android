@@ -98,7 +98,6 @@ class ExplorationActivityPresenter @Inject constructor(
         TAG_EXPLORATION_MANAGER_FRAGMENT
       ).commitNow()
     }
-
   }
 
   fun loadExplorationFragment(result: StoryTextSize) {
@@ -158,21 +157,24 @@ class ExplorationActivityPresenter @Inject constructor(
   fun stopExploration() {
     fontScaleConfigurationUtil.adjustFontScale(activity, StoryTextSize.MEDIUM_TEXT_SIZE.name)
     explorationDataController.stopPlayingExploration()
-      .observe(activity, Observer<AsyncResult<Any?>> {
-        when {
-          it.isPending() -> logger.d("ExplorationActivity", "Stopping exploration")
-          it.isFailure() -> logger.e(
-            "ExplorationActivity",
-            "Failed to stop exploration",
-            it.getErrorOrNull()!!
-          )
-          else -> {
-            logger.d("ExplorationActivity", "Successfully stopped exploration")
-            backPressActivitySelector(backflowScreen)
-            (activity as ExplorationActivity).finish()
+      .observe(
+        activity,
+        Observer<AsyncResult<Any?>> {
+          when {
+            it.isPending() -> logger.d("ExplorationActivity", "Stopping exploration")
+            it.isFailure() -> logger.e(
+              "ExplorationActivity",
+              "Failed to stop exploration",
+              it.getErrorOrNull()!!
+            )
+            else -> {
+              logger.d("ExplorationActivity", "Successfully stopped exploration")
+              backPressActivitySelector(backflowScreen)
+              (activity as ExplorationActivity).finish()
+            }
           }
         }
-      })
+      )
   }
 
   fun onKeyboardAction(actionCode: Int) {

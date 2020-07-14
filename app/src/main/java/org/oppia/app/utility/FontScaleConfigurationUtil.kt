@@ -11,7 +11,8 @@ import javax.inject.Inject
 class FontScaleConfigurationUtil @Inject constructor() {
   /** This method updates font scale. */
   fun adjustFontScale(
-    context: Context, storyTextSize: String
+    context: Context,
+    storyTextSize: String
   ) {
     val configuration = context.resources.configuration
     configuration.fontScale = getStoryTextSizeConfigurationUtil(storyTextSize)
