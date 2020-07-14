@@ -5,7 +5,6 @@ import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.app.application.ActivityComponentFactory
-import org.oppia.app.application.OppiaApplication
 import org.oppia.app.fragment.FragmentComponent
 
 /**

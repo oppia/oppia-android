@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
+import org.oppia.app.model.HelpIndex
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
@@ -14,6 +15,7 @@ import org.oppia.app.player.state.listener.NextNavigationButtonListener
 import org.oppia.app.player.state.listener.PreviousResponsesHeaderClickListener
 import org.oppia.app.player.state.listener.ReplayButtonListener
 import org.oppia.app.player.state.listener.ReturnToTopicNavigationButtonListener
+import org.oppia.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.app.player.state.listener.SubmitNavigationButtonListener
 import javax.inject.Inject
 
@@ -27,7 +29,8 @@ class QuestionPlayerFragment :
   ReplayButtonListener,
   ReturnToTopicNavigationButtonListener,
   SubmitNavigationButtonListener,
-  PreviousResponsesHeaderClickListener {
+  PreviousResponsesHeaderClickListener,
+  ShowHintAvailabilityListener {
 
   @Inject
   lateinit var questionPlayerFragmentPresenter: QuestionPlayerFragmentPresenter
@@ -63,8 +66,22 @@ class QuestionPlayerFragment :
   override fun onResponsesHeaderClicked() =
     questionPlayerFragmentPresenter.onResponsesHeaderClicked()
 
-  override fun onPendingAnswerErrorOrAvailabilityCheck(pendingAnswerError: String?, inputAnswerAvailable: Boolean) =
+  override fun onPendingAnswerErrorOrAvailabilityCheck(
+    pendingAnswerError: String?,
+    inputAnswerAvailable: Boolean
+  ) =
     questionPlayerFragmentPresenter.updateSubmitButton(pendingAnswerError, inputAnswerAvailable)
 
   fun handleKeyboardAction() = questionPlayerFragmentPresenter.handleKeyboardAction()
+
+  fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
+    questionPlayerFragmentPresenter.revealHint(saveUserChoice, hintIndex)
+  }
+
+  fun revealSolution(saveUserChoice: Boolean) {
+    questionPlayerFragmentPresenter.revealSolution(saveUserChoice)
+  }
+
+  override fun onHintAvailable(helpIndex: HelpIndex) =
+    questionPlayerFragmentPresenter.onHintAvailable(helpIndex)
 }

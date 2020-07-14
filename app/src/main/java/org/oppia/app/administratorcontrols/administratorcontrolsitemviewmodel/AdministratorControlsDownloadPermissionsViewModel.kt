@@ -6,12 +6,12 @@ import androidx.lifecycle.Observer
 import org.oppia.app.model.DeviceSettings
 import org.oppia.app.model.ProfileId
 import org.oppia.domain.profile.ProfileManagementController
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 
 /** [ViewModel] for the recycler view in [AdministratorControlsFragment]. */
 class AdministratorControlsDownloadPermissionsViewModel(
   private val fragment: Fragment,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val profileManagementController: ProfileManagementController,
   private val userProfileId: ProfileId,
   deviceSettings: DeviceSettings
