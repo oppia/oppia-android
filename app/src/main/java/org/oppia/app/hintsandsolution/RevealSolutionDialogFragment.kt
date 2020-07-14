@@ -26,9 +26,11 @@ class RevealSolutionDialogFragment : DialogFragment() {
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
     val view = View.inflate(context, R.layout.reveal_solution_dialog, /* root= */ null)
-    val revealSolutionInterface: RevealSolutionInterface = parentFragment as HintsAndSolutionDialogFragment
+    val revealSolutionInterface: RevealSolutionInterface =
+      parentFragment as HintsAndSolutionDialogFragment
 
-    return AlertDialog.Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
+    return AlertDialog
+      .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
       .setTitle(R.string.reveal_solution)
       .setView(view)
       .setMessage(getString(R.string.this_will_reveal_the_solution))

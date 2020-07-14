@@ -13,7 +13,8 @@ import javax.inject.Inject
  */
 class HintsAndSolutionQuestionManagerFragment : InjectableFragment() {
   @Inject
-  lateinit var hintsAndSolutionQuestionManagerFragmentPresenter: HintsAndSolutionQuestionManagerFragmentPresenter
+  lateinit var hintsAndSolutionQuestionManagerFragmentPresenter:
+    HintsAndSolutionQuestionManagerFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -29,4 +30,3 @@ class HintsAndSolutionQuestionManagerFragment : InjectableFragment() {
     return hintsAndSolutionQuestionManagerFragmentPresenter.handleCreateView()
   }
 }
-

@@ -22,9 +22,13 @@ private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
 const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
 
 /** The starting point for exploration. */
-class ExplorationActivity : InjectableAppCompatActivity(), StopStatePlayingSessionListener,
+class ExplorationActivity :
+  InjectableAppCompatActivity(),
+  StopStatePlayingSessionListener,
   StateKeyboardButtonListener,
-  AudioButtonListener, HintsAndSolutionListener, RouteToHintsAndSolutionListener,
+  AudioButtonListener,
+  HintsAndSolutionListener,
+  RouteToHintsAndSolutionListener,
   RevealHintListener,
   RevealSolutionInterface,
   HintsAndSolutionExplorationManagerListener {
@@ -137,7 +141,9 @@ class ExplorationActivity : InjectableAppCompatActivity(), StopStatePlayingSessi
   }
 
   private fun getHintsAndSolution(): HintsAndSolutionDialogFragment? {
-    return supportFragmentManager.findFragmentByTag(TAG_HINTS_AND_SOLUTION_DIALOG) as HintsAndSolutionDialogFragment?
+    return supportFragmentManager.findFragmentByTag(
+      TAG_HINTS_AND_SOLUTION_DIALOG
+    ) as HintsAndSolutionDialogFragment?
   }
 
   override fun routeToHintsAndSolution(

@@ -13,7 +13,7 @@ import javax.inject.Singleton
 
 /** Wrapper class for Android logcat and file logging. All logs in the app should use this class. */
 @Singleton
-class Logger @Inject constructor(
+class ConsoleLogger @Inject constructor(
   context: Context,
   @BlockingDispatcher private val blockingDispatcher: CoroutineDispatcher,
   @EnableConsoleLog private val enableConsoleLog: Boolean,

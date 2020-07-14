@@ -11,17 +11,22 @@ import javax.inject.Inject
 /** Activity for recent stories. */
 class RecentlyPlayedActivity : InjectableAppCompatActivity(), RouteToExplorationListener {
 
-  @Inject lateinit var recentlyPlayedActivityPresenter: RecentlyPlayedActivityPresenter
+  @Inject
+  lateinit var recentlyPlayedActivityPresenter: RecentlyPlayedActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    val internalProfileId = intent.getIntExtra(RECENTLY_PLAYED_ACTIVITY_INTERNAL_PROFILE_ID_KEY, -1)
+    val internalProfileId = intent.getIntExtra(
+      RECENTLY_PLAYED_ACTIVITY_INTERNAL_PROFILE_ID_KEY,
+      -1
+    )
     recentlyPlayedActivityPresenter.handleOnCreate(internalProfileId)
   }
 
   companion object {
-    internal const val RECENTLY_PLAYED_ACTIVITY_INTERNAL_PROFILE_ID_KEY = "RecentlyPlayedActivity.internal_profile_id"
+    internal const val RECENTLY_PLAYED_ACTIVITY_INTERNAL_PROFILE_ID_KEY =
+      "RecentlyPlayedActivity.internal_profile_id"
 
     /** Returns a new [Intent] to route to [RecentlyPlayedActivity]. */
     fun createRecentlyPlayedActivityIntent(context: Context, internalProfileId: Int): Intent {
@@ -31,7 +36,13 @@ class RecentlyPlayedActivity : InjectableAppCompatActivity(), RouteToExploration
     }
   }
 
-  override fun routeToExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String, backflowScreen: Int?) {
+  override fun routeToExploration(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    backflowScreen: Int?
+  ) {
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
         this,
