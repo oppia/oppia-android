@@ -1,7 +1,6 @@
 package org.oppia.app.profile
 
 import android.content.Context
-import android.content.res.Configuration
 import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
@@ -14,20 +13,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.app.R
 import org.oppia.app.databinding.ProfileChooserAddViewBinding
 import org.oppia.app.databinding.ProfileChooserFragmentBinding
 import org.oppia.app.databinding.ProfileChooserProfileViewBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.HomeActivity
+import org.oppia.app.model.EventLog
 import org.oppia.app.model.ProfileChooserUiModel
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.domain.analytics.AnalyticsController
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.statusbar.StatusBarColor
+import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
 private val COLORS_LIST = listOf(
@@ -63,9 +64,11 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val activity: AppCompatActivity,
   private val context: Context,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val viewModelProvider: ViewModelProvider<ProfileChooserViewModel>,
-  private val profileManagementController: ProfileManagementController
+  private val profileManagementController: ProfileManagementController,
+  private val analyticsController: AnalyticsController,
+  private val oppiaClock: OppiaClock
 ) {
   private lateinit var binding: ProfileChooserFragmentBinding
   private val orientation = Resources.getSystem().configuration.orientation
@@ -89,6 +92,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
       lifecycleOwner = fragment
       presenter = this@ProfileChooserFragmentPresenter
     }
+    logProfileChooserEvent()
     binding.profileRecyclerView.isNestedScrollingEnabled = false
     subscribeToWasProfileEverBeenAdded()
     binding.profileRecyclerView.apply {
@@ -168,7 +172,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   ) {
     binding.viewModel = model
     binding.presenter = this
-    binding.root.setOnClickListener {
+    binding.profileChooserItem.setOnClickListener {
       if (model.profile.pin.isEmpty()) {
         profileManagementController.loginToProfile(model.profile.id).observe(
           fragment,
@@ -201,7 +205,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     @Suppress("UNUSED_PARAMETER") model: ProfileChooserUiModel
   ) {
     binding.presenter = this
-    binding.root.setOnClickListener {
+    binding.addProfileItem.setOnClickListener {
       if (chooserViewModel.adminPin.isEmpty()) {
         activity.startActivity(
           AdminPinActivity.createAdminPinActivityIntent(
@@ -246,5 +250,14 @@ class ProfileChooserFragmentPresenter @Inject constructor(
         )
       )
     }
+  }
+
+  private fun logProfileChooserEvent() {
+    analyticsController.logTransitionEvent(
+      activity.applicationContext,
+      oppiaClock.getCurrentCalendar().timeInMillis,
+      EventLog.EventAction.OPEN_PROFILE_CHOOSER,
+      /* Event Context */ null
+    )
   }
 }
