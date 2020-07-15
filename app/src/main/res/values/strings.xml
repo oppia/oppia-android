@@ -356,4 +356,6 @@
     <item quantity="one">a day</item>
     <item quantity="other">%d days</item>
   </plurals>
+  <!-- ViewTags -->
+  <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
 </resources>
