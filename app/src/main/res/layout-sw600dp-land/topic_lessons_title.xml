@@ -12,16 +12,17 @@
 
   <FrameLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginTop="32dp">
 
     <TextView
       android:id="@+id/topic_play_text_view"
-      android:layout_width="wrap_content"
+      android:layout_width="528dp"
       android:layout_height="wrap_content"
-      android:layout_marginTop="32dp"
       android:fontFamily="sans-serif-medium"
       android:text="@string/stories_you_can_play"
       android:textColor="@color/oppiaPrimaryText"
-      android:textSize="20sp" />
+      android:textSize="20sp"
+      android:layout_gravity="center" />
   </FrameLayout>
 </layout>
