@@ -83,10 +83,16 @@ class AppStartupStateController @Inject constructor(
   }
 
   private fun hasAppExpired(): Boolean {
-    val expirationDateString = getApplicationMetaData()?.getString("expiration_date")
-    val expirationDate = expirationDateString?.let { parseDate(it) }
-    // Assume the app is in an expired state if something fails when comparing the date.
-    return expirationDate?.before(Date()) ?: true
+    val applicationMetadata = getApplicationMetaData()
+    val isAppExpirationEnabled =
+      applicationMetadata?.getBoolean(
+        "automatic_app_expiration_enabled", /* defaultValue= */ true) ?: true
+    return if (isAppExpirationEnabled) {
+      val expirationDateString = applicationMetadata?.getString("expiration_date")
+      val expirationDate = expirationDateString?.let { parseDate(it) }
+      // Assume the app is in an expired state if something fails when comparing the date.
+      expirationDate?.before(Date()) ?: true
+    } else false
   }
 
   private fun getApplicationMetaData(): Bundle? {

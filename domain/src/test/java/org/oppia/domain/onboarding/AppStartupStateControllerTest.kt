@@ -17,6 +17,7 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -41,6 +42,8 @@ import org.oppia.app.model.AppStartupState.StartupMode.USER_IS_ONBOARDED
 import org.oppia.app.model.AppStartupState.StartupMode.USER_NOT_YET_ONBOARDED
 import org.oppia.app.model.OnboardingState
 import org.oppia.data.persistence.PersistentCacheStore
+import org.oppia.testing.TestCoroutineDispatchers
+import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
@@ -78,12 +81,8 @@ class AppStartupStateControllerTest {
   lateinit var cacheFactory: PersistentCacheStore.Factory
 
   @Inject
-  @field:TestDispatcher
-  lateinit var testDispatcher: CoroutineDispatcher
-
-  private val coroutineContext by lazy {
-    EmptyCoroutineContext + testDispatcher
-  }
+  @InternalCoroutinesApi
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Mock
   lateinit var mockOnboardingObserver: Observer<AsyncResult<AppStartupState>>
@@ -123,78 +122,78 @@ class AppStartupStateControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_providesInitialLiveData_indicatesUserHasNotOnboardedTheApp() =
-    runBlockingTest(coroutineContext) {
-      val appStartupState = appStartupStateController.getAppStartupState()
-      advanceUntilIdle()
-      appStartupState.observeForever(mockOnboardingObserver)
+  @InternalCoroutinesApi
+  fun testController_providesInitialLiveData_indicatesUserHasNotOnboardedTheApp() {
+    val appStartupState = appStartupStateController.getAppStartupState()
+    appStartupState.observeForever(mockOnboardingObserver)
+    testCoroutineDispatchers.runCurrent()
 
-      verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
-      assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
-      assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_NOT_YET_ONBOARDED)
-    }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testControllerObserver_observedAfterSettingAppOnboarded_providesLiveData_userDidNotOnboardApp() = // ktlint-disable max-line-length
-    runBlockingTest(coroutineContext) {
-      val appStartupState = appStartupStateController.getAppStartupState()
-
-      appStartupState.observeForever(mockOnboardingObserver)
-      appStartupStateController.markOnboardingFlowCompleted()
-      advanceUntilIdle()
-
-      // The result should not indicate that the user onboarded the app because markUserOnboardedApp does not notify observers
-      // of the change.
-      verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
-      assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
-      assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_NOT_YET_ONBOARDED)
-    }
+    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
+    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
+    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_NOT_YET_ONBOARDED)
+  }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_settingAppOnboarded_observedNewController_userOnboardedApp() =
-    runBlockingTest(coroutineContext) {
-      appStartupStateController.markOnboardingFlowCompleted()
-      advanceUntilIdle()
+  @InternalCoroutinesApi
+  fun testControllerObserver_observedAfterSettingAppOnboarded_providesLiveData_userDidNotOnboardApp() { // ktlint-disable max-line-length
+    val appStartupState = appStartupStateController.getAppStartupState()
 
-      // Create the controller by creating another singleton graph and injecting it (simulating the
-      // app being recreated).
-      setUpTestApplicationComponent()
-      val appStartupState = appStartupStateController.getAppStartupState()
-      appStartupState.observeForever(mockOnboardingObserver)
-      advanceUntilIdle()
+    appStartupState.observeForever(mockOnboardingObserver)
+    appStartupStateController.markOnboardingFlowCompleted()
+    testCoroutineDispatchers.runCurrent()
 
-      // The app should be considered onboarded since a new LiveData instance was observed after
-      // marking the app as onboarded.
-      verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
-      assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
-      assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_IS_ONBOARDED)
-    }
+    // The result should not indicate that the user onboarded the app because markUserOnboardedApp does not notify observers
+    // of the change.
+    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
+    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
+    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_NOT_YET_ONBOARDED)
+  }
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testController_onboardedApp_cleared_observeNewController_userDidNotOnboardApp() =
-    runBlockingTest(coroutineContext) {
-      val onboardingFlowStore = cacheFactory.create(
-        "on_boarding_flow",
-        OnboardingState.getDefaultInstance()
-      )
-      appStartupStateController.markOnboardingFlowCompleted()
-      advanceUntilIdle()
-      // Clear, then recreate another controller.
-      onboardingFlowStore.clearCacheAsync()
-      setUpTestApplicationComponent()
+  @InternalCoroutinesApi
+  fun testController_settingAppOnboarded_observedNewController_userOnboardedApp() {
+    appStartupStateController.markOnboardingFlowCompleted()
+    testCoroutineDispatchers.runCurrent()
 
-      val appStartupState = appStartupStateController.getAppStartupState()
-      appStartupState.observeForever(mockOnboardingObserver)
-      advanceUntilIdle()
+    // Create the controller by creating another singleton graph and injecting it (simulating the
+    // app being recreated).
+    setUpTestApplicationComponent()
+    val appStartupState = appStartupStateController.getAppStartupState()
+    appStartupState.observeForever(mockOnboardingObserver)
+    testCoroutineDispatchers.runCurrent()
 
-      // The app should be considered not yet onboarded since the previous history was cleared.
-      verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
-      assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
-      assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_NOT_YET_ONBOARDED)
-    }
+    // The app should be considered onboarded since a new LiveData instance was observed after
+    // marking the app as onboarded.
+    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
+    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
+    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_IS_ONBOARDED)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  @InternalCoroutinesApi
+  fun testController_onboardedApp_cleared_observeNewController_userDidNotOnboardApp() {
+    val onboardingFlowStore = cacheFactory.create(
+      "on_boarding_flow",
+      OnboardingState.getDefaultInstance()
+    )
+    appStartupStateController.markOnboardingFlowCompleted()
+    testCoroutineDispatchers.runCurrent()
+    // Clear, then recreate another controller.
+    onboardingFlowStore.clearCacheAsync()
+    setUpTestApplicationComponent()
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+    appStartupState.observeForever(mockOnboardingObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    // The app should be considered not yet onboarded since the previous history was cleared.
+    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
+    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
+    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_NOT_YET_ONBOARDED)
+  }
 
   private fun setUpOppiaApplication(expirationDate: String) {
     val packageManager = shadowOf(context.packageManager)
@@ -229,32 +228,6 @@ class AppStartupStateControllerTest {
       return application
     }
 
-    @ExperimentalCoroutinesApi
-    @Singleton
-    @Provides
-    @TestDispatcher
-    fun provideTestDispatcher(): CoroutineDispatcher {
-      return TestCoroutineDispatcher()
-    }
-
-    @Singleton
-    @Provides
-    @BackgroundDispatcher
-    fun provideBackgroundDispatcher(
-      @TestDispatcher testDispatcher: CoroutineDispatcher
-    ): CoroutineDispatcher {
-      return testDispatcher
-    }
-
-    @Singleton
-    @Provides
-    @BlockingDispatcher
-    fun provideBlockingDispatcher(
-      @TestDispatcher testDispatcher: CoroutineDispatcher
-    ): CoroutineDispatcher {
-      return testDispatcher
-    }
-
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
     @EnableConsoleLog
@@ -272,7 +245,9 @@ class AppStartupStateControllerTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class, TestLogReportingModule::class])
+  @Component(modules = [
+    TestModule::class, TestDispatcherModule::class, TestLogReportingModule::class
+  ])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
