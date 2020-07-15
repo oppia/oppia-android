@@ -13,7 +13,7 @@
       android:layout_height="0dp"
       android:clipToPadding="false"
       android:overScrollMode="never"
-      android:paddingBottom="128dp"
+      android:paddingBottom="100dp"
       android:scrollbars="none"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
       app:layout_constraintBottom_toBottomOf="parent"
