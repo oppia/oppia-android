@@ -174,7 +174,7 @@
         },
         "customization_args": {
           "allowMultipleItemsInSamePosition": {
-            "value": false
+            "value": true
           },
           "choices": {
             "value": [

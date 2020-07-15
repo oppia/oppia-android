@@ -4,12 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.app.hintsandsolution.HintsAndSolutionDialogFragment
+import org.oppia.app.hintsandsolution.HintsAndSolutionListener
+import org.oppia.app.hintsandsolution.RevealHintListener
+import org.oppia.app.hintsandsolution.RevealSolutionInterface
 import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
-import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionFragment
-import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionListener
-import org.oppia.app.player.state.hintsandsolution.RevealHintListener
-import org.oppia.app.player.state.hintsandsolution.RevealSolutionInterface
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
@@ -22,9 +22,14 @@ internal const val TEST_ACTIVITY_EXPLORATION_ID_EXTRA = "StateFragmentTestActivi
 
 /** Test Activity used for testing StateFragment */
 class StateFragmentTestActivity :
-  InjectableAppCompatActivity(), StopStatePlayingSessionListener, StateKeyboardButtonListener,
-  AudioButtonListener, HintsAndSolutionListener, RouteToHintsAndSolutionListener,
-  RevealHintListener, RevealSolutionInterface {
+  InjectableAppCompatActivity(),
+  StopStatePlayingSessionListener,
+  StateKeyboardButtonListener,
+  AudioButtonListener,
+  HintsAndSolutionListener,
+  RouteToHintsAndSolutionListener,
+  RevealHintListener,
+  RevealSolutionInterface {
   @Inject lateinit var stateFragmentTestActivityPresenter: StateFragmentTestActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +44,11 @@ class StateFragmentTestActivity :
 
   companion object {
     fun createTestActivityIntent(
-      context: Context, profileId: Int, topicId: String, storyId: String, explorationId: String
+      context: Context,
+      profileId: Int,
+      topicId: String,
+      storyId: String,
+      explorationId: String
     ): Intent {
       val intent = Intent(context, StateFragmentTestActivity::class.java)
       intent.putExtra(TEST_ACTIVITY_PROFILE_ID_EXTRA, profileId)
@@ -73,7 +82,7 @@ class StateFragmentTestActivity :
   ) {
     if (getHintsAndSolution() == null) {
       val hintsAndSolutionFragment =
-        HintsAndSolutionFragment.newInstance(
+        HintsAndSolutionDialogFragment.newInstance(
           explorationId,
           newAvailableHintIndex,
           allHintsExhausted
@@ -90,7 +99,7 @@ class StateFragmentTestActivity :
     stateFragmentTestActivityPresenter.revealSolution(saveUserChoice)
   }
 
-  private fun getHintsAndSolution(): HintsAndSolutionFragment? {
-    return supportFragmentManager.findFragmentByTag(TAG_HINTS_AND_SOLUTION_DIALOG) as HintsAndSolutionFragment?
+  private fun getHintsAndSolution(): HintsAndSolutionDialogFragment? {
+    return supportFragmentManager.findFragmentByTag(TAG_HINTS_AND_SOLUTION_DIALOG) as HintsAndSolutionDialogFragment?
   }
 }

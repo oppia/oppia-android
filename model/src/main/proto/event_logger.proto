@@ -104,6 +104,8 @@ message EventLog {
     OPEN_CONCEPT_CARD = 9;
     // Opening of revision card.
     OPEN_REVISION_CARD = 10;
+    // Opening of profile chooser activity.
+    OPEN_PROFILE_CHOOSER = 11;
   }
 
   // Supported priority of events for event logging

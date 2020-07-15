@@ -14,7 +14,7 @@ import org.oppia.domain.exploration.TEST_EXPLORATION_ID_30
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 private const val TEST_ACTIVITY_TAG = "TestActivity"
@@ -24,7 +24,7 @@ private const val TEST_ACTIVITY_TAG = "TestActivity"
 class StateFragmentTestActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val explorationDataController: ExplorationDataController,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val viewModelProvider: ViewModelProvider<StateFragmentTestViewModel>
 ) {
   fun handleOnCreate() {
@@ -57,26 +57,32 @@ class StateFragmentTestActivityPresenter @Inject constructor(
   fun revealSolution(saveUserChoice: Boolean) = getStateFragment()?.revealSolution(saveUserChoice)
 
   private fun startPlayingExploration(
-    profileId: Int, topicId: String, storyId: String, explorationId: String
+    profileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String
   ) {
     // TODO(#59): With proper test ordering & isolation, this hacky clean-up should not be necessary since each test
     //  should run with a new application instance.
     explorationDataController.stopPlayingExploration()
     explorationDataController.startPlayingExploration(explorationId)
-      .observe(activity, Observer<AsyncResult<Any?>> { result ->
-        when {
-          result.isPending() -> logger.d(TEST_ACTIVITY_TAG, "Loading exploration")
-          result.isFailure() -> logger.e(
-            TEST_ACTIVITY_TAG,
-            "Failed to load exploration",
-            result.getErrorOrNull()!!
-          )
-          else -> {
-            logger.d(TEST_ACTIVITY_TAG, "Successfully loaded exploration")
-            initializeExploration(profileId, topicId, storyId, explorationId)
+      .observe(
+        activity,
+        Observer<AsyncResult<Any?>> { result ->
+          when {
+            result.isPending() -> logger.d(TEST_ACTIVITY_TAG, "Loading exploration")
+            result.isFailure() -> logger.e(
+              TEST_ACTIVITY_TAG,
+              "Failed to load exploration",
+              result.getErrorOrNull()!!
+            )
+            else -> {
+              logger.d(TEST_ACTIVITY_TAG, "Successfully loaded exploration")
+              initializeExploration(profileId, topicId, storyId, explorationId)
+            }
           }
         }
-      })
+      )
   }
 
   private fun initializeExploration(
@@ -103,7 +109,9 @@ class StateFragmentTestActivityPresenter @Inject constructor(
   }
 
   private fun getStateFragment(): StateFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.state_fragment_placeholder) as? StateFragment
+    return activity.supportFragmentManager.findFragmentById(
+      R.id.state_fragment_placeholder
+    ) as? StateFragment
   }
 
   private fun getStateFragmentTestViewModel(): StateFragmentTestViewModel {

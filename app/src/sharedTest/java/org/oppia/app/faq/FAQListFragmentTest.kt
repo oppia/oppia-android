@@ -44,9 +44,11 @@ class FAQListFragmentTest {
   }
 
   @Test
-  fun openFAQListActivity_scrollRecyclerViewToZeroPosition_checkFeaturedQuestionsDisplayedSuccessfully() {
+  fun openFAQListActivity_scrollRecyclerViewToZeroPosition_checkFeaturedQuestionsDisplayedSuccessfully() { // ktlint-disable max-line-length
     launch(FAQListActivity::class.java).use {
-      onView(withId(R.id.faq_fragment_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(0))
+      onView(withId(R.id.faq_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
+      )
       onView(
         atPositionOnView(
           R.id.faq_fragment_recycler_view, 0, R.id.faq_question_text_view
@@ -61,8 +63,14 @@ class FAQListFragmentTest {
       onView(atPosition(R.id.faq_fragment_recycler_view, 1)).perform(click())
       intended(
         allOf(
-          hasExtra(FAQSingleActivity.FAQ_SINGLE_ACTIVITY_QUESTION, getResources().getString(R.string.faq_question_1)),
-          hasExtra(FAQSingleActivity.FAQ_SINGLE_ACTIVITY_ANSWER, getResources().getString(R.string.faq_answer_1)),
+          hasExtra(
+            FAQSingleActivity.FAQ_SINGLE_ACTIVITY_QUESTION,
+            getResources().getString(R.string.faq_question_1)
+          ),
+          hasExtra(
+            FAQSingleActivity.FAQ_SINGLE_ACTIVITY_ANSWER,
+            getResources().getString(R.string.faq_answer_1)
+          ),
           hasComponent(FAQSingleActivity::class.java.name)
         )
       )
@@ -76,8 +84,14 @@ class FAQListFragmentTest {
       onView(atPosition(R.id.faq_fragment_recycler_view, 1)).perform(click())
       intended(
         allOf(
-          hasExtra(FAQSingleActivity.FAQ_SINGLE_ACTIVITY_QUESTION, getResources().getString(R.string.faq_question_1)),
-          hasExtra(FAQSingleActivity.FAQ_SINGLE_ACTIVITY_ANSWER, getResources().getString(R.string.faq_answer_1)),
+          hasExtra(
+            FAQSingleActivity.FAQ_SINGLE_ACTIVITY_QUESTION,
+            getResources().getString(R.string.faq_question_1)
+          ),
+          hasExtra(
+            FAQSingleActivity.FAQ_SINGLE_ACTIVITY_ANSWER,
+            getResources().getString(R.string.faq_answer_1)
+          ),
           hasComponent(FAQSingleActivity::class.java.name)
         )
       )

@@ -17,8 +17,13 @@ import org.oppia.app.model.AnsweredQuestionOutcome
 import org.oppia.app.model.EphemeralQuestion
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.EventLog
+import org.oppia.app.model.HelpIndex
+import org.oppia.app.model.Hint
+import org.oppia.app.model.Solution
+import org.oppia.app.model.State
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.StatePlayerRecyclerViewAssembler
+import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.stopplaying.RestartPlayingSessionListener
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.app.viewmodel.ViewModelProvider
@@ -26,7 +31,7 @@ import org.oppia.domain.analytics.AnalyticsController
 import org.oppia.domain.question.QuestionAssessmentProgressController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.QuestionResourceBucketName
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -39,11 +44,13 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private val questionAssessmentProgressController: QuestionAssessmentProgressController,
   private val analyticsController: AnalyticsController,
   private val oppiaClock: OppiaClock,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   @QuestionResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory
 ) {
   // TODO(#503): Add tests for the question player.
+
+  private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
 
   private val questionViewModel by lazy { getQuestionPlayerViewModel() }
   private val ephemeralQuestionLiveData: LiveData<AsyncResult<EphemeralQuestion>> by lazy {
@@ -51,6 +58,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
   private lateinit var binding: QuestionPlayerFragmentBinding
   private lateinit var recyclerViewAssembler: StatePlayerRecyclerViewAssembler
+  private lateinit var questionId: String
+  private lateinit var currentQuestionState: State
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = QuestionPlayerFragmentBinding.inflate(
@@ -71,8 +80,57 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     binding.questionRecyclerView.apply {
       adapter = recyclerViewAssembler.adapter
     }
+
+    binding.hintsAndSolutionFragmentContainer.setOnClickListener {
+      routeToHintsAndSolutionListener.routeToHintsAndSolution(
+        questionId,
+        questionViewModel.newAvailableHintIndex,
+        questionViewModel.allHintsExhausted
+      )
+    }
     subscribeToCurrentQuestion()
     return binding.root
+  }
+
+  fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
+    subscribeToHint(
+      questionAssessmentProgressController.submitHintIsRevealed(
+        currentQuestionState,
+        saveUserChoice,
+        hintIndex
+      )
+    )
+  }
+
+  fun revealSolution(saveUserChoice: Boolean) {
+    subscribeToSolution(
+      questionAssessmentProgressController.submitSolutionIsRevealed(
+        currentQuestionState,
+        saveUserChoice
+      )
+    )
+  }
+
+  fun onHintAvailable(helpIndex: HelpIndex) {
+    when (helpIndex.indexTypeCase) {
+      HelpIndex.IndexTypeCase.HINT_INDEX, HelpIndex.IndexTypeCase.SHOW_SOLUTION -> {
+        if (helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.HINT_INDEX) {
+          questionViewModel.newAvailableHintIndex = helpIndex.hintIndex
+        }
+        questionViewModel.allHintsExhausted =
+          helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.SHOW_SOLUTION
+        questionViewModel.setHintOpenedAndUnRevealedVisibility(true)
+        questionViewModel.setHintBulbVisibility(true)
+      }
+      HelpIndex.IndexTypeCase.EVERYTHING_REVEALED -> {
+        questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
+        questionViewModel.setHintBulbVisibility(true)
+      }
+      else -> {
+        questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
+        questionViewModel.setHintBulbVisibility(false)
+      }
+    }
   }
 
   fun handleAnswerReadyForSubmission(answer: UserAnswer) {
@@ -81,6 +139,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   fun onContinueButtonClicked() {
+    questionViewModel.setHintBulbVisibility(false)
     hideKeyboard()
     moveToNextState()
   }
@@ -112,7 +171,11 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
    * error state.
    */
   fun updateSubmitButton(pendingAnswerError: String?, inputAnswerAvailable: Boolean) {
-    questionViewModel.setCanSubmitAnswer(pendingAnswerError == null)
+    if (inputAnswerAvailable) {
+      questionViewModel.setCanSubmitAnswer(pendingAnswerError == null)
+    } else {
+      questionViewModel.setCanSubmitAnswer(canSubmitAnswer = false)
+    }
   }
 
   fun handleKeyboardAction() = onSubmitButtonClicked()
@@ -140,12 +203,18 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     val ephemeralQuestion = result.getOrThrow()
     // TODO(#497): Update this to properly link to question assets.
     val skillId = ephemeralQuestion.question.linkedSkillIdsList.firstOrNull() ?: ""
+
+    questionId = ephemeralQuestion.question.questionId
+
     updateProgress(ephemeralQuestion.currentQuestionIndex, ephemeralQuestion.totalQuestionCount)
     logQuestionPlayerEvent(
       ephemeralQuestion.question.questionId,
       ephemeralQuestion.question.linkedSkillIdsList
     )
     updateEndSessionMessage(ephemeralQuestion.ephemeralState)
+
+    currentQuestionState = ephemeralQuestion.ephemeralState.state
+
     questionViewModel.itemList.clear()
     questionViewModel.itemList += recyclerViewAssembler.compute(
       ephemeralQuestion.ephemeralState,
@@ -185,10 +254,84 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       Observer<AnsweredQuestionOutcome> { result ->
         recyclerViewAssembler.isCorrectAnswer.set(result.isCorrectAnswer)
         if (result.isCorrectAnswer) {
+          recyclerViewAssembler.stopHintsFromShowing()
+          questionViewModel.setHintBulbVisibility(false)
           recyclerViewAssembler.showCongratulationMessageOnCorrectAnswer()
+        } else {
+          questionViewModel.setCanSubmitAnswer(canSubmitAnswer = false)
         }
       }
     )
+  }
+
+  /**
+   * This function listens to the result of RevealHint.
+   * Whenever a hint is revealed using QuestionAssessmentProgressController.submitHintIsRevealed function,
+   * this function will wait for the response from that function and based on which we can move to next state.
+   */
+  private fun subscribeToHint(hintResultLiveData: LiveData<AsyncResult<Hint>>) {
+    val hintLiveData = getHintIsRevealed(hintResultLiveData)
+    hintLiveData.observe(
+      fragment,
+      Observer { result ->
+        // If the hint was revealed remove dot and radar.
+        if (result.hintIsRevealed) {
+          questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
+        }
+      }
+    )
+  }
+
+  /**
+   * This function listens to the result of RevealSolution.
+   * Whenever a hint is revealed using QuestionAssessmentProgressController.submitHintIsRevealed function,
+   * this function will wait for the response from that function and based on which we can move to next state.
+   */
+  private fun subscribeToSolution(solutionResultLiveData: LiveData<AsyncResult<Solution>>) {
+    val solutionLiveData = getSolutionIsRevealed(solutionResultLiveData)
+    solutionLiveData.observe(
+      fragment,
+      Observer { result ->
+        // If the hint was revealed remove dot and radar.
+        if (result.solutionIsRevealed) {
+          questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
+        }
+      }
+    )
+  }
+
+  /** Helper for [subscribeToSolution]. */
+  private fun getSolutionIsRevealed(hint: LiveData<AsyncResult<Solution>>): LiveData<Solution> {
+    return Transformations.map(hint, ::processSolution)
+  }
+
+  /** Helper for [subscribeToHint]. */
+  private fun getHintIsRevealed(hint: LiveData<AsyncResult<Hint>>): LiveData<Hint> {
+    return Transformations.map(hint, ::processHint)
+  }
+
+  /** Helper for [subscribeToHint]. */
+  private fun processHint(hintResult: AsyncResult<Hint>): Hint {
+    if (hintResult.isFailure()) {
+      logger.e(
+        "QuestionPlayerFragment",
+        "Failed to retrieve Hint",
+        hintResult.getErrorOrNull()!!
+      )
+    }
+    return hintResult.getOrDefault(Hint.getDefaultInstance())
+  }
+
+  /** Helper for [subscribeToSolution]. */
+  private fun processSolution(solutionResult: AsyncResult<Solution>): Solution {
+    if (solutionResult.isFailure()) {
+      logger.e(
+        "QuestionPlayerFragment",
+        "Failed to retrieve Solution",
+        solutionResult.getErrorOrNull()!!
+      )
+    }
+    return solutionResult.getOrDefault(Solution.getDefaultInstance())
   }
 
   /** Helper for subscribeToAnswerOutcome. */
@@ -197,7 +340,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   ): AnsweredQuestionOutcome {
     if (answeredQuestionOutcomeResult.isFailure()) {
       logger.e(
-        "StateFragment",
+        "QuestionPlayerFragment",
         "Failed to retrieve answer outcome",
         answeredQuestionOutcomeResult.getErrorOrNull()!!
       )
@@ -206,6 +349,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   private fun moveToNextState() {
+    questionViewModel.setCanSubmitAnswer(canSubmitAnswer = false)
     questionAssessmentProgressController.moveToNextQuestion()
   }
 
@@ -233,6 +377,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       .addForwardNavigationSupport()
       .addReplayButtonSupport()
       .addReturnToTopicSupport()
+      .addHintsAndSolutionsSupport()
       .addCongratulationsForCorrectAnswers(congratulationsTextView)
       .build()
   }

@@ -71,7 +71,11 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("TextInput")
   fun provideTextInputViewModelFactory(): InteractionViewModelFactory {
-    return { _, interaction, _, interactionAnswerErrorReceiver, _ -> TextInputViewModel(interaction, interactionAnswerErrorReceiver) }
+    return { _, interaction, _, interactionAnswerErrorReceiver, _ ->
+      TextInputViewModel(
+        interaction, interactionAnswerErrorReceiver
+      )
+    }
   }
 
   @Provides
