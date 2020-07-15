@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import androidx.recyclerview.widget.SimpleItemAnimator
 import org.oppia.app.databinding.TopicLessonsFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.RouteToExplorationListener
@@ -108,6 +109,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
             )
           binding.storySummaryRecyclerView.apply {
             adapter = storySummaryAdapter
+            (itemAnimator as SimpleItemAnimator).changeDuration = 0
           }
           if (storyId.isNotEmpty())
             binding.storySummaryRecyclerView.layoutManager!!.scrollToPosition(
