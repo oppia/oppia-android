@@ -27,7 +27,6 @@ import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.AudioUiManager
-import org.oppia.app.player.state.itemviewmodel.PlayerRecyclerViewAssemblerViewModel
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.app.utility.LifecycleSafeTimerFactory
@@ -208,12 +207,7 @@ class StateFragmentPresenter @Inject constructor(
     congratulationsTextView: TextView
   ): StatePlayerRecyclerViewAssembler {
     return builder
-      .addUISupport(
-        PlayerRecyclerViewAssemblerViewModel(
-          true,
-          false
-        )
-      )
+      .hasConversationalContentView(true)
       .addContentSupport()
       .addFeedbackSupport()
       .addInteractionSupport(viewModel.getCanSubmitAnswer())

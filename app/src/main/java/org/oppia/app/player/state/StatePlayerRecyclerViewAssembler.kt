@@ -60,7 +60,6 @@ import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.InteractionViewModelFactory
 import org.oppia.app.player.state.itemviewmodel.NextButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
-import org.oppia.app.player.state.itemviewmodel.PlayerRecyclerViewAssemblerViewModel
 import org.oppia.app.player.state.itemviewmodel.PreviousButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.PreviousResponsesHeaderViewModel
 import org.oppia.app.player.state.itemviewmodel.ReplayButtonViewModel
@@ -125,7 +124,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private val interactionViewModelFactoryMap: Map<
     String, @JvmSuppressWildcards InteractionViewModelFactory>,
   backgroundCoroutineDispatcher: CoroutineDispatcher,
-  private val playerRecyclerViewAssemblerViewModel: PlayerRecyclerViewAssemblerViewModel?
+  private val hasConversationalContentView: Boolean?
 ) {
   /**
    * A list of view models corresponding to past view models that are hidden by default. These are
@@ -255,8 +254,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     pendingItemList += ContentViewModel(
       contentSubtitledHtml.html,
       gcsEntityId,
-      playerRecyclerViewAssemblerViewModel!!.hasBlueBackground,
-      playerRecyclerViewAssemblerViewModel!!.isCenterAligned
+      hasConversationalContentView!!
     )
   }
 
@@ -553,7 +551,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
      */
     private val featureSets = mutableSetOf(PlayerFeatureSet())
     private var congratulationsTextView: TextView? = null
-    private var playerRecyclerViewAssemblerViewModel: PlayerRecyclerViewAssemblerViewModel? = null
+    private var hasConversationalContentView: Boolean? = null
     private var canSubmitAnswer: ObservableField<Boolean>? = null
     private var audioActivityId: String? = null
     private var currentStateName: ObservableField<String>? = null
@@ -974,8 +972,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     /**
      * Adds support for displaying with proper alignment and background.
      */
-    fun addUISupport(playerRecyclerViewAssemblerViewModel: PlayerRecyclerViewAssemblerViewModel): Builder {
-      this.playerRecyclerViewAssemblerViewModel = playerRecyclerViewAssemblerViewModel
+    fun hasConversationalContentView(hasConversationalContentView: Boolean): Builder {
+      this.hasConversationalContentView = hasConversationalContentView
       featureSets += PlayerFeatureSet(showCongratulationsOnCorrectAnswer = true)
       return this
     }
@@ -1034,7 +1032,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         audioUiManagerRetriever,
         interactionViewModelFactoryMap,
         backgroundCoroutineDispatcher,
-        playerRecyclerViewAssemblerViewModel
+        hasConversationalContentView
       )
     }
 

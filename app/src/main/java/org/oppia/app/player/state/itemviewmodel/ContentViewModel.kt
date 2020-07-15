@@ -4,14 +4,11 @@ package org.oppia.app.player.state.itemviewmodel
 class ContentViewModel(
   val htmlContent: CharSequence,
   val gcsEntityId: String,
-  hasBlueBackground: Boolean,
-  isCenterAligned: Boolean
+  hasConversationalContentView: Boolean
 ) : StateItemViewModel(ViewType.CONTENT) {
-  var hasBlueBackground: Boolean = false
-  var isCenterAligned: Boolean = false
+  var hasConversationalContentView: Boolean = false
 
   init {
-    this.hasBlueBackground = hasBlueBackground
-    this.isCenterAligned = isCenterAligned
+    this.hasConversationalContentView = hasConversationalContentView
   }
 }
