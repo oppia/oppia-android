@@ -51,6 +51,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   // TODO(#503): Add tests for the question player.
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
+  private val hasConversationalContentView = false
 
   private val questionViewModel by lazy { getQuestionPlayerViewModel() }
   private val ephemeralQuestionLiveData: LiveData<AsyncResult<EphemeralQuestion>> by lazy {
@@ -370,7 +371,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     //  controller & possibly the ephemeral question data model.
     // TODO(#502): Add support for surfacing skills that need to be reviewed by the learner.
     return builder
-      .hasConversationalContentView(false)
+      .hasConversationalContentView(hasConversationalContentView)
       .addContentSupport()
       .addFeedbackSupport()
       .addInteractionSupport(questionViewModel.getCanSubmitAnswer())

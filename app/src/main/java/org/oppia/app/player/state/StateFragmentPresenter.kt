@@ -37,7 +37,7 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY = "STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY"
@@ -62,6 +62,7 @@ class StateFragmentPresenter @Inject constructor(
 ) {
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
+  private val hasConversationalContentView = true
 
   private lateinit var currentState: State
   private lateinit var profileId: ProfileId
@@ -210,7 +211,7 @@ class StateFragmentPresenter @Inject constructor(
     congratulationsTextView: TextView
   ): StatePlayerRecyclerViewAssembler {
     return builder
-      .hasConversationalContentView(true)
+      .hasConversationalContentView(hasConversationalContentView)
       .addContentSupport()
       .addFeedbackSupport()
       .addInteractionSupport(viewModel.getCanSubmitAnswer())
