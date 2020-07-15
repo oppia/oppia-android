@@ -32,7 +32,7 @@ import org.oppia.domain.analytics.AnalyticsController
 import org.oppia.domain.question.QuestionAssessmentProgressController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.QuestionResourceBucketName
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -45,7 +45,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private val questionAssessmentProgressController: QuestionAssessmentProgressController,
   private val analyticsController: AnalyticsController,
   private val oppiaClock: OppiaClock,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   @QuestionResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory
 ) {
@@ -172,7 +172,11 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
    * error state.
    */
   fun updateSubmitButton(pendingAnswerError: String?, inputAnswerAvailable: Boolean) {
-    questionViewModel.setCanSubmitAnswer(pendingAnswerError == null)
+    if (inputAnswerAvailable) {
+      questionViewModel.setCanSubmitAnswer(pendingAnswerError == null)
+    } else {
+      questionViewModel.setCanSubmitAnswer(canSubmitAnswer = false)
+    }
   }
 
   fun handleKeyboardAction() = onSubmitButtonClicked()
@@ -254,6 +258,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
           recyclerViewAssembler.stopHintsFromShowing()
           questionViewModel.setHintBulbVisibility(false)
           recyclerViewAssembler.showCongratulationMessageOnCorrectAnswer()
+        } else {
+          questionViewModel.setCanSubmitAnswer(canSubmitAnswer = false)
         }
       }
     )
@@ -266,12 +272,15 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
    */
   private fun subscribeToHint(hintResultLiveData: LiveData<AsyncResult<Hint>>) {
     val hintLiveData = getHintIsRevealed(hintResultLiveData)
-    hintLiveData.observe(fragment, Observer { result ->
-      // If the hint was revealed remove dot and radar.
-      if (result.hintIsRevealed) {
-        questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
+    hintLiveData.observe(
+      fragment,
+      Observer { result ->
+        // If the hint was revealed remove dot and radar.
+        if (result.hintIsRevealed) {
+          questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
+        }
       }
-    })
+    )
   }
 
   /**
@@ -281,12 +290,15 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
    */
   private fun subscribeToSolution(solutionResultLiveData: LiveData<AsyncResult<Solution>>) {
     val solutionLiveData = getSolutionIsRevealed(solutionResultLiveData)
-    solutionLiveData.observe(fragment, Observer { result ->
-      // If the hint was revealed remove dot and radar.
-      if (result.solutionIsRevealed) {
-        questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
+    solutionLiveData.observe(
+      fragment,
+      Observer { result ->
+        // If the hint was revealed remove dot and radar.
+        if (result.solutionIsRevealed) {
+          questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
+        }
       }
-    })
+    )
   }
 
   /** Helper for [subscribeToSolution]. */
@@ -338,6 +350,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   private fun moveToNextState() {
+    questionViewModel.setCanSubmitAnswer(canSubmitAnswer = false)
     questionAssessmentProgressController.moveToNextQuestion()
   }
 

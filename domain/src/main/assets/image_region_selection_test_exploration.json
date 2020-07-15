@@ -1,0 +1,177 @@
+{
+  "correctness_feedback_enabled": false,
+  "exploration_id": "drag_and_drop_test_exploration",
+  "states": {
+    "ImageClickInput": {
+      "param_changes": [],
+      "interaction": {
+        "solution": null,
+        "answer_groups": [
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>That is correct it it is called view model</p>"
+              },
+              "dest": "End",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "IsInRegion",
+                "inputs": {
+                  "x": "Region1"
+                }
+              }
+            ]
+          }
+        ],
+        "default_outcome": {
+          "param_changes": [],
+          "feedback": {
+            "content_id": "default_outcome",
+            "html": "<p>This is incorrect please try again</p>"
+          },
+          "dest": "ImageClickInput",
+          "refresher_exploration_id": null,
+          "missing_prerequisite_skill_id": null,
+          "labelled_as_correct": false
+        },
+        "customization_args": {
+          "highlightRegionsOnHover": {
+            "value": false
+          },
+          "imageAndRegions": {
+            "value": {
+              "labeledRegions": [
+                {
+                  "region": {
+                    "regionType": "Rectangle",
+                    "area": [
+                      [
+                        0.2755102040816326,
+                        0.1970744680851064
+                      ],
+                      [
+                        0.6857142857142857,
+                        0.4375
+                      ]
+                    ]
+                  },
+                  "label": "Region1"
+                },
+                {
+                  "region": {
+                    "regionType": "Rectangle",
+                    "area": [
+                      [
+                        0.07346938775510205,
+                        0.7672872340425532
+                      ],
+                      [
+                        0.37551020408163266,
+                        0.9672872340425532
+                      ]
+                    ]
+                  },
+                  "label": "Region2"
+                },
+                {
+                  "region": {
+                    "regionType": "Rectangle",
+                    "area": [
+                      [
+                        0.6204081632653061,
+                        0.7672872340425532
+                      ],
+                      [
+                        0.9428571428571428,
+                        0.9672872340425532
+                      ]
+                    ]
+                  },
+                  "label": "Region3"
+                }
+              ],
+              "imagePath": "img_20200702_094205_tgcr5k6o9q_height_470_width_490.png"
+            }
+          }
+        },
+        "confirmed_unclassified_answers": [],
+        "id": "ImageClickInput",
+        "hints": []
+      },
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "content": {},
+          "default_outcome": {},
+          "feedback_1": {}
+        }
+      },
+      "classifier_model_id": null,
+      "content": {
+        "content_id": "content",
+        "html": "<p>Select the region in the image below which depicts the visual representation of viewmodel</p>"
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "content": {},
+          "default_outcome": {},
+          "feedback_1": {}
+        }
+      },
+      "solicit_answer_details": false
+    },
+    "End": {
+      "param_changes": [],
+      "interaction": {
+        "solution": null,
+        "answer_groups": [],
+        "default_outcome": {
+          "param_changes": [],
+          "feedback": {
+            "content_id": "default_outcome",
+            "html": ""
+          },
+          "dest": "End",
+          "refresher_exploration_id": null,
+          "missing_prerequisite_skill_id": null,
+          "labelled_as_correct": false
+        },
+        "customization_args": {},
+        "confirmed_unclassified_answers": [],
+        "id": null,
+        "hints": []
+      },
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "content": {},
+          "default_outcome": {}
+        }
+      },
+      "classifier_model_id": null,
+      "content": {
+        "content_id": "content",
+        "html": ""
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "content": {},
+          "default_outcome": {}
+        }
+      },
+      "solicit_answer_details": false
+    }
+  },
+  "title": "Image Region Selection Test Exploration",
+  "language_code": "en",
+  "param_changes": [],
+  "param_specs": {},
+  "objective": "learn how to identify object in an image",
+  "init_state_name": "ImageClickInput"
+}

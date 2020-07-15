@@ -11,7 +11,7 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import java.util.Locale
 import javax.inject.Inject
 
@@ -19,7 +19,7 @@ import javax.inject.Inject
 @FragmentScope
 class ProfileChooserViewModel @Inject constructor(
   fragment: Fragment,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val profileManagementController: ProfileManagementController
 ) : ObservableViewModel() {
 
