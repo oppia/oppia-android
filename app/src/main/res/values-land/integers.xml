@@ -3,4 +3,5 @@
   <integer name="home_span_count">3</integer>
   <integer name="recently_played_span_count">3</integer>
   <integer name="profile_chooser_first_time_span_count">2</integer>
+  <integer name="topic_revision_span_count">3</integer>
 </resources>
