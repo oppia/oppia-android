@@ -27,6 +27,7 @@ import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.AudioUiManager
+import org.oppia.app.player.state.itemviewmodel.PlayerRecyclerViewAssemblerViewModel
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.app.utility.LifecycleSafeTimerFactory
@@ -37,7 +38,7 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
-import java.util.Date
+import java.util.*
 import javax.inject.Inject
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY = "STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY"
@@ -209,7 +210,14 @@ class StateFragmentPresenter @Inject constructor(
     builder: StatePlayerRecyclerViewAssembler.Builder,
     congratulationsTextView: TextView
   ): StatePlayerRecyclerViewAssembler {
-    return builder.addContentSupport()
+    return builder
+      .addUISupport(
+        PlayerRecyclerViewAssemblerViewModel(
+          true,
+          false
+        )
+      )
+      .addContentSupport()
       .addFeedbackSupport()
       .addInteractionSupport(viewModel.getCanSubmitAnswer())
       .addPastAnswersSupport()

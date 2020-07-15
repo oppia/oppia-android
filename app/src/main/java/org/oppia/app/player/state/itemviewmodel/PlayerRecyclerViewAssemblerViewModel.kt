@@ -1,12 +1,9 @@
 package org.oppia.app.player.state.itemviewmodel
 
-/** [StateItemViewModel] for content-card state. */
-class ContentViewModel(
-  val htmlContent: CharSequence,
-  val gcsEntityId: String,
-  hasBlueBackground: Boolean,
-  isCenterAligned: Boolean
-) : StateItemViewModel(ViewType.CONTENT) {
+import androidx.lifecycle.ViewModel
+
+/** [ViewModel] for [StatePlayerRecyclerViewAssembler] items. */
+class PlayerRecyclerViewAssemblerViewModel(hasBlueBackground: Boolean, isCenterAligned: Boolean)  : ViewModel() {
   var hasBlueBackground: Boolean = false
   var isCenterAligned: Boolean = false
 
