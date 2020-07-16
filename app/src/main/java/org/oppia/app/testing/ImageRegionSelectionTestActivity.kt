@@ -11,7 +11,8 @@ class ImageRegionSelectionTestActivity :
   InjectableAppCompatActivity(),
   OnClickableAreaClickedListener {
 
-  @Inject lateinit var imageRegionSelectionTestActivityPresenter: ImageRegionSelectionTestActivityPresenter // ktlint-disable max-line-length
+  @Inject
+  lateinit var imageRegionSelectionTestActivityPresenter: ImageRegionSelectionTestActivityPresenter // ktlint-disable max-line-length
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

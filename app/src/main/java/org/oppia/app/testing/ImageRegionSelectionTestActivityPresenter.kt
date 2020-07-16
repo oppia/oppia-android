@@ -1,6 +1,5 @@
 package org.oppia.app.testing
 
-import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.image_region_selection_test_activity.*
 import org.oppia.app.R
@@ -17,20 +16,23 @@ class ImageRegionSelectionTestActivityPresenter @Inject constructor(
 
   fun handleOnCreate() {
     activity.setContentView(R.layout.image_region_selection_test_activity)
+    with(activity) {
+      val clickableAreas: List<LabeledRegion> = getClickableAreas()
+      clickable_image_view.setClickableAreas(clickableAreas)
 
-    val clickableAreas: List<LabeledRegion> = getClickableAreas()
-    activity.clickable_image_view.setClickableAreas(clickableAreas)
-
-    val clickableAreasImage = ClickableAreasImage(
-      activity.clickable_image_view,
-      activity.image_parent_view,
-      activity as OnClickableAreaClickedListener
-    )
-
-    Handler().postDelayed({
-      clickableAreasImage.addViews(activity.clickable_image_view.isAccessibilityEnabled())
-    }, 100)
-
+      val clickableAreasImage = ClickableAreasImage(
+        clickable_image_view,
+        image_parent_view,
+        this as OnClickableAreaClickedListener
+      )
+      clickable_image_view.addOnLayoutChangeListener { _, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->  // ktlint-disable max-line-length
+        // Update the regions, as the bounds have changed
+        if (left != oldLeft || top != oldTop || right != oldRight || bottom != oldBottom)
+          clickableAreasImage.addViews(
+            useSeparateRegionViews = clickable_image_view.isAccessibilityEnabled()
+          )
+      }
+    }
   }
 
   private fun getClickableAreas(): List<LabeledRegion> {

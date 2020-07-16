@@ -12,6 +12,9 @@ import org.oppia.app.R
 import org.oppia.app.player.state.ImageRegionSelectionInteractionView
 import kotlin.math.roundToInt
 
+/**
+ * Helper class to handle clicks on an image along with highlighting the selected region .
+ */
 class ClickableAreasImage(
   private val imageView: ImageRegionSelectionInteractionView,
   private val parentView: FrameLayout,
@@ -66,9 +69,11 @@ class ClickableAreasImage(
     return (y * rect.height()) + rect.top
   }
 
-  fun addViews(isAccessible: Boolean) {
+  /** Add selectable regions to [FrameLayout].*/
+  fun addViews(useSeparateRegionViews: Boolean) {
     parentView.let {
-      imageView.getClickableAreas().forEachIndexed { labelIndex, clickableArea ->
+      it.removeViews(1, it.childCount - 1) // remove all other views
+      imageView.getClickableAreas().forEach { clickableArea ->
         val imageRect = RectF(
           getXCoordinate(clickableArea.region.area.upperLeft.x),
           getYCoordinate(clickableArea.region.area.upperLeft.y),
@@ -88,24 +93,22 @@ class ClickableAreasImage(
         newView.isFocusable = true
         newView.layoutParams = layoutParams
         newView.contentDescription = clickableArea.label
-        if (!isAccessible) {
-          newView.isVisible = false
-          newView.setBackgroundResource(R.drawable.selected_region_background)
-        } else {
+        if (useSeparateRegionViews) {
           newView.setOnClickListener {
             parentView.forEachIndexed { index: Int, tappedView: View ->
+              // Remove any previously selected region excluding 0th index(image view)
               if (index > 0) {
                 tappedView.setBackgroundResource(0)
               }
             }
             listener.onClickableAreaTouched(clickableArea.label)
             newView.setBackgroundResource(R.drawable.selected_region_background)
-
           }
+        } else {
+          newView.isVisible = false
+          newView.setBackgroundResource(R.drawable.selected_region_background)
         }
-
         it.addView(newView)
-
       }
     }
   }

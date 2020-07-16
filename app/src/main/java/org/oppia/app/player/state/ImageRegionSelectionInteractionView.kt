@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.databinding.BindingAdapter
+import kotlinx.android.synthetic.main.image_region_selection_test_activity.*
 import org.oppia.app.model.ImageWithRegions
 import org.oppia.app.utility.ClickableAreasImage
 import org.oppia.app.utility.OnClickableAreaClickedListener
@@ -71,9 +72,13 @@ fun setRegionClickToImageView(
     parentView,
     onClickableAreaClickedListener
   )
-  Handler().postDelayed({
-    area.addViews(imageRegionSelectionInteractionView.isAccessibilityEnabled())
-  }, 100)
+  imageRegionSelectionInteractionView.addOnLayoutChangeListener { _, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->  // ktlint-disable max-line-length
+    // Update the regions, as the bounds have changed
+    if (left != oldLeft || top != oldTop || right != oldRight || bottom != oldBottom)
+    area.addViews(
+      useSeparateRegionViews = imageRegionSelectionInteractionView.isAccessibilityEnabled()
+    )
+  }
 }
 
 /** Sets the exploration ID for a specific [ImageRegionSelectionInteractionView] via data-binding. */
