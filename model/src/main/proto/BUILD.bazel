@@ -16,4 +16,3 @@ proto_library(
             "voiceover.proto",
             ],
 )
-
