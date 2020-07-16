@@ -26,7 +26,6 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.model.PromotedStory
 import org.oppia.app.model.Solution
 import org.oppia.app.model.State
-import org.oppia.app.model.StorySummary
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.Topic
 import org.oppia.app.model.TopicList
@@ -206,9 +205,14 @@ class TopicListController @Inject constructor(
   }
 
   private fun createTopicSummaryFromJson(topicId: String, jsonObject: JSONObject): TopicSummary {
-    val topic = topicController.retrieveTopic(topicId)
-    val totalChapterCount =
-      topic.storyList.map(StorySummary::getChapterCount).reduceRight(Int::plus)
+    var totalChapterCount = 0
+    val storyData = jsonObject.getJSONArray("canonical_story_dicts")
+    for (i in 0 until storyData.length()) {
+      totalChapterCount += storyData
+        .getJSONObject(i)
+        .getJSONArray("node_titles")
+        .length()
+    }
     return TopicSummary.newBuilder()
       .setTopicId(topicId)
       .setName(jsonObject.getString("topic_name"))
@@ -226,7 +230,7 @@ class TopicListController @Inject constructor(
         jsonObject.getJSONArray("additional_story_dicts")
           .length()
       )
-      .setTotalSkillCount(TOPIC_SKILL_ASSOCIATIONS.getValue(topicId).size)
+      .setTotalSkillCount(jsonObject.getJSONObject("skill_descriptions").length())
       .setTotalChapterCount(totalChapterCount)
       .setTopicThumbnail(TOPIC_THUMBNAILS.getValue(topicId))
       .build()
