@@ -124,7 +124,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private val interactionViewModelFactoryMap: Map<
     String, @JvmSuppressWildcards InteractionViewModelFactory>,
   backgroundCoroutineDispatcher: CoroutineDispatcher,
-  private val hasConversationalContentView: Boolean?
+  private val hasConversationView: Boolean
 ) {
   /**
    * A list of view models corresponding to past view models that are hidden by default. These are
@@ -254,7 +254,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     pendingItemList += ContentViewModel(
       contentSubtitledHtml.html,
       gcsEntityId,
-      hasConversationalContentView!!
+      hasConversationView
     )
   }
 
@@ -551,7 +551,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
      */
     private val featureSets = mutableSetOf(PlayerFeatureSet())
     private var congratulationsTextView: TextView? = null
-    private var hasConversationalContentView: Boolean? = null
+    private var hasConversationView: Boolean = true
     private var canSubmitAnswer: ObservableField<Boolean>? = null
     private var audioActivityId: String? = null
     private var currentStateName: ObservableField<String>? = null
@@ -972,8 +972,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     /**
      * Adds support for displaying with proper alignment and background.
      */
-    fun hasConversationalContentView(hasConversationalContentView: Boolean): Builder {
-      this.hasConversationalContentView = hasConversationalContentView
+    fun hasConversationView(hasConversationView: Boolean): Builder {
+      this.hasConversationView = hasConversationView
       featureSets += PlayerFeatureSet(showCongratulationsOnCorrectAnswer = true)
       return this
     }
@@ -1032,7 +1032,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         audioUiManagerRetriever,
         interactionViewModelFactoryMap,
         backgroundCoroutineDispatcher,
-        hasConversationalContentView
+        hasConversationView
       )
     }
 

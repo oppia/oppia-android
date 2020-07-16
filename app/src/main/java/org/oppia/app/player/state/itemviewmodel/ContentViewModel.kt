@@ -4,11 +4,5 @@ package org.oppia.app.player.state.itemviewmodel
 class ContentViewModel(
   val htmlContent: CharSequence,
   val gcsEntityId: String,
-  hasConversationalContentView: Boolean
-) : StateItemViewModel(ViewType.CONTENT) {
-  var hasConversationalContentView: Boolean = false
-
-  init {
-    this.hasConversationalContentView = hasConversationalContentView
-  }
-}
+  val hasConversationView: Boolean
+) : StateItemViewModel(ViewType.CONTENT)
