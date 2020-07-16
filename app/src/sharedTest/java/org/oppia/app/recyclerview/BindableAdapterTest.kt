@@ -252,77 +252,59 @@ class BindableAdapterTest {
   }
 
   @Test
-  fun testRecyclerDataDiffCallback_getOldListSize_correctListSize() {
-    val oldList = listOf(STR_VALUE_1, STR_VALUE_0, STR_VALUE_2).toMutableList()
-    val newList = listOf(STR_VALUE_1, STR_VALUE_0).toMutableList()
-    val diffObj = RecyclerDataDiffCallback(oldList, newList)
-    assertThat(diffObj.oldListSize).isEqualTo(oldList.size)
-  }
+  fun testBindableAdapter_incomingSameData_noRebindingShouldHappen() {
 
-  @Test
-  fun testRecyclerDataDiffCallback_getNewListSize_correctListSize() {
-    val oldList = listOf(STR_VALUE_1, STR_VALUE_0, STR_VALUE_2).toMutableList()
-    val newList = listOf(STR_VALUE_1, STR_VALUE_0).toMutableList()
-    val diffObj = RecyclerDataDiffCallback(oldList, newList)
-    assertThat(diffObj.newListSize).isEqualTo(newList.size)
-  }
+    val adapter = createMultiViewTypeNoDataBindingBindableAdapter()
+    BindableAdapterTestFragmentPresenter.testBindableAdapter = adapter
 
-  @Test
-  fun testRecyclerDataDiffCallback_areItemsTypeTheSame_sameItemsOfBothList() {
-    val oldList = listOf("a", 1, 1).toMutableList()
-    val newList = listOf("a", 1).toMutableList()
+    lateinit var dataObserver: RecyclerView.AdapterDataObserver
+    var doesRebind = false
 
-    val diffObj =
-      RecyclerDataDiffCallback(oldList, newList)
-    assertThat(diffObj.areItemsTheSame(0, 0)).isEqualTo(true)
-  }
+    val oldList = listOf(STR_VALUE_1, STR_VALUE_1, INT_VALUE_1).toMutableList()
+    val newList = listOf(STR_VALUE_1, STR_VALUE_1, INT_VALUE_1).toMutableList()
 
-  @Test
-  fun testRecyclerDataDiffCallback_areItemsTypeTheSame_NotSameItemsOfBothList() {
-    val oldList = listOf("a", 1).toMutableList()
-    val newList = listOf(1, "1").toMutableList()
+    ActivityScenario.launch(BindableAdapterTestActivity::class.java).use { scenario ->
 
-    val diffObj =
-      RecyclerDataDiffCallback(oldList, newList)
-    assertThat(diffObj.areItemsTheSame(0, 0)).isEqualTo(false)
-  }
+      scenario.onActivity { activity ->
+        dataObserver = object : RecyclerView.AdapterDataObserver() {
+          override fun onChanged() {
+            doesRebind = true
+          }
 
-  @Test
-  fun testRecyclerDataDiffCallback_areContentsTheSame_sameContentInItemOfBothList() {
-    val oldList = listOf("a", 1).toMutableList()
-    val newList = listOf("a", 1).toMutableList()
+          override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+            assertThat(positionStart).isEqualTo(0)
+            assertThat(itemCount).isEqualTo(3)
+          }
 
-    val diffObj =
-      RecyclerDataDiffCallback(oldList, newList)
-    assertThat(diffObj.areContentsTheSame(0, 0)).isEqualTo(true)
-  }
+          override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
+            doesRebind = true
+          }
 
-  @Test
-  fun testRecyclerDataDiffCallback_areContentsTheSame_notSameContentInItemOfBothList() {
-    val oldList = listOf("a", 1).toMutableList()
-    val newList = listOf("b", 1).toMutableList()
+          override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) {
+            doesRebind = true
+          }
+        }
+        adapter.registerAdapterDataObserver(dataObserver)
+      }
 
-    val diffObj =
-      RecyclerDataDiffCallback(oldList, newList)
-    assertThat(diffObj.areContentsTheSame(0, 0)).isEqualTo(false)
-  }
+      scenario.onActivity { activity ->
+        val liveData = getRecyclerViewListLiveData(activity)
+        liveData.value = oldList
+      }
+      safelyWaitUntilIdle()
 
-  @Test
-  fun testBindableAdapter_incomingNewData_correctUpdateListLogic() {
-    BindableAdapterTestFragmentPresenter.testBindableAdapter =
-      createMultiViewTypeWithDataBindingBindableAdapter()
+      scenario.onActivity { activity ->
+        val liveData = getRecyclerViewListLiveData(activity)
+        liveData.value = newList
+      }
 
-    val oldList = listOf(STR_VALUE_1, STR_VALUE_0, INT_VALUE_0).toMutableList()
-    BindableAdapterTestFragmentPresenter.testBindableAdapter?.setDataUnchecked(oldList)
+      safelyWaitUntilIdle()
 
-    val newList = listOf(STR_VALUE_1, INT_VALUE_0).toMutableList()
-    BindableAdapterTestFragmentPresenter.testBindableAdapter?.setDataUnchecked(newList)
-
-    assertThat(
-      newList
-    ).isEqualTo(
-      BindableAdapterTestFragmentPresenter.testBindableAdapter?.getDataList()
-    )
+      scenario.onActivity { activity ->
+        assertThat(doesRebind).isEqualTo(false)
+        adapter.unregisterAdapterDataObserver(dataObserver)
+      }
+    }
   }
 
   private fun createSingleViewTypeNoDataBindingBindableAdapter(): BindableAdapter<TestModel> {
@@ -399,20 +381,30 @@ class BindableAdapterTest {
     textView.text = "Value: " + data.intValue
   }
 
-  private fun getRecyclerViewListLiveData(activity: BindableAdapterTestActivity): MutableLiveData<List<TestModel>> { // ktlint-disable max-line-length
+  private fun getRecyclerViewListLiveData(
+    activity: BindableAdapterTestActivity
+  ): MutableLiveData<List<TestModel>> {
     return getTestViewModel(activity).dataListLiveData
   }
 
-  private fun getTestViewModel(activity: BindableAdapterTestActivity): BindableAdapterTestViewModel { // ktlint-disable max-line-length
+  private fun getTestViewModel(
+    activity: BindableAdapterTestActivity
+  ): BindableAdapterTestViewModel {
     return getTestFragmentPresenter(activity).viewModel
   }
 
-  private fun getTestFragmentPresenter(activity: BindableAdapterTestActivity): BindableAdapterTestFragmentPresenter { // ktlint-disable max-line-length
+  private fun getTestFragmentPresenter(
+    activity: BindableAdapterTestActivity
+  ): BindableAdapterTestFragmentPresenter {
     return getTestFragment(activity).bindableAdapterTestFragmentPresenter
   }
 
-  private fun getTestFragment(activity: BindableAdapterTestActivity): BindableAdapterTestFragment {
-    return activity.supportFragmentManager.findFragmentByTag(BINDABLE_TEST_FRAGMENT_TAG) as BindableAdapterTestFragment // ktlint-disable max-line-length
+  private fun getTestFragment(
+    activity: BindableAdapterTestActivity
+  ): BindableAdapterTestFragment {
+    return activity.supportFragmentManager.findFragmentByTag(
+      BINDABLE_TEST_FRAGMENT_TAG
+    ) as BindableAdapterTestFragment
   }
 
   private fun safelyWaitUntilIdle() {
