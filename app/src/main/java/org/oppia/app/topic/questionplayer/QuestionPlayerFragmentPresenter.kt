@@ -51,6 +51,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   // TODO(#503): Add tests for the question player.
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
+  private val hasConversationView = false
 
   private val questionViewModel by lazy { getQuestionPlayerViewModel() }
   private val ephemeralQuestionLiveData: LiveData<AsyncResult<EphemeralQuestion>> by lazy {
@@ -369,7 +370,9 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     // TODO(#501): Add support early exit detection & message, which requires changes in the training progress
     //  controller & possibly the ephemeral question data model.
     // TODO(#502): Add support for surfacing skills that need to be reviewed by the learner.
-    return builder.addContentSupport()
+    return builder
+      .hasConversationView(hasConversationView)
+      .addContentSupport()
       .addFeedbackSupport()
       .addInteractionSupport(questionViewModel.getCanSubmitAnswer())
       .addPastAnswersSupport()
