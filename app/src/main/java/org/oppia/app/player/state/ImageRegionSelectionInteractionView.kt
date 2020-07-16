@@ -1,7 +1,6 @@
 package org.oppia.app.player.state
 
 import android.content.Context
-import android.os.Handler
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
@@ -49,7 +48,7 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
     return clickableAreas
   }
 
-  fun isAccessibilityEnabled(): Boolean{
+  fun isAccessibilityEnabled(): Boolean {
     return isAccessibilityEnabled
   }
 //
@@ -72,12 +71,12 @@ fun setRegionClickToImageView(
     parentView,
     onClickableAreaClickedListener
   )
-  imageRegionSelectionInteractionView.addOnLayoutChangeListener { _, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->  // ktlint-disable max-line-length
+  imageRegionSelectionInteractionView.addOnLayoutChangeListener { _, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom -> // ktlint-disable max-line-length
     // Update the regions, as the bounds have changed
     if (left != oldLeft || top != oldTop || right != oldRight || bottom != oldBottom)
-    area.addViews(
-      useSeparateRegionViews = imageRegionSelectionInteractionView.isAccessibilityEnabled()
-    )
+      area.addViews(
+        useSeparateRegionViews = imageRegionSelectionInteractionView.isAccessibilityEnabled()
+      )
   }
 }
 
