@@ -75,10 +75,6 @@ val EXPLORATION_THUMBNAILS = mapOf(
   RATIOS_EXPLORATION_ID_2 to createChapterThumbnail4(),
   RATIOS_EXPLORATION_ID_3 to createChapterThumbnail5()
 )
-val TOPIC_SKILL_ASSOCIATIONS = mapOf(
-  FRACTIONS_TOPIC_ID to listOf(FRACTIONS_SKILL_ID_0, FRACTIONS_SKILL_ID_1, FRACTIONS_SKILL_ID_2),
-  RATIOS_TOPIC_ID to listOf(RATIOS_SKILL_ID_0)
-)
 
 private const val CUSTOM_IMG_TAG = "oppia-noninteractive-image"
 private const val REPLACE_IMG_TAG = "img"

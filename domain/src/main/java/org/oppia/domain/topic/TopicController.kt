@@ -408,14 +408,10 @@ class TopicController @Inject constructor(
       TEST_TOPIC_ID_0 -> createTestTopic0()
       TEST_TOPIC_ID_1 -> createTestTopic1()
       FRACTIONS_TOPIC_ID -> createTopicFromJson(
-        "fractions_topic.json",
-        "fractions_skills.json",
-        "fractions_stories.json"
+        "fractions_topic.json"
       )
       RATIOS_TOPIC_ID -> createTopicFromJson(
-        "ratios_topic.json",
-        "ratios_skills.json",
-        "ratios_stories.json"
+        "ratios_topic.json"
       )
       else -> throw IllegalArgumentException("Invalid topic ID: $topicId")
     }
@@ -675,21 +671,22 @@ class TopicController @Inject constructor(
    * Creates topic from its json representation. The json file is expected to have
    * a key called 'topic' that holds the topic data.
    */
-  private fun createTopicFromJson(
-    topicFileName: String,
-    skillFileName: String,
-    storyFileName: String
-  ): Topic {
+  private fun createTopicFromJson(topicFileName: String): Topic {
     val topicData = jsonAssetRetriever.loadJsonFromAsset(topicFileName)!!
     val subtopicList: List<Subtopic> =
       createSubtopicListFromJsonArray(topicData.optJSONArray("subtopics"))
+    val skillSummaryList: List<SkillSummary> =
+      createSkillSummaryListFromJsonObject(topicData.optJSONObject("skill_descriptions"))
+    val storySummaryList: List<StorySummary> =
+      createStorySummaryListFromJsonArray(topicData.optJSONArray("canonical_story_dicts"))
     val topicId = topicData.getString("topic_id")
     return Topic.newBuilder()
       .setTopicId(topicId)
       .setName(topicData.getString("topic_name"))
       .setDescription(topicData.getString("topic_description"))
-      .addAllSkill(createSkillsFromJson(skillFileName))
-      .addAllStory(createStoriesFromJson(storyFileName))
+      // TODO(#1476): Remove skill summary because we use subtopic in practice tab now.
+      .addAllSkill(skillSummaryList)
+      .addAllStory(storySummaryList)
       .setTopicThumbnail(TOPIC_THUMBNAILS.getValue(topicId))
       .setDiskSizeBytes(computeTopicSizeBytes(TOPIC_FILE_ASSOCIATIONS.getValue(topicId)))
       .addAllSubtopic(subtopicList)
@@ -735,6 +732,7 @@ class TopicController @Inject constructor(
       }
       val subtopic = Subtopic.newBuilder()
         .setSubtopicId(currentSubtopicJsonObject.optString("id"))
+        // TODO(#1476): Modify proto to add thumbnail_bg_color and thumbnail_filename from json files.
         .setTitle(currentSubtopicJsonObject.optString("title"))
         .setSubtopicThumbnail(
           createSubtopicThumbnail(
@@ -757,50 +755,60 @@ class TopicController @Inject constructor(
 
   /**
    * Creates a list of skill for topic from its json representation. The json file is expected to have
-   * a key called 'skill_list' that contains an array of skill objects, each with the key 'skill'.
+   * a key called 'skill_descriptions' that contains the mapping of of skill Id and description.
    */
-  private fun createSkillsFromJson(fileName: String): List<SkillSummary> {
-    val skillList = mutableListOf<SkillSummary>()
-    val skillData = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray(
-      "skills"
-    )!!
-    for (i in 0 until skillData.length()) {
-      skillList.add(
-        createSkillFromJson(
-          skillData.getJSONObject(i)
-        )
+  private fun createSkillSummaryListFromJsonObject(skillSummaryJsonObject: JSONObject?): List<SkillSummary> {
+    val skillSummaryList = mutableListOf<SkillSummary>()
+
+    val skillIdList = skillSummaryJsonObject!!.keys()
+    while (skillIdList.hasNext()) {
+      val skillId = skillIdList.next()
+      val description = skillSummaryJsonObject.optString(skillId)
+      skillSummaryList.add(
+        createSkillFromJson(skillId, description)
       )
     }
-    return skillList
+    return skillSummaryList
   }
 
-  private fun createSkillFromJson(skillData: JSONObject): SkillSummary {
+  private fun createSkillFromJson(skillId: String, description: String): SkillSummary {
     return SkillSummary.newBuilder()
-      .setSkillId(skillData.getString("id"))
-      .setDescription(skillData.getString("description"))
-      .setSkillThumbnail(createSkillThumbnail(skillData.getString("id")))
+      .setSkillId(skillId)
+      .setDescription(description)
+      // TODO(#1476): Remove skill thumbnail as we don't have them in json files.
+      .setSkillThumbnail(createSkillThumbnail(skillId))
       .build()
   }
 
   /**
    * Creates a list of [StorySummary]s for topic from its json representation. The json file is expected to have
-   * a key called 'story_list' that contains an array of story objects, each with the key 'story'.
+   * a key called 'canonical_story_dicts' that contains an array of story objects.
    */
-  private fun createStoriesFromJson(fileName: String): List<StorySummary> {
-    val storyList = mutableListOf<StorySummary>()
-    val storyData = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray(
-      "story_list"
-    )!!
-    for (i in 0 until storyData.length()) {
-      storyList.add(
-        createStoryFromJson(
-          storyData.getJSONObject(i).getJSONObject(
-            "story"
-          )
+  private fun createStorySummaryListFromJsonArray(storySummaryJsonArray: JSONArray?): List<StorySummary> {
+    val storySummaryList = mutableListOf<StorySummary>()
+    for (i in 0 until storySummaryJsonArray!!.length()) {
+      val currentStorySummaryJsonObject = storySummaryJsonArray.optJSONObject(i)
+      val storySummary: StorySummary = createStorySummaryFromJsonObject(currentStorySummaryJsonObject)
+      storySummaryList.add(storySummary)
+    }
+    return storySummaryList
+  }
+
+  /** Creates a list of [StorySummary]s for topic given its json representation. */
+  private fun createStorySummaryFromJsonObject(storySummaryJsonObject: JSONObject?): StorySummary {
+    val storyId = storySummaryJsonObject!!.optString("id")
+    val storyDataJsonObject = jsonAssetRetriever.loadJsonFromAsset("$storyId.json")
+    return StorySummary.newBuilder()
+      .setStoryId(storyId)
+      .setStoryName(storySummaryJsonObject.optString("title"))
+      // TODO(#1476): Modify proto to add thumbnail_bg_color and thumbnail_filename from json files.
+      .setStoryThumbnail(STORY_THUMBNAILS.getValue(storyId))
+      .addAllChapter(
+        createChaptersFromJson(
+          storyDataJsonObject!!.optJSONArray("story_nodes")
         )
       )
-    }
-    return storyList
+      .build()
   }
 
   /** Creates a list of [StorySummary]s for topic given its json representation and the index of the story in json. */
@@ -839,6 +847,7 @@ class TopicController @Inject constructor(
           .setExplorationId(explorationId)
           .setName(chapter.getString("title"))
           .setChapterPlayState(ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED)
+          // TODO(#1476): Modify proto to add thumbnail_bg_color and thumbnail_filename from json files.
           .setChapterThumbnail(EXPLORATION_THUMBNAILS.getValue(explorationId))
           .build()
       )
