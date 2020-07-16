@@ -25,7 +25,7 @@ class ImageRegionSelectionTestActivityPresenter @Inject constructor(
         image_parent_view,
         this as OnClickableAreaClickedListener
       )
-      clickable_image_view.addOnLayoutChangeListener { _, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->  // ktlint-disable max-line-length
+      clickable_image_view.addOnLayoutChangeListener { _, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom -> // ktlint-disable max-line-length
         // Update the regions, as the bounds have changed
         if (left != oldLeft || top != oldTop || right != oldRight || bottom != oldBottom)
           clickableAreasImage.addViews(
