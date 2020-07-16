@@ -62,6 +62,7 @@ class StateFragmentPresenter @Inject constructor(
 ) {
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
+  private val hasConversationView = true
 
   private lateinit var currentState: State
   private lateinit var profileId: ProfileId
@@ -209,7 +210,9 @@ class StateFragmentPresenter @Inject constructor(
     builder: StatePlayerRecyclerViewAssembler.Builder,
     congratulationsTextView: TextView
   ): StatePlayerRecyclerViewAssembler {
-    return builder.addContentSupport()
+    return builder
+      .hasConversationView(hasConversationView)
+      .addContentSupport()
       .addFeedbackSupport()
       .addInteractionSupport(viewModel.getCanSubmitAnswer())
       .addPastAnswersSupport()
