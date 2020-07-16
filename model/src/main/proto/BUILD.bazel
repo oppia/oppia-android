@@ -1,0 +1,19 @@
+load("@rules_proto//proto:defs.bzl", "proto_library")
+
+proto_library(
+    name = "proto_lib",
+    srcs = ["event_logger.proto",
+            "example.proto",
+            "exploration.proto",
+            "interaction_object.proto",
+            "onboarding.proto",
+            "profile.proto",
+            "question.proto",
+            "subtitled_html.proto",
+            "topic.proto",
+            "thumbnail.proto",
+            "translation.proto",
+            "voiceover.proto",
+            ],
+)
+
