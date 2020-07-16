@@ -744,7 +744,7 @@
         "answer_groups": [
           {
             "outcome": {
-              "dest": "End",
+              "dest": "ImageRegionClick",
               "labelled_as_correct": false,
               "param_changes": [],
               "feedback": {
@@ -819,6 +819,184 @@
         "confirmed_unclassified_answers": [],
         "default_outcome": {
           "dest": "DragDropGroup",
+          "labelled_as_correct": false,
+          "param_changes": [],
+          "feedback": {
+            "content_id": "default_outcome",
+            "html": "<p>Not quite. Try again.</p>"
+          },
+          "missing_prerequisite_skill_id": null,
+          "refresher_exploration_id": null
+        }
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "content": {},
+          "feedback_2": {},
+          "feedback_3": {},
+          "feedback_1": {},
+          "default_outcome": {}
+        }
+      },
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "content": {},
+          "feedback_2": {},
+          "feedback_3": {},
+          "feedback_1": {},
+          "default_outcome": {}
+        }
+      },
+      "content": {
+        "content_id": "content",
+        "html": "<p>Sort the following in descending order, putting equal items in the same position.</p>"
+      }
+    },
+    "ImageRegionClick": {
+      "param_changes": [],
+      "classifier_model_id": null,
+      "solicit_answer_details": false,
+      "interaction": {
+        "solution": null,
+        "answer_groups": [
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>This is known as Numerator. Try Again</p>"
+              },
+              "dest": "ImageRegionClick",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "IsInRegion",
+                "inputs": {
+                  "x": "Region2"
+                }
+              }
+            ]
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>This is known as Denominator.Try Again</p>"
+              },
+              "dest": "ImageRegionClick",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "IsInRegion",
+                "inputs": {
+                  "x": "Region1"
+                }
+              }
+            ]
+          },
+          {
+            "tagged_skill_misconception_id": null,
+            "outcome": {
+              "param_changes": [],
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>This is correct</p>"
+              },
+              "dest": "End",
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null,
+              "labelled_as_correct": false
+            },
+            "training_data": [],
+            "rule_specs": [
+              {
+                "rule_type": "IsInRegion",
+                "inputs": {
+                  "x": "Region3"
+                }
+              }
+            ]
+          }
+        ],
+        "customization_args": {
+          "highlightRegionsOnHover": {
+            "value": true
+          },
+          "imageAndRegions": {
+            "value": {
+              "labeledRegions": [
+                {
+                  "region": {
+                    "regionType": "Rectangle",
+                    "area": [
+                      [
+                        0.553030303030303,
+                        0.5470132743362832
+                      ],
+                      [
+                        0.7613636363636364,
+                        0.7638274336283186
+                      ]
+                    ]
+                  },
+                  "label": "Region1",
+                  "description" : "This is the lower part on right hand side of the number."
+                },
+                {
+                  "region": {
+                    "regionType": "Rectangle",
+                    "area": [
+                      [
+                        0.5454545454545454,
+                        0.22842920353982302
+                      ],
+                      [
+                        0.7537878787878788,
+                        0.4540929203539823
+                      ]
+                    ]
+                  },
+                  "label": "Region2",
+                  "description" : "This is the upper part on right hand side of the number."
+                },
+                {
+                  "region": {
+                    "regionType": "Rectangle",
+                    "area": [
+                      [
+                        0.24242424242424243,
+                        0.22400442477876106
+                      ],
+                      [
+                        0.49242424242424243,
+                        0.7638274336283186
+                      ]
+                    ]
+                  },
+                  "label": "Region3",
+                  "description" : "This is the left part of the number."
+                }
+              ],
+              "imagePath": "img_20200708_140916_u5b9wrqmni_height_226_width_264.png"
+            }
+          }
+        },
+        "id": "ImageClickInput",
+        "hints": [],
+        "confirmed_unclassified_answers": [],
+        "default_outcome": {
+          "dest": "ImageRegionClick",
           "labelled_as_correct": false,
           "param_changes": [],
           "feedback": {
