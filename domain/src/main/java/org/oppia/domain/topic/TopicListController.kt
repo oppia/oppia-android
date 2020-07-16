@@ -45,7 +45,7 @@ import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.DefaultGcsPrefix
 import org.oppia.util.parser.ImageDownloadUrlTemplate
 import org.oppia.util.threading.BackgroundDispatcher
-import java.util.Date
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -211,11 +211,11 @@ class TopicListController @Inject constructor(
       topic.storyList.map(StorySummary::getChapterCount).reduceRight(Int::plus)
     return TopicSummary.newBuilder()
       .setTopicId(topicId)
-      .setName(jsonObject.getString("name"))
+      .setName(jsonObject.getString("topic_name"))
       .setVersion(jsonObject.getInt("version"))
       .setSubtopicCount(jsonObject.getJSONArray("subtopics").length())
       .setCanonicalStoryCount(
-        jsonObject.getJSONArray("canonical_story_references")
+        jsonObject.getJSONArray("canonical_story_dicts")
           .length()
       )
       .setUncategorizedSkillCount(
@@ -223,7 +223,7 @@ class TopicListController @Inject constructor(
           .length()
       )
       .setAdditionalStoryCount(
-        jsonObject.getJSONArray("additional_story_references")
+        jsonObject.getJSONArray("additional_story_dicts")
           .length()
       )
       .setTotalSkillCount(TOPIC_SKILL_ASSOCIATIONS.getValue(topicId).size)

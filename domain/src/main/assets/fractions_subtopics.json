@@ -1,10 +1,6 @@
 {
   "subtopic_title":"What is Fraction?",
-  "is_super_admin":true,
-  "is_moderator":true,
-  "iframed":false,
-  "is_admin":true,
-  "username":"veena",
+  "topic_id": "GJ2rLXRKD5hw",
   "page_contents":{
     "subtitled_html":{
       "content_id":"content",
@@ -24,7 +20,5 @@
         }
       }
     }
-  },
-  "user_email":"test@example.com",
-  "is_topic_manager":false
+  }
 }

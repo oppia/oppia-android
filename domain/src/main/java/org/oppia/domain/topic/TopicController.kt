@@ -683,11 +683,11 @@ class TopicController @Inject constructor(
     val topicData = jsonAssetRetriever.loadJsonFromAsset(topicFileName)!!
     val subtopicList: List<Subtopic> =
       createSubtopicListFromJsonArray(topicData.optJSONArray("subtopics"))
-    val topicId = topicData.getString("id")
+    val topicId = topicData.getString("topic_id")
     return Topic.newBuilder()
       .setTopicId(topicId)
-      .setName(topicData.getString("name"))
-      .setDescription(topicData.getString("description"))
+      .setName(topicData.getString("topic_name"))
+      .setDescription(topicData.getString("topic_description"))
       .addAllSkill(createSkillsFromJson(skillFileName))
       .addAllStory(createStoriesFromJson(storyFileName))
       .setTopicThumbnail(TOPIC_THUMBNAILS.getValue(topicId))
@@ -762,14 +762,12 @@ class TopicController @Inject constructor(
   private fun createSkillsFromJson(fileName: String): List<SkillSummary> {
     val skillList = mutableListOf<SkillSummary>()
     val skillData = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray(
-      "skill_list"
+      "skills"
     )!!
     for (i in 0 until skillData.length()) {
       skillList.add(
         createSkillFromJson(
-          skillData.getJSONObject(i).getJSONObject(
-            "skill"
-          )
+          skillData.getJSONObject(i)
         )
       )
     }

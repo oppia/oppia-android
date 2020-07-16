@@ -1,116 +1,149 @@
 {
-  "story_reference_schema_version": 1,
-  "description": "You'll often need to talk about part of an object or group. For example, a jar of milk might be half-full, or some of the eggs in a box might have broken. In these lessons, you'll learn to use fractions to describe situations like these.",
-  "canonical_story_references": [
+  "canonical_story_dicts": [
     {
-      "story_id": "wANbh4oOClga",
-      "story_is_published": false
+      "thumbnail_bg_color": "#B3D8F1",
+      "description": "",
+      "title": "Matthew Goes to the Bakery",
+      "node_titles": [
+        "What is a Fraction?",
+        "The Meaning of Equal Parts"
+      ],
+      "thumbnail_filename": "img_20200521_034635_46gl425jp5_height_324_width_432.svg",
+      "id": "wANbh4oOClga",
+      "published": false
     }
   ],
-  "language_code": "en",
-  "id": "GJ2rLXRKD5hw",
   "uncategorized_skill_ids": [],
-  "name": "Fractions",
-  "subtopic_schema_version": 1,
-  "additional_story_references": [],
-  "version": 13,
-  "next_subtopic_id": 12,
+  "additional_story_dicts": [],
+  "topic_name": "Fractions",
+  "topic_description": "You'll often need to talk about part of an object or group. For example, a jar of milk might be half-full, or some of the eggs in a box might have broken. In these lessons, you'll learn to use fractions to describe situations like these.",
+  "topic_id": "GJ2rLXRKD5hw",
+  "version": 1,
+  "skill_descriptions": {
+    "5RM9KPfQxobH": "Given a picture divided into unequal parts, write the fraction.",
+    "UxTGIJqaHMLa": "Identify the numerator and denominator of a fraction.",
+    "B39yK4cbHZYI": "Explain the conceptual meaning of the terms \"numerator\" and \"denominator\"."
+  },
   "subtopics": [
     {
+      "thumbnail_bg_color": "#FFFFFF",
       "skill_ids": [
         "5RM9KPfQxobH",
         "B39yK4cbHZYI",
         "UxTGIJqaHMLa"
       ],
       "id": 1,
+      "thumbnail_filename": "img_20200521_034107_ngiwg3u9fc_height_324_width_432.svg",
       "title": "What is a Fraction?"
     },
     {
+      "thumbnail_bg_color": "#FFFFFF",
       "skill_ids": [
         "B39yK4cbHZYI",
         "UxTGIJqaHMLa"
       ],
       "id": 2,
+      "thumbnail_filename": "img_20200521_034107_ngiwg3u9fc_height_324_width_432.svg",
       "title": "Fractions of a group"
     },
     {
+      "thumbnail_bg_color": "#FFFFFF",
       "skill_ids": [
         "B39yK4cbHZYI",
         "UxTGIJqaHMLa"
       ],
       "id": 3,
+      "thumbnail_filename": "img_20200521_034107_ngiwg3u9fc_height_324_width_432.svg",
       "title": "Mixed Numbers"
     },
     {
+      "thumbnail_bg_color": "#FFFFFF",
       "skill_ids": [],
       "id": 4,
+      "thumbnail_filename": "img_20200521_034107_ngiwg3u9fc_height_324_width_432.svg",
       "title": "Adding Fractions"
     },
     {
+      "thumbnail_bg_color": "#FFFFFF",
       "skill_ids": [
         "5RM9KPfQxobH",
         "B39yK4cbHZYI"
       ],
       "id": 5,
+      "thumbnail_filename": "img_20200521_034107_ngiwg3u9fc_height_324_width_432.svg",
       "title": "Equivalent Fractions"
     },
     {
+      "thumbnail_bg_color": "#FFFFFF",
       "skill_ids": [
         "5RM9KPfQxobH",
         "B39yK4cbHZYI",
         "UxTGIJqaHMLa"
       ],
       "id": 5,
+      "thumbnail_filename": "img_20200521_034107_ngiwg3u9fc_height_324_width_432.svg",
       "title": "The Number Line"
     },
     {
+      "thumbnail_bg_color": "#FFFFFF",
       "skill_ids": [
         "B39yK4cbHZYI",
         "UxTGIJqaHMLa"
       ],
       "id": 6,
+      "thumbnail_filename": "img_20200521_034107_ngiwg3u9fc_height_324_width_432.svg",
       "title": "Comparing Fractions"
     },
     {
+      "thumbnail_bg_color": "#FFFFFF",
       "skill_ids": [
         "5RM9KPfQxobH",
         "B39yK4cbHZYI"
       ],
       "id": 7,
+      "thumbnail_filename": "img_20200521_034107_ngiwg3u9fc_height_324_width_432.svg",
       "title": "Adding Fractions"
     },
     {
+      "thumbnail_bg_color": "#FFFFFF",
       "skill_ids": [
         "5RM9KPfQxobH",
         "B39yK4cbHZYI",
         "UxTGIJqaHMLa"
       ],
       "id": 8,
+      "thumbnail_filename": "img_20200521_034107_ngiwg3u9fc_height_324_width_432.svg",
       "title": "Subtracting Fractions"
     },
     {
+      "thumbnail_bg_color": "#FFFFFF",
       "skill_ids": [
         "5RM9KPfQxobH",
         "UxTGIJqaHMLa"
       ],
       "id": 9,
+      "thumbnail_filename": "img_20200521_034107_ngiwg3u9fc_height_324_width_432.svg",
       "title": "Multiplying Fractions"
     },
     {
+      "thumbnail_bg_color": "#FFFFFF",
       "skill_ids": [
         "B39yK4cbHZYI",
         "UxTGIJqaHMLa"
       ],
       "id": 10,
+      "thumbnail_filename": "img_20200521_034107_ngiwg3u9fc_height_324_width_432.svg",
       "title": "Dividing Fractions"
     },
     {
+      "thumbnail_bg_color": "#FFFFFF",
       "skill_ids": [
         "5RM9KPfQxobH",
         "B39yK4cbHZYI",
         "UxTGIJqaHMLa"
       ],
       "id": 11,
+      "thumbnail_filename": "img_20200521_034107_ngiwg3u9fc_height_324_width_432.svg",
       "title": "General Skills"
     }
   ]
