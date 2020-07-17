@@ -2,7 +2,6 @@ package org.oppia.domain.oppialogger.analytics
 
 import android.content.Context
 import androidx.lifecycle.LiveData
-import kotlinx.coroutines.CoroutineDispatcher
 import org.oppia.app.model.EventLog
 import org.oppia.app.model.EventLog.EventAction
 import org.oppia.app.model.EventLog.Priority
@@ -16,7 +15,6 @@ import org.oppia.util.logging.EventLogger
 import org.oppia.util.logging.ExceptionLogger
 import org.oppia.util.networking.NetworkConnectionUtil
 import org.oppia.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
-import org.oppia.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 
 /** Controller for handling analytics event logging. */
