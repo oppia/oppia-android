@@ -71,11 +71,15 @@ maven_install(
     artifacts = DAGGER_ARTIFACTS + [
         "org.robolectric:robolectric:4.2",
         "androidx.appcompat:appcompat:1.0.2",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.2",
         "androidx.core:core-ktx:1.0.1",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2",#
+        "junit:junit:4.12",
     ],
     repositories = DAGGER_REPOSITORIES + [
         "https://maven.google.com",
         "https://repo1.maven.org/maven2",
+        "https://jcenter.bintray.com/",
     ],
 )
 
