@@ -1,18 +1,39 @@
 load("@rules_proto//proto:defs.bzl", "proto_library")
+load("//:preprocess_protos.bzl", "process")
 
 proto_library(
     name = "proto_lib",
     srcs = ["event_logger.proto",
             "example.proto",
-            "exploration.proto",
             "interaction_object.proto",
             "onboarding.proto",
             "profile.proto",
-            "question.proto",
             "subtitled_html.proto",
-            "topic.proto",
             "thumbnail.proto",
             "translation.proto",
             "voiceover.proto",
-            ],
+            "//bazel-bin/processed_topic.proto",
+            "//bazel-bin/processed_question.proto",
+            "//bazel-bin/processed_exploration.proto",
+    ],
+    data = [
+            ":process_exploration",
+            ":process_question",
+            ":process_topic",
+           ],
+)
+
+process(
+    name = "process_topic",
+    src = "topic.proto"
+)
+
+process(
+    name = "process_question",
+    src = "question.proto"
+)
+
+process(
+    name = "process_exploration",
+    src = "exploration.proto"
 )
