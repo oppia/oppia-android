@@ -13,6 +13,7 @@ import javax.inject.Inject
 /** Fragment that contains info of Topic. */
 class TopicInfoFragment : InjectableFragment() {
   companion object {
+    internal const val TOPIC_INFO_FRAGMENT_TAG = "TOPIC_INFO_FRAGMENT_TAG"
     /** Returns a new [TopicInfoFragment]. */
     fun newInstance(internalProfileId: Int, topicId: String): TopicInfoFragment {
       val topicInfoFragment = TopicInfoFragment()
