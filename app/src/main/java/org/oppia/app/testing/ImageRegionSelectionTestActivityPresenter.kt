@@ -1,6 +1,8 @@
 package org.oppia.app.testing
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.forEach
+import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.image_region_selection_test_activity.*
 import org.oppia.app.R
 import org.oppia.app.model.ImageWithRegions.LabeledRegion
@@ -25,7 +27,7 @@ class ImageRegionSelectionTestActivityPresenter @Inject constructor(
         image_parent_view,
         this as OnClickableAreaClickedListener
       )
-      clickable_image_view.addOnLayoutChangeListener { _, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom -> // ktlint-disable max-line-length
+      clickable_image_view.addOnLayoutChangeListener { _, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->// ktlint-disable max-line-length
         // Update the regions, as the bounds have changed
         if (left != oldLeft || top != oldTop || right != oldRight || bottom != oldBottom)
           clickableAreasImage.addViews(

@@ -24,7 +24,7 @@ class ImageRegionSelectionTestActivityTest {
       onView(withId(R.id.clickable_image_view)).perform(
         clickAtXY(0.3f, 0.3f)
       )
-      onView(withId(R.id.selected_region_view)).check(
+      onView(withId(R.id.image_parent_view)).check(
         matches(isDisplayed())
       )
     }

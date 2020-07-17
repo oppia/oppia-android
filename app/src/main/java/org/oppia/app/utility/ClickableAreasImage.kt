@@ -5,10 +5,10 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.core.view.forEachIndexed
-import androidx.core.view.isVisible
 import com.github.chrisbanes.photoview.OnPhotoTapListener
 import com.github.chrisbanes.photoview.PhotoViewAttacher
 import org.oppia.app.R
+import org.oppia.app.model.ImageWithRegions
 import org.oppia.app.player.state.ImageRegionSelectionInteractionView
 import kotlin.math.roundToInt
 
@@ -34,15 +34,8 @@ class ClickableAreasImage(
    * @param y the relative y coordinate according to image
    */
   override fun onPhotoTap(view: ImageView, x: Float, y: Float) {
-    val clickableAreaIndex = getClickableAreaOrDefault(x, y)
-    parentView.forEachIndexed { index: Int, tappedView: View ->
-      if (index > 0) {
-        tappedView.isVisible = index == clickableAreaIndex + 1
-        listener.onClickableAreaTouched(
-          imageView.getClickableAreas()[clickableAreaIndex].label
-        )
-      }
-    }
+    //show default region
+
   }
 
   private fun getClickableAreaOrDefault(x: Float, y: Float): Int {
@@ -85,31 +78,40 @@ class ClickableAreasImage(
           imageRect.height().roundToInt()
         )
         val newView = View(it.context)
-
+        newView.layoutParams = layoutParams
         newView.x = imageRect.left
         newView.y = imageRect.top
         newView.isClickable = true
-        newView.isFocusableInTouchMode = true
         newView.isFocusable = true
-        newView.layoutParams = layoutParams
+        newView.isFocusableInTouchMode = true
+        newView.tag = clickableArea.label
         newView.contentDescription = clickableArea.label
+        newView.setOnTouchListener { view, motionEvent ->
+          showRegion(newView, clickableArea)
+          return@setOnTouchListener true
+        }
         if (useSeparateRegionViews) {
           newView.setOnClickListener {
-            parentView.forEachIndexed { index: Int, tappedView: View ->
-              // Remove any previously selected region excluding 0th index(image view)
-              if (index > 0) {
-                tappedView.setBackgroundResource(0)
-              }
-            }
-            listener.onClickableAreaTouched(clickableArea.label)
-            newView.setBackgroundResource(R.drawable.selected_region_background)
+            showRegion(newView, clickableArea)
           }
-        } else {
-          newView.isVisible = false
-          newView.setBackgroundResource(R.drawable.selected_region_background)
         }
         it.addView(newView)
+        newView.requestLayout()
       }
     }
+  }
+
+  private fun showRegion(
+    newView: View,
+    clickableArea: ImageWithRegions.LabeledRegion
+  ) {
+    parentView.forEachIndexed { index: Int, tappedView: View ->
+      // Remove any previously selected region excluding 0th index(image view)
+      if (index > 0) {
+        tappedView.setBackgroundResource(0)
+      }
+    }
+    listener.onClickableAreaTouched(clickableArea.label)
+    newView.setBackgroundResource(R.drawable.selected_region_background)
   }
 }

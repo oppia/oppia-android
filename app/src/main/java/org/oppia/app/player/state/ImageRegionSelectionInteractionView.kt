@@ -5,7 +5,8 @@ import android.util.AttributeSet
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.databinding.BindingAdapter
-import kotlinx.android.synthetic.main.image_region_selection_test_activity.*
+import androidx.fragment.app.FragmentManager
+import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.model.ImageWithRegions
 import org.oppia.app.utility.ClickableAreasImage
 import org.oppia.app.utility.OnClickableAreaClickedListener
@@ -51,12 +52,13 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   fun isAccessibilityEnabled(): Boolean {
     return isAccessibilityEnabled
   }
-//
+
 //  override fun onAttachedToWindow() {
 //    super.onAttachedToWindow()
-//    FragmentManager.findFragment<InjectableFragment>(this).createViewComponent(this).inject(this)
+////    FragmentManager.findFragment<InjectableFragment>(this).createViewComponent(this).inject(this)
 //    isAccessibilityEnabled = accessibilityManager.isScreenReaderEnabled()
-//
+//  }
+
 }
 
 /** Bind ItemTouchHelperSimpleCallback with RecyclerView for a [DragDropSortInteractionView] via data-binding. */
