@@ -254,7 +254,6 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   private fun logProfileChooserEvent() {
     analyticsController.logTransitionEvent(
-      activity.applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_PROFILE_CHOOSER,
       /* Event Context */ null
