@@ -54,13 +54,13 @@ import org.oppia.app.testing.ExplorationInjectionActivity
 import org.oppia.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.exploration.ExplorationDataController
-import org.oppia.domain.exploration.TEST_EXPLORATION_ID_30
 import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.domain.topic.RATIOS_STORY_ID_0
 import org.oppia.domain.topic.RATIOS_TOPIC_ID
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.util.networking.NetworkConnectionUtil
@@ -114,13 +114,13 @@ class ExplorationActivityTest {
 
   @Test
   fun testExploration_toolbarTitle_isDisplayedSuccessfully() {
-    getApplicationDependencies(TEST_EXPLORATION_ID_30)
+    getApplicationDependencies(TEST_EXPLORATION_ID_2)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_30
+        TEST_EXPLORATION_ID_2
       )
     ).use {
       waitForTheView(withText("Prototype Exploration"))
@@ -132,13 +132,13 @@ class ExplorationActivityTest {
 
   @Test
   fun testExploration_configurationChange_toolbarTitle_isDisplayedSuccessfully() {
-    getApplicationDependencies(TEST_EXPLORATION_ID_30)
+    getApplicationDependencies(TEST_EXPLORATION_ID_2)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_30
+        TEST_EXPLORATION_ID_2
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -151,13 +151,13 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWithNoVoiceover_openPrototypeExploration_checkAudioButtonIsHidden() {
-    getApplicationDependencies(TEST_EXPLORATION_ID_30)
+    getApplicationDependencies(TEST_EXPLORATION_ID_2)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_30
+        TEST_EXPLORATION_ID_2
       )
     ).use {
       onView(withId(R.id.action_audio_player)).check(matches(not(isDisplayed())))
@@ -167,13 +167,13 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWithNoVoiceover_openPrototypeExploration_configurationChange_checkAudioButtonIsHidden() { // ktlint-disable max-line-length
-    getApplicationDependencies(TEST_EXPLORATION_ID_30)
+    getApplicationDependencies(TEST_EXPLORATION_ID_2)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_30
+        TEST_EXPLORATION_ID_2
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())

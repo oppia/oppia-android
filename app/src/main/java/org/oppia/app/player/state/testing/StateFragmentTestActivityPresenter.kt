@@ -10,7 +10,7 @@ import org.oppia.app.databinding.StateFragmentTestActivityBinding
 import org.oppia.app.player.state.StateFragment
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationDataController
-import org.oppia.domain.exploration.TEST_EXPLORATION_ID_30
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.util.data.AsyncResult
@@ -41,7 +41,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     val topicId = activity.intent.getStringExtra(TEST_ACTIVITY_TOPIC_ID_EXTRA) ?: TEST_TOPIC_ID_0
     val storyId = activity.intent.getStringExtra(TEST_ACTIVITY_STORY_ID_EXTRA) ?: TEST_STORY_ID_0
     val explorationId =
-      activity.intent.getStringExtra(TEST_ACTIVITY_EXPLORATION_ID_EXTRA) ?: TEST_EXPLORATION_ID_30
+      activity.intent.getStringExtra(TEST_ACTIVITY_EXPLORATION_ID_EXTRA) ?: TEST_EXPLORATION_ID_2
     activity.findViewById<Button>(R.id.play_test_exploration_button)?.setOnClickListener {
       startPlayingExploration(profileId, topicId, storyId, explorationId)
     }
