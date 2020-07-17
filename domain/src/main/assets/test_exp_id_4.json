@@ -1,6 +1,6 @@
 {
   "correctness_feedback_enabled": false,
-  "exploration_id": "drag_and_drop_test_exploration",
+  "exploration_id": "test_exp_id_4",
   "states": {
     "End": {
       "param_changes": [],
