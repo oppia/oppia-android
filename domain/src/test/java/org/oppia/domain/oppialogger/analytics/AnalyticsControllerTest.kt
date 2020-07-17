@@ -13,6 +13,7 @@ import dagger.Provides
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
@@ -20,7 +21,8 @@ import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 import org.oppia.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
 import org.oppia.app.model.EventLog.Context.ActivityContextCase.CONCEPT_CARD_CONTEXT
 import org.oppia.app.model.EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT
@@ -61,6 +63,10 @@ const val TEST_SUB_TOPIC_ID = "test_subTopicId"
 @Config(manifest = Config.NONE)
 class AnalyticsControllerTest {
 
+  @Rule
+  @JvmField
+  val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
   @Inject
   lateinit var analyticsController: AnalyticsController
 
@@ -82,7 +88,6 @@ class AnalyticsControllerTest {
 
   @Before
   fun setUp() {
-    MockitoAnnotations.initMocks(this)
     networkConnectionUtil = NetworkConnectionUtil(ApplicationProvider.getApplicationContext())
     setUpTestApplicationComponent()
   }
@@ -411,7 +416,7 @@ class AnalyticsControllerTest {
   @ExperimentalCoroutinesApi
   @InternalCoroutinesApi
   @Test
-  fun testController_logTransitionEvent_withNoneNetwork_checkLogsEventToStore() {
+  fun testController_logTransitionEvent_withNoNetwork_checkLogsEventToStore() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logTransitionEvent(
       ApplicationProvider.getApplicationContext(),
@@ -443,7 +448,7 @@ class AnalyticsControllerTest {
   @ExperimentalCoroutinesApi
   @InternalCoroutinesApi
   @Test
-  fun testController_logClickEvent_withNoneNetwork_checkLogsEventToStore() {
+  fun testController_logClickEvent_withNoNetwork_checkLogsEventToStore() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logClickEvent(
       ApplicationProvider.getApplicationContext(),
@@ -475,7 +480,7 @@ class AnalyticsControllerTest {
   @ExperimentalCoroutinesApi
   @InternalCoroutinesApi
   @Test
-  fun testController_logTransitionEvent_withNoneNetwork_exceedLimit_checkEventLogStoreSize() {
+  fun testController_logTransitionEvent_withNoNetwork_exceedLimit_checkEventLogStoreSize() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     for (i in 1..5005) {
       analyticsController.logTransitionEvent(
