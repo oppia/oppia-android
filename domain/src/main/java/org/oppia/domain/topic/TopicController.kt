@@ -74,8 +74,8 @@ val TOPIC_FILE_ASSOCIATIONS = mapOf(
     "fractions_exploration1.json",
     "fractions_questions.json",
     "fractions_skills.json",
-    "fractions_stories.json",
-    "fractions_topic.json"
+    "wANbh4oOClga.json",
+    "GJ2rLXRKD5hw.json"
   ),
   RATIOS_TOPIC_ID to listOf(
     "ratios_exploration0.json",
@@ -84,8 +84,9 @@ val TOPIC_FILE_ASSOCIATIONS = mapOf(
     "ratios_exploration3.json",
     "ratios_questions.json",
     "ratios_skills.json",
-    "ratios_stories.json",
-    "ratios_topic.json"
+    "wAMdg4oOClga.json",
+    "xBSdg4oOClga.json",
+    "omzF4oqgeTXd.json"
   )
 )
 
@@ -408,10 +409,10 @@ class TopicController @Inject constructor(
       TEST_TOPIC_ID_0 -> createTestTopic0()
       TEST_TOPIC_ID_1 -> createTestTopic1()
       FRACTIONS_TOPIC_ID -> createTopicFromJson(
-        "fractions_topic.json"
+        "GJ2rLXRKD5hw.json"
       )
       RATIOS_TOPIC_ID -> createTopicFromJson(
-        "ratios_topic.json"
+        "omzF4oqgeTXd.json"
       )
       else -> throw IllegalArgumentException("Invalid topic ID: $topicId")
     }

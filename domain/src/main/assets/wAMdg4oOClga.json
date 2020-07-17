@@ -1,7 +1,7 @@
 {
   "story_nodes": [
     {
-      "description": "Matthew learns about fractions.",
+      "description": "Matthew learns about ratios.",
       "exploration_id": "2mzzFVDLuAj8",
       "destination_node_ids": [
         "node_2"
@@ -23,7 +23,7 @@
       "acquired_skill_ids": []
     },
     {
-      "description": "Matthew learns about fractions.",
+      "description": "Matthew learns about ratios again.",
       "exploration_id": "5NWuolNcwH6e",
       "destination_node_ids": [],
       "thumbnail_filename": "",
