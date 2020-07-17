@@ -1,0 +1,36 @@
+load("@rules_proto//proto:defs.bzl", "proto_library")
+load("//model:src/main/proto/preprocess_protos.bzl", "process")
+
+proto_library(
+    name = "proto_lib",
+    srcs = ["src/main/proto/event_logger.proto",
+            "src/main/proto/example.proto",
+            "src/main/proto/interaction_object.proto",
+            "src/main/proto/onboarding.proto",
+            "src/main/proto/profile.proto",
+            "src/main/proto/subtitled_html.proto",
+            "src/main/proto/thumbnail.proto",
+            "src/main/proto/translation.proto",
+            "src/main/proto/voiceover.proto",
+    ],
+    data = [
+            ":process_exploration",
+            ":process_question",
+                :process_topic",
+    ],
+)
+
+process(
+    name = "process_topic",
+    src = "topic.proto"
+)
+
+process(
+    name = "process_question",
+    src = "question.proto"
+)
+
+process(
+    name = "process_exploration",
+    src = "exploration.proto"
+)
