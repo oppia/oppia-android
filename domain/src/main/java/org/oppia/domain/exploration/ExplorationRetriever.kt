@@ -3,21 +3,9 @@ package org.oppia.domain.exploration
 import org.json.JSONObject
 import org.oppia.app.model.Exploration
 import org.oppia.app.model.State
-import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_0
-import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_1
-import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_0
-import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_1
-import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_2
-import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_3
-import org.oppia.domain.topic.TEST_EXPLORATION_ID_0
-import org.oppia.domain.topic.TEST_EXPLORATION_ID_1
-import org.oppia.domain.topic.TEST_EXPLORATION_ID_2
-import org.oppia.domain.topic.TEST_EXPLORATION_ID_3
-import org.oppia.domain.topic.TEST_EXPLORATION_ID_4
 import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.domain.util.StateRetriever
 import org.oppia.util.logging.ExceptionLogger
-import java.io.IOException
 import javax.inject.Inject
 
 // TODO(#59): Make this class inaccessible outside of the domain package except for tests. UI code should not be allowed
@@ -32,26 +20,22 @@ class ExplorationRetriever @Inject constructor(
   // TODO(#169): Force callers of this method on a background thread.
   /** Loads and returns an exploration for the specified exploration ID, or fails. */
   internal fun loadExploration(explorationId: String): Exploration {
-    return loadExplorationFromAsset("$explorationId.json")
+    val explorationObject =
+      jsonAssetRetriever.loadJsonFromAsset("$explorationId.json")
+        ?: return Exploration.getDefaultInstance()
+    return loadExplorationFromAsset(explorationObject)
   }
 
   // Returns an exploration given an assetName
-  private fun loadExplorationFromAsset(assetName: String): Exploration {
-    try {
-      val explorationObject =
-        jsonAssetRetriever.loadJsonFromAsset(assetName) ?: return Exploration.getDefaultInstance()
-      return Exploration.newBuilder()
-        .setId(explorationObject.getString("exploration_id"))
-        .setTitle(explorationObject.getString("title"))
-        .setLanguageCode(explorationObject.getString("language_code"))
-        .setInitStateName(explorationObject.getString("init_state_name"))
-        .setObjective(explorationObject.getString("objective"))
-        .putAllStates(createStatesFromJsonObject(explorationObject.getJSONObject("states")))
-        .build()
-    } catch (e: IOException) {
-      exceptionLogger.logException(e)
-      throw(Throwable("Failed to load and parse the json asset file. %s", e))
-    }
+  private fun loadExplorationFromAsset(explorationObject: JSONObject): Exploration {
+    return Exploration.newBuilder()
+      .setId(explorationObject.getString("exploration_id"))
+      .setTitle(explorationObject.getString("title"))
+      .setLanguageCode(explorationObject.getString("language_code"))
+      .setInitStateName(explorationObject.getString("init_state_name"))
+      .setObjective(explorationObject.getString("objective"))
+      .putAllStates(createStatesFromJsonObject(explorationObject.getJSONObject("states")))
+      .build()
   }
 
   // Creates the states map from JSON

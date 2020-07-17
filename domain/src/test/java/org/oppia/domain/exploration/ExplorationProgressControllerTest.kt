@@ -59,6 +59,7 @@ import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
+import java.io.FileNotFoundException
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -190,7 +191,7 @@ class ExplorationProgressControllerTest {
       assertThat(currentStateResultCaptor.value.isFailure()).isTrue()
       assertThat(currentStateResultCaptor.value.getErrorOrNull())
         .hasMessageThat()
-        .contains("Invalid exploration ID: invalid_exp_id")
+        .contains("invalid_exp_id.json")
     }
 
   @Test
@@ -1588,9 +1589,8 @@ class ExplorationProgressControllerTest {
       playExploration("invalid_exp_id")
       val exception = fakeExceptionLogger.getMostRecentException()
 
-      assertThat(exception).isInstanceOf(IllegalStateException::class.java)
-      assertThat(exception).hasMessageThat()
-        .contains("Invalid exploration ID: invalid_exp_id")
+      assertThat(exception).isInstanceOf(FileNotFoundException::class.java)
+      assertThat(exception).hasMessageThat().contains("invalid_exp_id.json")
     }
 
   private suspend fun getTestExploration5(): Exploration {
