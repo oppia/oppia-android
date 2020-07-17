@@ -153,8 +153,8 @@ class EventBundleCreatorTest {
     assertThat(eventBundle.get(TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
     assertThat(eventBundle.get(PRIORITY_KEY)).isEqualTo(EventLog.Priority.ESSENTIAL.toString())
     assertThat(eventBundle.get(QUESTION_ID_KEY)).isEqualTo(TEST_QUESTION_ID)
-    assertThat(eventBundle.get(SKILL_ID_KEY + 0)).isEqualTo(TEST_SKILL_ID_ONE)
-    assertThat(eventBundle.get(SKILL_ID_KEY + 1)).isEqualTo(TEST_SKILL_ID_TWO)
+    assertThat(eventBundle.get(SKILL_ID_KEY))
+      .isEqualTo(listOf(TEST_SKILL_ID_ONE, TEST_SKILL_ID_TWO).joinToString())
   }
 
   @Test
