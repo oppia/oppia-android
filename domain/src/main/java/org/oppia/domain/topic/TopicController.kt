@@ -766,7 +766,9 @@ class TopicController @Inject constructor(
    * Creates a list of [StorySummary]s for topic from its json representation. The json file is expected to have
    * a key called 'canonical_story_dicts' that contains an array of story objects.
    */
-  private fun createStorySummaryListFromJsonArray(storySummaryJsonArray: JSONArray?): List<StorySummary> {
+  private fun createStorySummaryListFromJsonArray(
+    storySummaryJsonArray: JSONArray?
+  ): List<StorySummary> {
     val storySummaryList = mutableListOf<StorySummary>()
     for (i in 0 until storySummaryJsonArray!!.length()) {
       val currentStorySummaryJsonObject = storySummaryJsonArray.optJSONObject(i)
