@@ -27,7 +27,6 @@ class AnalyticsController @Inject constructor(
   private val consoleLogger: ConsoleLogger,
   private val networkConnectionUtil: NetworkConnectionUtil,
   private val exceptionLogger: ExceptionLogger,
-  @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
   @EventLogStorageCacheSize private val eventLogStorageCacheSize: Int
 ) {
   private val eventLogStore =
@@ -38,13 +37,11 @@ class AnalyticsController @Inject constructor(
    * These events are given HIGH priority.
    */
   fun logTransitionEvent(
-    context: Context,
     timestamp: Long,
     eventAction: EventAction,
     eventContext: EventLog.Context?
   ) {
     checkNetworkAndManageEventLog(
-      context,
       createEventLog(
         timestamp,
         eventAction,
@@ -59,13 +56,11 @@ class AnalyticsController @Inject constructor(
    * These events are given LOW priority.
    */
   fun logClickEvent(
-    context: Context,
     timestamp: Long,
     eventAction: EventAction,
     eventContext: EventLog.Context?
   ) {
     checkNetworkAndManageEventLog(
-      context,
       createEventLog(
         timestamp,
         eventAction,
@@ -186,10 +181,10 @@ class AnalyticsController @Inject constructor(
    * Saves the [eventLog] to the [eventLogStore] in the absence of it.
    * Uploads to remote service in the presence of it.
    */
-  private fun checkNetworkAndManageEventLog(context: Context, eventLog: EventLog) {
+  private fun checkNetworkAndManageEventLog(eventLog: EventLog) {
     when (networkConnectionUtil.getCurrentConnectionStatus()) {
       NONE -> addEventLog(eventLog)
-      else -> eventLogger.logEvent(context, eventLog)
+      else -> eventLogger.logEvent(eventLog)
     }
   }
 

@@ -95,7 +95,6 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logTransitionEvent_withQuestionContext_checkLogsEvent() {
     analyticsController.logTransitionEvent(
-      ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
       analyticsController.createQuestionContext(
@@ -117,7 +116,6 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logTransitionEvent_withExplorationContext_checkLogsEvent() {
     analyticsController.logTransitionEvent(
-      ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
       analyticsController.createExplorationContext(
@@ -138,7 +136,6 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logTransitionEvent_withTopicContext_checkLogsEvent() {
     analyticsController.logTransitionEvent(
-      ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
       analyticsController.createTopicContext(TEST_TOPIC_ID)
@@ -155,7 +152,6 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logTransitionEvent_withStoryContext_checkLogsEvent() {
     analyticsController.logTransitionEvent(
-      ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
       analyticsController.createStoryContext(TEST_TOPIC_ID, TEST_STORY_ID)
@@ -172,7 +168,6 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logTransitionEvent_withRevisionContext_checkLogsEvent() {
     analyticsController.logTransitionEvent(
-      ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
       analyticsController.createRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
@@ -189,7 +184,6 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logTransitionEvent_withConceptCardContext_checkLogsEvent() {
     analyticsController.logTransitionEvent(
-      ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
       analyticsController.createConceptCardContext(TEST_SKILL_ID)
@@ -206,7 +200,6 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logTransitionEvent_withNoContext_checkLogsEvent() {
     analyticsController.logTransitionEvent(
-      ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
       null
@@ -223,7 +216,6 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logClickEvent_withQuestionContext_checkLogsEvent() {
     analyticsController.logClickEvent(
-      ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
       analyticsController.createQuestionContext(
@@ -245,7 +237,6 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logClickEvent_withExplorationContext_checkLogsEvent() {
     analyticsController.logClickEvent(
-      ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
       analyticsController.createExplorationContext(
@@ -266,7 +257,6 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logClickEvent_withTopicContext_checkLogsEvent() {
     analyticsController.logClickEvent(
-      ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
       analyticsController.createTopicContext(TEST_TOPIC_ID)
@@ -283,7 +273,6 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logClickEvent_withStoryContext_checkLogsEvent() {
     analyticsController.logClickEvent(
-      ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
       analyticsController.createStoryContext(TEST_TOPIC_ID, TEST_STORY_ID)
@@ -300,7 +289,6 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logClickEvent_withRevisionContext_checkLogsEvent() {
     analyticsController.logClickEvent(
-      ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
       analyticsController.createRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
@@ -317,7 +305,6 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logClickEvent_withConceptCardContext_checkLogsEvent() {
     analyticsController.logClickEvent(
-      ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
       analyticsController.createConceptCardContext(TEST_SKILL_ID)
@@ -334,7 +321,6 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logClickEvent_withNoContext_checkLogsEvent() {
     analyticsController.logClickEvent(
-      ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
       null
