@@ -739,7 +739,9 @@ class TopicController @Inject constructor(
    * Creates a list of skill for topic from its json representation. The json file is expected to have
    * a key called 'skill_descriptions' that contains the mapping of of skill Id and description.
    */
-  private fun createSkillSummaryListFromJsonObject(skillSummaryJsonObject: JSONObject?): List<SkillSummary> {
+  private fun createSkillSummaryListFromJsonObject(
+    skillSummaryJsonObject: JSONObject?
+  ): List<SkillSummary> {
     val skillSummaryList = mutableListOf<SkillSummary>()
 
     val skillIdList = skillSummaryJsonObject!!.keys()
