@@ -19,12 +19,6 @@ kt_android_library(
       "src/main/java/org/oppia/util/profile/*.kt",
       "src/main/java/org/oppia/util/system/*.kt",
       "src/main/java/org/oppia/util/threading/*.kt",
-      "src/test/java/org/oppia/util/data/*.kt",
-      "src/test/java/org/oppia/util/datetime/*.kt",
-      "src/test/java/org/oppia/util/logging/*.kt",
-      "src/test/java/org/oppia/util/networking/*.kt",
-      "src/test/java/org/oppia/util/profile/*.kt",
-      "src/test/java/org/oppia/util/system/*.kt",
   ],
   deps = [
     ":dagger",
@@ -44,5 +38,26 @@ kt_android_library(
       ":dagger_graph",
     ],
 )
+
+#TODO: Get android_local_test working with kotlin files
+'''
+android_local_test(
+  name = "utility_tests_lib",
+  srcs = [
+      "src/test/java/org/oppia/util/data/*.kt",
+      "src/test/java/org/oppia/util/datetime/*.kt",
+      "src/test/java/org/oppia/util/logging/*.kt",
+      "src/test/java/org/oppia/util/networking/*.kt",
+      "src/test/java/org/oppia/util/profile/*.kt",
+      "src/test/java/org/oppia/util/system/*.kt",
+  ],
+  deps = [
+    ":utility_lib",
+    #"@robolectric//bazel:robolectric",
+    "@maven//:org_robolectric_robolectric",
+    "@robolectric//bazel:android-all",
+  ],
+)
+'''
 
 dagger_rules()

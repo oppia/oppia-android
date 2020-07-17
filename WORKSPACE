@@ -76,12 +76,11 @@ http_archive(
 
 load("@dagger//:workspace_defs.bzl", "DAGGER_ARTIFACTS", "DAGGER_REPOSITORIES")
 
-#Add support for Robolectric: http://robolectric.org/getting-started/
+#Add support for Robolectric: https://github.com/robolectric/robolectric-bazel
 http_archive(
- name = "robolectric",
- urls = ["https://github.com/robolectric/robolectric-bazel/archive/4.0.1.tar.gz"],
- strip_prefix = "robolectric-bazel-4.0.1",
- sha256 = "dff7a1f8e7bd8dc737f20b6bbfaf78d8b5851debe6a074757f75041029f0c43b",
+    name = "robolectric",
+    urls = ["https://github.com/robolectric/robolectric-bazel/archive/4.1.tar.gz"],
+    strip_prefix = "robolectric-bazel-4.1",
 )
 load("@robolectric//bazel:robolectric.bzl", "robolectric_repositories")
 robolectric_repositories()
@@ -89,6 +88,13 @@ robolectric_repositories()
 load("@rules_jvm_external//:defs.bzl", "maven_install")
 
 maven_install(
-    artifacts = DAGGER_ARTIFACTS,
-    repositories = DAGGER_REPOSITORIES,
+    artifacts = DAGGER_ARTIFACTS + [
+        "org.robolectric:robolectric:4.2",
+        "androidx.appcompat:appcompat:1.0.2",
+        "androidx.core:core-ktx:1.0.1",
+    ],
+    repositories = DAGGER_REPOSITORIES + [
+        "https://maven.google.com",
+        "https://repo1.maven.org/maven2",
+    ],
 )
