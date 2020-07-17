@@ -5,47 +5,50 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 package(default_visibility = ["//visibility:public"])
 
 kt_android_library(
-  name = "utility_lib",
-  custom_package = "org.oppia.util",
-  srcs = [
-      "src/main/java/org/oppia/util/accessibility/*.kt",
-      "src/main/java/org/oppia/util/caching/*.kt",
-      "src/main/java/org/oppia/util/data/*.kt",
-      "src/main/java/org/oppia/util/datetime/*.kt",
-      "src/main/java/org/oppia/util/gcsresource/*.kt",
-      "src/main/java/org/oppia/util/logging/*.kt",
-      "src/main/java/org/oppia/util/networking/*.kt",
-      "src/main/java/org/oppia/util/parser/*.kt",
-      "src/main/java/org/oppia/util/profile/*.kt",
-      "src/main/java/org/oppia/util/system/*.kt",
-      "src/main/java/org/oppia/util/threading/*.kt",
-      "src/main/java/org/oppia/util/extensions/*.kt",
-      "src/main/java/org/oppia/util/statusbar/*.kt",
-  ],
-  resource_files = glob(["src/main/res/**/*.xml", "src/main/res/**/*.png"]),
-  manifest = "src/main/AndroidManifest.xml",
-  deps = [
-    ":dagger",
-  ],
+    name = "utility_lib",
+    custom_package = "org.oppia.util",
+    srcs = glob(["src/main/**/*.kt"]),
+    resource_files = glob(["src/main/res/**/*.xml", "src/main/res/**/*.png"]),
+    manifest = "src/main/AndroidManifest.xml",
+    deps = [
+        ":dagger",
+        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-core"),
+        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-android"),
+        artifact("androidx.appcompat:appcompat:1.0.2"),
+    ],
 )
 
 #TODO: Get android_local_test working with kotlin files
 '''
+kt_android_library(
+    name = "test_lib",
+    custom_package = "org.oppia.util",
+    srcs = glob(["src/test/**/*.kt"]),
+    resource_files = glob(["src/main/res/**/*.xml", "src/main/res/**/*.png"]),
+    manifest = "src/main/AndroidManifest.xml",
+    deps = [
+        ":dagger",
+        ":utility_lib",
+        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-core"),
+        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-android"),
+        #artifact("androidx.appcompat:appcompat:1.0.2"),
+    ],
+)
+
+
 android_local_test(
-  name = "utility_tests_lib",
-  srcs = [
-      "src/test/java/org/oppia/util/data/*.kt",
-      "src/test/java/org/oppia/util/datetime/*.kt",
-      "src/test/java/org/oppia/util/logging/*.kt",
-      "src/test/java/org/oppia/util/networking/*.kt",
-      "src/test/java/org/oppia/util/profile/*.kt",
-      "src/test/java/org/oppia/util/system/*.kt",
-  ],
+  name = "all_tests",
+  custom_package = "org.oppia.util",
+  test_class = "org.oppia.util",
   deps = [
-    ":utility_lib",
-    #"@robolectric//bazel:robolectric",
-    "@maven//:org_robolectric_robolectric",
-    "@robolectric//bazel:android-all",
+      ":dagger",
+      ":test_lib",
+      "@robolectric//bazel:android-all",
+      artifact("org.robolectric:robolectric"),
+      artifact("org.jetbrains.kotlinx:kotlinx-coroutines-core"),
+      artifact("org.jetbrains.kotlinx:kotlinx-coroutines-android"),
+      artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test"),
+      artifact("junit:junit"),
   ],
 )
 '''
