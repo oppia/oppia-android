@@ -60,7 +60,6 @@ class ConceptCardFragmentPresenter @Inject constructor(
 
   private fun logConceptCardEvent(skillId: String) {
     analyticsController.logTransitionEvent(
-      fragment.requireActivity().applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_CONCEPT_CARD,
       analyticsController.createConceptCardContext(skillId)
