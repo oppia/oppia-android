@@ -1,5 +1,6 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:jvm.bzl", "jvm_maven_import_external")
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 android_sdk_repository(
     name = "androidsdk",
@@ -67,6 +68,15 @@ http_archive(
 load("@robolectric//bazel:robolectric.bzl", "robolectric_repositories")
 robolectric_repositories()
 
+#Add support for Firebase Crashlytics
+git_repository(
+    name = "tools_android",
+    commit = "00e6f4b7bdd75911e33c618a9bc57bab7a6e8930",
+    remote = "https://github.com/bazelbuild/tools_android"
+)
+load("@tools_android//tools/googleservices:defs.bzl", "google_services_workspace_dependencies")
+google_services_workspace_dependencies()
+
 maven_install(
     artifacts = DAGGER_ARTIFACTS + [
         "org.robolectric:robolectric:4.2",
@@ -75,11 +85,19 @@ maven_install(
         "androidx.core:core-ktx:1.0.1",
         "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2",#
         "junit:junit:4.12",
+        "com.github.bumptech.glide:glide:4.11.0",
+        "com.github.bumptech.glide:compiler:4.11.0",
+        "com.caverock:androidsvg-aar:1.4",
+        "com.crashlytics.sdk.android:crashlytics:2.9.8",
+        "io.fabric.sdk.android:fabric:1.4.7",
+        "com.google.gms:google-services:4.3.3",
     ],
     repositories = DAGGER_REPOSITORIES + [
         "https://maven.google.com",
         "https://repo1.maven.org/maven2",
         "https://jcenter.bintray.com/",
+        "https://bintray.com/bintray/jcenter",
+        "https://maven.fabric.io/public",
     ],
 )
 
