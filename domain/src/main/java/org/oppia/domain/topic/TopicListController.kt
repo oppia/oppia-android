@@ -44,7 +44,7 @@ import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.DefaultGcsPrefix
 import org.oppia.util.parser.ImageDownloadUrlTemplate
 import org.oppia.util.threading.BackgroundDispatcher
-import java.util.Date
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -190,18 +190,20 @@ class TopicListController @Inject constructor(
   }
 
   private fun createTopicList(): TopicList {
+    val topicIdJsonArray = jsonAssetRetriever
+      .loadJsonFromAsset("topics.json")!!
+      .getJSONArray("topic_id_list")
     val topicListBuilder = TopicList.newBuilder()
-      .addTopicSummary(createTopicSummary(TEST_TOPIC_ID_0))
-      .addTopicSummary(createTopicSummary(TEST_TOPIC_ID_1))
-      .addTopicSummary(createTopicSummary(FRACTIONS_TOPIC_ID))
-      .addTopicSummary(createTopicSummary(RATIOS_TOPIC_ID))
+    for (i in 0 until topicIdJsonArray.length()) {
+      topicListBuilder.addTopicSummary(createTopicSummary(topicIdJsonArray.optString(i)!!))
+    }
     return topicListBuilder.build()
   }
 
   private fun createTopicSummary(topicId: String): TopicSummary {
-    val fractionsJson =
+    val topicJson =
       jsonAssetRetriever.loadJsonFromAsset("$topicId.json")!!
-    return createTopicSummaryFromJson(topicId, fractionsJson)
+    return createTopicSummaryFromJson(topicId, topicJson)
   }
 
   private fun createTopicSummaryFromJson(topicId: String, jsonObject: JSONObject): TopicSummary {

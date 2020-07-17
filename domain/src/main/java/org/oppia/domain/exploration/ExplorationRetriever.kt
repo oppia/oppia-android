@@ -32,20 +32,7 @@ class ExplorationRetriever @Inject constructor(
   // TODO(#169): Force callers of this method on a background thread.
   /** Loads and returns an exploration for the specified exploration ID, or fails. */
   internal fun loadExploration(explorationId: String): Exploration {
-    return when (explorationId) {
-      TEST_EXPLORATION_ID_0 -> loadExplorationFromAsset("test_exp_id_0.json")
-      TEST_EXPLORATION_ID_1 -> loadExplorationFromAsset("test_exp_id_1.json")
-      TEST_EXPLORATION_ID_2 -> loadExplorationFromAsset("test_exp_id_2.json")
-      TEST_EXPLORATION_ID_3 -> loadExplorationFromAsset("test_exp_id_3.json")
-      TEST_EXPLORATION_ID_4 -> loadExplorationFromAsset("test_exp_id_4.json")
-      FRACTIONS_EXPLORATION_ID_0 -> loadExplorationFromAsset("fractions_exploration0.json")
-      FRACTIONS_EXPLORATION_ID_1 -> loadExplorationFromAsset("fractions_exploration1.json")
-      RATIOS_EXPLORATION_ID_0 -> loadExplorationFromAsset("ratios_exploration0.json")
-      RATIOS_EXPLORATION_ID_1 -> loadExplorationFromAsset("ratios_exploration1.json")
-      RATIOS_EXPLORATION_ID_2 -> loadExplorationFromAsset("ratios_exploration2.json")
-      RATIOS_EXPLORATION_ID_3 -> loadExplorationFromAsset("ratios_exploration3.json")
-      else -> throw IllegalStateException("Invalid exploration ID: $explorationId")
-    }
+    return loadExplorationFromAsset("$explorationId.json")
   }
 
   // Returns an exploration given an assetName
