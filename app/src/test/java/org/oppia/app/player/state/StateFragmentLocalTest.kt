@@ -1064,24 +1064,26 @@ class StateFragmentLocalTest {
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
-  @Component(modules = [
-    TestModule::class, TestDispatcherModule::class, ApplicationModule::class, NetworkModule::class,
-    LoggerModule::class, ContinueModule::class, FractionInputModule::class,
-    ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-    NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-    DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-    GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
-    HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-    TestAccessibilityModule::class
-  ])
-  interface TestApplicationComponent: ApplicationComponent {
+  @Component(
+    modules = [
+      TestModule::class, TestDispatcherModule::class, ApplicationModule::class,
+      NetworkModule::class, LoggerModule::class, ContinueModule::class, FractionInputModule::class,
+      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
+      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
+      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
+      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
+      TestAccessibilityModule::class
+    ]
+  )
+  interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder: ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder
 
     fun inject(stateFragmentLocalTest: StateFragmentLocalTest)
   }
 
-  class TestApplication: Application(), ActivityComponentFactory {
+  class TestApplication : Application(), ActivityComponentFactory {
     private val component: TestApplicationComponent by lazy {
       DaggerStateFragmentLocalTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -1107,7 +1109,7 @@ class StateFragmentLocalTest {
    */
   private class StateViewHolderTypeMatcher(
     private val viewType: StateItemViewModel.ViewType
-  ): BaseMatcher<ViewHolder>() {
+  ) : BaseMatcher<ViewHolder>() {
     override fun describeTo(description: Description?) {
       description?.appendText("item view type of $viewType")
     }

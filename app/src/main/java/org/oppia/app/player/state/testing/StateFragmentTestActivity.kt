@@ -109,6 +109,8 @@ class StateFragmentTestActivity :
   }
 
   private fun getHintsAndSolution(): HintsAndSolutionDialogFragment? {
-    return supportFragmentManager.findFragmentByTag(TAG_HINTS_AND_SOLUTION_DIALOG) as HintsAndSolutionDialogFragment?
+    return supportFragmentManager.findFragmentByTag(
+      TAG_HINTS_AND_SOLUTION_DIALOG
+    ) as HintsAndSolutionDialogFragment?
   }
 }
