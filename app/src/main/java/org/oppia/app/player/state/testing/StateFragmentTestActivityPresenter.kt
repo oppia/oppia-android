@@ -7,6 +7,8 @@ import androidx.lifecycle.Observer
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.databinding.StateFragmentTestActivityBinding
+import org.oppia.app.player.exploration.HintsAndSolutionExplorationManagerFragment
+import org.oppia.app.player.exploration.TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
 import org.oppia.app.player.state.StateFragment
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationDataController
@@ -44,6 +46,14 @@ class StateFragmentTestActivityPresenter @Inject constructor(
       activity.intent.getStringExtra(TEST_ACTIVITY_EXPLORATION_ID_EXTRA) ?: TEST_EXPLORATION_ID_30
     activity.findViewById<Button>(R.id.play_test_exploration_button)?.setOnClickListener {
       startPlayingExploration(profileId, topicId, storyId, explorationId)
+    }
+
+    if (getHintsAndSolutionManagerFragment() == null) {
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.exploration_fragment_placeholder,
+        HintsAndSolutionExplorationManagerFragment(),
+        TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
+      ).commitNow()
     }
   }
 
@@ -112,6 +122,12 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     return activity.supportFragmentManager.findFragmentById(
       R.id.state_fragment_placeholder
     ) as? StateFragment
+  }
+
+  private fun getHintsAndSolutionManagerFragment(): HintsAndSolutionExplorationManagerFragment? {
+    return activity.supportFragmentManager.findFragmentByTag(
+      TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
+    ) as HintsAndSolutionExplorationManagerFragment?
   }
 
   private fun getStateFragmentTestViewModel(): StateFragmentTestViewModel {

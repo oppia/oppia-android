@@ -45,8 +45,8 @@ import org.oppia.app.application.ActivityComponentFactory
 import org.oppia.app.application.ApplicationComponent
 import org.oppia.app.application.ApplicationContext
 import org.oppia.app.application.ApplicationModule
+import org.oppia.app.hintsandsolution.TAG_REVEAL_SOLUTION_DIALOG
 import org.oppia.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
-import org.oppia.app.player.state.hintsandsolution.TAG_REVEAL_SOLUTION_DIALOG
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
@@ -58,6 +58,7 @@ import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.domain.classify.rules.imageClickInput.ImageClickInputModule
 import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
@@ -68,6 +69,7 @@ import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.testing.TestAccessibilityModule
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
@@ -1067,9 +1069,10 @@ class StateFragmentLocalTest {
     LoggerModule::class, ContinueModule::class, FractionInputModule::class,
     ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
     NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-    DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
-    GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
-    QuestionModule::class, TestLogReportingModule::class
+    DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
+    GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
+    HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
+    TestAccessibilityModule::class
   ])
   interface TestApplicationComponent: ApplicationComponent {
     @Component.Builder

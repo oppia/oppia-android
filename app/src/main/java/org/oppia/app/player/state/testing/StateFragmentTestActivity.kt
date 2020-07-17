@@ -8,7 +8,9 @@ import org.oppia.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.app.hintsandsolution.HintsAndSolutionListener
 import org.oppia.app.hintsandsolution.RevealHintListener
 import org.oppia.app.hintsandsolution.RevealSolutionInterface
+import org.oppia.app.model.State
 import org.oppia.app.player.audio.AudioButtonListener
+import org.oppia.app.player.exploration.HintsAndSolutionExplorationManagerListener
 import org.oppia.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.state.listener.StateKeyboardButtonListener
@@ -29,8 +31,10 @@ class StateFragmentTestActivity :
   HintsAndSolutionListener,
   RouteToHintsAndSolutionListener,
   RevealHintListener,
-  RevealSolutionInterface {
+  RevealSolutionInterface,
+  HintsAndSolutionExplorationManagerListener {
   @Inject lateinit var stateFragmentTestActivityPresenter: StateFragmentTestActivityPresenter
+  private lateinit var state: State
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -87,6 +91,7 @@ class StateFragmentTestActivity :
           newAvailableHintIndex,
           allHintsExhausted
         )
+      hintsAndSolutionFragment.loadState(state)
       hintsAndSolutionFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }
   }
@@ -97,6 +102,10 @@ class StateFragmentTestActivity :
 
   override fun revealSolution(saveUserChoice: Boolean) {
     stateFragmentTestActivityPresenter.revealSolution(saveUserChoice)
+  }
+
+  override fun onExplorationStateLoaded(state: State) {
+    this.state = state
   }
 
   private fun getHintsAndSolution(): HintsAndSolutionDialogFragment? {
