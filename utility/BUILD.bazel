@@ -1,0 +1,48 @@
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+
+package(default_visibility = ["//visibility:public"])
+
+kt_android_library(
+  name = "dagger_graph",
+  custom_package = "org.oppia.util",
+  srcs = [
+      "src/main/java/org/oppia/util/accessibility/*.kt",
+      "src/main/java/org/oppia/util/caching/*.kt",
+      "src/main/java/org/oppia/util/data/*.kt",
+      "src/main/java/org/oppia/util/datetime/*.kt",
+      "src/main/java/org/oppia/util/gcsresource/*.kt",
+      "src/main/java/org/oppia/util/logging/*.kt",
+      "src/main/java/org/oppia/util/networking/*.kt",
+      "src/main/java/org/oppia/util/parser/*.kt",
+      "src/main/java/org/oppia/util/profile/*.kt",
+      "src/main/java/org/oppia/util/system/*.kt",
+      "src/main/java/org/oppia/util/threading/*.kt",
+      "src/test/java/org/oppia/util/data/*.kt",
+      "src/test/java/org/oppia/util/datetime/*.kt",
+      "src/test/java/org/oppia/util/logging/*.kt",
+      "src/test/java/org/oppia/util/networking/*.kt",
+      "src/test/java/org/oppia/util/profile/*.kt",
+      "src/test/java/org/oppia/util/system/*.kt",
+  ],
+  deps = [
+    ":dagger",
+  ],
+)
+
+kt_android_library(
+    name = "utility_lib",
+    custom_package = "org.oppia.util",
+    srcs = [
+      "src/main/java/org/oppia/util/extensions/*.kt",
+      "src/main/java/org/oppia/util/statusbar/*.kt",
+    ],
+    resource_files = glob(["src/main/res/**/*.xml", "src/main/res/**/*.png"]),
+    manifest = "src/main/AndroidManifest.xml",
+    deps = [
+      ":dagger_graph",
+    ],
+)
+
+dagger_rules()

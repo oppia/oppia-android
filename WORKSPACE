@@ -4,7 +4,7 @@ load("@bazel_tools//tools/build_defs/repo:jvm.bzl", "jvm_maven_import_external")
 android_sdk_repository(
     name = "androidsdk",
     api_level = 28,
-    build_tools_version = "28.0.2",
+    #build_tools_version = "28.0.2",
 )
 
 #Add support for JVM rules: https://github.com/bazelbuild/rules_jvm_external
@@ -45,6 +45,35 @@ http_archive(
     ],
 )
 
+#Add support for Dagger
+DAGGER_TAG = "2.28.1"
+DAGGER_SHA = "9e69ab2f9a47e0f74e71fe49098bea908c528aa02fa0c5995334447b310d0cdd"
+http_archive(
+    name = "dagger",
+    strip_prefix = "dagger-dagger-%s" % DAGGER_TAG,
+    sha256 = DAGGER_SHA,
+    urls = ["https://github.com/google/dagger/archive/dagger-%s.zip" % DAGGER_TAG],
+)
+
+load("@rules_jvm_external//:defs.bzl", "maven_install")
+load("@dagger//:workspace_defs.bzl", "DAGGER_ARTIFACTS", "DAGGER_REPOSITORIES")
+
+#Add support for Robolectric: http://robolectric.org/getting-started/
+http_archive(
+ name = "robolectric",
+ urls = ["https://github.com/robolectric/robolectric-bazel/archive/4.0.1.tar.gz"],
+ strip_prefix = "robolectric-bazel-4.0.1",
+ sha256 = "dff7a1f8e7bd8dc737f20b6bbfaf78d8b5851debe6a074757f75041029f0c43b",
+)
+load("@robolectric//bazel:robolectric.bzl", "robolectric_repositories")
+robolectric_repositories()
+
+maven_install(
+    artifacts = DAGGER_ARTIFACTS,
+    repositories = DAGGER_REPOSITORIES,
+)
+
 load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
 rules_proto_dependencies()
 rules_proto_toolchains()
+
