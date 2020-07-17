@@ -378,7 +378,7 @@ class HomeActivityTest {
       )
       onView(atPositionOnView(R.id.home_recycler_view, 3, R.id.topic_name_text_view)).check(
         matches(
-          withText(containsString("First Topic"))
+          withText(containsString("First Test Topic"))
         )
       )
     }
@@ -411,7 +411,7 @@ class HomeActivityTest {
       )
       onView(atPositionOnView(R.id.home_recycler_view, 4, R.id.topic_name_text_view)).check(
         matches(
-          withText(containsString("Second Topic"))
+          withText(containsString("Second Test Topic"))
         )
       )
     }
