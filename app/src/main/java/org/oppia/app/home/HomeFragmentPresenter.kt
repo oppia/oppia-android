@@ -207,7 +207,7 @@ class HomeFragmentPresenter @Inject constructor(
     analyticsController.logTransitionEvent(
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_HOME,
-      /* Event Context */ null
+      /* eventContext */ null
     )
   }
 }

@@ -57,9 +57,7 @@ class EventBundleCreator {
     val skillIdList = eventLog.context.questionContext.skillIdList
     bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(QUESTION_ID_KEY, eventLog.context.questionContext.questionId)
-    for (skillId in skillIdList) {
-      bundle.putString(SKILL_ID_KEY + skillIdList.indexOf(skillId), skillId)
-    }
+    bundle.putString(SKILL_ID_KEY, skillIdList.joinToString())
     bundle.putString(PRIORITY_KEY, eventLog.priority.toString())
     return bundle
   }
