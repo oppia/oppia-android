@@ -53,6 +53,7 @@ import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
+import java.io.FileNotFoundException
 import java.util.Date
 import javax.inject.Inject
 import javax.inject.Qualifier
@@ -1215,8 +1216,7 @@ class TopicControllerTest {
 
     val exception = fakeExceptionLogger.getMostRecentException()
 
-    assertThat(exception).isInstanceOf(IllegalArgumentException::class.java)
-    assertThat(exception).hasMessageThat().contains("Invalid topic Name: ")
+    assertThat(exception).isInstanceOf(FileNotFoundException::class.java)
   }
 
   private fun setUpTestApplicationComponent() {

@@ -26,7 +26,6 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.model.PromotedStory
 import org.oppia.app.model.Solution
 import org.oppia.app.model.State
-import org.oppia.app.model.StorySummary
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.Topic
 import org.oppia.app.model.TopicList
@@ -75,10 +74,6 @@ val EXPLORATION_THUMBNAILS = mapOf(
   RATIOS_EXPLORATION_ID_1 to createChapterThumbnail3(),
   RATIOS_EXPLORATION_ID_2 to createChapterThumbnail4(),
   RATIOS_EXPLORATION_ID_3 to createChapterThumbnail5()
-)
-val TOPIC_SKILL_ASSOCIATIONS = mapOf(
-  FRACTIONS_TOPIC_ID to listOf(FRACTIONS_SKILL_ID_0, FRACTIONS_SKILL_ID_1, FRACTIONS_SKILL_ID_2),
-  RATIOS_TOPIC_ID to listOf(RATIOS_SKILL_ID_0)
 )
 
 private const val CUSTOM_IMG_TAG = "oppia-noninteractive-image"
@@ -195,27 +190,32 @@ class TopicListController @Inject constructor(
 
   private fun createFractionsTopicSummary(): TopicSummary {
     val fractionsJson =
-      jsonAssetRetriever.loadJsonFromAsset("fractions_topic.json")!!
+      jsonAssetRetriever.loadJsonFromAsset("GJ2rLXRKD5hw.json")!!
     return createTopicSummaryFromJson(FRACTIONS_TOPIC_ID, fractionsJson)
   }
 
   private fun createRatiosTopicSummary(): TopicSummary {
     val ratiosJson =
-      jsonAssetRetriever.loadJsonFromAsset("ratios_topic.json")!!
+      jsonAssetRetriever.loadJsonFromAsset("omzF4oqgeTXd.json")!!
     return createTopicSummaryFromJson(RATIOS_TOPIC_ID, ratiosJson)
   }
 
   private fun createTopicSummaryFromJson(topicId: String, jsonObject: JSONObject): TopicSummary {
-    val topic = topicController.retrieveTopic(topicId)
-    val totalChapterCount =
-      topic.storyList.map(StorySummary::getChapterCount).reduceRight(Int::plus)
+    var totalChapterCount = 0
+    val storyData = jsonObject.getJSONArray("canonical_story_dicts")
+    for (i in 0 until storyData.length()) {
+      totalChapterCount += storyData
+        .getJSONObject(i)
+        .getJSONArray("node_titles")
+        .length()
+    }
     return TopicSummary.newBuilder()
       .setTopicId(topicId)
-      .setName(jsonObject.getString("name"))
+      .setName(jsonObject.getString("topic_name"))
       .setVersion(jsonObject.getInt("version"))
       .setSubtopicCount(jsonObject.getJSONArray("subtopics").length())
       .setCanonicalStoryCount(
-        jsonObject.getJSONArray("canonical_story_references")
+        jsonObject.getJSONArray("canonical_story_dicts")
           .length()
       )
       .setUncategorizedSkillCount(
@@ -223,10 +223,10 @@ class TopicListController @Inject constructor(
           .length()
       )
       .setAdditionalStoryCount(
-        jsonObject.getJSONArray("additional_story_references")
+        jsonObject.getJSONArray("additional_story_dicts")
           .length()
       )
-      .setTotalSkillCount(TOPIC_SKILL_ASSOCIATIONS.getValue(topicId).size)
+      .setTotalSkillCount(jsonObject.getJSONObject("skill_descriptions").length())
       .setTotalChapterCount(totalChapterCount)
       .setTopicThumbnail(TOPIC_THUMBNAILS.getValue(topicId))
       .build()
