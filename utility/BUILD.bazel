@@ -5,7 +5,7 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 package(default_visibility = ["//visibility:public"])
 
 kt_android_library(
-  name = "dagger_graph",
+  name = "utility_lib",
   custom_package = "org.oppia.util",
   srcs = [
       "src/main/java/org/oppia/util/accessibility/*.kt",
@@ -19,24 +19,14 @@ kt_android_library(
       "src/main/java/org/oppia/util/profile/*.kt",
       "src/main/java/org/oppia/util/system/*.kt",
       "src/main/java/org/oppia/util/threading/*.kt",
+      "src/main/java/org/oppia/util/extensions/*.kt",
+      "src/main/java/org/oppia/util/statusbar/*.kt",
   ],
+  resource_files = glob(["src/main/res/**/*.xml", "src/main/res/**/*.png"]),
+  manifest = "src/main/AndroidManifest.xml",
   deps = [
     ":dagger",
   ],
-)
-
-kt_android_library(
-    name = "utility_lib",
-    custom_package = "org.oppia.util",
-    srcs = [
-      "src/main/java/org/oppia/util/extensions/*.kt",
-      "src/main/java/org/oppia/util/statusbar/*.kt",
-    ],
-    resource_files = glob(["src/main/res/**/*.xml", "src/main/res/**/*.png"]),
-    manifest = "src/main/AndroidManifest.xml",
-    deps = [
-      ":dagger_graph",
-    ],
 )
 
 #TODO: Get android_local_test working with kotlin files
