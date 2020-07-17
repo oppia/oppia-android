@@ -405,7 +405,6 @@ class AnalyticsControllerTest {
   fun testController_logTransitionEvent_withNoNetwork_checkLogsEventToStore() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logTransitionEvent(
-      ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
       analyticsController.createQuestionContext(
@@ -437,7 +436,6 @@ class AnalyticsControllerTest {
   fun testController_logClickEvent_withNoNetwork_checkLogsEventToStore() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logClickEvent(
-      ApplicationProvider.getApplicationContext(),
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
       analyticsController.createQuestionContext(
@@ -470,7 +468,6 @@ class AnalyticsControllerTest {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     for (i in 1..5005) {
       analyticsController.logTransitionEvent(
-        ApplicationProvider.getApplicationContext(),
         TEST_TIMESTAMP,
         EventAction.EVENT_ACTION_UNSPECIFIED,
         analyticsController.createQuestionContext(
