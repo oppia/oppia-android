@@ -5,16 +5,31 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 package(default_visibility = ["//visibility:public"])
 
 kt_android_library(
-    name = "testing_lib",
-    custom_package = "org.oppia.testing",
-    srcs = glob(["src/main/java/**/*.kt"]),
-    manifest = "src/main/AndroidManifest.xml",
-    deps = [
-        ":dagger",
-        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-core"),
-        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-android"),
-        artifact("androidx.appcompat:appcompat:1.0.2"),
-    ],
+     name = "testing_main_lib",
+     custom_package = "org.oppia.testing",
+     srcs = glob(["src/main/java/**/*.kt"]),
+     manifest = "src/main/AndroidManifest.xml",
+     deps = [
+         ":dagger",
+         artifact("org.jetbrains.kotlinx:kotlinx-coroutines-core"),
+         artifact("org.jetbrains.kotlinx:kotlinx-coroutines-android"),
+         artifact("androidx.appcompat:appcompat:1.0.2"),
+     ],
+ )
+
+kt_android_library(
+     name = "testing_test_lib",
+     custom_package = "org.oppia.testing",
+     srcs = glob(["src/test/java/**/*.kt"]),
+     manifest = "src/main/AndroidManifest.xml",
+     deps = [
+         ":dagger",
+         artifact("org.jetbrains.kotlinx:kotlinx-coroutines-core"),
+         artifact("org.jetbrains.kotlinx:kotlinx-coroutines-android"),
+         artifact("androidx.appcompat:appcompat:1.0.2"),
+     ],
 )
+
+#TODO: Add android_local_test rule
 
 dagger_rules()
