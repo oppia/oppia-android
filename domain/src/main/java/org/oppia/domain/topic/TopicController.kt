@@ -932,12 +932,12 @@ class TopicController @Inject constructor(
 
   private fun createConceptCardFromJson(fileName: String, index: Int): ConceptCard {
     val skillList = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray(
-      "skill_list"
+      "skills"
     )!!
     if (skillList.length() < index) {
       return ConceptCard.getDefaultInstance()
     }
-    val skillData = skillList.getJSONObject(index).getJSONObject("skill")
+    val skillData = skillList.getJSONObject(index)
     val skillContents = skillData.getJSONObject("skill_contents")
     return ConceptCard.newBuilder()
       .setSkillId(skillData.getString("id"))

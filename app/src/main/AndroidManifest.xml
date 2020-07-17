@@ -103,6 +103,13 @@
       android:name=".splash.SplashActivity"
       android:screenOrientation="portrait"
       android:theme="@style/SplashScreenTheme">
+    </activity>
+    <activity
+      android:name=".story.StoryActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity android:name=".testing.AudioFragmentTestActivity" />
+    <activity android:name=".testing.BindableAdapterTestActivity" />
+    <activity android:name=".testing.ConceptCardFragmentTestActivity" >
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
@@ -112,12 +119,6 @@
         <category android:name="android.intent.category.DEFAULT" />
       </intent-filter>
     </activity>
-    <activity
-      android:name=".story.StoryActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity android:name=".testing.AudioFragmentTestActivity" />
-    <activity android:name=".testing.BindableAdapterTestActivity" />
-    <activity android:name=".testing.ConceptCardFragmentTestActivity" />
     <activity android:name=".testing.DragDropTestActivity" />
     <activity android:name=".testing.ExplorationInjectionActivity" />
     <activity android:name=".testing.ExplorationTestActivity" />
