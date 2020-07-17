@@ -14,15 +14,12 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -38,6 +35,7 @@ import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.app.model.AppStartupState
 import org.oppia.app.model.AppStartupState.StartupMode
+import org.oppia.app.model.AppStartupState.StartupMode.APP_IS_DEPRECATED
 import org.oppia.app.model.AppStartupState.StartupMode.USER_IS_ONBOARDED
 import org.oppia.app.model.AppStartupState.StartupMode.USER_NOT_YET_ONBOARDED
 import org.oppia.app.model.OnboardingState
@@ -50,14 +48,16 @@ import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
-import org.oppia.util.threading.BackgroundDispatcher
-import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
+import java.text.SimpleDateFormat
+import java.time.Duration
+import java.time.Instant
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
-import kotlin.coroutines.EmptyCoroutineContext
 
 /** Tests for [AppStartupStateController]. */
 @RunWith(AndroidJUnit4::class)
@@ -94,6 +94,8 @@ class AppStartupStateControllerTest {
   @ObsoleteCoroutinesApi
   private val testThread = newSingleThreadContext("TestMain")
 
+  private val expirationDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
+
   @Before
   @ExperimentalCoroutinesApi
   @ObsoleteCoroutinesApi
@@ -102,7 +104,7 @@ class AppStartupStateControllerTest {
     setUpTestApplicationComponent()
 
     // By default, set up the application to never expire.
-    setUpOppiaApplication(expirationDate = "9999-12-31")
+    setUpOppiaApplication(expirationEnabled = false, expDate = "9999-12-31")
   }
 
   @After
@@ -118,6 +120,10 @@ class AppStartupStateControllerTest {
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
+  }
+
+  private fun simulateAppRestart() {
+    setUpTestApplicationComponent()
   }
 
   @Test
@@ -143,8 +149,8 @@ class AppStartupStateControllerTest {
     appStartupStateController.markOnboardingFlowCompleted()
     testCoroutineDispatchers.runCurrent()
 
-    // The result should not indicate that the user onboarded the app because markUserOnboardedApp does not notify observers
-    // of the change.
+    // The result should not indicate that the user onboarded the app because markUserOnboardedApp
+    // does not notify observers of the change.
     verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
     assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
     assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_NOT_YET_ONBOARDED)
@@ -159,7 +165,7 @@ class AppStartupStateControllerTest {
 
     // Create the controller by creating another singleton graph and injecting it (simulating the
     // app being recreated).
-    setUpTestApplicationComponent()
+    simulateAppRestart()
     val appStartupState = appStartupStateController.getAppStartupState()
     appStartupState.observeForever(mockOnboardingObserver)
     testCoroutineDispatchers.runCurrent()
@@ -174,6 +180,7 @@ class AppStartupStateControllerTest {
   @Test
   @ExperimentalCoroutinesApi
   @InternalCoroutinesApi
+  @Suppress("DeferredResultUnused")
   fun testController_onboardedApp_cleared_observeNewController_userDidNotOnboardApp() {
     val onboardingFlowStore = cacheFactory.create(
       "on_boarding_flow",
@@ -181,9 +188,10 @@ class AppStartupStateControllerTest {
     )
     appStartupStateController.markOnboardingFlowCompleted()
     testCoroutineDispatchers.runCurrent()
-    // Clear, then recreate another controller.
+    // Clear, then recreate the controller.
     onboardingFlowStore.clearCacheAsync()
-    setUpTestApplicationComponent()
+    testCoroutineDispatchers.runCurrent()
+    simulateAppRestart()
 
     val appStartupState = appStartupStateController.getAppStartupState()
     appStartupState.observeForever(mockOnboardingObserver)
@@ -195,7 +203,159 @@ class AppStartupStateControllerTest {
     assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_NOT_YET_ONBOARDED)
   }
 
-  private fun setUpOppiaApplication(expirationDate: String) {
+  @Test
+  @ExperimentalCoroutinesApi
+  @InternalCoroutinesApi
+  fun testInitialAppOpen_appDeprecationEnabled_beforeDeprecationDate_appNotDeprecated() {
+    setUpOppiaApplication(expirationEnabled = true, expDate = dateStringAfterToday())
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+    appStartupState.observeForever(mockOnboardingObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
+    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
+    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_NOT_YET_ONBOARDED)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  @InternalCoroutinesApi
+  fun testInitialAppOpen_appDeprecationEnabled_onDeprecationDate_appIsDeprecated() {
+    setUpOppiaApplication(expirationEnabled = true, expDate = dateStringForToday())
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+    appStartupState.observeForever(mockOnboardingObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
+    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
+    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(APP_IS_DEPRECATED)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  @InternalCoroutinesApi
+  fun testInitialAppOpen_appDeprecationEnabled_afterDeprecationDate_appIsDeprecated() {
+    setUpOppiaApplication(expirationEnabled = true, expDate = dateStringBeforeToday())
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+    appStartupState.observeForever(mockOnboardingObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
+    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
+    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(APP_IS_DEPRECATED)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  @InternalCoroutinesApi
+  fun testInitialAppOpen_appDeprecationDisabled_afterDeprecationDate_appIsNotDeprecated() {
+    setUpOppiaApplication(expirationEnabled = false, expDate = dateStringBeforeToday())
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+    appStartupState.observeForever(mockOnboardingObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
+    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
+    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_NOT_YET_ONBOARDED)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  @InternalCoroutinesApi
+  fun testSecondAppOpen_onboardingFlowNotDone_deprecationEnabled_beforeDepDate_appNotDeprecated() {
+    setUpOppiaApplication(expirationEnabled = true, expDate = dateStringAfterToday())
+    simulateAppRestart()
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+    appStartupState.observeForever(mockOnboardingObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
+    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
+    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_NOT_YET_ONBOARDED)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  @InternalCoroutinesApi
+  fun testSecondAppOpen_onboardingFlowNotDone_deprecationEnabled_afterDepDate_appIsDeprecated() {
+    setUpOppiaApplication(expirationEnabled = true, expDate = dateStringBeforeToday())
+    simulateAppRestart()
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+    appStartupState.observeForever(mockOnboardingObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
+    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
+    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(APP_IS_DEPRECATED)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  @InternalCoroutinesApi
+  fun testSecondAppOpen_onboardingFlowCompleted_depEnabled_beforeDepDate_appNotDeprecated() {
+    setUpOppiaApplication(expirationEnabled = true, expDate = dateStringAfterToday())
+    appStartupStateController.markOnboardingFlowCompleted()
+    testCoroutineDispatchers.runCurrent()
+    simulateAppRestart()
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+    appStartupState.observeForever(mockOnboardingObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    // The user should be considered onboarded, but the app is not yet deprecated.
+    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
+    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
+    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_IS_ONBOARDED)
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  @InternalCoroutinesApi
+  fun testSecondAppOpen_onboardingFlowCompleted_deprecationEnabled_afterDepDate_appIsDeprecated() {
+    setUpOppiaApplication(expirationEnabled = true, expDate = dateStringBeforeToday())
+    appStartupStateController.markOnboardingFlowCompleted()
+    testCoroutineDispatchers.runCurrent()
+    simulateAppRestart()
+
+    val appStartupState = appStartupStateController.getAppStartupState()
+    appStartupState.observeForever(mockOnboardingObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    // Despite the user completing the onboarding flow, the app is still deprecated.
+    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
+    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
+    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(APP_IS_DEPRECATED)
+  }
+
+  /** Returns a date string occurring before today. */
+  private fun dateStringBeforeToday(): String {
+    return computeDateString(Instant.now() - Duration.ofDays(1))
+  }
+
+  private fun dateStringForToday(): String {
+    return computeDateString(Instant.now())
+  }
+
+  /** Returns a date string occurring after today. */
+  private fun dateStringAfterToday(): String {
+    return computeDateString(Instant.now() + Duration.ofDays(1))
+  }
+
+  private fun computeDateString(instant: Instant): String {
+    return computeDateString(Date.from(instant))
+  }
+
+  private fun computeDateString(date: Date): String {
+    return expirationDateFormat.format(date)
+  }
+
+  private fun setUpOppiaApplication(expirationEnabled: Boolean, expDate: String) {
     val packageManager = shadowOf(context.packageManager)
     val applicationInfo =
       ApplicationInfoBuilder.newBuilder()
@@ -203,7 +363,8 @@ class AppStartupStateControllerTest {
         .setName("Oppia")
         .build()
     applicationInfo.metaData = Bundle()
-    applicationInfo.metaData.putString("expiration_date", expirationDate)
+    applicationInfo.metaData.putBoolean("automatic_app_expiration_enabled", expirationEnabled)
+    applicationInfo.metaData.putString("expiration_date", expDate)
     val packageInfo =
       PackageInfoBuilder.newBuilder()
         .setPackageName("org.oppia.app")
