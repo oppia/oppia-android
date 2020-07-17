@@ -16,7 +16,7 @@ import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.topic.TopicController
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The [ViewModel] for [ProfileProgressFragment]. */
@@ -27,13 +27,13 @@ class ProfileProgressViewModel @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val topicController: TopicController,
   private val topicListController: TopicListController,
-  private val logger: Logger
+  private val logger: ConsoleLogger
 ) : ViewModel() {
   /** [internalProfileId] needs to be set before any of the live data members can be accessed. */
   private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
 
-  private val headerViewModel = ProfileProgressHeaderViewModel(activity)
+  private val headerViewModel = ProfileProgressHeaderViewModel(activity, fragment)
 
   private val itemViewModelList: MutableList<ProfileProgressItemViewModel> = mutableListOf(
     headerViewModel as ProfileProgressItemViewModel

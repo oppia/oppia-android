@@ -9,16 +9,16 @@ import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_1
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_2
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_3
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_0
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_1
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_2
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_3
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_4
 import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.domain.util.StateRetriever
 import org.oppia.util.logging.ExceptionLogger
 import java.io.IOException
 import javax.inject.Inject
-
-const val TEST_EXPLORATION_ID_5 = "0"
-const val TEST_EXPLORATION_ID_6 = "1"
-const val TEST_EXPLORATION_ID_30 = "2"
-const val TEST_EXPLORATION_ID_7 = "3"
 
 // TODO(#59): Make this class inaccessible outside of the domain package except for tests. UI code should not be allowed
 //  to depend on this utility.
@@ -33,10 +33,11 @@ class ExplorationRetriever @Inject constructor(
   /** Loads and returns an exploration for the specified exploration ID, or fails. */
   internal fun loadExploration(explorationId: String): Exploration {
     return when (explorationId) {
-      TEST_EXPLORATION_ID_5 -> loadExplorationFromAsset("welcome.json")
-      TEST_EXPLORATION_ID_6 -> loadExplorationFromAsset("about_oppia.json")
-      TEST_EXPLORATION_ID_30 -> loadExplorationFromAsset("prototype_exploration.json")
-      TEST_EXPLORATION_ID_7 -> loadExplorationFromAsset("oppia_exploration.json")
+      TEST_EXPLORATION_ID_0 -> loadExplorationFromAsset("test_exp_id_0.json")
+      TEST_EXPLORATION_ID_1 -> loadExplorationFromAsset("test_exp_id_1.json")
+      TEST_EXPLORATION_ID_2 -> loadExplorationFromAsset("test_exp_id_2.json")
+      TEST_EXPLORATION_ID_3 -> loadExplorationFromAsset("test_exp_id_3.json")
+      TEST_EXPLORATION_ID_4 -> loadExplorationFromAsset("test_exp_id_4.json")
       FRACTIONS_EXPLORATION_ID_0 -> loadExplorationFromAsset("fractions_exploration0.json")
       FRACTIONS_EXPLORATION_ID_1 -> loadExplorationFromAsset("fractions_exploration1.json")
       RATIOS_EXPLORATION_ID_0 -> loadExplorationFromAsset("ratios_exploration0.json")

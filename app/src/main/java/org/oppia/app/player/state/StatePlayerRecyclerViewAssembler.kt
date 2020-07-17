@@ -11,12 +11,14 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
+import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.CoroutineDispatcher
 import org.oppia.app.databinding.ContentItemBinding
 import org.oppia.app.databinding.ContinueInteractionItemBinding
 import org.oppia.app.databinding.ContinueNavigationButtonItemBinding
+import org.oppia.app.databinding.DragDropInteractionItemBinding
 import org.oppia.app.databinding.FeedbackItemBinding
 import org.oppia.app.databinding.FractionInteractionItemBinding
 import org.oppia.app.databinding.NextButtonItemBinding
@@ -26,12 +28,13 @@ import org.oppia.app.databinding.PreviousResponsesHeaderItemBinding
 import org.oppia.app.databinding.QuestionPlayerFeedbackItemBinding
 import org.oppia.app.databinding.QuestionPlayerSelectionInteractionItemBinding
 import org.oppia.app.databinding.QuestionPlayerSubmittedAnswerItemBinding
-import org.oppia.app.databinding.QuestionPlayerContentItemBinding
 import org.oppia.app.databinding.ReplayButtonItemBinding
 import org.oppia.app.databinding.ReturnToTopicButtonItemBinding
 import org.oppia.app.databinding.SelectionInteractionItemBinding
 import org.oppia.app.databinding.SubmitButtonItemBinding
 import org.oppia.app.databinding.SubmittedAnswerItemBinding
+import org.oppia.app.databinding.SubmittedAnswerListItemBinding
+import org.oppia.app.databinding.SubmittedHtmlAnswerItemBinding
 import org.oppia.app.databinding.TextInputInteractionItemBinding
 import org.oppia.app.model.AnswerAndResponse
 import org.oppia.app.model.EphemeralState
@@ -40,6 +43,7 @@ import org.oppia.app.model.HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.PendingState
 import org.oppia.app.model.State
+import org.oppia.app.model.StringList
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.audio.AudioUiManager
@@ -50,6 +54,7 @@ import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.app.player.state.itemviewmodel.ContinueInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.ContinueNavigationButtonViewModel
+import org.oppia.app.player.state.itemviewmodel.DragAndDropSortInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.FeedbackViewModel
 import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.InteractionViewModelFactory
@@ -107,8 +112,10 @@ private typealias AudioUiManagerRetriever = () -> AudioUiManager?
  * - [ReturnToTopicNavigationButtonListener] if the return to topic button is enabled
  */
 class StatePlayerRecyclerViewAssembler private constructor(
-  val adapter: BindableAdapter<StateItemViewModel>, private val playerFeatureSet: PlayerFeatureSet,
-  private val fragment: Fragment, private val congratulationsTextView: TextView?,
+  val adapter: BindableAdapter<StateItemViewModel>,
+  private val playerFeatureSet: PlayerFeatureSet,
+  private val fragment: Fragment,
+  private val congratulationsTextView: TextView?,
   private val canSubmitAnswer: ObservableField<Boolean>?,
   private val audioActivityId: String?,
   private val currentStateName: ObservableField<String>?,
@@ -116,7 +123,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private val audioUiManagerRetriever: AudioUiManagerRetriever?,
   private val interactionViewModelFactoryMap: Map<
     String, @JvmSuppressWildcards InteractionViewModelFactory>,
-  backgroundCoroutineDispatcher: CoroutineDispatcher
+  backgroundCoroutineDispatcher: CoroutineDispatcher,
+  private val hasConversationView: Boolean
 ) {
   /**
    * A list of view models corresponding to past view models that are hidden by default. These are
@@ -125,6 +133,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
    * answers header to help locate the items in the recycler view (when present).
    */
   private val previousAnswerViewModels: MutableList<StateItemViewModel> = mutableListOf()
+
   /**
    * Whether the previously submitted wrong answers should be expanded. This value is intentionally
    * not retained upon configuration changes since the user can just re-expand the list.
@@ -183,8 +192,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     var canContinueToNextState = false
     var hasGeneralContinueButton = false
     if (ephemeralState.stateTypeCase != EphemeralState.StateTypeCase.TERMINAL_STATE) {
-      if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE
-        && !ephemeralState.hasNextState
+      if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE &&
+        !ephemeralState.hasNextState
       ) {
         hasGeneralContinueButton = true
       } else if (ephemeralState.completedState.answerList.size > 0 && ephemeralState.hasNextState) {
@@ -242,7 +251,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
     gcsEntityId: String
   ) {
     val contentSubtitledHtml: SubtitledHtml = ephemeralState.state.content
-    pendingItemList += ContentViewModel(contentSubtitledHtml.html, gcsEntityId)
+    pendingItemList += ContentViewModel(
+      contentSubtitledHtml.html,
+      gcsEntityId,
+      hasConversationView
+    )
   }
 
   private fun addPreviousAnswers(
@@ -355,10 +368,13 @@ class StatePlayerRecyclerViewAssembler private constructor(
     animation.addAnimation(fadeOut)
     textView.animation = animation
 
-    lifecycleSafeTimerFactory.createTimer(2000).observe(fragment, Observer {
-      textView.clearAnimation()
-      textView.visibility = View.INVISIBLE
-    })
+    lifecycleSafeTimerFactory.createTimer(2000).observe(
+      fragment,
+      Observer {
+        textView.clearAnimation()
+        textView.visibility = View.INVISIBLE
+      }
+    )
   }
 
   /**
@@ -519,19 +535,23 @@ class StatePlayerRecyclerViewAssembler private constructor(
    * using its injectable [Factory].
    */
   class Builder private constructor(
-    private val htmlParserFactory: HtmlParser.Factory, private val resourceBucketName: String,
-    private val entityType: String, private val fragment: Fragment,
+    private val htmlParserFactory: HtmlParser.Factory,
+    private val resourceBucketName: String,
+    private val entityType: String,
+    private val fragment: Fragment,
     private val interactionViewModelFactoryMap: Map<String, InteractionViewModelFactory>,
     private val backgroundCoroutineDispatcher: CoroutineDispatcher
   ) {
     private val adapterBuilder = BindableAdapter.MultiTypeBuilder.newBuilder(
       StateItemViewModel::viewType
     )
+
     /**
      * Tracks features individually enabled for the assembler. No features are enabled by default.
      */
     private val featureSets = mutableSetOf(PlayerFeatureSet())
     private var congratulationsTextView: TextView? = null
+    private var hasConversationView: Boolean = true
     private var canSubmitAnswer: ObservableField<Boolean>? = null
     private var audioActivityId: String? = null
     private var currentStateName: ObservableField<String>? = null
@@ -540,56 +560,30 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     /** Adds support for displaying state content to the learner. */
     fun addContentSupport(): Builder {
-      if (fragment is QuestionPlayerFragment)
-        adapterBuilder.registerViewBinder(
-          viewType = StateItemViewModel.ViewType.CONTENT,
-          inflateView = { parent ->
-            QuestionPlayerContentItemBinding.inflate(
-              LayoutInflater.from(parent.context),
-              parent,
-              /* attachToParent= */ false
-            ).root
-          },
-          bindView = { view, viewModel ->
-            val binding = DataBindingUtil.findBinding<QuestionPlayerContentItemBinding>(view)!!
-            val contentViewModel = viewModel as ContentViewModel
-            binding.htmlContent =
-              htmlParserFactory.create(
-                resourceBucketName,
-                entityType,
-                contentViewModel.gcsEntityId,
-                imageCenterAlign = true
-              ).parseOppiaHtml(
-                contentViewModel.htmlContent.toString(),
-                binding.questionPlayerContentTextView
-              )
-          }
-        )
-      else {
-        adapterBuilder.registerViewBinder(
-          viewType = StateItemViewModel.ViewType.CONTENT,
-          inflateView = { parent ->
-            ContentItemBinding.inflate(
-              LayoutInflater.from(parent.context),
-              parent,
-              /* attachToParent= */ false
-            ).root
-          },
-          bindView = { view, viewModel ->
-            val binding = DataBindingUtil.findBinding<ContentItemBinding>(view)!!
-            val contentViewModel = viewModel as ContentViewModel
-            binding.htmlContent =
-              htmlParserFactory.create(
-                resourceBucketName,
-                entityType,
-                contentViewModel.gcsEntityId,
-                imageCenterAlign = true
-              ).parseOppiaHtml(
-                contentViewModel.htmlContent.toString(), binding.contentTextView
-              )
-          }
-        )
-      }
+      adapterBuilder.registerViewBinder(
+        viewType = StateItemViewModel.ViewType.CONTENT,
+        inflateView = { parent ->
+          ContentItemBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            /* attachToParent= */ false
+          ).root
+        },
+        bindView = { view, viewModel ->
+          val binding = DataBindingUtil.findBinding<ContentItemBinding>(view)!!
+          val contentViewModel = viewModel as ContentViewModel
+          binding.viewModel = contentViewModel
+          binding.htmlContent =
+            htmlParserFactory.create(
+              resourceBucketName,
+              entityType,
+              contentViewModel.gcsEntityId,
+              imageCenterAlign = true
+            ).parseOppiaHtml(
+              contentViewModel.htmlContent.toString(), binding.contentTextView
+            )
+        }
+      )
       featureSets += PlayerFeatureSet(contentSupport = true)
       return this
     }
@@ -677,6 +671,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
           setViewModel = NumericInputInteractionItemBinding::setViewModel,
           transformViewModel = { it as NumericInputViewModel }
         ).registerViewDataBinder(
+          viewType = StateItemViewModel.ViewType.DRAG_DROP_SORT_INTERACTION,
+          inflateDataBinding = DragDropInteractionItemBinding::inflate,
+          setViewModel = DragDropInteractionItemBinding::setViewModel,
+          transformViewModel = { it as DragAndDropSortInteractionViewModel }
+        ).registerViewDataBinder(
           viewType = StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION,
           inflateDataBinding = TextInputInteractionItemBinding::inflate,
           setViewModel = TextInputInteractionItemBinding::setViewModel,
@@ -698,6 +697,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
           inflateDataBinding = FractionInteractionItemBinding::inflate,
           setViewModel = FractionInteractionItemBinding::setViewModel,
           transformViewModel = { it as FractionInteractionViewModel }
+        ).registerViewDataBinder(
+          viewType = StateItemViewModel.ViewType.DRAG_DROP_SORT_INTERACTION,
+          inflateDataBinding = DragDropInteractionItemBinding::inflate,
+          setViewModel = DragDropInteractionItemBinding::setViewModel,
+          transformViewModel = { it as DragAndDropSortInteractionViewModel }
         ).registerViewDataBinder(
           viewType = StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION,
           inflateDataBinding = NumericInputInteractionItemBinding::inflate,
@@ -738,6 +742,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
             val userAnswer = submittedAnswerViewModel.submittedUserAnswer
             when (userAnswer.textualAnswerCase) {
               UserAnswer.TextualAnswerCase.HTML_ANSWER -> {
+                showSingleAnswer(binding)
                 val htmlParser = htmlParserFactory.create(
                   resourceBucketName,
                   entityType,
@@ -748,11 +753,19 @@ class StatePlayerRecyclerViewAssembler private constructor(
                   userAnswer.htmlAnswer, binding.questionPlayerSubmittedAnswerTextView
                 )
               }
+              UserAnswer.TextualAnswerCase.LIST_OF_HTML_ANSWERS -> {
+                showListOfAnswers(binding)
+                binding.submittedListAnswer = userAnswer.listOfHtmlAnswers
+                binding.questionPlayerSubmittedAnswerRecyclerView.adapter =
+                  createListAnswerAdapter(submittedAnswerViewModel.gcsEntityId)
+              }
               else -> {
+                showSingleAnswer(binding)
                 binding.submittedAnswer = userAnswer.plainAnswer
               }
             }
-          })
+          }
+        )
       } else {
         adapterBuilder.registerViewBinder(
           viewType = StateItemViewModel.ViewType.SUBMITTED_ANSWER,
@@ -767,6 +780,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
             val userAnswer = submittedAnswerViewModel.submittedUserAnswer
             when (userAnswer.textualAnswerCase) {
               UserAnswer.TextualAnswerCase.HTML_ANSWER -> {
+                showSingleAnswer(binding)
                 val htmlParser = htmlParserFactory.create(
                   resourceBucketName,
                   entityType,
@@ -778,13 +792,91 @@ class StatePlayerRecyclerViewAssembler private constructor(
                   binding.submittedAnswerTextView
                 )
               }
-              else -> binding.submittedAnswer = userAnswer.plainAnswer
+              UserAnswer.TextualAnswerCase.LIST_OF_HTML_ANSWERS -> {
+                showListOfAnswers(binding)
+                binding.submittedListAnswer = userAnswer.listOfHtmlAnswers
+                binding.submittedAnswerRecyclerView.adapter =
+                  createListAnswerAdapter(submittedAnswerViewModel.gcsEntityId)
+              }
+              else -> {
+                showSingleAnswer(binding)
+                binding.submittedAnswer = userAnswer.plainAnswer
+              }
             }
           }
         )
       }
       featureSets += PlayerFeatureSet(pastAnswerSupport = true)
       return this
+    }
+
+    private fun createListAnswerAdapter(gcsEntityId: String): BindableAdapter<StringList> {
+      return BindableAdapter.SingleTypeBuilder
+        .newBuilder<StringList>()
+        .registerViewBinder(
+          inflateView = { parent ->
+            SubmittedAnswerListItemBinding.inflate(
+              LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
+            ).root
+          },
+          bindView = { view, viewModel ->
+            val binding = DataBindingUtil.findBinding<SubmittedAnswerListItemBinding>(view)!!
+            binding.answerItem = viewModel
+            binding.submittedHtmlAnswerRecyclerView.adapter = createNestedAdapter(gcsEntityId)
+          }
+        )
+        .build()
+    }
+
+    private fun createNestedAdapter(gcsEntityId: String): BindableAdapter<String> {
+      return BindableAdapter.SingleTypeBuilder
+        .newBuilder<String>()
+        .registerViewBinder(
+          inflateView = { parent ->
+            SubmittedHtmlAnswerItemBinding.inflate(
+              LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
+            ).root
+          },
+          bindView = { view, viewModel ->
+            val binding = DataBindingUtil.findBinding<SubmittedHtmlAnswerItemBinding>(view)!!
+            binding.htmlContent =
+              htmlParserFactory.create(
+                resourceBucketName,
+                entityType,
+                gcsEntityId,
+                /* imageCenterAlign= */ false
+              ).parseOppiaHtml(
+                viewModel, binding.submittedAnswerContentTextView
+              )
+          }
+        )
+        .build()
+    }
+
+    private fun showSingleAnswer(binding: ViewDataBinding) {
+      when (binding) {
+        is QuestionPlayerSubmittedAnswerItemBinding -> {
+          binding.questionPlayerSubmittedAnswerRecyclerView.visibility = View.GONE
+          binding.questionPlayerSubmittedAnswerTextView.visibility = View.VISIBLE
+        }
+        is SubmittedAnswerItemBinding -> {
+          binding.submittedAnswerRecyclerView.visibility = View.GONE
+          binding.submittedAnswerTextView.visibility = View.VISIBLE
+        }
+      }
+    }
+
+    private fun showListOfAnswers(binding: ViewDataBinding) {
+      when (binding) {
+        is QuestionPlayerSubmittedAnswerItemBinding -> {
+          binding.questionPlayerSubmittedAnswerRecyclerView.visibility = View.VISIBLE
+          binding.questionPlayerSubmittedAnswerTextView.visibility = View.GONE
+        }
+        is SubmittedAnswerItemBinding -> {
+          binding.submittedAnswerRecyclerView.visibility = View.VISIBLE
+          binding.submittedAnswerTextView.visibility = View.GONE
+        }
+      }
     }
 
     /**
@@ -877,6 +969,15 @@ class StatePlayerRecyclerViewAssembler private constructor(
       return this
     }
 
+    /**
+     * Adds support for displaying with proper alignment and background.
+     */
+    fun hasConversationView(hasConversationView: Boolean): Builder {
+      this.hasConversationView = hasConversationView
+      featureSets += PlayerFeatureSet(showCongratulationsOnCorrectAnswer = true)
+      return this
+    }
+
     /** Adds support for showing hints & possibly a solution when the learner gets stuck. */
     fun addHintsAndSolutionsSupport(): Builder {
       featureSets += PlayerFeatureSet(hintsAndSolutionsSupport = true)
@@ -920,15 +1021,25 @@ class StatePlayerRecyclerViewAssembler private constructor(
     fun build(): StatePlayerRecyclerViewAssembler {
       val playerFeatureSet = featureSets.reduce(PlayerFeatureSet::union)
       return StatePlayerRecyclerViewAssembler(
-        adapterBuilder.build(), playerFeatureSet, fragment, congratulationsTextView,
-        canSubmitAnswer, audioActivityId, currentStateName, isAudioPlaybackEnabled,
-        audioUiManagerRetriever, interactionViewModelFactoryMap, backgroundCoroutineDispatcher
+        adapterBuilder.build(),
+        playerFeatureSet,
+        fragment,
+        congratulationsTextView,
+        canSubmitAnswer,
+        audioActivityId,
+        currentStateName,
+        isAudioPlaybackEnabled,
+        audioUiManagerRetriever,
+        interactionViewModelFactoryMap,
+        backgroundCoroutineDispatcher,
+        hasConversationView
       )
     }
 
     /** Fragment injectable factory to create new [Builder]s. */
     class Factory @Inject constructor(
-      private val htmlParserFactory: HtmlParser.Factory, private val fragment: Fragment,
+      private val htmlParserFactory: HtmlParser.Factory,
+      private val fragment: Fragment,
       private val interactionViewModelFactoryMap: Map<
         String, @JvmSuppressWildcards InteractionViewModelFactory>,
       @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
@@ -980,15 +1091,14 @@ class StatePlayerRecyclerViewAssembler private constructor(
         forwardNavigation = forwardNavigation || other.forwardNavigation,
         replaySupport = replaySupport || other.replaySupport,
         returnToTopicNavigation = returnToTopicNavigation || other.returnToTopicNavigation,
-        showCongratulationsOnCorrectAnswer = showCongratulationsOnCorrectAnswer
-          || other.showCongratulationsOnCorrectAnswer,
+        showCongratulationsOnCorrectAnswer = showCongratulationsOnCorrectAnswer ||
+          other.showCongratulationsOnCorrectAnswer,
         hintsAndSolutionsSupport = hintsAndSolutionsSupport || other.hintsAndSolutionsSupport,
         supportAudioVoiceovers = supportAudioVoiceovers || other.supportAudioVoiceovers
       )
     }
   }
 
-  // TODO(#1273): Add thorough testing for hints & solutions.
   /**
    * Handler for showing hints to the learner after a period of time in the event they submit a
    * wrong answer.
@@ -1027,7 +1137,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
    * available.
    */
   private class HintHandler(
-    private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory, private val fragment: Fragment
+    private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
+    private val fragment: Fragment
   ) {
     private var trackedWrongAnswerCount = 0
     private var previousHelpIndex: HelpIndex = HelpIndex.getDefaultInstance()
@@ -1121,9 +1232,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
      */
     private fun scheduleShowHint(delayMs: Long, helpIndexToShow: HelpIndex) {
       val targetSequenceNumber = ++hintSequenceNumber
-      lifecycleSafeTimerFactory.createTimer(delayMs).observe(fragment, Observer {
-        showHint(targetSequenceNumber, helpIndexToShow)
-      })
+      lifecycleSafeTimerFactory.createTimer(delayMs).observe(
+        fragment,
+        Observer {
+          showHint(targetSequenceNumber, helpIndexToShow)
+        }
+      )
     }
 
     /**

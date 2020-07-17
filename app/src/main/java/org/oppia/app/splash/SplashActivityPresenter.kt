@@ -14,7 +14,7 @@ import org.oppia.app.onboarding.OnboardingActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.domain.onboarding.AppStartupStateController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 private const val AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "auto_deprecation_notice_dialog"
@@ -23,7 +23,7 @@ private const val AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "auto_deprecatio
 @ActivityScope
 class SplashActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val appStartupStateController: AppStartupStateController
 ) {
 

@@ -16,8 +16,13 @@ import org.hamcrest.Matcher
 class OrientationChangeAction(private val orientation: Int) : ViewAction {
 
   companion object {
-    fun orientationLandscape(): ViewAction = OrientationChangeAction(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
-    fun orientationPortrait(): ViewAction = OrientationChangeAction(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+    fun orientationLandscape(): ViewAction = OrientationChangeAction(
+      ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+    )
+
+    fun orientationPortrait(): ViewAction = OrientationChangeAction(
+      ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+    )
   }
 
   override fun getDescription(): String = "change orientation to $orientation"

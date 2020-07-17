@@ -4,14 +4,15 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.app.model.ClickOnImage
 import org.oppia.app.model.ImageWithRegions
 import org.oppia.app.model.ImageWithRegions.LabeledRegion
 import org.oppia.app.model.ImageWithRegions.LabeledRegion.Region
 import org.oppia.app.model.ImageWithRegions.LabeledRegion.Region.NormalizedRectangle2d
-import org.oppia.app.model.ImageWithRegions.LabeledRegion.Region.NormalizedRectangle2d.Point2d
-import org.oppia.app.model.ImageWithRegions.LabeledRegion.Region.RegionType.*
+import org.oppia.app.model.ImageWithRegions.LabeledRegion.Region.RegionType.RECTANGLE
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.ListOfSetsOfHtmlStrings
+import org.oppia.app.model.Point2d
 import org.oppia.app.model.StringList
 import org.robolectric.annotation.Config
 
@@ -50,7 +51,22 @@ class InteractionObjectExtensionsTest {
     val interactionObject =
       InteractionObject.newBuilder().setImageWithRegions(imageWithRegions).build()
 
-    assertThat(interactionObject.toAnswerString()).isEqualTo("[$RECTANGLE Region 1 (0.1, 0.0), (0.4, 0.5)]")
+    assertThat(interactionObject.toAnswerString())
+      .isEqualTo("[$RECTANGLE Region 1 (0.1, 0.0), (0.4, 0.5)]")
+  }
+
+  @Test
+  fun testToAnswerStr_clickOnImage_multipleRegions_correctlyFormatsElements() {
+    val clickOnImage = ClickOnImage.newBuilder()
+      .setClickPosition(createPoint2d(0.3f, 1.0f))
+      .addAllClickedRegions(listOf("a", "b", "c"))
+      .build()
+
+    val interactionObject =
+      InteractionObject.newBuilder().setClickOnImage(clickOnImage).build()
+
+    assertThat(interactionObject.toAnswerString())
+      .isEqualTo("[(a, b, c), (0.3, 1.0)]")
   }
 
   private fun createPoint2d(x: Float, y: Float): Point2d {
@@ -61,10 +77,15 @@ class InteractionObjectExtensionsTest {
     label: String,
     points: Pair<Point2d, Point2d>
   ): LabeledRegion {
-    return LabeledRegion.newBuilder().setLabel(label).setRegion(
-        Region.newBuilder().setRegionType(RECTANGLE).setArea(
-          NormalizedRectangle2d.newBuilder().setUpperLeft(points.first).setLowerRight(points.second)
-        )
+    return LabeledRegion.newBuilder().setLabel(label)
+      .setRegion(
+        Region.newBuilder()
+          .setRegionType(RECTANGLE)
+          .setArea(
+            NormalizedRectangle2d.newBuilder()
+              .setUpperLeft(points.first)
+              .setLowerRight(points.second)
+          )
       )
       .build()
   }

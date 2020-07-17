@@ -30,7 +30,7 @@ import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.datetime.DateTimeUtil
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -42,7 +42,7 @@ class HomeFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val topicListController: TopicListController,
   private val oppiaClock: OppiaClock,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val analyticsController: AnalyticsController
 ) {
   private val routeToTopicListener = activity as RouteToTopicListener
@@ -109,14 +109,20 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   private fun getProfileData(): LiveData<Profile> {
-    return Transformations.map(profileManagementController.getProfile(profileId), ::processGetProfileResult)
+    return Transformations.map(
+      profileManagementController.getProfile(profileId),
+      ::processGetProfileResult
+    )
   }
 
   private fun subscribeToProfileLiveData() {
-    profileLiveData.observe(activity, Observer<Profile> { result ->
-      profileName = result.name
-      setProfileName()
-    })
+    profileLiveData.observe(
+      activity,
+      Observer<Profile> { result ->
+        profileName = result.name
+        setProfileName()
+      }
+    )
   }
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
@@ -131,58 +137,77 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   private fun subscribeToTopicList() {
-    getAssumedSuccessfulTopicList().observe(fragment, Observer<TopicList> { result ->
-      for (topicSummary in result.topicSummaryList) {
-        val topicSummaryViewModel = TopicSummaryViewModel(topicSummary, fragment as TopicSummaryClickListener)
-        itemList.add(topicSummaryViewModel)
+    getAssumedSuccessfulTopicList().observe(
+      fragment,
+      Observer<TopicList> { result ->
+        for (topicSummary in result.topicSummaryList) {
+          val topicSummaryViewModel =
+            TopicSummaryViewModel(topicSummary, fragment as TopicSummaryClickListener)
+          itemList.add(topicSummaryViewModel)
+        }
+        topicListAdapter.notifyDataSetChanged()
       }
-      topicListAdapter.notifyDataSetChanged()
-    })
+    )
   }
 
   private fun getAssumedSuccessfulTopicList(): LiveData<TopicList> {
     // If there's an error loading the data, assume the default.
-    return Transformations.map(topicListSummaryResultLiveData) { it.getOrDefault(TopicList.getDefaultInstance()) }
+    return Transformations.map(topicListSummaryResultLiveData) {
+      it.getOrDefault(TopicList.getDefaultInstance())
+    }
   }
 
   private fun setProfileName() {
     if (::welcomeViewModel.isInitialized && ::profileName.isInitialized) {
       welcomeViewModel.profileName.set(profileName)
-      welcomeViewModel.greeting.set(DateTimeUtil(fragment.requireContext(), oppiaClock).getGreetingMessage())
+      welcomeViewModel.greeting.set(
+        DateTimeUtil(
+          fragment.requireContext(),
+          oppiaClock
+        ).getGreetingMessage()
+      )
     }
   }
 
-  private val ongoingStoryListSummaryResultLiveData: LiveData<AsyncResult<OngoingStoryList>> by lazy {
-    topicListController.getOngoingStoryList(profileId)
-  }
+  private val ongoingStoryListSummaryResultLiveData:
+    LiveData<AsyncResult<OngoingStoryList>>
+    by lazy {
+      topicListController.getOngoingStoryList(profileId)
+    }
 
   private fun subscribeToOngoingStoryList() {
     val limit = activity.resources.getInteger(R.integer.promoted_story_list_limit)
-    getAssumedSuccessfulOngoingStoryList().observe(fragment, Observer<OngoingStoryList> {
-      it.recentStoryList.take(limit).forEach { promotedStory ->
-        val recentStory = PromotedStoryViewModel(activity, internalProfileId)
-        recentStory.setPromotedStory(promotedStory)
-        promotedStoryList.add(recentStory)
+    getAssumedSuccessfulOngoingStoryList().observe(
+      fragment,
+      Observer<OngoingStoryList> {
+        it.recentStoryList.take(limit).forEach { promotedStory ->
+          val recentStory = PromotedStoryViewModel(activity, internalProfileId)
+          recentStory.setPromotedStory(promotedStory)
+          promotedStoryList.add(recentStory)
+        }
+        topicListAdapter.notifyItemChanged(1)
       }
-      topicListAdapter.notifyItemChanged(1)
-    })
+    )
   }
 
   private fun getAssumedSuccessfulOngoingStoryList(): LiveData<OngoingStoryList> {
     // If there's an error loading the data, assume the default.
-    return Transformations.map(ongoingStoryListSummaryResultLiveData) { it.getOrDefault(OngoingStoryList.getDefaultInstance()) }
+    return Transformations.map(ongoingStoryListSummaryResultLiveData) {
+      it.getOrDefault(
+        OngoingStoryList.getDefaultInstance()
+      )
+    }
   }
 
   fun onTopicSummaryClicked(topicSummary: TopicSummary) {
     routeToTopicListener.routeToTopic(internalProfileId, topicSummary.topicId)
   }
 
-  private fun logHomeActivityEvent(){
+  private fun logHomeActivityEvent() {
     analyticsController.logTransitionEvent(
-      activity.applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_HOME,
-      null
-      )
+      /* eventContext= */ null
+    )
   }
 }

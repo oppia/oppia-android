@@ -2,15 +2,17 @@ package org.oppia.app.profileprogress
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ObservableField
+import androidx.fragment.app.Fragment
 import org.oppia.app.home.RouteToRecentlyPlayedListener
 import org.oppia.app.model.Profile
 
 /** Header [ViewModel] for the recycler view in [ProfileProgressFragment]. */
-class ProfileProgressHeaderViewModel(activity: AppCompatActivity) : ProfileProgressItemViewModel() {
+class ProfileProgressHeaderViewModel(activity: AppCompatActivity, fragment: Fragment) :
+  ProfileProgressItemViewModel() {
   private val routeToCompletedStoryListListener = activity as RouteToCompletedStoryListListener
   private val routeToOngoingTopicListListener = activity as RouteToOngoingTopicListListener
   private val routeToRecentlyPlayedActivity = activity as RouteToRecentlyPlayedListener
-  private val profilePictureEditListener = activity as ProfilePictureClickListener
+  private val profilePictureEditListener = fragment as ProfilePictureClickListener
 
   val profile = ObservableField<Profile>(Profile.getDefaultInstance())
   val ongoingTopicCount = ObservableField(0)

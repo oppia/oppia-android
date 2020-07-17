@@ -10,14 +10,14 @@ import org.oppia.app.model.Topic
 import org.oppia.app.topic.revision.revisionitemviewmodel.TopicRevisionItemViewModel
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** [ViewModel] for [TopicRevisionFragment]. */
 @FragmentScope
 class TopicRevisionViewModel @Inject constructor(
   private val topicController: TopicController,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   val fragment: Fragment
 ) : ViewModel() {
   private lateinit var profileId: ProfileId
