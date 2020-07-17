@@ -16,7 +16,7 @@ proto_library(
     data = [
             ":process_exploration",
             ":process_question",
-                :process_topic",
+            ":process_topic",
     ],
 )
 
