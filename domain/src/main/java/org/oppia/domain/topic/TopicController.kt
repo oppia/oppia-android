@@ -418,11 +418,11 @@ class TopicController @Inject constructor(
 
   // TODO(#21): Expose this as a data provider, or omit if it's not needed.
   internal fun retrieveTopic(topicId: String): Topic {
-    return createTopicFromJson("$topicId.json")
+    return createTopicFromJson(topicId)
   }
 
   internal fun retrieveStory(storyId: String): StorySummary {
-    return createStorySummaryFromJsonFile(storyId)
+    return createStorySummaryFromJson(storyId)
   }
 
   // TODO(#45): Expose this as a data provider, or omit if it's not needed.
@@ -615,15 +615,14 @@ class TopicController @Inject constructor(
    * Creates topic from its json representation. The json file is expected to have
    * a key called 'topic' that holds the topic data.
    */
-  private fun createTopicFromJson(topicFileName: String): Topic {
-    val topicData = jsonAssetRetriever.loadJsonFromAsset(topicFileName)!!
+  private fun createTopicFromJson(topicId: String): Topic {
+    val topicData = jsonAssetRetriever.loadJsonFromAsset("$topicId.json")!!
     val subtopicList: List<Subtopic> =
       createSubtopicListFromJsonArray(topicData.optJSONArray("subtopics"))
     val skillSummaryList: List<SkillSummary> =
       createSkillSummaryListFromJsonObject(topicData.optJSONObject("skill_descriptions"))
     val storySummaryList: List<StorySummary> =
       createStorySummaryListFromJsonArray(topicData.optJSONArray("canonical_story_dicts"))
-    val topicId = topicData.getString("topic_id")
     return Topic.newBuilder()
       .setTopicId(topicId)
       .setName(topicData.getString("topic_name"))
@@ -736,14 +735,14 @@ class TopicController @Inject constructor(
     for (i in 0 until storySummaryJsonArray!!.length()) {
       val currentStorySummaryJsonObject = storySummaryJsonArray.optJSONObject(i)
       val storySummary: StorySummary =
-        createStorySummaryFromJsonFile(currentStorySummaryJsonObject.optString("id"))
+        createStorySummaryFromJson(currentStorySummaryJsonObject.optString("id"))
       storySummaryList.add(storySummary)
     }
     return storySummaryList
   }
 
   /** Creates a list of [StorySummary]s for topic given its json representation and the index of the story in json. */
-  private fun createStorySummaryFromJsonFile(storyId: String): StorySummary {
+  private fun createStorySummaryFromJson(storyId: String): StorySummary {
     val storyDataJsonObject = jsonAssetRetriever.loadJsonFromAsset("$storyId.json")
     return StorySummary.newBuilder()
       .setStoryId(storyId)

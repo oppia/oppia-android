@@ -54,7 +54,7 @@ import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
 import java.io.FileNotFoundException
-import java.util.Date
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -413,7 +413,8 @@ class TopicControllerTest {
       verifyGetStorySucceeded()
       val story = storySummaryResultCaptor.value!!.getOrThrow()
       val chapter = story.getChapter(0)
-      assertThat(chapter.chapterThumbnail.thumbnailGraphic).isEqualTo(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
+      assertThat(chapter.chapterThumbnail.thumbnailGraphic)
+        .isEqualTo(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
     }
 
   @Test
@@ -1067,7 +1068,8 @@ class TopicControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testOngoingTopicList_finishOneEntireTopicAndOneChapterInAnotherTopic_ongoingTopicListIsCorrect() = // ktlint-disable max-line-length
+  fun testOngoingTopicList_finishOneEntireTopicAndOneChapterInAnotherTopic_ongoingTopicListIsCorrect() =
+    // ktlint-disable max-line-length
     runBlockingTest(coroutineContext) {
       // Mark entire FRACTIONS topic as finished.
       markFractionsStory0Chapter0AsCompleted()
@@ -1161,7 +1163,8 @@ class TopicControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testCompletedStoryList_finishOneEntireStoryAndOneChapterInAnotherStory_completedStoryListIsCorrect() = // ktlint-disable max-line-length
+  fun testCompletedStoryList_finishOneEntireStoryAndOneChapterInAnotherStory_completedStoryListIsCorrect() =
+    // ktlint-disable max-line-length
     runBlockingTest(coroutineContext) {
       markFractionsStory0Chapter0AsCompleted()
       advanceUntilIdle()
