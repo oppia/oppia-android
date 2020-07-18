@@ -60,12 +60,17 @@ const val SUBTOPIC_TOPIC_ID = "1"
 const val RATIOS_TOPIC_ID = "omzF4oqgeTXd"
 val TOPIC_THUMBNAILS = mapOf(
   FRACTIONS_TOPIC_ID to createTopicThumbnail0(),
-  RATIOS_TOPIC_ID to createTopicThumbnail1()
+  RATIOS_TOPIC_ID to createTopicThumbnail1(),
+  TEST_TOPIC_ID_0 to createTopicThumbnail2(),
+  TEST_TOPIC_ID_1 to createTopicThumbnail3()
 )
 val STORY_THUMBNAILS = mapOf(
   FRACTIONS_STORY_ID_0 to createStoryThumbnail0(),
   RATIOS_STORY_ID_0 to createStoryThumbnail1(),
-  RATIOS_STORY_ID_1 to createStoryThumbnail2()
+  RATIOS_STORY_ID_1 to createStoryThumbnail2(),
+  TEST_STORY_ID_0 to createStoryThumbnail3(),
+  TEST_STORY_ID_1 to createStoryThumbnail4(),
+  TEST_STORY_ID_2 to createStoryThumbnail5()
 )
 val EXPLORATION_THUMBNAILS = mapOf(
   FRACTIONS_EXPLORATION_ID_0 to createChapterThumbnail0(),
@@ -73,7 +78,12 @@ val EXPLORATION_THUMBNAILS = mapOf(
   RATIOS_EXPLORATION_ID_0 to createChapterThumbnail2(),
   RATIOS_EXPLORATION_ID_1 to createChapterThumbnail3(),
   RATIOS_EXPLORATION_ID_2 to createChapterThumbnail4(),
-  RATIOS_EXPLORATION_ID_3 to createChapterThumbnail5()
+  RATIOS_EXPLORATION_ID_3 to createChapterThumbnail5(),
+  TEST_EXPLORATION_ID_0 to createChapterThumbnail6(),
+  TEST_EXPLORATION_ID_1 to createChapterThumbnail7(),
+  TEST_EXPLORATION_ID_2 to createChapterThumbnail8(),
+  TEST_EXPLORATION_ID_3 to createChapterThumbnail9(),
+  TEST_EXPLORATION_ID_4 to createChapterThumbnail0()
 )
 
 private const val CUSTOM_IMG_TAG = "oppia-noninteractive-image"
@@ -181,23 +191,17 @@ class TopicListController @Inject constructor(
 
   private fun createTopicList(): TopicList {
     val topicListBuilder = TopicList.newBuilder()
-      .addTopicSummary(createTopicSummary0())
-      .addTopicSummary(createTopicSummary1())
-      .addTopicSummary(createFractionsTopicSummary())
-      .addTopicSummary(createRatiosTopicSummary())
+      .addTopicSummary(createTopicSummary(TEST_TOPIC_ID_0))
+      .addTopicSummary(createTopicSummary(TEST_TOPIC_ID_1))
+      .addTopicSummary(createTopicSummary(FRACTIONS_TOPIC_ID))
+      .addTopicSummary(createTopicSummary(RATIOS_TOPIC_ID))
     return topicListBuilder.build()
   }
 
-  private fun createFractionsTopicSummary(): TopicSummary {
+  private fun createTopicSummary(topicId: String): TopicSummary {
     val fractionsJson =
-      jsonAssetRetriever.loadJsonFromAsset("GJ2rLXRKD5hw.json")!!
-    return createTopicSummaryFromJson(FRACTIONS_TOPIC_ID, fractionsJson)
-  }
-
-  private fun createRatiosTopicSummary(): TopicSummary {
-    val ratiosJson =
-      jsonAssetRetriever.loadJsonFromAsset("omzF4oqgeTXd.json")!!
-    return createTopicSummaryFromJson(RATIOS_TOPIC_ID, ratiosJson)
+      jsonAssetRetriever.loadJsonFromAsset("$topicId.json")!!
+    return createTopicSummaryFromJson(topicId, fractionsJson)
   }
 
   private fun createTopicSummaryFromJson(topicId: String, jsonObject: JSONObject): TopicSummary {
@@ -229,36 +233,6 @@ class TopicListController @Inject constructor(
       .setTotalSkillCount(jsonObject.getJSONObject("skill_descriptions").length())
       .setTotalChapterCount(totalChapterCount)
       .setTopicThumbnail(TOPIC_THUMBNAILS.getValue(topicId))
-      .build()
-  }
-
-  private fun createTopicSummary0(): TopicSummary {
-    return TopicSummary.newBuilder()
-      .setTopicId(TEST_TOPIC_ID_0)
-      .setName("First Topic")
-      .setVersion(1)
-      .setSubtopicCount(0)
-      .setCanonicalStoryCount(2)
-      .setUncategorizedSkillCount(0)
-      .setAdditionalStoryCount(0)
-      .setTotalSkillCount(2)
-      .setTotalChapterCount(4)
-      .setTopicThumbnail(createTopicThumbnail0())
-      .build()
-  }
-
-  private fun createTopicSummary1(): TopicSummary {
-    return TopicSummary.newBuilder()
-      .setTopicId(TEST_TOPIC_ID_1)
-      .setName("Second Topic")
-      .setVersion(3)
-      .setSubtopicCount(0)
-      .setCanonicalStoryCount(1)
-      .setUncategorizedSkillCount(0)
-      .setAdditionalStoryCount(0)
-      .setTotalSkillCount(1)
-      .setTotalChapterCount(1)
-      .setTopicThumbnail(createTopicThumbnail1())
       .build()
   }
 
@@ -518,6 +492,20 @@ internal fun createTopicThumbnail1(): LessonThumbnail {
     .build()
 }
 
+internal fun createTopicThumbnail2(): LessonThumbnail {
+  return LessonThumbnail.newBuilder()
+    .setThumbnailGraphic(LessonThumbnailGraphic.ADDING_AND_SUBTRACTING_FRACTIONS)
+    .setBackgroundColorRgb(0xd5836f)
+    .build()
+}
+
+internal fun createTopicThumbnail3(): LessonThumbnail {
+  return LessonThumbnail.newBuilder()
+    .setThumbnailGraphic(LessonThumbnailGraphic.BAKER)
+    .setBackgroundColorRgb(0xd5A26f)
+    .build()
+}
+
 internal fun createStoryThumbnail0(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
@@ -536,6 +524,27 @@ internal fun createStoryThumbnail2(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_CUPCAKES)
     .setBackgroundColorRgb(0xa5ecd3)
+    .build()
+}
+
+internal fun createStoryThumbnail3(): LessonThumbnail {
+  return LessonThumbnail.newBuilder()
+    .setThumbnailGraphic(LessonThumbnailGraphic.BAKER)
+    .setBackgroundColorRgb(0xa5a2d3)
+    .build()
+}
+
+internal fun createStoryThumbnail4(): LessonThumbnail {
+  return LessonThumbnail.newBuilder()
+    .setThumbnailGraphic(LessonThumbnailGraphic.COMPARING_FRACTIONS)
+    .setBackgroundColorRgb(0xf2ecd3)
+    .build()
+}
+
+internal fun createStoryThumbnail5(): LessonThumbnail {
+  return LessonThumbnail.newBuilder()
+    .setThumbnailGraphic(LessonThumbnailGraphic.DERIVE_A_RATIO)
+    .setBackgroundColorRgb(0xf2ec63)
     .build()
 }
 
@@ -578,5 +587,33 @@ internal fun createChapterThumbnail5(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
     .setBackgroundColorRgb(0xd3a5ec)
+    .build()
+}
+
+internal fun createChapterThumbnail6(): LessonThumbnail {
+  return LessonThumbnail.newBuilder()
+    .setThumbnailGraphic(LessonThumbnailGraphic.BAKER)
+    .setBackgroundColorRgb(0xd325ec)
+    .build()
+}
+
+internal fun createChapterThumbnail7(): LessonThumbnail {
+  return LessonThumbnail.newBuilder()
+    .setThumbnailGraphic(LessonThumbnailGraphic.PERSON_WITH_PIE_CHART)
+    .setBackgroundColorRgb(0xd985ec)
+    .build()
+}
+
+internal fun createChapterThumbnail8(): LessonThumbnail {
+  return LessonThumbnail.newBuilder()
+    .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
+    .setBackgroundColorRgb(0xd3aa2c)
+    .build()
+}
+
+internal fun createChapterThumbnail9(): LessonThumbnail {
+  return LessonThumbnail.newBuilder()
+    .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
+    .setBackgroundColorRgb(0xd3a67ec)
     .build()
 }
