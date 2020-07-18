@@ -33,7 +33,6 @@ import org.oppia.app.model.EventLog.Context.ActivityContextCase.TOPIC_CONTEXT
 import org.oppia.app.model.EventLog.EventAction
 import org.oppia.app.model.EventLog.Priority
 import org.oppia.app.model.OppiaEventLogs
-import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.testing.FakeEventLogger
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
@@ -466,18 +465,7 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logTransitionEvent_withNoNetwork_exceedLimit_checkEventLogStoreSize() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
-    for (i in 1..5005) {
-      analyticsController.logTransitionEvent(
-        TEST_TIMESTAMP,
-        EventAction.EVENT_ACTION_UNSPECIFIED,
-        analyticsController.createQuestionContext(
-          TEST_QUESTION_ID,
-          listOf(
-            TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
-          )
-        )
-      )
-    }
+    logMultipleEvents()
 
     val eventLogs = analyticsController.getEventLogs()
     eventLogs.observeForever(this.mockOppiaEventLogsObserver)
@@ -488,7 +476,121 @@ class AnalyticsControllerTest {
     ).onChanged(oppiaEventLogsResultCaptor.capture())
 
     val eventLogStoreSize = oppiaEventLogsResultCaptor.value.getOrThrow().eventLogList.size
-    assertThat(eventLogStoreSize).isEqualTo(5000)
+    assertThat(eventLogStoreSize).isEqualTo(2)
+  }
+
+  @ExperimentalCoroutinesApi
+  @InternalCoroutinesApi
+  @Test
+  fun testController_logTransitionEvent_logClickEvent_withNoNetwork_checkOrderinCache() {
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    analyticsController.logClickEvent(
+      TEST_TIMESTAMP,
+      EventAction.EVENT_ACTION_UNSPECIFIED,
+      analyticsController.createQuestionContext(
+        TEST_QUESTION_ID,
+        listOf(
+          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
+        )
+      )
+    )
+    analyticsController.logTransitionEvent(
+      TEST_TIMESTAMP,
+      EventAction.EVENT_ACTION_UNSPECIFIED,
+      analyticsController.createQuestionContext(
+        TEST_QUESTION_ID,
+        listOf(
+          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
+        )
+      )
+    )
+
+    val eventLogs = analyticsController.getEventLogs()
+    eventLogs.observeForever(this.mockOppiaEventLogsObserver)
+    testCoroutineDispatchers.advanceUntilIdle()
+    verify(
+      this.mockOppiaEventLogsObserver,
+      atLeastOnce()
+    ).onChanged(oppiaEventLogsResultCaptor.capture())
+
+    val firstEventLog = oppiaEventLogsResultCaptor.value.getOrThrow().getEventLog(0)
+    val secondEventLog = oppiaEventLogsResultCaptor.value.getOrThrow().getEventLog(1)
+
+    assertThat(firstEventLog.priority).isEqualTo(Priority.OPTIONAL)
+    assertThat(secondEventLog.priority).isEqualTo(Priority.ESSENTIAL)
+  }
+
+  @ExperimentalCoroutinesApi
+  @InternalCoroutinesApi
+  @Test
+  fun testController_logTransitionEvent_switchToNoNetwork_logClickEvent_checkManagement() {
+    analyticsController.logTransitionEvent(
+      TEST_TIMESTAMP,
+      EventAction.EVENT_ACTION_UNSPECIFIED,
+      analyticsController.createQuestionContext(
+        TEST_QUESTION_ID,
+        listOf(
+          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
+        )
+      )
+    )
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    analyticsController.logClickEvent(
+      TEST_TIMESTAMP,
+      EventAction.EVENT_ACTION_UNSPECIFIED,
+      analyticsController.createQuestionContext(
+        TEST_QUESTION_ID,
+        listOf(
+          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
+        )
+      )
+    )
+
+    val cachedEventLogs = analyticsController.getEventLogs()
+    cachedEventLogs.observeForever(this.mockOppiaEventLogsObserver)
+    testCoroutineDispatchers.advanceUntilIdle()
+    verify(
+      this.mockOppiaEventLogsObserver,
+      atLeastOnce()
+    ).onChanged(oppiaEventLogsResultCaptor.capture())
+
+    val uploadedEventLog = fakeEventLogger.getMostRecentEvent()
+    val cachedEventLog = oppiaEventLogsResultCaptor.value.getOrThrow().getEventLog(0)
+
+    assertThat(uploadedEventLog.priority).isEqualTo(Priority.ESSENTIAL)
+    assertThat(uploadedEventLog.context.activityContextCase).isEqualTo(QUESTION_CONTEXT)
+    assertThat(uploadedEventLog.timestamp).isEqualTo(TEST_TIMESTAMP)
+    assertThat(uploadedEventLog.actionName).isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
+
+    assertThat(cachedEventLog.priority).isEqualTo(Priority.OPTIONAL)
+    assertThat(cachedEventLog.context.activityContextCase).isEqualTo(QUESTION_CONTEXT)
+    assertThat(cachedEventLog.timestamp).isEqualTo(TEST_TIMESTAMP)
+    assertThat(cachedEventLog.actionName).isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
+  }
+
+  @ExperimentalCoroutinesApi
+  @InternalCoroutinesApi
+  @Test
+  fun testController_logEvents_exceedLimit_withNoNetwork_checkCorrectEventIsEvicted() {
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    logMultipleEvents()
+
+    val cachedEventLogs = analyticsController.getEventLogs()
+    cachedEventLogs.observeForever(this.mockOppiaEventLogsObserver)
+    testCoroutineDispatchers.advanceUntilIdle()
+    verify(
+      this.mockOppiaEventLogsObserver,
+      atLeastOnce()
+    ).onChanged(oppiaEventLogsResultCaptor.capture())
+
+    val firstEventLog = oppiaEventLogsResultCaptor.value.getOrThrow().getEventLog(0)
+    val secondEventLog = oppiaEventLogsResultCaptor.value.getOrThrow().getEventLog(1)
+    val eventLogStoreSize = oppiaEventLogsResultCaptor.value.getOrThrow().eventLogList.size
+    assertThat(eventLogStoreSize).isEqualTo(2)
+    assertThat(firstEventLog.priority).isNotEqualTo(Priority.OPTIONAL)
+    assertThat(secondEventLog.priority).isNotEqualTo(Priority.OPTIONAL)
+    assertThat(firstEventLog.timestamp).isEqualTo(1556094120000)
+    assertThat(secondEventLog.timestamp).isEqualTo(1556094100000)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -496,6 +598,52 @@ class AnalyticsControllerTest {
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
+  }
+
+  private fun logMultipleEvents() {
+    analyticsController.logTransitionEvent(
+      1556094120000,
+      EventAction.EVENT_ACTION_UNSPECIFIED,
+      analyticsController.createQuestionContext(
+        TEST_QUESTION_ID,
+        listOf(
+          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
+        )
+      )
+    )
+
+    analyticsController.logClickEvent(
+      1556094110000,
+      EventAction.EVENT_ACTION_UNSPECIFIED,
+      analyticsController.createQuestionContext(
+        TEST_QUESTION_ID,
+        listOf(
+          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
+        )
+      )
+    )
+
+    analyticsController.logTransitionEvent(
+      1556093100000,
+      EventAction.EVENT_ACTION_UNSPECIFIED,
+      analyticsController.createQuestionContext(
+        TEST_QUESTION_ID,
+        listOf(
+          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
+        )
+      )
+    )
+
+    analyticsController.logTransitionEvent(
+      1556094100000,
+      EventAction.EVENT_ACTION_UNSPECIFIED,
+      analyticsController.createQuestionContext(
+        TEST_QUESTION_ID,
+        listOf(
+          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
+        )
+      )
+    )
   }
 
   @Qualifier
@@ -525,12 +673,22 @@ class AnalyticsControllerTest {
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
   }
 
+  @Qualifier
+  annotation class EventLogStorageCacheSize
+
+  @Module
+  class TestLogStorageModule {
+    @Provides
+    @org.oppia.domain.oppialogger.EventLogStorageCacheSize
+    fun provideEventLogStorageCacheSize(): Int = 2
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
       TestModule::class, TestLogReportingModule::class,
-      TestDispatcherModule::class, LogStorageModule::class
+      TestDispatcherModule::class, TestLogStorageModule::class
 
     ]
   )

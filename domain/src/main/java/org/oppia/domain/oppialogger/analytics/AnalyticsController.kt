@@ -1,6 +1,5 @@
 package org.oppia.domain.oppialogger.analytics
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import org.oppia.app.model.EventLog
 import org.oppia.app.model.EventLog.EventAction
@@ -39,7 +38,7 @@ class AnalyticsController @Inject constructor(
     eventAction: EventAction,
     eventContext: EventLog.Context?
   ) {
-    checkNetworkAndManageEventLog(
+    uploadOrCacheEventLog(
       createEventLog(
         timestamp,
         eventAction,
@@ -58,7 +57,7 @@ class AnalyticsController @Inject constructor(
     eventAction: EventAction,
     eventContext: EventLog.Context?
   ) {
-    checkNetworkAndManageEventLog(
+    uploadOrCacheEventLog(
       createEventLog(
         timestamp,
         eventAction,
@@ -176,23 +175,25 @@ class AnalyticsController @Inject constructor(
 
   /**
    * Checks network connectivity of the device.
+   *
    * Saves the [eventLog] to the [eventLogStore] in the absence of it.
    * Uploads to remote service in the presence of it.
    */
-  private fun checkNetworkAndManageEventLog(eventLog: EventLog) {
+  private fun uploadOrCacheEventLog(eventLog: EventLog) {
     when (networkConnectionUtil.getCurrentConnectionStatus()) {
-      NONE -> addEventLog(eventLog)
+      NONE -> cacheEventLog(eventLog)
       else -> eventLogger.logEvent(eventLog)
     }
   }
 
   /**
    * Adds an event to the storage.
+   *
    * At first, it checks if the size of the store isn't exceeding [eventLogStorageCacheSize]
    * If the limit is exceeded then the least recent event is removed from the [eventLogStore]
    * After this, the [eventLog] is added to the store.
    * */
-  private fun addEventLog(eventLog: EventLog) {
+  private fun cacheEventLog(eventLog: EventLog) {
     eventLogStore.storeDataAsync(updateInMemoryCache = true) { oppiaEventLogs ->
       val storeSize = oppiaEventLogs.eventLogList.size
       if (storeSize + 1 > eventLogStorageCacheSize) {
@@ -203,22 +204,17 @@ class AnalyticsController @Inject constructor(
             .addEventLog(eventLog)
             .build()
         } else {
-          exceptionLogger.logException(
-            NullPointerException(
-              "Least Recent Event index absent -- EventLogCacheStoreSize is 0"
-            )
-          )
-          consoleLogger.e(
-            "Analytics Controller",
-            "Least Recent Event index absent -- EventLogCacheStoreSize is 0"
-          )
+          val exception =
+            NullPointerException("Least Recent Event index absent -- EventLogCacheStoreSize is 0")
+          consoleLogger.e("Analytics Controller", exception.toString())
+          exceptionLogger.logException(exception)
         }
       }
       return@storeDataAsync oppiaEventLogs.toBuilder().addEventLog(eventLog).build()
     }.invokeOnCompletion {
       it?.let {
         consoleLogger.e(
-          "DOMAIN",
+          "Analytics Controller",
           "Failed to store event log",
           it
         )
@@ -228,6 +224,7 @@ class AnalyticsController @Inject constructor(
 
   /**
    * Returns the index of the least recent event from the existing store on the basis of recency and priority.
+   *
    * At first, it checks the index of the least recent event which has OPTIONAL priority.
    * If that returns null, then the index of the least recent event regardless of the priority is returned.
    */
