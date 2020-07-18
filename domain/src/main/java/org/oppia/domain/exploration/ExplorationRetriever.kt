@@ -28,13 +28,14 @@ class ExplorationRetriever @Inject constructor(
 
   // Returns an exploration given an assetName
   private fun loadExplorationFromAsset(explorationObject: JSONObject): Exploration {
+    val innerExplorationObject = explorationObject.getJSONObject("exploration")
     return Exploration.newBuilder()
       .setId(explorationObject.getString("exploration_id"))
-      .setTitle(explorationObject.getString("title"))
-      .setLanguageCode(explorationObject.getString("language_code"))
-      .setInitStateName(explorationObject.getString("init_state_name"))
-      .setObjective(explorationObject.getString("objective"))
-      .putAllStates(createStatesFromJsonObject(explorationObject.getJSONObject("states")))
+      .setTitle(innerExplorationObject.getString("title"))
+      .setLanguageCode(innerExplorationObject.getString("language_code"))
+      .setInitStateName(innerExplorationObject.getString("init_state_name"))
+      .setObjective(innerExplorationObject.getString("objective"))
+      .putAllStates(createStatesFromJsonObject(innerExplorationObject.getJSONObject("states")))
       .build()
   }
 
