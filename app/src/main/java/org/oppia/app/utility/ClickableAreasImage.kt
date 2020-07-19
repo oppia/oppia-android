@@ -90,8 +90,8 @@ class ClickableAreasImage(
         newView.tag = clickableArea.label
         newView.contentDescription = clickableArea.label
         newView.setOnTouchListener { _, event ->
-          if(event.action == MotionEvent.ACTION_DOWN)
-          showOrHideRegion(newView, clickableArea)
+          if (event.action == MotionEvent.ACTION_DOWN)
+            showOrHideRegion(newView, clickableArea)
           return@setOnTouchListener true
         }
         if (imageView.isAccessibilityEnabled()) {
