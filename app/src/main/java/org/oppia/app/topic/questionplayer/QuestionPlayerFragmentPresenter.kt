@@ -220,7 +220,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     questionViewModel.itemList += recyclerViewAssembler.compute(
       ephemeralQuestion.ephemeralState,
       skillId
-    )
+    ).first
   }
 
   private fun updateProgress(currentQuestionIndex: Int, questionCount: Int) {

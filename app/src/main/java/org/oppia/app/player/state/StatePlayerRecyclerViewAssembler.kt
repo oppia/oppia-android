@@ -1,5 +1,6 @@
 package org.oppia.app.player.state
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AccelerateInterpolator
@@ -168,25 +169,54 @@ class StatePlayerRecyclerViewAssembler private constructor(
    * configuration of this assembler, as well as the GCS entity ID that should be associated with
    * rich-text rendering for this state.
    */
-  fun compute(ephemeralState: EphemeralState, gcsEntityId: String): List<StateItemViewModel> {
+  fun compute(
+    ephemeralState: EphemeralState,
+    gcsEntityId: String
+  ): Pair<List<StateItemViewModel>, List<StateItemViewModel>> {
+    Log.d("compute","--------------------------------------------------")
     val hasPreviousState = ephemeralState.hasPreviousState
 
     previousAnswerViewModels.clear()
-    val pendingItemList = mutableListOf<StateItemViewModel>()
+    val leftPendingItemList = mutableListOf<StateItemViewModel>()
+    val rightPendingItemList = mutableListOf<StateItemViewModel>()
     if (playerFeatureSet.contentSupport) {
-      addContentItem(pendingItemList, ephemeralState, gcsEntityId)
+      addContentItem(leftPendingItemList, ephemeralState, gcsEntityId)
     }
     val interaction = ephemeralState.state.interaction
+    val shouldSplit = interaction.id == "DragAndDropSortInput"
+
+    Log.d("interaction_id", interaction.id)
+    Log.d("shouldSplit", shouldSplit.toString())
     if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE) {
-      addPreviousAnswers(pendingItemList, ephemeralState.pendingState.wrongAnswerList, gcsEntityId)
+      addPreviousAnswers(
+        leftPendingItemList,
+        ephemeralState.pendingState.wrongAnswerList,
+        gcsEntityId
+      )
       if (playerFeatureSet.hintsAndSolutionsSupport) {
         hintHandler.maybeScheduleShowHint(ephemeralState.state, ephemeralState.pendingState)
+        Log.d("hints_support",true.toString())
       }
-      if (playerFeatureSet.interactionSupport) {
-        addInteractionForPendingState(pendingItemList, interaction, hasPreviousState, gcsEntityId)
+      if (playerFeatureSet.interactionSupport && !shouldSplit) {
+        addInteractionForPendingState(
+          leftPendingItemList,
+          interaction,
+          hasPreviousState,
+          gcsEntityId
+        )
+        Log.d("interaction_support", "left")
+      }
+      if (playerFeatureSet.interactionSupport && shouldSplit) {
+        addInteractionForPendingState(
+          rightPendingItemList,
+          interaction,
+          hasPreviousState,
+          gcsEntityId
+        )
+        Log.d("interaction_support", "right")
       }
     } else if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE) {
-      addPreviousAnswers(pendingItemList, ephemeralState.completedState.answerList, gcsEntityId)
+      addPreviousAnswers(leftPendingItemList, ephemeralState.completedState.answerList, gcsEntityId)
     }
 
     var canContinueToNextState = false
@@ -219,14 +249,18 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
 
     maybeAddNavigationButtons(
-      pendingItemList,
+      leftPendingItemList,
+      rightPendingItemList,
       hasPreviousState,
       canContinueToNextState,
       hasGeneralContinueButton,
-      ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE
+      ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE,
+      shouldSplit
     )
-
-    return pendingItemList
+    Log.d("left", leftPendingItemList.toString())
+    Log.d("right", rightPendingItemList.toString())
+    Log.d("compute","--------------------------------------------------")
+    return Pair(leftPendingItemList, rightPendingItemList)
   }
 
   private fun addInteractionForPendingState(
@@ -443,21 +477,25 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
   private fun maybeAddNavigationButtons(
     pendingItemList: MutableList<StateItemViewModel>,
+    rightPendingItemList: MutableList<StateItemViewModel>,
     hasPreviousState: Boolean,
     canContinueToNextState: Boolean,
     hasGeneralContinueButton: Boolean,
-    stateIsTerminal: Boolean
+    stateIsTerminal: Boolean,
+    shouldSplit: Boolean
   ) {
     val hasPreviousButton = playerFeatureSet.backwardNavigation && hasPreviousState
     when {
-      hasGeneralContinueButton && playerFeatureSet.forwardNavigation -> {
-        pendingItemList += ContinueNavigationButtonViewModel(
+        hasGeneralContinueButton && playerFeatureSet.forwardNavigation -> {
+          Log.d("when", "A")
+          pendingItemList += ContinueNavigationButtonViewModel(
           hasPreviousButton,
           previousNavigationButtonListener,
           fragment as ContinueNavigationButtonListener
         )
-      }
+        }
       canContinueToNextState && playerFeatureSet.forwardNavigation -> {
+        Log.d("when", "B")
         pendingItemList += NextButtonViewModel(
           hasPreviousButton,
           previousNavigationButtonListener,
@@ -465,6 +503,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         )
       }
       stateIsTerminal -> {
+        Log.d("when", "C")
         if (playerFeatureSet.replaySupport) {
           pendingItemList += ReplayButtonViewModel(fragment as ReplayButtonListener)
         }
@@ -476,7 +515,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
         }
       }
       doesMostRecentInteractionRequireExplicitSubmission(pendingItemList) &&
-        playerFeatureSet.interactionSupport -> {
+        playerFeatureSet.interactionSupport && !shouldSplit -> {
+        Log.d("when", "D")
         val canSubmitAnswer = checkNotNull(this.canSubmitAnswer) {
           "Expected non-null submit answer observable for submit button when interaction support " +
             "is enabled"
@@ -488,9 +528,24 @@ class StatePlayerRecyclerViewAssembler private constructor(
           fragment as SubmitNavigationButtonListener
         )
       }
+      doesMostRecentInteractionRequireExplicitSubmission(rightPendingItemList) &&
+        playerFeatureSet.interactionSupport && shouldSplit -> {
+        Log.d("when", "E")
+        val canSubmitAnswer = checkNotNull(this.canSubmitAnswer) {
+          "Expected non-null submit answer observable for submit button when interaction support " +
+            "is enabled"
+        }
+        rightPendingItemList += SubmitButtonViewModel(
+          canSubmitAnswer,
+          hasPreviousButton,
+          previousNavigationButtonListener,
+          fragment as SubmitNavigationButtonListener
+        )
+      }
       // Otherwise, just show the previous button since the interaction itself will push the answer
       // submission.
       hasPreviousButton && !isMostRecentInteractionAutoNavigating(pendingItemList) -> {
+        Log.d("when", "F")
         pendingItemList += PreviousButtonViewModel(
           previousNavigationButtonListener
         )

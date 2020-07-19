@@ -72,6 +72,7 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
+  private lateinit var rhsInteractionsAdapter: RhsInteractionsAdapter
 
   private val viewModel: StateViewModel by lazy {
     getStateViewModel()
@@ -284,6 +285,14 @@ class StateFragmentPresenter @Inject constructor(
 
     val ephemeralState = result.getOrThrow()
 
+    if (ephemeralState.state.interaction.id == "DragAndDropSortInput") {
+      viewModel.shouldSplitView.set(true)
+      binding.rhsStateRecyclerView?.visibility = View.VISIBLE
+    } else {
+      viewModel.shouldSplitView.set(false)
+      binding.rhsStateRecyclerView?.visibility = View.GONE
+    }
+
     val isInNewState =
       ::currentStateName.isInitialized && currentStateName != ephemeralState.state.name
 
@@ -292,7 +301,11 @@ class StateFragmentPresenter @Inject constructor(
     showOrHideAudioByState(ephemeralState.state)
 
     viewModel.itemList.clear()
-    viewModel.itemList += recyclerViewAssembler.compute(ephemeralState, explorationId)
+    viewModel.itemList += recyclerViewAssembler.compute(ephemeralState, explorationId).first
+    viewModel.rightItemList.clear()
+    viewModel.rightItemList += recyclerViewAssembler.compute(ephemeralState, explorationId).second
+    rhsInteractionsAdapter = RhsInteractionsAdapter(viewModel.rightItemList)
+    binding.rhsStateRecyclerView?.adapter = rhsInteractionsAdapter
 
     if (isInNewState) {
       (binding.stateRecyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
