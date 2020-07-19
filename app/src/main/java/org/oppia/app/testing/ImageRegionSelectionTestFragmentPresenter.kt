@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.image_region_selection_test_activity.view.*
+import kotlinx.android.synthetic.main.image_region_selection_test_fragment.view.*
 import org.oppia.app.R
 import org.oppia.app.model.ImageWithRegions.LabeledRegion
 import org.oppia.app.model.Point2d
@@ -18,7 +18,7 @@ class ImageRegionSelectionTestFragmentPresenter @Inject constructor(
 ) {
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val view = inflater.inflate(R.layout.image_region_selection_test_activity, container, false)
+    val view = inflater.inflate(R.layout.image_region_selection_test_fragment, container, false)
     with(view) {
       val clickableAreas: List<LabeledRegion> = getClickableAreas()
       clickable_image_view.setClickableAreas(clickableAreas)

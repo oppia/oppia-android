@@ -8,6 +8,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withTagValue
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -15,8 +16,8 @@ import com.google.firebase.FirebaseApp
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matchers.allOf
 import org.junit.Before
 import org.junit.Test
@@ -52,8 +53,6 @@ import org.oppia.util.parser.GlideImageLoaderModule
 import org.oppia.util.parser.HtmlParserEntityTypeModule
 import org.oppia.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
-import java.util.EnumSet.allOf
-import java.util.regex.Pattern.matches
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -85,9 +84,13 @@ class ImageRegionSelectionAccessibilityTest {
       onView(withId(R.id.clickable_image_view)).perform(
         clickAtXY(0.3f, 0.3f)
       )
-      onView(allOf(withTagValue(CoreMatchers.`is`("Region 3"))))
+      onView(allOf(withTagValue(`is`("Region 3"))))
         .check(
           matches(isDisplayed())
+        )
+      onView(allOf(withId(R.id.submit_button)))
+        .check(
+          matches(isEnabled())
         )
     }
   }
@@ -110,6 +113,10 @@ class ImageRegionSelectionAccessibilityTest {
         .check(
           matches(isDisplayed())
         )
+      onView(allOf(withId(R.id.submit_button)))
+        .check(
+          matches(isEnabled())
+        )
     }
   }
 
@@ -122,6 +129,10 @@ class ImageRegionSelectionAccessibilityTest {
       onView(withId(R.id.default_selected_region)).check(
         matches((isDisplayed()))
       )
+      onView(allOf(withId(R.id.submit_button)))
+        .check(
+          matches(not(isEnabled()))
+        )
     }
   }
 
@@ -135,6 +146,10 @@ class ImageRegionSelectionAccessibilityTest {
       onView(allOf(withTagValue(`is`("Region 3"))))
         .check(
           matches(isDisplayed())
+        )
+      onView(allOf(withId(R.id.submit_button)))
+        .check(
+          matches(isEnabled())
         )
     }
   }

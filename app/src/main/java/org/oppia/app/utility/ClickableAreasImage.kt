@@ -1,6 +1,7 @@
 package org.oppia.app.utility
 
 import android.graphics.RectF
+import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -47,12 +48,8 @@ class ClickableAreasImage(
       defaultRegion.setBackgroundResource(R.drawable.selected_region_background)
       defaultRegion.x = getXCoordinate(x)
       defaultRegion.y = getYCoordinate(y)
+      listener.onClickableAreaTouched("")
     }
-  }
-
-  /** Return whether a point lies between two points.*/
-  private fun isBetween(start: Float, end: Float, actual: Float): Boolean {
-    return actual in start..end
   }
 
   /** Get X co-ordinate scaled according to image.*/
@@ -92,7 +89,8 @@ class ClickableAreasImage(
         newView.isFocusableInTouchMode = true
         newView.tag = clickableArea.label
         newView.contentDescription = clickableArea.label
-        newView.setOnTouchListener { _, _ ->
+        newView.setOnTouchListener { _, event ->
+          if(event.action == MotionEvent.ACTION_DOWN)
           showOrHideRegion(newView, clickableArea)
           return@setOnTouchListener true
         }
