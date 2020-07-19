@@ -49,7 +49,10 @@ import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_1
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_2
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_3
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_0
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_1
 import org.oppia.domain.topic.TEST_EXPLORATION_ID_3
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_4
 import org.oppia.testing.FakeExceptionLogger
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
@@ -129,7 +132,7 @@ class ExplorationDataControllerTest {
   fun testController_providesInitialLiveDataForTheWelcomeExploration() =
     runBlockingTest(coroutineContext) {
       val explorationLiveData =
-        explorationDataController.getExplorationById(TEST_EXPLORATION_ID_5)
+        explorationDataController.getExplorationById(TEST_EXPLORATION_ID_0)
       advanceUntilIdle()
       explorationLiveData.observeForever(mockExplorationObserver)
       val expectedExplorationStateSet = listOf(
@@ -152,7 +155,7 @@ class ExplorationDataControllerTest {
   fun testController_providesInitialLiveDataForTheAboutOppiaExploration() =
     runBlockingTest(coroutineContext) {
       val explorationLiveData =
-        explorationDataController.getExplorationById(TEST_EXPLORATION_ID_6)
+        explorationDataController.getExplorationById(TEST_EXPLORATION_ID_1)
       advanceUntilIdle()
       explorationLiveData.observeForever(mockExplorationObserver)
       val expectedExplorationStateSet = listOf(
@@ -321,7 +324,7 @@ class ExplorationDataControllerTest {
   fun testStartPlayingExploration_withoutStoppingSession_fails() =
     runBlockingTest(coroutineContext) {
       explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_3)
-      explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_7)
+      explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_4)
       advanceUntilIdle()
 
       val exception = fakeExceptionLogger.getMostRecentException()

@@ -32,8 +32,8 @@ import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.exploration.ExplorationDataController
-import org.oppia.domain.exploration.TEST_EXPLORATION_ID_30
 import org.oppia.domain.question.QuestionModule
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.testing.FakeEventLogger
@@ -77,13 +77,13 @@ class ExplorationActivityLocalTest {
 
   @Test
   fun testExploration_onLaunch_logsEvent() {
-    getApplicationDependencies(TEST_EXPLORATION_ID_30)
+    getApplicationDependencies(TEST_EXPLORATION_ID_2)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_30
+        TEST_EXPLORATION_ID_2
       )
     ).use {
 
@@ -92,7 +92,7 @@ class ExplorationActivityLocalTest {
       assertThat(event.context.activityContextCase).isEqualTo(EXPLORATION_CONTEXT)
       assertThat(event.actionName).isEqualTo(EventLog.EventAction.OPEN_EXPLORATION_ACTIVITY)
       assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
-      assertThat(event.context.explorationContext.explorationId).matches(TEST_EXPLORATION_ID_30)
+      assertThat(event.context.explorationContext.explorationId).matches(TEST_EXPLORATION_ID_2)
       assertThat(event.context.explorationContext.topicId).matches(TEST_TOPIC_ID_0)
       assertThat(event.context.explorationContext.storyId).matches(TEST_STORY_ID_0)
     }

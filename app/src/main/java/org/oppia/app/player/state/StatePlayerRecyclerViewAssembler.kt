@@ -1154,7 +1154,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
   }
 
-  // TODO(#1273): Add thorough testing for hints & solutions.
   /**
    * Handler for showing hints to the learner after a period of time in the event they submit a
    * wrong answer.
