@@ -3,18 +3,21 @@ package org.oppia.app.testing
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withTagValue
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.firebase.FirebaseApp
 import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.hamcrest.CoreMatchers
-import org.hamcrest.Matchers
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.Matchers.allOf
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -49,6 +52,8 @@ import org.oppia.util.parser.GlideImageLoaderModule
 import org.oppia.util.parser.HtmlParserEntityTypeModule
 import org.oppia.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
+import java.util.EnumSet.allOf
+import java.util.regex.Pattern.matches
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -67,7 +72,6 @@ class ImageRegionSelectionAccessibilityTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    fakeAccessibilityManager.setTalkbackEnabled(true)
     FirebaseApp.initializeApp(context)
   }
 
@@ -77,13 +81,60 @@ class ImageRegionSelectionAccessibilityTest {
 
   @Test
   fun testImageRegionSelectionTestActivity_clickOnRegion3() {
-    ActivityScenario.launch(ImageRegionSelectionTestActivity::class.java).use {
-      Espresso.onView(ViewMatchers.withId(R.id.clickable_image_view)).perform(
+    launch(ImageRegionSelectionTestActivity::class.java).use {
+      onView(withId(R.id.clickable_image_view)).perform(
         clickAtXY(0.3f, 0.3f)
       )
-      Espresso.onView(Matchers.allOf(ViewMatchers.withTagValue(CoreMatchers.`is`("Region 3"))))
+      onView(allOf(withTagValue(CoreMatchers.`is`("Region 3"))))
         .check(
-          ViewAssertions.matches(ViewMatchers.isDisplayed())
+          matches(isDisplayed())
+        )
+    }
+  }
+
+  @Test
+  fun testImageRegionSelectionTestActivity_clickOnRegion3_clickOnRegion2_onlyRegion2IsDisplayed() {
+    launch(ImageRegionSelectionTestActivity::class.java).use {
+      onView(withId(R.id.clickable_image_view)).perform(
+        clickAtXY(0.3f, 0.3f)
+      )
+      onView(allOf(withTagValue(`is`("Region 3"))))
+        .check(
+          matches(isDisplayed())
+        )
+
+      onView(withId(R.id.clickable_image_view)).perform(
+        clickAtXY(0.7f, 0.3f)
+      )
+      onView(allOf(withTagValue(`is`("Region 2"))))
+        .check(
+          matches(isDisplayed())
+        )
+    }
+  }
+
+  @Test
+  fun testImageRegionSelectionTestActivity_clickOnDefaultRegion() {
+    launch(ImageRegionSelectionTestActivity::class.java).use {
+      onView(withId(R.id.clickable_image_view)).perform(
+        clickAtXY(0.0f, 0.0f)
+      )
+      onView(withId(R.id.default_selected_region)).check(
+        matches((isDisplayed()))
+      )
+    }
+  }
+
+  @Test
+  fun testImageRegionSelectionTestActivity_clickOnDefaultRegionWithAccessibility() {
+    fakeAccessibilityManager.setTalkbackEnabled(true)
+    launch(ImageRegionSelectionTestActivity::class.java).use {
+      onView(withId(R.id.clickable_image_view)).perform(
+        clickAtXY(0.3f, 0.3f)
+      )
+      onView(allOf(withTagValue(`is`("Region 3"))))
+        .check(
+          matches(isDisplayed())
         )
     }
   }
