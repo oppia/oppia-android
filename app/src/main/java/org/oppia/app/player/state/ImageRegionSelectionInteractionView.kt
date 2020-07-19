@@ -15,6 +15,10 @@ import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import javax.inject.Inject
 
+/**
+ * A custom [AppCompatImageView] with a list of [LabeledRegion] to work with
+ * [ClickableAreasImage].
+ */
 class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
@@ -53,12 +57,11 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
     return isAccessibilityEnabled
   }
 
-//  override fun onAttachedToWindow() {
-//    super.onAttachedToWindow()
-////    FragmentManager.findFragment<InjectableFragment>(this).createViewComponent(this).inject(this)
-//    isAccessibilityEnabled = accessibilityManager.isScreenReaderEnabled()
-//  }
-
+  override fun onAttachedToWindow() {
+    super.onAttachedToWindow()
+    FragmentManager.findFragment<InjectableFragment>(this).createViewComponent(this).inject(this)
+    isAccessibilityEnabled = accessibilityManager.isScreenReaderEnabled()
+  }
 }
 
 /** Bind ItemTouchHelperSimpleCallback with RecyclerView for a [DragDropSortInteractionView] via data-binding. */
@@ -76,9 +79,7 @@ fun setRegionClickToImageView(
   imageRegionSelectionInteractionView.addOnLayoutChangeListener { _, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom -> // ktlint-disable max-line-length
     // Update the regions, as the bounds have changed
     if (left != oldLeft || top != oldTop || right != oldRight || bottom != oldBottom)
-      area.addViews(
-        useSeparateRegionViews = imageRegionSelectionInteractionView.isAccessibilityEnabled()
-      )
+      area.addViews()
   }
 }
 

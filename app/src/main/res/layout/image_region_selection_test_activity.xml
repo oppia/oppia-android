@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/image_parent_view"
   android:layout_width="wrap_content"
   android:layout_height="wrap_content"
-  android:id="@+id/image_parent_view"
   tools:context=".testing.ImageRegionSelectionTestActivity">
-  
+
   <org.oppia.app.player.state.ImageRegionSelectionInteractionView
-    android:src="@drawable/testing_fraction"
     android:id="@+id/clickable_image_view"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:adjustViewBounds="true"/>
+    android:adjustViewBounds="true"
+    android:src="@drawable/testing_fraction" />
+
+  <View
+    android:id="@+id/default_selected_region"
+    android:layout_width="24dp"
+    android:layout_height="24dp" />
+
 </FrameLayout>

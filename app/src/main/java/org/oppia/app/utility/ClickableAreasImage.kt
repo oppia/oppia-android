@@ -4,6 +4,7 @@ import android.graphics.RectF
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.core.view.forEach
 import androidx.core.view.forEachIndexed
 import com.github.chrisbanes.photoview.OnPhotoTapListener
 import com.github.chrisbanes.photoview.PhotoViewAttacher
@@ -34,14 +35,18 @@ class ClickableAreasImage(
    * @param y the relative y coordinate according to image
    */
   override fun onPhotoTap(view: ImageView, x: Float, y: Float) {
-    //show default region
-
-  }
-
-  private fun getClickableAreaOrDefault(x: Float, y: Float): Int {
-    return imageView.getClickableAreas().indexOfFirst {
-      isBetween(it.region.area.upperLeft.x, it.region.area.lowerRight.x, x) &&
-        isBetween(it.region.area.upperLeft.y, it.region.area.lowerRight.y, y)
+    // show default region for non-accessibility case
+    if (!imageView.isAccessibilityEnabled()) {
+      parentView.forEachIndexed { index: Int, childView: View ->
+        // Remove any previously selected region excluding 0th index(image view)
+        if (index > 0) {
+          childView.setBackgroundResource(0)
+        }
+      }
+      val defaultRegion = parentView.findViewById<View>(R.id.default_selected_region)
+      defaultRegion.setBackgroundResource(R.drawable.selected_region_background)
+      defaultRegion.x = getXCoordinate(x)
+      defaultRegion.y = getYCoordinate(y)
     }
   }
 
@@ -63,9 +68,10 @@ class ClickableAreasImage(
   }
 
   /** Add selectable regions to [FrameLayout].*/
-  fun addViews(useSeparateRegionViews: Boolean) {
+  fun addViews() {
     parentView.let {
-      it.removeViews(1, it.childCount - 1) // remove all other views
+      if (it.childCount > 2)
+        it.removeViews(2, it.childCount - 1) // remove all other views
       imageView.getClickableAreas().forEach { clickableArea ->
         val imageRect = RectF(
           getXCoordinate(clickableArea.region.area.upperLeft.x),
@@ -86,13 +92,13 @@ class ClickableAreasImage(
         newView.isFocusableInTouchMode = true
         newView.tag = clickableArea.label
         newView.contentDescription = clickableArea.label
-        newView.setOnTouchListener { view, motionEvent ->
-          showRegion(newView, clickableArea)
+        newView.setOnTouchListener { _, _ ->
+          showOrHideRegion(newView, clickableArea)
           return@setOnTouchListener true
         }
-        if (useSeparateRegionViews) {
+        if (imageView.isAccessibilityEnabled()) {
           newView.setOnClickListener {
-            showRegion(newView, clickableArea)
+            showOrHideRegion(newView, clickableArea)
           }
         }
         it.addView(newView)
@@ -101,10 +107,7 @@ class ClickableAreasImage(
     }
   }
 
-  private fun showRegion(
-    newView: View,
-    clickableArea: ImageWithRegions.LabeledRegion
-  ) {
+  private fun showOrHideRegion(newView: View, clickableArea: ImageWithRegions.LabeledRegion) {
     parentView.forEachIndexed { index: Int, tappedView: View ->
       // Remove any previously selected region excluding 0th index(image view)
       if (index > 0) {

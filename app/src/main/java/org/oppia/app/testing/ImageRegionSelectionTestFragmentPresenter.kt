@@ -1,9 +1,10 @@
 package org.oppia.app.testing
 
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.forEach
-import androidx.core.view.isVisible
-import kotlinx.android.synthetic.main.image_region_selection_test_activity.*
+import kotlinx.android.synthetic.main.image_region_selection_test_activity.view.*
 import org.oppia.app.R
 import org.oppia.app.model.ImageWithRegions.LabeledRegion
 import org.oppia.app.model.Point2d
@@ -12,29 +13,28 @@ import org.oppia.app.utility.OnClickableAreaClickedListener
 import javax.inject.Inject
 
 /** The presenter for [ImageRegionSelectionTestActivity] */
-class ImageRegionSelectionTestActivityPresenter @Inject constructor(
+class ImageRegionSelectionTestFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
 
-  fun handleOnCreate() {
-    activity.setContentView(R.layout.image_region_selection_test_activity)
-    with(activity) {
+  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+    val view = inflater.inflate(R.layout.image_region_selection_test_activity, container, false)
+    with(view) {
       val clickableAreas: List<LabeledRegion> = getClickableAreas()
       clickable_image_view.setClickableAreas(clickableAreas)
 
       val clickableAreasImage = ClickableAreasImage(
         clickable_image_view,
         image_parent_view,
-        this as OnClickableAreaClickedListener
+        activity as OnClickableAreaClickedListener
       )
-      clickable_image_view.addOnLayoutChangeListener { _, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->// ktlint-disable max-line-length
+      clickable_image_view.addOnLayoutChangeListener { _, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom -> // ktlint-disable max-line-length
         // Update the regions, as the bounds have changed
         if (left != oldLeft || top != oldTop || right != oldRight || bottom != oldBottom)
-          clickableAreasImage.addViews(
-            useSeparateRegionViews = clickable_image_view.isAccessibilityEnabled()
-          )
+          clickableAreasImage.addViews()
       }
     }
+    return view
   }
 
   private fun getClickableAreas(): List<LabeledRegion> {
