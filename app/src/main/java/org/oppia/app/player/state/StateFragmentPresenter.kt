@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -288,9 +289,15 @@ class StateFragmentPresenter @Inject constructor(
     if (ephemeralState.state.interaction.id == "DragAndDropSortInput") {
       viewModel.shouldSplitView.set(true)
       binding.rhsStateRecyclerView?.visibility = View.VISIBLE
+      val params = binding.centerGuideline?.layoutParams as ConstraintLayout.LayoutParams
+      params.guidePercent = 0.5f
+      binding.centerGuideline?.layoutParams = params
     } else {
       viewModel.shouldSplitView.set(false)
       binding.rhsStateRecyclerView?.visibility = View.GONE
+      val params = binding.centerGuideline?.layoutParams as ConstraintLayout.LayoutParams
+      params.guidePercent = 1f
+      binding.centerGuideline?.layoutParams = params
     }
 
     val isInNewState =
