@@ -4,15 +4,19 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.databinding.ContinueInteractionItemBinding
+import org.oppia.app.databinding.ContinueNavigationButtonItemBinding
 import org.oppia.app.databinding.DragDropInteractionItemBinding
 import org.oppia.app.databinding.FractionInteractionItemBinding
+import org.oppia.app.databinding.NextButtonItemBinding
 import org.oppia.app.databinding.NumericInputInteractionItemBinding
 import org.oppia.app.databinding.SelectionInteractionItemBinding
 import org.oppia.app.databinding.SubmitButtonItemBinding
 import org.oppia.app.databinding.TextInputInteractionItemBinding
 import org.oppia.app.player.state.itemviewmodel.ContinueInteractionViewModel
+import org.oppia.app.player.state.itemviewmodel.ContinueNavigationButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.DragAndDropSortInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
+import org.oppia.app.player.state.itemviewmodel.NextButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
@@ -26,6 +30,8 @@ private const val VIEW_TYPE_FRACTION_INPUT = 3
 private const val VIEW_TYPE_SELECTION = 4
 private const val VIEW_TYPE_NUMERIC_INPUT = 5
 private const val VIEW_TYPE_TEXT_INPUT = 6
+private const val VIEW_TYPE_CONTINUE_NAVIGATION_BUTTON = 7
+private const val VIEW_TYPE_NEXT_BUTTON = 8
 
 class RhsInteractionsAdapter(private val itemList: MutableList<StateItemViewModel>) :
   RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -94,6 +100,24 @@ class RhsInteractionsAdapter(private val itemList: MutableList<StateItemViewMode
         )
         TextInputViewHolder(binding)
       }
+      VIEW_TYPE_CONTINUE_NAVIGATION_BUTTON -> {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding = ContinueNavigationButtonItemBinding.inflate(
+          inflater,
+          parent,
+          false
+        )
+        ContinueNavigationButtonViewHolder(binding)
+      }
+      VIEW_TYPE_NEXT_BUTTON -> {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding = NextButtonItemBinding.inflate(
+          inflater,
+          parent,
+          false
+        )
+        NextButtonViewHolder(binding)
+      }
       else -> {
         throw IllegalArgumentException("Invalid view type: $viewType")
       }
@@ -127,6 +151,13 @@ class RhsInteractionsAdapter(private val itemList: MutableList<StateItemViewMode
       VIEW_TYPE_TEXT_INPUT -> {
         (holder as TextInputViewHolder).bind(itemList[position] as TextInputViewModel)
       }
+      VIEW_TYPE_CONTINUE_NAVIGATION_BUTTON -> {
+        (holder as ContinueNavigationButtonViewHolder)
+          .bind(itemList[position] as ContinueNavigationButtonViewModel)
+      }
+      VIEW_TYPE_NEXT_BUTTON -> {
+        (holder as NextButtonViewHolder).bind(itemList[position] as NextButtonViewModel)
+      }
     }
   }
 
@@ -152,6 +183,12 @@ class RhsInteractionsAdapter(private val itemList: MutableList<StateItemViewMode
       }
       is TextInputViewModel -> {
         VIEW_TYPE_TEXT_INPUT
+      }
+      is ContinueNavigationButtonViewModel -> {
+        VIEW_TYPE_CONTINUE_NAVIGATION_BUTTON
+      }
+      is NextButtonViewModel -> {
+        VIEW_TYPE_NEXT_BUTTON
       }
       else -> throw IllegalArgumentException(
         "Invalid type of data $position with item ${itemList[position]}"
@@ -205,6 +242,20 @@ class RhsInteractionsAdapter(private val itemList: MutableList<StateItemViewMode
     RecyclerView.ViewHolder(binding.root) {
     internal fun bind(textInputViewModel: TextInputViewModel) {
       binding.viewModel = textInputViewModel
+    }
+  }
+
+  class ContinueNavigationButtonViewHolder(val binding: ContinueNavigationButtonItemBinding) :
+    RecyclerView.ViewHolder(binding.root) {
+    internal fun bind(continueNavigationButtonViewModel: ContinueNavigationButtonViewModel) {
+      binding.buttonViewModel = continueNavigationButtonViewModel
+    }
+  }
+
+  class NextButtonViewHolder(val binding: NextButtonItemBinding) :
+    RecyclerView.ViewHolder(binding.root) {
+    internal fun bind(nextButtonViewModel: NextButtonViewModel) {
+      binding.buttonViewModel = nextButtonViewModel
     }
   }
 }

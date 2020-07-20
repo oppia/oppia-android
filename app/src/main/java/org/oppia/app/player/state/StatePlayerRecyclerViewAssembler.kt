@@ -173,7 +173,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     ephemeralState: EphemeralState,
     gcsEntityId: String
   ): Pair<List<StateItemViewModel>, List<StateItemViewModel>> {
-    Log.d("compute","--------------------------------------------------")
+    Log.d("compute", "--------------------------------------------------")
     val hasPreviousState = ephemeralState.hasPreviousState
 
     previousAnswerViewModels.clear()
@@ -195,7 +195,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       )
       if (playerFeatureSet.hintsAndSolutionsSupport) {
         hintHandler.maybeScheduleShowHint(ephemeralState.state, ephemeralState.pendingState)
-        Log.d("hints_support",true.toString())
+        Log.d("hints_support", true.toString())
       }
       if (playerFeatureSet.interactionSupport && !shouldSplit) {
         addInteractionForPendingState(
@@ -259,7 +259,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     )
     Log.d("left", leftPendingItemList.toString())
     Log.d("right", rightPendingItemList.toString())
-    Log.d("compute","--------------------------------------------------")
+    Log.d("compute", "--------------------------------------------------")
     return Pair(leftPendingItemList, rightPendingItemList)
   }
 
@@ -486,32 +486,73 @@ class StatePlayerRecyclerViewAssembler private constructor(
   ) {
     val hasPreviousButton = playerFeatureSet.backwardNavigation && hasPreviousState
     when {
-        hasGeneralContinueButton && playerFeatureSet.forwardNavigation -> {
-          Log.d("when", "A")
+      hasGeneralContinueButton && playerFeatureSet.forwardNavigation -> {
+        if (!shouldSplit) {
           pendingItemList += ContinueNavigationButtonViewModel(
-          hasPreviousButton,
-          previousNavigationButtonListener,
-          fragment as ContinueNavigationButtonListener
-        )
+            hasPreviousButton,
+            previousNavigationButtonListener,
+            fragment as ContinueNavigationButtonListener
+          )
+        } else {
+          rightPendingItemList += ContinueNavigationButtonViewModel(
+            false,
+            previousNavigationButtonListener,
+            fragment as ContinueNavigationButtonListener
+          )
+          if (hasPreviousButton) {
+            pendingItemList += PreviousButtonViewModel(
+              previousNavigationButtonListener
+            )
+          }
         }
+      }
       canContinueToNextState && playerFeatureSet.forwardNavigation -> {
         Log.d("when", "B")
-        pendingItemList += NextButtonViewModel(
-          hasPreviousButton,
-          previousNavigationButtonListener,
-          fragment as NextNavigationButtonListener
-        )
+        if (!shouldSplit) {
+          pendingItemList += NextButtonViewModel(
+            hasPreviousButton,
+            previousNavigationButtonListener,
+            fragment as NextNavigationButtonListener
+          )
+        } else {
+          rightPendingItemList += NextButtonViewModel(
+            false,
+            previousNavigationButtonListener,
+            fragment as NextNavigationButtonListener
+          )
+          if (hasPreviousButton) {
+            pendingItemList += PreviousButtonViewModel(
+              previousNavigationButtonListener
+            )
+          }
+        }
       }
       stateIsTerminal -> {
         Log.d("when", "C")
         if (playerFeatureSet.replaySupport) {
-          pendingItemList += ReplayButtonViewModel(fragment as ReplayButtonListener)
+          if (!shouldSplit) {
+            pendingItemList += ReplayButtonViewModel(fragment as ReplayButtonListener)
+          } else {
+            rightPendingItemList += ReplayButtonViewModel(fragment as ReplayButtonListener)
+          }
         }
         if (playerFeatureSet.returnToTopicNavigation) {
-          pendingItemList += ReturnToTopicButtonViewModel(
-            hasPreviousButton, previousNavigationButtonListener,
-            fragment as ReturnToTopicNavigationButtonListener
-          )
+          if (!shouldSplit) {
+            pendingItemList += ReturnToTopicButtonViewModel(
+              hasPreviousButton, previousNavigationButtonListener,
+              fragment as ReturnToTopicNavigationButtonListener
+            )
+          } else {
+            rightPendingItemList += ReturnToTopicButtonViewModel(
+              false, previousNavigationButtonListener,
+              fragment as ReturnToTopicNavigationButtonListener
+            )
+            if (hasPreviousButton) {
+              pendingItemList += PreviousButtonViewModel(
+                previousNavigationButtonListener
+              )
+            }
+          }
         }
       }
       doesMostRecentInteractionRequireExplicitSubmission(pendingItemList) &&
@@ -537,10 +578,15 @@ class StatePlayerRecyclerViewAssembler private constructor(
         }
         rightPendingItemList += SubmitButtonViewModel(
           canSubmitAnswer,
-          hasPreviousButton,
+          false,
           previousNavigationButtonListener,
           fragment as SubmitNavigationButtonListener
         )
+        if (hasPreviousButton) {
+          pendingItemList += PreviousButtonViewModel(
+            previousNavigationButtonListener
+          )
+        }
       }
       // Otherwise, just show the previous button since the interaction itself will push the answer
       // submission.
