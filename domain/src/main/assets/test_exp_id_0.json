@@ -88,7 +88,7 @@
         "classifier_model_id": null,
         "content": {
           "audio_translations": {},
-          "html": "<div>Let <oppia-noninteractive-math raw_latex-with-value=\"&quot;x=11&quot;\"></oppia-noninteractive-math>. What is the value of <oppia-noninteractive-math raw_latex-with-value=\"&quot;x^2&quot;\"></oppia-noninteractive-math>?</div><div><br></div>"
+          "html": "What is the value of 11 times 11?"
         },
         "interaction": {
           "answer_groups": [

@@ -87,7 +87,7 @@
         "classifier_model_id": null,
         "content": {
           "audio_translations": {},
-          "html": "<div>Let <oppia-noninteractive-math raw_latex-with-value=\"&quot;x=11&quot;\"></oppia-noninteractive-math>. What is the value of <oppia-noninteractive-math raw_latex-with-value=\"&quot;x^2&quot;\"></oppia-noninteractive-math>?</div><div><br></div>"
+          "html": "What is the value of 11 times 11?"
         },
         "interaction": {
           "answer_groups": [
@@ -222,12 +222,12 @@
           "answer_groups": [
             {
               "outcome": {
-                "dest": "NumberInput",
+                "dest": "Estimate 100",
                 "labelled_as_correct": false,
                 "param_changes": [],
                 "feedback": {
                   "content_id": "feedback_1",
-                  "html": ""
+                  "html": "<b>Correct!</b>"
                 },
                 "missing_prerequisite_skill_id": null,
                 "refresher_exploration_id": null
