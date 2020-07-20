@@ -7,7 +7,7 @@ android_sdk_repository(
     build_tools_version = "28.0.2",
 )
 
-#Add support for JVM rules: https://github.com/bazelbuild/rules_jvm_external
+# Add support for JVM rules: https://github.com/bazelbuild/rules_jvm_external
 RULES_JVM_EXTERNAL_TAG = "2.9"
 RULES_JVM_EXTERNAL_SHA = "e5b97a31a3e8feed91636f42e19b11c49487b85e5de2f387c999ea14d77c7f45"
 http_archive(
