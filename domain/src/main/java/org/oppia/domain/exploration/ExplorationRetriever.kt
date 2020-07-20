@@ -5,7 +5,6 @@ import org.oppia.app.model.Exploration
 import org.oppia.app.model.State
 import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.domain.util.StateRetriever
-import org.oppia.util.logging.ExceptionLogger
 import javax.inject.Inject
 
 // TODO(#59): Make this class inaccessible outside of the domain package except for tests. UI code should not be allowed
@@ -14,8 +13,7 @@ import javax.inject.Inject
 /** Internal class for actually retrieving an exploration object for uses in domain controllers. */
 class ExplorationRetriever @Inject constructor(
   private val jsonAssetRetriever: JsonAssetRetriever,
-  private val stateRetriever: StateRetriever,
-  private val exceptionLogger: ExceptionLogger
+  private val stateRetriever: StateRetriever
 ) {
   // TODO(#169): Force callers of this method on a background thread.
   /** Loads and returns an exploration for the specified exploration ID, or fails. */
