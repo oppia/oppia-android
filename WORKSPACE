@@ -69,21 +69,25 @@ load("@robolectric//bazel:robolectric.bzl", "robolectric_repositories")
 robolectric_repositories()
 
 #Add support for Firebase Crashlytics
+
 git_repository(
     name = "tools_android",
     commit = "00e6f4b7bdd75911e33c618a9bc57bab7a6e8930",
     remote = "https://github.com/bazelbuild/tools_android"
 )
+
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_workspace_dependencies")
 google_services_workspace_dependencies()
 
+#TODO: Remove unused dependencies once android_local_test errors are resolved
 maven_install(
     artifacts = DAGGER_ARTIFACTS + [
         "org.robolectric:robolectric:4.2",
         "androidx.appcompat:appcompat:1.0.2",
+        "com.android.support:support-annotations:28.0.0",
         "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.2",
         "androidx.core:core-ktx:1.0.1",
-        "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2",#
+        "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2",
         "junit:junit:4.12",
         "com.github.bumptech.glide:glide:4.11.0",
         "com.github.bumptech.glide:compiler:4.11.0",
@@ -91,6 +95,8 @@ maven_install(
         "com.crashlytics.sdk.android:crashlytics:2.9.8",
         "io.fabric.sdk.android:fabric:1.4.7",
         "com.google.gms:google-services:4.3.3",
+        "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03",
+        "com.google.firebase:firebase-analytics-ktx:17.4.2",
     ],
     repositories = DAGGER_REPOSITORIES + [
         "https://maven.google.com",

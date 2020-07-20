@@ -1,6 +1,8 @@
 load("@rules_proto//proto:defs.bzl", "proto_library")
 load("//model:src/main/proto/preprocess_protos.bzl", "process")
 
+package(default_visibility = ["//visibility:public"])
+
 proto_library(
     name = "proto_lib",
     srcs = ["src/main/proto/event_logger.proto",
