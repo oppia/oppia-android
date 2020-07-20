@@ -83,18 +83,18 @@ val TOPIC_FILE_ASSOCIATIONS = mapOf(
     "test_topic_id_1.json"
   ),
   FRACTIONS_TOPIC_ID to listOf(
-    "fractions_exploration0.json",
-    "fractions_exploration1.json",
+    "umPkwp0L1M0-.json",
+    "MjZzEVOG47_1.json",
     "fractions_questions.json",
     "fractions_skills.json",
     "wANbh4oOClga.json",
     "GJ2rLXRKD5hw.json"
   ),
   RATIOS_TOPIC_ID to listOf(
-    "ratios_exploration0.json",
-    "ratios_exploration1.json",
-    "ratios_exploration2.json",
-    "ratios_exploration3.json",
+    "2mzzFVDLuAj8.json",
+    "5NWuolNcwH6e.json",
+    "k2bQ7z5XHNbK.json",
+    "tIoSb3HZFN6e.json",
     "ratios_questions.json",
     "ratios_skills.json",
     "wAMdg4oOClga.json",

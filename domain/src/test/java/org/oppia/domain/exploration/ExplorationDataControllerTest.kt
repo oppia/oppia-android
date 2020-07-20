@@ -63,6 +63,7 @@ import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
+import java.io.FileNotFoundException
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -288,8 +289,10 @@ class ExplorationDataControllerTest {
       explorationDataController.getExplorationById("NON_EXISTENT_TEST")
     advanceUntilIdle()
     explorationLiveData.observeForever(mockExplorationObserver)
-    verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
-    assertThat(explorationResultCaptor.value.isFailure()).isTrue()
+
+    val exception = fakeExceptionLogger.getMostRecentException()
+    assertThat(exception).isInstanceOf(FileNotFoundException::class.java)
+    assertThat(exception).hasMessageThat().contains("NON_EXISTENT_TEST.json")
   }
 
   @Test
@@ -299,10 +302,10 @@ class ExplorationDataControllerTest {
       explorationDataController.getExplorationById("NON_EXISTENT_TEST")
     advanceUntilIdle()
     explorationLiveData.observeForever(mockExplorationObserver)
-    val exception = fakeExceptionLogger.getMostRecentException()
 
-    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
-    assertThat(exception).hasMessageThat().contains("Invalid exploration ID: NON_EXISTENT_TEST")
+    val exception = fakeExceptionLogger.getMostRecentException()
+    assertThat(exception).isInstanceOf(FileNotFoundException::class.java)
+    assertThat(exception).hasMessageThat().contains("NON_EXISTENT_TEST.json")
   }
 
   @Test
