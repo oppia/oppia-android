@@ -204,6 +204,7 @@ class AnalyticsController @Inject constructor(
             .addEventLog(eventLog)
             .build()
         } else {
+          // TODO (#1433): Refactoring for logging exceptions to both console and exception loggers.
           val exception =
             NullPointerException("Least Recent Event index absent -- EventLogCacheStoreSize is 0")
           consoleLogger.e("Analytics Controller", exception.toString())

@@ -33,6 +33,7 @@ import org.oppia.app.model.EventLog.Context.ActivityContextCase.TOPIC_CONTEXT
 import org.oppia.app.model.EventLog.EventAction
 import org.oppia.app.model.EventLog.Priority
 import org.oppia.app.model.OppiaEventLogs
+import org.oppia.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.testing.FakeEventLogger
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
@@ -107,6 +108,7 @@ class AnalyticsControllerTest {
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
       .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
+    // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
     assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
       .isEqualTo(QUESTION_CONTEXT)
@@ -127,6 +129,7 @@ class AnalyticsControllerTest {
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
       .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
+    // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
     assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
       .isEqualTo(EXPLORATION_CONTEXT)
@@ -143,6 +146,7 @@ class AnalyticsControllerTest {
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
       .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
+    // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
     assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
       .isEqualTo(TOPIC_CONTEXT)
@@ -159,6 +163,7 @@ class AnalyticsControllerTest {
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
       .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
+    // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
     assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
       .isEqualTo(STORY_CONTEXT)
@@ -175,6 +180,7 @@ class AnalyticsControllerTest {
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
       .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
+    // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
     assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
       .isEqualTo(REVISION_CARD_CONTEXT)
@@ -191,6 +197,7 @@ class AnalyticsControllerTest {
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
       .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
+    // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
     assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
       .isEqualTo(CONCEPT_CARD_CONTEXT)
@@ -207,6 +214,7 @@ class AnalyticsControllerTest {
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
       .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
+    // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
     assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
       .isEqualTo(ACTIVITYCONTEXT_NOT_SET)
@@ -228,6 +236,7 @@ class AnalyticsControllerTest {
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
       .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
+    // OPTIONAL priority confirms that the event logged is a click event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
     assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
       .isEqualTo(QUESTION_CONTEXT)
@@ -248,6 +257,7 @@ class AnalyticsControllerTest {
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
       .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
+    // OPTIONAL priority confirms that the event logged is a click event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
     assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
       .isEqualTo(EXPLORATION_CONTEXT)
@@ -264,6 +274,7 @@ class AnalyticsControllerTest {
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
       .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
+    // OPTIONAL priority confirms that the event logged is a click event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
     assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
       .isEqualTo(TOPIC_CONTEXT)
@@ -280,6 +291,7 @@ class AnalyticsControllerTest {
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
       .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
+    // OPTIONAL priority confirms that the event logged is a click event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
     assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
       .isEqualTo(STORY_CONTEXT)
@@ -296,6 +308,7 @@ class AnalyticsControllerTest {
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
       .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
+    // OPTIONAL priority confirms that the event logged is a click event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
     assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
       .isEqualTo(REVISION_CARD_CONTEXT)
@@ -312,6 +325,7 @@ class AnalyticsControllerTest {
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
       .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
+    // OPTIONAL priority confirms that the event logged is a click event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
     assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
       .isEqualTo(CONCEPT_CARD_CONTEXT)
@@ -328,6 +342,7 @@ class AnalyticsControllerTest {
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
       .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
+    // OPTIONAL priority confirms that the event logged is a click event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
     assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
       .isEqualTo(ACTIVITYCONTEXT_NOT_SET)
@@ -398,6 +413,8 @@ class AnalyticsControllerTest {
     assertThat(eventContext.revisionCardContext.subTopicId).matches(TEST_SUB_TOPIC_ID)
   }
 
+  // TODO(#1106): Addition of tests tracking behaviour of the controller after uploading of logs to the remote service.
+
   @ExperimentalCoroutinesApi
   @InternalCoroutinesApi
   @Test
@@ -423,6 +440,7 @@ class AnalyticsControllerTest {
     ).onChanged(oppiaEventLogsResultCaptor.capture())
 
     val eventLog = oppiaEventLogsResultCaptor.value.getOrThrow().getEventLog(0)
+    // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(eventLog.priority).isEqualTo(Priority.ESSENTIAL)
     assertThat(eventLog.context.activityContextCase).isEqualTo(QUESTION_CONTEXT)
     assertThat(eventLog.timestamp).isEqualTo(TEST_TIMESTAMP)
@@ -454,6 +472,7 @@ class AnalyticsControllerTest {
     ).onChanged(oppiaEventLogsResultCaptor.capture())
 
     val eventLog = oppiaEventLogsResultCaptor.value.getOrThrow().getEventLog(0)
+    // OPTIONAL priority confirms that the event logged is a click event.
     assertThat(eventLog.priority).isEqualTo(Priority.OPTIONAL)
     assertThat(eventLog.context.activityContextCase).isEqualTo(QUESTION_CONTEXT)
     assertThat(eventLog.timestamp).isEqualTo(TEST_TIMESTAMP)
@@ -516,7 +535,9 @@ class AnalyticsControllerTest {
     val firstEventLog = oppiaEventLogsResultCaptor.value.getOrThrow().getEventLog(0)
     val secondEventLog = oppiaEventLogsResultCaptor.value.getOrThrow().getEventLog(1)
 
+    // OPTIONAL priority confirms that the event logged is a click event.
     assertThat(firstEventLog.priority).isEqualTo(Priority.OPTIONAL)
+    // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(secondEventLog.priority).isEqualTo(Priority.ESSENTIAL)
   }
 
@@ -557,11 +578,13 @@ class AnalyticsControllerTest {
     val uploadedEventLog = fakeEventLogger.getMostRecentEvent()
     val cachedEventLog = oppiaEventLogsResultCaptor.value.getOrThrow().getEventLog(0)
 
+    // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(uploadedEventLog.priority).isEqualTo(Priority.ESSENTIAL)
     assertThat(uploadedEventLog.context.activityContextCase).isEqualTo(QUESTION_CONTEXT)
     assertThat(uploadedEventLog.timestamp).isEqualTo(TEST_TIMESTAMP)
     assertThat(uploadedEventLog.actionName).isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
 
+    // OPTIONAL priority confirms that the event logged is a click event.
     assertThat(cachedEventLog.priority).isEqualTo(Priority.OPTIONAL)
     assertThat(cachedEventLog.context.activityContextCase).isEqualTo(QUESTION_CONTEXT)
     assertThat(cachedEventLog.timestamp).isEqualTo(TEST_TIMESTAMP)
@@ -587,8 +610,13 @@ class AnalyticsControllerTest {
     val secondEventLog = oppiaEventLogsResultCaptor.value.getOrThrow().getEventLog(1)
     val eventLogStoreSize = oppiaEventLogsResultCaptor.value.getOrThrow().eventLogList.size
     assertThat(eventLogStoreSize).isEqualTo(2)
+    // In this case, 3 ESSENTIAL and 1 OPTIONAL event was logged. So while pruning, none of the retained logs should have OPTIONAL priority.
     assertThat(firstEventLog.priority).isNotEqualTo(Priority.OPTIONAL)
     assertThat(secondEventLog.priority).isNotEqualTo(Priority.OPTIONAL)
+    // If we analyse the implementation of logMultipleEvents(), we can see that record pruning will begin from the logging of the third record.
+    // At first, the second event log will be removed as it has OPTIONAL priority and the event logged at the third place will become the event record at the second place in the store.
+    // When the forth event gets logged then the pruning will be purely based on timestamp of the event as both event logs have ESSENTIAL priority.
+    // As the third event's timestamp was lesser than that of the first event, it will be pruned from the store and the forth event will become the second event in the store.
     assertThat(firstEventLog.timestamp).isEqualTo(1556094120000)
     assertThat(secondEventLog.timestamp).isEqualTo(1556094100000)
   }
@@ -673,13 +701,11 @@ class AnalyticsControllerTest {
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
   }
 
-  @Qualifier
-  annotation class EventLogStorageCacheSize
-
   @Module
   class TestLogStorageModule {
+
     @Provides
-    @org.oppia.domain.oppialogger.EventLogStorageCacheSize
+    @EventLogStorageCacheSize
     fun provideEventLogStorageCacheSize(): Int = 2
   }
 
