@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -22,6 +23,7 @@ import org.oppia.app.model.Hint
 import org.oppia.app.model.Solution
 import org.oppia.app.model.State
 import org.oppia.app.model.UserAnswer
+import org.oppia.app.player.state.RhsInteractionsAdapter
 import org.oppia.app.player.state.StatePlayerRecyclerViewAssembler
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.stopplaying.RestartPlayingSessionListener
@@ -61,6 +63,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private lateinit var recyclerViewAssembler: StatePlayerRecyclerViewAssembler
   private lateinit var questionId: String
   private lateinit var currentQuestionState: State
+  private lateinit var rhsInteractionsAdapter: RhsInteractionsAdapter
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = QuestionPlayerFragmentBinding.inflate(
@@ -216,11 +219,32 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
     currentQuestionState = ephemeralQuestion.ephemeralState.state
 
+    if (ephemeralQuestion.ephemeralState.state.interaction.id == "DragAndDropSortInput") {
+      questionViewModel.shouldSplitView.set(true)
+      binding.rightQuestionRecyclerView?.visibility = View.VISIBLE
+      val params = binding.centerGuideline?.layoutParams as ConstraintLayout.LayoutParams
+      params.guidePercent = 0.5f
+      binding.centerGuideline?.layoutParams = params
+    } else {
+      questionViewModel.shouldSplitView.set(false)
+      binding.rightQuestionRecyclerView?.visibility = View.GONE
+      val params = binding.centerGuideline?.layoutParams as ConstraintLayout.LayoutParams
+      params.guidePercent = 1f
+      binding.centerGuideline?.layoutParams = params
+    }
+
     questionViewModel.itemList.clear()
     questionViewModel.itemList += recyclerViewAssembler.compute(
       ephemeralQuestion.ephemeralState,
       skillId
     ).first
+    questionViewModel.rightItemList.clear()
+    questionViewModel.rightItemList += recyclerViewAssembler.compute(
+      ephemeralQuestion.ephemeralState,
+      skillId
+    ).second
+    rhsInteractionsAdapter = RhsInteractionsAdapter(questionViewModel.rightItemList)
+    binding.rightQuestionRecyclerView?.adapter = rhsInteractionsAdapter
   }
 
   private fun updateProgress(currentQuestionIndex: Int, questionCount: Int) {

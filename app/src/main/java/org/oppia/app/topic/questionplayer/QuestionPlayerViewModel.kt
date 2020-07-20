@@ -14,6 +14,10 @@ import javax.inject.Inject
 /** [ObservableViewModel] for the question player. */
 class QuestionPlayerViewModel @Inject constructor() : ObservableViewModel() {
   val itemList: ObservableList<StateItemViewModel> = ObservableArrayList<StateItemViewModel>()
+  val rightItemList: ObservableList<StateItemViewModel> = ObservableArrayList()
+
+  val shouldSplitView = ObservableField(false)
+
   val questionCount = ObservableField(0)
   val currentQuestion = ObservableField(0)
   val progressPercentage = ObservableField(0)
@@ -46,8 +50,13 @@ class QuestionPlayerViewModel @Inject constructor() : ObservableViewModel() {
   private fun getPendingAnswerWithoutError(
     recyclerViewAssembler: StatePlayerRecyclerViewAssembler
   ): UserAnswer? {
+    val items = if (shouldSplitView.get() == true) {
+      rightItemList
+    } else {
+      itemList
+    }
     val answerHandler = recyclerViewAssembler
-      .getPendingAnswerHandler(itemList)
+      .getPendingAnswerHandler(items)
     return if (answerHandler?.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME) == null) {
       answerHandler?.getPendingAnswer()
     } else {
