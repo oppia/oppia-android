@@ -1,583 +1,224 @@
 {
-  "correctness_feedback_enabled": false,
-  "exploration_id": "test_exp_id_4",
-  "states": {
-    "End": {
-      "param_changes": [],
-      "classifier_model_id": null,
-      "content": {
-        "content_id": "content",
-        "html": "<p>This is the end&nbsp;</p>"
-      },
-      "interaction": {
-        "answer_groups": [],
-        "default_outcome": null,
-        "customization_args": {
-          "recommendedExplorationIds": {
-            "value": []
+  "exploration": {
+    "states": {
+      "End": {
+        "param_changes": [],
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "<p>This is the end&nbsp;</p>"
+        },
+        "interaction": {
+          "answer_groups": [],
+          "default_outcome": null,
+          "customization_args": {
+            "recommendedExplorationIds": {
+              "value": []
+            }
+          },
+          "id": "EndExploration",
+          "solution": null,
+          "confirmed_unclassified_answers": [],
+          "hints": []
+        },
+        "solicit_answer_details": false,
+        "written_translations": {
+          "translations_mapping": {
+            "content": {}
           }
         },
-        "id": "EndExploration",
-        "solution": null,
-        "confirmed_unclassified_answers": [],
-        "hints": []
-      },
-      "solicit_answer_details": false,
-      "written_translations": {
-        "translations_mapping": {
-          "content": {}
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {}
+          }
         }
       },
-      "recorded_voiceovers": {
-        "voiceovers_mapping": {
-          "content": {}
+      "DragDropSortInput": {
+        "param_changes": [],
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "<p>Rearrange the following sentence in the correct order:</p>"
+        },
+        "interaction": {
+          "answer_groups": [
+            {
+              "tagged_skill_misconception_id": null,
+              "rule_specs": [
+                {
+                  "rule_type": "IsEqualToOrdering",
+                  "inputs": {
+                    "x": [
+                      [
+                        "<p>yesterday</p>"
+                      ],
+                      [
+                        "<p>I bought</p>"
+                      ],
+                      [
+                        "<p>a camera at the store</p>"
+                      ]
+                    ]
+                  }
+                }
+              ],
+              "training_data": [],
+              "outcome": {
+                "labelled_as_correct": false,
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "feedback": {
+                  "content_id": "feedback_1",
+                  "html": "<p>Yay.This is correct</p>"
+                },
+                "param_changes": [],
+                "dest": "End"
+              }
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "rule_specs": [
+                {
+                  "rule_type": "HasElementXAtPositionY",
+                  "inputs": {
+                    "y": 4,
+                    "x": "<p>I bought</p>"
+                  }
+                }
+              ],
+              "training_data": [],
+              "outcome": {
+                "labelled_as_correct": false,
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "feedback": {
+                  "content_id": "feedback_2",
+                  "html": "<p>This doesn't seems right</p>"
+                },
+                "param_changes": [],
+                "dest": "DragDropSortInput"
+              }
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "rule_specs": [
+                {
+                  "rule_type": "HasElementXBeforeElementY",
+                  "inputs": {
+                    "y": "<p>to photograph the parade.</p>",
+                    "x": "<p>I bought</p>"
+                  }
+                }
+              ],
+              "training_data": [],
+              "outcome": {
+                "labelled_as_correct": false,
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "feedback": {
+                  "content_id": "feedback_3",
+                  "html": "<p>Look likes you inverted the order</p>"
+                },
+                "param_changes": [],
+                "dest": "DragDropSortInput"
+              }
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "rule_specs": [
+                {
+                  "rule_type": "IsEqualToOrderingWithOneItemAtIncorrectPosition",
+                  "inputs": {
+                    "x": [
+                      [
+                        "<p>I bought</p>"
+                      ],
+                      [
+                        "<p>a camera at the store</p>"
+                      ],
+                      [
+                        "<p>yesterday</p>"
+                      ],
+                      [
+                        "<p>to photograph the parade.</p>"
+                      ]
+                    ]
+                  }
+                }
+              ],
+              "training_data": [],
+              "outcome": {
+                "labelled_as_correct": false,
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "feedback": {
+                  "content_id": "feedback_4",
+                  "html": "<p>Sentence does not make any sense</p>"
+                },
+                "param_changes": [],
+                "dest": "DragDropSortInput"
+              }
+            }
+          ],
+          "default_outcome": {
+            "labelled_as_correct": false,
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>This is incorrect please try again</p>"
+            },
+            "param_changes": [],
+            "dest": "DragDropSortInput"
+          },
+          "customization_args": {
+            "allowMultipleItemsInSamePosition": {
+              "value": true
+            },
+            "choices": {
+              "value": [
+                "<p>I bought</p>",
+                "<p>a camera at the store</p>",
+                "<p>yesterday</p>",
+                "<p>to photograph the parade.</p>"
+              ]
+            }
+          },
+          "id": "DragAndDropSortInput",
+          "solution": null,
+          "confirmed_unclassified_answers": [],
+          "hints": []
+        },
+        "solicit_answer_details": false,
+        "written_translations": {
+          "translations_mapping": {
+            "feedback_4": {},
+            "feedback_1": {},
+            "feedback_2": {},
+            "feedback_3": {},
+            "default_outcome": {},
+            "content": {}
+          }
+        },
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "feedback_4": {},
+            "feedback_1": {},
+            "feedback_2": {},
+            "feedback_3": {},
+            "default_outcome": {},
+            "content": {}
+          }
         }
       }
     },
-    "Numeric input": {
-      "classifier_model_id": null,
-      "content": {
-        "audio_translations": {},
-        "html": "<div>Let <oppia-noninteractive-math raw_latex-with-value=\"&quot;x=11&quot;\"></oppia-noninteractive-math>. What is the value of <oppia-noninteractive-math raw_latex-with-value=\"&quot;x^2&quot;\"></oppia-noninteractive-math>?</div><div><br></div>"
-      },
-      "interaction": {
-        "answer_groups": [
-          {
-            "outcome": {
-              "dest": "DragDropSortInput",
-              "feedback": "Yes, that's correct: 11 times 11 is 121.",
-              "labelled_as_correct": false,
-              "param_changes": []
-            },
-            "rule_specs": [
-              {
-                "inputs": {
-                  "x": 121
-                },
-                "rule_type": "Equals"
-              }
-            ]
-          },
-          {
-            "outcome": {
-              "dest": "Numeric input",
-              "feedback": "You are actually very close. Think about the last digit of the answer; what must it be? Then you should be able to get it in one or two more goes.",
-              "labelled_as_correct": false,
-              "param_changes": []
-            },
-            "rule_specs": [
-              {
-                "inputs": {
-                  "tol": 9,
-                  "x": 121
-                },
-                "rule_type": "IsWithinTolerance"
-              }
-            ]
-          },
-          {
-            "outcome": {
-              "dest": "Numeric input",
-              "feedback": "That's too high! Try guessing lower.",
-              "labelled_as_correct": false,
-              "param_changes": []
-            },
-            "rule_specs": [
-              {
-                "inputs": {
-                  "x": 121
-                },
-                "rule_type": "IsGreaterThan"
-              }
-            ]
-          },
-          {
-            "outcome": {
-              "dest": "Numeric input",
-              "feedback": "That's not large enough. Try guessing higher?",
-              "labelled_as_correct": false,
-              "param_changes": []
-            },
-            "rule_specs": [
-              {
-                "inputs": {
-                  "x": 121
-                },
-                "rule_type": "IsLessThan"
-              }
-            ]
-          }
-        ],
-        "confirmed_unclassified_answers": [],
-        "customization_args": {},
-        "default_outcome": {
-          "dest": "Numeric input",
-          "feedback": "If you got here, something's gone a bit wrong with this exploration. Sorry about that. If you're wondering, the answer is 121.",
-          "param_changes": [],
-          "labelled_as_correct": false
-        },
-        "hints": [],
-        "id": "NumericInput",
-        "solution": null
-      },
-      "param_changes": []
-    },
-    "DragDropSortInput": {
-      "param_changes": [],
-      "classifier_model_id": null,
-      "content": {
-        "content_id": "content",
-        "html": "<p>Rearrange the following sentence in the correct order:</p>"
-      },
-      "interaction": {
-        "answer_groups": [
-          {
-            "tagged_skill_misconception_id": null,
-            "rule_specs": [
-              {
-                "rule_type": "IsEqualToOrdering",
-                "inputs": {
-                  "x": [
-                    [
-                      "<p>yesterday</p>"
-                    ],
-                    [
-                      "<p>I bought</p>"
-                    ],
-                    [
-                      "<p>a camera at the store</p>"
-                    ],
-                    [
-                      "<p>to photograph the parade.</p>"
-                    ]
-                  ]
-                }
-              }
-            ],
-            "training_data": [],
-            "outcome": {
-              "labelled_as_correct": false,
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null,
-              "feedback": {
-                "content_id": "feedback_1",
-                "html": "<p>Yay.This is correct</p>"
-              },
-              "param_changes": [],
-              "dest": "What language"
-            }
-          },
-          {
-            "tagged_skill_misconception_id": null,
-            "rule_specs": [
-              {
-                "rule_type": "HasElementXAtPositionY",
-                "inputs": {
-                  "y": 4,
-                  "x": "<p>I bought</p>"
-                }
-              }
-            ],
-            "training_data": [],
-            "outcome": {
-              "labelled_as_correct": false,
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null,
-              "feedback": {
-                "content_id": "feedback_2",
-                "html": "<p>This doesn't seems right</p>"
-              },
-              "param_changes": [],
-              "dest": "DragDropSortInput"
-            }
-          },
-          {
-            "tagged_skill_misconception_id": null,
-            "rule_specs": [
-              {
-                "rule_type": "HasElementXBeforeElementY",
-                "inputs": {
-                  "y": "<p>to photograph the parade.</p>",
-                  "x": "<p>I bought</p>"
-                }
-              }
-            ],
-            "training_data": [],
-            "outcome": {
-              "labelled_as_correct": false,
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null,
-              "feedback": {
-                "content_id": "feedback_3",
-                "html": "<p>Look likes you inverted the order</p>"
-              },
-              "param_changes": [],
-              "dest": "DragDropSortInput"
-            }
-          },
-          {
-            "tagged_skill_misconception_id": null,
-            "rule_specs": [
-              {
-                "rule_type": "IsEqualToOrderingWithOneItemAtIncorrectPosition",
-                "inputs": {
-                  "x": [
-                    [
-                      "<p>I bought</p>"
-                    ],
-                    [
-                      "<p>a camera at the store</p>"
-                    ],
-                    [
-                      "<p>yesterday</p>"
-                    ],
-                    [
-                      "<p>to photograph the parade.</p>"
-                    ]
-                  ]
-                }
-              }
-            ],
-            "training_data": [],
-            "outcome": {
-              "labelled_as_correct": false,
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null,
-              "feedback": {
-                "content_id": "feedback_4",
-                "html": "<p>Sentence does not make any sense</p>"
-              },
-              "param_changes": [],
-              "dest": "DragDropSortInput"
-            }
-          }
-        ],
-        "default_outcome": {
-          "labelled_as_correct": false,
-          "refresher_exploration_id": null,
-          "missing_prerequisite_skill_id": null,
-          "feedback": {
-            "content_id": "default_outcome",
-            "html": "<p>This is incorrect please try again</p>"
-          },
-          "param_changes": [],
-          "dest": "DragDropSortInput"
-        },
-        "customization_args": {
-          "allowMultipleItemsInSamePosition": {
-            "value": true
-          },
-          "choices": {
-            "value": [
-              "<p>I bought</p>",
-              "<p>a camera at the store</p>",
-              "<p>yesterday</p>",
-              "<p>to photograph the parade.</p>"
-            ]
-          }
-        },
-        "id": "DragAndDropSortInput",
-        "solution": null,
-        "confirmed_unclassified_answers": [],
-        "hints": []
-      },
-      "solicit_answer_details": false,
-      "written_translations": {
-        "translations_mapping": {
-          "feedback_4": {},
-          "feedback_1": {},
-          "feedback_2": {},
-          "feedback_3": {},
-          "default_outcome": {},
-          "content": {}
-        }
-      },
-      "recorded_voiceovers": {
-        "voiceovers_mapping": {
-          "feedback_4": {},
-          "feedback_1": {},
-          "feedback_2": {},
-          "feedback_3": {},
-          "default_outcome": {},
-          "content": {}
-        }
-      }
-    },
-    "What language": {
-      "classifier_model_id": null,
-      "content": {
-        "audio_translations": {},
-        "html": "In fact, the word Oppia means 'learn'. Can you guess which language it comes from?<br><br><oppia-noninteractive-tabs tab_contents-with-value=\"[{&quot;content&quot;:&quot;Here are some hints. The first hint narrows down the continent, the second tells you the geographical region, and the last gives away the answer.&lt;br&gt;&quot;,&quot;title&quot;:&quot;Hints&quot;},{&quot;content&quot;:&quot;This language is spoken in a European country.&lt;br&gt;&quot;,&quot;title&quot;:&quot;Hint 1&quot;},{&quot;content&quot;:&quot;This country is located in Northern Europe.&lt;br&gt;&quot;,&quot;title&quot;:&quot;Hint 2&quot;},{&quot;content&quot;:&quot;Oppia is a Finnish word.&lt;br&gt;&quot;,&quot;title&quot;:&quot;Hint 3&quot;}]\"></oppia-noninteractive-tabs><br>"
-      },
-      "interaction": {
-        "answer_groups": [
-          {
-            "outcome": {
-              "dest": "What language",
-              "feedback": "That's a pretty good guess. Several Greek words end with 'ia', such as 'thexia' and 'paralia'. But Oppia is not a Greek word, though it's from a country that's not too far away. Try again?",
-              "labelled_as_correct": false,
-              "param_changes": []
-            },
-            "rule_specs": [
-              {
-                "inputs": {
-                  "x": "greek"
-                },
-                "rule_type": "Equals"
-              }
-            ]
-          },
-          {
-            "outcome": {
-              "dest": "What language",
-              "feedback": "There is indeed an ancient Roman law named Lex Oppia, which was instituted by Gaius Oppius, a friend of Julius Caesar. But this isn't where our word comes from, and Oppius isn't the language (or person) that we're looking for. (Please feel free to search on the Web for the answer, by the way; this is admittedly a factual question which not many people will know the answer to.)",
-              "labelled_as_correct": false,
-              "param_changes": []
-            },
-            "rule_specs": [
-              {
-                "inputs": {
-                  "x": "roman"
-                },
-                "rule_type": "Contains"
-              }
-            ]
-          },
-          {
-            "outcome": {
-              "dest": "What language",
-              "feedback": "There is indeed an ancient Roman law named Lex Oppia, which was instituted by Gaius Oppius, a friend of Julius Caesar. But this isn't where our word comes from, and Oppius isn't the language (or person) that we're looking for. (Please feel free to search on the Web for the answer, by the way; this is admittedly a factual question which not many people will know the answer to.)",
-              "labelled_as_correct": false,
-              "param_changes": []
-            },
-            "rule_specs": [
-              {
-                "inputs": {
-                  "x": "latin"
-                },
-                "rule_type": "Contains"
-              }
-            ]
-          },
-          {
-            "outcome": {
-              "dest": "What language",
-              "feedback": "That's not it, alas. But you're very close! Oppia is indeed a Nordic word, but it's not from Sweden.",
-              "labelled_as_correct": false,
-              "param_changes": []
-            },
-            "rule_specs": [
-              {
-                "inputs": {
-                  "x": "Swedish"
-                },
-                "rule_type": "Equals"
-              }
-            ]
-          },
-          {
-            "outcome": {
-              "dest": "What language",
-              "feedback": "Oops, I was unclear, sorry. I meant: type 'translate oppia' into a search engine, such as Google.",
-              "labelled_as_correct": false,
-              "param_changes": []
-            },
-            "rule_specs": [
-              {
-                "inputs": {
-                  "x": "translate oppia"
-                },
-                "rule_type": "Contains"
-              }
-            ]
-          },
-          {
-            "outcome": {
-              "dest": "What language",
-              "feedback": "Not quite; that's actually the opposite of 'start'. Check your spelling!",
-              "labelled_as_correct": false,
-              "param_changes": []
-            },
-            "rule_specs": [
-              {
-                "inputs": {
-                  "x": "finish"
-                },
-                "rule_type": "Equals"
-              }
-            ]
-          },
-          {
-            "outcome": {
-              "dest": "End",
-              "feedback": "Yes! Oppia is the Finnish word for learn. As you can see, you're not limited to multiple-choice questions here. For example, you could ask for numeric answers, text answers, sets of strings, and so on. You can even write your own types of questions. Here is a question that takes numeric input:",
-              "labelled_as_correct": false,
-              "param_changes": []
-            },
-            "rule_specs": [
-              {
-                "inputs": {
-                  "x": "finnish"
-                },
-                "rule_type": "Equals"
-              }
-            ]
-          },
-          {
-            "outcome": {
-              "dest": "What language",
-              "feedback": "I think your spelling isn't quite right; you might want to check it.",
-              "labelled_as_correct": false,
-              "param_changes": []
-            },
-            "rule_specs": [
-              {
-                "inputs": {
-                  "x": "finnish"
-                },
-                "rule_type": "FuzzyEquals"
-              }
-            ]
-          },
-          {
-            "outcome": {
-              "dest": "What language",
-              "feedback": "Great, glad to hear that. Which language is it?",
-              "labelled_as_correct": false,
-              "param_changes": []
-            },
-            "rule_specs": [
-              {
-                "inputs": {
-                  "x": "yes"
-                },
-                "rule_type": "Equals"
-              }
-            ]
-          },
-          {
-            "outcome": {
-              "dest": "What language",
-              "feedback": "Nein! Ahem... no, it's not German. But it's a European language. From a place that's colder than Germany. Have another go?",
-              "labelled_as_correct": false,
-              "param_changes": []
-            },
-            "rule_specs": [
-              {
-                "inputs": {
-                  "x": "German"
-                },
-                "rule_type": "Contains"
-              }
-            ]
-          },
-          {
-            "outcome": {
-              "dest": "What language",
-              "feedback": "Mais non! Well, no, it's not French. But it's pretty close. Here, I'll give you a hint: Oppia is a word from one of the Scandinavian countries. Can you guess which one?",
-              "labelled_as_correct": false,
-              "param_changes": []
-            },
-            "rule_specs": [
-              {
-                "inputs": {
-                  "x": "French"
-                },
-                "rule_type": "Contains"
-              }
-            ]
-          },
-          {
-            "outcome": {
-              "dest": "Numeric input",
-              "feedback": "Yes! Suomi is Finnish for Finnish and Oppia is the Finnish word for learn. As you can see, you're not limited to multiple-choice questions here. For example, you could ask for numeric answers, text answers, sets of strings, and so on. You can even write your own types of questions. Here is a question that takes numeric input:",
-              "param_changes": [],
-              "labelled_as_correct": false
-            },
-            "rule_specs": [
-              {
-                "inputs": {
-                  "x": "suomi"
-                },
-                "rule_type": "Equals"
-              }
-            ]
-          },
-          {
-            "outcome": {
-              "dest": "What language",
-              "feedback": "Finland is a country. But what language do they speak there?<br>That's very close! But we're looking for a language rather than the name of a country.<br>",
-              "labelled_as_correct": false,
-              "param_changes": []
-            },
-            "rule_specs": [
-              {
-                "inputs": {
-                  "x": "Finland"
-                },
-                "rule_type": "Equals"
-              }
-            ]
-          },
-          {
-            "outcome": {
-              "dest": "What language",
-              "feedback": "You're close! Try heading east...<br> It is indeed a Nordic language, but one a little different to Norwegian.<br>",
-              "labelled_as_correct": false,
-              "param_changes": []
-            },
-            "rule_specs": [
-              {
-                "inputs": {
-                  "x": "Norway"
-                },
-                "rule_type": "Contains"
-              }
-            ]
-          },
-          {
-            "outcome": {
-              "dest": "What language",
-              "feedback": "<span><span><span>That's not it, alas. But you're very close! Oppia is indeed a Nordic word, but it's not from Sweden.</span></span></span>Try a little further East.... And remember we're looking for a language rather than the name of a country.<br>",
-              "labelled_as_correct": false,
-              "param_changes": []
-            },
-            "rule_specs": [
-              {
-                "inputs": {
-                  "x": "Sweden"
-                },
-                "rule_type": "Contains"
-              }
-            ]
-          }
-        ],
-        "confirmed_unclassified_answers": [],
-        "customization_args": {
-          "placeholder": {
-            "value": ""
-          },
-          "rows": {
-            "value": 1
-          }
-        },
-        "default_outcome": {
-          "dest": "What language",
-          "feedback": "Sorry, nope, we didn't get it from {{answer}}. But you can find out lots of things on the Web. Why not try doing a search for [translate oppia] on your favorite search engine?",
-          "param_changes": [],
-          "labelled_as_correct": false
-        },
-        "hints": [],
-        "id": "TextInput",
-        "solution": null
-      },
-      "param_changes": []
-    }
+    "title": "Drag and Drop Test Exploration",
+    "language_code": "en",
+    "param_changes": [],
+    "param_specs": {},
+    "objective": "learn how to arrange the sentence",
+    "init_state_name": "DragDropSortInput"
   },
-  "title": "Drag and Drop Test Exploration",
-  "language_code": "en",
-  "param_changes": [],
-  "param_specs": {},
-  "objective": "learn how to arrange the sentence",
-  "init_state_name": "Numeric input"
+  "exploration_id": "test_exp_id_4",
+  "version": 1
 }

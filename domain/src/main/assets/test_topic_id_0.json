@@ -33,9 +33,7 @@
   "version": 1,
   "skill_descriptions": {
     "test_skill_id_0": "An important skill",
-    "test_skill_id_1": "Another important skill",
-    "test_skill_id_2": "A different skill in a different topic Another important skill",
-    "test_skill_id_3": "Another important skill 4"
+    "test_skill_id_1": "Another important skill"
   },
   "subtopics": []
 }
