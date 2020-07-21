@@ -79,20 +79,6 @@ fun setRegionClickToImageView(
   imageRegionSelectionInteractionView.addOnLayoutChangeListener { _, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom -> // ktlint-disable max-line-length
     // Update the regions, as the bounds have changed
     if (left != oldLeft || top != oldTop || right != oldRight || bottom != oldBottom)
-      area.addViews()
+      area.addRegionViews()
   }
 }
-
-/** Sets the exploration ID for a specific [ImageRegionSelectionInteractionView] via data-binding. */
-@BindingAdapter("entityId")
-fun setEntityId(
-  imageRegionSelectionInteractionView: ImageRegionSelectionInteractionView,
-  entityId: String
-) = imageRegionSelectionInteractionView.setEntityId(entityId)
-
-/** Sets the selectable regions for a specific [ImageRegionSelectionInteractionView] via data-binding. */
-@BindingAdapter("regions")
-fun setRegions(
-  imageRegionSelectionInteractionView: ImageRegionSelectionInteractionView,
-  clickableAreas: List<ImageWithRegions.LabeledRegion>
-) = imageRegionSelectionInteractionView.setClickableAreas(clickableAreas)

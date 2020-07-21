@@ -29,7 +29,7 @@ import org.oppia.app.application.ApplicationComponent
 import org.oppia.app.application.ApplicationContext
 import org.oppia.app.application.ApplicationModule
 import org.oppia.app.player.state.StateFragment
-import org.oppia.app.utility.clickAtXY
+import org.oppia.app.utility.clickPoint
 import org.oppia.data.backends.gae.NetworkModule
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
@@ -58,8 +58,8 @@ import javax.inject.Singleton
 
 /** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)
-@Config(application = ImageRegionSelectionAccessibilityTest.TestApplication::class)
-class ImageRegionSelectionAccessibilityTest {
+@Config(application = ImageRegionSelectionInteractionViewTest.TestApplication::class)
+class ImageRegionSelectionInteractionViewTest {
 
   @Inject
   @field:ApplicationContext
@@ -79,27 +79,23 @@ class ImageRegionSelectionAccessibilityTest {
   }
 
   @Test
-  fun testImageRegionSelectionTestActivity_clickOnRegion3() {
+  fun testImageRegionSelectionInteractionView_clickRegion3_Region3Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       onView(withId(R.id.clickable_image_view)).perform(
-        clickAtXY(0.3f, 0.3f)
+        clickPoint(0.3f, 0.3f)
       )
       onView(allOf(withTagValue(`is`("Region 3"))))
         .check(
           matches(isDisplayed())
-        )
-      onView(allOf(withId(R.id.submit_button)))
-        .check(
-          matches(isEnabled())
         )
     }
   }
 
   @Test
-  fun testImageRegionSelectionTestActivity_clickOnRegion3_clickOnRegion2_onlyRegion2IsDisplayed() {
+  fun testImageRegionSelectionInteractionView_clickRegion3_clickRegion2_Region2Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       onView(withId(R.id.clickable_image_view)).perform(
-        clickAtXY(0.3f, 0.3f)
+        clickPoint(0.3f, 0.3f)
       )
       onView(allOf(withTagValue(`is`("Region 3"))))
         .check(
@@ -107,50 +103,73 @@ class ImageRegionSelectionAccessibilityTest {
         )
 
       onView(withId(R.id.clickable_image_view)).perform(
-        clickAtXY(0.7f, 0.3f)
+        clickPoint(0.7f, 0.3f)
       )
       onView(allOf(withTagValue(`is`("Region 2"))))
         .check(
           matches(isDisplayed())
         )
-      onView(allOf(withId(R.id.submit_button)))
-        .check(
-          matches(isEnabled())
-        )
     }
   }
 
   @Test
-  fun testImageRegionSelectionTestActivity_clickOnDefaultRegion() {
+  fun testImageRegionSelectionInteractionView_clickOnDefaultRegion_defaultRegionClicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       onView(withId(R.id.clickable_image_view)).perform(
-        clickAtXY(0.0f, 0.0f)
+        clickPoint(0.0f, 0.0f)
       )
       onView(withId(R.id.default_selected_region)).check(
-        matches((isDisplayed()))
+        matches(isDisplayed())
       )
-      onView(allOf(withId(R.id.submit_button)))
-        .check(
-          matches(not(isEnabled()))
-        )
     }
   }
 
   @Test
-  fun testImageRegionSelectionTestActivity_clickOnDefaultRegionWithAccessibility() {
+  fun testImageRegionSelectionInteractionView_withTalkbackEnabled_clickRegion3_clickRegion2_Region2Clicked() { // ktlint-disable max-line-length
     fakeAccessibilityManager.setTalkbackEnabled(true)
     launch(ImageRegionSelectionTestActivity::class.java).use {
       onView(withId(R.id.clickable_image_view)).perform(
-        clickAtXY(0.3f, 0.3f)
+        clickPoint(0.3f, 0.3f)
       )
       onView(allOf(withTagValue(`is`("Region 3"))))
         .check(
           matches(isDisplayed())
         )
-      onView(allOf(withId(R.id.submit_button)))
+
+      onView(withId(R.id.clickable_image_view)).perform(
+        clickPoint(0.7f, 0.3f)
+      )
+      onView(allOf(withTagValue(`is`("Region 2"))))
         .check(
-          matches(isEnabled())
+          matches(isDisplayed())
         )
+    }
+  }
+
+  @Test
+  fun testImageRegionSelectionInteractionView_withTalkbackEnabled_clickRegion3_Region3Clicked() {
+    fakeAccessibilityManager.setTalkbackEnabled(true)
+    launch(ImageRegionSelectionTestActivity::class.java).use {
+      onView(withId(R.id.clickable_image_view)).perform(
+        clickPoint(0.3f, 0.3f)
+      )
+      onView(allOf(withTagValue(`is`("Region 3"))))
+        .check(
+          matches(isDisplayed())
+        )
+    }
+  }
+
+  @Test
+  fun testImageRegionSelectionInteractionView_withTalkbackEnabled_clickOnDefaultRegion_defaultRegionNotClicked() { // ktlint-disable max-line-length
+    fakeAccessibilityManager.setTalkbackEnabled(true)
+    launch(ImageRegionSelectionTestActivity::class.java).use { activityScenario ->
+      onView(withId(R.id.clickable_image_view)).perform(
+        clickPoint(0.0f, 0.0f)
+      )
+      onView(withId(R.id.default_selected_region)).check(
+        matches(not(isDisplayed()))
+      )
     }
   }
 
@@ -180,17 +199,17 @@ class ImageRegionSelectionAccessibilityTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(imageRegionSelectionAccessibilityTest: ImageRegionSelectionAccessibilityTest)
+    fun inject(imageRegionSelectionAccessibilityTest: ImageRegionSelectionInteractionViewTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory {
     private val component: TestApplicationComponent by lazy {
-      DaggerImageRegionSelectionAccessibilityTest_TestApplicationComponent.builder()
+      DaggerImageRegionSelectionInteractionViewTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(imageRegionSelectionAccessibilityTest: ImageRegionSelectionAccessibilityTest) {
+    fun inject(imageRegionSelectionAccessibilityTest: ImageRegionSelectionInteractionViewTest) {
       component.inject(imageRegionSelectionAccessibilityTest)
     }
 

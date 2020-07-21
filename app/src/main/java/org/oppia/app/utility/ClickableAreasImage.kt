@@ -5,8 +5,8 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
-import androidx.core.view.forEach
 import androidx.core.view.forEachIndexed
+import androidx.core.view.isVisible
 import com.github.chrisbanes.photoview.OnPhotoTapListener
 import com.github.chrisbanes.photoview.PhotoViewAttacher
 import org.oppia.app.R
@@ -38,17 +38,22 @@ class ClickableAreasImage(
   override fun onPhotoTap(view: ImageView, x: Float, y: Float) {
     // show default region for non-accessibility case
     if (!imageView.isAccessibilityEnabled()) {
-      parentView.forEachIndexed { index: Int, childView: View ->
-        // Remove any previously selected region excluding 0th index(image view)
-        if (index > 0) {
-          childView.setBackgroundResource(0)
-        }
-      }
+      resetViewBackground()
       val defaultRegion = parentView.findViewById<View>(R.id.default_selected_region)
       defaultRegion.setBackgroundResource(R.drawable.selected_region_background)
       defaultRegion.x = getXCoordinate(x)
       defaultRegion.y = getYCoordinate(y)
-      listener.onClickableAreaTouched("")
+      listener.onClickableAreaTouched(DefaultRegionClickedEvent())
+    }
+  }
+
+  /** Function to remove the background from the views.*/
+  private fun resetViewBackground() {
+    parentView.forEachIndexed { index: Int, childView: View ->
+      // Remove any previously selected region excluding 0th index(image view)
+      if (index > 0) {
+        childView.setBackgroundResource(0)
+      }
     }
   }
 
@@ -65,10 +70,11 @@ class ClickableAreasImage(
   }
 
   /** Add selectable regions to [FrameLayout].*/
-  fun addViews() {
+  fun addRegionViews() {
     parentView.let {
-      if (it.childCount > 2)
+      if (it.childCount > 2) {
         it.removeViews(2, it.childCount - 1) // remove all other views
+      }
       imageView.getClickableAreas().forEach { clickableArea ->
         val imageRect = RectF(
           getXCoordinate(clickableArea.region.area.upperLeft.x),
@@ -88,13 +94,17 @@ class ClickableAreasImage(
         newView.isFocusable = true
         newView.isFocusableInTouchMode = true
         newView.tag = clickableArea.label
-        newView.contentDescription = clickableArea.label
+        newView.contentDescription = clickableArea.contentDescription
         newView.setOnTouchListener { _, event ->
-          if (event.action == MotionEvent.ACTION_DOWN)
+          if (event.action == MotionEvent.ACTION_DOWN) {
             showOrHideRegion(newView, clickableArea)
+          }
           return@setOnTouchListener true
         }
         if (imageView.isAccessibilityEnabled()) {
+          //Make default region visibility gone when talkback enabled to avoid any accidental touch.
+          val defaultRegion = parentView.findViewById<View>(R.id.default_selected_region)
+          defaultRegion.isVisible = false
           newView.setOnClickListener {
             showOrHideRegion(newView, clickableArea)
           }
@@ -106,13 +116,8 @@ class ClickableAreasImage(
   }
 
   private fun showOrHideRegion(newView: View, clickableArea: ImageWithRegions.LabeledRegion) {
-    parentView.forEachIndexed { index: Int, tappedView: View ->
-      // Remove any previously selected region excluding 0th index(image view)
-      if (index > 0) {
-        tappedView.setBackgroundResource(0)
-      }
-    }
-    listener.onClickableAreaTouched(clickableArea.label)
+    resetViewBackground()
+    listener.onClickableAreaTouched(NamedRegionClickedEvent(clickableArea.label))
     newView.setBackgroundResource(R.drawable.selected_region_background)
   }
 }

@@ -5,7 +5,10 @@ import android.widget.Button
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.utility.ClickableAreasImage
+import org.oppia.app.utility.DefaultRegionClickedEvent
+import org.oppia.app.utility.NamedRegionClickedEvent
 import org.oppia.app.utility.OnClickableAreaClickedListener
+import org.oppia.app.utility.RegionClickedEvent
 
 /** Test Activity used for testing [ClickableAreasImage] functionality */
 class ImageRegionSelectionTestActivity :
@@ -25,7 +28,7 @@ class ImageRegionSelectionTestActivity :
       .commitNow()
   }
 
-  override fun onClickableAreaTouched(region: String) {
-    findViewById<Button>(R.id.submit_button).isEnabled = region.isNotEmpty()
+  override fun onClickableAreaTouched(region: RegionClickedEvent) {
+    //TODO - Need to discuss this
   }
 }

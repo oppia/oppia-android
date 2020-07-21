@@ -6,7 +6,12 @@ import androidx.test.espresso.action.GeneralClickAction
 import androidx.test.espresso.action.Press
 import androidx.test.espresso.action.Tap
 
-fun clickAtXY(pctX: Float, pctY: Float): ViewAction {
+/**
+ * A custom [ViewAction] that can be used to perform click at a particular position.
+ *
+ * Reference: https://stackoverflow.com/a/22798043
+ */
+fun clickPoint(pointX: Float, pointY: Float): ViewAction {
   return GeneralClickAction(
     Tap.SINGLE,
     CoordinatesProvider { view ->
@@ -15,8 +20,8 @@ fun clickAtXY(pctX: Float, pctY: Float): ViewAction {
       val w = view.width
       val h = view.height
 
-      val x: Float = w * pctX
-      val y: Float = h * pctY
+      val x: Float = w * pointX
+      val y: Float = h * pointY
 
       val screenX = screenPos[0] + x
       val screenY = screenPos[1] + y
