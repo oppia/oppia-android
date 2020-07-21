@@ -62,8 +62,8 @@ load("@dagger//:workspace_defs.bzl", "DAGGER_ARTIFACTS", "DAGGER_REPOSITORIES")
 #Add support for Robolectric: https://github.com/robolectric/robolectric-bazel
 http_archive(
     name = "robolectric",
-    urls = ["https://github.com/robolectric/robolectric-bazel/archive/4.1.tar.gz"],
-    strip_prefix = "robolectric-bazel-4.1",
+    urls = ["https://github.com/oppia/robolectric-bazel/archive/4.x-oppia-exclusive-rc02.tar.gz"],
+    strip_prefix = "robolectric-bazel-4.x-oppia-exclusive-rc02",
 )
 load("@robolectric//bazel:robolectric.bzl", "robolectric_repositories")
 robolectric_repositories()
@@ -82,13 +82,14 @@ google_services_workspace_dependencies()
 #TODO: Remove unused dependencies once android_local_test errors are resolved
 maven_install(
     artifacts = DAGGER_ARTIFACTS + [
-        "org.robolectric:robolectric:4.2",
+        "org.robolectric:robolectric:4.3",
         "androidx.appcompat:appcompat:1.0.2",
         "com.android.support:support-annotations:28.0.0",
         "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.2",
         "androidx.core:core-ktx:1.0.1",
         "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2",
         "junit:junit:4.12",
+        "com.google.truth:truth:0.43",
         "com.github.bumptech.glide:glide:4.11.0",
         "com.github.bumptech.glide:compiler:4.11.0",
         "com.caverock:androidsvg-aar:1.4",
@@ -97,6 +98,11 @@ maven_install(
         "com.google.gms:google-services:4.3.3",
         "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03",
         "com.google.firebase:firebase-analytics-ktx:17.4.2",
+        "org.mockito:mockito-core:2.19.0",
+        "androidx.test.ext:junit:1.1.1",
+        "org.jetbrains.kotlin:kotlin-stdlib-jdk7:jar:1.3.72",
+        "org.jetbrains.kotlin:kotlin-test-junit:1.3.72",
+        "org.robolectric:annotations:4.3",
     ],
     repositories = DAGGER_REPOSITORIES + [
         "https://maven.google.com",
