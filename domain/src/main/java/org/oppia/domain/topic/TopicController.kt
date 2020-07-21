@@ -73,16 +73,16 @@ val TOPIC_FILE_ASSOCIATIONS = mapOf(
     "test_exp_id_1.json",
     "test_exp_id_2.json",
     "test_exp_id_3.json",
-    "test_skill_id_0.json",
-    "test_skill_id_1.json",
+    "questions.json",
+    "skill.json",
     "test_story_id_0.json",
     "test_story_id_1.json",
     "test_topic_id_0.json"
   ),
   TEST_TOPIC_ID_1 to listOf(
     "test_exp_id_4.json",
-    "test_skill_id_2.json",
-    "test_skill_id_3.json",
+    "questions.json",
+    "skill.json",
     "test_story_id_2.json",
     "test_topic_id_1.json"
   ),
@@ -90,9 +90,7 @@ val TOPIC_FILE_ASSOCIATIONS = mapOf(
     "umPkwp0L1M0-.json",
     "MjZzEVOG47_1.json",
     "questions.json",
-    "5RM9KPfQxobH.json",
-    "UxTGIJqaHMLa.json",
-    "B39yK4cbHZYI.json",
+    "skill.json",
     "wANbh4oOClga.json",
     "GJ2rLXRKD5hw.json"
   ),
@@ -102,7 +100,7 @@ val TOPIC_FILE_ASSOCIATIONS = mapOf(
     "k2bQ7z5XHNbK.json",
     "tIoSb3HZFN6e.json",
     "questions.json",
-    "NGZ89uMw0IGV.json",
+    "skill.json",
     "wAMdg4oOClga.json",
     "xBSdg4oOClga.json",
     "omzF4oqgeTXd.json"
@@ -188,7 +186,7 @@ class TopicController @Inject constructor(
   fun getConceptCard(skillId: String): LiveData<AsyncResult<ConceptCard>> {
     return MutableLiveData(
       try {
-        AsyncResult.success(createConceptCardFromJson("$skillId.json"))
+        AsyncResult.success(createConceptCardFromJson(skillId))
       } catch (e: Exception) {
         exceptionLogger.logException(e)
         AsyncResult.failed<ConceptCard>(e)
@@ -641,9 +639,11 @@ class TopicController @Inject constructor(
     return chapterList
   }
 
-  private fun createConceptCardFromJson(fileName: String): ConceptCard {
-    val skillData = jsonAssetRetriever.loadJsonFromAsset(fileName)
-      ?: return ConceptCard.getDefaultInstance()
+  private fun createConceptCardFromJson(skillId: String): ConceptCard {
+    val skillData = getSkillJsonObject(skillId)
+    if (skillData.length() <= 0) {
+      return ConceptCard.getDefaultInstance()
+    }
     val skillContents = skillData.getJSONObject("skill_contents")
     val workedExamplesList = createWorkedExamplesFromJson(
       skillContents.getJSONArray(
@@ -703,6 +703,18 @@ class TopicController @Inject constructor(
       .putAllWrittenTranslation(writtenTranslationMapping)
       .putAllRecordedVoiceover(recordedVoiceoverMapping)
       .build()
+  }
+
+  private fun getSkillJsonObject(skillId: String): JSONObject {
+    val skillJsonArray = jsonAssetRetriever.loadJsonFromAsset("skills.json")?.optJSONArray("skills")
+      ?: return JSONObject("")
+    for (i in 0 until skillJsonArray.length()) {
+      val currentSkillJsonObject = skillJsonArray.optJSONObject(i)
+      if (skillId == currentSkillJsonObject.optString("id")) {
+        return currentSkillJsonObject
+      }
+    }
+    return return JSONObject("")
   }
 
   private fun createWorkedExamplesFromJson(workedExampleData: JSONArray): List<SubtitledHtml> {
