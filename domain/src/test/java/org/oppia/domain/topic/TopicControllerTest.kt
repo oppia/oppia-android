@@ -916,7 +916,7 @@ class TopicControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testRetrieveQuestionsForInvalidSkillIds_returnsFailure() = runBlockingTest(coroutineContext) {
+  fun testRetrieveQuestionsForInvalidSkillIds_returnsResultForValidSkillsOnly() = runBlockingTest(coroutineContext) {
     val questionsListProvider = topicController
       .retrieveQuestionsForSkillIds(
         listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, "NON_EXISTENT_SKILL_ID")
@@ -924,7 +924,9 @@ class TopicControllerTest {
     dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
     verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
 
-    assertThat(questionListResultCaptor.value.isFailure()).isTrue()
+    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+    val questionsList = questionListResultCaptor.value.getOrThrow()
+    assertThat(questionsList.size).isEqualTo(5)
   }
 
   @Test

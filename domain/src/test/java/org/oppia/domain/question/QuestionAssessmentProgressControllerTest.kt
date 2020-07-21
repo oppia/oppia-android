@@ -67,11 +67,10 @@ import kotlinx.coroutines.test.runBlockingTest as runBlockingTest1
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
 class QuestionAssessmentProgressControllerTest {
-  private val TEST_SKILL_ID_LIST_012 =
-    listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, TEST_SKILL_ID_2) // questions 0, 2, 3
-  private val TEST_SKILL_ID_LIST_02 = listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_2) // questions 2, 1, 5
-  private val TEST_SKILL_ID_LIST_01 = listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1) // questions 2, 0, 3
-  private val TEST_SKILL_ID_LIST_2 = listOf(TEST_SKILL_ID_2) // questions 4, 5, 2
+  private val TEST_SKILL_ID_LIST_012 = listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, TEST_SKILL_ID_2) // questions 0, 1, 2, 3, 4, 5
+  private val TEST_SKILL_ID_LIST_02 = listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_2) // questions 0, 1, 2, 4, 5
+  private val TEST_SKILL_ID_LIST_01 = listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1) // questions 0, 1, 2, 3
+  private val TEST_SKILL_ID_LIST_2 = listOf(TEST_SKILL_ID_2) // questions 2, 4, 5
 
   @Rule
   @JvmField
@@ -617,7 +616,7 @@ class QuestionAssessmentProgressControllerTest {
       )
       assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
       val currentQuestion = currentQuestionResultCaptor.value.getOrThrow()
-      assertThat(currentQuestion.ephemeralState.state.content.html).contains("frac{1}{4}")
+      assertThat(currentQuestion.ephemeralState.state.content.html).contains("1/2 + 1/4")
     }
 
   @Test

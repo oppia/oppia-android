@@ -85,8 +85,8 @@ val TOPIC_FILE_ASSOCIATIONS = mapOf(
   FRACTIONS_TOPIC_ID to listOf(
     "umPkwp0L1M0-.json",
     "MjZzEVOG47_1.json",
-    "fractions_questions.json",
-    "fractions_skills.json",
+    "questions.json",
+    "GJ2rLXRKD5hw_skills.json",
     "wANbh4oOClga.json",
     "GJ2rLXRKD5hw.json"
   ),
@@ -95,8 +95,8 @@ val TOPIC_FILE_ASSOCIATIONS = mapOf(
     "5NWuolNcwH6e.json",
     "k2bQ7z5XHNbK.json",
     "tIoSb3HZFN6e.json",
-    "ratios_questions.json",
-    "ratios_skills.json",
+    "questions.json",
+    "omzF4oqgeTXd_skills.json",
     "wAMdg4oOClga.json",
     "xBSdg4oOClga.json",
     "omzF4oqgeTXd.json"
@@ -187,25 +187,25 @@ class TopicController @Inject constructor(
         TEST_SKILL_ID_2 -> AsyncResult.success(createTestConceptCardForSkill2())
         FRACTIONS_SKILL_ID_0 -> AsyncResult.success(
           createConceptCardFromJson(
-            "fractions_skills.json",
+            "GJ2rLXRKD5hw_skills.json",
             /* index= */ 0
           )
         )
         FRACTIONS_SKILL_ID_1 -> AsyncResult.success(
           createConceptCardFromJson(
-            "fractions_skills.json",
+            "GJ2rLXRKD5hw_skills.json",
             /* index= */ 1
           )
         )
         FRACTIONS_SKILL_ID_2 -> AsyncResult.success(
           createConceptCardFromJson(
-            "fractions_skills.json",
+            "GJ2rLXRKD5hw_skills.json",
             /* index= */ 2
           )
         )
         RATIOS_SKILL_ID_0 -> AsyncResult.success(
           createConceptCardFromJson(
-            "ratios_skills.json",
+            "omzF4oqgeTXd_skills.json",
             /* index= */ 0
           )
         )
@@ -438,66 +438,21 @@ class TopicController @Inject constructor(
 
   private fun loadQuestions(skillIdsList: List<String>): List<Question> {
     val questionsList = mutableListOf<Question>()
-    val questionsJSON = jsonAssetRetriever.loadJsonFromAsset(
-      "sample_questions.json"
-    )?.getJSONArray("questions")
-    val fractionQuestionsJSON = jsonAssetRetriever.loadJsonFromAsset(
-      "fractions_questions.json"
+    val questionJsonArray = jsonAssetRetriever.loadJsonFromAsset(
+      "questions.json"
     )?.getJSONArray("questions")!!
-    val ratiosQuestionsJSON = jsonAssetRetriever.loadJsonFromAsset(
-      "ratios_questions.json"
-    )?.getJSONArray("questions")!!
+
     for (skillId in skillIdsList) {
-      when (skillId) {
-        TEST_SKILL_ID_0 -> questionsList.addAll(
-          mutableListOf(
-            createTestQuestion0(questionsJSON),
-            createTestQuestion1(questionsJSON),
-            createTestQuestion2(questionsJSON)
-          )
-        )
-        TEST_SKILL_ID_1 -> questionsList.addAll(
-          mutableListOf(
-            createTestQuestion0(questionsJSON),
-            createTestQuestion3(questionsJSON)
-          )
-        )
-        TEST_SKILL_ID_2 -> questionsList.addAll(
-          mutableListOf(
-            createTestQuestion2(questionsJSON),
-            createTestQuestion4(questionsJSON),
-            createTestQuestion5(questionsJSON)
-          )
-        )
-        FRACTIONS_SKILL_ID_0 -> questionsList.addAll(
-          mutableListOf(
-            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(0)),
-            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(1)),
-            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(2)),
-            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(3)),
-            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(4))
-          )
-        )
-        FRACTIONS_SKILL_ID_1 -> questionsList.addAll(
-          mutableListOf(
-            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(5)),
-            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(6)),
-            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(7)),
-            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(10))
-          )
-        )
-        FRACTIONS_SKILL_ID_2 -> questionsList.addAll(
-          mutableListOf(
-            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(8)),
-            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(9)),
-            createQuestionFromJsonObject(fractionQuestionsJSON.getJSONObject(10))
-          )
-        )
-        RATIOS_SKILL_ID_0 -> questionsList.add(
-          createQuestionFromJsonObject(ratiosQuestionsJSON.getJSONObject(0))
-        )
-        else -> {
-          throw IllegalStateException("Invalid skill ID: $skillId")
+      for (i in 0 until questionJsonArray.length()) {
+        val questionJsonObject = questionJsonArray.getJSONObject(i)
+        val questionLinkedSkillsJsonArray =
+          questionJsonObject.optJSONArray("linked_skill_ids")
+        val linkedSkillIdList = mutableListOf<String>()
+        for (j in 0 until questionLinkedSkillsJsonArray.length()) {
+          linkedSkillIdList.add(questionLinkedSkillsJsonArray.getString(j))
+        }
+        if (linkedSkillIdList.contains(skillId)) {
+          questionsList.add(createQuestionFromJsonObject(questionJsonObject))
         }
       }
     }
