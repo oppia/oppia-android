@@ -47,14 +47,10 @@ const val FRACTIONS_SUBTOPIC_ID_2 = "2"
 const val FRACTIONS_SUBTOPIC_ID_3 = "3"
 const val FRACTIONS_SUBTOPIC_ID_4 = "4"
 const val RATIOS_SKILL_ID_0 = "NGZ89uMw0IGV"
-const val TEST_SKILL_CONTENT_ID_0 = "test_skill_content_id_0"
-const val TEST_SKILL_CONTENT_ID_1 = "test_skill_content_id_1"
 const val TEST_QUESTION_ID_0 = "question_id_0"
 const val TEST_QUESTION_ID_1 = "question_id_1"
 const val TEST_QUESTION_ID_2 = "question_id_2"
 const val TEST_QUESTION_ID_3 = "question_id_3"
-const val TEST_QUESTION_ID_4 = "question_id_4"
-const val TEST_QUESTION_ID_5 = "question_id_5"
 const val FRACTIONS_QUESTION_ID_0 = "dobbibJorU9T"
 const val FRACTIONS_QUESTION_ID_1 = "EwbUb5oITtUX"
 const val FRACTIONS_QUESTION_ID_2 = "ryIPWUmts8rN"
@@ -714,7 +710,7 @@ class TopicController @Inject constructor(
         return currentSkillJsonObject
       }
     }
-    return return JSONObject("")
+    return JSONObject("")
   }
 
   private fun createWorkedExamplesFromJson(workedExampleData: JSONArray): List<SubtitledHtml> {
