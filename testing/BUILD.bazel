@@ -5,12 +5,6 @@ package(default_visibility = ["//visibility:public"])
 load("//:oppia_android_test.bzl", "oppia_android_test")
 load("//testing:testing_test.bzl", "testing_test")
 
-testing_test(
-    name = "FakeExceptionLoggerTest",
-    src = ["src/test/java/org/oppia/testing/FakeExceptionLoggerTest.kt"],
-    test_class = "org.oppia.testing.FakeExceptionLoggerTest",
-)
-
 android_library(
     name = "testing_test_deps",
     exports = [
@@ -97,27 +91,17 @@ kt_android_library(
 )
 
 #TODO: Building but not passing
-android_local_test(
-    name = "fake_event_logger_test",
-    custom_package = "org.oppia.testing",
+testing_test(
+    name = "FakeEventLoggerTest",
+    src = ["src/test/java/org/oppia/testing/FakeEventLoggerTest.kt"],
     test_class = "org.oppia.testing.FakeEventLoggerTest",
-    manifest = "src/test/TestManifest.xml",
-    deps = [
-        ":testing_test_lib",
-        ":testing_test_deps",
-    ],
 )
 
 #TODO: Building but not passing
-android_local_test(
-    name = "fake_exception_logger_test",
-    custom_package = "org.oppia.testing",
+testing_test(
+    name = "FakeExceptionLoggerTest",
+    src = ["src/test/java/org/oppia/testing/FakeExceptionLoggerTest.kt"],
     test_class = "org.oppia.testing.FakeExceptionLoggerTest",
-    manifest = "src/test/TestManifest.xml",
-    deps = [
-        ":testing_test_lib",
-        ":testing_test_deps",
-    ],
 )
 
 dagger_rules()
