@@ -25,6 +25,7 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Solution
 import org.oppia.app.model.State
 import org.oppia.app.model.UserAnswer
+import org.oppia.app.player.SplitScreenManager
 import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.AudioUiManager
@@ -38,7 +39,7 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
-import java.util.Date
+import java.util.*
 import javax.inject.Inject
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY = "STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY"
@@ -74,6 +75,7 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
   private lateinit var rhsInteractionsAdapter: RhsInteractionsAdapter
+  private val splitScreenManager: SplitScreenManager = SplitScreenManager(activity)
 
   private val viewModel: StateViewModel by lazy {
     getStateViewModel()
@@ -285,8 +287,9 @@ class StateFragmentPresenter @Inject constructor(
     }
 
     val ephemeralState = result.getOrThrow()
+    val shouldSplit = splitScreenManager.shouldSplit(ephemeralState.state.interaction.id)
 
-    if (ephemeralState.state.interaction.id == "DragAndDropSortInput") {
+    if (shouldSplit) {
       viewModel.shouldSplitView.set(true)
       binding.rhsStateRecyclerView?.visibility = View.VISIBLE
       val params = binding.centerGuideline?.layoutParams as ConstraintLayout.LayoutParams
@@ -308,9 +311,17 @@ class StateFragmentPresenter @Inject constructor(
     showOrHideAudioByState(ephemeralState.state)
 
     viewModel.itemList.clear()
-    viewModel.itemList += recyclerViewAssembler.compute(ephemeralState, explorationId).first
+    viewModel.itemList += recyclerViewAssembler.compute(
+      ephemeralState,
+      explorationId,
+      shouldSplit
+    ).first
     viewModel.rightItemList.clear()
-    viewModel.rightItemList += recyclerViewAssembler.compute(ephemeralState, explorationId).second
+    viewModel.rightItemList += recyclerViewAssembler.compute(
+      ephemeralState,
+      explorationId,
+      shouldSplit
+    ).second
     rhsInteractionsAdapter = RhsInteractionsAdapter(viewModel.rightItemList)
     binding.rhsStateRecyclerView?.adapter = rhsInteractionsAdapter
 

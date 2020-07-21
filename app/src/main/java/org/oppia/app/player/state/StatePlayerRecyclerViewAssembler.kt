@@ -171,7 +171,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
    */
   fun compute(
     ephemeralState: EphemeralState,
-    gcsEntityId: String
+    gcsEntityId: String,
+    shouldSplit: Boolean
   ): Pair<List<StateItemViewModel>, List<StateItemViewModel>> {
     Log.d("compute", "--------------------------------------------------")
     val hasPreviousState = ephemeralState.hasPreviousState
@@ -183,7 +184,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
       addContentItem(leftPendingItemList, ephemeralState, gcsEntityId)
     }
     val interaction = ephemeralState.state.interaction
-    val shouldSplit = interaction.id == "DragAndDropSortInput"
 
     Log.d("interaction_id", interaction.id)
     Log.d("shouldSplit", shouldSplit.toString())

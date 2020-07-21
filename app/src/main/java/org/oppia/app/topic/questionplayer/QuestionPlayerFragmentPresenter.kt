@@ -23,6 +23,7 @@ import org.oppia.app.model.Hint
 import org.oppia.app.model.Solution
 import org.oppia.app.model.State
 import org.oppia.app.model.UserAnswer
+import org.oppia.app.player.SplitScreenManager
 import org.oppia.app.player.state.RhsInteractionsAdapter
 import org.oppia.app.player.state.StatePlayerRecyclerViewAssembler
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
@@ -64,6 +65,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private lateinit var questionId: String
   private lateinit var currentQuestionState: State
   private lateinit var rhsInteractionsAdapter: RhsInteractionsAdapter
+  private val splitScreenManager: SplitScreenManager = SplitScreenManager(activity)
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = QuestionPlayerFragmentBinding.inflate(
@@ -219,7 +221,10 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
     currentQuestionState = ephemeralQuestion.ephemeralState.state
 
-    if (ephemeralQuestion.ephemeralState.state.interaction.id == "DragAndDropSortInput") {
+    val shouldSplit =
+      splitScreenManager.shouldSplit(ephemeralQuestion.ephemeralState.state.interaction.id)
+
+    if (shouldSplit) {
       questionViewModel.shouldSplitView.set(true)
       binding.rightQuestionRecyclerView?.visibility = View.VISIBLE
       val params = binding.centerGuideline?.layoutParams as ConstraintLayout.LayoutParams
@@ -236,12 +241,14 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     questionViewModel.itemList.clear()
     questionViewModel.itemList += recyclerViewAssembler.compute(
       ephemeralQuestion.ephemeralState,
-      skillId
+      skillId,
+      shouldSplit
     ).first
     questionViewModel.rightItemList.clear()
     questionViewModel.rightItemList += recyclerViewAssembler.compute(
       ephemeralQuestion.ephemeralState,
-      skillId
+      skillId,
+      shouldSplit
     ).second
     rhsInteractionsAdapter = RhsInteractionsAdapter(questionViewModel.rightItemList)
     binding.rightQuestionRecyclerView?.adapter = rhsInteractionsAdapter
