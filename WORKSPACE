@@ -89,16 +89,33 @@ load("@rules_jvm_external//:defs.bzl", "maven_install")
 
 maven_install(
     artifacts = DAGGER_ARTIFACTS + [
-        "org.robolectric:robolectric:4.2",
+        "org.robolectric:robolectric:4.3",
         "androidx.appcompat:appcompat:1.0.2",
+        "com.android.support:support-annotations:28.0.0",
         "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.2",
         "androidx.core:core-ktx:1.0.1",
-        "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2",#
+        "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2",
         "junit:junit:4.12",
+        "com.google.truth:truth:0.43",
+        "com.github.bumptech.glide:glide:4.11.0",
+        "com.github.bumptech.glide:compiler:4.11.0",
+        "com.caverock:androidsvg-aar:1.4",
+        "com.crashlytics.sdk.android:crashlytics:2.9.8",
+        "io.fabric.sdk.android:fabric:1.4.7",
+        "com.google.gms:google-services:4.3.3",
+        "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03",
+        "com.google.firebase:firebase-analytics-ktx:17.4.2",
+        "org.mockito:mockito-core:2.19.0",
+        "androidx.test.ext:junit:1.1.1",
+        "org.jetbrains.kotlin:kotlin-stdlib-jdk7:jar:1.3.72",
+        "org.jetbrains.kotlin:kotlin-test-junit:1.3.72",
+        "org.robolectric:annotations:4.3",
     ],
     repositories = DAGGER_REPOSITORIES + [
         "https://maven.google.com",
         "https://repo1.maven.org/maven2",
         "https://jcenter.bintray.com/",
+        "https://bintray.com/bintray/jcenter",
+        "https://maven.fabric.io/public",
     ],
 )

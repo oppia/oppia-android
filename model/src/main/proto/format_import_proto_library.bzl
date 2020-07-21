@@ -17,10 +17,10 @@ def format_import_proto_library(name, src):
 
   native.proto_library(
       name = name + "_lib",
-      srcs = ["processed_" + src]
+      srcs = ["processed_" + src],
   )
 
-  native.java_proto_library(
+  native.java_lite_proto_library(
       name = name + "_java_lib",
-      deps = [name + "_lib"]
+      deps = [":" + name + "_lib"],
   )
