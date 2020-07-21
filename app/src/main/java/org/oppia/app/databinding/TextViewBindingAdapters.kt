@@ -28,6 +28,11 @@ fun setProfileLastVisitedText(textView: TextView, timestamp: Long) {
     )
 }
 
+@BindingAdapter("storyTextSize")
+fun setStoryTextSize(textView: TextView, textSize: Float) {
+  textView.textSize = textSize
+}
+
 private const val SECOND_MILLIS = 1000
 private const val MINUTE_MILLIS = 60 * SECOND_MILLIS
 private const val HOUR_MILLIS = 60 * MINUTE_MILLIS

@@ -20,18 +20,20 @@ import org.oppia.app.model.AnswerOutcome
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.model.HelpIndex
 import org.oppia.app.model.Hint
+import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Solution
 import org.oppia.app.model.State
+import org.oppia.app.model.StoryTextSize
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.AudioUiManager
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
-import org.oppia.app.utility.LifecycleSafeTimerFactory
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationProgressController
+import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.topic.StoryProgressController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.DefaultResourceBucketName
@@ -55,10 +57,10 @@ class StateFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<StateViewModel>,
   private val explorationProgressController: ExplorationProgressController,
   private val storyProgressController: StoryProgressController,
+  private val profileManagementController: ProfileManagementController,
   private val logger: ConsoleLogger,
   @DefaultResourceBucketName private val resourceBucketName: String,
-  private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
-  private var lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
+  private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory
 ) {
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
@@ -79,6 +81,9 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var recyclerViewAssembler: StatePlayerRecyclerViewAssembler
   private val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
     explorationProgressController.getCurrentState()
+  }
+  private val profileResultLiveData: LiveData<AsyncResult<Profile>> by lazy {
+    profileManagementController.getProfile(profileId)
   }
 
   fun handleCreateView(
@@ -130,6 +135,7 @@ class StateFragmentPresenter @Inject constructor(
     }
 
     subscribeToCurrentState()
+    subscribeToProfile()
     markExplorationAsRecentlyPlayed()
     return binding.root
   }
@@ -264,6 +270,15 @@ class StateFragmentPresenter @Inject constructor(
     return getAudioFragment() as? AudioUiManager
   }
 
+  private fun subscribeToProfile() {
+    profileResultLiveData.observe(
+      fragment,
+      Observer { result ->
+        processProfileResult(result)
+      }
+    )
+  }
+
   private fun subscribeToCurrentState() {
     ephemeralStateLiveData.observe(
       fragment,
@@ -271,6 +286,19 @@ class StateFragmentPresenter @Inject constructor(
         processEphemeralStateResult(result)
       }
     )
+  }
+
+  private fun processProfileResult(result: AsyncResult<Profile>){
+    if (result.isFailure()) {
+      logger.e("StateFragment", "Failed to retrieve profile", result.getErrorOrNull()!!)
+      return
+    } else if (result.isPending()) {
+      // Display nothing until a valid result is available.
+      return
+    }
+
+    val profile = result.getOrThrow()
+    recyclerViewAssembler.setStoryTextSizeForContent(profile.storyTextSize)
   }
 
   private fun processEphemeralStateResult(result: AsyncResult<EphemeralState>) {

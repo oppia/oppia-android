@@ -43,6 +43,7 @@ import org.oppia.app.model.HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.PendingState
 import org.oppia.app.model.State
+import org.oppia.app.model.StoryTextSize
 import org.oppia.app.model.StringList
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.app.model.UserAnswer
@@ -81,6 +82,7 @@ import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.topic.questionplayer.QuestionPlayerFragment
 import org.oppia.app.utility.LifecycleSafeTimerFactory
 import org.oppia.util.parser.HtmlParser
+import org.oppia.util.profile.StoryTextSizeConverter
 import org.oppia.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 
@@ -149,6 +151,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
   /** The most recent content ID read by the audio system. */
   private var audioPlaybackContentId: String? = null
 
+  private var storyTextSizeForContent: Float = 16f
+
   /**
    * An ever-present [PreviousNavigationButtonListener] that can exist even if backward navigation
    * is disabled. This listener no-ops if backward navigation is enabled. This serves to allows the
@@ -161,6 +165,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
         (fragment as PreviousNavigationButtonListener).onPreviousButtonClicked()
       }
     }
+  }
+
+  fun setStoryTextSizeForContent(storyTextSize: StoryTextSize) {
+    storyTextSizeForContent = StoryTextSizeConverter.getStoryTextSizeInFloat(storyTextSize)
   }
 
   /**
@@ -254,7 +262,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     pendingItemList += ContentViewModel(
       contentSubtitledHtml.html,
       gcsEntityId,
-      hasConversationView
+      hasConversationView,
+      storyTextSizeForContent
     )
   }
 

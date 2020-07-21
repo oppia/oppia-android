@@ -32,7 +32,7 @@
       android:fontFamily="sans-serif"
       android:text="@{htmlContent}"
       android:textColor="@color/oppiaPrimaryText"
-      android:textSize="16sp"
+      app:storyTextSize="@{viewModel.storyTextSize}"
       android:visibility="@{htmlContent.length() > 0 ? View.VISIBLE : View.GONE, default=gone}"
       app:layoutMarginEnd="@{viewModel.hasConversationView ? @dimen/padding_8 : @dimen/padding_0}"
       app:layoutMarginStart="@{viewModel.hasConversationView ? @dimen/padding_8 : @dimen/padding_0}" />
