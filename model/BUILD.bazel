@@ -109,9 +109,6 @@ process(
 
 android_library(
     name = "model_lib",
-    srcs = [
-
-    ],
     data = [
         ":event_logger_java_proto",
         ":example_java_proto",
