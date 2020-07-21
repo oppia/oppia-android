@@ -4,6 +4,30 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 
 package(default_visibility = ["//visibility:public"])
 
+android_library(
+    name = "testing_test_deps",
+    exports = [
+        "@robolectric//bazel:android-all",
+        artifact("org.robolectric:robolectric"),
+        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-core"),
+        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-android"),
+        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test"),
+        artifact("com.google.truth:truth"),
+        artifact("androidx.appcompat:appcompat"),
+        artifact("com.github.bumptech.glide:glide"),
+        artifact("com.github.bumptech.glide:compiler"),
+        artifact("com.caverock:androidsvg-aar"),
+        artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
+        artifact("com.google.firebase:firebase-analytics-ktx"),
+        artifact("com.crashlytics.sdk.android:crashlytics"),
+        artifact("io.fabric.sdk.android:fabric"),
+        artifact("com.google.gms:google-services"),
+        artifact("com.android.support:support-annotations"),
+        artifact("androidx.test.ext:junit"),
+        artifact("org.mockito:mockito-core"),
+    ],
+)
+
 kt_android_library(
      name = "testing_lib",
      custom_package = "org.oppia.testing",
@@ -40,7 +64,7 @@ kt_android_library(
      srcs = glob(["src/test/java/**/*.kt"]),
      manifest = "src/main/AndroidManifest.xml",
      deps = [
-         ":testing_main_lib",
+         ":testing_lib",
          ":dagger",
          "//model:model_lib",
          "//utility:utility_lib",
@@ -65,6 +89,28 @@ kt_android_library(
      ],
 )
 
-#TODO: Add android_local_test rule
+#TODO: Building but not passing
+android_local_test(
+    name = "fake_event_logger_test",
+    custom_package = "org.oppia.testing",
+    test_class = "org.oppia.testing.FakeEventLoggerTest",
+    manifest = "src/test/TestManifest.xml",
+    deps = [
+        ":testing_test_lib",
+        ":testing_test_deps",
+    ],
+)
+
+#TODO: Building but not passing
+android_local_test(
+    name = "fake_exception_logger_test",
+    custom_package = "org.oppia.testing",
+    test_class = "org.oppia.testing.FakeExceptionLoggerTest",
+    manifest = "src/test/TestManifest.xml",
+    deps = [
+        ":testing_test_lib",
+        ":testing_test_deps",
+    ],
+)
 
 dagger_rules()
