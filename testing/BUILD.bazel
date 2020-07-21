@@ -5,7 +5,7 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 package(default_visibility = ["//visibility:public"])
 
 kt_android_library(
-     name = "testing_main_lib",
+     name = "testing_lib",
      custom_package = "org.oppia.testing",
      srcs = glob(["src/main/java/**/*.kt"]),
      manifest = "src/main/AndroidManifest.xml",
