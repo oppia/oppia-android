@@ -100,18 +100,13 @@ class ExplorationActivityPresenter @Inject constructor(
       ).commitNow()
     }
 
-    if (getHintsAndSolutionExplorationManagerFragment() == null) {
+    if (getHintsAndSolutionManagerFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_fragment_placeholder,
-        HintsAndSolutionExplorationManagerFragment()
+        HintsAndSolutionExplorationManagerFragment(),
+        TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
       ).commitNow()
     }
-  }
-
-  private fun getHintsAndSolutionExplorationManagerFragment(): HintsAndSolutionExplorationManagerFragment? { // ktlint-disable max-line-length
-    return activity.supportFragmentManager.findFragmentByTag(
-      TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
-    ) as HintsAndSolutionExplorationManagerFragment?
   }
 
   fun showAudioButton() = exploreViewModel.showAudioButton.set(true)
@@ -131,6 +126,12 @@ class ExplorationActivityPresenter @Inject constructor(
     return activity.supportFragmentManager.findFragmentByTag(
       TAG_EXPLORATION_FRAGMENT
     ) as ExplorationFragment?
+  }
+
+  private fun getHintsAndSolutionManagerFragment(): HintsAndSolutionExplorationManagerFragment? {
+    return activity.supportFragmentManager.findFragmentByTag(
+      TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
+    ) as HintsAndSolutionExplorationManagerFragment?
   }
 
   fun stopExploration() {

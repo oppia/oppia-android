@@ -8,7 +8,7 @@ android_sdk_repository(
     #build_tools_version = "28.0.2",
 )
 
-#Add support for JVM rules: https://github.com/bazelbuild/rules_jvm_external
+# Add support for JVM rules: https://github.com/bazelbuild/rules_jvm_external
 RULES_JVM_EXTERNAL_TAG = "2.9"
 RULES_JVM_EXTERNAL_SHA = "e5b97a31a3e8feed91636f42e19b11c49487b85e5de2f387c999ea14d77c7f45"
 http_archive(
@@ -46,6 +46,25 @@ http_archive(
     ],
 )
 
+load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
+rules_proto_dependencies()
+rules_proto_toolchains()
+
+# rules_java defines rules for generating Java code from Protocol Buffers.
+http_archive(
+    name = "rules_java",
+    sha256 = "ccf00372878d141f7d5568cedc4c42ad4811ba367ea3e26bc7c43445bbc52895",
+    strip_prefix = "rules_java-d7bf804c8731edd232cb061cb2a9fe003a85d8ee",
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_java/archive/d7bf804c8731edd232cb061cb2a9fe003a85d8ee.tar.gz",
+        "https://github.com/bazelbuild/rules_java/archive/d7bf804c8731edd232cb061cb2a9fe003a85d8ee.tar.gz",
+    ],
+)
+
+load("@rules_java//java:repositories.bzl", "rules_java_dependencies", "rules_java_toolchains")
+rules_java_dependencies()
+rules_java_toolchains()
+
 #Add support for Dagger
 DAGGER_TAG = "2.28.1"
 DAGGER_SHA = "9e69ab2f9a47e0f74e71fe49098bea908c528aa02fa0c5995334447b310d0cdd"
@@ -56,7 +75,6 @@ http_archive(
     urls = ["https://github.com/google/dagger/archive/dagger-%s.zip" % DAGGER_TAG],
 )
 
-load("@rules_jvm_external//:defs.bzl", "maven_install")
 load("@dagger//:workspace_defs.bzl", "DAGGER_ARTIFACTS", "DAGGER_REPOSITORIES")
 
 #Add support for Robolectric: https://github.com/robolectric/robolectric-bazel
@@ -79,6 +97,8 @@ git_repository(
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_workspace_dependencies")
 google_services_workspace_dependencies()
 
+
+load("@rules_jvm_external//:defs.bzl", "maven_install")
 #TODO: Remove unused dependencies once android_local_test errors are resolved
 maven_install(
     artifacts = DAGGER_ARTIFACTS + [
@@ -112,8 +132,3 @@ maven_install(
         "https://maven.fabric.io/public",
     ],
 )
-
-load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
-rules_proto_dependencies()
-rules_proto_toolchains()
-

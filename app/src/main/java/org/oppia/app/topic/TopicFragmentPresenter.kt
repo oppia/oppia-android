@@ -12,7 +12,7 @@ import org.oppia.app.databinding.TopicFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.EventLog
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.analytics.AnalyticsController
+import org.oppia.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -105,7 +105,6 @@ class TopicFragmentPresenter @Inject constructor(
 
   private fun logInfoFragmentEvent(topicId: String) {
     analyticsController.logTransitionEvent(
-      fragment.requireActivity().applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_INFO_TAB,
       analyticsController.createTopicContext(topicId)
@@ -114,7 +113,6 @@ class TopicFragmentPresenter @Inject constructor(
 
   private fun logLessonsFragmentEvent(topicId: String) {
     analyticsController.logTransitionEvent(
-      fragment.requireActivity().applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_LESSONS_TAB,
       analyticsController.createTopicContext(topicId)
@@ -123,7 +121,6 @@ class TopicFragmentPresenter @Inject constructor(
 
   private fun logPracticeFragmentEvent(topicId: String) {
     analyticsController.logTransitionEvent(
-      fragment.requireActivity().applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_PRACTICE_TAB,
       analyticsController.createTopicContext(topicId)
@@ -132,7 +129,6 @@ class TopicFragmentPresenter @Inject constructor(
 
   private fun logRevisionFragmentEvent(topicId: String) {
     analyticsController.logTransitionEvent(
-      fragment.requireActivity().applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_REVISION_TAB,
       analyticsController.createTopicContext(topicId)
