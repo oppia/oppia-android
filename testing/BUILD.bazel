@@ -12,9 +12,7 @@ kt_android_library(
      deps = [
          ":dagger",
          "//model:model_lib",
-         "//utility:utility_logging_lib",
-         "//utility:utility_threading_lib",
-         "//utility:utility_accessibility_lib",
+         "//utility:utility_lib",
          "@robolectric//bazel:android-all",
          artifact("org.robolectric:robolectric"),
          artifact("org.jetbrains.kotlinx:kotlinx-coroutines-core"),
@@ -45,9 +43,7 @@ kt_android_library(
          ":testing_main_lib",
          ":dagger",
          "//model:model_lib",
-         "//utility:utility_logging_lib",
-         "//utility:utility_threading_lib",
-         "//utility:utility_accessibility_lib",
+         "//utility:utility_lib",
          "@robolectric//bazel:android-all",
          artifact("org.robolectric:robolectric"),
          artifact("org.jetbrains.kotlinx:kotlinx-coroutines-core"),
@@ -68,5 +64,7 @@ kt_android_library(
          artifact("org.mockito:mockito-core:2.19.0"),
      ],
 )
+
+#TODO: Add android_local_test rule
 
 dagger_rules()

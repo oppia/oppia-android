@@ -84,7 +84,6 @@ http_archive(
 load("@robolectric//bazel:robolectric.bzl", "robolectric_repositories")
 robolectric_repositories()
 
-
 #Add support for Firebase Crashlytics
 git_repository(
     name = "tools_android",
