@@ -1,8 +1,15 @@
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
-
 package(default_visibility = ["//visibility:public"])
+load("//:oppia_android_test.bzl", "oppia_android_test")
+load("//testing:testing_test.bzl", "testing_test")
+
+testing_test(
+    name = "FakeExceptionLoggerTest",
+    src = ["src/test/java/org/oppia/testing/FakeExceptionLoggerTest.kt"],
+    test_class = "org.oppia.testing.FakeExceptionLoggerTest",
+)
 
 android_library(
     name = "testing_test_deps",
@@ -61,7 +68,7 @@ kt_android_library(
 kt_android_library(
      name = "testing_test_lib",
      custom_package = "org.oppia.testing",
-     srcs = glob(["src/test/java/**/*.kt"]),
+     srcs = glob(["src/test/java/org/oppia/testing/*.kt"]),
      manifest = "src/main/AndroidManifest.xml",
      deps = [
          ":testing_lib",

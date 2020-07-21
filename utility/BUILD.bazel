@@ -4,7 +4,6 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 load("//utility:utility_test.bzl", "utility_test")
 
-
 utility_test(
     name = "netowrk_connection_creator_test_oppia",
     src = ["src/test/java/org/oppia/util/networking/NetworkConnectionUtilTest.kt"],
