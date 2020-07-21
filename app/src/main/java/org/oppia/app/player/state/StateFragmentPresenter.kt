@@ -24,7 +24,6 @@ import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Solution
 import org.oppia.app.model.State
-import org.oppia.app.model.StoryTextSize
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.audio.AudioFragment
@@ -288,7 +287,7 @@ class StateFragmentPresenter @Inject constructor(
     )
   }
 
-  private fun processProfileResult(result: AsyncResult<Profile>){
+  private fun processProfileResult(result: AsyncResult<Profile>) {
     if (result.isFailure()) {
       logger.e("StateFragment", "Failed to retrieve profile", result.getErrorOrNull()!!)
       return
