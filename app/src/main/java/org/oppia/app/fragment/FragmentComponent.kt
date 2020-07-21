@@ -29,6 +29,7 @@ import org.oppia.app.profile.ResetPinDialogFragment
 import org.oppia.app.profileprogress.ProfileProgressFragment
 import org.oppia.app.story.StoryFragment
 import org.oppia.app.testing.BindableAdapterTestFragment
+import org.oppia.app.testing.ImageRegionSelectionTestFragment
 import org.oppia.app.topic.TopicFragment
 import org.oppia.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.app.topic.info.TopicInfoFragment
@@ -72,6 +73,7 @@ interface FragmentComponent {
   fun inject(hintsAndSolutionDialogFragment: HintsAndSolutionDialogFragment)
   fun inject(hintsAndSolutionExplorationManagerFragment: HintsAndSolutionExplorationManagerFragment)
   fun inject(hintsAndSolutionQuestionManagerFragment: HintsAndSolutionQuestionManagerFragment)
+  fun inject(imageRegionSelectionTestFragment: ImageRegionSelectionTestFragment)
   fun inject(homeFragment: HomeFragment)
   fun inject(myDownloadsFragment: MyDownloadsFragment)
   fun inject(navigationDrawerFragment: NavigationDrawerFragment)

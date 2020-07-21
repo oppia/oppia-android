@@ -1,22 +1,24 @@
-package org.oppia.app.testing.player.state
+package org.oppia.app.testing
 
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers.withTagValue
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.firebase.FirebaseApp
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.InternalCoroutinesApi
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.not
+import org.hamcrest.Matchers.allOf
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,8 +29,7 @@ import org.oppia.app.application.ApplicationComponent
 import org.oppia.app.application.ApplicationContext
 import org.oppia.app.application.ApplicationModule
 import org.oppia.app.player.state.StateFragment
-import org.oppia.app.player.state.testing.StateFragmentTestActivity
-import org.oppia.app.recyclerview.RecyclerViewMatcher
+import org.oppia.app.utility.clickPoint
 import org.oppia.data.backends.gae.NetworkModule
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
@@ -40,13 +41,8 @@ import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputMo
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.domain.exploration.TEST_EXPLORATION_ID_8
-import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.domain.question.QuestionModule
-import org.oppia.domain.topic.TEST_STORY_ID_0
-import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.testing.TestAccessibilityModule
-import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.accessibility.FakeAccessibilityManager
@@ -62,15 +58,8 @@ import javax.inject.Singleton
 
 /** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)
-@Config(application = StateFragmentAccessibilityTest.TestApplication::class)
-class StateFragmentAccessibilityTest {
-
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
-
-  @InternalCoroutinesApi
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+@Config(application = ImageRegionSelectionInteractionViewTest.TestApplication::class)
+class ImageRegionSelectionInteractionViewTest {
 
   @Inject
   @field:ApplicationContext
@@ -79,81 +68,109 @@ class StateFragmentAccessibilityTest {
   @Inject
   lateinit var fakeAccessibilityManager: FakeAccessibilityManager
 
-  private val internalProfileId: Int = 1
-
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    profileTestHelper.initializeProfiles()
-    fakeAccessibilityManager.setTalkbackEnabled(true)
     FirebaseApp.initializeApp(context)
-  }
-
-  @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
-  fun testStateFragment_loadDragDropExp_moveDownWithAccessibility() {
-    launchForExploration(TEST_EXPLORATION_ID_8).use {
-      startPlayingExploration()
-      onView(
-        RecyclerViewMatcher.atPositionOnView(
-          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
-          position = 0,
-          targetViewId = R.id.drag_drop_move_down_item
-        )
-      ).perform(click())
-      onView(
-        RecyclerViewMatcher.atPositionOnView(
-          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
-          position = 1,
-          targetViewId = R.id.drag_drop_content_text_view
-        )
-      ).check(matches(withText("I bought")))
-    }
-  }
-
-  @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
-  fun testStateFragment_loadDragDropExp_moveUpWithAccessibility() {
-    launchForExploration(TEST_EXPLORATION_ID_8).use {
-      startPlayingExploration()
-      onView(
-        RecyclerViewMatcher.atPositionOnView(
-          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
-          position = 1,
-          targetViewId = R.id.drag_drop_move_up_item
-        )
-      ).perform(click())
-      onView(
-        RecyclerViewMatcher.atPositionOnView(
-          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
-          position = 0,
-          targetViewId = R.id.drag_drop_content_text_view
-        )
-      ).check(matches(withText("a camera at the store")))
-    }
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun launchForExploration(
-    explorationId: String
-  ): ActivityScenario<StateFragmentTestActivity> {
-    return ActivityScenario.launch(
-      StateFragmentTestActivity.createTestActivityIntent(
-        context, internalProfileId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, explorationId
+  @Test
+  fun testImageRegionSelectionInteractionView_clickRegion3_Region3Clicked() {
+    launch(ImageRegionSelectionTestActivity::class.java).use {
+      onView(withId(R.id.clickable_image_view)).perform(
+        clickPoint(0.3f, 0.3f)
       )
-    )
+      onView(allOf(withTagValue(`is`("Region 3"))))
+        .check(
+          matches(isDisplayed())
+        )
+    }
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
-  private fun startPlayingExploration() {
-    onView(withId(R.id.play_test_exploration_button)).perform(click())
-    testCoroutineDispatchers.runCurrent()
+  @Test
+  fun testImageRegionSelectionInteractionView_clickRegion3_clickRegion2_Region2Clicked() {
+    launch(ImageRegionSelectionTestActivity::class.java).use {
+      onView(withId(R.id.clickable_image_view)).perform(
+        clickPoint(0.3f, 0.3f)
+      )
+      onView(allOf(withTagValue(`is`("Region 3"))))
+        .check(
+          matches(isDisplayed())
+        )
+
+      onView(withId(R.id.clickable_image_view)).perform(
+        clickPoint(0.7f, 0.3f)
+      )
+      onView(allOf(withTagValue(`is`("Region 2"))))
+        .check(
+          matches(isDisplayed())
+        )
+    }
+  }
+
+  @Test
+  fun testImageRegionSelectionInteractionView_clickOnDefaultRegion_defaultRegionClicked() {
+    launch(ImageRegionSelectionTestActivity::class.java).use {
+      onView(withId(R.id.clickable_image_view)).perform(
+        clickPoint(0.0f, 0.0f)
+      )
+      onView(withId(R.id.default_selected_region)).check(
+        matches(isDisplayed())
+      )
+    }
+  }
+
+  @Test
+  fun testImageRegionSelectionInteractionView_withTalkbackEnabled_clickRegion3_clickRegion2_Region2Clicked() { // ktlint-disable max-line-length
+    fakeAccessibilityManager.setTalkbackEnabled(true)
+    launch(ImageRegionSelectionTestActivity::class.java).use {
+      onView(withId(R.id.clickable_image_view)).perform(
+        clickPoint(0.3f, 0.3f)
+      )
+      onView(allOf(withTagValue(`is`("Region 3"))))
+        .check(
+          matches(isDisplayed())
+        )
+
+      onView(withId(R.id.clickable_image_view)).perform(
+        clickPoint(0.7f, 0.3f)
+      )
+      onView(allOf(withTagValue(`is`("Region 2"))))
+        .check(
+          matches(isDisplayed())
+        )
+    }
+  }
+
+  @Test
+  fun testImageRegionSelectionInteractionView_withTalkbackEnabled_clickRegion3_Region3Clicked() {
+    fakeAccessibilityManager.setTalkbackEnabled(true)
+    launch(ImageRegionSelectionTestActivity::class.java).use {
+      onView(withId(R.id.clickable_image_view)).perform(
+        clickPoint(0.3f, 0.3f)
+      )
+      onView(allOf(withTagValue(`is`("Region 3"))))
+        .check(
+          matches(isDisplayed())
+        )
+    }
+  }
+
+  @Test
+  fun testImageRegionSelectionInteractionView_withTalkbackEnabled_clickOnDefaultRegion_defaultRegionNotClicked() { // ktlint-disable max-line-length
+    fakeAccessibilityManager.setTalkbackEnabled(true)
+    launch(ImageRegionSelectionTestActivity::class.java).use { activityScenario ->
+      onView(withId(R.id.clickable_image_view)).perform(
+        clickPoint(0.0f, 0.0f)
+      )
+      onView(withId(R.id.default_selected_region)).check(
+        matches(not(isDisplayed()))
+      )
+    }
   }
 
   @Module
@@ -182,18 +199,18 @@ class StateFragmentAccessibilityTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(stateFragmentAccessibilityTest: StateFragmentAccessibilityTest)
+    fun inject(imageRegionSelectionAccessibilityTest: ImageRegionSelectionInteractionViewTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory {
     private val component: TestApplicationComponent by lazy {
-      DaggerStateFragmentAccessibilityTest_TestApplicationComponent.builder()
+      DaggerImageRegionSelectionInteractionViewTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(stateFragmentAccessibilityTest: StateFragmentAccessibilityTest) {
-      component.inject(stateFragmentAccessibilityTest)
+    fun inject(imageRegionSelectionAccessibilityTest: ImageRegionSelectionInteractionViewTest) {
+      component.inject(imageRegionSelectionAccessibilityTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

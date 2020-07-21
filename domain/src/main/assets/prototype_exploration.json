@@ -951,7 +951,7 @@
                     ]
                   },
                   "label": "Region1",
-                  "description" : "This is the lower part on right hand side of the number."
+                  "contentDescription" : "This is the lower part on right hand side of the number."
                 },
                 {
                   "region": {
@@ -968,7 +968,7 @@
                     ]
                   },
                   "label": "Region2",
-                  "description" : "This is the upper part on right hand side of the number."
+                  "contentDescription" : "This is the upper part on right hand side of the number."
                 },
                 {
                   "region": {
@@ -985,7 +985,7 @@
                     ]
                   },
                   "label": "Region3",
-                  "description" : "This is the left part of the number."
+                  "contentDescription" : "This is the left part of the number."
                 }
               ],
               "imagePath": "img_20200708_140916_u5b9wrqmni_height_226_width_264.png"

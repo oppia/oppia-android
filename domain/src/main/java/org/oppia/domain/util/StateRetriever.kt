@@ -6,12 +6,16 @@ import org.oppia.app.model.AnswerGroup
 import org.oppia.app.model.CorrectAnswer
 import org.oppia.app.model.Fraction
 import org.oppia.app.model.Hint
+import org.oppia.app.model.ImageWithRegions
+import org.oppia.app.model.ImageWithRegions.LabeledRegion
+import org.oppia.app.model.ImageWithRegions.LabeledRegion.Region.NormalizedRectangle2d
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.ListOfSetsOfHtmlStrings
 import org.oppia.app.model.NumberUnit
 import org.oppia.app.model.NumberWithUnits
 import org.oppia.app.model.Outcome
+import org.oppia.app.model.Point2d
 import org.oppia.app.model.RuleSpec
 import org.oppia.app.model.Solution
 import org.oppia.app.model.State
@@ -466,6 +470,13 @@ class StateRetriever @Inject constructor(
           ).build()
         }
       }
+      is JSONObject -> {
+        if (customizationArgValue.has("labeledRegions")) {
+          return interactionObjectBuilder.setImageWithRegions(
+            parseImageWithRegions(customizationArgValue)
+          ).build()
+        }
+      }
     }
     return InteractionObject.getDefaultInstance()
   }
@@ -477,4 +488,55 @@ class StateRetriever @Inject constructor(
     }
     return StringList.newBuilder().addAllHtml(list).build()
   }
+
+  private fun parseImageWithRegions(jsonObject: JSONObject): ImageWithRegions {
+    return ImageWithRegions.newBuilder()
+      .addAllLabelRegions(parseJsonToLabeledRegionsList(jsonObject.getJSONArray("labeledRegions")))
+      .setImagePath(jsonObject.getString("imagePath"))
+      .build()
+  }
+
+  private fun parseJsonToLabeledRegionsList(jsonArray: JSONArray): List<LabeledRegion> {
+    val list: MutableList<LabeledRegion> = ArrayList()
+    for (i in 0 until jsonArray.length()) {
+      list.add(parseLabeledRegion(jsonArray.getJSONObject(i)))
+    }
+    return list
+  }
+
+  private fun parseLabeledRegion(jsonObject: JSONObject): LabeledRegion {
+    return LabeledRegion.newBuilder()
+      .setLabel(jsonObject.getString("label"))
+      .setRegion(parseRegion(jsonObject.getJSONObject("region")))
+//      .setContentDescription(jsonObject.getString("contentDescription"))
+      .build()
+  }
+
+  private fun parseRegion(jsonObject: JSONObject): LabeledRegion.Region {
+    val regionType =
+      if (jsonObject.get("regionType") == LabeledRegion.Region.RegionType.RECTANGLE.name) {
+        LabeledRegion.Region.RegionType.RECTANGLE
+      } else {
+        LabeledRegion.Region.RegionType.UNRECOGNIZED
+      }
+    return LabeledRegion.Region.newBuilder()
+      .setRegionType(regionType)
+      .setArea(parseNormalizedRectangle2d(jsonObject.getJSONArray("area")))
+      .build()
+  }
+
+  private fun parseNormalizedRectangle2d(jsonArray: JSONArray): NormalizedRectangle2d {
+    return NormalizedRectangle2d.newBuilder()
+      .setUpperLeft(parsePoint2D(jsonArray.getJSONArray(0)))
+      .setLowerRight(parsePoint2D(jsonArray.getJSONArray(1)))
+      .build()
+  }
+
+  private fun parsePoint2D(points: JSONArray): Point2d {
+    return Point2d.newBuilder()
+      .setX(points.getDouble(0).toFloat())
+      .setX(points.getDouble(1).toFloat())
+      .build()
+  }
+
 }

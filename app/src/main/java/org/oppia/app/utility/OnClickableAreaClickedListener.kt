@@ -5,5 +5,5 @@ interface OnClickableAreaClickedListener {
   /**
    * @param region the name of the region which is selected
    */
-  fun onClickableAreaTouched(region: String)
+  fun onClickableAreaTouched(region: RegionClickedEvent)
 }
