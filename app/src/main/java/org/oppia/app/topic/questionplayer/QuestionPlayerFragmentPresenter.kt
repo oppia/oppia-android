@@ -226,16 +226,16 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
     if (shouldSplit) {
       questionViewModel.shouldSplitView.set(true)
-      binding.rightQuestionRecyclerView?.visibility = View.VISIBLE
-      val params = binding.centerGuideline?.layoutParams as ConstraintLayout.LayoutParams
+      binding.rightQuestionRecyclerView.visibility = View.VISIBLE
+      val params = binding.centerGuideline.layoutParams as ConstraintLayout.LayoutParams
       params.guidePercent = 0.5f
-      binding.centerGuideline?.layoutParams = params
+      binding.centerGuideline.layoutParams = params
     } else {
       questionViewModel.shouldSplitView.set(false)
-      binding.rightQuestionRecyclerView?.visibility = View.GONE
-      val params = binding.centerGuideline?.layoutParams as ConstraintLayout.LayoutParams
+      binding.rightQuestionRecyclerView.visibility = View.GONE
+      val params = binding.centerGuideline.layoutParams as ConstraintLayout.LayoutParams
       params.guidePercent = 1f
-      binding.centerGuideline?.layoutParams = params
+      binding.centerGuideline.layoutParams = params
     }
 
     questionViewModel.itemList.clear()
@@ -251,7 +251,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       shouldSplit
     ).second
     rhsInteractionsAdapter = RhsInteractionsAdapter(questionViewModel.rightItemList)
-    binding.rightQuestionRecyclerView?.adapter = rhsInteractionsAdapter
+    binding.rightQuestionRecyclerView.adapter = rhsInteractionsAdapter
   }
 
   private fun updateProgress(currentQuestionIndex: Int, questionCount: Int) {

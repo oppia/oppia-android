@@ -14,7 +14,6 @@ import org.junit.runner.RunWith
 import org.oppia.app.player.SplitScreenManager
 import org.oppia.app.testing.ExplorationTestActivity
 import org.robolectric.annotation.Config
-import org.robolectric.shadows.ShadowLog
 
 //Devices reference: https://material.io/resources/devices/
 @RunWith(AndroidJUnit4::class)
@@ -23,7 +22,6 @@ class PlayerSplitScreenTesting {
   @Before
   @ExperimentalCoroutinesApi
   fun setUp() {
-    ShadowLog.stream = System.out
     Intents.init()
     FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
   }

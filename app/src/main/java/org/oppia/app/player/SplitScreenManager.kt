@@ -2,7 +2,6 @@ package org.oppia.app.player
 
 import android.app.Activity
 import android.util.DisplayMetrics
-import android.util.Log
 import org.oppia.app.R
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -28,7 +27,6 @@ class SplitScreenManager(
     val hi = height.toDouble() / dm.ydpi.toDouble()
     val x = wi.pow(2.0)
     val y = hi.pow(2.0)
-    Log.d("diagonal width", "${sqrt(x + y)}")
     return sqrt(x + y)
   }
 

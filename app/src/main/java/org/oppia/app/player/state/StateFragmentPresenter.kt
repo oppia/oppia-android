@@ -291,16 +291,16 @@ class StateFragmentPresenter @Inject constructor(
 
     if (shouldSplit) {
       viewModel.shouldSplitView.set(true)
-      binding.rhsStateRecyclerView?.visibility = View.VISIBLE
-      val params = binding.centerGuideline?.layoutParams as ConstraintLayout.LayoutParams
+      binding.rhsStateRecyclerView.visibility = View.VISIBLE
+      val params = binding.centerGuideline.layoutParams as ConstraintLayout.LayoutParams
       params.guidePercent = 0.5f
-      binding.centerGuideline?.layoutParams = params
+      binding.centerGuideline.layoutParams = params
     } else {
       viewModel.shouldSplitView.set(false)
-      binding.rhsStateRecyclerView?.visibility = View.GONE
-      val params = binding.centerGuideline?.layoutParams as ConstraintLayout.LayoutParams
+      binding.rhsStateRecyclerView.visibility = View.GONE
+      val params = binding.centerGuideline.layoutParams as ConstraintLayout.LayoutParams
       params.guidePercent = 1f
-      binding.centerGuideline?.layoutParams = params
+      binding.centerGuideline.layoutParams = params
     }
 
     val isInNewState =
@@ -323,7 +323,7 @@ class StateFragmentPresenter @Inject constructor(
       shouldSplit
     ).second
     rhsInteractionsAdapter = RhsInteractionsAdapter(viewModel.rightItemList)
-    binding.rhsStateRecyclerView?.adapter = rhsInteractionsAdapter
+    binding.rhsStateRecyclerView.adapter = rhsInteractionsAdapter
 
     if (isInNewState) {
       (binding.stateRecyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
