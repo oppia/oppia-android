@@ -7,18 +7,15 @@ package(default_visibility = ["//visibility:public"])
 kt_android_library(
     name = "utility_lib",
     custom_package = "org.oppia.util",
-    srcs = glob(
-        ["src/main/java/org/oppia/util/**/*.kt"],
-        exclude = [
-            "src/main/java/org/oppia/util/logging/*.kt",
-            "src/main/java/org/oppia/util/threading/*.kt"
-        ]
-    ),
-    resource_files = glob(["src/main/res/**/*.xml", "src/main/res/**/*.png"]),
+    srcs = glob(["src/main/java/org/oppia/util/**/*.kt"],
+                exclude = ["src/main/java/org/oppia/util/logging/firebase/*.kt"]),
+    resource_files = glob(["src/main/res/**/*.xml"]),
     manifest = "src/main/AndroidManifest.xml",
     deps = [
         ":dagger",
         "//model:model_lib",
+        "//firebase:crashlytics_lib",
+        "//firebase:crashlytics_deps",
         artifact("org.jetbrains.kotlinx:kotlinx-coroutines-core"),
         artifact("org.jetbrains.kotlinx:kotlinx-coroutines-android"),
         artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test"),
@@ -38,72 +35,94 @@ kt_android_library(
     ],
 )
 
-#TODO: Have each library in utility contain a different rule
+#TODO: Build all tests
 kt_android_library(
-    name = "utility_logging_threading_accessibility_lib",
+    name = "async",
     custom_package = "org.oppia.util",
-    srcs = glob([
-        "src/main/java/org/oppia/util/logging/*.kt",
-        "src/main/java/org/oppia/util/threading/*.kt",
-        "src/main/java/org/oppia/util/accessibility/*.kt",
-        ]),
-    resource_files = glob(["src/main/res/**/*.xml", "src/main/res/**/*.png"]),
+    srcs = ["src/main/java/org/oppia/util/data/AsyncResult.kt"],
+    resource_files = glob(["src/main/res/**/*.xml"]),
     manifest = "src/main/AndroidManifest.xml",
     deps = [
         ":dagger",
-        "//model:model_lib",
+        "//testing:testing_main_lib",
+        artifact("com.google.truth:truth"),
         artifact("org.jetbrains.kotlinx:kotlinx-coroutines-core"),
         artifact("org.jetbrains.kotlinx:kotlinx-coroutines-android"),
         artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test"),
-        artifact("com.google.truth:truth"),
-        artifact("androidx.appcompat:appcompat"),
+        artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
+        artifact("io.fabric.sdk.android:fabric:1.4.7"),
+        artifact("org.mockito:mockito-core:2.19.0"),
+        artifact("androidx.test.ext:junit"),
         artifact("com.github.bumptech.glide:glide"),
         artifact("com.github.bumptech.glide:compiler"),
         artifact("com.caverock:androidsvg-aar"),
-        artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
-        artifact("com.google.firebase:firebase-analytics-ktx"),
-        artifact("com.crashlytics.sdk.android:crashlytics:2.9.8"),
-        artifact("io.fabric.sdk.android:fabric:1.4.7"),
-        artifact("com.google.gms:google-services:4.3.3"),
-        artifact("com.android.support:support-annotations"),
-        artifact("androidx.test.ext:junit"),
-        artifact("org.mockito:mockito-core:2.19.0"),
+        artifact("androidx.appcompat:appcompat"),
+        artifact("androidx.core:core-ktx"),
+        artifact("junit:junit"),
+        artifact("org.jetbrains.kotlin:kotlin-stdlib-jdk7:jar"),
     ],
+)
+
+kt_android_library(
+    name = "async_test_lib",
+    custom_package = "org.oppia.util",
+    srcs = ["src/test/java/org/oppia/util/data/AsyncResultTest.kt"],
+    resource_files = glob(["src/main/res/**/*.xml"]),
+    manifest = "src/test/TestManifest.xml",
+    deps = [
+        ":async",
+        ":dagger",
+        "@robolectric//bazel:android-all",
+        "@maven//:org_robolectric_robolectric",
+        artifact("org.jetbrains.kotlin:kotlin-test-junit:1.3.72"),
+    ],
+)
+
+android_local_test(
+   name = "async_tests",
+   custom_package = "org.oppia.util",
+   test_class = "org.oppia.util.data.AsyncResultTest",
+   manifest = "src/test/TestManifest.xml",
+   deps = [
+       ":async_test_lib",
+       "@robolectric//bazel:android-all",
+       "@maven//:org_robolectric_robolectric",
+       artifact("com.google.truth:truth"),
+       artifact("org.jetbrains.kotlinx:kotlinx-coroutines-core"),
+               artifact("org.jetbrains.kotlinx:kotlinx-coroutines-android"),
+               artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test"),
+               artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
+               artifact("io.fabric.sdk.android:fabric:1.4.7"),
+               artifact("org.mockito:mockito-core:2.19.0"),
+               artifact("androidx.test.ext:junit"),
+               artifact("com.github.bumptech.glide:glide"),
+               artifact("com.github.bumptech.glide:compiler"),
+               artifact("com.caverock:androidsvg-aar"),
+               artifact("androidx.appcompat:appcompat"),
+               artifact("androidx.core:core-ktx"),
+               artifact("junit:junit"),
+               artifact("org.jetbrains.kotlin:kotlin-stdlib-jdk7:jar"),
+   ],
+ )
+
+android_local_test(
+   name = "demo_test",
+     custom_package = "org.oppia.util",
+     test_class = "org.oppia.util.data.DemoJavaTest",
+     srcs = ["src/test/java/org/oppia/util/data/DemoJavaTest.java"],
+     manifest = "src/test/TestManifest.xml",
+     deps = [
+         #":async_test_lib",
+         "@robolectric//bazel:android-all",
+         "@maven//:org_robolectric_robolectric",
+         artifact("com.google.truth:truth"),
+         artifact("junit:junit"),
+         artifact("org.robolectric:annotations:4.3"),
+         artifact("androidx.test.ext:junit"),
+   ],
 )
 
 #TODO: Get android_local_test working with kotlin files
-'''
-kt_android_library(
-    name = "test_lib",
-    custom_package = "org.oppia.util",
-    srcs = glob(["src/test/**/*.kt"]),
-    resource_files = glob(["src/main/res/**/*.xml", "src/main/res/**/*.png"]),
-    manifest = "src/main/AndroidManifest.xml",
-    deps = [
-        ":dagger",
-        ":utility_lib",
-        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-core"),
-        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-android"),
-        #artifact("androidx.appcompat:appcompat:1.0.2"),
-    ],
-)
 
-
-android_local_test(
-  name = "all_tests",
-  custom_package = "org.oppia.util",
-  test_class = "org.oppia.util",
-  deps = [
-      ":dagger",
-      ":test_lib",
-      "@robolectric//bazel:android-all",
-      artifact("org.robolectric:robolectric"),
-      artifact("org.jetbrains.kotlinx:kotlinx-coroutines-core"),
-      artifact("org.jetbrains.kotlinx:kotlinx-coroutines-android"),
-      artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test"),
-      artifact("junit:junit"),
-  ],
-)
-'''
 
 dagger_rules()
