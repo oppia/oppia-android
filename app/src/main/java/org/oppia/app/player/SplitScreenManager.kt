@@ -12,7 +12,7 @@ private const val MINIMUM_DIAGONAL_WIDTH = 7.0
 class SplitScreenManager(
   private val activity: Activity
 ) {
-  private val splitScreenInteractionIdsPool = listOf("DragAndDropSortInput")
+  private val splitScreenInteractionIdsPool = listOf("DragAndDropSortInput", "ImageClickInput")
 
   fun shouldSplit(interactionId: String): Boolean {
     return isDeviceSplittable() && isInteractionSplittable(interactionId)
