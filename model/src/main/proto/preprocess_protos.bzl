@@ -19,3 +19,8 @@ def process(name, src):
       name = name + "_lib",
       srcs = ["processed_" + src]
   )
+
+  native.java_proto_library(
+      name = name + "_java_lib",
+      deps = [name + "_lib"]
+  )

@@ -1,37 +1,129 @@
 load("@rules_proto//proto:defs.bzl", "proto_library")
+load("@rules_java//java:defs.bzl", "java_proto_library")
 load("//model:src/main/proto/preprocess_protos.bzl", "process")
 
 proto_library(
-    name = "proto_lib",
-    srcs = [
-        "src/main/proto/event_logger.proto",
-        "src/main/proto/example.proto",
-        "src/main/proto/interaction_object.proto",
-        "src/main/proto/onboarding.proto",
-        "src/main/proto/profile.proto",
-        "src/main/proto/subtitled_html.proto",
-        "src/main/proto/thumbnail.proto",
-        "src/main/proto/translation.proto",
-        "src/main/proto/voiceover.proto",
-    ],
-    data = [
-        ":process_exploration",
-        ":process_question",
-        ":process_topic",
-    ],
+    name = "event_logger_proto",
+    srcs = ["src/main/proto/event_logger.proto"],
+)
+
+java_proto_library(
+    name = "event_logger_java_proto",
+    deps = [":event_logger_proto"],
+)
+
+proto_library(
+    name = "example_proto",
+    srcs = ["src/main/proto/example.proto"],
+)
+
+java_proto_library(
+    name = "example_java_proto",
+    deps = [":example_proto"],
+)
+
+proto_library(
+    name = "interaction_object_proto",
+    srcs = ["src/main/proto/interaction_object.proto"],
+)
+
+java_proto_library(
+    name = "interaction_object_java_proto",
+    deps = [":interaction_object_proto"],
+)
+
+proto_library(
+    name = "onboarding_proto",
+    srcs = ["src/main/proto/onboarding.proto"],
+)
+
+java_proto_library(
+    name = "onboarding_java_proto",
+    deps = [":onboarding_proto"],
+)
+
+proto_library(
+    name = "profile_proto",
+    srcs = ["src/main/proto/profile.proto"],
+)
+
+java_proto_library(
+    name = "profile_java_proto",
+    deps = [":profile_proto"],
+)
+
+proto_library(
+    name = "subtitled_html_proto",
+    srcs = ["src/main/proto/subtitled_html.proto"],
+)
+
+java_proto_library(
+    name = "subtitled_html_java_proto",
+    deps = [":subtitled_html_proto"],
+)
+
+proto_library(
+    name = "thumbnail_proto",
+    srcs = ["src/main/proto/thumbnail.proto"],
+)
+
+java_proto_library(
+    name = "thumbnail_java_proto",
+    deps = [":thumbnail_proto"],
+)
+
+proto_library(
+    name = "translation_proto",
+    srcs = ["src/main/proto/translation.proto"],
+)
+
+java_proto_library(
+    name = "translation_java_proto",
+    deps = [":translation_proto"],
+)
+
+proto_library(
+    name = "voiceover_proto",
+    srcs = ["src/main/proto/voiceover.proto"],
+)
+
+java_proto_library(
+    name = "voiceover_java_proto",
+    deps = [":voiceover_proto"],
 )
 
 process(
     name = "process_topic",
-    src = "topic.proto"
+    src = "src/main/proto/topic.proto"
 )
 
 process(
     name = "process_question",
-    src = "question.proto"
+    src = "src/main/proto/question.proto"
 )
 
 process(
     name = "process_exploration",
-    src = "exploration.proto"
+    src = "src/main/proto/exploration.proto"
+)
+
+android_library(
+    name = "model_lib",
+    srcs = [
+
+    ],
+    data = [
+        ":event_logger_java_proto",
+        ":example_java_proto",
+        ":interaction_object_java_proto",
+        ":onboarding_java_proto",
+        ":profile_java_proto",
+        ":subtitled_html_java_proto",
+        ":thumbnail_java_proto",
+        ":translation_java_proto",
+        ":voiceover_java_proto",
+        ":process_exploration",
+        ":process_question",
+        ":process_topic",
+    ],
 )
