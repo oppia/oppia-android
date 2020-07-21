@@ -15,7 +15,7 @@ import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.topic.RouteToRevisionCardListener
 import org.oppia.app.topic.revision.revisionitemviewmodel.TopicRevisionItemViewModel
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.analytics.AnalyticsController
+import org.oppia.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 

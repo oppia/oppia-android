@@ -33,9 +33,9 @@ import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
-const val DRAG_DROP_TEST_EXPLORATION_NAME = "drag_and_drop_test_exploration.json"
+const val DRAG_DROP_TEST_EXPLORATION_NAME = "test_exp_id_4.json"
 const val IMAGE_REGION_SELECTION_TEST_EXPLORATION_NAME =
-  "image_region_selection_test_exploration.json"
+  "image_click_input_exploration.json"
 
 /** Tests for [StateRetriever]. */
 @RunWith(AndroidJUnit4::class)
@@ -253,7 +253,7 @@ class StateRetrieverTest {
     val json = jsonAssetRetriever.loadJsonFromAsset(explorationName)
     return stateRetriever.createStateFromJson(
       stateName,
-      json?.getJSONObject("states")?.getJSONObject(stateName)
+      json?.getJSONObject("exploration")?.getJSONObject("states")?.getJSONObject(stateName)
     )
   }
 
