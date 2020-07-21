@@ -67,5 +67,4 @@ kt_android_library(
 
 #TODO: Add android_local_test rule
 
-
 dagger_rules()
