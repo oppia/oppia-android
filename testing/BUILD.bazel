@@ -11,6 +11,8 @@ kt_android_library(
      manifest = "src/main/AndroidManifest.xml",
      deps = [
          ":dagger",
+         "//model:model_lib",
+         "//utility:utility_lib",
          artifact("org.jetbrains.kotlinx:kotlinx-coroutines-core"),
          artifact("org.jetbrains.kotlinx:kotlinx-coroutines-android"),
          artifact("androidx.appcompat:appcompat:1.0.2"),

@@ -123,4 +123,5 @@ android_library(
         ":question_proto",
         ":topic_proto",
     ],
+    visibility = ["//visibility:public"],
 )
