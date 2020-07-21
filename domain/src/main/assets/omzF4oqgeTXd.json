@@ -1,0 +1,38 @@
+{
+  "canonical_story_dicts": [
+    {
+      "thumbnail_bg_color": "#B3D8F1",
+      "description": "",
+      "title": "Ratios: Part 1",
+      "node_titles": [
+        "What is a Ratio?",
+        "Order is important"
+      ],
+      "thumbnail_filename": "",
+      "published": true,
+      "id": "wAMdg4oOClga"
+    },
+    {
+      "thumbnail_bg_color": "#B3F1D8",
+      "description": "",
+      "title": "Ratios: Part 2",
+      "node_titles": [
+        "Equivalent Ratios",
+        "Writing Ratios in Simplest Form"
+      ],
+      "thumbnail_filename": "",
+      "published": true,
+      "id": "xBSdg4oOClga"
+    }
+  ],
+  "uncategorized_skill_ids": [],
+  "additional_story_dicts": [],
+  "topic_description": "Many everyday problems involve thinking about proportions. For example, if 30 apples cost 6 dollars, how much would 12 apples cost? In these lessons, you'll learn about how to use ratios and proportional reasoning to solve problems like this.",
+  "topic_name": "Ratios and Proportional Reasoning",
+  "topic_id": "omzF4oqgeTXd",
+  "version": 1,
+  "skill_descriptions": {
+    "NGZ89uMw0IGV": "Ratios Skill 1"
+  },
+  "subtopics": []
+}

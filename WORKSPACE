@@ -1,5 +1,6 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:jvm.bzl", "jvm_maven_import_external")
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 android_sdk_repository(
     name = "androidsdk",
@@ -16,8 +17,6 @@ http_archive(
     sha256 = RULES_JVM_EXTERNAL_SHA,
     url = "https://github.com/bazelbuild/rules_jvm_external/archive/%s.zip" % RULES_JVM_EXTERNAL_TAG,
 )
-
-load("@rules_jvm_external//:defs.bzl", "maven_install")
 
 # Add support for Kotlin: https://github.com/bazelbuild/rules_kotlin.
 RULES_KOTLIN_VERSION = "legacy-1.3.0-rc4"
@@ -79,14 +78,26 @@ load("@dagger//:workspace_defs.bzl", "DAGGER_ARTIFACTS", "DAGGER_REPOSITORIES")
 #Add support for Robolectric: https://github.com/robolectric/robolectric-bazel
 http_archive(
     name = "robolectric",
-    urls = ["https://github.com/robolectric/robolectric-bazel/archive/4.1.tar.gz"],
-    strip_prefix = "robolectric-bazel-4.1",
+    urls = ["https://github.com/oppia/robolectric-bazel/archive/4.x-oppia-exclusive-rc02.tar.gz"],
+    strip_prefix = "robolectric-bazel-4.x-oppia-exclusive-rc02",
 )
 load("@robolectric//bazel:robolectric.bzl", "robolectric_repositories")
 robolectric_repositories()
 
+
+#Add support for Firebase Crashlytics
+git_repository(
+    name = "tools_android",
+    commit = "00e6f4b7bdd75911e33c618a9bc57bab7a6e8930",
+    remote = "https://github.com/bazelbuild/tools_android"
+)
+
+load("@tools_android//tools/googleservices:defs.bzl", "google_services_workspace_dependencies")
+google_services_workspace_dependencies()
+
 load("@rules_jvm_external//:defs.bzl", "maven_install")
 
+#TODO: Remove unused dependencies once android_local_test errors are resolved
 maven_install(
     artifacts = DAGGER_ARTIFACTS + [
         "org.robolectric:robolectric:4.3",
