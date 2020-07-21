@@ -74,7 +74,7 @@ val TOPIC_FILE_ASSOCIATIONS = mapOf(
     "test_exp_id_2.json",
     "test_exp_id_3.json",
     "questions.json",
-    "skill.json",
+    "skills.json",
     "test_story_id_0.json",
     "test_story_id_1.json",
     "test_topic_id_0.json"
@@ -82,7 +82,7 @@ val TOPIC_FILE_ASSOCIATIONS = mapOf(
   TEST_TOPIC_ID_1 to listOf(
     "test_exp_id_4.json",
     "questions.json",
-    "skill.json",
+    "skills.json",
     "test_story_id_2.json",
     "test_topic_id_1.json"
   ),
@@ -90,7 +90,7 @@ val TOPIC_FILE_ASSOCIATIONS = mapOf(
     "umPkwp0L1M0-.json",
     "MjZzEVOG47_1.json",
     "questions.json",
-    "skill.json",
+    "skills.json",
     "wANbh4oOClga.json",
     "GJ2rLXRKD5hw.json"
   ),
@@ -100,7 +100,7 @@ val TOPIC_FILE_ASSOCIATIONS = mapOf(
     "k2bQ7z5XHNbK.json",
     "tIoSb3HZFN6e.json",
     "questions.json",
-    "skill.json",
+    "skills.json",
     "wAMdg4oOClga.json",
     "xBSdg4oOClga.json",
     "omzF4oqgeTXd.json"

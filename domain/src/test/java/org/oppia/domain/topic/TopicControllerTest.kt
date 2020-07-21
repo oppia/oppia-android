@@ -20,6 +20,7 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
+import org.json.JSONException
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -757,7 +758,7 @@ class TopicControllerTest {
 
     val exception = fakeExceptionLogger.getMostRecentException()
 
-    assertThat(exception).isInstanceOf(FileNotFoundException::class.java)
+    assertThat(exception).isInstanceOf(JSONException::class.java)
   }
 
   @Test
@@ -919,17 +920,18 @@ class TopicControllerTest {
   @ExperimentalCoroutinesApi
   fun testRetrieveQuestionsForInvalidSkillIds_returnsResultForValidSkillsOnly() =
     runBlockingTest(coroutineContext) {
-    val questionsListProvider = topicController
-      .retrieveQuestionsForSkillIds(
-        listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, "NON_EXISTENT_SKILL_ID")
-      )
-    dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
-    verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
+      val questionsListProvider = topicController
+        .retrieveQuestionsForSkillIds(
+          listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, "NON_EXISTENT_SKILL_ID")
+        )
+      dataProviders.convertToLiveData(questionsListProvider)
+        .observeForever(mockQuestionListObserver)
+      verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
 
-    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
-    val questionsList = questionListResultCaptor.value.getOrThrow()
-    assertThat(questionsList.size).isEqualTo(5)
-  }
+      assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+      val questionsList = questionListResultCaptor.value.getOrThrow()
+      assertThat(questionsList.size).isEqualTo(5)
+    }
 
   @Test
   @ExperimentalCoroutinesApi
@@ -1072,7 +1074,8 @@ class TopicControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testOngoingTopicList_finishOneEntireTopicAndOneChapterInAnotherTopic_ongoingTopicListIsCorrect() = // ktlint-disable max-line-length
+  fun testOngoingTopicList_finishOneEntireTopicAndOneChapterInAnotherTopic_ongoingTopicListIsCorrect() =
+    // ktlint-disable max-line-length
     runBlockingTest(coroutineContext) {
       // Mark entire FRACTIONS topic as finished.
       markFractionsStory0Chapter0AsCompleted()
@@ -1166,7 +1169,8 @@ class TopicControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testCompletedStoryList_finishOneEntireStoryAndOneChapterInAnotherStory_completedStoryListIsCorrect() = // ktlint-disable max-line-length
+  fun testCompletedStoryList_finishOneEntireStoryAndOneChapterInAnotherStory_completedStoryListIsCorrect() =
+    // ktlint-disable max-line-length
     runBlockingTest(coroutineContext) {
       markFractionsStory0Chapter0AsCompleted()
       advanceUntilIdle()
