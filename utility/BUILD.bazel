@@ -4,12 +4,6 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 load("//utility:utility_test.bzl", "utility_test")
 
-utility_test(
-    name = "netowrk_connection_creator_test_oppia",
-    src = ["src/test/java/org/oppia/util/networking/NetworkConnectionUtilTest.kt"],
-    test_class = "org.oppia.util.networking.NetworkConnectionUtilTest",
-)
-
 # TODO: Remove testing dependencies
 android_library(
     name = "utility_deps",
@@ -96,117 +90,53 @@ kt_android_library(
     visibility = ["//visibility:public"]
 )
 
-android_local_test(
+utility_test(
    name = "async_result_test",
-   custom_package = "org.oppia.util",
+    src = ["src/test/java/org/oppia/util/data/AsyncResultTest.kt"],
    test_class = "org.oppia.util.data.AsyncResultTest",
-   manifest = "src/test/TestManifest.xml",
-   deps = [
-       ":utility_test_lib",
-       "@robolectric//bazel:android-all",
-       "@maven//:org_robolectric_robolectric",
-       ":utility_deps",
-       ":utility_test_deps",
-   ],
  )
 
-android_local_test(
+utility_test(
     name = "data_providers_test",
-    custom_package = "org.oppia.util",
+    src = ["src/test/java/org/oppia/util/data/DataProvidersTest.kt"],
     test_class = "org.oppia.util.data.DataProvidersTest",
-    manifest = "src/test/TestManifest.xml",
-    deps = [
-        ":utility_test_lib",
-        "@robolectric//bazel:android-all",
-        "@maven//:org_robolectric_robolectric",
-        ":utility_deps",
-        ":utility_test_deps",
-    ],
 )
 
 # TODO: Builds but does not pass
-android_local_test(
+utility_test(
     name = "in_memory_blocking_cache_test",
-    custom_package = "org.oppia.util",
+    src = ["src/test/java/org/oppia/util/data/InMemoryBlockingCacheTest.kt"],
     test_class = "org.oppia.util.data.InMemoryBlockingCacheTest",
-    manifest = "src/test/TestManifest.xml",
-    deps = [
-        ":utility_test_lib",
-        "@robolectric//bazel:android-all",
-        "@maven//:org_robolectric_robolectric",
-        ":utility_deps",
-        ":utility_test_deps",
-    ],
 )
 
-android_local_test(
+utility_test(
     name = "date_time_util_test",
-    custom_package = "org.oppia.util",
+    src = ["src/test/java/org/oppia/util/datetime/DateTimeUtilTest.kt"],
     test_class = "org.oppia.util.datetime.DateTimeUtilTest",
-    manifest = "src/test/TestManifest.xml",
-    deps = [
-        ":utility_test_lib",
-        "@robolectric//bazel:android-all",
-        "@maven//:org_robolectric_robolectric",
-        ":utility_deps",
-        ":utility_test_deps",
-    ],
 )
 
-android_local_test(
+utility_test(
     name = "event_bundle_creator_test",
-    custom_package = "org.oppia.util",
+    src = ["src/test/java/org/oppia/util/logging/EventBundleCreatorTest.kt"],
     test_class = "org.oppia.util.logging.EventBundleCreatorTest",
-    manifest = "src/test/TestManifest.xml",
-    deps = [
-        ":utility_test_lib",
-        "@robolectric//bazel:android-all",
-        "@maven//:org_robolectric_robolectric",
-        ":utility_deps",
-        ":utility_test_deps",
-    ],
 )
 
-android_local_test(
+utility_test(
     name = "network_connection_util_test",
-    custom_package = "org.oppia.util",
+    src = ["src/test/java/org/oppia/util/networking/NetworkConnectionUtilTest.kt"],
     test_class = "org.oppia.util.networking.NetworkConnectionUtilTest",
-    manifest = "src/test/TestManifest.xml",
-    deps = [
-        ":utility_test_lib",
-        "@robolectric//bazel:android-all",
-        "@maven//:org_robolectric_robolectric",
-        ":utility_deps",
-        ":utility_test_deps",
-    ],
 )
 
-android_local_test(
+utility_test(
     name = "directory_management_util_test",
-    custom_package = "org.oppia.util",
+    src = ["src/test/java/org/oppia/util/profile/DirectoryManagementUtilTest.kt"],
     test_class = "org.oppia.util.profile.DirectoryManagementUtilTest",
-    manifest = "src/test/TestManifest.xml",
-    deps = [
-        ":utility_test_lib",
-        "@robolectric//bazel:android-all",
-        "@maven//:org_robolectric_robolectric",
-        ":utility_deps",
-        ":utility_test_deps",
-    ],
 )
 
-android_local_test(
+utility_test(
     name = "oppia_date_time_formatter_test",
-    custom_package = "org.oppia.util",
+    src = ["src/test/java/org/oppia/util/system/OppiaDateTimeFormatterTest.kt"],
     test_class = "org.oppia.util.system.OppiaDateTimeFormatterTest",
-    manifest = "src/test/TestManifest.xml",
-    deps = [
-        ":utility_test_lib",
-        "@robolectric//bazel:android-all",
-        "@maven//:org_robolectric_robolectric",
-        ":utility_deps",
-        ":utility_test_deps",
-    ],
 )
 
 dagger_rules()
