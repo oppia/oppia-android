@@ -13,7 +13,7 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Topic
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.analytics.AnalyticsController
+import org.oppia.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.DefaultResourceBucketName
