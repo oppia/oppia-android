@@ -46,7 +46,6 @@ import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.topic.TEST_QUESTION_ID_0
 import org.oppia.domain.topic.TEST_QUESTION_ID_1
 import org.oppia.domain.topic.TEST_QUESTION_ID_3
-import org.oppia.domain.topic.TEST_QUESTION_ID_4
 import org.oppia.domain.topic.TEST_SKILL_ID_0
 import org.oppia.domain.topic.TEST_SKILL_ID_1
 import org.oppia.domain.topic.TEST_SKILL_ID_2

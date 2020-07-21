@@ -67,9 +67,12 @@ import kotlinx.coroutines.test.runBlockingTest as runBlockingTest1
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
 class QuestionAssessmentProgressControllerTest {
-  private val TEST_SKILL_ID_LIST_012 = listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, TEST_SKILL_ID_2) // questions 0, 1, 2, 3, 4, 5
-  private val TEST_SKILL_ID_LIST_02 = listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_2) // questions 0, 1, 2, 4, 5
-  private val TEST_SKILL_ID_LIST_01 = listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1) // questions 0, 1, 2, 3
+  private val TEST_SKILL_ID_LIST_012 =
+    listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, TEST_SKILL_ID_2) // questions 0, 1, 2, 3, 4, 5
+  private val TEST_SKILL_ID_LIST_02 =
+    listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_2) // questions 0, 1, 2, 4, 5
+  private val TEST_SKILL_ID_LIST_01 =
+    listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1) // questions 0, 1, 2, 3
   private val TEST_SKILL_ID_LIST_2 = listOf(TEST_SKILL_ID_2) // questions 2, 4, 5
 
   @Rule

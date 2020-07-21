@@ -917,7 +917,8 @@ class TopicControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testRetrieveQuestionsForInvalidSkillIds_returnsResultForValidSkillsOnly() = runBlockingTest(coroutineContext) {
+  fun testRetrieveQuestionsForInvalidSkillIds_returnsResultForValidSkillsOnly() =
+    runBlockingTest(coroutineContext) {
     val questionsListProvider = topicController
       .retrieveQuestionsForSkillIds(
         listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, "NON_EXISTENT_SKILL_ID")

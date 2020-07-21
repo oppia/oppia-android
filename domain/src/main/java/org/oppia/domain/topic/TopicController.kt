@@ -730,7 +730,9 @@ class TopicController @Inject constructor(
     return workedExampleList
   }
 
-  private fun createWrittenTranslationFromJson(translationMappingJsonObject: JSONObject?): TranslationMapping {
+  private fun createWrittenTranslationFromJson(
+    translationMappingJsonObject: JSONObject?
+  ): TranslationMapping {
     if (translationMappingJsonObject == null) {
       return TranslationMapping.getDefaultInstance()
     }
@@ -748,7 +750,9 @@ class TopicController @Inject constructor(
     return translationMappingBuilder.build()
   }
 
-  private fun createRecordedVoiceoversFromJson(voiceoverMappingJsonObject: JSONObject?): VoiceoverMapping {
+  private fun createRecordedVoiceoversFromJson(
+    voiceoverMappingJsonObject: JSONObject?
+  ): VoiceoverMapping {
     if (voiceoverMappingJsonObject == null) {
       return VoiceoverMapping.getDefaultInstance()
     }
