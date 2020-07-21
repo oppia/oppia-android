@@ -95,7 +95,7 @@ message EventLog {
     // Opening of revision tab under topic activity.
     OPEN_REVISION_TAB = 5;
     // Opening of story activity.
-    OPEN_STORY_ACTIVITY= 6;
+    OPEN_STORY_ACTIVITY = 6;
     // Opening of exploration activity.
     OPEN_EXPLORATION_ACTIVITY = 7;
     // Opening of question player.
@@ -120,7 +120,7 @@ message EventLog {
   }
 }
 
-// Structure of a container that contains event logs.
-message EventLogs{
+// Structure for a container that contains an event log report.
+message OppiaEventLogs {
   repeated EventLog event_log = 1;
 }

@@ -18,7 +18,7 @@ import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeHeaderVie
 import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeItemViewModel
 import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeSubtopicViewModel
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.analytics.AnalyticsController
+import org.oppia.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.system.OppiaClock
 import javax.inject.Inject

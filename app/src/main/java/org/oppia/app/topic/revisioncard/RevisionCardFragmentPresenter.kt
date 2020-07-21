@@ -8,7 +8,7 @@ import org.oppia.app.databinding.RevisionCardFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.EventLog
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.analytics.AnalyticsController
+import org.oppia.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
