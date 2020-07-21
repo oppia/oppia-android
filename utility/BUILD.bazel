@@ -2,17 +2,14 @@ load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//:oppia_android_test.bzl", "oppia_android_test")
+load("//utility:utility_test.bzl", "utility_test")
 
-'''
-oppia_android_test(
+
+utility_test(
     name = "netowrk_connection_creator_test_oppia",
-    srcs = ["src/test/java/org/oppia/util/networking/NetworkConnectionUtilTest.kt"],
-    resource_files = glob(["src/main/res/**/*.xml"]),
-    src_library_name = "utility_test_lib",
-    custom_package = "org.oppia.util",
-    test_class = "org.oppia.util.datetime.NetworkConnectionUtilTest",
-    test_manifest = "src/test/TestManifest.xml",
-)'''
+    src = ["src/test/java/org/oppia/util/networking/NetworkConnectionUtilTest.kt"],
+    test_class = "org.oppia.util.networking.NetworkConnectionUtilTest",
+)
 
 # TODO: Remove testing dependencies
 android_library(

@@ -35,7 +35,7 @@ def oppia_android_test(name, srcs, test_manifest, custom_package, resource_files
     )
 
     native.android_local_test(
-       name = name + "_test",
+       name = name,
        custom_package = custom_package,
        test_class = test_class,
        manifest = test_manifest,
