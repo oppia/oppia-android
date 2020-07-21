@@ -73,12 +73,16 @@ val TOPIC_FILE_ASSOCIATIONS = mapOf(
     "test_exp_id_1.json",
     "test_exp_id_2.json",
     "test_exp_id_3.json",
+    "test_skill_id_0.json",
+    "test_skill_id_1.json",
     "test_story_id_0.json",
     "test_story_id_1.json",
     "test_topic_id_0.json"
   ),
   TEST_TOPIC_ID_1 to listOf(
     "test_exp_id_4.json",
+    "test_skill_id_2.json",
+    "test_skill_id_3.json",
     "test_story_id_2.json",
     "test_topic_id_1.json"
   ),
@@ -86,7 +90,9 @@ val TOPIC_FILE_ASSOCIATIONS = mapOf(
     "umPkwp0L1M0-.json",
     "MjZzEVOG47_1.json",
     "questions.json",
-    "GJ2rLXRKD5hw_skills.json",
+    "5RM9KPfQxobH.json",
+    "UxTGIJqaHMLa.json",
+    "B39yK4cbHZYI.json",
     "wANbh4oOClga.json",
     "GJ2rLXRKD5hw.json"
   ),
@@ -96,7 +102,7 @@ val TOPIC_FILE_ASSOCIATIONS = mapOf(
     "k2bQ7z5XHNbK.json",
     "tIoSb3HZFN6e.json",
     "questions.json",
-    "omzF4oqgeTXd_skills.json",
+    "NGZ89uMw0IGV.json",
     "wAMdg4oOClga.json",
     "xBSdg4oOClga.json",
     "omzF4oqgeTXd.json"
@@ -181,35 +187,11 @@ class TopicController @Inject constructor(
   /** Returns the [ConceptCard] corresponding to the specified skill ID, or a failed result if there is none. */
   fun getConceptCard(skillId: String): LiveData<AsyncResult<ConceptCard>> {
     return MutableLiveData(
-      when (skillId) {
-        TEST_SKILL_ID_0 -> AsyncResult.success(createTestConceptCardForSkill0())
-        TEST_SKILL_ID_1 -> AsyncResult.success(createTestConceptCardForSkill1())
-        TEST_SKILL_ID_2 -> AsyncResult.success(createTestConceptCardForSkill2())
-        FRACTIONS_SKILL_ID_0 -> AsyncResult.success(
-          createConceptCardFromJson(
-            "GJ2rLXRKD5hw_skills.json",
-            /* index= */ 0
-          )
-        )
-        FRACTIONS_SKILL_ID_1 -> AsyncResult.success(
-          createConceptCardFromJson(
-            "GJ2rLXRKD5hw_skills.json",
-            /* index= */ 1
-          )
-        )
-        FRACTIONS_SKILL_ID_2 -> AsyncResult.success(
-          createConceptCardFromJson(
-            "GJ2rLXRKD5hw_skills.json",
-            /* index= */ 2
-          )
-        )
-        RATIOS_SKILL_ID_0 -> AsyncResult.success(
-          createConceptCardFromJson(
-            "omzF4oqgeTXd_skills.json",
-            /* index= */ 0
-          )
-        )
-        else -> AsyncResult.failed(IllegalArgumentException("Invalid skill ID: $skillId"))
+      try {
+        AsyncResult.success(createConceptCardFromJson("$skillId.json"))
+      } catch (e: Exception) {
+        exceptionLogger.logException(e)
+        AsyncResult.failed<ConceptCard>(e)
       }
     )
   }
@@ -494,78 +476,6 @@ class TopicController @Inject constructor(
       .build()
   }
 
-  private fun createTestQuestion0(questionsJson: JSONArray?): Question {
-    return Question.newBuilder()
-      .setQuestionId(TEST_QUESTION_ID_0)
-      .setQuestionState(
-        stateRetriever.createStateFromJson(
-          "question", questionsJson?.getJSONObject(0)
-        )
-      )
-      .addAllLinkedSkillIds(mutableListOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1))
-      .build()
-  }
-
-  private fun createTestQuestion1(questionsJson: JSONArray?): Question {
-    return Question.newBuilder()
-      .setQuestionId(TEST_QUESTION_ID_1)
-      .setQuestionState(
-        stateRetriever.createStateFromJson(
-          "question", questionsJson?.getJSONObject(1)
-        )
-      )
-      .addAllLinkedSkillIds(mutableListOf(TEST_SKILL_ID_0))
-      .build()
-  }
-
-  private fun createTestQuestion2(questionsJson: JSONArray?): Question {
-    return Question.newBuilder()
-      .setQuestionId(TEST_QUESTION_ID_2)
-      .setQuestionState(
-        stateRetriever.createStateFromJson(
-          "question", questionsJson?.getJSONObject(2)
-        )
-      )
-      .addAllLinkedSkillIds(mutableListOf(TEST_SKILL_ID_0, TEST_SKILL_ID_2))
-      .build()
-  }
-
-  private fun createTestQuestion3(questionsJson: JSONArray?): Question {
-    return Question.newBuilder()
-      .setQuestionId(TEST_QUESTION_ID_3)
-      .setQuestionState(
-        stateRetriever.createStateFromJson(
-          "question", questionsJson?.getJSONObject(3)
-        )
-      )
-      .addAllLinkedSkillIds(mutableListOf(TEST_SKILL_ID_1))
-      .build()
-  }
-
-  private fun createTestQuestion4(questionsJson: JSONArray?): Question {
-    return Question.newBuilder()
-      .setQuestionId(TEST_QUESTION_ID_4)
-      .setQuestionState(
-        stateRetriever.createStateFromJson(
-          "question", questionsJson?.getJSONObject(4)
-        )
-      )
-      .addAllLinkedSkillIds(mutableListOf(TEST_SKILL_ID_2))
-      .build()
-  }
-
-  private fun createTestQuestion5(questionsJson: JSONArray?): Question {
-    return Question.newBuilder()
-      .setQuestionId(TEST_QUESTION_ID_5)
-      .setQuestionState(
-        stateRetriever.createStateFromJson(
-          "question", questionsJson?.getJSONObject(5)
-        )
-      )
-      .addAllLinkedSkillIds(mutableListOf(TEST_SKILL_ID_2))
-      .build()
-  }
-
   /**
    * Creates topic from its json representation. The json file is expected to have
    * a key called 'topic' that holds the topic data.
@@ -731,39 +641,52 @@ class TopicController @Inject constructor(
     return chapterList
   }
 
-  private fun createTestTopic0Skill0(): SkillSummary {
-    return SkillSummary.newBuilder()
-      .setSkillId(TEST_SKILL_ID_0)
-      .setDescription("An important skill")
-      .setSkillThumbnail(createSkillThumbnail(TEST_SKILL_ID_0))
-      .build()
-  }
-
-  private fun createTestTopic0Skill1(): SkillSummary {
-    return SkillSummary.newBuilder()
-      .setSkillId(TEST_SKILL_ID_1)
-      .setDescription("Another important skill")
-      .setSkillThumbnail(createSkillThumbnail(TEST_SKILL_ID_1))
-      .build()
-  }
-
-  private fun createTestTopic1Skill0(): SkillSummary {
-    return SkillSummary.newBuilder()
-      .setSkillId(TEST_SKILL_ID_2)
-      .setDescription("A different skill in a different topic")
-      .setSkillThumbnail(createSkillThumbnail(TEST_SKILL_ID_2))
-      .build()
-  }
-
-  private fun createConceptCardFromJson(fileName: String, index: Int): ConceptCard {
-    val skillList = jsonAssetRetriever.loadJsonFromAsset(fileName)?.getJSONArray(
-      "skills"
-    )!!
-    if (skillList.length() < index) {
-      return ConceptCard.getDefaultInstance()
-    }
-    val skillData = skillList.getJSONObject(index)
+  private fun createConceptCardFromJson(fileName: String): ConceptCard {
+    val skillData = jsonAssetRetriever.loadJsonFromAsset(fileName)
+      ?: return ConceptCard.getDefaultInstance()
     val skillContents = skillData.getJSONObject("skill_contents")
+    val workedExamplesList = createWorkedExamplesFromJson(
+      skillContents.getJSONArray(
+        "worked_examples"
+      )
+    )
+
+    val recordedVoiceoverMapping = hashMapOf<String, VoiceoverMapping>()
+    recordedVoiceoverMapping["explanation"] = createRecordedVoiceoversFromJson(
+      skillContents
+        .optJSONObject("recorded_voiceovers")
+        .optJSONObject("voiceovers_mapping")
+        .optJSONObject(
+          skillContents.optJSONObject("explanation").optString("content_id")
+        )!!
+    )
+    for (workedExample in workedExamplesList) {
+      recordedVoiceoverMapping[workedExample.contentId] = createRecordedVoiceoversFromJson(
+        skillContents
+          .optJSONObject("recorded_voiceovers")
+          .optJSONObject("voiceovers_mapping")
+          .optJSONObject(workedExample.contentId)
+      )
+    }
+
+    val writtenTranslationMapping = hashMapOf<String, TranslationMapping>()
+    writtenTranslationMapping["explanation"] = createWrittenTranslationFromJson(
+      skillContents
+        .optJSONObject("written_translations")
+        .optJSONObject("translations_mapping")
+        .optJSONObject(
+          skillContents.optJSONObject("explanation").optString("content_id")
+        )!!
+    )
+    for (workedExample in workedExamplesList) {
+      writtenTranslationMapping[workedExample.contentId] = createWrittenTranslationFromJson(
+        skillContents
+          .optJSONObject("written_translations")
+          .optJSONObject("translations_mapping")
+          .optJSONObject(workedExample.contentId)
+      )
+    }
+
     return ConceptCard.newBuilder()
       .setSkillId(skillData.getString("id"))
       .setSkillDescription(skillData.getString("description"))
@@ -776,13 +699,9 @@ class TopicController @Inject constructor(
             )
           ).build()
       )
-      .addAllWorkedExample(
-        createWorkedExamplesFromJson(
-          skillContents.getJSONArray(
-            "worked_examples"
-          )
-        )
-      )
+      .addAllWorkedExample(workedExamplesList)
+      .putAllWrittenTranslation(writtenTranslationMapping)
+      .putAllRecordedVoiceover(recordedVoiceoverMapping)
       .build()
   }
 
@@ -799,76 +718,41 @@ class TopicController @Inject constructor(
     return workedExampleList
   }
 
-  private fun createTestConceptCardForSkill0(): ConceptCard {
-    return ConceptCard.newBuilder()
-      .setSkillId(TEST_SKILL_ID_0)
-      .setSkillDescription(createTestTopic0Skill0().description)
-      .setExplanation(
-        SubtitledHtml.newBuilder().setHtml("Hello. Welcome to Oppia.").setContentId(
-          TEST_SKILL_CONTENT_ID_0
-        ).build()
-      )
-      .addWorkedExample(
-        SubtitledHtml.newBuilder().setHtml("This is the first example.").setContentId(
-          TEST_SKILL_CONTENT_ID_1
-        ).build()
-      )
-      .putRecordedVoiceover(
-        TEST_SKILL_CONTENT_ID_0,
-        VoiceoverMapping.newBuilder().putVoiceoverMapping(
-          "es",
-          Voiceover.newBuilder().setFileName("fake_spanish_xlated_explanation.mp3")
-            .setFileSizeBytes(
-              456
-            ).build()
-        ).build()
-      )
-      .putRecordedVoiceover(
-        TEST_SKILL_CONTENT_ID_1,
-        VoiceoverMapping.newBuilder().putVoiceoverMapping(
-          "es",
-          Voiceover.newBuilder().setFileName("fake_spanish_xlated_example.mp3")
-            .setFileSizeBytes(123).build()
-        ).build()
-      )
-      .putWrittenTranslation(
-        TEST_SKILL_CONTENT_ID_0,
-        TranslationMapping.newBuilder().putTranslationMapping(
-          "es", Translation.newBuilder().setHtml("Hola. Bienvenidos a Oppia.").build()
-        ).build()
-      )
-      .putWrittenTranslation(
-        TEST_SKILL_CONTENT_ID_1,
-        TranslationMapping.newBuilder().putTranslationMapping(
-          "es", Translation.newBuilder().setHtml("Este es el primer ejemplo trabajado.").build()
-        ).build()
-      )
-      .build()
+  private fun createWrittenTranslationFromJson(translationMappingJsonObject: JSONObject?): TranslationMapping {
+    if (translationMappingJsonObject == null) {
+      return TranslationMapping.getDefaultInstance()
+    }
+    val translationMappingBuilder = TranslationMapping.newBuilder()
+    val languages = translationMappingJsonObject.keys()
+    while (languages.hasNext()) {
+      val language = languages.next()
+      val translationJson = translationMappingJsonObject.optJSONObject(language)
+      val translation = Translation.newBuilder()
+        .setHtml(translationJson.optString("html"))
+        .setNeedsUpdate(translationJson.optBoolean("needs_update"))
+        .build()
+      translationMappingBuilder.putTranslationMapping(language, translation)
+    }
+    return translationMappingBuilder.build()
   }
 
-  private fun createTestConceptCardForSkill1(): ConceptCard {
-    return ConceptCard.newBuilder()
-      .setSkillId(TEST_SKILL_ID_1)
-      .setSkillDescription(createTestTopic0Skill1().description)
-      .setExplanation(
-        SubtitledHtml.newBuilder().setHtml("Explanation with <b>rich text</b>.").build()
-      )
-      .addWorkedExample(
-        SubtitledHtml.newBuilder().setHtml("Worked example with <i>rich text</i>.").build()
-      )
-      .build()
-  }
-
-  private fun createTestConceptCardForSkill2(): ConceptCard {
-    return ConceptCard.newBuilder()
-      .setSkillId(TEST_SKILL_ID_2)
-      .setSkillDescription(createTestTopic1Skill0().description)
-      .setExplanation(SubtitledHtml.newBuilder().setHtml("Explanation without rich text.").build())
-      .addWorkedExample(
-        SubtitledHtml.newBuilder().setHtml("Worked example without rich text.").build()
-      )
-      .addWorkedExample(SubtitledHtml.newBuilder().setHtml("Second worked example.").build())
-      .build()
+  private fun createRecordedVoiceoversFromJson(voiceoverMappingJsonObject: JSONObject?): VoiceoverMapping {
+    if (voiceoverMappingJsonObject == null) {
+      return VoiceoverMapping.getDefaultInstance()
+    }
+    val voiceoverMappingBuilder = VoiceoverMapping.newBuilder()
+    val languages = voiceoverMappingJsonObject.keys()
+    while (languages.hasNext()) {
+      val language = languages.next()
+      val voiceoverJson = voiceoverMappingJsonObject.optJSONObject(language)
+      val voiceover = Voiceover.newBuilder()
+        .setFileName(voiceoverJson.optString("filename"))
+        .setNeedsUpdate(voiceoverJson.optBoolean("needs_update"))
+        .setFileSizeBytes(voiceoverJson.optLong("file_size_bytes"))
+        .build()
+      voiceoverMappingBuilder.putVoiceoverMapping(language, voiceover)
+    }
+    return voiceoverMappingBuilder.build()
   }
 
   private fun createSkillThumbnail(skillId: String): LessonThumbnail {

@@ -753,10 +753,11 @@ class TopicControllerTest {
 
   @Test
   fun testGetConceptCard_invalidSkillId_returnsFailure() {
-    val conceptCardLiveData = topicController
-      .getConceptCard("invalid_skill_id")
+    topicController.getConceptCard("invalid_skill_id")
 
-    assertThat(conceptCardLiveData.value!!.isFailure()).isTrue()
+    val exception = fakeExceptionLogger.getMostRecentException()
+
+    assertThat(exception).isInstanceOf(FileNotFoundException::class.java)
   }
 
   @Test

@@ -1,0 +1,56 @@
+{
+  "misconceptions_schema_version": 1,
+  "next_misconception_id": 1,
+  "description": "A different skill in a different topic",
+  "rubrics": [
+    {
+      "difficulty": "Easy",
+      "explanation": ["Easy"]
+    },
+    {
+      "difficulty": "Medium",
+      "explanation": ["Medium"]
+    },
+    {
+      "difficulty": "Hard",
+      "explanation": ["Hard"]
+    }
+  ],
+  "superseding_skill_id": null,
+  "language_code": "en",
+  "rubric_schema_version": 1,
+  "id": "test_skill_id_2",
+  "skill_contents_schema_version": 1,
+  "prerequisite_skill_ids": [],
+  "all_questions_merged": false,
+  "version": 2,
+  "misconceptions": [],
+  "skill_contents": {
+    "worked_examples": [
+      {
+        "content_id": "worked_example_1",
+        "html": "Worked example without rich text."
+      },
+      {
+        "content_id": "worked_example_2",
+        "html" : "Second worked example."
+      }
+    ],
+    "explanation": {
+      "content_id": "explanation",
+      "html": "Explanation without rich text."
+    },
+    "written_translations": {
+      "translations_mapping": {
+        "explanation": {},
+        "worked_example_1": {}
+      }
+    },
+    "recorded_voiceovers": {
+      "voiceovers_mapping": {
+        "explanation": {},
+        "worked_example_1": {}
+      }
+    }
+  }
+}
