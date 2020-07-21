@@ -1,6 +1,6 @@
 load("@rules_proto//proto:defs.bzl", "proto_library")
 load("@rules_java//java:defs.bzl", "java_proto_library")
-load("//model:src/main/proto/preprocess_protos.bzl", "process")
+load("//model:src/main/proto/format_import_proto_library.bzl", "format_import_proto_library")
 
 proto_library(
     name = "event_logger_proto",
@@ -92,18 +92,18 @@ java_proto_library(
     deps = [":voiceover_proto"],
 )
 
-process(
-    name = "process_topic",
+format_import_proto_library(
+    name = "topic_proto",
     src = "src/main/proto/topic.proto"
 )
 
-process(
-    name = "process_question",
+format_import_proto_library(
+    name = "question_proto",
     src = "src/main/proto/question.proto"
 )
 
-process(
-    name = "process_exploration",
+format_import_proto_library(
+    name = "exploration_proto",
     src = "src/main/proto/exploration.proto"
 )
 
@@ -119,8 +119,8 @@ android_library(
         ":thumbnail_java_proto",
         ":translation_java_proto",
         ":voiceover_java_proto",
-        ":process_exploration",
-        ":process_question",
-        ":process_topic",
+        ":exploration_proto",
+        ":question_proto",
+        ":topic_proto",
     ],
 )

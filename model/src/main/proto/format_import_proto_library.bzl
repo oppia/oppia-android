@@ -1,5 +1,5 @@
 
-def process(name, src):
+def format_import_proto_library(name, src):
   """
   Formats the import statement of the src file to contain a full path to the file
   The genrule() rule generates a copy of the src file and alters the copy
