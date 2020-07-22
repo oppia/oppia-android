@@ -2,6 +2,7 @@ package org.oppia.app.player.exploration
 
 import android.content.Context
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -12,8 +13,10 @@ import androidx.lifecycle.Transformations
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.databinding.ExplorationActivityBinding
+import org.oppia.app.help.HelpActivity
 import org.oppia.app.model.Exploration
 import org.oppia.app.model.StoryTextSize
+import org.oppia.app.options.OptionsActivity
 import org.oppia.app.story.StoryActivity
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.utility.FontScaleConfigurationUtil
@@ -115,18 +118,37 @@ class ExplorationActivityPresenter @Inject constructor(
       ).commitNow()
     }
 
-    if (getHintsAndSolutionExplorationManagerFragment() == null) {
+    if (getHintsAndSolutionManagerFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_fragment_placeholder,
-        HintsAndSolutionExplorationManagerFragment()
+        HintsAndSolutionExplorationManagerFragment(),
+        TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
       ).commitNow()
     }
   }
 
-  private fun getHintsAndSolutionExplorationManagerFragment(): HintsAndSolutionExplorationManagerFragment? { // ktlint-disable max-line-length
-    return activity.supportFragmentManager.findFragmentByTag(
-      TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
-    ) as HintsAndSolutionExplorationManagerFragment?
+  /** Action for onOptionsItemSelected */
+  fun handleOnOptionsItemSelected(item: MenuItem?): Boolean {
+    return when (item?.itemId) {
+      R.id.action_preferences -> {
+        val intent = OptionsActivity.createOptionsActivity(
+          activity,
+          internalProfileId,
+          /* isFromExploration= */ true
+        )
+        context.startActivity(intent)
+        true
+      }
+      R.id.action_help -> {
+        val intent = HelpActivity.createHelpActivityIntent(
+          activity, internalProfileId,
+          /* isFromExploration= */true
+        )
+        context.startActivity(intent)
+        true
+      }
+      else -> false
+    }
   }
 
   fun showAudioButton() = exploreViewModel.showAudioButton.set(true)
@@ -152,6 +174,12 @@ class ExplorationActivityPresenter @Inject constructor(
     return activity.supportFragmentManager.findFragmentById(
       R.id.exploration_fragment_placeholder
     ) as? ExplorationFragment
+  }
+
+  private fun getHintsAndSolutionManagerFragment(): HintsAndSolutionExplorationManagerFragment? {
+    return activity.supportFragmentManager.findFragmentByTag(
+      TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
+    ) as HintsAndSolutionExplorationManagerFragment?
   }
 
   fun stopExploration() {
