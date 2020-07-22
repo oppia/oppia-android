@@ -32,14 +32,12 @@ kt_android_library(
      ],
 )
 
-#TODO: Building but not passing
 testing_test(
     name = "FakeEventLoggerTest",
     src = ["src/test/java/org/oppia/testing/FakeEventLoggerTest.kt"],
     test_class = "org.oppia.testing.FakeEventLoggerTest",
 )
 
-#TODO: Building but not passing
 testing_test(
     name = "FakeExceptionLoggerTest",
     src = ["src/test/java/org/oppia/testing/FakeExceptionLoggerTest.kt"],
