@@ -16,13 +16,11 @@ class AnalyticsController @Inject constructor(
    * These events are given HIGH priority.
    */
   fun logTransitionEvent(
-    context: Context,
     timestamp: Long,
     eventAction: EventAction,
     eventContext: EventLog.Context?
   ) {
     eventLogger.logEvent(
-      context,
       createEventLog(
         timestamp,
         eventAction,
@@ -37,13 +35,11 @@ class AnalyticsController @Inject constructor(
    * These events are given LOW priority.
    */
   fun logClickEvent(
-    context: Context,
     timestamp: Long,
     eventAction: EventAction,
     eventContext: EventLog.Context?
   ) {
     eventLogger.logEvent(
-      context,
       createEventLog(
         timestamp,
         eventAction,
