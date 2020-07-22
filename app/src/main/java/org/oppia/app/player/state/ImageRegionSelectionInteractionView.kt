@@ -27,6 +27,7 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
 
   private var isAccessibilityEnabled: Boolean = false
   private var clickableAreas: List<ImageWithRegions.LabeledRegion> = emptyList()
+  private lateinit var listener: OnClickableAreaClickedListener
 
   @Inject
   lateinit var accessibilityManager: CustomAccessibilityManager
@@ -47,6 +48,16 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
 
   fun setClickableAreas(clickableAreas: List<ImageWithRegions.LabeledRegion>) {
     this.clickableAreas = clickableAreas
+  }
+
+  fun setListener(onClickableAreaClickedListener: OnClickableAreaClickedListener) {
+    this.listener = onClickableAreaClickedListener
+    val area = ClickableAreasImage(
+      this,
+      this.parent as FrameLayout,
+      listener
+    )
+    area.addRegionViews()
   }
 
   fun getClickableAreas(): List<ImageWithRegions.LabeledRegion> {

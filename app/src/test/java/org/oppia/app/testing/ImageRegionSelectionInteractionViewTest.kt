@@ -24,6 +24,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
+import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
@@ -34,12 +35,11 @@ import org.oppia.app.application.ActivityComponentFactory
 import org.oppia.app.application.ApplicationComponent
 import org.oppia.app.application.ApplicationContext
 import org.oppia.app.application.ApplicationModule
-import org.oppia.app.model.ImageWithRegions
-import org.oppia.app.model.Point2d
 import org.oppia.app.player.state.StateFragment
 import org.oppia.app.utility.NamedRegionClickedEvent
 import org.oppia.app.utility.OnClickableAreaClickedListener
 import org.oppia.app.utility.RegionClickedEvent
+import org.oppia.app.utility.capture
 import org.oppia.app.utility.clickPoint
 import org.oppia.data.backends.gae.NetworkModule
 import org.oppia.domain.classify.InteractionsModule
@@ -83,6 +83,9 @@ class ImageRegionSelectionInteractionViewTest {
   @Mock
   lateinit var onClickableAreaClickedListener: OnClickableAreaClickedListener
 
+  @Captor
+  lateinit var regionClickedEvent: ArgumentCaptor<RegionClickedEvent>
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -95,35 +98,19 @@ class ImageRegionSelectionInteractionViewTest {
   }
 
   @Test
-  fun testImageRegionSelectionInteractionView_clickRegion3_Region3Clicked() {
+  fun testImageRegionSelectionInteractionView_clickRegion3_Region2Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
-      it.onActivity { activity ->
-        setUpActivity(activity)
+      it.onActivity {
+        it.clickable_image_view.setListener(onClickableAreaClickedListener)
 
         onView(withId(R.id.clickable_image_view)).perform(
-          clickPoint(0.3f, 0.3f)
+          clickPoint(0.2f, 0.2f)
         )
-        onView(allOf(withTagValue(`is`("Region 3"))))
-          .check(
-            matches(isDisplayed())
-          )
 
-        verify(onClickableAreaClickedListener, times(1)).onClickableAreaTouched(
-          NamedRegionClickedEvent("Region 3")
-        )
+        verify(onClickableAreaClickedListener).onClickableAreaTouched(capture(regionClickedEvent))
+        assertEquals(NamedRegionClickedEvent("Region 2"), regionClickedEvent.value)
       }
     }
-  }
-
-  private fun setUpActivity(activity: ImageRegionSelectionTestActivity) = with(activity) {
-    val clickableAreas: List<ImageWithRegions.LabeledRegion> = getClickableAreas()
-    clickable_image_view.setClickableAreas(clickableAreas)
-    val clickableAreasImage = org.oppia.app.utility.ClickableAreasImage(
-      clickable_image_view,
-      image_parent_view,
-      onClickableAreaClickedListener
-    )
-    clickableAreasImage.addRegionViews()
   }
 
   @Test
@@ -150,18 +137,12 @@ class ImageRegionSelectionInteractionViewTest {
   @Test
   fun testImageRegionSelectionInteractionView_clickOnDefaultRegion_defaultRegionClicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
-      it.onActivity { activity ->
-        setUpActivity(activity)
-        onView(withId(R.id.clickable_image_view)).perform(
-          clickPoint(0.0f, 0.0f)
-        )
-        onView(withId(R.id.default_selected_region)).check(
-          matches(isDisplayed())
-        )
-        val argumentCaptor = ArgumentCaptor.forClass(RegionClickedEvent::class.java)
-        verify(onClickableAreaClickedListener).onClickableAreaTouched(argumentCaptor.capture())
-        assertEquals("", argumentCaptor.value)
-      }
+      onView(withId(R.id.clickable_image_view)).perform(
+        clickPoint(0.0f, 0.0f)
+      )
+      onView(withId(R.id.default_selected_region)).check(
+        matches(isDisplayed())
+      )
     }
   }
 
@@ -220,47 +201,6 @@ class ImageRegionSelectionInteractionViewTest {
     @Provides
     @CacheAssetsLocally
     fun provideCacheAssetsLocally(): Boolean = false
-  }
-
-  private fun getClickableAreas(): List<ImageWithRegions.LabeledRegion> {
-    return listOf(
-      createLabeledRegion(
-        "Region 1",
-        createPoint2d(0.553030303030303f, 0.5470132743362832f) to
-          createPoint2d(0.7613636363636364f, 0.7638274336283186f)
-      ),
-      createLabeledRegion(
-        "Region 2",
-        createPoint2d(0.5454545454545454f, 0.22842920353982302f) to
-          createPoint2d(0.7537878787878788f, 0.4540929203539823f)
-      ),
-      createLabeledRegion(
-        "Region 3",
-        createPoint2d(0.24242424242424243f, 0.22400442477876106f) to
-          createPoint2d(0.49242424242424243f, 0.7638274336283186f)
-      )
-    )
-  }
-
-  private fun createLabeledRegion(
-    label: String,
-    points: Pair<Point2d, Point2d>
-  ): ImageWithRegions.LabeledRegion {
-    return ImageWithRegions.LabeledRegion.newBuilder().setLabel(label)
-      .setRegion(
-        ImageWithRegions.LabeledRegion.Region.newBuilder()
-          .setRegionType(ImageWithRegions.LabeledRegion.Region.RegionType.RECTANGLE)
-          .setArea(
-            ImageWithRegions.LabeledRegion.Region.NormalizedRectangle2d.newBuilder()
-              .setUpperLeft(points.first)
-              .setLowerRight(points.second)
-          )
-      )
-      .build()
-  }
-
-  private fun createPoint2d(x: Float, y: Float): Point2d {
-    return Point2d.newBuilder().setX(x).setY(y).build()
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

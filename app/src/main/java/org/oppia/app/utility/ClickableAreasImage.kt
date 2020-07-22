@@ -1,6 +1,7 @@
 package org.oppia.app.utility
 
 import android.graphics.RectF
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
@@ -110,6 +111,7 @@ class ClickableAreasImage(
           }
         }
         it.addView(newView)
+        Log.i("POINTS OF SCREEN", "${newView.x}, ${newView.y}")
         newView.requestLayout()
       }
     }
