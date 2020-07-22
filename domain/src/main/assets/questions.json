@@ -1631,6 +1631,633 @@
       "version": 3,
       "language_code": "en",
       "id": "NNuVGmbJpnj5"
+    },
+    {
+      "linked_skill_ids": [
+        "NGZ89uMw0IGV"
+      ],
+      "question_state_data_schema_version": 30,
+      "question_state_data": {
+        "param_changes": [],
+        "interaction": {
+          "solution": null,
+          "answer_groups": [
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_2",
+                  "html": "<p>Yes, that's correct! Well done.</p>"
+                },
+                "dest": null,
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": true
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": 1
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_1",
+                  "html": "<p>No, that's not correct. Bobby ate 3 pears, so the number of pears would change. Try again.</p>"
+                },
+                "dest": null,
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": 0
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_3",
+                  "html": "<p>No, that's not correct. Be careful to make sure that the order of the terms in the ratio follows what the question asks for. Try again.</p>"
+                },
+                "dest": null,
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": 2
+                  }
+                },
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": 3
+                  }
+                },
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": 4
+                  }
+                }
+              ]
+            }
+          ],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": ""
+            },
+            "dest": null,
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "customization_args": {
+            "choices": {
+              "value": [
+                "<p>9:6</p>",
+                "<p>9:3</p>",
+                "<p>3:9</p>",
+                "<p>6:9</p>",
+                "<p>12:9</p>"
+              ]
+            }
+          },
+          "confirmed_unclassified_answers": [],
+          "id": "MultipleChoiceInput",
+          "hints": [
+            {
+              "hint_content": {
+                "content_id": "hint_1",
+                "html": "<p>Start by figuring out the number of apples and pears remaining on the table after Bobby has eaten some of them.</p>"
+              }
+            }
+          ]
+        },
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {},
+            "feedback_2": {},
+            "feedback_3": {},
+            "feedback_1": {},
+            "hint_1": {},
+            "default_outcome": {}
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "<p><span>There are 9 apples and 6 pears on the table. Bobby ate 3 of the pears. What is the new ratio of apples to pears?</span></p>"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "content": {},
+            "feedback_2": {},
+            "feedback_3": {},
+            "feedback_1": {},
+            "hint_1": {},
+            "default_outcome": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "version": 3,
+      "language_code": "en",
+      "id": "QiKxvAXpvUbb"
+    },
+    {
+      "linked_skill_ids": [
+        "test_skill_id_0",
+        "test_skill_id_1"
+      ],
+      "question_state_data_schema_version": 1,
+      "version": 1,
+      "language_code": "en",
+      "id": "question_id_0",
+      "question_state_data": {
+        "param_changes": [],
+        "classifier_model_id": null,
+        "interaction": {
+          "confirmed_unclassified_answers": [],
+          "answer_groups": [
+            {
+              "rule_specs": [
+                {
+                  "rule_type": "Contains",
+                  "inputs": {
+                    "x": "1/4"
+                  }
+                }
+              ],
+              "outcome": {
+                "dest": null,
+                "feedback": {
+                  "html": "<p>That's correct!</p>",
+                  "content_id": "feedback_1"
+                },
+                "labelled_as_correct": true,
+                "param_changes": [],
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null
+              },
+              "trainingData": [],
+              "taggedSkillMisconceptionId": null
+            }
+          ],
+          "confirmedUnclassifiedAnswers": [],
+          "customizationArgs": {
+            "placeholder": {
+              "value": "Write your fraction as x/y"
+            },
+            "rows": {
+              "value": 1
+            }
+          },
+          "defaultOutcome": {
+            "dest": null,
+            "feedback": {
+              "html": "",
+              "content_id": "default_outcome"
+            },
+            "labelled_as_correct": false,
+            "param_changes": [],
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null
+          },
+          "hints": [
+            {
+              "hint_content": {
+                "html": "<p>Hint text will appear here</p>",
+                "content_id": "hint_1"
+              }
+            }
+          ],
+          "id": "TextInput",
+          "solution": {
+            "answer_is_exclusive": false,
+            "correct_answer": "1/4",
+            "explanation": {
+              "html": "<p>A quarter is 1/4th of something</p>",
+              "content_id": "solution"
+            }
+          }
+        },
+        "content": {
+          "html": "<p>What fraction does 'quarter' represent?&nbsp;</p>",
+          "content_id": "content"
+        }
+      }
+    },
+    {
+      "linked_skill_ids": [
+        "test_skill_id_0"
+      ],
+      "question_state_data_schema_version": 1,
+      "version": 1,
+      "language_code": "en",
+      "id": "question_id_1",
+      "question_state_data": {
+        "param_changes": [],
+        "classifier_model_id": null,
+        "interaction": {
+          "confirmed_unclassified_answers": [],
+          "answer_groups": [
+            {
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": 1
+                  }
+                }
+              ],
+              "outcome": {
+                "dest": null,
+                "feedback": {
+                  "html": "<p>That's correct!</p>",
+                  "content_id": "feedback_1"
+                },
+                "labelled_as_correct": true,
+                "param_changes": [],
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null
+              },
+              "trainingData": [],
+              "taggedSkillMisconceptionId": null
+            }
+          ],
+          "confirmedUnclassifiedAnswers": [],
+          "customizationArgs": {
+            "choices": {
+              "value": [
+                "<p>The number of pieces of cake I want.</p>",
+                "<p>The number of pieces the whole cake is cut into.</p>",
+                "<p>None of the above.</p>"
+              ]
+            }
+          },
+          "defaultOutcome": {
+            "dest": null,
+            "feedback": {
+              "html": "",
+              "content_id": "default_outcome"
+            },
+            "labelled_as_correct": false,
+            "param_changes": [],
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null
+          },
+          "hints": [
+            {
+              "hint_content": {
+                "html": "<p>Hint text will appear here</p>",
+                "content_id": "hint_1"
+              }
+            }
+          ],
+          "id": "MultipleChoiceInput",
+          "solution": {
+            "answer_is_exclusive": false,
+            "correct_answer": "<p>The number of pieces of cake I want.</p>",
+            "explanation": {
+              "html": "<p>The number of pieces of cake I want.</p>",
+              "content_id": "solution"
+            }
+          }
+        },
+        "content": {
+          "html": "<p>If we talk about wanting 4/7 of a cake, what does the 7 represent?</p>",
+          "content_id": "content"
+        }
+      }
+    },
+    {
+      "linked_skill_ids": [
+        "test_skill_id_0",
+        "test_skill_id_2"
+      ],
+      "question_state_data_schema_version": 1,
+      "version": 1,
+      "language_code": "en",
+      "id": "question_id_2",
+      "question_state_data": {
+        "param_changes": [],
+        "classifier_model_id": null,
+        "content": {
+          "html": "<p>What is the numerator of 1/2 + 1/4 equal to?</p>",
+          "content_id": "content"
+        },
+        "interaction": {
+          "confirmed_unclassified_answers": [],
+          "answer_groups": [
+            {
+              "rule_specs": [
+                {
+                  "rule_type": "IsInclusivelyBetween",
+                  "inputs": {
+                    "a": 3,
+                    "b": 3
+                  }
+                }
+              ],
+              "outcome": {
+                "dest": null,
+                "feedback": "<p>That's correct!</p>",
+                "labelled_as_correct": true,
+                "param_changes": [],
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null
+              },
+              "trainingData": [],
+              "taggedSkillMisconceptionId": null
+            }
+          ],
+          "confirmedUnclassifiedAnswers": [],
+          "customizationArgs": {},
+          "defaultOutcome": {
+            "dest": null,
+            "feedback": {
+              "html": "",
+              "content_id": "default_outcome"
+            },
+            "labelled_as_correct": false,
+            "param_changes": [],
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null
+          },
+          "hints": [
+            {
+              "hint_content": {
+                "html": "<p>Hint text will appear here</p>",
+                "content_id": "hint_1"
+              }
+            }
+          ],
+          "id": "NumericInput",
+          "solution": {
+            "answer_is_exclusive": false,
+            "correct_answer": 3,
+            "explanation": {
+              "html": "<p>The solution comes out to be 3/4 and the numerator of that is 3.</p>",
+              "content_id": "solution"
+            }
+          }
+        }
+      }
+    },
+    {
+      "linked_skill_ids": [
+        "test_skill_id_1"
+      ],
+      "question_state_data_schema_version": 1,
+      "version": 1,
+      "language_code": "en",
+      "id": "question_id_3",
+      "question_state_data": {
+        "param_changes": [],
+        "classifier_model_id": null,
+        "content": {
+          "html": "<p>What fraction does 'half' represent?&nbsp;</p>",
+          "content_id": "content"
+        },
+        "interaction": {
+          "confirmed_unclassified_answers": [],
+          "answer_groups": [
+            {
+              "rule_specs": [
+                {
+                  "rule_type": "Contains",
+                  "inputs": {
+                    "x": "1/2"
+                  }
+                }
+              ],
+              "outcome": {
+                "dest": null,
+                "feedback": {
+                  "html": "<p>That's correct!</p>",
+                  "content_id": "feedback_1"
+                },
+                "labelled_as_correct": true,
+                "param_changes": [],
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null
+              },
+              "trainingData": [],
+              "taggedSkillMisconceptionId": null
+            }
+          ],
+          "confirmedUnclassifiedAnswers": [],
+          "customizationArgs": {
+            "placeholder": {
+              "value": "Write your fraction as x/y"
+            },
+            "rows": {
+              "value": 1
+            }
+          },
+          "defaultOutcome": {
+            "dest": null,
+            "feedback": {
+              "html": "",
+              "content_id": "default_outcome"
+            },
+            "labelled_as_correct": false,
+            "param_changes": [],
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null
+          },
+          "hints": [
+            {
+              "hint_content": {
+                "html": "<p>Hint text will appear here</p>",
+                "content_id": "hint_1"
+              }
+            }
+          ],
+          "id": "TextInput",
+          "solution": {
+            "answer_is_exclusive": false,
+            "correct_answer": "1/2",
+            "explanation": {
+              "html": "<p>A half is 1/2 of something</p>",
+              "content_id": "solution"
+            }
+          }
+        }
+      }
+    },
+    {
+      "linked_skill_ids": [
+        "test_skill_id_2"
+      ],
+      "question_state_data_schema_version": 1,
+      "version": 1,
+      "language_code": "en",
+      "id": "question_id_4",
+      "question_state_data": {
+        "param_changes": [],
+        "classifier_model_id": null,
+        "content": {
+          "html": "<p>If we talk about wanting 8/10 of a cake, what does the 10 represent?</p>",
+          "content_id": "content"
+        },
+        "interaction": {
+          "confirmed_unclassified_answers": [],
+          "answer_groups": [
+            {
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": 1
+                  }
+                }
+              ],
+              "outcome": {
+                "dest": null,
+                "feedback": {
+                  "html": "<p>That's correct!</p>",
+                  "content_id": "feedback_1"
+                },
+                "labelled_as_correct": true,
+                "param_changes": [],
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null
+              },
+              "trainingData": [],
+              "taggedSkillMisconceptionId": null
+            }
+          ],
+          "confirmedUnclassifiedAnswers": [],
+          "customizationArgs": {
+            "choices": {
+              "value": [
+                "<p>The number of pieces of cake I want.</p>",
+                "<p>The number of pieces the whole cake is cut into.</p>",
+                "<p>None of the above.</p>"
+              ]
+            }
+          },
+          "defaultOutcome": {
+            "dest": null,
+            "feedback": {
+              "html": "Incorrect. Try again.",
+              "content_id": "default_outcome"
+            },
+            "labelled_as_correct": false,
+            "param_changes": [],
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null
+          },
+          "hints": [
+            {
+              "hint_content": {
+                "html": "<p>Hint text will appear here</p>",
+                "content_id": "hint_1"
+              }
+            }
+          ],
+          "id": "MultipleChoiceInput",
+          "solution": null
+        }
+      }
+    },
+    {
+      "linked_skill_ids": [
+        "test_skill_id_2"
+      ],
+      "question_state_data_schema_version": 1,
+      "version": 1,
+      "language_code": "en",
+      "id": "question_id_5",
+      "question_state_data": {
+        "param_changes": [],
+        "classifier_model_id": null,
+        "content": {
+          "html": "<p>What is the numerator of 1/2 + 1/3 equal to?</p>",
+          "content_id": "content"
+        },
+        "interaction": {
+          "confirmed_unclassified_answers": [],
+          "answer_groups": [
+            {
+              "rule_specs": [
+                {
+                  "rule_type": "IsInclusivelyBetween",
+                  "inputs": {
+                    "a": 5,
+                    "b": 5
+                  }
+                }
+              ],
+              "outcome": {
+                "dest": null,
+                "feedback": "<p>That's correct!</p>",
+                "labelled_as_correct": true,
+                "param_changes": [],
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null
+              },
+              "trainingData": [],
+              "taggedSkillMisconceptionId": null
+            }
+          ],
+          "confirmedUnclassifiedAnswers": [],
+          "customizationArgs": {},
+          "defaultOutcome": {
+            "dest": null,
+            "feedback": {
+              "html": "",
+              "content_id": "default_outcome"
+            },
+            "labelled_as_correct": false,
+            "param_changes": [],
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null
+          },
+          "hints": [
+            {
+              "hint_content": {
+                "html": "<p>Hint text will appear here</p>",
+                "content_id": "hint_1"
+              }
+            }
+          ],
+          "id": "NumericInput",
+          "solution": {
+            "answer_is_exclusive": false,
+            "correct_answer": 5,
+            "explanation": {
+              "html": "<p>The solution comes out to be 5/6 and the numerator of that is 5.</p>",
+              "content_id": "solution"
+            }
+          }
+        }
+      }
     }
   ]
 }

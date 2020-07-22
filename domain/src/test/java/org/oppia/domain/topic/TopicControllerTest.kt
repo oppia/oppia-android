@@ -20,6 +20,7 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
+import org.json.JSONException
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -753,10 +754,11 @@ class TopicControllerTest {
 
   @Test
   fun testGetConceptCard_invalidSkillId_returnsFailure() {
-    val conceptCardLiveData = topicController
-      .getConceptCard("invalid_skill_id")
+    topicController.getConceptCard("invalid_skill_id")
 
-    assertThat(conceptCardLiveData.value!!.isFailure()).isTrue()
+    val exception = fakeExceptionLogger.getMostRecentException()
+
+    assertThat(exception).isInstanceOf(JSONException::class.java)
   }
 
   @Test
@@ -916,16 +918,20 @@ class TopicControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testRetrieveQuestionsForInvalidSkillIds_returnsFailure() = runBlockingTest(coroutineContext) {
-    val questionsListProvider = topicController
-      .retrieveQuestionsForSkillIds(
-        listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, "NON_EXISTENT_SKILL_ID")
-      )
-    dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
-    verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
+  fun testRetrieveQuestionsForInvalidSkillIds_returnsResultForValidSkillsOnly() =
+    runBlockingTest(coroutineContext) {
+      val questionsListProvider = topicController
+        .retrieveQuestionsForSkillIds(
+          listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, "NON_EXISTENT_SKILL_ID")
+        )
+      dataProviders.convertToLiveData(questionsListProvider)
+        .observeForever(mockQuestionListObserver)
+      verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
 
-    assertThat(questionListResultCaptor.value.isFailure()).isTrue()
-  }
+      assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+      val questionsList = questionListResultCaptor.value.getOrThrow()
+      assertThat(questionsList.size).isEqualTo(5)
+    }
 
   @Test
   @ExperimentalCoroutinesApi
