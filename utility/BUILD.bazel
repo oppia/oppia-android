@@ -4,53 +4,6 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 load("//utility:utility_test.bzl", "utility_test")
 
-# TODO: Remove testing dependencies
-android_library(
-    name = "utility_deps",
-    exports = [
-        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-core"),
-        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-android"),
-        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test"),
-        artifact("com.google.truth:truth"),
-        artifact("androidx.appcompat:appcompat"),
-        artifact("com.github.bumptech.glide:glide"),
-        artifact("com.github.bumptech.glide:compiler"),
-        artifact("com.caverock:androidsvg-aar"),
-        artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
-        artifact("com.google.firebase:firebase-analytics-ktx"),
-        artifact("com.crashlytics.sdk.android:crashlytics:2.9.8"),
-        artifact("io.fabric.sdk.android:fabric:1.4.7"),
-        artifact("com.google.gms:google-services:4.3.3"),
-        artifact("com.android.support:support-annotations"),
-        artifact("androidx.test.ext:junit"),
-        artifact("org.mockito:mockito-core:2.19.0"),
-    ],
-)
-
-# TODO: Remove non-testing dependencies
-android_library(
-    name = "utility_test_deps",
-    exports = [
-        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-core"),
-        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-android"),
-        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test"),
-        artifact("org.jetbrains.kotlin:kotlin-test-junit"),
-        artifact("com.google.truth:truth"),
-        artifact("androidx.appcompat:appcompat"),
-        artifact("com.github.bumptech.glide:glide"),
-        artifact("com.github.bumptech.glide:compiler"),
-        artifact("com.caverock:androidsvg-aar"),
-        artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
-        artifact("com.google.firebase:firebase-analytics-ktx"),
-        artifact("com.crashlytics.sdk.android:crashlytics"),
-        artifact("io.fabric.sdk.android:fabric"),
-        artifact("com.google.gms:google-services"),
-        artifact("com.android.support:support-annotations"),
-        artifact("androidx.test.ext:junit"),
-        artifact("org.mockito:mockito-core"),
-    ],
-)
-
 kt_android_library(
     name = "utility_lib",
     custom_package = "org.oppia.util",
@@ -61,9 +14,10 @@ kt_android_library(
     deps = [
         ":dagger",
         "//model:model_lib",
-        "//firebase:crashlytics_lib",
-        "//firebase:crashlytics_deps",
-        ":utility_deps",
+        artifact("androidx.appcompat:appcompat"),
+        artifact("com.github.bumptech.glide:glide"),
+        artifact("com.caverock:androidsvg-aar"),
+        artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
     ],
     visibility = ["//visibility:public"]
 )
@@ -76,16 +30,14 @@ kt_android_library(
     resource_files = glob(["src/main/res/**/*.xml"]),
     manifest = "src/test/TestManifest.xml",
     deps = [
+        ":dagger",
         ":utility_lib",
         "//testing:testing_lib",
-        ":dagger",
         "//model:model_lib",
-        "//firebase:crashlytics_lib",
-        "//firebase:crashlytics_deps",
-        "@robolectric//bazel:android-all",
-        "@maven//:org_robolectric_robolectric",
-        ":utility_test_deps",
-        ":utility_deps",
+        artifact("org.jetbrains.kotlin:kotlin-test-junit"),
+        artifact("com.google.truth:truth"),
+        artifact("androidx.test.ext:junit"),
+        artifact("org.mockito:mockito-core"),
     ],
     visibility = ["//visibility:public"]
 )
@@ -102,7 +54,6 @@ utility_test(
     test_class = "org.oppia.util.data.DataProvidersTest",
 )
 
-# TODO: Builds but does not pass
 utility_test(
     name = "InMemoryBlockingCacheTest",
     src = ["src/test/java/org/oppia/util/data/InMemoryBlockingCacheTest.kt"],
