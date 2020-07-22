@@ -17,7 +17,7 @@ class SplitScreenManager(
     return isDeviceSplittable() && isInteractionSplittable(interactionId)
   }
 
-  //https://stackoverflow.com/a/19156339/6628335
+  // https://stackoverflow.com/a/19156339/6628335
   private fun deviceDiagonalWidth(): Double {
     val dm = DisplayMetrics()
     activity.windowManager.defaultDisplay.getMetrics(dm)

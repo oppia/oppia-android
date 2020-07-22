@@ -15,7 +15,7 @@ import org.oppia.app.player.SplitScreenManager
 import org.oppia.app.testing.ExplorationTestActivity
 import org.robolectric.annotation.Config
 
-//Devices reference: https://material.io/resources/devices/
+// Devices reference: https://material.io/resources/devices/
 @RunWith(AndroidJUnit4::class)
 class PlayerSplitScreenTesting {
 
@@ -32,7 +32,7 @@ class PlayerSplitScreenTesting {
   }
 
   @Test
-  @Config(qualifiers = "w540dp-h960dp-xhdpi") //5.5 (inch)
+  @Config(qualifiers = "w540dp-h960dp-xhdpi") // 5.5 (inch)
   fun testSplitScreen_540x960_xhdpi_continueInteraction_NoSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
@@ -42,7 +42,7 @@ class PlayerSplitScreenTesting {
   }
 
   @Test
-  @Config(qualifiers = "w540dp-h960dp-xhdpi") //5.5 (inch)
+  @Config(qualifiers = "w540dp-h960dp-xhdpi") // 5.5 (inch)
   fun testSplitScreen_540x960_xhdpi_dragInteraction_NoSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
@@ -52,7 +52,7 @@ class PlayerSplitScreenTesting {
   }
 
   @Test
-  @Config(qualifiers = "w800dp-h1280dp-xhdpi") //8.4 (inch)
+  @Config(qualifiers = "w800dp-h1280dp-xhdpi") // 8.4 (inch)
   fun testSplitScreen_800x1280_xhdpi_continueInteraction_NoSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
@@ -62,7 +62,7 @@ class PlayerSplitScreenTesting {
   }
 
   @Test
-  @Config(qualifiers = "w800dp-h1280dp-xhdpi") //8.4 (inch)
+  @Config(qualifiers = "w800dp-h1280dp-xhdpi") // 8.4 (inch)
   fun testSplitScreen_800x1280_xhdpi_dragInteraction_Split() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
@@ -72,7 +72,7 @@ class PlayerSplitScreenTesting {
   }
 
   @Test
-  @Config(qualifiers = "w411dp-h731dp-xxxhdpi") //5.5 (inch)
+  @Config(qualifiers = "w411dp-h731dp-xxxhdpi") // 5.5 (inch)
   fun testSplitScreen_411x731_xxxhdpi_dragInteraction_NoSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
