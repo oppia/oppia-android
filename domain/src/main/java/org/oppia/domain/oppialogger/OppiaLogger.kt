@@ -1,6 +1,5 @@
 package org.oppia.domain.oppialogger
 
-import android.content.Context
 import org.oppia.app.model.EventLog
 import org.oppia.app.model.EventLog.EventAction
 import org.oppia.domain.oppialogger.analytics.AnalyticsController
