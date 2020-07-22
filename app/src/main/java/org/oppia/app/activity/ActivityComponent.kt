@@ -40,13 +40,13 @@ import org.oppia.app.testing.ConceptCardFragmentTestActivity
 import org.oppia.app.testing.DragDropTestActivity
 import org.oppia.app.testing.ExplorationInjectionActivity
 import org.oppia.app.testing.ExplorationTestActivity
-import org.oppia.app.testing.TestFontScaleConfigurationUtilActivity
 import org.oppia.app.testing.HomeInjectionActivity
 import org.oppia.app.testing.HomeTestActivity
 import org.oppia.app.testing.HtmlParserTestActivity
 import org.oppia.app.testing.NavigationDrawerTestActivity
 import org.oppia.app.testing.ProfileChooserFragmentTestActivity
 import org.oppia.app.testing.StoryFragmentTestActivity
+import org.oppia.app.testing.TestFontScaleConfigurationUtilActivity
 import org.oppia.app.testing.TopicRevisionTestActivity
 import org.oppia.app.testing.TopicTestActivity
 import org.oppia.app.testing.TopicTestActivityForStory
