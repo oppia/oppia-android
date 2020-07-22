@@ -39,14 +39,6 @@ class HelpActivity : InjectableAppCompatActivity(), RouteToFAQListListener {
       intent.putExtra(BOOL_IS_FROM_EXPLORATION_EXTRA_KEY, isFromExploration)
       return intent
     }
-
-    fun getIntentKey(): String {
-      return KEY_NAVIGATION_PROFILE_ID
-    }
-
-    fun getIsFromExplorationKey(): String {
-      return BOOL_IS_FROM_EXPLORATION_EXTRA_KEY
-    }
   }
 
   override fun onRouteToFAQList() {

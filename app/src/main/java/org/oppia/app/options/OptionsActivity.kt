@@ -31,10 +31,6 @@ class OptionsActivity :
       intent.putExtra(BOOL_IS_FROM_EXPLORATION_EXTRA_KEY, isFromExploration)
       return intent
     }
-
-    fun getIsFromExplorationKey(): String {
-      return BOOL_IS_FROM_EXPLORATION_EXTRA_KEY
-    }
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {

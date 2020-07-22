@@ -49,7 +49,7 @@ class HelpFragmentTest {
   }
 
   @Test
-  fun testHelpFragment_getIsFromExplorationTrue_checkBackArrowVisible() {
+  fun testHelpFragment_parentIsExploration_checkBackArrowVisible() {
     launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
       onView(withContentDescription(R.string.abc_action_bar_up_description))
         .check(matches(isCompletelyDisplayed()))
@@ -57,7 +57,7 @@ class HelpFragmentTest {
   }
 
   @Test
-  fun testHelpFragment_getIsFromExplorationFalse_checkBackArrowNotVisible() {
+  fun testHelpFragment_parentIsNotExploration_checkBackArrowNotVisible() {
     launch<HelpActivity>(createHelpActivityIntent(0, false)).use {
       onView(withContentDescription(R.string.abc_action_bar_up_description))
         .check(doesNotExist())

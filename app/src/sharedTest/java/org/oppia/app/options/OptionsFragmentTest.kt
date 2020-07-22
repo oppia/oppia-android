@@ -102,7 +102,7 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun testOptionFragment_getIsFromExplorationTrue_checkBackArrowVisible() {
+  fun testOptionsFragment_parentIsExploration_checkBackArrowNotVisible() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       onView(withContentDescription(R.string.abc_action_bar_up_description))
         .check(matches(isCompletelyDisplayed()))
@@ -110,7 +110,7 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun testOptionFragment_getIsFromExplorationFalse_checkBackArrowNotVisible() {
+  fun testOptionsFragment_parentIsNotExploration_checkBackArrowNotVisible() {
     launch<OptionsActivity>(createOptionActivityIntent(0, false)).use {
       onView(withContentDescription(R.string.abc_action_bar_up_description))
         .check(doesNotExist())
