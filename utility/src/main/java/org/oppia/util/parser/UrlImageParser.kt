@@ -79,10 +79,10 @@ class UrlImageParser private constructor(
             // Then multipleFactor will be 2 (120/60).
             // The new height will be 180 and new width will be 120.
             val multipleFactor = if (drawableHeight <= drawableWidth) {
-              // If height is less then the multipleFactor, value is determined by height.
+              // If height is less then the width, multipleFactor value is determined by height.
               (minimumImageSize.toDouble() / drawableHeight.toDouble())
             } else {
-              // If width is less then the multipleFactor, value is determined by width.
+              // If height is less then the width, multipleFactor value is determined by width.
               (minimumImageSize.toDouble() / drawableWidth.toDouble())
             }
             drawableHeight = (drawableHeight.toDouble() * multipleFactor).toInt()
@@ -95,10 +95,10 @@ class UrlImageParser private constructor(
             // Then multipleFactor will be (200/440).
             // The new height will be 191 and new width will be 200.
             val multipleFactor = if (drawableHeight >= drawableWidth) {
-              // If height is less then the multipleFactor, value is determined by height.
+              // If height is greater then the width, multipleFactor value is determined by height.
               (maximumImageSize.toDouble() / drawableHeight.toDouble())
             } else {
-              // If width is less then the multipleFactor, value is determined by width.
+              // If height is greater then the width, multipleFactor value is determined by width.
               (maximumImageSize.toDouble() / drawableWidth.toDouble())
             }
             drawableHeight = (drawableHeight.toDouble() * multipleFactor).toInt()
