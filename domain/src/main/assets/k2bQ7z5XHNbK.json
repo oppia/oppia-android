@@ -1,0 +1,3243 @@
+{
+  "exploration": {
+    "param_changes": [],
+    "language_code": "en",
+    "states": {
+      "Shortcut for finding equivalent ratio": {
+        "param_changes": [],
+        "interaction": {
+          "solution": null,
+          "answer_groups": [
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_1",
+                  "html": "<p>Correct! Excellent!</p>"
+                },
+                "dest": "Multiplying and dividing a number to ratio",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": true
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": 1
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_2",
+                  "html": "<p>No, that is not correct.</p>\n\n<p>Consider 1:2. If we add 4 to each side, it will be 5:6. But 1:2 and 5:6 do not have the same relative relationship. In fact, 1:2 = 5:10.</p>\n\n<p>So, that's not the correct shortcut. Think carefully, then try again.</p>"
+                },
+                "dest": "Shortcut for finding equivalent ratio",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": 0
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_3",
+                  "html": "<p>No, that is wrong.</p>\n\n<p>Consider multiplying 2 to just the left side of the ratio 1:2. That would give us 2:2.</p>\n\n<p>But do 1:2 and 2:2 have the same relative relationship? In one of them, the right side is double the left side. In the other, both sides are the same...</p>\n\n<p>So, that can't be the correct shortcut. Think carefully and try to figure it out before you try again.</p>"
+                },
+                "dest": "Shortcut for finding equivalent ratio",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": 2
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_4",
+                  "html": "<p>No, that is incorrect.</p>\n\n<p>Consider adding 2 to just the left side of the ratio 1:2. That would result in 3:2.</p>\n\n<p>In 1:2, the right side is bigger than the left side. In 3:2, that is not the case. So, 1:2 cannot be the same as 3:2, and this short cut doesn't work.</p>\n\n<p>Think carefully before trying again.</p>"
+                },
+                "dest": "Shortcut for finding equivalent ratio",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": 3
+                  }
+                }
+              ]
+            }
+          ],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>No, that is incorrect. Try again.</p>"
+            },
+            "dest": "Shortcut for finding equivalent ratio",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "customization_args": {
+            "choices": {
+              "value": [
+                "<p>You add the same number to both sides.</p>",
+                "<p>You multiply both sides by the same number.</p>",
+                "<p>You multiply the left side by a number, and keep the right side the same.</p>",
+                "<p>You add a number to the left side, and keep the right side the same.</p>"
+              ]
+            }
+          },
+          "confirmed_unclassified_answers": [],
+          "id": "MultipleChoiceInput",
+          "hints": []
+        },
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "feedback_2": {
+              "en": {
+                "file_size_bytes": 698917,
+                "needs_update": false,
+                "filename": "feedback_2-en-d93p5en2tb.mp3"
+              }
+            },
+            "content": {
+              "en": {
+                "file_size_bytes": 992328,
+                "needs_update": false,
+                "filename": "content-en-dfkqg6zyvt.mp3"
+              }
+            },
+            "feedback_3": {
+              "en": {
+                "file_size_bytes": 857324,
+                "needs_update": false,
+                "filename": "feedback_3-en-dw20vov8xl.mp3"
+              }
+            },
+            "feedback_1": {
+              "en": {
+                "file_size_bytes": 79926,
+                "needs_update": false,
+                "filename": "feedback_1-en-rp43mdaz09.mp3"
+              }
+            },
+            "feedback_4": {
+              "en": {
+                "file_size_bytes": 757850,
+                "needs_update": false,
+                "filename": "feedback_4-en-6qtcjshekk.mp3"
+              }
+            },
+            "default_outcome": {
+              "en": {
+                "file_size_bytes": 108759,
+                "needs_update": false,
+                "filename": "default_outcome-en-izlso22k1g.mp3"
+              }
+            }
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "<p>“Uncle Berry,” James asked, “do I always need to draw a picture to see if two ratios represent the same relative relationship?”</p>\n\n<p>\"No, not necessarily,\" Uncle Berry answered. “There's actually a shortcut for it! You…”</p>\n\n<p>“Wait, can I find the shortcut by myself?” James interrupted.</p>\n\n<p>“Yes, of course!\" said Uncle Berry. \"Here's a picture for you to think about.\" He drew a picture on a piece of paper:</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;image of 1 cup of mango puree on left and 2 cups of milk on right. text \\&amp;quot;1:2\\&amp;quot; written below the image. Image of the first image drawn three times one over the another (3 cups of mango puree and 6 cups of milk). Text \\&amp;quot;3:6\\&amp;quot; written below this image. Image of the first image drawn 5 times one over the another (5 cups of mango puree and 10 cups of milk). Text \\&amp;quot;5:10\\&amp;quot; written below this image.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190207_210541_1n2d5wguew_height_358_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>\"Now, James,\" he said, \"here are three equivalent ratios. Can you find a shortcut for figuring out that they are equivalent, if you only had the numerical ratios and not the pictures?”</p>"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "feedback_2": {},
+            "content": {},
+            "feedback_3": {},
+            "feedback_1": {},
+            "feedback_4": {},
+            "default_outcome": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "Practice 11": {
+        "param_changes": [],
+        "interaction": {
+          "solution": null,
+          "answer_groups": [
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_1",
+                  "html": "<p>Correct! Well done.</p>\n"
+                },
+                "dest": "Final Test",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": true
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": "1:2"
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_3",
+                  "html": "<p>No, that's not correct. When simplifying, make sure to divide both sides by the <strong>same </strong>number.<strong> </strong>Try again!</p>"
+                },
+                "dest": "Practice 11",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Contains",
+                  "inputs": {
+                    "x": "1:"
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_2",
+                  "html": "<p>No, that's not correct. Read the question carefully. Which number should be equal to 1?</p>\n\n<p>Try again!</p>"
+                },
+                "dest": "Practice 11",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": "2:1"
+                  }
+                }
+              ]
+            }
+          ],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>No, that's not correct. Make sure to read the question carefully, and enter a ratio where the number on the left is 1. Try again.</p>"
+            },
+            "dest": "Practice 11",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "customization_args": {
+            "rows": {
+              "value": 1
+            },
+            "placeholder": {
+              "value": "Enter the ratio as 1:X (without spaces), where X is a number."
+            }
+          },
+          "confirmed_unclassified_answers": [],
+          "id": "TextInput",
+          "hints": []
+        },
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {
+              "en": {
+                "file_size_bytes": 589832,
+                "needs_update": false,
+                "filename": "content-en-1249m9y1rg.mp3"
+              }
+            },
+            "default_outcome": {
+              "en": {
+                "file_size_bytes": 277197,
+                "needs_update": false,
+                "filename": "default_outcome-en-pg7uing7b7.mp3"
+              }
+            },
+            "feedback_2": {
+              "en": {
+                "file_size_bytes": 227459,
+                "needs_update": false,
+                "filename": "feedback_2-en-rqsioqgs17.mp3"
+              }
+            },
+            "feedback_1": {
+              "en": {
+                "file_size_bytes": 68222,
+                "needs_update": false,
+                "filename": "feedback_1-en-fvgx81pnim.mp3"
+              }
+            },
+            "feedback_3": {
+              "en": {
+                "file_size_bytes": 240834,
+                "needs_update": false,
+                "filename": "feedback_3-en-vlfsro8570.mp3"
+              }
+            }
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "<p>\"What about our banana strawberry smoothies?\" asked Uncle Berry.</p>\n\n<p>\"For 3 cups of smoothie, I want to get 6 dollars,\" answered James.</p>\n\n<p>\"Right, but you've only made 1 glass of fruit smoothie. Maybe you can simplify the ratio of cups to dollars, so that the number on the left is 1,\" said Uncle Berry.</p>\n\n<p>Can you help James do this?</p>"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "content": {},
+            "feedback_3": {},
+            "feedback_2": {},
+            "feedback_1": {},
+            "default_outcome": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "Practice 10": {
+        "param_changes": [],
+        "interaction": {
+          "solution": null,
+          "answer_groups": [
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_1",
+                  "html": "<p>Yes, that is correct! So, we can sell 2 glasses of chocolate smoothie for $4 instead.</p>"
+                },
+                "dest": "Practice 11",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": true
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": "4:2"
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_2",
+                  "html": "<p>No, that's not right. Remember, when simplifying a ratio, you need to divide all the parts of the ratio by the <strong>same number</strong>. Try again!</p>"
+                },
+                "dest": "Practice 10",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Contains",
+                  "inputs": {
+                    "x": ":2"
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_3",
+                  "html": "<p>No, that's not correct. Look at the original ratio carefully. Which side of the ratio represents the number of glasses? That part should end up being equal to 2.</p>\n\n<p>Try again!</p>"
+                },
+                "dest": "Practice 10",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Contains",
+                  "inputs": {
+                    "x": "2:"
+                  }
+                }
+              ]
+            }
+          ],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>No, that's not correct. Make sure to read the question carefully! The number on the right should be equal to 2.</p>\n\n<p>Try again.</p>"
+            },
+            "dest": "Practice 10",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "customization_args": {
+            "rows": {
+              "value": 1
+            },
+            "placeholder": {
+              "value": "Enter the ratio as X:2 (without spaces), where X is a number."
+            }
+          },
+          "confirmed_unclassified_answers": [],
+          "id": "TextInput",
+          "hints": [
+            {
+              "hint_content": {
+                "content_id": "hint_1",
+                "html": "<p>We want to change 8:4 into X:2 (where we need to find X).</p>\n\n<p>Let's look at the second part of the ratio. To get 2 from 4, we need to divide 4 by 2. So, what should we do to the first part of the ratio?</p>"
+              }
+            },
+            {
+              "hint_content": {
+                "content_id": "hint_2",
+                "html": "<p>Remember that, in order to find an equivalent ratio, you need to divide all parts of the ratio by the <strong>same number</strong>.</p>"
+              }
+            }
+          ]
+        },
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {
+              "en": {
+                "file_size_bytes": 997761,
+                "needs_update": false,
+                "filename": "content-en-00os8e1tfq.mp3"
+              }
+            },
+            "feedback_2": {
+              "en": {
+                "file_size_bytes": 285556,
+                "needs_update": false,
+                "filename": "feedback_2-en-yehnedbzum.mp3"
+              }
+            },
+            "feedback_3": {
+              "en": {
+                "file_size_bytes": 347832,
+                "needs_update": false,
+                "filename": "feedback_3-en-8a1o8zsgid.mp3"
+              }
+            },
+            "feedback_1": {
+              "en": {
+                "file_size_bytes": 201129,
+                "needs_update": false,
+                "filename": "feedback_1-en-gh3iccwkwx.mp3"
+              }
+            },
+            "hint_1": {
+              "en": {
+                "file_size_bytes": 455247,
+                "needs_update": false,
+                "filename": "hint_1-en-t7j34wq46j.mp3"
+              }
+            },
+            "hint_2": {
+              "en": {
+                "file_size_bytes": 217434,
+                "needs_update": false,
+                "filename": "hint_2-en-syzqw9mnev.mp3"
+              }
+            },
+            "default_outcome": {
+              "en": {
+                "file_size_bytes": 268001,
+                "needs_update": false,
+                "filename": "default_outcome-en-kibebrudmt.mp3"
+              }
+            }
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "<p>James and Uncle Berry decided to start selling their smoothies in the stand.</p>\n\n<p>\"What price should we sell them at?” asked Uncle Berry.</p>\n\n<p>\"Ummm…. I want 8 dollars for 4 glasses of chocolate smoothie. So, the ratio of money to glasses of chocolate smoothie is 8:4,\" answered James.</p>\n\n<p>\"But we only have 2 glasses,\" said Uncle Berry, looking in the fridge.</p>\n\n<p>\"No problem!\" said James. \"I'll just simplify the ratio so that the number on the right represents 2 glasses instead of 4.\"</p>\n\n<p>Can you help James do this? Type in the correct ratio.</p>"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "feedback_2": {},
+            "content": {},
+            "feedback_3": {},
+            "feedback_1": {},
+            "hint_1": {},
+            "hint_2": {},
+            "default_outcome": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "Introduction": {
+        "param_changes": [],
+        "interaction": {
+          "solution": null,
+          "answer_groups": [],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": ""
+            },
+            "dest": "Review 1",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "customization_args": {
+            "buttonText": {
+              "value": "Continue"
+            }
+          },
+          "confirmed_unclassified_answers": [],
+          "id": "Continue",
+          "hints": []
+        },
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {
+              "en": {
+                "file_size_bytes": 1197516,
+                "needs_update": false,
+                "filename": "content-en-4w4m3hpdfi.mp3"
+              }
+            },
+            "default_outcome": {}
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "<p>Now that James is an expert at making smoothies, he was able to enjoy fresh delicious smoothies every day! In fact, he got so good at making smoothies that he decided to open a small smoothie stand in the ground floor of his house.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of James thinking of a smoothie stand written: \\&amp;quot;James &amp;amp; Berry’s Smoothie\\&amp;quot;&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190207_210400_xqi1zsl97q_height_421_width_441.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>You should know the following before going on:</p>\n\n<ul>\n\t<li>\n\t<p><strong>What a ratio is.</strong></p>\n\t</li>\n\t<li>\n\t<p><strong>Why the order of the numbers in a ratio is important.</strong></p>\n\t</li>\n\t<li>\n\t<p><strong>How to multiply and divide the counting numbers (eg. 1, 2, 3, 4, ...).</strong></p>\n\t</li>\n</ul>\n\n<p>Also, make sure to get some paper and a pen/pencil to write with, and find a quiet space to work. Take your time and go through the story at your own pace, and try to think about the questions carefully before you answer them!</p>\n\n<p>Once you’re ready, click <strong>Continue</strong> to get started!</p>"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "content": {},
+            "default_outcome": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "Final Test": {
+        "param_changes": [],
+        "interaction": {
+          "solution": null,
+          "answer_groups": [
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_1",
+                  "html": "<p>Yes, that is correct! Well done. Now James can go to bed!</p>"
+                },
+                "dest": "Happy ending",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": true
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": "2:1:4"
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_2",
+                  "html": "<p>No, that's not correct. If you were in James's place, you'd have to clean up the kitchen together with Uncle Berry!</p>\n\n<p>Or, maybe you could try again...</p>"
+                },
+                "dest": "Final Test",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Contains",
+                  "inputs": {
+                    "x": ":1:"
+                  }
+                }
+              ]
+            }
+          ],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>No, that's not correct. Try again. Remember to write your ratio without any spaces, and make sure that the number representing milk is equal to 1.</p>"
+            },
+            "dest": "Final Test",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "customization_args": {
+            "rows": {
+              "value": 1
+            },
+            "placeholder": {
+              "value": "Enter the correct ratio, without spaces."
+            }
+          },
+          "confirmed_unclassified_answers": [],
+          "id": "TextInput",
+          "hints": [
+            {
+              "hint_content": {
+                "content_id": "hint_1",
+                "html": "<p>Writing the ratio like this might help you answer the question. Can you fill in the blanks?</p>\n\n<blockquote>\n<p><strong>apple puree : milk : mango puree</strong></p>\n\n<p><strong>      6             :    3    :           12</strong></p>\n\n<p><strong>      ?             :    1    :             ?</strong></p></blockquote>"
+              }
+            }
+          ]
+        },
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {
+              "en": {
+                "file_size_bytes": 1667748,
+                "needs_update": false,
+                "filename": "content-en-eryi9g357v.mp3"
+              }
+            },
+            "default_outcome": {
+              "en": {
+                "file_size_bytes": 338637,
+                "needs_update": false,
+                "filename": "default_outcome-en-2t0dn48xbs.mp3"
+              }
+            },
+            "feedback_2": {
+              "en": {
+                "file_size_bytes": 275525,
+                "needs_update": false,
+                "filename": "feedback_2-en-qzunova065.mp3"
+              }
+            },
+            "feedback_1": {
+              "en": {
+                "file_size_bytes": 153482,
+                "needs_update": false,
+                "filename": "feedback_1-en-qims21pe24.mp3"
+              }
+            },
+            "hint_1": {
+              "en": {
+                "file_size_bytes": 460268,
+                "needs_update": false,
+                "filename": "hint_1-en-d2vc637fes.mp3"
+              }
+            }
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "<p>“All right, we have a plan! But it's getting late,\" said Uncle Berry. \"Let’s clean up now. We can try making other smoothies tomorrow.\"</p>\n\n<p>\"Okay,\" said James. Yawning, he started to put the glasses into the sink.</p>\n\n<p>Uncle Berry noticed James yawning. \"James, how about this,\" he said. \"I'm going to ask you a ratios question. If you answer it correctly, I’ll clean up by myself. But, if you get it wrong, you'll need to clean up with me.\" He hoped James would get the question right.</p>\n\n<p>James's eyes lit up. \"Give me the question!\" he said.</p>\n\n<p>\"OK,\" said Uncle Berry, laughing. \"I saw another recipe in the ‘Smoothie for Kids’ book just now. It suggested using <strong>6 cups of apple puree, 3 cups of milk and 12 cups of mango puree</strong> to make a smoothie. However, I only have 1 cup of milk. Can you simplify the ratio of apple puree to milk to mango puree so that the <strong>number representing milk is 1</strong>?\"</p>"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "content": {},
+            "feedback_2": {},
+            "feedback_1": {},
+            "hint_1": {},
+            "default_outcome": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "Multiplying and dividing a number to ratio": {
+        "param_changes": [],
+        "interaction": {
+          "solution": null,
+          "answer_groups": [
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_1",
+                  "html": "<p>Good job!</p>\n"
+                },
+                "dest": "Practice 4",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": true
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": "9:6"
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_2",
+                  "html": "<p>It's true that 3:2 = 6:4. But the question says to multiply both sides by 3, not 2.</p>\n\n<p>Try again!</p>"
+                },
+                "dest": "Multiplying and dividing a number to ratio",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": "6:4"
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_3",
+                  "html": "<p>No, that's not right. When calculating an equivalent ratio, you need to multiply or divide by the same number on both sides. Adding or subtracting the same number won't work, because this does not preserve the relative relationship between the numbers.</p>\n\n<p>Try again, and make sure to <strong>multiply</strong> the numbers on each side by 3.</p>"
+                },
+                "dest": "Multiplying and dividing a number to ratio",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": "6:5"
+                  }
+                }
+              ]
+            }
+          ],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>No, that is wrong. Read the question carefully, and try again.</p>"
+            },
+            "dest": "Multiplying and dividing a number to ratio",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "customization_args": {
+            "rows": {
+              "value": 1
+            },
+            "placeholder": {
+              "value": "Enter a ratio in the form X:Y, without spaces."
+            }
+          },
+          "confirmed_unclassified_answers": [],
+          "id": "TextInput",
+          "hints": []
+        },
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {
+              "en": {
+                "file_size_bytes": 1398588,
+                "needs_update": false,
+                "filename": "content-en-spasr84nuo.mp3"
+              }
+            },
+            "default_outcome": {
+              "en": {
+                "file_size_bytes": 170617,
+                "needs_update": false,
+                "filename": "default_outcome-en-fjw513mq13.mp3"
+              }
+            },
+            "feedback_2": {
+              "en": {
+                "file_size_bytes": 334041,
+                "needs_update": false,
+                "filename": "feedback_2-en-z8noyaop5i.mp3"
+              }
+            },
+            "feedback_1": {
+              "en": {
+                "file_size_bytes": 40634,
+                "needs_update": false,
+                "filename": "feedback_1-en-ong64xtfv2.mp3"
+              }
+            },
+            "feedback_3": {
+              "en": {
+                "file_size_bytes": 681363,
+                "needs_update": false,
+                "filename": "feedback_3-en-5pogw1hefu.mp3"
+              }
+            }
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "<p>\"Excellent!\" said Uncle Berry. \"That is very good mathematical thinking!\"</p>\n\n<p>\"Like you said, we can find equivalent ratios by multiplying both sides by the same number. For example, the ratio 2:5 can be written as 10:25, after multiplying both sides by 5.\"</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;&amp;#39;2:5 is equal to 10:25&amp;#39; is written. An arrow goes from 2 to 10 and times 5 is written above the arrow. Another arrow goes from 5 to 25 and times 5 is written below this arrow.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_162718_6ltm8gk5qd_height_222_width_294.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>“We can also find equivalent ratios by dividing both sides by the same number. For example, the ratio 10:25 can be written as 2:5, after dividing both sides by 5.”</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;&amp;#39;10:25 =2:5&amp;#39; is written. An arrow goes from 10 to 2, and divide by 5 is written above the arrow. Another arrow goes from 25 to 5 and divide by 5 is written below the arrow.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_162728_9ssdwbdymy_height_207_width_294.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>\"Also, dividing means that we can make the numbers smaller. This is called <strong>simplifying</strong> the ratio.\"</p>\n\n<p>\"Now, let's take a look at the ratio 3:2. Can you find a ratio that's equivalent to it, by multiplying each side of this ratio by 3?\"</p>"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "content": {},
+            "feedback_2": {},
+            "feedback_1": {},
+            "default_outcome": {},
+            "feedback_3": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "Practice 5.5": {
+        "param_changes": [],
+        "interaction": {
+          "solution": null,
+          "answer_groups": [
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_1",
+                  "html": "<p>Yes, that is correct! Great job!</p>"
+                },
+                "dest": "Practice 6",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": true
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": 1
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_2",
+                  "html": "<p>No, that's not right. It's true that 6:8 = 12:16, but remember that \"simplifying\" means finding an equivalent ratio that is <strong>smaller</strong> than the original one.</p>\n\n<p>Try again.</p>"
+                },
+                "dest": "Practice 5.5",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": 4
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_3",
+                  "html": "<p>No, that is not correct. Remember that, to find an equivalent ratio, we need to mulitply or divide the ratio by the same number on both sides. Adding or subtracting by the same number will not work.</p>\n\n<p>Let's look at this concept again, since it's quite important!</p>"
+                },
+                "dest": "Shortcut for finding equivalent ratio",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": 2
+                  }
+                }
+              ]
+            }
+          ],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>No, that's not correct. Remember that simplifying means finding an equivalent ratio with smaller numbers. But your answer is not equivalent to 6:8.</p>\n\n<p>Let's take another look at how to find equivalent ratios. Maybe James's shortcut can help us!</p>"
+            },
+            "dest": "Shortcut for finding equivalent ratio",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "customization_args": {
+            "choices": {
+              "value": [
+                "<p>1:2</p>",
+                "<p>3:4</p>",
+                "<p>4:6</p>",
+                "<p>8:6</p>",
+                "<p>12:16</p>"
+              ]
+            }
+          },
+          "confirmed_unclassified_answers": [],
+          "id": "MultipleChoiceInput",
+          "hints": []
+        },
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {
+              "en": {
+                "file_size_bytes": 301439,
+                "needs_update": false,
+                "filename": "content-en-i98uepo91e.mp3"
+              }
+            },
+            "default_outcome": {
+              "en": {
+                "file_size_bytes": 576455,
+                "needs_update": false,
+                "filename": "default_outcome-en-ttpwov8u2w.mp3"
+              }
+            },
+            "feedback_2": {
+              "en": {
+                "file_size_bytes": 428080,
+                "needs_update": false,
+                "filename": "feedback_2-en-0bc6u53e4g.mp3"
+              }
+            },
+            "feedback_1": {
+              "en": {
+                "file_size_bytes": 96639,
+                "needs_update": false,
+                "filename": "feedback_1-en-zroae2xwdc.mp3"
+              }
+            },
+            "feedback_3": {
+              "en": {
+                "file_size_bytes": 560155,
+                "needs_update": false,
+                "filename": "feedback_3-en-ml4gz3t7qf.mp3"
+              }
+            }
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "<p>\"Now,\" said Uncle Berry, writing down five ratios on a piece of paper, \"can you figure out which of these ratios is correctly simplified from 6:8?\"</p>"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "content": {},
+            "feedback_2": {},
+            "feedback_1": {},
+            "default_outcome": {},
+            "feedback_3": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "Smoothie for stand": {
+        "param_changes": [],
+        "interaction": {
+          "solution": null,
+          "answer_groups": [
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_1",
+                  "html": "<p>Correct! Great job!</p>"
+                },
+                "dest": "Equivalent ratio",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": true
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": [
+                      "<p>For every 1 unit of white chocolate, there should be twice that amount of dark chocolate.</p>",
+                      "<p>For any amount of white chocolate, there should be twice that amount of dark chocolate.</p>"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_2",
+                  "html": "<p>No, that is incorrect. Remember, a ratio does not show exact numbers. A ratio only shows the <strong>relative</strong> relationship between two things.</p>\n\n<p>Let's take another look at Uncle Berry's explanation of what a ratio is.</p>"
+                },
+                "dest": "Definition of a ratio",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "ContainsAtLeastOneOf",
+                  "inputs": {
+                    "x": [
+                      "<p>There should be exactly 1 piece of white chocolate and 2 pieces of dark chocolate.</p>",
+                      "<p>There should always be 1 bar of white chocolate and 2 bars of dark chocolate.</p>"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_3",
+                  "html": "<p>That's OK. Let's look again at Uncle Berry's explanation of what a ratio is.</p>"
+                },
+                "dest": "Definition of a ratio",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "ContainsAtLeastOneOf",
+                  "inputs": {
+                    "x": [
+                      "<p>I don't know!</p>"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_4",
+                  "html": "<p>You picked one of the correct answers, but there is more than one correct answer. Try again.</p>"
+                },
+                "dest": "Smoothie for stand",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": [
+                      "<p>For every 1 unit of white chocolate, there should be twice that amount of dark chocolate.</p>"
+                    ]
+                  }
+                },
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": [
+                      "<p>For any amount of white chocolate, there should be twice that amount of dark chocolate.</p>"
+                    ]
+                  }
+                }
+              ]
+            }
+          ],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>No, your answer is wrong. Let's review Uncle Berry's explanation of what a ratio is.</p>"
+            },
+            "dest": "Definition of a ratio",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "customization_args": {
+            "maxAllowableSelectionCount": {
+              "value": 4
+            },
+            "minAllowableSelectionCount": {
+              "value": 1
+            },
+            "choices": {
+              "value": [
+                "<p>There should be exactly 1 piece of white chocolate and 2 pieces of dark chocolate.</p>",
+                "<p>For every 1 unit of white chocolate, there should be twice that amount of dark chocolate.</p>",
+                "<p>There should always be 1 bar of white chocolate and 2 bars of dark chocolate.</p>",
+                "<p>For any amount of white chocolate, there should be twice that amount of dark chocolate.</p>",
+                "<p>I don't know!</p>"
+              ]
+            }
+          },
+          "confirmed_unclassified_answers": [],
+          "id": "ItemSelectionInput",
+          "hints": []
+        },
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "feedback_2": {
+              "en": {
+                "file_size_bytes": 462770,
+                "needs_update": false,
+                "filename": "feedback_2-en-vr4yvaj75m.mp3"
+              }
+            },
+            "content": {
+              "en": {
+                "file_size_bytes": 1742146,
+                "needs_update": false,
+                "filename": "content-en-czsv9a77jc.mp3"
+              }
+            },
+            "feedback_3": {
+              "en": {
+                "file_size_bytes": 178144,
+                "needs_update": false,
+                "filename": "feedback_3-en-vutalq7pcn.mp3"
+              }
+            },
+            "feedback_1": {
+              "en": {
+                "file_size_bytes": 75745,
+                "needs_update": false,
+                "filename": "feedback_1-en-oz4dqsv8ad.mp3"
+              }
+            },
+            "feedback_4": {
+              "en": {
+                "file_size_bytes": 188590,
+                "needs_update": false,
+                "filename": "feedback_4-en-n5quvyqsk5.mp3"
+              }
+            },
+            "default_outcome": {
+              "en": {
+                "file_size_bytes": 187335,
+                "needs_update": false,
+                "filename": "default_outcome-en-w8txcdf8w8.mp3"
+              }
+            }
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "<p>James and Uncle Berry were in the kitchen again. They were trying different recipes in the recipe book, and finding ones that would sell well for their smoothie stand.</p>\n\n<p>Uncle Berry asked James, \"Could you put white chocolate and dark chocolate in the ratio of 1:2 into the blender?\"</p>\n\n<p>A little confused, James asked, “So, do I put in 1 piece of white chocolate, and 2 pieces of dark chocolate?”</p>\n\n<p>“No, that would be too little for the blender to work properly. Let's use 4 pieces of white chocolate and 8 pieces of dark chocolate instead,” Uncle Berry answered, pointing to the chocolates on the kitchen table.</p>\n\n<p>“Hmmm,” James mumbled to himself, “But then, the ratio of white chocolate to dark chocolate will become 4:8. Is 4:8 the same as 1:2?”</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;James thinking 4:8=1:2?&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_222613_mrwlyh5tg7_height_343_width_343.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Uncle Berry heard this and said, “James, that's a very good question. Before we answer that, let's see if you still remember what a ratio is. What does a '1:2 ratio of white chocolate to dark chocolate' mean?”</p>"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "feedback_2": {},
+            "content": {},
+            "feedback_3": {},
+            "feedback_1": {},
+            "feedback_4": {},
+            "default_outcome": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "Definition of a ratio": {
+        "param_changes": [],
+        "interaction": {
+          "solution": null,
+          "answer_groups": [],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": ""
+            },
+            "dest": "Smoothie for stand",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "customization_args": {
+            "buttonText": {
+              "value": "Retry the question"
+            }
+          },
+          "confirmed_unclassified_answers": [],
+          "id": "Continue",
+          "hints": []
+        },
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {
+              "en": {
+                "file_size_bytes": 1296572,
+                "needs_update": false,
+                "filename": "content-en-6j13hfth29.mp3"
+              }
+            },
+            "default_outcome": {}
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "<p>Uncle Berry said, “A ratio can be used to show the <strong>relative</strong> relationship between different quantities. Let me explain what the word 'relative' means.\"</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;fully-filled 1-unit tall glass of milk and a fully-filled 2-unit tall glass of mango puree&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_162216_z7yt02aqdh_height_276_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p> </p>\n\n<p>\"See these glasses? Here, the ratio of milk to mango puree is 1:2, because for every 1 unit of milk, we need two times that amount of mango puree. The ratio doesn't say that we need exactly 1 unit of milk. It just says that, if we know the amount of milk, we can calculate the amount of mango puree.\"</p>\n\n<p>James asked, “So, when you say that a ratio shows the relative relationship, you mean that it doesn’t show the exact number of things, right? Instead, it shows how much of a substance we have relative to another substance?”</p>\n\n<p>“Correct!” said Uncle Berry. \"Now, try answering the question again.\"</p>"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "content": {},
+            "default_outcome": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "Review 1": {
+        "param_changes": [],
+        "interaction": {
+          "solution": null,
+          "answer_groups": [
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_1",
+                  "html": "<p>Yes, that is correct!</p>"
+                },
+                "dest": "Review 2",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": true
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": "4:10"
+                  }
+                },
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": "2:5"
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_2",
+                  "html": "<p>Your answer is correct! However, the question asks to write your answer as X:Y, where X and Y are numbers. This is a more common way of writing ratios, and we'll be using it for the rest of the story. Can you rewrite your answer in this form?</p>"
+                },
+                "dest": "Review 1",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Contains",
+                  "inputs": {
+                    "x": "4 to 10"
+                  }
+                }
+              ]
+            }
+          ],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>No, that's not correct. Try again. If you need a refresher, take another look at the <oppia-noninteractive-link text-with-value=\"&amp;quot;\\&amp;quot;What is a Ratio?\\&amp;quot; lesson&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/2mzzFVDLuAj8&amp;quot;\"></oppia-noninteractive-link>.</p>"
+            },
+            "dest": "Review 1",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "customization_args": {
+            "rows": {
+              "value": 1
+            },
+            "placeholder": {
+              "value": "Enter your answer as X:Y"
+            }
+          },
+          "confirmed_unclassified_answers": [],
+          "id": "TextInput",
+          "hints": []
+        },
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {
+              "en": {
+                "file_size_bytes": 455251,
+                "needs_update": false,
+                "filename": "content-en-w7tf26lkhd.mp3"
+              }
+            },
+            "default_outcome": {
+              "en": {
+                "file_size_bytes": 219518,
+                "needs_update": false,
+                "filename": "default_outcome-en-q7eae1igjk.mp3"
+              }
+            },
+            "feedback_2": {
+              "en": {
+                "file_size_bytes": 448144,
+                "needs_update": false,
+                "filename": "feedback_2-en-jy1we69xk2.mp3"
+              }
+            },
+            "feedback_1": {
+              "en": {
+                "file_size_bytes": 63202,
+                "needs_update": false,
+                "filename": "feedback_1-en-nd6x4s47s4.mp3"
+              }
+            }
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "<p>Before we join James, let’s see if you still remember what you and James learned last time when James made smoothies.</p>\n\n<p>If the ratio of blueberry puree to apple puree is 10:4, what is the ratio of apple puree to blueberry puree?</p>"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "content": {},
+            "feedback_2": {},
+            "feedback_1": {},
+            "default_outcome": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "Review 2": {
+        "param_changes": [],
+        "interaction": {
+          "solution": null,
+          "answer_groups": [
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_1",
+                  "html": "<p>Good job! You've remembered what you learned in the last lesson well!</p>"
+                },
+                "dest": "Review 3",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": true
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": "1:3:2"
+                  }
+                }
+              ]
+            }
+          ],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>No, that's not the correct answer. Try writing the ratio like this:</p>\n\n<blockquote>\n<p><strong>apple puree : mango puree : milk </strong></p>\n\n<p><strong>         2          :             1           :    3</strong></p>\n</blockquote>\n\n<p>Then, rearrange the order of the items, keeping the corresponding description and the number together.</p>\n\n<blockquote>\n<p><strong>mango puree : milk : apple puree</strong></p>\n\n<p><strong>        1              :    ?   :          ?</strong></p>\n</blockquote>\n\n<p>See if you can figure it out!</p>"
+            },
+            "dest": "Review 2",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "customization_args": {
+            "rows": {
+              "value": 1
+            },
+            "placeholder": {
+              "value": "Enter your answer in the form X:Y:Z, with no spaces."
+            }
+          },
+          "confirmed_unclassified_answers": [],
+          "id": "TextInput",
+          "hints": []
+        },
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {
+              "en": {
+                "file_size_bytes": 431844,
+                "needs_update": false,
+                "filename": "content-en-tgobxwp49n.mp3"
+              }
+            },
+            "default_outcome": {
+              "en": {
+                "file_size_bytes": 713964,
+                "needs_update": false,
+                "filename": "default_outcome-en-r7655g2wco.mp3"
+              }
+            },
+            "feedback_1": {
+              "en": {
+                "file_size_bytes": 135510,
+                "needs_update": false,
+                "filename": "feedback_1-en-jvn2wpuv2i.mp3"
+              }
+            }
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "<p>Let’s try another one. If the ratio of apple puree to mango puree to milk is 2:1:3, what is the ratio of mango puree to milk to apple puree?</p>\n"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "content": {},
+            "default_outcome": {},
+            "feedback_1": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "Review 3": {
+        "param_changes": [],
+        "interaction": {
+          "solution": null,
+          "answer_groups": [
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_1",
+                  "html": "<p>Yes, that is correct.</p>\n\n<p>Now, let's return to James and Uncle Berry, and see how they're doing!</p>"
+                },
+                "dest": "Smoothie for stand",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": true
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": [
+                      "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 2-unit tall glass fully filled with mango puree. On the right there are 5 1-unit tall glasses, fully filled with strawberry puree.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_161900_jw61qt7ott_height_163_width_392.png&amp;quot;\"></oppia-noninteractive-image>",
+                      "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 2-units tall glass fully filled with milk. On the right, there is 5-units tall glass fully filled with strawberry puree.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_161944_fqdts0567o_height_259_width_392.png&amp;quot;\"></oppia-noninteractive-image>"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_2",
+                  "html": "<p>You got one answer right, but there is more correct answer. Pick all the correct answers.</p>\n"
+                },
+                "dest": "Review 3",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": [
+                      "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 2-unit tall glass fully filled with mango puree. On the right there are 5 1-unit tall glasses, fully filled with strawberry puree.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_161900_jw61qt7ott_height_163_width_392.png&amp;quot;\"></oppia-noninteractive-image>"
+                    ]
+                  }
+                },
+                {
+                  "rule_type": "DoesNotContainAtLeastOneOf",
+                  "inputs": {
+                    "x": [
+                      "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 2-units tall glass fully filled with milk. On the right, there is 5-units tall glass fully filled with strawberry puree.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_161944_fqdts0567o_height_259_width_392.png&amp;quot;\"></oppia-noninteractive-image>"
+                    ]
+                  }
+                }
+              ]
+            }
+          ],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>No, your answer is wrong.</p>\n<p>Try again.</p>\n"
+            },
+            "dest": "Review 3",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "customization_args": {
+            "maxAllowableSelectionCount": {
+              "value": 4
+            },
+            "minAllowableSelectionCount": {
+              "value": 1
+            },
+            "choices": {
+              "value": [
+                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is a 2-unit tall glass fully filled with mango puree. On the right, there is a 4-units tall glass fully filled with strawberry puree.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_161841_6oqulrb5wr_height_218_width_392.png&amp;quot;\"></oppia-noninteractive-image>",
+                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 2-unit tall glass fully filled with mango puree. On the right there are 5 1-unit tall glasses, fully filled with strawberry puree.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_161900_jw61qt7ott_height_163_width_392.png&amp;quot;\"></oppia-noninteractive-image>",
+                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there are two 1-unit tall glasses fully filled with mango puree. On the right, there are three 2-units tall glasses fully filled with strawberry puree.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_161919_1bh2ytwrmj_height_134_width_392.png&amp;quot;\"></oppia-noninteractive-image>",
+                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 2-units tall glass fully filled with milk. On the right, there is 5-units tall glass fully filled with strawberry puree.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_161944_fqdts0567o_height_259_width_392.png&amp;quot;\"></oppia-noninteractive-image>"
+              ]
+            }
+          },
+          "confirmed_unclassified_answers": [],
+          "id": "ItemSelectionInput",
+          "hints": []
+        },
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {
+              "en": {
+                "file_size_bytes": 338222,
+                "needs_update": false,
+                "filename": "content-en-y9wpf48cys.mp3"
+              }
+            },
+            "default_outcome": {
+              "en": {
+                "file_size_bytes": 112103,
+                "needs_update": false,
+                "filename": "default_outcome-en-wbktm1nmmq.mp3"
+              }
+            },
+            "feedback_2": {
+              "en": {
+                "file_size_bytes": 186918,
+                "needs_update": false,
+                "filename": "feedback_2-en-sgfxxlw93x.mp3"
+              }
+            },
+            "feedback_1": {
+              "en": {
+                "file_size_bytes": 189844,
+                "needs_update": false,
+                "filename": "feedback_1-en-j8evwim7zq.mp3"
+              }
+            }
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "<p>Let’s try one more question.</p>\n\n<p>Pick all the pictures that show a 2:5 ratio of mango puree to strawberry puree. There may be more than one answer.</p>"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "content": {},
+            "feedback_2": {},
+            "feedback_1": {},
+            "default_outcome": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "Congratulations": {
+        "param_changes": [],
+        "interaction": {
+          "solution": null,
+          "answer_groups": [],
+          "default_outcome": null,
+          "customization_args": {
+            "recommendedExplorationIds": {
+              "value": []
+            }
+          },
+          "confirmed_unclassified_answers": [],
+          "id": "EndExploration",
+          "hints": []
+        },
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {
+              "en": {
+                "file_size_bytes": 456892,
+                "needs_update": false,
+                "filename": "content-en-qolsb6gryt.mp3"
+              }
+            }
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "<p>Congratulations on completing this lesson!</p>\n\n<p>James and Uncle Berry have had lots of practice following the recipes in their book. But can James invent his own recipes to create new types of smoothies that no one else has? Click on the next lesson to find out!</p>"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "content": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "Practice 1": {
+        "param_changes": [],
+        "interaction": {
+          "solution": null,
+          "answer_groups": [
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_1",
+                  "html": "<p>Very good!</p>\n"
+                },
+                "dest": "Practice 2",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": true
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": [
+                      "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there are four glasses of blueberry puree. On the right, there are 6 glasses of mango puree. The glasses are all same size&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_223455_z2b5likty7_height_182_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
+                      "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left side, there are 6 glasses of blueberry puree. On the right side, there are 9 glasses of mango puree. The glasses are all same size.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_223511_cx7j3xq7qq_height_172_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_2",
+                  "html": "<p>No, that's not correct. The original picture had more cups of mango puree than blueberry puree, but one of your answers has more cups of blueberry puree than mango puree. If we're trying to keep the relative relationships the same, that can't be right!</p>\n\n<p>Try again.</p>"
+                },
+                "dest": "Practice 1",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "ContainsAtLeastOneOf",
+                  "inputs": {
+                    "x": [
+                      "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left side, there are 9 glasses of blueberry puree. On the right side, there are 6 glasses of mango puree. The glasses are all same size.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_223529_oeltknb8z8_height_178_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_4",
+                  "html": "<p>No, that's not correct. Remember, it's the relative relationship that matters, so you should think like this: \"For every X cups of blueberry puree, you have Y cups of mango puree.\" Don't just add the same number of cups to each side.</p>\n\n<p>Try again!</p>"
+                },
+                "dest": "Practice 1",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "ContainsAtLeastOneOf",
+                  "inputs": {
+                    "x": [
+                      "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left side, there are 4 glasses of blueberry puree. On the right side, there are 5 glasses of mango puree. The glasses are all same size.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_223617_h010ya3h8y_height_183_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_3",
+                  "html": "<p>That's great! But there are more correct answers. Try again, and make sure to pick all of them.</p>"
+                },
+                "dest": "Practice 1",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "ContainsAtLeastOneOf",
+                  "inputs": {
+                    "x": [
+                      "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left side, there are 6 glasses of blueberry puree. On the right side, there are 9 glasses of mango puree. The glasses are all same size.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_223511_cx7j3xq7qq_height_172_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
+                      "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there are four glasses of blueberry puree. On the right, there are 6 glasses of mango puree. The glasses are all same size&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_223455_z2b5likty7_height_182_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
+                    ]
+                  }
+                }
+              ]
+            }
+          ],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>No, that's not correct. Try again. Make sure to select all the correct answers.</p>"
+            },
+            "dest": "Practice 1",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "customization_args": {
+            "maxAllowableSelectionCount": {
+              "value": 4
+            },
+            "minAllowableSelectionCount": {
+              "value": 1
+            },
+            "choices": {
+              "value": [
+                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there are four glasses of blueberry puree. On the right, there are 6 glasses of mango puree. The glasses are all same size&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_223455_z2b5likty7_height_182_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
+                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left side, there are 6 glasses of blueberry puree. On the right side, there are 9 glasses of mango puree. The glasses are all same size.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_223511_cx7j3xq7qq_height_172_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
+                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left side, there are 9 glasses of blueberry puree. On the right side, there are 6 glasses of mango puree. The glasses are all same size.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_223529_oeltknb8z8_height_178_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
+                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left side, there are 4 glasses of blueberry puree. On the right side, there are 5 glasses of mango puree. The glasses are all same size.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_223617_h010ya3h8y_height_183_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
+              ]
+            }
+          },
+          "confirmed_unclassified_answers": [],
+          "id": "ItemSelectionInput",
+          "hints": [
+            {
+              "hint_content": {
+                "content_id": "hint_1",
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of 2 cups of blueberry puree on the left and 3 cups of mango puree on the right.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190128_004544_d32vdo4tsl_height_55_width_294.png&amp;quot;\"></oppia-noninteractive-image>\n<p>In this case, for every 2 cups of blueberry puree, we need 3 cups of mango puree. Let's look at the picture below:</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of: On the first there are 2 cups of blueberry puree on the left and 3 cups of mango puree on the right. On the second row, there are 2 cups of blueberry puree on the left and 3 cups of mango puree on the right.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190128_005957_jo2frof2ne_height_94_width_294.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>In this picture, if we group the ingredients like this:</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Previous image grouped so that in the first, group there are 2 cups of blueberry puree on the left and 3 cups of mango puree on the right. And second group also has 2 cups of blueberry puree on the left and 3 cups of mango puree on the right.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190128_005656_css74fvx8x_height_115_width_294.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>we can see that, for every 2 cups of blueberry puree, we need 3 cups of mango puree. Therefore, the relative relationship is the same.</p>\n\n<p>Can you find another picture with the same relative relationship?</p>"
+              }
+            }
+          ]
+        },
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "feedback_2": {
+              "en": {
+                "file_size_bytes": 490356,
+                "needs_update": false,
+                "filename": "feedback_2-en-36j7ptbqn7.mp3"
+              }
+            },
+            "content": {
+              "en": {
+                "file_size_bytes": 299351,
+                "needs_update": false,
+                "filename": "content-en-z843tzbydk.mp3"
+              }
+            },
+            "feedback_3": {
+              "en": {
+                "file_size_bytes": 198206,
+                "needs_update": false,
+                "filename": "feedback_3-en-vzigcgysbs.mp3"
+              }
+            },
+            "feedback_1": {
+              "en": {
+                "file_size_bytes": 45649,
+                "needs_update": false,
+                "filename": "feedback_1-en-kuq1l68bfc.mp3"
+              }
+            },
+            "hint_1": {
+              "en": {
+                "file_size_bytes": 698081,
+                "needs_update": false,
+                "filename": "hint_1-en-jc4sanbl0f.mp3"
+              }
+            },
+            "feedback_4": {
+              "en": {
+                "file_size_bytes": 475309,
+                "needs_update": false,
+                "filename": "feedback_4-en-j1q4aoy5xi.mp3"
+              }
+            },
+            "default_outcome": {
+              "en": {
+                "file_size_bytes": 199874,
+                "needs_update": false,
+                "filename": "default_outcome-en-zg1ewzzpk4.mp3"
+              }
+            }
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "<p>Uncle Berry quickly drew a picture on a paper.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of 2 glasses of blueberry puree and 3 glasses of mango puree&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_223405_t9fcxvk58v_height_78_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>\"James\", he asked, \"can you figure out which of the following pictures have the same relative relationship as this one?\"</p>"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "feedback_2": {},
+            "content": {},
+            "feedback_3": {},
+            "feedback_1": {},
+            "hint_1": {},
+            "feedback_4": {},
+            "default_outcome": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "Practice 3": {
+        "param_changes": [],
+        "interaction": {
+          "solution": null,
+          "answer_groups": [
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_1",
+                  "html": "<p>Correct! Well done.</p>\n"
+                },
+                "dest": "Shortcut for finding equivalent ratio",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": true
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": [
+                      "<p>8:2</p>\n",
+                      "<p>12:3</p>\n"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_3",
+                  "html": "<p>No, that's not correct. In 4:1, the first number is 4 times the second one. So, this should be the case for all of your choices.</p>\n\n<p>Try again.</p>"
+                },
+                "dest": "Practice 3",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "ContainsAtLeastOneOf",
+                  "inputs": {
+                    "x": [
+                      "<p>16:2</p>\n",
+                      "<p>20:4</p>\n"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_2",
+                  "html": "<p>That's great, but you've only picked one correct answer. Pick all the answers that are correct.</p>"
+                },
+                "dest": "Practice 3",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": [
+                      "<p>8:2</p>\n"
+                    ]
+                  }
+                },
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": [
+                      "<p>12:3</p>\n"
+                    ]
+                  }
+                }
+              ]
+            }
+          ],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>No, that's not correct. Try again.</p>"
+            },
+            "dest": "Practice 3",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "customization_args": {
+            "maxAllowableSelectionCount": {
+              "value": 4
+            },
+            "minAllowableSelectionCount": {
+              "value": 1
+            },
+            "choices": {
+              "value": [
+                "<p>8:2</p>\n",
+                "<p>12:3</p>\n",
+                "<p>16:2</p>\n",
+                "<p>20:4</p>\n"
+              ]
+            }
+          },
+          "confirmed_unclassified_answers": [],
+          "id": "ItemSelectionInput",
+          "hints": [
+            {
+              "hint_content": {
+                "content_id": "hint_1",
+                "html": "<p>In the ratio 4:1, the first element is 4 times the second element.</p>\n\n<p>That is, for every 4 units of the first element, there is 1 unit of the second element.</p>\n\n<p>Can you find <strong>all</strong> the ratios for which this relative relationship holds?</p>"
+              }
+            },
+            {
+              "hint_content": {
+                "content_id": "hint_2",
+                "html": "<p>In the ratio 4:1, the first element is 4 times the second element.</p>\n\n<p>Find all the ratios for which the first element is 4 times the second element.</p>"
+              }
+            }
+          ]
+        },
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "feedback_2": {
+              "en": {
+                "file_size_bytes": 186503,
+                "needs_update": false,
+                "filename": "feedback_2-en-7es0uhxk47.mp3"
+              }
+            },
+            "content": {
+              "en": {
+                "file_size_bytes": 178563,
+                "needs_update": false,
+                "filename": "content-en-m1frfdt417.mp3"
+              }
+            },
+            "feedback_3": {
+              "en": {
+                "file_size_bytes": 290153,
+                "needs_update": false,
+                "filename": "feedback_3-en-sqvi2tv5im.mp3"
+              }
+            },
+            "feedback_1": {
+              "en": {
+                "file_size_bytes": 87030,
+                "needs_update": false,
+                "filename": "feedback_1-en-ush2a7ful6.mp3"
+              }
+            },
+            "hint_1": {
+              "en": {
+                "file_size_bytes": 422228,
+                "needs_update": false,
+                "filename": "hint_1-en-aycd9dxyra.mp3"
+              }
+            },
+            "hint_2": {
+              "en": {
+                "file_size_bytes": 287228,
+                "needs_update": false,
+                "filename": "hint_2-en-23ssdzvwrd.mp3"
+              }
+            },
+            "default_outcome": {
+              "en": {
+                "file_size_bytes": 105415,
+                "needs_update": false,
+                "filename": "default_outcome-en-p54lkpmq5p.mp3"
+              }
+            }
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "<p>“Correct!” said Uncle Berry. “Now, which of these ratios are equivalent to 4:1?”</p>"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "feedback_2": {},
+            "content": {},
+            "feedback_3": {},
+            "feedback_1": {},
+            "hint_1": {},
+            "hint_2": {},
+            "default_outcome": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "Practice 2": {
+        "param_changes": [],
+        "interaction": {
+          "solution": null,
+          "answer_groups": [
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_1",
+                  "html": "<p>Yes, that is correct!</p>\n"
+                },
+                "dest": "Practice 3",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": true
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": 0
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_2",
+                  "html": "<p>No, that's not right.</p>\n\n<p>The ratio 4:2 shows a relative relationship where the right element is half of the left element.</p>\n\n<p>But the ratio 6:12 shows a relative relationship where the right element is double the left element.</p>\n\n<p>Try again!</p>"
+                },
+                "dest": "Practice 2",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": 1
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_3",
+                  "html": "<p>No, that is not right.</p>\n\n<p>The ratio 4:2 shows a relative relationship where the right element is half of the left element.</p>\n\n<p>But the ratio 1:2 shows a relative relationship where the right element is double the left element.</p>\n\n<p>Try again.</p>"
+                },
+                "dest": "Practice 2",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": 3
+                  }
+                }
+              ]
+            }
+          ],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>No, that's not right. The ratio 4:2 shows a relative relationship where the first element is double the second element. But that's not the case for 6:4.</p>\n\n<p>Remember, you should be thinking along the lines of \"for every X on the left side, I have Y on the right side\". Don't just add the same number to both sides.</p>\n\n<p>Try again!</p>"
+            },
+            "dest": "Practice 2",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "customization_args": {
+            "choices": {
+              "value": [
+                "<p>2:1</p>\n",
+                "<p>6:12</p>\n",
+                "<p>6:4</p>",
+                "<p>1:2</p>\n"
+              ]
+            }
+          },
+          "confirmed_unclassified_answers": [],
+          "id": "MultipleChoiceInput",
+          "hints": [
+            {
+              "hint_content": {
+                "content_id": "hint_1",
+                "html": "<p>Here's one way to represent a ratio of 4:2.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of: On the first row, there are 2 cups of mango puree and 1 cup of blueberry puree next to it. On the second row, there are 2 cups of mango puree and 1 cup of blueberry puree next to it.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190128_010809_lva694n0ta_height_172_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>What relative relationship does this have? (\"For every X cups of mango puree, there are Y cups of blueberry puree.\")</p>"
+              }
+            }
+          ]
+        },
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "feedback_2": {
+              "en": {
+                "file_size_bytes": 521703,
+                "needs_update": false,
+                "filename": "feedback_2-en-z4ri7q19u8.mp3"
+              }
+            },
+            "content": {
+              "en": {
+                "file_size_bytes": 306874,
+                "needs_update": false,
+                "filename": "content-en-781g8jk34n.mp3"
+              }
+            },
+            "feedback_3": {
+              "en": {
+                "file_size_bytes": 503312,
+                "needs_update": false,
+                "filename": "feedback_3-en-xcxy26hmh5.mp3"
+              }
+            },
+            "feedback_1": {
+              "en": {
+                "file_size_bytes": 64456,
+                "needs_update": false,
+                "filename": "feedback_1-en-jce5aa1n2s.mp3"
+              }
+            },
+            "hint_1": {
+              "en": {
+                "file_size_bytes": 347418,
+                "needs_update": false,
+                "filename": "hint_1-en-2lzjr56dic.mp3"
+              }
+            },
+            "default_outcome": {
+              "en": {
+                "file_size_bytes": 716472,
+                "needs_update": false,
+                "filename": "default_outcome-en-4kzh8sf82a.mp3"
+              }
+            }
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "<p>“Good, James!” said Uncle Berry, “Let’s try another one.”</p>\n\n<p>“What of these ratios is equivalent to 4:2? Making a quick drawing might help you.”</p>"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "feedback_2": {},
+            "content": {},
+            "feedback_3": {},
+            "feedback_1": {},
+            "hint_1": {},
+            "default_outcome": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "Practice 5": {
+        "param_changes": [],
+        "interaction": {
+          "solution": null,
+          "answer_groups": [
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_1",
+                  "html": "<p>Good job! You are correct!</p>\n"
+                },
+                "dest": "Practice 5.5",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": true
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": "1:2"
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_2",
+                  "html": "<p>No, that is wrong. The question asks you to divide each side of the ratio by 4, not subtract. Remember, to find an equivalent ratio, you need to <strong>multiply or divide</strong> both sides by the same number. Adding or subtracting will not work.</p>\n\n<p>Let's practise this again, since it's a very important concept!</p>"
+                },
+                "dest": "Shortcut for finding equivalent ratio",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Contains",
+                  "inputs": {
+                    "x": "0:4"
+                  }
+                }
+              ]
+            }
+          ],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>No, that's not correct. Try again.</p>"
+            },
+            "dest": "Practice 5",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "customization_args": {
+            "rows": {
+              "value": 1
+            },
+            "placeholder": {
+              "value": "Enter your answer in the form X:Y, without spaces."
+            }
+          },
+          "confirmed_unclassified_answers": [],
+          "id": "TextInput",
+          "hints": []
+        },
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {
+              "en": {
+                "file_size_bytes": 563500,
+                "needs_update": false,
+                "filename": "content-en-t0rckv7r0a.mp3"
+              }
+            },
+            "default_outcome": {
+              "en": {
+                "file_size_bytes": 102072,
+                "needs_update": false,
+                "filename": "default_outcome-en-ysyd5ssw8m.mp3"
+              }
+            },
+            "feedback_2": {
+              "en": {
+                "file_size_bytes": 639567,
+                "needs_update": false,
+                "filename": "feedback_2-en-voob6g0p1d.mp3"
+              }
+            },
+            "feedback_1": {
+              "en": {
+                "file_size_bytes": 84519,
+                "needs_update": false,
+                "filename": "feedback_1-en-zvkru5hpyc.mp3"
+              }
+            }
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "<p>“You are doing great!\" said Uncle Berry. \"Now, let’s try simplifying ratios by dividing each side by the same number.\"</p>\n\n<p>\"Here is an easy question for you. Can you simplify the ratio 4:8 to use smaller numbers, by dividing both sides by 4?\"</p>"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "content": {},
+            "feedback_2": {},
+            "feedback_1": {},
+            "default_outcome": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "Practice 4": {
+        "param_changes": [],
+        "interaction": {
+          "solution": null,
+          "answer_groups": [
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_1",
+                  "html": "<p>Correct! You are doing great!</p>\n"
+                },
+                "dest": "Practice 5",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": true
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": 3
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_2",
+                  "html": "<p>To get 10 from 5, we need to multiply the entire ratio by 2.</p>\n\n<p>But, multiplying 5:4 by 2 gives 10:8. That's not the same as 10:9, is it? Remember, to find an equivalent ratio, you need to multiply or divide both sides by the same number, not add or subtract.</p>\n\n<p>Let's take another look at the shortcut that James just learned.</p>"
+                },
+                "dest": "Shortcut for finding equivalent ratio",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": 0
+                  }
+                }
+              ]
+            }
+          ],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>No, that's not correct. If you multiply one part of a ratio by a number, you need to multiply all the other parts of the ratio by the <strong>same</strong> number in order to get an equivalent ratio.</p>\n\n<p>Let's take another look at the shortcut that James just learned.</p>"
+            },
+            "dest": "Shortcut for finding equivalent ratio",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "customization_args": {
+            "choices": {
+              "value": [
+                "<p>10:9</p>\n",
+                "<p>30:16</p>\n",
+                "<p>20:15</p>\n",
+                "<p>15:12</p>\n"
+              ]
+            }
+          },
+          "confirmed_unclassified_answers": [],
+          "id": "MultipleChoiceInput",
+          "hints": []
+        },
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {
+              "en": {
+                "file_size_bytes": 316905,
+                "needs_update": false,
+                "filename": "content-en-rza0789bpp.mp3"
+              }
+            },
+            "default_outcome": {
+              "en": {
+                "file_size_bytes": 517105,
+                "needs_update": false,
+                "filename": "default_outcome-en-u4xhpnttdo.mp3"
+              }
+            },
+            "feedback_2": {
+              "en": {
+                "file_size_bytes": 827649,
+                "needs_update": false,
+                "filename": "feedback_2-en-ar77onh20q.mp3"
+              }
+            },
+            "feedback_1": {
+              "en": {
+                "file_size_bytes": 87030,
+                "needs_update": false,
+                "filename": "feedback_1-en-bba3s5qtec.mp3"
+              }
+            }
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "<p>“Very good!\" said Uncle Berry. \"Now, using the shortcut you've learned, can you pick a ratio from the following ratios that is equivalent to 5:4?\"</p>"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "content": {},
+            "feedback_2": {},
+            "feedback_1": {},
+            "default_outcome": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "Practice 7": {
+        "param_changes": [],
+        "interaction": {
+          "solution": null,
+          "answer_groups": [
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_1",
+                  "html": "<p>Correct! Well done!</p>\n"
+                },
+                "dest": "Practice 8",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": true
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": 1
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_2",
+                  "html": "<p>No, that is not correct. You <strong>cannot</strong> find an equivalent ratio by adding or subtracting the same number to both sides of the ratio.</p>\n\n<p>Maybe you've forgotten James's shortcut? Let's go back and take another look.</p>"
+                },
+                "dest": "Shortcut for finding equivalent ratio",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": 0
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_3",
+                  "html": "<p>No, that's not correct. Remember, like Uncle Berry said, you need to multiply <strong>all parts</strong> of the original ratio by the same number. Try again!</p>"
+                },
+                "dest": "Practice 7",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": 2
+                  }
+                }
+              ]
+            }
+          ],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>No, that's not correct. It looks like you might have forgotten the shortcut, so let's go back and take another look!</p>"
+            },
+            "dest": "Shortcut for finding equivalent ratio",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "customization_args": {
+            "choices": {
+              "value": [
+                "<p>8:6:5</p>\n",
+                "<p>12:8:6</p>\n",
+                "<p>18:12:3</p>",
+                "<p>36:16:9</p>"
+              ]
+            }
+          },
+          "confirmed_unclassified_answers": [],
+          "id": "MultipleChoiceInput",
+          "hints": []
+        },
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {
+              "en": {
+                "file_size_bytes": 1560334,
+                "needs_update": false,
+                "filename": "content-en-kki1e06foq.mp3"
+              }
+            },
+            "default_outcome": {
+              "en": {
+                "file_size_bytes": 219518,
+                "needs_update": false,
+                "filename": "default_outcome-en-4s19pqupys.mp3"
+              }
+            },
+            "feedback_2": {
+              "en": {
+                "file_size_bytes": 431005,
+                "needs_update": false,
+                "filename": "feedback_2-en-st1zktcv03.mp3"
+              }
+            },
+            "feedback_1": {
+              "en": {
+                "file_size_bytes": 71567,
+                "needs_update": false,
+                "filename": "feedback_1-en-mr35mlz7h7.mp3"
+              }
+            },
+            "feedback_3": {
+              "en": {
+                "file_size_bytes": 305618,
+                "needs_update": false,
+                "filename": "feedback_3-en-0o16vrhjig.mp3"
+              }
+            }
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "<p>James blended 1 cup of chocolate and 4 cups of milk to make a chocolate smoothie. \"Wow, this is delicious!\" he said. He put the extra glasses in the fridge. \"We should definitely sell this one!\"</p>\n\n<p>\"Yes!\" Uncle Berry agreed. \"I think our customers will also like fruit smoothies. How about making a smoothie with banana and strawberry? This recipe says that you can mix banana puree, strawberry puree and milk in the ratio 6:4:3.\"</p>\n\n<p>\"But we don't have 6 cups of banana puree,\" James said.</p>\n\n<p>\"Well, maybe you can find an equivalent ratio with larger numbers, and then use a spoon to count out the ratio using scoops instead,\" said Uncle Berry. \"Just remember to multiply <strong>all</strong> <strong>three</strong> parts of the ratio by the same number.\"</p>\n\n<p>Can you help James find a ratio that is equivalent to 6:4:3?</p>"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "content": {},
+            "feedback_2": {},
+            "feedback_1": {},
+            "default_outcome": {},
+            "feedback_3": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "Practice 6": {
+        "param_changes": [],
+        "interaction": {
+          "solution": null,
+          "answer_groups": [
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_1",
+                  "html": "<p>That is correct!</p>\n"
+                },
+                "dest": "Practice 7",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": true
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": [
+                      "<p>1:4</p>\n",
+                      "<p>4:16</p>\n"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_2",
+                  "html": "<p>You got one answer right, but there are more answers that are correct. Pick all of the correct answers.</p>"
+                },
+                "dest": "Practice 6",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": [
+                      "<p>1:4</p>\n"
+                    ]
+                  }
+                },
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": [
+                      "<p>4:16</p>\n"
+                    ]
+                  }
+                }
+              ]
+            }
+          ],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>No, that's not correct. Remember, if you divide one side of the ratio by a number, you need to divide the other side by the <strong>same number</strong> to find an equivalent ratio.</p>\n\n<p>Check your work carefully, and try again.</p>"
+            },
+            "dest": "Practice 6",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "customization_args": {
+            "maxAllowableSelectionCount": {
+              "value": 7
+            },
+            "minAllowableSelectionCount": {
+              "value": 1
+            },
+            "choices": {
+              "value": [
+                "<p>1:4</p>\n",
+                "<p>2:26</p>",
+                "<p>3:7</p>\n",
+                "<p>4:16</p>\n",
+                "<p>5:15</p>\n",
+                "<p>6:21</p>\n",
+                "<p>7:30</p>\n"
+              ]
+            }
+          },
+          "confirmed_unclassified_answers": [],
+          "id": "ItemSelectionInput",
+          "hints": []
+        },
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {
+              "en": {
+                "file_size_bytes": 1676943,
+                "needs_update": false,
+                "filename": "content-en-w9espiih5p.mp3"
+              }
+            },
+            "default_outcome": {
+              "en": {
+                "file_size_bytes": 399241,
+                "needs_update": false,
+                "filename": "default_outcome-en-qhav2f0c8w.mp3"
+              }
+            },
+            "feedback_2": {
+              "en": {
+                "file_size_bytes": 209906,
+                "needs_update": false,
+                "filename": "feedback_2-en-wvmi6rctgi.mp3"
+              }
+            },
+            "feedback_1": {
+              "en": {
+                "file_size_bytes": 54008,
+                "needs_update": false,
+                "filename": "feedback_1-en-dm8stbd1wr.mp3"
+              }
+            }
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "<p>\"All right, time to make a smoothie!\" said Uncle Berry. \"Have you put the white and dark chocolates in the blender yet?\"</p>\n\n<p>James threw in the chocolates. \"Done!\" he said.</p>\n\n<p>\"Now,\" said Uncle Berry, looking at the recipe book, \"the next step is to blend them together.\" James pushed the 'ON' button on the blender, waited a while, and turned it off again. Then, Uncle Berry carefully poured the ground chocolate into cups.</p>\n\n<p>Uncle Berry checked the book again. \"Next, we need to mix 8 cups of ground chocolates and 32 cups of milk.\"</p>\n\n<p>\"Isn't that too much, Uncle Berry?\" asked James. \"We don't even have 8 cups of chocolates. Can we simplify the ratio?\"</p>\n\n<p>\"That's a good idea!\" said Uncle Berry. \"Why don't you do that? The recipe says to mix 8 cups of ground chocolate and 32 cups of milk. Pick all the ratios of ground chocolate to milk that are equivalent to 8:32.\"</p>"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "content": {},
+            "feedback_2": {},
+            "feedback_1": {},
+            "default_outcome": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "Practice 9": {
+        "param_changes": [],
+        "interaction": {
+          "solution": null,
+          "answer_groups": [
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_1",
+                  "html": "<p>Correct!</p>\n"
+                },
+                "dest": "Practice 10",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": true
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": 1
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_2",
+                  "html": "<p>No, that's not correct. Remember, you can only find equivalent ratios by <strong>multiplying or dividing</strong> the entire ratio by the same number. Adding or subtracting won't work!</p>\n\n<p>Maybe you forgotten James's shortcut. Let's take a quick look at it again.</p>"
+                },
+                "dest": "Shortcut for finding equivalent ratio",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": 3
+                  }
+                }
+              ]
+            }
+          ],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>No, that's not correct. Be careful to ensure that you're dividing <strong>all parts</strong> of the ratio by the same number. Try again!</p>"
+            },
+            "dest": "Practice 9",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "customization_args": {
+            "choices": {
+              "value": [
+                "<p>1:3:7</p>",
+                "<p>2:6:7</p>",
+                "<p>3:6:8</p>",
+                "<p>5:17:20</p>"
+              ]
+            }
+          },
+          "confirmed_unclassified_answers": [],
+          "id": "MultipleChoiceInput",
+          "hints": []
+        },
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {
+              "en": {
+                "file_size_bytes": 297262,
+                "needs_update": false,
+                "filename": "content-en-6vbzrvcdbu.mp3"
+              }
+            },
+            "default_outcome": {
+              "en": {
+                "file_size_bytes": 274689,
+                "needs_update": false,
+                "filename": "default_outcome-en-abqsa9u972.mp3"
+              }
+            },
+            "feedback_2": {
+              "en": {
+                "file_size_bytes": 501223,
+                "needs_update": false,
+                "filename": "feedback_2-en-1y3zc0hjmv.mp3"
+              }
+            },
+            "feedback_1": {
+              "en": {
+                "file_size_bytes": 37293,
+                "needs_update": false,
+                "filename": "feedback_1-en-zoxi2qa0xs.mp3"
+              }
+            }
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "<p>\"Great job!\" said Uncle Berry. \"Here's another one. Which of the following ratios is a simplified form of 6:18:21?\"</p>"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "content": {},
+            "feedback_2": {},
+            "feedback_1": {},
+            "default_outcome": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "Practice 8": {
+        "param_changes": [],
+        "interaction": {
+          "solution": null,
+          "answer_groups": [
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_1",
+                  "html": "<p>Yes, that is correct! Great job!</p>"
+                },
+                "dest": "Practice 9",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": true
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": [
+                      "<p>6:9:12</p>\n",
+                      "<p>10:15:20</p>\n",
+                      "<p>12:18:24</p>\n"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_2",
+                  "html": "<p>You got one answer correct, but there are more correct answers! Pick <strong>all</strong> the answers that are correct.</p>"
+                },
+                "dest": "Practice 8",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": [
+                      "<p>12:18:24</p>\n"
+                    ]
+                  }
+                },
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": [
+                      "<p>6:9:12</p>\n"
+                    ]
+                  }
+                },
+                {
+                  "rule_type": "Equals",
+                  "inputs": {
+                    "x": [
+                      "<p>10:15:20</p>\n"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "tagged_skill_misconception_id": null,
+              "outcome": {
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_3",
+                  "html": "<p>No, your answer is wrong. Remember, <strong>adding/subtracting</strong> the same number to both sides does<strong> not</strong> give an equivalent ratio. Only multiplication or division works.</p>\n\n<p>Perhaps you've forgotten James's shortcut! Let's go and look at it again.</p>"
+                },
+                "dest": "Practice 8",
+                "refresher_exploration_id": null,
+                "missing_prerequisite_skill_id": null,
+                "labelled_as_correct": false
+              },
+              "training_data": [],
+              "rule_specs": [
+                {
+                  "rule_type": "ContainsAtLeastOneOf",
+                  "inputs": {
+                    "x": [
+                      "<p>4:5:6</p>\n"
+                    ]
+                  }
+                }
+              ]
+            }
+          ],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>No, at least one of your answers is wrong. Try again, and make sure to double-check your work carefully before submitting! Use a pencil and paper if you need to.</p>"
+            },
+            "dest": "Practice 8",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "customization_args": {
+            "maxAllowableSelectionCount": {
+              "value": 5
+            },
+            "minAllowableSelectionCount": {
+              "value": 1
+            },
+            "choices": {
+              "value": [
+                "<p>4:5:6</p>\n",
+                "<p>6:9:12</p>\n",
+                "<p>8:24:32</p>\n",
+                "<p>10:15:20</p>\n",
+                "<p>12:18:24</p>\n"
+              ]
+            }
+          },
+          "confirmed_unclassified_answers": [],
+          "id": "ItemSelectionInput",
+          "hints": []
+        },
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {
+              "en": {
+                "file_size_bytes": 1060455,
+                "needs_update": false,
+                "filename": "content-en-y7uw3wn46k.mp3"
+              }
+            },
+            "default_outcome": {
+              "en": {
+                "file_size_bytes": 331531,
+                "needs_update": false,
+                "filename": "default_outcome-en-dq6c8aqdor.mp3"
+              }
+            },
+            "feedback_2": {
+              "en": {
+                "file_size_bytes": 199457,
+                "needs_update": false,
+                "filename": "feedback_2-en-tdfjrpypkl.mp3"
+              }
+            },
+            "feedback_1": {
+              "en": {
+                "file_size_bytes": 99147,
+                "needs_update": false,
+                "filename": "feedback_1-en-jitm6dchmc.mp3"
+              }
+            },
+            "feedback_3": {
+              "en": {
+                "file_size_bytes": 485758,
+                "needs_update": false,
+                "filename": "feedback_3-en-gbcdhd93u4.mp3"
+              }
+            }
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "<p>James carefully measured out the banana puree, strawberry puree and milk into the blender, and blended them together.</p>\n\n<p>While he was waiting for the ingredients to mix thoroughly, James said, \"You know what, Uncle Berry? Ratios are quite easy!\"</p>\n\n<p>\"Oh, really?\" said Uncle Berry, as he poured the smoothie into a glass. \"Should I give you some trickier questions, then?”</p>\n\n<p>“Yeah!” said James, enthusiastically.</p>\n\n<p>\"All right, here's a trickier question for you,\" said Uncle Berry. \"I've written down five ratios. Which of them are equivalent to 2:3:4?\"</p>"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "content": {},
+            "feedback_2": {},
+            "feedback_1": {},
+            "default_outcome": {},
+            "feedback_3": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "Happy ending": {
+        "param_changes": [],
+        "interaction": {
+          "solution": null,
+          "answer_groups": [],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": ""
+            },
+            "dest": "Congratulations",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "customization_args": {
+            "buttonText": {
+              "value": "Continue"
+            }
+          },
+          "confirmed_unclassified_answers": [],
+          "id": "Continue",
+          "hints": []
+        },
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {
+              "en": {
+                "file_size_bytes": 1069202,
+                "needs_update": false,
+                "filename": "content-en-fsy3g8hckz.mp3"
+              }
+            },
+            "default_outcome": {}
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "<p>\"Yes, you got it right!\" said Uncle Berry. \"You can have a rest this time. But you need to clean up together with me next time!\"</p>\n\n<p>\"Yes, of course!\" said James.</p>\n\n<p>While he waited for his uncle to finish cleaning up, James made sure to remember the important things he learned today. You might want to write them down, so that you remember too!</p>\n\n<ul>\n\t<li>\n\t<p>Two ratios are <strong>equivalent</strong> if they represent the same relative relationship.</p>\n\t</li>\n\t<li>\n\t<p>To find an equivalent ratio, you need to <strong>divide</strong> or <strong>multiply</strong> all parts of a ratio by the <strong>same</strong> number.</p>\n\t</li>\n\t<li>\n\t<p>\"Simplifying\" a ratio means finding an equivalent ratio that uses <strong>smaller</strong> numbers.</p>\n\t</li></ul>"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "content": {},
+            "default_outcome": {}
+          }
+        },
+        "solicit_answer_details": false
+      },
+      "Equivalent ratio": {
+        "param_changes": [],
+        "interaction": {
+          "solution": null,
+          "answer_groups": [],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": ""
+            },
+            "dest": "Practice 1",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "customization_args": {
+            "buttonText": {
+              "value": "Continue"
+            }
+          },
+          "confirmed_unclassified_answers": [],
+          "id": "Continue",
+          "hints": []
+        },
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {
+              "en": {
+                "file_size_bytes": 1505552,
+                "needs_update": false,
+                "filename": "content-en-tik66ytg0w.mp3"
+              }
+            },
+            "default_outcome": {}
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "<p>“Correct! You’ve remembered what you learned last time well.”</p>\n\n<p>\"Now, let's return to your question. A 4:8 ratio is actually the same as a 1:2 ratio, because both ratios represent the same relative amounts. That’s because, in both ratios, for every piece of white chocolate, there are 2 times as many pieces of dark chocolate.\" He rearranged the 4 white chocolates and 8 dark chocolates into groups, and showed it to James.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left there are 4 pieces of white chocolate, grouped together into 2 by 2 block. On the right there are 8 pieces of dark chocolate, grouped into two 2 by 2 blocks.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181118_125609_mnr5u0nopk_height_126_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>“Aha!” said James. \"I see now why 4:8 is the same thing as 1:2!\"</p>\n\n<p>Uncle Berry continued, “If two ratios represent the same relative relationship, we call them <strong>equivalent ratios</strong>. So, for example, 4:8 and 1:2 are equivalent, and we can write <strong>4:8 = 1:2</strong>.”</p>"
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "content": {},
+            "default_outcome": {}
+          }
+        },
+        "solicit_answer_details": false
+      }
+    },
+    "state_classifier_mapping": {},
+    "init_state_name": "Introduction",
+    "param_specs": {},
+    "objective": "Learn how to find equivalent ratios, and how to simplify ratios.",
+    "title": "Equivalent Ratios"
+  },
+  "exploration_id": "k2bQ7z5XHNbK",
+  "version": 41
+}
