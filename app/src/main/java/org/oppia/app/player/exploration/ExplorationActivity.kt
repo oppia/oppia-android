@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.hintsandsolution.HintsAndSolutionDialogFragment
@@ -110,6 +111,10 @@ class ExplorationActivity :
   override fun onCreateOptionsMenu(menu: Menu?): Boolean {
     menuInflater.inflate(R.menu.menu_exploration_activity, menu)
     return super.onCreateOptionsMenu(menu)
+  }
+
+  override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    return explorationActivityPresenter.handleOnOptionsItemSelected(item)
   }
 
   override fun showAudioButton() = explorationActivityPresenter.showAudioButton()
