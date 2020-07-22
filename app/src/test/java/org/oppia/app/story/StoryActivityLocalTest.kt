@@ -32,6 +32,7 @@ import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputMo
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.testing.FakeEventLogger
 import org.oppia.testing.TestAccessibilityModule
@@ -126,7 +127,7 @@ class StoryActivityLocalTest {
       DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
       GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
       QuestionModule::class, TestLogReportingModule::class, TestAccessibilityModule::class,
-      ImageClickInputModule::class
+      ImageClickInputModule::class, LogStorageModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
