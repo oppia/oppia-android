@@ -17,14 +17,26 @@ class HelpActivity : InjectableAppCompatActivity(), RouteToFAQListListener {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    helpActivityPresenter.handleOnCreate()
+    val isFromExploration = intent.getBooleanExtra(
+      BOOL_IS_FROM_EXPLORATION,
+      /* defaultValue= */ false
+    )
+    helpActivityPresenter.handleOnCreate(isFromExploration)
     title = getString(R.string.menu_help)
   }
 
   companion object {
-    fun createHelpActivityIntent(context: Context, profileId: Int?): Intent {
+
+    internal const val BOOL_IS_FROM_EXPLORATION = "BOOL_IS_FROM_EXPLORATION"
+
+    fun createHelpActivityIntent(
+      context: Context,
+      profileId: Int?,
+      isFromExploration: Boolean
+    ): Intent {
       val intent = Intent(context, HelpActivity::class.java)
       intent.putExtra(KEY_NAVIGATION_PROFILE_ID, profileId)
+      intent.putExtra(BOOL_IS_FROM_EXPLORATION, isFromExploration)
       return intent
     }
 

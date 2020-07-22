@@ -2,6 +2,7 @@ package org.oppia.app.player.exploration
 
 import android.content.Context
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -12,7 +13,9 @@ import androidx.lifecycle.Transformations
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.databinding.ExplorationActivityBinding
+import org.oppia.app.help.HelpActivity
 import org.oppia.app.model.Exploration
+import org.oppia.app.options.OptionsActivity
 import org.oppia.app.story.StoryActivity
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.viewmodel.ViewModelProvider
@@ -106,6 +109,30 @@ class ExplorationActivityPresenter @Inject constructor(
         HintsAndSolutionExplorationManagerFragment(),
         TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
       ).commitNow()
+    }
+  }
+
+  /** Action for onOptionsItemSelected */
+  fun clickOnOverFlowMenuItems(item: MenuItem?): Boolean {
+    return when (item?.itemId) {
+      R.id.action_preferences -> {
+        val intent = OptionsActivity.createOptionsActivity(
+          activity,
+          internalProfileId,
+          /* isFromExploration= */ true
+        )
+        context.startActivity(intent)
+        true
+      }
+      R.id.action_help -> {
+        val intent = HelpActivity.createHelpActivityIntent(
+          activity, internalProfileId,
+          /* isFromExploration= */true
+        )
+        context.startActivity(intent)
+        true
+      }
+      else -> false
     }
   }
 
