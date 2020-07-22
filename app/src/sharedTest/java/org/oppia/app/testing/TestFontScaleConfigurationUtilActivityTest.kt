@@ -15,11 +15,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.model.StoryTextSize
-import org.oppia.app.utility.FontSizeMatcher
+import org.oppia.app.utility.FontSizeMatcher.Companion.withFontSize
 
-/** Tests for [FontScaleConfigurationUtilActivity]. */
+/** Tests for [TestFontScaleConfigurationUtilActivity]. */
 @RunWith(AndroidJUnit4::class)
-class FontScaleConfigurationUtilActivityTest {
+class TestFontScaleConfigurationUtilActivityTest {
   lateinit var context: Context
 
   @Before
@@ -34,20 +34,20 @@ class FontScaleConfigurationUtilActivityTest {
   }
 
   private fun createFontScaleTestActivityIntent(storyTextSize: String): Intent {
-    return FontScaleConfigurationUtilActivity.createFontScaleTestActivity(
+    return TestFontScaleConfigurationUtilActivity.createFontScaleTestActivity(
       context,
       storyTextSize
     )
   }
 
   @Test
-  fun testFontScaleTestActivity_smallTextSizeIsVerifiedSuccessfully() {
-    launch<FontScaleConfigurationUtilActivity>(
+  fun testFontScaleConfigurationUtil_smallTextSize_hasCorrectDimension() {
+    launch<TestFontScaleConfigurationUtilActivity>(
       createFontScaleTestActivityIntent(StoryTextSize.SMALL_TEXT_SIZE.name)
     ).use {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
-          FontSizeMatcher.withFontSize(
+          withFontSize(
             context.resources.getDimension(R.dimen.margin_16)
           )
         )
@@ -56,13 +56,13 @@ class FontScaleConfigurationUtilActivityTest {
   }
 
   @Test
-  fun testFontScaleTestActivity_mediumTextSizeIsVerifiedSuccessfully() {
-    launch<FontScaleConfigurationUtilActivity>(
+  fun testFontScaleConfigurationUtil_mediumTextSize_hasCorrectDimension() {
+    launch<TestFontScaleConfigurationUtilActivity>(
       createFontScaleTestActivityIntent(StoryTextSize.MEDIUM_TEXT_SIZE.name)
     ).use {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
-          FontSizeMatcher.withFontSize(
+          withFontSize(
             context.resources.getDimension(R.dimen.margin_20)
           )
         )
@@ -71,13 +71,13 @@ class FontScaleConfigurationUtilActivityTest {
   }
 
   @Test
-  fun testFontScaleTestActivity_largeTextSizeIsVerifiedSuccessfully() {
-    launch<FontScaleConfigurationUtilActivity>(
+  fun testFontScaleConfigurationUtil_largeTextSize_hasCorrectDimension() {
+    launch<TestFontScaleConfigurationUtilActivity>(
       createFontScaleTestActivityIntent(StoryTextSize.LARGE_TEXT_SIZE.name)
     ).use {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
-          FontSizeMatcher.withFontSize(
+          withFontSize(
             context.resources.getDimension(R.dimen.margin_24)
           )
         )
@@ -86,13 +86,13 @@ class FontScaleConfigurationUtilActivityTest {
   }
 
   @Test
-  fun testFontScaleTestActivity_extraLargeTextSizeIsVerifiedSuccessfully() {
-    launch<FontScaleConfigurationUtilActivity>(
+  fun testFontScaleConfigurationUtil_extraLargeTextSize_hasCorrectDimension() {
+    launch<TestFontScaleConfigurationUtilActivity>(
       createFontScaleTestActivityIntent(StoryTextSize.EXTRA_LARGE_TEXT_SIZE.name)
     ).use {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
-          FontSizeMatcher.withFontSize(
+          withFontSize(
             context.resources.getDimension(R.dimen.margin_28)
           )
         )

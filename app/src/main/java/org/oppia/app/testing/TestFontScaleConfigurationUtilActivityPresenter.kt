@@ -6,9 +6,9 @@ import org.oppia.app.activity.ActivityScope
 import org.oppia.app.utility.FontScaleConfigurationUtil
 import javax.inject.Inject
 
-/** The presenter for [FontScaleConfigurationUtilActivity] */
+/** The presenter for [TestFontScaleConfigurationUtilActivity] */
 @ActivityScope
-class FontScaleConfigurationUtilActivityPresenter @Inject constructor(
+class TestFontScaleConfigurationUtilActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil
 ) {

@@ -100,7 +100,7 @@ class ExplorationActivityPresenter @Inject constructor(
     }
   }
 
-  fun loadExplorationFragment(result: StoryTextSize) {
+  fun loadExplorationFragment(storyTextSize: StoryTextSize) {
     if (getExplorationFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_fragment_placeholder,
@@ -108,7 +108,7 @@ class ExplorationActivityPresenter @Inject constructor(
           topicId = topicId,
           internalProfileId = internalProfileId,
           storyId = storyId,
-          storyTextSize = result.name,
+          storyTextSize = storyTextSize.name,
           explorationId = explorationId
         ),
         TAG_EXPLORATION_FRAGMENT
