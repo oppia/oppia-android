@@ -40,6 +40,6 @@ class DragDropSortInputModule {
   @DragDropSortInputRules
   internal fun provideDragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionRuleClassifier( // ktlint-disable max-line-length
     classifierProvider:
-    DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider
+      DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 }

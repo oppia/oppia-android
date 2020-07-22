@@ -185,6 +185,9 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProviderTest)
+    fun inject(
+      test:
+        DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProviderTest
+    )
   }
 }
