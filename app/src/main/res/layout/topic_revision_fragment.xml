@@ -24,6 +24,7 @@
       android:paddingEnd="20dp"
       android:paddingBottom="144dp"
       android:scrollbars="none"
+      android:tag="@string/topic_revision_recyclerview_tag"
       app:data="@{viewModel.subtopicLiveData}"/>
   </FrameLayout>
 </layout>

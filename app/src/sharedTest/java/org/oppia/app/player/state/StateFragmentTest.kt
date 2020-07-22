@@ -55,10 +55,10 @@ import org.oppia.app.utility.CustomGeneralLocation
 import org.oppia.app.utility.DragViewAction
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.app.utility.RecyclerViewCoordinatesProvider
-import org.oppia.domain.exploration.TEST_EXPLORATION_ID_30
-import org.oppia.domain.exploration.TEST_EXPLORATION_ID_5
-import org.oppia.domain.exploration.TEST_EXPLORATION_ID_8
 import org.oppia.domain.profile.ProfileTestHelper
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_0
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_2
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_4
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.testing.TestLogReportingModule
@@ -116,7 +116,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_explorationLoads() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       // Due to the exploration activity loading, the play button should no longer be visible.
       onView(withId(R.id.play_test_exploration_button)).check(matches(not(isDisplayed())))
@@ -125,7 +125,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_explorationLoads_changeConfiguration_buttonIsNotVisible() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(isRoot()).perform(orientationLandscape())
       // Due to the exploration activity loading, the play button should no longer be visible.
@@ -135,7 +135,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_explorationHasContinueButton() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(withId(R.id.continue_button)).check(matches(isDisplayed()))
     }
@@ -143,7 +143,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_changeConfiguration_explorationHasContinueButton() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.continue_button)).check(matches(isDisplayed()))
@@ -152,7 +152,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_secondState_hasSubmitButton() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(withId(R.id.continue_button)).perform(click())
       onView(withId(R.id.submit_answer_button)).check(
@@ -164,7 +164,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_changeConfiguration_secondState_hasSubmitButton() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.continue_button)).perform(click())
@@ -177,7 +177,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_secondState_submitAnswer_submitChangesToContinueButton() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(withId(R.id.continue_button)).perform(click())
       onView(withId(R.id.fraction_input_interaction_view)).perform(
@@ -195,7 +195,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_changeConfiguration_secondState_submitAnswer_submitChangesToContinueButton() { // ktlint-disable max-line-length
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
@@ -214,7 +214,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_secondState_submitInvalidAnswer_disablesSubmitAndShowsError() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(withId(R.id.continue_button)).perform(click())
 
@@ -233,7 +233,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_changeConfiguration_secondState_submitInvalidAnswer_disablesSubmitAndShowsError() { // ktlint-disable max-line-length
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.continue_button)).perform(click())
@@ -255,7 +255,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_secondState_invalidAnswer_updated_reenabledSubmitButton() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(withId(R.id.continue_button)).perform(click())
       onView(withId(R.id.fraction_input_interaction_view)).perform(
@@ -279,7 +279,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_changeConfiguration_secondState_invalidAnswer_updated_reenabledSubmitButton() { // ktlint-disable max-line-length
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.continue_button)).perform(click())
@@ -303,7 +303,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_firstState_previousAndNextButtonIsNotDisplayed() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
 
       onView(withId(R.id.previous_state_navigation_button)).check(matches(not(isDisplayed())))
@@ -313,7 +313,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_worksCorrectly() {
-    launchForExploration(TEST_EXPLORATION_ID_8).use {
+    launchForExploration(TEST_EXPLORATION_ID_4).use {
       startPlayingExploration()
 
       onView(
@@ -335,7 +335,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_invalidAnswer_correctItemCount() {
-    launchForExploration(TEST_EXPLORATION_ID_8).use {
+    launchForExploration(TEST_EXPLORATION_ID_4).use {
       startPlayingExploration()
 
       onView(
@@ -359,7 +359,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_dragItem_worksCorrectly() {
-    launchForExploration(TEST_EXPLORATION_ID_8).use {
+    launchForExploration(TEST_EXPLORATION_ID_4).use {
       startPlayingExploration()
 
       onView(
@@ -394,7 +394,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_unlinkFirstItem_worksCorrectly() {
-    launchForExploration(TEST_EXPLORATION_ID_8).use {
+    launchForExploration(TEST_EXPLORATION_ID_4).use {
       startPlayingExploration()
 
       onView(
@@ -423,7 +423,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_changeConfiguration_firstState_previousAndNextButtonIsNotDisplayed() { // ktlint-disable max-line-length
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.previous_state_navigation_button)).check(matches(not(isDisplayed())))
@@ -433,7 +433,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_submitAnswer_clickContinueButton_previousButtonIsDisplayed() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
 
       onView(withId(R.id.continue_button)).perform(click())
@@ -445,7 +445,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_changeConfiguration_submitAnswer_clickContinueButton_previousButtonIsDisplayed() { // ktlint-disable max-line-length
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.continue_button)).perform(click())
@@ -457,7 +457,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_submitAnswer_clickContinueThenPrevious_onlyNextButtonIsShown() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(withId(R.id.continue_button)).perform(click())
 
@@ -472,7 +472,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_changeConfiguration_submitAnswer_clickContinueThenPrevious_onlyNextButtonIsShown() { // ktlint-disable max-line-length
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.continue_button)).perform(click())
@@ -488,7 +488,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_submitAnswer_clickContinueThenPreviousThenNext_prevAndSubmitShown() { // ktlint-disable max-line-length
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(withId(R.id.continue_button)).perform(click())
 
@@ -505,7 +505,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_changeConfiguration_submitAnswer_clickContinueThenPreviousThenNext_prevAndSubmitShown() { // ktlint-disable max-line-length
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(withId(R.id.continue_button)).perform(click())
 
@@ -522,7 +522,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_continueToEndExploration_hasReturnToTopicButton() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
 
       playThroughPrototypeExploration()
@@ -536,7 +536,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_changeConfiguration_continueToEndExploration_hasReturnToTopicButton() { // ktlint-disable max-line-length
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
 
       playThroughPrototypeExploration()
@@ -550,7 +550,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_continueToEndExploration_clickReturnToTopic_destroysActivity() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       playThroughPrototypeExploration()
 
@@ -563,7 +563,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_changeConfiguration_continueToEndExploration_clickReturnToTopic_destroysActivity() { // ktlint-disable max-line-length
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       playThroughPrototypeExploration()
 
@@ -576,7 +576,7 @@ class StateFragmentTest {
 
   @Test
   fun testContentCard_forDemoExploration_withCustomOppiaTags_displaysParsedHtml() {
-    launchForExploration(TEST_EXPLORATION_ID_5).use {
+    launchForExploration(TEST_EXPLORATION_ID_0).use {
       startPlayingExploration()
 
       val htmlResult =
@@ -593,7 +593,7 @@ class StateFragmentTest {
 
   @Test
   fun testContentCard_forDemoExploration_changeConfiguration_withCustomOppiaTags_displaysParsedHtml() { // ktlint-disable max-line-length
-    launchForExploration(TEST_EXPLORATION_ID_5).use {
+    launchForExploration(TEST_EXPLORATION_ID_0).use {
       startPlayingExploration()
 
       val htmlResult =
@@ -705,7 +705,7 @@ class StateFragmentTest {
     onView(withId(R.id.submit_answer_button)).perform(click())
     onView(withId(R.id.continue_navigation_button)).perform(click())
 
-    // Seventh state: Drag Drop Sort. Correct answer: Move 1st item to 3rd position.
+    // Seventh state: Drag Drop Sort. Correct answer: Move 1st item to 4th position.
     onView(withId(R.id.drag_drop_interaction_recycler_view)).perform(
       DragViewAction(
         RecyclerViewCoordinatesProvider(
@@ -715,7 +715,7 @@ class StateFragmentTest {
             GeneralLocation.CENTER
           )
         ),
-        RecyclerViewCoordinatesProvider(2, CustomGeneralLocation.UNDER_RIGHT),
+        RecyclerViewCoordinatesProvider(3, CustomGeneralLocation.UNDER_RIGHT),
         Press.FINGER
       )
     )
@@ -729,7 +729,7 @@ class StateFragmentTest {
     ).check(matches(withText("3/5")))
     onView(withId(R.id.continue_navigation_button)).perform(click())
 
-    // Eighth state: Drag Drop Sort with grouping. Correct answer: Merge First Two.
+    // Eighth state: Drag Drop Sort with grouping. Correct answer: Merge First Two and after merging move 2nd item to 3rd position .
     onView(
       atPositionOnView(
         recyclerViewId = R.id.drag_drop_interaction_recycler_view,
@@ -751,6 +751,19 @@ class StateFragmentTest {
         targetViewId = R.id.drag_drop_content_group_item
       )
     ).perform(click())
+    onView(withId(R.id.drag_drop_interaction_recycler_view)).perform(
+      DragViewAction(
+        RecyclerViewCoordinatesProvider(
+          1,
+          ChildViewCoordinatesProvider(
+            R.id.drag_drop_item_container,
+            GeneralLocation.CENTER
+          )
+        ),
+        RecyclerViewCoordinatesProvider(2, CustomGeneralLocation.UNDER_RIGHT),
+        Press.FINGER
+      )
+    )
     onView(withId(R.id.submit_answer_button)).perform(click())
     onView(
       atPositionOnView(

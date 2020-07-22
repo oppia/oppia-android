@@ -72,7 +72,6 @@ class ExplorationFragmentPresenter @Inject constructor(
 
   private fun logPracticeFragmentEvent(topicId: String, storyId: String, explorationId: String) {
     analyticsController.logTransitionEvent(
-      fragment.context!!.applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_EXPLORATION_ACTIVITY,
       analyticsController.createExplorationContext(topicId, storyId, explorationId)
