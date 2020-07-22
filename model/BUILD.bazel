@@ -94,18 +94,49 @@ java_lite_proto_library(
 )
 
 format_import_proto_library(
-    name = "topic_proto",
-    src = "src/main/proto/topic.proto"
+    name = "question",
+    src = "src/main/proto/question.proto",
+    deps = [
+        ":exploration_proto",
+        ":subtitled_html_proto",
+    ],
+)
+
+java_lite_proto_library(
+    name = "question_java_proto",
+    deps = [":question_proto"],
 )
 
 format_import_proto_library(
-    name = "question_proto",
-    src = "src/main/proto/question.proto"
+    name = "topic",
+    src = "src/main/proto/topic.proto",
+    deps = [
+        ":subtitled_html_proto",
+        ":thumbnail_proto",
+        ":translation_proto",
+        ":voiceover_proto",
+    ],
+)
+
+java_lite_proto_library(
+    name = "topic_java_proto",
+    deps = [":topic_proto"],
 )
 
 format_import_proto_library(
-    name = "exploration_proto",
-    src = "src/main/proto/exploration.proto"
+    name = "exploration",
+    src = "src/main/proto/exploration.proto",
+    deps = [
+        ":subtitled_html_proto",
+        ":interaction_object_proto",
+        ":translation_proto",
+        ":voiceover_proto",
+    ],
+)
+
+java_lite_proto_library(
+    name = "exploration_java_proto",
+    deps = [":exploration_proto"],
 )
 
 android_library(
@@ -120,11 +151,9 @@ android_library(
         ":thumbnail_java_proto",
         ":translation_java_proto",
         ":voiceover_java_proto",
-    ],
-    data = [
-        ":exploration_proto",
-        ":question_proto",
-        ":topic_proto",
+        ":exploration_java_proto",
+        ":question_java_proto",
+        ":topic_java_proto",
     ],
     visibility = ["//visibility:public"],
 )
