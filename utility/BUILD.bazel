@@ -104,23 +104,6 @@ android_local_test(
    ],
  )
 
-android_local_test(
-   name = "demo_test",
-     custom_package = "org.oppia.util",
-     test_class = "org.oppia.util.data.DemoJavaTest",
-     srcs = ["src/test/java/org/oppia/util/data/DemoJavaTest.java"],
-     manifest = "src/test/TestManifest.xml",
-     deps = [
-         #":async_test_lib",
-         "@robolectric//bazel:android-all",
-         "@maven//:org_robolectric_robolectric",
-         artifact("com.google.truth:truth"),
-         artifact("junit:junit"),
-         artifact("org.robolectric:annotations:4.3"),
-         artifact("androidx.test.ext:junit"),
-   ],
-)
-
 #TODO: Get android_local_test working with kotlin files
 '''
 kt_android_library(
