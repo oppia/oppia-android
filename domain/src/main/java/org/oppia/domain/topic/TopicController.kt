@@ -363,9 +363,8 @@ class TopicController @Inject constructor(
   }
 
   // TODO(#45): Expose this as a data provider, or omit if it's not needed.
-  // TODO(#1476): Remove topicId as it is not needed anymore.
   private fun retrieveReviewCard(topicId: String, subtopicId: String): RevisionCard {
-    return createSubtopicFromJson(subtopicId)
+    return createSubtopicFromJson(topicId, subtopicId)
   }
 
   // Loads and returns the questions given a list of skill ids.
@@ -457,11 +456,12 @@ class TopicController @Inject constructor(
   }
 
   /** Creates a subtopic from its json representation. */
-  private fun createSubtopicFromJson(subtopicId: String): RevisionCard {
-    val subtopicData =
-      jsonAssetRetriever.loadJsonFromAsset("$subtopicId.json")?.getJSONObject("page_contents")!!
-    val subtopicTitle =
-      jsonAssetRetriever.loadJsonFromAsset("$subtopicId.json")?.getString("subtopic_title")!!
+  private fun createSubtopicFromJson(topicId: String, subtopicId: String): RevisionCard {
+    val subtopicJsonObject =
+      jsonAssetRetriever.loadJsonFromAsset(topicId + "_" + subtopicId + ".json")
+        ?: return RevisionCard.getDefaultInstance()
+    val subtopicData = subtopicJsonObject.getJSONObject("page_contents")!!
+    val subtopicTitle = subtopicJsonObject.getString("subtopic_title")!!
     return RevisionCard.newBuilder()
       .setSubtopicTitle(subtopicTitle)
       .setPageContents(
@@ -493,7 +493,8 @@ class TopicController @Inject constructor(
         skillIdList.add(skillJsonArray.optString(j))
       }
       val subtopic = Subtopic.newBuilder()
-        .setSubtopicId(currentSubtopicJsonObject.optString("id"))
+        // TODO(#1476): Modify proto to change the subtopic id type tp integer.
+        .setSubtopicId(currentSubtopicJsonObject.optInt("id").toString())
         // TODO(#1476): Modify proto to add thumbnail_bg_color and thumbnail_filename from json files.
         .setTitle(currentSubtopicJsonObject.optString("title"))
         .setSubtopicThumbnail(
@@ -543,7 +544,7 @@ class TopicController @Inject constructor(
     for (i in 0 until subtopicJsonArray.length()) {
       val subtopicJsonObject = subtopicJsonArray.optJSONObject(i)
       val subtopicId = subtopicJsonObject.optInt("id")
-      assetFileNameList.add("$subtopicId.json")
+      assetFileNameList.add(topicId + "_" + subtopicId + ".json")
     }
     return assetFileNameList
   }
