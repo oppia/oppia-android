@@ -15,6 +15,7 @@ import androidx.test.espresso.action.Press
 import androidx.test.espresso.action.Tap
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.swipeUp
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.DrawerMatchers
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
@@ -92,16 +93,33 @@ class OptionsFragmentTest {
     /* launchActivity= */ false
   )
 
-  private fun createOptionActivityIntent(profileId: Int): Intent {
+  private fun createOptionActivityIntent(profileId: Int, isFromExploration: Boolean): Intent {
     return OptionsActivity.createOptionsActivity(
       ApplicationProvider.getApplicationContext(),
-      profileId
+      profileId,
+      isFromExploration
     )
   }
 
   @Test
+  fun testOptionsFragment_parentIsExploration_checkBackArrowNotVisible() {
+    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+      onView(withContentDescription(R.string.abc_action_bar_up_description))
+        .check(matches(isCompletelyDisplayed()))
+    }
+  }
+
+  @Test
+  fun testOptionsFragment_parentIsNotExploration_checkBackArrowNotVisible() {
+    launch<OptionsActivity>(createOptionActivityIntent(0, false)).use {
+      onView(withContentDescription(R.string.abc_action_bar_up_description))
+        .check(doesNotExist())
+    }
+  }
+
+  @Test
   fun testOptionFragment_clickNavigationDrawerHamburger_navigationDrawerIsOpenedSuccessfully() {
-    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(0, false)).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).check(
         matches(isCompletelyDisplayed())
       ).perform(click())
@@ -113,7 +131,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_clickStoryTextSize_changeTextSizeToLargeSuccessfully() {
-    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(0, false)).use {
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
@@ -138,7 +156,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_clickStoryTextSize_changeTextSizeToLarge_changeConfiguration_checkTextSizeLargeIsSelected() { // ktlint-disable max-length-line
-    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(0, false)).use {
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
@@ -164,7 +182,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_clickStoryTextSize_changeTextSizeToMediumSuccessfully() {
-    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(0, false)).use {
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
@@ -189,7 +207,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_clickStoryTextSize_changeTextSizeToMedium_changeConfiguration_checkTextSizeMediumIsSelected() { // ktlint-disable max-length-line
-    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(0, false)).use {
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
@@ -215,7 +233,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_clickStoryTextSize_changeTextSizeToExtraLargeSuccessfully() {
-    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(0, false)).use {
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
@@ -240,7 +258,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_clickStoryTextSize_changeTextSizeToExtraLarge_changeConfiguration_checkTextSizeExtraLargeIsSelected() { // ktlint-disable max-length-line
-    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(0, false)).use {
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
@@ -266,7 +284,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_clickAppLanguage_changeAppLanguageToFrenchSuccessfully() {
-    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(0, false)).use {
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
@@ -297,7 +315,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_clickAppLanguage_changeAppLanguageToFrench_changeConfiguration_selectedLanguageIsFrench() { // ktlint-disable max-length-line
-    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(0, false)).use {
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
@@ -329,7 +347,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_clickAppLanguage_changeAppLanguageHindiSuccessfully() {
-    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(0, false)).use {
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
@@ -359,7 +377,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_clickDefaultAudioLanguage_changeDefaultAudioLanguageToEnglishSuccessfully() { // ktlint-disable max-length-line
-    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(0, false)).use {
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
@@ -391,7 +409,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_checkDefaultAudioLanguage_changeLanguageToEnglish_changeConfiguration_checkEnglishLanguageIsSelected() { // ktlint-disable max-length-line
-    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(0, false)).use {
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
@@ -423,7 +441,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_checkDefaultAudioLanguage_changeLanguageToChinese_changeConfiguration_checkChineseLanguageIsSelected() { // ktlint-disable max-length-line
-    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(0, false)).use {
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
@@ -456,7 +474,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_checkDefaultAudioLanguage_changeLanguageToHindi_changeConfiguration_checkHindiLanguageIsSelected() { // ktlint-disable max-length-line
-    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(0, false)).use {
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
@@ -488,7 +506,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_clickDefaultAudioLanguage_changeDefaultAudioLanguageToChineseSuccessfully() { // ktlint-disable max-length-line
-    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(0, false)).use {
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
@@ -519,7 +537,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_changeConfiguration_checkTextSizeLargeIsSmall() {
-    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(0, false)).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(
         atPositionOnView(
@@ -534,7 +552,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_changeConfiguration_checkAppLanguageIsEnglish() {
-    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(0, false)).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(
         atPositionOnView(
@@ -549,7 +567,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_changeConfiguration_checkAudioLanguageIsHindi() {
-    launch<OptionsActivity>(createOptionActivityIntent(0)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(0, false)).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(
         atPositionOnView(
