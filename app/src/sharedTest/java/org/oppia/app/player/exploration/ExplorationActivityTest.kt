@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
@@ -43,6 +44,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.Matcher
+import org.hamcrest.Matchers
 import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Ignore
@@ -142,6 +144,112 @@ class ExplorationActivityTest {
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
+      waitForTheView(withText("Prototype Exploration"))
+      onView(allOf(instanceOf(TextView::class.java), withParent(withId(R.id.exploration_toolbar))))
+        .check(matches(withText("Prototype Exploration")))
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
+  fun testExploration_overflowMenu_isDisplayedSuccessfully() {
+    getApplicationDependencies(TEST_EXPLORATION_ID_2)
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
+      )
+    ).use {
+      openActionBarOverflowOrOptionsMenu(context)
+      onView(withText(context.getString(R.string.menu_options))).check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.help))).check(matches(isDisplayed()))
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
+  fun testExploration_openOverflowMenu_selectHelpInOverflowMenu_showsHelpFragmentSuccessfully() {
+    getApplicationDependencies(TEST_EXPLORATION_ID_2)
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
+      )
+    ).use {
+      openActionBarOverflowOrOptionsMenu(context)
+      onView(withText(context.getString(R.string.help))).perform(click())
+      onView(
+        Matchers.allOf(
+          Matchers.instanceOf(TextView::class.java),
+          withParent(withId(R.id.help_activity_toolbar))
+        )
+      ).check(matches(withText(R.string.help)))
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
+  fun testExploration_openOverflowMenu_selectOptionsInOverflowMenu_showsOptionsFragmentSuccessfully() { // ktlint-disable max-line-length
+    getApplicationDependencies(TEST_EXPLORATION_ID_2)
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
+      )
+    ).use {
+      openActionBarOverflowOrOptionsMenu(context)
+      onView(withText(context.getString(R.string.menu_options))).perform(click())
+      onView(
+        Matchers.allOf(
+          Matchers.instanceOf(TextView::class.java),
+          withParent(withId(R.id.options_activity_toolbar))
+        )
+      ).check(matches(withText(R.string.menu_options)))
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
+  fun testExploration_openOverflowMenu_selectHelpInOverflowMenu_clickBackArrow_backToExplorationActivitySuccessfully() { // ktlint-disable max-line-length
+    getApplicationDependencies(TEST_EXPLORATION_ID_2)
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
+      )
+    ).use {
+      openActionBarOverflowOrOptionsMenu(context)
+      onView(withText(context.getString(R.string.help))).perform(click())
+      onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
+      waitForTheView(withText("Prototype Exploration"))
+      onView(allOf(instanceOf(TextView::class.java), withParent(withId(R.id.exploration_toolbar))))
+        .check(matches(withText("Prototype Exploration")))
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
+  fun testExploration_openOverflowMenu_selectOptionsInOverflowMenu_clickBackArrow_backToExplorationActivitySuccessfully() { // ktlint-disable max-line-length
+    getApplicationDependencies(TEST_EXPLORATION_ID_2)
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
+      )
+    ).use {
+      openActionBarOverflowOrOptionsMenu(context)
+      onView(withText(context.getString(R.string.menu_options))).perform(click())
+      onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
       waitForTheView(withText("Prototype Exploration"))
       onView(allOf(instanceOf(TextView::class.java), withParent(withId(R.id.exploration_toolbar))))
         .check(matches(withText("Prototype Exploration")))
