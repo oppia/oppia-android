@@ -8,7 +8,7 @@ import org.oppia.app.databinding.RevisionCardFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.EventLog
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.domain.oppialogger.OppiaLogger
 import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -16,7 +16,7 @@ import javax.inject.Inject
 @FragmentScope
 class RevisionCardFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
-  private val analyticsController: AnalyticsController,
+  private val oppiaLogger: OppiaLogger,
   private val oppiaClock: OppiaClock,
   private val viewModelProvider: ViewModelProvider<RevisionCardViewModel>
 ) {
@@ -50,10 +50,10 @@ class RevisionCardFragmentPresenter @Inject constructor(
   }
 
   private fun logRevisionCardEvent(topicId: String, subTopicId: String) {
-    analyticsController.logTransitionEvent(
+    oppiaLogger.logTransitionEvent(
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_REVISION_CARD,
-      analyticsController.createRevisionCardContext(topicId, subTopicId)
+      oppiaLogger.createRevisionCardContext(topicId, subTopicId)
     )
   }
 }
