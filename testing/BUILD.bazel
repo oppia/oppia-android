@@ -1,7 +1,6 @@
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
-package(default_visibility = ["//visibility:public"])
 load("//:oppia_android_test.bzl", "oppia_android_test")
 load("//testing:testing_test.bzl", "testing_test")
 
@@ -17,6 +16,7 @@ kt_android_library(
          artifact("org.jetbrains.kotlinx:kotlinx-coroutines-android"),
          artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test"),
      ],
+     visibility = ["//visibility:public"]
  )
 
 kt_android_library(
