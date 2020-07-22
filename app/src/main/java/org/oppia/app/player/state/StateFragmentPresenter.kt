@@ -74,7 +74,6 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
-  private lateinit var rhsInteractionsAdapter: RhsInteractionsAdapter
   private val splitScreenManager: SplitScreenManager = SplitScreenManager(activity)
 
   private val viewModel: StateViewModel by lazy {
@@ -105,8 +104,12 @@ class StateFragmentPresenter @Inject constructor(
     )
 
     val stateRecyclerViewAdapter = recyclerViewAssembler.adapter
+    val rhsStateRecyclerViewAdapter = recyclerViewAssembler.rhsAdapter
     binding.stateRecyclerView.apply {
       adapter = stateRecyclerViewAdapter
+    }
+    binding.rhsStateRecyclerView.apply {
+      adapter = rhsStateRecyclerViewAdapter
     }
     recyclerViewAdapter = stateRecyclerViewAdapter
     binding.let {
@@ -322,8 +325,6 @@ class StateFragmentPresenter @Inject constructor(
       explorationId,
       shouldSplit
     ).second
-    rhsInteractionsAdapter = RhsInteractionsAdapter(viewModel.rightItemList)
-    binding.rhsStateRecyclerView.adapter = rhsInteractionsAdapter
 
     if (isInNewState) {
       (binding.stateRecyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(

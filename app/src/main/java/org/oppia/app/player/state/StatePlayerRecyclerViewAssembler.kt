@@ -113,6 +113,7 @@ private typealias AudioUiManagerRetriever = () -> AudioUiManager?
  */
 class StatePlayerRecyclerViewAssembler private constructor(
   val adapter: BindableAdapter<StateItemViewModel>,
+  val rhsAdapter: BindableAdapter<StateItemViewModel>,
   private val playerFeatureSet: PlayerFeatureSet,
   private val fragment: Fragment,
   private val congratulationsTextView: TextView?,
@@ -186,7 +187,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
     if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE) {
       addPreviousAnswers(
         leftPendingItemList,
+        rightPendingItemList,
         ephemeralState.pendingState.wrongAnswerList,
+        false,
+        shouldSplit,
         gcsEntityId
       )
       if (playerFeatureSet.hintsAndSolutionsSupport) {
@@ -209,7 +213,14 @@ class StatePlayerRecyclerViewAssembler private constructor(
         )
       }
     } else if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE) {
-      addPreviousAnswers(leftPendingItemList, ephemeralState.completedState.answerList, gcsEntityId)
+      addPreviousAnswers(
+        leftPendingItemList,
+        rightPendingItemList,
+        ephemeralState.completedState.answerList,
+        true,
+        shouldSplit,
+        gcsEntityId
+      )
     }
 
     var canContinueToNextState = false
@@ -284,7 +295,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
   private fun addPreviousAnswers(
     pendingItemList: MutableList<StateItemViewModel>,
+    rightPendingItemList: MutableList<StateItemViewModel>,
     answersAndResponses: List<AnswerAndResponse>,
+    isCorrectAnswer: Boolean,
+    shouldSplit: Boolean,
     gcsEntityId: String
   ) {
     if (answersAndResponses.size > 1) {
@@ -321,7 +335,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
     answersAndResponses.lastOrNull()?.let { answerAndResponse ->
       if (playerFeatureSet.pastAnswerSupport) {
-        pendingItemList += createSubmittedAnswer(answerAndResponse.userAnswer, gcsEntityId)
+        if (isCorrectAnswer && shouldSplit) {
+          rightPendingItemList += createSubmittedAnswer(answerAndResponse.userAnswer, gcsEntityId)
+        } else {
+          pendingItemList += createSubmittedAnswer(answerAndResponse.userAnswer, gcsEntityId)
+        }
       }
       if (playerFeatureSet.feedbackSupport) {
         createFeedbackItem(answerAndResponse.feedback, gcsEntityId)?.let(pendingItemList::add)
@@ -1107,6 +1125,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     fun build(): StatePlayerRecyclerViewAssembler {
       val playerFeatureSet = featureSets.reduce(PlayerFeatureSet::union)
       return StatePlayerRecyclerViewAssembler(
+        adapterBuilder.build(),
         adapterBuilder.build(),
         playerFeatureSet,
         fragment,

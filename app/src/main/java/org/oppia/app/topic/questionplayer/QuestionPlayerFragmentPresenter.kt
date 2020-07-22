@@ -24,7 +24,6 @@ import org.oppia.app.model.Solution
 import org.oppia.app.model.State
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.SplitScreenManager
-import org.oppia.app.player.state.RhsInteractionsAdapter
 import org.oppia.app.player.state.StatePlayerRecyclerViewAssembler
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.stopplaying.RestartPlayingSessionListener
@@ -64,7 +63,6 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private lateinit var recyclerViewAssembler: StatePlayerRecyclerViewAssembler
   private lateinit var questionId: String
   private lateinit var currentQuestionState: State
-  private lateinit var rhsInteractionsAdapter: RhsInteractionsAdapter
   private val splitScreenManager: SplitScreenManager = SplitScreenManager(activity)
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
@@ -85,6 +83,9 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     }
     binding.questionRecyclerView.apply {
       adapter = recyclerViewAssembler.adapter
+    }
+    binding.rightQuestionRecyclerView.apply {
+      adapter = recyclerViewAssembler.rhsAdapter
     }
 
     binding.hintsAndSolutionFragmentContainer.setOnClickListener {
@@ -250,8 +251,6 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       skillId,
       shouldSplit
     ).second
-    rhsInteractionsAdapter = RhsInteractionsAdapter(questionViewModel.rightItemList)
-    binding.rightQuestionRecyclerView.adapter = rhsInteractionsAdapter
   }
 
   private fun updateProgress(currentQuestionIndex: Int, questionCount: Int) {

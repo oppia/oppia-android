@@ -77,6 +77,7 @@
         android:dividerHeight="8dp"
         android:overScrollMode="never"
         android:paddingTop="24dp"
+        app:data="@{viewModel.rightItemList}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@id/question_progress_bar"
         app:layout_constraintEnd_toEndOf="parent"
