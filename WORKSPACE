@@ -119,6 +119,7 @@ maven_install(
         "androidx.test.ext:junit:1.1.1",
         "org.jetbrains.kotlin:kotlin-stdlib-jdk7:jar:1.3.72",
         "org.jetbrains.kotlin:kotlin-test-junit:1.3.72",
+        "org.jetbrains.kotlin:kotlin-reflect:1.3.72",
         "org.robolectric:annotations:4.3",
     ],
     repositories = DAGGER_REPOSITORIES + [

@@ -31,6 +31,7 @@ def oppia_android_test(name, srcs, test_manifest, custom_package, resource_files
             artifact("androidx.core:core-ktx"),
             artifact("junit:junit"),
             artifact("org.jetbrains.kotlin:kotlin-stdlib-jdk7:jar"),
+            artifact("org.jetbrains.kotlin:kotlin-reflect"),
         ],
     )
 
@@ -59,5 +60,6 @@ def oppia_android_test(name, srcs, test_manifest, custom_package, resource_files
            artifact("androidx.core:core-ktx"),
            artifact("junit:junit"),
            artifact("org.jetbrains.kotlin:kotlin-stdlib-jdk7:jar"),
+           artifact("org.jetbrains.kotlin:kotlin-reflect"),
        ],
      )
