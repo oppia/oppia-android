@@ -5,7 +5,7 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 kt_android_library(
     name = "domain_lib",
     custom_package = "org.oppia.domain",
-    srcs = glob(["src/main/**/*.kt"]),
+    srcs = glob(["src/main/java/org/oppia/domain/**/*.kt"]),
     data = glob(["src/main/assets/*.json",]),
     manifest = "src/main/AndroidManifest.xml",
     deps = [
@@ -15,5 +15,29 @@ kt_android_library(
     ],
     visibility = ["//visibility:public"]
 )
+
+#TODO: Get test files to build
+'''
+kt_android_library(
+    name = "domain_test_lib",
+    custom_package = "org.oppia.domain",
+    srcs = glob(["src/test/java/org/oppia/domain/**/*.kt"]),
+    data = glob(["src/main/assets/*.json",]),
+    manifest = "src/test/TestManifest.xml",
+    deps = [
+        ":dagger",
+        ":domain_lib",
+        "//model:model_lib",
+        "//data:cache_store_lib",
+        artifact("com.google.truth:truth"),
+        artifact("androidx.test.ext:junit"),
+        artifact("org.robolectric:robolectric"),
+        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-android"),
+        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test"),
+        "@robolectric//bazel:android-all",
+        artifact("org.jetbrains.kotlin:kotlin-reflect"),
+    ],
+    visibility = ["//visibility:public"]
+)'''
 
 dagger_rules()
