@@ -19,7 +19,7 @@ class OptionsActivity :
 
   companion object {
 
-    internal const val BOOL_IS_FROM_EXPLORATION = "BOOL_IS_FROM_EXPLORATION"
+    internal const val BOOL_IS_FROM_EXPLORATION_EXTRA_KEY = "BOOL_IS_FROM_EXPLORATION_EXTRA_KEY"
 
     fun createOptionsActivity(
       context: Context,
@@ -28,8 +28,12 @@ class OptionsActivity :
     ): Intent {
       val intent = Intent(context, OptionsActivity::class.java)
       intent.putExtra(KEY_NAVIGATION_PROFILE_ID, profileId)
-      intent.putExtra(BOOL_IS_FROM_EXPLORATION, isFromExploration)
+      intent.putExtra(BOOL_IS_FROM_EXPLORATION_EXTRA_KEY, isFromExploration)
       return intent
+    }
+
+    fun getIsFromExplorationKey(): String {
+      return BOOL_IS_FROM_EXPLORATION_EXTRA_KEY
     }
   }
 
@@ -37,7 +41,7 @@ class OptionsActivity :
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     val isFromExploration = intent.getBooleanExtra(
-      BOOL_IS_FROM_EXPLORATION,
+      BOOL_IS_FROM_EXPLORATION_EXTRA_KEY,
       /* defaultValue= */ false
     )
     optionActivityPresenter.handleOnCreate(isFromExploration)

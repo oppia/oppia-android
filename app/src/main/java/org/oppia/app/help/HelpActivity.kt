@@ -18,7 +18,7 @@ class HelpActivity : InjectableAppCompatActivity(), RouteToFAQListListener {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     val isFromExploration = intent.getBooleanExtra(
-      BOOL_IS_FROM_EXPLORATION,
+      BOOL_IS_FROM_EXPLORATION_EXTRA_KEY,
       /* defaultValue= */ false
     )
     helpActivityPresenter.handleOnCreate(isFromExploration)
@@ -27,7 +27,7 @@ class HelpActivity : InjectableAppCompatActivity(), RouteToFAQListListener {
 
   companion object {
 
-    internal const val BOOL_IS_FROM_EXPLORATION = "BOOL_IS_FROM_EXPLORATION"
+    internal const val BOOL_IS_FROM_EXPLORATION_EXTRA_KEY = "BOOL_IS_FROM_EXPLORATION_EXTRA_KEY"
 
     fun createHelpActivityIntent(
       context: Context,
@@ -36,12 +36,16 @@ class HelpActivity : InjectableAppCompatActivity(), RouteToFAQListListener {
     ): Intent {
       val intent = Intent(context, HelpActivity::class.java)
       intent.putExtra(KEY_NAVIGATION_PROFILE_ID, profileId)
-      intent.putExtra(BOOL_IS_FROM_EXPLORATION, isFromExploration)
+      intent.putExtra(BOOL_IS_FROM_EXPLORATION_EXTRA_KEY, isFromExploration)
       return intent
     }
 
     fun getIntentKey(): String {
       return KEY_NAVIGATION_PROFILE_ID
+    }
+
+    fun getIsFromExplorationKey(): String {
+      return BOOL_IS_FROM_EXPLORATION_EXTRA_KEY
     }
   }
 

@@ -21,6 +21,10 @@ import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -44,14 +48,16 @@ import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
 import org.hamcrest.Matchers.not
+import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.help.HelpActivity
+import org.oppia.app.options.OptionsActivity
 import org.oppia.app.testing.ExplorationInjectionActivity
 import org.oppia.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -87,8 +93,14 @@ class ExplorationActivityTest {
 
   @Before
   fun setUp() {
+    Intents.init()
     setUpTestApplicationComponent()
     FirebaseApp.initializeApp(context)
+  }
+
+  @After
+  fun tearDown() {
+    Intents.release()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -170,7 +182,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExploration_openOverflowMenu_selectHelpInOverflowMenu_showsHelpFragmentSuccessfully() {
+  fun testExploration_openOverflowMenu_selectHelpInOverflowMenu_opensHelpActivity() {
     getApplicationDependencies(TEST_EXPLORATION_ID_2)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -182,18 +194,14 @@ class ExplorationActivityTest {
     ).use {
       openActionBarOverflowOrOptionsMenu(context)
       onView(withText(context.getString(R.string.help))).perform(click())
-      onView(
-        Matchers.allOf(
-          Matchers.instanceOf(TextView::class.java),
-          withParent(withId(R.id.help_activity_toolbar))
-        )
-      ).check(matches(withText(R.string.help)))
+      intended(hasComponent(HelpActivity::class.java.name))
+      intended(hasExtra(HelpActivity.getIsFromExplorationKey(), /* value= */ true))
     }
     explorationDataController.stopPlayingExploration()
   }
 
   @Test
-  fun testExploration_openOverflowMenu_selectOptionsInOverflowMenu_showsOptionsFragmentSuccessfully() { // ktlint-disable max-line-length
+  fun testExploration_openOverflowMenu_selectOptionsInOverflowMenu_opensOptionsActivity() {
     getApplicationDependencies(TEST_EXPLORATION_ID_2)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -205,54 +213,8 @@ class ExplorationActivityTest {
     ).use {
       openActionBarOverflowOrOptionsMenu(context)
       onView(withText(context.getString(R.string.menu_options))).perform(click())
-      onView(
-        Matchers.allOf(
-          Matchers.instanceOf(TextView::class.java),
-          withParent(withId(R.id.options_activity_toolbar))
-        )
-      ).check(matches(withText(R.string.menu_options)))
-    }
-    explorationDataController.stopPlayingExploration()
-  }
-
-  @Test
-  fun testExploration_openOverflowMenu_selectHelpInOverflowMenu_clickBackArrow_backToExplorationActivitySuccessfully() { // ktlint-disable max-line-length
-    getApplicationDependencies(TEST_EXPLORATION_ID_2)
-    launch<ExplorationActivity>(
-      createExplorationActivityIntent(
-        internalProfileId,
-        TEST_TOPIC_ID_0,
-        TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
-      )
-    ).use {
-      openActionBarOverflowOrOptionsMenu(context)
-      onView(withText(context.getString(R.string.help))).perform(click())
-      onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
-      waitForTheView(withText("Prototype Exploration"))
-      onView(allOf(instanceOf(TextView::class.java), withParent(withId(R.id.exploration_toolbar))))
-        .check(matches(withText("Prototype Exploration")))
-    }
-    explorationDataController.stopPlayingExploration()
-  }
-
-  @Test
-  fun testExploration_openOverflowMenu_selectOptionsInOverflowMenu_clickBackArrow_backToExplorationActivitySuccessfully() { // ktlint-disable max-line-length
-    getApplicationDependencies(TEST_EXPLORATION_ID_2)
-    launch<ExplorationActivity>(
-      createExplorationActivityIntent(
-        internalProfileId,
-        TEST_TOPIC_ID_0,
-        TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
-      )
-    ).use {
-      openActionBarOverflowOrOptionsMenu(context)
-      onView(withText(context.getString(R.string.menu_options))).perform(click())
-      onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
-      waitForTheView(withText("Prototype Exploration"))
-      onView(allOf(instanceOf(TextView::class.java), withParent(withId(R.id.exploration_toolbar))))
-        .check(matches(withText("Prototype Exploration")))
+      intended(hasComponent(OptionsActivity::class.java.name))
+      intended(hasExtra(OptionsActivity.getIsFromExplorationKey(), /* value= */ true))
     }
     explorationDataController.stopPlayingExploration()
   }

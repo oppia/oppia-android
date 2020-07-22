@@ -113,7 +113,7 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   /** Action for onOptionsItemSelected */
-  fun clickOnOverFlowMenuItems(item: MenuItem?): Boolean {
+  fun handleOnOptionsItemSelected(item: MenuItem?): Boolean {
     return when (item?.itemId) {
       R.id.action_preferences -> {
         val intent = OptionsActivity.createOptionsActivity(

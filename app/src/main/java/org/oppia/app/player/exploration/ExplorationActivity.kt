@@ -114,7 +114,7 @@ class ExplorationActivity :
   }
 
   override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-    return explorationActivityPresenter.clickOnOverFlowMenuItems(item)
+    return explorationActivityPresenter.handleOnOptionsItemSelected(item)
   }
 
   override fun showAudioButton() = explorationActivityPresenter.showAudioButton()

@@ -15,6 +15,7 @@ import androidx.test.espresso.action.Press
 import androidx.test.espresso.action.Tap
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.swipeUp
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.DrawerMatchers
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
@@ -98,6 +99,22 @@ class OptionsFragmentTest {
       profileId,
       isFromExploration
     )
+  }
+
+  @Test
+  fun testOptionFragment_getIsFromExplorationTrue_checkBackArrowVisible() {
+    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+      onView(withContentDescription(R.string.abc_action_bar_up_description))
+        .check(matches(isCompletelyDisplayed()))
+    }
+  }
+
+  @Test
+  fun testOptionFragment_getIsFromExplorationFalse_checkBackArrowNotVisible() {
+    launch<OptionsActivity>(createOptionActivityIntent(0, false)).use {
+      onView(withContentDescription(R.string.abc_action_bar_up_description))
+        .check(doesNotExist())
+    }
   }
 
   @Test

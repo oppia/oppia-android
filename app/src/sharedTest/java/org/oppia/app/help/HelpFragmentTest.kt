@@ -1,10 +1,12 @@
 package org.oppia.app.help
 
+import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.DrawerActions.close
 import androidx.test.espresso.contrib.DrawerMatchers.isClosed
@@ -36,6 +38,30 @@ class HelpFragmentTest {
   fun setUp() {
     Intents.init()
     FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
+  }
+
+  private fun createHelpActivityIntent(profileId: Int, isFromExploration: Boolean): Intent {
+    return HelpActivity.createHelpActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      profileId,
+      isFromExploration
+    )
+  }
+
+  @Test
+  fun testHelpFragment_getIsFromExplorationTrue_checkBackArrowVisible() {
+    launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
+      onView(withContentDescription(R.string.abc_action_bar_up_description))
+        .check(matches(isCompletelyDisplayed()))
+    }
+  }
+
+  @Test
+  fun testHelpFragment_getIsFromExplorationFalse_checkBackArrowNotVisible() {
+    launch<HelpActivity>(createHelpActivityIntent(0, false)).use {
+      onView(withContentDescription(R.string.abc_action_bar_up_description))
+        .check(doesNotExist())
+    }
   }
 
   @Test
