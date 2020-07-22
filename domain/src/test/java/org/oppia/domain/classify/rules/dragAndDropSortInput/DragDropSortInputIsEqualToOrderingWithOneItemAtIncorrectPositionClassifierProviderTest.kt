@@ -20,17 +20,16 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.cast
 import kotlin.test.fail
 
-/** Tests for [DragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProvider]. */
+/** Tests for [DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider]. */
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
-class DragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProviderTest {
+class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProviderTest {
   private val NON_NEGATIVE_VALUE_0 = createNonNegativeInt(value = 0)
   private val ITEM_SET_1_AB = listOf("item a", "item b")
   private val ITEM_SET_1_ABC = listOf("item a", "item b", "item c")
   private val ITEM_SET_1_A = listOf("item a")
   private val ITEM_SET_2_ITEM_2 = listOf("item 2")
   private val ITEM_SET_3_ITEM_3 = listOf("item 3")
-  private val ITEM_SET_4_INVALID_AB = listOf("item invalid a", "item invalid b")
   private val SET_LIST_ITEMS_AB_ITEM_2_ITEM_3 =
     createListOfSetsOfHtmlStrings(ITEM_SET_1_AB, ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3)
   private val SET_LIST_ITEMS_ABC_ITEM_2_ITEM_3 =
@@ -42,7 +41,7 @@ class DragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProviderTe
 
   @Inject
   internal lateinit var dragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProvider:
-    DragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProvider
+    DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider
 
   private val isEqualToOrderingWithOneItemIncorrectClassifier: RuleClassifier by lazy {
     dragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProvider.createRuleClassifier()
@@ -156,7 +155,7 @@ class DragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProviderTe
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerDragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProviderTest_TestApplicationComponent.builder() // ktlint-disable max-line-length
+    DaggerDragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProviderTest_TestApplicationComponent.builder() // ktlint-disable max-line-length
       .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
   }
 
@@ -186,6 +185,6 @@ class DragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProviderTe
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: DragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProviderTest)
+    fun inject(test: DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProviderTest)
   }
 }

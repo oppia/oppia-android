@@ -36,9 +36,10 @@ class DragDropSortInputModule {
 
   @Provides
   @IntoMap
-  @StringKey("IsEqualToOrderingWithOneItemIncorrect")
+  @StringKey("IsEqualToOrderingWithOneItemAtIncorrectPosition")
   @DragDropSortInputRules
-  internal fun provideDragDropSortInputIsEqualToOrderingWithOneItemIncorrectRuleClassifier(
-    classifierProvider: DragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProvider
+  internal fun provideDragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionRuleClassifier( // ktlint-disable max-line-length
+    classifierProvider:
+    DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 }
