@@ -11,13 +11,7 @@ kt_android_library(
     deps = [
         ":dagger",
         "//model:model_lib",
-        #"//model:exploration_proto",
-        "//utility:utility_lib",
         "//data:cache_store_lib",
-        artifact("androidx.appcompat:appcompat"),
-        artifact("com.github.bumptech.glide:glide"),
-        artifact("com.caverock:androidsvg-aar"),
-        artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
     ],
     visibility = ["//visibility:public"]
 )
