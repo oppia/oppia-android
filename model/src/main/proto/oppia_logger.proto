@@ -120,7 +120,47 @@ message EventLog {
   }
 }
 
-// Structure for a container that contains an event log report.
+// Structure for an exception log.
+message ExceptionLog {
+  // The timestamp of the exception.
+  int64 timestamp = 1;
+  // The stacktrace of the exception explaining what went wrong
+  repeated StackTraceElement stacktrace = 2;
+  // The message explaining what failed at the site the exception was thrown.
+  string message = 3;
+  // The cause of the exception which in itself is a throwable.
+  ExceptionLog cause = 4;
+  // The type of exception indicating how that exception affected the application.
+  ExceptionType exception_type = 5;
+
+  enum ExceptionType {
+    // The undefined exception type.
+    CRASH_TYPE_UNSPECIFIED = 0;
+    // Indicates an exception that caused the application to close.
+    FATAL = 1;
+    // Indicates an exception that was not fatal to the application and could be recovered from.
+    NON_FATAL = 2;
+  }
+
+  // Structure of the stacktrace element of an exception.
+  message StackTraceElement {
+    // The name of the class where the exception occurred.
+    string declaring_class = 1;
+    // The name of the method due to which that exception occurred.
+    string method_name = 2;
+    // The name of the file containing the execution point of the exception.
+    string file_name = 3;
+    // The line number of the source code where exception took place.
+    int32 line_number = 4;
+  }
+}
+
+// Structure for a container that contains event log reports.
 message OppiaEventLogs {
   repeated EventLog event_log = 1;
+}
+
+// Structure for a container that contains exception log reports.
+message OppiaExceptionLogs {
+  repeated ExceptionLog exception_log = 1;
 }
