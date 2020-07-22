@@ -102,7 +102,7 @@ class ClickableAreasImage(
           return@setOnTouchListener true
         }
         if (imageView.isAccessibilityEnabled()) {
-          //Make default region visibility gone when talkback enabled to avoid any accidental touch.
+          // Make default region visibility gone when talkback enabled to avoid any accidental touch.
           val defaultRegion = parentView.findViewById<View>(R.id.default_selected_region)
           defaultRegion.isVisible = false
           newView.setOnClickListener {
