@@ -50,7 +50,9 @@ class OppiaLoggerTest {
       TEST_EXPLORATION_ID
     )
 
-    assertThat(eventContext.activityContextCase).isEqualTo(EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT)
+    assertThat(eventContext.activityContextCase).isEqualTo(
+      EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT
+    )
     assertThat(eventContext.explorationContext.topicId).matches(TEST_TOPIC_ID)
     assertThat(eventContext.explorationContext.storyId).matches(TEST_STORY_ID)
     assertThat(eventContext.explorationContext.explorationId).matches(TEST_EXPLORATION_ID)
@@ -63,7 +65,9 @@ class OppiaLoggerTest {
       listOf(TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID)
     )
 
-    assertThat(eventContext.activityContextCase).isEqualTo(EventLog.Context.ActivityContextCase.QUESTION_CONTEXT)
+    assertThat(eventContext.activityContextCase).isEqualTo(
+      EventLog.Context.ActivityContextCase.QUESTION_CONTEXT
+    )
     assertThat(eventContext.questionContext.questionId).matches(TEST_QUESTION_ID)
     assertThat(eventContext.questionContext.skillIdList)
       .containsAllIn(arrayOf(TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID))
@@ -76,7 +80,9 @@ class OppiaLoggerTest {
       TEST_STORY_ID
     )
 
-    assertThat(eventContext.activityContextCase).isEqualTo(EventLog.Context.ActivityContextCase.STORY_CONTEXT)
+    assertThat(eventContext.activityContextCase).isEqualTo(
+      EventLog.Context.ActivityContextCase.STORY_CONTEXT
+    )
     assertThat(eventContext.storyContext.topicId).matches(TEST_TOPIC_ID)
     assertThat(eventContext.storyContext.storyId).matches(TEST_STORY_ID)
   }
@@ -85,7 +91,9 @@ class OppiaLoggerTest {
   fun testController_createTopicContext_returnsCorrectTopicContext() {
     val eventContext = oppiaLogger.createTopicContext(TEST_TOPIC_ID)
 
-    assertThat(eventContext.activityContextCase).isEqualTo(EventLog.Context.ActivityContextCase.TOPIC_CONTEXT)
+    assertThat(eventContext.activityContextCase).isEqualTo(
+      EventLog.Context.ActivityContextCase.TOPIC_CONTEXT
+    )
     assertThat(eventContext.topicContext.topicId).matches(TEST_TOPIC_ID)
   }
 
@@ -93,7 +101,9 @@ class OppiaLoggerTest {
   fun testController_createConceptCardContext_returnsCorrectConceptCardContext() {
     val eventContext = oppiaLogger.createConceptCardContext(TEST_SKILL_ID)
 
-    assertThat(eventContext.activityContextCase).isEqualTo(EventLog.Context.ActivityContextCase.CONCEPT_CARD_CONTEXT)
+    assertThat(eventContext.activityContextCase).isEqualTo(
+      EventLog.Context.ActivityContextCase.CONCEPT_CARD_CONTEXT
+    )
     assertThat(eventContext.conceptCardContext.skillId).matches(TEST_SKILL_ID)
   }
 
@@ -102,7 +112,9 @@ class OppiaLoggerTest {
     val eventContext =
       oppiaLogger.createRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
 
-    assertThat(eventContext.activityContextCase).isEqualTo(EventLog.Context.ActivityContextCase.REVISION_CARD_CONTEXT)
+    assertThat(eventContext.activityContextCase).isEqualTo(
+      EventLog.Context.ActivityContextCase.REVISION_CARD_CONTEXT
+    )
     assertThat(eventContext.revisionCardContext.topicId).matches(TEST_TOPIC_ID)
     assertThat(eventContext.revisionCardContext.subTopicId).matches(TEST_SUB_TOPIC_ID)
   }

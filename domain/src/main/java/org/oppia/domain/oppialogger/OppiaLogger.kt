@@ -1,14 +1,13 @@
 package org.oppia.domain.oppialogger
 
 import android.content.Context
-import org.oppia.app.model.EventLog.EventAction
 import org.oppia.app.model.EventLog
+import org.oppia.app.model.EventLog.EventAction
 import org.oppia.domain.oppialogger.analytics.AnalyticsController
-import org.oppia.util.logging.EventLogger
 import javax.inject.Inject
 
 /** Logger that handles exceptions, crashes, events, and console logging. */
-class OppiaLogger  @Inject constructor(
+class OppiaLogger @Inject constructor(
   private val analyticsController: AnalyticsController
 ) {
   /**
