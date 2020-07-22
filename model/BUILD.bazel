@@ -5,7 +5,7 @@ load("//model:src/main/proto/format_import_proto_library.bzl", "format_import_pr
 
 proto_library(
     name = "event_logger_proto",
-    srcs = ["src/main/proto/event_logger.proto"],
+    srcs = ["src/main/proto/oppia_logger.proto"],
 )
 
 java_lite_proto_library(
