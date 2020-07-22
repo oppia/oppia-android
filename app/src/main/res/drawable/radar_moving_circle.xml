@@ -3,5 +3,5 @@
   android:shape="oval">
   <stroke
     android:width="0.5dp"
-    android:color="#FFCD2A" />
+    android:color="@color/radarColor" />
 </shape>

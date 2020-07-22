@@ -12,7 +12,6 @@ private val animatorSet = AnimatorSet()
 
 @BindingAdapter("app:flashingAnimation")
 fun setFlashingAnimation(view: View, isFlashing: Boolean) {
-
   appearAnimator.addUpdateListener {
     view.scaleX = it.animatedValue as Float
     view.scaleY = it.animatedValue as Float
