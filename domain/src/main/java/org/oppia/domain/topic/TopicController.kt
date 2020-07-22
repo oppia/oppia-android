@@ -493,9 +493,9 @@ class TopicController @Inject constructor(
         skillIdList.add(skillJsonArray.optString(j))
       }
       val subtopic = Subtopic.newBuilder()
-        // TODO(#1476): Modify proto to change the subtopic id type tp integer.
+        // TODO(#1508): Modify proto to change the subtopic id type tp integer.
         .setSubtopicId(currentSubtopicJsonObject.optInt("id").toString())
-        // TODO(#1476): Modify proto to add thumbnail_bg_color and thumbnail_filename from json files.
+        // TODO(#1476): Modify proto to add thumbnail_color and thumbnail_filename from json files.
         .setTitle(currentSubtopicJsonObject.optString("title"))
         .setSubtopicThumbnail(
           createSubtopicThumbnail(
