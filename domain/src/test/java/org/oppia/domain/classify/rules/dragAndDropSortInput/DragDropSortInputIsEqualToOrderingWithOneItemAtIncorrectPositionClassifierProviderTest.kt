@@ -40,11 +40,11 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
     createListOfSetsOfHtmlStrings(ITEM_SET_1_A, ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3)
 
   @Inject
-  internal lateinit var dragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProvider:
+  internal lateinit var dragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider: // ktlint-disable max-line-length
     DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider
 
   private val isEqualToOrderingWithOneItemIncorrectClassifier: RuleClassifier by lazy {
-    dragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProvider.createRuleClassifier()
+    dragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider.createRuleClassifier() // ktlint-disable max-line-length
   }
 
   @Before
