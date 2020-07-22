@@ -1,6 +1,17 @@
 package org.oppia.domain.oppialogger
 
+import android.app.Application
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
+import dagger.BindsInstance
+import dagger.Component
+import dagger.Module
+import dagger.Provides
+import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.oppia.app.model.EventLog
 import org.oppia.domain.oppialogger.analytics.TEST_EXPLORATION_ID
 import org.oppia.domain.oppialogger.analytics.TEST_QUESTION_ID
@@ -9,8 +20,28 @@ import org.oppia.domain.oppialogger.analytics.TEST_SKILL_LIST_ID
 import org.oppia.domain.oppialogger.analytics.TEST_STORY_ID
 import org.oppia.domain.oppialogger.analytics.TEST_SUB_TOPIC_ID
 import org.oppia.domain.oppialogger.analytics.TEST_TOPIC_ID
+import org.oppia.testing.TestDispatcherModule
+import org.oppia.testing.TestLogReportingModule
+import org.oppia.util.logging.EnableConsoleLog
+import org.oppia.util.logging.EnableFileLog
+import org.oppia.util.logging.GlobalLogLevel
+import org.oppia.util.logging.LogLevel
+import org.robolectric.annotation.Config
+import javax.inject.Inject
+import javax.inject.Qualifier
+import javax.inject.Singleton
 
+@RunWith(AndroidJUnit4::class)
+@Config(manifest = Config.NONE)
 class OppiaLoggerTest {
+  @Before
+  fun setUp() {
+    setUpTestApplicationComponent()
+  }
+
+  @Inject
+  lateinit var oppiaLogger: OppiaLogger
+
   @Test
   fun testController_createExplorationContext_returnsCorrectExplorationContext() {
     val eventContext = oppiaLogger.createExplorationContext(
@@ -74,5 +105,68 @@ class OppiaLoggerTest {
     assertThat(eventContext.activityContextCase).isEqualTo(EventLog.Context.ActivityContextCase.REVISION_CARD_CONTEXT)
     assertThat(eventContext.revisionCardContext.topicId).matches(TEST_TOPIC_ID)
     assertThat(eventContext.revisionCardContext.subTopicId).matches(TEST_SUB_TOPIC_ID)
+  }
+
+  private fun setUpTestApplicationComponent() {
+    DaggerOppiaLoggerTest_TestApplicationComponent.builder()
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
+  }
+
+  @Qualifier
+  annotation class TestDispatcher
+
+  // TODO(#89): Move this to a common test application component.
+  @Module
+  class TestModule {
+    @Provides
+    @Singleton
+    fun provideContext(application: Application): Context {
+      return application
+    }
+
+    // TODO(#59): Either isolate these to their own shared test module, or use the real logging
+    // module in tests to avoid needing to specify these settings for tests.
+    @EnableConsoleLog
+    @Provides
+    fun provideEnableConsoleLog(): Boolean = true
+
+    @EnableFileLog
+    @Provides
+    fun provideEnableFileLog(): Boolean = false
+
+    @GlobalLogLevel
+    @Provides
+    fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
+  }
+
+  @Module
+  class TestLogStorageModule {
+
+    @Provides
+    @EventLogStorageCacheSize
+    fun provideEventLogStorageCacheSize(): Int = 2
+  }
+
+  // TODO(#89): Move this to a common test application component.
+  @Singleton
+  @Component(
+    modules = [
+      TestModule::class,
+      TestLogReportingModule::class,
+      TestLogStorageModule::class,
+      TestDispatcherModule::class
+    ]
+  )
+  interface TestApplicationComponent {
+    @Component.Builder
+    interface Builder {
+      @BindsInstance
+      fun setApplication(application: Application): Builder
+      fun build(): TestApplicationComponent
+    }
+
+    fun inject(oppiaLoggerTest: OppiaLoggerTest)
   }
 }
