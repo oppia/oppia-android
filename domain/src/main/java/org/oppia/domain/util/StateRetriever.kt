@@ -535,7 +535,7 @@ class StateRetriever @Inject constructor(
   private fun parsePoint2D(points: JSONArray): Point2d {
     return Point2d.newBuilder()
       .setX(points.getDouble(0).toFloat())
-      .setX(points.getDouble(1).toFloat())
+      .setY(points.getDouble(1).toFloat())
       .build()
   }
 

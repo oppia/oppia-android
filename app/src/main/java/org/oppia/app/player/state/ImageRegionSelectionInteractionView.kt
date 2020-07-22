@@ -62,7 +62,7 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
     val requestOptions = RequestOptions().placeholder(R.drawable.review_placeholder)
 
     Glide.with(this.context)
-      .load("$gcsPrefix/$resourceBucketName/$imageUrl")
+      .load(urlString)
       .apply(requestOptions)
       .into(this)
   }

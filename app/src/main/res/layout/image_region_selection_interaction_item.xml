@@ -21,6 +21,8 @@
       android:adjustViewBounds="true"
       app:clickableAreas="@{viewModel.selectableRegions}"
       app:entityId="@{viewModel.entityId}"
+      app:onRegionClicked="@{(region) -> viewModel.onClickableAreaTouched(region)}"
+      app:overlayView="@{imageParentView}"
       app:urlString="@{viewModel.imagePath}" />
 
     <View

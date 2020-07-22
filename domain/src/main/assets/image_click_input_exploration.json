@@ -62,7 +62,8 @@
                         ]
                       ]
                     },
-                    "label": "Region1"
+                    "label": "Region1",
+                    "contentDescription": "Region 1"
                   },
                   {
                     "region": {
@@ -78,7 +79,8 @@
                         ]
                       ]
                     },
-                    "label": "Region2"
+                    "label": "Region2",
+                    "contentDescription": "Region 2"
                   },
                   {
                     "region": {
@@ -94,7 +96,8 @@
                         ]
                       ]
                     },
-                    "label": "Region3"
+                    "label": "Region3",
+                    "contentDescription": "Region 3"
                   }
                 ],
                 "imagePath": "img_20200702_094205_tgcr5k6o9q_height_470_width_490.png"
