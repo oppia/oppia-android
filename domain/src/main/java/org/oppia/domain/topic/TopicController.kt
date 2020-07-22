@@ -63,45 +63,6 @@ const val FRACTIONS_QUESTION_ID_8 = "AciwQAtcvZfI"
 const val FRACTIONS_QUESTION_ID_9 = "YQwbX2r6p3Xj"
 const val FRACTIONS_QUESTION_ID_10 = "NNuVGmbJpnj5"
 const val RATIOS_QUESTION_ID_0 = "QiKxvAXpvUbb"
-val TOPIC_FILE_ASSOCIATIONS = mapOf(
-  TEST_TOPIC_ID_0 to listOf(
-    "test_exp_id_0.json",
-    "test_exp_id_1.json",
-    "test_exp_id_2.json",
-    "test_exp_id_3.json",
-    "questions.json",
-    "skills.json",
-    "test_story_id_0.json",
-    "test_story_id_1.json",
-    "test_topic_id_0.json"
-  ),
-  TEST_TOPIC_ID_1 to listOf(
-    "test_exp_id_4.json",
-    "questions.json",
-    "skills.json",
-    "test_story_id_2.json",
-    "test_topic_id_1.json"
-  ),
-  FRACTIONS_TOPIC_ID to listOf(
-    "umPkwp0L1M0-.json",
-    "MjZzEVOG47_1.json",
-    "questions.json",
-    "skills.json",
-    "wANbh4oOClga.json",
-    "GJ2rLXRKD5hw.json"
-  ),
-  RATIOS_TOPIC_ID to listOf(
-    "2mzzFVDLuAj8.json",
-    "5NWuolNcwH6e.json",
-    "k2bQ7z5XHNbK.json",
-    "tIoSb3HZFN6e.json",
-    "questions.json",
-    "skills.json",
-    "wAMdg4oOClga.json",
-    "xBSdg4oOClga.json",
-    "omzF4oqgeTXd.json"
-  )
-)
 
 private const val QUESTION_DATA_PROVIDER_ID = "QuestionDataProvider"
 private const val TRANSFORMED_GET_COMPLETED_STORIES_PROVIDER_ID =
@@ -490,7 +451,7 @@ class TopicController @Inject constructor(
       .addAllSkill(skillSummaryList)
       .addAllStory(storySummaryList)
       .setTopicThumbnail(TOPIC_THUMBNAILS.getValue(topicId))
-      .setDiskSizeBytes(computeTopicSizeBytes(getAllAssetFileName(topicId)))
+      .setDiskSizeBytes(computeTopicSizeBytes(getAssetFileNameList(topicId)))
       .addAllSubtopic(subtopicList)
       .build()
   }
@@ -554,7 +515,7 @@ class TopicController @Inject constructor(
       .reduceRight(Long::plus)
   }
 
-  private fun getAllAssetFileName(topicId: String): List<String> {
+  fun getAssetFileNameList(topicId: String): List<String> {
     val assetFileNameList = mutableListOf<String>()
     assetFileNameList.add("questions.json")
     assetFileNameList.add("skills.json")

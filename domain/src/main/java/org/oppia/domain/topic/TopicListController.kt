@@ -119,7 +119,15 @@ class TopicListController @Inject constructor(
     //  load operation.
     if (cacheAssetsLocally) {
       // Ensure all JSON files are available in memory for quick retrieval.
-      val allFiles = TOPIC_FILE_ASSOCIATIONS.values.flatten()
+      val allFiles = mutableListOf<String>()
+      allFiles.add("topics.json")
+      val topicIdJsonArray = jsonAssetRetriever
+        .loadJsonFromAsset("topics.json")!!
+        .getJSONArray("topic_id_list")
+      for (i in 0 until topicIdJsonArray.length()) {
+        allFiles.addAll(topicController.getAssetFileNameList(topicIdJsonArray.optString(i)))
+      }
+
       val primeAssetJobs = allFiles.map {
         backgroundScope.async {
           assetRepository.primeTextFileFromLocalAssets(it)
