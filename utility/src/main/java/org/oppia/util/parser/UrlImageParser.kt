@@ -88,6 +88,22 @@ class UrlImageParser private constructor(
             drawableHeight = (drawableHeight.toDouble() * multipleFactor).toInt()
             drawableWidth = (drawableWidth.toDouble() * multipleFactor).toInt()
           }
+          val maximumImageSize = context.resources.getDimensionPixelSize(R.dimen.maximum_image_size)
+          if (drawableHeight >= maximumImageSize || drawableWidth >= maximumImageSize) {
+            // The multipleFactor value is used to make sure that the aspect ratio of the image remains the same.
+            // Example: Height is 420, width is 440 and maximumImageSize is 200.
+            // Then multipleFactor will be (200/420).
+            // The new height will be 168 and new width will be 176.
+            val multipleFactor = if (drawableHeight <= drawableWidth) {
+              // If height is less then the multipleFactor, value is determined by height.
+              (maximumImageSize.toDouble() / drawableHeight.toDouble())
+            } else {
+              // If width is less then the multipleFactor, value is determined by width.
+              (maximumImageSize.toDouble() / drawableWidth.toDouble())
+            }
+            drawableHeight = (drawableHeight.toDouble() * multipleFactor).toInt()
+            drawableWidth = (drawableWidth.toDouble() * multipleFactor).toInt()
+          }
           val initialDrawableMargin = if (imageCenterAlign) {
             calculateInitialMargin(it, drawableWidth)
           } else {
