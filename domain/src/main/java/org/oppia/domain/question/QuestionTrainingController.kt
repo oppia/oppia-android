@@ -3,11 +3,12 @@ package org.oppia.domain.question
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.oppia.app.model.Question
+import org.oppia.domain.oppialogger.crashlytics.ExceptionsController
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
-import org.oppia.util.logging.ExceptionLogger
+import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.random.Random
@@ -21,7 +22,8 @@ class QuestionTrainingController @Inject constructor(
   private val questionAssessmentProgressController: QuestionAssessmentProgressController,
   private val topicController: TopicController,
   private val dataProviders: DataProviders,
-  private val exceptionLogger: ExceptionLogger,
+  private val exceptionsController: ExceptionsController,
+  private val oppiaClock: OppiaClock,
   @QuestionCountPerTrainingSession private val questionCountPerSession: Int,
   @QuestionTrainingSeed private val questionTrainingSeed: Long
 ) {
@@ -52,7 +54,7 @@ class QuestionTrainingController @Inject constructor(
       ) { it }
       dataProviders.convertToLiveData(erasedDataProvider)
     } catch (e: Exception) {
-      exceptionLogger.logException(e)
+      exceptionsController.logException(e, oppiaClock.getCurrentCalendar().timeInMillis)
       MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -111,7 +113,7 @@ class QuestionTrainingController @Inject constructor(
       questionAssessmentProgressController.finishQuestionTrainingSession()
       MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
-      exceptionLogger.logException(e)
+      exceptionsController.logException(e, oppiaClock.getCurrentCalendar().timeInMillis)
       MutableLiveData(AsyncResult.failed(e))
     }
   }

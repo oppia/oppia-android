@@ -28,7 +28,7 @@ class ExceptionsController @Inject constructor(
   lateinit var exceptionCause: Throwable
 
   fun logException(exception: Exception, timestamp: Long) {
-    uploadOrCacheExceptionLog(exceptionToExceptionLog(exception, timestamp))
+    uploadOrCacheExceptionLog(exception, timestamp)
   }
 
   /**
@@ -37,10 +37,11 @@ class ExceptionsController @Inject constructor(
    * Saves the [exceptionLog] to the [exceptionLogStore] in the absence of it.
    * Uploads to remote service in the presence of it.
    */
-  private fun uploadOrCacheExceptionLog(exceptionLog: ExceptionLog) {
+  private fun uploadOrCacheExceptionLog(exception: Exception, timestamp: Long) {
     when (networkConnectionUtil.getCurrentConnectionStatus()) {
-      NetworkConnectionUtil.ConnectionStatus.NONE -> cacheExceptionLog(exceptionLog)
-      else -> exceptionLogger.logException(exceptionLogToException(exceptionLog))
+      NetworkConnectionUtil.ConnectionStatus.NONE ->
+        cacheExceptionLog(exceptionToExceptionLog(exception, timestamp))
+      else -> exceptionLogger.logException(exception)
     }
   }
 

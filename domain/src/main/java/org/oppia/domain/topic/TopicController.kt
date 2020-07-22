@@ -27,12 +27,13 @@ import org.oppia.app.model.Translation
 import org.oppia.app.model.TranslationMapping
 import org.oppia.app.model.Voiceover
 import org.oppia.app.model.VoiceoverMapping
+import org.oppia.domain.oppialogger.crashlytics.ExceptionsController
 import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.domain.util.StateRetriever
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
-import org.oppia.util.logging.ExceptionLogger
+import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -120,7 +121,8 @@ class TopicController @Inject constructor(
   private val jsonAssetRetriever: JsonAssetRetriever,
   private val stateRetriever: StateRetriever,
   private val storyProgressController: StoryProgressController,
-  private val exceptionLogger: ExceptionLogger
+  private val exceptionsController: ExceptionsController,
+  private val oppiaClock: OppiaClock
 ) {
 
   /**
@@ -184,7 +186,7 @@ class TopicController @Inject constructor(
       try {
         AsyncResult.success(createConceptCardFromJson(skillId))
       } catch (e: Exception) {
-        exceptionLogger.logException(e)
+        exceptionsController.logException(e, oppiaClock.getCurrentCalendar().timeInMillis)
         AsyncResult.failed<ConceptCard>(e)
       }
     )
@@ -196,7 +198,7 @@ class TopicController @Inject constructor(
       try {
         AsyncResult.success(retrieveReviewCard(topicId, subtopicId))
       } catch (e: Exception) {
-        exceptionLogger.logException(e)
+        exceptionsController.logException(e, oppiaClock.getCurrentCalendar().timeInMillis)
         AsyncResult.failed<RevisionCard>(e)
       }
     )
