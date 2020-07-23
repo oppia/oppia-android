@@ -9,5 +9,6 @@ def domain_test(name, src, test_class):
         custom_package = "org.oppia.domain",
         test_class = test_class,
         test_manifest = "src/test/TestManifest.xml",
-        data = native.glob(["src/main/assets/**"]),
+        assets = native.glob(["src/main/assets/**"]),
+        assets_dir = "src/main/assets/",
     )

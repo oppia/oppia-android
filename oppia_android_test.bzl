@@ -2,7 +2,7 @@ load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 def oppia_android_test(name, srcs, test_manifest, custom_package, test_class, src_library_name,
-                       data=None, resource_files=None):
+                       assets=None, assets_dir=None, resource_files=None):
 
     kt_android_library(
         name = name + "_lib",
@@ -13,7 +13,8 @@ def oppia_android_test(name, srcs, test_manifest, custom_package, test_class, sr
         deps = [
             ":" + src_library_name,
         ],
-        data = data,
+        assets = assets,
+        assets_dir = assets_dir,
     )
 
     native.android_local_test(
