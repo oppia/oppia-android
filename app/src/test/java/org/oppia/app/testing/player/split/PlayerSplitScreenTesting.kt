@@ -11,8 +11,8 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.utility.SplitScreenManager
 import org.oppia.app.testing.ExplorationTestActivity
+import org.oppia.app.utility.SplitScreenManager
 import org.robolectric.annotation.Config
 
 // Devices reference: https://material.io/resources/devices/
