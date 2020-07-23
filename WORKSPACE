@@ -20,19 +20,31 @@ http_archive(
 load("@rules_jvm_external//:defs.bzl", "maven_install")
 
 # Add support for Kotlin: https://github.com/bazelbuild/rules_kotlin.
-RULES_KOTLIN_VERSION = "legacy-1.3.0-rc4"
-RULES_KOTLIN_SHA = "fe32ced5273bcc2f9e41cea65a28a9184a77f3bc30fea8a5c47b3d3bfc801dff"
-http_archive(
-    name = "io_bazel_rules_kotlin",
-    urls = ["https://github.com/bazelbuild/rules_kotlin/archive/%s.zip" % RULES_KOTLIN_VERSION],
-    type = "zip",
-    strip_prefix = "rules_kotlin-%s" % RULES_KOTLIN_VERSION,
-    sha256 = RULES_KOTLIN_SHA,
-)
+#RULES_KOTLIN_VERSION = "legacy-1.3.0-rc4"
+#RULES_KOTLIN_SHA = "fe32ced5273bcc2f9e41cea65a28a9184a77f3bc30fea8a5c47b3d3bfc801dff"
+#http_archive(
+#    name = "io_bazel_rules_kotlin",
+#    urls = ["https://github.com/bazelbuild/rules_kotlin/archive/%s.zip" % RULES_KOTLIN_VERSION],
+#    type = "zip",
+#    strip_prefix = "rules_kotlin-%s" % RULES_KOTLIN_VERSION,
+#    sha256 = RULES_KOTLIN_SHA,
+#)
+#load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kotlin_repositories", "kt_register_toolchains")
+#kotlin_repositories()
+#kt_register_toolchains()
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kotlin_repositories", "kt_register_toolchains")
-kotlin_repositories()
-kt_register_toolchains()
+#RULES_KOTLIN_VERSION = "legacy-1.3.0-rc4"
+#RULES_KOTLIN_SHA = "fe32ced5273bcc2f9e41cea65a28a9184a77f3bc30fea8a5c47b3d3bfc801dff"
+#http_archive(
+#    name = "io_bazel_rules_kotlin",
+#    urls = ["https://github.com/oppia/rules_kotlin/archive/%s.zip" % RULES_KOTLIN_VERSION],
+#    type = "zip",
+#    strip_prefix = "rules_kotlin-%s" % RULES_KOTLIN_VERSION,
+#    sha256 = RULES_KOTLIN_SHA,
+#)
+#load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kotlin_repositories", "kt_register_toolchains")
+#kotlin_repositories()
+#kt_register_toolchains()
 
 # rules_proto defines abstract rules for building Protocol Buffers.
 http_archive(
@@ -63,3 +75,19 @@ http_archive(
 load("@rules_java//java:repositories.bzl", "rules_java_dependencies", "rules_java_toolchains")
 rules_java_dependencies()
 rules_java_toolchains()
+
+RULES_KOTLIN_VERSION = "legacy-1.4.0-rcx-oppia-exclusive-rc01"
+RULES_KOTLIN_SHA = "600f3d916eda5531dd70614ec96dc92b4ac24da0e1d815eb94559976e9bea8aa"
+http_archive(
+   name = "io_bazel_rules_kotlin",
+   urls = ["https://github.com/oppia/rules_kotlin/archive/%s.zip" % RULES_KOTLIN_VERSION],
+   type = "zip",
+   strip_prefix = "rules_kotlin-%s" % RULES_KOTLIN_VERSION,
+   sha256 = RULES_KOTLIN_SHA,
+)
+#TODO: Remove kt_download_local_dev_dependencies() when switching to rules_kotlin release
+load("@io_bazel_rules_kotlin//kotlin:dependencies.bzl", "kt_download_local_dev_dependencies")
+kt_download_local_dev_dependencies()
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kotlin_repositories", "kt_register_toolchains")
+kotlin_repositories()
+kt_register_toolchains()
