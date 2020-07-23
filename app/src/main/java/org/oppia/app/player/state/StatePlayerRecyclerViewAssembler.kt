@@ -172,7 +172,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   fun compute(
     ephemeralState: EphemeralState,
     gcsEntityId: String,
-    shouldSplit: Boolean
+    isSplitView: Boolean
   ): Pair<List<StateItemViewModel>, List<StateItemViewModel>> {
     val hasPreviousState = ephemeralState.hasPreviousState
 
@@ -190,13 +190,13 @@ class StatePlayerRecyclerViewAssembler private constructor(
         rightPendingItemList,
         ephemeralState.pendingState.wrongAnswerList,
         /* isCorrectAnswer= */ false,
-        shouldSplit,
+        isSplitView,
         gcsEntityId
       )
       if (playerFeatureSet.hintsAndSolutionsSupport) {
         hintHandler.maybeScheduleShowHint(ephemeralState.state, ephemeralState.pendingState)
       }
-      if (playerFeatureSet.interactionSupport && !shouldSplit) {
+      if (playerFeatureSet.interactionSupport && !isSplitView) {
         addInteractionForPendingState(
           leftPendingItemList,
           interaction,
@@ -204,7 +204,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
           gcsEntityId
         )
       }
-      if (playerFeatureSet.interactionSupport && shouldSplit) {
+      if (playerFeatureSet.interactionSupport && isSplitView) {
         addInteractionForPendingState(
           rightPendingItemList,
           interaction,
@@ -218,7 +218,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         rightPendingItemList,
         ephemeralState.completedState.answerList,
         /* isCorrectAnswer= */ true,
-        shouldSplit,
+        isSplitView,
         gcsEntityId
       )
     }
@@ -259,7 +259,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       canContinueToNextState,
       hasGeneralContinueButton,
       ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE,
-      shouldSplit
+      isSplitView
     )
     return Pair(leftPendingItemList, rightPendingItemList)
   }
@@ -298,7 +298,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     rightPendingItemList: MutableList<StateItemViewModel>,
     answersAndResponses: List<AnswerAndResponse>,
     isCorrectAnswer: Boolean,
-    shouldSplit: Boolean,
+    isSplitView: Boolean,
     gcsEntityId: String
   ) {
     if (answersAndResponses.size > 1) {
@@ -335,7 +335,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
     answersAndResponses.lastOrNull()?.let { answerAndResponse ->
       if (playerFeatureSet.pastAnswerSupport) {
-        if (isCorrectAnswer && shouldSplit) {
+        if (isCorrectAnswer && isSplitView) {
           rightPendingItemList += createSubmittedAnswer(answerAndResponse.userAnswer, gcsEntityId)
         } else {
           pendingItemList += createSubmittedAnswer(answerAndResponse.userAnswer, gcsEntityId)

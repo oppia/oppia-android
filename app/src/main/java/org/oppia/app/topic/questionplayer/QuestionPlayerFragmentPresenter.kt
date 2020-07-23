@@ -221,21 +221,21 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
     currentQuestionState = ephemeralQuestion.ephemeralState.state
 
-    val shouldSplit =
+    val isSplitView =
       splitScreenManager.isSplitPossible(ephemeralQuestion.ephemeralState.state.interaction.id)
 
-    if (shouldSplit) {
-      questionViewModel.shouldSplitView.set(true)
+    if (isSplitView) {
+      questionViewModel.isSplitView.set(true)
       questionViewModel.centerGuidelinePercentage.set(0.5f)
     } else {
-      questionViewModel.shouldSplitView.set(false)
+      questionViewModel.isSplitView.set(false)
       questionViewModel.centerGuidelinePercentage.set(1f)
     }
 
     val dataPair = recyclerViewAssembler.compute(
       ephemeralQuestion.ephemeralState,
       skillId,
-      shouldSplit
+      isSplitView
     )
 
     questionViewModel.itemList.clear()

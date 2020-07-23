@@ -19,6 +19,7 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 class PlayerSplitScreenTesting {
 
+  // TODO(#1512): Add test cases for ImageClickInput interaction for split-view screen.
   @Before
   @ExperimentalCoroutinesApi
   fun setUp() {

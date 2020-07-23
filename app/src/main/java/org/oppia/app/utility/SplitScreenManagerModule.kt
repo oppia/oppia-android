@@ -5,7 +5,7 @@ import dagger.Module
 import dagger.Provides
 import org.oppia.app.application.ApplicationContext
 
-/** A module for [SplitScreenManager] for dagger injection*/
+/** A module for [SplitScreenManager] for dagger injection. */
 @Module
 class SplitScreenManagerModule {
 

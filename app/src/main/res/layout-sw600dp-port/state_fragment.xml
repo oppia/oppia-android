@@ -53,7 +53,7 @@
         android:overScrollMode="never"
         android:paddingTop="@{viewModel.isAudioBarVisible ? @dimen/padding_72dp : @dimen/padding_24dp}"
         android:scrollbars="none"
-        android:visibility="@{viewModel.shouldSplitView ? View.VISIBLE : View.GONE}"
+        android:visibility="@{viewModel.isSplitView ? View.VISIBLE : View.GONE}"
         app:data="@{viewModel.rightItemList}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintStart_toEndOf="@id/center_guideline"

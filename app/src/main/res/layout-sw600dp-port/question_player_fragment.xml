@@ -74,7 +74,7 @@
         android:dividerHeight="8dp"
         android:overScrollMode="never"
         android:paddingTop="24dp"
-        android:visibility="@{viewModel.shouldSplitView ? View.VISIBLE : View.GONE}"
+        android:visibility="@{viewModel.isSplitView ? View.VISIBLE : View.GONE}"
         app:data="@{viewModel.rightItemList}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@id/question_progress_bar"

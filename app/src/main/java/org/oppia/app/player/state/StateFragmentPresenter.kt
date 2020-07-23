@@ -290,12 +290,11 @@ class StateFragmentPresenter @Inject constructor(
 
     val ephemeralState = result.getOrThrow()
     val shouldSplit = splitScreenManager.isSplitPossible(ephemeralState.state.interaction.id)
-
     if (shouldSplit) {
-      viewModel.shouldSplitView.set(true)
+      viewModel.isSplitView.set(true)
       viewModel.centerGuidelinePercentage.set(0.5f)
     } else {
-      viewModel.shouldSplitView.set(false)
+      viewModel.isSplitView.set(false)
       viewModel.centerGuidelinePercentage.set(1f)
     }
 
