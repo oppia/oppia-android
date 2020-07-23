@@ -111,6 +111,8 @@ maven_install(
         "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03",
         "org.mockito:mockito-core:2.19.0",
         "androidx.test.ext:junit:1.1.1",
+        "android.arch.core:core-testing:1.1.1",
+        "androidx.arch.core:core-testing:2.1.0"
     ],
     repositories = DAGGER_REPOSITORIES + [
         "https://maven.google.com",

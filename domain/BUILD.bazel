@@ -12,16 +12,16 @@ kt_android_library(
         ":dagger",
         "//model:model_lib",
         "//data:cache_store_lib",
+        "//testing:testing_lib",
     ],
-    visibility = ["//visibility:public"]
+    visibility = ["//visibility:public"],
 )
 
-#TODO: Get test files to build
-'''
 kt_android_library(
     name = "domain_test_lib",
     custom_package = "org.oppia.domain",
-    srcs = glob(["src/test/java/org/oppia/domain/**/*.kt"]),
+    srcs = glob(["src/test/java/org/oppia/domain/**/*.kt",
+                 "src/main/java/org/oppia/domain/**/*.kt"]),
     data = glob(["src/main/assets/*.json",]),
     manifest = "src/test/TestManifest.xml",
     deps = [
@@ -29,15 +29,14 @@ kt_android_library(
         ":domain_lib",
         "//model:model_lib",
         "//data:cache_store_lib",
+        "//testing:testing_lib",
+        "@robolectric//bazel:android-all",
         artifact("com.google.truth:truth"),
         artifact("androidx.test.ext:junit"),
-        artifact("org.robolectric:robolectric"),
-        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-android"),
-        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test"),
-        "@robolectric//bazel:android-all",
-        artifact("org.jetbrains.kotlin:kotlin-reflect"),
+        artifact("org.jetbrains.kotlin:kotlin-test-junit"),
+        artifact("androidx.arch.core:core-testing"),
     ],
-    visibility = ["//visibility:public"]
-)'''
+    visibility = ["//visibility:public"],
+)
 
 dagger_rules()
