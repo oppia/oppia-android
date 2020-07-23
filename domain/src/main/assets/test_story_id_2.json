@@ -11,6 +11,7 @@
       "thumbnail_bg_color": "#D68F78",
       "exp_summary_dict": {
         "thumbnail_bg_color": "#d68453",
+        "thumbnail_icon_url": "",
         "title": "Fifth Exploration inner",
         "language_code": "en",
         "objective": "Learn about oppia app via testing in fifth exploration.",
