@@ -21,8 +21,7 @@ kt_android_library(
 kt_android_library(
     name = "domain_test_lib",
     custom_package = "org.oppia.domain",
-    srcs = glob(["src/test/java/org/oppia/domain/**/*.kt",
-                 "src/main/java/org/oppia/domain/**/*.kt"]),
+    srcs = glob(["src/test/java/org/oppia/domain/**/*.kt"]),
     data = glob(["src/main/assets/**"]),
     manifest = "src/test/TestManifest.xml",
     deps = [
@@ -53,21 +52,18 @@ domain_test(
     test_class = "org.oppia.domain.audio.CellularAudioDialogControllerTest",
 )
 
-#TODO: Not building
 domain_test(
     name = "AnswerClassificationControllerTest",
     src = ["src/test/java/org/oppia/domain/classify/AnswerClassificationControllerTest.kt"],
     test_class = "org.oppia.domain.classify.AnswerClassificationControllerTest",
 )
 
-#TODO: Not building
 domain_test(
     name = "NumericInputEqualsRuleClassifierProviderTest",
     src = ["src/test/java/org/oppia/domain/classify/NumericInputEqualsRuleClassifierProviderTest.kt"],
     test_class = "org.oppia.domain.classify.NumericInputEqualsRuleClassifierProviderTest",
 )
 
-#TODO: Not building
 domain_test(
     name = "DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest",
     src = [
@@ -78,7 +74,6 @@ domain_test(
     + "DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest",
 )
 
-#TODO: Not building
 domain_test(
     name = "DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest",
     src = [
@@ -89,7 +84,6 @@ domain_test(
     + "DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest",
 )
 
-#TODO: Not building
 domain_test(
     name = "DragDropSortInputIsEqualToOrderingClassifierProviderTest",
     src = [
@@ -100,7 +94,6 @@ domain_test(
     + "DragDropSortInputIsEqualToOrderingClassifierProviderTest",
 )
 
-#TODO: Not building
 domain_test(
     name = "DragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProviderTest",
     src = [
@@ -111,7 +104,6 @@ domain_test(
     + "DragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProviderTest",
 )
 
-#TODO: Not building
 domain_test(
     name = "ImageClickInputIsInRegionRuleClassifierProviderTest",
     src = [
@@ -122,7 +114,6 @@ domain_test(
     + "ImageClickInputIsInRegionRuleClassifierProviderTest",
 )
 
-#TODO: Not building
 domain_test(
     name = "MultipleChoiceInputEqualsRuleClassifierProviderTest",
     src = [
@@ -133,7 +124,6 @@ domain_test(
     + "MultipleChoiceInputEqualsRuleClassifierProviderTest",
 )
 
-#TODO: Not building
 domain_test(
     name = "TextInputContainsRuleClassifierProviderTest",
     src = [
@@ -144,7 +134,6 @@ domain_test(
     + "TextInputContainsRuleClassifierProviderTest",
 )
 
-#TODO: Not building
 domain_test(
     name = "TextInputEqualsRuleClassifierProviderTest",
     src = [
@@ -162,7 +151,7 @@ domain_test(
     test_class = "org.oppia.domain.exploration.ExplorationDataControllerTest",
 )
 
-#TODO: Not building
+#TODO: Building not passing
 domain_test(
     name = "ExplorationProgressControllerTest",
     src = ["src/test/java/org/oppia/domain/exploration/ExplorationProgressControllerTest.kt"],

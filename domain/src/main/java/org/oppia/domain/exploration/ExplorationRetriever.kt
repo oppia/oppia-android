@@ -17,7 +17,7 @@ class ExplorationRetriever @Inject constructor(
 ) {
   // TODO(#169): Force callers of this method on a background thread.
   /** Loads and returns an exploration for the specified exploration ID, or fails. */
-  internal fun loadExploration(explorationId: String): Exploration {
+  fun loadExploration(explorationId: String): Exploration {
     val explorationObject =
       jsonAssetRetriever.loadJsonFromAsset("$explorationId.json")
         ?: return Exploration.getDefaultInstance()

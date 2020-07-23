@@ -13,8 +13,8 @@ import kotlin.reflect.KClass
  * managing the enum->method relationship directly.
  */
 @Singleton // Avoid recomputing the mapping multiple times.
-internal class InteractionObjectTypeExtractorRepository @Inject constructor() {
-  private val extractors: Map<ObjectTypeCase, ExtractorMapping<*>> by lazy {
+class InteractionObjectTypeExtractorRepository @Inject constructor() {
+  val extractors: Map<ObjectTypeCase, ExtractorMapping<*>> by lazy {
     computeExtractorMap()
   }
 
@@ -40,7 +40,7 @@ internal class InteractionObjectTypeExtractorRepository @Inject constructor() {
     }
   }
 
-  internal data class ExtractorMapping<T : Any>(
+  data class ExtractorMapping<T : Any>(
     val extractionType: KClass<T>,
     val genericExtractor: (InteractionObject) -> T
   )

@@ -17,7 +17,7 @@ def oppia_android_test(name, srcs, test_manifest, custom_package, test_class, sr
     )
 
     native.android_local_test(
-       name = name + "_test_lib",
+       name = name,
        custom_package = custom_package,
        test_class = test_class,
        manifest = test_manifest,
@@ -28,5 +28,4 @@ def oppia_android_test(name, srcs, test_manifest, custom_package, test_class, sr
            "@maven//:org_robolectric_robolectric",
            artifact("org.jetbrains.kotlin:kotlin-reflect"),
        ],
-       data = data
      )

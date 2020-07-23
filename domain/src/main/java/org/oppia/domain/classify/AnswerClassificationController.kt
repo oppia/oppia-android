@@ -21,7 +21,7 @@ class AnswerClassificationController @Inject constructor(
    * Classifies the specified answer in the context of the specified [Interaction] and returns the [Outcome] that best
    * matches the learner's answer.
    */
-  internal fun classify(interaction: Interaction, answer: InteractionObject): Outcome {
+  fun classify(interaction: Interaction, answer: InteractionObject): Outcome {
     val interactionClassifier = checkNotNull(
       interactionClassifiers[interaction.id]
     ) {
