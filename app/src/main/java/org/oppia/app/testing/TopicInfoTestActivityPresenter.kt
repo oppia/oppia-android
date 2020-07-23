@@ -19,6 +19,6 @@ class TopicInfoTestActivityPresenter @Inject constructor(
       TopicInfoFragment.newInstance(internalProfileId = 0, topicId = RATIOS_TOPIC_ID)
     activity.supportFragmentManager.beginTransaction()
       .add(R.id.topic_info_container, topicInfoFragment, TopicInfoFragment.TOPIC_INFO_FRAGMENT_TAG)
-      .commit()
+      .commitNow()
   }
 }
