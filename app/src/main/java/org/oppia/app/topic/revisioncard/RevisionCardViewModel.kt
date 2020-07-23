@@ -42,8 +42,12 @@ class RevisionCardViewModel @Inject constructor(
     returnToTopicClickListener.onReturnToTopicClicked()
   }
 
-  /** Sets the value of subtopicId and binding. Must be called before setting ViewModel to binding. */
-  fun setSubtopicIdAndBinding(topicId: String, subtopicId: Int, binding: RevisionCardFragmentBinding) {
+  /** Sets the value of topicId, subtopicId and binding before anything else. */
+  fun setSubtopicIdAndBinding(
+    topicId: String,
+    subtopicId: Int,
+    binding: RevisionCardFragmentBinding
+  ) {
     this.topicId = topicId
     this.subtopicId = subtopicId
     this.binding = binding

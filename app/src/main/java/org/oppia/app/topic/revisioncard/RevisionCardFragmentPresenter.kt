@@ -12,7 +12,7 @@ import org.oppia.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
-/** Presenter for [RevisionCardFragment], sets up bindings from ViewModel */
+/** Presenter for [RevisionCardFragment], sets up bindings from ViewModel. */
 @FragmentScope
 class RevisionCardFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
@@ -21,7 +21,12 @@ class RevisionCardFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<RevisionCardViewModel>
 ) {
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, topicId: String, subtopicId: Int): View? {
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    topicId: String,
+    subtopicId: Int
+  ): View? {
     val binding =
       RevisionCardFragmentBinding.inflate(
         inflater,
