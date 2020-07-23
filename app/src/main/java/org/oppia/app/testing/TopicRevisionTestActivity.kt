@@ -19,7 +19,7 @@ class TopicRevisionTestActivity : InjectableAppCompatActivity(), RouteToRevision
     topicRevisionTestActivityPresenter.handleOnCreate()
   }
 
-  override fun routeToRevisionCard(topicId: String, subtopicId: String) {
+  override fun routeToRevisionCard(topicId: String, subtopicId: Int) {
     startActivity(
       RevisionCardActivity.createRevisionCardActivityIntent(
         this,
