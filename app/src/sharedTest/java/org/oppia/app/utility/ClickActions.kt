@@ -9,6 +9,8 @@ import androidx.test.espresso.action.Tap
 /**
  * A custom [ViewAction] that can be used to perform click at a particular position.
  *
+ * Here pointX and pointY are being normalized from 0 to 1 and are relative to the corresponding view.
+ *
  * Reference: https://stackoverflow.com/a/22798043
  */
 fun clickPoint(pointX: Float, pointY: Float): ViewAction {

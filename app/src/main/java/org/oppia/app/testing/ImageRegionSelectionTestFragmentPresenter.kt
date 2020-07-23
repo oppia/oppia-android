@@ -8,8 +8,6 @@ import kotlinx.android.synthetic.main.image_region_selection_test_fragment.view.
 import org.oppia.app.R
 import org.oppia.app.model.ImageWithRegions.LabeledRegion
 import org.oppia.app.model.Point2d
-import org.oppia.app.utility.ClickableAreasImage
-import org.oppia.app.utility.OnClickableAreaClickedListener
 import javax.inject.Inject
 
 /** The presenter for [ImageRegionSelectionTestActivity] */
@@ -22,23 +20,17 @@ class ImageRegionSelectionTestFragmentPresenter @Inject constructor(
     with(view) {
       val clickableAreas: List<LabeledRegion> = getClickableAreas()
       clickable_image_view.setClickableAreas(clickableAreas)
-
-      val clickableAreasImage = ClickableAreasImage(
-        clickable_image_view,
-        image_parent_view,
-        activity as OnClickableAreaClickedListener
-      )
-      clickable_image_view.addOnLayoutChangeListener { _, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom -> // ktlint-disable max-line-length
-        // Update the regions, as the bounds have changed
-        if (left != oldLeft || top != oldTop || right != oldRight || bottom != oldBottom)
-          clickableAreasImage.addRegionViews()
-      }
     }
     return view
   }
 
   private fun getClickableAreas(): List<LabeledRegion> {
     return listOf(
+      createLabeledRegion(
+        "Region 3",
+        createPoint2d(0.24242424242424243f, 0.22400442477876106f) to
+          createPoint2d(0.49242424242424243f, 0.7638274336283186f)
+      ),
       createLabeledRegion(
         "Region 1",
         createPoint2d(0.553030303030303f, 0.5470132743362832f) to
@@ -48,11 +40,6 @@ class ImageRegionSelectionTestFragmentPresenter @Inject constructor(
         "Region 2",
         createPoint2d(0.5454545454545454f, 0.22842920353982302f) to
           createPoint2d(0.7537878787878788f, 0.4540929203539823f)
-      ),
-      createLabeledRegion(
-        "Region 3",
-        createPoint2d(0.24242424242424243f, 0.22400442477876106f) to
-          createPoint2d(0.49242424242424243f, 0.7638274336283186f)
       )
     )
   }

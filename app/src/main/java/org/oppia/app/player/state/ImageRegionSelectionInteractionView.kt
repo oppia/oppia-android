@@ -23,6 +23,8 @@ import javax.inject.Inject
 /**
  * A custom [AppCompatImageView] with a list of [LabeledRegion] to work with
  * [ClickableAreasImage].
+ *
+ * In order to correctly work with this interaction make sure you've called attached an listener using setListener function.
  */
 class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   context: Context,
@@ -33,6 +35,7 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   private var isAccessibilityEnabled: Boolean = false
   private lateinit var urlString: String
   private var clickableAreas: List<ImageWithRegions.LabeledRegion> = emptyList()
+  private lateinit var listener: OnClickableAreaClickedListener
 
   @Inject
   lateinit var accessibilityManager: CustomAccessibilityManager
@@ -73,6 +76,17 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
 
   fun setClickableAreas(clickableAreas: List<ImageWithRegions.LabeledRegion>) {
     this.clickableAreas = clickableAreas
+  }
+
+  /** Binds [OnClickableAreaClickedListener] with the view inorder to get callback from [ClickableAreasImage]. */
+  fun setListener(onClickableAreaClickedListener: OnClickableAreaClickedListener) {
+    this.listener = onClickableAreaClickedListener
+    val area = ClickableAreasImage(
+      this,
+      this.parent as FrameLayout,
+      listener
+    )
+    area.addRegionViews()
   }
 
   fun getClickableAreas(): List<ImageWithRegions.LabeledRegion> {
