@@ -27,7 +27,7 @@ class RevisionCardViewModel @Inject constructor(
   @RevisionCardHtmlParserEntityType private val entityType: String
 ) : ViewModel() {
   private lateinit var topicId: String
-  private lateinit var subtopicId: String
+  private var subtopicId: Int = 0
   private lateinit var binding: RevisionCardFragmentBinding
   private val returnToTopicClickListener: ReturnToTopicClickListener =
     activity as ReturnToTopicClickListener
@@ -43,9 +43,9 @@ class RevisionCardViewModel @Inject constructor(
   }
 
   /** Sets the value of subtopicId and binding. Must be called before setting ViewModel to binding. */
-  fun setSubtopicIdAndBinding(topicId: String, id: String, binding: RevisionCardFragmentBinding) {
-    subtopicId = id
+  fun setSubtopicIdAndBinding(topicId: String, subtopicId: Int, binding: RevisionCardFragmentBinding) {
     this.topicId = topicId
+    this.subtopicId = subtopicId
     this.binding = binding
   }
 
@@ -72,7 +72,7 @@ class RevisionCardViewModel @Inject constructor(
     )
     subtopicTitle = revisionCard.subtopicTitle
     return htmlParserFactory.create(
-      resourceBucketName, entityType, subtopicId, /* imageCenterAlign= */ true
+      resourceBucketName, entityType, topicId, /* imageCenterAlign= */ true
     ).parseOppiaHtml(revisionCard.pageContents.html, binding.revisionCardExplanationText)
   }
 }

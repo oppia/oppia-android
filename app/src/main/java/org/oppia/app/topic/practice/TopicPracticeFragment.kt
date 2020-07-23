@@ -10,7 +10,7 @@ import org.oppia.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
 import javax.inject.Inject
 
-private const val KEY_SKILL_ID_LIST = "SKILL_ID_LIST"
+private const val KEY_SUBTOPIC_ID_LIST = "SKILL_ID_LIST"
 
 /** Fragment that displays skills for topic practice mode. */
 class TopicPracticeFragment : InjectableFragment() {
@@ -39,9 +39,9 @@ class TopicPracticeFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    var selectedIdList = ArrayList<String>()
+    var selectedIdList = ArrayList<Int>()
     if (savedInstanceState != null) {
-      selectedIdList = savedInstanceState.getStringArrayList(KEY_SKILL_ID_LIST)
+      selectedIdList = savedInstanceState.getIntegerArrayList(KEY_SUBTOPIC_ID_LIST)!!
     }
     val internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)!!
     val topicId = checkNotNull(arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
@@ -58,9 +58,9 @@ class TopicPracticeFragment : InjectableFragment() {
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    outState.putStringArrayList(
-      KEY_SKILL_ID_LIST,
-      topicPracticeFragmentPresenter.selectedSkillIdList
+    outState.putIntegerArrayList(
+      KEY_SUBTOPIC_ID_LIST,
+      topicPracticeFragmentPresenter.selectedSubtopicIdList
     )
   }
 }

@@ -20,10 +20,8 @@ class RevisionCardFragmentPresenter @Inject constructor(
   private val oppiaClock: OppiaClock,
   private val viewModelProvider: ViewModelProvider<RevisionCardViewModel>
 ) {
-  private lateinit var topicId: String
-  private lateinit var subtopicId: String
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, topicId: String, subtopicId: Int): View? {
     val binding =
       RevisionCardFragmentBinding.inflate(
         inflater,
@@ -31,9 +29,6 @@ class RevisionCardFragmentPresenter @Inject constructor(
         /* attachToRoot= */ false
       )
     val viewModel = getReviewCardViewModel()
-
-    topicId = fragment.activity!!.intent.getStringExtra(TOPIC_ID_ARGUMENT_KEY)
-    subtopicId = fragment.activity!!.intent.getStringExtra(SUBTOPIC_ID_ARGUMENT_KEY)
 
     viewModel.setSubtopicIdAndBinding(topicId, subtopicId, binding)
     logRevisionCardEvent(topicId, subtopicId)
@@ -49,11 +44,11 @@ class RevisionCardFragmentPresenter @Inject constructor(
     return viewModelProvider.getForFragment(fragment, RevisionCardViewModel::class.java)
   }
 
-  private fun logRevisionCardEvent(topicId: String, subTopicId: String) {
+  private fun logRevisionCardEvent(topicId: String, subTopicId: Int) {
     analyticsController.logTransitionEvent(
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_REVISION_CARD,
-      analyticsController.createRevisionCardContext(topicId, subTopicId)
+      analyticsController.createRevisionCardContext(topicId, subTopicId.toString())
     )
   }
 }
