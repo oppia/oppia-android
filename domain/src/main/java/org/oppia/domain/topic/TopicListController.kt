@@ -57,6 +57,7 @@ const val TEST_TOPIC_ID_0 = "test_topic_id_0"
 const val TEST_TOPIC_ID_1 = "test_topic_id_1"
 const val FRACTIONS_TOPIC_ID = "GJ2rLXRKD5hw"
 const val SUBTOPIC_TOPIC_ID = "1"
+const val SUBTOPIC_TOPIC_ID_2 = "2"
 const val RATIOS_TOPIC_ID = "omzF4oqgeTXd"
 val TOPIC_THUMBNAILS = mapOf(
   FRACTIONS_TOPIC_ID to createTopicThumbnail0(),
@@ -119,7 +120,15 @@ class TopicListController @Inject constructor(
     //  load operation.
     if (cacheAssetsLocally) {
       // Ensure all JSON files are available in memory for quick retrieval.
-      val allFiles = TOPIC_FILE_ASSOCIATIONS.values.flatten()
+      val allFiles = mutableListOf<String>()
+      allFiles.add("topics.json")
+      val topicIdJsonArray = jsonAssetRetriever
+        .loadJsonFromAsset("topics.json")!!
+        .getJSONArray("topic_id_list")
+      for (i in 0 until topicIdJsonArray.length()) {
+        allFiles.addAll(topicController.getAssetFileNameList(topicIdJsonArray.optString(i)))
+      }
+
       val primeAssetJobs = allFiles.map {
         backgroundScope.async {
           assetRepository.primeTextFileFromLocalAssets(it)
