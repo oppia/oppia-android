@@ -25,7 +25,7 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Solution
 import org.oppia.app.model.State
 import org.oppia.app.model.UserAnswer
-import org.oppia.app.player.SplitScreenManager
+import org.oppia.app.utility.SplitScreenManager
 import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.AudioUiManager
@@ -290,7 +290,7 @@ class StateFragmentPresenter @Inject constructor(
     }
 
     val ephemeralState = result.getOrThrow()
-    val shouldSplit = splitScreenManager.shouldSplit(ephemeralState.state.interaction.id)
+    val shouldSplit = splitScreenManager.isSplitPossible(ephemeralState.state.interaction.id)
 
     if (shouldSplit) {
       viewModel.shouldSplitView.set(true)

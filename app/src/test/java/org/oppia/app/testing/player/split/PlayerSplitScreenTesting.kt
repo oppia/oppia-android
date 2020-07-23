@@ -11,7 +11,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.player.SplitScreenManager
+import org.oppia.app.utility.SplitScreenManager
 import org.oppia.app.testing.ExplorationTestActivity
 import org.robolectric.annotation.Config
 
@@ -36,7 +36,7 @@ class PlayerSplitScreenTesting {
   fun testSplitScreen_540x960_xhdpi_continueInteraction_NoSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplit("Continue")).isFalse()
+        assertThat(SplitScreenManager(activity).isSplitPossible("Continue")).isFalse()
       }
     }
   }
@@ -46,7 +46,7 @@ class PlayerSplitScreenTesting {
   fun testSplitScreen_540x960_xhdpi_dragInteraction_NoSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplit("DragAndDropSortInput")).isFalse()
+        assertThat(SplitScreenManager(activity).isSplitPossible("DragAndDropSortInput")).isFalse()
       }
     }
   }
@@ -56,7 +56,7 @@ class PlayerSplitScreenTesting {
   fun testSplitScreen_800x1280_xhdpi_continueInteraction_NoSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplit("Continue")).isFalse()
+        assertThat(SplitScreenManager(activity).isSplitPossible("Continue")).isFalse()
       }
     }
   }
@@ -66,7 +66,7 @@ class PlayerSplitScreenTesting {
   fun testSplitScreen_800x1280_xhdpi_dragInteraction_Split() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplit("DragAndDropSortInput")).isTrue()
+        assertThat(SplitScreenManager(activity).isSplitPossible("DragAndDropSortInput")).isTrue()
       }
     }
   }
@@ -76,7 +76,7 @@ class PlayerSplitScreenTesting {
   fun testSplitScreen_411x731_xxxhdpi_dragInteraction_NoSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplit("DragAndDropSortInput")).isFalse()
+        assertThat(SplitScreenManager(activity).isSplitPossible("DragAndDropSortInput")).isFalse()
       }
     }
   }

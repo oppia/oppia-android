@@ -23,11 +23,11 @@ import org.oppia.app.model.Hint
 import org.oppia.app.model.Solution
 import org.oppia.app.model.State
 import org.oppia.app.model.UserAnswer
-import org.oppia.app.player.SplitScreenManager
 import org.oppia.app.player.state.StatePlayerRecyclerViewAssembler
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.stopplaying.RestartPlayingSessionListener
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
+import org.oppia.app.utility.SplitScreenManager
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.domain.question.QuestionAssessmentProgressController
@@ -223,7 +223,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     currentQuestionState = ephemeralQuestion.ephemeralState.state
 
     val shouldSplit =
-      splitScreenManager.shouldSplit(ephemeralQuestion.ephemeralState.state.interaction.id)
+      splitScreenManager.isSplitPossible(ephemeralQuestion.ephemeralState.state.interaction.id)
 
     if (shouldSplit) {
       questionViewModel.shouldSplitView.set(true)
@@ -239,18 +239,16 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       binding.centerGuideline.layoutParams = params
     }
 
+    val dataPair = recyclerViewAssembler.compute(
+      ephemeralQuestion.ephemeralState,
+      skillId,
+      shouldSplit
+    )
+
     questionViewModel.itemList.clear()
-    questionViewModel.itemList += recyclerViewAssembler.compute(
-      ephemeralQuestion.ephemeralState,
-      skillId,
-      shouldSplit
-    ).first
+    questionViewModel.itemList += dataPair.first
     questionViewModel.rightItemList.clear()
-    questionViewModel.rightItemList += recyclerViewAssembler.compute(
-      ephemeralQuestion.ephemeralState,
-      skillId,
-      shouldSplit
-    ).second
+    questionViewModel.rightItemList += dataPair.second
   }
 
   private fun updateProgress(currentQuestionIndex: Int, questionCount: Int) {
