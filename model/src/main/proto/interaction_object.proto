@@ -95,8 +95,9 @@ message ImageWithRegions {
     }
 
     Region region = 2;
-    // The description for the region.
-    string content_description = 3;
+
+    // The description for the region that will be used for accessibility purpose to speak out about region.
+    string region_description = 3;
 
   }
   repeated LabeledRegion label_regions = 2;

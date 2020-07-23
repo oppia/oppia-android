@@ -15,11 +15,11 @@ import com.google.firebase.FirebaseApp
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import junit.framework.Assert.assertEquals
-import kotlinx.android.synthetic.main.image_region_selection_test_fragment.*
+import kotlinx.android.synthetic.main.image_region_selection_test_fragment.clickable_image_view
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matchers.allOf
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,6 +36,7 @@ import org.oppia.app.application.ApplicationComponent
 import org.oppia.app.application.ApplicationContext
 import org.oppia.app.application.ApplicationModule
 import org.oppia.app.player.state.StateFragment
+import org.oppia.app.utility.DefaultRegionClickedEvent
 import org.oppia.app.utility.NamedRegionClickedEvent
 import org.oppia.app.utility.OnClickableAreaClickedListener
 import org.oppia.app.utility.RegionClickedEvent
@@ -98,73 +99,110 @@ class ImageRegionSelectionInteractionViewTest {
   }
 
   @Test
-  fun testImageRegionSelectionInteractionView_clickRegion3_Region2Clicked() {
+  fun testImageRegionSelectionInteractionView_clickRegion3_Region3Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
         it.clickable_image_view.setListener(onClickableAreaClickedListener)
 
         onView(withId(R.id.clickable_image_view)).perform(
-          clickPoint(0.2f, 0.2f)
+          clickPoint(0.3f, 0.3f)
         )
 
-        verify(onClickableAreaClickedListener).onClickableAreaTouched(capture(regionClickedEvent))
-        assertEquals(NamedRegionClickedEvent("Region 2"), regionClickedEvent.value)
+        verify(onClickableAreaClickedListener)
+          .onClickableAreaTouched(
+            capture(regionClickedEvent)
+          )
+        assertEquals(NamedRegionClickedEvent("Region 3"), regionClickedEvent.value)
       }
     }
   }
 
   @Test
-  fun testImageRegionSelectionInteractionView_clickRegion3_clickRegion2_Region2Clicked() {
+  fun testImageRegionSelectionInteractionView_clickRegion3_clickRegion2_region2Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
-      onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(0.3f, 0.3f)
-      )
-      onView(allOf(withTagValue(`is`("Region 3"))))
-        .check(
-          matches(isDisplayed())
+      it.onActivity {
+        it.clickable_image_view.setListener(onClickableAreaClickedListener)
+        onView(withId(R.id.clickable_image_view)).perform(
+          clickPoint(0.3f, 0.3f)
         )
+        onView(allOf(withTagValue(`is`("Region 3"))))
+          .check(
+            matches(isDisplayed())
+          )
 
-      onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(0.7f, 0.3f)
-      )
-      onView(allOf(withTagValue(`is`("Region 2"))))
-        .check(
-          matches(isDisplayed())
+        onView(withId(R.id.clickable_image_view)).perform(
+          clickPoint(0.7f, 0.3f)
         )
+        onView(allOf(withTagValue(`is`("Region 2"))))
+          .check(
+            matches(isDisplayed())
+          )
+
+        verify(
+          onClickableAreaClickedListener,
+          times(2)
+        ).onClickableAreaTouched(
+          capture(
+            regionClickedEvent
+          )
+        )
+        assertEquals(NamedRegionClickedEvent("Region 2"), regionClickedEvent.allValues[1])
+      }
     }
   }
 
   @Test
   fun testImageRegionSelectionInteractionView_clickOnDefaultRegion_defaultRegionClicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
-      onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(0.0f, 0.0f)
-      )
-      onView(withId(R.id.default_selected_region)).check(
-        matches(isDisplayed())
-      )
+      it.onActivity {
+        it.clickable_image_view.setListener(onClickableAreaClickedListener)
+        onView(withId(R.id.clickable_image_view)).perform(
+          clickPoint(0.0f, 0.0f)
+        )
+        onView(withId(R.id.default_selected_region)).check(
+          matches(isDisplayed())
+        )
+        verify(onClickableAreaClickedListener)
+          .onClickableAreaTouched(
+            capture(regionClickedEvent)
+          )
+        assertEquals(DefaultRegionClickedEvent(), regionClickedEvent.value)
+      }
     }
   }
 
   @Test
-  fun testImageRegionSelectionInteractionView_withTalkbackEnabled_clickRegion3_clickRegion2_Region2Clicked() { // ktlint-disable max-line-length
+  fun testView_withTalkbackEnabled_clickRegion3_clickRegion2_Region2Clicked() {
     fakeAccessibilityManager.setTalkbackEnabled(true)
     launch(ImageRegionSelectionTestActivity::class.java).use {
-      onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(0.3f, 0.3f)
-      )
-      onView(allOf(withTagValue(`is`("Region 3"))))
-        .check(
-          matches(isDisplayed())
+      it.onActivity {
+        it.clickable_image_view.setListener(onClickableAreaClickedListener)
+        onView(withId(R.id.clickable_image_view)).perform(
+          clickPoint(0.3f, 0.3f)
         )
+        onView(allOf(withTagValue(`is`("Region 3"))))
+          .check(
+            matches(isDisplayed())
+          )
 
-      onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(0.7f, 0.3f)
-      )
-      onView(allOf(withTagValue(`is`("Region 2"))))
-        .check(
-          matches(isDisplayed())
+        onView(withId(R.id.clickable_image_view)).perform(
+          clickPoint(0.7f, 0.3f)
         )
+        onView(allOf(withTagValue(`is`("Region 2"))))
+          .check(
+            matches(isDisplayed())
+          )
+
+        verify(
+          onClickableAreaClickedListener,
+          times(2)
+        ).onClickableAreaTouched(
+          capture(
+            regionClickedEvent
+          )
+        )
+        assertEquals(NamedRegionClickedEvent("Region 2"), regionClickedEvent.allValues[1])
+      }
     }
   }
 
@@ -172,26 +210,40 @@ class ImageRegionSelectionInteractionViewTest {
   fun testImageRegionSelectionInteractionView_withTalkbackEnabled_clickRegion3_Region3Clicked() {
     fakeAccessibilityManager.setTalkbackEnabled(true)
     launch(ImageRegionSelectionTestActivity::class.java).use {
-      onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(0.3f, 0.3f)
-      )
-      onView(allOf(withTagValue(`is`("Region 3"))))
-        .check(
-          matches(isDisplayed())
+      it.onActivity {
+        it.clickable_image_view.setListener(onClickableAreaClickedListener)
+        onView(withId(R.id.clickable_image_view)).perform(
+          clickPoint(0.3f, 0.3f)
         )
+        onView(allOf(withTagValue(`is`("Region 3"))))
+          .check(
+            matches(isDisplayed())
+          )
+
+        verify(onClickableAreaClickedListener)
+          .onClickableAreaTouched(
+            capture(regionClickedEvent)
+          )
+        assertEquals(NamedRegionClickedEvent("Region 3"), regionClickedEvent.value)
+      }
     }
   }
 
   @Test
-  fun testImageRegionSelectionInteractionView_withTalkbackEnabled_clickOnDefaultRegion_defaultRegionNotClicked() { // ktlint-disable max-line-length
+  fun testView_withTalkbackEnabled_clickOnDefaultRegion_defaultRegionNotClicked() {
     fakeAccessibilityManager.setTalkbackEnabled(true)
-    launch(ImageRegionSelectionTestActivity::class.java).use { activityScenario ->
-      onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(0.0f, 0.0f)
-      )
-      onView(withId(R.id.default_selected_region)).check(
-        matches(not(isDisplayed()))
-      )
+    launch(ImageRegionSelectionTestActivity::class.java).use { scenario ->
+      scenario.onActivity {
+        it.clickable_image_view.setListener(onClickableAreaClickedListener)
+        onView(withId(R.id.clickable_image_view)).perform(
+          clickPoint(0.0f, 0.0f)
+        )
+        onView(withId(R.id.default_selected_region)).check(
+          matches(not(isDisplayed()))
+        )
+
+        assertEquals(DefaultRegionClickedEvent(), regionClickedEvent.value)
+      }
     }
   }
 

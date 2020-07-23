@@ -4,6 +4,10 @@ package org.oppia.app.utility
 interface OnClickableAreaClickedListener {
   /**
    * @param region the name of the region which is selected
+   *
+   * For an specified region it will be called with [NamedRegionClickedEvent] with region name.
+   * For an unspecified region it will be called with [DefaultRegionClickedEvent].
+   *
    */
   fun onClickableAreaTouched(region: RegionClickedEvent)
 }
