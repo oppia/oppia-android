@@ -152,7 +152,7 @@ class TopicController @Inject constructor(
   }
 
   /** Returns the [RevisionCard] corresponding to the specified topic Id and subtopic ID, or a failed result if there is none. */
-  fun getRevisionCard(topicId: String, subtopicId: String): LiveData<AsyncResult<RevisionCard>> {
+  fun getRevisionCard(topicId: String, subtopicId: Int): LiveData<AsyncResult<RevisionCard>> {
     return MutableLiveData(
       try {
         AsyncResult.success(retrieveReviewCard(topicId, subtopicId))
@@ -363,7 +363,7 @@ class TopicController @Inject constructor(
   }
 
   // TODO(#45): Expose this as a data provider, or omit if it's not needed.
-  private fun retrieveReviewCard(topicId: String, subtopicId: String): RevisionCard {
+  private fun retrieveReviewCard(topicId: String, subtopicId: Int): RevisionCard {
     return createSubtopicFromJson(topicId, subtopicId)
   }
 
@@ -456,7 +456,7 @@ class TopicController @Inject constructor(
   }
 
   /** Creates a subtopic from its json representation. */
-  private fun createSubtopicFromJson(topicId: String, subtopicId: String): RevisionCard {
+  private fun createSubtopicFromJson(topicId: String, subtopicId: Int): RevisionCard {
     val subtopicJsonObject =
       jsonAssetRetriever.loadJsonFromAsset(topicId + "_" + subtopicId + ".json")
         ?: return RevisionCard.getDefaultInstance()
@@ -493,8 +493,7 @@ class TopicController @Inject constructor(
         skillIdList.add(skillJsonArray.optString(j))
       }
       val subtopic = Subtopic.newBuilder()
-        // TODO(#1508): Modify proto to change the subtopic id type tp integer.
-        .setSubtopicId(currentSubtopicJsonObject.optInt("id").toString())
+        .setSubtopicId(currentSubtopicJsonObject.optInt("id"))
         // TODO(#1476): Modify proto to add thumbnail_color and thumbnail_filename from json files.
         .setTitle(currentSubtopicJsonObject.optString("title"))
         .setSubtopicThumbnail(
