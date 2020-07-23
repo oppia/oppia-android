@@ -7,7 +7,7 @@ kt_android_library(
     name = "domain_lib",
     custom_package = "org.oppia.domain",
     srcs = glob(["src/main/java/org/oppia/domain/**/*.kt"]),
-    data = glob(["src/main/assets/*.json",]),
+    data = glob(["src/main/assets/**"]),
     manifest = "src/main/AndroidManifest.xml",
     deps = [
         ":dagger",
@@ -23,7 +23,7 @@ kt_android_library(
     custom_package = "org.oppia.domain",
     srcs = glob(["src/test/java/org/oppia/domain/**/*.kt",
                  "src/main/java/org/oppia/domain/**/*.kt"]),
-    data = glob(["src/main/assets/*.json",]),
+    data = glob(["src/main/assets/**"]),
     manifest = "src/test/TestManifest.xml",
     deps = [
         ":dagger",
