@@ -227,16 +227,10 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
     if (shouldSplit) {
       questionViewModel.shouldSplitView.set(true)
-      binding.rightQuestionRecyclerView.visibility = View.VISIBLE
-      val params = binding.centerGuideline.layoutParams as ConstraintLayout.LayoutParams
-      params.guidePercent = 0.5f
-      binding.centerGuideline.layoutParams = params
+      questionViewModel.centerGuidelinePercentage.set(0.5f)
     } else {
       questionViewModel.shouldSplitView.set(false)
-      binding.rightQuestionRecyclerView.visibility = View.GONE
-      val params = binding.centerGuideline.layoutParams as ConstraintLayout.LayoutParams
-      params.guidePercent = 1f
-      binding.centerGuideline.layoutParams = params
+      questionViewModel.centerGuidelinePercentage.set(1f)
     }
 
     val dataPair = recyclerViewAssembler.compute(

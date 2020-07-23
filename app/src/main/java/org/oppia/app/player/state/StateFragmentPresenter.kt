@@ -25,13 +25,13 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Solution
 import org.oppia.app.model.State
 import org.oppia.app.model.UserAnswer
-import org.oppia.app.utility.SplitScreenManager
 import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.AudioUiManager
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.app.utility.LifecycleSafeTimerFactory
+import org.oppia.app.utility.SplitScreenManager
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationProgressController
 import org.oppia.domain.topic.StoryProgressController
@@ -294,16 +294,10 @@ class StateFragmentPresenter @Inject constructor(
 
     if (shouldSplit) {
       viewModel.shouldSplitView.set(true)
-      binding.rhsStateRecyclerView.visibility = View.VISIBLE
-      val params = binding.centerGuideline.layoutParams as ConstraintLayout.LayoutParams
-      params.guidePercent = 0.5f
-      binding.centerGuideline.layoutParams = params
+      viewModel.centerGuidelinePercentage.set(0.5f)
     } else {
       viewModel.shouldSplitView.set(false)
-      binding.rhsStateRecyclerView.visibility = View.GONE
-      val params = binding.centerGuideline.layoutParams as ConstraintLayout.LayoutParams
-      params.guidePercent = 1f
-      binding.centerGuideline.layoutParams = params
+      viewModel.centerGuidelinePercentage.set(1f)
     }
 
     val isInNewState =

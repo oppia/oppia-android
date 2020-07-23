@@ -18,6 +18,7 @@ class StateViewModel @Inject constructor() : ObservableViewModel() {
   val rightItemList: ObservableList<StateItemViewModel> = ObservableArrayList()
 
   val shouldSplitView = ObservableField(false)
+  val centerGuidelinePercentage = ObservableField(0.5f)
 
   val isAudioBarVisible = ObservableField(false)
 

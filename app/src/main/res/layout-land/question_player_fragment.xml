@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
 
   <data>
 
@@ -77,6 +78,7 @@
         android:dividerHeight="8dp"
         android:overScrollMode="never"
         android:paddingTop="24dp"
+        android:visibility="@{viewModel.shouldSplitView ? View.VISIBLE : View.GONE}"
         app:data="@{viewModel.rightItemList}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@id/question_progress_bar"
@@ -115,7 +117,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
+        tools:layout_constraintGuide_percent="0.5f"
+        app:layout_constraintGuide_percent="@{viewModel.centerGuidelinePercentage.floatValue()}" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout

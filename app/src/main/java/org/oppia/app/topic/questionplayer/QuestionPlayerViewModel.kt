@@ -17,6 +17,7 @@ class QuestionPlayerViewModel @Inject constructor() : ObservableViewModel() {
   val rightItemList: ObservableList<StateItemViewModel> = ObservableArrayList()
 
   val shouldSplitView = ObservableField(false)
+  val centerGuidelinePercentage = ObservableField(0.5f)
 
   val questionCount = ObservableField(0)
   val currentQuestion = ObservableField(0)
