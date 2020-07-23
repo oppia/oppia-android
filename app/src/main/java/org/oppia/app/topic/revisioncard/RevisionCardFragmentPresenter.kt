@@ -53,7 +53,7 @@ class RevisionCardFragmentPresenter @Inject constructor(
     analyticsController.logTransitionEvent(
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_REVISION_CARD,
-      analyticsController.createRevisionCardContext(topicId, subTopicId.toString())
+      analyticsController.createRevisionCardContext(topicId, subTopicId)
     )
   }
 }

@@ -15,12 +15,13 @@ class RevisionCardActivity : InjectableAppCompatActivity(), ReturnToTopicClickLi
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-
-    val topicId = checkNotNull(intent?.getStringExtra(TOPIC_ID_EXTRA_KEY)) {
-      "Expected topic ID to be included in intent for RevisionCardActivity."
+    intent?.let { intent ->
+      val topicId = checkNotNull(intent.getStringExtra(TOPIC_ID_EXTRA_KEY)) {
+        "Expected topic ID to be included in intent for RevisionCardActivity."
+      }
+      val subtopicId = intent.getIntExtra(SUBTOPIC_ID_EXTRA_KEY, -1)
+      revisionCardActivityPresenter.handleOnCreate(topicId, subtopicId)
     }
-    val subtopicId = intent?.getIntExtra(SUBTOPIC_ID_EXTRA_KEY, -1)!!
-    revisionCardActivityPresenter.handleOnCreate(topicId, subtopicId)
   }
 
   companion object {

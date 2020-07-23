@@ -161,7 +161,7 @@ class AnalyticsController @Inject constructor(
   /** Returns the context of an event related to revision card. */
   fun createRevisionCardContext(
     topicId: String,
-    subtopicId: String
+    subtopicId: Int
   ): EventLog.Context {
     return EventLog.Context.newBuilder()
       .setRevisionCardContext(
