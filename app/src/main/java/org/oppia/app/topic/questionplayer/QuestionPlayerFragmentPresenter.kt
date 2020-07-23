@@ -48,7 +48,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private val oppiaClock: OppiaClock,
   private val logger: ConsoleLogger,
   @QuestionResourceBucketName private val resourceBucketName: String,
-  private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory
+  private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
+  private val splitScreenManager: SplitScreenManager
 ) {
   // TODO(#503): Add tests for the question player.
 
@@ -63,7 +64,6 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private lateinit var recyclerViewAssembler: StatePlayerRecyclerViewAssembler
   private lateinit var questionId: String
   private lateinit var currentQuestionState: State
-  private val splitScreenManager: SplitScreenManager = SplitScreenManager(activity)
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = QuestionPlayerFragmentBinding.inflate(

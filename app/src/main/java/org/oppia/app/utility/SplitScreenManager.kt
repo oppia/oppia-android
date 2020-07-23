@@ -1,12 +1,14 @@
 package org.oppia.app.utility
 
-import android.app.Activity
-import android.util.DisplayMetrics
+import android.content.Context
+import android.content.res.Resources
 import org.oppia.app.R
 import org.oppia.app.model.EphemeralQuestion
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.player.state.StateFragment
 import org.oppia.app.topic.questionplayer.QuestionPlayerFragment
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -16,9 +18,8 @@ private const val MINIMUM_DIAGONAL_WIDTH = 7.0
  * A helper class that is used to detect whether to split the screen in [QuestionPlayerFragment]
  * and [StateFragment] or not based on multiple factors
  */
-class SplitScreenManager(
-  private val activity: Activity
-) {
+@Singleton
+class SplitScreenManager @Inject constructor(private val context: Context) {
   private val splitScreenInteractionIdsPool = listOf("DragAndDropSortInput", "ImageClickInput")
 
   /**
@@ -37,8 +38,7 @@ class SplitScreenManager(
    */
   // https://stackoverflow.com/a/19156339/6628335
   private fun deviceDiagonalSize(): Double {
-    val displayMetrics = DisplayMetrics()
-    activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
+    val displayMetrics = Resources.getSystem().displayMetrics
     val widthInPixel = displayMetrics.widthPixels
     val heightInPixel = displayMetrics.heightPixels
     val widthInInch = widthInPixel.toDouble() / displayMetrics.xdpi.toDouble()
@@ -53,7 +53,7 @@ class SplitScreenManager(
    * @return `true` if the device is splittable, `false` otherwise
    */
   private fun isDeviceSplittable(): Boolean {
-    val shouldSplit = activity.resources.getBoolean(R.bool.shouldSplit)
+    val shouldSplit = context.resources.getBoolean(R.bool.shouldSplit)
     return shouldSplit && deviceDiagonalSize() >= MINIMUM_DIAGONAL_WIDTH
   }
 

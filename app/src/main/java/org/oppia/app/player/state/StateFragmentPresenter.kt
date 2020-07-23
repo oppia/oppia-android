@@ -60,7 +60,8 @@ class StateFragmentPresenter @Inject constructor(
   private val logger: ConsoleLogger,
   @DefaultResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
-  private var lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
+  private var lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
+  private val splitScreenManager: SplitScreenManager
 ) {
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
@@ -74,7 +75,6 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
-  private val splitScreenManager: SplitScreenManager = SplitScreenManager(activity)
 
   private val viewModel: StateViewModel by lazy {
     getStateViewModel()
