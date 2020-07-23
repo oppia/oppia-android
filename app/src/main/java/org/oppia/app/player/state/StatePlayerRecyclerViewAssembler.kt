@@ -189,7 +189,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         leftPendingItemList,
         rightPendingItemList,
         ephemeralState.pendingState.wrongAnswerList,
-        false,
+        /* isCorrectAnswer= */ false,
         shouldSplit,
         gcsEntityId
       )
@@ -217,7 +217,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         leftPendingItemList,
         rightPendingItemList,
         ephemeralState.completedState.answerList,
-        true,
+        /* isCorrectAnswer= */ true,
         shouldSplit,
         gcsEntityId
       )
@@ -503,7 +503,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
           )
         } else {
           rightPendingItemList += ContinueNavigationButtonViewModel(
-            false,
+            /* hasPreviousButton= */ false,
             previousNavigationButtonListener,
             fragment as ContinueNavigationButtonListener
           )
@@ -523,7 +523,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
           )
         } else {
           rightPendingItemList += NextButtonViewModel(
-            false,
+            /* hasPreviousButton= */ false,
             previousNavigationButtonListener,
             fragment as NextNavigationButtonListener
           )
@@ -550,7 +550,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
             )
           } else {
             rightPendingItemList += ReturnToTopicButtonViewModel(
-              false, previousNavigationButtonListener,
+              /* hasPreviousButton= */ false,
+              previousNavigationButtonListener,
               fragment as ReturnToTopicNavigationButtonListener
             )
             if (hasPreviousButton) {
@@ -582,7 +583,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         }
         rightPendingItemList += SubmitButtonViewModel(
           canSubmitAnswer,
-          false,
+          /* hasPreviousButton= */ false,
           previousNavigationButtonListener,
           fragment as SubmitNavigationButtonListener
         )
@@ -1125,8 +1126,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     fun build(): StatePlayerRecyclerViewAssembler {
       val playerFeatureSet = featureSets.reduce(PlayerFeatureSet::union)
       return StatePlayerRecyclerViewAssembler(
-        adapterBuilder.build(),
-        adapterBuilder.build(),
+        /* adapter= */ adapterBuilder.build(),
+        /* rhsAdapter= */ adapterBuilder.build(),
         playerFeatureSet,
         fragment,
         congratulationsTextView,
