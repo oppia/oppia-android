@@ -313,18 +313,16 @@ class StateFragmentPresenter @Inject constructor(
     currentStateName = ephemeralState.state.name
     showOrHideAudioByState(ephemeralState.state)
 
+    val dataPair = recyclerViewAssembler.compute(
+      ephemeralState,
+      explorationId,
+      shouldSplit
+    )
+
     viewModel.itemList.clear()
-    viewModel.itemList += recyclerViewAssembler.compute(
-      ephemeralState,
-      explorationId,
-      shouldSplit
-    ).first
+    viewModel.itemList += dataPair.first
     viewModel.rightItemList.clear()
-    viewModel.rightItemList += recyclerViewAssembler.compute(
-      ephemeralState,
-      explorationId,
-      shouldSplit
-    ).second
+    viewModel.rightItemList += dataPair.second
 
     if (isInNewState) {
       (binding.stateRecyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
