@@ -63,45 +63,6 @@ const val FRACTIONS_QUESTION_ID_8 = "AciwQAtcvZfI"
 const val FRACTIONS_QUESTION_ID_9 = "YQwbX2r6p3Xj"
 const val FRACTIONS_QUESTION_ID_10 = "NNuVGmbJpnj5"
 const val RATIOS_QUESTION_ID_0 = "QiKxvAXpvUbb"
-val TOPIC_FILE_ASSOCIATIONS = mapOf(
-  TEST_TOPIC_ID_0 to listOf(
-    "test_exp_id_0.json",
-    "test_exp_id_1.json",
-    "test_exp_id_2.json",
-    "test_exp_id_3.json",
-    "questions.json",
-    "skills.json",
-    "test_story_id_0.json",
-    "test_story_id_1.json",
-    "test_topic_id_0.json"
-  ),
-  TEST_TOPIC_ID_1 to listOf(
-    "test_exp_id_4.json",
-    "questions.json",
-    "skills.json",
-    "test_story_id_2.json",
-    "test_topic_id_1.json"
-  ),
-  FRACTIONS_TOPIC_ID to listOf(
-    "umPkwp0L1M0-.json",
-    "MjZzEVOG47_1.json",
-    "questions.json",
-    "skills.json",
-    "wANbh4oOClga.json",
-    "GJ2rLXRKD5hw.json"
-  ),
-  RATIOS_TOPIC_ID to listOf(
-    "2mzzFVDLuAj8.json",
-    "5NWuolNcwH6e.json",
-    "k2bQ7z5XHNbK.json",
-    "tIoSb3HZFN6e.json",
-    "questions.json",
-    "skills.json",
-    "wAMdg4oOClga.json",
-    "xBSdg4oOClga.json",
-    "omzF4oqgeTXd.json"
-  )
-)
 
 private const val QUESTION_DATA_PROVIDER_ID = "QuestionDataProvider"
 private const val TRANSFORMED_GET_COMPLETED_STORIES_PROVIDER_ID =
@@ -402,9 +363,8 @@ class TopicController @Inject constructor(
   }
 
   // TODO(#45): Expose this as a data provider, or omit if it's not needed.
-  // TODO(#1476): Remove topicId as it is not needed anymore.
   private fun retrieveReviewCard(topicId: String, subtopicId: String): RevisionCard {
-    return createSubtopicFromJson(subtopicId)
+    return createSubtopicFromJson(topicId, subtopicId)
   }
 
   // Loads and returns the questions given a list of skill ids.
@@ -416,7 +376,7 @@ class TopicController @Inject constructor(
     val questionsList = mutableListOf<Question>()
     val questionJsonArray = jsonAssetRetriever.loadJsonFromAsset(
       "questions.json"
-    )?.getJSONArray("questions")!!
+    )?.getJSONArray("question_dicts")!!
 
     for (skillId in skillIdsList) {
       for (i in 0 until questionJsonArray.length()) {
@@ -490,17 +450,18 @@ class TopicController @Inject constructor(
       .addAllSkill(skillSummaryList)
       .addAllStory(storySummaryList)
       .setTopicThumbnail(TOPIC_THUMBNAILS.getValue(topicId))
-      .setDiskSizeBytes(computeTopicSizeBytes(TOPIC_FILE_ASSOCIATIONS.getValue(topicId)))
+      .setDiskSizeBytes(computeTopicSizeBytes(getAssetFileNameList(topicId)))
       .addAllSubtopic(subtopicList)
       .build()
   }
 
   /** Creates a subtopic from its json representation. */
-  private fun createSubtopicFromJson(subtopicId: String): RevisionCard {
-    val subtopicData =
-      jsonAssetRetriever.loadJsonFromAsset("$subtopicId.json")?.getJSONObject("page_contents")!!
-    val subtopicTitle =
-      jsonAssetRetriever.loadJsonFromAsset("$subtopicId.json")?.getString("subtopic_title")!!
+  private fun createSubtopicFromJson(topicId: String, subtopicId: String): RevisionCard {
+    val subtopicJsonObject =
+      jsonAssetRetriever.loadJsonFromAsset(topicId + "_" + subtopicId + ".json")
+        ?: return RevisionCard.getDefaultInstance()
+    val subtopicData = subtopicJsonObject.getJSONObject("page_contents")!!
+    val subtopicTitle = subtopicJsonObject.getString("subtopic_title")!!
     return RevisionCard.newBuilder()
       .setSubtopicTitle(subtopicTitle)
       .setPageContents(
@@ -532,8 +493,9 @@ class TopicController @Inject constructor(
         skillIdList.add(skillJsonArray.optString(j))
       }
       val subtopic = Subtopic.newBuilder()
-        .setSubtopicId(currentSubtopicJsonObject.optString("id"))
-        // TODO(#1476): Modify proto to add thumbnail_bg_color and thumbnail_filename from json files.
+        // TODO(#1508): Modify proto to change the subtopic id type tp integer.
+        .setSubtopicId(currentSubtopicJsonObject.optInt("id").toString())
+        // TODO(#1476): Modify proto to add thumbnail_color and thumbnail_filename from json files.
         .setTitle(currentSubtopicJsonObject.optString("title"))
         .setSubtopicThumbnail(
           createSubtopicThumbnail(
@@ -552,6 +514,39 @@ class TopicController @Inject constructor(
     // TODO(#386): Incorporate audio & image files in this computation.
     return constituentFiles.map(jsonAssetRetriever::getAssetSize).map(Int::toLong)
       .reduceRight(Long::plus)
+  }
+
+  fun getAssetFileNameList(topicId: String): List<String> {
+    val assetFileNameList = mutableListOf<String>()
+    assetFileNameList.add("questions.json")
+    assetFileNameList.add("skills.json")
+    assetFileNameList.add("$topicId.json")
+
+    val topicJsonObject = jsonAssetRetriever
+      .loadJsonFromAsset("$topicId.json")!!
+    val storySummaryJsonArray = topicJsonObject
+      .optJSONArray("canonical_story_dicts")
+    for (i in 0 until storySummaryJsonArray.length()) {
+      val storySummaryJsonObject = storySummaryJsonArray.optJSONObject(i)
+      val storyId = storySummaryJsonObject.optString("id")
+      assetFileNameList.add("$storyId.json")
+
+      val storyJsonObject = jsonAssetRetriever
+        .loadJsonFromAsset("$storyId.json")!!
+      val storyNodeJsonArray = storyJsonObject.optJSONArray("story_nodes")
+      for (j in 0 until storyNodeJsonArray.length()) {
+        val storyNodeJsonObject = storyNodeJsonArray.optJSONObject(j)
+        val explorationId = storyNodeJsonObject.optString("exploration_id")
+        assetFileNameList.add("$explorationId.json")
+      }
+    }
+    val subtopicJsonArray = topicJsonObject.optJSONArray("subtopics")
+    for (i in 0 until subtopicJsonArray.length()) {
+      val subtopicJsonObject = subtopicJsonArray.optJSONObject(i)
+      val subtopicId = subtopicJsonObject.optInt("id")
+      assetFileNameList.add(topicId + "_" + subtopicId + ".json")
+    }
+    return assetFileNameList
   }
 
   /**

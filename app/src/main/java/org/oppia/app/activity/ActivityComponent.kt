@@ -46,6 +46,7 @@ import org.oppia.app.testing.HtmlParserTestActivity
 import org.oppia.app.testing.NavigationDrawerTestActivity
 import org.oppia.app.testing.ProfileChooserFragmentTestActivity
 import org.oppia.app.testing.StoryFragmentTestActivity
+import org.oppia.app.testing.TestFontScaleConfigurationUtilActivity
 import org.oppia.app.testing.TopicRevisionTestActivity
 import org.oppia.app.testing.TopicTestActivity
 import org.oppia.app.testing.TopicTestActivityForStory
@@ -86,6 +87,7 @@ interface ActivityComponent {
   fun inject(explorationTestActivity: ExplorationTestActivity)
   fun inject(faqListActivity: FAQListActivity)
   fun inject(faqSingleActivity: FAQSingleActivity)
+  fun inject(testFontScaleConfigurationUtilActivity: TestFontScaleConfigurationUtilActivity)
   fun inject(helpActivity: HelpActivity)
   fun inject(homeActivity: HomeActivity)
   fun inject(homeInjectionActivity: HomeInjectionActivity)
