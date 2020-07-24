@@ -222,7 +222,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     currentQuestionState = ephemeralQuestion.ephemeralState.state
 
     val isSplitView =
-      splitScreenManager.isSplitPossible(ephemeralQuestion.ephemeralState.state.interaction.id)
+      splitScreenManager.shouldSplitScreen(ephemeralQuestion.ephemeralState.state.interaction.id)
 
     if (isSplitView) {
       questionViewModel.isSplitView.set(true)

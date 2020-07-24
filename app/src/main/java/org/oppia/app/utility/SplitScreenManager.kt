@@ -29,7 +29,7 @@ class SplitScreenManager @Inject constructor(private val context: Context) {
    * [EphemeralQuestion].
    * @return `true` if the screen should be split, `false` otherwise.
    */
-  fun isSplitPossible(interactionId: String): Boolean {
+  fun shouldSplitScreen(interactionId: String): Boolean {
     return isDeviceLargeEnoughForSplitScreen() && isInteractionSplittable(interactionId)
   }
 

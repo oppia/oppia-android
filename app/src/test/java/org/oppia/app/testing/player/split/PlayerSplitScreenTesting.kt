@@ -37,7 +37,7 @@ class PlayerSplitScreenTesting {
   fun testSplitScreen_540x960_xhdpi_continueInteraction_NoSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).isSplitPossible("Continue")).isFalse()
+        assertThat(SplitScreenManager(activity).shouldSplitScreen("Continue")).isFalse()
       }
     }
   }
@@ -47,7 +47,7 @@ class PlayerSplitScreenTesting {
   fun testSplitScreen_540x960_xhdpi_dragInteraction_NoSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).isSplitPossible("DragAndDropSortInput")).isFalse()
+        assertThat(SplitScreenManager(activity).shouldSplitScreen("DragAndDropSortInput")).isFalse()
       }
     }
   }
@@ -57,7 +57,7 @@ class PlayerSplitScreenTesting {
   fun testSplitScreen_800x1280_xhdpi_continueInteraction_NoSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).isSplitPossible("Continue")).isFalse()
+        assertThat(SplitScreenManager(activity).shouldSplitScreen("Continue")).isFalse()
       }
     }
   }
@@ -67,7 +67,7 @@ class PlayerSplitScreenTesting {
   fun testSplitScreen_800x1280_xhdpi_dragInteraction_Split() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).isSplitPossible("DragAndDropSortInput")).isTrue()
+        assertThat(SplitScreenManager(activity).shouldSplitScreen("DragAndDropSortInput")).isTrue()
       }
     }
   }
@@ -77,7 +77,7 @@ class PlayerSplitScreenTesting {
   fun testSplitScreen_411x731_xxxhdpi_dragInteraction_NoSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).isSplitPossible("DragAndDropSortInput")).isFalse()
+        assertThat(SplitScreenManager(activity).shouldSplitScreen("DragAndDropSortInput")).isFalse()
       }
     }
   }
