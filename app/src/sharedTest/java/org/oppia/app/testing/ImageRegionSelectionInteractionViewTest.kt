@@ -84,17 +84,16 @@ class ImageRegionSelectionInteractionViewTest {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
         it.clickable_image_view.setListener(onClickableAreaClickedListener)
-
-        onView(withId(R.id.clickable_image_view)).perform(
-          clickPoint(0.3f, 0.3f)
-        )
-
-        verify(onClickableAreaClickedListener)
-          .onClickableAreaTouched(
-            capture(regionClickedEvent)
-          )
-        assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent("Region 3"))
       }
+      onView(withId(R.id.clickable_image_view)).perform(
+        clickPoint(0.3f, 0.3f)
+      )
+
+      verify(onClickableAreaClickedListener)
+        .onClickableAreaTouched(
+          capture(regionClickedEvent)
+        )
+      assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent("Region 3"))
     }
   }
 
@@ -103,32 +102,32 @@ class ImageRegionSelectionInteractionViewTest {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
         it.clickable_image_view.setListener(onClickableAreaClickedListener)
-        onView(withId(R.id.clickable_image_view)).perform(
-          clickPoint(0.3f, 0.3f)
-        )
-        onView(allOf(withTagValue(`is`("Region 3"))))
-          .check(
-            matches(isDisplayed())
-          )
-
-        onView(withId(R.id.clickable_image_view)).perform(
-          clickPoint(0.7f, 0.3f)
-        )
-        onView(allOf(withTagValue(`is`("Region 2"))))
-          .check(
-            matches(isDisplayed())
-          )
-
-        verify(
-          onClickableAreaClickedListener,
-          times(2)
-        ).onClickableAreaTouched(
-          capture(
-            regionClickedEvent
-          )
-        )
-        assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent("Region 2"))
       }
+      onView(withId(R.id.clickable_image_view)).perform(
+        clickPoint(0.3f, 0.3f)
+      )
+      onView(allOf(withTagValue(`is`("Region 3"))))
+        .check(
+          matches(isDisplayed())
+        )
+
+      onView(withId(R.id.clickable_image_view)).perform(
+        clickPoint(0.7f, 0.3f)
+      )
+      onView(allOf(withTagValue(`is`("Region 2"))))
+        .check(
+          matches(isDisplayed())
+        )
+
+      verify(
+        onClickableAreaClickedListener,
+        times(2)
+      ).onClickableAreaTouched(
+        capture(
+          regionClickedEvent
+        )
+      )
+      assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent("Region 2"))
     }
   }
 
@@ -137,18 +136,18 @@ class ImageRegionSelectionInteractionViewTest {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
         it.clickable_image_view.setListener(onClickableAreaClickedListener)
-        onView(withId(R.id.clickable_image_view)).perform(
-          clickPoint(0.0f, 0.0f)
-        )
-        onView(withId(R.id.default_selected_region)).check(
-          matches(isDisplayed())
-        )
-        verify(onClickableAreaClickedListener)
-          .onClickableAreaTouched(
-            capture(regionClickedEvent)
-          )
-        assertThat(regionClickedEvent.value).isEqualTo(DefaultRegionClickedEvent())
       }
+      onView(withId(R.id.clickable_image_view)).perform(
+        clickPoint(0.0f, 0.0f)
+      )
+      onView(withId(R.id.default_selected_region)).check(
+        matches(isDisplayed())
+      )
+      verify(onClickableAreaClickedListener)
+        .onClickableAreaTouched(
+          capture(regionClickedEvent)
+        )
+      assertThat(regionClickedEvent.value).isEqualTo(DefaultRegionClickedEvent)
     }
   }
 
@@ -223,7 +222,7 @@ class ImageRegionSelectionInteractionViewTest {
           matches(not(isDisplayed()))
         )
 
-        assertThat(regionClickedEvent.value).isEqualTo(DefaultRegionClickedEvent())
+        assertThat(regionClickedEvent.value).isEqualTo(DefaultRegionClickedEvent)
       }
     }
   }
