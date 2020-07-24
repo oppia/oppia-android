@@ -94,6 +94,11 @@ git_repository(
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_workspace_dependencies")
 google_services_workspace_dependencies()
 
+bind(
+  name = "databinding_annotation_processor",
+  actual = "//tools/android:compiler_annotation_processor",
+)
+
 load("@rules_jvm_external//:defs.bzl", "maven_install")
 
 maven_install(
@@ -112,7 +117,14 @@ maven_install(
         "org.mockito:mockito-core:2.19.0",
         "androidx.test.ext:junit:1.1.1",
         "android.arch.core:core-testing:1.1.1",
-        "androidx.arch.core:core-testing:2.1.0"
+        "androidx.arch.core:core-testing:2.1.0",
+        "com.android.databinding:adapters:3.4.2",
+        "com.android.databinding:baseLibrary:3.4.2",
+        "com.android.support:support-annotations:28.0.0",
+        "androidx.databinding:databinding-runtime:3.4.2",
+        "androidx.databinding:databinding-adapters:3.4.2",
+        "androidx.databinding:databinding-common:3.4.2",
+        "androidx.annotation:annotation:1.1.0",
     ],
     repositories = DAGGER_REPOSITORIES + [
         "https://maven.google.com",
