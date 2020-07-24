@@ -1,6 +1,10 @@
 package org.oppia.app.player.state
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Picture
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.PictureDrawable
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
@@ -9,6 +13,8 @@ import androidx.core.view.forEachIndexed
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.FragmentManager
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.model.ImageWithRegions
 import org.oppia.app.utility.ClickableAreasImage
@@ -71,29 +77,25 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   private fun loadImage() {
     val imageUrl = String.format(imageDownloadUrlTemplate, entityType, entityId, urlString)
 
-    Glide.with(this.context)
-      .load("$gcsPrefix/$resourceBucketName/$imageUrl")
-      .into(this)
-    // TODO: Discuss this issue.
-//    if (imageUrl.endsWith("svg", ignoreCase = true)) {
-//      val target = object : CustomTarget<Picture>() {
-//        override fun onResourceReady(resource: Picture, transition: Transition<in Picture>?) {
-//          this@ImageRegionSelectionInteractionView.setImageDrawable(PictureDrawable(resource))
-//        }
-//
-//        override fun onLoadCleared(placeholder: Drawable?) {}
-//      }
-//      imageLoader.loadSvg("$gcsPrefix/$resourceBucketName/$imageUrl", target)
-//    } else {
-//      val target = object : CustomTarget<Bitmap>() {
-//        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-//          this@ImageRegionSelectionInteractionView.setImageBitmap(resource)
-//        }
-//
-//        override fun onLoadCleared(placeholder: Drawable?) {}
-//      }
-//      imageLoader.load("$gcsPrefix/$resourceBucketName/$imageUrl", target)
-//    }
+    if (imageUrl.endsWith("svg", ignoreCase = true)) {
+      val target = object : CustomTarget<Picture>() {
+        override fun onResourceReady(resource: Picture, transition: Transition<in Picture>?) {
+          this@ImageRegionSelectionInteractionView.setImageDrawable(PictureDrawable(resource))
+        }
+
+        override fun onLoadCleared(placeholder: Drawable?) {}
+      }
+      imageLoader.loadSvg("$gcsPrefix/$resourceBucketName/$imageUrl", target)
+    } else {
+      val target = object : CustomTarget<Bitmap>() {
+        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+          this@ImageRegionSelectionInteractionView.setImageBitmap(resource)
+        }
+
+        override fun onLoadCleared(placeholder: Drawable?) {}
+      }
+      imageLoader.load("$gcsPrefix/$resourceBucketName/$imageUrl", target)
+    }
   }
 
   fun setEntityId(entityId: String) {

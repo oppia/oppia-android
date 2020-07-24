@@ -65,10 +65,12 @@ import org.oppia.domain.topic.TEST_EXPLORATION_ID_5
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.testing.TestLogReportingModule
+import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
+import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import java.util.concurrent.AbstractExecutorService
@@ -430,7 +432,6 @@ class StateFragmentTest {
       startPlayingExploration()
       waitForExplorationToBeLoaded()
       onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
-      onView(isRoot()).perform(waitFor(2000))
       onView(withId(R.id.image_click_interaction_image_view)).perform(
         clickPoint(0.5f, 0.5f)
       )
@@ -954,6 +955,10 @@ class StateFragmentTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
+
+    @CacheAssetsLocally
+    @Provides
+    fun provideCacheAssetsLocally(): Boolean = true
   }
 
   @Singleton
