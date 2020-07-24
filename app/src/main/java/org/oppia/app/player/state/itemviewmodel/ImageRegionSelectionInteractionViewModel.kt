@@ -9,6 +9,7 @@ import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
+import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.utility.DefaultRegionClickedEvent
 import org.oppia.app.utility.NamedRegionClickedEvent
 import org.oppia.app.utility.OnClickableAreaClickedListener
@@ -18,6 +19,7 @@ import org.oppia.app.utility.RegionClickedEvent
 class ImageRegionSelectionInteractionViewModel(
   val entityId: String,
   interaction: Interaction,
+  private val interactionAnswerReceiver: InteractionAnswerReceiver,
   private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver // ktlint-disable max-line-length
 ) : StateItemViewModel(ViewType.IMAGE_REGION_SELECTION_INTERACTION),
   InteractionAnswerHandler,
@@ -48,8 +50,9 @@ class ImageRegionSelectionInteractionViewModel(
   override fun onClickableAreaTouched(region: RegionClickedEvent) {
     when (region) {
       is DefaultRegionClickedEvent -> {
-        answerText = ""
+        answerText = "Image"
         isAnswerAvailable.set(false)
+        interactionAnswerReceiver.onAnswerReadyForSubmission(getPendingAnswer())
       }
       is NamedRegionClickedEvent -> {
         answerText = region.regionLabel
@@ -60,19 +63,17 @@ class ImageRegionSelectionInteractionViewModel(
 
   override fun getPendingAnswer(): UserAnswer {
     val userAnswerBuilder = UserAnswer.newBuilder()
-    if (answerText.isNotEmpty()) {
-      val answerTextString = answerText.toString()
-      userAnswerBuilder.answer =
-        InteractionObject.newBuilder().setClickOnImage(parseClickOnImage(answerTextString)).build()
-      userAnswerBuilder.plainAnswer = answerTextString
-    }
+    val answerTextString = answerText.toString()
+    userAnswerBuilder.answer =
+      InteractionObject.newBuilder().setClickOnImage(parseClickOnImage(answerTextString)).build()
+    userAnswerBuilder.plainAnswer = "Clicks on $answerTextString"
     return userAnswerBuilder.build()
   }
 
   private fun parseClickOnImage(answerTextString: String): ClickOnImage {
     val region = selectableRegions.find { it.label == answerTextString }
     return ClickOnImage.newBuilder()
-      .addClickedRegions(region?.label)
+      .addClickedRegions(region?.label ?: "")
       .build()
   }
 }

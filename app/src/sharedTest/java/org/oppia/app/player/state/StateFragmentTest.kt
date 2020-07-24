@@ -41,6 +41,7 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
+import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
 import org.junit.After
@@ -55,10 +56,12 @@ import org.oppia.app.utility.CustomGeneralLocation
 import org.oppia.app.utility.DragViewAction
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.app.utility.RecyclerViewCoordinatesProvider
+import org.oppia.app.utility.clickPoint
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.domain.topic.TEST_EXPLORATION_ID_0
 import org.oppia.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.domain.topic.TEST_EXPLORATION_ID_4
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_5
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.testing.TestLogReportingModule
@@ -418,6 +421,89 @@ class StateFragmentTest {
           targetViewId = R.id.drag_drop_item_recyclerview
         )
       ).check(matches(hasChildCount(1)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadImageRegion_clickRegion6_region6Clicked() {
+    launchForExploration(TEST_EXPLORATION_ID_5).use {
+      startPlayingExploration()
+      waitForExplorationToBeLoaded()
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+      onView(isRoot()).perform(waitFor(2000))
+      onView(withId(R.id.image_click_interaction_image_view)).perform(
+        clickPoint(0.5f, 0.5f)
+      )
+      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
+      onView(withId(R.id.submit_answer_button)).perform(click())
+      onView(withId(R.id.feedback_text_view)).check(
+        matches(
+          withText(containsString("Saturn"))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadImageRegion_clickRegion6_region6Clicked() {
+    launchForExploration(TEST_EXPLORATION_ID_5).use {
+      startPlayingExploration()
+      waitForExplorationToBeLoaded()
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+      onView(isRoot()).perform(waitFor(2000))
+      onView(withId(R.id.image_click_interaction_image_view)).perform(
+        clickPoint(0.5f, 0.5f)
+      )
+      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
+      onView(withId(R.id.submit_answer_button)).perform(click())
+      onView(withId(R.id.feedback_text_view)).check(
+        matches(
+          withText(containsString("Saturn"))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadImageRegion_clickRegion6_clickedRegion5_region5Clicked() {
+    launchForExploration(TEST_EXPLORATION_ID_5).use {
+      startPlayingExploration()
+      waitForExplorationToBeLoaded()
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+      onView(isRoot()).perform(waitFor(2000))
+      onView(withId(R.id.image_click_interaction_image_view)).perform(
+        clickPoint(0.5f, 0.5f)
+      )
+      onView(withId(R.id.image_click_interaction_image_view)).perform(
+        clickPoint(0.2f, 0.5f)
+      )
+      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
+      onView(withId(R.id.submit_answer_button)).perform(click())
+      onView(withId(R.id.feedback_text_view)).check(
+        matches(
+          withText(containsString("Jupiter"))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadImageRegion_clickedRegion5_region5Clicked() {
+    launchForExploration(TEST_EXPLORATION_ID_5).use {
+      startPlayingExploration()
+      waitForExplorationToBeLoaded()
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+      onView(isRoot()).perform(waitFor(2000))
+      onView(withId(R.id.image_click_interaction_image_view)).perform(
+        clickPoint(0.2f, 0.5f)
+      )
+      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
+      onView(withId(R.id.submit_answer_button)).perform(click())
+      onView(withId(R.id.feedback_text_view)).check(
+        matches(
+          withText(containsString("Jupiter"))
+        )
+      )
     }
   }
 
@@ -845,7 +931,9 @@ class StateFragmentTest {
     @Provides
     @BackgroundDispatcher
     fun provideBackgroundDispatcher(@BlockingDispatcher blockingDispatcher: CoroutineDispatcher):
-      CoroutineDispatcher { return blockingDispatcher }
+      CoroutineDispatcher {
+        return blockingDispatcher
+      }
 
     @Singleton
     @Provides
@@ -921,6 +1009,28 @@ class StateFragmentTest {
 
     override fun awaitTermination(timeout: Long, unit: TimeUnit?): Boolean {
       throw UnsupportedOperationException()
+    }
+  }
+}
+
+/**
+ * Perform action of waiting for a specific time.
+ */
+fun waitFor(millis: Long): ViewAction? {
+  return object : ViewAction {
+    override fun getConstraints(): Matcher<View> {
+      return isRoot()
+    }
+
+    override fun getDescription(): String {
+      return "Wait for $millis milliseconds."
+    }
+
+    override fun perform(
+      uiController: UiController,
+      view: View
+    ) {
+      uiController.loopMainThreadForAtLeast(millis)
     }
   }
 }

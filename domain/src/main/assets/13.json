@@ -46,7 +46,7 @@
                   "content_id": "feedback_1",
                   "html": "<p>This is Mercury, a small metallic planet closest to the sun. Since it is so near to the sun, it only takes 88 days for it to travel one entire orbit, so a year on Mercury would only be 88 days long.</p>"
                 },
-                "dest": "First State",
+                "dest": "ImageClickInput",
                 "refresher_exploration_id": null,
                 "missing_prerequisite_skill_id": null,
                 "labelled_as_correct": false
@@ -69,7 +69,7 @@
                   "content_id": "feedback_2",
                   "html": "<p>This is Venus, the second planet from the sun. It is the brightest planet in the Solar System, and can sometimes even be seen during the day. Though Mercury is nearer to the sun than Venus, Venus is the hottest planet in the Solar System, because its thick atmosphere of carbon dioxide traps heat on its surface.</p>"
                 },
-                "dest": "First State",
+                "dest": "ImageClickInput",
                 "refresher_exploration_id": null,
                 "missing_prerequisite_skill_id": null,
                 "labelled_as_correct": false
@@ -92,7 +92,7 @@
                   "content_id": "feedback_3",
                   "html": "<p>Earth! Our home planet is the third planet from the sun. Despite the vastness of the Solar System and the rest of space, it is the only place that we know life exists on. It is at just the right distance from the sun to ensure a comfortable temperature for us to exist in.</p>"
                 },
-                "dest": "First State",
+                "dest": "ImageClickInput",
                 "refresher_exploration_id": null,
                 "missing_prerequisite_skill_id": null,
                 "labelled_as_correct": false
@@ -115,7 +115,7 @@
                   "content_id": "feedback_4",
                   "html": "<p>Mars is the fourth planet from the sun. It is often dubbed the \"red planet\" due to its color, which is a result of large quantities of iron oxide on its surface. It has a thin atmosphere of carbon dioxide and ice caps on either end, and has two small irregularly-shaped moons called Phobos and Deimos.</p>"
                 },
-                "dest": "First State",
+                "dest": "ImageClickInput",
                 "refresher_exploration_id": null,
                 "missing_prerequisite_skill_id": null,
                 "labelled_as_correct": false
@@ -138,7 +138,7 @@
                   "content_id": "feedback_5",
                   "html": "<p>Jupiter, the fifth planet from the sun, is a huge planet that is 2.5 times heavier than all of the other planets in our Solar System combined. It is mostly formed out of thick gases around a solid core. One famous feature on it is the \"Great Red Spot\", which is a huge storm on its surface that has raged for at least 350 years, and is large enough to swallow three entire Earths.</p>"
                 },
-                "dest": "First State",
+                "dest": "ImageClickInput",
                 "refresher_exploration_id": null,
                 "missing_prerequisite_skill_id": null,
                 "labelled_as_correct": false
@@ -161,7 +161,7 @@
                   "content_id": "feedback_6",
                   "html": "<p>Saturn, the sixth planet from the sun, is most well known for its beautiful rings of ice and dust orbiting around it. Like Jupiter, it is a gas giant, mostly made of layers of hydrogen which get progressively denser towards its solid core. </p>"
                 },
-                "dest": "First State",
+                "dest": "End",
                 "refresher_exploration_id": null,
                 "missing_prerequisite_skill_id": null,
                 "labelled_as_correct": false
@@ -184,7 +184,7 @@
                   "content_id": "feedback_7",
                   "html": "<p>Uranus is the seventh planet from the sun. It was the first planet that was discovered using a telescope, since it is normally too dim to be seen with the naked eye. It is the coldest planet, and is formed from layers of hydrogen gas enveloping a frigid core of rock and ice.</p>"
                 },
-                "dest": "First State",
+                "dest": "ImageClickInput",
                 "refresher_exploration_id": null,
                 "missing_prerequisite_skill_id": null,
                 "labelled_as_correct": false
@@ -207,7 +207,7 @@
                   "content_id": "feedback_8",
                   "html": "<p>Neptune is the eighth planet from the sun. It is an \"ice giant\", like Uranus, with an outer layer of hydrogen, helium, and methane enveloping an icy core. The methane in its atmosphere absorbs red light, giving it a beautiful blue color. It was first predicted to exist from gravitational calculations, and was only discovered by telescope later.</p>"
                 },
-                "dest": "First State",
+                "dest": "ImageClickInput",
                 "refresher_exploration_id": null,
                 "missing_prerequisite_skill_id": null,
                 "labelled_as_correct": false
@@ -230,7 +230,7 @@
                   "content_id": "feedback_9",
                   "html": "<p>Pluto was once considered the ninth planet from the sun, but has now been reclassified as a \"dwarf planet\". It is formed from ice and rock, and is even smaller than our moon. The first spacecraft to visit Pluto is due to reach in July 2015.</p>"
                 },
-                "dest": "First State",
+                "dest": "ImageClickInput",
                 "refresher_exploration_id": null,
                 "missing_prerequisite_skill_id": null,
                 "labelled_as_correct": false
@@ -278,7 +278,8 @@
                         ]
                       ]
                     },
-                    "label": "1"
+                    "label": "1",
+                    "regionDescription": "A small metallic planet closest to the sun."
                   },
                   {
                     "region": {
@@ -294,7 +295,8 @@
                         ]
                       ]
                     },
-                    "label": "2"
+                    "label": "2",
+                    "regionDescription": "The brightest planet in the Solar System."
                   },
                   {
                     "region": {
@@ -310,7 +312,8 @@
                         ]
                       ]
                     },
-                    "label": "3"
+                    "label": "3",
+                    "regionDescription": "Our home planet."
                   },
                   {
                     "region": {
@@ -326,7 +329,8 @@
                         ]
                       ]
                     },
-                    "label": "4"
+                    "label": "4",
+                    "regionDescription": "It is the fourth planet from the sun."
                   },
                   {
                     "region": {
@@ -342,7 +346,8 @@
                         ]
                       ]
                     },
-                    "label": "5"
+                    "label": "5",
+                    "regionDescription": "It is mostly formed out of thick gases around a solid core."
                   },
                   {
                     "region": {
@@ -358,7 +363,8 @@
                         ]
                       ]
                     },
-                    "label": "6"
+                    "label": "6",
+                    "regionDescription": "It is most well known for its beautiful rings."
                   },
                   {
                     "region": {
@@ -374,7 +380,8 @@
                         ]
                       ]
                     },
-                    "label": "7"
+                    "label": "7",
+                    "regionDescription": "It was the first planet that was discovered using a telescope."
                   },
                   {
                     "region": {
@@ -390,7 +397,8 @@
                         ]
                       ]
                     },
-                    "label": "8"
+                    "label": "8",
+                    "regionDescription": "It was first predicted to exist from gravitational calculations."
                   },
                   {
                     "region": {
@@ -406,7 +414,8 @@
                         ]
                       ]
                     },
-                    "label": "9"
+                    "label": "9",
+                    "regionDescription": "It is even smaller than our moon."
                   }
                 ],
                 "imagePath": "Screen Shot 2015-02-18 at 3.51.49 AM_height_400_width_816.png"

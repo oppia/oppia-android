@@ -2,13 +2,13 @@ package org.oppia.app.player.state
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.view.forEachIndexed
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.FragmentManager
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import org.oppia.app.R
 import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.model.ImageWithRegions
 import org.oppia.app.utility.ClickableAreasImage
@@ -17,6 +17,7 @@ import org.oppia.util.accessibility.CustomAccessibilityManager
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.parser.DefaultGcsPrefix
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
+import org.oppia.util.parser.GlideImageLoader
 import org.oppia.util.parser.ImageDownloadUrlTemplate
 import javax.inject.Inject
 
@@ -41,6 +42,9 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   lateinit var accessibilityManager: CustomAccessibilityManager
 
   @Inject
+  lateinit var imageLoader: GlideImageLoader
+
+  @Inject
   @field:ExplorationHtmlParserEntityType
   lateinit var entityType: String
 
@@ -60,14 +64,36 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
 
   fun setUrlString(urlString: String) {
     this.urlString = urlString
+    loadImage()
+  }
 
+  /** loads an image using Glide from [urlString]. */
+  private fun loadImage() {
     val imageUrl = String.format(imageDownloadUrlTemplate, entityType, entityId, urlString)
-    val requestOptions = RequestOptions().placeholder(R.drawable.review_placeholder)
 
     Glide.with(this.context)
-      .load(urlString)
-      .apply(requestOptions)
+      .load("$gcsPrefix/$resourceBucketName/$imageUrl")
       .into(this)
+    // TODO: Discuss this issue.
+//    if (imageUrl.endsWith("svg", ignoreCase = true)) {
+//      val target = object : CustomTarget<Picture>() {
+//        override fun onResourceReady(resource: Picture, transition: Transition<in Picture>?) {
+//          this@ImageRegionSelectionInteractionView.setImageDrawable(PictureDrawable(resource))
+//        }
+//
+//        override fun onLoadCleared(placeholder: Drawable?) {}
+//      }
+//      imageLoader.loadSvg("$gcsPrefix/$resourceBucketName/$imageUrl", target)
+//    } else {
+//      val target = object : CustomTarget<Bitmap>() {
+//        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+//          this@ImageRegionSelectionInteractionView.setImageBitmap(resource)
+//        }
+//
+//        override fun onLoadCleared(placeholder: Drawable?) {}
+//      }
+//      imageLoader.load("$gcsPrefix/$resourceBucketName/$imageUrl", target)
+//    }
   }
 
   fun setEntityId(entityId: String) {
@@ -76,6 +102,16 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
 
   fun setClickableAreas(clickableAreas: List<ImageWithRegions.LabeledRegion>) {
     this.clickableAreas = clickableAreas
+    // Remove selected view in case of wrong answer
+    val parentView = this.parent as FrameLayout
+    if (parentView.childCount > 2) {
+      parentView.forEachIndexed { index: Int, childView: View ->
+        // Remove any previously selected region excluding 0th index(image view)
+        if (index > 0) {
+          childView.setBackgroundResource(0)
+        }
+      }
+    }
   }
 
   /** Binds [OnClickableAreaClickedListener] with the view inorder to get callback from [ClickableAreasImage]. */
@@ -116,6 +152,7 @@ fun setRegionClickToImageView(
     parentView,
     onClickableAreaClickedListener
   )
+
   imageRegionSelectionInteractionView.addOnLayoutChangeListener { _, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom -> // ktlint-disable max-line-length
     // Update the regions, as the bounds have changed
     if (left != oldLeft || top != oldTop || right != oldRight || bottom != oldBottom)
