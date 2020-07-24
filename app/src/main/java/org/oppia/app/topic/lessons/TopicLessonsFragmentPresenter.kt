@@ -91,6 +91,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
               currentExpandedChapterListIndex = index + 1
             }
           }
+          itemList.clear()
           itemList.add(TopicLessonsTitleViewModel())
           for (storySummary in it.storyList) {
             itemList.add(StorySummaryViewModel(storySummary, fragment as StorySummarySelector))
