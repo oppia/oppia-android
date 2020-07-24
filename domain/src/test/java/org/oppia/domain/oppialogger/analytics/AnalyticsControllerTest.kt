@@ -57,7 +57,7 @@ const val TEST_EXPLORATION_ID = "test_explorationId"
 const val TEST_QUESTION_ID = "test_questionId"
 const val TEST_SKILL_ID = "test_skillId"
 const val TEST_SKILL_LIST_ID = "test_skillListId"
-const val TEST_SUB_TOPIC_ID = "test_subTopicId"
+const val TEST_SUB_TOPIC_ID = 1
 
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
@@ -410,7 +410,7 @@ class AnalyticsControllerTest {
 
     assertThat(eventContext.activityContextCase).isEqualTo(REVISION_CARD_CONTEXT)
     assertThat(eventContext.revisionCardContext.topicId).matches(TEST_TOPIC_ID)
-    assertThat(eventContext.revisionCardContext.subTopicId).matches(TEST_SUB_TOPIC_ID)
+    assertThat(eventContext.revisionCardContext.subTopicId).isEqualTo(TEST_SUB_TOPIC_ID)
   }
 
   // TODO(#1106): Addition of tests tracking behaviour of the controller after uploading of logs to the remote service.

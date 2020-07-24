@@ -13,10 +13,19 @@ import javax.inject.Inject
 @ActivityScope
 class HelpActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
   private lateinit var navigationDrawerFragment: NavigationDrawerFragment
+  private lateinit var toolbar: Toolbar
 
-  fun handleOnCreate() {
+  fun handleOnCreate(isFromExploration: Boolean) {
     activity.setContentView(R.layout.help_activity)
-    setUpNavigationDrawer()
+    setUpToolbar()
+    if (isFromExploration) {
+      activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+      toolbar.setNavigationOnClickListener {
+        activity.finish()
+      }
+    } else {
+      setUpNavigationDrawer()
+    }
     if (getHelpFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.help_fragment_placeholder,
@@ -25,9 +34,12 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
     }
   }
 
-  private fun setUpNavigationDrawer() {
-    val toolbar = activity.findViewById<View>(R.id.help_activity_toolbar) as Toolbar
+  private fun setUpToolbar() {
+    toolbar = activity.findViewById<View>(R.id.help_activity_toolbar) as Toolbar
     activity.setSupportActionBar(toolbar)
+  }
+
+  private fun setUpNavigationDrawer() {
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     navigationDrawerFragment = activity
       .supportFragmentManager
