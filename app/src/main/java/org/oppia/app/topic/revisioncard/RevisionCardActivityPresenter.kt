@@ -8,12 +8,12 @@ import javax.inject.Inject
 /** The presenter for [RevisionCardActivity]. */
 @ActivityScope
 class RevisionCardActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
-  fun handleOnCreate() {
+  fun handleOnCreate(topicId: String, subtopicId: Int) {
     activity.setContentView(R.layout.revision_card_activity)
     if (getReviewCardFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.revision_card_fragment_placeholder,
-        RevisionCardFragment()
+        RevisionCardFragment.newInstance(topicId, subtopicId)
       ).commitNow()
     }
   }

@@ -50,6 +50,7 @@ import org.oppia.testing.TestAccessibilityModule
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
+import org.oppia.util.accessibility.FakeAccessibilityManager
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.gcsresource.GcsResourceModule
 import org.oppia.util.logging.LoggerModule
@@ -76,12 +77,16 @@ class StateFragmentAccessibilityTest {
   @field:ApplicationContext
   lateinit var context: Context
 
+  @Inject
+  lateinit var fakeAccessibilityManager: FakeAccessibilityManager
+
   private val internalProfileId: Int = 1
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
+    fakeAccessibilityManager.setTalkbackEnabled(true)
     FirebaseApp.initializeApp(context)
   }
 

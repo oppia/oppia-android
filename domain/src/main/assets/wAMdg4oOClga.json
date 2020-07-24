@@ -13,6 +13,7 @@
       "thumbnail_bg_color": "#D68F78",
       "exp_summary_dict": {
         "thumbnail_bg_color": "#d68453",
+        "thumbnail_icon_url": "",
         "title": "Ratios-1",
         "language_code": "en",
         "objective": "Learn about ratios.",
@@ -33,6 +34,7 @@
       "thumbnail_bg_color": "#D6FA78",
       "exp_summary_dict": {
         "thumbnail_bg_color": "#d76453",
+        "thumbnail_icon_url": "",
         "title": "Ratios-2",
         "language_code": "en",
         "objective": "Learn about ordering in ratios.",
