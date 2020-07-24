@@ -83,7 +83,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     binding.questionRecyclerView.apply {
       adapter = recyclerViewAssembler.adapter
     }
-    binding.rightQuestionRecyclerView.apply {
+    binding.extraInteractionRecyclerView.apply {
       adapter = recyclerViewAssembler.rhsAdapter
     }
 

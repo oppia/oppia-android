@@ -177,17 +177,17 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val hasPreviousState = ephemeralState.hasPreviousState
 
     previousAnswerViewModels.clear()
-    val leftPendingItemList = mutableListOf<StateItemViewModel>()
-    val rightPendingItemList = mutableListOf<StateItemViewModel>()
+    val conversationPendingItemList = mutableListOf<StateItemViewModel>()
+    val extraInteractionPendingItemList = mutableListOf<StateItemViewModel>()
     if (playerFeatureSet.contentSupport) {
-      addContentItem(leftPendingItemList, ephemeralState, gcsEntityId)
+      addContentItem(conversationPendingItemList, ephemeralState, gcsEntityId)
     }
     val interaction = ephemeralState.state.interaction
 
     if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE) {
       addPreviousAnswers(
-        leftPendingItemList,
-        rightPendingItemList,
+        conversationPendingItemList,
+        extraInteractionPendingItemList,
         ephemeralState.pendingState.wrongAnswerList,
         /* isCorrectAnswer= */ false,
         isSplitView,
@@ -196,17 +196,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
       if (playerFeatureSet.hintsAndSolutionsSupport) {
         hintHandler.maybeScheduleShowHint(ephemeralState.state, ephemeralState.pendingState)
       }
-      if (playerFeatureSet.interactionSupport && !isSplitView) {
+      if (playerFeatureSet.interactionSupport) {
+        val interactionItemList =
+          if (isSplitView) extraInteractionPendingItemList else conversationPendingItemList
         addInteractionForPendingState(
-          leftPendingItemList,
-          interaction,
-          hasPreviousState,
-          gcsEntityId
-        )
-      }
-      if (playerFeatureSet.interactionSupport && isSplitView) {
-        addInteractionForPendingState(
-          rightPendingItemList,
+          interactionItemList,
           interaction,
           hasPreviousState,
           gcsEntityId
@@ -214,8 +208,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
       }
     } else if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE) {
       addPreviousAnswers(
-        leftPendingItemList,
-        rightPendingItemList,
+        conversationPendingItemList,
+        extraInteractionPendingItemList,
         ephemeralState.completedState.answerList,
         /* isCorrectAnswer= */ true,
         isSplitView,
@@ -253,15 +247,15 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
 
     maybeAddNavigationButtons(
-      leftPendingItemList,
-      rightPendingItemList,
+      conversationPendingItemList,
+      extraInteractionPendingItemList,
       hasPreviousState,
       canContinueToNextState,
       hasGeneralContinueButton,
       ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE,
       isSplitView
     )
-    return Pair(leftPendingItemList, rightPendingItemList)
+    return Pair(conversationPendingItemList, extraInteractionPendingItemList)
   }
 
   private fun addInteractionForPendingState(
@@ -484,8 +478,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
   }
 
   private fun maybeAddNavigationButtons(
-    pendingItemList: MutableList<StateItemViewModel>,
-    rightPendingItemList: MutableList<StateItemViewModel>,
+    conversationPendingItemList: MutableList<StateItemViewModel>,
+    extraInteractionPendingItemList: MutableList<StateItemViewModel>,
     hasPreviousState: Boolean,
     canContinueToNextState: Boolean,
     hasGeneralContinueButton: Boolean,
@@ -496,19 +490,19 @@ class StatePlayerRecyclerViewAssembler private constructor(
     when {
       hasGeneralContinueButton && playerFeatureSet.forwardNavigation -> {
         if (!shouldSplit) {
-          pendingItemList += ContinueNavigationButtonViewModel(
+          conversationPendingItemList += ContinueNavigationButtonViewModel(
             hasPreviousButton,
             previousNavigationButtonListener,
             fragment as ContinueNavigationButtonListener
           )
         } else {
-          rightPendingItemList += ContinueNavigationButtonViewModel(
+          extraInteractionPendingItemList += ContinueNavigationButtonViewModel(
             /* hasPreviousButton= */ false,
             previousNavigationButtonListener,
             fragment as ContinueNavigationButtonListener
           )
           if (hasPreviousButton) {
-            pendingItemList += PreviousButtonViewModel(
+            conversationPendingItemList += PreviousButtonViewModel(
               previousNavigationButtonListener
             )
           }
@@ -516,19 +510,19 @@ class StatePlayerRecyclerViewAssembler private constructor(
       }
       canContinueToNextState && playerFeatureSet.forwardNavigation -> {
         if (!shouldSplit) {
-          pendingItemList += NextButtonViewModel(
+          conversationPendingItemList += NextButtonViewModel(
             hasPreviousButton,
             previousNavigationButtonListener,
             fragment as NextNavigationButtonListener
           )
         } else {
-          rightPendingItemList += NextButtonViewModel(
+          extraInteractionPendingItemList += NextButtonViewModel(
             /* hasPreviousButton= */ false,
             previousNavigationButtonListener,
             fragment as NextNavigationButtonListener
           )
           if (hasPreviousButton) {
-            pendingItemList += PreviousButtonViewModel(
+            conversationPendingItemList += PreviousButtonViewModel(
               previousNavigationButtonListener
             )
           }
@@ -537,66 +531,67 @@ class StatePlayerRecyclerViewAssembler private constructor(
       stateIsTerminal -> {
         if (playerFeatureSet.replaySupport) {
           if (!shouldSplit) {
-            pendingItemList += ReplayButtonViewModel(fragment as ReplayButtonListener)
+            conversationPendingItemList += ReplayButtonViewModel(fragment as ReplayButtonListener)
           } else {
-            rightPendingItemList += ReplayButtonViewModel(fragment as ReplayButtonListener)
+            extraInteractionPendingItemList +=
+              ReplayButtonViewModel(fragment as ReplayButtonListener)
           }
         }
         if (playerFeatureSet.returnToTopicNavigation) {
           if (!shouldSplit) {
-            pendingItemList += ReturnToTopicButtonViewModel(
+            conversationPendingItemList += ReturnToTopicButtonViewModel(
               hasPreviousButton, previousNavigationButtonListener,
               fragment as ReturnToTopicNavigationButtonListener
             )
           } else {
-            rightPendingItemList += ReturnToTopicButtonViewModel(
+            extraInteractionPendingItemList += ReturnToTopicButtonViewModel(
               /* hasPreviousButton= */ false,
               previousNavigationButtonListener,
               fragment as ReturnToTopicNavigationButtonListener
             )
             if (hasPreviousButton) {
-              pendingItemList += PreviousButtonViewModel(
+              conversationPendingItemList += PreviousButtonViewModel(
                 previousNavigationButtonListener
               )
             }
           }
         }
       }
-      doesMostRecentInteractionRequireExplicitSubmission(pendingItemList) &&
+      doesMostRecentInteractionRequireExplicitSubmission(conversationPendingItemList) &&
         playerFeatureSet.interactionSupport && !shouldSplit -> {
         val canSubmitAnswer = checkNotNull(this.canSubmitAnswer) {
           "Expected non-null submit answer observable for submit button when interaction support " +
             "is enabled"
         }
-        pendingItemList += SubmitButtonViewModel(
+        conversationPendingItemList += SubmitButtonViewModel(
           canSubmitAnswer,
           hasPreviousButton,
           previousNavigationButtonListener,
           fragment as SubmitNavigationButtonListener
         )
       }
-      doesMostRecentInteractionRequireExplicitSubmission(rightPendingItemList) &&
+      doesMostRecentInteractionRequireExplicitSubmission(extraInteractionPendingItemList) &&
         playerFeatureSet.interactionSupport && shouldSplit -> {
         val canSubmitAnswer = checkNotNull(this.canSubmitAnswer) {
           "Expected non-null submit answer observable for submit button when interaction support " +
             "is enabled"
         }
-        rightPendingItemList += SubmitButtonViewModel(
+        extraInteractionPendingItemList += SubmitButtonViewModel(
           canSubmitAnswer,
           /* hasPreviousButton= */ false,
           previousNavigationButtonListener,
           fragment as SubmitNavigationButtonListener
         )
         if (hasPreviousButton) {
-          pendingItemList += PreviousButtonViewModel(
+          conversationPendingItemList += PreviousButtonViewModel(
             previousNavigationButtonListener
           )
         }
       }
       // Otherwise, just show the previous button since the interaction itself will push the answer
       // submission.
-      hasPreviousButton && !isMostRecentInteractionAutoNavigating(pendingItemList) -> {
-        pendingItemList += PreviousButtonViewModel(
+      hasPreviousButton && !isMostRecentInteractionAutoNavigating(conversationPendingItemList) -> {
+        conversationPendingItemList += PreviousButtonViewModel(
           previousNavigationButtonListener
         )
       }

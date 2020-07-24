@@ -4,7 +4,6 @@ import android.app.Application
 import dagger.BindsInstance
 import dagger.Component
 import org.oppia.app.activity.ActivityComponent
-import org.oppia.app.utility.SplitScreenManagerModule
 import org.oppia.data.backends.gae.NetworkModule
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
@@ -45,7 +44,7 @@ import javax.inject.Singleton
     HtmlParserEntityTypeModule::class, CachingModule::class,
     QuestionModule::class, LogReportingModule::class,
     AccessibilityModule::class, ImageClickInputModule::class,
-    LogStorageModule::class, SplitScreenManagerModule::class
+    LogStorageModule::class
   ]
 )
 

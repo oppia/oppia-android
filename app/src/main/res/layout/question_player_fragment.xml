@@ -67,7 +67,7 @@
         app:layout_constraintTop_toBottomOf="@+id/end_session_body_text_view" />
 
       <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/right_question_recycler_view"
+        android:id="@+id/extra_interaction_recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:divider="@android:color/transparent"

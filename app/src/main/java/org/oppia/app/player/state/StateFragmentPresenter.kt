@@ -107,7 +107,7 @@ class StateFragmentPresenter @Inject constructor(
     binding.stateRecyclerView.apply {
       adapter = stateRecyclerViewAdapter
     }
-    binding.rhsStateRecyclerView.apply {
+    binding.extraInteractionRecyclerView.apply {
       adapter = rhsStateRecyclerViewAdapter
     }
     recyclerViewAdapter = stateRecyclerViewAdapter

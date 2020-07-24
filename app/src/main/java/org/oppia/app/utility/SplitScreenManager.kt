@@ -6,6 +6,7 @@ import org.oppia.app.R
 import org.oppia.app.model.EphemeralQuestion
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.player.state.StateFragment
+import org.oppia.app.player.state.itemviewmodel.InteractionViewModelModule.Companion.splitScreenInteractionIdsPool
 import org.oppia.app.topic.questionplayer.QuestionPlayerFragment
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -20,7 +21,6 @@ private const val MINIMUM_DIAGONAL_WIDTH = 7.0
  */
 @Singleton
 class SplitScreenManager @Inject constructor(private val context: Context) {
-  private val splitScreenInteractionIdsPool = listOf("DragAndDropSortInput", "ImageClickInput")
 
   /**
    * The actual function that decides whether to split or not.
@@ -30,14 +30,14 @@ class SplitScreenManager @Inject constructor(private val context: Context) {
    * @return `true` if the screen should be split, `false` otherwise.
    */
   fun isSplitPossible(interactionId: String): Boolean {
-    return isDeviceSplittable() && isInteractionSplittable(interactionId)
+    return isDeviceLargeEnoughForSplitScreen() && isInteractionSplittable(interactionId)
   }
 
   /**
    * @return The physical diagonal size of the device in inches.
    */
   // https://stackoverflow.com/a/19156339/6628335
-  private fun deviceDiagonalSize(): Double {
+  private fun computeDeviceDiagonalSizeInches(): Double {
     val displayMetrics = Resources.getSystem().displayMetrics
     val widthInPixel = displayMetrics.widthPixels
     val heightInPixel = displayMetrics.heightPixels
@@ -52,9 +52,9 @@ class SplitScreenManager @Inject constructor(private val context: Context) {
    * Checks the device efficiency for splitting based on the **density** and **diagonal physical size**.
    * @return `true` if the device is splittable, `false` otherwise.
    */
-  private fun isDeviceSplittable(): Boolean {
-    val shouldSplit = context.resources.getBoolean(R.bool.shouldSplit)
-    return shouldSplit && deviceDiagonalSize() >= MINIMUM_DIAGONAL_WIDTH
+  private fun isDeviceLargeEnoughForSplitScreen(): Boolean {
+    val shouldSplit = context.resources.getBoolean(R.bool.shouldCheckForSplittingInteraction)
+    return shouldSplit && computeDeviceDiagonalSizeInches() >= MINIMUM_DIAGONAL_WIDTH
   }
 
   /**
