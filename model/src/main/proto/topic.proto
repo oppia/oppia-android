@@ -292,7 +292,7 @@ message CellularDataPreference {
 // Corresponds to a single subtopic.
 message Subtopic {
   // The ID of the subtopic.
-  string subtopic_id = 1;
+  int32 subtopic_id = 1;
 
   // The title of the subtopic.
   string title = 2;
