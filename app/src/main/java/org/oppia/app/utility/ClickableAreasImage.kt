@@ -20,7 +20,6 @@ class ClickableAreasImage(
   private val parentView: FrameLayout,
   private val listener: OnClickableAreaClickedListener
 ) {
-  private var rect = Rect()
   init {
     imageView.setOnTouchListener { view, motionEvent ->
       if (motionEvent.action == MotionEvent.ACTION_DOWN) {
@@ -44,7 +43,7 @@ class ClickableAreasImage(
       defaultRegion.setBackgroundResource(R.drawable.selected_region_background)
       defaultRegion.x = x
       defaultRegion.y = y
-      listener.onClickableAreaTouched(DefaultRegionClickedEvent)
+      listener.onClickableAreaTouched(DefaultRegionClickedEvent())
     }
   }
 
@@ -78,7 +77,6 @@ class ClickableAreasImage(
 
   /** Add selectable regions to [FrameLayout].*/
   fun addRegionViews() {
-    rect = Rect(0, 0, getImageViewContentWidth(), getImageViewContentHeight())
     parentView.let {
       if (it.childCount > 2) {
         it.removeViews(2, it.childCount - 1) // remove all other views
