@@ -60,25 +60,25 @@ class ClickableAreasImage(
 
   /** Get X co-ordinate scaled according to image.*/
   private fun getXCoordinate(x: Float): Float {
-    return (x * rect.width()) + rect.left
+    return x * getImageViewContentWidth()
   }
 
   /** Get Y co-ordinate scaled according to image.*/
   private fun getYCoordinate(y: Float): Float {
-    return (y * rect.height()) + rect.top
+    return y * getImageViewContentHeight()
   }
 
-  private fun getImageViewWidth(): Int {
+  private fun getImageViewContentWidth(): Int {
     return imageView.width - imageView.paddingLeft - imageView.paddingRight
   }
 
-  private fun getImageViewHeight(): Int {
+  private fun getImageViewContentHeight(): Int {
     return imageView.height - imageView.paddingTop - imageView.paddingBottom
   }
 
   /** Add selectable regions to [FrameLayout].*/
   fun addRegionViews() {
-    rect = Rect(0, 0, getImageViewWidth(), getImageViewHeight())
+    rect = Rect(0, 0, getImageViewContentWidth(), getImageViewContentHeight())
     parentView.let {
       if (it.childCount > 2) {
         it.removeViews(2, it.childCount - 1) // remove all other views
