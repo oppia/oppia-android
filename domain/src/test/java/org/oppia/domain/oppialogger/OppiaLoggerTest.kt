@@ -116,7 +116,7 @@ class OppiaLoggerTest {
       EventLog.Context.ActivityContextCase.REVISION_CARD_CONTEXT
     )
     assertThat(eventContext.revisionCardContext.topicId).matches(TEST_TOPIC_ID)
-    assertThat(eventContext.revisionCardContext.subTopicId).matches(TEST_SUB_TOPIC_ID)
+    assertThat(eventContext.revisionCardContext.subTopicId).isEqualTo(TEST_SUB_TOPIC_ID)
   }
 
   private fun setUpTestApplicationComponent() {

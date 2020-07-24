@@ -106,7 +106,7 @@ class OppiaLogger @Inject constructor(
   /** Returns the context of an event related to revision card. */
   fun createRevisionCardContext(
     topicId: String,
-    subTopicId: String
+    subTopicId: Int
   ): EventLog.Context {
     return EventLog.Context.newBuilder()
       .setRevisionCardContext(

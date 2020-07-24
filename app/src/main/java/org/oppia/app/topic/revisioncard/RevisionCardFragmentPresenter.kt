@@ -49,7 +49,7 @@ class RevisionCardFragmentPresenter @Inject constructor(
     return viewModelProvider.getForFragment(fragment, RevisionCardViewModel::class.java)
   }
 
-  private fun logRevisionCardEvent(topicId: String, subTopicId: String) {
+  private fun logRevisionCardEvent(topicId: String, subTopicId: Int) {
     oppiaLogger.logTransitionEvent(
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_REVISION_CARD,
