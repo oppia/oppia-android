@@ -7,8 +7,7 @@ load("//utility:utility_test.bzl", "utility_test")
 kt_android_library(
     name = "utility_lib",
     custom_package = "org.oppia.util",
-    srcs = glob(["src/main/java/org/oppia/util/**/*.kt"],
-                exclude = ["src/main/java/org/oppia/util/logging/firebase/*.kt"]),
+    srcs = glob(["src/main/java/org/oppia/util/**/*.kt"],),
     resource_files = glob(["src/main/res/**/*.xml"]),
     manifest = "src/main/AndroidManifest.xml",
     deps = [
@@ -32,8 +31,7 @@ kt_android_library(
 kt_android_library(
     name = "utility_test_lib",
     custom_package = "org.oppia.util",
-    srcs = glob(["src/test/java/org/oppia/util/**/*.kt"],
-                exclude = ["src/test/java/org/oppia/util/logging/firebase/*.kt"]),
+    srcs = glob(["src/test/java/org/oppia/util/**/*.kt"],),
     resource_files = glob(["src/main/res/**/*.xml"]),
     manifest = "src/test/TestManifest.xml",
     deps = [
@@ -41,6 +39,10 @@ kt_android_library(
         ":utility_lib",
         "//testing:testing_lib",
         "//model:model_lib",
+        "//firebase:crashlytics_lib",
+        "//firebase:crashlytics_deps",
+        artifact("com.google.firebase:firebase-analytics:17.4.4"),
+        artifact("com.google.firebase:firebase-crashlytics:17.1.1"),
         artifact("org.jetbrains.kotlin:kotlin-test-junit"),
         artifact("com.google.truth:truth"),
         artifact("androidx.test.ext:junit"),
