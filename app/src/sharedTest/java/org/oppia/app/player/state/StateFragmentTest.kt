@@ -2,6 +2,8 @@ package org.oppia.app.player.state
 
 import android.app.Application
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.Looper
 import android.view.View
@@ -21,6 +23,7 @@ import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents
@@ -34,6 +37,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
@@ -41,14 +46,19 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
+import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.not
+import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FEEDBACK
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.utility.ChildViewCoordinatesProvider
@@ -65,12 +75,16 @@ import org.oppia.domain.topic.TEST_EXPLORATION_ID_5
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.testing.TestLogReportingModule
+import org.oppia.util.caching.AssetRepository
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
+import org.oppia.util.parser.CustomImageTarget
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
+import org.oppia.util.parser.GlideImageLoaderModule
+import org.oppia.util.parser.ImageLoader
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import java.util.concurrent.AbstractExecutorService
@@ -88,6 +102,12 @@ class StateFragmentTest {
   @Inject
   lateinit var context: Context
 
+  @Inject
+  lateinit var assetRepository: AssetRepository
+
+  @Inject
+  lateinit var imageLoader: ImageLoader
+
   private val internalProfileId: Int = 1
 
   @Before
@@ -96,6 +116,12 @@ class StateFragmentTest {
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
     FirebaseApp.initializeApp(context)
+
+    assetRepository.primeLocalUrlAssociation("solar_system.png", "https://storage.googleapis.com/oppiaserver-resources/exploration/13/assets/image/Screen%20Shot%202015-02-18%20at%203.51.49%20AM_height_400_width_816.png")
+    imageLoader.loadBitmap("https://storage.googleapis.com/oppiaserver-resources/exploration/13/assets/image/Screen%20Shot%202015-02-18%20at%203.51.49%20AM_height_400_width_816.png", CustomImageTarget(object: CustomTarget<Bitmap>() {
+      override fun onLoadCleared(placeholder: Drawable?) {}
+      override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {}
+    }))
   }
 
   @After
@@ -455,7 +481,9 @@ class StateFragmentTest {
       onView(withId(R.id.image_click_interaction_image_view)).perform(
         clickPoint(0.1f, 0.5f)
       )
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SUBMIT_ANSWER_BUTTON))
       onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(FEEDBACK))
       onView(withId(R.id.feedback_text_view)).check(
         matches(
           withText(containsString("Try Again"))
@@ -932,8 +960,8 @@ class StateFragmentTest {
     @BackgroundDispatcher
     fun provideBackgroundDispatcher(@BlockingDispatcher blockingDispatcher: CoroutineDispatcher):
       CoroutineDispatcher {
-        return blockingDispatcher
-      }
+      return blockingDispatcher
+    }
 
     @Singleton
     @Provides
@@ -962,7 +990,7 @@ class StateFragmentTest {
   }
 
   @Singleton
-  @Component(modules = [TestModule::class, TestLogReportingModule::class])
+  @Component(modules = [TestModule::class, TestLogReportingModule::class, GlideImageLoaderModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
@@ -1015,26 +1043,46 @@ class StateFragmentTest {
       throw UnsupportedOperationException()
     }
   }
-}
 
-/**
- * Perform action of waiting for a specific time.
- */
-fun waitFor(millis: Long): ViewAction? {
-  return object : ViewAction {
-    override fun getConstraints(): Matcher<View> {
-      return isRoot()
+  private fun scrollToViewType(viewType: StateItemViewModel.ViewType): ViewAction {
+    return RecyclerViewActions.scrollToHolder(StateViewHolderTypeMatcher(viewType))
+  }
+
+  /**
+   * [BaseMatcher] that matches against the first occurrence of the specified view holder type in
+   * StateFragment's RecyclerView.
+   */
+  private class StateViewHolderTypeMatcher(
+    private val viewType: StateItemViewModel.ViewType
+  ) : BaseMatcher<RecyclerView.ViewHolder>() {
+    override fun describeTo(description: Description?) {
+      description?.appendText("item view type of $viewType")
     }
 
-    override fun getDescription(): String {
-      return "Wait for $millis milliseconds."
+    override fun matches(item: Any?): Boolean {
+      return (item as? RecyclerView.ViewHolder)?.itemViewType == viewType.ordinal
     }
+  }
 
-    override fun perform(
-      uiController: UiController,
-      view: View
-    ) {
-      uiController.loopMainThreadForAtLeast(millis)
+  /**
+   * Perform action of waiting for a specific time.
+   */
+  private fun waitFor(millis: Long): ViewAction? {
+    return object : ViewAction {
+      override fun getConstraints(): Matcher<View> {
+        return isRoot()
+      }
+
+      override fun getDescription(): String {
+        return "Wait for $millis milliseconds."
+      }
+
+      override fun perform(
+        uiController: UiController,
+        view: View
+      ) {
+        uiController.loopMainThreadForAtLeast(millis)
+      }
     }
   }
 }

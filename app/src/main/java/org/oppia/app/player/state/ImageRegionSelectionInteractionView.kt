@@ -1,10 +1,6 @@
 package org.oppia.app.player.state
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Picture
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.PictureDrawable
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
@@ -12,9 +8,6 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.forEachIndexed
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.FragmentManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.model.ImageWithRegions
 import org.oppia.app.utility.ClickableAreasImage
@@ -23,8 +16,9 @@ import org.oppia.util.accessibility.CustomAccessibilityManager
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.parser.DefaultGcsPrefix
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
-import org.oppia.util.parser.GlideImageLoader
 import org.oppia.util.parser.ImageDownloadUrlTemplate
+import org.oppia.util.parser.ImageLoader
+import org.oppia.util.parser.ImageViewTarget
 import javax.inject.Inject
 
 /**
@@ -48,7 +42,7 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   lateinit var accessibilityManager: CustomAccessibilityManager
 
   @Inject
-  lateinit var imageLoader: GlideImageLoader
+  lateinit var imageLoader: ImageLoader
 
   @Inject
   @field:ExplorationHtmlParserEntityType
@@ -75,26 +69,12 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
 
   /** loads an image using Glide from [urlString]. */
   private fun loadImage() {
-    val imageUrl = String.format(imageDownloadUrlTemplate, entityType, entityId, urlString)
-
+    val imageName = String.format(imageDownloadUrlTemplate, entityType, entityId, urlString)
+    val imageUrl = "$gcsPrefix/$resourceBucketName/$imageName"
     if (imageUrl.endsWith("svg", ignoreCase = true)) {
-      val target = object : CustomTarget<Picture>() {
-        override fun onResourceReady(resource: Picture, transition: Transition<in Picture>?) {
-          this@ImageRegionSelectionInteractionView.setImageDrawable(PictureDrawable(resource))
-        }
-
-        override fun onLoadCleared(placeholder: Drawable?) {}
-      }
-      imageLoader.loadSvg("$gcsPrefix/$resourceBucketName/$imageUrl", target)
+      imageLoader.loadSvg(imageUrl, ImageViewTarget(this))
     } else {
-      val target = object : CustomTarget<Bitmap>() {
-        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-          this@ImageRegionSelectionInteractionView.setImageBitmap(resource)
-        }
-
-        override fun onLoadCleared(placeholder: Drawable?) {}
-      }
-      imageLoader.load("$gcsPrefix/$resourceBucketName/$imageUrl", target)
+      imageLoader.loadBitmap(imageUrl, ImageViewTarget(this))
     }
   }
 
