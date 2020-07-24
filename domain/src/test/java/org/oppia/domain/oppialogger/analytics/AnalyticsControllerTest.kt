@@ -58,7 +58,7 @@ const val TEST_EXPLORATION_ID = "test_explorationId"
 const val TEST_QUESTION_ID = "test_questionId"
 const val TEST_SKILL_ID = "test_skillId"
 const val TEST_SKILL_LIST_ID = "test_skillListId"
-const val TEST_SUB_TOPIC_ID = "test_subTopicId"
+const val TEST_SUB_TOPIC_ID = 1
 
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
