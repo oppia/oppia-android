@@ -111,6 +111,13 @@ maven_install(
         "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03",
         "org.mockito:mockito-core:2.19.0",
         "androidx.test.ext:junit:1.1.1",
+        "org.jetbrains.kotlin:kotlin-stdlib-jdk7:jar:1.3.72",
+        "org.jetbrains.kotlin:kotlin-test-junit:1.3.72",
+        "org.robolectric:annotations:4.3",
+        "com.crashlytics.sdk.android:crashlytics:2.9.8", #Firebase
+        "io.fabric.sdk.android:fabric:1.4.7", #Firebase
+        "com.google.firebase:firebase-analytics:17.4.4", #Firebase
+        "com.google.firebase:firebase-crashlytics:17.1.1", #Firebase
     ],
     repositories = DAGGER_REPOSITORIES + [
         "https://maven.google.com",
