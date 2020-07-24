@@ -112,7 +112,11 @@ maven_install(
         "org.mockito:mockito-core:2.19.0",
         "androidx.test.ext:junit:1.1.1",
         "android.arch.core:core-testing:1.1.1",
-        "androidx.arch.core:core-testing:2.1.0"
+        "androidx.arch.core:core-testing:2.1.0",
+        "com.crashlytics.sdk.android:crashlytics:2.9.8", #Firebase
+        "io.fabric.sdk.android:fabric:1.4.7", #Firebase
+        "com.google.firebase:firebase-analytics:17.4.4", #Firebase
+        "com.google.firebase:firebase-crashlytics:17.1.1", #Firebase
     ],
     repositories = DAGGER_REPOSITORIES + [
         "https://maven.google.com",
