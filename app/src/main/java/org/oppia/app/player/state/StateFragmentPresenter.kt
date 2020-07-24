@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -25,13 +24,13 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Solution
 import org.oppia.app.model.State
 import org.oppia.app.model.UserAnswer
-import org.oppia.app.player.SplitScreenManager
 import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.AudioUiManager
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.app.utility.LifecycleSafeTimerFactory
+import org.oppia.app.utility.SplitScreenManager
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationProgressController
 import org.oppia.domain.topic.StoryProgressController
@@ -60,7 +59,8 @@ class StateFragmentPresenter @Inject constructor(
   private val logger: ConsoleLogger,
   @DefaultResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
-  private var lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
+  private var lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
+  private val splitScreenManager: SplitScreenManager
 ) {
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
@@ -74,7 +74,6 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
-  private val splitScreenManager: SplitScreenManager = SplitScreenManager(activity)
 
   private val viewModel: StateViewModel by lazy {
     getStateViewModel()
@@ -108,7 +107,7 @@ class StateFragmentPresenter @Inject constructor(
     binding.stateRecyclerView.apply {
       adapter = stateRecyclerViewAdapter
     }
-    binding.rhsStateRecyclerView.apply {
+    binding.extraInteractionRecyclerView.apply {
       adapter = rhsStateRecyclerViewAdapter
     }
     recyclerViewAdapter = stateRecyclerViewAdapter
@@ -290,20 +289,13 @@ class StateFragmentPresenter @Inject constructor(
     }
 
     val ephemeralState = result.getOrThrow()
-    val shouldSplit = splitScreenManager.shouldSplit(ephemeralState.state.interaction.id)
-
+    val shouldSplit = splitScreenManager.isSplitPossible(ephemeralState.state.interaction.id)
     if (shouldSplit) {
-      viewModel.shouldSplitView.set(true)
-      binding.rhsStateRecyclerView.visibility = View.VISIBLE
-      val params = binding.centerGuideline.layoutParams as ConstraintLayout.LayoutParams
-      params.guidePercent = 0.5f
-      binding.centerGuideline.layoutParams = params
+      viewModel.isSplitView.set(true)
+      viewModel.centerGuidelinePercentage.set(0.5f)
     } else {
-      viewModel.shouldSplitView.set(false)
-      binding.rhsStateRecyclerView.visibility = View.GONE
-      val params = binding.centerGuideline.layoutParams as ConstraintLayout.LayoutParams
-      params.guidePercent = 1f
-      binding.centerGuideline.layoutParams = params
+      viewModel.isSplitView.set(false)
+      viewModel.centerGuidelinePercentage.set(1f)
     }
 
     val isInNewState =
@@ -313,18 +305,16 @@ class StateFragmentPresenter @Inject constructor(
     currentStateName = ephemeralState.state.name
     showOrHideAudioByState(ephemeralState.state)
 
+    val dataPair = recyclerViewAssembler.compute(
+      ephemeralState,
+      explorationId,
+      shouldSplit
+    )
+
     viewModel.itemList.clear()
-    viewModel.itemList += recyclerViewAssembler.compute(
-      ephemeralState,
-      explorationId,
-      shouldSplit
-    ).first
+    viewModel.itemList += dataPair.first
     viewModel.rightItemList.clear()
-    viewModel.rightItemList += recyclerViewAssembler.compute(
-      ephemeralState,
-      explorationId,
-      shouldSplit
-    ).second
+    viewModel.rightItemList += dataPair.second
 
     if (isInNewState) {
       (binding.stateRecyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(

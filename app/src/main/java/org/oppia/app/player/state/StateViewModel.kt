@@ -17,7 +17,8 @@ class StateViewModel @Inject constructor() : ObservableViewModel() {
   val itemList: ObservableList<StateItemViewModel> = ObservableArrayList()
   val rightItemList: ObservableList<StateItemViewModel> = ObservableArrayList()
 
-  val shouldSplitView = ObservableField(false)
+  val isSplitView = ObservableField(false)
+  val centerGuidelinePercentage = ObservableField(0.5f)
 
   val isAudioBarVisible = ObservableField(false)
 
@@ -56,7 +57,7 @@ class StateViewModel @Inject constructor() : ObservableViewModel() {
   private fun getPendingAnswerWithoutError(
     statePlayerRecyclerViewAssembler: StatePlayerRecyclerViewAssembler
   ): UserAnswer? {
-    val items = if (shouldSplitView.get() == true) {
+    val items = if (isSplitView.get() == true) {
       rightItemList
     } else {
       itemList

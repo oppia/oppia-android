@@ -56,8 +56,8 @@ private const val ONE_DAY_IN_MS = 24 * 60 * 60 * 1000
 const val TEST_TOPIC_ID_0 = "test_topic_id_0"
 const val TEST_TOPIC_ID_1 = "test_topic_id_1"
 const val FRACTIONS_TOPIC_ID = "GJ2rLXRKD5hw"
-const val SUBTOPIC_TOPIC_ID = "1"
-const val SUBTOPIC_TOPIC_ID_2 = "2"
+const val SUBTOPIC_TOPIC_ID = 1
+const val SUBTOPIC_TOPIC_ID_2 = 2
 const val RATIOS_TOPIC_ID = "omzF4oqgeTXd"
 val TOPIC_THUMBNAILS = mapOf(
   FRACTIONS_TOPIC_ID to createTopicThumbnail0(),

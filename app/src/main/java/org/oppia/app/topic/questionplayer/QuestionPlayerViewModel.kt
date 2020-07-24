@@ -16,7 +16,8 @@ class QuestionPlayerViewModel @Inject constructor() : ObservableViewModel() {
   val itemList: ObservableList<StateItemViewModel> = ObservableArrayList<StateItemViewModel>()
   val rightItemList: ObservableList<StateItemViewModel> = ObservableArrayList()
 
-  val shouldSplitView = ObservableField(false)
+  val isSplitView = ObservableField(false)
+  val centerGuidelinePercentage = ObservableField(0.5f)
 
   val questionCount = ObservableField(0)
   val currentQuestion = ObservableField(0)
@@ -50,7 +51,7 @@ class QuestionPlayerViewModel @Inject constructor() : ObservableViewModel() {
   private fun getPendingAnswerWithoutError(
     recyclerViewAssembler: StatePlayerRecyclerViewAssembler
   ): UserAnswer? {
-    val items = if (shouldSplitView.get() == true) {
+    val items = if (isSplitView.get() == true) {
       rightItemList
     } else {
       itemList

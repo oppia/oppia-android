@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -23,11 +22,11 @@ import org.oppia.app.model.Hint
 import org.oppia.app.model.Solution
 import org.oppia.app.model.State
 import org.oppia.app.model.UserAnswer
-import org.oppia.app.player.SplitScreenManager
 import org.oppia.app.player.state.StatePlayerRecyclerViewAssembler
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.stopplaying.RestartPlayingSessionListener
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
+import org.oppia.app.utility.SplitScreenManager
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.domain.question.QuestionAssessmentProgressController
@@ -48,7 +47,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private val oppiaClock: OppiaClock,
   private val logger: ConsoleLogger,
   @QuestionResourceBucketName private val resourceBucketName: String,
-  private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory
+  private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
+  private val splitScreenManager: SplitScreenManager
 ) {
   // TODO(#503): Add tests for the question player.
 
@@ -63,7 +63,6 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private lateinit var recyclerViewAssembler: StatePlayerRecyclerViewAssembler
   private lateinit var questionId: String
   private lateinit var currentQuestionState: State
-  private val splitScreenManager: SplitScreenManager = SplitScreenManager(activity)
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = QuestionPlayerFragmentBinding.inflate(
@@ -84,7 +83,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     binding.questionRecyclerView.apply {
       adapter = recyclerViewAssembler.adapter
     }
-    binding.rightQuestionRecyclerView.apply {
+    binding.extraInteractionRecyclerView.apply {
       adapter = recyclerViewAssembler.rhsAdapter
     }
 
@@ -222,35 +221,27 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
     currentQuestionState = ephemeralQuestion.ephemeralState.state
 
-    val shouldSplit =
-      splitScreenManager.shouldSplit(ephemeralQuestion.ephemeralState.state.interaction.id)
+    val isSplitView =
+      splitScreenManager.isSplitPossible(ephemeralQuestion.ephemeralState.state.interaction.id)
 
-    if (shouldSplit) {
-      questionViewModel.shouldSplitView.set(true)
-      binding.rightQuestionRecyclerView.visibility = View.VISIBLE
-      val params = binding.centerGuideline.layoutParams as ConstraintLayout.LayoutParams
-      params.guidePercent = 0.5f
-      binding.centerGuideline.layoutParams = params
+    if (isSplitView) {
+      questionViewModel.isSplitView.set(true)
+      questionViewModel.centerGuidelinePercentage.set(0.5f)
     } else {
-      questionViewModel.shouldSplitView.set(false)
-      binding.rightQuestionRecyclerView.visibility = View.GONE
-      val params = binding.centerGuideline.layoutParams as ConstraintLayout.LayoutParams
-      params.guidePercent = 1f
-      binding.centerGuideline.layoutParams = params
+      questionViewModel.isSplitView.set(false)
+      questionViewModel.centerGuidelinePercentage.set(1f)
     }
 
+    val dataPair = recyclerViewAssembler.compute(
+      ephemeralQuestion.ephemeralState,
+      skillId,
+      isSplitView
+    )
+
     questionViewModel.itemList.clear()
-    questionViewModel.itemList += recyclerViewAssembler.compute(
-      ephemeralQuestion.ephemeralState,
-      skillId,
-      shouldSplit
-    ).first
+    questionViewModel.itemList += dataPair.first
     questionViewModel.rightItemList.clear()
-    questionViewModel.rightItemList += recyclerViewAssembler.compute(
-      ephemeralQuestion.ephemeralState,
-      skillId,
-      shouldSplit
-    ).second
+    questionViewModel.rightItemList += dataPair.second
   }
 
   private fun updateProgress(currentQuestionIndex: Int, questionCount: Int) {
