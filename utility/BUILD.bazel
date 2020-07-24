@@ -7,7 +7,7 @@ load("//utility:utility_test.bzl", "utility_test")
 kt_android_library(
     name = "utility_lib",
     custom_package = "org.oppia.util",
-    srcs = glob(["src/main/java/org/oppia/util/**/*.kt"]),
+    srcs = glob(["src/main/java/org/oppia/util/**/*.kt"],
                 exclude = ["src/main/java/org/oppia/util/logging/firebase/*.kt"]),
     resource_files = glob(["src/main/res/**/*.xml"]),
     manifest = "src/main/AndroidManifest.xml",
