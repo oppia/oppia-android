@@ -20,6 +20,7 @@ import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
 import org.oppia.app.story.storyitemviewmodel.StoryHeaderViewModel
 import org.oppia.app.story.storyitemviewmodel.StoryItemViewModel
+import org.oppia.app.topic.TopicActivity
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.util.system.OppiaClock
@@ -58,7 +59,14 @@ class StoryFragmentPresenter @Inject constructor(
     logStoryActivityEvent(topicId, storyId)
 
     binding.storyToolbar.setNavigationOnClickListener {
-      (activity as StoryActivity).finish()
+      activity.startActivity(
+        TopicActivity.createTopicPlayStoryActivityIntent(
+          activity,
+          internalProfileId,
+          topicId,
+          storyId
+        )
+      )
     }
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)

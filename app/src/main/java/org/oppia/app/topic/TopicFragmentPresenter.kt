@@ -10,6 +10,7 @@ import com.google.android.material.tabs.TabLayout
 import org.oppia.app.R
 import org.oppia.app.databinding.TopicFragmentBinding
 import org.oppia.app.fragment.FragmentScope
+import org.oppia.app.home.HomeActivity
 import org.oppia.app.model.EventLog
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.oppialogger.analytics.AnalyticsController
@@ -58,7 +59,12 @@ class TopicFragmentPresenter @Inject constructor(
     this.topicId = topicId
 
     binding.topicToolbar.setNavigationOnClickListener {
-      (activity as TopicActivity).finish()
+      activity.startActivity(
+        HomeActivity.createHomeActivity(
+          activity,
+          internalProfileId
+        )
+      )
     }
 
     val viewModel = getTopicViewModel()
