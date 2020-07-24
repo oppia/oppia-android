@@ -125,6 +125,13 @@ maven_install(
         "androidx.databinding:databinding-adapters:3.4.2",
         "androidx.databinding:databinding-common:3.4.2",
         "androidx.annotation:annotation:1.1.0",
+        "org.jetbrains.kotlin:kotlin-stdlib-jdk7:jar:1.3.72",
+        "org.jetbrains.kotlin:kotlin-test-junit:1.3.72",
+        "org.robolectric:annotations:4.3",
+        "com.crashlytics.sdk.android:crashlytics:2.9.8", #Firebase
+        "io.fabric.sdk.android:fabric:1.4.7", #Firebase
+        "com.google.firebase:firebase-analytics:17.4.4", #Firebase
+        "com.google.firebase:firebase-crashlytics:17.1.1", #Firebase
     ],
     repositories = DAGGER_REPOSITORIES + [
         "https://maven.google.com",
