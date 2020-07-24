@@ -1,14 +1,12 @@
 package org.oppia.app.utility
 
+import android.graphics.Rect
 import android.graphics.RectF
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.ImageView
 import androidx.core.view.forEachIndexed
 import androidx.core.view.isVisible
-import com.github.chrisbanes.photoview.OnPhotoTapListener
-import com.github.chrisbanes.photoview.PhotoViewAttacher
 import org.oppia.app.R
 import org.oppia.app.model.ImageWithRegions
 import org.oppia.app.player.state.ImageRegionSelectionInteractionView
@@ -21,13 +19,16 @@ class ClickableAreasImage(
   private val imageView: ImageRegionSelectionInteractionView,
   private val parentView: FrameLayout,
   private val listener: OnClickableAreaClickedListener
-) : OnPhotoTapListener {
-  private val attacher: PhotoViewAttacher = PhotoViewAttacher(imageView)
-
+) {
+  private var rect = Rect()
   init {
-    attacher.setOnPhotoTapListener(this)
+    imageView.setOnTouchListener { view, motionEvent ->
+      if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+        onPhotoTap(motionEvent.x, motionEvent.y)
+      }
+      return@setOnTouchListener false
+    }
   }
-
   /**
    * Called when an image is clicked.
    *
@@ -35,15 +36,15 @@ class ClickableAreasImage(
    * @param x the relative x coordinate according to image
    * @param y the relative y coordinate according to image
    */
-  override fun onPhotoTap(view: ImageView, x: Float, y: Float) {
+  private fun onPhotoTap(x: Float, y: Float) {
     // Show default region for non-accessibility cases and this will be only called when user taps on unspecified region.
     if (!imageView.isAccessibilityEnabled()) {
       resetRegionSelectionViews()
       val defaultRegion = parentView.findViewById<View>(R.id.default_selected_region)
       defaultRegion.setBackgroundResource(R.drawable.selected_region_background)
-      defaultRegion.x = getXCoordinate(x)
-      defaultRegion.y = getYCoordinate(y)
-      listener.onClickableAreaTouched(DefaultRegionClickedEvent())
+      defaultRegion.x = x
+      defaultRegion.y = y
+      listener.onClickableAreaTouched(DefaultRegionClickedEvent)
     }
   }
 
@@ -59,18 +60,25 @@ class ClickableAreasImage(
 
   /** Get X co-ordinate scaled according to image.*/
   private fun getXCoordinate(x: Float): Float {
-    val rect = attacher.displayRect
-    return (x * rect.width()) + rect.left
+    return x * getImageViewContentWidth()
   }
 
   /** Get Y co-ordinate scaled according to image.*/
   private fun getYCoordinate(y: Float): Float {
-    val rect = attacher.displayRect
-    return (y * rect.height()) + rect.top
+    return y * getImageViewContentHeight()
+  }
+
+  private fun getImageViewContentWidth(): Int {
+    return imageView.width - imageView.paddingLeft - imageView.paddingRight
+  }
+
+  private fun getImageViewContentHeight(): Int {
+    return imageView.height - imageView.paddingTop - imageView.paddingBottom
   }
 
   /** Add selectable regions to [FrameLayout].*/
   fun addRegionViews() {
+    rect = Rect(0, 0, getImageViewContentWidth(), getImageViewContentHeight())
     parentView.let {
       if (it.childCount > 2) {
         it.removeViews(2, it.childCount - 1) // remove all other views
