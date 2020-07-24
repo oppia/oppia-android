@@ -5,14 +5,14 @@ import org.oppia.app.model.EventLog.EventAction
 import org.oppia.domain.oppialogger.analytics.AnalyticsController
 import javax.inject.Inject
 
-/** Logger that handles exceptions, crashes, events, and console logging. */
+/** Logger that handles exceptions, crashes, events, and console logging.
+ * All classes that want to log should use this logger and not the underlying
+ * loggers that OppiaLogger uses.
+ */
 class OppiaLogger @Inject constructor(
   private val analyticsController: AnalyticsController
 ) {
-  /**
-   * Logs transition events.
-   * These events are given HIGH priority.
-   */
+  /** Logs transition events. See [AnalyticsController.logTransitionEvent] for more context. */
   fun logTransitionEvent(
     timestamp: Long,
     eventAction: EventAction,
@@ -21,10 +21,7 @@ class OppiaLogger @Inject constructor(
     analyticsController.logTransitionEvent(timestamp, eventAction, eventContext)
   }
 
-  /**
-   * Logs click events.
-   * These events are given LOW priority.
-   */
+  /** Logs click events. See [AnalyticsController.logClickEvent] for more context. */
   fun logClickEvent(
     timestamp: Long,
     eventAction: EventAction,
