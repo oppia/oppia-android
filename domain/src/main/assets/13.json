@@ -250,9 +250,9 @@
             "param_changes": [],
             "feedback": {
               "content_id": "default_outcome",
-              "html": "<p>Do you want to exit the exploration?</p>"
+              "html": "<p>This doesn't seem like the correct choice.Try Again</p>"
             },
-            "dest": "End",
+            "dest": "ImageClickInput",
             "refresher_exploration_id": null,
             "missing_prerequisite_skill_id": null,
             "labelled_as_correct": false

@@ -445,20 +445,19 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadImageRegion_clickRegion6_region6Clicked() {
+  fun testStateFragment_loadImageRegion_defaultRegionClick_defaultRegionClicked() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
       waitForExplorationToBeLoaded()
       onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
       onView(isRoot()).perform(waitFor(2000))
       onView(withId(R.id.image_click_interaction_image_view)).perform(
-        clickPoint(0.5f, 0.5f)
+        clickPoint(0.1f, 0.5f)
       )
-      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
-      onView(withId(R.id.submit_answer_button)).perform(click())
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
       onView(withId(R.id.feedback_text_view)).check(
         matches(
-          withText(containsString("Saturn"))
+          withText(containsString("Try Again"))
         )
       )
     }
