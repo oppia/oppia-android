@@ -5,7 +5,7 @@ import javax.inject.Singleton
 
 @Singleton
 class FakeAccessibilityManager @Inject constructor() : CustomAccessibilityManager {
-  private var talkbackEnabled = true
+  private var talkbackEnabled = false
 
   override fun isScreenReaderEnabled(): Boolean {
     return talkbackEnabled

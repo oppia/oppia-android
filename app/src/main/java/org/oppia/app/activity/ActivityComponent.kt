@@ -43,6 +43,7 @@ import org.oppia.app.testing.ExplorationTestActivity
 import org.oppia.app.testing.HomeInjectionActivity
 import org.oppia.app.testing.HomeTestActivity
 import org.oppia.app.testing.HtmlParserTestActivity
+import org.oppia.app.testing.ImageRegionSelectionTestActivity
 import org.oppia.app.testing.NavigationDrawerTestActivity
 import org.oppia.app.testing.ProfileChooserFragmentTestActivity
 import org.oppia.app.testing.StoryFragmentTestActivity
@@ -93,6 +94,7 @@ interface ActivityComponent {
   fun inject(homeInjectionActivity: HomeInjectionActivity)
   fun inject(homeTestActivity: HomeTestActivity)
   fun inject(htmlParserTestActivity: HtmlParserTestActivity)
+  fun inject(imageRegionSelectionTestActivity: ImageRegionSelectionTestActivity)
   fun inject(myDownloadsActivity: MyDownloadsActivity)
   fun inject(navigationDrawerTestActivity: NavigationDrawerTestActivity)
   fun inject(onboardingActivity: OnboardingActivity)
