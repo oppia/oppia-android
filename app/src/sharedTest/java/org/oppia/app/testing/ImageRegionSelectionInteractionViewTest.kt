@@ -10,6 +10,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withTagValue
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
@@ -22,7 +23,6 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matchers.allOf
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
@@ -93,7 +93,7 @@ class ImageRegionSelectionInteractionViewTest {
           .onClickableAreaTouched(
             capture(regionClickedEvent)
           )
-        assertEquals(NamedRegionClickedEvent("Region 3"), regionClickedEvent.value)
+        assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent("Region 3"))
       }
     }
   }
@@ -127,7 +127,7 @@ class ImageRegionSelectionInteractionViewTest {
             regionClickedEvent
           )
         )
-        assertEquals(NamedRegionClickedEvent("Region 2"), regionClickedEvent.allValues[1])
+        assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent("Region 2"))
       }
     }
   }
@@ -147,7 +147,7 @@ class ImageRegionSelectionInteractionViewTest {
           .onClickableAreaTouched(
             capture(regionClickedEvent)
           )
-        assertEquals(DefaultRegionClickedEvent(), regionClickedEvent.value)
+        assertThat(regionClickedEvent.value).isEqualTo(DefaultRegionClickedEvent())
       }
     }
   }
@@ -182,7 +182,7 @@ class ImageRegionSelectionInteractionViewTest {
             regionClickedEvent
           )
         )
-        assertEquals(NamedRegionClickedEvent("Region 2"), regionClickedEvent.allValues[1])
+        assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent("Region 2"))
       }
     }
   }
@@ -205,7 +205,7 @@ class ImageRegionSelectionInteractionViewTest {
           .onClickableAreaTouched(
             capture(regionClickedEvent)
           )
-        assertEquals(NamedRegionClickedEvent("Region 3"), regionClickedEvent.value)
+        assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent("Region 3"))
       }
     }
   }
@@ -223,7 +223,7 @@ class ImageRegionSelectionInteractionViewTest {
           matches(not(isDisplayed()))
         )
 
-        assertEquals(DefaultRegionClickedEvent(), regionClickedEvent.value)
+        assertThat(regionClickedEvent.value).isEqualTo(DefaultRegionClickedEvent())
       }
     }
   }
