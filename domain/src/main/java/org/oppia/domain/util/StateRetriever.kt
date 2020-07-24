@@ -538,5 +538,4 @@ class StateRetriever @Inject constructor(
       .setY(points.getDouble(1).toFloat())
       .build()
   }
-
 }
