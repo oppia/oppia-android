@@ -132,6 +132,7 @@ maven_install(
         "io.fabric.sdk.android:fabric:1.4.7", #Firebase
         "com.google.firebase:firebase-analytics:17.4.4", #Firebase
         "com.google.firebase:firebase-crashlytics:17.1.1", #Firebase
+        "com.google.android.material:material:1.2.0-alpha02",
     ],
     repositories = DAGGER_REPOSITORIES + [
         "https://maven.google.com",

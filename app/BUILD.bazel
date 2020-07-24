@@ -103,7 +103,6 @@ VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/topic/revision/TopicRevisionViewModel.kt",
     "src/main/java/org/oppia/app/topic/revision/revisionitemviewmodel/TopicRevisionItemViewModel.kt",
     "src/main/java/org/oppia/app/topic/revisioncard/RevisionCardViewModel.kt",
-    #"src/main/java/org/oppia/app/topic/revisioncard",
     "src/main/java/org/oppia/app/viewmodel/ObservableViewModel.kt",
     "src/main/java/org/oppia/app/walkthrough/WalkthroughViewModel.kt",
     "src/main/java/org/oppia/app/walkthrough/welcome/WalkthroughWelcomeViewModel.kt",
@@ -115,14 +114,41 @@ VIEW_MODEL_FILES = [
 ]
 
 BINDING_FILES = [
-    "src/main/java/org/oppia/app/databinding/DrawableBindingAdapters.kt",
-    "src/main/java/org/oppia/app/databinding/EditTextBindingAdapters.kt",
-    "src/main/java/org/oppia/app/databinding/ImageViewBindingAdapters.kt",
-    "src/main/java/org/oppia/app/databinding/MarginBindingAdapters.kt",
-    "src/main/java/org/oppia/app/databinding/TextViewBindingAdapters.kt",
-    "src/main/java/org/oppia/app/recyclerview/RecyclerViewBindingAdapter.kt",
+    "src/main/java/org/oppia/app/databinding/DrawableBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/EditTextBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/ImageViewBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/MarginBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/TextViewBindingAdapters.java",
+    "src/main/java/org/oppia/app/recyclerview/RecyclerViewBindingAdapter.java",
     #"src/main/java/org/oppia/app/recyclerview/BindableAdapter.kt",
 ]
+
+kt_android_library(
+    name = "app_ba_lib",
+    custom_package = "org.oppia.app",
+    srcs = BINDING_FILES,
+    enable_data_binding = 1,
+    resource_files = glob(["src/main/res/**"]),
+    manifest = "src/main/AndroidManifest.xml",
+    deps = [
+        ":dagger",
+        "//model:model_lib",
+        "//utility:utility_lib",
+        artifact("androidx.appcompat:appcompat"),
+        artifact("com.github.bumptech.glide:glide"),
+        artifact("com.caverock:androidsvg-aar"),
+        artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
+        artifact("com.android.databinding:adapters"),
+        artifact("com.android.databinding:baseLibrary"),
+        artifact("com.android.support:support-annotations"),
+        artifact("androidx.databinding:databinding-runtime"),
+        artifact("androidx.databinding:databinding-adapters"),
+        artifact("androidx.databinding:databinding-common"),
+        artifact("androidx.annotation:annotation"),
+        artifact("com.google.android.material:material:1.2.0-alpha02"),
+    ],
+    visibility = ["//visibility:public"]
+)
 
 kt_android_library(
     name = "app_vm_lib",
@@ -146,6 +172,7 @@ kt_android_library(
         artifact("androidx.databinding:databinding-adapters"),
         artifact("androidx.databinding:databinding-common"),
         artifact("androidx.annotation:annotation"),
+        artifact("com.google.android.material:material:1.2.0-alpha02"),
     ],
     visibility = ["//visibility:public"]
 )
@@ -160,6 +187,7 @@ kt_android_library(
     deps = [
         ":dagger",
         ":app_vm_lib",
+        ":app_ba_lib",
         "//model:model_lib",
         "//utility:utility_lib",
         artifact("androidx.appcompat:appcompat"),
@@ -173,6 +201,7 @@ kt_android_library(
         artifact("androidx.databinding:databinding-adapters"),
         artifact("androidx.databinding:databinding-common"),
         artifact("androidx.annotation:annotation"),
+        artifact("com.google.android.material:material:1.2.0-alpha02"),
     ],
     visibility = ["//visibility:public"]
 )
