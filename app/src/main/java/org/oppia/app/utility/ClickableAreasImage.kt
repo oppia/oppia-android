@@ -20,7 +20,7 @@ class ClickableAreasImage(
   private val parentView: FrameLayout,
   private val listener: OnClickableAreaClickedListener
 ) {
-
+  private var rect = Rect()
   init {
     imageView.setOnTouchListener { view, motionEvent ->
       if (motionEvent.action == MotionEvent.ACTION_DOWN) {
@@ -60,20 +60,25 @@ class ClickableAreasImage(
 
   /** Get X co-ordinate scaled according to image.*/
   private fun getXCoordinate(x: Float): Float {
-    val rect = Rect()
-    imageView.getLocalVisibleRect(rect)
     return (x * rect.width()) + rect.left
   }
 
   /** Get Y co-ordinate scaled according to image.*/
   private fun getYCoordinate(y: Float): Float {
-    val rect = Rect()
-    imageView.getLocalVisibleRect(rect)
     return (y * rect.height()) + rect.top
+  }
+
+  private fun getImageViewWidth(): Int {
+    return imageView.width - imageView.paddingLeft - imageView.paddingRight
+  }
+
+  private fun getImageViewHeight(): Int {
+    return imageView.height - imageView.paddingTop - imageView.paddingBottom
   }
 
   /** Add selectable regions to [FrameLayout].*/
   fun addRegionViews() {
+    rect = Rect(0, 0, getImageViewWidth(), getImageViewHeight())
     parentView.let {
       if (it.childCount > 2) {
         it.removeViews(2, it.childCount - 1) // remove all other views
