@@ -408,7 +408,8 @@ class ExplorationProgressController @Inject constructor(
             finishLoadExploration(exploration!!, explorationProgress)
             AsyncResult.success(explorationProgress.stateDeck.getCurrentEphemeralState())
           } catch (e: Exception) {
-            exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+            exceptionsController
+              .logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
             AsyncResult.failed<EphemeralState>(e)
           }
         }

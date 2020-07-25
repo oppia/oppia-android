@@ -30,7 +30,7 @@ class ExceptionsController @Inject constructor(
   }
 
   /** Logs a FATAL exception. */
-  fun logFatalException(exception: Exception, timestamp: Long){
+  fun logFatalException(exception: Exception, timestamp: Long) {
     uploadOrCacheExceptionLog(exception, timestamp, ExceptionLog.ExceptionType.FATAL)
   }
 
@@ -40,7 +40,11 @@ class ExceptionsController @Inject constructor(
    * Saves the [exception] to the [exceptionLogStore] in the absence of it.
    * Uploads to remote service in the presence of it.
    */
-  private fun uploadOrCacheExceptionLog(exception: Exception, timestamp: Long, exceptionType: ExceptionLog.ExceptionType) {
+  private fun uploadOrCacheExceptionLog(
+    exception: Exception,
+    timestamp: Long,
+    exceptionType: ExceptionLog.ExceptionType
+  ) {
     when (networkConnectionUtil.getCurrentConnectionStatus()) {
       NetworkConnectionUtil.ConnectionStatus.NONE ->
         cacheExceptionLog(convertExceptionToExceptionLog(exception, timestamp, exceptionType))
@@ -49,7 +53,11 @@ class ExceptionsController @Inject constructor(
   }
 
   /** Returns an [ExceptionLog] from an [throwable]. */
-  private fun convertExceptionToExceptionLog(throwable: Throwable, timestamp: Long, exceptionType: ExceptionLog.ExceptionType): ExceptionLog {
+  private fun convertExceptionToExceptionLog(
+    throwable: Throwable,
+    timestamp: Long,
+    exceptionType: ExceptionLog.ExceptionType
+  ): ExceptionLog {
     val exceptionLogBuilder = ExceptionLog.newBuilder()
     throwable.message?.let {
       exceptionLogBuilder.message = it
@@ -124,7 +132,8 @@ class ExceptionsController @Inject constructor(
   private fun getLeastRecentExceptionIndex(oppiaExceptionLogs: OppiaExceptionLogs): Int? =
     oppiaExceptionLogs.exceptionLogList.withIndex()
       .filter { it.value.exceptionType == ExceptionLog.ExceptionType.NON_FATAL }
-      .minBy { it.value.timestampInMillis }?.index ?: getLeastRecentGeneralEventIndex(oppiaExceptionLogs)
+      .minBy { it.value.timestampInMillis }?.index
+      ?: getLeastRecentGeneralEventIndex(oppiaExceptionLogs)
 
   /** Returns the index of the least recent exception regardless of their exception type. */
   private fun getLeastRecentGeneralEventIndex(oppiaExceptionLogs: OppiaExceptionLogs): Int? =
