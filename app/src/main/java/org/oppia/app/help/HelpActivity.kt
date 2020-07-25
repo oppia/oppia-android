@@ -27,7 +27,8 @@ class HelpActivity : InjectableAppCompatActivity(), RouteToFAQListListener {
 
   companion object {
 
-    internal const val BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY = "BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY"
+    internal const val BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY =
+      "BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY"
 
     fun createHelpActivityIntent(
       context: Context,

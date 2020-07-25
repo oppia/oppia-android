@@ -40,7 +40,10 @@ class HelpFragmentTest {
     FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
   }
 
-  private fun createHelpActivityIntent(internalProfileId: Int, isFromNavigationDrawer: Boolean): Intent {
+  private fun createHelpActivityIntent(
+    internalProfileId: Int,
+    isFromNavigationDrawer: Boolean
+  ): Intent {
     return HelpActivity.createHelpActivityIntent(
       ApplicationProvider.getApplicationContext(),
       internalProfileId,

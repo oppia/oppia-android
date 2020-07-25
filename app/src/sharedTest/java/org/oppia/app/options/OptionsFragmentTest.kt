@@ -93,7 +93,10 @@ class OptionsFragmentTest {
     /* launchActivity= */ false
   )
 
-  private fun createOptionActivityIntent(internalProfileId: Int, isFromNavigationDrawer: Boolean): Intent {
+  private fun createOptionActivityIntent(
+    internalProfileId: Int,
+    isFromNavigationDrawer: Boolean
+  ): Intent {
     return OptionsActivity.createOptionsActivity(
       ApplicationProvider.getApplicationContext(),
       internalProfileId,
@@ -103,7 +106,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_parentIsExploration_checkBackArrowNotVisible() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+    launch<OptionsActivity>(createOptionActivityIntent(0, false)).use {
       onView(withContentDescription(R.string.abc_action_bar_up_description))
         .check(matches(isCompletelyDisplayed()))
     }
