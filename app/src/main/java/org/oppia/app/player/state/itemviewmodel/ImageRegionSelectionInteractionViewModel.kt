@@ -19,18 +19,22 @@ import org.oppia.app.utility.RegionClickedEvent
 class ImageRegionSelectionInteractionViewModel(
   val entityId: String,
   interaction: Interaction,
-  private val interactionAnswerReceiver: InteractionAnswerReceiver,
   private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver // ktlint-disable max-line-length
 ) : StateItemViewModel(ViewType.IMAGE_REGION_SELECTION_INTERACTION),
   InteractionAnswerHandler,
   OnClickableAreaClickedListener {
   var answerText: CharSequence = ""
+  val isDefaultRegionEnabled = ObservableField<Boolean>(false)
   val selectableRegions: List<ImageWithRegions.LabeledRegion> by lazy {
     interaction.customizationArgsMap["imageAndRegions"]?.imageWithRegions?.labelRegionsList
       ?: listOf()
   }
   val imagePath: String by lazy {
-    interaction.customizationArgsMap["imageAndRegions"]?.imageWithRegions?.imagePath ?: ""
+    interaction.customizationArgsMap["imageAndRegions"]?.imageWithRegions?.imagePath ?: "This seems incorrect"
+  }
+
+  val defaultRegion: String by lazy {
+    interaction.customizationArgsMap["defaultRegion"]?.normalizedString ?: ""
   }
   var isAnswerAvailable = ObservableField<Boolean>(false)
 
@@ -50,11 +54,12 @@ class ImageRegionSelectionInteractionViewModel(
   override fun onClickableAreaTouched(region: RegionClickedEvent) {
     when (region) {
       is DefaultRegionClickedEvent -> {
-        answerText = "Image"
+        answerText = ""
+        isDefaultRegionEnabled.set(true)
         isAnswerAvailable.set(false)
-        interactionAnswerReceiver.onAnswerReadyForSubmission(getPendingAnswer())
       }
       is NamedRegionClickedEvent -> {
+        isDefaultRegionEnabled.set(false)
         answerText = region.regionLabel
         isAnswerAvailable.set(true)
       }

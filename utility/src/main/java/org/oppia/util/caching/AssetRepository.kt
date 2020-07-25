@@ -29,8 +29,6 @@ class AssetRepository @Inject constructor(
   /** Map of asset names to file contents for text file assets. */
   private val textFileAssets = mutableMapOf<String, String>()
 
-  private val localBinaryFileAssociations = mutableMapOf<String, String>()
-
   /** Returns the whole text contents of the file corresponding to the specified asset name. */
   fun loadTextFileFromLocalAssets(assetName: String): String {
     repositoryLock.withLock {
@@ -49,10 +47,6 @@ class AssetRepository @Inject constructor(
         }
       }
     }
-  }
-
-  fun primeLocalUrlAssociation(assetName: String, mappedUrl: String) {
-    localBinaryFileAssociations[mappedUrl] = assetName
   }
 
   /**
@@ -119,9 +113,6 @@ class AssetRepository @Inject constructor(
   }
 
   private fun openLocalCacheFileForRead(identifier: String): InputStream? {
-    if (identifier in localBinaryFileAssociations) {
-      return context.assets.open(localBinaryFileAssociations[identifier])
-    }
     val cacheFile = getLocalCacheFile(identifier)
     return if (cacheFile.exists()) cacheFile.inputStream() else null
   }

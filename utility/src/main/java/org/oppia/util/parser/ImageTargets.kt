@@ -13,4 +13,4 @@ sealed class ImageTarget<T>
 data class CustomImageTarget<T>(val customTarget: CustomTarget<T>) : ImageTarget<T>()
 
 /** A type of [ImageTarget] that loads images into an [ImageView]. */
-data class ImageViewTarget<T>(val imageView: ImageView): ImageTarget<T>()
+data class ImageViewTarget<T>(val imageView: ImageView) : ImageTarget<T>()

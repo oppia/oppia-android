@@ -93,9 +93,9 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("ImageClickInput")
   fun provideImageClickInputViewModelFactory(): InteractionViewModelFactory {
-    return { entityId, interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver, _ ->
+    return { entityId, interaction, _, interactionAnswerErrorReceiver, _ ->
       ImageRegionSelectionInteractionViewModel(
-        entityId, interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver
+        entityId, interaction, interactionAnswerErrorReceiver
       )
     }
   }
