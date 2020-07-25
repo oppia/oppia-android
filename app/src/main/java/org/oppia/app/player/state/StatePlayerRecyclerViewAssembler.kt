@@ -263,7 +263,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
     if (answersAndResponses.size > 1) {
       if (playerFeatureSet.wrongAnswerCollapsing) {
         PreviousResponsesHeaderViewModel(
-          answersAndResponses.size - 1, ObservableBoolean(hasPreviousResponsesExpanded),
+          answersAndResponses.size - 1,
+          hasConversationView,
+          ObservableBoolean(hasPreviousResponsesExpanded),
           fragment as PreviousResponsesHeaderClickListener
         ).let { viewModel ->
           pendingItemList += viewModel
@@ -455,6 +457,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       hasGeneralContinueButton && playerFeatureSet.forwardNavigation -> {
         pendingItemList += ContinueNavigationButtonViewModel(
           hasPreviousButton,
+          hasConversationView,
           previousNavigationButtonListener,
           fragment as ContinueNavigationButtonListener
         )
@@ -462,17 +465,20 @@ class StatePlayerRecyclerViewAssembler private constructor(
       canContinueToNextState && playerFeatureSet.forwardNavigation -> {
         pendingItemList += NextButtonViewModel(
           hasPreviousButton,
+          hasConversationView,
           previousNavigationButtonListener,
           fragment as NextNavigationButtonListener
         )
       }
       stateIsTerminal -> {
         if (playerFeatureSet.replaySupport) {
-          pendingItemList += ReplayButtonViewModel(fragment as ReplayButtonListener)
+          pendingItemList += ReplayButtonViewModel(hasConversationView, fragment as ReplayButtonListener)
         }
         if (playerFeatureSet.returnToTopicNavigation) {
           pendingItemList += ReturnToTopicButtonViewModel(
-            hasPreviousButton, previousNavigationButtonListener,
+            hasPreviousButton,
+            hasConversationView,
+            previousNavigationButtonListener,
             fragment as ReturnToTopicNavigationButtonListener
           )
         }
@@ -485,6 +491,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         }
         pendingItemList += SubmitButtonViewModel(
           canSubmitAnswer,
+          hasConversationView,
           hasPreviousButton,
           previousNavigationButtonListener,
           fragment as SubmitNavigationButtonListener
@@ -494,6 +501,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       // submission.
       hasPreviousButton && !isMostRecentInteractionAutoNavigating(pendingItemList) -> {
         pendingItemList += PreviousButtonViewModel(
+          hasConversationView,
           previousNavigationButtonListener
         )
       }

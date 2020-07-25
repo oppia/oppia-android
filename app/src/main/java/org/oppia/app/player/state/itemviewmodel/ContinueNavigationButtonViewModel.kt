@@ -11,6 +11,7 @@ import org.oppia.app.player.state.listener.PreviousNavigationButtonListener
  */
 class ContinueNavigationButtonViewModel(
   val hasPreviousButton: Boolean,
+  val hasConversationView: Boolean,
   val previousNavigationButtonListener: PreviousNavigationButtonListener,
   val continueNavigationButtonListener: ContinueNavigationButtonListener
 ) : StateItemViewModel(ViewType.CONTINUE_NAVIGATION_BUTTON)
