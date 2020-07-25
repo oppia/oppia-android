@@ -32,8 +32,6 @@ class RevisionCardViewModel @Inject constructor(
   private val returnToTopicClickListener: ReturnToTopicClickListener =
     activity as ReturnToTopicClickListener
 
-  var subtopicTitle: String = ""
-
   val explanationLiveData: LiveData<CharSequence> by lazy {
     processExplanationLiveData()
   }
@@ -74,7 +72,6 @@ class RevisionCardViewModel @Inject constructor(
     val revisionCard = revisionCardResult.getOrDefault(
       RevisionCard.getDefaultInstance()
     )
-    subtopicTitle = revisionCard.subtopicTitle
     return htmlParserFactory.create(
       resourceBucketName, entityType, topicId, /* imageCenterAlign= */ true
     ).parseOppiaHtml(revisionCard.pageContents.html, binding.revisionCardExplanationText)

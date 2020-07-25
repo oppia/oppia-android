@@ -40,17 +40,17 @@ class HelpFragmentTest {
     FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
   }
 
-  private fun createHelpActivityIntent(profileId: Int, isFromExploration: Boolean): Intent {
+  private fun createHelpActivityIntent(internalProfileId: Int, isFromNavigationDrawer: Boolean): Intent {
     return HelpActivity.createHelpActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      profileId,
-      isFromExploration
+      internalProfileId,
+      isFromNavigationDrawer
     )
   }
 
   @Test
   fun testHelpFragment_parentIsExploration_checkBackArrowVisible() {
-    launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
+    launch<HelpActivity>(createHelpActivityIntent(0, false)).use {
       onView(withContentDescription(R.string.abc_action_bar_up_description))
         .check(matches(isCompletelyDisplayed()))
     }
@@ -58,7 +58,7 @@ class HelpFragmentTest {
 
   @Test
   fun testHelpFragment_parentIsNotExploration_checkBackArrowNotVisible() {
-    launch<HelpActivity>(createHelpActivityIntent(0, false)).use {
+    launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
       onView(withContentDescription(R.string.abc_action_bar_up_description))
         .check(doesNotExist())
     }

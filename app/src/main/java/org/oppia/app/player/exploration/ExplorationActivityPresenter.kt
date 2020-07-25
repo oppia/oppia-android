@@ -134,7 +134,7 @@ class ExplorationActivityPresenter @Inject constructor(
         val intent = OptionsActivity.createOptionsActivity(
           activity,
           internalProfileId,
-          /* isFromExploration= */ true
+          /* isFromNavigationDrawer= */ false
         )
         context.startActivity(intent)
         true
@@ -142,7 +142,7 @@ class ExplorationActivityPresenter @Inject constructor(
       R.id.action_help -> {
         val intent = HelpActivity.createHelpActivityIntent(
           activity, internalProfileId,
-          /* isFromExploration= */true
+          /* isFromNavigationDrawer= */false
         )
         context.startActivity(intent)
         true
