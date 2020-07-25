@@ -27,7 +27,7 @@ import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.stopplaying.RestartPlayingSessionListener
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.analytics.AnalyticsController
+import org.oppia.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.domain.question.QuestionAssessmentProgressController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.QuestionResourceBucketName
@@ -51,6 +51,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   // TODO(#503): Add tests for the question player.
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
+  private val hasConversationView = false
 
   private val questionViewModel by lazy { getQuestionPlayerViewModel() }
   private val ephemeralQuestionLiveData: LiveData<AsyncResult<EphemeralQuestion>> by lazy {
@@ -369,7 +370,9 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     // TODO(#501): Add support early exit detection & message, which requires changes in the training progress
     //  controller & possibly the ephemeral question data model.
     // TODO(#502): Add support for surfacing skills that need to be reviewed by the learner.
-    return builder.addContentSupport()
+    return builder
+      .hasConversationView(hasConversationView)
+      .addContentSupport()
       .addFeedbackSupport()
       .addInteractionSupport(questionViewModel.getCanSubmitAnswer())
       .addPastAnswersSupport()
@@ -388,7 +391,6 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
   private fun logQuestionPlayerEvent(questionId: String, skillIds: List<String>) {
     analyticsController.logTransitionEvent(
-      activity.applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_QUESTION_PLAYER,
       analyticsController.createQuestionContext(

@@ -1,6 +1,5 @@
 package org.oppia.util.logging.firebase
 
-import android.content.Context
 import android.os.Bundle
 import com.google.firebase.analytics.FirebaseAnalytics
 import org.oppia.app.model.EventLog
@@ -17,7 +16,7 @@ class FirebaseEventLogger(
   private var bundle = Bundle()
 
   /** Logs an event to Firebase Analytics. */
-  override fun logEvent(context: Context, eventLog: EventLog) {
+  override fun logEvent(eventLog: EventLog) {
     bundle = eventBundleCreator.createEventBundle(eventLog)
     firebaseAnalytics.logEvent(eventLog.actionName.toString(), bundle)
   }
