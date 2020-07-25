@@ -531,7 +531,7 @@ class StateFragmentTest {
       onView(withId(R.id.state_recycler_view)).perform(scrollToAnswer())
       onView(withId(R.id.submitted_answer_text_view)).check(
         matches(
-          withText("6")
+          withText("Clicks on Saturn")
         )
       )
     }

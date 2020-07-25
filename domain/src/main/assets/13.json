@@ -278,7 +278,7 @@
                         ]
                       ]
                     },
-                    "label": "1"
+                    "label": "Mercury"
                   },
                   {
                     "region": {
@@ -294,7 +294,7 @@
                         ]
                       ]
                     },
-                    "label": "2"
+                    "label": "Venus"
                   },
                   {
                     "region": {
@@ -310,7 +310,7 @@
                         ]
                       ]
                     },
-                    "label": "3"
+                    "label": "Earth"
                   },
                   {
                     "region": {
@@ -326,7 +326,7 @@
                         ]
                       ]
                     },
-                    "label": "4"
+                    "label": "Mars"
                   },
                   {
                     "region": {
@@ -342,7 +342,7 @@
                         ]
                       ]
                     },
-                    "label": "5"
+                    "label": "Jupiter"
                   },
                   {
                     "region": {
@@ -358,7 +358,7 @@
                         ]
                       ]
                     },
-                    "label": "6"
+                    "label": "Saturn"
                   },
                   {
                     "region": {
@@ -374,7 +374,7 @@
                         ]
                       ]
                     },
-                    "label": "7"
+                    "label": "Uranus"
                   },
                   {
                     "region": {
@@ -390,7 +390,7 @@
                         ]
                       ]
                     },
-                    "label": "8"
+                    "label": "Neptune"
                   },
                   {
                     "region": {
@@ -406,7 +406,7 @@
                         ]
                       ]
                     },
-                    "label": "9"
+                    "label": "Pluto"
                   }
                 ],
                 "imagePath": "Screen Shot 2015-02-18 at 3.51.49 AM_height_400_width_816.png"

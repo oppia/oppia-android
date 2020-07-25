@@ -1,7 +1,9 @@
 package org.oppia.app.player.state.itemviewmodel
 
+import android.content.Context
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
+import org.oppia.app.R
 import org.oppia.app.model.ClickOnImage
 import org.oppia.app.model.ImageWithRegions
 import org.oppia.app.model.Interaction
@@ -19,7 +21,8 @@ class ImageRegionSelectionInteractionViewModel(
   val entityId: String,
   val hasConversationView: Boolean,
   interaction: Interaction,
-  private val errorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver
+  private val errorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
+  val context: Context
 ) : StateItemViewModel(ViewType.IMAGE_REGION_SELECTION_INTERACTION),
   InteractionAnswerHandler,
   OnClickableAreaClickedListener {
@@ -28,9 +31,11 @@ class ImageRegionSelectionInteractionViewModel(
     interaction.customizationArgsMap["imageAndRegions"]?.imageWithRegions?.labelRegionsList
       ?: listOf()
   }
+
   val imagePath: String by lazy {
     interaction.customizationArgsMap["imageAndRegions"]?.imageWithRegions?.imagePath ?: ""
   }
+
   val isAnswerAvailable = ObservableField<Boolean>(false)
 
   init {
@@ -64,7 +69,10 @@ class ImageRegionSelectionInteractionViewModel(
     val answerTextString = answerText.toString()
     userAnswerBuilder.answer =
       InteractionObject.newBuilder().setClickOnImage(parseClickOnImage(answerTextString)).build()
-    userAnswerBuilder.plainAnswer = answerTextString
+    userAnswerBuilder.plainAnswer = context.getString(
+      R.string.image_interaction_answer_text,
+      answerTextString
+    )
     return userAnswerBuilder.build()
   }
 
