@@ -1,5 +1,4 @@
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
   <data>
 
@@ -10,97 +9,41 @@
       type="org.oppia.app.topic.revisioncard.RevisionCardViewModel" />
   </data>
 
-  <androidx.constraintlayout.widget.ConstraintLayout
+  <ScrollView
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white">
+    android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
-      android:id="@+id/revision_card_app_bar_layout"
-      android:layout_width="0dp"
+    <LinearLayout
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent">
+      android:orientation="vertical">
 
-      <androidx.appcompat.widget.Toolbar
-        android:id="@+id/revision_card_toolbar"
+      <TextView
+        android:id="@+id/revision_card_explanation_text"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/oppiaPrimaryDark"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="40dp"
         android:fontFamily="sans-serif"
-        android:minHeight="?attr/actionBarSize"
-        android:textSize="20sp"
-        app:title="@{viewModel.subtopicTitle}"
-        app:navigationContentDescription="@string/go_to_previous_page"
-        app:titleTextColor="@color/white" />
-    </com.google.android.material.appbar.AppBarLayout>
+        android:text="@{viewModel.explanationLiveData}"
+        android:textColor="@color/oppiaPrimaryText"
+        android:textSize="16sp" />
 
-    <FrameLayout
-      android:layout_width="0dp"
-      android:layout_height="0dp"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/revision_card_app_bar_layout">
-
-      <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:orientation="vertical">
-
-          <TextView
-            android:id="@+id/revision_card_heading_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="28dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginEnd="28dp"
-            android:fontFamily="sans-serif-medium"
-            android:textColor="@color/oppiaPrimaryText"
-            android:textSize="20sp" />
-
-          <TextView
-            android:id="@+id/revision_card_explanation_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="28dp"
-            android:layout_marginEnd="40dp"
-            android:fontFamily="sans-serif"
-            android:text="@{viewModel.explanationLiveData}"
-            android:textColor="@color/oppiaPrimaryText"
-            android:textSize="16sp" />
-
-          <Button
-            android:id="@+id/revision_card_return_button"
-            style="@style/StateButtonActive"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="28dp"
-            android:background="@drawable/state_button_primary_background"
-            android:onClick="@{viewModel::clickReturnToTopic}"
-            android:text="@string/return_to_topic"
-            android:textAllCaps="true"
-            android:layout_gravity="end"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-             />
-        </LinearLayout>
-        <!--TODO(#352): Show worked examples in Review Card.-->
-      </ScrollView>
-
-      <View
-        android:id="@+id/revision_card_shadow_view"
-        android:layout_width="match_parent"
-        android:layout_height="6dp"
-        android:background="@drawable/toolbar_drop_shadow" />
-    </FrameLayout>
-  </androidx.constraintlayout.widget.ConstraintLayout>
+      <Button
+        android:id="@+id/revision_card_return_button"
+        style="@style/StateButtonActive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="28dp"
+        android:background="@drawable/state_button_primary_background"
+        android:onClick="@{viewModel::clickReturnToTopic}"
+        android:text="@string/return_to_topic"
+        android:textAllCaps="true"
+        android:textColor="@color/white"
+        android:textSize="14sp" />
+    </LinearLayout>
+  </ScrollView>
 </layout>
