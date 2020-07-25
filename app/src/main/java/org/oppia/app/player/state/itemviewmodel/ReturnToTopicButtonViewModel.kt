@@ -7,5 +7,6 @@ import org.oppia.app.player.state.listener.ReturnToTopicNavigationButtonListener
 class ReturnToTopicButtonViewModel(
   val hasPreviousButton: Boolean,
   val previousNavigationButtonListener: PreviousNavigationButtonListener,
-  val returnToTopicNavigationButtonListener: ReturnToTopicNavigationButtonListener
+  val returnToTopicNavigationButtonListener: ReturnToTopicNavigationButtonListener,
+  val isSplitView: Boolean
 ) : StateItemViewModel(ViewType.RETURN_TO_TOPIC_NAVIGATION_BUTTON)
