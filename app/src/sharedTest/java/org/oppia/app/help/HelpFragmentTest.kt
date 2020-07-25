@@ -69,7 +69,7 @@ class HelpFragmentTest {
 
   @Test
   fun openHelpActivity_scrollRecyclerViewToZeroPosition_showsFAQSuccessfully() {
-    launch(HelpActivity::class.java).use {
+    launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
       onView(withId(R.id.help_fragment_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(0)
       )
@@ -83,7 +83,7 @@ class HelpFragmentTest {
 
   @Test
   fun openHelpActivity_configurationChanged_scrollRecyclerViewToZeroPosition_showsFAQSuccessfully() { // ktlint-disable max-line-length
-    launch(HelpActivity::class.java).use {
+    launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.help_fragment_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(0)
@@ -98,7 +98,7 @@ class HelpFragmentTest {
 
   @Test
   fun openHelpActivity_selectFAQ_showFAQActivitySuccessfully() {
-    launch(HelpActivity::class.java).use {
+    launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
       onView(atPosition(R.id.help_fragment_recycler_view, 0)).perform(click())
       intended(hasComponent(FAQListActivity::class.java.name))
     }
@@ -106,7 +106,7 @@ class HelpFragmentTest {
 
   @Test
   fun openHelpActivity_openNavigationDrawer_navigationDrawerOpeningIsVerifiedSuccessfully() {
-    launch(HelpActivity::class.java).use {
+    launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).check(
         matches(isCompletelyDisplayed())
       ).perform(click())
@@ -118,7 +118,7 @@ class HelpFragmentTest {
 
   @Test
   fun openHelpActivity_openNavigationDrawerAndClose_closingOfNavigationDrawerIsVerifiedSuccessfully() { // ktlint-disable max-line-length
-    launch(HelpActivity::class.java).use {
+    launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
       onView(withId(R.id.help_activity_drawer_layout)).perform(close())
       onView(withId(R.id.help_activity_drawer_layout)).check(matches(isClosed()))
