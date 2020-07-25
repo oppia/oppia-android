@@ -32,11 +32,13 @@ class InputInteractionViewTestActivity :
   lateinit var fractionInteractionViewModel: FractionInteractionViewModel
   val numericInputViewModel = NumericInputViewModel(
     context = this,
+    hasConversationView = false,
     interactionAnswerErrorOrAvailabilityCheckReceiver = this
   )
 
   val textInputViewModel = TextInputViewModel(
     interaction = Interaction.getDefaultInstance(),
+    hasConversationView = false,
     interactionAnswerErrorOrAvailabilityCheckReceiver = this
   )
 
@@ -48,6 +50,7 @@ class InputInteractionViewTestActivity :
     fractionInteractionViewModel = FractionInteractionViewModel(
       interaction = Interaction.getDefaultInstance(),
       context = this,
+      hasConversationView = false,
       interactionAnswerErrorOrAvailabilityCheckReceiver = this
     )
     binding.numericInputViewModel = numericInputViewModel

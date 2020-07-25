@@ -18,6 +18,7 @@ private const val DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER = "Please continue."
  */
 class ContinueInteractionViewModel(
   private val interactionAnswerReceiver: InteractionAnswerReceiver,
+  val hasConversationView: Boolean,
   val hasPreviousButton: Boolean,
   val previousNavigationButtonListener: PreviousNavigationButtonListener
 ) : StateItemViewModel(ViewType.CONTINUE_INTERACTION), InteractionAnswerHandler {
