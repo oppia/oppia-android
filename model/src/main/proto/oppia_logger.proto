@@ -123,9 +123,9 @@ message EventLog {
 // Structure for an exception log.
 message ExceptionLog {
   // The UTC timestamp of the exception in millis.
-  int64 timestampInMillis = 1;
+  int64 timestamp_in_millis = 1;
   // The stacktrace of the exception explaining what went wrong
-  repeated StackTraceElement stacktraceElement = 2;
+  repeated StackTraceElement stacktrace_element = 2;
   // The message explaining what failed at the site the exception was thrown.
   string message = 3;
   // The cause of the exception which in itself is a throwable.
