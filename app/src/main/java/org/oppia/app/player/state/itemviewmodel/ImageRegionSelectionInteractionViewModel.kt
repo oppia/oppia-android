@@ -9,7 +9,6 @@ import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
-import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.utility.DefaultRegionClickedEvent
 import org.oppia.app.utility.NamedRegionClickedEvent
 import org.oppia.app.utility.OnClickableAreaClickedListener
@@ -30,7 +29,7 @@ class ImageRegionSelectionInteractionViewModel(
       ?: listOf()
   }
   val imagePath: String by lazy {
-    interaction.customizationArgsMap["imageAndRegions"]?.imageWithRegions?.imagePath ?: "This seems incorrect"
+    interaction.customizationArgsMap["imageAndRegions"]?.imageWithRegions?.imagePath ?: ""
   }
 
   val defaultRegion: String by lazy {
