@@ -205,7 +205,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         NavigationDrawerItem.OPTIONS -> {
           val intent = OptionsActivity.createOptionsActivity(
             activity, internalProfileId,
-            /* isFromExploration= */ false
+            /* isFromNavigationDrawer= */ true
           )
           fragment.activity!!.startActivity(intent)
           if (checkIfPreviousActivityShouldGetFinished(menuItemId)) {
@@ -216,7 +216,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         NavigationDrawerItem.HELP -> {
           val intent = HelpActivity.createHelpActivityIntent(
             activity, internalProfileId,
-            /* isFromExploration= */ false
+            /* isFromNavigationDrawer= */ true
           )
           fragment.activity!!.startActivity(intent)
           if (checkIfPreviousActivityShouldGetFinished(menuItemId)) {

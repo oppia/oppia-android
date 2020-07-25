@@ -77,7 +77,7 @@ message EventLog {
     // The active topic ID when the event is logged.
     string topic_id = 1;
     // The active sub topic ID when the event is logged.
-    string sub_topic_id = 2;
+    int32 sub_topic_id = 2;
   }
 
   // Supported event actions for event logging.

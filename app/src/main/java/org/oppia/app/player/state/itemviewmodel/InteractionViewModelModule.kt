@@ -14,6 +14,10 @@ import org.oppia.app.player.state.listener.PreviousNavigationButtonListener
  */
 @Module
 class InteractionViewModelModule {
+  companion object {
+    val splitScreenInteractionIdsPool = listOf("DragAndDropSortInput", "ImageClickInput")
+  }
+
   // TODO(#300): Use a common source for these interaction IDs to de-duplicate them from other places in the codebase
   //  where they are referenced.
   @Provides
