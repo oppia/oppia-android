@@ -439,6 +439,8 @@ class StateFragmentTest {
       startPlayingExploration()
       waitForExplorationToBeLoaded()
       onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+      // TODO(#669): Remove explicit delay - https://github.com/oppia/oppia-android/issues/1523
+      onView(isRoot()).perform(waitFor(5000))
       onView(withId(R.id.image_click_interaction_image_view)).perform(
         clickPoint(0.5f, 0.5f)
       )
@@ -526,7 +528,7 @@ class StateFragmentTest {
       onView(withId(R.id.submit_answer_button)).perform(click())
       onView(withId(R.id.feedback_text_view)).check(
         matches(
-          withText(containsString("Jupiter"))
+          withText(containsString("Saturn"))
         )
       )
       onView(withId(R.id.continue_navigation_button)).check(matches(isDisplayed()))
