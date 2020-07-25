@@ -11,7 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.oppia.domain.oppialogger.crashlytics.ExceptionsController
+import org.oppia.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.util.caching.AssetRepository
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.data.AsyncResult
@@ -185,7 +185,7 @@ class AudioPlayerController @Inject constructor(
       }
       mediaPlayer.prepareAsync()
     } catch (e: IOException) {
-      exceptionsController.logException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
       logger.e("AudioPlayerController", "Failed to set data source for media player", e)
     }
     playProgress?.value = AsyncResult.pending()

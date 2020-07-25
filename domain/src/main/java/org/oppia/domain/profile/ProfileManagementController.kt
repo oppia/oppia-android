@@ -19,7 +19,7 @@ import org.oppia.app.model.ProfileDatabase
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.StoryTextSize
 import org.oppia.data.persistence.PersistentCacheStore
-import org.oppia.domain.oppialogger.crashlytics.ExceptionsController
+import org.oppia.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
@@ -739,7 +739,7 @@ class ProfileManagementController @Inject constructor(
           .compress(Bitmap.CompressFormat.PNG, /* quality= */ 100, fos)
       }
     } catch (e: Exception) {
-      exceptionsController.logException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
       logger.e(
         "ProfileManagementController",
         "Failed to store user submitted avatar image",

@@ -3,7 +3,7 @@ package org.oppia.domain.question
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.oppia.app.model.Question
-import org.oppia.domain.oppialogger.crashlytics.ExceptionsController
+import org.oppia.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
@@ -54,7 +54,7 @@ class QuestionTrainingController @Inject constructor(
       ) { it }
       dataProviders.convertToLiveData(erasedDataProvider)
     } catch (e: Exception) {
-      exceptionsController.logException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
       MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -113,7 +113,7 @@ class QuestionTrainingController @Inject constructor(
       questionAssessmentProgressController.finishQuestionTrainingSession()
       MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
-      exceptionsController.logException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
       MutableLiveData(AsyncResult.failed(e))
     }
   }

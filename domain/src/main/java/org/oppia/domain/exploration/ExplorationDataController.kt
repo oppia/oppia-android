@@ -3,7 +3,7 @@ package org.oppia.domain.exploration
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.oppia.app.model.Exploration
-import org.oppia.domain.oppialogger.crashlytics.ExceptionsController
+import org.oppia.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
 import org.oppia.util.system.OppiaClock
@@ -50,7 +50,7 @@ class ExplorationDataController @Inject constructor(
       explorationProgressController.beginExplorationAsync(explorationId)
       MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
-      exceptionsController.logException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
       MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -64,7 +64,7 @@ class ExplorationDataController @Inject constructor(
       explorationProgressController.finishExplorationAsync()
       MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
-      exceptionsController.logException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
       MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -75,7 +75,7 @@ class ExplorationDataController @Inject constructor(
     return try {
       AsyncResult.success(explorationRetriever.loadExploration(explorationId))
     } catch (e: Exception) {
-      exceptionsController.logException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
       AsyncResult.failed(e)
     }
   }

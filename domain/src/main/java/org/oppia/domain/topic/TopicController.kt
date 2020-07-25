@@ -27,7 +27,7 @@ import org.oppia.app.model.Translation
 import org.oppia.app.model.TranslationMapping
 import org.oppia.app.model.Voiceover
 import org.oppia.app.model.VoiceoverMapping
-import org.oppia.domain.oppialogger.crashlytics.ExceptionsController
+import org.oppia.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.domain.util.StateRetriever
 import org.oppia.util.data.AsyncResult
@@ -186,7 +186,7 @@ class TopicController @Inject constructor(
       try {
         AsyncResult.success(createConceptCardFromJson(skillId))
       } catch (e: Exception) {
-        exceptionsController.logException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+        exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
         AsyncResult.failed<ConceptCard>(e)
       }
     )
@@ -198,7 +198,7 @@ class TopicController @Inject constructor(
       try {
         AsyncResult.success(retrieveReviewCard(topicId, subtopicId))
       } catch (e: Exception) {
-        exceptionsController.logException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+        exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
         AsyncResult.failed<RevisionCard>(e)
       }
     )

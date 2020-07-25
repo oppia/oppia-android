@@ -1,4 +1,4 @@
-package org.oppia.domain.oppialogger.crashlytics
+package org.oppia.domain.oppialogger.exceptions
 
 import androidx.lifecycle.LiveData
 import org.oppia.app.model.ExceptionLog
@@ -10,103 +10,71 @@ import org.oppia.util.data.DataProviders
 import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.logging.ExceptionLogger
 import org.oppia.util.networking.NetworkConnectionUtil
-import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
+/** Controller for handling exception logging. */
 class ExceptionsController @Inject constructor(
   private val exceptionLogger: ExceptionLogger,
   private val dataProviders: DataProviders,
   cacheStoreFactory: PersistentCacheStore.Factory,
   private val consoleLogger: ConsoleLogger,
   private val networkConnectionUtil: NetworkConnectionUtil,
-  private val oppiaClock: OppiaClock,
   @ExceptionLogStorageCacheSize private val exceptionLogStorageCacheSize: Int
 ) {
   private val exceptionLogStore =
     cacheStoreFactory.create("exception_logs", OppiaExceptionLogs.getDefaultInstance())
 
-  lateinit var exceptionCause: Throwable
+  /** Logs a NON-FATAL exception. */
+  fun logNonFatalException(exception: Exception, timestamp: Long) {
+    uploadOrCacheExceptionLog(exception, timestamp, ExceptionLog.ExceptionType.NON_FATAL)
+  }
 
-  fun logException(exception: Exception, timestamp: Long) {
-    uploadOrCacheExceptionLog(exception, timestamp)
+  /** Logs a FATAL exception. */
+  fun logFatalException(exception: Exception, timestamp: Long){
+    uploadOrCacheExceptionLog(exception, timestamp, ExceptionLog.ExceptionType.FATAL)
   }
 
   /**
    * Checks network connectivity of the device.
    *
-   * Saves the [exceptionLog] to the [exceptionLogStore] in the absence of it.
+   * Saves the [exception] to the [exceptionLogStore] in the absence of it.
    * Uploads to remote service in the presence of it.
    */
-  private fun uploadOrCacheExceptionLog(exception: Exception, timestamp: Long) {
+  private fun uploadOrCacheExceptionLog(exception: Exception, timestamp: Long, exceptionType: ExceptionLog.ExceptionType) {
     when (networkConnectionUtil.getCurrentConnectionStatus()) {
       NetworkConnectionUtil.ConnectionStatus.NONE ->
-        cacheExceptionLog(exceptionToExceptionLog(exception, timestamp))
+        cacheExceptionLog(convertExceptionToExceptionLog(exception, timestamp, exceptionType))
       else -> exceptionLogger.logException(exception)
     }
   }
 
-  /** Returns an [ExceptionLog] from an [exception]. */
-  private fun exceptionToExceptionLog(exception: Exception, timestamp: Long): ExceptionLog {
+  /** Returns an [ExceptionLog] from an [throwable]. */
+  private fun convertExceptionToExceptionLog(throwable: Throwable, timestamp: Long, exceptionType: ExceptionLog.ExceptionType): ExceptionLog {
     val exceptionLogBuilder = ExceptionLog.newBuilder()
-    val exceptionLogCauseBuilder = ExceptionLog.newBuilder()
-    exceptionLogBuilder.message = exception.message
-    exceptionLogBuilder.timestamp = timestamp
-    val stackTraceSize = exception.stackTrace.size
-    buildStackTraceElement(stackTraceSize, exceptionLogBuilder, exception)
-    exception.cause?.message?.let {
-      exceptionLogCauseBuilder.setMessage(it)
+    throwable.message?.let {
+      exceptionLogBuilder.message = it
     }
-    val causeStackTraceSize = exception.cause?.stackTrace?.size
-    if (causeStackTraceSize != null) {
-      buildStackTraceElement(causeStackTraceSize, exceptionLogCauseBuilder, exception)
+    exceptionLogBuilder.timestampInMillis = timestamp
+    throwable.cause?.let {
+      exceptionLogBuilder.cause = convertExceptionToExceptionLog(it, timestamp, exceptionType)
     }
-    exceptionLogBuilder.cause = exceptionLogCauseBuilder.build()
+    throwable.stackTrace?.let {
+      exceptionLogBuilder.addAllStacktraceElement(it.map(this::convertStackTraceElementToLog))
+    }
+    exceptionLogBuilder.exceptionType = exceptionType
     return exceptionLogBuilder.build()
   }
 
-  /** Returns an [Exception] from an [exceptionLog]. */
-  private fun exceptionLogToException(exceptionLog: ExceptionLog): Exception {
-    val exceptionMessage = exceptionLog.message
-    exceptionCause = if (exceptionLog.cause.message != "") {
-      Throwable(exceptionLog.cause.message)
-    } else {
-      Throwable()
-    }
-    exceptionCause.stackTrace = createErrorStackTrace(exceptionLog.cause)
-    val exception = Exception(exceptionMessage, exceptionCause)
-    exception.stackTrace = createErrorStackTrace(exceptionLog)
-    return exception
-  }
-
-  /** Builds the [ExceptionLog.StackTraceElement] for an [exception] with relevant data and adds it to the [exceptionLogBuilder]. */
-  private fun buildStackTraceElement(
-    stackTraceSize: Int,
-    exceptionLogBuilder: ExceptionLog.Builder,
-    exception: Exception
-  ) {
-    for (i in 0 until stackTraceSize) {
-      val stackTraceElement = ExceptionLog.StackTraceElement.newBuilder()
-      stackTraceElement.fileName = exception.stackTrace[i].fileName
-      stackTraceElement.methodName = exception.stackTrace[i].methodName
-      stackTraceElement.lineNumber = exception.stackTrace[i].lineNumber
-      stackTraceElement.declaringClass = exception.stackTrace[i].className
-      exceptionLogBuilder.addStacktrace(i, stackTraceElement.build())
-    }
-  }
-
-  /** Returns exception stacktrace for the [exceptionLog]. */
-  private fun createErrorStackTrace(exceptionLog: ExceptionLog): Array<StackTraceElement> {
-    return Array(
-      exceptionLog.stacktraceCount,
-      init = { i: Int ->
-        StackTraceElement(
-          exceptionLog.stacktraceList[i].declaringClass,
-          exceptionLog.stacktraceList[i].methodName,
-          exceptionLog.stacktraceList[i].fileName,
-          exceptionLog.stacktraceList[i].lineNumber
-        )
-      }
-    )
+/** Builds the [ExceptionLog.StackTraceElement] from a [stackTraceElement]. */
+  private fun convertStackTraceElementToLog(
+    stackTraceElement: StackTraceElement
+  ): ExceptionLog.StackTraceElement {
+    return ExceptionLog.StackTraceElement.newBuilder()
+      .setFileName(stackTraceElement.fileName)
+      .setMethodName(stackTraceElement.methodName)
+      .setLineNumber(stackTraceElement.lineNumber)
+      .setDeclaringClass(stackTraceElement.className)
+      .build()
   }
 
   /**
@@ -133,7 +101,6 @@ class ExceptionsController @Inject constructor(
               "Least Recent Exception index absent -- ExceptionLogCacheStoreSize is 0"
             )
           consoleLogger.e("Exceptions Controller", exception.toString())
-          logException(exception, oppiaClock.getCurrentCalendar().timeInMillis)
         }
       }
       return@storeDataAsync oppiaExceptionLogs.toBuilder().addExceptionLog(exceptionLog).build()
@@ -157,12 +124,12 @@ class ExceptionsController @Inject constructor(
   private fun getLeastRecentExceptionIndex(oppiaExceptionLogs: OppiaExceptionLogs): Int? =
     oppiaExceptionLogs.exceptionLogList.withIndex()
       .filter { it.value.exceptionType == ExceptionLog.ExceptionType.NON_FATAL }
-      .minBy { it.value.timestamp }?.index ?: getLeastRecentGeneralEventIndex(oppiaExceptionLogs)
+      .minBy { it.value.timestampInMillis }?.index ?: getLeastRecentGeneralEventIndex(oppiaExceptionLogs)
 
   /** Returns the index of the least recent exception regardless of their exception type. */
   private fun getLeastRecentGeneralEventIndex(oppiaExceptionLogs: OppiaExceptionLogs): Int? =
     oppiaExceptionLogs.exceptionLogList.withIndex()
-      .minBy { it.value.timestamp }?.index
+      .minBy { it.value.timestampInMillis }?.index
 
   /**
    * Returns a [LiveData] result which can be used to get [OppiaExceptionLogs]

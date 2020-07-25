@@ -10,7 +10,7 @@ import org.oppia.app.model.Solution
 import org.oppia.app.model.State
 import org.oppia.app.model.UserAnswer
 import org.oppia.domain.classify.AnswerClassificationController
-import org.oppia.domain.oppialogger.crashlytics.ExceptionsController
+import org.oppia.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.domain.question.QuestionAssessmentProgress.TrainStage
 import org.oppia.util.data.AsyncDataSubscriptionManager
 import org.oppia.util.data.AsyncResult
@@ -155,7 +155,7 @@ class QuestionAssessmentProgressController @Inject constructor(
         return MutableLiveData(AsyncResult.success(answeredQuestionOutcome))
       }
     } catch (e: Exception) {
-      exceptionsController.logException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -190,7 +190,7 @@ class QuestionAssessmentProgressController @Inject constructor(
         return MutableLiveData(AsyncResult.success(hint))
       }
     } catch (e: Exception) {
-      exceptionsController.logException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -227,7 +227,7 @@ class QuestionAssessmentProgressController @Inject constructor(
         return MutableLiveData(AsyncResult.success(solution))
       }
     } catch (e: Exception) {
-      exceptionsController.logException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -264,7 +264,7 @@ class QuestionAssessmentProgressController @Inject constructor(
       }
       return MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
-      exceptionsController.logException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -326,7 +326,7 @@ class QuestionAssessmentProgressController @Inject constructor(
           TrainStage.SUBMITTING_ANSWER -> AsyncResult.pending()
         }
       } catch (e: Exception) {
-        exceptionsController.logException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+        exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
         AsyncResult.failed(e)
       }
     }
