@@ -470,6 +470,7 @@ class ExplorationActivityTest {
   }
 
   @Test
+  @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
   fun testAudioWithWifi_openRatioExploration_clickAudioIcon_checkAudioFragmentHasDefaultLanguageAndAutoPlays() { // ktlint-disable max-line-length
     getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
