@@ -6,6 +6,7 @@ import org.oppia.app.player.state.listener.PreviousResponsesHeaderClickListener
 /** [StateItemViewModel] for the header of the section of previously submitted answers. */
 class PreviousResponsesHeaderViewModel(
   val previousAnswerCount: Int,
+  val hasConversationView: Boolean,
   var isExpanded: ObservableBoolean,
   private val previousResponsesHeaderClickListener: PreviousResponsesHeaderClickListener,
   val isSplitView: Boolean

@@ -25,9 +25,6 @@ import org.oppia.app.databinding.NextButtonItemBinding
 import org.oppia.app.databinding.NumericInputInteractionItemBinding
 import org.oppia.app.databinding.PreviousButtonItemBinding
 import org.oppia.app.databinding.PreviousResponsesHeaderItemBinding
-import org.oppia.app.databinding.QuestionPlayerFeedbackItemBinding
-import org.oppia.app.databinding.QuestionPlayerSelectionInteractionItemBinding
-import org.oppia.app.databinding.QuestionPlayerSubmittedAnswerItemBinding
 import org.oppia.app.databinding.ReplayButtonItemBinding
 import org.oppia.app.databinding.ReturnToTopicButtonItemBinding
 import org.oppia.app.databinding.SelectionInteractionItemBinding
@@ -78,7 +75,6 @@ import org.oppia.app.player.state.listener.ReturnToTopicNavigationButtonListener
 import org.oppia.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.app.player.state.listener.SubmitNavigationButtonListener
 import org.oppia.app.recyclerview.BindableAdapter
-import org.oppia.app.topic.questionplayer.QuestionPlayerFragment
 import org.oppia.app.utility.LifecycleSafeTimerFactory
 import org.oppia.util.parser.HtmlParser
 import org.oppia.util.threading.BackgroundDispatcher
@@ -269,6 +265,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val interactionViewModelFactory = interactionViewModelFactoryMap.getValue(interaction.id)
     pendingItemList += interactionViewModelFactory(
       gcsEntityId,
+      hasConversationView,
       interaction,
       fragment as InteractionAnswerReceiver,
       fragment as InteractionAnswerErrorOrAvailabilityCheckReceiver,
@@ -304,6 +301,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       if (playerFeatureSet.wrongAnswerCollapsing) {
         PreviousResponsesHeaderViewModel(
           answersAndResponses.size - 1,
+          hasConversationView,
           ObservableBoolean(hasPreviousResponsesExpanded),
           fragment as PreviousResponsesHeaderClickListener,
           isSplitView
@@ -490,7 +488,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     gcsEntityId: String,
     isSplitView: Boolean
   ): SubmittedAnswerViewModel {
-    val submittedAnswerViewModel = SubmittedAnswerViewModel(userAnswer, gcsEntityId, isSplitView)
+    val submittedAnswerViewModel = SubmittedAnswerViewModel(userAnswer, gcsEntityId, hasConversationView, isSplitView)
     submittedAnswerViewModel.isCorrectAnswer.set(isCorrectAnswer.get())
     return submittedAnswerViewModel
   }
@@ -502,7 +500,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   ): FeedbackViewModel? {
     // Only show feedback if there's some to show.
     if (feedback.html.isNotEmpty()) {
-      return FeedbackViewModel(feedback.html, gcsEntityId, isSplitView)
+      return FeedbackViewModel(feedback.html, gcsEntityId, hasConversationView, isSplitView)
     }
     return null
   }
@@ -581,6 +579,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val hasPrevious = if (shouldSplit) false else hasPreviousButton
     targetList += SubmitButtonViewModel(
       canSubmitAnswer,
+      hasConversationView,
       hasPrevious,
       previousNavigationButtonListener,
       fragment as SubmitNavigationButtonListener,
@@ -603,6 +602,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val hasPrevious = if (shouldSplit) false else hasPreviousButton
     targetList += ReturnToTopicButtonViewModel(
       hasPrevious,
+      hasConversationView,
       previousNavigationButtonListener,
       fragment as ReturnToTopicNavigationButtonListener,
       shouldSplit
@@ -620,7 +620,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   ) {
     val targetList =
       if (shouldSplit) extraInteractionPendingItemList else conversationPendingItemList
-    targetList += ReplayButtonViewModel(fragment as ReplayButtonListener, shouldSplit)
+    targetList += ReplayButtonViewModel(hasConversationView, fragment as ReplayButtonListener, shouldSplit)
   }
 
   private fun addNextButtonNavigation(
@@ -634,6 +634,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val hasPrevious = if (shouldSplit) false else hasPreviousButton
     targetList += NextButtonViewModel(
       hasPrevious,
+      hasConversationView,
       previousNavigationButtonListener,
       fragment as NextNavigationButtonListener,
       shouldSplit
@@ -655,6 +656,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val hasPrevious = if (shouldSplit) false else hasPreviousButton
     targetList += ContinueNavigationButtonViewModel(
       hasPrevious,
+      hasConversationView,
       previousNavigationButtonListener,
       fragment as ContinueNavigationButtonListener,
       shouldSplit
@@ -671,7 +673,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
     isSplitView: Boolean
   ) {
     if (hasPreviousButton) {
-      itemList += PreviousButtonViewModel(previousNavigationButtonListener, isSplitView)
+      itemList += PreviousButtonViewModel(
+        hasConversationView,
+        previousNavigationButtonListener,
+        isSplitView
+      )
     }
   }
 
@@ -764,59 +770,31 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     /** Adds support for displaying feedback to the user when they submit an answer. */
     fun addFeedbackSupport(): Builder {
-      if (fragment is QuestionPlayerFragment) {
-        adapterBuilder.registerViewBinder(
-          viewType = StateItemViewModel.ViewType.FEEDBACK,
-          inflateView = { parent ->
-            QuestionPlayerFeedbackItemBinding.inflate(
-              LayoutInflater.from(parent.context),
-              parent,
-              /* attachToParent= */ false
-            ).root
-          },
-          bindView = { view, viewModel ->
-            val binding = DataBindingUtil.findBinding<QuestionPlayerFeedbackItemBinding>(view)!!
-            val feedbackViewModel = viewModel as FeedbackViewModel
-            binding.viewModel = feedbackViewModel
-            binding.htmlContent =
-              htmlParserFactory.create(
-                resourceBucketName,
-                entityType,
-                feedbackViewModel.gcsEntityId,
-                imageCenterAlign = true
-              ).parseOppiaHtml(
-                feedbackViewModel.htmlContent.toString(),
-                binding.questionPlayerFeedbackTextView
-              )
-          }
-        )
-      } else {
-        adapterBuilder.registerViewBinder(
-          viewType = StateItemViewModel.ViewType.FEEDBACK,
-          inflateView = { parent ->
-            FeedbackItemBinding.inflate(
-              LayoutInflater.from(parent.context),
-              parent,
-              /* attachToParent= */ false
-            ).root
-          },
-          bindView = { view, viewModel ->
-            val binding = DataBindingUtil.findBinding<FeedbackItemBinding>(view)!!
-            val feedbackViewModel = viewModel as FeedbackViewModel
-            binding.viewModel = feedbackViewModel
-            binding.htmlContent =
-              htmlParserFactory.create(
-                resourceBucketName,
-                entityType,
-                feedbackViewModel.gcsEntityId,
-                imageCenterAlign = true
-              ).parseOppiaHtml(
-                feedbackViewModel.htmlContent.toString(),
-                binding.feedbackTextView
-              )
-          }
-        )
-      }
+      adapterBuilder.registerViewBinder(
+        viewType = StateItemViewModel.ViewType.FEEDBACK,
+        inflateView = { parent ->
+          FeedbackItemBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            /* attachToParent= */ false
+          ).root
+        },
+        bindView = { view, viewModel ->
+          val binding = DataBindingUtil.findBinding<FeedbackItemBinding>(view)!!
+          val feedbackViewModel = viewModel as FeedbackViewModel
+          binding.viewModel = feedbackViewModel
+          binding.htmlContent =
+            htmlParserFactory.create(
+              resourceBucketName,
+              entityType,
+              feedbackViewModel.gcsEntityId,
+              imageCenterAlign = true
+            ).parseOppiaHtml(
+              feedbackViewModel.htmlContent.toString(),
+              binding.feedbackTextView
+            )
+        }
+      )
       featureSets += PlayerFeatureSet(feedbackSupport = true)
       return this
     }
@@ -830,71 +808,37 @@ class StatePlayerRecyclerViewAssembler private constructor(
      *     there's an error which should prevent answer submission).
      */
     fun addInteractionSupport(canSubmitAnswer: ObservableField<Boolean>): Builder {
-      if (fragment is QuestionPlayerFragment) {
-        adapterBuilder.registerViewDataBinder(
-          viewType = StateItemViewModel.ViewType.SELECTION_INTERACTION,
-          inflateDataBinding = QuestionPlayerSelectionInteractionItemBinding::inflate,
-          setViewModel = QuestionPlayerSelectionInteractionItemBinding::setViewModel,
-          transformViewModel = { it as SelectionInteractionViewModel }
-        ).registerViewDataBinder(
-          viewType = StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION,
-          inflateDataBinding = FractionInteractionItemBinding::inflate,
-          setViewModel = FractionInteractionItemBinding::setViewModel,
-          transformViewModel = { it as FractionInteractionViewModel }
-        ).registerViewDataBinder(
-          viewType = StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION,
-          inflateDataBinding = NumericInputInteractionItemBinding::inflate,
-          setViewModel = NumericInputInteractionItemBinding::setViewModel,
-          transformViewModel = { it as NumericInputViewModel }
-        ).registerViewDataBinder(
-          viewType = StateItemViewModel.ViewType.DRAG_DROP_SORT_INTERACTION,
-          inflateDataBinding = DragDropInteractionItemBinding::inflate,
-          setViewModel = DragDropInteractionItemBinding::setViewModel,
-          transformViewModel = { it as DragAndDropSortInteractionViewModel }
-        ).registerViewDataBinder(
-          viewType = StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION,
-          inflateDataBinding = TextInputInteractionItemBinding::inflate,
-          setViewModel = TextInputInteractionItemBinding::setViewModel,
-          transformViewModel = { it as TextInputViewModel }
-        ).registerViewDataBinder(
-          viewType = StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON,
-          inflateDataBinding = SubmitButtonItemBinding::inflate,
-          setViewModel = SubmitButtonItemBinding::setButtonViewModel,
-          transformViewModel = { it as SubmitButtonViewModel }
-        )
-      } else {
-        adapterBuilder.registerViewDataBinder(
-          viewType = StateItemViewModel.ViewType.SELECTION_INTERACTION,
-          inflateDataBinding = SelectionInteractionItemBinding::inflate,
-          setViewModel = SelectionInteractionItemBinding::setViewModel,
-          transformViewModel = { it as SelectionInteractionViewModel }
-        ).registerViewDataBinder(
-          viewType = StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION,
-          inflateDataBinding = FractionInteractionItemBinding::inflate,
-          setViewModel = FractionInteractionItemBinding::setViewModel,
-          transformViewModel = { it as FractionInteractionViewModel }
-        ).registerViewDataBinder(
-          viewType = StateItemViewModel.ViewType.DRAG_DROP_SORT_INTERACTION,
-          inflateDataBinding = DragDropInteractionItemBinding::inflate,
-          setViewModel = DragDropInteractionItemBinding::setViewModel,
-          transformViewModel = { it as DragAndDropSortInteractionViewModel }
-        ).registerViewDataBinder(
-          viewType = StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION,
-          inflateDataBinding = NumericInputInteractionItemBinding::inflate,
-          setViewModel = NumericInputInteractionItemBinding::setViewModel,
-          transformViewModel = { it as NumericInputViewModel }
-        ).registerViewDataBinder(
-          viewType = StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION,
-          inflateDataBinding = TextInputInteractionItemBinding::inflate,
-          setViewModel = TextInputInteractionItemBinding::setViewModel,
-          transformViewModel = { it as TextInputViewModel }
-        ).registerViewDataBinder(
-          viewType = StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON,
-          inflateDataBinding = SubmitButtonItemBinding::inflate,
-          setViewModel = SubmitButtonItemBinding::setButtonViewModel,
-          transformViewModel = { it as SubmitButtonViewModel }
-        )
-      }
+      adapterBuilder.registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.SELECTION_INTERACTION,
+        inflateDataBinding = SelectionInteractionItemBinding::inflate,
+        setViewModel = SelectionInteractionItemBinding::setViewModel,
+        transformViewModel = { it as SelectionInteractionViewModel }
+      ).registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION,
+        inflateDataBinding = FractionInteractionItemBinding::inflate,
+        setViewModel = FractionInteractionItemBinding::setViewModel,
+        transformViewModel = { it as FractionInteractionViewModel }
+      ).registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.DRAG_DROP_SORT_INTERACTION,
+        inflateDataBinding = DragDropInteractionItemBinding::inflate,
+        setViewModel = DragDropInteractionItemBinding::setViewModel,
+        transformViewModel = { it as DragAndDropSortInteractionViewModel }
+      ).registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION,
+        inflateDataBinding = NumericInputInteractionItemBinding::inflate,
+        setViewModel = NumericInputInteractionItemBinding::setViewModel,
+        transformViewModel = { it as NumericInputViewModel }
+      ).registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION,
+        inflateDataBinding = TextInputInteractionItemBinding::inflate,
+        setViewModel = TextInputInteractionItemBinding::setViewModel,
+        transformViewModel = { it as TextInputViewModel }
+      ).registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON,
+        inflateDataBinding = SubmitButtonItemBinding::inflate,
+        setViewModel = SubmitButtonItemBinding::setButtonViewModel,
+        transformViewModel = { it as SubmitButtonViewModel }
+      )
       this.canSubmitAnswer = canSubmitAnswer
       featureSets += PlayerFeatureSet(interactionSupport = true)
       return this
@@ -902,86 +846,45 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     /** Adds support for displaying previously submitted answers. */
     fun addPastAnswersSupport(): Builder {
-      if (fragment is QuestionPlayerFragment) {
-        adapterBuilder.registerViewBinder(
-          viewType = StateItemViewModel.ViewType.SUBMITTED_ANSWER,
-          inflateView = { parent ->
-            QuestionPlayerSubmittedAnswerItemBinding.inflate(
-              LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
-            ).root
-          },
-          bindView = { view, viewModel ->
-            val binding =
-              DataBindingUtil.findBinding<QuestionPlayerSubmittedAnswerItemBinding>(view)!!
-            val submittedAnswerViewModel = viewModel as SubmittedAnswerViewModel
-            binding.viewModel = submittedAnswerViewModel
-            val userAnswer = submittedAnswerViewModel.submittedUserAnswer
-            when (userAnswer.textualAnswerCase) {
-              UserAnswer.TextualAnswerCase.HTML_ANSWER -> {
-                showSingleAnswer(binding)
-                val htmlParser = htmlParserFactory.create(
-                  resourceBucketName,
-                  entityType,
-                  submittedAnswerViewModel.gcsEntityId,
-                  imageCenterAlign = false
-                )
-                binding.submittedAnswer = htmlParser.parseOppiaHtml(
-                  userAnswer.htmlAnswer, binding.questionPlayerSubmittedAnswerTextView
-                )
-              }
-              UserAnswer.TextualAnswerCase.LIST_OF_HTML_ANSWERS -> {
-                showListOfAnswers(binding)
-                binding.submittedListAnswer = userAnswer.listOfHtmlAnswers
-                binding.questionPlayerSubmittedAnswerRecyclerView.adapter =
-                  createListAnswerAdapter(submittedAnswerViewModel.gcsEntityId)
-              }
-              else -> {
-                showSingleAnswer(binding)
-                binding.submittedAnswer = userAnswer.plainAnswer
-              }
+      adapterBuilder.registerViewBinder(
+        viewType = StateItemViewModel.ViewType.SUBMITTED_ANSWER,
+        inflateView = { parent ->
+          SubmittedAnswerItemBinding.inflate(
+            LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
+          ).root
+        },
+        bindView = { view, viewModel ->
+          val binding = DataBindingUtil.findBinding<SubmittedAnswerItemBinding>(view)!!
+          val submittedAnswerViewModel = viewModel as SubmittedAnswerViewModel
+          binding.viewModel = submittedAnswerViewModel
+          val userAnswer = submittedAnswerViewModel.submittedUserAnswer
+          when (userAnswer.textualAnswerCase) {
+            UserAnswer.TextualAnswerCase.HTML_ANSWER -> {
+              showSingleAnswer(binding)
+              val htmlParser = htmlParserFactory.create(
+                resourceBucketName,
+                entityType,
+                submittedAnswerViewModel.gcsEntityId,
+                imageCenterAlign = false
+              )
+              binding.submittedAnswer = htmlParser.parseOppiaHtml(
+                userAnswer.htmlAnswer,
+                binding.submittedAnswerTextView
+              )
+            }
+            UserAnswer.TextualAnswerCase.LIST_OF_HTML_ANSWERS -> {
+              showListOfAnswers(binding)
+              binding.submittedListAnswer = userAnswer.listOfHtmlAnswers
+              binding.submittedAnswerRecyclerView.adapter =
+                createListAnswerAdapter(submittedAnswerViewModel.gcsEntityId)
+            }
+            else -> {
+              showSingleAnswer(binding)
+              binding.submittedAnswer = userAnswer.plainAnswer
             }
           }
-        )
-      } else {
-        adapterBuilder.registerViewBinder(
-          viewType = StateItemViewModel.ViewType.SUBMITTED_ANSWER,
-          inflateView = { parent ->
-            SubmittedAnswerItemBinding.inflate(
-              LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
-            ).root
-          },
-          bindView = { view, viewModel ->
-            val binding = DataBindingUtil.findBinding<SubmittedAnswerItemBinding>(view)!!
-            val submittedAnswerViewModel = viewModel as SubmittedAnswerViewModel
-            val userAnswer = submittedAnswerViewModel.submittedUserAnswer
-            when (userAnswer.textualAnswerCase) {
-              UserAnswer.TextualAnswerCase.HTML_ANSWER -> {
-                showSingleAnswer(binding)
-                val htmlParser = htmlParserFactory.create(
-                  resourceBucketName,
-                  entityType,
-                  submittedAnswerViewModel.gcsEntityId,
-                  imageCenterAlign = false
-                )
-                binding.submittedAnswer = htmlParser.parseOppiaHtml(
-                  userAnswer.htmlAnswer,
-                  binding.submittedAnswerTextView
-                )
-              }
-              UserAnswer.TextualAnswerCase.LIST_OF_HTML_ANSWERS -> {
-                showListOfAnswers(binding)
-                binding.submittedListAnswer = userAnswer.listOfHtmlAnswers
-                binding.submittedAnswerRecyclerView.adapter =
-                  createListAnswerAdapter(submittedAnswerViewModel.gcsEntityId)
-              }
-              else -> {
-                showSingleAnswer(binding)
-                binding.submittedAnswer = userAnswer.plainAnswer
-              }
-            }
-          }
-        )
-      }
+        }
+      )
       featureSets += PlayerFeatureSet(pastAnswerSupport = true)
       return this
     }
@@ -1031,10 +934,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     private fun showSingleAnswer(binding: ViewDataBinding) {
       when (binding) {
-        is QuestionPlayerSubmittedAnswerItemBinding -> {
-          binding.questionPlayerSubmittedAnswerRecyclerView.visibility = View.GONE
-          binding.questionPlayerSubmittedAnswerTextView.visibility = View.VISIBLE
-        }
         is SubmittedAnswerItemBinding -> {
           binding.submittedAnswerRecyclerView.visibility = View.GONE
           binding.submittedAnswerTextView.visibility = View.VISIBLE
@@ -1044,10 +943,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     private fun showListOfAnswers(binding: ViewDataBinding) {
       when (binding) {
-        is QuestionPlayerSubmittedAnswerItemBinding -> {
-          binding.questionPlayerSubmittedAnswerRecyclerView.visibility = View.VISIBLE
-          binding.questionPlayerSubmittedAnswerTextView.visibility = View.GONE
-        }
         is SubmittedAnswerItemBinding -> {
           binding.submittedAnswerRecyclerView.visibility = View.VISIBLE
           binding.submittedAnswerTextView.visibility = View.GONE

@@ -15,16 +15,16 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
   private lateinit var navigationDrawerFragment: NavigationDrawerFragment
   private lateinit var toolbar: Toolbar
 
-  fun handleOnCreate(isFromExploration: Boolean) {
+  fun handleOnCreate(isFromNavigationDrawer: Boolean) {
     activity.setContentView(R.layout.help_activity)
     setUpToolbar()
-    if (isFromExploration) {
+    if (isFromNavigationDrawer) {
+      setUpNavigationDrawer()
+    } else {
       activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
       toolbar.setNavigationOnClickListener {
         activity.finish()
       }
-    } else {
-      setUpNavigationDrawer()
     }
     if (getHelpFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(

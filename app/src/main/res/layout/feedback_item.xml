@@ -1,4 +1,5 @@
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
 
@@ -14,11 +15,10 @@
   <FrameLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginStart="20dp"
-    android:layout_marginTop="@dimen/divider_margin_top"
-    android:layout_marginEnd="28dp"
-    android:layout_marginBottom="@dimen/divider_margin_bottom"
-    android:background="@drawable/content_blue_background">
+    android:background="@{viewModel.hasConversationView ? @drawable/content_blue_background : @drawable/transparent_background}"
+    app:layoutMarginBottom="@{viewModel.hasConversationView ? @dimen/margin_8 : @dimen/margin_28}"
+    app:layoutMarginStart="@{viewModel.hasConversationView ? @dimen/margin_20 : @dimen/margin_28}"
+    app:layoutMarginTop="@{viewModel.hasConversationView ? @dimen/margin_8 : @dimen/margin_28}">
 
     <TextView
       android:id="@+id/feedback_text_view"

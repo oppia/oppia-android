@@ -134,7 +134,7 @@ class ExplorationActivityPresenter @Inject constructor(
         val intent = OptionsActivity.createOptionsActivity(
           activity,
           internalProfileId,
-          /* isFromExploration= */ true
+          /* isFromNavigationDrawer= */ false
         )
         context.startActivity(intent)
         true
@@ -142,7 +142,7 @@ class ExplorationActivityPresenter @Inject constructor(
       R.id.action_help -> {
         val intent = HelpActivity.createHelpActivityIntent(
           activity, internalProfileId,
-          /* isFromExploration= */true
+          /* isFromNavigationDrawer= */false
         )
         context.startActivity(intent)
         true
@@ -171,8 +171,8 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   private fun getExplorationFragment(): ExplorationFragment? {
-    return activity.supportFragmentManager.findFragmentById(
-      R.id.exploration_fragment_placeholder
+    return activity.supportFragmentManager.findFragmentByTag(
+      TAG_EXPLORATION_FRAGMENT
     ) as? ExplorationFragment
   }
 

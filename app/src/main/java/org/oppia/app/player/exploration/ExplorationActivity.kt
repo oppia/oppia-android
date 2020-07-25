@@ -111,7 +111,7 @@ class ExplorationActivity :
   }
 
   override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-    menuInflater.inflate(R.menu.menu_exploration_activity, menu)
+    menuInflater.inflate(R.menu.menu_reading_options, menu)
     return super.onCreateOptionsMenu(menu)
   }
 
