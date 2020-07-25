@@ -20,7 +20,7 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("Continue")
   fun provideContinueInteractionViewModelFactory(fragment: Fragment): InteractionViewModelFactory {
-    return { _, _, interactionAnswerReceiver, _, hasPreviousButton ->
+    return { _, _, _,interactionAnswerReceiver, _, hasPreviousButton ->
       ContinueInteractionViewModel(
         interactionAnswerReceiver, hasPreviousButton, fragment as PreviousNavigationButtonListener
       )
@@ -31,9 +31,9 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("MultipleChoiceInput")
   fun provideMultipleChoiceInputViewModelFactory(): InteractionViewModelFactory {
-    return { entityId, interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver, _ ->
+    return { entityId, hasConversationView, interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver, _ ->
       SelectionInteractionViewModel(
-        entityId, interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver
+        entityId, hasConversationView , interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver
       )
     }
   }
@@ -42,9 +42,9 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("ItemSelectionInput")
   fun provideItemSelectionInputViewModelFactory(): InteractionViewModelFactory {
-    return { entityId, interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver, _ ->
+    return { entityId, hasConversationView, interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver, _ ->
       SelectionInteractionViewModel(
-        entityId, interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver
+        entityId, hasConversationView, interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver
       )
     }
   }
@@ -53,7 +53,7 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("FractionInput")
   fun provideFractionInputViewModelFactory(context: Context): InteractionViewModelFactory {
-    return { _, interaction, _, interactionAnswerErrorReceiver, _ ->
+    return { _, _, interaction, _, interactionAnswerErrorReceiver, _ ->
       FractionInteractionViewModel(interaction, context, interactionAnswerErrorReceiver)
     }
   }
@@ -62,7 +62,7 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("NumericInput")
   fun provideNumericInputViewModelFactory(context: Context): InteractionViewModelFactory {
-    return { _, _, _, interactionAnswerErrorReceiver, _ ->
+    return { _, _,  _, _, interactionAnswerErrorReceiver, _ ->
       NumericInputViewModel(context, interactionAnswerErrorReceiver)
     }
   }
@@ -71,7 +71,7 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("TextInput")
   fun provideTextInputViewModelFactory(): InteractionViewModelFactory {
-    return { _, interaction, _, interactionAnswerErrorReceiver, _ ->
+    return { _, _, interaction, _, interactionAnswerErrorReceiver, _ ->
       TextInputViewModel(
         interaction, interactionAnswerErrorReceiver
       )
@@ -82,7 +82,7 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("DragAndDropSortInput")
   fun provideDragAndDropSortInputViewModelFactory(): InteractionViewModelFactory {
-    return { entityId, interaction, _, interactionAnswerErrorReceiver, _ ->
+    return { entityId, _, interaction, _, interactionAnswerErrorReceiver, _ ->
       DragAndDropSortInteractionViewModel(
         entityId, interaction, interactionAnswerErrorReceiver
       )
