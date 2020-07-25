@@ -62,6 +62,10 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
 
   private lateinit var entityId: String
 
+  /**
+   * Setter for image url which is called via data-binding.
+   * This method is also responsible for triggering actual image to be loaded into view.
+   */
   fun setUrlString(urlString: String) {
     this.urlString = urlString
     loadImage()
@@ -84,7 +88,7 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
 
   fun setClickableAreas(clickableAreas: List<ImageWithRegions.LabeledRegion>) {
     this.clickableAreas = clickableAreas
-    // Remove selected view in case of wrong answer
+    // Resenting the backgrounds in case of wrong answer
     val parentView = this.parent as FrameLayout
     if (parentView.childCount > 2) {
       parentView.forEachIndexed { index: Int, childView: View ->

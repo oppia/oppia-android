@@ -10,5 +10,5 @@ sealed class RegionClickedEvent
  */
 data class NamedRegionClickedEvent(val regionLabel: String) : RegionClickedEvent()
 
-/** object to be used in case when [OnClickableAreaClickedListener] is called with an unspecified region. */
+/** class to be used in case when [OnClickableAreaClickedListener] is called with an unspecified region. */
 class DefaultRegionClickedEvent : RegionClickedEvent()

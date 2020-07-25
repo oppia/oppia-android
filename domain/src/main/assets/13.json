@@ -278,8 +278,7 @@
                         ]
                       ]
                     },
-                    "label": "1",
-                    "regionDescription": "A small metallic planet closest to the sun."
+                    "label": "1"
                   },
                   {
                     "region": {
@@ -295,8 +294,7 @@
                         ]
                       ]
                     },
-                    "label": "2",
-                    "regionDescription": "The brightest planet in the Solar System."
+                    "label": "2"
                   },
                   {
                     "region": {
@@ -312,8 +310,7 @@
                         ]
                       ]
                     },
-                    "label": "3",
-                    "regionDescription": "Our home planet."
+                    "label": "3"
                   },
                   {
                     "region": {
@@ -329,8 +326,7 @@
                         ]
                       ]
                     },
-                    "label": "4",
-                    "regionDescription": "It is the fourth planet from the sun."
+                    "label": "4"
                   },
                   {
                     "region": {
@@ -346,8 +342,7 @@
                         ]
                       ]
                     },
-                    "label": "5",
-                    "regionDescription": "It is mostly formed out of thick gases around a solid core."
+                    "label": "5"
                   },
                   {
                     "region": {
@@ -363,8 +358,7 @@
                         ]
                       ]
                     },
-                    "label": "6",
-                    "regionDescription": "It is most well known for its beautiful rings."
+                    "label": "6"
                   },
                   {
                     "region": {
@@ -380,8 +374,7 @@
                         ]
                       ]
                     },
-                    "label": "7",
-                    "regionDescription": "It was the first planet that was discovered using a telescope."
+                    "label": "7"
                   },
                   {
                     "region": {
@@ -397,8 +390,7 @@
                         ]
                       ]
                     },
-                    "label": "8",
-                    "regionDescription": "It was first predicted to exist from gravitational calculations."
+                    "label": "8"
                   },
                   {
                     "region": {
@@ -414,8 +406,7 @@
                         ]
                       ]
                     },
-                    "label": "9",
-                    "regionDescription": "It is even smaller than our moon."
+                    "label": "9"
                   }
                 ],
                 "imagePath": "Screen Shot 2015-02-18 at 3.51.49 AM_height_400_width_816.png"

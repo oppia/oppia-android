@@ -17,13 +17,13 @@ import org.oppia.app.utility.RegionClickedEvent
 /** [StateItemViewModel] for image region selection. */
 class ImageRegionSelectionInteractionViewModel(
   val entityId: String,
+  val hasConversationView: Boolean,
   interaction: Interaction,
-  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver // ktlint-disable max-line-length
+  private val errorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver
 ) : StateItemViewModel(ViewType.IMAGE_REGION_SELECTION_INTERACTION),
   InteractionAnswerHandler,
   OnClickableAreaClickedListener {
   var answerText: CharSequence = ""
-  val isDefaultRegionEnabled = ObservableField<Boolean>(false)
   val selectableRegions: List<ImageWithRegions.LabeledRegion> by lazy {
     interaction.customizationArgsMap["imageAndRegions"]?.imageWithRegions?.labelRegionsList
       ?: listOf()
@@ -31,19 +31,15 @@ class ImageRegionSelectionInteractionViewModel(
   val imagePath: String by lazy {
     interaction.customizationArgsMap["imageAndRegions"]?.imageWithRegions?.imagePath ?: ""
   }
-
-  val defaultRegion: String by lazy {
-    interaction.customizationArgsMap["defaultRegion"]?.normalizedString ?: ""
-  }
-  var isAnswerAvailable = ObservableField<Boolean>(false)
+  val isAnswerAvailable = ObservableField<Boolean>(false)
 
   init {
     val callback: Observable.OnPropertyChangedCallback =
       object : Observable.OnPropertyChangedCallback() {
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
-          interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
-            /* pendingAnswerError= */null,
-            /* inputAnswerAvailable= */answerText.isNotEmpty()
+          errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
+            pendingAnswerError = null,
+            inputAnswerAvailable = answerText.isNotEmpty()
           )
         }
       }
@@ -54,11 +50,9 @@ class ImageRegionSelectionInteractionViewModel(
     when (region) {
       is DefaultRegionClickedEvent -> {
         answerText = ""
-        isDefaultRegionEnabled.set(true)
         isAnswerAvailable.set(false)
       }
       is NamedRegionClickedEvent -> {
-        isDefaultRegionEnabled.set(false)
         answerText = region.regionLabel
         isAnswerAvailable.set(true)
       }
@@ -70,7 +64,7 @@ class ImageRegionSelectionInteractionViewModel(
     val answerTextString = answerText.toString()
     userAnswerBuilder.answer =
       InteractionObject.newBuilder().setClickOnImage(parseClickOnImage(answerTextString)).build()
-    userAnswerBuilder.plainAnswer = "Clicks on $answerTextString"
+    userAnswerBuilder.plainAnswer = answerTextString
     return userAnswerBuilder.build()
   }
 

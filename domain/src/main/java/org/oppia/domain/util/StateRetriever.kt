@@ -9,6 +9,7 @@ import org.oppia.app.model.Hint
 import org.oppia.app.model.ImageWithRegions
 import org.oppia.app.model.ImageWithRegions.LabeledRegion
 import org.oppia.app.model.ImageWithRegions.LabeledRegion.Region.NormalizedRectangle2d
+import org.oppia.app.model.ImageWithRegions.LabeledRegion.Region.RegionType
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.ListOfSetsOfHtmlStrings
@@ -497,42 +498,42 @@ class StateRetriever @Inject constructor(
   }
 
   private fun parseJsonToLabeledRegionsList(jsonArray: JSONArray): List<LabeledRegion> {
-    val list: MutableList<LabeledRegion> = ArrayList()
+    val regionList = mutableListOf<LabeledRegion>()
     for (i in 0 until jsonArray.length()) {
-      list.add(parseLabeledRegion(jsonArray.getJSONObject(i)))
+      regionList.add(parseLabeledRegion(jsonArray.getJSONObject(i)))
     }
-    return list
+    return regionList
   }
 
   private fun parseLabeledRegion(jsonObject: JSONObject): LabeledRegion {
     return LabeledRegion.newBuilder()
       .setLabel(jsonObject.getString("label"))
       .setRegion(parseRegion(jsonObject.getJSONObject("region")))
-      .setRegionDescription(jsonObject.getString("regionDescription"))
       .build()
   }
 
   private fun parseRegion(jsonObject: JSONObject): LabeledRegion.Region {
-    val regionType =
-      if (jsonObject.get("regionType") == LabeledRegion.Region.RegionType.RECTANGLE.name) {
-        LabeledRegion.Region.RegionType.RECTANGLE
-      } else {
-        LabeledRegion.Region.RegionType.UNRECOGNIZED
-      }
     return LabeledRegion.Region.newBuilder()
-      .setRegionType(regionType)
+      .setRegionType(parseRegionType(jsonObject.get("regionType")))
       .setArea(parseNormalizedRectangle2d(jsonObject.getJSONArray("area")))
       .build()
   }
 
+  private fun parseRegionType(regionTypeStr: Any): RegionType {
+    return when (regionTypeStr) {
+      RegionType.RECTANGLE.name -> RegionType.RECTANGLE
+      else -> RegionType.UNRECOGNIZED
+    }
+  }
+
   private fun parseNormalizedRectangle2d(jsonArray: JSONArray): NormalizedRectangle2d {
     return NormalizedRectangle2d.newBuilder()
-      .setUpperLeft(parsePoint2D(jsonArray.getJSONArray(0)))
-      .setLowerRight(parsePoint2D(jsonArray.getJSONArray(1)))
+      .setUpperLeft(parsePoint2d(jsonArray.getJSONArray(0)))
+      .setLowerRight(parsePoint2d(jsonArray.getJSONArray(1)))
       .build()
   }
 
-  private fun parsePoint2D(points: JSONArray): Point2d {
+  private fun parsePoint2d(points: JSONArray): Point2d {
     return Point2d.newBuilder()
       .setX(points.getDouble(0).toFloat())
       .setY(points.getDouble(1).toFloat())
