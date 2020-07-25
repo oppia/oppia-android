@@ -75,7 +75,6 @@ import org.oppia.app.player.state.listener.ReturnToTopicNavigationButtonListener
 import org.oppia.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.app.player.state.listener.SubmitNavigationButtonListener
 import org.oppia.app.recyclerview.BindableAdapter
-import org.oppia.app.topic.questionplayer.QuestionPlayerFragment
 import org.oppia.app.utility.LifecycleSafeTimerFactory
 import org.oppia.util.parser.HtmlParser
 import org.oppia.util.threading.BackgroundDispatcher
@@ -464,7 +463,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     userAnswer: UserAnswer,
     gcsEntityId: String
   ): SubmittedAnswerViewModel {
-    val submittedAnswerViewModel = SubmittedAnswerViewModel(userAnswer, gcsEntityId, hasConversationView)
+    val submittedAnswerViewModel =
+      SubmittedAnswerViewModel(userAnswer, gcsEntityId, hasConversationView)
     submittedAnswerViewModel.isCorrectAnswer.set(isCorrectAnswer.get())
     return submittedAnswerViewModel
   }
