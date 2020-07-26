@@ -33,11 +33,14 @@
   <dimen name="margin_208">208dp</dimen>
   <dimen name="margin_176">176dp</dimen>
   <dimen name="margin_170">170dp</dimen>
+  <dimen name="margin_144">144dp</dimen>
   <dimen name="margin_124">124dp</dimen>
   <dimen name="margin_120">120dp</dimen>
+  <dimen name="margin_112">112dp</dimen>
   <dimen name="margin_84">84dp</dimen>
   <dimen name="margin_72">72dp</dimen>
   <dimen name="margin_68">68dp</dimen>
+  <dimen name="margin_64">64dp</dimen>
   <dimen name="margin_48">48dp</dimen>
   <dimen name="margin_44">44dp</dimen>
   <dimen name="margin_40">40dp</dimen>
