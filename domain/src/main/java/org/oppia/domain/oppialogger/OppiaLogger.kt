@@ -5,10 +5,7 @@ import org.oppia.app.model.EventLog.EventAction
 import org.oppia.domain.oppialogger.analytics.AnalyticsController
 import javax.inject.Inject
 
-/** Logger that handles event logging.
- * All classes that want to log should use this logger and not the underlying
- * loggers that OppiaLogger uses.
- */
+/** Logger that handles event logging. */
 class OppiaLogger @Inject constructor(
   private val analyticsController: AnalyticsController
 ) {
