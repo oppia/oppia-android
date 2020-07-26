@@ -4,6 +4,6 @@ package org.oppia.app.player.state.itemviewmodel
 class ContentViewModel(
   val htmlContent: CharSequence,
   val gcsEntityId: String,
-  val hasConversationView: Boolean,
+  val isConversationView: Boolean,
   val isSplitView: Boolean
 ) : StateItemViewModel(ViewType.CONTENT)
