@@ -15,5 +15,6 @@ typealias InteractionViewModelFactory = (
   interaction: Interaction,
   interactionAnswerReceiver: InteractionAnswerReceiver,
   interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
-  hasPreviousButton: Boolean
+  hasPreviousButton: Boolean,
+  isSplitView: Boolean
 ) -> StateItemViewModel

@@ -1,0 +1,40 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="htmlContent"
+      type="CharSequence" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.player.state.itemviewmodel.ContentViewModel" />
+  </data>
+
+  <FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="24dp"
+    android:layout_marginBottom="24dp"
+    android:background="@{viewModel.hasConversationView ? @drawable/content_blue_background : @drawable/transparent_background}"
+    app:layoutMarginEnd="@{viewModel.hasConversationView ? @dimen/margin_40 : @dimen/margin_24}">
+
+    <TextView
+      android:id="@+id/content_text_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="12dp"
+      android:layout_marginBottom="12dp"
+      android:breakStrategy="simple"
+      android:fontFamily="sans-serif"
+      android:text="@{htmlContent}"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textSize="16sp"
+      android:visibility="@{htmlContent.length() > 0 ? View.VISIBLE : View.GONE, default=gone}"
+      app:layoutMarginEnd="@{viewModel.hasConversationView ? @dimen/padding_8 : @dimen/padding_0}"
+      app:layoutMarginStart="@{viewModel.hasConversationView ? @dimen/padding_8 : @dimen/padding_0}" />
+  </FrameLayout>
+</layout>

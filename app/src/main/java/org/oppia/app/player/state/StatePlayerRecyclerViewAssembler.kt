@@ -179,7 +179,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val conversationPendingItemList = mutableListOf<StateItemViewModel>()
     val extraInteractionPendingItemList = mutableListOf<StateItemViewModel>()
     if (playerFeatureSet.contentSupport) {
-      addContentItem(conversationPendingItemList, ephemeralState, gcsEntityId)
+      addContentItem(conversationPendingItemList, ephemeralState, gcsEntityId, isSplitView)
     }
     val interaction = ephemeralState.state.interaction
 
@@ -202,7 +202,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
           interactionItemList,
           interaction,
           hasPreviousState,
-          gcsEntityId
+          gcsEntityId,
+          isSplitView
         )
       }
     } else if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE) {
@@ -261,7 +262,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     pendingItemList: MutableList<StateItemViewModel>,
     interaction: Interaction,
     hasPreviousButton: Boolean,
-    gcsEntityId: String
+    gcsEntityId: String,
+    isSplitView: Boolean
   ) {
     val interactionViewModelFactory = interactionViewModelFactoryMap.getValue(interaction.id)
     pendingItemList += interactionViewModelFactory(
@@ -270,21 +272,23 @@ class StatePlayerRecyclerViewAssembler private constructor(
       interaction,
       fragment as InteractionAnswerReceiver,
       fragment as InteractionAnswerErrorOrAvailabilityCheckReceiver,
-      hasPreviousButton
+      hasPreviousButton,
+      isSplitView
     )
   }
 
   private fun addContentItem(
     pendingItemList: MutableList<StateItemViewModel>,
     ephemeralState: EphemeralState,
-    gcsEntityId: String
+    gcsEntityId: String,
+    isSplitView: Boolean
   ) {
     val contentSubtitledHtml: SubtitledHtml = ephemeralState.state.content
     pendingItemList += ContentViewModel(
       contentSubtitledHtml.html,
       gcsEntityId,
       hasConversationView,
-      isSplitView.get()!!
+      isSplitView
     )
   }
 
@@ -302,7 +306,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
           answersAndResponses.size - 1,
           hasConversationView,
           ObservableBoolean(hasPreviousResponsesExpanded),
-          fragment as PreviousResponsesHeaderClickListener
+          fragment as PreviousResponsesHeaderClickListener,
+          isSplitView
         ).let { viewModel ->
           pendingItemList += viewModel
           previousAnswerViewModels += viewModel
@@ -313,7 +318,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
         hasPreviousResponsesExpanded
       for (answerAndResponse in answersAndResponses.take(answersAndResponses.size - 1)) {
         if (playerFeatureSet.pastAnswerSupport) {
-          createSubmittedAnswer(answerAndResponse.userAnswer, gcsEntityId).let { viewModel ->
+          createSubmittedAnswer(
+            answerAndResponse.userAnswer,
+            gcsEntityId,
+            isSplitView
+          ).let { viewModel ->
             if (showPreviousAnswers) {
               pendingItemList += viewModel
             }
@@ -321,7 +330,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
           }
         }
         if (playerFeatureSet.feedbackSupport) {
-          createFeedbackItem(answerAndResponse.feedback, gcsEntityId)?.let { viewModel ->
+          createFeedbackItem(
+            answerAndResponse.feedback,
+            gcsEntityId,
+            isSplitView
+          )?.let { viewModel ->
             if (showPreviousAnswers) {
               pendingItemList += viewModel
             }
@@ -333,13 +346,23 @@ class StatePlayerRecyclerViewAssembler private constructor(
     answersAndResponses.lastOrNull()?.let { answerAndResponse ->
       if (playerFeatureSet.pastAnswerSupport) {
         if (isCorrectAnswer && isSplitView) {
-          rightPendingItemList += createSubmittedAnswer(answerAndResponse.userAnswer, gcsEntityId)
+          rightPendingItemList += createSubmittedAnswer(
+            answerAndResponse.userAnswer,
+            gcsEntityId,
+            isSplitView
+          )
         } else {
-          pendingItemList += createSubmittedAnswer(answerAndResponse.userAnswer, gcsEntityId)
+          pendingItemList += createSubmittedAnswer(
+            answerAndResponse.userAnswer,
+            gcsEntityId,
+            isSplitView
+          )
         }
       }
       if (playerFeatureSet.feedbackSupport) {
-        createFeedbackItem(answerAndResponse.feedback, gcsEntityId)?.let(pendingItemList::add)
+        createFeedbackItem(answerAndResponse.feedback, gcsEntityId, isSplitView)?.let(
+          pendingItemList::add
+        )
       }
     }
   }
@@ -465,18 +488,23 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
   private fun createSubmittedAnswer(
     userAnswer: UserAnswer,
-    gcsEntityId: String
+    gcsEntityId: String,
+    isSplitView: Boolean
   ): SubmittedAnswerViewModel {
     val submittedAnswerViewModel =
-      SubmittedAnswerViewModel(userAnswer, gcsEntityId, hasConversationView)
+      SubmittedAnswerViewModel(userAnswer, gcsEntityId, hasConversationView, isSplitView)
     submittedAnswerViewModel.isCorrectAnswer.set(isCorrectAnswer.get())
     return submittedAnswerViewModel
   }
 
-  private fun createFeedbackItem(feedback: SubtitledHtml, gcsEntityId: String): FeedbackViewModel? {
+  private fun createFeedbackItem(
+    feedback: SubtitledHtml,
+    gcsEntityId: String,
+    isSplitView: Boolean
+  ): FeedbackViewModel? {
     // Only show feedback if there's some to show.
     if (feedback.html.isNotEmpty()) {
-      return FeedbackViewModel(feedback.html, gcsEntityId, hasConversationView)
+      return FeedbackViewModel(feedback.html, gcsEntityId, hasConversationView, isSplitView)
     }
     return null
   }
@@ -533,7 +561,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       // Otherwise, just show the previous button since the interaction itself will push the answer
       // submission.
       !isMostRecentInteractionAutoNavigating(conversationPendingItemList) -> {
-        addPreviousButtonNavigation(hasPreviousButton, conversationPendingItemList)
+        addPreviousButtonNavigation(hasPreviousButton, conversationPendingItemList, shouldSplit)
       }
       // Otherwise, there's no navigation button that should be shown since the current interaction
       // handles this or navigation in this context is disabled.
@@ -558,11 +586,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
       hasConversationView,
       hasPrevious,
       previousNavigationButtonListener,
-      fragment as SubmitNavigationButtonListener
+      fragment as SubmitNavigationButtonListener,
+      shouldSplit
     )
     if (shouldSplit) {
       // "previous button" should appear in the conversation recycler view only
-      addPreviousButtonNavigation(hasPreviousButton, conversationPendingItemList)
+      addPreviousButtonNavigation(hasPreviousButton, conversationPendingItemList, shouldSplit)
     }
   }
 
@@ -579,11 +608,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
       hasPrevious,
       hasConversationView,
       previousNavigationButtonListener,
-      fragment as ReturnToTopicNavigationButtonListener
+      fragment as ReturnToTopicNavigationButtonListener,
+      shouldSplit
     )
     if (shouldSplit) {
       // "previous button" should appear in the conversation recycler view only
-      addPreviousButtonNavigation(hasPreviousButton, conversationPendingItemList)
+      addPreviousButtonNavigation(hasPreviousButton, conversationPendingItemList, shouldSplit)
     }
   }
 
@@ -594,7 +624,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
   ) {
     val targetList =
       if (shouldSplit) extraInteractionPendingItemList else conversationPendingItemList
-    targetList += ReplayButtonViewModel(hasConversationView, fragment as ReplayButtonListener)
+    targetList +=
+      ReplayButtonViewModel(hasConversationView, fragment as ReplayButtonListener, shouldSplit)
   }
 
   private fun addNextButtonNavigation(
@@ -610,11 +641,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
       hasPrevious,
       hasConversationView,
       previousNavigationButtonListener,
-      fragment as NextNavigationButtonListener
+      fragment as NextNavigationButtonListener,
+      shouldSplit
     )
     if (shouldSplit) {
       // "previous button" should appear in the conversation recycler view only
-      addPreviousButtonNavigation(hasPreviousButton, conversationPendingItemList)
+      addPreviousButtonNavigation(hasPreviousButton, conversationPendingItemList, shouldSplit)
     }
   }
 
@@ -631,22 +663,25 @@ class StatePlayerRecyclerViewAssembler private constructor(
       hasPrevious,
       hasConversationView,
       previousNavigationButtonListener,
-      fragment as ContinueNavigationButtonListener
+      fragment as ContinueNavigationButtonListener,
+      shouldSplit
     )
     if (shouldSplit) {
       // "previous button" should appear in the conversation recycler view only
-      addPreviousButtonNavigation(hasPreviousButton, conversationPendingItemList)
+      addPreviousButtonNavigation(hasPreviousButton, conversationPendingItemList, shouldSplit)
     }
   }
 
   private fun addPreviousButtonNavigation(
     hasPreviousButton: Boolean,
-    itemList: MutableList<StateItemViewModel>
+    itemList: MutableList<StateItemViewModel>,
+    isSplitView: Boolean
   ) {
     if (hasPreviousButton) {
       itemList += PreviousButtonViewModel(
         hasConversationView,
-        previousNavigationButtonListener
+        previousNavigationButtonListener,
+        isSplitView
       )
     }
   }
