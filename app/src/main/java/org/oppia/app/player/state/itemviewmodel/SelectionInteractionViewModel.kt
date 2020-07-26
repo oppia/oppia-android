@@ -19,7 +19,8 @@ class SelectionInteractionViewModel(
   val hasConversationView: Boolean,
   interaction: Interaction,
   private val interactionAnswerReceiver: InteractionAnswerReceiver,
-  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver // ktlint-disable max-line-length
+  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
+  val isSplitView: Boolean
 ) : StateItemViewModel(ViewType.SELECTION_INTERACTION), InteractionAnswerHandler {
   private val interactionId: String = interaction.id
 
