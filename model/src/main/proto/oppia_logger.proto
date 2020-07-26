@@ -135,7 +135,7 @@ message ExceptionLog {
 
   enum ExceptionType {
     // The undefined exception type.
-    CRASH_TYPE_UNSPECIFIED = 0;
+    EXCEPTION_TYPE_UNSPECIFIED = 0;
     // Indicates an exception that caused the application to close.
     FATAL = 1;
     // Indicates an exception that was not fatal to the application and could be recovered from.

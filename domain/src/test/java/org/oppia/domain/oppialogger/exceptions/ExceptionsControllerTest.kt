@@ -24,6 +24,7 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.app.model.ExceptionLog
+import org.oppia.app.model.ExceptionLog.ExceptionType
 import org.oppia.app.model.OppiaExceptionLogs
 import org.oppia.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.testing.FakeExceptionLogger
@@ -119,7 +120,7 @@ class ExceptionsControllerTest {
     assertThat(exception.stackTrace).isEqualTo(exceptionThrown.stackTrace)
     assertThat(exception.cause?.message).isEqualTo(exceptionThrown.cause?.message)
     assertThat(exception.cause?.stackTrace).isEqualTo(exceptionThrown.cause?.stackTrace)
-    assertThat(exceptionLog.exceptionType).isEqualTo(ExceptionLog.ExceptionType.NON_FATAL)
+    assertThat(exceptionLog.exceptionType).isEqualTo(ExceptionType.NON_FATAL)
   }
 
   @ExperimentalCoroutinesApi
@@ -143,7 +144,7 @@ class ExceptionsControllerTest {
     assertThat(exception.stackTrace).isEqualTo(exceptionThrown.stackTrace)
     assertThat(exception.cause?.message).isEqualTo(exceptionThrown.cause?.message)
     assertThat(exception.cause?.stackTrace).isEqualTo(exceptionThrown.cause?.stackTrace)
-    assertThat(exceptionLog.exceptionType).isEqualTo(ExceptionLog.ExceptionType.FATAL)
+    assertThat(exceptionLog.exceptionType).isEqualTo(ExceptionType.FATAL)
   }
 
   @ExperimentalCoroutinesApi
@@ -170,8 +171,8 @@ class ExceptionsControllerTest {
 
     assertThat(cacheStoreSize).isEqualTo(2)
     // In this case, 3 FATAL and 1 NON-FATAL exception was logged. So while pruning, none of the retained logs should have NON-FATAL exception type.
-    assertThat(exceptionOne.exceptionType).isNotEqualTo(ExceptionLog.ExceptionType.NON_FATAL)
-    assertThat(exceptionTwo.exceptionType).isNotEqualTo(ExceptionLog.ExceptionType.NON_FATAL)
+    assertThat(exceptionOne.exceptionType).isNotEqualTo(ExceptionType.NON_FATAL)
+    assertThat(exceptionTwo.exceptionType).isNotEqualTo(ExceptionType.NON_FATAL)
     // If we analyse the order of logging of exceptions, we can see that record pruning will begin from the logging of the third record.
     // At first, the second exception log will be removed as it has NON-FATAL exception type and the exception logged at the third place will become the exception record at the second place in the store.
     // When the forth exception gets logged then the pruning will be purely based on timestamp of the exception as both exception logs have FATAL exception type.
@@ -226,7 +227,7 @@ class ExceptionsControllerTest {
     assertThat(exception.stackTrace).isEqualTo(exceptionThrown.stackTrace)
     assertThat(exception.cause?.message).isEqualTo(exceptionThrown.cause?.message)
     assertThat(exception.cause?.stackTrace).isEqualTo(exceptionThrown.cause?.stackTrace)
-    assertThat(exceptionFromCacheStorage.exceptionType).isEqualTo(ExceptionLog.ExceptionType.FATAL)
+    assertThat(exceptionFromCacheStorage.exceptionType).isEqualTo(ExceptionType.FATAL)
   }
 
   @ExperimentalCoroutinesApi
@@ -246,8 +247,8 @@ class ExceptionsControllerTest {
       .onChanged(oppiaExceptionLogsResultCaptor.capture())
     val exceptionOne = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
     val exceptionTwo = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(1)
-    assertThat(exceptionOne.exceptionType).isEqualTo(ExceptionLog.ExceptionType.NON_FATAL)
-    assertThat(exceptionTwo.exceptionType).isEqualTo(ExceptionLog.ExceptionType.FATAL)
+    assertThat(exceptionOne.exceptionType).isEqualTo(ExceptionType.NON_FATAL)
+    assertThat(exceptionTwo.exceptionType).isEqualTo(ExceptionType.FATAL)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -334,7 +335,6 @@ class ExceptionsControllerTest {
     modules = [
       TestModule::class, TestLogReportingModule::class,
       TestDispatcherModule::class, TestLogStorageModule::class
-
     ]
   )
   interface TestApplicationComponent {

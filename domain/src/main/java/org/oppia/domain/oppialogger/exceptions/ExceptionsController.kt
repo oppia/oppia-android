@@ -12,6 +12,8 @@ import org.oppia.util.logging.ExceptionLogger
 import org.oppia.util.networking.NetworkConnectionUtil
 import javax.inject.Inject
 
+const val EXCEPTIONS_CONTROLLER = "Exceptions Controller"
+
 /** Controller for handling exception logging. */
 class ExceptionsController @Inject constructor(
   private val exceptionLogger: ExceptionLogger,
@@ -115,7 +117,7 @@ class ExceptionsController @Inject constructor(
     }.invokeOnCompletion {
       it?.let {
         consoleLogger.e(
-          "Exceptions Controller",
+          EXCEPTIONS_CONTROLLER,
           "Failed to store exception log",
           it
         )
