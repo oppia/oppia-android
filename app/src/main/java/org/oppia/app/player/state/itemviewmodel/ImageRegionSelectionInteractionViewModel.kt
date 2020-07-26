@@ -79,7 +79,7 @@ class ImageRegionSelectionInteractionViewModel(
   private fun parseClickOnImage(answerTextString: String): ClickOnImage {
     val region = selectableRegions.find { it.label == answerTextString }
     return ClickOnImage.newBuilder()
-      //The object supports multiple regions in an answer, but neither web nor Android supports this.
+      // The object supports multiple regions in an answer, but neither web nor Android supports this.
       .addClickedRegions(region?.label ?: "")
       .build()
   }
