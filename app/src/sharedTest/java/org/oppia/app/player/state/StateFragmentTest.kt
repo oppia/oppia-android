@@ -472,7 +472,7 @@ class StateFragmentTest {
           WithNonZeroDimensionsMatcher()
         )
       )
-      onView(withId(R.id.state_recycler_view)).perform(scrollToSubmit())
+      scrollToSubmit()
       onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
     }
   }
@@ -492,7 +492,7 @@ class StateFragmentTest {
       onView(withId(R.id.image_click_interaction_image_view)).perform(
         clickPoint(0.1f, 0.5f)
       )
-      onView(withId(R.id.state_recycler_view)).perform(scrollToSubmit())
+      scrollToSubmit()
       onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
     }
   }
@@ -512,7 +512,7 @@ class StateFragmentTest {
       onView(withId(R.id.image_click_interaction_image_view)).perform(
         clickPoint(0.5f, 0.5f)
       )
-      onView(withId(R.id.state_recycler_view)).perform(scrollToSubmit())
+      scrollToSubmit()
       onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
     }
   }
@@ -532,9 +532,9 @@ class StateFragmentTest {
       onView(withId(R.id.image_click_interaction_image_view)).perform(
         clickPoint(0.5f, 0.5f)
       )
-      onView(withId(R.id.state_recycler_view)).perform(scrollToSubmit())
+      scrollToSubmit()
       onView(withId(R.id.submit_answer_button)).perform(click())
-      onView(withId(R.id.state_recycler_view)).perform(scrollToFeedback())
+      scrollToFeedback()
       onView(withId(R.id.feedback_text_view)).check(
         matches(
           withText(containsString("Saturn"))
@@ -558,9 +558,9 @@ class StateFragmentTest {
       onView(withId(R.id.image_click_interaction_image_view)).perform(
         clickPoint(0.5f, 0.5f)
       )
-      onView(withId(R.id.state_recycler_view)).perform(scrollToSubmit())
+      scrollToSubmit()
       onView(withId(R.id.submit_answer_button)).perform(click())
-      onView(withId(R.id.state_recycler_view)).perform(scrollToAnswer())
+      scrollToAnswer()
       onView(withId(R.id.submitted_answer_text_view)).check(
         matches(
           withText("Clicks on Saturn")
@@ -584,9 +584,9 @@ class StateFragmentTest {
       onView(withId(R.id.image_click_interaction_image_view)).perform(
         clickPoint(0.5f, 0.5f)
       )
-      onView(withId(R.id.state_recycler_view)).perform(scrollToSubmit())
+      scrollToSubmit()
       onView(withId(R.id.submit_answer_button)).perform(click())
-      onView(withId(R.id.state_recycler_view)).perform(scrollToContinue())
+      scrollToContinue()
       onView(withId(R.id.continue_navigation_button)).check(matches(isDisplayed()))
     }
   }
@@ -610,9 +610,9 @@ class StateFragmentTest {
       onView(withId(R.id.image_click_interaction_image_view)).perform(
         clickPoint(0.2f, 0.5f)
       )
-      onView(withId(R.id.state_recycler_view)).perform(scrollToSubmit())
+      scrollToSubmit()
       onView(withId(R.id.submit_answer_button)).perform(click())
-      onView(withId(R.id.state_recycler_view)).perform(scrollToFeedback())
+      scrollToFeedback()
       onView(withId(R.id.feedback_text_view)).check(
         matches(
           withText(containsString("Jupiter"))
@@ -1134,13 +1134,29 @@ class StateFragmentTest {
     return RecyclerViewActions.scrollToHolder(StateViewHolderTypeMatcher(viewType))
   }
 
-  private fun scrollToSubmit(): ViewAction = scrollToViewType(SUBMIT_ANSWER_BUTTON)
+  private fun scrollToSubmit() {
+    onView(withId(R.id.state_recycler_view)).perform(
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+    )
+  }
 
-  private fun scrollToFeedback(): ViewAction = scrollToViewType(FEEDBACK)
+  private fun scrollToFeedback() {
+    onView(withId(R.id.state_recycler_view)).perform(
+      scrollToViewType(FEEDBACK)
+    )
+  }
 
-  private fun scrollToAnswer(): ViewAction = scrollToViewType(SUBMITTED_ANSWER)
+  private fun scrollToAnswer() {
+    onView(withId(R.id.state_recycler_view)).perform(
+      scrollToViewType(SUBMITTED_ANSWER)
+    )
+  }
 
-  private fun scrollToContinue(): ViewAction = scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
+  private fun scrollToContinue() {
+    onView(withId(R.id.state_recycler_view)).perform(
+      scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
+    )
+  }
 
   /**
    * [BaseMatcher] that matches against the first occurrence of the specified view holder type in

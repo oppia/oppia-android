@@ -34,7 +34,7 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
 ) : AppCompatImageView(context, attrs, defStyleAttr) {
 
   private var isAccessibilityEnabled: Boolean = false
-  private lateinit var urlString: String
+  private lateinit var imageUrl: String
   private var clickableAreas: List<ImageWithRegions.LabeledRegion> = emptyList()
   private lateinit var listener: OnClickableAreaClickedListener
 
@@ -63,17 +63,16 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   private lateinit var entityId: String
 
   /**
-   * Setter for image url which is called via data-binding.
-   * This method is also responsible for triggering actual image to be loaded into view.
+   * Sets the URL for the image & initiates loading it. This is intended to be called via data-binding.
    */
-  fun setUrlString(urlString: String) {
-    this.urlString = urlString
+  fun setImageUrl(imageUrl: String) {
+    this.imageUrl = imageUrl
     loadImage()
   }
 
   /** loads an image using Glide from [urlString]. */
   private fun loadImage() {
-    val imageName = String.format(imageDownloadUrlTemplate, entityType, entityId, urlString)
+    val imageName = String.format(imageDownloadUrlTemplate, entityType, entityId, imageUrl)
     val imageUrl = "$gcsPrefix/$resourceBucketName/$imageName"
     if (imageUrl.endsWith("svg", ignoreCase = true)) {
       imageLoader.loadSvg(imageUrl, ImageViewTarget(this))
@@ -88,7 +87,7 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
 
   fun setClickableAreas(clickableAreas: List<ImageWithRegions.LabeledRegion>) {
     this.clickableAreas = clickableAreas
-    // Resenting the backgrounds in case of wrong answer
+    // Resets the backgrounds for all regions if any have been loaded. This ensures the backgrounds are reset in the case when an incorrect answer is submitted.
     val parentView = this.parent as FrameLayout
     if (parentView.childCount > 2) {
       parentView.forEachIndexed { index: Int, childView: View ->
