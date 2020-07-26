@@ -488,7 +488,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     gcsEntityId: String,
     isSplitView: Boolean
   ): SubmittedAnswerViewModel {
-    val submittedAnswerViewModel = SubmittedAnswerViewModel(userAnswer, gcsEntityId, hasConversationView, isSplitView)
+    val submittedAnswerViewModel =
+      SubmittedAnswerViewModel(userAnswer, gcsEntityId, hasConversationView, isSplitView)
     submittedAnswerViewModel.isCorrectAnswer.set(isCorrectAnswer.get())
     return submittedAnswerViewModel
   }
@@ -620,7 +621,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
   ) {
     val targetList =
       if (shouldSplit) extraInteractionPendingItemList else conversationPendingItemList
-    targetList += ReplayButtonViewModel(hasConversationView, fragment as ReplayButtonListener, shouldSplit)
+    targetList +=
+      ReplayButtonViewModel(hasConversationView, fragment as ReplayButtonListener, shouldSplit)
   }
 
   private fun addNextButtonNavigation(
