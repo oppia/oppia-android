@@ -24,12 +24,13 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("Continue")
   fun provideContinueInteractionViewModelFactory(fragment: Fragment): InteractionViewModelFactory {
-    return { _, hasConversationView, _, interactionAnswerReceiver, _, hasPreviousButton ->
+    return { _, hasConversationView, _, interactionAnswerReceiver, _, hasPreviousButton, isSplitView -> // ktlint-disable max-line-length
       ContinueInteractionViewModel(
         interactionAnswerReceiver,
         hasConversationView,
         hasPreviousButton,
-        fragment as PreviousNavigationButtonListener
+        fragment as PreviousNavigationButtonListener,
+        isSplitView
       )
     }
   }
@@ -38,13 +39,14 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("MultipleChoiceInput")
   fun provideMultipleChoiceInputViewModelFactory(): InteractionViewModelFactory {
-    return { entityId, hasConversationView, interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver, _ -> // ktlint-disable max-line-length
+    return { entityId, hasConversationView, interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver, _, isSplitView -> // ktlint-disable max-line-length
       SelectionInteractionViewModel(
         entityId,
         hasConversationView,
         interaction,
         interactionAnswerReceiver,
-        interactionAnswerErrorReceiver
+        interactionAnswerErrorReceiver,
+        isSplitView
       )
     }
   }
@@ -53,13 +55,14 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("ItemSelectionInput")
   fun provideItemSelectionInputViewModelFactory(): InteractionViewModelFactory {
-    return { entityId, hasConversationView, interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver, _ -> // ktlint-disable max-line-length
+    return { entityId, hasConversationView, interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver, _, isSplitView -> // ktlint-disable max-line-length
       SelectionInteractionViewModel(
         entityId,
         hasConversationView,
         interaction,
         interactionAnswerReceiver,
-        interactionAnswerErrorReceiver
+        interactionAnswerErrorReceiver,
+        isSplitView
       )
     }
   }
@@ -68,11 +71,12 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("FractionInput")
   fun provideFractionInputViewModelFactory(context: Context): InteractionViewModelFactory {
-    return { _, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _ ->
+    return { _, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _, isSplitView -> // ktlint-disable max-line-length
       FractionInteractionViewModel(
         interaction,
         context,
         hasConversationView,
+        isSplitView,
         interactionAnswerErrorReceiver
       )
     }
@@ -82,8 +86,13 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("NumericInput")
   fun provideNumericInputViewModelFactory(context: Context): InteractionViewModelFactory {
-    return { _, hasConversationView, _, _, interactionAnswerErrorReceiver, _ ->
-      NumericInputViewModel(context, hasConversationView, interactionAnswerErrorReceiver)
+    return { _, hasConversationView, _, _, interactionAnswerErrorReceiver, _, isSplitView ->
+      NumericInputViewModel(
+        context,
+        hasConversationView,
+        interactionAnswerErrorReceiver,
+        isSplitView
+      )
     }
   }
 
@@ -91,9 +100,9 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("TextInput")
   fun provideTextInputViewModelFactory(): InteractionViewModelFactory {
-    return { _, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _ ->
+    return { _, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _, isSplitView -> // ktlint-disable max-line-length
       TextInputViewModel(
-        interaction, hasConversationView, interactionAnswerErrorReceiver
+        interaction, hasConversationView, interactionAnswerErrorReceiver, isSplitView
       )
     }
   }
@@ -102,9 +111,9 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("DragAndDropSortInput")
   fun provideDragAndDropSortInputViewModelFactory(): InteractionViewModelFactory {
-    return { entityId, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _ ->
+    return { entityId, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _, isSplitView -> // ktlint-disable max-line-length
       DragAndDropSortInteractionViewModel(
-        entityId, hasConversationView, interaction, interactionAnswerErrorReceiver
+        entityId, hasConversationView, interaction, interactionAnswerErrorReceiver, isSplitView
       )
     }
   }
