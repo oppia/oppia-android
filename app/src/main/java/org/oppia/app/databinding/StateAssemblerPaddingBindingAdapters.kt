@@ -43,7 +43,7 @@ fun setExplorationViewPadding(
   setPaddingIfApplicable(view, isApplicable, paddingStart, paddingTop, paddingEnd, paddingBottom)
 }
 
-/** Used to set a padding for question split-view. */
+/** Used to set a padding for question view. */
 @BindingAdapter(
   "app:questionViewPaddingApplicable",
   "app:questionViewPaddingStart",
@@ -63,7 +63,7 @@ fun setQuestionViewPadding(
   setPaddingIfApplicable(view, isApplicable, paddingStart, paddingTop, paddingEnd, paddingBottom)
 }
 
-/** Used to set a padding for question view. */
+/** Used to set a padding for question split-view. */
 @BindingAdapter(
   "app:questionSplitViewPaddingApplicable",
   "app:questionSplitViewPaddingStart",

@@ -44,7 +44,7 @@ fun setExplorationViewMargin(
   setMarginIfApplicable(view, isApplicable, marginStart, marginTop, marginEnd, marginBottom)
 }
 
-/** Used to set a margin for question split-view. */
+/** Used to set a margin for question view. */
 @BindingAdapter(
   "app:questionViewMarginApplicable",
   "app:questionViewMarginStart",
@@ -64,7 +64,7 @@ fun setQuestionViewMargin(
   setMarginIfApplicable(view, isApplicable, marginStart, marginTop, marginEnd, marginBottom)
 }
 
-/** Used to set a margin for question view. */
+/** Used to set a margin for question split-view. */
 @BindingAdapter(
   "app:questionSplitViewMarginApplicable",
   "app:questionSplitViewMarginStart",
