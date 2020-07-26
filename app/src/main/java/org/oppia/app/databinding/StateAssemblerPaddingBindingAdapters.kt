@@ -3,7 +3,7 @@ package org.oppia.app.databinding
 import android.view.View
 import androidx.databinding.BindingAdapter
 
-/** Used to set a padding for exploration-split view. */
+/** Used to set a padding for exploration split-view. */
 @BindingAdapter(
   "app:explorationSplitViewPaddingApplicable",
   "app:explorationSplitViewPaddingStart",
@@ -20,14 +20,7 @@ fun setExplorationSplitViewPadding(
   paddingEnd: Float,
   paddingBottom: Float
 ) {
-  if (isApplicable) {
-    view.setPadding(
-      paddingStart.toInt(),
-      paddingTop.toInt(),
-      paddingEnd.toInt(),
-      paddingBottom.toInt()
-    )
-  }
+  setPaddingIfApplicable(view, isApplicable, paddingStart, paddingTop, paddingEnd, paddingBottom)
 }
 
 /** Used to set a padding for exploration view. */
@@ -47,17 +40,10 @@ fun setExplorationViewPadding(
   paddingEnd: Float,
   paddingBottom: Float
 ) {
-  if (isApplicable) {
-    view.setPadding(
-      paddingStart.toInt(),
-      paddingTop.toInt(),
-      paddingEnd.toInt(),
-      paddingBottom.toInt()
-    )
-  }
+  setPaddingIfApplicable(view, isApplicable, paddingStart, paddingTop, paddingEnd, paddingBottom)
 }
 
-/** Used to set a padding for question-split view. */
+/** Used to set a padding for question split-view. */
 @BindingAdapter(
   "app:questionViewPaddingApplicable",
   "app:questionViewPaddingStart",
@@ -74,14 +60,7 @@ fun setQuestionViewPadding(
   paddingEnd: Float,
   paddingBottom: Float
 ) {
-  if (isApplicable) {
-    view.setPadding(
-      paddingStart.toInt(),
-      paddingTop.toInt(),
-      paddingEnd.toInt(),
-      paddingBottom.toInt()
-    )
-  }
+  setPaddingIfApplicable(view, isApplicable, paddingStart, paddingTop, paddingEnd, paddingBottom)
 }
 
 /** Used to set a padding for question view. */
@@ -101,6 +80,17 @@ fun setQuestionSplitViewPadding(
   paddingEnd: Float,
   paddingBottom: Float
 ) {
+  setPaddingIfApplicable(view, isApplicable, paddingStart, paddingTop, paddingEnd, paddingBottom)
+}
+
+private fun setPaddingIfApplicable(
+  view: View,
+  isApplicable: Boolean,
+  paddingStart: Float,
+  paddingTop: Float,
+  paddingEnd: Float,
+  paddingBottom: Float
+) {
   if (isApplicable) {
     view.setPadding(
       paddingStart.toInt(),
@@ -108,5 +98,6 @@ fun setQuestionSplitViewPadding(
       paddingEnd.toInt(),
       paddingBottom.toInt()
     )
+    view.requestLayout()
   }
 }

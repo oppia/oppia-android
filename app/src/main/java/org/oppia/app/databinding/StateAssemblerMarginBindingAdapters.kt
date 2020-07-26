@@ -4,7 +4,7 @@ import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.databinding.BindingAdapter
 
-/** Used to set a margin for exploration-split view. */
+/** Used to set a margin for exploration split-view. */
 @BindingAdapter(
   "app:explorationSplitViewMarginApplicable",
   "app:explorationSplitViewMarginStart",
@@ -21,16 +21,7 @@ fun setExplorationSplitViewMargin(
   marginEnd: Float,
   marginBottom: Float
 ) {
-  if (isApplicable && view.layoutParams is MarginLayoutParams) {
-    val params = view.layoutParams as MarginLayoutParams
-    params.setMargins(
-      marginStart.toInt(),
-      marginTop.toInt(),
-      marginEnd.toInt(),
-      marginBottom.toInt()
-    )
-    view.requestLayout()
-  }
+  setMarginIfApplicable(view, isApplicable, marginStart, marginTop, marginEnd, marginBottom)
 }
 
 /** Used to set a margin for exploration view. */
@@ -50,19 +41,10 @@ fun setExplorationViewMargin(
   marginEnd: Float,
   marginBottom: Float
 ) {
-  if (isApplicable && view.layoutParams is MarginLayoutParams) {
-    val params = view.layoutParams as MarginLayoutParams
-    params.setMargins(
-      marginStart.toInt(),
-      marginTop.toInt(),
-      marginEnd.toInt(),
-      marginBottom.toInt()
-    )
-    view.requestLayout()
-  }
+  setMarginIfApplicable(view, isApplicable, marginStart, marginTop, marginEnd, marginBottom)
 }
 
-/** Used to set a margin for question-split view. */
+/** Used to set a margin for question split-view. */
 @BindingAdapter(
   "app:questionViewMarginApplicable",
   "app:questionViewMarginStart",
@@ -79,16 +61,7 @@ fun setQuestionViewMargin(
   marginEnd: Float,
   marginBottom: Float
 ) {
-  if (isApplicable && view.layoutParams is MarginLayoutParams) {
-    val params = view.layoutParams as MarginLayoutParams
-    params.setMargins(
-      marginStart.toInt(),
-      marginTop.toInt(),
-      marginEnd.toInt(),
-      marginBottom.toInt()
-    )
-    view.requestLayout()
-  }
+  setMarginIfApplicable(view, isApplicable, marginStart, marginTop, marginEnd, marginBottom)
 }
 
 /** Used to set a margin for question view. */
@@ -101,6 +74,17 @@ fun setQuestionViewMargin(
   requireAll = false
 )
 fun setQuestionSplitViewMargin(
+  view: View,
+  isApplicable: Boolean,
+  marginStart: Float,
+  marginTop: Float,
+  marginEnd: Float,
+  marginBottom: Float
+) {
+  setMarginIfApplicable(view, isApplicable, marginStart, marginTop, marginEnd, marginBottom)
+}
+
+private fun setMarginIfApplicable(
   view: View,
   isApplicable: Boolean,
   marginStart: Float,
