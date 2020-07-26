@@ -1184,7 +1184,7 @@ class StateFragmentTest {
     }
 
     override fun describeTo(description: Description) {
-      description.appendText("with SizeMatcher: Non Zero Width Height")
+      description.appendText("with non-zero width and height")
     }
   }
 }

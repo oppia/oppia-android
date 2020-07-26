@@ -25,7 +25,8 @@ import javax.inject.Inject
  * A custom [AppCompatImageView] with a list of [LabeledRegion] to work with
  * [ClickableAreasImage].
  *
- * In order to correctly work with this interaction make sure you've called attached an listener using setListener function.
+ * In order to correctly work with this interaction make sure you've called attached an listener
+ * using setListener function.
  */
 class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   context: Context,
@@ -87,7 +88,8 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
 
   fun setClickableAreas(clickableAreas: List<ImageWithRegions.LabeledRegion>) {
     this.clickableAreas = clickableAreas
-    // Resets the backgrounds for all regions if any have been loaded. This ensures the backgrounds are reset in the case when an incorrect answer is submitted.
+    // Resets the backgrounds for all regions if any have been loaded. This ensures the backgrounds
+    // are reset in the case when an incorrect answer is submitted.
     val parentView = this.parent as FrameLayout
     if (parentView.childCount > 2) {
       parentView.forEachIndexed { index: Int, childView: View ->

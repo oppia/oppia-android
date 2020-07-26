@@ -22,7 +22,8 @@ class ImageRegionSelectionInteractionViewModel(
   val hasConversationView: Boolean,
   interaction: Interaction,
   private val errorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
-  val context: Context
+  val context: Context,
+  val isSplitView: Boolean
 ) : StateItemViewModel(ViewType.IMAGE_REGION_SELECTION_INTERACTION),
   InteractionAnswerHandler,
   OnClickableAreaClickedListener {
