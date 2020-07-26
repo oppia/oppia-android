@@ -293,6 +293,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     isCorrectAnswer: Boolean,
     gcsEntityId: String
   ) {
+    this.isCorrectAnswer.set(isCorrectAnswer)
     if (answersAndResponses.size > 1) {
       if (playerFeatureSet.wrongAnswerCollapsing) {
         PreviousResponsesHeaderViewModel(
