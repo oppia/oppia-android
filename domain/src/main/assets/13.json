@@ -56,7 +56,7 @@
                 {
                   "rule_type": "IsInRegion",
                   "inputs": {
-                    "x": "1"
+                    "x": "Mercury"
                   }
                 }
               ]
@@ -79,7 +79,7 @@
                 {
                   "rule_type": "IsInRegion",
                   "inputs": {
-                    "x": "2"
+                    "x": "Venus"
                   }
                 }
               ]
@@ -102,7 +102,7 @@
                 {
                   "rule_type": "IsInRegion",
                   "inputs": {
-                    "x": "3"
+                    "x": "Earth"
                   }
                 }
               ]
@@ -125,7 +125,7 @@
                 {
                   "rule_type": "IsInRegion",
                   "inputs": {
-                    "x": "4"
+                    "x": "Mars"
                   }
                 }
               ]
@@ -148,7 +148,7 @@
                 {
                   "rule_type": "IsInRegion",
                   "inputs": {
-                    "x": "5"
+                    "x": "Jupiter"
                   }
                 }
               ]
@@ -171,7 +171,7 @@
                 {
                   "rule_type": "IsInRegion",
                   "inputs": {
-                    "x": "6"
+                    "x": "Saturn"
                   }
                 }
               ]
@@ -194,7 +194,7 @@
                 {
                   "rule_type": "IsInRegion",
                   "inputs": {
-                    "x": "7"
+                    "x": "Uranus"
                   }
                 }
               ]
@@ -217,7 +217,7 @@
                 {
                   "rule_type": "IsInRegion",
                   "inputs": {
-                    "x": "8"
+                    "x": "Neptune"
                   }
                 }
               ]
@@ -240,7 +240,7 @@
                 {
                   "rule_type": "IsInRegion",
                   "inputs": {
-                    "x": "9"
+                    "x": "Pluto"
                   }
                 }
               ]

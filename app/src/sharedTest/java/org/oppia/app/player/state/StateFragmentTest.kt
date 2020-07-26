@@ -42,10 +42,12 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
 import org.hamcrest.BaseMatcher
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -439,7 +441,12 @@ class StateFragmentTest {
       waitForExplorationToBeLoaded()
       onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
       // TODO(#669): Remove explicit delay - https://github.com/oppia/oppia-android/issues/1523
-      onView(isRoot()).perform(waitFor(5000))
+      waitForTheView(
+        allOf(
+          withId(R.id.image_click_interaction_image_view),
+          WithNonZeroDimensionsMatcher()
+        )
+      )
       onView(withId(R.id.image_click_interaction_image_view)).perform(
         clickPoint(0.5f, 0.5f)
       )
@@ -459,7 +466,12 @@ class StateFragmentTest {
       startPlayingExploration()
       waitForExplorationToBeLoaded()
       // TODO(#669): Remove explicit delay - https://github.com/oppia/oppia-android/issues/1523
-      onView(isRoot()).perform(waitFor(5000))
+      waitForTheView(
+        allOf(
+          withId(R.id.image_click_interaction_image_view),
+          WithNonZeroDimensionsMatcher()
+        )
+      )
       onView(withId(R.id.state_recycler_view)).perform(scrollToSubmit())
       onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
     }
@@ -471,7 +483,12 @@ class StateFragmentTest {
       startPlayingExploration()
       waitForExplorationToBeLoaded()
       // TODO(#669): Remove explicit delay - https://github.com/oppia/oppia-android/issues/1523
-      onView(isRoot()).perform(waitFor(5000))
+      waitForTheView(
+        allOf(
+          withId(R.id.image_click_interaction_image_view),
+          WithNonZeroDimensionsMatcher()
+        )
+      )
       onView(withId(R.id.image_click_interaction_image_view)).perform(
         clickPoint(0.1f, 0.5f)
       )
@@ -486,7 +503,12 @@ class StateFragmentTest {
       startPlayingExploration()
       waitForExplorationToBeLoaded()
       // TODO(#669): Remove explicit delay - https://github.com/oppia/oppia-android/issues/1523
-      onView(isRoot()).perform(waitFor(5000))
+      waitForTheView(
+        allOf(
+          withId(R.id.image_click_interaction_image_view),
+          WithNonZeroDimensionsMatcher()
+        )
+      )
       onView(withId(R.id.image_click_interaction_image_view)).perform(
         clickPoint(0.5f, 0.5f)
       )
@@ -501,7 +523,12 @@ class StateFragmentTest {
       startPlayingExploration()
       waitForExplorationToBeLoaded()
       // TODO(#669): Remove explicit delay - https://github.com/oppia/oppia-android/issues/1523
-      onView(isRoot()).perform(waitFor(5000))
+      waitForTheView(
+        allOf(
+          withId(R.id.image_click_interaction_image_view),
+          WithNonZeroDimensionsMatcher()
+        )
+      )
       onView(withId(R.id.image_click_interaction_image_view)).perform(
         clickPoint(0.5f, 0.5f)
       )
@@ -522,7 +549,12 @@ class StateFragmentTest {
       startPlayingExploration()
       waitForExplorationToBeLoaded()
       // TODO(#669): Remove explicit delay - https://github.com/oppia/oppia-android/issues/1523
-      onView(isRoot()).perform(waitFor(5000))
+      waitForTheView(
+        allOf(
+          withId(R.id.image_click_interaction_image_view),
+          WithNonZeroDimensionsMatcher()
+        )
+      )
       onView(withId(R.id.image_click_interaction_image_view)).perform(
         clickPoint(0.5f, 0.5f)
       )
@@ -543,7 +575,12 @@ class StateFragmentTest {
       startPlayingExploration()
       waitForExplorationToBeLoaded()
       // TODO(#669): Remove explicit delay - https://github.com/oppia/oppia-android/issues/1523
-      onView(isRoot()).perform(waitFor(5000))
+      waitForTheView(
+        allOf(
+          withId(R.id.image_click_interaction_image_view),
+          WithNonZeroDimensionsMatcher()
+        )
+      )
       onView(withId(R.id.image_click_interaction_image_view)).perform(
         clickPoint(0.5f, 0.5f)
       )
@@ -561,7 +598,12 @@ class StateFragmentTest {
       waitForExplorationToBeLoaded()
       onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
       // TODO(#669): Remove explicit delay - https://github.com/oppia/oppia-android/issues/1523
-      onView(isRoot()).perform(waitFor(5000))
+      waitForTheView(
+        allOf(
+          withId(R.id.image_click_interaction_image_view),
+          WithNonZeroDimensionsMatcher()
+        )
+      )
       onView(withId(R.id.image_click_interaction_image_view)).perform(
         clickPoint(0.5f, 0.5f)
       )
@@ -1116,25 +1158,17 @@ class StateFragmentTest {
     }
   }
 
-  /**
-   * Perform action of waiting for a specific time.
-   */
-  private fun waitFor(millis: Long): ViewAction? {
-    return object : ViewAction {
-      override fun getConstraints(): Matcher<View> {
-        return isRoot()
-      }
+  /*** Returns a matcher that matches view based on non-zero width and height.*/
+  private class WithNonZeroDimensionsMatcher : TypeSafeMatcher<View>() {
 
-      override fun getDescription(): String {
-        return "Wait for $millis milliseconds."
-      }
+    override fun matchesSafely(target: View): Boolean {
+      val targetWidth = target.width
+      val targetHeight = target.height
+      return targetWidth > 0 && targetHeight > 0
+    }
 
-      override fun perform(
-        uiController: UiController,
-        view: View
-      ) {
-        uiController.loopMainThreadForAtLeast(millis)
-      }
+    override fun describeTo(description: Description) {
+      description.appendText("with SizeMatcher: Non Zero Width Height")
     }
   }
 }
