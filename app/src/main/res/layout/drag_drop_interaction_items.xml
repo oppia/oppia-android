@@ -75,6 +75,7 @@
         android:id="@+id/drag_drop_item_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:overScrollMode="never"
         app:itemDecorator="@{@drawable/divider}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:list="@{viewModel.htmlContent.htmlList}"

@@ -35,7 +35,6 @@ class TopicRevisionFragmentPresenter @Inject constructor(
     internalProfileId: Int,
     topicId: String
   ): View? {
-
     val viewModel = getTopicRevisionViewModel()
 
     this.internalProfileId = internalProfileId
@@ -63,7 +62,7 @@ class TopicRevisionFragmentPresenter @Inject constructor(
   }
 
   override fun onTopicRevisionSummaryClicked(subtopic: Subtopic) {
-    routeToReviewListener.routeToRevisionCard(topicId, subtopic.subtopicId)
+    routeToReviewListener.routeToRevisionCard(internalProfileId, topicId, subtopic.subtopicId)
   }
 
   private fun getTopicRevisionViewModel(): TopicRevisionViewModel {

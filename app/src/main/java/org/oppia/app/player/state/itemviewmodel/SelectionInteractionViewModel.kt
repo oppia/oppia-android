@@ -16,6 +16,7 @@ import org.oppia.app.viewmodel.ObservableArrayList
 /** [StateItemViewModel] for multiple or item-selection input choice list. */
 class SelectionInteractionViewModel(
   val entityId: String,
+  val hasConversationView: Boolean,
   interaction: Interaction,
   private val interactionAnswerReceiver: InteractionAnswerReceiver,
   private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver // ktlint-disable max-line-length
@@ -36,7 +37,7 @@ class SelectionInteractionViewModel(
   }
   private val selectedItems: MutableList<Int> = mutableListOf()
   val choiceItems: ObservableList<SelectionInteractionContentViewModel> =
-    computeChoiceItems(choiceStrings, this)
+    computeChoiceItems(choiceStrings, hasConversationView, this)
 
   private val isAnswerAvailable = ObservableField<Boolean>(false)
 
@@ -138,12 +139,14 @@ class SelectionInteractionViewModel(
   companion object {
     private fun computeChoiceItems(
       choiceStrings: List<String>,
+      hasConversationView: Boolean,
       selectionInteractionViewModel: SelectionInteractionViewModel
     ): ObservableArrayList<SelectionInteractionContentViewModel> {
       val observableList = ObservableArrayList<SelectionInteractionContentViewModel>()
       observableList += choiceStrings.mapIndexed { index, choiceString ->
         SelectionInteractionContentViewModel(
           htmlContent = choiceString,
+          hasConversationView = hasConversationView,
           itemIndex = index,
           selectionInteractionViewModel = selectionInteractionViewModel
         )

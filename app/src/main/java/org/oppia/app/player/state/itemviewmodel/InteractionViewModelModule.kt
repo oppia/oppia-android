@@ -9,20 +9,27 @@ import dagger.multibindings.StringKey
 import org.oppia.app.player.state.listener.PreviousNavigationButtonListener
 
 /**
- * Module to provide interaction view model-specific dependencies for intreactions that should be explicitly displayed
- * to the user.
+ * Module to provide interaction view model-specific dependencies for interactions that should be
+ * explicitly displayed to the user.
  */
 @Module
 class InteractionViewModelModule {
-  // TODO(#300): Use a common source for these interaction IDs to de-duplicate them from other places in the codebase
-  //  where they are referenced.
+  companion object {
+    val splitScreenInteractionIdsPool = listOf("DragAndDropSortInput", "ImageClickInput")
+  }
+
+  // TODO(#300): Use a common source for these interaction IDs to de-duplicate them from
+  //  other places in the codebase where they are referenced.
   @Provides
   @IntoMap
   @StringKey("Continue")
   fun provideContinueInteractionViewModelFactory(fragment: Fragment): InteractionViewModelFactory {
-    return { _, _, interactionAnswerReceiver, _, hasPreviousButton ->
+    return { _, hasConversationView, _, interactionAnswerReceiver, _, hasPreviousButton ->
       ContinueInteractionViewModel(
-        interactionAnswerReceiver, hasPreviousButton, fragment as PreviousNavigationButtonListener
+        interactionAnswerReceiver,
+        hasConversationView,
+        hasPreviousButton,
+        fragment as PreviousNavigationButtonListener
       )
     }
   }
@@ -31,9 +38,13 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("MultipleChoiceInput")
   fun provideMultipleChoiceInputViewModelFactory(): InteractionViewModelFactory {
-    return { entityId, interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver, _ ->
+    return { entityId, hasConversationView, interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver, _ -> // ktlint-disable max-line-length
       SelectionInteractionViewModel(
-        entityId, interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver
+        entityId,
+        hasConversationView,
+        interaction,
+        interactionAnswerReceiver,
+        interactionAnswerErrorReceiver
       )
     }
   }
@@ -42,9 +53,13 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("ItemSelectionInput")
   fun provideItemSelectionInputViewModelFactory(): InteractionViewModelFactory {
-    return { entityId, interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver, _ ->
+    return { entityId, hasConversationView, interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver, _ -> // ktlint-disable max-line-length
       SelectionInteractionViewModel(
-        entityId, interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver
+        entityId,
+        hasConversationView,
+        interaction,
+        interactionAnswerReceiver,
+        interactionAnswerErrorReceiver
       )
     }
   }
@@ -53,8 +68,13 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("FractionInput")
   fun provideFractionInputViewModelFactory(context: Context): InteractionViewModelFactory {
-    return { _, interaction, _, interactionAnswerErrorReceiver, _ ->
-      FractionInteractionViewModel(interaction, context, interactionAnswerErrorReceiver)
+    return { _, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _ ->
+      FractionInteractionViewModel(
+        interaction,
+        context,
+        hasConversationView,
+        interactionAnswerErrorReceiver
+      )
     }
   }
 
@@ -62,8 +82,8 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("NumericInput")
   fun provideNumericInputViewModelFactory(context: Context): InteractionViewModelFactory {
-    return { _, _, _, interactionAnswerErrorReceiver, _ ->
-      NumericInputViewModel(context, interactionAnswerErrorReceiver)
+    return { _, hasConversationView, _, _, interactionAnswerErrorReceiver, _ ->
+      NumericInputViewModel(context, hasConversationView, interactionAnswerErrorReceiver)
     }
   }
 
@@ -71,9 +91,9 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("TextInput")
   fun provideTextInputViewModelFactory(): InteractionViewModelFactory {
-    return { _, interaction, _, interactionAnswerErrorReceiver, _ ->
+    return { _, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _ ->
       TextInputViewModel(
-        interaction, interactionAnswerErrorReceiver
+        interaction, hasConversationView, interactionAnswerErrorReceiver
       )
     }
   }
@@ -82,9 +102,9 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("DragAndDropSortInput")
   fun provideDragAndDropSortInputViewModelFactory(): InteractionViewModelFactory {
-    return { entityId, interaction, _, interactionAnswerErrorReceiver, _ ->
+    return { entityId, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _ ->
       DragAndDropSortInteractionViewModel(
-        entityId, interaction, interactionAnswerErrorReceiver
+        entityId, hasConversationView, interaction, interactionAnswerErrorReceiver
       )
     }
   }
