@@ -33,15 +33,15 @@ class InputInteractionViewTestActivity :
   val numericInputViewModel = NumericInputViewModel(
     context = this,
     hasConversationView = false,
-    isSplitView = false,
-    interactionAnswerErrorOrAvailabilityCheckReceiver = this
+    interactionAnswerErrorOrAvailabilityCheckReceiver = this,
+    isSplitView = false
   )
 
   val textInputViewModel = TextInputViewModel(
     interaction = Interaction.getDefaultInstance(),
-    isSplitView = false,
     hasConversationView = false,
-    interactionAnswerErrorOrAvailabilityCheckReceiver = this
+    interactionAnswerErrorOrAvailabilityCheckReceiver = this,
+    isSplitView = false
   )
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,8 +52,8 @@ class InputInteractionViewTestActivity :
     fractionInteractionViewModel = FractionInteractionViewModel(
       interaction = Interaction.getDefaultInstance(),
       context = this,
-      isSplitView = false,
       hasConversationView = false,
+      isSplitView = false,
       interactionAnswerErrorOrAvailabilityCheckReceiver = this
     )
     binding.numericInputViewModel = numericInputViewModel
