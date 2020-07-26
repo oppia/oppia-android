@@ -122,14 +122,12 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("ImageClickInput")
   fun provideImageClickInputViewModelFactory(context: Context): InteractionViewModelFactory {
-    return { entityId, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _, isSplitView -> // ktlint-disable max-line-length
+    return { entityId, _, interaction, _, interactionAnswerErrorReceiver, _, _ ->
       ImageRegionSelectionInteractionViewModel(
         entityId,
-        hasConversationView,
         interaction,
         interactionAnswerErrorReceiver,
-        context,
-        isSplitView
+        context
       )
     }
   }

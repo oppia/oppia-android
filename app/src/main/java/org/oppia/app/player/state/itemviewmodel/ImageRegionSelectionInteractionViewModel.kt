@@ -19,11 +19,9 @@ import org.oppia.app.utility.RegionClickedEvent
 /** [StateItemViewModel] for image region selection. */
 class ImageRegionSelectionInteractionViewModel(
   val entityId: String,
-  val hasConversationView: Boolean,
   interaction: Interaction,
   private val errorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
-  val context: Context,
-  val isSplitView: Boolean
+  val context: Context
 ) : StateItemViewModel(ViewType.IMAGE_REGION_SELECTION_INTERACTION),
   InteractionAnswerHandler,
   OnClickableAreaClickedListener {
