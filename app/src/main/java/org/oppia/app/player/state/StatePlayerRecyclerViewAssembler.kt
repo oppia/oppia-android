@@ -160,6 +160,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
   }
 
+  private val isSplitView = ObservableField<Boolean>(false)
+
   /**
    * Computes a list of view models corresponding to the specified [EphemeralState] and the
    * configuration of this assembler, as well as the GCS entity ID that should be associated with
@@ -170,8 +172,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
     gcsEntityId: String,
     isSplitView: Boolean
   ): Pair<List<StateItemViewModel>, List<StateItemViewModel>> {
-    val hasPreviousState = ephemeralState.hasPreviousState
+    this.isSplitView.set(isSplitView)
 
+    val hasPreviousState = ephemeralState.hasPreviousState
     previousAnswerViewModels.clear()
     val conversationPendingItemList = mutableListOf<StateItemViewModel>()
     val extraInteractionPendingItemList = mutableListOf<StateItemViewModel>()
