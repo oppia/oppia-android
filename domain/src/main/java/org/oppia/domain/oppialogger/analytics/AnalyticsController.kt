@@ -16,7 +16,10 @@ import org.oppia.util.networking.NetworkConnectionUtil
 import org.oppia.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
 import javax.inject.Inject
 
-/** Controller for handling analytics event logging. */
+/** Controller for handling analytics event logging.
+ * [OppiaLogger] should be the only caller of this class. Any other classes that want to log
+ * events should call either [OppiaLogger.logTransitionEvent] or [OppiaLogger.logClickEvent].
+ */
 class AnalyticsController @Inject constructor(
   private val eventLogger: EventLogger,
   cacheStoreFactory: PersistentCacheStore.Factory,
