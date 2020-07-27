@@ -1,3 +1,4 @@
+# TODO: Rename file to 'BUILD' post-Gradle. See https://github.com/oppia/oppia-android/issues/1532.
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
@@ -123,7 +124,7 @@ BINDING_FILES = [
     #"src/main/java/org/oppia/app/recyclerview/BindableAdapter.kt",
 ]
 
-kt_android_library(
+android_library(
     name = "app_ba_lib",
     custom_package = "org.oppia.app",
     srcs = BINDING_FILES,
@@ -147,7 +148,7 @@ kt_android_library(
         artifact("androidx.annotation:annotation"),
         artifact("com.google.android.material:material:1.2.0-alpha02"),
     ],
-    visibility = ["//visibility:public"]
+    visibility = ["//visibility:public"],
 )
 
 kt_android_library(
@@ -174,7 +175,7 @@ kt_android_library(
         artifact("androidx.annotation:annotation"),
         artifact("com.google.android.material:material:1.2.0-alpha02"),
     ],
-    visibility = ["//visibility:public"]
+    visibility = ["//visibility:public"],
 )
 
 kt_android_library(
@@ -203,7 +204,7 @@ kt_android_library(
         artifact("androidx.annotation:annotation"),
         artifact("com.google.android.material:material:1.2.0-alpha02"),
     ],
-    visibility = ["//visibility:public"]
+    visibility = ["//visibility:public"],
 )
 
 dagger_rules()

@@ -25,7 +25,7 @@ public final class ImageViewBindingAdapters {
     public static void setImageDrawable(@NotNull ImageView imageView, String imageUrl) {
         RequestOptions requestOptions = new RequestOptions().placeholder(R.drawable.review_placeholder);
 
-        Glide.with(imageView.context)
+        Glide.with(imageView.getContext())
             .load(imageUrl)
             .apply(requestOptions)
             .into(imageView);
@@ -45,93 +45,95 @@ public final class ImageViewBindingAdapters {
      */
     @BindingAdapter("android:src")
     public static void setImageDrawable(ImageView imageView, LessonThumbnailGraphic thumbnailGraphic) {
+        int drawableResourceId;
+        switch (thumbnailGraphic) {
+            case BAKER:
+                drawableResourceId = R.drawable.lesson_thumbnail_graphic_baker;
+            case CHILD_WITH_BOOK:
+                drawableResourceId = R.drawable.lesson_thumbnail_graphic_child_with_book;
+            case CHILD_WITH_CUPCAKES:
+                drawableResourceId = R.drawable.lesson_thumbnail_graphic_child_with_cupcakes;
+            case CHILD_WITH_FRACTIONS_HOMEWORK:
+                drawableResourceId = R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework;
+            case DUCK_AND_CHICKEN:
+                drawableResourceId = R.drawable.lesson_thumbnail_graphic_duck_and_chicken;
+            case PERSON_WITH_PIE_CHART:
+                drawableResourceId = R.drawable.lesson_thumbnail_graphic_person_with_pie_chart;
+            case IDENTIFYING_THE_PARTS_OF_A_FRACTION:
+                drawableResourceId = R.drawable.topic_fractions_01;
+            case WRITING_FRACTIONS:
+                drawableResourceId = R.drawable.topic_fractions_02;
+            case EQUIVALENT_FRACTIONS:
+                drawableResourceId = R.drawable.topic_fractions_03;
+            case MIXED_NUMBERS_AND_IMPROPER_FRACTIONS:
+                drawableResourceId = R.drawable.topic_fractions_04;
+            case COMPARING_FRACTIONS:
+                drawableResourceId = R.drawable.topic_fractions_05;
+            case ADDING_AND_SUBTRACTING_FRACTIONS:
+                drawableResourceId = R.drawable.topic_fractions_06;
+            case MULTIPLYING_FRACTIONS:
+                drawableResourceId = R.drawable.topic_fractions_07;
+            case DIVIDING_FRACTIONS:
+                drawableResourceId = R.drawable.topic_fractions_08;
+            case DERIVE_A_RATIO:
+                drawableResourceId = R.drawable.topic_ratios_01;
+            case WHAT_IS_A_FRACTION:
+                drawableResourceId = R.drawable.topic_fractions_01;
+            case FRACTION_OF_A_GROUP:
+                drawableResourceId = R.drawable.topic_fractions_02;
+            case ADDING_FRACTIONS:
+                drawableResourceId = R.drawable.topic_fractions_03;
+            case MIXED_NUMBERS:
+                drawableResourceId = R.drawable.topic_fractions_04;
+            default:
+                drawableResourceId = R.drawable.topic_fractions_01;
+        }
         setImageDrawable(
             imageView,
-            switch (thumbnailGraphic) {
-                case LessonThumbnailGraphic.BAKER:
-                    R.drawable.lesson_thumbnail_graphic_baker;
-                case LessonThumbnailGraphic.CHILD_WITH_BOOK:
-                    R.drawable.lesson_thumbnail_graphic_child_with_book;
-                case LessonThumbnailGraphic.CHILD_WITH_CUPCAKES:
-                    R.drawable.lesson_thumbnail_graphic_child_with_cupcakes;
-                case LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK:
-                    R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework;
-                case LessonThumbnailGraphic.DUCK_AND_CHICKEN:
-                    R.drawable.lesson_thumbnail_graphic_duck_and_chicken;
-                case LessonThumbnailGraphic.PERSON_WITH_PIE_CHART:
-                    R.drawable.lesson_thumbnail_graphic_person_with_pie_chart;
-                case LessonThumbnailGraphic.IDENTIFYING_THE_PARTS_OF_A_FRACTION:
-                    R.drawable.topic_fractions_01;
-                case LessonThumbnailGraphic.WRITING_FRACTIONS:
-                    R.drawable.topic_fractions_02;
-                case LessonThumbnailGraphic.EQUIVALENT_FRACTIONS:
-                    R.drawable.topic_fractions_03;
-                case LessonThumbnailGraphic.MIXED_NUMBERS_AND_IMPROPER_FRACTIONS:
-                    R.drawable.topic_fractions_04;
-                case LessonThumbnailGraphic.COMPARING_FRACTIONS:
-                    R.drawable.topic_fractions_05;
-                case LessonThumbnailGraphic.ADDING_AND_SUBTRACTING_FRACTIONS:
-                    R.drawable.topic_fractions_06;
-                case LessonThumbnailGraphic.MULTIPLYING_FRACTIONS:
-                    R.drawable.topic_fractions_07;
-                case LessonThumbnailGraphic.DIVIDING_FRACTIONS:
-                    R.drawable.topic_fractions_08;
-                case LessonThumbnailGraphic.DERIVE_A_RATIO:
-                    R.drawable.topic_ratios_01;
-                case LessonThumbnailGraphic.WHAT_IS_A_FRACTION:
-                    R.drawable.topic_fractions_01;
-                case LessonThumbnailGraphic.FRACTION_OF_A_GROUP:
-                    R.drawable.topic_fractions_02;
-                case LessonThumbnailGraphic.ADDING_FRACTIONS:
-                    R.drawable.topic_fractions_03;
-                case LessonThumbnailGraphic.MIXED_NUMBERS:
-                    R.drawable.topic_fractions_04;
-                default:
-                    R.drawable.topic_fractions_01;
-            }
+            drawableResourceId
         );
     }
 
     //TODO: Figure out translation
     /**
      * Binding adapter for profile images. Used to either display a local image or custom colored avatar.
-     *
-     * @param imageView View where the profile avatar will be loaded into.
+     *  @param imageView View where the profile avatar will be loaded into.
      * @param profileAvatar Represents either a colorId or local image uri.
      */
     @BindingAdapter("profile:src")
-    public static Boolean setProfileImage(ImageView imageView, ProfileAvatar profileAvatar) {
+    public static void setProfileImage(ImageView imageView, ProfileAvatar profileAvatar) {
         if (profileAvatar != null) {
-            if (profileAvatar.avatarTypeCase == ProfileAvatar.AvatarTypeCase.AVATAR_COLOR_RGB) {
-                Glide.with(imageView.context).load(R.drawable.ic_default_avatar).listener(object : RequestListener<Drawable> {
+            if (profileAvatar.getAvatarTypeCase() == ProfileAvatar.AvatarTypeCase.AVATAR_COLOR_RGB) {
+                Glide.with(imageView.getContext())
+                    .load(R.drawable.ic_default_avatar)
+                    .listener(new RequestListener<Drawable>() {
 
-                    public Boolean onLoadFailed(
-                        GlideException e,
-                        Object model,
-                        Target<Drawable> target,
-                        Boolean isFirstResource) {
-                        return false;
-                    }
+                        @Override
+                        public boolean onLoadFailed(
+                            GlideException e,
+                            Object model,
+                            Target<Drawable> target,
+                            boolean isFirstResource) {
+                            return false;
+                        }
 
-                    public Boolean onResourceReady(
-                        Drawable resource,
-                        Object model,
-                        Target<Drawable> target,
-                        DataSource dataSource,
-                        Boolean isFirstResource) {
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                             imageView.setColorFilter(
-                                profileAvatar.avatarColorRgb,
+                                profileAvatar.getAvatarColorRgb(),
                                 PorterDuff.Mode.DST_OVER
                             );
                             return false;
                         }
+
                 }).into(imageView);
             } else {
-                Glide.with(imageView.context)
-                    .load(profileAvatar.avatarImageUri)
+                Glide.with(imageView.getContext())
+                    .load(profileAvatar.getAvatarImageUri())
                     .placeholder(R.drawable.ic_default_avatar)
                     .into(imageView);
             }
         }
     }
+
 }

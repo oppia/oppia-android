@@ -19,7 +19,6 @@ public final class DrawableBindingAdapters {
       // The input color needs to have alpha channel prepended to it.
       GradientDrawable background = (GradientDrawable) view.getBackground();
       background.setColor(0xff000000 | colorRgb);
-      //(view.background as GradientDrawable).setColor((0xff000000 or colorRgb.toLong()).toInt());
   }
 
   @BindingAdapter("app:topRoundedRectDrawableWithColor")
@@ -28,7 +27,6 @@ public final class DrawableBindingAdapters {
       // The input color needs to have alpha channel prepended to it.
       GradientDrawable background = (GradientDrawable) view.getBackground();
       background.setColor(0xff000000 | colorRgb);
-      //(view.background as GradientDrawable).setColor((0xff000000 or colorRgb.toLong()).toInt());
   }
 
   @BindingAdapter("app:bottomRoundedRectDrawableWithColor")
@@ -37,7 +35,6 @@ public final class DrawableBindingAdapters {
       // The input color needs to have alpha channel prepended to it.
       GradientDrawable background = (GradientDrawable) view.getBackground();
       background.setColor(0xff000000 | colorRgb);
-      //(view.background as GradientDrawable).setColor((0xff000000 or colorRgb.toLong()).toInt());
   }
 
   @BindingAdapter("app:rectangleDrawableWithColor")
@@ -46,7 +43,6 @@ public final class DrawableBindingAdapters {
       // The input color needs to have alpha channel prepended to it.
       GradientDrawable background = (GradientDrawable) view.getBackground();
       background.setColor(0xff000000 | colorRgb);
-      //(view.background as GradientDrawable).setColor((0xff000000 or colorRgb.toLong()).toInt());
   }
 
   @BindingAdapter("android:button")

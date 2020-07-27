@@ -9,7 +9,7 @@ public final class EditTextBindingAdapters {
     /**
      * Binding adapter for setting a [TextWatcher] as a change listener for an [EditText].
      */
-    @BindingAdapter("app:textChangedListener")
+    @BindingAdapter("textChangedListener")
     public static void bindTextWatcher(@NotNull EditText editText, TextWatcher textWatcher) {
       editText.addTextChangedListener(textWatcher);
     }
