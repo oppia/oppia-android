@@ -12,13 +12,11 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/divider_margin_top"
+    android:layout_marginTop="24dp"
     android:clickable="true"
     android:focusable="true"
-    android:minHeight="48dp"
-    android:paddingBottom="28dp"
-    android:paddingStart="28dp"
-    android:paddingEnd="28dp"
+    android:layout_marginStart="48dp"
+    android:layout_marginEnd="48dp"
     android:onClick="@{(v) -> viewModel.onResponsesHeaderClicked()}">
 
     <FrameLayout
@@ -36,7 +34,8 @@
       android:layout_height="wrap_content"
       android:drawableEnd="@{viewModel.isExpanded ? @drawable/ic_arrow_down_grey_24dp : @drawable/ic_arrow_right_grey_24dp}"
       android:fontFamily="sans-serif-medium"
-      android:padding="8dp"
+      android:paddingStart="8dp"
+      android:paddingEnd="8dp"
       android:text="@{@string/previous_responses_header(viewModel.previousAnswerCount)}"
       android:textAllCaps="true"
       android:textColor="@color/mid_grey"

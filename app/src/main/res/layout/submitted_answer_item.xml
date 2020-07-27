@@ -39,12 +39,12 @@
     app:questionSplitViewPaddingBottom="@{@dimen/padding_0}"
     app:questionSplitViewPaddingEnd="@{@dimen/padding_32}"
     app:questionSplitViewPaddingStart="@{@dimen/padding_32}"
-    app:questionSplitViewPaddingTop="@{@dimen/padding_36}"
+    app:questionSplitViewPaddingTop="@{@dimen/padding_24}"
     app:questionViewPaddingApplicable="@{!viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
     app:questionViewPaddingBottom="@{@dimen/padding_0}"
     app:questionViewPaddingEnd="@{@dimen/padding_32}"
     app:questionViewPaddingStart="@{@dimen/padding_32}"
-    app:questionViewPaddingTop="@{@dimen/padding_36}">
+    app:questionViewPaddingTop="@{@dimen/padding_24}">
 
     <FrameLayout
       android:id="@+id/submitted_answer_container"
