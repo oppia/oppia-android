@@ -77,7 +77,6 @@
       style="@style/StateButtonActive"
       android:layout_height="0dp"
       android:layout_alignParentEnd="true"
-      android:layout_margin="4dp"
       android:button="@drawable/state_button_primary_background"
       android:clickable="@{buttonViewModel.canSubmitAnswer}"
       android:background="@{buttonViewModel.canSubmitAnswer ? @drawable/state_button_primary_background : @drawable/state_button_inactive_background}"

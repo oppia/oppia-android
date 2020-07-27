@@ -11,4 +11,5 @@ class SubmittedAnswerViewModel(
   val isSplitView: Boolean
 ) : StateItemViewModel(ViewType.SUBMITTED_ANSWER) {
   val isCorrectAnswer = ObservableField<Boolean>(false)
+  val isExtraInteractionAnswerCorrect = ObservableField<Boolean>(false)
 }

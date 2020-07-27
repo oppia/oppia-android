@@ -161,6 +161,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   }
 
   private val isSplitView = ObservableField<Boolean>(false)
+  private var isExtraInteractionAnswerCorrect = false
 
   /**
    * Computes a list of view models corresponding to the specified [EphemeralState] and the
@@ -293,7 +294,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
     isCorrectAnswer: Boolean,
     gcsEntityId: String
   ) {
-    this.isCorrectAnswer.set(isCorrectAnswer)
     if (answersAndResponses.size > 1) {
       if (playerFeatureSet.wrongAnswerCollapsing) {
         PreviousResponsesHeaderViewModel(
@@ -338,6 +338,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     answersAndResponses.lastOrNull()?.let { answerAndResponse ->
       if (playerFeatureSet.pastAnswerSupport) {
         if (isCorrectAnswer && isSplitView.get()!!) {
+          isExtraInteractionAnswerCorrect = true
           rightPendingItemList += createSubmittedAnswer(
             answerAndResponse.userAnswer,
             gcsEntityId
@@ -483,6 +484,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val submittedAnswerViewModel =
       SubmittedAnswerViewModel(userAnswer, gcsEntityId, hasConversationView, isSplitView.get()!!)
     submittedAnswerViewModel.isCorrectAnswer.set(isCorrectAnswer.get())
+    submittedAnswerViewModel.isExtraInteractionAnswerCorrect.set(isExtraInteractionAnswerCorrect)
     return submittedAnswerViewModel
   }
 

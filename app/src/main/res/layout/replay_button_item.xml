@@ -12,7 +12,6 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="56dp"
     android:gravity="center_vertical"
     app:explorationSplitViewMarginApplicable="@{buttonViewModel.hasConversationView &amp;&amp; buttonViewModel.isSplitView}"
     app:explorationSplitViewMarginBottom="@{@dimen/margin_0}"
