@@ -36,5 +36,5 @@ def format_import_proto_library(name, src, deps):
   native.proto_library(
       name = name + "_proto",
       srcs = ["processed_" + src],
-      deps = deps
+      deps = deps,
   )

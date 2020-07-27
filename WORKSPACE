@@ -9,7 +9,7 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 android_sdk_repository(
     name = "androidsdk",
     api_level = 28,
-    #build_tools_version = "28.0.2",
+    # build_tools_version = "28.0.2",
 )
 
 # Add support for JVM rules: https://github.com/bazelbuild/rules_jvm_external
@@ -34,7 +34,8 @@ http_archive(
    strip_prefix = "rules_kotlin-%s" % RULES_KOTLIN_VERSION,
    sha256 = RULES_KOTLIN_SHA,
 )
-#TODO: Remove kt_download_local_dev_dependencies() when switching to rules_kotlin release
+
+# TODO: Remove kt_download_local_dev_dependencies() when switching to rules_kotlin release
 load("@io_bazel_rules_kotlin//kotlin:dependencies.bzl", "kt_download_local_dev_dependencies")
 kt_download_local_dev_dependencies()
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kotlin_repositories", "kt_register_toolchains")
@@ -71,7 +72,7 @@ load("@rules_java//java:repositories.bzl", "rules_java_dependencies", "rules_jav
 rules_java_dependencies()
 rules_java_toolchains()
 
-#Add support for Dagger
+# Add support for Dagger
 DAGGER_TAG = "2.28.1"
 DAGGER_SHA = "9e69ab2f9a47e0f74e71fe49098bea908c528aa02fa0c5995334447b310d0cdd"
 http_archive(
@@ -83,7 +84,7 @@ http_archive(
 
 load("@dagger//:workspace_defs.bzl", "DAGGER_ARTIFACTS", "DAGGER_REPOSITORIES")
 
-#Add support for Robolectric: https://github.com/robolectric/robolectric-bazel
+# Add support for Robolectric: https://github.com/robolectric/robolectric-bazel
 http_archive(
     name = "robolectric",
     urls = ["https://github.com/oppia/robolectric-bazel/archive/4.x-oppia-exclusive-rc02.tar.gz"],
@@ -92,8 +93,7 @@ http_archive(
 load("@robolectric//bazel:robolectric.bzl", "robolectric_repositories")
 robolectric_repositories()
 
-#Add support for Firebase Crashlytics
-
+# Add support for Firebase Crashlytics
 git_repository(
     name = "tools_android",
     commit = "00e6f4b7bdd75911e33c618a9bc57bab7a6e8930",
@@ -103,9 +103,8 @@ git_repository(
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_workspace_dependencies")
 google_services_workspace_dependencies()
 
-
 load("@rules_jvm_external//:defs.bzl", "maven_install")
-#TODO: Remove unused dependencies once android_local_test errors are resolved
+# TODO: Remove unused dependencies once android_local_test errors are resolved
 maven_install(
     artifacts = DAGGER_ARTIFACTS + [
         "org.robolectric:robolectric:4.3",
