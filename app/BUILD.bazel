@@ -147,6 +147,9 @@ android_library(
         artifact("androidx.databinding:databinding-common"),
         artifact("androidx.annotation:annotation"),
         artifact("com.google.android.material:material:1.2.0-alpha02"),
+        artifact("androidx.constraintlayout:constraintlayout:1.1.3"),
+        artifact("de.hdodenhof:circleimageview:3.0.1"),
+        artifact("com.jackandphantom.android:circularimageview:1.2.0"),
     ],
     visibility = ["//visibility:public"],
 )

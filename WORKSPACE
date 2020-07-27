@@ -139,6 +139,9 @@ maven_install(
         "io.fabric.sdk.android:fabric:1.4.7",
         "com.google.firebase:firebase-analytics:17.4.4",
         "com.google.firebase:firebase-crashlytics:17.1.1",
+        "androidx.constraintlayout:constraintlayout:1.1.3",
+        "de.hdodenhof:circleimageview:3.0.1",
+        "com.jackandphantom.android:circularimageview:1.2.0",
     ],
     repositories = DAGGER_REPOSITORIES + [
         "https://maven.google.com",
