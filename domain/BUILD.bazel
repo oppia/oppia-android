@@ -1,3 +1,4 @@
+# TODO: Rename file to 'BUILD' post-Gradle. See https://github.com/oppia/oppia-android/issues/1532.
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
@@ -144,14 +145,12 @@ domain_test(
     + "TextInputEqualsRuleClassifierProviderTest",
 )
 
-#TODO: Building not passing
 domain_test(
     name = "ExplorationDataControllerTest",
     src = ["src/test/java/org/oppia/domain/exploration/ExplorationDataControllerTest.kt"],
     test_class = "org.oppia.domain.exploration.ExplorationDataControllerTest",
 )
 
-#TODO: Building not passing
 domain_test(
     name = "ExplorationProgressControllerTest",
     src = ["src/test/java/org/oppia/domain/exploration/ExplorationProgressControllerTest.kt"],
@@ -182,14 +181,12 @@ domain_test(
     test_class = "org.oppia.domain.profile.ProfileTestHelperTest",
 )
 
-#TODO: Building not passing
 domain_test(
     name = "QuestionAssessmentProgressControllerTest",
     src = ["src/test/java/org/oppia/domain/question/QuestionAssessmentProgressControllerTest.kt"],
     test_class = "org.oppia.domain.question.QuestionAssessmentProgressControllerTest",
 )
 
-#TODO: Building not passing
 domain_test(
     name = "QuestionTrainingControllerTest",
     src = ["src/test/java/org/oppia/domain/question/QuestionTrainingControllerTest.kt"],
@@ -202,21 +199,18 @@ domain_test(
     test_class = "org.oppia.domain.topic.StoryProgressControllerTest",
 )
 
-#TODO: Building not passing
 domain_test(
     name = "StoryProgressTestHelperTest",
     src = ["src/test/java/org/oppia/domain/topic/StoryProgressTestHelperTest.kt"],
     test_class = "org.oppia.domain.topic.StoryProgressTestHelperTest",
 )
 
-#TODO: Building not passing
 domain_test(
     name = "TopicControllerTest",
     src = ["src/test/java/org/oppia/domain/topic/TopicControllerTest.kt"],
     test_class = "org.oppia.domain.topic.TopicControllerTest",
 )
 
-#TODO: Building not passing
 domain_test(
     name = "TopicListControllerTest",
     src = ["src/test/java/org/oppia/domain/topic/TopicListControllerTest.kt"],
@@ -229,7 +223,6 @@ domain_test(
     test_class = "org.oppia.domain.util.InteractionObjectExtensionsTest",
 )
 
-#TODO: Building not passing
 domain_test(
     name = "StateRetrieverTest",
     src = ["src/test/java/org/oppia/domain/util/StateRetrieverTest.kt"],

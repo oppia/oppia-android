@@ -165,7 +165,6 @@ class ExplorationDataControllerTest {
       )
 
       verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
-      explorationResultCaptor.value.getErrorOrNull()?.printStackTrace()
       assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
       assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
       val exploration = explorationResultCaptor.value.getOrThrow()
