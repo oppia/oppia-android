@@ -117,4 +117,18 @@ class InteractionViewModelModule {
       )
     }
   }
+
+  @Provides
+  @IntoMap
+  @StringKey("ImageClickInput")
+  fun provideImageClickInputViewModelFactory(context: Context): InteractionViewModelFactory {
+    return { entityId, _, interaction, _, interactionAnswerErrorReceiver, _, _ ->
+      ImageRegionSelectionInteractionViewModel(
+        entityId,
+        interaction,
+        interactionAnswerErrorReceiver,
+        context
+      )
+    }
+  }
 }

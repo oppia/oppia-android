@@ -147,7 +147,7 @@ class ImageRegionSelectionInteractionViewTest {
         .onClickableAreaTouched(
           capture(regionClickedEvent)
         )
-      assertThat(regionClickedEvent.value).isEqualTo(DefaultRegionClickedEvent)
+      assertThat(regionClickedEvent.value).isInstanceOf(DefaultRegionClickedEvent::class.java)
     }
   }
 
@@ -223,7 +223,7 @@ class ImageRegionSelectionInteractionViewTest {
         matches(not(isDisplayed()))
       )
 
-      assertThat(regionClickedEvent.value).isEqualTo(DefaultRegionClickedEvent)
+      assertThat(regionClickedEvent.value).isInstanceOf(DefaultRegionClickedEvent::class.java)
     }
   }
 

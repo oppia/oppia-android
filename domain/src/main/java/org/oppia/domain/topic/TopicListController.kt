@@ -84,7 +84,9 @@ val EXPLORATION_THUMBNAILS = mapOf(
   TEST_EXPLORATION_ID_1 to createChapterThumbnail7(),
   TEST_EXPLORATION_ID_2 to createChapterThumbnail8(),
   TEST_EXPLORATION_ID_3 to createChapterThumbnail9(),
-  TEST_EXPLORATION_ID_4 to createChapterThumbnail0()
+  TEST_EXPLORATION_ID_4 to createChapterThumbnail0(),
+  TEST_EXPLORATION_ID_5 to createChapterThumbnail0()
+
 )
 
 private const val CUSTOM_IMG_TAG = "oppia-noninteractive-image"

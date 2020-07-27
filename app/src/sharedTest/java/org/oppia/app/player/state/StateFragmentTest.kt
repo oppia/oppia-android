@@ -21,10 +21,10 @@ import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -41,13 +41,23 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
+import org.hamcrest.BaseMatcher
+import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.not
+import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FEEDBACK
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMITTED_ANSWER
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.utility.ChildViewCoordinatesProvider
@@ -55,14 +65,17 @@ import org.oppia.app.utility.CustomGeneralLocation
 import org.oppia.app.utility.DragViewAction
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.app.utility.RecyclerViewCoordinatesProvider
+import org.oppia.app.utility.clickPoint
 import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.domain.topic.TEST_EXPLORATION_ID_0
 import org.oppia.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.domain.topic.TEST_EXPLORATION_ID_4
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_5
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.testing.TestLogReportingModule
+import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -423,6 +436,193 @@ class StateFragmentTest {
   }
 
   @Test
+  fun testStateFragment_loadImageRegion_clickRegion6_region6Clicked() {
+    launchForExploration(TEST_EXPLORATION_ID_5).use {
+      startPlayingExploration()
+      waitForExplorationToBeLoaded()
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+      // TODO(#669): Remove explicit delay - https://github.com/oppia/oppia-android/issues/1523
+      waitForTheView(
+        allOf(
+          withId(R.id.image_click_interaction_image_view),
+          WithNonZeroDimensionsMatcher()
+        )
+      )
+      onView(withId(R.id.image_click_interaction_image_view)).perform(
+        clickPoint(0.5f, 0.5f)
+      )
+      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
+      onView(withId(R.id.submit_answer_button)).perform(click())
+      onView(withId(R.id.feedback_text_view)).check(
+        matches(
+          withText(containsString("Saturn"))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadImageRegion_submitButtonDisabled() {
+    launchForExploration(TEST_EXPLORATION_ID_5).use {
+      startPlayingExploration()
+      waitForExplorationToBeLoaded()
+      // TODO(#669): Remove explicit delay - https://github.com/oppia/oppia-android/issues/1523
+      waitForTheView(
+        allOf(
+          withId(R.id.image_click_interaction_image_view),
+          WithNonZeroDimensionsMatcher()
+        )
+      )
+      scrollToSubmit()
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+    }
+  }
+
+  @Test
+  fun loadImageRegion_defaultRegionClick_defaultRegionClicked_submitButtonDisabled() {
+    launchForExploration(TEST_EXPLORATION_ID_5).use {
+      startPlayingExploration()
+      waitForExplorationToBeLoaded()
+      // TODO(#669): Remove explicit delay - https://github.com/oppia/oppia-android/issues/1523
+      waitForTheView(
+        allOf(
+          withId(R.id.image_click_interaction_image_view),
+          WithNonZeroDimensionsMatcher()
+        )
+      )
+      onView(withId(R.id.image_click_interaction_image_view)).perform(
+        clickPoint(0.1f, 0.5f)
+      )
+      scrollToSubmit()
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_submitButtonEnabled() {
+    launchForExploration(TEST_EXPLORATION_ID_5).use {
+      startPlayingExploration()
+      waitForExplorationToBeLoaded()
+      // TODO(#669): Remove explicit delay - https://github.com/oppia/oppia-android/issues/1523
+      waitForTheView(
+        allOf(
+          withId(R.id.image_click_interaction_image_view),
+          WithNonZeroDimensionsMatcher()
+        )
+      )
+      onView(withId(R.id.image_click_interaction_image_view)).perform(
+        clickPoint(0.5f, 0.5f)
+      )
+      scrollToSubmit()
+      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_correctFeedback() {
+    launchForExploration(TEST_EXPLORATION_ID_5).use {
+      startPlayingExploration()
+      waitForExplorationToBeLoaded()
+      // TODO(#669): Remove explicit delay - https://github.com/oppia/oppia-android/issues/1523
+      waitForTheView(
+        allOf(
+          withId(R.id.image_click_interaction_image_view),
+          WithNonZeroDimensionsMatcher()
+        )
+      )
+      onView(withId(R.id.image_click_interaction_image_view)).perform(
+        clickPoint(0.5f, 0.5f)
+      )
+      scrollToSubmit()
+      onView(withId(R.id.submit_answer_button)).perform(click())
+      scrollToFeedback()
+      onView(withId(R.id.feedback_text_view)).check(
+        matches(
+          withText(containsString("Saturn"))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_correctAnswer() {
+    launchForExploration(TEST_EXPLORATION_ID_5).use {
+      startPlayingExploration()
+      waitForExplorationToBeLoaded()
+      // TODO(#669): Remove explicit delay - https://github.com/oppia/oppia-android/issues/1523
+      waitForTheView(
+        allOf(
+          withId(R.id.image_click_interaction_image_view),
+          WithNonZeroDimensionsMatcher()
+        )
+      )
+      onView(withId(R.id.image_click_interaction_image_view)).perform(
+        clickPoint(0.5f, 0.5f)
+      )
+      scrollToSubmit()
+      onView(withId(R.id.submit_answer_button)).perform(click())
+      scrollToAnswer()
+      onView(withId(R.id.submitted_answer_text_view)).check(
+        matches(
+          withText("Clicks on Saturn")
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_continueButtonIsDisplayed() {
+    launchForExploration(TEST_EXPLORATION_ID_5).use {
+      startPlayingExploration()
+      waitForExplorationToBeLoaded()
+      // TODO(#669): Remove explicit delay - https://github.com/oppia/oppia-android/issues/1523
+      waitForTheView(
+        allOf(
+          withId(R.id.image_click_interaction_image_view),
+          WithNonZeroDimensionsMatcher()
+        )
+      )
+      onView(withId(R.id.image_click_interaction_image_view)).perform(
+        clickPoint(0.5f, 0.5f)
+      )
+      scrollToSubmit()
+      onView(withId(R.id.submit_answer_button)).perform(click())
+      scrollToContinue()
+      onView(withId(R.id.continue_navigation_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun loadImageRegion_clickRegion6_clickedRegion5_region5Clicked_correctFeedback() {
+    launchForExploration(TEST_EXPLORATION_ID_5).use {
+      startPlayingExploration()
+      waitForExplorationToBeLoaded()
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+      // TODO(#669): Remove explicit delay - https://github.com/oppia/oppia-android/issues/1523
+      waitForTheView(
+        allOf(
+          withId(R.id.image_click_interaction_image_view),
+          WithNonZeroDimensionsMatcher()
+        )
+      )
+      onView(withId(R.id.image_click_interaction_image_view)).perform(
+        clickPoint(0.5f, 0.5f)
+      )
+      onView(withId(R.id.image_click_interaction_image_view)).perform(
+        clickPoint(0.2f, 0.5f)
+      )
+      scrollToSubmit()
+      onView(withId(R.id.submit_answer_button)).perform(click())
+      scrollToFeedback()
+      onView(withId(R.id.feedback_text_view)).check(
+        matches(
+          withText(containsString("Jupiter"))
+        )
+      )
+    }
+  }
+
+  @Test
   fun testStateFragment_loadExp_changeConfiguration_firstState_previousAndNextButtonIsNotDisplayed() { // ktlint-disable max-line-length
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -777,7 +977,7 @@ class StateFragmentTest {
   }
 
   private fun waitForTheView(viewMatcher: Matcher<View>): ViewInteraction {
-    return onView(ViewMatchers.isRoot()).perform(waitForMatch(viewMatcher, 30000L))
+    return onView(isRoot()).perform(waitForMatch(viewMatcher, 30000L))
   }
 
   private fun setUpTestApplicationComponent() {
@@ -804,7 +1004,7 @@ class StateFragmentTest {
       }
 
       override fun getConstraints(): Matcher<View> {
-        return ViewMatchers.isRoot()
+        return isRoot()
       }
 
       override fun perform(uiController: UiController?, view: View?) {
@@ -846,7 +1046,9 @@ class StateFragmentTest {
     @Provides
     @BackgroundDispatcher
     fun provideBackgroundDispatcher(@BlockingDispatcher blockingDispatcher: CoroutineDispatcher):
-      CoroutineDispatcher { return blockingDispatcher }
+      CoroutineDispatcher {
+        return blockingDispatcher
+      }
 
     @Singleton
     @Provides
@@ -868,6 +1070,10 @@ class StateFragmentTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
+
+    @CacheAssetsLocally
+    @Provides
+    fun provideCacheAssetsLocally(): Boolean = true
   }
 
   @Singleton
@@ -922,6 +1128,64 @@ class StateFragmentTest {
 
     override fun awaitTermination(timeout: Long, unit: TimeUnit?): Boolean {
       throw UnsupportedOperationException()
+    }
+  }
+
+  private fun scrollToViewType(viewType: StateItemViewModel.ViewType): ViewAction {
+    return RecyclerViewActions.scrollToHolder(StateViewHolderTypeMatcher(viewType))
+  }
+
+  private fun scrollToSubmit() {
+    onView(withId(R.id.state_recycler_view)).perform(
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+    )
+  }
+
+  private fun scrollToFeedback() {
+    onView(withId(R.id.state_recycler_view)).perform(
+      scrollToViewType(FEEDBACK)
+    )
+  }
+
+  private fun scrollToAnswer() {
+    onView(withId(R.id.state_recycler_view)).perform(
+      scrollToViewType(SUBMITTED_ANSWER)
+    )
+  }
+
+  private fun scrollToContinue() {
+    onView(withId(R.id.state_recycler_view)).perform(
+      scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
+    )
+  }
+
+  /**
+   * [BaseMatcher] that matches against the first occurrence of the specified view holder type in
+   * StateFragment's RecyclerView.
+   */
+  private class StateViewHolderTypeMatcher(
+    private val viewType: StateItemViewModel.ViewType
+  ) : BaseMatcher<RecyclerView.ViewHolder>() {
+    override fun describeTo(description: Description?) {
+      description?.appendText("item view type of $viewType")
+    }
+
+    override fun matches(item: Any?): Boolean {
+      return (item as? RecyclerView.ViewHolder)?.itemViewType == viewType.ordinal
+    }
+  }
+
+  /*** Returns a matcher that matches view based on non-zero width and height.*/
+  private class WithNonZeroDimensionsMatcher : TypeSafeMatcher<View>() {
+
+    override fun matchesSafely(target: View): Boolean {
+      val targetWidth = target.width
+      val targetHeight = target.height
+      return targetWidth > 0 && targetHeight > 0
+    }
+
+    override fun describeTo(description: Description) {
+      description.appendText("with non-zero width and height")
     }
   }
 }

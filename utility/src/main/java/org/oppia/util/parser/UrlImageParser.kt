@@ -42,10 +42,10 @@ class UrlImageParser private constructor(
     // TODO(#1039): Introduce custom type OppiaImage for rendering Bitmap and Svg.
     if (imageUrl.endsWith("svg", ignoreCase = true)) {
       val target = SvgTarget(urlDrawable)
-      imageLoader.loadSvg("$gcsPrefix/$gcsResourceName/$imageUrl", target)
+      imageLoader.loadSvg("$gcsPrefix/$gcsResourceName/$imageUrl", CustomImageTarget(target))
     } else {
       val target = BitmapTarget(urlDrawable)
-      imageLoader.load("$gcsPrefix/$gcsResourceName/$imageUrl", target)
+      imageLoader.loadBitmap("$gcsPrefix/$gcsResourceName/$imageUrl", CustomImageTarget(target))
     }
     return urlDrawable
   }
