@@ -1,9 +1,11 @@
+# TODO: Rename file to 'BUILD' post-Gradle. See https://github.com/oppia/oppia-android/issues/1532.
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 load("//utility:utility_test.bzl", "utility_test")
 
+'''A kt_android_library() rule that builds utility module kotlin source files into a library.'''
 kt_android_library(
     name = "utility_lib",
     custom_package = "org.oppia.util",
@@ -25,7 +27,7 @@ kt_android_library(
         artifact("com.caverock:androidsvg-aar"),
         artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
     ],
-    visibility = ["//visibility:public"]
+    visibility = ["//visibility:public"],
 )
 
 kt_android_library(
@@ -48,12 +50,12 @@ kt_android_library(
         artifact("androidx.test.ext:junit"),
         artifact("org.mockito:mockito-core"),
     ],
-    visibility = ["//visibility:public"]
+    visibility = ["//visibility:public"],
 )
 
 utility_test(
    name = "AsyncResultTest",
-    src = ["src/test/java/org/oppia/util/data/AsyncResultTest.kt"],
+   src = ["src/test/java/org/oppia/util/data/AsyncResultTest.kt"],
    test_class = "org.oppia.util.data.AsyncResultTest",
  )
 

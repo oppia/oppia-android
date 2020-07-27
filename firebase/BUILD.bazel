@@ -1,3 +1,7 @@
+''' Builds and exports Firebase dependencies.
+To reference these dependencies, add '//firebase:crashlytics_lib' and '//firebase:crashlytics_deps'
+to your build rule's dependency list.
+'''
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@tools_android//tools/crashlytics:defs.bzl", "crashlytics_android_library")
