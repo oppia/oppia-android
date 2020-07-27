@@ -9,7 +9,7 @@ import org.oppia.app.databinding.ConceptCardFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.EventLog
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.analytics.AnalyticsController
+import org.oppia.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -60,7 +60,6 @@ class ConceptCardFragmentPresenter @Inject constructor(
 
   private fun logConceptCardEvent(skillId: String) {
     analyticsController.logTransitionEvent(
-      fragment.requireActivity().applicationContext,
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_CONCEPT_CARD,
       analyticsController.createConceptCardContext(skillId)

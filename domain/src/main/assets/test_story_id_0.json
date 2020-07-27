@@ -1,0 +1,49 @@
+{
+  "story_nodes": [
+    {
+      "description": "Learning about oppia app in First Story",
+      "exploration_id": "test_exp_id_2",
+      "destination_node_ids": [
+        "node_2"
+      ],
+      "thumbnail_filename": "",
+      "outline_is_finalized": false,
+      "id": "node_1",
+      "prerequisite_skill_ids": [],
+      "thumbnail_bg_color": "#D68F78",
+      "exp_summary_dict": {
+        "thumbnail_bg_color": "#d68453",
+        "thumbnail_icon_url": "",
+        "title": "Prototype Exploration inner",
+        "language_code": "en",
+        "objective": "Learn about oppia app via testing.",
+        "id": "test_exp_id_2"
+      },
+      "outline": "",
+      "title": "Prototype Exploration",
+      "acquired_skill_ids": []
+    },
+    {
+      "description": "Learning about oppia app in Second Story",
+      "exploration_id": "13",
+      "destination_node_ids": [],
+      "thumbnail_filename": "",
+      "outline_is_finalized": false,
+      "id": "node_2",
+      "prerequisite_skill_ids": [],
+      "thumbnail_bg_color": "#D68F78",
+      "exp_summary_dict": {
+        "thumbnail_bg_color": "#d68453",
+        "title": "Image Click Input Interaction",
+        "language_code": "en",
+        "objective": "Learn about oppia app via testing.",
+        "id": "13"
+      },
+      "outline": "",
+      "title": "Image Region Selection Exploration",
+      "acquired_skill_ids": []
+    }
+  ],
+  "story_description": "",
+  "story_title": "First Story"
+}
