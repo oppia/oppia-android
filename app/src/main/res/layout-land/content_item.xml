@@ -19,8 +19,8 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="24dp"
     android:layout_marginBottom="24dp"
-    android:background="@{viewModel.isConversationView ? @drawable/content_blue_background : @drawable/transparent_background}"
-    app:layoutMarginEnd="@{viewModel.isConversationView ? @dimen/margin_40 : @dimen/margin_24}">
+    android:background="@{viewModel.hasConversationView ? @drawable/content_blue_background : @drawable/transparent_background}"
+    app:layoutMarginEnd="@{viewModel.hasConversationView ? @dimen/margin_40 : @dimen/margin_24}">
 
     <TextView
       android:id="@+id/content_text_view"
@@ -34,7 +34,7 @@
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp"
       android:visibility="@{htmlContent.length() > 0 ? View.VISIBLE : View.GONE, default=gone}"
-      app:layoutMarginEnd="@{viewModel.isConversationView ? @dimen/padding_8 : @dimen/padding_0}"
-      app:layoutMarginStart="@{viewModel.isConversationView ? @dimen/padding_8 : @dimen/padding_0}" />
+      app:layoutMarginEnd="@{viewModel.hasConversationView ? @dimen/padding_8 : @dimen/padding_0}"
+      app:layoutMarginStart="@{viewModel.hasConversationView ? @dimen/padding_8 : @dimen/padding_0}" />
   </FrameLayout>
 </layout>
