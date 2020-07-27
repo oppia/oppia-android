@@ -10,7 +10,7 @@ proto_library(
 )
 
 java_lite_proto_library(
-    name = "event_logger_java_proto",
+    name = "event_logger_java_proto_lite",
     deps = [":event_logger_proto"],
 )
 
@@ -20,7 +20,7 @@ proto_library(
 )
 
 java_lite_proto_library(
-    name = "example_java_proto",
+    name = "example_java_proto_lite",
     deps = [":example_proto"],
 )
 
@@ -30,7 +30,7 @@ proto_library(
 )
 
 java_lite_proto_library(
-    name = "interaction_object_java_proto",
+    name = "interaction_object_java_proto_lite",
     deps = [":interaction_object_proto"],
 )
 
@@ -40,7 +40,7 @@ proto_library(
 )
 
 java_lite_proto_library(
-    name = "onboarding_java_proto",
+    name = "onboarding_java_proto_lite",
     deps = [":onboarding_proto"],
 )
 
@@ -50,7 +50,7 @@ proto_library(
 )
 
 java_lite_proto_library(
-    name = "profile_java_proto",
+    name = "profile_java_proto_lite",
     deps = [":profile_proto"],
 )
 
@@ -60,7 +60,7 @@ proto_library(
 )
 
 java_lite_proto_library(
-    name = "subtitled_html_java_proto",
+    name = "subtitled_html_java_proto_lite",
     deps = [":subtitled_html_proto"],
 )
 
@@ -70,7 +70,7 @@ proto_library(
 )
 
 java_lite_proto_library(
-    name = "thumbnail_java_proto",
+    name = "thumbnail_java_proto_lite",
     deps = [":thumbnail_proto"],
 )
 
@@ -80,7 +80,7 @@ proto_library(
 )
 
 java_lite_proto_library(
-    name = "translation_java_proto",
+    name = "translation_java_proto_lite",
     deps = [":translation_proto"],
 )
 
@@ -90,7 +90,7 @@ proto_library(
 )
 
 java_lite_proto_library(
-    name = "voiceover_java_proto",
+    name = "voiceover_java_proto_lite",
     deps = [":voiceover_proto"],
 )
 
@@ -104,7 +104,7 @@ format_import_proto_library(
 )
 
 java_lite_proto_library(
-    name = "question_java_proto",
+    name = "question_java_proto_lite",
     deps = [":question_proto"],
 )
 
@@ -120,7 +120,7 @@ format_import_proto_library(
 )
 
 java_lite_proto_library(
-    name = "topic_java_proto",
+    name = "topic_java_proto_lite",
     deps = [":topic_proto"],
 )
 
@@ -136,25 +136,25 @@ format_import_proto_library(
 )
 
 java_lite_proto_library(
-    name = "exploration_java_proto",
+    name = "exploration_java_proto_lite",
     deps = [":exploration_proto"],
 )
 
 android_library(
     name = "model_lib",
     exports = [
-        ":event_logger_java_proto",
-        ":example_java_proto",
-        ":interaction_object_java_proto",
-        ":onboarding_java_proto",
-        ":profile_java_proto",
-        ":subtitled_html_java_proto",
-        ":thumbnail_java_proto",
-        ":translation_java_proto",
-        ":voiceover_java_proto",
-        ":exploration_java_proto",
-        ":question_java_proto",
-        ":topic_java_proto",
+        ":event_logger_java_proto_lite",
+        ":example_java_proto_lite",
+        ":interaction_object_java_proto_lite",
+        ":onboarding_java_proto_lite",
+        ":profile_java_proto_lite",
+        ":subtitled_html_java_proto_lite",
+        ":thumbnail_java_proto_lite",
+        ":translation_java_proto_lite",
+        ":voiceover_java_proto_lite",
+        ":exploration_java_proto_lite",
+        ":question_java_proto_lite",
+        ":topic_java_proto_lite",
     ],
     visibility = ["//visibility:public"],
 )

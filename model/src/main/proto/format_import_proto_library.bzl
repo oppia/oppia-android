@@ -16,8 +16,7 @@ def format_import_proto_library(name, src, deps):
     sed 's/\"model\/src\/main\/proto\/exploration/\"model\/processed_src\/main\/proto\/exploration/g' |
     sed 's/\"model\/src\/main\/proto\/topic/\"model\/processed_src\/main\/proto\/topic/g' |
     sed 's/\"model\/src\/main\/proto\/question/\"model\/processed_src\/main\/proto\/question/g' > $@
-    '''
-    ,
+    ''',
   )
 
   native.proto_library(
@@ -25,15 +24,3 @@ def format_import_proto_library(name, src, deps):
       srcs = ["processed_" + src],
       deps = deps
   )
-
-'''
-  native.java_lite_proto_library(
-      name = name + "_java_proto",
-      deps = [name + "_proto"] + java_lite_proto_deps,
-  )
-'''
-
-''' cp $< $@ &&\
-    sed 's/import \"/import \"model\/src\/main\/proto\//g' $< > $@ &&\
-    sed 's/\"model\/src\/main\/proto\/exploration/\"exploration/g' $@ >> $@
-    '''
