@@ -97,7 +97,7 @@ robolectric_repositories()
 git_repository(
     name = "tools_android",
     commit = "00e6f4b7bdd75911e33c618a9bc57bab7a6e8930",
-    remote = "https://github.com/bazelbuild/tools_android"
+    remote = "https://github.com/bazelbuild/tools_android",
 )
 
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_workspace_dependencies")
@@ -128,10 +128,10 @@ maven_install(
         "org.jetbrains.kotlin:kotlin-stdlib-jdk7:jar:1.3.72",
         "org.jetbrains.kotlin:kotlin-test-junit:1.3.72",
         "org.robolectric:annotations:4.3",
-        "com.crashlytics.sdk.android:crashlytics:2.9.8", #Firebase
-        "io.fabric.sdk.android:fabric:1.4.7", #Firebase
-        "com.google.firebase:firebase-analytics:17.4.4", #Firebase
-        "com.google.firebase:firebase-crashlytics:17.1.1", #Firebase
+        "com.crashlytics.sdk.android:crashlytics:2.9.8",
+        "io.fabric.sdk.android:fabric:1.4.7",
+        "com.google.firebase:firebase-analytics:17.4.4",
+        "com.google.firebase:firebase-crashlytics:17.1.1",
     ],
     repositories = DAGGER_REPOSITORIES + [
         "https://maven.google.com",
