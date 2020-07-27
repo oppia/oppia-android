@@ -125,7 +125,7 @@ public final class ImageViewBindingAdapters {
                             );
                             return false;
                         }
-                    }).into(imageView);
+                }).into(imageView);
             } else {
                 Glide.with(imageView.context)
                     .load(profileAvatar.avatarImageUri)
