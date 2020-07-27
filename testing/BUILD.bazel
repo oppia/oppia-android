@@ -1,3 +1,4 @@
+# TODO: Rename file to 'BUILD' post-Gradle. See https://github.com/oppia/oppia-android/issues/1532.
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
@@ -34,7 +35,6 @@ kt_android_library(
      ],
  )
 
-
 kt_android_library(
      name = "testing_test_lib",
      custom_package = "org.oppia.testing",
@@ -66,6 +66,6 @@ kt_android_library(
      ],
 )
 
-#TODO: Add android_local_test rule
+# TODO: Add android_local_test rule
 
 dagger_rules()
