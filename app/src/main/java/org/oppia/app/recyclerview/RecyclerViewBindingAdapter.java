@@ -1,14 +1,18 @@
 package org.oppia.app.recyclerview;
 
 import android.graphics.drawable.Drawable;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
 import androidx.databinding.BindingAdapter;
 import androidx.databinding.ObservableList;
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
-
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 public class RecyclerViewBindingAdapter {
     /**
@@ -19,7 +23,7 @@ public class RecyclerViewBindingAdapter {
     @BindingAdapter("data")
     public static <T> void bindToRecyclerViewAdapterWithLiveData(
         RecyclerView recyclerView,
-        @NotNull LiveData<List<T>> liveData
+        LiveData<List<T>> liveData
     ) {
         List<T> data = liveData.getValue();
         bindToRecyclerViewAdapter(recyclerView, data);
@@ -35,7 +39,7 @@ public class RecyclerViewBindingAdapter {
         RecyclerView recyclerView,
         List<T> itemList
     ) {
-        if (!(itemList == null) || !(itemList.isEmpty())) {
+        if (!(itemList == null) && !(itemList.isEmpty())) {
             bindToRecyclerViewAdapter(recyclerView, itemList);
         }
     }
@@ -49,9 +53,11 @@ public class RecyclerViewBindingAdapter {
         bindToRecyclerViewAdapter(recyclerView, dataList);
     }
 
-    private static <T> void bindToRecyclerViewAdapter(@NotNull RecyclerView recyclerView, List<T> dataList) {
-        //val adapter = recyclerView.adapter;
-        if (recyclerView.getAdapter() == null) {
+    private static <T> void bindToRecyclerViewAdapter(RecyclerView recyclerView,
+                                                      List<T> dataList) {
+
+        RecyclerView.Adapter adapter = recyclerView.getAdapter();
+        if (adapter == null) {
             throw new IllegalArgumentException(
                 "Cannot bind data to a RecyclerView missing its adapter."
             );
@@ -61,11 +67,14 @@ public class RecyclerViewBindingAdapter {
                 "Can only bind data to a BindableAdapter."
             );
         }
-        ((BindableAdapter<T>) recyclerView.getAdapter()).setDataUnchecked(dataList);
+        // TODO: Fix so that this check is not necessary
+        if (dataList != null) {
+            ((BindableAdapter<T>) adapter).setDataUnchecked(dataList);
+        }
     }
 
     @BindingAdapter("itemDecorator")
-    public static void addItemDecorator(@NotNull RecyclerView recyclerView, Drawable drawable) {
+    public static void addItemDecorator(RecyclerView recyclerView, Drawable drawable) {
         recyclerView.addItemDecoration(new DividerItemDecorator(drawable));
     }
 }
