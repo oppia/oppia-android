@@ -33,7 +33,7 @@ http_archive(
    strip_prefix = "rules_kotlin-%s" % RULES_KOTLIN_VERSION,
    sha256 = RULES_KOTLIN_SHA,
 )
-#TODO: Remove kt_download_local_dev_dependencies() when switching to rules_kotlin release
+# TODO: Remove kt_download_local_dev_dependencies() when switching to rules_kotlin release
 load("@io_bazel_rules_kotlin//kotlin:dependencies.bzl", "kt_download_local_dev_dependencies")
 kt_download_local_dev_dependencies()
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kotlin_repositories", "kt_register_toolchains")
