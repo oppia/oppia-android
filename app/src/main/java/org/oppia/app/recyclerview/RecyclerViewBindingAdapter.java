@@ -17,11 +17,11 @@ public class RecyclerViewBindingAdapter {
      * https://android.jlelse.eu/1bd08b4796b4.
      */
     @BindingAdapter("data")
-    public static void bindToRecyclerViewAdapterWithLiveData(
+    public static <T> void bindToRecyclerViewAdapterWithLiveData(
         RecyclerView recyclerView,
-        @NotNull LiveData<List<Object>> liveData
+        @NotNull LiveData<List<T>> liveData
     ) {
-        List<Object> data = liveData.getValue();
+        List<T> data = liveData.getValue();
         bindToRecyclerViewAdapter(recyclerView, data);
     }
 
@@ -31,9 +31,9 @@ public class RecyclerViewBindingAdapter {
  * https://android.jlelse.eu/1bd08b4796b4.
  */
     @BindingAdapter("list")
-    public static void bindToRecyclerViewAdapterWithoutLiveData(
+    public static <T> void bindToRecyclerViewAdapterWithoutLiveData(
         RecyclerView recyclerView,
-        List<Object> itemList
+        List<T> itemList
     ) {
         if (!(itemList == null) || !(itemList.isEmpty())) {
             bindToRecyclerViewAdapter(recyclerView, itemList);
@@ -42,14 +42,14 @@ public class RecyclerViewBindingAdapter {
 
 /** A variant of [bindToRecyclerViewAdapterWithLiveData] that instead uses an observable list. */
     @BindingAdapter("data")
-    public static void bindToRecyclerViewAdapterWithObservableList(
+    public static <T> void bindToRecyclerViewAdapterWithObservableList(
         RecyclerView recyclerView,
-        ObservableList<Object> dataList
+        ObservableList<T> dataList
     ) {
         bindToRecyclerViewAdapter(recyclerView, dataList);
     }
 
-    private static void bindToRecyclerViewAdapter(@NotNull RecyclerView recyclerView, List<Object> dataList) {
+    private static <T> void bindToRecyclerViewAdapter(@NotNull RecyclerView recyclerView, List<T> dataList) {
         //val adapter = recyclerView.adapter;
         if (recyclerView.getAdapter() == null) {
             throw new IllegalArgumentException(
@@ -61,7 +61,7 @@ public class RecyclerViewBindingAdapter {
                 "Can only bind data to a BindableAdapter."
             );
         }
-        ((BindableAdapter<Object>) recyclerView.getAdapter()).setDataUnchecked(dataList);
+        ((BindableAdapter<T>) recyclerView.getAdapter()).setDataUnchecked(dataList);
     }
 
     @BindingAdapter("itemDecorator")
