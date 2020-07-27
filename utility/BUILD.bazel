@@ -3,6 +3,7 @@ load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 
+'''A kt_android_library() rule that builds utility module kotlin source files into a library.'''
 kt_android_library(
     name = "utility_lib",
     custom_package = "org.oppia.util",
