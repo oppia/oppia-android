@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
 
   <data>
 
@@ -22,17 +23,52 @@
     android:fitsSystemWindows="true"
     android:focusableInTouchMode="true">
 
-    <androidx.recyclerview.widget.RecyclerView
-      android:id="@+id/state_recycler_view"
+    <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:clipToPadding="false"
-      android:divider="@android:color/transparent"
-      android:overScrollMode="never"
-      android:paddingTop="@{viewModel.isAudioBarVisible ? @dimen/padding_72dp : @dimen/padding_24dp}"
-      android:scrollbars="none"
-      app:data="@{viewModel.itemList}"
-      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+      android:orientation="horizontal">
+
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/state_recycler_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:divider="@android:color/transparent"
+        android:overScrollMode="never"
+        android:paddingTop="@{viewModel.isAudioBarVisible ? @dimen/padding_72dp : @dimen/padding_24dp}"
+        android:scrollbars="none"
+        app:data="@{viewModel.itemList}"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/center_guideline"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/extra_interaction_recycler_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:divider="@android:color/transparent"
+        android:overScrollMode="never"
+        android:paddingTop="@{viewModel.isAudioBarVisible ? @dimen/padding_72dp : @dimen/padding_24dp}"
+        android:scrollbars="none"
+        android:visibility="@{viewModel.isSplitView ? View.VISIBLE : View.GONE}"
+        app:data="@{viewModel.rightItemList}"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintStart_toEndOf="@id/center_guideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+      <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/center_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:layout_constraintGuide_percent="0.5f"
+        app:layout_constraintGuide_percent="@{viewModel.centerGuidelinePercentage.floatValue()}" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout
       android:id="@+id/audio_fragment_container"

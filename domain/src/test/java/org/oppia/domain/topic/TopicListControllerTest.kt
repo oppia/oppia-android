@@ -166,7 +166,7 @@ class TopicListControllerTest {
 
     val topicList = topicListLiveData.value!!.getOrThrow()
     val firstTopic = topicList.getTopicSummary(0)
-    assertThat(firstTopic.totalChapterCount).isEqualTo(4)
+    assertThat(firstTopic.totalChapterCount).isEqualTo(5)
   }
 
   @Test
