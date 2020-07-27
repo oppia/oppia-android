@@ -35,7 +35,7 @@
         android:clipToPadding="false"
         android:divider="@android:color/transparent"
         android:overScrollMode="never"
-        android:paddingTop="@{viewModel.isAudioBarVisible ? @dimen/padding_72dp : @dimen/padding_24dp}"
+        android:paddingTop="@{viewModel.isAudioBarVisible ? @dimen/padding_48 : @dimen/padding_0}"
         android:scrollbars="none"
         app:data="@{viewModel.itemList}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -51,7 +51,6 @@
         android:clipToPadding="false"
         android:divider="@android:color/transparent"
         android:overScrollMode="never"
-        android:paddingTop="@{viewModel.isAudioBarVisible ? @dimen/padding_72dp : @dimen/padding_24dp}"
         android:scrollbars="none"
         android:visibility="@{viewModel.isSplitView ? View.VISIBLE : View.GONE}"
         app:data="@{viewModel.rightItemList}"
@@ -68,21 +67,25 @@
         android:orientation="vertical"
         tools:layout_constraintGuide_percent="0.5f"
         app:layout_constraintGuide_percent="@{viewModel.centerGuidelinePercentage.floatValue()}" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <FrameLayout
-      android:id="@+id/audio_fragment_container"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_gravity="top"
-      android:layout_marginStart="24dp">
 
       <FrameLayout
-        android:id="@+id/audio_fragment_placeholder"
-        android:layout_width="match_parent"
+        android:id="@+id/audio_fragment_container"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:visibility="@{viewModel.isAudioBarVisible ? View.VISIBLE : View.GONE}" />
-    </FrameLayout>
+        android:layout_gravity="top"
+        app:layoutMarginStart="@{viewModel.isSplitView() ? @dimen/margin_64 : @dimen/margin_192}"
+        app:layoutMarginEnd="@{viewModel.isSplitView() ? @dimen/margin_64 : @dimen/margin_192}"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/center_guideline">
+
+        <FrameLayout
+          android:id="@+id/audio_fragment_placeholder"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:visibility="@{viewModel.isAudioBarVisible ? View.VISIBLE : View.GONE}" />
+      </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout
       android:id="@+id/hints_and_solution_fragment_placeholder"
