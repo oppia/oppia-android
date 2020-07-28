@@ -21,6 +21,7 @@ import org.oppia.app.databinding.ContinueNavigationButtonItemBinding
 import org.oppia.app.databinding.DragDropInteractionItemBinding
 import org.oppia.app.databinding.FeedbackItemBinding
 import org.oppia.app.databinding.FractionInteractionItemBinding
+import org.oppia.app.databinding.ImageRegionSelectionInteractionItemBinding
 import org.oppia.app.databinding.NextButtonItemBinding
 import org.oppia.app.databinding.NumericInputInteractionItemBinding
 import org.oppia.app.databinding.PreviousButtonItemBinding
@@ -54,6 +55,7 @@ import org.oppia.app.player.state.itemviewmodel.ContinueNavigationButtonViewMode
 import org.oppia.app.player.state.itemviewmodel.DragAndDropSortInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.FeedbackViewModel
 import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
+import org.oppia.app.player.state.itemviewmodel.ImageRegionSelectionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.InteractionViewModelFactory
 import org.oppia.app.player.state.itemviewmodel.NextButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
@@ -811,6 +813,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
         inflateDataBinding = DragDropInteractionItemBinding::inflate,
         setViewModel = DragDropInteractionItemBinding::setViewModel,
         transformViewModel = { it as DragAndDropSortInteractionViewModel }
+      ).registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.IMAGE_REGION_SELECTION_INTERACTION,
+        inflateDataBinding = ImageRegionSelectionInteractionItemBinding::inflate,
+        setViewModel = ImageRegionSelectionInteractionItemBinding::setViewModel,
+        transformViewModel = { it as ImageRegionSelectionInteractionViewModel }
       ).registerViewDataBinder(
         viewType = StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION,
         inflateDataBinding = NumericInputInteractionItemBinding::inflate,
