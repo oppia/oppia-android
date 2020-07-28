@@ -8,7 +8,8 @@ class PreviousResponsesHeaderViewModel(
   val previousAnswerCount: Int,
   val hasConversationView: Boolean,
   var isExpanded: ObservableBoolean,
-  private val previousResponsesHeaderClickListener: PreviousResponsesHeaderClickListener
+  private val previousResponsesHeaderClickListener: PreviousResponsesHeaderClickListener,
+  val isSplitView: Boolean
 ) : StateItemViewModel(ViewType.PREVIOUS_RESPONSES_HEADER) {
   /** Called when the user clicks on the previous response header. */
   fun onResponsesHeaderClicked() = previousResponsesHeaderClickListener.onResponsesHeaderClicked()
