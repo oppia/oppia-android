@@ -1,5 +1,7 @@
-'''This file lists and imports all external dependencies needed to build Oppia Android.
 '''
+This file lists and imports all external dependencies needed to build Oppia Android.
+'''
+
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:jvm.bzl", "jvm_maven_import_external")
 
