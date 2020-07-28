@@ -136,9 +136,8 @@
               android:layout_gravity="center_horizontal|bottom"
               android:contentDescription="@{@string/show_hide_chapter_list(viewModel.storySummary.storyName)}"
               android:src="@drawable/ic_arrow_drop_down_black_24dp"
-              app:hasRotationAnimation="@{true}"
-              app:rotationAngle="@{180f}"
-              app:isRotationClockwise="@{isListExpanded}" />
+              app:rotationAnimationAngle="@{180f}"
+              app:isRotationAnimationClockwise="@{isListExpanded}" />
           </FrameLayout>
         </LinearLayout>
       </LinearLayout>
