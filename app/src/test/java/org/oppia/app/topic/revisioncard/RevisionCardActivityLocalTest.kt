@@ -29,6 +29,7 @@ import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputMo
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.domain.topic.SUBTOPIC_TOPIC_ID
@@ -55,6 +56,8 @@ import javax.inject.Singleton
 )
 class RevisionCardActivityLocalTest {
 
+  private val internalProfileId = 1
+
   @Inject
   lateinit var fakeEventLogger: FakeEventLogger
 
@@ -68,6 +71,7 @@ class RevisionCardActivityLocalTest {
     ActivityScenario.launch<RevisionCardActivity>(
       RevisionCardActivity.createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
+        internalProfileId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID
       )
@@ -103,7 +107,7 @@ class RevisionCardActivityLocalTest {
       DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
       GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
       QuestionModule::class, TestLogReportingModule::class, TestAccessibilityModule::class,
-      ImageClickInputModule::class
+      ImageClickInputModule::class, LogStorageModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

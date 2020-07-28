@@ -11,8 +11,10 @@ import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
  */
 typealias InteractionViewModelFactory = (
   entityId: String,
+  hasConversationView: Boolean,
   interaction: Interaction,
   interactionAnswerReceiver: InteractionAnswerReceiver,
   interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
-  hasPreviousButton: Boolean
+  hasPreviousButton: Boolean,
+  isSplitView: Boolean
 ) -> StateItemViewModel

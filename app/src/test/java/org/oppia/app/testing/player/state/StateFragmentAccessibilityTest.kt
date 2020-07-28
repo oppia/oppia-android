@@ -40,15 +40,17 @@ import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputMo
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.domain.exploration.TEST_EXPLORATION_ID_8
+import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.domain.question.QuestionModule
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_4
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.testing.TestAccessibilityModule
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
+import org.oppia.util.accessibility.FakeAccessibilityManager
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.gcsresource.GcsResourceModule
 import org.oppia.util.logging.LoggerModule
@@ -75,12 +77,16 @@ class StateFragmentAccessibilityTest {
   @field:ApplicationContext
   lateinit var context: Context
 
+  @Inject
+  lateinit var fakeAccessibilityManager: FakeAccessibilityManager
+
   private val internalProfileId: Int = 1
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
+    fakeAccessibilityManager.setTalkbackEnabled(true)
     FirebaseApp.initializeApp(context)
   }
 
@@ -88,7 +94,7 @@ class StateFragmentAccessibilityTest {
   @InternalCoroutinesApi
   @ExperimentalCoroutinesApi
   fun testStateFragment_loadDragDropExp_moveDownWithAccessibility() {
-    launchForExploration(TEST_EXPLORATION_ID_8).use {
+    launchForExploration(TEST_EXPLORATION_ID_4).use {
       startPlayingExploration()
       onView(
         RecyclerViewMatcher.atPositionOnView(
@@ -111,7 +117,7 @@ class StateFragmentAccessibilityTest {
   @InternalCoroutinesApi
   @ExperimentalCoroutinesApi
   fun testStateFragment_loadDragDropExp_moveUpWithAccessibility() {
-    launchForExploration(TEST_EXPLORATION_ID_8).use {
+    launchForExploration(TEST_EXPLORATION_ID_4).use {
       startPlayingExploration()
       onView(
         RecyclerViewMatcher.atPositionOnView(
@@ -170,7 +176,7 @@ class StateFragmentAccessibilityTest {
       DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
       GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
       QuestionModule::class, TestLogReportingModule::class, TestAccessibilityModule::class,
-      ImageClickInputModule::class
+      ImageClickInputModule::class, LogStorageModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
