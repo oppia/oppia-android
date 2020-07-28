@@ -16,15 +16,16 @@
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:paddingBottom="160dp"
       android:orientation="vertical">
 
       <TextView
         android:id="@+id/revision_card_explanation_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="28dp"
-        android:layout_marginEnd="40dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="28dp"
         android:fontFamily="sans-serif"
         android:text="@{viewModel.explanationLiveData}"
         android:textColor="@color/oppiaPrimaryText"
@@ -36,8 +37,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="48dp"
         android:layout_marginEnd="28dp"
+        android:paddingStart="32dp"
+        android:paddingEnd="32dp"
         android:background="@drawable/state_button_primary_background"
         android:onClick="@{viewModel::clickReturnToTopic}"
         android:text="@string/return_to_topic"
