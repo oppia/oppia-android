@@ -107,7 +107,6 @@ class TopicLessonsFragmentPresenter @Inject constructor(
             )
           binding.storySummaryRecyclerView.apply {
             adapter = storySummaryAdapter
-            (itemAnimator as SimpleItemAnimator).changeDuration = 0
           }
           if (storyId.isNotEmpty())
             binding.storySummaryRecyclerView.layoutManager!!.scrollToPosition(

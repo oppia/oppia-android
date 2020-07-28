@@ -39,3 +39,29 @@ fun setFlashingAnimation(view: View, isFlashing: Boolean) {
     view.alpha = 0f
   }
 }
+
+@BindingAdapter(
+  "app:hasRotationAnimation",
+  "app:isRotationClockwise",
+  "app:rotationAngle",
+  requireAll = true
+)
+fun setRotationAnimation(view: View, hasAnimation: Boolean, isClockwise: Boolean, angle: Float) {
+  if (hasAnimation) {
+    if (isClockwise) {
+      val valueAnimator = ValueAnimator.ofFloat(0f, angle)
+      valueAnimator.duration = 300
+      valueAnimator.addUpdateListener {
+        view.rotation = it.animatedValue as Float
+      }
+      valueAnimator.start()
+    } else {
+      val valueAnimator = ValueAnimator.ofFloat(angle, 0f)
+      valueAnimator.duration = 300
+      valueAnimator.addUpdateListener {
+        view.rotation = it.animatedValue as Float
+      }
+      valueAnimator.start()
+    }
+  }
+}

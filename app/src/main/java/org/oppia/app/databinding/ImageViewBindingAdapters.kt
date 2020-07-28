@@ -133,22 +133,3 @@ fun setProfileImage(imageView: ImageView, profileAvatar: ProfileAvatar?) {
       .into(imageView)
   }
 }
-
-@BindingAdapter("app:expand_rotation_anim")
-fun setExpandRotationAnimation(imageView: ImageView, isExpanded: Boolean) {
-  if (isExpanded) {
-    val valueAnimator = ValueAnimator.ofFloat(0f, 180f)
-    valueAnimator.duration = 300
-    valueAnimator.addUpdateListener {
-      imageView.rotation = it.animatedValue as Float
-    }
-    valueAnimator.start()
-  } else {
-    val valueAnimator = ValueAnimator.ofFloat(180f, 0f)
-    valueAnimator.duration = 300
-    valueAnimator.addUpdateListener {
-      imageView.rotation = it.animatedValue as Float
-    }
-    valueAnimator.start()
-  }
-}
