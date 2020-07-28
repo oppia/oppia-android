@@ -79,7 +79,9 @@
           android:layout_gravity="center_vertical"
           android:contentDescription="@{@string/show_hide_solution_list(viewModel.solutionSummary)}"
           android:padding="8dp"
-          android:src="@{isListExpanded? @drawable/ic_arrow_drop_up_black_24dp : @drawable/ic_arrow_drop_down_black_24dp}" />
+          android:src="@drawable/ic_arrow_drop_down_black_24dp"
+          app:isRotationAnimationClockwise="@{isListExpanded}"
+          app:rotationAnimationAngle="@{180f}" />
       </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
