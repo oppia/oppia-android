@@ -1,4 +1,3 @@
-
 def format_import_proto_library(name, src, deps):
   """
   This macro exists as a way to build proto files that contain import statements in both Gradle
