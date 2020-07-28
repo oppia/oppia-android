@@ -1,7 +1,10 @@
-''' Builds and exports Firebase dependencies.
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+'''
+Package for all Firebase dependencies.
 To reference these dependencies, add '//firebase:crashlytics_lib' and '//firebase:crashlytics_deps'
 to your build rule's dependency list.
 '''
+
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@tools_android//tools/crashlytics:defs.bzl", "crashlytics_android_library")
@@ -26,5 +29,7 @@ android_library(
     exports = [
         artifact("com.crashlytics.sdk.android:crashlytics"),
         artifact("io.fabric.sdk.android:fabric"),
+        artifact("com.google.firebase:firebase-analytics:17.4.4"),
+        artifact("com.google.firebase:firebase-crashlytics:17.1.1"),
     ],
 )
