@@ -1,6 +1,6 @@
 # TODO(#1532): Rename file to 'BUILD' post-Gradle.
 '''
-Builds and exports Firebase dependencies.
+Package for all Firebase dependencies.
 To reference these dependencies, add '//firebase:crashlytics_lib' and '//firebase:crashlytics_deps'
 to your build rule's dependency list.
 '''
