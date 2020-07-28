@@ -15,7 +15,7 @@
   </data>
 
   <FrameLayout
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@{viewModel.hasConversationView ? @drawable/content_blue_background : @drawable/transparent_background}"
     app:explorationSplitViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
@@ -61,7 +61,7 @@
 
     <TextView
       android:id="@+id/feedback_text_view"
-      android:layout_width="match_parent"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:breakStrategy="simple"
       android:fontFamily="sans-serif"
