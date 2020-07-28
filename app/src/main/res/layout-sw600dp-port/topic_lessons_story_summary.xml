@@ -30,6 +30,7 @@
       android:layout_marginTop="12dp"
       android:layout_marginBottom="12dp"
       android:layout_gravity="center"
+      app:rippleColor="@color/transparent"
       app:cardBackgroundColor="@color/white"
       app:cardCornerRadius="4dp"
       app:cardElevation="4dp">
@@ -137,7 +138,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|bottom"
                 android:contentDescription="@{@string/show_hide_chapter_list(viewModel.storySummary.storyName)}"
-                android:src="@{isListExpanded? @drawable/ic_arrow_drop_up_black_24dp : @drawable/ic_arrow_drop_down_black_24dp}" />
+                android:src="@drawable/ic_arrow_drop_down_black_24dp"
+                app:rotationAnimationAngle="@{180f}"
+                app:isRotationAnimationClockwise="@{isListExpanded}" />
             </FrameLayout>
           </LinearLayout>
         </LinearLayout>
