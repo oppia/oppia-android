@@ -70,4 +70,3 @@ fun setRotationAnimation(view: View, isClockwise: Boolean, angle: Float) {
     valueAnimator.start()
   }
 }
-
