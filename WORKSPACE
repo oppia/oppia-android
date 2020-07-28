@@ -11,7 +11,6 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 android_sdk_repository(
     name = "androidsdk",
     api_level = 28,
-    # build_tools_version = "28.0.2",
 )
 
 # Add support for JVM rules: https://github.com/bazelbuild/rules_jvm_external
@@ -23,8 +22,6 @@ http_archive(
     sha256 = RULES_JVM_EXTERNAL_SHA,
     url = "https://github.com/bazelbuild/rules_jvm_external/archive/%s.zip" % RULES_JVM_EXTERNAL_TAG,
 )
-
-load("@rules_jvm_external//:defs.bzl", "maven_install")
 
 # Add support for Kotlin: https://github.com/bazelbuild/rules_kotlin.
 RULES_KOTLIN_VERSION = "legacy-1.4.0-rcx-oppia-exclusive-rc01"
@@ -107,6 +104,7 @@ load("@tools_android//tools/googleservices:defs.bzl", "google_services_workspace
 google_services_workspace_dependencies()
 
 load("@rules_jvm_external//:defs.bzl", "maven_install")
+
 # TODO: Remove unused dependencies once android_local_test errors are resolved
 maven_install(
     artifacts = DAGGER_ARTIFACTS + [
