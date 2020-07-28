@@ -25,7 +25,7 @@ import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.TopicList
 import org.oppia.app.model.TopicSummary
-import org.oppia.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.domain.oppialogger.OppiaLogger
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
@@ -43,7 +43,7 @@ class HomeFragmentPresenter @Inject constructor(
   private val topicListController: TopicListController,
   private val oppiaClock: OppiaClock,
   private val logger: ConsoleLogger,
-  private val analyticsController: AnalyticsController
+  private val oppiaLogger: OppiaLogger
 ) {
   private val routeToTopicListener = activity as RouteToTopicListener
   private val itemList: MutableList<HomeItemViewModel> = ArrayList()
@@ -204,7 +204,7 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   private fun logHomeActivityEvent() {
-    analyticsController.logTransitionEvent(
+    oppiaLogger.logTransitionEvent(
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_HOME,
       /* eventContext= */ null
