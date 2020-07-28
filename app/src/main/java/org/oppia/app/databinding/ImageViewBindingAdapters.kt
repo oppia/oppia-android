@@ -1,6 +1,5 @@
 package org.oppia.app.databinding
 
-import android.animation.ValueAnimator
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
