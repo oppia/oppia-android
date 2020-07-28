@@ -19,7 +19,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical"
-      android:paddingBottom="108dp">
+      android:paddingBottom="145dp">
 
       <TextView
         android:id="@+id/revision_card_explanation_text"
