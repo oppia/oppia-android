@@ -28,7 +28,7 @@
     app:explorationSplitViewPaddingTop="@{@dimen/padding_0}"
     app:explorationViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
     app:explorationViewMarginBottom="@{@dimen/margin_0}"
-    app:explorationViewMarginEnd="@{@dimen/margin_112}"
+    app:explorationViewMarginEnd="@{@dimen/margin_144}"
     app:explorationViewMarginStart="@{@dimen/margin_144}"
     app:explorationViewMarginTop="@{@dimen/margin_24}"
     app:explorationViewPaddingApplicable="@{viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
@@ -48,8 +48,8 @@
     app:questionSplitViewPaddingTop="@{@dimen/padding_0}"
     app:questionViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
     app:questionViewMarginBottom="@{@dimen/margin_0}"
-    app:questionViewMarginEnd="@{@dimen/margin_128}"
-    app:questionViewMarginStart="@{@dimen/margin_128}"
+    app:questionViewMarginEnd="@{@dimen/margin_144}"
+    app:questionViewMarginStart="@{@dimen/margin_144}"
     app:questionViewMarginTop="@{@dimen/margin_24}"
     app:questionViewPaddingApplicable="@{!viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
     app:questionViewPaddingBottom="@{@dimen/padding_0}"
@@ -59,7 +59,7 @@
 
     <FrameLayout
       android:layout_width="0dp"
-      android:layout_height="1dp"
+      android:layout_height="2dp"
       android:background="@color/mid_grey"
       app:layout_constraintBottom_toBottomOf="@+id/previous_responses_header_text"
       app:layout_constraintEnd_toStartOf="@+id/previous_responses_header_text"
@@ -84,7 +84,7 @@
 
     <FrameLayout
       android:layout_width="0dp"
-      android:layout_height="1dp"
+      android:layout_height="2dp"
       android:background="@color/mid_grey"
       app:layout_constraintBottom_toBottomOf="@+id/previous_responses_header_text"
       app:layout_constraintEnd_toEndOf="parent"

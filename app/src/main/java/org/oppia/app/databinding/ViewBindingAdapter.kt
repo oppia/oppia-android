@@ -39,3 +39,11 @@ fun setFlashingAnimation(view: View, isFlashing: Boolean) {
     view.alpha = 0f
   }
 }
+
+/** BindingAdapter to set the height of a View.*/
+@BindingAdapter("android:layout_height")
+fun setLayoutHeight(view: View, height: Float) {
+  val layoutParams = view.layoutParams
+  layoutParams.height = height.toInt()
+  view.layoutParams = layoutParams
+}

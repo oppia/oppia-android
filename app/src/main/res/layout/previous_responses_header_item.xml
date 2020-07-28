@@ -18,7 +18,7 @@
     android:onClick="@{(v) -> viewModel.onResponsesHeaderClicked()}"
     app:explorationSplitViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
     app:explorationSplitViewMarginBottom="@{@dimen/margin_0}"
-    app:explorationSplitViewMarginEnd="@{@dimen/margin_48}"
+    app:explorationSplitViewMarginEnd="@{@dimen/margin_80}"
     app:explorationSplitViewMarginStart="@{@dimen/margin_80}"
     app:explorationSplitViewMarginTop="@{@dimen/margin_24}"
     app:explorationSplitViewPaddingApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
@@ -38,7 +38,7 @@
     app:explorationViewPaddingTop="@{@dimen/padding_0}"
     app:questionSplitViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
     app:questionSplitViewMarginBottom="@{@dimen/margin_0}"
-    app:questionSplitViewMarginEnd="@{@dimen/margin_48}"
+    app:questionSplitViewMarginEnd="@{@dimen/margin_80}"
     app:questionSplitViewMarginStart="@{@dimen/margin_80}"
     app:questionSplitViewMarginTop="@{@dimen/margin_24}"
     app:questionSplitViewPaddingApplicable="@{!viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
@@ -59,7 +59,7 @@
 
     <FrameLayout
       android:layout_width="0dp"
-      android:layout_height="1dp"
+      android:layout_height="@{viewModel.isSplitView? @dimen/thickness_2 : @dimen/thickness_1}"
       android:background="@color/mid_grey"
       app:layout_constraintBottom_toBottomOf="@+id/previous_responses_header_text"
       app:layout_constraintEnd_toStartOf="@+id/previous_responses_header_text"
@@ -84,7 +84,7 @@
 
     <FrameLayout
       android:layout_width="0dp"
-      android:layout_height="1dp"
+      android:layout_height="@{viewModel.isSplitView? @dimen/thickness_2 : @dimen/thickness_1}"
       android:background="@color/mid_grey"
       app:layout_constraintBottom_toBottomOf="@+id/previous_responses_header_text"
       app:layout_constraintEnd_toEndOf="parent"

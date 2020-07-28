@@ -62,6 +62,8 @@
   <dimen name="margin_8">8dp</dimen>
   <dimen name="margin_4">4dp</dimen>
   <dimen name="margin_0">0dp</dimen>
+  <dimen name="thickness_2">2dp</dimen>
+  <dimen name="thickness_1">1dp</dimen>
   <dimen name="dot_width_height">12dp</dimen>
   <dimen name="dot_gap">12dp</dimen>
   <dimen name="enter_text_view_padding_start">60dp</dimen>

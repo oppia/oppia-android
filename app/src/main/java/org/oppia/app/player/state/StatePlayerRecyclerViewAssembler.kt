@@ -163,7 +163,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
   }
 
   private val isSplitView = ObservableField<Boolean>(false)
-  private var isExtraInteractionAnswerCorrect = false
 
   /**
    * Computes a list of view models corresponding to the specified [EphemeralState] and the
@@ -316,7 +315,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
         if (playerFeatureSet.pastAnswerSupport) {
           createSubmittedAnswer(
             answerAndResponse.userAnswer,
-            gcsEntityId
+            gcsEntityId,
+            /* isAnswerCorrect= */ false
           ).let { viewModel ->
             if (showPreviousAnswers) {
               pendingItemList += viewModel
@@ -340,15 +340,16 @@ class StatePlayerRecyclerViewAssembler private constructor(
     answersAndResponses.lastOrNull()?.let { answerAndResponse ->
       if (playerFeatureSet.pastAnswerSupport) {
         if (isCorrectAnswer && isSplitView.get()!!) {
-          isExtraInteractionAnswerCorrect = true
           rightPendingItemList += createSubmittedAnswer(
             answerAndResponse.userAnswer,
-            gcsEntityId
+            gcsEntityId,
+            /* isAnswerCorrect= */ true
           )
         } else {
           pendingItemList += createSubmittedAnswer(
             answerAndResponse.userAnswer,
-            gcsEntityId
+            gcsEntityId,
+            this.isCorrectAnswer.get()!!
           )
         }
       }
@@ -481,12 +482,13 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
   private fun createSubmittedAnswer(
     userAnswer: UserAnswer,
-    gcsEntityId: String
+    gcsEntityId: String,
+    isAnswerCorrect: Boolean
   ): SubmittedAnswerViewModel {
     val submittedAnswerViewModel =
       SubmittedAnswerViewModel(userAnswer, gcsEntityId, hasConversationView, isSplitView.get()!!)
     submittedAnswerViewModel.isCorrectAnswer.set(isCorrectAnswer.get())
-    submittedAnswerViewModel.isExtraInteractionAnswerCorrect.set(isExtraInteractionAnswerCorrect)
+    submittedAnswerViewModel.isExtraInteractionAnswerCorrect.set(isAnswerCorrect)
     return submittedAnswerViewModel
   }
 
