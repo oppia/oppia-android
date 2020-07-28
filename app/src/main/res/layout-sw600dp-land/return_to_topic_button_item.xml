@@ -76,7 +76,6 @@
       android:id="@+id/return_to_topic_button"
       style="@style/StateButtonActive"
       android:layout_height="0dp"
-      android:layout_margin="4dp"
       android:button="@drawable/state_button_primary_background"
       android:onClick="@{(v) -> buttonViewModel.returnToTopicNavigationButtonListener.onReturnToTopicButtonClicked()}"
       android:text="@string/state_end_exploration_button"
