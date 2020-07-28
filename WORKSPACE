@@ -105,7 +105,6 @@ google_services_workspace_dependencies()
 
 load("@rules_jvm_external//:defs.bzl", "maven_install")
 
-# TODO: Remove unused dependencies once android_local_test errors are resolved
 maven_install(
     artifacts = DAGGER_ARTIFACTS + [
         "org.robolectric:robolectric:4.3",
