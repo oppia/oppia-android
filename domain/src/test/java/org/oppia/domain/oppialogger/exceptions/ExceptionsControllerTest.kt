@@ -105,7 +105,7 @@ class ExceptionsControllerTest {
   @ExperimentalCoroutinesApi
   @InternalCoroutinesApi
   @Test
-  fun testController_logException_NonFatal_withNoNetwork_logsToCacheStore() {
+  fun testController_logException_nonFatal_withNoNetwork_logsToCacheStore() {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
     val exceptionThrown = Exception("TEST MESSAGE", Throwable("TEST CAUSE"))
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_ONE)
@@ -129,7 +129,7 @@ class ExceptionsControllerTest {
   @ExperimentalCoroutinesApi
   @InternalCoroutinesApi
   @Test
-  fun testController_logException_Fatal_withNoNetwork_logsToCacheStore() {
+  fun testController_logFatalException_withNoNetwork_logsToCacheStore() {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
     val exceptionThrown = Exception("TEST MESSAGE", Throwable("TEST"))
     exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP_ONE)
