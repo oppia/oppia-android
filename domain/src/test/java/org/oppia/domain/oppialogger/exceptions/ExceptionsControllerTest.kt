@@ -42,7 +42,10 @@ import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
-const val TEST_TIMESTAMP = 1556094120000
+private const val TEST_TIMESTAMP_ONE = 1556094120000
+private const val TEST_TIMESTAMP_TWO = 1556094110000
+private const val TEST_TIMESTAMP_THREE = 1556094100000
+private const val TEST_TIMESTAMP_FOUR = 1556094000000
 
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
@@ -78,9 +81,9 @@ class ExceptionsControllerTest {
   }
 
   @Test
-  fun testController_logException_NonFatal_logsToRemoteService() {
+  fun testController_logException_nonFatal_logsToRemoteService() {
     val exceptionThrown = Exception("TEST MESSAGE", Throwable())
-    exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP)
+    exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_ONE)
 
     val exceptionLogged = fakeExceptionLogger.getMostRecentException()
 
@@ -88,9 +91,9 @@ class ExceptionsControllerTest {
   }
 
   @Test
-  fun testController_logException_Fatal_logsToRemoteService() {
+  fun testController_logFatalException_logsToRemoteService() {
     val exceptionThrown = Exception("TEST MESSAGE", Throwable())
-    exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP)
+    exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP_ONE)
 
     val exceptionLogged = fakeExceptionLogger.getMostRecentException()
 
@@ -105,7 +108,7 @@ class ExceptionsControllerTest {
   fun testController_logException_NonFatal_withNoNetwork_logsToCacheStore() {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
     val exceptionThrown = Exception("TEST MESSAGE", Throwable("TEST CAUSE"))
-    exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP)
+    exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_ONE)
 
     val cachedExceptions = exceptionsController.getExceptionLogs()
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
@@ -129,7 +132,7 @@ class ExceptionsControllerTest {
   fun testController_logException_Fatal_withNoNetwork_logsToCacheStore() {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
     val exceptionThrown = Exception("TEST MESSAGE", Throwable("TEST"))
-    exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP)
+    exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP_ONE)
 
     val cachedExceptions = exceptionsController.getExceptionLogs()
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
@@ -153,10 +156,19 @@ class ExceptionsControllerTest {
   fun testController_logExceptions_exceedLimit_checkCorrectEviction() {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
 
-    exceptionsController.logFatalException(Exception("TEST1", Throwable("ONE")), 1556094120000)
-    exceptionsController.logNonFatalException(Exception("TEST2", Throwable("TWO")), 1556094110000)
-    exceptionsController.logFatalException(Exception("TEST3", Throwable("THREE")), 1556094100000)
-    exceptionsController.logFatalException(Exception("TEST4", Throwable("FOUR")), 1556094000000)
+    exceptionsController.logFatalException(Exception("TEST1", Throwable("ONE")), TEST_TIMESTAMP_ONE)
+    exceptionsController.logNonFatalException(
+      Exception("TEST2", Throwable("TWO")),
+      TEST_TIMESTAMP_TWO
+    )
+    exceptionsController.logFatalException(
+      Exception("TEST3", Throwable("THREE")),
+      TEST_TIMESTAMP_THREE
+    )
+    exceptionsController.logFatalException(
+      Exception("TEST4", Throwable("FOUR")),
+      TEST_TIMESTAMP_FOUR
+    )
 
     val cachedExceptions = exceptionsController.getExceptionLogs()
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
@@ -169,27 +181,34 @@ class ExceptionsControllerTest {
     val exceptionTwo = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(1)
     val cacheStoreSize = oppiaExceptionLogsResultCaptor.value.getOrThrow().exceptionLogList.size
 
-    assertThat(cacheStoreSize).isEqualTo(2)
-    // In this case, 3 FATAL and 1 NON-FATAL exception was logged. So while pruning, none of the retained logs should have NON-FATAL exception type.
+    // In this case, 3 fatal and 1 non-fatal exceptions were logged. So while pruning, none of the retained logs should have non-fatal exception type.
     assertThat(exceptionOne.exceptionType).isNotEqualTo(ExceptionType.NON_FATAL)
     assertThat(exceptionTwo.exceptionType).isNotEqualTo(ExceptionType.NON_FATAL)
     // If we analyse the order of logging of exceptions, we can see that record pruning will begin from the logging of the third record.
-    // At first, the second exception log will be removed as it has NON-FATAL exception type and the exception logged at the third place will become the exception record at the second place in the store.
-    // When the forth exception gets logged then the pruning will be purely based on timestamp of the exception as both exception logs have FATAL exception type.
+    // At first, the second exception log will be removed as it has non-fatal exception type and the exception logged at the third place will become the exception record at the second place in the store.
+    // When the forth exception gets logged then the pruning will be purely based on timestamp of the exception as both exception logs have fatal exception type.
     // As the third exceptions's timestamp was lesser than that of the first event, it will be pruned from the store and the forth exception will become the second exception in the store.
-    assertThat(exceptionOne.timestampInMillis).isEqualTo(1556094120000)
-    assertThat(exceptionTwo.timestampInMillis).isEqualTo(1556094000000)
+    assertThat(exceptionOne.timestampInMillis).isEqualTo(TEST_TIMESTAMP_ONE)
+    assertThat(exceptionTwo.timestampInMillis).isEqualTo(TEST_TIMESTAMP_FOUR)
+    assertThat(exceptionOne.message).isEqualTo("TEST1")
+    assertThat(exceptionTwo.message).isEqualTo("TEST4")
   }
 
   @ExperimentalCoroutinesApi
   @InternalCoroutinesApi
   @Test
-  fun testController_logExceptions_exceedLimit_checkSizeOfCache() {
+  fun testController_logExceptions_exceedLimit_cacheSizeDoesNotExceedLimit() {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
 
-    exceptionsController.logFatalException(Exception("TEST1", Throwable("ONE")), 1556094120000)
-    exceptionsController.logNonFatalException(Exception("TEST2", Throwable("TWO")), 1556094110000)
-    exceptionsController.logFatalException(Exception("TEST3", Throwable("THREE")), 1556094100000)
+    exceptionsController.logFatalException(Exception("TEST1", Throwable("ONE")), TEST_TIMESTAMP_ONE)
+    exceptionsController.logNonFatalException(
+      Exception("TEST2", Throwable("TWO")),
+      TEST_TIMESTAMP_TWO
+    )
+    exceptionsController.logFatalException(
+      Exception("TEST3", Throwable("THREE")),
+      TEST_TIMESTAMP_THREE
+    )
 
     val cachedExceptions = exceptionsController.getExceptionLogs()
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
@@ -205,11 +224,11 @@ class ExceptionsControllerTest {
   @ExperimentalCoroutinesApi
   @InternalCoroutinesApi
   @Test
-  fun testController_logException_switchToNoNetwork_logException_checkManagement() {
+  fun testController_logException_switchToNoNetwork_logException_verifyLoggingAndCaching() {
     val exceptionThrown = Exception("TEST", Throwable())
-    exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP)
+    exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_ONE)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
-    exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP)
+    exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP_ONE)
 
     val cachedExceptions = exceptionsController.getExceptionLogs()
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
@@ -233,11 +252,11 @@ class ExceptionsControllerTest {
   @ExperimentalCoroutinesApi
   @InternalCoroutinesApi
   @Test
-  fun testController_logNonFatalException_logFatalException_withNoNetwork_checkOrderinCache() {
+  fun testController_logExceptions_withNoNetwork_verifyCachedInCorrectOrder() {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
     val exceptionThrown = Exception("TEST", Throwable())
-    exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP)
-    exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP)
+    exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_ONE)
+    exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP_ONE)
 
     val cachedExceptions = exceptionsController.getExceptionLogs()
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)

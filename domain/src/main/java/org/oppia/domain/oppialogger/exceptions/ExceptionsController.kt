@@ -2,6 +2,7 @@ package org.oppia.domain.oppialogger.exceptions
 
 import androidx.lifecycle.LiveData
 import org.oppia.app.model.ExceptionLog
+import org.oppia.app.model.ExceptionLog.ExceptionType
 import org.oppia.app.model.OppiaExceptionLogs
 import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.domain.oppialogger.ExceptionLogStorageCacheSize
@@ -12,7 +13,7 @@ import org.oppia.util.logging.ExceptionLogger
 import org.oppia.util.networking.NetworkConnectionUtil
 import javax.inject.Inject
 
-const val EXCEPTIONS_CONTROLLER = "Exceptions Controller"
+private const val EXCEPTIONS_CONTROLLER = "Exceptions Controller"
 
 /** Controller for handling exception logging. */
 class ExceptionsController @Inject constructor(
@@ -26,14 +27,20 @@ class ExceptionsController @Inject constructor(
   private val exceptionLogStore =
     cacheStoreFactory.create("exception_logs", OppiaExceptionLogs.getDefaultInstance())
 
-  /** Logs a NON-FATAL exception. */
+  /**
+   * Logs a non-fatal [exception].
+   * The [timestamp], along with [ExceptionType] facilitate effective pruning records when [exceptionLogStorageCacheSize] is exceeded.
+   */
   fun logNonFatalException(exception: Exception, timestamp: Long) {
-    uploadOrCacheExceptionLog(exception, timestamp, ExceptionLog.ExceptionType.NON_FATAL)
+    uploadOrCacheExceptionLog(exception, timestamp, ExceptionType.NON_FATAL)
   }
 
-  /** Logs a FATAL exception. */
+  /**
+   * Logs a FATAL exception.
+   * The [timestamp], along with [ExceptionType] facilitate effective pruning records when [exceptionLogStorageCacheSize] is exceeded.
+   */
   fun logFatalException(exception: Exception, timestamp: Long) {
-    uploadOrCacheExceptionLog(exception, timestamp, ExceptionLog.ExceptionType.FATAL)
+    uploadOrCacheExceptionLog(exception, timestamp, ExceptionType.FATAL)
   }
 
   /**
@@ -45,7 +52,7 @@ class ExceptionsController @Inject constructor(
   private fun uploadOrCacheExceptionLog(
     exception: Exception,
     timestamp: Long,
-    exceptionType: ExceptionLog.ExceptionType
+    exceptionType: ExceptionType
   ) {
     when (networkConnectionUtil.getCurrentConnectionStatus()) {
       NetworkConnectionUtil.ConnectionStatus.NONE ->
@@ -54,11 +61,11 @@ class ExceptionsController @Inject constructor(
     }
   }
 
-  /** Returns an [ExceptionLog] from an [throwable]. */
+  /** Returns an [ExceptionLog] from a [throwable]. */
   private fun convertExceptionToExceptionLog(
     throwable: Throwable,
     timestamp: Long,
-    exceptionType: ExceptionLog.ExceptionType
+    exceptionType: ExceptionType
   ): ExceptionLog {
     val exceptionLogBuilder = ExceptionLog.newBuilder()
     throwable.message?.let {
