@@ -83,7 +83,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       hintsAndSolutionAdapter =
         HintsAndSolutionAdapter(
           fragment,
-          viewModel.processHintList(),
+          getHintListWithDividers(viewModel.processHintList()),
           expandedHintListIndexListener,
           currentExpandedHintListIndex,
           viewModel.explorationId.get(),
@@ -102,6 +102,16 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
         handleAllHintsExhausted(viewModel.allHintsExhausted.get()!!)
       }
     }
+  }
+
+  private fun getHintListWithDividers(hintList: List<HintsAndSolutionItemViewModel>)
+    : List<HintsAndSolutionItemViewModel> {
+    val newHintList = mutableListOf<HintsAndSolutionItemViewModel>()
+    hintList.forEach {
+      newHintList.add(it)
+      newHintList.add(HintsDividerViewModel())
+    }
+    return newHintList
   }
 
   private fun handleAllHintsExhausted(allHintsExhausted: Boolean) {
