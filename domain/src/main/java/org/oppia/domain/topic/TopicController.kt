@@ -449,7 +449,7 @@ class TopicController @Inject constructor(
       // TODO(#1476): Remove skill summary because we use subtopic in practice tab now.
       .addAllSkill(skillSummaryList)
       .addAllStory(storySummaryList)
-      .setTopicThumbnail(TOPIC_THUMBNAILS.getValue(topicId))
+      .setTopicThumbnail(createTopicThumbnail(topicData))
       .setDiskSizeBytes(computeTopicSizeBytes(getAssetFileNameList(topicId)))
       .addAllSubtopic(subtopicList)
       .build()

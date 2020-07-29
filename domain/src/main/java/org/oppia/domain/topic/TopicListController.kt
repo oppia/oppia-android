@@ -1,5 +1,6 @@
 package org.oppia.domain.topic
 
+import android.graphics.Color
 import android.os.SystemClock
 import android.text.Spannable
 import android.text.style.ImageSpan
@@ -44,7 +45,7 @@ import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.DefaultGcsPrefix
 import org.oppia.util.parser.ImageDownloadUrlTemplate
 import org.oppia.util.threading.BackgroundDispatcher
-import java.util.*
+import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -52,6 +53,8 @@ import kotlin.collections.ArrayList
 
 private const val ONE_WEEK_IN_DAYS = 7
 private const val ONE_DAY_IN_MS = 24 * 60 * 60 * 1000
+
+private const val TOPIC_BG_COLOR = "#C6DCDA"
 
 const val TEST_TOPIC_ID_0 = "test_topic_id_0"
 const val TEST_TOPIC_ID_1 = "test_topic_id_1"
@@ -245,7 +248,7 @@ class TopicListController @Inject constructor(
       )
       .setTotalSkillCount(jsonObject.getJSONObject("skill_descriptions").length())
       .setTotalChapterCount(totalChapterCount)
-      .setTopicThumbnail(TOPIC_THUMBNAILS.getValue(topicId))
+      .setTopicThumbnail(createTopicThumbnail(jsonObject))
       .build()
   }
 
@@ -505,31 +508,55 @@ class TopicListController @Inject constructor(
   }
 }
 
+internal fun createTopicThumbnail(topicJsonObject: JSONObject): LessonThumbnail {
+  val topicId = topicJsonObject.optString("topic_id")
+  val thumbnailBgColor = topicJsonObject.optString("thumbnail_bg_color")
+  val thumbnailFilename = topicJsonObject.optString("thumbnail_filename")
+
+  return if (thumbnailFilename.isNotEmpty() && thumbnailBgColor.isNotEmpty()) {
+    LessonThumbnail.newBuilder()
+      .setThumbnailFilename(thumbnailFilename)
+      .setBackgroundColorRgb(Color.parseColor(thumbnailBgColor))
+      .build()
+  } else if (TOPIC_THUMBNAILS.containsKey(topicId)) {
+    TOPIC_THUMBNAILS.getValue(topicId)
+  } else {
+    createDefaultTopicThumbnail()
+  }
+}
+
+internal fun createDefaultTopicThumbnail(): LessonThumbnail {
+  return LessonThumbnail.newBuilder()
+    .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
+    .setBackgroundColorRgb(Color.parseColor(TOPIC_BG_COLOR))
+    .build()
+}
+
 internal fun createTopicThumbnail0(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
-    .setBackgroundColorRgb(0xd5836f)
+    .setBackgroundColorRgb(Color.parseColor(TOPIC_BG_COLOR))
     .build()
 }
 
 internal fun createTopicThumbnail1(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
-    .setBackgroundColorRgb(0xf7bf73)
+    .setBackgroundColorRgb(Color.parseColor(TOPIC_BG_COLOR))
     .build()
 }
 
 internal fun createTopicThumbnail2(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.ADDING_AND_SUBTRACTING_FRACTIONS)
-    .setBackgroundColorRgb(0xd5836f)
+    .setBackgroundColorRgb(Color.parseColor(TOPIC_BG_COLOR))
     .build()
 }
 
 internal fun createTopicThumbnail3(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.BAKER)
-    .setBackgroundColorRgb(0xd5A26f)
+    .setBackgroundColorRgb(Color.parseColor(TOPIC_BG_COLOR))
     .build()
 }
 
