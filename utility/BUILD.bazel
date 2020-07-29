@@ -54,7 +54,6 @@ kt_android_library(
     visibility = ["//visibility:public"],
 )
 
-
 utility_test(
    name = "AsyncResultTest",
    src = ["src/test/java/org/oppia/util/data/AsyncResultTest.kt"],
