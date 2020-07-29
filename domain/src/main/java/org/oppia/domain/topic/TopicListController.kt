@@ -331,35 +331,49 @@ class TopicListController @Inject constructor(
       }
     }
     if ((ongoingStoryListBuilder.olderStoryCount + ongoingStoryListBuilder.recentStoryCount) == 0) {
-      ongoingStoryListBuilder.addAllRecentStory(recommendedStoryList())
+      ongoingStoryListBuilder.addAllRecentStory(createRecommendedStoryList())
     }
     return ongoingStoryListBuilder.build()
   }
 
-  private fun recommendedStoryList(): List<PromotedStory> {
+  private fun createRecommendedStoryList(): List<PromotedStory> {
     val recommendedStories = ArrayList<PromotedStory>()
-    recommendedStories.add(
-      createPromotedStory(
-        FRACTIONS_STORY_ID_0,
-        topicController.retrieveTopic(FRACTIONS_TOPIC_ID),
-        0,
-        2,
-        "What is a Fraction?",
-        FRACTIONS_EXPLORATION_ID_0
-      )
-    )
-
-    recommendedStories.add(
-      createPromotedStory(
-        RATIOS_STORY_ID_0,
-        topicController.retrieveTopic(RATIOS_TOPIC_ID),
-        0,
-        2,
-        "What is a Ratio?",
-        RATIOS_EXPLORATION_ID_0
-      )
-    )
+    val topicIdJsonArray = jsonAssetRetriever
+      .loadJsonFromAsset("topics.json")!!
+      .getJSONArray("topic_id_list")
+    for (i in 0 until topicIdJsonArray.length()) {
+      recommendedStories.add(createRecommendedStoryFromAssets(topicIdJsonArray[i].toString()))
+    }
     return recommendedStories
+  }
+
+  private fun createRecommendedStoryFromAssets(topicId: String): PromotedStory {
+    val topicJson = jsonAssetRetriever.loadJsonFromAsset("$topicId.json")!!
+
+    var totalChapterCount = 0
+    val storyData = topicJson.getJSONArray("canonical_story_dicts")
+    for (i in 0 until storyData.length()) {
+      totalChapterCount += storyData
+        .getJSONObject(i)
+        .getJSONArray("node_titles")
+        .length()
+    }
+    val storyId = storyData.optJSONObject(0).optString("id")
+    val storySummary = topicController.retrieveStory(storyId)
+
+    val promotedStoryBuilder = PromotedStory.newBuilder()
+      .setStoryId(storyId)
+      .setStoryName(storySummary.storyName)
+      .setLessonThumbnail(storySummary.storyThumbnail)
+      .setTopicId(topicId)
+      .setTopicName(topicJson.optString("topic_name"))
+      .setCompletedChapterCount(0)
+      .setTotalChapterCount(totalChapterCount)
+    if (storySummary.chapterList.isNotEmpty()) {
+      promotedStoryBuilder.nextChapterName = storySummary.chapterList[0].name
+      promotedStoryBuilder.explorationId = storySummary.chapterList[0].explorationId
+    }
+    return promotedStoryBuilder.build()
   }
 
   private fun createPromotedStory(
