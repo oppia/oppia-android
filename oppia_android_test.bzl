@@ -7,6 +7,16 @@ def oppia_android_test(name, srcs, test_manifest, custom_package, resource_files
   This macro exists as a way to set up a test in Oppia Android to be run with Bazel.
   This macro creates a library for an individual test that is fed as a dependency into an
   android_local_test() rule which configures the test to be run with Roboletric and Bazel.
+
+  Args:
+      name: str. The name of the Kotlin test file without the '.kt' suffix.
+      srcs: str. The name of the Kotlin test file to be run.
+      test_manifest: str. The path to the test manifest file.
+      custom_package: str. The module's package. Example: 'org.oppia.utility'.
+      resource_files: str. The path to the resource files. This is typically a glob([]).
+      test_class: The package of the src file. For example, if the src is 'FakeEventLoggerTest.kt',
+          then the test_class would be "org.oppia.testing.FakeEventLoggerTest".
+      src_library_name: str. The name of the library that builds the module's test files.
   '''
 
   kt_android_library(
