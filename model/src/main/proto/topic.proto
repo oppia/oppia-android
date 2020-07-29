@@ -100,13 +100,6 @@ message SkillSummary {
 
   // A brief description of the skill.
   string description = 2;
-
-  // A URL corresponding to a thumbnail associated with this skill. If this is absent, the UI should show a reasonable
-  // alternative.
-  string thumbnail_url = 3;
-
-  // The thumbnail corresponding to this skill.
-  LessonThumbnail skill_thumbnail = 4;
 }
 
 // Corresponds to the on-disk storage representing all available topics for play.

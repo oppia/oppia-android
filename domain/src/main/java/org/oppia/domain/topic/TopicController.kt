@@ -65,7 +65,7 @@ private const val FRACTIONS_SUBTOPIC_ID_1 = 1
 private const val FRACTIONS_SUBTOPIC_ID_2 = 2
 private const val FRACTIONS_SUBTOPIC_ID_3 = 3
 private const val FRACTIONS_SUBTOPIC_ID_4 = 4
-private val SUBTOPIC_BG_COLOR = "#FFFFFF"
+private const val SUBTOPIC_BG_COLOR = "#FFFFFF"
 
 private const val QUESTION_DATA_PROVIDER_ID = "QuestionDataProvider"
 private const val TRANSFORMED_GET_COMPLETED_STORIES_PROVIDER_ID =
@@ -572,8 +572,6 @@ class TopicController @Inject constructor(
     return SkillSummary.newBuilder()
       .setSkillId(skillId)
       .setDescription(description)
-      // TODO(#1476): Remove skill thumbnail as we don't have them in json files.
-      .setSkillThumbnail(createSkillThumbnail(skillId))
       .build()
   }
 
@@ -798,31 +796,6 @@ class TopicController @Inject constructor(
         .build()
     } else {
       createSubtopicThumbnail(subtopicId)
-    }
-  }
-
-  private fun createSkillThumbnail(skillId: String): LessonThumbnail {
-    return when (skillId) {
-      FRACTIONS_SKILL_ID_0 ->
-        LessonThumbnail.newBuilder()
-          .setThumbnailGraphic(LessonThumbnailGraphic.IDENTIFYING_THE_PARTS_OF_A_FRACTION)
-          .build()
-      FRACTIONS_SKILL_ID_1 ->
-        LessonThumbnail.newBuilder()
-          .setThumbnailGraphic(LessonThumbnailGraphic.WRITING_FRACTIONS)
-          .build()
-      FRACTIONS_SKILL_ID_2 ->
-        LessonThumbnail.newBuilder()
-          .setThumbnailGraphic(LessonThumbnailGraphic.MIXED_NUMBERS_AND_IMPROPER_FRACTIONS)
-          .build()
-      RATIOS_SKILL_ID_0 ->
-        LessonThumbnail.newBuilder()
-          .setThumbnailGraphic(LessonThumbnailGraphic.DERIVE_A_RATIO)
-          .build()
-      else ->
-        LessonThumbnail.newBuilder()
-          .setThumbnailGraphic(LessonThumbnailGraphic.IDENTIFYING_THE_PARTS_OF_A_FRACTION)
-          .build()
     }
   }
 
