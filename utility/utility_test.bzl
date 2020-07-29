@@ -11,8 +11,8 @@ def utility_test(name, src, test_class):
     name = name,
     srcs = src,
     resource_files = native.glob(["src/main/res/**/*.xml"]),
-    src_library_name = "utility_test_lib",
+    src_library_name = "utility_tests",
     custom_package = "org.oppia.util",
     test_class = test_class,
-    test_manifest = "src/test/TestManifest.xml",
+    test_manifest = "src/test/AndroidManifest.xml",
   )
