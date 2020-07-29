@@ -34,5 +34,15 @@
   "skill_descriptions": {
     "NGZ89uMw0IGV": "Ratios Skill 1"
   },
-  "subtopics": []
+  "subtopics": [
+    {
+      "thumbnail_bg_color": "#FF72FF",
+      "skill_ids": [
+        "NGZ89uMw0IGV"
+      ],
+      "id": 1,
+      "thumbnail_filename": "",
+      "title": "What is a Ratio?"
+    }
+  ]
 }
