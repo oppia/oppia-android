@@ -193,19 +193,19 @@ class StateRetriever @Inject constructor(
       .build()
   }
 
-  private fun createCorrectAnswer(containerObject: JSONObject): CorrectAnswer {
+  private fun createCorrectAnswer(containerObject: JSONObject): InteractionObject {
     val correctAnswerObject = containerObject.optJSONObject("correct_answer")
     return if (correctAnswerObject != null) {
-      CorrectAnswer.newBuilder()
-        .setNumerator(correctAnswerObject.getInt("numerator"))
-        .setDenominator(correctAnswerObject.getInt("denominator"))
-        .setWholeNumber(correctAnswerObject.getInt("wholeNumber"))
-        .setIsNegative(correctAnswerObject.getBoolean("isNegative"))
-        .build()
+//      CorrectAnswer.newBuilder()
+//        .setNumerator(correctAnswerObject.getInt("numerator"))
+//        .setDenominator(correctAnswerObject.getInt("denominator"))
+//        .setWholeNumber(correctAnswerObject.getInt("wholeNumber"))
+//        .setIsNegative(correctAnswerObject.getBoolean("isNegative"))
+//        .build()
     } else {
-      CorrectAnswer.newBuilder()
-        .setCorrectAnswer(containerObject.getString("correct_answer"))
-        .build()
+//      CorrectAnswer.newBuilder()
+//        .setCorrectAnswer(containerObject.getString("correct_answer"))
+//        .build()
     }
   }
 

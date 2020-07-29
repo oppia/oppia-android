@@ -110,7 +110,7 @@ message Solution {
   // Flag that is true if correct_answer is the only correct answer of the question.
   bool answer_is_exclusive = 2;
   // correct_answer of the State.
-  CorrectAnswer correct_answer = 3;
+  InteractionObject correct_answer = 3;
   // Core explanation to the correct answer.
   SubtitledHtml explanation = 4;
   // To check if the solution was revealed or not by the learner.
@@ -119,13 +119,13 @@ message Solution {
 
 // Structure for a Correct answer in Solution
 // Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeSolution.kt
-message CorrectAnswer {
-  int32 denominator = 1;
-  int32 numerator = 2;
-  int32 whole_number = 3;
-  bool is_negative = 4;
-  string correct_answer = 5;
-}
+//message CorrectAnswer {
+//  int32 denominator = 1;
+//  int32 numerator = 2;
+//  int32 whole_number = 3;
+//  bool is_negative = 4;
+//  string correct_answer = 5;
+//}
 
 // Structure for a single hint
 // Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeHint.kt
