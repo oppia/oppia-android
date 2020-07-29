@@ -5,4 +5,5 @@
   <dimen name="bullet_y_offset">2dp</dimen>
   <dimen name="bullet_leading_margin">24dp</dimen>
   <dimen name="minimum_image_size">48dp</dimen>
+  <dimen name="maximum_image_size">200dp</dimen>
 </resources>
