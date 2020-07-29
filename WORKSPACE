@@ -1,5 +1,7 @@
-'''This file lists and imports all external dependencies needed to build Oppia Android.
 '''
+This file lists and imports all external dependencies needed to build Oppia Android.
+'''
+
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:jvm.bzl", "jvm_maven_import_external")
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
@@ -9,7 +11,6 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 android_sdk_repository(
     name = "androidsdk",
     api_level = 28,
-    # build_tools_version = "28.0.2",
 )
 
 # Add support for JVM rules: https://github.com/bazelbuild/rules_jvm_external
@@ -33,9 +34,10 @@ http_archive(
    sha256 = RULES_KOTLIN_SHA,
 )
 
-# TODO: Remove kt_download_local_dev_dependencies() when switching to rules_kotlin release
+# TODO(#1535): Remove once rules_kotlin is released because these lines become unnecessary
 load("@io_bazel_rules_kotlin//kotlin:dependencies.bzl", "kt_download_local_dev_dependencies")
 kt_download_local_dev_dependencies()
+
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kotlin_repositories", "kt_register_toolchains")
 kotlin_repositories()
 kt_register_toolchains()
@@ -102,15 +104,18 @@ load("@tools_android//tools/googleservices:defs.bzl", "google_services_workspace
 google_services_workspace_dependencies()
 
 load("@rules_jvm_external//:defs.bzl", "maven_install")
+
 maven_install(
     artifacts = DAGGER_ARTIFACTS + [
         "org.robolectric:robolectric:4.3",
         "org.robolectric:annotations:4.3",
         "androidx.appcompat:appcompat:1.0.2",
+        "androidx.annotation:annotation:1.1.0",
+        "com.android.support:support-annotations:28.0.0",
         "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.2",
-        "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2",
-        "org.jetbrains.kotlin:kotlin-test-junit:1.3.72",
-        "org.jetbrains.kotlin:kotlin-reflect:1.3.72",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.8",
+        "androidx.core:core-ktx:1.0.1",
+        "junit:junit:4.12",
         "com.google.truth:truth:0.43",
         "com.github.bumptech.glide:glide:4.11.0",
         "com.caverock:androidsvg-aar:1.4",
@@ -124,6 +129,7 @@ maven_install(
         "io.fabric.sdk.android:fabric:1.4.7",
         "com.google.firebase:firebase-analytics:17.4.4",
         "com.google.firebase:firebase-crashlytics:17.1.1",
+        "org.jetbrains.kotlin:kotlin-reflect:1.3.41",
     ],
     repositories = DAGGER_REPOSITORIES + [
         "https://maven.google.com",

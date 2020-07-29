@@ -1,21 +1,29 @@
-# TODO: Rename file to 'BUILD' post-Gradle. See https://github.com/oppia/oppia-android/issues/1532.
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+'''
+This library contains utilities that all other modules, minus model, depend on.
+It also contains Robolectric and JUnit tests for it's utilities.
+In Bazel, Kotlin source files are built into a library using the kt_android_library() rule.
+Kotlin test files must be built in their own kt_android_library() rule and added as a dependency to
+an android_local_test() rule which configures instrumentation tests in Bazel.
+'''
+
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 load("//utility:utility_test.bzl", "utility_test")
 
-'''A kt_android_library() rule that builds utility module kotlin source files into a library.'''
+# Library for general-purpose utilities.
 kt_android_library(
-    name = "utility_lib",
+    name = "utility",
     custom_package = "org.oppia.util",
-    srcs = glob(["src/main/java/org/oppia/util/**/*.kt"],),
+    srcs = glob(["src/main/java/org/oppia/util/**/*.kt"]),
     resource_files = glob(["src/main/res/**/*.xml"]),
     manifest = "src/main/AndroidManifest.xml",
     deps = [
         ":dagger",
-        "//model:model_lib",
-        "//firebase:crashlytics_lib",
+        "//model",
+        "//firebase:crashlytics",
         "//firebase:crashlytics_deps",
         artifact("com.google.firebase:firebase-analytics:17.4.4"),
         artifact("com.google.firebase:firebase-crashlytics:17.1.1"),
@@ -31,16 +39,16 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "utility_test_lib",
+    name = "utility_tests",
     custom_package = "org.oppia.util",
     srcs = glob(["src/test/java/org/oppia/util/**/*.kt"],),
     resource_files = glob(["src/main/res/**/*.xml"]),
     manifest = "src/test/TestManifest.xml",
     deps = [
         ":dagger",
-        ":utility_lib",
-        "//testing:testing_lib",
-        "//model:model_lib",
+        ":utility",
+        "//testing",
+        "//model",
         "//firebase:crashlytics_lib",
         "//firebase:crashlytics_deps",
         artifact("com.google.firebase:firebase-analytics:17.4.4"),
@@ -49,9 +57,14 @@ kt_android_library(
         artifact("com.google.truth:truth"),
         artifact("androidx.test.ext:junit"),
         artifact("org.mockito:mockito-core"),
+        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-core"),
+        artifact("androidx.appcompat:appcompat"),
+        artifact("com.github.bumptech.glide:glide"),
+        artifact("com.caverock:androidsvg-aar"),
     ],
     visibility = ["//visibility:public"],
 )
+
 
 utility_test(
    name = "AsyncResultTest",

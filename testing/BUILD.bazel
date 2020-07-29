@@ -1,44 +1,47 @@
-# TODO: Rename file to 'BUILD' post-Gradle. See https://github.com/oppia/oppia-android/issues/1532.
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+'''
+This library contains fake objects used for testing as well as tests for these objects.
+In Bazel, Kotlin source files are built into a library using the kt_android_library() rule.
+Individual Kotlin test files must be built in their own kt_android_library() rules and added as a
+dependency to an android_local_test() rule which configures instrumentation tests in Bazel.
+In order to eliminate duplicate code, a custom macro testing_test() has been written to streamline
+testing in this module.
+'''
+
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 load("//testing:testing_test.bzl", "testing_test")
 
+# Library for general-purpose testing fakes.
 kt_android_library(
-     name = "testing_lib",
+     name = "testing",
      custom_package = "org.oppia.testing",
      srcs = glob(["src/main/java/org/oppia/testing/*.kt"]),
      manifest = "src/main/AndroidManifest.xml",
      deps = [
          ":dagger",
-         "//utility:utility_lib",
+         "//utility",
+         artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test"),
          artifact("org.robolectric:robolectric"),
-         artifact("com.google.truth:truth"),
-         artifact("androidx.appcompat:appcompat"),
-         artifact("com.github.bumptech.glide:glide"),
-         artifact("com.caverock:androidsvg-aar"),
-         artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
-         artifact("com.crashlytics.sdk.android:crashlytics:2.9.8"),
-         artifact("io.fabric.sdk.android:fabric:1.4.7"),
-         artifact("com.android.support:support-annotations"),
-         artifact("androidx.test.ext:junit"),
-         artifact("org.mockito:mockito-core:2.19.0"),
      ],
      visibility = ["//visibility:public"],
  )
 
+# Library for tests of testing fakes.
 kt_android_library(
-     name = "testing_test_lib",
+     name = "testing_tests",
      custom_package = "org.oppia.testing",
      srcs = glob(["src/test/java/org/oppia/testing/*.kt"]),
      manifest = "src/main/AndroidManifest.xml",
      deps = [
-         ":testing_lib",
+         ":testing",
          ":dagger",
          artifact("com.google.truth:truth"),
          artifact("androidx.test.ext:junit"),
      ],
+     visibility = ["//visibility:private"],
 )
 
 testing_test(
