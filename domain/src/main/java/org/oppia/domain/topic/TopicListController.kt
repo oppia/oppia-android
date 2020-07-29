@@ -45,7 +45,7 @@ import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.DefaultGcsPrefix
 import org.oppia.util.parser.ImageDownloadUrlTemplate
 import org.oppia.util.threading.BackgroundDispatcher
-import java.util.Date
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -260,7 +260,7 @@ class TopicListController @Inject constructor(
       val topic = topicController.retrieveTopic(topicProgress.topicId)
       topicProgress.storyProgressMap.values.forEach { storyProgress ->
         val storyId = storyProgress.storyId
-        val story = topicController.retrieveStory(storyId)
+        val story = topicController.retrieveStory(topic.topicId, storyId)
 
         val completedChapterProgressList =
           storyProgress.chapterProgressMap.values
@@ -362,7 +362,7 @@ class TopicListController @Inject constructor(
       .getJSONArray("node_titles")
       .length()
     val storyId = storyData.optJSONObject(0).optString("id")
-    val storySummary = topicController.retrieveStory(storyId)
+    val storySummary = topicController.retrieveStory(topicId, storyId)
 
     val promotedStoryBuilder = PromotedStory.newBuilder()
       .setStoryId(storyId)
@@ -557,6 +557,13 @@ internal fun createTopicThumbnail3(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.BAKER)
     .setBackgroundColorRgb(Color.parseColor(TOPIC_BG_COLOR))
+    .build()
+}
+
+internal fun createDefaultStoryThumbnail(): LessonThumbnail {
+  return LessonThumbnail.newBuilder()
+    .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
+    .setBackgroundColorRgb(0xa5d3ec)
     .build()
 }
 
