@@ -44,7 +44,7 @@ import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.DefaultGcsPrefix
 import org.oppia.util.parser.ImageDownloadUrlTemplate
 import org.oppia.util.threading.BackgroundDispatcher
-import java.util.Date
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -350,14 +350,14 @@ class TopicListController @Inject constructor(
   private fun createRecommendedStoryFromAssets(topicId: String): PromotedStory {
     val topicJson = jsonAssetRetriever.loadJsonFromAsset("$topicId.json")!!
 
-    var totalChapterCount = 0
     val storyData = topicJson.getJSONArray("canonical_story_dicts")
-    for (i in 0 until storyData.length()) {
-      totalChapterCount += storyData
-        .getJSONObject(i)
-        .getJSONArray("node_titles")
-        .length()
+    if (storyData.length() == 0) {
+      return PromotedStory.getDefaultInstance()
     }
+    val totalChapterCount = storyData
+      .getJSONObject(0)
+      .getJSONArray("node_titles")
+      .length()
     val storyId = storyData.optJSONObject(0).optString("id")
     val storySummary = topicController.retrieveStory(storyId)
 
