@@ -108,11 +108,13 @@ load("@rules_jvm_external//:defs.bzl", "maven_install")
 maven_install(
     artifacts = DAGGER_ARTIFACTS + [
         "org.robolectric:robolectric:4.3",
+        "org.robolectric:annotations:4.3",
         "androidx.appcompat:appcompat:1.0.2",
+        "androidx.annotation:annotation:1.1.0",
         "com.android.support:support-annotations:28.0.0",
         "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.2",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.8",
         "androidx.core:core-ktx:1.0.1",
-        "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2",
         "junit:junit:4.12",
         "com.google.truth:truth:0.43",
         "com.github.bumptech.glide:glide:4.11.0",
@@ -132,6 +134,7 @@ maven_install(
         "io.fabric.sdk.android:fabric:1.4.7",
         "com.google.firebase:firebase-analytics:17.4.4",
         "com.google.firebase:firebase-crashlytics:17.1.1",
+        "org.jetbrains.kotlin:kotlin-reflect:1.3.41",
     ],
     repositories = DAGGER_REPOSITORIES + [
         "https://maven.google.com",

@@ -1,67 +1,49 @@
-# TODO: Rename file to 'BUILD' post-Gradle. See https://github.com/oppia/oppia-android/issues/1532.
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+'''
+
+'''
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
-
-package(default_visibility = ["//visibility:public"])
+load("//:oppia_android_test.bzl", "oppia_android_test")
+load("//testing:testing_test.bzl", "testing_test")
 
 kt_android_library(
-     name = "testing_main_lib",
+     name = "testing",
      custom_package = "org.oppia.testing",
      srcs = glob(["src/main/java/**/*.kt"]),
      manifest = "src/main/AndroidManifest.xml",
      deps = [
          ":dagger",
-         "//model:model_lib",
-         "//utility:utility_lib",
+         "//utility:utility",
+         artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test"),
          artifact("org.robolectric:robolectric"),
-         artifact("com.google.truth:truth"),
-         artifact("androidx.appcompat:appcompat"),
-         artifact("com.github.bumptech.glide:glide"),
-         artifact("com.github.bumptech.glide:compiler"),
-         artifact("com.caverock:androidsvg-aar"),
-         artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
-         artifact("com.google.firebase:firebase-analytics-ktx"),
-         artifact("com.crashlytics.sdk.android:crashlytics:2.9.8"),
-         artifact("io.fabric.sdk.android:fabric:1.4.7"),
-         artifact("com.google.gms:google-services:4.3.3"),
-         artifact("com.android.support:support-annotations"),
-         artifact("androidx.test.ext:junit"),
-         artifact("org.mockito:mockito-core:2.19.0"),
      ],
  )
 
 kt_android_library(
-     name = "testing_test_lib",
+     name = "testing_tests",
      custom_package = "org.oppia.testing",
-     srcs = glob(["src/test/java/**/*.kt"]),
+     srcs = glob(["src/test/java/org/oppia/testing/*.kt"]),
      manifest = "src/main/AndroidManifest.xml",
      deps = [
-         ":testing_main_lib",
+         ":testing",
          ":dagger",
-         "//model:model_lib",
-         "//utility:utility_lib",
-         "@robolectric//bazel:android-all",
-         artifact("org.robolectric:robolectric"),
-         artifact("org.jetbrains.kotlinx:kotlinx-coroutines-core"),
-         artifact("org.jetbrains.kotlinx:kotlinx-coroutines-android"),
-         artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test"),
          artifact("com.google.truth:truth"),
-         artifact("androidx.appcompat:appcompat"),
-         artifact("com.github.bumptech.glide:glide"),
-         artifact("com.github.bumptech.glide:compiler"),
-         artifact("com.caverock:androidsvg-aar"),
-         artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
-         artifact("com.google.firebase:firebase-analytics-ktx"),
-         artifact("com.crashlytics.sdk.android:crashlytics:2.9.8"),
-         artifact("io.fabric.sdk.android:fabric:1.4.7"),
-         artifact("com.google.gms:google-services:4.3.3"),
-         artifact("com.android.support:support-annotations"),
          artifact("androidx.test.ext:junit"),
-         artifact("org.mockito:mockito-core:2.19.0"),
      ],
 )
 
-# TODO: Add android_local_test rule
+testing_test(
+    name = "FakeEventLoggerTest",
+    src = ["src/test/java/org/oppia/testing/FakeEventLoggerTest.kt"],
+    test_class = "org.oppia.testing.FakeEventLoggerTest",
+)
+
+testing_test(
+    name = "FakeExceptionLoggerTest",
+    src = ["src/test/java/org/oppia/testing/FakeExceptionLoggerTest.kt"],
+    test_class = "org.oppia.testing.FakeExceptionLoggerTest",
+)
 
 dagger_rules()
