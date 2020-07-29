@@ -22,9 +22,7 @@ kt_android_library(
     manifest = "src/main/AndroidManifest.xml",
     deps = [
         ":dagger",
-        #"//model",
         "//data:cache_store",
-        #"//testing",
     ],
     visibility = ["//visibility:public"],
 )
