@@ -169,7 +169,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
   fun onResponsesHeaderClicked() {
     recyclerViewAssembler.togglePreviousAnswers(questionViewModel.itemList)
-    recyclerViewAssembler.adapter.setDataUnchecked(questionViewModel.itemList)
+    recyclerViewAssembler.adapter.notifyDataSetChanged()
   }
 
   /**
