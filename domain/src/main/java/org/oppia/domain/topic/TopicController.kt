@@ -619,8 +619,7 @@ class TopicController @Inject constructor(
           .setExplorationId(explorationId)
           .setName(chapter.getString("title"))
           .setChapterPlayState(ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED)
-          // TODO(#1476): Modify proto to add thumbnail_bg_color and thumbnail_filename from json files.
-          .setChapterThumbnail(EXPLORATION_THUMBNAILS.getValue(explorationId))
+          .setChapterThumbnail(createChapterThumbnail(chapter))
           .build()
       )
     }
@@ -782,6 +781,34 @@ class TopicController @Inject constructor(
     } else {
       createDefaultStoryThumbnail()
     }
+  }
+
+  private fun createChapterThumbnail(chapterJsonObject: JSONObject): LessonThumbnail {
+    val explorationId = chapterJsonObject.optString("exploration_id")
+    val thumbnailBgColor = chapterJsonObject
+      .optJSONObject("exp_summary_dict")
+      .optString("thumbnail_bg_color")
+    val thumbnailFilename = chapterJsonObject
+      .optJSONObject("exp_summary_dict")
+      .optString("thumbnail_icon_url")
+
+    return if (thumbnailFilename.isNotEmpty() && thumbnailBgColor.isNotEmpty()) {
+      LessonThumbnail.newBuilder()
+        .setThumbnailFilename(thumbnailFilename)
+        .setBackgroundColorRgb(Color.parseColor(thumbnailBgColor))
+        .build()
+    } else if (EXPLORATION_THUMBNAILS.containsKey(explorationId)) {
+      EXPLORATION_THUMBNAILS.getValue(explorationId)
+    } else {
+      createDefaultChapterThumbnail()
+    }
+  }
+
+  private fun createDefaultChapterThumbnail(): LessonThumbnail {
+    return LessonThumbnail.newBuilder()
+      .setThumbnailGraphic(LessonThumbnailGraphic.BAKER)
+      .setBackgroundColorRgb(0xd325ec)
+      .build()
   }
 
   private fun createSubtopicThumbnail(subtopicJsonObject: JSONObject): LessonThumbnail {
