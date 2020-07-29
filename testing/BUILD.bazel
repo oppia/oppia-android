@@ -14,6 +14,7 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 load("//testing:testing_test.bzl", "testing_test")
 
+# Library for general-purpose testing fakes.
 kt_android_library(
      name = "testing",
      custom_package = "org.oppia.testing",
@@ -21,13 +22,14 @@ kt_android_library(
      manifest = "src/main/AndroidManifest.xml",
      deps = [
          ":dagger",
-         "//utility:utility",
+         "//utility",
          artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test"),
          artifact("org.robolectric:robolectric"),
      ],
      visibility = ["//visibility:public"],
  )
 
+# Library for tests of testing fakes.
 kt_android_library(
      name = "testing_tests",
      custom_package = "org.oppia.testing",
@@ -39,7 +41,7 @@ kt_android_library(
          artifact("com.google.truth:truth"),
          artifact("androidx.test.ext:junit"),
      ],
-     visibility = ["//visibility:public"],
+     visibility = ["//visibility:private"],
 )
 
 testing_test(
