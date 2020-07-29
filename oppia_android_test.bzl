@@ -1,8 +1,8 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
-def oppia_android_test(name, srcs, test_manifest, custom_package, resource_files,
-                       test_class, src_library_name):
+def oppia_android_test(name, srcs, test_manifest, custom_package, test_class, src_library_name,
+                       resource_files=None, assets=None, assets_dir=None):
   '''
   This macro exists as a way to set up a test in Oppia Android to be run with Bazel.
   This macro creates a library for an individual test that is fed as a dependency into an
@@ -18,6 +18,8 @@ def oppia_android_test(name, srcs, test_manifest, custom_package, resource_files
     deps = [
         ":" + src_library_name,
     ],
+    assets = assets,
+    assets_dir = assets_dir,
   )
 
   native.android_local_test(

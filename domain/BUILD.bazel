@@ -1,42 +1,45 @@
-# TODO: Rename file to 'BUILD' post-Gradle. See https://github.com/oppia/oppia-android/issues/1532.
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+'''
+
+'''
+
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//domain:domain_test.bzl", "domain_test")
 
 kt_android_library(
-    name = "domain_lib",
+    name = "domain",
     custom_package = "org.oppia.domain",
     srcs = glob(["src/main/java/org/oppia/domain/**/*.kt"]),
     data = glob(["src/main/assets/**"]),
     manifest = "src/main/AndroidManifest.xml",
     deps = [
         ":dagger",
-        "//model:model_lib",
-        "//data:cache_store_lib",
-        "//testing:testing_lib",
+        #"//model",
+        "//data:cache_store",
+        #"//testing",
     ],
     visibility = ["//visibility:public"],
 )
 
 kt_android_library(
-    name = "domain_test_lib",
+    name = "domain_tests",
     custom_package = "org.oppia.domain",
-    srcs = glob(["src/test/java/org/oppia/domain/**/*.kt"]),
+    srcs = glob(["src/test/java/org/oppia/domain/**"]),
     data = glob(["src/main/assets/**"]),
-    manifest = "src/test/TestManifest.xml",
+    manifest = "src/test/AndroidManifest.xml",
     deps = [
         ":dagger",
-        ":domain_lib",
-        "//model:model_lib",
-        "//data:cache_store_lib",
-        "//testing:testing_lib",
+        ":domain",
+        "//model",
+        "//data:cache_store",
+        "//testing",
         "@robolectric//bazel:android-all",
         artifact("com.google.truth:truth"),
         artifact("androidx.test.ext:junit"),
         artifact("org.jetbrains.kotlin:kotlin-test-junit"),
         artifact("androidx.arch.core:core-testing"),
-        artifact("org.jetbrains.kotlin:kotlin-reflect"),
     ],
     visibility = ["//visibility:public"],
 )
