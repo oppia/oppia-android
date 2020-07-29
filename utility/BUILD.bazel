@@ -11,7 +11,7 @@ load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 
-# A kt_android_library() rule that builds utility module kotlin source files into a library.
+# Library for general-purpose utilities.
 kt_android_library(
     name = "utility",
     custom_package = "org.oppia.util",
@@ -20,8 +20,8 @@ kt_android_library(
     manifest = "src/main/AndroidManifest.xml",
     deps = [
         ":dagger",
-        "//model:model",
-        "//firebase:crashlytics_lib",
+        "//model",
+        "//firebase:crashlytics",
         "//firebase:crashlytics_deps",
         artifact("org.jetbrains.kotlinx:kotlinx-coroutines-core"),
         artifact("androidx.appcompat:appcompat"),

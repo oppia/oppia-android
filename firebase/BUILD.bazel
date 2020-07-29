@@ -1,7 +1,7 @@
 # TODO(#1532): Rename file to 'BUILD' post-Gradle.
 '''
 Package for all Firebase dependencies.
-To reference these dependencies, add '//firebase:crashlytics_lib' and '//firebase:crashlytics_deps'
+To reference these dependencies, add '//firebase:crashlytics' and '//firebase:crashlytics_deps'
 to your build rule's dependency list.
 '''
 
@@ -18,7 +18,7 @@ GOOGLE_SERVICES_RESOURCES = google_services_xml(
 )
 
 crashlytics_android_library(
-    name = "crashlytics_lib",
+    name = "crashlytics",
     package_name = "org.oppia.app",
     build_id = "48fc9d17-e102-444c-8e0d-638d75ec0942",
     resource_files = GOOGLE_SERVICES_RESOURCES,
