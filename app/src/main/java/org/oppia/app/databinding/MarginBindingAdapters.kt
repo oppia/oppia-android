@@ -43,3 +43,13 @@ fun setLayoutMarginBottom(view: View, marginBottom: Float) {
     view.requestLayout()
   }
 }
+
+/** Used to set a margin for views. */
+@BindingAdapter("app:layoutMargin")
+fun setLayoutMargin(view: View, margin: Float) {
+  if (view.layoutParams is MarginLayoutParams) {
+    val params = view.layoutParams as MarginLayoutParams
+    params.setMargins(margin.toInt(), margin.toInt(), margin.toInt(), margin.toInt())
+    view.requestLayout()
+  }
+}

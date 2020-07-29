@@ -56,6 +56,8 @@ import javax.inject.Singleton
 )
 class RevisionCardActivityLocalTest {
 
+  private val internalProfileId = 1
+
   @Inject
   lateinit var fakeEventLogger: FakeEventLogger
 
@@ -69,6 +71,7 @@ class RevisionCardActivityLocalTest {
     ActivityScenario.launch<RevisionCardActivity>(
       RevisionCardActivity.createRevisionCardActivityIntent(
         ApplicationProvider.getApplicationContext(),
+        internalProfileId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID
       )
