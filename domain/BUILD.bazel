@@ -1,6 +1,12 @@
 # TODO(#1532): Rename file to 'BUILD' post-Gradle.
 '''
-
+This library contains the frontend controller and business service logic for the application.
+It also contains Robolectric and JUnit tests for it's Kotlin files.
+In Bazel, Kotlin source files are built into a library using the kt_android_library() rule.
+Kotlin test files must be built in their own kt_android_library() rule and added as a dependency to
+an android_local_test() rule which configures instrumentation tests in Bazel.
+In order to eliminate duplicate code, a custom macro domain_test() has been written to streamline
+testing in this module.
 '''
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")

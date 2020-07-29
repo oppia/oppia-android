@@ -1,6 +1,6 @@
 # TODO(#1532): Rename file to 'BUILD' post-Gradle.
 '''
-
+This library provides data to the rest of the application.
 '''
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
