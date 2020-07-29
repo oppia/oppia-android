@@ -11,20 +11,24 @@
 
   <ScrollView
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/oppiaLightGreen"
+    android:overScrollMode="never"
+    android:scrollbars="none">
 
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:orientation="vertical">
+      android:orientation="vertical"
+      android:paddingBottom="145dp">
 
       <TextView
         android:id="@+id/revision_card_explanation_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="28dp"
-        android:layout_marginEnd="40dp"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="52dp"
         android:fontFamily="sans-serif"
         android:text="@{viewModel.explanationLiveData}"
         android:textColor="@color/oppiaPrimaryText"
@@ -36,10 +40,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="28dp"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="52dp"
         android:background="@drawable/state_button_primary_background"
         android:onClick="@{viewModel::clickReturnToTopic}"
+        android:paddingStart="32dp"
+        android:paddingEnd="32dp"
         android:text="@string/return_to_topic"
         android:textAllCaps="true"
         android:textColor="@color/white"
