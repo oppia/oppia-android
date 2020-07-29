@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="org.oppia.util">
-  <uses-sdk android:minSdkVersion="16"
+  package="org.oppia.testing">
+  <uses-sdk android:minSdkVersion="19"
     android:maxSdkVersion="28" />
 </manifest>
