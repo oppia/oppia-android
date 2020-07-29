@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel" />
+  </data>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    app:explorationSplitViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
+    app:explorationSplitViewMarginBottom="@{@dimen/margin_0}"
+    app:explorationSplitViewMarginEnd="@{@dimen/margin_0}"
+    app:explorationSplitViewMarginStart="@{@dimen/margin_0}"
+    app:explorationSplitViewMarginTop="@{@dimen/margin_0}"
+    app:explorationSplitViewPaddingApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
+    app:explorationSplitViewPaddingBottom="@{@dimen/padding_0}"
+    app:explorationSplitViewPaddingEnd="@{@dimen/padding_0}"
+    app:explorationSplitViewPaddingStart="@{@dimen/padding_0}"
+    app:explorationSplitViewPaddingTop="@{@dimen/padding_0}"
+    app:explorationViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
+    app:explorationViewMarginBottom="@{@dimen/margin_0}"
+    app:explorationViewMarginEnd="@{@dimen/margin_112}"
+    app:explorationViewMarginStart="@{@dimen/margin_144}"
+    app:explorationViewMarginTop="@{@dimen/margin_24}"
+    app:explorationViewPaddingApplicable="@{viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
+    app:explorationViewPaddingBottom="@{@dimen/padding_0}"
+    app:explorationViewPaddingEnd="@{@dimen/padding_0}"
+    app:explorationViewPaddingStart="@{@dimen/padding_0}"
+    app:explorationViewPaddingTop="@{@dimen/padding_0}"
+    app:questionSplitViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
+    app:questionSplitViewMarginBottom="@{@dimen/margin_0}"
+    app:questionSplitViewMarginEnd="@{@dimen/margin_0}"
+    app:questionSplitViewMarginStart="@{@dimen/margin_0}"
+    app:questionSplitViewMarginTop="@{@dimen/margin_0}"
+    app:questionSplitViewPaddingApplicable="@{!viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
+    app:questionSplitViewPaddingBottom="@{@dimen/padding_0}"
+    app:questionSplitViewPaddingEnd="@{@dimen/padding_0}"
+    app:questionSplitViewPaddingStart="@{@dimen/padding_0}"
+    app:questionSplitViewPaddingTop="@{@dimen/padding_0}"
+    app:questionViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
+    app:questionViewMarginBottom="@{@dimen/margin_0}"
+    app:questionViewMarginEnd="@{@dimen/margin_128}"
+    app:questionViewMarginStart="@{@dimen/margin_128}"
+    app:questionViewMarginTop="@{@dimen/margin_24}"
+    app:questionViewPaddingApplicable="@{!viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
+    app:questionViewPaddingBottom="@{@dimen/padding_0}"
+    app:questionViewPaddingEnd="@{@dimen/padding_0}"
+    app:questionViewPaddingStart="@{@dimen/padding_0}"
+    app:questionViewPaddingTop="@{@dimen/padding_0}">
+
+    <org.oppia.app.customview.interaction.FractionInputInteractionView
+      android:id="@+id/fraction_input_interaction_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@drawable/edit_text_background"
+      android:digits="0123456789/- "
+      android:fontFamily="sans-serif"
+      android:hint="@{viewModel.hintText}"
+      android:imeOptions="actionDone"
+      android:inputType="date"
+      android:longClickable="false"
+      android:maxLength="200"
+      android:minHeight="48dp"
+      android:paddingStart="16dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="8dp"
+      android:singleLine="true"
+      android:text="@={viewModel.answerText}"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textColorHint="@color/editTextHint"
+      android:textSize="14sp"
+      android:textStyle="italic"
+      app:textChangedListener="@{viewModel.answerTextWatcher}" />
+
+    <TextView
+      android:id="@+id/fraction_input_error"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="16dp"
+      android:layout_marginEnd="8dp"
+      android:fontFamily="sans-serif"
+      android:minHeight="32dp"
+      android:text="@{viewModel.errorMessage}"
+      android:textColor="@color/editTextError"
+      android:textSize="12sp"
+      android:visibility="@{viewModel.errorMessage.length()>0? View.VISIBLE : View.INVISIBLE}" />
+  </LinearLayout>
+</layout>

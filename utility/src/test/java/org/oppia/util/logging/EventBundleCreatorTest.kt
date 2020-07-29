@@ -21,8 +21,9 @@ const val TEST_TOPIC_ID = "test_topicId"
 const val TEST_STORY_ID = "test_storyId"
 const val TEST_EXPLORATION_ID = "test_explorationId"
 const val TEST_QUESTION_ID = "test_questionId"
-const val TEST_SKILL_ID = "test_skillId"
-const val TEST_SUB_TOPIC_ID = "test_subTopicId"
+const val TEST_SKILL_ID_ONE = "test_skillId_one"
+const val TEST_SKILL_ID_TWO = "test_skillId_two"
+const val TEST_SUB_TOPIC_ID = 1
 
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
@@ -53,7 +54,7 @@ class EventBundleCreatorTest {
         .setQuestionContext(
           EventLog.QuestionContext.newBuilder()
             .setQuestionId(TEST_QUESTION_ID)
-            .addAllSkillId(listOf(TEST_SKILL_ID, TEST_SKILL_ID))
+            .addAllSkillId(listOf(TEST_SKILL_ID_ONE, TEST_SKILL_ID_TWO))
             .build()
         )
         .build()
@@ -99,7 +100,7 @@ class EventBundleCreatorTest {
       EventLog.Context.newBuilder()
         .setConceptCardContext(
           EventLog.ConceptCardContext.newBuilder()
-            .setSkillId(TEST_SKILL_ID)
+            .setSkillId(TEST_SKILL_ID_ONE)
             .build()
         )
         .build()
@@ -152,7 +153,8 @@ class EventBundleCreatorTest {
     assertThat(eventBundle.get(TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
     assertThat(eventBundle.get(PRIORITY_KEY)).isEqualTo(EventLog.Priority.ESSENTIAL.toString())
     assertThat(eventBundle.get(QUESTION_ID_KEY)).isEqualTo(TEST_QUESTION_ID)
-    assertThat(eventBundle.get(SKILL_LIST_ID_KEY)).isEqualTo(arrayOf(TEST_SKILL_ID, TEST_SKILL_ID))
+    assertThat(eventBundle.get(SKILL_ID_KEY))
+      .isEqualTo(listOf(TEST_SKILL_ID_ONE, TEST_SKILL_ID_TWO).joinToString())
   }
 
   @Test
@@ -180,7 +182,7 @@ class EventBundleCreatorTest {
 
     assertThat(eventBundle.get(TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
     assertThat(eventBundle.get(PRIORITY_KEY)).isEqualTo(EventLog.Priority.ESSENTIAL.toString())
-    assertThat(eventBundle.get(SKILL_ID_KEY)).isEqualTo(TEST_SKILL_ID)
+    assertThat(eventBundle.get(SKILL_ID_KEY)).isEqualTo(TEST_SKILL_ID_ONE)
   }
 
   @Test

@@ -1,0 +1,50 @@
+{
+  "story_nodes": [
+    {
+      "description": "Matthew learns about fractions.",
+      "exploration_id": "umPkwp0L1M0-",
+      "destination_node_ids": [
+        "node_2"
+      ],
+      "thumbnail_filename": "",
+      "outline_is_finalized": false,
+      "id": "node_1",
+      "prerequisite_skill_ids": [],
+      "thumbnail_bg_color": "#D68F78",
+      "exp_summary_dict": {
+        "thumbnail_bg_color": "#d68453",
+        "thumbnail_icon_url": "",
+        "title": "Fraction-1",
+        "language_code": "en",
+        "objective": "Learn about fractions in detail.",
+        "id": "umPkwp0L1M0-"
+      },
+      "outline": "",
+      "title": "What is a Fraction?",
+      "acquired_skill_ids": []
+    },
+    {
+      "description": "Matthew learns about equal parts in fractions.",
+      "exploration_id": "MjZzEVOG47_1",
+      "destination_node_ids": [],
+      "thumbnail_filename": "",
+      "outline_is_finalized": false,
+      "id": "node_2",
+      "thumbnail_bg_color": "#D678F8",
+      "prerequisite_skill_ids": [],
+      "exp_summary_dict": {
+        "thumbnail_bg_color": "#d68453",
+        "thumbnail_icon_url": "",
+        "title": "Equal Parts-1",
+        "language_code": "en",
+        "objective": "Learn about fractions and equal parts.",
+        "id": "MjZzEVOG47_1"
+      },
+      "outline": "",
+      "title": "The Meaning of Equal Parts",
+      "acquired_skill_ids": []
+    }
+  ],
+  "story_description": "",
+  "story_title": "Matthew Goes to the Bakery"
+}

@@ -1,12 +1,12 @@
 package org.oppia.app.topic.revision
 
-import android.content.res.Configuration
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import org.oppia.app.R
 import org.oppia.app.databinding.TopicRevisionFragmentBinding
 import org.oppia.app.databinding.TopicRevisionSummaryViewBinding
 import org.oppia.app.fragment.FragmentScope
@@ -15,8 +15,6 @@ import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.topic.RouteToRevisionCardListener
 import org.oppia.app.topic.revision.revisionitemviewmodel.TopicRevisionItemViewModel
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.analytics.AnalyticsController
-import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
 /** The presenter for [TopicRevisionFragment]. */
@@ -24,8 +22,6 @@ import javax.inject.Inject
 class TopicRevisionFragmentPresenter @Inject constructor(
   activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val analyticsController: AnalyticsController,
-  private val oppiaClock: OppiaClock,
   private val viewModelProvider: ViewModelProvider<TopicRevisionViewModel>
 ) : RevisionSubtopicSelector {
   private lateinit var binding: TopicRevisionFragmentBinding
@@ -39,7 +35,6 @@ class TopicRevisionFragmentPresenter @Inject constructor(
     internalProfileId: Int,
     topicId: String
   ): View? {
-
     val viewModel = getTopicRevisionViewModel()
 
     this.internalProfileId = internalProfileId
@@ -56,12 +51,7 @@ class TopicRevisionFragmentPresenter @Inject constructor(
     binding.revisionRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
       // https://stackoverflow.com/a/50075019/3689782
-      val spanCount =
-        if (fragment.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-          3
-        } else {
-          2
-        }
+      val spanCount = fragment.resources.getInteger(R.integer.topic_revision_span_count)
       layoutManager = GridLayoutManager(context, spanCount)
     }
     binding.apply {
@@ -72,7 +62,7 @@ class TopicRevisionFragmentPresenter @Inject constructor(
   }
 
   override fun onTopicRevisionSummaryClicked(subtopic: Subtopic) {
-    routeToReviewListener.routeToRevisionCard(topicId, subtopic.subtopicId)
+    routeToReviewListener.routeToRevisionCard(internalProfileId, topicId, subtopic.subtopicId)
   }
 
   private fun getTopicRevisionViewModel(): TopicRevisionViewModel {

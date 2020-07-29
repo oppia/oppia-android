@@ -26,8 +26,9 @@ import org.oppia.app.player.state.StatePlayerRecyclerViewAssembler
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.stopplaying.RestartPlayingSessionListener
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
+import org.oppia.app.utility.SplitScreenManager
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.analytics.AnalyticsController
+import org.oppia.domain.oppialogger.OppiaLogger
 import org.oppia.domain.question.QuestionAssessmentProgressController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.QuestionResourceBucketName
@@ -42,15 +43,17 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<QuestionPlayerViewModel>,
   private val questionAssessmentProgressController: QuestionAssessmentProgressController,
-  private val analyticsController: AnalyticsController,
+  private val oppiaLogger: OppiaLogger,
   private val oppiaClock: OppiaClock,
   private val logger: ConsoleLogger,
   @QuestionResourceBucketName private val resourceBucketName: String,
-  private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory
+  private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
+  private val splitScreenManager: SplitScreenManager
 ) {
   // TODO(#503): Add tests for the question player.
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
+  private val hasConversationView = false
 
   private val questionViewModel by lazy { getQuestionPlayerViewModel() }
   private val ephemeralQuestionLiveData: LiveData<AsyncResult<EphemeralQuestion>> by lazy {
@@ -79,6 +82,9 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     }
     binding.questionRecyclerView.apply {
       adapter = recyclerViewAssembler.adapter
+    }
+    binding.extraInteractionRecyclerView.apply {
+      adapter = recyclerViewAssembler.rhsAdapter
     }
 
     binding.hintsAndSolutionFragmentContainer.setOnClickListener {
@@ -215,11 +221,27 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
     currentQuestionState = ephemeralQuestion.ephemeralState.state
 
-    questionViewModel.itemList.clear()
-    questionViewModel.itemList += recyclerViewAssembler.compute(
+    val isSplitView =
+      splitScreenManager.shouldSplitScreen(ephemeralQuestion.ephemeralState.state.interaction.id)
+
+    if (isSplitView) {
+      questionViewModel.isSplitView.set(true)
+      questionViewModel.centerGuidelinePercentage.set(0.5f)
+    } else {
+      questionViewModel.isSplitView.set(false)
+      questionViewModel.centerGuidelinePercentage.set(1f)
+    }
+
+    val dataPair = recyclerViewAssembler.compute(
       ephemeralQuestion.ephemeralState,
-      skillId
+      skillId,
+      isSplitView
     )
+
+    questionViewModel.itemList.clear()
+    questionViewModel.itemList += dataPair.first
+    questionViewModel.rightItemList.clear()
+    questionViewModel.rightItemList += dataPair.second
   }
 
   private fun updateProgress(currentQuestionIndex: Int, questionCount: Int) {
@@ -369,7 +391,9 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     // TODO(#501): Add support early exit detection & message, which requires changes in the training progress
     //  controller & possibly the ephemeral question data model.
     // TODO(#502): Add support for surfacing skills that need to be reviewed by the learner.
-    return builder.addContentSupport()
+    return builder
+      .hasConversationView(hasConversationView)
+      .addContentSupport()
       .addFeedbackSupport()
       .addInteractionSupport(questionViewModel.getCanSubmitAnswer())
       .addPastAnswersSupport()
@@ -387,11 +411,10 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   private fun logQuestionPlayerEvent(questionId: String, skillIds: List<String>) {
-    analyticsController.logTransitionEvent(
-      activity.applicationContext,
+    oppiaLogger.logTransitionEvent(
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_QUESTION_PLAYER,
-      analyticsController.createQuestionContext(
+      oppiaLogger.createQuestionContext(
         questionId,
         skillIds
       )

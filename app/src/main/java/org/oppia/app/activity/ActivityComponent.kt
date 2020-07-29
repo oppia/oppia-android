@@ -43,9 +43,12 @@ import org.oppia.app.testing.ExplorationTestActivity
 import org.oppia.app.testing.HomeInjectionActivity
 import org.oppia.app.testing.HomeTestActivity
 import org.oppia.app.testing.HtmlParserTestActivity
+import org.oppia.app.testing.ImageRegionSelectionTestActivity
 import org.oppia.app.testing.NavigationDrawerTestActivity
 import org.oppia.app.testing.ProfileChooserFragmentTestActivity
 import org.oppia.app.testing.StoryFragmentTestActivity
+import org.oppia.app.testing.TestFontScaleConfigurationUtilActivity
+import org.oppia.app.testing.TopicRevisionTestActivity
 import org.oppia.app.testing.TopicTestActivity
 import org.oppia.app.testing.TopicTestActivityForStory
 import org.oppia.app.topic.TopicActivity
@@ -85,11 +88,13 @@ interface ActivityComponent {
   fun inject(explorationTestActivity: ExplorationTestActivity)
   fun inject(faqListActivity: FAQListActivity)
   fun inject(faqSingleActivity: FAQSingleActivity)
+  fun inject(testFontScaleConfigurationUtilActivity: TestFontScaleConfigurationUtilActivity)
   fun inject(helpActivity: HelpActivity)
   fun inject(homeActivity: HomeActivity)
   fun inject(homeInjectionActivity: HomeInjectionActivity)
   fun inject(homeTestActivity: HomeTestActivity)
   fun inject(htmlParserTestActivity: HtmlParserTestActivity)
+  fun inject(imageRegionSelectionTestActivity: ImageRegionSelectionTestActivity)
   fun inject(myDownloadsActivity: MyDownloadsActivity)
   fun inject(navigationDrawerTestActivity: NavigationDrawerTestActivity)
   fun inject(onboardingActivity: OnboardingActivity)
@@ -112,6 +117,7 @@ interface ActivityComponent {
   fun inject(storyActivity: StoryActivity)
   fun inject(storyTextSizeActivity: StoryTextSizeActivity)
   fun inject(topicActivity: TopicActivity)
+  fun inject(topicRevisionTestActivity: TopicRevisionTestActivity)
   fun inject(topicTestActivity: TopicTestActivity)
   fun inject(topicTestActivityForStory: TopicTestActivityForStory)
   fun inject(storyFragmentTestActivity: StoryFragmentTestActivity)

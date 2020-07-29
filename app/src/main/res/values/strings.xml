@@ -44,6 +44,7 @@
   <string name="lesson_replay_button_text">Replay</string>
   <string name="state_end_exploration_button">Return To Topic</string>
   <string name="previous_responses_header">Previous Responses (%d)</string>
+  <string name="image_interaction_answer_text">Clicks on %s</string>
   <string name="state_learn_again_button">Learn Again</string>
   <string name="topic_download_text">(%s)</string>
   <string name="see_more">See More</string>
@@ -97,7 +98,7 @@
   <string name="fraction_error_larger_than_seven_digits">None of the numbers in the fraction should have more than 7 digits.</string>
   <string name="number_error_starting_with_floating_point">Please begin your answer with a number (e.g.,”0” in 0.5).</string>
   <string name="number_error_invalid_format">Please enter a valid number.</string>
-  <string name="number_error_larger_than_fifteen_characters">The answer can contain at most 15 characters (i.e.,[0-9] or "." or "-").</string>
+  <string name="number_error_larger_than_fifteen_characters">The answer can contain at most 15 digits (0–9) or symbols (. or -).</string>
   <string name="unknown_size">Unknown size</string>
   <string name="size_bytes">%d Bytes</string>
   <string name="size_kb">%d KB</string>
@@ -356,4 +357,6 @@
     <item quantity="one">a day</item>
     <item quantity="other">%d days</item>
   </plurals>
+  <!-- ViewTags -->
+  <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
 </resources>

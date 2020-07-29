@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.topic.TopicViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+      android:id="@+id/topic_app_bar_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+      app:layout_constraintBottom_toTopOf="@+id/topic_tabs_viewpager_container"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+
+      <androidx.appcompat.widget.Toolbar
+        android:id="@+id/topic_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:fontFamily="sans-serif"
+        app:title="@{String.format(@string/topic_name, viewModel.topicNameLiveData)}"
+        android:minHeight="?attr/actionBarSize"
+        app:navigationContentDescription="@string/go_to_previous_page"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:titleTextAppearance="@style/ToolbarTextAppearance"
+        app:titleTextColor="@color/white" />
+
+      <com.google.android.material.tabs.TabLayout
+        android:id="@+id/topic_tabs_container"
+        style="@style/AppTabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:layout_marginStart="64dp"
+        android:layout_marginEnd="64dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tabBackground="@color/oppiaPrimaryDark"
+        app:tabGravity="fill"
+        app:tabIconTint="@color/tab_icon_color_selector"
+        app:tabIndicatorColor="@android:color/white"
+        app:tabIndicatorHeight="4dp"
+        app:tabMode="fixed"
+        app:tabTextAppearance="@style/AppTabTextAppearance"
+        app:tabTextColor="@color/tab_icon_color_selector" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <FrameLayout
+      android:id="@+id/topic_tabs_viewpager_container"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/topic_app_bar_layout">
+
+      <androidx.viewpager.widget.ViewPager
+        android:id="@+id/topic_tabs_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+      <View
+        android:id="@+id/topic_shadow_view"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:background="@drawable/toolbar_drop_shadow" />
+    </FrameLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
