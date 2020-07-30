@@ -21,13 +21,11 @@ import org.oppia.app.databinding.ContinueNavigationButtonItemBinding
 import org.oppia.app.databinding.DragDropInteractionItemBinding
 import org.oppia.app.databinding.FeedbackItemBinding
 import org.oppia.app.databinding.FractionInteractionItemBinding
+import org.oppia.app.databinding.ImageRegionSelectionInteractionItemBinding
 import org.oppia.app.databinding.NextButtonItemBinding
 import org.oppia.app.databinding.NumericInputInteractionItemBinding
 import org.oppia.app.databinding.PreviousButtonItemBinding
 import org.oppia.app.databinding.PreviousResponsesHeaderItemBinding
-import org.oppia.app.databinding.QuestionPlayerFeedbackItemBinding
-import org.oppia.app.databinding.QuestionPlayerSelectionInteractionItemBinding
-import org.oppia.app.databinding.QuestionPlayerSubmittedAnswerItemBinding
 import org.oppia.app.databinding.ReplayButtonItemBinding
 import org.oppia.app.databinding.ReturnToTopicButtonItemBinding
 import org.oppia.app.databinding.SelectionInteractionItemBinding
@@ -57,6 +55,7 @@ import org.oppia.app.player.state.itemviewmodel.ContinueNavigationButtonViewMode
 import org.oppia.app.player.state.itemviewmodel.DragAndDropSortInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.FeedbackViewModel
 import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
+import org.oppia.app.player.state.itemviewmodel.ImageRegionSelectionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.InteractionViewModelFactory
 import org.oppia.app.player.state.itemviewmodel.NextButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
@@ -78,7 +77,6 @@ import org.oppia.app.player.state.listener.ReturnToTopicNavigationButtonListener
 import org.oppia.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.app.player.state.listener.SubmitNavigationButtonListener
 import org.oppia.app.recyclerview.BindableAdapter
-import org.oppia.app.topic.questionplayer.QuestionPlayerFragment
 import org.oppia.app.utility.LifecycleSafeTimerFactory
 import org.oppia.util.parser.HtmlParser
 import org.oppia.util.threading.BackgroundDispatcher
@@ -113,6 +111,7 @@ private typealias AudioUiManagerRetriever = () -> AudioUiManager?
  */
 class StatePlayerRecyclerViewAssembler private constructor(
   val adapter: BindableAdapter<StateItemViewModel>,
+  val rhsAdapter: BindableAdapter<StateItemViewModel>,
   private val playerFeatureSet: PlayerFeatureSet,
   private val fragment: Fragment,
   private val congratulationsTextView: TextView?,
@@ -163,30 +162,58 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
   }
 
+  private val isSplitView = ObservableField<Boolean>(false)
+
   /**
    * Computes a list of view models corresponding to the specified [EphemeralState] and the
    * configuration of this assembler, as well as the GCS entity ID that should be associated with
    * rich-text rendering for this state.
    */
-  fun compute(ephemeralState: EphemeralState, gcsEntityId: String): List<StateItemViewModel> {
-    val hasPreviousState = ephemeralState.hasPreviousState
+  fun compute(
+    ephemeralState: EphemeralState,
+    gcsEntityId: String,
+    isSplitView: Boolean
+  ): Pair<List<StateItemViewModel>, List<StateItemViewModel>> {
+    this.isSplitView.set(isSplitView)
 
+    val hasPreviousState = ephemeralState.hasPreviousState
     previousAnswerViewModels.clear()
-    val pendingItemList = mutableListOf<StateItemViewModel>()
+    val conversationPendingItemList = mutableListOf<StateItemViewModel>()
+    val extraInteractionPendingItemList = mutableListOf<StateItemViewModel>()
     if (playerFeatureSet.contentSupport) {
-      addContentItem(pendingItemList, ephemeralState, gcsEntityId)
+      addContentItem(conversationPendingItemList, ephemeralState, gcsEntityId)
     }
     val interaction = ephemeralState.state.interaction
+
     if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE) {
-      addPreviousAnswers(pendingItemList, ephemeralState.pendingState.wrongAnswerList, gcsEntityId)
+      addPreviousAnswers(
+        conversationPendingItemList,
+        extraInteractionPendingItemList,
+        ephemeralState.pendingState.wrongAnswerList,
+        /* isCorrectAnswer= */ false,
+        gcsEntityId
+      )
       if (playerFeatureSet.hintsAndSolutionsSupport) {
         hintHandler.maybeScheduleShowHint(ephemeralState.state, ephemeralState.pendingState)
       }
       if (playerFeatureSet.interactionSupport) {
-        addInteractionForPendingState(pendingItemList, interaction, hasPreviousState, gcsEntityId)
+        val interactionItemList =
+          if (isSplitView) extraInteractionPendingItemList else conversationPendingItemList
+        addInteractionForPendingState(
+          interactionItemList,
+          interaction,
+          hasPreviousState,
+          gcsEntityId
+        )
       }
     } else if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE) {
-      addPreviousAnswers(pendingItemList, ephemeralState.completedState.answerList, gcsEntityId)
+      addPreviousAnswers(
+        conversationPendingItemList,
+        extraInteractionPendingItemList,
+        ephemeralState.completedState.answerList,
+        /* isCorrectAnswer= */ true,
+        gcsEntityId
+      )
     }
 
     var canContinueToNextState = false
@@ -219,14 +246,14 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
 
     maybeAddNavigationButtons(
-      pendingItemList,
+      conversationPendingItemList,
+      extraInteractionPendingItemList,
       hasPreviousState,
       canContinueToNextState,
       hasGeneralContinueButton,
       ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE
     )
-
-    return pendingItemList
+    return Pair(conversationPendingItemList, extraInteractionPendingItemList)
   }
 
   private fun addInteractionForPendingState(
@@ -238,10 +265,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val interactionViewModelFactory = interactionViewModelFactoryMap.getValue(interaction.id)
     pendingItemList += interactionViewModelFactory(
       gcsEntityId,
+      hasConversationView,
       interaction,
       fragment as InteractionAnswerReceiver,
       fragment as InteractionAnswerErrorOrAvailabilityCheckReceiver,
-      hasPreviousButton
+      hasPreviousButton,
+      isSplitView.get()!!
     )
   }
 
@@ -254,20 +283,26 @@ class StatePlayerRecyclerViewAssembler private constructor(
     pendingItemList += ContentViewModel(
       contentSubtitledHtml.html,
       gcsEntityId,
-      hasConversationView
+      hasConversationView,
+      isSplitView.get()!!
     )
   }
 
   private fun addPreviousAnswers(
     pendingItemList: MutableList<StateItemViewModel>,
+    rightPendingItemList: MutableList<StateItemViewModel>,
     answersAndResponses: List<AnswerAndResponse>,
+    isCorrectAnswer: Boolean,
     gcsEntityId: String
   ) {
     if (answersAndResponses.size > 1) {
       if (playerFeatureSet.wrongAnswerCollapsing) {
         PreviousResponsesHeaderViewModel(
-          answersAndResponses.size - 1, ObservableBoolean(hasPreviousResponsesExpanded),
-          fragment as PreviousResponsesHeaderClickListener
+          answersAndResponses.size - 1,
+          hasConversationView,
+          ObservableBoolean(hasPreviousResponsesExpanded),
+          fragment as PreviousResponsesHeaderClickListener,
+          isSplitView.get()!!
         ).let { viewModel ->
           pendingItemList += viewModel
           previousAnswerViewModels += viewModel
@@ -278,7 +313,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
         hasPreviousResponsesExpanded
       for (answerAndResponse in answersAndResponses.take(answersAndResponses.size - 1)) {
         if (playerFeatureSet.pastAnswerSupport) {
-          createSubmittedAnswer(answerAndResponse.userAnswer, gcsEntityId).let { viewModel ->
+          createSubmittedAnswer(
+            answerAndResponse.userAnswer,
+            gcsEntityId,
+            /* isAnswerCorrect= */ false
+          ).let { viewModel ->
             if (showPreviousAnswers) {
               pendingItemList += viewModel
             }
@@ -286,7 +325,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
           }
         }
         if (playerFeatureSet.feedbackSupport) {
-          createFeedbackItem(answerAndResponse.feedback, gcsEntityId)?.let { viewModel ->
+          createFeedbackItem(
+            answerAndResponse.feedback,
+            gcsEntityId
+          )?.let { viewModel ->
             if (showPreviousAnswers) {
               pendingItemList += viewModel
             }
@@ -297,10 +339,24 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
     answersAndResponses.lastOrNull()?.let { answerAndResponse ->
       if (playerFeatureSet.pastAnswerSupport) {
-        pendingItemList += createSubmittedAnswer(answerAndResponse.userAnswer, gcsEntityId)
+        if (isCorrectAnswer && isSplitView.get()!!) {
+          rightPendingItemList += createSubmittedAnswer(
+            answerAndResponse.userAnswer,
+            gcsEntityId,
+            /* isAnswerCorrect= */ true
+          )
+        } else {
+          pendingItemList += createSubmittedAnswer(
+            answerAndResponse.userAnswer,
+            gcsEntityId,
+            this.isCorrectAnswer.get()!!
+          )
+        }
       }
       if (playerFeatureSet.feedbackSupport) {
-        createFeedbackItem(answerAndResponse.feedback, gcsEntityId)?.let(pendingItemList::add)
+        createFeedbackItem(answerAndResponse.feedback, gcsEntityId)?.let(
+          pendingItemList::add
+        )
       }
     }
   }
@@ -426,23 +482,30 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
   private fun createSubmittedAnswer(
     userAnswer: UserAnswer,
-    gcsEntityId: String
+    gcsEntityId: String,
+    isAnswerCorrect: Boolean
   ): SubmittedAnswerViewModel {
-    val submittedAnswerViewModel = SubmittedAnswerViewModel(userAnswer, gcsEntityId)
+    val submittedAnswerViewModel =
+      SubmittedAnswerViewModel(userAnswer, gcsEntityId, hasConversationView, isSplitView.get()!!)
     submittedAnswerViewModel.isCorrectAnswer.set(isCorrectAnswer.get())
+    submittedAnswerViewModel.isExtraInteractionAnswerCorrect.set(isAnswerCorrect)
     return submittedAnswerViewModel
   }
 
-  private fun createFeedbackItem(feedback: SubtitledHtml, gcsEntityId: String): FeedbackViewModel? {
+  private fun createFeedbackItem(
+    feedback: SubtitledHtml,
+    gcsEntityId: String
+  ): FeedbackViewModel? {
     // Only show feedback if there's some to show.
     if (feedback.html.isNotEmpty()) {
-      return FeedbackViewModel(feedback.html, gcsEntityId)
+      return FeedbackViewModel(feedback.html, gcsEntityId, hasConversationView, isSplitView.get()!!)
     }
     return null
   }
 
   private fun maybeAddNavigationButtons(
-    pendingItemList: MutableList<StateItemViewModel>,
+    conversationPendingItemList: MutableList<StateItemViewModel>,
+    extraInteractionPendingItemList: MutableList<StateItemViewModel>,
     hasPreviousState: Boolean,
     canContinueToNextState: Boolean,
     hasGeneralContinueButton: Boolean,
@@ -451,53 +514,162 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val hasPreviousButton = playerFeatureSet.backwardNavigation && hasPreviousState
     when {
       hasGeneralContinueButton && playerFeatureSet.forwardNavigation -> {
-        pendingItemList += ContinueNavigationButtonViewModel(
-          hasPreviousButton,
-          previousNavigationButtonListener,
-          fragment as ContinueNavigationButtonListener
+        addContinueNavigation(
+          conversationPendingItemList,
+          extraInteractionPendingItemList,
+          hasPreviousButton
         )
       }
       canContinueToNextState && playerFeatureSet.forwardNavigation -> {
-        pendingItemList += NextButtonViewModel(
-          hasPreviousButton,
-          previousNavigationButtonListener,
-          fragment as NextNavigationButtonListener
+        addNextButtonNavigation(
+          conversationPendingItemList,
+          extraInteractionPendingItemList,
+          hasPreviousButton
         )
       }
       stateIsTerminal -> {
         if (playerFeatureSet.replaySupport) {
-          pendingItemList += ReplayButtonViewModel(fragment as ReplayButtonListener)
+          addReplyButton(conversationPendingItemList, extraInteractionPendingItemList)
         }
         if (playerFeatureSet.returnToTopicNavigation) {
-          pendingItemList += ReturnToTopicButtonViewModel(
-            hasPreviousButton, previousNavigationButtonListener,
-            fragment as ReturnToTopicNavigationButtonListener
+          addReturnTopTopicNavigation(
+            conversationPendingItemList,
+            extraInteractionPendingItemList,
+            hasPreviousButton
           )
         }
       }
-      doesMostRecentInteractionRequireExplicitSubmission(pendingItemList) &&
+      doesMostRecentInteractionRequireExplicitSubmission(conversationPendingItemList) &&
         playerFeatureSet.interactionSupport -> {
-        val canSubmitAnswer = checkNotNull(this.canSubmitAnswer) {
-          "Expected non-null submit answer observable for submit button when interaction support " +
-            "is enabled"
-        }
-        pendingItemList += SubmitButtonViewModel(
-          canSubmitAnswer,
-          hasPreviousButton,
-          previousNavigationButtonListener,
-          fragment as SubmitNavigationButtonListener
+        addSubmitButton(
+          conversationPendingItemList,
+          extraInteractionPendingItemList,
+          hasPreviousButton
         )
       }
       // Otherwise, just show the previous button since the interaction itself will push the answer
       // submission.
-      hasPreviousButton && !isMostRecentInteractionAutoNavigating(pendingItemList) -> {
-        pendingItemList += PreviousButtonViewModel(
-          previousNavigationButtonListener
-        )
+      !isMostRecentInteractionAutoNavigating(conversationPendingItemList) -> {
+        addPreviousButtonNavigation(hasPreviousButton, conversationPendingItemList)
       }
-
       // Otherwise, there's no navigation button that should be shown since the current interaction
       // handles this or navigation in this context is disabled.
+    }
+  }
+
+  private fun addSubmitButton(
+    conversationPendingItemList: MutableList<StateItemViewModel>,
+    extraInteractionPendingItemList: MutableList<StateItemViewModel>,
+    hasPreviousButton: Boolean
+  ) {
+    val canSubmitAnswer = checkNotNull(this.canSubmitAnswer) {
+      "Expected non-null submit answer observable for submit button when interaction support " +
+        "is enabled"
+    }
+    val targetList =
+      if (isSplitView.get()!!) extraInteractionPendingItemList else conversationPendingItemList
+    val hasPrevious = if (isSplitView.get()!!) false else hasPreviousButton
+    targetList += SubmitButtonViewModel(
+      canSubmitAnswer,
+      hasConversationView,
+      hasPrevious,
+      previousNavigationButtonListener,
+      fragment as SubmitNavigationButtonListener,
+      isSplitView.get()!!
+    )
+    if (isSplitView.get()!!) {
+      // "previous button" should appear in the conversation recycler view only
+      addPreviousButtonNavigation(hasPreviousButton, conversationPendingItemList)
+    }
+  }
+
+  private fun addReturnTopTopicNavigation(
+    conversationPendingItemList: MutableList<StateItemViewModel>,
+    extraInteractionPendingItemList: MutableList<StateItemViewModel>,
+    hasPreviousButton: Boolean
+  ) {
+    val targetList =
+      if (isSplitView.get()!!) extraInteractionPendingItemList else conversationPendingItemList
+    val hasPrevious = if (isSplitView.get()!!) false else hasPreviousButton
+    targetList += ReturnToTopicButtonViewModel(
+      hasPrevious,
+      hasConversationView,
+      previousNavigationButtonListener,
+      fragment as ReturnToTopicNavigationButtonListener,
+      isSplitView.get()!!
+    )
+    if (isSplitView.get()!!) {
+      // "previous button" should appear in the conversation recycler view only
+      addPreviousButtonNavigation(hasPreviousButton, conversationPendingItemList)
+    }
+  }
+
+  private fun addReplyButton(
+    conversationPendingItemList: MutableList<StateItemViewModel>,
+    extraInteractionPendingItemList: MutableList<StateItemViewModel>
+  ) {
+    val targetList =
+      if (isSplitView.get()!!) extraInteractionPendingItemList else conversationPendingItemList
+    targetList +=
+      ReplayButtonViewModel(
+        hasConversationView,
+        fragment as ReplayButtonListener,
+        isSplitView.get()!!
+      )
+  }
+
+  private fun addNextButtonNavigation(
+    conversationPendingItemList: MutableList<StateItemViewModel>,
+    extraInteractionPendingItemList: MutableList<StateItemViewModel>,
+    hasPreviousButton: Boolean
+  ) {
+    val targetList =
+      if (isSplitView.get()!!) extraInteractionPendingItemList else conversationPendingItemList
+    val hasPrevious = if (isSplitView.get()!!) false else hasPreviousButton
+    targetList += NextButtonViewModel(
+      hasPrevious,
+      hasConversationView,
+      previousNavigationButtonListener,
+      fragment as NextNavigationButtonListener,
+      isSplitView.get()!!
+    )
+    if (isSplitView.get()!!) {
+      // "previous button" should appear in the conversation recycler view only
+      addPreviousButtonNavigation(hasPreviousButton, conversationPendingItemList)
+    }
+  }
+
+  private fun addContinueNavigation(
+    conversationPendingItemList: MutableList<StateItemViewModel>,
+    extraInteractionPendingItemList: MutableList<StateItemViewModel>,
+    hasPreviousButton: Boolean
+  ) {
+    val targetList =
+      if (isSplitView.get()!!) extraInteractionPendingItemList else conversationPendingItemList
+    val hasPrevious = if (isSplitView.get()!!) false else hasPreviousButton
+    targetList += ContinueNavigationButtonViewModel(
+      hasPrevious,
+      hasConversationView,
+      previousNavigationButtonListener,
+      fragment as ContinueNavigationButtonListener,
+      isSplitView.get()!!
+    )
+    if (isSplitView.get()!!) {
+      // "previous button" should appear in the conversation recycler view only
+      addPreviousButtonNavigation(hasPreviousButton, conversationPendingItemList)
+    }
+  }
+
+  private fun addPreviousButtonNavigation(
+    hasPreviousButton: Boolean,
+    itemList: MutableList<StateItemViewModel>
+  ) {
+    if (hasPreviousButton) {
+      itemList += PreviousButtonViewModel(
+        hasConversationView,
+        previousNavigationButtonListener,
+        isSplitView.get()!!
+      )
     }
   }
 
@@ -590,57 +762,31 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     /** Adds support for displaying feedback to the user when they submit an answer. */
     fun addFeedbackSupport(): Builder {
-      if (fragment is QuestionPlayerFragment) {
-        adapterBuilder.registerViewBinder(
-          viewType = StateItemViewModel.ViewType.FEEDBACK,
-          inflateView = { parent ->
-            QuestionPlayerFeedbackItemBinding.inflate(
-              LayoutInflater.from(parent.context),
-              parent,
-              /* attachToParent= */ false
-            ).root
-          },
-          bindView = { view, viewModel ->
-            val binding = DataBindingUtil.findBinding<QuestionPlayerFeedbackItemBinding>(view)!!
-            val feedbackViewModel = viewModel as FeedbackViewModel
-            binding.htmlContent =
-              htmlParserFactory.create(
-                resourceBucketName,
-                entityType,
-                feedbackViewModel.gcsEntityId,
-                imageCenterAlign = true
-              ).parseOppiaHtml(
-                feedbackViewModel.htmlContent.toString(),
-                binding.questionPlayerFeedbackTextView
-              )
-          }
-        )
-      } else {
-        adapterBuilder.registerViewBinder(
-          viewType = StateItemViewModel.ViewType.FEEDBACK,
-          inflateView = { parent ->
-            FeedbackItemBinding.inflate(
-              LayoutInflater.from(parent.context),
-              parent,
-              /* attachToParent= */ false
-            ).root
-          },
-          bindView = { view, viewModel ->
-            val binding = DataBindingUtil.findBinding<FeedbackItemBinding>(view)!!
-            val feedbackViewModel = viewModel as FeedbackViewModel
-            binding.htmlContent =
-              htmlParserFactory.create(
-                resourceBucketName,
-                entityType,
-                feedbackViewModel.gcsEntityId,
-                imageCenterAlign = true
-              ).parseOppiaHtml(
-                feedbackViewModel.htmlContent.toString(),
-                binding.feedbackTextView
-              )
-          }
-        )
-      }
+      adapterBuilder.registerViewBinder(
+        viewType = StateItemViewModel.ViewType.FEEDBACK,
+        inflateView = { parent ->
+          FeedbackItemBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            /* attachToParent= */ false
+          ).root
+        },
+        bindView = { view, viewModel ->
+          val binding = DataBindingUtil.findBinding<FeedbackItemBinding>(view)!!
+          val feedbackViewModel = viewModel as FeedbackViewModel
+          binding.viewModel = feedbackViewModel
+          binding.htmlContent =
+            htmlParserFactory.create(
+              resourceBucketName,
+              entityType,
+              feedbackViewModel.gcsEntityId,
+              imageCenterAlign = true
+            ).parseOppiaHtml(
+              feedbackViewModel.htmlContent.toString(),
+              binding.feedbackTextView
+            )
+        }
+      )
       featureSets += PlayerFeatureSet(feedbackSupport = true)
       return this
     }
@@ -654,71 +800,42 @@ class StatePlayerRecyclerViewAssembler private constructor(
      *     there's an error which should prevent answer submission).
      */
     fun addInteractionSupport(canSubmitAnswer: ObservableField<Boolean>): Builder {
-      if (fragment is QuestionPlayerFragment) {
-        adapterBuilder.registerViewDataBinder(
-          viewType = StateItemViewModel.ViewType.SELECTION_INTERACTION,
-          inflateDataBinding = QuestionPlayerSelectionInteractionItemBinding::inflate,
-          setViewModel = QuestionPlayerSelectionInteractionItemBinding::setViewModel,
-          transformViewModel = { it as SelectionInteractionViewModel }
-        ).registerViewDataBinder(
-          viewType = StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION,
-          inflateDataBinding = FractionInteractionItemBinding::inflate,
-          setViewModel = FractionInteractionItemBinding::setViewModel,
-          transformViewModel = { it as FractionInteractionViewModel }
-        ).registerViewDataBinder(
-          viewType = StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION,
-          inflateDataBinding = NumericInputInteractionItemBinding::inflate,
-          setViewModel = NumericInputInteractionItemBinding::setViewModel,
-          transformViewModel = { it as NumericInputViewModel }
-        ).registerViewDataBinder(
-          viewType = StateItemViewModel.ViewType.DRAG_DROP_SORT_INTERACTION,
-          inflateDataBinding = DragDropInteractionItemBinding::inflate,
-          setViewModel = DragDropInteractionItemBinding::setViewModel,
-          transformViewModel = { it as DragAndDropSortInteractionViewModel }
-        ).registerViewDataBinder(
-          viewType = StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION,
-          inflateDataBinding = TextInputInteractionItemBinding::inflate,
-          setViewModel = TextInputInteractionItemBinding::setViewModel,
-          transformViewModel = { it as TextInputViewModel }
-        ).registerViewDataBinder(
-          viewType = StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON,
-          inflateDataBinding = SubmitButtonItemBinding::inflate,
-          setViewModel = SubmitButtonItemBinding::setButtonViewModel,
-          transformViewModel = { it as SubmitButtonViewModel }
-        )
-      } else {
-        adapterBuilder.registerViewDataBinder(
-          viewType = StateItemViewModel.ViewType.SELECTION_INTERACTION,
-          inflateDataBinding = SelectionInteractionItemBinding::inflate,
-          setViewModel = SelectionInteractionItemBinding::setViewModel,
-          transformViewModel = { it as SelectionInteractionViewModel }
-        ).registerViewDataBinder(
-          viewType = StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION,
-          inflateDataBinding = FractionInteractionItemBinding::inflate,
-          setViewModel = FractionInteractionItemBinding::setViewModel,
-          transformViewModel = { it as FractionInteractionViewModel }
-        ).registerViewDataBinder(
-          viewType = StateItemViewModel.ViewType.DRAG_DROP_SORT_INTERACTION,
-          inflateDataBinding = DragDropInteractionItemBinding::inflate,
-          setViewModel = DragDropInteractionItemBinding::setViewModel,
-          transformViewModel = { it as DragAndDropSortInteractionViewModel }
-        ).registerViewDataBinder(
-          viewType = StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION,
-          inflateDataBinding = NumericInputInteractionItemBinding::inflate,
-          setViewModel = NumericInputInteractionItemBinding::setViewModel,
-          transformViewModel = { it as NumericInputViewModel }
-        ).registerViewDataBinder(
-          viewType = StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION,
-          inflateDataBinding = TextInputInteractionItemBinding::inflate,
-          setViewModel = TextInputInteractionItemBinding::setViewModel,
-          transformViewModel = { it as TextInputViewModel }
-        ).registerViewDataBinder(
-          viewType = StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON,
-          inflateDataBinding = SubmitButtonItemBinding::inflate,
-          setViewModel = SubmitButtonItemBinding::setButtonViewModel,
-          transformViewModel = { it as SubmitButtonViewModel }
-        )
-      }
+      adapterBuilder.registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.SELECTION_INTERACTION,
+        inflateDataBinding = SelectionInteractionItemBinding::inflate,
+        setViewModel = SelectionInteractionItemBinding::setViewModel,
+        transformViewModel = { it as SelectionInteractionViewModel }
+      ).registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION,
+        inflateDataBinding = FractionInteractionItemBinding::inflate,
+        setViewModel = FractionInteractionItemBinding::setViewModel,
+        transformViewModel = { it as FractionInteractionViewModel }
+      ).registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.DRAG_DROP_SORT_INTERACTION,
+        inflateDataBinding = DragDropInteractionItemBinding::inflate,
+        setViewModel = DragDropInteractionItemBinding::setViewModel,
+        transformViewModel = { it as DragAndDropSortInteractionViewModel }
+      ).registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.IMAGE_REGION_SELECTION_INTERACTION,
+        inflateDataBinding = ImageRegionSelectionInteractionItemBinding::inflate,
+        setViewModel = ImageRegionSelectionInteractionItemBinding::setViewModel,
+        transformViewModel = { it as ImageRegionSelectionInteractionViewModel }
+      ).registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION,
+        inflateDataBinding = NumericInputInteractionItemBinding::inflate,
+        setViewModel = NumericInputInteractionItemBinding::setViewModel,
+        transformViewModel = { it as NumericInputViewModel }
+      ).registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION,
+        inflateDataBinding = TextInputInteractionItemBinding::inflate,
+        setViewModel = TextInputInteractionItemBinding::setViewModel,
+        transformViewModel = { it as TextInputViewModel }
+      ).registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON,
+        inflateDataBinding = SubmitButtonItemBinding::inflate,
+        setViewModel = SubmitButtonItemBinding::setButtonViewModel,
+        transformViewModel = { it as SubmitButtonViewModel }
+      )
       this.canSubmitAnswer = canSubmitAnswer
       featureSets += PlayerFeatureSet(interactionSupport = true)
       return this
@@ -726,86 +843,45 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     /** Adds support for displaying previously submitted answers. */
     fun addPastAnswersSupport(): Builder {
-      if (fragment is QuestionPlayerFragment) {
-        adapterBuilder.registerViewBinder(
-          viewType = StateItemViewModel.ViewType.SUBMITTED_ANSWER,
-          inflateView = { parent ->
-            QuestionPlayerSubmittedAnswerItemBinding.inflate(
-              LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
-            ).root
-          },
-          bindView = { view, viewModel ->
-            val binding =
-              DataBindingUtil.findBinding<QuestionPlayerSubmittedAnswerItemBinding>(view)!!
-            val submittedAnswerViewModel = viewModel as SubmittedAnswerViewModel
-            binding.viewModel = submittedAnswerViewModel
-            val userAnswer = submittedAnswerViewModel.submittedUserAnswer
-            when (userAnswer.textualAnswerCase) {
-              UserAnswer.TextualAnswerCase.HTML_ANSWER -> {
-                showSingleAnswer(binding)
-                val htmlParser = htmlParserFactory.create(
-                  resourceBucketName,
-                  entityType,
-                  submittedAnswerViewModel.gcsEntityId,
-                  imageCenterAlign = false
-                )
-                binding.submittedAnswer = htmlParser.parseOppiaHtml(
-                  userAnswer.htmlAnswer, binding.questionPlayerSubmittedAnswerTextView
-                )
-              }
-              UserAnswer.TextualAnswerCase.LIST_OF_HTML_ANSWERS -> {
-                showListOfAnswers(binding)
-                binding.submittedListAnswer = userAnswer.listOfHtmlAnswers
-                binding.questionPlayerSubmittedAnswerRecyclerView.adapter =
-                  createListAnswerAdapter(submittedAnswerViewModel.gcsEntityId)
-              }
-              else -> {
-                showSingleAnswer(binding)
-                binding.submittedAnswer = userAnswer.plainAnswer
-              }
+      adapterBuilder.registerViewBinder(
+        viewType = StateItemViewModel.ViewType.SUBMITTED_ANSWER,
+        inflateView = { parent ->
+          SubmittedAnswerItemBinding.inflate(
+            LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
+          ).root
+        },
+        bindView = { view, viewModel ->
+          val binding = DataBindingUtil.findBinding<SubmittedAnswerItemBinding>(view)!!
+          val submittedAnswerViewModel = viewModel as SubmittedAnswerViewModel
+          binding.viewModel = submittedAnswerViewModel
+          val userAnswer = submittedAnswerViewModel.submittedUserAnswer
+          when (userAnswer.textualAnswerCase) {
+            UserAnswer.TextualAnswerCase.HTML_ANSWER -> {
+              showSingleAnswer(binding)
+              val htmlParser = htmlParserFactory.create(
+                resourceBucketName,
+                entityType,
+                submittedAnswerViewModel.gcsEntityId,
+                imageCenterAlign = false
+              )
+              binding.submittedAnswer = htmlParser.parseOppiaHtml(
+                userAnswer.htmlAnswer,
+                binding.submittedAnswerTextView
+              )
+            }
+            UserAnswer.TextualAnswerCase.LIST_OF_HTML_ANSWERS -> {
+              showListOfAnswers(binding)
+              binding.submittedListAnswer = userAnswer.listOfHtmlAnswers
+              binding.submittedAnswerRecyclerView.adapter =
+                createListAnswerAdapter(submittedAnswerViewModel.gcsEntityId)
+            }
+            else -> {
+              showSingleAnswer(binding)
+              binding.submittedAnswer = userAnswer.plainAnswer
             }
           }
-        )
-      } else {
-        adapterBuilder.registerViewBinder(
-          viewType = StateItemViewModel.ViewType.SUBMITTED_ANSWER,
-          inflateView = { parent ->
-            SubmittedAnswerItemBinding.inflate(
-              LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
-            ).root
-          },
-          bindView = { view, viewModel ->
-            val binding = DataBindingUtil.findBinding<SubmittedAnswerItemBinding>(view)!!
-            val submittedAnswerViewModel = viewModel as SubmittedAnswerViewModel
-            val userAnswer = submittedAnswerViewModel.submittedUserAnswer
-            when (userAnswer.textualAnswerCase) {
-              UserAnswer.TextualAnswerCase.HTML_ANSWER -> {
-                showSingleAnswer(binding)
-                val htmlParser = htmlParserFactory.create(
-                  resourceBucketName,
-                  entityType,
-                  submittedAnswerViewModel.gcsEntityId,
-                  imageCenterAlign = false
-                )
-                binding.submittedAnswer = htmlParser.parseOppiaHtml(
-                  userAnswer.htmlAnswer,
-                  binding.submittedAnswerTextView
-                )
-              }
-              UserAnswer.TextualAnswerCase.LIST_OF_HTML_ANSWERS -> {
-                showListOfAnswers(binding)
-                binding.submittedListAnswer = userAnswer.listOfHtmlAnswers
-                binding.submittedAnswerRecyclerView.adapter =
-                  createListAnswerAdapter(submittedAnswerViewModel.gcsEntityId)
-              }
-              else -> {
-                showSingleAnswer(binding)
-                binding.submittedAnswer = userAnswer.plainAnswer
-              }
-            }
-          }
-        )
-      }
+        }
+      )
       featureSets += PlayerFeatureSet(pastAnswerSupport = true)
       return this
     }
@@ -855,10 +931,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     private fun showSingleAnswer(binding: ViewDataBinding) {
       when (binding) {
-        is QuestionPlayerSubmittedAnswerItemBinding -> {
-          binding.questionPlayerSubmittedAnswerRecyclerView.visibility = View.GONE
-          binding.questionPlayerSubmittedAnswerTextView.visibility = View.VISIBLE
-        }
         is SubmittedAnswerItemBinding -> {
           binding.submittedAnswerRecyclerView.visibility = View.GONE
           binding.submittedAnswerTextView.visibility = View.VISIBLE
@@ -868,10 +940,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     private fun showListOfAnswers(binding: ViewDataBinding) {
       when (binding) {
-        is QuestionPlayerSubmittedAnswerItemBinding -> {
-          binding.questionPlayerSubmittedAnswerRecyclerView.visibility = View.VISIBLE
-          binding.questionPlayerSubmittedAnswerTextView.visibility = View.GONE
-        }
         is SubmittedAnswerItemBinding -> {
           binding.submittedAnswerRecyclerView.visibility = View.VISIBLE
           binding.submittedAnswerTextView.visibility = View.GONE
@@ -1021,7 +1089,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     fun build(): StatePlayerRecyclerViewAssembler {
       val playerFeatureSet = featureSets.reduce(PlayerFeatureSet::union)
       return StatePlayerRecyclerViewAssembler(
-        adapterBuilder.build(),
+        /* adapter= */ adapterBuilder.build(),
+        /* rhsAdapter= */ adapterBuilder.build(),
         playerFeatureSet,
         fragment,
         congratulationsTextView,

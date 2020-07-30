@@ -95,7 +95,7 @@ class EventBundleCreator {
     val bundle = Bundle()
     bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(TOPIC_ID_KEY, eventLog.context.revisionCardContext.topicId)
-    bundle.putString(SUB_TOPIC_ID_KEY, eventLog.context.revisionCardContext.subTopicId)
+    bundle.putInt(SUB_TOPIC_ID_KEY, eventLog.context.revisionCardContext.subTopicId)
     bundle.putString(PRIORITY_KEY, eventLog.priority.toString())
     return bundle
   }

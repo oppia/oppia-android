@@ -4,6 +4,6 @@
   <dimen name="home_padding_start">72dp</dimen>
   <dimen name="home_margin_max">72dp</dimen>
   <dimen name="home_margin_min">36dp</dimen>
-  <dimen name="recently_played_margin_max">28dp</dimen>
-  <dimen name="recently_played_margin_min">28dp</dimen>
+  <dimen name="recently_played_margin_max">72dp</dimen>
+  <dimen name="recently_played_margin_min">36dp</dimen>
 </resources>

@@ -13,6 +13,7 @@
       "thumbnail_bg_color": "#D68F78",
       "exp_summary_dict": {
         "thumbnail_bg_color": "#d68453",
+        "thumbnail_icon_url": "",
         "title": "Fraction-1",
         "language_code": "en",
         "objective": "Learn about fractions in detail.",
@@ -33,6 +34,7 @@
       "prerequisite_skill_ids": [],
       "exp_summary_dict": {
         "thumbnail_bg_color": "#d68453",
+        "thumbnail_icon_url": "",
         "title": "Equal Parts-1",
         "language_code": "en",
         "objective": "Learn about fractions and equal parts.",

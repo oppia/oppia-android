@@ -15,6 +15,10 @@ import javax.inject.Inject
 @FragmentScope
 class StateViewModel @Inject constructor() : ObservableViewModel() {
   val itemList: ObservableList<StateItemViewModel> = ObservableArrayList()
+  val rightItemList: ObservableList<StateItemViewModel> = ObservableArrayList()
+
+  val isSplitView = ObservableField(false)
+  val centerGuidelinePercentage = ObservableField(0.5f)
 
   val isAudioBarVisible = ObservableField(false)
 
@@ -53,7 +57,12 @@ class StateViewModel @Inject constructor() : ObservableViewModel() {
   private fun getPendingAnswerWithoutError(
     statePlayerRecyclerViewAssembler: StatePlayerRecyclerViewAssembler
   ): UserAnswer? {
-    val answerHandler = statePlayerRecyclerViewAssembler.getPendingAnswerHandler(itemList)
+    val items = if (isSplitView.get() == true) {
+      rightItemList
+    } else {
+      itemList
+    }
+    val answerHandler = statePlayerRecyclerViewAssembler.getPendingAnswerHandler(items)
     return if (answerHandler?.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME) == null) {
       answerHandler?.getPendingAnswer()
     } else {

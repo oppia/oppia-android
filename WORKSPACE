@@ -8,6 +8,7 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 # Android SDK configuration. For more details, see:
 # https://docs.bazel.build/versions/master/be/android.html#android_sdk_repository
+# TODO(#1542): Sync Android SDK version with the manifest.
 android_sdk_repository(
     name = "androidsdk",
     api_level = 28,
