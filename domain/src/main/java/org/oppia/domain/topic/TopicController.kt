@@ -693,7 +693,8 @@ class TopicController @Inject constructor(
   }
 
   private fun getSkillJsonObject(skillId: String): JSONObject {
-    val skillJsonArray = jsonAssetRetriever.loadJsonFromAsset("skills.json")?.optJSONArray("skills")
+    val skillJsonArray = jsonAssetRetriever
+      .loadJsonFromAsset("skills.json")?.optJSONArray("skills")
       ?: return JSONObject("")
     for (i in 0 until skillJsonArray.length()) {
       val currentSkillJsonObject = skillJsonArray.optJSONObject(i)
