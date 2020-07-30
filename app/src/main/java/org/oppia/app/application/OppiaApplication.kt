@@ -13,8 +13,10 @@ import javax.inject.Inject
 class OppiaApplication : MultiDexApplication(), ActivityComponentFactory {
   /** The root [ApplicationComponent]. */
 
-  @Inject lateinit var exceptionsController: ExceptionsController
-  @Inject lateinit var oppiaClock: OppiaClock
+  @Inject
+  lateinit var exceptionsController: ExceptionsController
+  @Inject
+  lateinit var oppiaClock: OppiaClock
 
   private val component: ApplicationComponent by lazy {
     DaggerApplicationComponent.builder()
@@ -32,8 +34,8 @@ class OppiaApplication : MultiDexApplication(), ActivityComponentFactory {
     try {
       Thread.currentThread().uncaughtExceptionHandler =
         OppiaUncaughtExceptionHandler(exceptionsController, oppiaClock)
-    } catch (exception: Exception) { }
-    finally {
+    } catch (exception: Exception) {
+    } finally {
       Thread.currentThread().uncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
     }
   }
