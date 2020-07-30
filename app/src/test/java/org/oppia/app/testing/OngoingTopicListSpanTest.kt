@@ -14,11 +14,10 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.app.R
 import org.oppia.app.ongoingtopiclist.OngoingTopicListActivity
 import org.oppia.app.ongoingtopiclist.OngoingTopicListFragment
 import org.robolectric.annotation.Config
-
-private const val TAG_ONGOING_RECYCLER_VIEW = "TAG_ONGOING_RECYCLER_VIEW"
 
 @RunWith(AndroidJUnit4::class)
 class OngoingTopicListSpanTest {
@@ -43,7 +42,7 @@ class OngoingTopicListSpanTest {
 
   private fun getOngoingRecyclerView(activity: OngoingTopicListActivity): RecyclerView {
     return getOngoingTopicListFragment(activity).view?.findViewWithTag<View>(
-      TAG_ONGOING_RECYCLER_VIEW
+      activity.resources.getString(R.string.ongoing_recycler_view_tag)
     )!! as RecyclerView
   }
 

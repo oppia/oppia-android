@@ -57,7 +57,7 @@
         android:paddingTop="28dp"
         android:paddingBottom="88dp"
         android:scrollbars="none"
-        android:tag="TAG_ONGOING_RECYCLER_VIEW"
+        android:tag="@string/ongoing_recycler_view_tag"
         app:data="@{viewModel.ongoingTopicListViewModelLiveData}" />
 
       <View
