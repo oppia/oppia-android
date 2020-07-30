@@ -359,4 +359,5 @@
   </plurals>
   <!-- ViewTags -->
   <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
+  <string name="completed_story_list_recyclerview_tag">completed_story_list_recyclerview_tag</string>
 </resources>
