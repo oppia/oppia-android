@@ -35,8 +35,9 @@
         android:clipToPadding="false"
         android:divider="@android:color/transparent"
         android:overScrollMode="never"
-        android:paddingTop="@{viewModel.isAudioBarVisible ? @dimen/padding_72dp : @dimen/padding_24dp}"
+        android:paddingTop="@{viewModel.isAudioBarVisible ? @dimen/padding_48 : @dimen/padding_0}"
         android:scrollbars="none"
+        android:paddingBottom="112dp"
         app:data="@{viewModel.itemList}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,8 +52,8 @@
         android:clipToPadding="false"
         android:divider="@android:color/transparent"
         android:overScrollMode="never"
-        android:paddingTop="@{viewModel.isAudioBarVisible ? @dimen/padding_72dp : @dimen/padding_24dp}"
         android:scrollbars="none"
+        android:paddingBottom="112dp"
         android:visibility="@{viewModel.isSplitView ? View.VISIBLE : View.GONE}"
         app:data="@{viewModel.rightItemList}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -68,20 +69,30 @@
         android:orientation="vertical"
         tools:layout_constraintGuide_percent="0.5f"
         app:layout_constraintGuide_percent="@{viewModel.centerGuidelinePercentage.floatValue()}" />
+
+      <FrameLayout
+        android:id="@+id/audio_fragment_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        app:layoutMarginStart="@{viewModel.isSplitView() ? @dimen/margin_64 : @dimen/margin_128}"
+        app:layoutMarginEnd="@{viewModel.isSplitView() ? @dimen/margin_64 : @dimen/margin_128}"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/center_guideline">
+
+        <FrameLayout
+          android:id="@+id/audio_fragment_placeholder"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:visibility="@{viewModel.isAudioBarVisible ? View.VISIBLE : View.GONE}" />
+      </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout
-      android:id="@+id/audio_fragment_container"
+      android:id="@+id/hints_and_solution_fragment_placeholder"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_gravity="top"
-      android:layout_marginStart="24dp">
-
-      <FrameLayout
-        android:id="@+id/audio_fragment_placeholder"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="@{viewModel.isAudioBarVisible ? View.VISIBLE : View.GONE}" />
+      android:layout_height="match_parent">
     </FrameLayout>
 
     <FrameLayout
@@ -91,6 +102,16 @@
       android:background="@drawable/hints_background"
       android:visibility="@{viewModel.isHintBulbVisible() ? View.VISIBLE : View.GONE}"
       android:layout_gravity="bottom|start">
+
+      <ImageView
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="3dp"
+        android:layout_marginEnd="4dp"
+        android:visibility="@{viewModel.isHintOpenedAndUnRevealed() ? View.VISIBLE : View.GONE}"
+        android:src="@drawable/radar_moving_circle"
+        app:flashingAnimation="@{viewModel.isHintOpenedAndUnRevealed()}" />
 
       <ImageView
         android:id="@+id/dot_hint"
@@ -114,10 +135,10 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_gravity="bottom"
-      android:layout_marginStart="28dp"
+      android:layout_marginStart="128dp"
       android:layout_marginTop="8dp"
-      android:layout_marginEnd="28dp"
-      android:layout_marginBottom="16dp"
+      android:layout_marginEnd="128dp"
+      android:layout_marginBottom="24dp"
       android:elevation="8dp"
       android:translationZ="4dp">
 

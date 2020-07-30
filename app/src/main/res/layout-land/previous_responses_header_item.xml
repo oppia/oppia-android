@@ -23,7 +23,7 @@
 
     <FrameLayout
       android:layout_width="0dp"
-      android:layout_height="1dp"
+      android:layout_height="@{viewModel.isSplitView? @dimen/thickness_2 : @dimen/thickness_1, default=@dimen/thickness_1}"
       android:background="@color/mid_grey"
       app:layout_constraintBottom_toBottomOf="@+id/previous_responses_header_text"
       app:layout_constraintEnd_toStartOf="@+id/previous_responses_header_text"
@@ -48,7 +48,7 @@
 
     <FrameLayout
       android:layout_width="0dp"
-      android:layout_height="1dp"
+      android:layout_height="@{viewModel.isSplitView? @dimen/thickness_2 : @dimen/thickness_1, default=@dimen/thickness_1}"
       android:background="@color/mid_grey"
       app:layout_constraintBottom_toBottomOf="@+id/previous_responses_header_text"
       app:layout_constraintEnd_toEndOf="parent"
