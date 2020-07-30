@@ -17,7 +17,6 @@ import org.oppia.app.model.OngoingTopicList
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Question
 import org.oppia.app.model.RevisionCard
-import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.StoryProgress
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.SubtitledHtml
@@ -441,16 +440,12 @@ class TopicController @Inject constructor(
     val topicData = jsonAssetRetriever.loadJsonFromAsset("$topicId.json")!!
     val subtopicList: List<Subtopic> =
       createSubtopicListFromJsonArray(topicData.optJSONArray("subtopics"))
-    val skillSummaryList: List<SkillSummary> =
-      createSkillSummaryListFromJsonObject(topicData.optJSONObject("skill_descriptions"))
     val storySummaryList: List<StorySummary> =
       createStorySummaryListFromJsonArray(topicId, topicData.optJSONArray("canonical_story_dicts"))
     return Topic.newBuilder()
       .setTopicId(topicId)
       .setName(topicData.getString("topic_name"))
       .setDescription(topicData.getString("topic_description"))
-      // TODO(#1476): Remove skill summary because we use subtopic in practice tab now.
-      .addAllSkill(skillSummaryList)
       .addAllStory(storySummaryList)
       .setTopicThumbnail(createTopicThumbnail(topicData))
       .setDiskSizeBytes(computeTopicSizeBytes(getAssetFileNameList(topicId)))
@@ -497,7 +492,6 @@ class TopicController @Inject constructor(
       }
       val subtopic = Subtopic.newBuilder()
         .setSubtopicId(currentSubtopicJsonObject.optInt("id"))
-        // TODO(#1476): Modify proto to add thumbnail_color and thumbnail_filename from json files.
         .setTitle(currentSubtopicJsonObject.optString("title"))
         .setSubtopicThumbnail(
           createSubtopicThumbnail(currentSubtopicJsonObject)
@@ -546,33 +540,6 @@ class TopicController @Inject constructor(
       assetFileNameList.add(topicId + "_" + subtopicId + ".json")
     }
     return assetFileNameList
-  }
-
-  /**
-   * Creates a list of skill for topic from its json representation. The json file is expected to have
-   * a key called 'skill_descriptions' that contains the mapping of of skill Id and description.
-   */
-  private fun createSkillSummaryListFromJsonObject(
-    skillSummaryJsonObject: JSONObject?
-  ): List<SkillSummary> {
-    val skillSummaryList = mutableListOf<SkillSummary>()
-
-    val skillIdList = skillSummaryJsonObject!!.keys()
-    while (skillIdList.hasNext()) {
-      val skillId = skillIdList.next()
-      val description = skillSummaryJsonObject.optString(skillId)
-      skillSummaryList.add(
-        createSkillFromJson(skillId, description)
-      )
-    }
-    return skillSummaryList
-  }
-
-  private fun createSkillFromJson(skillId: String, description: String): SkillSummary {
-    return SkillSummary.newBuilder()
-      .setSkillId(skillId)
-      .setDescription(description)
-      .build()
   }
 
   /**

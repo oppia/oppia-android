@@ -24,17 +24,14 @@ message Topic {
   // A list of summarized stories contained within this topic.
   repeated StorySummary story = 4;
 
-  // A list of summarized skills contained within this topic.
-  repeated SkillSummary skill = 5;
+  // A list of subtopic contained within this topic.
+  repeated Subtopic subtopic = 5;
 
   // The thumbnail corresponding to this topic.
   LessonThumbnail topic_thumbnail = 6;
 
   // The number of on-disk bytes this topic consumes.
   int64 disk_size_bytes = 7;
-
-  // A list of subtopic contained within this topic.
-  repeated Subtopic subtopic = 8;
 }
 
 // Corresponds to a concept card that can be displayed for a specific skill.
@@ -197,26 +194,11 @@ message TopicSummary {
   // The structural version of the topic.
   int32 version = 3;
 
-  // The number of subtopics.
-  int32 subtopic_count = 4;
-
-  // The number of canonical stories.
-  int32 canonical_story_count = 5;
-
-  // The number of skills that have yet to be categorized.
-  int32 uncategorized_skill_count = 6;
-
-  // The number of additional, non-canonical stories.
-  int32 additional_story_count = 7;
-
-  // The total number of skills associated with this topic.
-  int32 total_skill_count = 8;
-
   // The total number of lessons associated with this topic.
-  int32 total_chapter_count = 9;
+  int32 total_chapter_count = 4;
 
   // The associated thumbnail that should be displayed with this topic summary.
-  LessonThumbnail topic_thumbnail = 10;
+  LessonThumbnail topic_thumbnail = 5;
 }
 
 // Represents the play state of a single chapter.

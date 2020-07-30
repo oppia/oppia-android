@@ -233,20 +233,6 @@ class TopicListController @Inject constructor(
       .setTopicId(topicId)
       .setName(jsonObject.getString("topic_name"))
       .setVersion(jsonObject.optInt("version"))
-      .setSubtopicCount(jsonObject.getJSONArray("subtopics").length())
-      .setCanonicalStoryCount(
-        jsonObject.getJSONArray("canonical_story_dicts")
-          .length()
-      )
-      .setUncategorizedSkillCount(
-        jsonObject.getJSONArray("uncategorized_skill_ids")
-          .length()
-      )
-      .setAdditionalStoryCount(
-        jsonObject.getJSONArray("additional_story_dicts")
-          .length()
-      )
-      .setTotalSkillCount(jsonObject.getJSONObject("skill_descriptions").length())
       .setTotalChapterCount(totalChapterCount)
       .setTopicThumbnail(createTopicThumbnail(jsonObject))
       .build()

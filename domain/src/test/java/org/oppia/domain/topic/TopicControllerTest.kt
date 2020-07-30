@@ -196,7 +196,6 @@ class TopicControllerTest {
       val topic = topicResultCaptor.value!!.getOrThrow()
       assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
       assertThat(topic.storyCount).isEqualTo(1)
-      assertThat(topic.skillCount).isEqualTo(3)
     }
 
   @Test
@@ -223,7 +222,6 @@ class TopicControllerTest {
       val topic = topicResultCaptor.value!!.getOrThrow()
       assertThat(topic.topicId).isEqualTo(RATIOS_TOPIC_ID)
       assertThat(topic.storyCount).isEqualTo(2)
-      assertThat(topic.skillCount).isEqualTo(1)
     }
 
   @Test
