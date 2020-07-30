@@ -21,7 +21,6 @@ kt_android_library(
          artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
          artifact("com.crashlytics.sdk.android:crashlytics:2.9.8"),
          artifact("io.fabric.sdk.android:fabric:1.4.7"),
-         artifact("com.android.support:support-annotations"),
          artifact("androidx.test.ext:junit"),
          artifact("org.mockito:mockito-core:2.19.0"),
      ],

@@ -10,8 +10,9 @@ kt_android_library(
     name = "utility_lib",
     custom_package = "org.oppia.util",
     srcs = glob(["src/main/java/org/oppia/util/**/*.kt"],),
-    #resource_files = glob(["src/main/res/**/*.xml"]),
-    #manifest = "src/main/AndroidManifest.xml",
+    resource_files = glob(["src/main/res/**/*.xml"]),
+    manifest = "src/main/AndroidManifest.xml",
+    exports_manifest = True,
     deps = [
         ":dagger",
         "//model:model_lib",

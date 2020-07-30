@@ -101,6 +101,12 @@ git_repository(
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_workspace_dependencies")
 google_services_workspace_dependencies()
 
+git_repository(
+    name = "circularimageview",
+    commit = "2d19cae90e591f236146eea9026eec93f3972414",
+    remote = "https://github.com/oppia/CircularImageview",
+)
+
 bind(
   name = "databinding_annotation_processor",
   actual = "//tools/android:compiler_annotation_processor",
@@ -124,9 +130,6 @@ maven_install(
         "androidx.test.ext:junit:1.1.1",
         "android.arch.core:core-testing:1.1.1",
         "androidx.arch.core:core-testing:2.1.0",
-        "com.android.databinding:adapters:3.4.2",
-        "com.android.databinding:baseLibrary:3.4.2",
-        "com.android.support:support-annotations:28.0.0",
         "androidx.databinding:databinding-runtime:3.4.2",
         "androidx.databinding:databinding-adapters:3.4.2",
         "androidx.databinding:databinding-common:3.4.2",
@@ -142,6 +145,8 @@ maven_install(
         "androidx.constraintlayout:constraintlayout:1.1.3",
         "de.hdodenhof:circleimageview:3.0.1",
         "com.jackandphantom.android:circularimageview:1.2.0",
+        "com.chaos.view:pinview:1.4.3",
+        "androidx.recyclerview:recyclerview:1.0.0",
     ],
     repositories = DAGGER_REPOSITORIES + [
         "https://maven.google.com",
