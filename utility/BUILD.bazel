@@ -31,8 +31,8 @@ kt_android_library(
     visibility = ["//visibility:public"],
 )
 
+# TODO(#59): Write a kt_android_library() rule to build test files and an android_local_test() rule.
 '''
-TODO(#59): Write a kt_android_library() rule to build test files and an android_local_test() rule.
 Because test files depend on the testing module source files being built, these rules have been left
 for a later PR.
 '''
