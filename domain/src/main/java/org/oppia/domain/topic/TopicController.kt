@@ -1,5 +1,6 @@
 package org.oppia.domain.topic
 
+import android.graphics.Color
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.json.JSONArray
@@ -16,7 +17,6 @@ import org.oppia.app.model.OngoingTopicList
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Question
 import org.oppia.app.model.RevisionCard
-import org.oppia.app.model.SkillSummary
 import org.oppia.app.model.StoryProgress
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.SubtitledHtml
@@ -42,10 +42,6 @@ const val TEST_SKILL_ID_2 = "test_skill_id_2"
 const val FRACTIONS_SKILL_ID_0 = "5RM9KPfQxobH"
 const val FRACTIONS_SKILL_ID_1 = "UxTGIJqaHMLa"
 const val FRACTIONS_SKILL_ID_2 = "B39yK4cbHZYI"
-const val FRACTIONS_SUBTOPIC_ID_1 = "1"
-const val FRACTIONS_SUBTOPIC_ID_2 = "2"
-const val FRACTIONS_SUBTOPIC_ID_3 = "3"
-const val FRACTIONS_SUBTOPIC_ID_4 = "4"
 const val RATIOS_SKILL_ID_0 = "NGZ89uMw0IGV"
 const val TEST_QUESTION_ID_0 = "question_id_0"
 const val TEST_QUESTION_ID_1 = "question_id_1"
@@ -63,6 +59,12 @@ const val FRACTIONS_QUESTION_ID_8 = "AciwQAtcvZfI"
 const val FRACTIONS_QUESTION_ID_9 = "YQwbX2r6p3Xj"
 const val FRACTIONS_QUESTION_ID_10 = "NNuVGmbJpnj5"
 const val RATIOS_QUESTION_ID_0 = "QiKxvAXpvUbb"
+
+private const val FRACTIONS_SUBTOPIC_ID_1 = 1
+private const val FRACTIONS_SUBTOPIC_ID_2 = 2
+private const val FRACTIONS_SUBTOPIC_ID_3 = 3
+private const val FRACTIONS_SUBTOPIC_ID_4 = 4
+private const val SUBTOPIC_BG_COLOR = "#FFFFFF"
 
 private const val QUESTION_DATA_PROVIDER_ID = "QuestionDataProvider"
 private const val TRANSFORMED_GET_COMPLETED_STORIES_PROVIDER_ID =
@@ -124,7 +126,7 @@ class TopicController @Inject constructor(
   ): LiveData<AsyncResult<StorySummary>> {
     val storyDataProvider =
       dataProviders.createInMemoryDataProviderAsync(TRANSFORMED_GET_STORY_PROVIDER_ID) {
-        return@createInMemoryDataProviderAsync AsyncResult.success(retrieveStory(storyId))
+        return@createInMemoryDataProviderAsync AsyncResult.success(retrieveStory(topicId, storyId))
       }
     val storyProgressDataProvider =
       storyProgressController.retrieveStoryProgressDataProvider(profileId, topicId, storyId)
@@ -172,7 +174,7 @@ class TopicController @Inject constructor(
       ) {
         val completedStoryListBuilder = CompletedStoryList.newBuilder()
         it.forEach { topicProgress ->
-          val topicName = retrieveTopic(topicProgress.topicId).name
+          val topic = retrieveTopic(topicProgress.topicId)
           val storyProgressList = mutableListOf<StoryProgress>()
           val transformedStoryProgressList = topicProgress
             .storyProgressMap.values.toList()
@@ -180,7 +182,7 @@ class TopicController @Inject constructor(
 
           completedStoryListBuilder.addAllCompletedStory(
             createCompletedStoryListFromProgress(
-              topicName,
+              topic,
               storyProgressList
             )
           )
@@ -273,12 +275,12 @@ class TopicController @Inject constructor(
   }
 
   private fun createCompletedStoryListFromProgress(
-    topicName: String,
+    topic: Topic,
     storyProgressList: List<StoryProgress>
   ): List<CompletedStory> {
     val completedStoryList = ArrayList<CompletedStory>()
     storyProgressList.forEach { storyProgress ->
-      val storySummary = retrieveStory(storyProgress.storyId)
+      val storySummary = retrieveStory(topic.topicId, storyProgress.storyId)
       val lastChapterSummary = storySummary.chapterList.last()
       if (storyProgress.chapterProgressMap.containsKey(lastChapterSummary.explorationId) &&
         storyProgress.chapterProgressMap[lastChapterSummary.explorationId]!!.chapterPlayState ==
@@ -287,7 +289,7 @@ class TopicController @Inject constructor(
         val completedStoryBuilder = CompletedStory.newBuilder()
           .setStoryId(storySummary.storyId)
           .setStoryName(storySummary.storyName)
-          .setTopicName(topicName)
+          .setTopicName(topic.name)
           .setLessonThumbnail(storySummary.storyThumbnail)
         completedStoryList.add(completedStoryBuilder.build())
       }
@@ -358,8 +360,8 @@ class TopicController @Inject constructor(
     return createTopicFromJson(topicId)
   }
 
-  internal fun retrieveStory(storyId: String): StorySummary {
-    return createStorySummaryFromJson(storyId)
+  internal fun retrieveStory(topicId: String, storyId: String): StorySummary {
+    return createStorySummaryFromJson(topicId, storyId)
   }
 
   // TODO(#45): Expose this as a data provider, or omit if it's not needed.
@@ -438,18 +440,14 @@ class TopicController @Inject constructor(
     val topicData = jsonAssetRetriever.loadJsonFromAsset("$topicId.json")!!
     val subtopicList: List<Subtopic> =
       createSubtopicListFromJsonArray(topicData.optJSONArray("subtopics"))
-    val skillSummaryList: List<SkillSummary> =
-      createSkillSummaryListFromJsonObject(topicData.optJSONObject("skill_descriptions"))
     val storySummaryList: List<StorySummary> =
-      createStorySummaryListFromJsonArray(topicData.optJSONArray("canonical_story_dicts"))
+      createStorySummaryListFromJsonArray(topicId, topicData.optJSONArray("canonical_story_dicts"))
     return Topic.newBuilder()
       .setTopicId(topicId)
       .setName(topicData.getString("topic_name"))
       .setDescription(topicData.getString("topic_description"))
-      // TODO(#1476): Remove skill summary because we use subtopic in practice tab now.
-      .addAllSkill(skillSummaryList)
       .addAllStory(storySummaryList)
-      .setTopicThumbnail(TOPIC_THUMBNAILS.getValue(topicId))
+      .setTopicThumbnail(createTopicThumbnail(topicData))
       .setDiskSizeBytes(computeTopicSizeBytes(getAssetFileNameList(topicId)))
       .addAllSubtopic(subtopicList)
       .build()
@@ -494,13 +492,9 @@ class TopicController @Inject constructor(
       }
       val subtopic = Subtopic.newBuilder()
         .setSubtopicId(currentSubtopicJsonObject.optInt("id"))
-        // TODO(#1476): Modify proto to add thumbnail_color and thumbnail_filename from json files.
         .setTitle(currentSubtopicJsonObject.optString("title"))
         .setSubtopicThumbnail(
-          createSubtopicThumbnail(
-            currentSubtopicJsonObject
-              .optString("id")
-          )
+          createSubtopicThumbnail(currentSubtopicJsonObject)
         )
         .addAllSkillIds(skillIdList).build()
       subtopicList.add(subtopic)
@@ -549,59 +543,30 @@ class TopicController @Inject constructor(
   }
 
   /**
-   * Creates a list of skill for topic from its json representation. The json file is expected to have
-   * a key called 'skill_descriptions' that contains the mapping of of skill Id and description.
-   */
-  private fun createSkillSummaryListFromJsonObject(
-    skillSummaryJsonObject: JSONObject?
-  ): List<SkillSummary> {
-    val skillSummaryList = mutableListOf<SkillSummary>()
-
-    val skillIdList = skillSummaryJsonObject!!.keys()
-    while (skillIdList.hasNext()) {
-      val skillId = skillIdList.next()
-      val description = skillSummaryJsonObject.optString(skillId)
-      skillSummaryList.add(
-        createSkillFromJson(skillId, description)
-      )
-    }
-    return skillSummaryList
-  }
-
-  private fun createSkillFromJson(skillId: String, description: String): SkillSummary {
-    return SkillSummary.newBuilder()
-      .setSkillId(skillId)
-      .setDescription(description)
-      // TODO(#1476): Remove skill thumbnail as we don't have them in json files.
-      .setSkillThumbnail(createSkillThumbnail(skillId))
-      .build()
-  }
-
-  /**
    * Creates a list of [StorySummary]s for topic from its json representation. The json file is expected to have
    * a key called 'canonical_story_dicts' that contains an array of story objects.
    */
   private fun createStorySummaryListFromJsonArray(
+    topicId: String,
     storySummaryJsonArray: JSONArray?
   ): List<StorySummary> {
     val storySummaryList = mutableListOf<StorySummary>()
     for (i in 0 until storySummaryJsonArray!!.length()) {
       val currentStorySummaryJsonObject = storySummaryJsonArray.optJSONObject(i)
       val storySummary: StorySummary =
-        createStorySummaryFromJson(currentStorySummaryJsonObject.optString("id"))
+        createStorySummaryFromJson(topicId, currentStorySummaryJsonObject.optString("id"))
       storySummaryList.add(storySummary)
     }
     return storySummaryList
   }
 
   /** Creates a list of [StorySummary]s for topic given its json representation and the index of the story in json. */
-  private fun createStorySummaryFromJson(storyId: String): StorySummary {
+  private fun createStorySummaryFromJson(topicId: String, storyId: String): StorySummary {
     val storyDataJsonObject = jsonAssetRetriever.loadJsonFromAsset("$storyId.json")
     return StorySummary.newBuilder()
       .setStoryId(storyId)
       .setStoryName(storyDataJsonObject?.optString("story_title"))
-      // TODO(#1476): Modify proto to add thumbnail_bg_color and thumbnail_filename from json files.
-      .setStoryThumbnail(STORY_THUMBNAILS.getValue(storyId))
+      .setStoryThumbnail(createStoryThumbnail(topicId, storyId))
       .addAllChapter(
         createChaptersFromJson(
           storyDataJsonObject!!.optJSONArray("story_nodes")
@@ -621,8 +586,7 @@ class TopicController @Inject constructor(
           .setExplorationId(explorationId)
           .setName(chapter.getString("title"))
           .setChapterPlayState(ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED)
-          // TODO(#1476): Modify proto to add thumbnail_bg_color and thumbnail_filename from json files.
-          .setChapterThumbnail(EXPLORATION_THUMBNAILS.getValue(explorationId))
+          .setChapterThumbnail(createChapterThumbnail(chapter))
           .build()
       )
     }
@@ -696,7 +660,8 @@ class TopicController @Inject constructor(
   }
 
   private fun getSkillJsonObject(skillId: String): JSONObject {
-    val skillJsonArray = jsonAssetRetriever.loadJsonFromAsset("skills.json")?.optJSONArray("skills")
+    val skillJsonArray = jsonAssetRetriever
+      .loadJsonFromAsset("skills.json")?.optJSONArray("skills")
       ?: return JSONObject("")
     for (i in 0 until skillJsonArray.length()) {
       val currentSkillJsonObject = skillJsonArray.optJSONObject(i)
@@ -761,52 +726,100 @@ class TopicController @Inject constructor(
     return voiceoverMappingBuilder.build()
   }
 
-  private fun createSkillThumbnail(skillId: String): LessonThumbnail {
-    return when (skillId) {
-      FRACTIONS_SKILL_ID_0 ->
-        LessonThumbnail.newBuilder()
-          .setThumbnailGraphic(LessonThumbnailGraphic.IDENTIFYING_THE_PARTS_OF_A_FRACTION)
-          .build()
-      FRACTIONS_SKILL_ID_1 ->
-        LessonThumbnail.newBuilder()
-          .setThumbnailGraphic(LessonThumbnailGraphic.WRITING_FRACTIONS)
-          .build()
-      FRACTIONS_SKILL_ID_2 ->
-        LessonThumbnail.newBuilder()
-          .setThumbnailGraphic(LessonThumbnailGraphic.MIXED_NUMBERS_AND_IMPROPER_FRACTIONS)
-          .build()
-      RATIOS_SKILL_ID_0 ->
-        LessonThumbnail.newBuilder()
-          .setThumbnailGraphic(LessonThumbnailGraphic.DERIVE_A_RATIO)
-          .build()
-      else ->
-        LessonThumbnail.newBuilder()
-          .setThumbnailGraphic(LessonThumbnailGraphic.IDENTIFYING_THE_PARTS_OF_A_FRACTION)
-          .build()
+  private fun createStoryThumbnail(topicId: String, storyId: String): LessonThumbnail {
+    val topicJsonObject = jsonAssetRetriever.loadJsonFromAsset("$topicId.json")!!
+    val storyData = topicJsonObject.getJSONArray("canonical_story_dicts")
+    var thumbnailBgColor = ""
+    var thumbnailFilename = ""
+    for (i in 0 until storyData.length()) {
+      val storyJsonObject = storyData.getJSONObject(i)
+      if (storyId == storyJsonObject.optString("id")) {
+        thumbnailBgColor = storyJsonObject.optString("thumbnail_bg_color")
+        thumbnailFilename = storyJsonObject.optString("thumbnail_filename")
+      }
+    }
+
+    return if (thumbnailFilename.isNotEmpty() && thumbnailBgColor.isNotEmpty()) {
+      LessonThumbnail.newBuilder()
+        .setThumbnailFilename(thumbnailFilename)
+        .setBackgroundColorRgb(Color.parseColor(thumbnailBgColor))
+        .build()
+    } else if (STORY_THUMBNAILS.containsKey(storyId)) {
+      STORY_THUMBNAILS.getValue(storyId)
+    } else {
+      createDefaultStoryThumbnail()
     }
   }
 
-  private fun createSubtopicThumbnail(subtopicId: String): LessonThumbnail {
+  private fun createChapterThumbnail(chapterJsonObject: JSONObject): LessonThumbnail {
+    val explorationId = chapterJsonObject.optString("exploration_id")
+    val thumbnailBgColor = chapterJsonObject
+      .optJSONObject("exp_summary_dict")
+      .optString("thumbnail_bg_color")
+    val thumbnailFilename = chapterJsonObject
+      .optJSONObject("exp_summary_dict")
+      .optString("thumbnail_icon_url")
+
+    return if (thumbnailFilename.isNotEmpty() && thumbnailBgColor.isNotEmpty()) {
+      LessonThumbnail.newBuilder()
+        .setThumbnailFilename(thumbnailFilename)
+        .setBackgroundColorRgb(Color.parseColor(thumbnailBgColor))
+        .build()
+    } else if (EXPLORATION_THUMBNAILS.containsKey(explorationId)) {
+      EXPLORATION_THUMBNAILS.getValue(explorationId)
+    } else {
+      createDefaultChapterThumbnail()
+    }
+  }
+
+  private fun createDefaultChapterThumbnail(): LessonThumbnail {
+    return LessonThumbnail.newBuilder()
+      .setThumbnailGraphic(LessonThumbnailGraphic.BAKER)
+      .setBackgroundColorRgb(0xd325ec)
+      .build()
+  }
+
+  private fun createSubtopicThumbnail(subtopicJsonObject: JSONObject): LessonThumbnail {
+    val subtopicId = subtopicJsonObject.optInt("id")
+    val thumbnailBgColor = subtopicJsonObject.optString("thumbnail_bg_color")
+    val thumbnailFilename = subtopicJsonObject.optString("thumbnail_filename")
+
+    return if (thumbnailFilename.isNotEmpty() && thumbnailBgColor.isNotEmpty()) {
+      LessonThumbnail.newBuilder()
+        .setThumbnailFilename(thumbnailFilename)
+        .setBackgroundColorRgb(Color.parseColor(thumbnailBgColor))
+        .build()
+    } else {
+      createSubtopicThumbnail(subtopicId)
+    }
+  }
+
+  private fun createSubtopicThumbnail(subtopicId: Int): LessonThumbnail {
     return when (subtopicId) {
       FRACTIONS_SUBTOPIC_ID_1 ->
         LessonThumbnail.newBuilder()
           .setThumbnailGraphic(LessonThumbnailGraphic.WHAT_IS_A_FRACTION)
+          .setBackgroundColorRgb(Color.parseColor(SUBTOPIC_BG_COLOR))
           .build()
       FRACTIONS_SUBTOPIC_ID_2 ->
         LessonThumbnail.newBuilder()
           .setThumbnailGraphic(LessonThumbnailGraphic.FRACTION_OF_A_GROUP)
+          .setBackgroundColorRgb(Color.parseColor(SUBTOPIC_BG_COLOR))
           .build()
       FRACTIONS_SUBTOPIC_ID_3 ->
         LessonThumbnail.newBuilder()
           .setThumbnailGraphic(LessonThumbnailGraphic.MIXED_NUMBERS)
+          .setBackgroundColorRgb(Color.parseColor(SUBTOPIC_BG_COLOR))
           .build()
       FRACTIONS_SUBTOPIC_ID_4 ->
         LessonThumbnail.newBuilder()
           .setThumbnailGraphic(LessonThumbnailGraphic.ADDING_FRACTIONS)
+          .setBackgroundColorRgb(Color.parseColor(SUBTOPIC_BG_COLOR))
           .build()
       else ->
         LessonThumbnail.newBuilder()
           .setThumbnailGraphic(LessonThumbnailGraphic.THE_NUMBER_LINE)
+          .setBackgroundColorRgb(Color.parseColor(SUBTOPIC_BG_COLOR))
           .build()
     }
   }

@@ -10,8 +10,11 @@ message LessonThumbnail {
   // The graphic corresponding to this thumbnail.
   LessonThumbnailGraphic thumbnail_graphic = 1;
 
+  // The filename for this thumbnail, to fetch image from server.
+  string thumbnail_filename = 2;
+
   // The background color for this thumbnail, in RGB (no alpha channel).
-  int32 background_color_rgb = 2;
+  int32 background_color_rgb = 3;
 }
 
 // Corresponds to different types of thumbnails that may be used by a topic, story, or chapter. These currently only
