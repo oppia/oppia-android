@@ -1072,8 +1072,7 @@ class TopicControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testOngoingTopicList_finishOneEntireTopicAndOneChapterInAnotherTopic_ongoingTopicListIsCorrect() =
-    // ktlint-disable max-line-length
+  fun testOngoingTopicList_finishOneEntireTopicAndOneChapterInAnotherTopic_ongoingTopicListIsCorrect() = // ktlint-disable max-line-length
     runBlockingTest(coroutineContext) {
       // Mark entire FRACTIONS topic as finished.
       markFractionsStory0Chapter0AsCompleted()
@@ -1167,8 +1166,7 @@ class TopicControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testCompletedStoryList_finishOneEntireStoryAndOneChapterInAnotherStory_completedStoryListIsCorrect() =
-    // ktlint-disable max-line-length
+  fun testCompletedStoryList_finishOneEntireStoryAndOneChapterInAnotherStory_completedStoryListIsCorrect() = // ktlint-disable max-line-length
     runBlockingTest(coroutineContext) {
       markFractionsStory0Chapter0AsCompleted()
       advanceUntilIdle()

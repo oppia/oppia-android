@@ -271,8 +271,7 @@ class TopicListControllerTest {
   @Test
   @Ignore("Failing on Circle CI.")
   @ExperimentalCoroutinesApi
-  fun testRetrieveOngoingStoryList_markRecentlyPlayedFractionStory0Exploration0_ongoingStoryListIsCorrect() =
-    // ktlint-disable max-line-length
+  fun testRetrieveOngoingStoryList_markRecentlyPlayedFractionStory0Exploration0_ongoingStoryListIsCorrect() = // ktlint-disable max-line-length
     runBlockingTest(coroutineContext) {
       storyProgressController.recordRecentlyPlayedChapter(
         profileId0,
@@ -296,8 +295,7 @@ class TopicListControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testRetrieveOngoingStoryList_markChapterCompletedFractionStory0Exploration0_ongoingStoryListIsCorrect() =
-    // ktlint-disable max-line-length
+  fun testRetrieveOngoingStoryList_markChapterCompletedFractionStory0Exploration0_ongoingStoryListIsCorrect() = // ktlint-disable max-line-length
     runBlockingTest(coroutineContext) {
       storyProgressController.recordCompletedChapter(
         profileId0,
@@ -321,8 +319,7 @@ class TopicListControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testRetrieveOngoingStoryList_markChapterCompletedFractionStory0Exploration0_markRecentlyPlayedFractionStory0Exploration1_ongoingStoryListIsCorrect() =
-    // ktlint-disable max-line-length
+  fun testRetrieveOngoingStoryList_markChapterCompletedFractionStory0Exploration0_markRecentlyPlayedFractionStory0Exploration1_ongoingStoryListIsCorrect() = // ktlint-disable max-line-length
     runBlockingTest(coroutineContext) {
       storyProgressController.recordCompletedChapter(
         profileId0,
@@ -389,8 +386,7 @@ class TopicListControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testRetrieveOngoingStoryList_markRecentPlayedFirstChaptersInAllStoriesInRatios_ongoingStoryListIsCorrect() =
-    // ktlint-disable max-line-length
+  fun testRetrieveOngoingStoryList_markRecentPlayedFirstChaptersInAllStoriesInRatios_ongoingStoryListIsCorrect() = // ktlint-disable max-line-length
     runBlockingTest(coroutineContext) {
       storyProgressController.recordRecentlyPlayedChapter(
         profileId0,
@@ -424,8 +420,7 @@ class TopicListControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testRetrieveOngoingStoryList_markExploration0CompletedAndExploration2AsRecentlyPlayedInRatios_ongoingStoryListIsCorrect() =
-    // ktlint-disable max-line-length
+  fun testRetrieveOngoingStoryList_markExploration0CompletedAndExploration2AsRecentlyPlayedInRatios_ongoingStoryListIsCorrect() = // ktlint-disable max-line-length
     runBlockingTest(coroutineContext) {
       storyProgressController.recordCompletedChapter(
         profileId0,
@@ -459,8 +454,7 @@ class TopicListControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testRetrieveOngoingStoryList_markFirstExplorationOfEveryStoryCompletedWithinLastSevenDays_ongoingStoryListIsCorrect() =
-    // ktlint-disable max-line-length
+  fun testRetrieveOngoingStoryList_markFirstExplorationOfEveryStoryCompletedWithinLastSevenDays_ongoingStoryListIsCorrect() = // ktlint-disable max-line-length
     runBlockingTest(coroutineContext) {
       storyProgressController.recordCompletedChapter(
         profileId0,
@@ -504,8 +498,7 @@ class TopicListControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testRetrieveOngoingStoryList_markFirstExplorationOfEveryStoryCompletedWithinLastMonth_ongoingStoryListIsCorrect() =
-    // ktlint-disable max-line-length
+  fun testRetrieveOngoingStoryList_markFirstExplorationOfEveryStoryCompletedWithinLastMonth_ongoingStoryListIsCorrect() = // ktlint-disable max-line-length
     runBlockingTest(coroutineContext) {
       storyProgressController.recordCompletedChapter(
         profileId0,
