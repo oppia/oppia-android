@@ -6,17 +6,16 @@ import androidx.multidex.MultiDexApplication
 import org.oppia.app.activity.ActivityComponent
 import org.oppia.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.domain.oppialogger.exceptions.OppiaUncaughtExceptionHandler
-import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
 /** The root [Application] of the Oppia app. */
-class OppiaApplication @Inject constructor(
-  private var exceptionsController: ExceptionsController,
-  private var oppiaClock: OppiaClock,
-  private var consoleLogger: ConsoleLogger
-) : MultiDexApplication(), ActivityComponentFactory {
+class OppiaApplication : MultiDexApplication(), ActivityComponentFactory {
   /** The root [ApplicationComponent]. */
+
+  @Inject lateinit var exceptionsController: ExceptionsController
+  @Inject lateinit var oppiaClock: OppiaClock
+
   private val component: ApplicationComponent by lazy {
     DaggerApplicationComponent.builder()
       .setApplication(this)
@@ -33,13 +32,8 @@ class OppiaApplication @Inject constructor(
     try {
       Thread.currentThread().uncaughtExceptionHandler =
         OppiaUncaughtExceptionHandler(exceptionsController, oppiaClock)
-    } catch (exception: Exception) {
-      consoleLogger.e(
-        "OppiaApplication",
-        "Couldn't connect to OppiaUncaughtExceptionHandler",
-        exception
-      )
-    } finally {
+    } catch (exception: Exception) { }
+    finally {
       Thread.currentThread().uncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
     }
   }
