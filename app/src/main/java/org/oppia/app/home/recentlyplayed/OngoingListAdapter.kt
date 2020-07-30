@@ -100,19 +100,19 @@ class OngoingListAdapter(
           }
           3 -> {
             when {
-              (storyGridPosition) % spanCount == 1 -> params.setMargins(
+              storyGridPosition % spanCount == 1 -> params.setMargins(
                 marginMax,
                 marginTop,
                 /* right= */ 0,
                 marginBottom
               )
-              (storyGridPosition) % spanCount == 2 -> params.setMargins(
+              storyGridPosition % spanCount == 2 -> params.setMargins(
                 marginMin,
                 marginTop,
                 marginMin,
                 marginBottom
               )
-              (storyGridPosition) % spanCount == 0 -> params.setMargins(
+              storyGridPosition % spanCount == 0 -> params.setMargins(
                 /* left= */ 0,
                 marginTop,
                 marginMax,
