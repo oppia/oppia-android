@@ -27,7 +27,6 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
@@ -35,6 +34,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.espresso.util.TreeIterables
@@ -51,7 +51,6 @@ import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
@@ -68,8 +67,7 @@ import org.oppia.app.topic.TopicActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.profile.ProfileTestHelper
-import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
-import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
+import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.logging.EnableConsoleLog
@@ -298,11 +296,11 @@ class HomeActivityTest {
       onView(
         allOf(
           withId(R.id.promoted_story_list_recycler_view),
-          ViewMatchers.withParent(
+          withParent(
             atPosition(R.id.home_recycler_view, 1)
           )
         )
-      ).check(matches(hasDescendant(withText(containsString("What is a Fraction?")))))
+      ).check(matches(hasDescendant(withText(containsString("Prototype Exploration")))))
     }
   }
 
@@ -314,7 +312,7 @@ class HomeActivityTest {
       )
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view)).check(
         matches(
-          withText(containsString("Matthew Goes to the Bakery"))
+          withText(containsString("First Story"))
         )
       )
     }
@@ -329,7 +327,7 @@ class HomeActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view)).check(
         matches(
-          withText(containsString("Matthew Goes to the Bakery"))
+          withText(containsString("First Story"))
         )
       )
     }
@@ -342,17 +340,17 @@ class HomeActivityTest {
         scrollToPosition<RecyclerView.ViewHolder>(1)
       )
       onView(
-        Matchers.allOf(
+        allOf(
           withId(R.id.promoted_story_list_recycler_view),
-          ViewMatchers.withParent(
+          withParent(
             atPosition(R.id.home_recycler_view, 1)
           )
         )
       ).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId))
-      intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
-      intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
+      intended(hasExtra(TopicActivity.getTopicIdKey(), TEST_TOPIC_ID_0))
+      intended(hasExtra(TopicActivity.getStoryIdKey(), TEST_STORY_ID_0))
     }
   }
 
@@ -364,7 +362,7 @@ class HomeActivityTest {
       )
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.topic_name_text_view)).check(
         matches(
-          withText(containsString("FRACTIONS"))
+          withText(containsString("FIRST TEST TOPIC"))
         )
       )
     }
@@ -397,7 +395,7 @@ class HomeActivityTest {
         )
       ).check(
         matches(
-          withText(containsString("4 Lessons"))
+          withText(containsString("5 Lessons"))
         )
       )
     }
