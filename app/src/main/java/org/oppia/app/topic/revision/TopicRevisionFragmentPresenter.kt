@@ -15,8 +15,6 @@ import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.topic.RouteToRevisionCardListener
 import org.oppia.app.topic.revision.revisionitemviewmodel.TopicRevisionItemViewModel
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.analytics.AnalyticsController
-import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
 /** The presenter for [TopicRevisionFragment]. */
@@ -24,8 +22,6 @@ import javax.inject.Inject
 class TopicRevisionFragmentPresenter @Inject constructor(
   activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val analyticsController: AnalyticsController,
-  private val oppiaClock: OppiaClock,
   private val viewModelProvider: ViewModelProvider<TopicRevisionViewModel>
 ) : RevisionSubtopicSelector {
   private lateinit var binding: TopicRevisionFragmentBinding
@@ -39,7 +35,6 @@ class TopicRevisionFragmentPresenter @Inject constructor(
     internalProfileId: Int,
     topicId: String
   ): View? {
-
     val viewModel = getTopicRevisionViewModel()
 
     this.internalProfileId = internalProfileId
@@ -67,7 +62,7 @@ class TopicRevisionFragmentPresenter @Inject constructor(
   }
 
   override fun onTopicRevisionSummaryClicked(subtopic: Subtopic) {
-    routeToReviewListener.routeToRevisionCard(topicId, subtopic.subtopicId)
+    routeToReviewListener.routeToRevisionCard(internalProfileId, topicId, subtopic.subtopicId)
   }
 
   private fun getTopicRevisionViewModel(): TopicRevisionViewModel {
