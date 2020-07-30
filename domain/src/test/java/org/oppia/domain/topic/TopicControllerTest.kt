@@ -786,19 +786,6 @@ class TopicControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testRetrieveSubtopicTopic_validSubtopic_subtopicsHaveNoThumbnailUrls() =
-    runBlockingTest(coroutineContext) {
-      topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID).observeForever(mockTopicObserver)
-      advanceUntilIdle()
-
-      verifyGetTopicSucceeded()
-      val topic = topicResultCaptor.value!!.getOrThrow()
-      assertThat(topic.subtopicList[0].thumbnailUrl).isEmpty()
-      assertThat(topic.subtopicList[1].thumbnailUrl).isEmpty()
-    }
-
-  @Test
-  @ExperimentalCoroutinesApi
   fun testRetrieveQuestionsForSkillIds_returnsAllQuestions() = runBlockingTest(coroutineContext) {
     val questionsListProvider = topicController
       .retrieveQuestionsForSkillIds(
