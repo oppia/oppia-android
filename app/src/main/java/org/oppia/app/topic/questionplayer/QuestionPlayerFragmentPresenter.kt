@@ -28,7 +28,7 @@ import org.oppia.app.player.stopplaying.RestartPlayingSessionListener
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.app.utility.SplitScreenManager
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.domain.oppialogger.OppiaLogger
 import org.oppia.domain.question.QuestionAssessmentProgressController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.QuestionResourceBucketName
@@ -43,7 +43,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<QuestionPlayerViewModel>,
   private val questionAssessmentProgressController: QuestionAssessmentProgressController,
-  private val analyticsController: AnalyticsController,
+  private val oppiaLogger: OppiaLogger,
   private val oppiaClock: OppiaClock,
   private val logger: ConsoleLogger,
   @QuestionResourceBucketName private val resourceBucketName: String,
@@ -411,10 +411,10 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   private fun logQuestionPlayerEvent(questionId: String, skillIds: List<String>) {
-    analyticsController.logTransitionEvent(
+    oppiaLogger.logTransitionEvent(
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_QUESTION_PLAYER,
-      analyticsController.createQuestionContext(
+      oppiaLogger.createQuestionContext(
         questionId,
         skillIds
       )
