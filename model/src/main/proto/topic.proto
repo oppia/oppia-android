@@ -275,12 +275,8 @@ message Subtopic {
   // The list of skill ids associated with the subtopic.
   repeated string skill_ids = 3;
 
-  // A URL corresponding to a thumbnail associated with this subtopic. If this is absent, the UI should show a reasonable
-  // alternative.
-  string thumbnail_url = 4;
-
   // The thumbnail corresponding to this subtopic.
-  LessonThumbnail subtopic_thumbnail = 5;
+  LessonThumbnail subtopic_thumbnail = 4;
 }
 
 // Corresponds to a revision card that can be displayed for a specific subtopic.
