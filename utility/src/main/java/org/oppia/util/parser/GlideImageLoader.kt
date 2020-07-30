@@ -2,11 +2,18 @@ package org.oppia.util.parser
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Picture
+import android.graphics.drawable.PictureDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
+import com.bumptech.glide.load.Options
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.Resource
+import com.bumptech.glide.load.resource.SimpleResource
+import com.bumptech.glide.load.resource.transcode.ResourceTranscoder
 import com.bumptech.glide.request.RequestOptions
+import com.caverock.androidsvg.SVG
 import org.oppia.util.caching.AssetRepository
 import org.oppia.util.caching.CacheAssetsLocally
 import javax.inject.Inject

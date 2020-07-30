@@ -151,6 +151,18 @@
         app:layout_constraintBottom_toBottomOf="@+id/download_status_image_view"
         app:layout_constraintStart_toEndOf="@+id/download_story_count_text_view"
         app:layout_constraintTop_toTopOf="@+id/download_status_image_view" />
+
+      <org.oppia.app.customview.LessonThumbnailImageView
+        android:id="@+id/lesson_thumbnail_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:adjustViewBounds="true"
+        app:entityId="@{viewModel.topic.topicId}"
+        app:layout_constraintDimensionRatio="16:9"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/download_status_image_view"
+        app:lessonThumbnail="@{viewModel.topic.topicThumbnail}" />
     </androidx.constraintlayout.widget.ConstraintLayout>
   </ScrollView>
 </layout>

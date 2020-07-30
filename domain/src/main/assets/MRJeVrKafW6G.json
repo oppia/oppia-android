@@ -1,0 +1,1904 @@
+{
+	"exploration": {
+		"param_changes": [],
+		"states": {
+			"Introduction": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": ""
+						},
+						"dest": "Recap 1",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {
+						"buttonText": {
+							"value": "Continue"
+						}
+					},
+					"confirmed_unclassified_answers": [],
+					"id": "Continue",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003eWelcome back. Aria and Omar say\u0026nbsp;hello!\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;Aria in a pink shirt, standing next to her father Omar.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200606_005533_t96kfaabvr_height_400_width_347.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003eAria recently\u0026nbsp;planted a garden with her father, Omar! It is summer now, and new vegetables and fruits are growing every week! In this lesson, we\u2019ll continue following Aria as she learns about multiplication equations and how to use them.\u003c/p\u003e\n\n\u003cp\u003eOnce you\u2019re ready, click \u003cstrong\u003eContinue\u003c/strong\u003e to get started!\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Multiples of 10": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": ""
+						},
+						"dest": "Trailing zeroes part 1",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {
+						"buttonText": {
+							"value": "CONTINUE"
+						}
+					},
+					"confirmed_unclassified_answers": [],
+					"id": "Continue",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\"It\u2019s fun to multiply by 10!\u201d said Aria as she solved the last question. \"But, what if I wanted to multiply by numbers that have more than one 0 at the end, like 100, 200, or 1,000?\u201d\u003c/p\u003e\n\n\u003cp\u003e\u201cMultiplication is great!\u201d said Omar. \u201cYou can use a similar method for multiplying by all numbers that end in more than one 0, like 100 or even 29,000! All you have to do is follow the rules that I will teach you now!\"\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"60500 times 100": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eCorrect!\u003c/p\u003e"
+							},
+							"dest": "60500 times 100 part 2",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 605.0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not correct. Remember that when a number\u0026nbsp;is multiplied by 1, the product is that number. Try again!\u003c/p\u003e"
+						},
+						"dest": "60500 times 100",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {},
+					"confirmed_unclassified_answers": [],
+					"id": "NumericInput",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\"Wonderful, Aria!\" said Omar. \"Now, the first step in any multiplication problem where the factors have trailing zeros is to remove the trailing zeros from the factors.\"\u003c/p\u003e\n\n\u003cp\u003e\"So, 60,500 * 100 would become...605 * 1?\" asked Aria.\u003c/p\u003e\n\n\u003cp\u003e\"Yes!\" said Omar. \"Now, what is 605 * 1?\"\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Omar and his Trick": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eCorrect!\u0026nbsp;Great\u0026nbsp;job!\u003c/p\u003e"
+							},
+							"dest": "Multiples of 10",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 67890.0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not right. Remember to use Omar's trick to solve the problem! Try again.\u003c/p\u003e"
+						},
+						"dest": "Omar and his Trick",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {},
+					"confirmed_unclassified_answers": [],
+					"id": "NumericInput",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\"Well done!\" said Omar. \"Now, Aria, do you notice anything about your answers when you multiply a whole number by 10?\"\u003c/p\u003e\n\n\u003cp\u003e\"When I multiplied 68 by 10, I got 680. When I multiplied a whole number by 10, I just added a 0 to the end of the number!\" Aria said.\u003c/p\u003e\n\n\u003cp\u003e\u201cYup!\u201d Omar replied. \u201cAn easy way to remember how to multiply any whole number by 10 is that you just add a zero to the end! Try one more problem using this trick!\" said Omar. \"What is 6,789 * 10?\"\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Back to Place Value": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eGood work! That's right.\u003c/p\u003e"
+							},
+							"dest": "Moving a Place Value",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 3
+							}
+						}]
+					}, {
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_2",
+								"html": "\u003cp\u003eThe number 54 has a 5 in the tens place and a 4 in the ones place. But the question is asking where the 5 and 4 are in the number 540. Try again!\u003c/p\u003e"
+							},
+							"dest": "Back to Place Value",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": false
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 1
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not right. Go back and refresh your memory on place values if you need to - you will have to know them to complete this story with Aria! Then, try again,\u003c/p\u003e"
+						},
+						"dest": "Back to Place Value",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {
+						"showChoicesInShuffledOrder": {
+							"value": false
+						},
+						"choices": {
+							"value": ["\u003cp\u003e5 is in the tens place and 4 is in the hundreds place\u003c/p\u003e", "\u003cp\u003e5 is in the tens place and 4 is in the ones place\u003c/p\u003e", "\u003cp\u003e5 is in the hundreds place and 4 is in the ones place\u003c/p\u003e", "\u003cp\u003e5 is in the hundreds place and 4 is in the tens place\u003c/p\u003e"]
+						}
+					},
+					"confirmed_unclassified_answers": [],
+					"id": "MultipleChoiceInput",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_2": {},
+						"feedback_1": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\"Here's a trick!\" said Omar. \"Whenever you are multiplying a number by 10, add 0 to the end of it!\"\u003c/p\u003e\n\n\u003cp\u003e\u201cAdding a 0 to a number when you multiply it by 10, like 2 * 10 = 20, works,\u201d said Aria, confused. \u201cBut, why does it work?\u201d\u003c/p\u003e\n\n\u003cp\u003e\u201cThat\u2019s because when you multiply a number by 10, you move all the digits in the number one place to the left.\u201d explained Omar. \u201cLet's try to understand this better! Using my trick, let's try to find the answer to 54 * 10.\u201d\u003c/p\u003e\n\n\u003cp\u003e\u201cIn 54, 5 is in the tens place, and 4 is in the ones place. But, in 54 * 10, if we move each digit to the left, which places will the 5 and 4 be in?\" asked Omar.\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_2": {},
+						"feedback_1": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"TEST 1 VERSION 2": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eYes, that's correct!\u003c/p\u003e"
+							},
+							"dest": "TEST 2",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 60000.0
+							}
+						}]
+					}, {
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_2",
+								"html": "\u003cp\u003eIncorrect. 20000 is just the answer to the example solution we were given. Write a multiplication expression for total grapes and use the same method to find the number of total grapes. If you need help, go back and revise the rules for multiplying numbers with trailing zeroes. Then, try again!\u003c/p\u003e"
+							},
+							"dest": "TEST 1 VERSION 2",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": false
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 20000.0
+							}
+						}]
+					}, {
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_3",
+								"html": "\u003cp\u003eNo, that's not the correct number of trailing zeroes. 300 * 200 is not equal to 600. Try again!\u003c/p\u003e"
+							},
+							"dest": "TEST 1 VERSION 2",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": false
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 600.0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not correct. Here's an example of how this kind of problem is solved. This is not the problem you are working on right now, just a similar one!:\u003c/p\u003e\n\n\u003cp\u003eStep 1: Write a multiplication expression: \u003cstrong\u003e500 * 40\u003c/strong\u003e.\u003c/p\u003e\n\n\u003cp\u003eStep 2: Count the trailing zeroes: \u003cstrong\u003e3\u003c/strong\u003e\u003c/p\u003e\n\n\u003cp\u003eStep 3: Multiply out the remaining expression when you remove the trailing zeroes: \u003cstrong\u003e5 * 4 = 20\u003c/strong\u003e.\u003c/p\u003e\n\n\u003cp\u003eStep 4: Add back the trailing zeroes to the end:\u0026nbsp;\u003cstrong\u003e20000\u003c/strong\u003e.\u003c/p\u003e\n\n\u003cp\u003eTry again!\u003c/p\u003e"
+						},
+						"dest": "TEST 1 VERSION 2",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {},
+					"confirmed_unclassified_answers": [],
+					"id": "NumericInput",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_2": {},
+						"feedback_1": {},
+						"feedback_3": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\"That was a tricky one!\" said Omar. \"Let's try a similar problem. Make sure to write out a multiplication expression, follow the rules we learned today, and count the trailing zeroes correctly!\"\u003c/p\u003e\n\n\u003cp\u003e\"Your Uncle Jack\u0026nbsp;is a farmer,\" said Omar. \"He has three hundred grape\u0026nbsp;vines in his orchard. If each vine\u0026nbsp;grows two hundred grapes\u0026nbsp;every summer, how many grapes does he pick in total over the summer?\"\u003c/p\u003e\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;A bunch of purple grapes\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200606_030603_62z9xdr4j9_height_341_width_343.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_2": {},
+						"feedback_1": {},
+						"feedback_3": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Congratulations": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [],
+					"default_outcome": null,
+					"customization_args": {
+						"recommendedExplorationIds": {
+							"value": []
+						}
+					},
+					"confirmed_unclassified_answers": [],
+					"id": "EndExploration",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003eCongratulations! You made it!\u0026nbsp;\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;Aria and Omar and their new plants!\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200606_031522_9kzpseuvxl_height_381_width_490.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003eIn this exploration, you and Aria learned about:\u003c/p\u003e\n\n\u003cul\u003e\n\t\u003cli\u003e\n\t\u003cp\u003eMultiplying expressions where one factor is a power or multiple of 10\u003c/p\u003e\n\t\u003c/li\u003e\n\t\u003cli\u003e\n\t\u003cp\u003eThe relationship between place values and multiplication\u003c/p\u003e\n\t\u003c/li\u003e\n\u003c/ul\u003e\n\n\u003cp\u003eCome back for the next chapter as Aria starts school and plans what to do with all her fruits and vegetables!\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Trailing zeroes part 1": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eGood!\u003c/p\u003e"
+							},
+							"dest": "Trailing Zeroes part 2",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 2.0
+							}
+						}]
+					}, {
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_2",
+								"html": "\u003cp\u003eNo, that's not right. In 60500, the first\u0026nbsp;zero\u0026nbsp;is\u0026nbsp;not a\u0026nbsp;\u003cstrong\u003etrailing zero.\u003c/strong\u003e\u0026nbsp;Remember that trailing zeroes are only the zeroes\u0026nbsp;\u003cem\u003eat the end of a number\u003c/em\u003e. Try again!\u003c/p\u003e"
+							},
+							"dest": "Trailing zeroes part 1",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": false
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 3.0
+							}
+						}]
+					}, {
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_3",
+								"html": "\u003cp\u003eNo, that's not correct. Count the number of zeroes at the end of this number. There are more than 1 zero! Try again.\u003c/p\u003e"
+							},
+							"dest": "Trailing zeroes part 1",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": false
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 1.0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not right. Remember that trailing zeroes are the zeroes at the end of a number. Try again!\u003c/p\u003e"
+						},
+						"dest": "Trailing zeroes part 1",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {},
+					"confirmed_unclassified_answers": [],
+					"id": "NumericInput",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_2": {},
+						"feedback_1": {},
+						"feedback_3": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\"Now, we'll learn how to multiply numbers with more than one 0 at the end!\" said Omar. \"Give me an example problem, Aria!\"\u003c/p\u003e\n\n\u003cp\u003e\"60,500 * 100!\" said Aria. \"Let's do this.\"\u003c/p\u003e\n\n\u003cp\u003e\"Great!\" said Omar. \"The first thing we need to do is learn a new word: trailing zeros.\"\u003c/p\u003e\n\n\u003cp\u003e\"What's that?\" asked Aria.\u003c/p\u003e\n\n\u003cp\u003e\"A trailing zero means a 0 at the end of a number. In the number 60,500, how many trailing zeros are there?\"\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_2": {},
+						"feedback_1": {},
+						"feedback_3": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Picking Up From Last Lesson": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eCorrect! Good job!\u003c/p\u003e"
+							},
+							"dest": "Total Cucumbers",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 1
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not correct. Try again!\u003c/p\u003e"
+						},
+						"dest": "Picking Up From Last Lesson",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {
+						"showChoicesInShuffledOrder": {
+							"value": false
+						},
+						"choices": {
+							"value": ["\u003cp\u003e2 * 5\u003c/p\u003e", "\u003cp\u003e2 * 10\u003c/p\u003e", "\u003cp\u003e9 * 4\u003c/p\u003e", "\u003cp\u003e1 * 5\u003c/p\u003e"]
+						}
+					},
+					"confirmed_unclassified_answers": [],
+					"id": "MultipleChoiceInput",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003eIn the last chapter, Aria and Omar finished planting their garden! Now, it is summer, and they are picking new fruits and vegetables every week!\u003c/p\u003e\n\n\u003cp\u003e\u003cspan\u003e\u201cIf we pick two\u0026nbsp;cucumbers every week, how many total cucumbers will we have picked after 10 weeks?\u201d quizzed Omar.\u003c/span\u003e\u003c/p\u003e\n\n\u003cp\u003eAria immediately knew this was a multiplication question! She thought to herself, \u201cHmm\u2026what multiplication expression could I use to solve this problem?\u201d\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"TEST 2": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eCorrect! Well done!\u003c/p\u003e"
+							},
+							"dest": "Congratulations",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 140000.0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not correct. Here's an example of how this kind of problem is solved. This is not the problem you are working on right now, just a similar one!:\u003c/p\u003e\n\n\u003cp\u003eStep 1: Write a multiplication expression: \u003cstrong\u003e500 * 40\u003c/strong\u003e.\u003c/p\u003e\n\n\u003cp\u003eStep 2: Count the trailing zeroes: \u003cstrong\u003e3\u003c/strong\u003e\u003c/p\u003e\n\n\u003cp\u003eStep 3: Multiply out the remaining expression when you remove the trailing zeroes: \u003cstrong\u003e5 * 4 = 20\u003c/strong\u003e.\u003c/p\u003e\n\n\u003cp\u003eStep 4: Add back the trailing zeroes to the end:\u0026nbsp;\u003cstrong\u003e20000\u003c/strong\u003e.\u003c/p\u003e\n\n\u003cp\u003eTry again!\u003c/p\u003e"
+						},
+						"dest": "TEST 2",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {},
+					"confirmed_unclassified_answers": [],
+					"id": "NumericInput",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003eOmar is proud of Aria for learning so much! He has one more problem for her.\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp;\u003c/p\u003e\n\n\u003cp\u003e\u201cOur tomatoes have not grown yet, but they sure have a lot of leaves!\" Omar remarked. \"If each tomato plant has 70 leaves, how many leaves would 2,000 tomato plants have?\u201d\u003c/p\u003e\n\n\u003cp\u003eAria laughed. \u201cWho has 2,000 tomato plants?!\u201d She asked.\u003c/p\u003e\n\n\u003cp\u003eOmar replied, \u201cA farmer, maybe! In some situations, you have to deal with really big numbers! That\u2019s why it\u2019s so important to learn to work with them!\u201d\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"TEST 1": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eAwesome job!\u003c/p\u003e"
+							},
+							"dest": "TEST 2",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 1600.0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not right. Make sure you know all the steps to multiplying two numbers with trailing zeroes. Once your are done learning the table, we will try a similar problem.\u003c/p\u003e\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;Table of steps to solve a multiplication problem where both factors have trailing zeroes\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200606_025850_tgpp49zgvm_height_368_width_490.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e"
+						},
+						"dest": "TEST 1 VERSION 2",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {},
+					"confirmed_unclassified_answers": [],
+					"id": "NumericInput",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\u201cAwesome work!\u201d exclaimed Omar. \u201cWhile you were working on those problems, I found out that our carrot patches will grow eight carrots every day this entire year! If there are 200 days left in the year, how many carrots will have grown after that time?\"\u003c/p\u003e\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;8 orange carrots growing in the brown garden soil\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200606_025759_ubkwj2cyk7_height_202_width_490.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Expressions with 10": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": ""
+						},
+						"dest": "Back to Place Value",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {
+						"buttonText": {
+							"value": "Continue"
+						}
+					},
+					"confirmed_unclassified_answers": [],
+					"id": "Continue",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\u201cGreat job!\u201d said Omar. \u201cIf we pick two cucumbers a week for 10 weeks, we would have harvested a total of 20 cucumbers by the end of the summer!\u201d\u003c/p\u003e\n\n\u003cp\u003e\u201cThat\u2019s neat!\u201d said Aria. \u201cWe could do this for all our vegetables!\u201d\u003c/p\u003e\n\n\u003cp\u003e\u201cYes!\u201d said Omar. \u201cSince we have 10 weeks in the summer, we can multiply the number of vegetables that grow each week by 10 to get the total number of vegetables that will grow during the summer.\u201d\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Total Cucumbers": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eGood job! That's right.\u003c/p\u003e"
+							},
+							"dest": "Expressions with 10",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 20.0
+							}
+						}]
+					}, {
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_2",
+								"html": "\u003cp\u003eNo, that's not correct. The picture shows two cucumbers multiplied by 10, not 11 * 10. Try again!\u003c/p\u003e"
+							},
+							"dest": "Total Cucumbers",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": false
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 110.0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not right. To solve 2 * 10, use either an addition expression or solve 2 * 9 and add 2\u0026nbsp;to its answer.\u003c/p\u003e"
+						},
+						"dest": "Total Cucumbers",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {},
+					"confirmed_unclassified_answers": [],
+					"id": "NumericInput",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_2": {},
+						"feedback_1": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\u201cYes!\u201d Aria thought silently. \u201cNow to figure out how many cucumbers we can harvest at the end of 10 weeks if two grow\u0026nbsp;each week, I just need to multiply 2 * 10! What is 2 * 10?\"\u003c/p\u003e\n\n\u003cp\u003e\"But I haven't learnt the multiples of 10 yet!\" said Aria.\u003c/p\u003e\n\n\u003cp\u003e\"I know. But yoy can still solve this problem, if you think carefully! I'll give you a hint. Remember, multiplication is just repeated addition!\" said Omar.\u003c/p\u003e\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;2 cucumbers every week, for 10 weeks, = 2 * 10\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200606_021134_ofahbx9ale_height_273_width_490.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_2": {},
+						"feedback_1": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Trailing Zeroes part 2": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eCorrect!\u003c/p\u003e"
+							},
+							"dest": "60500 times 100",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 2.0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not right. Remember that trailing zeroes are the zeroes at the end of a number. Try again!\u003c/p\u003e"
+						},
+						"dest": "Trailing Zeroes part 2",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {},
+					"confirmed_unclassified_answers": [],
+					"id": "NumericInput",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\"Correct, Aria!\" said Omar. \"60,500 has two trailing zeros. Write this down on your paper or remember it for later. You'll need this information!\"\u003c/p\u003e\n\n\u003cp\u003e\"Now, to solve 60,500 * 100, we also need to know how many trailing zeros 100 has. So, how many trailing zeros does 100 have?\"\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Practice 1": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eGood job! That's right!\u003c/p\u003e"
+							},
+							"dest": "Practice 2",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 680.0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not right. Write out the number (which is\u0026nbsp;68 in this problem) and draw arrows from each digit to one place to the right. The picture shown below is used to solve the problem 54 * 10. You can solve 68 * 10 using the same approach.\u003c/p\u003e\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200317_101933_ucpjgejbrb_height_159_width_490.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e"
+						},
+						"dest": "Practice 1",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {},
+					"confirmed_unclassified_answers": [],
+					"id": "NumericInput",
+					"hints": [{
+						"hint_content": {
+							"content_id": "hint_1",
+							"html": "\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;54 * 10 = 540. A zero is added to 54.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200606_021815_w0vbrmrkaf_height_149_width_490.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e"
+						}
+					}, {
+						"hint_content": {
+							"content_id": "hint_2",
+							"html": "\u003cp\u003eMultiplying 68 by 10 is the same thing as moving both digits in 68 one place to the left, creating 6 hundreds and 8 tens. What is this number?\u003c/p\u003e"
+						}
+					}, {
+						"hint_content": {
+							"content_id": "hint_3",
+							"html": "\u003cp\u003e68 * 10 can be solved by adding one zero at the end of 68.\u0026nbsp;This is because every digit in a number gets moved one place to the left when the number is multiplied by 10.\u003c/p\u003e"
+						}
+					}]
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"feedback_1": {},
+						"hint_1": {},
+						"hint_2": {},
+						"hint_3": {},
+						"default_outcome": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003eOmar and Aria went back inside the house to practice some place value multiplication! Omar reminded Aria, \u201cWhen you multiply a whole number by 10, you always add a 0 to the original number!\"\u003c/p\u003e\n\n\u003cp\u003e\u201cNow, let\u2019s do some practice to make sure we understand this! Here\u2019s a question, Aria: what is 68 * 10?\u201d\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"feedback_1": {},
+						"hint_1": {},
+						"hint_2": {},
+						"hint_3": {},
+						"default_outcome": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Practice 3": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eYes, that's right!\u003c/p\u003e"
+							},
+							"dest": "Omar and his Trick",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 32640.0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not right. Go back to Omar's explanation about how to multiply a number by 10. Then, try again!\u003c/p\u003e"
+						},
+						"dest": "Practice 3",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {},
+					"confirmed_unclassified_answers": [],
+					"id": "NumericInput",
+					"hints": [{
+						"hint_content": {
+							"content_id": "hint_1",
+							"html": "\u003cp\u003eWhen you multiply any number by 10, just add a zero at the end of the original number. This works because multiplying by 10 shifts all digits one place value to the left.\u003c/p\u003e"
+						}
+					}]
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {},
+						"hint_1": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\u201cGreat job!\u201d said Omar. \u201cLet\u2019s try another one: What\u2019s 3,264 * 10?\u201d\u003c/p\u003e\n\n\u003cp\u003e\"Don\u2019t be afraid of the big number: the way to solve the problem is still the same!\"\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {},
+						"hint_1": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Practice 2": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eCorrect! Aria and Omar will have 300 blueberries in June.\u003c/p\u003e"
+							},
+							"dest": "Practice 3",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 300.0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not right. First, write out the multiplication expression. Go back to Omar's explanation about how to multiply a number by 10. Then, use a hint if you need to, and try again!\u003c/p\u003e"
+						},
+						"dest": "Practice 2",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {},
+					"confirmed_unclassified_answers": [],
+					"id": "NumericInput",
+					"hints": [{
+						"hint_content": {
+							"content_id": "hint_1",
+							"html": "\u003cp\u003eWrite a multiplication expression for this situation.\u0026nbsp;\u003c/p\u003e"
+						}
+					}, {
+						"hint_content": {
+							"content_id": "hint_2",
+							"html": "\u003cp\u003e54 * 10 = 540 because each digit in 54 gets moved one place to the left when it is multiplied by 10.\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;54 * 10 = 540 because a zero gets added to 54 when it\u0026amp;#39;s multiplied by 10\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200606_022153_xwqn0eemzm_height_149_width_490.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003eThe same thing happens when 30 is multiplied by 10. Draw this diagram for 30 * 10.\u003c/p\u003e"
+						}
+					}]
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {},
+						"hint_1": {},
+						"hint_2": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\"All right!\" said Aria. \"Can I choose the next problem?\"\u003c/p\u003e\n\n\u003cp\u003e\"Sure!\" replied\u0026nbsp;Omar. \"Now, I'll try to solve it!\"\u003c/p\u003e\n\n\u003cp\u003e\"Okay, Dad!\" said Aria. \"There are 30 days in the month of June! If 10 blueberries grow each day, how many blueberries in total will we have in June?\"\u003c/p\u003e\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;A brown wooden basket filled with bright blueberries\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200606_022920_ucrokw2354_height_302_width_490.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {},
+						"hint_1": {},
+						"hint_2": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Practice 5": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eCorrect!\u003c/p\u003e"
+							},
+							"dest": "Practice 6",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 1500.0
+							}
+						}]
+					}, {
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_2",
+								"html": "\u003cp\u003eAlmost correct! Make sure you have the right number of trailing zeroes at the end of 15. Try again!\u003c/p\u003e"
+							},
+							"dest": "Practice 5",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": false
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 15000.0
+							}
+						}]
+					}, {
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_3",
+								"html": "\u003cp\u003eAlmost correct! Make sure you have the right number of trailing zeroes at the end of 15. Try again!\u003c/p\u003e"
+							},
+							"dest": "Practice 5",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": false
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 150000.0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not right. Use a hint to get the table of trailing zero rules if you need help and try again!\u003c/p\u003e"
+						},
+						"dest": "Practice 5",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {},
+					"confirmed_unclassified_answers": [],
+					"id": "NumericInput",
+					"hints": [{
+						"hint_content": {
+							"content_id": "hint_1",
+							"html": "\u003cp\u003e500 has two trailing zeroes and 30 has one trailing zero. That's three trailing zeroes in total.\u003c/p\u003e\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;Trailing zero multiplication rules table\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200606_025534_fr6jcfuybe_height_368_width_490.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e"
+						}
+					}, {
+						"hint_content": {
+							"content_id": "hint_2",
+							"html": "\u003cp\u003eWhen we remove the trailing zeroes from 500 * 30, our new multiplication expression is 5 * 3.\u003c/p\u003e"
+						}
+					}, {
+						"hint_content": {
+							"content_id": "hint_3",
+							"html": "\u003cp\u003e5 * 3 = 15. Adding our three trailing zeroes back to 15 gives us 15000.\u003c/p\u003e"
+						}
+					}]
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"feedback_2": {},
+						"content": {},
+						"feedback_3": {},
+						"feedback_1": {},
+						"hint_1": {},
+						"hint_2": {},
+						"hint_3": {},
+						"default_outcome": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\u201cGreat! Keep up the good work and use the table if you need help!\u201d said Omar.\u003c/p\u003e\n\n\u003cp\u003e\u201cIn the garden, there are 15 cucumbers right now,\" said Omar, quickly counting up the vegetables on the cucumber plants. \"Every cucumber has 100 seeds. How many seeds are in all our cucumbers?\"\u003c/p\u003e\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;15 bright green cucumbers\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200606_025424_61e827390a_height_368_width_490.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"feedback_2": {},
+						"content": {},
+						"feedback_3": {},
+						"feedback_1": {},
+						"hint_1": {},
+						"hint_2": {},
+						"hint_3": {},
+						"default_outcome": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Practice 4": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eGreat work! That's the right answer!\u003c/p\u003e"
+							},
+							"dest": "Practice 5",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 2
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not right. Remember to follow the steps and add the correct number of trailing zeroes! And use a hint if you need to.\u0026nbsp;Try again.\u003c/p\u003e"
+						},
+						"dest": "Practice 4",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {
+						"showChoicesInShuffledOrder": {
+							"value": false
+						},
+						"choices": {
+							"value": ["\u003cp\u003e25\u003c/p\u003e", "\u003cp\u003e250\u003c/p\u003e", "\u003cp\u003e2,500\u003c/p\u003e", "\u003cp\u003e25,000\u003c/p\u003e"]
+						}
+					},
+					"confirmed_unclassified_answers": [],
+					"id": "MultipleChoiceInput",
+					"hints": [{
+						"hint_content": {
+							"content_id": "hint_1",
+							"html": "\u003cp\u003eThe first factor, 50, has one trailing zero. The second factor, also 50, also has one trailing zero. That's two trailing zeroes.\u003c/p\u003e"
+						}
+					}, {
+						"hint_content": {
+							"content_id": "hint_2",
+							"html": "\u003cp\u003eOur expression is 50 * 50. Removing the trailing zeroes from the expression gives us 5 * 5.\u003c/p\u003e"
+						}
+					}, {
+						"hint_content": {
+							"content_id": "hint_3",
+							"html": "\u003cp\u003e5 * 5 = 25. Then, add back the two trailing zeroes you removed to get 2500.\u003c/p\u003e"
+						}
+					}]
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"feedback_1": {},
+						"hint_1": {},
+						"hint_2": {},
+						"hint_3": {},
+						"default_outcome": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\u201cHere are the rules we just looked at!\" said Omar.\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;Rules for multiplying with trailing zeroes\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200606_023542_1uzh13truk_height_368_width_490.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003e\"Let\u2019s use them to practice with our first\u0026nbsp;question!\" said Omar.\u0026nbsp;\"What\u2019s 50 * 50?\u201d\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"feedback_1": {},
+						"hint_1": {},
+						"hint_2": {},
+						"hint_3": {},
+						"default_outcome": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Practice 6": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eGood work!\u003c/p\u003e"
+							},
+							"dest": "TEST 1",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 80.0
+							}
+						}]
+					}, {
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_2",
+								"html": "\u003cp\u003eIncorrect.\u0026nbsp;Make sure you counted the right number of trailing zeroes and added them to the end of 8.\u0026nbsp;Try again!\u003c/p\u003e"
+							},
+							"dest": "Practice 6",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": false
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 8.0
+							}
+						}, {
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 800.0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not right. Use a hint to get the table of steps if you really need it. Try again!\u003c/p\u003e"
+						},
+						"dest": "Practice 6",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {},
+					"confirmed_unclassified_answers": [],
+					"id": "NumericInput",
+					"hints": [{
+						"hint_content": {
+							"content_id": "hint_1",
+							"html": "\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;Rules for multiplying numbers with trailing zeroes\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200606_023853_vu3vzgl4nz_height_368_width_490.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e"
+						}
+					}]
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_2": {},
+						"feedback_1": {},
+						"hint_1": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\u201cIt looks like you\u2019re getting the hang of this!\u201d said Omar. \u201cNow, let's pick some peas! There are 10 peas in a pea pod. If there are eight pea pods right now, how many total peas are there?\"\u003c/p\u003e\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;Eight small, green, pea pods\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200606_024449_rgcyf1k26l_height_117_width_490.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_2": {},
+						"feedback_1": {},
+						"hint_1": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Recap 2": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eYes, correct!\u003c/p\u003e"
+							},
+							"dest": "Recap 3",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 24.0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not right. The box Omar is pointing at is next to the number 4 and\u0026nbsp;under the number 6\u0026nbsp;\u003c/p\u003e\n\n\u003cp\u003eMake sure you know how to read the multiplication table\u0026nbsp;\u003cstrong\u003eand\u003c/strong\u003e have memorized it before beginning this lesson! After\u0026nbsp;you have memorized it, try again.\u003c/p\u003e"
+						},
+						"dest": "Recap 2",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {},
+					"confirmed_unclassified_answers": [],
+					"id": "NumericInput",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\"Perfect!\" said Omar. \"Now, let's look back to the multiplication table. Which number goes into the box I am pointing at?\" asks Omar.\u003c/p\u003e\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;Multiplication table: Omar points at a square in the \\\u0026amp;quot;4\\\u0026amp;quot; row and under the \\\u0026amp;quot;6\\\u0026amp;quot; column\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200714_125009_ybu26lrp8i_height_393_width_392.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Recap 3": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eGood job! That was a tough one!\u003c/p\u003e"
+							},
+							"dest": "Recap 4",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 32.0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eThat's not right. Try multiplying 2 * 4 first, and then multiplying that answer by 4!\u003c/p\u003e"
+						},
+						"dest": "Recap 3",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {},
+					"confirmed_unclassified_answers": [],
+					"id": "NumericInput",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\"Here's a tougher one.\" said Omar. \"What is (2 * 4) * 4? Remember to solve the multiplication expression in the brackets first!\"\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Recap 1": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eCorrect!\u003c/p\u003e"
+							},
+							"dest": "Recap 2",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 36.0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not correct. Refresh your memory on multiplication and make sure you have your multiplication table memorized! If you need help, use the hint and try again!\u003c/p\u003e"
+						},
+						"dest": "Recap 1",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {},
+					"confirmed_unclassified_answers": [],
+					"id": "NumericInput",
+					"hints": [{
+						"hint_content": {
+							"content_id": "hint_1",
+							"html": "\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;Multiplication table for factors 1-9\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200308_213016_u6ap4qq25c_height_313_width_490.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e"
+						}
+					}]
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {},
+						"hint_1": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\"Before we move on, Aria, let\u2019s see if you've memorized your multiples!\"\u003c/p\u003e\n\n\u003cp\u003e\"I picked six daisies for your mother this morning,\" said Omar. \"Each daisy had six petals. How many total petals were in all the flowers I gave your mother?\"\u003c/p\u003e\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;Six daisies, each with 6 petals\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200712_204720_fj2dl6974k_height_253_width_430.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {},
+						"hint_1": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Recap 4": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eGood job!\u003c/p\u003e"
+							},
+							"dest": "Picking Up From Last Lesson",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 54.0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eThats's not right. Try multiplying 3 * 3 first, and then multiplying that answer of that by 6!\u003c/p\u003e"
+						},
+						"dest": "Recap 4",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {},
+					"confirmed_unclassified_answers": [],
+					"id": "NumericInput",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\"Last one!\" said Omar. \"What is 3 * (3 * 6)?\"\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Moving a Place Value": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eGood job!\u003c/p\u003e"
+							},
+							"dest": "Practice 1",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 540.0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eThat's not right! Let's try to understand this better.\u003c/p\u003e"
+						},
+						"dest": "Moving a Place Value",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {},
+					"confirmed_unclassified_answers": [],
+					"id": "NumericInput",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\u201cCorrect!\u201d said Omar. \u201cIf the digits move to the left, 5 is in the hundreds place, and the 4 is in the tens place.\u201d\u003c/p\u003e\n\n\u003cp\u003e\u201cOh!\u201d Aria finally realized. \u201cWhen we multiplied 54 by 10, all the numbers got moved one place value to the left!\"\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;When 54 * 10, all the numbers in 54 are moved one place to the left.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200708_224713_6jf5lv1mb3_height_152_width_490.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003e\u201cRight!\u201d said Omar.\u003c/p\u003e\n\n\u003cp\u003e\"But, you said we need to add a 0 to the end in the ones place. Why? There was no 0 before!\" Aria said.\u003c/p\u003e\n\n\u003cp\u003e\"Because we moved all the numbers in 54 one place to the left, there is nothing left in the ones place! So, we put a 0 there!\" explained Omar.\u003c/p\u003e\n\n\u003cp\u003e\"Oh! That makes sense!\" said Aria.\u003c/p\u003e\n\n\u003cp\u003e\"Now, tell me, after moving both the digits to the left and then adding a 0 in the ones place, what will be the answer to 54 * 10?\" asked Omar.\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"60500 times 100 part 2": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eCorrect!\u003c/p\u003e"
+							},
+							"dest": "Practice 4",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 6050000.0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not correct. Read Omar and Aria's conversation again to understand the rules of multiplying two numbers with trailing zeroes. Use a hint if you need to, and try again!\u003c/p\u003e"
+						},
+						"dest": "60500 times 100 part 2",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {},
+					"confirmed_unclassified_answers": [],
+					"id": "NumericInput",
+					"hints": [{
+						"hint_content": {
+							"content_id": "hint_1",
+							"html": "\u003cp\u003eTo multiply 60500 * 100, the first step is to count how many trailing zeroes each number has.\u0026nbsp;\u003c/p\u003e"
+						}
+					}, {
+						"hint_content": {
+							"content_id": "hint_2",
+							"html": "\u003cp\u003e60500 has 2 trailing zeroes. 100 also has 2 trailing zeroes.\u003c/p\u003e"
+						}
+					}, {
+						"hint_content": {
+							"content_id": "hint_3",
+							"html": "\u003cp\u003eThe second step to evaluate 60500 * 100 is to\u0026nbsp;\u003cstrong\u003eremove all the trailing zeroes\u003c/strong\u003e\u0026nbsp;from both numbers, and evaluate the resulting expression.\u003c/p\u003e\n\n\u003cp\u003eThen, we add back the trailing zeroes to the product of that expression\u003c/p\u003e"
+						}
+					}, {
+						"hint_content": {
+							"content_id": "hint_4",
+							"html": "\u003cp\u003e60500 * 100 with all trailing zeroes removed is 605 * 1\u003c/p\u003e"
+						}
+					}, {
+						"hint_content": {
+							"content_id": "hint_5",
+							"html": "\u003cp\u003e605 * 1 = 605. Now, we write\u0026nbsp;the four trailing zeroes we previously removed, at the end of 605.\u003c/p\u003e"
+						}
+					}]
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"hint_4": {},
+						"content": {},
+						"hint_5": {},
+						"feedback_1": {},
+						"hint_1": {},
+						"hint_2": {},
+						"hint_3": {},
+						"default_outcome": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\"Correct! 605 * 1 = 605.\" said Omar. \"Now, to solve 60,500 * 100, the last step is to add the trailing zeros we removed from the factors back to the answer!\"\u003c/p\u003e\n\n\u003cp\u003e\"Hmm...60,500 has two trailing zeros, and 100 also has two trailing zeros. So, we have to add four 0s to the end of the answer we got in the last step!\" Aria said.\u003c/p\u003e\n\n\u003cp\u003e\"Yes!\" said Omar. \"We add the four trailing zeros to the end of 605 to get the answer to 60,500 * 100.\"\u003c/p\u003e\n\n\u003cp\u003e\"So, using that strategy,\" said Omar, \"what is 60,500 * 100?\"\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"hint_4": {},
+						"content": {},
+						"hint_5": {},
+						"feedback_1": {},
+						"hint_1": {},
+						"hint_2": {},
+						"hint_3": {},
+						"default_outcome": {}
+					}
+				},
+				"solicit_answer_details": false
+			}
+		},
+		"param_specs": {},
+		"title": "Multiplying By Multiples of Ten",
+		"objective": "Learn how to multiply numbers with more than one digit!",
+		"language_code": "en",
+		"init_state_name": "Introduction",
+		"correctness_feedback_enabled": true
+	},
+	"exploration_id": "MRJeVrKafW6G",
+	"state_classifier_mapping": {},
+	"version": 56,
+	"correctness_feedback_enabled": true,
+	"record_playthrough_probability": 0.2,
+	"preferred_audio_language_code": null
+}

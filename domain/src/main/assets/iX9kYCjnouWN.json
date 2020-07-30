@@ -1,0 +1,58 @@
+{
+	"canonical_story_dicts": [{
+		"thumbnail_bg_color": "#B3D8F1",
+		"description": "In this story, we'll follow Jaime and his sister Nic as they learn how to represent and read a number's value.",
+		"title": "Jaime's Adventures in the Arcade",
+		"node_titles": ["What are the place values?", "Finding the value of a number", "Comparing numbers", "Rounding numbers to a given place"],
+		"thumbnail_filename": "img_20200521_034635_46gl425jp5_height_324_width_432.svg",
+		"published": true,
+		"id": "RRVMHsZ5Mobh"
+	}],
+	"uncategorized_skill_ids": [],
+	"additional_story_dicts": [],
+	"topic_name": "Place Values",
+	"topic_description": "Did you know that all possible numbers of things can be expressed using just ten digits (0,1,2,3,...,9)? In this topic, we'll learn how we can use place values to do that, and, for example, how \"5\" has a different value in \"25\" and \"2506\".",
+	"topic_id": "iX9kYCjnouWN",
+	"thumbnail_bg_color": "#C6DCDA",
+	"thumbnail_filename": "img_20200521_033202_4r4j4ljrwy_height_324_width_432.svg",
+	"skill_descriptions": {
+		"5UeFU80Yoaf7": "Write the name of the place occupied by a digit in a number.",
+		"1nl7FpQuOI1p": "Round a number to a given place value.",
+		"DAMrlUjg9Gy9": "Write a number, given its verbal description.",
+		"EK521D5vFNoI": "Identify the value represented by a digit in a number.",
+		"iSm2utLbGYmL": "Find the digit in a number corresponding to a given place name.",
+		"TFqov4gKVN1n": "Build a number from several \"number + place name\" groups.",
+		"f12I5buviMdT": "Build the largest or smallest number from a given set of digits.",
+		"O0aZp94Aj8yG": "Given a number, write it as a sum of its place values.",
+		"c2JtMYxrWfE8": "Write a number using words.",
+		"asQSA9rXpdwu": "Arrange the place names in the correct order (up to \"millions\").",
+		"kNnNHaxmb0Db": "Given a place name, state the corresponding place value (or vice versa).",
+		"63HdyngqkSSV": "Write a number, given its breakdown into place values.",
+		"nB6LbjFbgY6c": "Sort a list of positive integers."
+	},
+	"subtopics": [{
+		"thumbnail_bg_color": "#FFFFFF",
+		"skill_ids": ["5UeFU80Yoaf7", "63HdyngqkSSV", "EK521D5vFNoI", "O0aZp94Aj8yG", "TFqov4gKVN1n", "asQSA9rXpdwu", "kNnNHaxmb0Db", "iSm2utLbGYmL"],
+		"id": 1,
+		"thumbnail_filename": "img_20200521_034107_ngiwg3u9fc_height_324_width_432.svg",
+		"title": "The place names and their values"
+	}, {
+		"thumbnail_bg_color": "#FFFFFF",
+		"skill_ids": ["DAMrlUjg9Gy9", "c2JtMYxrWfE8"],
+		"id": 2,
+		"thumbnail_filename": "img_20200521_034133_nepsykledc_height_900_width_1200.svg",
+		"title": "Naming numbers"
+	}, {
+		"thumbnail_bg_color": "#FFFFFF",
+		"skill_ids": ["f12I5buviMdT", "nB6LbjFbgY6c"],
+		"id": 3,
+		"thumbnail_filename": "img_20200521_034155_q0jsiqvngy_height_327_width_437.svg",
+		"title": "Comparing numbers"
+	}, {
+		"thumbnail_bg_color": "#FFFFFF",
+		"skill_ids": ["1nl7FpQuOI1p"],
+		"id": 4,
+		"thumbnail_filename": "img_20200521_034215_es3sx55ssg_height_324_width_432.svg",
+		"title": "Rounding numbers"
+	}]
+}

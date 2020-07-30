@@ -1,498 +1,1405 @@
 {
-  "skills": [
-    {
-      "misconceptions_schema_version": 1,
-      "next_misconception_id": 1,
-      "description": "An important skill",
-      "rubrics": [
-        {
-          "difficulty": "Easy",
-          "explanation": [
-            "Easy"
-          ]
-        },
-        {
-          "difficulty": "Medium",
-          "explanation": [
-            "Medium"
-          ]
-        },
-        {
-          "difficulty": "Hard",
-          "explanation": [
-            "Hard"
-          ]
-        }
-      ],
-      "superseding_skill_id": null,
-      "language_code": "en",
-      "rubric_schema_version": 1,
-      "id": "test_skill_id_0",
-      "skill_contents_schema_version": 1,
-      "prerequisite_skill_ids": [],
-      "all_questions_merged": false,
-      "version": 2,
-      "misconceptions": [],
-      "skill_contents": {
-        "worked_examples": [
-          {
-            "content_id": "test_skill_content_id_1",
-            "html": "This is the first example."
-          }
-        ],
-        "explanation": {
-          "content_id": "explanation",
-          "html": "Hello. Welcome to Oppia."
-        },
-        "written_translations": {
-          "translations_mapping": {
-            "explanation": {
-              "es": {
-                "html": "Hola. Bienvenidos a Oppia.",
-                "needs_update": false
-              }
-            },
-            "test_skill_content_id_1": {
-              "es": {
-                "html": "Este es el primer ejemplo trabajado.",
-                "needs_update": false
-              }
-            }
-          }
-        },
-        "recorded_voiceovers": {
-          "voiceovers_mapping": {
-            "explanation": {
-              "es": {
-                "file_size_bytes": 456,
-                "needs_update": false,
-                "filename": "fake_spanish_xlated_explanation.mp3"
-              }
-            },
-            "test_skill_content_id_1": {
-              "es": {
-                "file_size_bytes": 456,
-                "needs_update": false,
-                "filename": "fake_spanish_xlated_example.mp3"
-              }
-            }
-          }
-        }
-      }
-    },
-    {
-      "misconceptions_schema_version": 1,
-      "next_misconception_id": 1,
-      "description": "Another important skill",
-      "rubrics": [
-        {
-          "difficulty": "Easy",
-          "explanation": [
-            "Easy"
-          ]
-        },
-        {
-          "difficulty": "Medium",
-          "explanation": [
-            "Medium"
-          ]
-        },
-        {
-          "difficulty": "Hard",
-          "explanation": [
-            "Hard"
-          ]
-        }
-      ],
-      "superseding_skill_id": null,
-      "language_code": "en",
-      "rubric_schema_version": 1,
-      "id": "test_skill_id_1",
-      "skill_contents_schema_version": 1,
-      "prerequisite_skill_ids": [],
-      "all_questions_merged": false,
-      "version": 2,
-      "misconceptions": [],
-      "skill_contents": {
-        "worked_examples": [
-          {
-            "content_id": "worked_example_1",
-            "html": "Worked example with <i>rich text</i>."
-          }
-        ],
-        "explanation": {
-          "content_id": "explanation",
-          "html": "Explanation with <b>rich text</b>."
-        },
-        "written_translations": {
-          "translations_mapping": {
-            "explanation": {},
-            "worked_example_1": {}
-          }
-        },
-        "recorded_voiceovers": {
-          "voiceovers_mapping": {
-            "explanation": {},
-            "worked_example_1": {}
-          }
-        }
-      }
-    },
-    {
-      "misconceptions_schema_version": 1,
-      "next_misconception_id": 1,
-      "description": "A different skill in a different topic",
-      "rubrics": [
-        {
-          "difficulty": "Easy",
-          "explanation": [
-            "Easy"
-          ]
-        },
-        {
-          "difficulty": "Medium",
-          "explanation": [
-            "Medium"
-          ]
-        },
-        {
-          "difficulty": "Hard",
-          "explanation": [
-            "Hard"
-          ]
-        }
-      ],
-      "superseding_skill_id": null,
-      "language_code": "en",
-      "rubric_schema_version": 1,
-      "id": "test_skill_id_2",
-      "skill_contents_schema_version": 1,
-      "prerequisite_skill_ids": [],
-      "all_questions_merged": false,
-      "version": 2,
-      "misconceptions": [],
-      "skill_contents": {
-        "worked_examples": [
-          {
-            "content_id": "worked_example_1",
-            "html": "Worked example without rich text."
-          },
-          {
-            "content_id": "worked_example_2",
-            "html": "Second worked example."
-          }
-        ],
-        "explanation": {
-          "content_id": "explanation",
-          "html": "Explanation without rich text."
-        },
-        "written_translations": {
-          "translations_mapping": {
-            "explanation": {},
-            "worked_example_1": {}
-          }
-        },
-        "recorded_voiceovers": {
-          "voiceovers_mapping": {
-            "explanation": {},
-            "worked_example_1": {}
-          }
-        }
-      }
-    },
-    {
-      "misconceptions_schema_version": 1,
-      "next_misconception_id": 1,
-      "description": "Another important skill 4",
-      "rubrics": [
-        {
-          "difficulty": "Easy",
-          "explanation": [
-            "Easy"
-          ]
-        },
-        {
-          "difficulty": "Medium",
-          "explanation": [
-            "Medium"
-          ]
-        },
-        {
-          "difficulty": "Hard",
-          "explanation": [
-            "Hard"
-          ]
-        }
-      ],
-      "superseding_skill_id": null,
-      "language_code": "en",
-      "rubric_schema_version": 1,
-      "id": "test_skill_id_3",
-      "skill_contents_schema_version": 1,
-      "prerequisite_skill_ids": [],
-      "all_questions_merged": false,
-      "version": 2,
-      "misconceptions": [],
-      "skill_contents": {
-        "worked_examples": [],
-        "explanation": {
-          "content_id": "explanation",
-          "html": "The content for test skill id 3. This is a dummy skill content."
-        },
-        "written_translations": {
-          "translations_mapping": {
-            "explanation": {},
-            "worked_example_1": {}
-          }
-        },
-        "recorded_voiceovers": {
-          "voiceovers_mapping": {
-            "explanation": {},
-            "worked_example_1": {}
-          }
-        }
-      }
-    },
-    {
-      "misconceptions_schema_version": 1,
-      "next_misconception_id": 1,
-      "description": "Given a picture divided into unequal parts, write the fraction.",
-      "rubrics": [
-        {
-          "difficulty": "Easy",
-          "explanation": [
-            "<p>Reject a fraction derived from looking at a whole that is not divided into equal parts.</p>"
-          ]
-        },
-        {
-          "difficulty": "Medium",
-          "explanation": [
-            "<p>Given a picture divided into unequal parts, divide (or undivide) it into equal parts and write the resulting fraction.</p>"
-          ]
-        },
-        {
-          "difficulty": "Hard",
-          "explanation": [
-            "<p>As in the medium rubric, but the division/undivision requires the addition/removal of more than two lines.</p>"
-          ]
-        }
-      ],
-      "superseding_skill_id": null,
-      "language_code": "en",
-      "rubric_schema_version": 1,
-      "id": "5RM9KPfQxobH",
-      "prerequisite_skill_ids": [],
-      "skill_contents_schema_version": 1,
-      "all_questions_merged": false,
-      "version": 3,
-      "misconceptions": [
-        {
-          "notes": "<p>NA</p>",
-          "feedback": "<p>No, that's not correct. What do you need to do first, before writing any fraction?</p>",
-          "id": 0,
-          "name": "Picture divided into unequal parts initially"
-        }
-      ],
-      "skill_contents": {
-        "worked_examples": [
-          {
-            "content_id": "worked_example_1",
-            "html": "<p>[Show a picture of a square, divided into quarters, except that two of the quarters are joined to form a single larger \"1/2\" rectangle. One of the quarters is shaded.]</p>\n\n<p>What fraction of this picture is shaded?<br>\n<br>\nAnswer: First, we must divide the picture into equal parts. We can divide the square into four equal parts, like this: [Show picture of square divided into quarters, with the same shading].<br>\n<br>\nNow, there are 4 equal parts and only 1 is shaded, so the fraction shown is <strong>1/4</strong>.</p>"
-          }
-        ],
-        "explanation": {
-          "content_id": "explanation",
-          "html": "<p>First, divide the picture into equal parts, so that you can figure out what the denominator (the total number of parts) is.<br>\n<br>\nThen, count the number of equal parts that are shaded/selected. That is the numerator of the fraction.</p>"
-        },
-        "written_translations": {
-          "translations_mapping": {
-            "explanation": {},
-            "worked_example_1": {}
-          }
-        },
-        "recorded_voiceovers": {
-          "voiceovers_mapping": {
-            "explanation": {},
-            "worked_example_1": {}
-          }
-        }
-      }
-    },
-    {
-      "misconceptions_schema_version": 1,
-      "next_misconception_id": 1,
-      "description": "Identify the numerator and denominator of a fraction.",
-      "rubrics": [
-        {
-          "difficulty": "Easy",
-          "explanation": [
-            "N/A"
-          ]
-        },
-        {
-          "difficulty": "Medium",
-          "explanation": [
-            "Identify the numerator and denominator of a fraction."
-          ]
-        },
-        {
-          "difficulty": "Hard",
-          "explanation": [
-            "N/A"
-          ]
-        }
-      ],
-      "superseding_skill_id": null,
-      "language_code": "en",
-      "rubric_schema_version": 1,
-      "id": "UxTGIJqaHMLa",
-      "prerequisite_skill_ids": [],
-      "skill_contents_schema_version": 1,
-      "all_questions_merged": false,
-      "version": 2,
-      "misconceptions": [
-        {
-          "notes": "<p>NA</p>",
-          "feedback": "<p>No, that's not correct. Remember, the numerator counts (\"enumerates\") the number of pieces, so it should be the first number. The denominator names (\"denominates\") the type of piece, so it should be the second number.</p>",
-          "id": 0,
-          "name": "Switching the ID of numerator and denominator"
-        }
-      ],
-      "skill_contents": {
-        "worked_examples": [],
-        "explanation": {
-          "content_id": "explanation",
-          "html": "<p>The numerator is the number at the \"top\" of the fraction. It counts (\"enumerates\") how many pieces the fraction represents.<br>\n<br>\nThe denominator is the number at the \"bottom\" of the fraction. It names (\"denominates\") the size of each piece.<br>\n<br>\nFor example, in 2/3, the numerator is 2 and the denominator is 3.</p>"
-        },
-        "written_translations": {
-          "translations_mapping": {
-            "explanation": {}
-          }
-        },
-        "recorded_voiceovers": {
-          "voiceovers_mapping": {
-            "explanation": {}
-          }
-        }
-      }
-    },
-    {
-      "misconceptions_schema_version": 1,
-      "next_misconception_id": 1,
-      "description": "Explain the conceptual meaning of the terms \"numerator\" and \"denominator\".",
-      "rubrics": [
-        {
-          "difficulty": "Easy",
-          "explanation": [
-            "N/A"
-          ]
-        },
-        {
-          "difficulty": "Medium",
-          "explanation": [
-            "Explain the conceptual meaning of the terms \"numerator\" and \"denominator\"."
-          ]
-        },
-        {
-          "difficulty": "Hard",
-          "explanation": [
-            "N/A"
-          ]
-        }
-      ],
-      "superseding_skill_id": null,
-      "language_code": "en",
-      "rubric_schema_version": 1,
-      "id": "B39yK4cbHZYI",
-      "prerequisite_skill_ids": [],
-      "skill_contents_schema_version": 1,
-      "all_questions_merged": false,
-      "version": 2,
-      "misconceptions": [
-        {
-          "notes": "<p>NA</p>",
-          "feedback": "<p>No, that's not correct. The denominator (second number) describes the size of each piece, so it should be the <strong>total</strong>&nbsp;number of pieces that the whole is divided into. Try again.</p>",
-          "id": 0,
-          "name": "Switching the definitions of num and denom"
-        }
-      ],
-      "skill_contents": {
-        "worked_examples": [
-          {
-            "content_id": "worked_example_1",
-            "html": "<p>What does the <strong>denominator</strong>&nbsp;of a fraction represent?</p>\n\n<ul>\n\t<li>The total number of parts</li>\n\t<li>The number of unselected parts</li>\n\t<li>The number of selected parts</li>\n</ul>\n\n<p><br>\nAnswer: <strong>The total number of parts</strong>. (The \"denominator\" specifies the total number of parts in the whole, in order to explain what the size of each part is.)</p>"
-          }
-        ],
-        "explanation": {
-          "content_id": "explanation",
-          "html": "<p>The numerator is the number at the \"top\" of the fraction. It counts (\"enumerates\") how many pieces the fraction represents.<br>\n<br>\nThe denominator is the number at the \"bottom\" of the fraction. It names (\"denominates\") what the size of each piece is, based on how many equal parts the \"whole\" is divided into.</p>"
-        },
-        "written_translations": {
-          "translations_mapping": {
-            "explanation": {},
-            "worked_example_1": {}
-          }
-        },
-        "recorded_voiceovers": {
-          "voiceovers_mapping": {
-            "explanation": {},
-            "worked_example_1": {}
-          }
-        }
-      }
-    },
-    {
-      "misconceptions_schema_version": 1,
-      "next_misconception_id": 1,
-      "description": "Derive a ratio from a description or a picture",
-      "rubrics": [
-        {
-          "difficulty": "Easy",
-          "explanation": [
-            ""
-          ]
-        },
-        {
-          "difficulty": "Medium",
-          "explanation": [
-            "<p>Derive a ratio from a description or a picture.</p>"
-          ]
-        },
-        {
-          "difficulty": "Hard",
-          "explanation": [
-            "<p>Given a description of a change in a situation, derive a new ratio (e.g. there are originally 9 apples and 6 pears, and Bobby ate 3 pears, what is the new ratio of apples to pears).</p>"
-          ]
-        }
-      ],
-      "superseding_skill_id": null,
-      "language_code": "en",
-      "rubric_schema_version": 1,
-      "id": "NGZ89uMw0IGV",
-      "skill_contents_schema_version": 1,
-      "prerequisite_skill_ids": [],
-      "all_questions_merged": false,
-      "version": 2,
-      "misconceptions": [],
-      "skill_contents": {
-        "worked_examples": [],
-        "explanation": {
-          "content_id": "explanation",
-          "html": "<p>A ratio represents a relative relationship between two or more amounts. To write a ratio, start by writing these amounts, separating them by a colon. Remember that the order matters!</p><p>For example, let's say you have 9 apples and 6 pears. You can write the ratio of apples to pears as <b> 9 : 6.</b></p>If, instead, you have 3 pears, 5 apples and 9 bananas, you can write the ratio of apples to bananas to pears as <b>5 : 9 : 3.</b> Notice that the order of items in the ratio follows the order that was asked for."
-        },
-        "written_translations": {
-          "translations_mapping": {
-            "explanation": {},
-            "worked_example_1": {}
-          }
-        },
-        "recorded_voiceovers": {
-          "voiceovers_mapping": {
-            "explanation": {},
-            "worked_example_1": {}
-          }
-        }
-      }
-    }
-  ]
+	"skills": [{
+		"misconceptions_schema_version": 2,
+		"next_misconception_id": 1,
+		"description": "Multiply any two single-digit numbers between 2 and 9, inclusive.",
+		"rubrics": [{
+			"difficulty": "Easy",
+			"explanations": []
+		}, {
+			"difficulty": "Medium",
+			"explanations": ["\u003cp\u003eQuickly recall the product of any two single-digit numbers.\u003c/p\u003e", "\u003cp\u003eWrite out a full multiplication table for any single-digit number from memory.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Hard",
+			"explanations": []
+		}],
+		"superseding_skill_id": null,
+		"language_code": "en",
+		"rubric_schema_version": 2,
+		"id": "a3QtIqWYO6WL",
+		"prerequisite_skill_ids": [],
+		"skill_contents_schema_version": 1,
+		"all_questions_merged": false,
+		"version": 4,
+		"misconceptions": [{
+			"must_be_addressed": true,
+			"notes": "",
+			"feedback": "\u003cp\u003eNo, that's not correct. You should be \u003cstrong\u003emultiplying\u003c/strong\u003e the numbers, but it looks like you've added them instead. Try again.\u003c/p\u003e",
+			"id": 0,
+			"name": "Adding instead of multiplying."
+		}],
+		"skill_contents": {
+			"worked_examples": [],
+			"explanation": {
+				"content_id": "explanation",
+				"html": "\u003cp\u003eBefore you learn how to run, you must learn\u2014and master\u2014how to walk. Similarly, before you start doing complex problems with multiplication (ex: multi-digit multiplication), you must memorize the basic single-digit multiplication expressions.\u003c/p\u003e\n\n\u003cp\u003eYou should master and know these single-digit expressions (like 4 * 3, or 8 * 7) so well, to the point that you can recall the answer within 3-5 seconds of seeing the expression. A great way to start memorizing your basic, single-digit multiplication expressions is to write out \u003cstrong\u003emultiplication tables\u003c/strong\u003e of all the numbers from 2 to 9 every day until you can recall the product of any two single-digit numbers quickly. Or, you could ask a friend or family member to quiz you!\u003c/p\u003e\n\n\u003cp\u003eHere are the multiplication tables from 2 to 9, for your reference:\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;The multiplication tables from 2 to 5.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200705_235104_iwqsjefq9p_height_448_width_490.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003e\u0026nbsp;\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;The multiplication tables from 6 to 9.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200705_235128_w19xvbaxhx_height_443_width_490.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003e---------------------------------------------------------------------------------\u003c/p\u003e\n\n\u003cp\u003e\u003cstrong\u003eTip: \u003c/strong\u003eFor the special case of the multiplication table for 9, there is a little trick that you can use to practice it. See the picture below for an example; you can calculate the other multiples of 9 that way, too!\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;Rough representation of left and right hand next to each other, palms up, fingers splayed. The 4th finger from the left is bent down. There is a bracket around the first two fingers on the left of the bent finger saying \\\u0026amp;quot;3 tens\\\u0026amp;quot; and a bracket around the 6 fingers on the right of the bent finger saying \\\u0026amp;quot;6 ones\\\u0026amp;quot;. Below the picture is the caption \\\u0026amp;quot;4 x 9 = 3 tens + 6 ones = 36.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200711_030806_y457tyu3zr_height_290_width_343.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003e---------------------------------------------------------------------------------\u003c/p\u003e\n\n\u003cp\u003eIf you'd like to challenge yourself, you may also want to try to remember these ones:\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;Multiplication tables from 10 to 12.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200711_030720_9rolzjvsz8_height_422_width_392.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003eIt may take a while to remember all of these, but once you've done so, it'll be\u0026nbsp;as though you'll have a new superpower, since you won't need to calculate these values manually from scratch every single time (which can easily lead to errors)!\u003c/p\u003e"
+			},
+			"written_translations": {
+				"translations_mapping": {
+					"explanation": {}
+				}
+			},
+			"recorded_voiceovers": {
+				"voiceovers_mapping": {
+					"explanation": {}
+				}
+			}
+		}
+	}, {
+		"misconceptions_schema_version": 2,
+		"next_misconception_id": 0,
+		"description": "Simplify calculations using a * (b * c) = (a * b) * c.",
+		"rubrics": [{
+			"difficulty": "Easy",
+			"explanations": ["\u003cp\u003eState the associative property of multiplication.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Medium",
+			"explanations": ["\u003cp\u003eUse associativity to simplify and evaluate a multiplication expression that would be harder to calculate sequentially.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Hard",
+			"explanations": []
+		}],
+		"superseding_skill_id": null,
+		"language_code": "en",
+		"rubric_schema_version": 2,
+		"id": "OhnLR4G1eTEY",
+		"prerequisite_skill_ids": ["a3QtIqWYO6WL"],
+		"skill_contents_schema_version": 1,
+		"all_questions_merged": false,
+		"version": 2,
+		"misconceptions": [],
+		"skill_contents": {
+			"worked_examples": [],
+			"explanation": {
+				"content_id": "explanation",
+				"html": "\u003cp\u003eWhen you see a multiplication expression with more than two factors, like 8 * 4 * 3, it is up to you which of the multiplication operations you want to perform first. You'll get the same result either way.\u003c/p\u003e\n\n\u003cp\u003eFor example, 8 * 4 * 3 could be solved by writing it as \u003cstrong\u003e(8 * 4) * 3\u003c/strong\u003e, or as \u003cstrong\u003e8 * (4 * 3)\u003c/strong\u003e. The parentheses indicate the operation that should be done first. For instance, if we have to compute (8 * 4) * 3, we first evaluate (8 * 4) = 32. Then, we can use that to get \u003cstrong\u003e(8 * 4) \u003c/strong\u003e* 3\u003cstrong\u003e \u003c/strong\u003e=\u003cstrong\u003e 32 \u003c/strong\u003e* 3 = 96.\u003c/p\u003e\n\n\u003cp\u003eIn general, whenever you have numbers a, b, and c, (a * b) * c = a * (b * c). Both those expressions have the same answer. This property is called the \u003cstrong\u003eAssociative Property \u003c/strong\u003eof Multiplication, which states that, if you multiply a bunch of numbers, you will get the same answer no matter which operation you perform first.\u0026nbsp;Note that the Associative Property only holds for addition and multiplication, but not subtraction and division.\u003c/p\u003e\n\n\u003cp\u003eThis property can be useful for simplifying multiplication expressions. For example, if you wanted to calculate 35937 * 2 * 5, you could start by calculating 35937 * 2, and then multiplying the result by 5. But it would be easier to perform the last multiplication first. This would give you:\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; 3537 * 2 * 5 = 3537 * (2 * 5) (let's start with the second multiplication)\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; = 3537 * 10 (easy to calculate!)\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; = 35370.\u003c/p\u003e"
+			},
+			"written_translations": {
+				"translations_mapping": {
+					"explanation": {}
+				}
+			},
+			"recorded_voiceovers": {
+				"voiceovers_mapping": {
+					"explanation": {}
+				}
+			}
+		}
+	}, {
+		"misconceptions_schema_version": 2,
+		"next_misconception_id": 1,
+		"description": "Identify the factors and products in a multiplication expression.",
+		"rubrics": [{
+			"difficulty": "Easy",
+			"explanations": []
+		}, {
+			"difficulty": "Medium",
+			"explanations": ["\u003cp\u003eDefine the terms \"factor\" and \"product\".\u003c/p\u003e", "\u003cp\u003eGiven a multiplication expression, identify the factors and the product.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Hard",
+			"explanations": []
+		}],
+		"superseding_skill_id": null,
+		"language_code": "en",
+		"rubric_schema_version": 2,
+		"id": "vVmmTAiWEjzo",
+		"prerequisite_skill_ids": [],
+		"skill_contents_schema_version": 1,
+		"all_questions_merged": false,
+		"version": 2,
+		"misconceptions": [{
+			"must_be_addressed": false,
+			"notes": "\u003cp\u003eThis could be checked in questions like \"Which of the following expressions has 30 as a product?\"\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that's not correct. The product is the result of the multiplication. It could be on the right or left hand side of the equation.\u003c/p\u003e",
+			"id": 0,
+			"name": "Not accepting statements like 30 = 5 * 6 where the product is on the left."
+		}],
+		"skill_contents": {
+			"worked_examples": [],
+			"explanation": {
+				"content_id": "explanation",
+				"html": "\u003cp\u003eIn a multiplication expression, the numbers being multiplied are called the \u003cstrong\u003efactors\u003c/strong\u003e, and the result of the multiplication is called the \u003cstrong\u003eproduct\u003c/strong\u003e.\u003cbr\u003e\n\u003cbr\u003e\nFor example, in 2 * 3 * 5 = 30, the factors are 2, 3 and 5, and the product is 30.\u003c/p\u003e"
+			},
+			"written_translations": {
+				"translations_mapping": {
+					"explanation": {}
+				}
+			},
+			"recorded_voiceovers": {
+				"voiceovers_mapping": {
+					"explanation": {}
+				}
+			}
+		}
+	}, {
+		"misconceptions_schema_version": 2,
+		"next_misconception_id": 7,
+		"description": "Multiply a multi-digit number by a multi-digit number (using long-form or table methods)",
+		"rubrics": [{
+			"difficulty": "Easy",
+			"explanations": ["\u003cp\u003eFill in single-digit blanks in a long-form multiplication calculation.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Medium",
+			"explanations": ["\u003cp\u003eMultiply two multi-digit numbers.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Hard",
+			"explanations": ["\u003cp\u003eMultiply three or more multi-digit numbers.\u003c/p\u003e"]
+		}],
+		"superseding_skill_id": null,
+		"language_code": "en",
+		"rubric_schema_version": 2,
+		"id": "G0NsFwEahIZx",
+		"prerequisite_skill_ids": ["mHFrQ1KPZ8qN", "aWHXi0W4i6ky"],
+		"skill_contents_schema_version": 1,
+		"all_questions_merged": false,
+		"version": 6,
+		"misconceptions": [{
+			"must_be_addressed": true,
+			"notes": "",
+			"feedback": "\u003cp\u003eNo, that's not correct. Remember, when multiplying by the tens, hundreds, etc. digit\u0026nbsp;of the second factor, you should write your answer so that its last digit lies in the tens, hundreds, etc. place. Instead, you've written all the intermediate products so that they end at the units place. Try again!\u003c/p\u003e\n\n\u003cp\u003e(In the future, you can catch mistakes like this for yourself by \u003coppia-noninteractive-skillreview skill_id-with-value=\"\u0026amp;quot;OQUsLvCg6dAX\u0026amp;quot;\" text-with-value=\"\u0026amp;quot;estimation\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-skillreview\u003e.)\u003c/p\u003e",
+			"id": 0,
+			"name": "In long-form multiplication, writing all intermediate products with the end at the ones place."
+		}, {
+			"must_be_addressed": true,
+			"notes": "\u003cp\u003eExample: 24 * 35 = 6 + 10 + 12 + 20 = 48.\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that's not correct. You are treating each of the digits in the factors individually, but it is important to consider the place value as well. For example, in 24 * 35, you would calculate (20 + 4) * (30 + 5), not (2 + 4) * (3 + 5).\u003c/p\u003e\n\n\u003cp\u003eIf you've forgotten how to do multi-digit multiplication, check this \u003coppia-noninteractive-skillreview skill_id-with-value=\"\u0026amp;quot;G0NsFwEahIZx\u0026amp;quot;\" text-with-value=\"\u0026amp;quot;concept card\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-skillreview\u003e for a refresher.\u003c/p\u003e\n\n\u003cp\u003eTry again!\u003c/p\u003e",
+			"id": 1,
+			"name": "Multiplying each digit in the first factor by each digit in the second and adding the results."
+		}, {
+			"must_be_addressed": false,
+			"notes": "\u003cp\u003eThis is relevant to long-form multiplication,\u0026nbsp;but only when\u0026nbsp;digits are carried in the intermediate calculations (excluding the first digit in the second factor).\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that's not correct. Make sure to erase the carried-over digits completely each time you multiply by a new digit in the second factor.\u003c/p\u003e\n\n\u003cp\u003eTry again!\u003c/p\u003e",
+			"id": 2,
+			"name": "Forgetting to erase the carried digits, and using them in subsequent intermediate calculations."
+		}, {
+			"must_be_addressed": false,
+			"notes": "\u003cp\u003eThis is only relevant if the multiplication involves carrying.\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that's not correct. You need to multiply by the digit in the second factor first, and\u0026nbsp;\u003cstrong\u003eonly then\u003c/strong\u003e\u0026nbsp;add the carried digit (if any) to the result. It looks like you might have done this the wrong way round!\u003c/p\u003e\n\n\u003cp\u003eTry again.\u003c/p\u003e",
+			"id": 3,
+			"name": "Adding the carry-over digits to the digit in the first factor, before multiplying."
+		}, {
+			"must_be_addressed": true,
+			"notes": "\u003cp\u003eThis should catch two error cases:\u003c/p\u003e\n\n\u003cul\u003e\n\t\u003cli\u003eConcatenation:\u0026nbsp;35\u0026nbsp;* 61 = 185 (because 5\u0026nbsp;*\u0026nbsp;1 = 5\u0026nbsp;and 3 *\u0026nbsp;6 = 18).\u003c/li\u003e\n\t\u003cli\u003eAddition:\u0026nbsp;35\u0026nbsp;*\u0026nbsp;61 = 18 + 5 = 23.\u003c/li\u003e\n\u003c/ul\u003e\n\n\u003cp\u003eThe feedback for both cases can probably be combined.\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that's not correct. That's not how multi-digit multiplication works.\u003c/p\u003e\n\n\u003cp\u003eIf, for example, you were calculating 35 * 61, then you would\u0026nbsp;need to multiply (30 + 5) and (60 + 1).\u0026nbsp;You wouldn't just multiply 3 * 6 and 5 * 1, because this\u0026nbsp;ignores the fact that the 3 and 6 have a different place value (they are in the tens place, and should be treated as 30 and 60 instead). In addition, the cross-terms of \"30 * 1\" and \"5 * 60\" would be missing.\u003c/p\u003e\n\n\u003cp\u003eTake a look at this \u003coppia-noninteractive-skillreview skill_id-with-value=\"\u0026amp;quot;G0NsFwEahIZx\u0026amp;quot;\" text-with-value=\"\u0026amp;quot;concept card\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-skillreview\u003e on multi-digit multiplication to understand the steps, and then try the question again.\u003c/p\u003e",
+			"id": 4,
+			"name": "Multiplying the digits in each \"place\" sequentially, then concatenating or adding the results."
+		}, {
+			"must_be_addressed": false,
+			"notes": "\u003cp\u003eExample:\u0026nbsp;72\u0026nbsp;*\u0026nbsp;46 = 4212 + 2880\u0026nbsp;= 7092.\u003c/p\u003e\n\n\u003cp\u003eThis only applies when the multiplication includes\u0026nbsp;carried digits.\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that's not correct -- the \"carried\" digits should not be added directly into the answer.\u0026nbsp;You might want to refresh your memory on how\u0026nbsp;to\u0026nbsp;\u003coppia-noninteractive-skillreview skill_id-with-value=\"\u0026amp;quot;mHFrQ1KPZ8qN\u0026amp;quot;\" text-with-value=\"\u0026amp;quot;handle \\\u0026amp;quot;carried\\\u0026amp;quot; digits when multiplying\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-skillreview\u003e!\u003c/p\u003e",
+			"id": 5,
+			"name": "Inserting the \"carry\" digits at the intermediate stages."
+		}, {
+			"must_be_addressed": true,
+			"notes": "",
+			"feedback": "\u003cp\u003eNo, that's not correct. The question is asking you to \u003cstrong\u003emultiply \u003c/strong\u003ethe two numbers, not add them!\u003c/p\u003e\n\n\u003cp\u003eTry again.\u003c/p\u003e",
+			"id": 6,
+			"name": "Adding instead of multiplying."
+		}],
+		"skill_contents": {
+			"worked_examples": [],
+			"explanation": {
+				"content_id": "explanation",
+				"html": "\u003cp\u003eTo multiply a multi-digit number by another multi-digit number, we first need to master the skill of multiplying a multi-digit number by a 1-digit number (e.g. 32 * 5). If you are not sure how to do that, please read\u0026nbsp;\u003coppia-noninteractive-skillreview skill_id-with-value=\"\u0026amp;quot;mHFrQ1KPZ8qN\u0026amp;quot;\" text-with-value=\"\u0026amp;quot;this concept card\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-skillreview\u003e\u0026nbsp;before reading this one.\u003c/p\u003e\n\n\u003cp\u003eNow, how do we turn a problem like multiplying 32 * 458 into one involving multiplication by 1-digit numbers? The trick is to break up the second number into a sum of its place values. So, in this case, since 458 = 400 + 50 + 8, we can calculate:\u003c/p\u003e\n\n\u003cul\u003e\n\t\u003cli\u003e32 * 400 = 12800 (since 32 * 4 = 128 and we \u003coppia-noninteractive-skillreview skill_id-with-value=\"\u0026amp;quot;aWHXi0W4i6ky\u0026amp;quot;\" text-with-value=\"\u0026amp;quot;add 2 zeros at the end\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-skillreview\u003e)\u003c/li\u003e\n\t\u003cli\u003e32 * 50 = 1600 (since 32 * 5 = 160 and we add 1 zero at the end)\u003c/li\u003e\n\t\u003cli\u003e32 * 8 = 256\u003c/li\u003e\n\u003c/ul\u003e\n\n\u003cp\u003eAdding these up gives:\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; 32 * 458 = (32 * 400) + (32 * 50) + (32 * 8)\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; = 12800 + 1600 + 256\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; = 14656.\u003c/p\u003e\n\n\u003cp\u003e------------------------------------------------------\u003c/p\u003e\n\n\u003cp\u003eOnce you understand (and have practiced) multi-digit multiplication in long form, we can simplify the process using the table method of multiplication.\u003c/p\u003e\n\n\u003cp\u003eUsing the table method, if we are multiplying two numbers 32 * 458, we first write out the multiplication expression in a table form, like this:\u0026nbsp;\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;32 * 458 in long-form, with a blank answer space below.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200711_165515_oqmu90mz19_height_71_width_132.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003eNow, we start by multiplying by one digit at a time, in the second factor.\u003c/p\u003e\n\n\u003cul\u003e\n\t\u003cli\u003eFirst, multiply 32 * 8 \u003coppia-noninteractive-skillreview skill_id-with-value=\"\u0026amp;quot;mHFrQ1KPZ8qN\u0026amp;quot;\" text-with-value=\"\u0026amp;quot;the usual way\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-skillreview\u003e, ignoring all the other digits in 458.\u003c/li\u003e\n\u003c/ul\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;32 * 458 in long-form, with a 256 written at the bottom. The digits 4 and 5 in 458 should be grayed out. There should be a small \\\u0026amp;quot;1\\\u0026amp;quot; on the top-left of the 3 in the top row.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200711_165602_yjboiwlroj_height_116_width_132.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cul\u003e\n\t\u003cli\u003eNext, we multiply by the tens digit of 458, which is 5. Erase all the numbers you carried over from before, and now focus on multiplying 32 * 5 the usual way.\u0026nbsp;\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;32 * 458 in long-form, with a 256 written at the bottom and a 160 written below it, indented one digit to the left. The digits 4 and 8 in 458 should be grayed out. There should be a small \\\u0026amp;quot;1\\\u0026amp;quot; on the top-left of the 3 in the top row.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200712_154504_vys35ybfbl_height_148_width_132.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\u003cstrong\u003e[Important!]\u003c/strong\u003e Notice that the result, 160, is written so that it ends at the \u003cstrong\u003etens\u003c/strong\u003e place. This is important because it shows you are multiplying by 5 tens. Do not write it in the same position as the number in the previous row.\u003c/li\u003e\n\u003c/ul\u003e\n\n\u003cul\u003e\n\t\u003cli\u003eFinally, we multiply by the hundreds digit of 458, which is 4. Erase all the numbers you carried over from before, and now focus on multiplying 32 * 4. Again, notice that the result is written so that it ends at the hundreds place. That is because you are multiplying by 4 hundreds.\u003c/li\u003e\n\u003c/ul\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;32 * 458 in long-form, with a 256 written at the bottom, a 160 written below it (indented one digit to the left), and a 128 written below it (indented two digits to the left). The digits 5 and 8 in 458 should be grayed out. There are no numbers \\\u0026amp;quot;carried over\\\u0026amp;quot; in the top row.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200712_154524_88sfjivzr9_height_166_width_132.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003eAgain, notice that the result is written so that it ends at the hundreds place. That is because you are multiplying by 4 hundreds.\u003c/p\u003e\n\n\u003cp\u003eFinally, you can add all the numbers to get the final answer:\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;32 * 458 in long-form, with a 256 written at the bottom, a 160 written below it (indented one digit to the left), and a 128 written below it (indented two digits to the left). There is now a + sign on the left of the 128. The result of the calculation, 14,656, is written at the bottom, with the appropriate \\\u0026amp;quot;carry\\\u0026amp;quot; numbers added at the top left of digits in the third row.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200711_170526_85sbwj9x81_height_211_width_140.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003eSo, the final answer is \u003cstrong\u003e14,656\u003c/strong\u003e.\u003c/p\u003e\n\n\u003cp\u003e\u003cstrong\u003eNote\u003c/strong\u003e: Make sure you add the numbers in the correct columns. If you like, you can add zeros to the right of the numbers in the 4th and 5th rows to make sure you don't ignore the empty columns by mistake:\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;32 * 458 in long-form, with a 256 written at the bottom, a 1600 written below it, and a \\\u0026amp;quot;+ 12800\\\u0026amp;quot; written below it. The last zero in the 4th row and the last two zeros in the 5th row are in green. The result of the calculation, 14,656, is written at the bottom, and a small 1 \\\u0026amp;quot;carry\\\u0026amp;quot; digit is added to the top left of the first digit of 1600 in the fourth row.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200712_154812_m0biksf8pz_height_211_width_140.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003e\u0026nbsp;\u003c/p\u003e\n\n\u003cp\u003eTo check your understanding, see if you can calculate 458 x 32 using the same approach. (Try it now -- you should get the same answer!)\u003c/p\u003e\n\n\u003cp\u003e\u003cstrong\u003eTip\u003c/strong\u003e: To guard against errors like the one above (i.e., ignoring the zeros), you can check your answer by \u003coppia-noninteractive-skillreview skill_id-with-value=\"\u0026amp;quot;OQUsLvCg6dAX\u0026amp;quot;\" text-with-value=\"\u0026amp;quot;estimating it\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-skillreview\u003e. This means that you just keep the first digit in each of the numbers being multiplied, and check quickly whether the result of that calculation is roughly similar to your answer. In this case, 32 * 458 is approximately 30 * 400 = 12,000, which is \"close enough\" to 14,656. If you had gotten an answer like 128 instead, you'd know you've done something wrong because it would be too small!\u003c/p\u003e"
+			},
+			"written_translations": {
+				"translations_mapping": {
+					"explanation": {}
+				}
+			},
+			"recorded_voiceovers": {
+				"voiceovers_mapping": {
+					"explanation": {}
+				}
+			}
+		}
+	}, {
+		"misconceptions_schema_version": 2,
+		"next_misconception_id": 0,
+		"description": "Multiply two or more numbers with one or more trailing zeros each.",
+		"rubrics": [{
+			"difficulty": "Easy",
+			"explanations": ["\u003cp\u003eGiven two or more numbers with one or more trailing zeros each, identify the simplified multiplication expression (without trailing zeros), as well as how many zeros to add to the end of the product.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Medium",
+			"explanations": ["\u003cp\u003eMultiply two or more numbers with one or more trailing zeros each.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Hard",
+			"explanations": []
+		}],
+		"superseding_skill_id": null,
+		"language_code": "en",
+		"rubric_schema_version": 2,
+		"id": "okiapFJ3LBxu",
+		"prerequisite_skill_ids": ["a3QtIqWYO6WL", "aWHXi0W4i6ky"],
+		"skill_contents_schema_version": 1,
+		"all_questions_merged": false,
+		"version": 3,
+		"misconceptions": [],
+		"skill_contents": {
+			"worked_examples": [],
+			"explanation": {
+				"content_id": "explanation",
+				"html": "\u003cp\u003eWhen you are multiplying two or more numbers with trailing zeros, you can start by collecting all the zeros, multiplying what's left, and then moving the final answer the correct number of places to the left.\u003c/p\u003e\n\n\u003cp\u003eFor example, to multiply 200 * 300, you can write:\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; 200 * 300 = 2 * 3 * 10000 (collecting the 4 zeros into one term)\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp;= 6 * 10000 (calculating 2 * 3)\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp;= \u003cstrong\u003e60000\u003c/strong\u003e (moving \"6\" four places to the left).\u003c/p\u003e\n\n\u003cp\u003eNotice that this is the same as calculating 2 * 3 = 6, and adding 4 zeros to the end. The 4 zeros come from the 2 zeros at the end of 200, and the 2 zeros at the end of 300.\u003c/p\u003e\n\n\u003cp\u003e------------------------------------------------------------------------------\u003c/p\u003e\n\n\u003cp\u003eIn case you're curious, this is possible because of the\u0026nbsp;\u003coppia-noninteractive-skillreview skill_id-with-value=\"\u0026amp;quot;9Mg793eaW88W\u0026amp;quot;\" text-with-value=\"\u0026amp;quot;commutative\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-skillreview\u003e and \u003coppia-noninteractive-skillreview skill_id-with-value=\"\u0026amp;quot;OhnLR4G1eTEY\u0026amp;quot;\" text-with-value=\"\u0026amp;quot;associative\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-skillreview\u003e rules. The first step above can be expanded to this (which you don't usually need to write down):\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; 200 * 300 = (2 * 100) * (3 * 100)\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp;= 2 * 3 * 100 * 100 (because the order you multiply doesn't matter)\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp;= 2 * 3 * 10000 (deciding to do the last multiplication first)\u003c/p\u003e"
+			},
+			"written_translations": {
+				"translations_mapping": {
+					"explanation": {}
+				}
+			},
+			"recorded_voiceovers": {
+				"voiceovers_mapping": {
+					"explanation": {}
+				}
+			}
+		}
+	}, {
+		"misconceptions_schema_version": 2,
+		"next_misconception_id": 1,
+		"description": "Apply the distributive property when multiplying two or more terms, each with multiple addends.",
+		"rubrics": [{
+			"difficulty": "Easy",
+			"explanations": []
+		}, {
+			"difficulty": "Medium",
+			"explanations": ["\u003cp\u003eApply the distributive property to split a multiplication expression, involving factors composed of at least two addends each, into a sum of products of addends.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Hard",
+			"explanations": []
+		}],
+		"superseding_skill_id": null,
+		"language_code": "en",
+		"rubric_schema_version": 2,
+		"id": "ZQo719isHrqc",
+		"prerequisite_skill_ids": ["a3QtIqWYO6WL"],
+		"skill_contents_schema_version": 1,
+		"all_questions_merged": false,
+		"version": 4,
+		"misconceptions": [{
+			"must_be_addressed": true,
+			"notes": "",
+			"feedback": "\u003cp\u003eNo, that's not correct. You may have missed out some of the terms. If you like, you can try drawing a picture similar to the one at the bottom of \u003coppia-noninteractive-skillreview skill_id-with-value=\"\u0026amp;quot;ZQo719isHrqc\u0026amp;quot;\" text-with-value=\"\u0026amp;quot;this card\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-skillreview\u003e to make sure that you have correctly counted the different terms.\u003c/p\u003e",
+			"id": 0,
+			"name": "Missing out some of the terms (not expanding the product fully)."
+		}],
+		"skill_contents": {
+			"worked_examples": [],
+			"explanation": {
+				"content_id": "explanation",
+				"html": "\u003cp\u003eThe \u003coppia-noninteractive-skillreview skill_id-with-value=\"\u0026amp;quot;zZv9Y0UBEzh8\u0026amp;quot;\" text-with-value=\"\u0026amp;quot;Distributive Property of Multiplication\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-skillreview\u003e\u0026nbsp;states that, when you see a multiplication expression in the form a * (b + c), you can write it as a * b + a * c. In this case, you split one of the factors into two parts, and \"distribute the multiplication\" over both parts to make the calculations easier.\u003c/p\u003e\n\n\u003cp\u003eYou can do the same thing with both terms in a multiplication. That is, when you see a multiplication expression in the form (a+b) * (c+d), you have two options:\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; 1) You can add a+b and c+d separately, and then multiply their sums together\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; 2) You can also use another method instead, which may make\u0026nbsp;easier. The shortcut to evaluating (a+b) * (c+d) is to split that expression into four simpler multiplication expressions: (a+b) * (c+d) = (a *\u0026nbsp;c) + (a *\u0026nbsp;d) + (b * c) + (b *\u0026nbsp;d). Notice how each term in the first parentheses is multiplied exactly once by each term in the second parentheses.\u003c/p\u003e\n\n\u003cp\u003eFor example, to calculate 25 * 25, you can write it as:\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; 25 * 25 = (20 + 5) * (20 + 5)\u0026nbsp;\u0026nbsp;(so that you can just\u0026nbsp;do single-digit multiplications)\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; = 20 * 20 + 20 * 5 + 5 * 20 + 5 * 5\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; = 400 + 100 + 100 + 25\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; = 625.\u003c/p\u003e\n\n\u003cp\u003e------------------------------------------------------------------------------------\u003c/p\u003e\n\n\u003cp\u003eBefore leaving this card, see if you can understand why the following\u0026nbsp;picture...\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;A square with lengths 25 x 25, divided into four smaller squares and rectangles by an intersecting vertical and horizontal line. Measurements along the sides of the diagram show that the side length of the big square is 25 = 20 + 5, and provide the side lengths of each smaller shape. Within each shape is written the corresponding multiplication expression for its area, i.e. 20 * 20, 5 * 20, 20 * 5, and 5 * 5 respectively.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200712_154312_1q96gdjldl_height_282_width_294.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003e... shows that the following equality is true:\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp;(20 + 5)\u0026nbsp;* (20 + 5)\u0026nbsp;= 20 * 20 + 20 * 5 + 5 * 20 + 5 * 5.\u003c/p\u003e\n\n\u003cp\u003eIf you can figure that out, you'll be able to use similar pictures when multiplying more complicated expressions!\u003c/p\u003e"
+			},
+			"written_translations": {
+				"translations_mapping": {
+					"explanation": {}
+				}
+			},
+			"recorded_voiceovers": {
+				"voiceovers_mapping": {
+					"explanation": {}
+				}
+			}
+		}
+	}, {
+		"misconceptions_schema_version": 2,
+		"next_misconception_id": 1,
+		"description": "Multiply by 1.",
+		"rubrics": [{
+			"difficulty": "Easy",
+			"explanations": []
+		}, {
+			"difficulty": "Medium",
+			"explanations": ["\u003cp\u003eMultiply any number by 1.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Hard",
+			"explanations": []
+		}],
+		"superseding_skill_id": null,
+		"language_code": "en",
+		"rubric_schema_version": 2,
+		"id": "r2RKQnUe9ZLW",
+		"prerequisite_skill_ids": [],
+		"skill_contents_schema_version": 1,
+		"all_questions_merged": false,
+		"version": 2,
+		"misconceptions": [{
+			"must_be_addressed": true,
+			"notes": "",
+			"feedback": "\u003cp\u003eNo, that's not correct. The question is asking you to \u003cstrong\u003emultiply\u003c/strong\u003e the numbers, but you are adding them instead. Try again.\u003c/p\u003e",
+			"id": 0,
+			"name": "Adding the numbers instead of multiplying them."
+		}],
+		"skill_contents": {
+			"worked_examples": [],
+			"explanation": {
+				"content_id": "explanation",
+				"html": "\u003cp\u003eWhen you multiply a number by 1, the answer is always the original number.\u0026nbsp; For example, 175 * 1 = 175.\u003c/p\u003e\n\n\u003cp\u003eThis is because, when you count a number 1 time, the total value would be the value of the original number.\u003c/p\u003e"
+			},
+			"written_translations": {
+				"translations_mapping": {
+					"explanation": {}
+				}
+			},
+			"recorded_voiceovers": {
+				"voiceovers_mapping": {
+					"explanation": {}
+				}
+			}
+		}
+	}, {
+		"misconceptions_schema_version": 2,
+		"next_misconception_id": 1,
+		"description": "Multiply a number by a power of 10.",
+		"rubrics": [{
+			"difficulty": "Easy",
+			"explanations": []
+		}, {
+			"difficulty": "Medium",
+			"explanations": ["\u003cp\u003eMultiply any number by a power of 10.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Hard",
+			"explanations": []
+		}],
+		"superseding_skill_id": null,
+		"language_code": "en",
+		"rubric_schema_version": 2,
+		"id": "aWHXi0W4i6ky",
+		"prerequisite_skill_ids": [],
+		"skill_contents_schema_version": 1,
+		"all_questions_merged": false,
+		"version": 2,
+		"misconceptions": [{
+			"must_be_addressed": false,
+			"notes": "\u003cp\u003eA misconception like this can be\u0026nbsp;detected by asking \u003cem\u003ewhy\u003c/em\u003e 45 x 10 = 450.\u0026nbsp; (Note that this misconception still gives the correct answer now, but will not do so for decimals later e.g. 1.09 x 10 = 1.090.)\u003c/p\u003e",
+			"feedback": "\u003cp\u003e(NOTE: Creators should provide their own feedback for this question.)\u003c/p\u003e",
+			"id": 0,
+			"name": "Thinking of multiplication by 10 as \"add zero at the end\"."
+		}],
+		"skill_contents": {
+			"worked_examples": [],
+			"explanation": {
+				"content_id": "explanation",
+				"html": "\u003cp\u003eWhen you multiply a number by 10, you are making 10 \"groups\" of that number. For example, if you multiply 4 cookies by 10, you are making \u003cem\u003e10 groups with 4 cookies in each group\u003c/em\u003e.\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;4 cookies in 10 groups. The first group of 4 cookies is enclosed in a box.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200704_214414_ar518uopgt_height_177_width_490.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003eLet's think about what happens to each digit in a number when you multiply it by 10:\u003c/p\u003e\n\n\u003cul\u003e\n\t\u003cli\u003eIf the original number has a 4 in the ones place, this will become a 4 in the tens place (since each \"one\" becomes \"ten\" when multiplied by 10),\u003c/li\u003e\n\t\u003cli\u003eIf the number has a 5 in the tens place, this will become a 5 in the hundreds place (since each \"ten\" becomes \"hundred\" when multiplied by 10),\u003c/li\u003e\n\t\u003cli\u003e... and so on.\u003c/li\u003e\n\u003c/ul\u003e\n\n\u003cp\u003eSo, when you multiply a number by 10, all the digits in that number \u003cstrong\u003eshift one place to the left\u003c/strong\u003e.\u0026nbsp;Similarly, when you multiply a number by 100, all the digits in that number move two places to the left. And so on!\u003c/p\u003e\n\n\u003cp\u003eThis means that multiplying by powers of 10 (i.e. 10, 100, 1000, etc.) is very easy. For example:\u003c/p\u003e\n\n\u003cul\u003e\n\t\u003cli\u003eTo multiply 34 * 10, just move all the digits in 34 one place to the left to get your answer: \u003cstrong\u003e340\u003c/strong\u003e.\u003c/li\u003e\n\t\u003cli\u003eTo multiply by 100, 1000, ..., just count how many zeroes are at the end of that number and \u003cstrong\u003emove the first factor the correct number of places to the left\u003c/strong\u003e. For example, when multiplying 45 * 100, we see that 100 has two zeroes, so we move each of the digits in 45 two places to the left. This gives the answer: 45 * 100 = \u003cstrong\u003e4500\u003c/strong\u003e.\u003c/li\u003e\u003c/ul\u003e"
+			},
+			"written_translations": {
+				"translations_mapping": {
+					"explanation": {}
+				}
+			},
+			"recorded_voiceovers": {
+				"voiceovers_mapping": {
+					"explanation": {}
+				}
+			}
+		}
+	}, {
+		"misconceptions_schema_version": 2,
+		"next_misconception_id": 0,
+		"description": "Simplify calculations using a * b = b * a.",
+		"rubrics": [{
+			"difficulty": "Easy",
+			"explanations": ["\u003cp\u003eState the commutative\u0026nbsp;property of multiplication.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Medium",
+			"explanations": ["\u003cp\u003eUse commutativity to simplify and evaluate a multiplication expression that would be harder to calculate sequentially.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Hard",
+			"explanations": []
+		}],
+		"superseding_skill_id": null,
+		"language_code": "en",
+		"rubric_schema_version": 2,
+		"id": "9Mg793eaW88W",
+		"prerequisite_skill_ids": ["a3QtIqWYO6WL"],
+		"skill_contents_schema_version": 1,
+		"all_questions_merged": false,
+		"version": 4,
+		"misconceptions": [],
+		"skill_contents": {
+			"worked_examples": [],
+			"explanation": {
+				"content_id": "explanation",
+				"html": "\u003cp\u003eWhen you multiply two numbers, it doesn't matter what order the numbers are in. For example, 2 * 3 = 3 * 2.\u003c/p\u003e\n\n\u003cp\u003eThis is because these are two different ways to count the same thing. For example, you can interpret the picture below as 3 rows of 2 balls each, or 2 columns of 3 balls each.\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;3 rows, where each row contains 2 orange balls.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200705_234908_pdfb4726k6_height_108_width_73.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003eEither way, the total number of balls is 6.\u003c/p\u003e\n\n\u003cp\u003eYou can use this to make it easy to multiply longer chains of numbers. For example, if you needed to calculate 2 * 2479 * 5, you could first calculate 2 * 2479, and then multiply the product by 5. But there's a simpler way. If you switch the last two terms around, then you get:\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; 2 * 2479 * 5 = 2 * 5 * 2479\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; = 10 * 2479 (much easier to calculate!)\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; = \u003cstrong\u003e24790\u003c/strong\u003e.\u003c/p\u003e\n\n\u003cp\u003eThis is called the \u003cstrong\u003eCommutative Property\u003c/strong\u003e of multiplication. The word \"commutative\" just means that you can swap the numbers around the \"*\". Note that the Commutative Property only holds for addition and multiplication, but not subtraction and division.\u003c/p\u003e\n\n\u003cp\u003e\u003cstrong\u003eTip\u003c/strong\u003e: When multiplying numbers by hand, it's easy to make a mistake. To avoid this, you can check your work by multiplying the numbers in reverse order. For example, if you calculated 248 * 34, then you could try calculating 34 * 248. The two answers should be the same, by the Commutative Property. If you find that both answers don't match, then you know you have made a mistake. This is useful in situations where it's important that you get the correct answer.\u003c/p\u003e"
+			},
+			"written_translations": {
+				"translations_mapping": {
+					"explanation": {}
+				}
+			},
+			"recorded_voiceovers": {
+				"voiceovers_mapping": {
+					"explanation": {}
+				}
+			}
+		}
+	}, {
+		"misconceptions_schema_version": 2,
+		"next_misconception_id": 0,
+		"description": "Check reasonableness of work using estimation.",
+		"rubrics": [{
+			"difficulty": "Easy",
+			"explanations": []
+		}, {
+			"difficulty": "Medium",
+			"explanations": ["\u003cp\u003eEstimate the range that the answer to a multiplication falls into.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Hard",
+			"explanations": []
+		}],
+		"superseding_skill_id": null,
+		"language_code": "en",
+		"rubric_schema_version": 2,
+		"id": "OQUsLvCg6dAX",
+		"prerequisite_skill_ids": ["a3QtIqWYO6WL", "aWHXi0W4i6ky", "1nl7FpQuOI1p"],
+		"skill_contents_schema_version": 1,
+		"all_questions_merged": false,
+		"version": 2,
+		"misconceptions": [],
+		"skill_contents": {
+			"worked_examples": [],
+			"explanation": {
+				"content_id": "explanation",
+				"html": "\u003cp\u003eIn mathematics, \"estimating\" means to find a reasonable guess for the answer that makes sense.\u003c/p\u003e\n\n\u003cp\u003eFor example, how many sweets are in this jar? Don't count them -- just take a quick guess.\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;A glass jar filled with about 20 wrapped sweets.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200711_033043_rd8ybvp360_height_277_width_155.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003eHow did you do? If you guessed that there are 20 sweets in the jar, that would be a \u003cstrong\u003ereasonable estimate\u003c/strong\u003e. But if you guessed that there are 200 sweets, or 2 sweets, that\u0026nbsp;would just be a wild guess \u2014\u0026nbsp;an \u003cstrong\u003eunreasonable estimate\u003c/strong\u003e.\u003c/p\u003e\n\n\u003cp\u003eA good estimate can tell you roughly what the correct answer is, and it's useful for checking your work. For example, if you counted the sweets in the jar one-by-one, and you got the answer 200, then you must have made a mistake somewhere.\u003c/p\u003e\n\n\u003cp\u003e------------------------------------------------------------------------------\u003c/p\u003e\n\n\u003cp\u003eSimilarly, whenever you have solved a math problem, \u003cstrong\u003eestimation\u003c/strong\u003e is a really easy way to sanity-check your work!\u0026nbsp;In other words, does your answer make sense? If not, then you know\u0026nbsp;something is wrong with your calculation, and you can try again.\u003c/p\u003e\n\n\u003cp\u003eFor example, if you solved 485 * 32 and got 155,200 as your answer, you should be able to see that that's the wrong answer using estimation. Here's how:\u003c/p\u003e\n\n\u003cul\u003e\n\t\u003cli\u003e485 is roughly 500.\u003c/li\u003e\n\t\u003cli\u003e32 is roughly 30.\u003c/li\u003e\n\t\u003cli\u003eSo, 485 * 32 should be close to 500 * 30 = 15,000.\u003c/li\u003e\n\t\u003cli\u003eBut the answer you got, 155,200, is much too big! So there must have been a mistake somewhere -- probably an extra zero. You'll need to repeat the calculation again.\u003c/li\u003e\n\u003c/ul\u003e\n\n\u003cp\u003eIn general, to estimate the result of a multiplication, you can round the factors you are multiplying to have just one nonzero digit, and then multiply the rounded numbers. (For example, 2483 * 34 is approximately 2000 * 30.)\u0026nbsp;The answer you get from multiplying the rounded numbers is your estimate. If your estimate looks very different from your actual answer, that's a clue that you might have made a mistake somewhere.\u003c/p\u003e\n\n\u003cp\u003e\u003cstrong\u003eWarning\u003c/strong\u003e: this doesn't work the other way round! If the estimate is close to your answer, that is not a guarantee that you got it right, because it's still possible that your answer is only slightly wrong! An estimate can only tell you whether your answer is roughly correct, but it cannot tell you whether it's precisely correct.\u003c/p\u003e"
+			},
+			"written_translations": {
+				"translations_mapping": {
+					"explanation": {}
+				}
+			},
+			"recorded_voiceovers": {
+				"voiceovers_mapping": {
+					"explanation": {}
+				}
+			}
+		}
+	}, {
+		"misconceptions_schema_version": 2,
+		"next_misconception_id": 1,
+		"description": "Convert repeated addition to a multiplication statement, and vice versa.",
+		"rubrics": [{
+			"difficulty": "Easy",
+			"explanations": []
+		}, {
+			"difficulty": "Medium",
+			"explanations": ["\u003cp\u003eWrite a multiplication expression as a repeated addition.\u003c/p\u003e", "\u003cp\u003eWrite a repeated addition as a multiplication expression.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Hard",
+			"explanations": []
+		}],
+		"superseding_skill_id": null,
+		"language_code": "en",
+		"rubric_schema_version": 2,
+		"id": "QFI2y3aaqz0e",
+		"prerequisite_skill_ids": [],
+		"skill_contents_schema_version": 1,
+		"all_questions_merged": false,
+		"version": 2,
+		"misconceptions": [{
+			"must_be_addressed": false,
+			"notes": "\u003cp\u003eThis arises when the student takes the first number and multiplies it by the number of terms, without checking first that each term is equal.\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that's not correct. In order to write\u0026nbsp;a multiplication expression, the numbers you are adding must be equal! If not, you can't represent the sum directly as a multiplication.\u003c/p\u003e",
+			"id": 0,
+			"name": "Incorrectly applying multiplication when groups are not equal (e.g. 4 + 5 + 3 = 4 * 3)."
+		}],
+		"skill_contents": {
+			"worked_examples": [],
+			"explanation": {
+				"content_id": "explanation",
+				"html": "\u003cp\u003eWhen you are converting a \"repeated addition\" expression such as \"4 + 4 + 4\" into a multiplication expression, the multiplication expression will have two \u003cstrong\u003efactors\u003c/strong\u003e: a) the number being added, and b) the number of times it is being added.\u003cbr\u003e\n\u003cbr\u003e\nTo write out the multiplication expression, you must find the two factors (a and b) and write them in the form a * b. For example, 4 + 4 + 4 can be written as \u003cstrong\u003e4 * 3\u003c/strong\u003e. The first number is the number being added, and the second number is the number of times it repeats.\u003c/p\u003e\n\n\u003cp\u003eSimilarly, you can write a multiplication expression as a repeated addition. For example, 5 * 4 = \u003cstrong\u003e5 + 5 + 5 + 5\u003c/strong\u003e.\u003c/p\u003e"
+			},
+			"written_translations": {
+				"translations_mapping": {
+					"explanation": {}
+				}
+			},
+			"recorded_voiceovers": {
+				"voiceovers_mapping": {
+					"explanation": {}
+				}
+			}
+		}
+	}, {
+		"misconceptions_schema_version": 2,
+		"next_misconception_id": 1,
+		"description": "Multiply by 0",
+		"rubrics": [{
+			"difficulty": "Easy",
+			"explanations": []
+		}, {
+			"difficulty": "Medium",
+			"explanations": ["\u003cp\u003eMultiply any number by 0.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Hard",
+			"explanations": ["\u003cp\u003eMultiply three or more numbers, one of which is 0.\u003c/p\u003e"]
+		}],
+		"superseding_skill_id": null,
+		"language_code": "en",
+		"rubric_schema_version": 2,
+		"id": "dUuQT23NDYDN",
+		"prerequisite_skill_ids": [],
+		"skill_contents_schema_version": 1,
+		"all_questions_merged": false,
+		"version": 2,
+		"misconceptions": [{
+			"must_be_addressed": true,
+			"notes": "",
+			"feedback": "\u003cp\u003eNo, that's not correct. The question is asking you to multiply the given numbers, but you're adding them together instead. Try again!\u003c/p\u003e",
+			"id": 0,
+			"name": "Adding instead of multiplying, e.g. 4 * 0 = 4 or 0 * 6 = 6."
+		}],
+		"skill_contents": {
+			"worked_examples": [],
+			"explanation": {
+				"content_id": "explanation",
+				"html": "\u003cp\u003eWhen you multiply a number by \"0\", the answer is always 0.\u003c/p\u003e\n\n\u003cp\u003eThis is because, when you count a number zero times, the total value would be 0.\u003c/p\u003e"
+			},
+			"written_translations": {
+				"translations_mapping": {
+					"explanation": {}
+				}
+			},
+			"recorded_voiceovers": {
+				"voiceovers_mapping": {
+					"explanation": {}
+				}
+			}
+		}
+	}, {
+		"misconceptions_schema_version": 2,
+		"next_misconception_id": 8,
+		"description": "Multiply a multi-digit number by a single-digit number, e.g. 1548 * 4.",
+		"rubrics": [{
+			"difficulty": "Easy",
+			"explanations": ["\u003cp\u003ePerform a single step correctly in the long-form multiplication of a multi-digit number by a single-digit number.\u003c/p\u003e", "\u003cp\u003eGiven a partial long-form multiplication of a multi-digit number by a single-digit number, identify the next step to take.\u003c/p\u003e", "\u003cp\u003eMultiply a multi-digit number\u0026nbsp;by a single-digit number, without carrying.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Medium",
+			"explanations": ["\u003cp\u003eMultiply any multi-digit number by a single-digit number between 2 and 9, with at least one \"carry\" operation.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Hard",
+			"explanations": ["\u003cp\u003eMultiply a multi-digit number with at least 5 non-zero digits by a single-digit number between 2 and 9, with at least one \"carry\" operation.\u003c/p\u003e"]
+		}],
+		"superseding_skill_id": null,
+		"language_code": "en",
+		"rubric_schema_version": 2,
+		"id": "mHFrQ1KPZ8qN",
+		"prerequisite_skill_ids": ["a3QtIqWYO6WL"],
+		"skill_contents_schema_version": 1,
+		"all_questions_merged": false,
+		"version": 7,
+		"misconceptions": [{
+			"must_be_addressed": true,
+			"notes": "",
+			"feedback": "\u003cp\u003eNo, that's not correct. It looks like you've added the numbers together, but you should be \u003cstrong\u003emultiplying\u003c/strong\u003e them instead. Try again!\u003c/p\u003e",
+			"id": 0,
+			"name": "Adding instead of multiplying."
+		}, {
+			"must_be_addressed": false,
+			"notes": "\u003cp\u003eFor example: 347 * 3 = 1281 (because the 2 carried over from the ones place is added to the 4 to get 6, before multiplying by 3).\u003c/p\u003e\n\n\u003cp\u003eNote that this mistake might be carried out\u0026nbsp;only for some (and not all) digits in the first factor. Try to catch these cases too and provide specific feedback about what went wrong.\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that's not correct. When carrying a number to the next higher place, don't add it immediately. Do the multiplication in that higher place first, and \u003cem\u003ethen\u003c/em\u003e add the carried number to the result.\u003c/p\u003e\n\n\u003cp\u003eFor example, in 37 * 3, we get 7 * 3 = 21, so we carry 2. Now, we must multiply 3 * 3 first to get 9, and only then add the carried 2 to get 11 (so\u0026nbsp;our final answer is 111). \u003cstrong\u003eWrite this\u0026nbsp;calculation out\u003c/strong\u003e\u0026nbsp;by yourself to make sure you understand it.\u003c/p\u003e\n\n\u003cp\u003eWhen you've\u0026nbsp;done that, try the original question again!\u003c/p\u003e",
+			"id": 1,
+			"name": "Adding the carry-over digits to the digit in the first factor, and then multiplying."
+		}, {
+			"must_be_addressed": false,
+			"notes": "\u003cp\u003eThis\u0026nbsp;is a place value difficulty. It should only be checked if the multiplication involves carrying.\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that's not correct. Remember to keep the numbers in the correct places. Sometimes, two numbers may go in the same place, so you'll need to add them.\u003c/p\u003e\n\n\u003cp\u003eFor example, when calculating 37 * 2, starting with 7 * 2 gives 14. But you shouldn't just write 14 in the answer! You'll need to write a 4 in the ones place, and then carry the 1 to the tens place, so that you can add it to the result of 3 * 2. Try working this out for yourself,\u0026nbsp;and make sure you get the correct answer of 74 before proceeding further.\u003c/p\u003e\n\n\u003cp\u003eOnce you've understood this, try the original question again!\u003c/p\u003e",
+			"id": 2,
+			"name": "Inserting the carried digit directly in the answer (e.g. 37 * 2 = 614)."
+		}, {
+			"must_be_addressed": false,
+			"notes": "\u003cp\u003eThis case should be checked\u0026nbsp;whenever\u0026nbsp;the multiplication involves carrying.\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that's not correct. When you multiplied \u003cstrong\u003e[FILL THIS IN]\u003c/strong\u003e\u0026nbsp;by \u003cstrong\u003e[FILL THIS IN]\u003c/strong\u003e, you carried over a digit \u003cstrong\u003e[FILL THIS IN]\u003c/strong\u003e\u0026nbsp;to the \u003cstrong\u003e[FILL THIS IN]\u0026nbsp;\u003c/strong\u003eplace.\u003c/p\u003e\n\n\u003cp\u003eSo, after multiplying the digit in that place with the multiplier\u0026nbsp;(i.e.,\u0026nbsp;\u003cstrong\u003e[FILL THIS IN]\u003c/strong\u003e\u0026nbsp;by\u0026nbsp;\u003cstrong\u003e[FILL THIS IN]\u003c/strong\u003e), you need to add the carried-over\u0026nbsp;digit to the result.\u003c/p\u003e\n\n\u003cp\u003eTry again!\u003c/p\u003e",
+			"id": 3,
+			"name": "Forgetting to add the carrying digit (e.g. 36 x 3 = 98)."
+		}, {
+			"must_be_addressed": false,
+			"notes": "\u003cp\u003eThis is only relevant if the multiplication involves carrying.\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that's not right. When calculating the \u003cstrong\u003e[FILL THIS IN]\u003c/strong\u003e\u0026nbsp;place, you need to do the multiplication of\u0026nbsp;\u003cstrong\u003e[FILL THIS IN]\u003c/strong\u003e\u0026nbsp;by\u0026nbsp;\u003cstrong\u003e[FILL THIS IN]\u003c/strong\u003e\u0026nbsp;first, and only then add the carried-over digit to the result.\u003c/p\u003e\n\n\u003cp\u003eTry again!\u003c/p\u003e",
+			"id": 4,
+			"name": "Adding the carrying digit to the digit in the first factor (e.g. 36 x 3 = 48)."
+		}, {
+			"must_be_addressed": false,
+			"notes": "\u003cp\u003eThis is only relevant when the multiplication involves carrying.\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that's not correct. When you calculate the value in the\u0026nbsp;\u003cstrong\u003e[FILL THIS IN]\u003c/strong\u003e\u0026nbsp;place, you need to do the multiplication the usual way first, and only then\u0026nbsp;\u003cstrong\u003eadd\u003c/strong\u003e\u0026nbsp;the digit you carried over.\u003c/p\u003e\n\n\u003cp\u003eFor example, in 36 * 3, we know that, since 6 * 3 = 18, the ones place of the result is 8. To get the tens place, we \u003cstrong\u003efirst \u003c/strong\u003ecalculate 3 * 3 = 9, and then add the \"1\" that was carried over from the ones place, to get 10. So the final answer is 108. (Try and check this for yourself by writing it in long-form before carrying on.)\u003c/p\u003e\n\n\u003cp\u003eOnce you've understood the above example, try again!\u003c/p\u003e",
+			"id": 5,
+			"name": "Multiplying the carrying digit by the digit in the first factor (e.g. 36 * 3 = 38)."
+		}, {
+			"must_be_addressed": false,
+			"notes": "\u003cp\u003eThis is a place value difficulty. It is relevant when the answer contains more digits than the first number.\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that's not correct. You're missing some digits at the beginning.\u003c/p\u003e\n\n\u003cp\u003eIf you get a multiplication result of more than 9, you'll need to add more place values to the left of your existing answer, since there's nowhere else to \"carry\" the extra digits. It's fine for your answer to have\u0026nbsp;more digits than either of the original numbers.\u003c/p\u003e\n\n\u003cp\u003eTry again!\u003c/p\u003e",
+			"id": 6,
+			"name": "Not creating a new place value column when needed (e.g. 36 x 3 = 08)."
+		}, {
+			"must_be_addressed": false,
+			"notes": "\u003cp\u003eE.g.:\u0026nbsp;51 x 4 = 24 (5 x 4 = 20 and 20 is 2 tens, so the 2 goes in tens column).\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that's not correct. Be very careful to ensure you know which place you're working on, at any given moment.\u003c/p\u003e\n\n\u003cp\u003eIn this case, when you calculated the\u0026nbsp;\u003cstrong\u003e[FILL THIS IN]\u003c/strong\u003e\u0026nbsp;place of the result, you got\u0026nbsp;\u003cstrong\u003e[FILL THIS IN]\u003c/strong\u003e. But that means the 0 at the end should be in the\u0026nbsp;\u003cstrong\u003e[FILL THIS\u0026nbsp;IN]\u003c/strong\u003e\u0026nbsp;place. It looks like you've ignored it and put the\u0026nbsp;\u003cstrong\u003e[FILL THIS DIGIT IN]\u003c/strong\u003e\u0026nbsp;there instead.\u003c/p\u003e\n\n\u003cp\u003eTry again.\u003c/p\u003e",
+			"id": 7,
+			"name": "Eliding interior zeros when the result of the tens place ends in 0."
+		}],
+		"skill_contents": {
+			"worked_examples": [],
+			"explanation": {
+				"content_id": "explanation",
+				"html": "\u003cp\u003eWhen multiplying a large multi-digit factor by a single-digit number, like 1548 * 4, it is easy to get confused because of the large numbers. But, in mathematics, every big problem can often be broken up into smaller problems that are easier to solve!\u003c/p\u003e\n\n\u003cp\u003eIn this case, we will literally \"break up\" the bigger factor to make the problem easier for us. Even if we don't know how to multiply a large number like 1548 by 4 directly, we do know how to multiply each of 1000, 500, 40, and 8 by 4. We just multiply the single digits and add the correct number of zeros at the end:\u003c/p\u003e\n\n\u003cul\u003e\n\t\u003cli\u003e1000 x 4 = 4000 (since 1 x 4 = 4, and 1000 has 3 zeros at the end)\u003c/li\u003e\n\t\u003cli\u003e500 x 4 = 2000 (since 5 x 4 = 20, and 500 has 2 zeros at the end)\u003c/li\u003e\n\t\u003cli\u003e40 x 4 = 160 (since 4 x 4 = 16, and 40 has 1 zero at the end)\u003c/li\u003e\n\t\u003cli\u003e8 x 4 = 32.\u003c/li\u003e\n\u003c/ul\u003e\n\n\u003cp\u003eNow, since 1548 = (1000 + 500 + 40 + 8), we can just add up all these products to get the result. So, we can write:\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; 1548 * 4 = (1000 + 500 + 40 + 8) * 4\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; =\u0026nbsp;(1000 * 4) + (500 * 4) + (40 * 4) + (8 * 4)\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; = 4000 + 2000 + 160 + 32\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; = \u003cstrong\u003e6192\u003c/strong\u003e.\u003c/p\u003e\n\n\u003cp\u003e-------------------------------------\u003c/p\u003e\n\n\u003cp\u003eYou can also multiply numbers directly by writing them one on top of the other.\u003c/p\u003e\n\n\u003cp\u003eLet's try calculating 458 * 5 this way. First, write the numbers one on top of the other, like this:\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;458 x 5 in long-form, with an empty answer space.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200705_234951_lcmq0fvx8y_height_70_width_100.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003e\u0026nbsp;\u003c/p\u003e\n\n\u003cp\u003eThen, multiply each digit in the first number by 5,\u0026nbsp;starting from the right and handling one digit at a time:\u003c/p\u003e\n\n\u003cul\u003e\n\t\u003cli\u003eFirst, calculate the ones digit. \u003cstrong\u003e8\u003c/strong\u003e * 5 = 40, so we write a 0 in the ones place, and carry the \"4\" to add to the tens place later.\u003c/li\u003e\n\u003c/ul\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;458 x 5 in long-form, with a 0 in the ones place of the answer, and a small 4 on the top-left of the 5 in the first factor.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200705_235000_dboe9ogu3f_height_114_width_100.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cul\u003e\n\t\u003cli\u003eNext, calculate the tens digit. \u003cstrong\u003e5\u003c/strong\u003e * 5 = 25, and we carried a 4 from before, so 25 + 4 = 29. So we write a 9 in the tens place, and carry the \"2\" to add to the hundreds place later.\u003c/li\u003e\n\u003c/ul\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;458 x 5 in long-form, with a 90 in the last two places of the answer, and a small 2 on the top-left of the 4 in the first factor.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200705_235011_qznf8ev84p_height_114_width_100.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cul\u003e\n\t\u003cli\u003eFinally, we calculate \u003cstrong\u003e4\u003c/strong\u003e * 5 = 20 and add the 2 to get 22. So we write a 22 to the left of our previous numbers (to represent 22 hundreds), and we are done!\u003c/li\u003e\n\u003c/ul\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;458 x 5 in long-form, with a 2290 in the answer row.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200705_235022_t1p23915v6_height_114_width_100.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003eSo, 458 x 5 = \u003cstrong\u003e2290\u003c/strong\u003e.\u003c/p\u003e\n\n\u003cp\u003eMake sure you understand each step, since then\u0026nbsp;you'll be able to multiply any large number with any single digit in the same way!\u003c/p\u003e"
+			},
+			"written_translations": {
+				"translations_mapping": {
+					"explanation": {}
+				}
+			},
+			"recorded_voiceovers": {
+				"voiceovers_mapping": {
+					"explanation": {}
+				}
+			}
+		}
+	}, {
+		"misconceptions_schema_version": 2,
+		"next_misconception_id": 1,
+		"description": "Remove parentheses using the distributive property of multiplication.",
+		"rubrics": [{
+			"difficulty": "Easy",
+			"explanations": []
+		}, {
+			"difficulty": "Medium",
+			"explanations": ["\u003cp\u003eUse the distributive property to simplify and evaluate a multiplication expression that would be complicated to calculate in the usual way.\u003c/p\u003e", "\u003cp\u003eApply the distributive property to remove parentheses in\u0026nbsp;a multiplication expression by splitting it into the sum of two or more terms.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Hard",
+			"explanations": []
+		}],
+		"superseding_skill_id": null,
+		"language_code": "en",
+		"rubric_schema_version": 2,
+		"id": "zZv9Y0UBEzh8",
+		"prerequisite_skill_ids": ["a3QtIqWYO6WL"],
+		"skill_contents_schema_version": 1,
+		"all_questions_merged": false,
+		"version": 2,
+		"misconceptions": [{
+			"must_be_addressed": true,
+			"notes": "",
+			"feedback": "\u003cp\u003eNo, that's not correct. When removing parentheses using the distributive property, make sure that you apply the \"outside\"\u0026nbsp;number\u0026nbsp;to\u0026nbsp;\u003cstrong\u003eall\u003c/strong\u003e of the terms inside the parentheses, not just the first one.\u003c/p\u003e\n\n\u003cp\u003eTry again!\u003c/p\u003e",
+			"id": 0,
+			"name": "Forgetting to apply the multiplicand to the second number (e.g. 3 * (4 + 5) = 3 * 4 + 5)."
+		}],
+		"skill_contents": {
+			"worked_examples": [],
+			"explanation": {
+				"content_id": "explanation",
+				"html": "\u003cp\u003eThe \u003cstrong\u003eDistributive Property\u003c/strong\u003e of Multiplication states that, when you see a multiplication expression in the form a * (b + c), you have two options:\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp;1) You can add b + c first and multiply their sum by a.\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; 2) You can also use another method instead, where you separate the expression into two multiplication expressions. In other words, you could multiply a * (b + c) by solving for (a * b) + (a * c).\u003c/p\u003e\n\n\u003cp\u003eThis can be useful when b + c is complicated. For example, 23 * 23 might look hard to calculate, but you can write it as:\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; 23 * 23 = 23 * (20 + 3)\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; = 23 * 20 + 23 * 3 (using the distributive property)\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; = 460 + 69 (calculating 23 * 20 and 23 * 3 separately)\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; = 529.\u003c/p\u003e\n\n\u003cp\u003eSimilarly, you can also write (a + b) * c = a * c + b * c.\u003c/p\u003e\n\n\u003cp\u003e------------------------------------------------------------------------\u003c/p\u003e\n\n\u003cp\u003eHere's a picture that shows why the distributive property works. Take a look at it and see if you can understand\u0026nbsp;why this shows that 6 * 3 = (2 * 3) + (4 * 3).\u003c/p\u003e\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;On the left, a rectangle with 6 rows of 3. On the right, the same rectangle, but split into one with 2 rows of 3, on top of another with 4 rows of 3. To the left of the first rectangle is written 6 * 3, and to the right of each of the smaller rectangles is written 2 * 3 and 4 * 3 respectively, with a \\\u0026amp;quot;+\\\u0026amp;quot; sign vertically between them. There is an equality sign between the left and right pictures.]\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200711_154522_e03jifug07_height_261_width_392.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e"
+			},
+			"written_translations": {
+				"translations_mapping": {
+					"explanation": {}
+				}
+			},
+			"recorded_voiceovers": {
+				"voiceovers_mapping": {
+					"explanation": {}
+				}
+			}
+		}
+	}, {
+		"misconceptions_schema_version": 2,
+		"next_misconception_id": 0,
+		"description": "Write a multiplication expression for items arranged in a rectangle or cuboid.",
+		"rubrics": [{
+			"difficulty": "Easy",
+			"explanations": []
+		}, {
+			"difficulty": "Medium",
+			"explanations": ["\u003cp\u003eGiven a picture of a rectangle/cuboid,\u0026nbsp;or items arranged in such a pattern, write a multiplication expression that represents the total number of items.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Hard",
+			"explanations": []
+		}],
+		"superseding_skill_id": null,
+		"language_code": "en",
+		"rubric_schema_version": 2,
+		"id": "pdmI5RdxkgeL",
+		"prerequisite_skill_ids": [],
+		"skill_contents_schema_version": 1,
+		"all_questions_merged": false,
+		"version": 4,
+		"misconceptions": [],
+		"skill_contents": {
+			"worked_examples": [],
+			"explanation": {
+				"content_id": "explanation",
+				"html": "\u003cp\u003eWhen you are shown a flat rectangle (or square) with a given length and width, you can multiply the length and the width to find the area.\u003c/p\u003e\n\n\u003cp\u003eWhy does this work? Observe the picture below.\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;A 7-by-3 rectangle, made out of little squares.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200703_023719_f97bv6kci5_height_136_width_311.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003e\u003cbr\u003e\nThe length is 7 blocks and the width is 3 blocks. So, in other words, we have 3 groups of 7 blocks, and we can write this as 3 * 7 or 7 * 3.\u003c/p\u003e\n\n\u003cp\u003e------------------------------------------------------------------\u003c/p\u003e\n\n\u003cp\u003eSimilarly, when you are shown a (3D) rectangular prism like the one pictured below, you can multiply the area of one face by the height of the prism to find the volume. In other words, to calculate volume, you are multiplying the length by the width by the height.\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;A 3-by-4-by-7 rectangular prism made out of unit blocks.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200703_200509_ihizw2b1wf_height_146_width_338.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003eIn the picture above, the volume of the prism is 7 * 3 * 4 = 84 blocks.\u003c/p\u003e\n\n\u003cp\u003eWhy does this work? Imagine cutting the prism into \"slices,\" where each slice represents the area of one face:\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;The same rectangular prism, cut into \\\u0026amp;quot;slices\\\u0026amp;quot;. Each slice has an area of 7-by-3 blocks, and there are 4 slices.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200703_200518_hmomomv8jl_height_202_width_392.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003eThere are 4 slices, and each has area 7 * 3 = 21. So, the total volume is 21 * 4 = 84 blocks.\u003c/p\u003e"
+			},
+			"written_translations": {
+				"translations_mapping": {
+					"explanation": {}
+				}
+			},
+			"recorded_voiceovers": {
+				"voiceovers_mapping": {
+					"explanation": {}
+				}
+			}
+		}
+	}, {
+		"misconceptions_schema_version": 2,
+		"next_misconception_id": 1,
+		"description": "Write the name of the place occupied by a digit in a number.",
+		"rubrics": [{
+			"difficulty": "Easy",
+			"explanations": [""]
+		}, {
+			"difficulty": "Medium",
+			"explanations": ["\u003cp\u003eGiven a number and a digit within it, write down the name of the place occupied by the digit.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Hard",
+			"explanations": [""]
+		}],
+		"superseding_skill_id": null,
+		"language_code": "en",
+		"rubric_schema_version": 2,
+		"id": "5UeFU80Yoaf7",
+		"prerequisite_skill_ids": ["asQSA9rXpdwu"],
+		"skill_contents_schema_version": 1,
+		"all_questions_merged": false,
+		"version": 3,
+		"misconceptions": [{
+			"must_be_addressed": true,
+			"notes": "",
+			"feedback": "\u003cp\u003eNo, that's not correct. The smallest place names are always located at the right, and increase as you go to the left. For example, the\u0026nbsp;rightmost digit is in the ones place.\u003c/p\u003e\n\n\u003cp\u003eTry again!\u003c/p\u003e",
+			"id": 0,
+			"name": "Having the smallest place name on the left."
+		}],
+		"skill_contents": {
+			"worked_examples": [],
+			"explanation": {
+				"content_id": "explanation",
+				"html": "\u003cp\u003eThe place name of a digit tells us\u0026nbsp;where that digit occurs in a number.\u003c/p\u003e\n\n\u003cp\u003eYou can label each digit in a number with its\u0026nbsp;place name by counting \u003cstrong\u003efrom the right \u003c/strong\u003eone digit at a time. The first digit on the right is in the \"ones\" place, the second digit from the right is in the \"tens\" place, and so on.\u003c/p\u003e\n\n\u003cp\u003e\u003cstrong\u003eExample: \u003c/strong\u003eLet's find the place value of the digit 4 in\u0026nbsp;the number 541,625. We can count from the right to find that\u0026nbsp;4 is the \u003cstrong\u003efifth\u003c/strong\u003e digit from the right (try it!). So, 4 is in the \u003cstrong\u003eten thousands place\u003c/strong\u003e.\u003c/p\u003e"
+			},
+			"written_translations": {
+				"translations_mapping": {
+					"explanation": {}
+				}
+			},
+			"recorded_voiceovers": {
+				"voiceovers_mapping": {
+					"explanation": {}
+				}
+			}
+		}
+	}, {
+		"misconceptions_schema_version": 2,
+		"next_misconception_id": 5,
+		"description": "Round a number to a given place value.",
+		"rubrics": [{
+			"difficulty": "Easy",
+			"explanations": ["\u003cp\u003eRound a number to a given place value, without any carrying needed.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Medium",
+			"explanations": ["\u003cp\u003eRound a number up to a given place value in a way that requires \"carrying the 1\".\u003c/p\u003e"]
+		}, {
+			"difficulty": "Hard",
+			"explanations": [""]
+		}],
+		"superseding_skill_id": null,
+		"language_code": "en",
+		"rubric_schema_version": 2,
+		"id": "1nl7FpQuOI1p",
+		"prerequisite_skill_ids": [],
+		"skill_contents_schema_version": 1,
+		"all_questions_merged": false,
+		"version": 2,
+		"misconceptions": [{
+			"must_be_addressed": true,
+			"notes": "\u003cp\u003eE.g. converts 2843 to 2700 or 2743, if rounding to the nearest hundred.\u003c/p\u003e\n\n\u003cp\u003eThis misconception is only relevant when a \"rounding down\" is performed.\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that's not right.\u0026nbsp;Remember, when rounding down at a given place, you should keep the number at that place unchanged. If you make it smaller, then the resulting number will end up being farther away from the original number.\u003c/p\u003e\n\n\u003cp\u003eFor example, 3215 rounded to the nearest hundred is 3200, not 3100. (Notice that 3100 is farther away from 3215 than 3200 is.)\u003c/p\u003e\n\n\u003cp\u003eTry again.\u003c/p\u003e",
+			"id": 0,
+			"name": "Decrements the digit when rounding down."
+		}, {
+			"must_be_addressed": true,
+			"notes": "",
+			"feedback": "\u003cp\u003eNo, that is not correct. Your answer is not a round number. Recall that a round number is a number where all the digits after a certain place are \u003cstrong\u003eall zeros\u003c/strong\u003e.\u003c/p\u003e\n\n\u003cp\u003eTry again.\u003c/p\u003e",
+			"id": 1,
+			"name": "Doesn't zero out the digits at the end."
+		}, {
+			"must_be_addressed": true,
+			"notes": "",
+			"feedback": "\u003cp\u003eNo, that's not correct. Remember that there are two cases:\u003c/p\u003e\n\n\u003cul\u003e\n\t\u003cli\u003eIf the\u0026nbsp;digit in the next place is 5 or greater, \u003cstrong\u003eround up\u003c/strong\u003e.\u003c/li\u003e\n\t\u003cli\u003eIf the\u0026nbsp;digit in the next place is 4\u0026nbsp;or smaller,\u003cstrong\u003e round down\u003c/strong\u003e.\u003c/li\u003e\n\u003c/ul\u003e\n\n\u003cp\u003eWhich case applies to this question? Use that to figure out what to do next. Try again.\u003c/p\u003e",
+			"id": 2,
+			"name": "Rounds up instead of down (or vice versa)."
+		}, {
+			"must_be_addressed": false,
+			"notes": "\u003cp\u003eThis misconception is only relevant when the original number has a 9 in the place being rounded to, and that 9 is followed by a digit that is 5 or greater.\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that's not correct. Note that you need to \"carry the one\" when rounding up from 9 to 10, not throw it away!\u003c/p\u003e\n\n\u003cp\u003eWhen you \"carry the one\", you need to add 1\u0026nbsp;to the digit in the next higher place. What you did was to change the 10 to a 1, which is not correct.\u003c/p\u003e\n\n\u003cp\u003eFor example, rounding 9\u003cstrong\u003e9\u003c/strong\u003e78 to the nearest hundred gives 10000. That's\u0026nbsp;because the 9 in the hundreds place rounds up to 10 hundreds, which is the same as 1 thousand. So, our number becomes 9 thousand (from the original number) + 1 thousand (from rounding up the 978), which makes 10 thousand, or \u003cstrong\u003e10000\u003c/strong\u003e.\u003c/p\u003e\n\n\u003cp\u003eNow, see if you can use this approach to solve the original question.\u003c/p\u003e",
+			"id": 3,
+			"name": "Discards the 1 instead of carrying it."
+		}, {
+			"must_be_addressed": false,
+			"notes": "\u003cp\u003eThis misconception is only relevant when the original number has a 9 in the place that's being rounded to, and the next digit is 5 or greater.\u003c/p\u003e\n\n\u003cp\u003eFor example, when rounding to the nearest hundred, the student may round 958 up to 100\u0026nbsp;(instead of 1000).\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that's not correct. You've rounded up from 9 to 10, but you're putting the 10 in the wrong place. It should go one place higher.\u003c/p\u003e\n\n\u003cp\u003eFor example, rounding 2\u003cstrong\u003e9\u003c/strong\u003e58\u0026nbsp;to the nearest hundred gives 3000. That's because the 9\u0026nbsp;in the hundreds place rounds up to \u003cstrong\u003e10\u003c/strong\u003e hundreds, which is the same as 1 thousand. Notice that the 1 has moved to the next higher place.\u003c/p\u003e\n\n\u003cp\u003eSo, our number becomes 2\u0026nbsp;thousand (from the original number) + 1\u0026nbsp;thousand (from rounding up the 958), which makes 3\u0026nbsp;thousand, or \u003cstrong\u003e3000\u003c/strong\u003e.\u003c/p\u003e\n\n\u003cp\u003eNow, see if you can use this approach to solve the original question.\u003c/p\u003e",
+			"id": 4,
+			"name": "Changes the digit to 1 instead of carrying."
+		}],
+		"skill_contents": {
+			"worked_examples": [],
+			"explanation": {
+				"content_id": "explanation",
+				"html": "\u003cp\u003e\"Round\" numbers, which are numbers ending in a string of 0s, are easy to work with. If we just want to find a rough approximation, we can work with round numbers that are close to the actual numbers.\u003c/p\u003e\n\n\u003cp\u003eTo round a number, we replace it with the closest multiple of 100, 1000, or whatever place we want to work with. If the place value to the right is between 0 and 4, we \"round down\" and replace all smaller place values with 0s. If the place value to the right is between 5 and 9, we \"round up\" and increase the value of the rounded digit by 1, then replace all smaller place values with 0s.\u003c/p\u003e\n\n\u003cp\u003e\u003cstrong\u003eExample 1\u003c/strong\u003e:\u0026nbsp;Let's round 2400 to the nearest thousand. The digit in the thousands place is 2, so we look at the place to its right, which is the hundreds place.\u0026nbsp;The hundreds digit of 2400 is 4, which is between 0 and 4. So, we round down to 2000. Notice that we don't care about the value of the tens and ones digits in the original number.\u003c/p\u003e\n\n\u003cp\u003e(You can also see this by thinking about 2400 in terms of \"thousands\". Notice that 2400 has 2 thousands\u0026nbsp;and a 400. Since 4\u0026nbsp;is between 0\u0026nbsp;and 4, we round down to get \u003cstrong\u003e2\u0026nbsp;\u003c/strong\u003ethousands, which is equal to 2000.)\u003c/p\u003e\n\n\u003cp\u003e\u003cstrong\u003eExample 2\u003c/strong\u003e:\u0026nbsp;Let's round\u0026nbsp;2500 to the nearest thousand. The digit in the thousands place is 2, so we look at the place to its right, which is the hundreds place. The hundreds digit of 2500 is 5, which is between 5 and 9. So, we round up to 3000. Again, notice that we don't care about the value of the tens and ones digits in the original number.\u003c/p\u003e\n\n\u003cp\u003e(You can also see this by thinking about 2500 in terms of \"thousands\". Notice that 2500 has 2 thousands and a 500. Since 5 is between 5 and 9, we round up to get \u003cstrong\u003e3\u0026nbsp;\u003c/strong\u003ethousands, which is equal to 3000.)\u003c/p\u003e\n\n\u003cp\u003e\u003cstrong\u003eExample 3\u003c/strong\u003e:\u0026nbsp;Let's round\u0026nbsp;3496 to the nearest ten. The digit in the tens place is 9, so we look at the place to its right, which is the ones place. The ones digit of 3496 is 6, which is between 5 and 9. So, we round up by changing the 6 to a zero, and adding 1 to the tens place. This results in 1 + 9 = 10. But 10 is too big to fit in the tens place, so we need to \"carry over\" the 1 to the hundreds place, which gives us the answer of 3500.\u003c/p\u003e\n\n\u003cp\u003e(You can also see this by noticing that we have 349 tens and a 6. Since the 6 is between 5 and 9, we round up to get \u003cstrong\u003e350\u003c/strong\u003e tens. This is equal to\u0026nbsp;3500.)\u003c/p\u003e"
+			},
+			"written_translations": {
+				"translations_mapping": {
+					"explanation": {}
+				}
+			},
+			"recorded_voiceovers": {
+				"voiceovers_mapping": {
+					"explanation": {}
+				}
+			}
+		}
+	}, {
+		"misconceptions_schema_version": 2,
+		"next_misconception_id": 1,
+		"description": "Write a number, given its verbal description.",
+		"rubrics": [{
+			"difficulty": "Easy",
+			"explanations": ["\u003cp\u003eGiven the description of a number from 1 to 99 in words, write the number using numerals.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Medium",
+			"explanations": ["\u003cp\u003eGiven the description of a number in words, write the number using numerals.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Hard",
+			"explanations": [""]
+		}],
+		"superseding_skill_id": null,
+		"language_code": "en",
+		"rubric_schema_version": 2,
+		"id": "DAMrlUjg9Gy9",
+		"prerequisite_skill_ids": [],
+		"skill_contents_schema_version": 1,
+		"all_questions_merged": false,
+		"version": 2,
+		"misconceptions": [{
+			"must_be_addressed": false,
+			"notes": "\u003cp\u003eE.g. \"five hundred eleven thousand\" is written \"500,11,000\".\u003c/p\u003e\n\n\u003cp\u003eThis misconception is only relevant if the number has at least a \"hundred thousands\" place.\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that's not correct. When reading a verbal description, break it up by every \"third place\" first (thousands, millions, etc.).\u003c/p\u003e\n\n\u003cp\u003eFor example, in \"five hundred eleven thousand\", the \"five hundred\" is part of the thousands block. So, you would write the number as \"511,000\", not \"500,11,000\".\u003c/p\u003e\n\n\u003cp\u003eIf you're having trouble\u003cspan\u003e\u0026nbsp;understanding this concept, check\u0026nbsp;\u003coppia-noninteractive-skillreview skill_id-with-value=\"\u0026amp;quot;DAMrlUjg9Gy9\u0026amp;quot;\" text-with-value=\"\u0026amp;quot;this concept card\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-skillreview\u003efor a reminder on how to read a verbal description of a number. Then, try the question again!\u003c/span\u003e\u003c/p\u003e",
+			"id": 0,
+			"name": "Breaks up the number too much."
+		}],
+		"skill_contents": {
+			"worked_examples": [],
+			"explanation": {
+				"content_id": "explanation",
+				"html": "\u003cp\u003eTo translate a number from word form into numerals, we convert each part of the description into a place value. Then we write the numeral by adding the place values together. It is easiest to handle this by converting a block of three digits at a time.\u003cbr\u003e\n\u003cbr\u003e\nFor example, let's convert \"five hundred twenty-seven thousand, six hundred nine\" into numerals. We begin with the \u003cstrong\u003ethousands\u003c/strong\u003e block. We see that \"five hundred twenty-seven thousand\" translates to 527 thousands, or 527000. The remaining part, \"six hundred nine\", is 609. So, the final number would be 527609.\u003cbr\u003e\n\u003cbr\u003e\n\u003cstrong\u003eNote: \u003c/strong\u003eBe careful to start by breaking up the description\u0026nbsp;at the \u003cstrong\u003e\"millions\"\u003c/strong\u003e and \u003cstrong\u003e\"thousands\"\u003c/strong\u003e blocks!\u0026nbsp;\"Nine hundred one thousand\" is 901000, but \"nine thousand one hundred\" is 9100.\u0026nbsp;The words \"ten\" and \"hundred\" describe different values \u003cem\u003ewithin\u003c/em\u003e a block, whereas\u0026nbsp;words like \"thousand\" and \"million\" separate different blocks.\u003c/p\u003e"
+			},
+			"written_translations": {
+				"translations_mapping": {
+					"explanation": {}
+				}
+			},
+			"recorded_voiceovers": {
+				"voiceovers_mapping": {
+					"explanation": {}
+				}
+			}
+		}
+	}, {
+		"misconceptions_schema_version": 2,
+		"next_misconception_id": 2,
+		"description": "Identify the value represented by a digit in a number.",
+		"rubrics": [{
+			"difficulty": "Easy",
+			"explanations": [""]
+		}, {
+			"difficulty": "Medium",
+			"explanations": ["\u003cp\u003eGiven a number and a digit within it, write down the value represented by the digit.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Hard",
+			"explanations": [""]
+		}],
+		"superseding_skill_id": null,
+		"language_code": "en",
+		"rubric_schema_version": 2,
+		"id": "EK521D5vFNoI",
+		"prerequisite_skill_ids": [],
+		"skill_contents_schema_version": 1,
+		"all_questions_merged": false,
+		"version": 3,
+		"misconceptions": [{
+			"must_be_addressed": false,
+			"notes": "\u003cp\u003eNote that this misconception can\u0026nbsp;only be detected when the digit in question is not 1.\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that's not correct. You've got the correct value for the place, but you also need to make use of the digit in that place.\u003c/p\u003e\n\n\u003cp\u003eFor example, the digit value of 2 in 320 would be 20, not 10. This is because the 2 represents \"2 tens\" (20), not \"1 ten\" (10).\u003c/p\u003e\n\n\u003cp\u003eTry again.\u003c/p\u003e",
+			"id": 0,
+			"name": "Omits the digit (e.g. types 100 instead of 600)."
+		}, {
+			"must_be_addressed": false,
+			"notes": "\u003cp\u003eThis misconception cannot be detected if the digit is in the ones place.\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that's not correct. You have only written the digit, but not considered its place value. The location of the digit in the number affects its value too.\u003c/p\u003e\n\n\u003cp\u003eFor example, the place value of 2 in 320 would be 20, not 2. This is because the 2 represents \"2 tens\" (20), not \"2 ones\" (2).\u003c/p\u003e\n\n\u003cp\u003eTry again.\u003c/p\u003e",
+			"id": 1,
+			"name": "Omits trailing zeros (e.g. types 6 for 600)."
+		}],
+		"skill_contents": {
+			"worked_examples": [],
+			"explanation": {
+				"content_id": "explanation",
+				"html": "\u003cp\u003eTo find the value represented by a digit in a number, count from the right until you reach the digit. Then, replace\u0026nbsp;all the other digits by zeros, and ignore\u0026nbsp;any zeros at the beginning.\u003c/p\u003e\n\n\u003cp\u003e\u003cstrong\u003eExample\u003c/strong\u003e: For example, in the number 284, the digit \"8\" is second from the right. So, in this case, the digit \"8\"\u0026nbsp;represents a value of \u003cstrong\u003e80\u003c/strong\u003e.\u003c/p\u003e\n\n\u003cp\u003eYou can also use the value corresponding to the\u0026nbsp;place that the digit is in. (If you've forgotten the names of the places, click\u0026nbsp;\u003coppia-noninteractive-skillreview skill_id-with-value=\"\u0026amp;quot;kNnNHaxmb0Db\u0026amp;quot;\" text-with-value=\"\u0026amp;quot;here\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-skillreview\u003e\u0026nbsp;for a refresher.)\u003c/p\u003e\n\n\u003cp\u003e\u003cstrong\u003eExample (continued): \u003c/strong\u003eIn the number 284, the digit \"8\"\u0026nbsp;occupies the \u003cstrong\u003etens\u0026nbsp;place\u003c/strong\u003e, because that is the second place value from the right. So, the digit \"8\" represents \"8 tens\", or \u003cstrong\u003e80\u003c/strong\u003e.\u003c/p\u003e"
+			},
+			"written_translations": {
+				"translations_mapping": {
+					"explanation": {}
+				}
+			},
+			"recorded_voiceovers": {
+				"voiceovers_mapping": {
+					"explanation": {}
+				}
+			}
+		}
+	}, {
+		"misconceptions_schema_version": 2,
+		"next_misconception_id": 2,
+		"description": "Find the digit in a number corresponding to a given place name.",
+		"rubrics": [{
+			"difficulty": "Easy",
+			"explanations": [""]
+		}, {
+			"difficulty": "Medium",
+			"explanations": ["\u003cp\u003eGiven a number and a place name, find the digit corresponding to that place.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Hard",
+			"explanations": [""]
+		}],
+		"superseding_skill_id": null,
+		"language_code": "en",
+		"rubric_schema_version": 2,
+		"id": "iSm2utLbGYmL",
+		"prerequisite_skill_ids": [],
+		"skill_contents_schema_version": 1,
+		"all_questions_merged": false,
+		"version": 2,
+		"misconceptions": [{
+			"must_be_addressed": true,
+			"notes": "\u003cp\u003eFor example: stating that the tens place of 2035 is 10, rather than 3.\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that's not correct. The question is asking for a specific digit in a number.\u003c/p\u003e\n\n\u003cp\u003eFor example: the \u003cstrong\u003edigit\u003c/strong\u003e in the tens place in 59\u003cstrong\u003e2\u003c/strong\u003e0 is 2,\u0026nbsp;not 10. Remember that a digit is one of the symbols 0, 1, 2, 3, 4, 5, 6, 7, 8 or 9.\u003c/p\u003e\n\n\u003cp\u003eTry again!\u003c/p\u003e",
+			"id": 0,
+			"name": "Writing the generic value for the place name."
+		}, {
+			"must_be_addressed": true,
+			"notes": "",
+			"feedback": "\u003cp\u003eNo, that's not correct. The smallest place names are always located at the right, and increase as you go to the left. For example, the\u0026nbsp;rightmost digit is in the ones place.\u003c/p\u003e\n\n\u003cp\u003eTry again!\u003c/p\u003e",
+			"id": 1,
+			"name": "Having the smallest place name on the left."
+		}],
+		"skill_contents": {
+			"worked_examples": [],
+			"explanation": {
+				"content_id": "explanation",
+				"html": "\u003cp\u003eThe place name of a digit tells us where that digit occurs in a number.\u003c/p\u003e\n\n\u003cp\u003eYou can label each digit in a number with its place name by counting from the right one digit at a time. The first digit on the right is in the \"ones\" place, the second digit from the right is in the \"tens\" place, and so on.\u003c/p\u003e\n\n\u003cp\u003e\u003cstrong\u003eExample\u003c/strong\u003e: Let's find the digit in the hundreds place in the number 541,625. We can count from the right to find that the ones place contains a 5, the tens place contains a 2, the hundreds place contains a 6, and so on. So, the digit in the hundreds place is \u003cstrong\u003e6\u003c/strong\u003e.\u003c/p\u003e"
+			},
+			"written_translations": {
+				"translations_mapping": {
+					"explanation": {}
+				}
+			},
+			"recorded_voiceovers": {
+				"voiceovers_mapping": {
+					"explanation": {}
+				}
+			}
+		}
+	}, {
+		"misconceptions_schema_version": 2,
+		"next_misconception_id": 3,
+		"description": "Build a number from several \"number + place name\" groups.",
+		"rubrics": [{
+			"difficulty": "Easy",
+			"explanations": ["\u003cp\u003eGiven several groups of the form \"{{number}} {{place name}}\" (where each {{number}} is between 1 and 9),\u0026nbsp;combine them into a number. The groups should be in order and\u0026nbsp;the resulting number should have no 0s.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Medium",
+			"explanations": ["\u003cp\u003eGiven several groups of the form \"{{number}} {{place name}}\" (where each {{number}} is between 1 and 9), combine them into a number.\u0026nbsp;The groups may be out of order.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Hard",
+			"explanations": ["\u003cp\u003eGiven several groups of the form \"{{number}} {{place name}}\" (with at least one {{number}} greater than 9),\u0026nbsp;combine them into a number.\u0026nbsp;The groups may be out of order.\u003c/p\u003e"]
+		}],
+		"superseding_skill_id": null,
+		"language_code": "en",
+		"rubric_schema_version": 2,
+		"id": "TFqov4gKVN1n",
+		"prerequisite_skill_ids": [],
+		"skill_contents_schema_version": 1,
+		"all_questions_merged": false,
+		"version": 3,
+		"misconceptions": [{
+			"must_be_addressed": false,
+			"notes": "\u003cp\u003eE.g.\u0026nbsp;writes \"12 hundreds, 2 tens and 13 ones\" as \"12213\".\u003c/p\u003e\n\n\u003cp\u003eNote that this misconception is only applicable if the question includes overlapping summands.\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that is not correct. You need to put each term in the correct place, and, if two terms overlap, you'll need to \u003cstrong\u003eadd\u003c/strong\u003e the digits in the overlapping place.\u003c/p\u003e\n\n\u003cp\u003eFor example, 23 tens + 36 ones can be written as\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp;[hundreds]\u0026nbsp; \u0026nbsp;[tens]\u0026nbsp; \u0026nbsp;[ones]\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; 2\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; 3\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp;\u0026nbsp;\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; 3\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp;6\u003c/p\u003e\n\n\u003cp\u003eThe two terms overlap in\u0026nbsp;the tens column. In the end, we have a total of\u0026nbsp;3 + 3 = 6 tens.\u003c/p\u003e\n\n\u003cp\u003eSo,\u0026nbsp;the resulting number is 266, not 2336.\u003c/p\u003e\n\n\u003cp\u003eTry again!\u003c/p\u003e",
+			"id": 0,
+			"name": "Concatenating the numbers when there is overlap"
+		}, {
+			"must_be_addressed": false,
+			"notes": "\u003cp\u003eE.g. writes \"12 hundreds and 3 thousands\" as 3200.\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that is not correct. You need to put each term in the correct place, and, if two terms overlap, you'll need to \u003cstrong\u003eadd\u003c/strong\u003e the digits in the overlapping place.\u003c/p\u003e\n\n\u003cp\u003eFor example, 23 tens + 36 ones can be written as\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp;[hundreds]\u0026nbsp; \u0026nbsp;[tens]\u0026nbsp; \u0026nbsp;[ones]\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; 2\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; 3\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp;\u0026nbsp;\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; 3\u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp; \u0026nbsp;6\u003c/p\u003e\n\n\u003cp\u003eThe two terms overlap in\u0026nbsp;the tens column. In the end, we have a total of\u0026nbsp;3 + 3 = 6 tens.\u003c/p\u003e\n\n\u003cp\u003eSo,\u0026nbsp;the resulting number is 266, not 236.\u003c/p\u003e\n\n\u003cp\u003eTry again!\u003c/p\u003e",
+			"id": 1,
+			"name": "Truncating the numbers when there is overlap."
+		}, {
+			"must_be_addressed": false,
+			"notes": "\u003cp\u003eFor example, the student may just use the order of the digits in the question.\u003c/p\u003e\n\n\u003cp\u003eThis misconception is only relevant when the order of the terms in the question is not the same as the natural order of the place names from largest to smallest, or when there are \"gaps\" between the place names.\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that's not correct. Make sure to put each digit in the correct place based on the number of zeros at the end.\u003c/p\u003e\n\n\u003cp\u003eFor example, \"8 ones + 2 tens\" means that\u0026nbsp;there should be an \"8\" in the ones position, and a \"2\" in the tens position, which gives the number 28 (\u003cstrong\u003enot\u003c/strong\u003e 82).\u003c/p\u003e\n\n\u003cp\u003eIn general, the zeros at the end of each term tell you where to put the corresponding digit. Don't ignore them, since that would change the value of the final number.\u003c/p\u003e\n\n\u003cp\u003eTry again.\u003c/p\u003e",
+			"id": 2,
+			"name": "The digits are in the wrong order."
+		}],
+		"skill_contents": {
+			"worked_examples": [],
+			"explanation": {
+				"content_id": "explanation",
+				"html": "\u003cp\u003eSometimes, the breakdown of a number may be written using place names.\u003c/p\u003e\n\n\u003cp\u003eFor example, we\u0026nbsp;may need to add \"8 hundreds + 7 tens\". 8 and 7 are both digits, so:\u003c/p\u003e\n\n\u003cul\u003e\n\t\u003cli\u003e8 hundreds = 800, and\u003c/li\u003e\n\t\u003cli\u003e7 tens = 70.\u003c/li\u003e\n\u003c/ul\u003e\n\n\u003cp\u003eSo, 8 hundreds plus 7 tens is the same thing as saying 800 + 70, which is \u003cstrong\u003e870\u003c/strong\u003e.\u003c/p\u003e\n\n\u003cp\u003e----------------------------------------------------------------------\u003c/p\u003e\n\n\u003cp\u003eWhat if we need to add 12 tens to 72 ones?\u003c/p\u003e\n\n\u003cp\u003eBecause 12 is not a digit, we must \"carry\" 10 of our tens to the next place value: the hundreds. 10 tens is equal to 1 hundred, so\u0026nbsp;we can rewrite 12 tens as \u003cstrong\u003e1 hundred and 2 tens\u003c/strong\u003e.\u003c/p\u003e\n\n\u003cp\u003eSimilarly, we can rewrite 72 ones as \u003cstrong\u003e7 tens and 2 ones\u003c/strong\u003e.\u003c/p\u003e\n\n\u003cp\u003eSo, 12 tens plus 72 ones is equal to: 1 hundred plus 2 tens plus 7 tens plus 2 ones.\u003c/p\u003e\n\n\u003cp\u003eIn total, we have 1 hundred plus (2 + 7) tens plus 2 ones. Since 2 + 7 = 9, this gives 1 hundred plus 9 tens plus 2 ones. Therefore, we have 100 + 90 + 2, or \u003cstrong\u003e192\u003c/strong\u003e.\u003c/p\u003e"
+			},
+			"written_translations": {
+				"translations_mapping": {
+					"explanation": {}
+				}
+			},
+			"recorded_voiceovers": {
+				"voiceovers_mapping": {
+					"explanation": {}
+				}
+			}
+		}
+	}, {
+		"misconceptions_schema_version": 2,
+		"next_misconception_id": 2,
+		"description": "Build the largest or smallest number from a given set of digits.",
+		"rubrics": [{
+			"difficulty": "Easy",
+			"explanations": ["\u003cp\u003eWrite the largest or smallest number that can be formed from a given set of non-zero digits.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Medium",
+			"explanations": ["\u003cp\u003eWrite the largest or smallest number that can be formed from a given set of at least 3 digits (possibly including zeros).\u003c/p\u003e"]
+		}, {
+			"difficulty": "Hard",
+			"explanations": ["\u003cp\u003eWrite the largest or smallest number that can be formed from a given set of digits, with some additional restrictions (e.g. \"there must be a 2 in the tens place\").\u003c/p\u003e"]
+		}],
+		"superseding_skill_id": null,
+		"language_code": "en",
+		"rubric_schema_version": 2,
+		"id": "f12I5buviMdT",
+		"prerequisite_skill_ids": ["nB6LbjFbgY6c", "EK521D5vFNoI"],
+		"skill_contents_schema_version": 1,
+		"all_questions_merged": false,
+		"version": 3,
+		"misconceptions": [{
+			"must_be_addressed": false,
+			"notes": "\u003cp\u003eE.g. rearranging \"4, 4, 1, 6\" as \"146\" or \"641\".\u003c/p\u003e\n\n\u003cp\u003eThis misconception only applies if some digits are repeated.\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that's not correct. You've\u0026nbsp;missed at least one digit in your answer!\u003c/p\u003e\n\n\u003cp\u003eNote that if a digit is repeated, then all instances of the digit should be used. For example, when creating the largest number from 4, 4, 2, and 9, we should use the 4 twice. The largest number would be \u003cstrong\u003e9442\u003c/strong\u003e, not 942.\u003c/p\u003e\n\n\u003cp\u003eTry again.\u003c/p\u003e",
+			"id": 0,
+			"name": "Ignoring repeated digits."
+		}, {
+			"must_be_addressed": false,
+			"notes": "\u003cp\u003eE.g. rearranging \"0, 0, 1, 2\" as \"0012\".\u003c/p\u003e\n\n\u003cp\u003e\u003cbr\u003e\nThis misconception\u0026nbsp;is only relevant when the set of digits contains zeros.\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that's not correct. When you write a number, you shouldn't start it with a zero. So, for example, writing \"100\" is OK, but not \"010\" or \"001\".\u003c/p\u003e\n\n\u003cp\u003eTo fill up the largest place in a number, you'll need to choose a non-zero digit instead.\u003c/p\u003e\n\n\u003cp\u003eTry again!\u003c/p\u003e",
+			"id": 1,
+			"name": "Starting the answer with 0."
+		}],
+		"skill_contents": {
+			"worked_examples": [],
+			"explanation": {
+				"content_id": "explanation",
+				"html": "\u003cp\u003eThe largest number that can be formed by a set of digits is simply the digits arranged in decreasing order. Take the largest digit in your set and place it furthest to the left. Next, take the second-largest digit and place it to the right of your largest digit. Repeat until you run out of digits.\u003c/p\u003e\n\n\u003cp\u003eThis works because the larger places\u0026nbsp;have the largest values, so you'll want to put the largest digits there to make the value of the resulting number as big as possible.\u003c/p\u003e\n\n\u003cp\u003e\u003cstrong\u003eExample\u003c/strong\u003e:\u0026nbsp;Say we are given the digits 6, 1, 9, 7, and 5. The largest digit is the 9, so we place it on the left. The remaining digits in decreasing order are 7, 6, 5, and 1. So, our final number is \u003cstrong\u003e97651\u003c/strong\u003e.\u003c/p\u003e\n\n\u003cp\u003eIf two or more digits have the same value, then it doesn't matter which digit you use first!\u003c/p\u003e\n\n\u003cp\u003e\u003cstrong\u003eExample\u003c/strong\u003e: Let us arrange the digits 4, 6, 6, and 7 to make the largest possible number. The smallest digit is 4, so it goes in the ones place. There are two 6s, so we put one each in the tens and hundreds place. That leaves the 7 for the thousands place. Our final number is \u003cstrong\u003e7664\u003c/strong\u003e.\u003c/p\u003e\n\n\u003cp\u003e------------------------------------------------------------------------\u003c/p\u003e\n\n\u003cp\u003eWhat if we want to create the \u003cem\u003esmallest\u003c/em\u003e number?\u0026nbsp;We can do a similar thing: place the smallest digit on the far left, and work our way to the right one digit at a time.\u0026nbsp;\u003c/p\u003e\n\n\u003cp\u003e\u003cstrong\u003eExample\u003c/strong\u003e: To order 2, 8, 4, and 1, we place the smallest digit, 1, on the far left. The second-smallest digit, 2, goes to the right of the 1. Similarly, 4 goes to the right of the 2, and 8 is furthest to the right. Our final answer is \u003cstrong\u003e1248\u003c/strong\u003e.\u003c/p\u003e\n\n\u003cp\u003eWhen creating the smallest number, be careful when zeroes are involved! We can't place zeroes in the front of a number. So, to make the smallest number possible, we first place\u0026nbsp;the smallest \u003cem\u003enon-zero\u003c/em\u003e digit and place it in the far left. Then, we can continue with\u0026nbsp;the zeroes and the remaining digits.\u003c/p\u003e\n\n\u003cp\u003e\u003cstrong\u003eExample\u003c/strong\u003e: To order 0, 0, 2, 3\u0026nbsp;and 9 into the smallest possible number, we might want to write 00239. But that won't work, because numbers shouldn't start with 0, and this \"number\" would usually be written as 239. So, our first digit must be the smallest non-zero digit, which is 2. After that, we can use the digits in increasing order, and the correct arrangement is 0, 0,\u0026nbsp;3 and 9. So, the smallest number we can form is \u003cstrong\u003e20039\u003c/strong\u003e.\u003c/p\u003e"
+			},
+			"written_translations": {
+				"translations_mapping": {
+					"explanation": {}
+				}
+			},
+			"recorded_voiceovers": {
+				"voiceovers_mapping": {
+					"explanation": {}
+				}
+			}
+		}
+	}, {
+		"misconceptions_schema_version": 2,
+		"next_misconception_id": 1,
+		"description": "Given a number, write it as a sum of its place values.",
+		"rubrics": [{
+			"difficulty": "Easy",
+			"explanations": ["\u003cp\u003eGiven a partial breakdown of a number with one or more missing place values, fill in the missing place values.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Medium",
+			"explanations": ["\u003cp\u003eGiven a number, write it as a sum of its place values.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Hard",
+			"explanations": [""]
+		}],
+		"superseding_skill_id": null,
+		"language_code": "en",
+		"rubric_schema_version": 2,
+		"id": "O0aZp94Aj8yG",
+		"prerequisite_skill_ids": [],
+		"skill_contents_schema_version": 1,
+		"all_questions_merged": false,
+		"version": 2,
+		"misconceptions": [{
+			"must_be_addressed": true,
+			"notes": "\u003cp\u003eSuggest customizing the example in the feedback to the one in the question. You can do the first number for them, and ask them to try the other ones themselves.\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that's not correct.\u003c/p\u003e\n\n\u003cp\u003eLet's say you wanted to break down the\u0026nbsp;number 9382.\u0026nbsp;If you just write 9 + 3 + 8 + 2, then you've written\u0026nbsp;9 ones + 3 ones + 8 ones + 2 ones, which is not correct.\u003c/p\u003e\n\n\u003cp\u003eWhen writting a place value you must take into account the digits and place values. So, for 9382, what we want is 9 thousands + 3 hundreds + 8 tens + 2 ones. The first number, for example, would be 9000, because the 9 represents \"9 thousands\" (9000), not \"9 ones\" (9).\u003c/p\u003e\n\n\u003cp\u003eTry again!\u003c/p\u003e",
+			"id": 0,
+			"name": "All trailing zeros are ignored, e.g. 32 = 3 + 2."
+		}],
+		"skill_contents": {
+			"worked_examples": [],
+			"explanation": {
+				"content_id": "explanation",
+				"html": "\u003cp\u003eWe can write a number\u0026nbsp;as a sum of the place values of each of its digits.\u003c/p\u003e\n\n\u003cp\u003eFor example, take the number 517. In this number:\u003c/p\u003e\n\n\u003cul\u003e\n\t\u003cli\u003eThe place value of 5 is 500\u003c/li\u003e\n\t\u003cli\u003eThe place value of 1 is 10\u003c/li\u003e\n\t\u003cli\u003eThe place value of 7 is 7.\u003c/li\u003e\n\u003c/ul\u003e\n\n\u003cp\u003eSo, we can write\u0026nbsp;\u003cstrong\u003e517 = 500 + 10 + 7\u003c/strong\u003e.\u003c/p\u003e\n\n\u003cp\u003eMake sure to add\u0026nbsp;the correct number of zeros at the end of each place value.\u0026nbsp;Be especially careful\u0026nbsp;if any of the digits are 0: the number 107 is equal to \u003cstrong\u003e100 + 7\u003c/strong\u003e, not 10 + 7 or 1 + 7. Note that zeros don't need to be included in the breakdown.\u003c/p\u003e"
+			},
+			"written_translations": {
+				"translations_mapping": {
+					"explanation": {}
+				}
+			},
+			"recorded_voiceovers": {
+				"voiceovers_mapping": {
+					"explanation": {}
+				}
+			}
+		}
+	}, {
+		"misconceptions_schema_version": 2,
+		"next_misconception_id": 4,
+		"description": "Write a number using words.",
+		"rubrics": [{
+			"difficulty": "Easy",
+			"explanations": ["\u003cp\u003eWrite a number up to 99 using words.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Medium",
+			"explanations": ["\u003cp\u003eWrite a number up to 9999999 using words.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Hard",
+			"explanations": [""]
+		}],
+		"superseding_skill_id": null,
+		"language_code": "en",
+		"rubric_schema_version": 2,
+		"id": "c2JtMYxrWfE8",
+		"prerequisite_skill_ids": ["5UeFU80Yoaf7"],
+		"skill_contents_schema_version": 1,
+		"all_questions_merged": false,
+		"version": 2,
+		"misconceptions": [{
+			"must_be_addressed": false,
+			"notes": "\u003cp\u003eThis misconception is only relevant if the number contains zeros.\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that is not correct. Don't ignore the zeros.\u003c/p\u003e\n\n\u003cp\u003eFor example, in\u0026nbsp;the number 306, the 3 represents \"3 hundred\" because it is in the hundreds place. So, you can't just write the number as \"thirty-six\".\u003c/p\u003e",
+			"id": 0,
+			"name": "Ignoring 0s, e.g. 306 is written \"thirty-six\"."
+		}, {
+			"must_be_addressed": false,
+			"notes": "\u003cp\u003eE.g. 81 is written \"eighteen\".\u003c/p\u003e\n\n\u003cp\u003eThis misconception is only relevant for non-palindromic numbers.\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that's not correct. You're reading the number in the wrong direction! The smallest place is on the right.\u003c/p\u003e\n\n\u003cp\u003eTry again.\u003c/p\u003e",
+			"id": 1,
+			"name": "Reads from right to left."
+		}, {
+			"must_be_addressed": false,
+			"notes": "\u003cp\u003eE.g. \"5,343,232\" = \"five thousand, three hundred and forty-three thousand, two hundred and thirty-two\".\u003c/p\u003e\n\n\u003cp\u003eThis misconception is only applicable to numbers that use commas and are at least 1 million.\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that's not correct. The comma doesn't always mean \"thousand\". It just separates each block of three digits, and doesn't stand for any particular word.\u003c/p\u003e\n\n\u003cp\u003eInstead, you'll need to figure out the place names by counting from the right. For example, the\u0026nbsp;second block from the right is the \u003cstrong\u003ethousands\u003c/strong\u003e, the third block is the \u003cstrong\u003emillions\u003c/strong\u003e, and so on.\u003c/p\u003e\n\n\u003cp\u003eTry again.\u003c/p\u003e",
+			"id": 2,
+			"name": "Treats \"comma\" as \"thousand\"."
+		}, {
+			"must_be_addressed": false,
+			"notes": "\u003cp\u003eE.g. \"5,343\" = \"five, three hundred and forty-three\".\u003c/p\u003e\n\n\u003cp\u003eThis misconception is only applicable to numbers written using commas and that are greater than or equal to 1000.\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that's not correct. That's not what the comma means.\u003c/p\u003e\n\n\u003cp\u003eThe comma is used to separate\u0026nbsp;\"blocks of three\" in the same number. However, all the digits before and after the comma still combine to make \u003cstrong\u003ea single number\u003c/strong\u003e.\u0026nbsp;\u003c/p\u003e\n\n\u003cp\u003eFor example, 250,410 is \"two hundred and fifty thousand, four hundred and ten\". In this number, the comma just separates the thousands block from the units block.\u003c/p\u003e\n\n\u003cp\u003eTry again!\u003c/p\u003e",
+			"id": 3,
+			"name": "Treats \"comma\" as \"new number\"."
+		}],
+		"skill_contents": {
+			"worked_examples": [],
+			"explanation": {
+				"content_id": "explanation",
+				"html": "\u003cp\u003eYou can write a number\u0026nbsp;using either numerals (such as 6, 57, or 108) or words (such as \"fifty-seven\" or \"one hundred\").\u003c/p\u003e\n\n\u003cp\u003eAs we'll see below, writing a number using words is similar to breaking it down into a sum of digit values.\u003c/p\u003e\n\n\u003cp\u003eThere are a few basic numbers to remember:\u003c/p\u003e\n\n\u003cul\u003e\n\t\u003cli\u003e1 is \"one\"\u003c/li\u003e\n\t\u003cli\u003e2 is \"two\"\u003c/li\u003e\n\t\u003cli\u003e3 is \"three\"\u003c/li\u003e\n\t\u003cli\u003e4 is \"four\"\u003c/li\u003e\n\t\u003cli\u003e5 is \"five\"\u003c/li\u003e\n\t\u003cli\u003e6 is \"six\"\u003c/li\u003e\n\t\u003cli\u003e7 is \"seven\"\u003c/li\u003e\n\t\u003cli\u003e8 is \"eight\"\u003c/li\u003e\n\t\u003cli\u003e9 is \"nine\".\u003c/li\u003e\n\u003c/ul\u003e\n\n\u003cp\u003eWhen these digits appear in the tens place, we call them special names because we're not dealing with ones. The multiples of 10 are as follows:\u003c/p\u003e\n\n\u003cul\u003e\n\t\u003cli\u003e10 is \"ten\"\u003c/li\u003e\n\t\u003cli\u003e20 is \"twenty\"\u003c/li\u003e\n\t\u003cli\u003e30 is \"thirty\"\u003c/li\u003e\n\t\u003cli\u003e40 is \"forty\"\u003c/li\u003e\n\t\u003cli\u003e50 is \"fifty\"\u003c/li\u003e\n\t\u003cli\u003e60 is \"sixty\"\u003c/li\u003e\n\t\u003cli\u003e70 is \"seventy\"\u003c/li\u003e\n\t\u003cli\u003e80 is \"eighty\"\u003c/li\u003e\n\t\u003cli\u003e90 is \"ninety\".\u003c/li\u003e\n\u003c/ul\u003e\n\n\u003cp\u003eFor all two-digit numbers that are 20 or greater, we describe that number by writing the special name for the tens digit followed by the name of the ones digit, connected by a hyphen (-). For instance, 54 is \"fifty-four\", 29 is \"twenty-nine\", and 81 is \"eighty-one\".\u003c/p\u003e\n\n\u003cp\u003e\u003cstrong\u003eNote:\u003c/strong\u003e the numbers from 10 to 19\u0026nbsp;are treated differently.\u003cstrong\u003e \u003c/strong\u003e11 is \"eleven\", 12 is \"twelve\", 13 is \"thirteen\", 14 is \"fourteen\", 15 is \"fifteen\", 16 is \"sixteen\", 17 is \"seventeen\", 18 is \"eighteen\", and 19 is \"nineteen\". So, 14 is not \"ten-four\" or \"tenty-four\"!\u003c/p\u003e\n\n\u003cp\u003e----------------------------------------------------------------\u003c/p\u003e\n\n\u003cp\u003eDigits in the hundreds place are easy to describe: they're simply the digit, followed by the word \"hundred\". So, 400 is \"four hundred\", and 846 is \"eight hundred forty-six\".\u003c/p\u003e\n\n\u003cp\u003e----------------------------------------------------------------\u003c/p\u003e\n\n\u003cp\u003eThe next three digits (thousands, ten thousands,\u0026nbsp;hundred thousands) can be treated as a block. After describing the block of three digits, add a \"thousand\" at the end to denote the place value. So, 651,000 is \"six hundred fifty-one thousand\", and 817,956 can be written as \"eight hundred seventeen thousand nine hundred fifty-six\".\u003c/p\u003e\n\n\u003cp\u003e----------------------------------------------------------------\u003c/p\u003e\n\n\u003cp\u003eEvery block of digits after the thousands can be treated the same way. The word \"million\" separates the millions block from the thousands block, and so on. So, 3,456,150 is \"three million,\u0026nbsp;four hundred fifty-six thousand, one hundred fifty\". And, for a more extreme example,\u0026nbsp;461,891,086,237,913,870,433 is \"four hundred sixty-one quintillion, eight hundred ninety-one quadrillion, eighty-six trillion, two hundred thirty-seven billion, nine hundred thirteen million, eight hundred seventy thousand, four hundred thirty-three\"!\u003c/p\u003e"
+			},
+			"written_translations": {
+				"translations_mapping": {
+					"explanation": {}
+				}
+			},
+			"recorded_voiceovers": {
+				"voiceovers_mapping": {
+					"explanation": {}
+				}
+			}
+		}
+	}, {
+		"misconceptions_schema_version": 2,
+		"next_misconception_id": 1,
+		"description": "Arrange the place names in the correct order (up to \"millions\").",
+		"rubrics": [{
+			"difficulty": "Easy",
+			"explanations": ["\u003cp\u003eGiven two place values, identify the bigger/smaller one.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Medium",
+			"explanations": ["\u003cp\u003eSort a given subset of place values in order.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Hard",
+			"explanations": ["\u003cp\u003eWrite the place values in order, from memory.\u003c/p\u003e"]
+		}],
+		"superseding_skill_id": null,
+		"language_code": "en",
+		"rubric_schema_version": 2,
+		"id": "asQSA9rXpdwu",
+		"prerequisite_skill_ids": [],
+		"skill_contents_schema_version": 1,
+		"all_questions_merged": false,
+		"version": 3,
+		"misconceptions": [{
+			"must_be_addressed": true,
+			"notes": "",
+			"feedback": "\u003cp\u003eNo, that's not correct. It looks like you have put the places in the wrong order. Remember, the smallest place name is the \"ones\" place!\u003c/p\u003e",
+			"id": 0,
+			"name": "Arranging the place names in the wrong order."
+		}],
+		"skill_contents": {
+			"worked_examples": [],
+			"explanation": {
+				"content_id": "explanation",
+				"html": "\u003cp\u003eFrom smallest to largest, the place names (and their values) are as follows:\u003c/p\u003e\n\n\u003cul\u003e\n\t\u003cli\u003eOnes (1)\u003c/li\u003e\n\t\u003cli\u003eTens (10)\u003c/li\u003e\n\t\u003cli\u003eHundreds (100)\u003c/li\u003e\n\t\u003cli\u003eThousands (1000)\u003c/li\u003e\n\t\u003cli\u003eTen thousands (10000)\u003c/li\u003e\n\t\u003cli\u003eHundred thousands (100000)\u003c/li\u003e\n\t\u003cli\u003eMillions (1000000)\u003c/li\u003e\n\u003c/ul\u003e\n\n\u003cp\u003ePlace names are labelled starting from the right. For example, in the number\u0026nbsp;2,355,734, the 4\u0026nbsp;is in the ones place, the 3 is in the tens place, and so on, up to the 2 in the millions place.\u003c/p\u003e"
+			},
+			"written_translations": {
+				"translations_mapping": {
+					"explanation": {}
+				}
+			},
+			"recorded_voiceovers": {
+				"voiceovers_mapping": {
+					"explanation": {}
+				}
+			}
+		}
+	}, {
+		"misconceptions_schema_version": 2,
+		"next_misconception_id": 0,
+		"description": "Given a place name, state the corresponding place value (or vice versa).",
+		"rubrics": [{
+			"difficulty": "Easy",
+			"explanations": [""]
+		}, {
+			"difficulty": "Medium",
+			"explanations": ["\u003cp\u003eGiven a place name, state the corresponding place value (or vice versa).\u003c/p\u003e"]
+		}, {
+			"difficulty": "Hard",
+			"explanations": [""]
+		}],
+		"superseding_skill_id": null,
+		"language_code": "en",
+		"rubric_schema_version": 2,
+		"id": "kNnNHaxmb0Db",
+		"prerequisite_skill_ids": [],
+		"skill_contents_schema_version": 1,
+		"all_questions_merged": false,
+		"version": 1,
+		"misconceptions": [],
+		"skill_contents": {
+			"worked_examples": [],
+			"explanation": {
+				"content_id": "explanation",
+				"html": "\u003cp\u003eHere is a list of the place names and their values in order, from smallest to largest:\u003c/p\u003e\n\n\u003cul\u003e\n\t\u003cli\u003eOnes (1)\u003c/li\u003e\n\t\u003cli\u003eTens (10)\u003c/li\u003e\n\t\u003cli\u003eHundreds (100)\u003c/li\u003e\n\t\u003cli\u003eThousands (1000)\u003c/li\u003e\n\t\u003cli\u003eTen thousands (10000)\u003c/li\u003e\n\t\u003cli\u003eHundred thousands (100000)\u003c/li\u003e\n\t\u003cli\u003eMillions (1000000)\u003c/li\u003e\n\u003c/ul\u003e\n\n\u003cp\u003ePlace values are labelled starting from the right. So, the ones place is the 1st digit from the right, the tens place is the 2nd digit from the right, and so on.\u003c/p\u003e"
+			},
+			"written_translations": {
+				"translations_mapping": {
+					"explanation": {}
+				}
+			},
+			"recorded_voiceovers": {
+				"voiceovers_mapping": {
+					"explanation": {}
+				}
+			}
+		}
+	}, {
+		"misconceptions_schema_version": 2,
+		"next_misconception_id": 1,
+		"description": "Write a number, given its breakdown into place values.",
+		"rubrics": [{
+			"difficulty": "Easy",
+			"explanations": ["\u003cp\u003eGiven the breakdown of a number into its place values, write the number. The breakdown should be in descending order and the number should have\u0026nbsp;no zeros.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Medium",
+			"explanations": ["\u003cp\u003eGiven the breakdown of a number into its place values, write the number. The breakdown may be out of order and may include zeros.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Hard",
+			"explanations": [""]
+		}],
+		"superseding_skill_id": null,
+		"language_code": "en",
+		"rubric_schema_version": 2,
+		"id": "63HdyngqkSSV",
+		"prerequisite_skill_ids": [],
+		"skill_contents_schema_version": 1,
+		"all_questions_merged": false,
+		"version": 2,
+		"misconceptions": [{
+			"must_be_addressed": true,
+			"notes": "\u003cp\u003eE.g.: 800 + 2 = 82, or 2 + 80 = 28.\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that's not correct. Make sure to put each digit in the correct place based on the number of zeros at the end.\u003c/p\u003e\n\n\u003cp\u003eFor example, 1000 + 8 + 20\u0026nbsp;represents 1 thousand, 8 ones and 2 tens. So there should be a \"1\" in the thousands position, an\u0026nbsp;\"8\" in the ones position, and a \"2\" in the tens position, which gives the number 1028 (and not 182 or 128).\u003c/p\u003e\n\n\u003cp\u003eIn general, the zeros at the end of each number tell you where exactly to put the corresponding digit. Don't ignore them, since that would change the value of the final number.\u003c/p\u003e\n\n\u003cp\u003eTry again!\u003c/p\u003e",
+			"id": 0,
+			"name": "They ignore the zeros at the end of each number."
+		}],
+		"skill_contents": {
+			"worked_examples": [],
+			"explanation": {
+				"content_id": "explanation",
+				"html": "\u003cp\u003eGiven a sum of place values, we can convert it into a single number. There are two ways to do this.\u003cbr\u003e\n\u003cbr\u003e\nFirst, we can simply add the\u0026nbsp;numbers one by one in order to find the original number. For example, to compute 600 + 20 + 8, we first add 600 and 20 to get 620. Then, we add 8 to the sum to get 628.\u003cbr\u003e\n\u003cbr\u003e\nSecond, because we are given a sum of digit values, we can figure out that the original number should have the same digit values as our breakdown. For example, suppose we are given the breakdown 8000 + 100 + 90 + 2. This means that the original number must have:\u003c/p\u003e\n\n\u003cul\u003e\n\t\u003cli\u003ean 8 in the thousands place\u003c/li\u003e\n\t\u003cli\u003ea 1 in the hundreds place\u003c/li\u003e\n\t\u003cli\u003ea 9 in the tens place, and\u003c/li\u003e\n\t\u003cli\u003ea 2 in the ones place.\u003c/li\u003e\n\u003c/ul\u003e\n\n\u003cp\u003eSo, our original number must be \u003cstrong\u003e8192\u003c/strong\u003e.\u003c/p\u003e\n\n\u003cp\u003eNote that the breakdown may be given in a different order, so you'll need to remember the order of the place values. For example, if the number has 9 tens, 8 thousands and 6 ones, the resulting number should be written as \u003cstrong\u003e8096\u003c/strong\u003e (and not 986 or 896). If a place value is missing, that means that the corresponding digit would be 0.\u003c/p\u003e"
+			},
+			"written_translations": {
+				"translations_mapping": {
+					"explanation": {}
+				}
+			},
+			"recorded_voiceovers": {
+				"voiceovers_mapping": {
+					"explanation": {}
+				}
+			}
+		}
+	}, {
+		"misconceptions_schema_version": 2,
+		"next_misconception_id": 1,
+		"description": "Sort a list of positive integers.",
+		"rubrics": [{
+			"difficulty": "Easy",
+			"explanations": ["\u003cp\u003eGiven a list of\u0026nbsp;positive integers, state which one is the largest/smallest.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Medium",
+			"explanations": ["\u003cp\u003eSort a list of positive integers.\u003c/p\u003e"]
+		}, {
+			"difficulty": "Hard",
+			"explanations": [""]
+		}],
+		"superseding_skill_id": null,
+		"language_code": "en",
+		"rubric_schema_version": 2,
+		"id": "nB6LbjFbgY6c",
+		"prerequisite_skill_ids": [],
+		"skill_contents_schema_version": 1,
+		"all_questions_merged": false,
+		"version": 3,
+		"misconceptions": [{
+			"must_be_addressed": true,
+			"notes": "\u003cp\u003eE.g. 69 \u0026gt; 102 because 6, 9 \u0026gt; 1, 2.\u003c/p\u003e",
+			"feedback": "\u003cp\u003eNo, that's not correct. Don't just compare the individual digits. Instead, start by figuring out which number has the most digits. If they have the same number of digits, compare the digits one at a time starting from the left.\u003c/p\u003e\n\n\u003cp\u003eIf you need a refresher on how to do this, check out \u003coppia-noninteractive-skillreview skill_id-with-value=\"\u0026amp;quot;nB6LbjFbgY6c\u0026amp;quot;\" text-with-value=\"\u0026amp;quot;this link\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-skillreview\u003e for more information on how to sort numbers.\u003c/p\u003e\n\n\u003cp\u003eTry again!\u003c/p\u003e",
+			"id": 0,
+			"name": "Only looks at the digits in the number."
+		}],
+		"skill_contents": {
+			"worked_examples": [],
+			"explanation": {
+				"content_id": "explanation",
+				"html": "\u003cp\u003eLet's learn how to arrange numbers in order. To do this, we need to be able to look at two numbers, and \u003cstrong\u003ecompare\u003c/strong\u003e\u0026nbsp;them by figuring\u0026nbsp;out which one is larger.\u003c/p\u003e\n\n\u003cp\u003eWe have a special set of symbols that help us compare numbers:\u003c/p\u003e\n\n\u003cul\u003e\n\t\u003cli\u003eThe \"less than\" symbol (\u0026lt;)\u0026nbsp;tells us that the left number is smaller than the right number. For example: 1 \u0026lt; 4, 16 \u0026lt; 809, and 999 \u0026lt; 1000.\u003c/li\u003e\n\t\u003cli\u003eThe \"greater than\" symbol (\u0026gt;)\u0026nbsp;tells us that the left number is greater than the right number. For example: 52 \u0026gt; 20, 109 \u0026gt; 71, and 10387019375032 \u0026gt; 1.\u003c/li\u003e\n\t\u003cli\u003eThe \"equals\" symbol (=) tells us that the numbers on each side\u0026nbsp;of it are the same size. For example, 5 = 5, 73 = 70 + 3, and 109010941801 = 109010941801.\u003c/li\u003e\n\u003c/ul\u003e\n\n\u003cp\u003eYou can think of the \"\u0026lt;\" and\u0026nbsp;\"\u0026gt;\" symbols as \"little mouths\".\u0026nbsp;The mouth opens wider towards the larger number!\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp;\u003c/p\u003e\n\n\u003cp\u003e\u003cstrong\u003eComparing two numbers\u003c/strong\u003e\u003c/p\u003e\n\n\u003cp\u003eTo compare two numbers, start by\u0026nbsp;figuring\u0026nbsp;out which number has more places (or more digits). If one number contains a place value that the other doesn't, then it must be larger.\u003c/p\u003e\n\n\u003cp\u003eExample: Let's compare\u0026nbsp;2019 and 514. Notice that\u0026nbsp;2019 contains a thousands digit, but 514 doesn't. So, \u003cstrong\u003e2019\u003c/strong\u003e must be the larger number.\u003c/p\u003e\n\n\u003cp\u003eNow, you try it! Convince yourself that 109 \u0026gt; 70, 6091 \u0026gt; 614, and 9999999 \u0026lt; 10000000 are all true.\u003c/p\u003e\n\n\u003cp\u003e-----------------------------------------------------------\u003c/p\u003e\n\n\u003cp\u003eBut what if both numbers have the same number of digits? Then,\u0026nbsp;we look at each digit one by one, starting from the largest place value.\u003c/p\u003e\n\n\u003cp\u003eExample: Let's compare 5109\u0026nbsp;and 7102.\u0026nbsp;We compare the thousands digit first. Because 5 \u0026lt; 7, we see that\u0026nbsp;the second number (7102) is bigger, so we write\u0026nbsp;5109\u0026nbsp;\u0026lt; 7102.\u0026nbsp;\u003c/p\u003e\n\n\u003cp\u003eNow, what if\u0026nbsp;both digits in the largest place are equal? Then, we compare the next largest place value. If those are equal, then we go to the next digit, and so on.\u003c/p\u003e\n\n\u003cp\u003eExample: Let's compare 298127 and 259613. The hundred thousands places are\u0026nbsp;equal, so we compare the ten thousands places next. These are different, and since\u0026nbsp;9 \u0026gt; 5, this means 298127 \u0026gt; 259613.\u003c/p\u003e\n\n\u003cp\u003eFinally, if all the digits in the numbers are equal, then the two numbers are equal.\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp;\u003c/p\u003e\n\n\u003cp\u003e\u003cstrong\u003eSorting a list of numbers\u003c/strong\u003e\u003c/p\u003e\n\n\u003cp\u003eTo sort more than two numbers, we can do the same thing as before.\u003c/p\u003e\n\n\u003cul\u003e\n\t\u003cli\u003eFirst, group the numbers by how many digits they have. The more digits, the larger the number.\u003c/li\u003e\n\t\u003cli\u003eThen, in each group, compare the numbers starting from the leftmost (highest) digit.\u003c/li\u003e\n\u003c/ul\u003e\n\n\u003cp\u003eExample: Let's try to sort the numbers\u0026nbsp;94, 47, 79, and 49. All of these numbers have 2 digits, so we start by comparing the highest (tens) digit. Since 4 \u0026lt; 7 \u0026lt; 9, we know that 94 is largest, 79 is next, and the other two numbers are smaller.\u003c/p\u003e\n\n\u003cp\u003eBut what about 47 and 49? Those have the same tens digit, so we look at the next (ones) digit. Since 7 \u0026lt; 9, this tells us that 47 \u0026lt; 49.\u003c/p\u003e\n\n\u003cp\u003ePutting all this together, we see that 47 \u0026lt; 49 \u0026lt; 79 \u0026lt; 94. So, the order from smallest to largest would be 47, 49, 79, 94, and the order from largest to smallest is 94, 79, 49, 47.\u003c/p\u003e"
+			},
+			"written_translations": {
+				"translations_mapping": {
+					"explanation": {}
+				}
+			},
+			"recorded_voiceovers": {
+				"voiceovers_mapping": {
+					"explanation": {}
+				}
+			}
+		}
+	}]
 }

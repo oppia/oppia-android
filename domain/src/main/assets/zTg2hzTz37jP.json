@@ -1,0 +1,1574 @@
+{
+	"exploration": {
+		"param_changes": [],
+		"states": {
+			"Associative Property": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eCorrect! 3 * (2 * 5) means we have to multiply 2 * 5 first to get 10. Then, we multiply 10 * 3 to get 30. We still get the same answer because it doesn't matter which numbers you multiply first.\u003c/p\u003e"
+							},
+							"dest": "Associative Property 2",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 30.0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not right. 3 * (2 * 5) means you multiply 2 * 5 first, and then multiply its product by 3. Try again!\u003c/p\u003e"
+						},
+						"dest": "Associative Property",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {},
+					"confirmed_unclassified_answers": [],
+					"id": "NumericInput",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\u201cCorrect!\u201d said Omar. \u201cNotice that there were three ways to solve the last question! In 3 * 7 * 4, You could have multiplied 3 * 7 first, multiplied 7 * 4 first, or multiplied 3 * 4 first!\"\u003c/p\u003e\n\n\u003cp\u003e\u201cWow!\u201d said Aria and her friends. \u201cYou can group the numbers in any order!\u201d\u003c/p\u003e\n\n\u003cp\u003e\u201cRight! That\u2019s why we can write this expression in three ways:\"\u003c/p\u003e\n\n\u003cul\u003e\n\t\u003cli\u003e(3 * 7) * 4\u003c/li\u003e\n\t\u003cli\u003e(7 * 4) * 3\u003c/li\u003e\n\t\u003cli\u003e(4 * 3) * 7\u003c/li\u003e\n\u003c/ul\u003e\n\n\u003cp\u003e\u201cWhat are the parentheses for?\u201d wondered Aria aloud.\u003c/p\u003e\n\n\u003cp\u003e\u201cIn math, whatever is inside the parentheses has to be done first,\u201d explained Omar. \u201cSo, when we write something like (1 * 2) * 3, we specifically mean that you have to multiply 1 * 2 first, and then multiply by 3.\u201d\u003c/p\u003e\n\n\u003cp\u003e\"I want to see if that's true!\" said Aria's friend Nina. \"(3 * 2) * 5 means we multiply 3 * 2 first to get 6. Then, we multiply 6 * 5 to get 30. (3 * 2) * 5 = 30! What is 3 * (2 * 5)?\"\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Two multi-digit factors Part 3": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": ""
+						},
+						"dest": "Two Multi-Digit Factors, Part 4",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {
+						"buttonText": {
+							"value": "Continue"
+						}
+					},
+					"confirmed_unclassified_answers": [],
+					"id": "Continue",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\"Okay!\" said Omar. \"Are you ready? We're going to multiply 25 * 21 using the carry method, one factor at a time!\"\u003c/p\u003e\n\n\u003cp\u003e\"Ready!\" said Aria.\u003c/p\u003e\n\n\u003cp\u003e\"First of all, understand that multiplying by 21 is the same as multiplying by 20, multiplying by 1, and adding the results together. So, 25 * 21 = 25 * (20 + 1) = (25 * 20) + (25 * 1).\"\u003c/p\u003e\n\n\u003cp\u003e\"Will we use this information with the carry method?\" asked Aria.\u003c/p\u003e\n\n\u003cp\u003e\"Yes!\" said Omar. \"First, we will multiply 25 by the 1 in 21. Then, we will multiply 25 by the 20 in 21. Finally, we will add up the two products to get our final answer.\"\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Introduction": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": ""
+						},
+						"dest": "Recap 1",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {
+						"buttonText": {
+							"value": "Continue"
+						}
+					},
+					"confirmed_unclassified_answers": [],
+					"id": "Continue",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003eWelcome back! It's the\u0026nbsp;weekend, and Aria and Omar are sitting in Aria's schoolyard with some of Aria's friends. In the last chapter, Aria made plans for a school garden she wanted to start. Today, she and her friends will plant it with Omar's help!\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;Aria and her friends: Miguel (in the brown shirt), Nina (in the purple shirt), and Matthew (in the red shirt)\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200618_182114_op9ipzsf5w_height_386_width_441.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003eIn this lesson, we will\u0026nbsp;finish our\u0026nbsp;Multiplication journey by\u0026nbsp;learning how to multiply multi-digit numbers together. You should be able to do the following before going on:\u003c/p\u003e\n\n\u003cul\u003e\n\t\u003cli\u003e\n\t\u003cp\u003eHow to quickly recall the result of multiplying any two single-digit numbers (from 0 to 9)\u003c/p\u003e\n\t\u003c/li\u003e\n\t\u003cli\u003e\n\t\u003cp\u003eHow to multiply numbers in cases where one factor ends with \u201c0\"s\u003c/p\u003e\n\t\u003c/li\u003e\n\t\u003cli\u003e\n\t\u003cp\u003eHow to multiply a multi-digit number with a single-digit number\u003c/p\u003e\n\t\u003c/li\u003e\n\u003c/ul\u003e\n\n\u003cp\u003eYou should also get some paper and a pen or pencil to write with, and find a quiet place to work. Be sure to take your time and go through the story at your own pace. Understanding is more important than speed!\u003c/p\u003e\n\n\u003cp\u003eOnce you\u2019re ready, click \u003cstrong\u003eContinue\u003c/strong\u003e to get started!\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Final Story": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": ""
+						},
+						"dest": "Congratulations",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {
+						"buttonText": {
+							"value": "Continue"
+						}
+					},
+					"confirmed_unclassified_answers": [],
+					"id": "Continue",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003eEach day at school, Aria and her friends studied hard and played in the garden every afternoon.\u003c/p\u003e\n\n\u003cp\u003eOne day, when they were playing hide-and-seek in the garden, Aria's friend Matthew pointed at a soil bed and said, \"Look!\"\u003c/p\u003e\n\n\u003cp\u003eAria squinted and then smiled. There were tiny green plants in the soil bed. \"Our pumpkin and corn plants have started to grow!\"\u003c/p\u003e\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;Aria and her friends in front of a soil bed which now has small green seedlings growing in it\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200619_133659_b8up9wgbfs_height_372_width_399.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Associative Property 3": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eCorrect! The Associative Property of Multiplication says that if more than two factors are being multiplied together, the order in which they are grouped does not matter.\u003c/p\u003e"
+							},
+							"dest": "Final Story",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 1
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not correct. The\u0026nbsp;\u003cstrong\u003edistributive property of multiplication\u003c/strong\u003e\u0026nbsp;states that when a number is multiplied by the sum of two numbers, the first number can be distributed to both of those numbers, and all the products can be added together. Try again!\u003c/p\u003e"
+						},
+						"dest": "Associative Property 3",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {
+						"showChoicesInShuffledOrder": {
+							"value": true
+						},
+						"choices": {
+							"value": ["\u003cp\u003eDistributive Property of Multiplication\u003c/p\u003e", "\u003cp\u003eAssociative Property of Multiplication\u003c/p\u003e", "\u003cp\u003eCommutative property of Multiplication\u003c/p\u003e"]
+						}
+					},
+					"confirmed_unclassified_answers": [],
+					"id": "MultipleChoiceInput",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\"Correct!\" said Omar. \"Now, which rule makes this statement true?\"\u003c/p\u003e\n\n\u003cp\u003e23 * (5 * 34) = (23 * 5) * 34\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Whew a Review": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": ""
+						},
+						"dest": "Practice 1",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {
+						"buttonText": {
+							"value": "Continue"
+						}
+					},
+					"confirmed_unclassified_answers": [],
+					"id": "Continue",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\u003cstrong\u003eRead this card carefully! It is\u0026nbsp;\u003cem\u003every\u003c/em\u003e\u0026nbsp;important to understand.\u003c/strong\u003e\u003c/p\u003e\n\n\u003cp\u003e\"Wow!\" said Omar. \"That was a lot to learn. To make sure you understood it, Aria, can you explain to me what I just did to solve 25 * 21 using the carry method?\"\u003c/p\u003e\n\n\u003cp\u003e\"Sure,\" said Aria. She paused to think before answering.\u003c/p\u003e\n\n\u003cp\u003e\"First,\" continued Aria. \"Because 25 * 21 is the same thing as (20 + 5) * (20 + 1), we multiply the ones places together first. 5 * 1 = 5. Because there's nothing to carry to the tens place, I'm going to write a 0 above it.\"\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;25 * 21 in carrying form, where 5 * 1 have been multiplied together to get a 5 and a 0 has been carried above the 2 of 25.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200708_204545_yy64d3uk7b_height_214_width_169.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003e\"Then, we multiply the tens place of 25 by the ones place of 21. 2 * 1 = 2. So, we write a 2 in the tens place.\"\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;25 * 21 written in carrying form, with a 25 in the first row of the answer\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200708_204648_7z3cfb69lg_height_214_width_169.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003e\"Next, we move on to the second row and write the ''0' needed in its ones place before we multiply the ones place of 25 by the tens place of 21.\"\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;25 * 21 in carrying form, now with a 0 in the ones\u0026amp;#39; place of the answer\u0026amp;#39;s second row\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200708_204909_ppjnohhkx3_height_194_width_179.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003e\"5 * 2 = 10. Carry the 1, and write another 0 in the tens place of the answer's second row.\"\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;25 * 21 written in carrying form, this time with a second zero in the tens place of the answer\u0026amp;#39;s second row, and a 1 carried above the 2 in 25\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200708_205006_ujwuqsnt4w_height_163_width_147.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003e\"Finally, multiply the tens places together. 2 * 2 = 4. We carried a 1, so add it to 4 to get 4 + 1 = 5. So, we write a 5 in the hundreds place of the answer's second row.\"\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;25 * 21 written in carrying form, this time with a 500 in the second row of the answer.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200708_205111_cmy8uz02nq_height_220_width_164.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003e\"We have a 25 in the answer's first row, and a 500 in the second row. Adding 25 + 500 gives us a final answer of 525.\"\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;25 * 21 written in carrying form, with the answer 525 written in golden text.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200708_205152_e0zor050n6_height_198_width_140.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003e\"Perfect!\" said Omar. \"I'm really proud of you for working so hard to understand! Now, let's practice.\"\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Corn": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": ""
+						},
+						"dest": "Triple-Digit Factors, Part 3",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {
+						"buttonText": {
+							"value": "Continue"
+						}
+					},
+					"confirmed_unclassified_answers": [],
+					"id": "Continue",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\"Great work!\u201d said Omar as the kids worked on planting their pumpkins. Aria was excited! In three months, the school garden would be filled with big, bright, orange pumpkins!\"\u003c/p\u003e\n\n\u003cp\u003e\"What should we plant next?\" asked Aria.\u003c/p\u003e\n\n\u003cp\u003e\"Let's plant corn!\" exclaimed Miguel.\u003c/p\u003e\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;Aria\u0026amp;#39;s friend Miguel holding two ears of yellow corn in each hand.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200619_132955_xvmkszn1u8_height_337_width_274.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Three factors, Part 2": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eCorrect!\u003c/p\u003e"
+							},
+							"dest": "Practice 5",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 11904.0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not correct. Remember to multiply two factors first, and then multiply their product by the third factor. Try again!\u003c/p\u003e"
+						},
+						"dest": "Three factors, Part 2",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {},
+					"confirmed_unclassified_answers": [],
+					"id": "NumericInput",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\u201cI like it when there are only two factors,\" said Aria. \"So, in 93 * 4 * 32, I will multiply two of the numbers first, like 93 * 4,\u201d said Aria. \"Then, I will take the product of 93 * 4 and multiply it by 32.\"\u003c/p\u003e\n\n\u003cp\u003e\u201cExactly!\u201d said Omar, happy that Aria was learning. \u201cWhen you have a big multiplication expression where you have to multiply three or more factors, you should always multiply two numbers first and then multiply their product by the third number.\u201d\u003c/p\u003e\n\n\u003cp\u003e\u201cSo, in this case, 93 * 4 * 32 is\u2026\u201d\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Triple-Digit Factors, Part 1": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eCorrect!\u003c/p\u003e"
+							},
+							"dest": "Triple-Digit Factors Part 2",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 3855.0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not right. Go back to the previous examples and reread Omar's explanations if you need to. Then, try again!\u003c/p\u003e"
+						},
+						"dest": "Triple-Digit Factors, Part 1",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {},
+					"confirmed_unclassified_answers": [],
+					"id": "NumericInput",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\u201cWell done, Aria!\u201d said Omar. \u201cThe next problem I\u2019m about to show you has a three-digit factor. But, don\u2019t worry, it still uses the same method!\u201d said Omar.\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;257 * 15 written in carrying form\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200712_223256_y7zoq6bi3t_height_416_width_245.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003e\u003cstrong\u003e\u0026nbsp;\u003c/strong\u003e\u201cOkay,\" said Aria. \u201cBut, why are there two zeros in the ones and tens places of the third row?\u201d she asked.\u003c/p\u003e\n\n\u003cp\u003e\"Because we solve the number in the third row by multiplying a 2 in the hundreds place by 15,\" said Omar, \"we add zeros to the ones and tens places of the third row to show that there\u2019s nothing there!\u201d\u003c/p\u003e\n\n\u003cp\u003e\u201cOkay,\u201d Aria said again, \u201cthere are no boxes above the problem to carry numbers. Does this mean I still have to carry them?\u201d\u003c/p\u003e\n\n\u003cp\u003e\u201cYes.\u201d said Omar. \"I haven't written boxes for the carried numbers because you'll be carrying lots of them! You still need to carry them when you\u2019re doing your work on paper! This is why you should do your work on paper first and then fill in the boxes!\u201d Follow Omar's advice and fill in the boxes on paper, then type your final answer below.\u003c/p\u003e\n\n\u003cp\u003eFill in the boxes on paper, and type your final answer below.\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Congratulations": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [],
+					"default_outcome": null,
+					"customization_args": {
+						"recommendedExplorationIds": {
+							"value": []
+						}
+					},
+					"confirmed_unclassified_answers": [],
+					"id": "EndExploration",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003eFor 3 months, Aria and her friends played in the garden after school and watched their plants grow until, one day, the garden was filled with tall corn plants and gigantic orange pumpkins!\u003c/p\u003e\n\n\u003cp\u003eAria and her friends marveled at the results of all their hard work. After weeks and weeks of learning Multiplication, their work had finally paid off with a spectacular garden!\u003c/p\u003e\n\n\u003cp\u003eAs they stood there admiring their garden, Omar arrived. He smiled at Aria and her friends. What an achievement! Omar had successfully taught Aria multiplication, and now, she knew how to use it to solve problems in the real world!\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;Aria and her friends admiring their garden, Omar looks on proudly\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200619_134718_9uilfa20j0_height_245_width_441.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003e\u003cspan\u003eCongratulations! In this exploration, you and Aria learned about:\u003c/span\u003e\u003c/p\u003e\n\n\u003cul\u003e\n\t\u003cli\u003e\n\t\u003cp\u003eEvaluating multi-digit multiplication expressions\u003c/p\u003e\n\t\u003c/li\u003e\n\t\u003cli\u003e\n\t\u003cp\u003eThe Associative Property of Multiplication\u003c/p\u003e\n\t\u003c/li\u003e\n\t\u003cli\u003e\n\t\u003cp\u003eUsing the Associative Property to evaluate multi-factor multiplication expressions\u003c/p\u003e\n\t\u003c/li\u003e\u003c/ul\u003e\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;Aria with a blue graduation hat, celebrating the end of her multiplication journey with Omar. Omar looks on proudly\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200619_135007_u7mrfxvhvp_height_297_width_490.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Two Multi-Digit Factors Part 5": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eCorrect!\u003c/p\u003e"
+							},
+							"dest": "Whew a Review",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 525.0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not right. The number of desks in Aria's school is the product to 25 * 21. Try again!\u003c/p\u003e"
+						},
+						"dest": "Two Multi-Digit Factors Part 5",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {},
+					"confirmed_unclassified_answers": [],
+					"id": "NumericInput",
+					"hints": [{
+						"hint_content": {
+							"content_id": "hint_1",
+							"html": "\u003cp\u003e25 * 21 is the problem which Aria and Omar worked through on this card. The answer is in yellow, in the last picture.\u003c/p\u003e"
+						}
+					}, {
+						"hint_content": {
+							"content_id": "hint_2",
+							"html": "\u003cp\u003e25 + 500 =\u0026nbsp;\u003c/p\u003e"
+						}
+					}]
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {},
+						"hint_1": {},
+						"hint_2": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;25 * 21 written in \\\u0026amp;quot;carrying form\\\u0026amp;quot; with a 2 and 5 in the first row of the answer and a 0 carried atop the 2 of 25\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200712_222007_44hp85zu5x_height_201_width_179.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\u003cp\u003e\u201cNext, to start the second row of the answer, we multiply 25 * 2!\"\u003c/p\u003e\n\n\u003cp\u003e\u201cBut, first, remember this because it is very important!\" said Omar. \"Because the 2 in '21' that we are multiplying to find the second row of the answer is in the tens place, we need to add a zero in the ones place of the second row in the answer to show that there are no 1s there,\u201d finished Omar.\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200712_222102_bqbcjbl48f_height_270_width_179.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003e\"First, we need to multiply the ones place of 25 by 2, so, 5 * 2 = 10.\u201d\u003c/p\u003e\n\n\u003cp\u003eAfter thinking for a moment, Aria said, \u201cSo, I'm guessing, first you write a 0 in the ones place of the second line. Then,\u0026nbsp;you solve 5 * 2 = 10, so you write another 0 in the second row and carry the 1!\u201d\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;25 * 21 written in \\\u0026amp;quot;carrying form\\\u0026amp;quot; with the 5 in 25 and the 2 in 21 highlighted, a 00 in the second row of the answer, a 1 carried atop the 2 of 25\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200712_221330_9cxrk7g69m_height_292_width_179.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003e\u201cExactly!\u201d said Omar. \"Now, all you need to do is multiply the tens place of 25\u0026nbsp;by 2. So, 2 * 2 = 4. Since you carried a 1 in the last step, you add\u0026nbsp;it to 4, to get 5.\u201d\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200712_221534_rkrz61hno1_height_292_width_179.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003e\u201cSweet!\u201d said Aria. \u201cBut, now what?\u201d\u003c/p\u003e\n\n\u003cp\u003e\u201cNow, it\u2019s simple!\u201d said Omar. \u201cJust take the numbers from your rows and add them up to get the final answer! In this case, the answer represents the number of desks in your entire school.\u201d\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;25 * 21 written in \\\u0026amp;quot;carrying form\\\u0026amp;quot; -- the last step where there is a 25 in the first row of the answer and a 500 in the second row. 25 + 500 = 525, which is the product.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200712_221749_gpau8w4idr_height_383_width_219.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003e\u201cAccording to our multiplication, how many total desks are there in Aria\u2019s school?\u201d\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {},
+						"hint_1": {},
+						"hint_2": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Triple-Digit Factors, Part 3": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eCorrect!\u003c/p\u003e"
+							},
+							"dest": "Three factors",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 230.0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not correct. Remember to draw a \"carrying diagram\" for 242 * 101. Look at the previous examples if you need help, and try again!\u003c/p\u003e"
+						},
+						"dest": "Triple-Digit Factors, Part 3",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {},
+					"confirmed_unclassified_answers": [],
+					"id": "NumericInput",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\"Sure!\" said Aria as she brought out some corn seeds. \"We have enough seeds to plant 115 corn plants. If each corn plant grows two ears of corn, how many total ears of corn will grow? Remember, to make it easier for you to use the carry method, you should always write the bigger number at the top, and the smaller number at the bottom!\"\u003c/p\u003e\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;One ear of yellow corn, surrounded by the green corn husk\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200619_131532_s02x6kxhye_height_320_width_286.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Triple-Digit Factors Part 2": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eWell done!\u003c/p\u003e"
+							},
+							"dest": "Corn",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 0.0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not correct. Look at the previous examples for clues, and try again!\u003c/p\u003e"
+						},
+						"dest": "Triple-Digit Factors Part 2",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {},
+					"confirmed_unclassified_answers": [],
+					"id": "NumericInput",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\u201cWonderful work!\u201d said Omar. \u201cBefore we solve this one, what number goes in the boxes labeled A, B,\u0026nbsp;and C?\u201d\u0026nbsp;\u0026nbsp;\u0026nbsp;\u0026nbsp;\u003c/p\u003e\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;482 * 29 written in carrying form\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200712_223636_3tkg3959jf_height_348_width_245.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Two Multi-Digit Factors, Part 1": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eCorrect!\u003c/p\u003e"
+							},
+							"dest": "Two Multi-Digit Factors, Part 2",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": "21 * 25"
+							}
+						}, {
+							"rule_type": "Equals",
+							"inputs": {
+								"x": "25 * 21"
+							}
+						}, {
+							"rule_type": "Equals",
+							"inputs": {
+								"x": "25*21"
+							}
+						}, {
+							"rule_type": "Equals",
+							"inputs": {
+								"x": "21*25"
+							}
+						}]
+					}, {
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_2",
+								"html": "\u003cp\u003eNo, that's not correct. You are correct that 525 is the number of desks :) But first, write the multiplication expression to find the number of desks. Try again!\u003c/p\u003e"
+							},
+							"dest": "Two Multi-Digit Factors, Part 1",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": false
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": "525"
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not right. If you forgot how to write a multiplication expression, go back and\u0026nbsp;read [refresher lesson] (LINK: Subtopic Cards: Multiplication Expression given Situation)\u003c/p\u003e"
+						},
+						"dest": "Two Multi-Digit Factors, Part 1",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {
+						"rows": {
+							"value": 1
+						},
+						"placeholder": {
+							"value": ""
+						}
+					},
+					"confirmed_unclassified_answers": [],
+					"id": "TextInput",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_2": {},
+						"feedback_1": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003eWe left Aria as she was learning how to multiply numbers with multi-digit factors. This is an important topic, so look back at the last lesson if you want to refresh your memory.\u003c/p\u003e\n\n\u003cp\u003eAt school, Aria's classroom is very\u0026nbsp;big.\u0026nbsp;\u201cEvery classroom has 25 desks!\u201d she exclaimed to Omar.\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;Aria\u0026amp;#39;s friend Matthew in a classroom with 25 desks\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200618_190413_07orldeyyh_height_261_width_441.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003e\u201cAnd there are 21 classrooms in the school!\" added Aria's friend Matthew.\u0026nbsp;\"I wonder how many kids there are.\u201d\u003c/p\u003e\n\n\u003cp\u003eOmar\u0026nbsp;smiled. \u201cIf there are 21 classrooms in the school and 25 desks, write a multiplication expression that we can use to find the total number of desks in the school!\u201d\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_2": {},
+						"feedback_1": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Two Multi-Digit Factors, Part 2": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": ""
+						},
+						"dest": "Two multi-digit factors Part 3",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {
+						"buttonText": {
+							"value": "Continue"
+						}
+					},
+					"confirmed_unclassified_answers": [],
+					"id": "Continue",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\u201cPerfect!\u201d said Omar. \u201c25 * 21 is the expression you can use to calculate the total number of kids in your school. Now\u2026do you remember the carrying method we learnt?\u201d\u003c/p\u003e\n\n\u003cp\u003e\u201cYeah!\u201d said Aria. \"But, how do you solve such a big expression? Do I have to memorize the 25 times table? That would be hard!\"\u003c/p\u003e\n\n\u003cp\u003e\"Don't worry!\" said Omar. \"I'm going to teach you how to use the carry method to solve multiplication expressions where there is more than one multi-digit factor. Let\u2019s see how!\u201d\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Two Multi-Digit Factors, Part 4": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": ""
+						},
+						"dest": "Two Multi-Digit Factors Part 5",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {
+						"buttonText": {
+							"value": "Continue"
+						}
+					},
+					"confirmed_unclassified_answers": [],
+					"id": "Continue",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\u201cGreat! Now, let's make this a little easier for you. Imagine that\u0026nbsp;we are only multiplying 25 by the rightmost digit of 21, which is 1, and the rest of the number 21 (the 2 part) isn't there!\u0026nbsp;So, we would start off by multiplying using the same method we just learnt, where there was only 1 digit to multiply. Isn't that easy?\" asked Omar.\u003c/p\u003e\n\n\u003cp\u003e\"Yes!\" said Aria. \"If we pretend that the 2 isn't there, then this is just\u0026nbsp;long multiplication with 1 digit, like we did last time! But how can we just remove the 2? Won't our\u0026nbsp;answer be wrong?\" asked Aria.\u003c/p\u003e\n\n\u003cp\u003e\"Well,\" said Omar,\u0026nbsp;\"we're not exactly removing the 2! We're just imagining that it isn't there for now, to make our job easier! We're going to come back to the 2 later, before getting our\u0026nbsp;final answer. Don't worry!\" answered Omar.\u003c/p\u003e\n\n\u003cp\u003e\"So, pretend the 2 in 21 isn't there. Now, just like we did last lesson, the first step in 25 * 1 is multiplying the ones place of 25, which is 5, by 1.\u0026nbsp;So, 5 * 1 = 5.\"\u0026nbsp;said Omar.\u0026nbsp;\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;25 * 21 written in \\\u0026amp;quot;carrying form\\\u0026amp;quot; 0 carried on the 2 in 25\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200712_220949_dpam06o18l_height_201_width_179.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003e\u201cThen, because we don\u2019t have anything to carry, we move on to multiply the tens place in 25, which is 2, by 1.\u0026nbsp;So, 2 * 1 = 2!\u201d said Aria.\u0026nbsp;\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;25 * 21 in \\\u0026amp;quot;carrying form,\\\u0026amp;quot; with a 2 and a 5 in the answer so far and a 0 carried above the 2 in 25\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200712_221007_7eaxnemv6v_height_201_width_179.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003e\u201cYep!\u201d said Omar. \u201cThe first step is the exact same as what we learned last lesson! Now that we\u2019re done multiplying 25 by 1, which is in the ones place of 21, we need to start a \u003cem\u003esecond\u003c/em\u003e \u003cem\u003erow\u003c/em\u003e\u0026nbsp;in the answer, for multiplying 25 by the \u003cem\u003etens\u003c/em\u003e \u003cem\u003eplace\u003c/em\u003e of 21, which is 2!\u201d\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Practice 1": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eCorrect! Well done!\u003c/p\u003e"
+							},
+							"dest": "Practice 2",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 384.0
+							}
+						}]
+					}, {
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_2",
+								"html": "\u003cp\u003eNo, that's not correct. 525 is the answer to 25 * 21! but this question is asking you to solve 16 * 24. Try again!\u003c/p\u003e"
+							},
+							"dest": "Practice 1",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": false
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 525.0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not right. Go back to Omar's explanation for multiplying 25 * 21 (two multi-digit factors) if you are confused. Then, use the hints\u0026nbsp;if you need to, and try again!\u003c/p\u003e"
+						},
+						"dest": "Practice 1",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {},
+					"confirmed_unclassified_answers": [],
+					"id": "NumericInput",
+					"hints": [{
+						"hint_content": {
+							"content_id": "hint_1",
+							"html": "\u003cp\u003eIn 16 * 24, we must first calculate the top row of the answer.\u0026nbsp;\u003c/p\u003e\n\n\u003cp\u003eTo do this, we do the following:\u003c/p\u003e\n\n\u003col\u003e\n\t\u003cli\u003eMultiply the\u0026nbsp;\u003cstrong\u003eones place of 16\u0026nbsp;\u003c/strong\u003eby the\u0026nbsp;\u003cstrong\u003eones place of 24.\u003c/strong\u003e\u0026nbsp;\u003c/li\u003e\n\u003c/ol\u003e\n\n\u003cul\u003e\n\t\u003cli\u003e6 * 4 = 24\u003c/li\u003e\n\t\u003cli\u003eIn 24, put the \"4\" in the ones place of the answer's first row.\u003c/li\u003e\n\t\u003cli\u003eIn 24, carry the \"2\" above the tens place of 16.\u003c/li\u003e\n\u003c/ul\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;16 * 24: 6 * 4 = 24, 4 put in the ones place of the answer\u0026amp;#39;s first row, 2 carried on top of the 1\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200616_140600_hk6p6ek6b8_height_364_width_234.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003eThe next step is to multiply the tens place of 16 by the ones place of 24.\u003c/p\u003e"
+						}
+					}, {
+						"hint_content": {
+							"content_id": "hint_2",
+							"html": "\u003cp\u003eThe next step is to multiply the \u003cstrong\u003etens place of 16 \u003c/strong\u003eby the \u003cstrong\u003eones place of 24\u003c/strong\u003e.\u003c/p\u003e\n\n\u003cp\u003e1 * 4 = 4. Then, we add the 2 we carried above the tens place to 4. The first row of the answer is complete. Now, erase the \"2\" you carried before moving on to evaluating the second row of the answer.\u003c/p\u003e\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;16 * 24 with the \\\u0026amp;quot;carry number\\\u0026amp;quot; box erased, \\\u0026amp;quot;64\\\u0026amp;quot; in the first row of the answer\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200616_141242_rs34tm83s9_height_330_width_207.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e"
+						}
+					}, {
+						"hint_content": {
+							"content_id": "hint_3",
+							"html": "\u003cp\u003eNow that we are done calculating the first row of the answer, it is time to caluclate the second row of the answer, and the tens place of 24.\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;16 * 24 with the first row of the answer filled in\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200616_141421_0dinbiysjy_height_330_width_207.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003eThe next thing we need to calculate is\u0026nbsp;the \u003cstrong\u003eones place of 16\u003c/strong\u003e\u0026nbsp;multiplied by the\u0026nbsp;\u003cstrong\u003etens place of 24\u003c/strong\u003e. In other words, 6 * 2 = 12.\u003c/p\u003e\n\n\u003cp\u003eIn 12, we put the \"2\" left of the \"0\" in the answer's second row. We carry the \"1\" above the \"1\" in 16.\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;16 * 24 in carrying form, working on the second row of the answer with a \\\u0026amp;quot;1\\\u0026amp;quot; currently in the carrying box\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200616_141807_r1dvs37f8y_height_395_width_265.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003eNext, we multiply the\u0026nbsp;\u003cstrong\u003etens place of 16\u0026nbsp;\u003c/strong\u003eby the\u0026nbsp;\u003cstrong\u003etens place of\u0026nbsp;\u003c/strong\u003e24. In other words, 1 * 2 = 2.\u003c/p\u003e\n\n\u003cp\u003eThen, we add the \"1\" we carried to the 2 to get 1 + 2 = 3. The last box in the answer's second row is a \"3\".\u003c/p\u003e\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;16 * 24 in carrying form, fully solved except for the three boxes representing the final answer at the bottom.\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200616_142049_isvtl3nvjl_height_285_width_189.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e"
+						}
+					}, {
+						"hint_content": {
+							"content_id": "hint_4",
+							"html": "\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;16 * 24 fully solved except the last three boxes representing the final answer at the bottom\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200616_142132_d0yg5y6prt_height_285_width_189.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\u003cp\u003eFinally, we add the answer's first row and its second row to get the answer. In this case, evaluate 64 + 320 to get the final answer, and type it in when you are done!\u003c/p\u003e"
+						}
+					}]
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"feedback_2": {},
+						"content": {},
+						"feedback_1": {},
+						"hint_4": {},
+						"hint_1": {},
+						"hint_2": {},
+						"hint_3": {},
+						"default_outcome": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\u201cWonderful job,\u201d praised Omar. \u201cThat was a tricky concept! Make sure to go back to it if you need to.\u201d\u003c/p\u003e\n\n\u003cp\u003e\u201cGreat!\u201d continued Omar. \u201cNow that you see how to multiply two double-digit factors together, I want you to do a couple problems for practice!\u201d\u003c/p\u003e\n\n\u003cp\u003e\u0026nbsp; \u0026nbsp;\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;16 * 24 written in \\\u0026amp;quot;carrying form\\\u0026amp;quot;, with boxes for the student to fill with numbers\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200616_133802_3oo7ar4a3t_height_356_width_236.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003e\u003cbr\u003e\n\u201cCopy this diagram on your paper and solve it just like we did for 25 * 21. As you fill in the boxes, remember that in a double-digit multiplication problem, there is always a zero in the ones place of the answer's second row,\u201d said Omar. \u201cGo back to the last card if you forgot why!\u201d\u003c/p\u003e\n\n\u003cp\u003e\"What if I get stuck?\" asked Aria. \"This is my first time doing this on my own!\"\u003c/p\u003e\n\n\u003cp\u003e\"Don't worry!\" said Omar. \"If you need more help, look at the\u0026nbsp;\u003cstrong\u003ehints\u003c/strong\u003e. They are here to help you!\"\u003c/p\u003e\n\n\u003cp\u003e\u201cAfter you\u2019re done, enter your final answer below!\u201d\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"feedback_2": {},
+						"content": {},
+						"feedback_1": {},
+						"hint_4": {},
+						"hint_1": {},
+						"hint_2": {},
+						"hint_3": {},
+						"default_outcome": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Practice 3": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eCorrect!\u003c/p\u003e"
+							},
+							"dest": "Triple-Digit Factors, Part 1",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 1455.0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not correct. If you need help understanding how to multiply two multi-digit numbers, go back to Omar's explanation of 25 * 21. Then, use a hint if you need to, and try again!\u003c/p\u003e"
+						},
+						"dest": "Practice 3",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {},
+					"confirmed_unclassified_answers": [],
+					"id": "NumericInput",
+					"hints": [{
+						"hint_content": {
+							"content_id": "hint_1",
+							"html": "\u003cp\u003eThe multiplication expression for this problem is 97 * 15 because 15 seeds must be planted to grow 1 pumpkin, and Aria and her friends want 97 pumpkins.\u003c/p\u003e"
+						}
+					}, {
+						"hint_content": {
+							"content_id": "hint_2",
+							"html": "\u003cp\u003eWrite 97 * 15 in carrying form on your paper and solve it.\u0026nbsp;\u003c/p\u003e"
+						}
+					}, {
+						"hint_content": {
+							"content_id": "hint_3",
+							"html": "\u003cp\u003eThis is what 97 * 15 looks like in carrying form. Fill in the boxes and submit your final answer.\u003c/p\u003e\n\n\u003cp\u003eNote that the \"carrying box\" above the 9 might need to be erased after the first row of the answer has been filled, so another number can be carried when calculating the second row of the answer.\u003c/p\u003e\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;97 * 15 in carrying form\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200616_135223_xvdexsjq38_height_402_width_232.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e"
+						}
+					}]
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"feedback_1": {},
+						"hint_1": {},
+						"hint_2": {},
+						"hint_3": {},
+						"default_outcome": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\u201cMarvelous!\u201d Omar exclaimed. \u201cNow, that you've learned how to multiply two double-digit numbers, let's get started on the school garden!\"\u003c/p\u003e\n\n\u003cp\u003eAria and her friends want to grow pumpkins. There are 97 soil beds to grow them! If each soil bed can grow 15 pumpkins, how many pumpkin seeds must they plant?\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;Omar, Aria, and all of Aria\u0026amp;#39;s friends around a wooden soil bed with mud in it\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200619_130651_yb21dbxkiq_height_322_width_441.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003eWork this one out in a notebook or on a piece of paper, using the same method you learned in the last few problems!\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"feedback_1": {},
+						"hint_1": {},
+						"hint_2": {},
+						"hint_3": {},
+						"default_outcome": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Practice 2": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eCorrect!\u003c/p\u003e"
+							},
+							"dest": "Practice 3",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 855.0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not right. If you want to refresh your memory on how to multiply two multi-digit numbers,\u0026nbsp;go back to the example with 25 * 21 and look at Omar's explanation again. Use a hint if you need to, and try again!\u003c/p\u003e"
+						},
+						"dest": "Practice 2",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {},
+					"confirmed_unclassified_answers": [],
+					"id": "NumericInput",
+					"hints": [{
+						"hint_content": {
+							"content_id": "hint_1",
+							"html": "\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;The same diagram shown in the question, but with a \\\u0026amp;quot;0\\\u0026amp;quot; in the ones place of the answer\u0026amp;#39;s second row\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200616_134143_8y2vp02eiw_height_417_width_222.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\u003cp\u003eThe second row of the answer is the product of 57 and the \"1\" in 17. Because the \"1\" in 17 is in the tens place, it is the same thing as multiplying 57 * 10.\u0026nbsp;There is always a \"0\" in the ones place of the answer's second row.\u0026nbsp;\u003c/p\u003e"
+						}
+					}, {
+						"hint_content": {
+							"content_id": "hint_2",
+							"html": "\u003cp\u003eThis is 57 * 15\u0026nbsp;written using the \"carry method.\" Copy this diagram on your paper, fill in the boxes, and submit your final answer!\u0026nbsp;\u003c/p\u003e\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;57 * 15 written using the carry method\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200616_135854_jrhdnhd05n_height_356_width_223.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e"
+						}
+					}]
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {},
+						"hint_1": {},
+						"hint_2": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\u201cYou\u2019re doing great!\u201d said Omar. \u201cNow, solve 57 * 15 using the 'carrying method' diagram we used in the last two problems! Draw the diagram on to your paper, solve the question, and submit your final answer!\u201d\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {},
+						"hint_1": {},
+						"hint_2": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Practice 5": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eGood\u0026nbsp;job!\u003c/p\u003e"
+							},
+							"dest": "Associative Property",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": "3*7*4"
+							}
+						}, {
+							"rule_type": "Equals",
+							"inputs": {
+								"x": "3 * 7 * 4"
+							}
+						}, {
+							"rule_type": "Equals",
+							"inputs": {
+								"x": "4*3*7"
+							}
+						}, {
+							"rule_type": "StartsWith",
+							"inputs": {
+								"x": "4 * 3 * 7"
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not correct. Try again!\u003c/p\u003e"
+						},
+						"dest": "Practice 5",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {
+						"rows": {
+							"value": 1
+						},
+						"placeholder": {
+							"value": "Write a multiplication expression here"
+						}
+					},
+					"confirmed_unclassified_answers": [],
+					"id": "TextInput",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\u201cGood start!\u201d said Omar. \u201cNow, let\u2019s think about this another way. Let's say we need to count the number of cubes in this big cuboid. Can you think of a way to do this?\u0026nbsp;\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200713_191147_nmeqpa03gs_height_146_width_338.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003e\"We can cut the rectangle into slices, and count the number of cubes in each slice!\" said Aria.\u003c/p\u003e\n\n\u003cp\u003e\"Good idea!\" said Omar. \"Let's do that. Since the cuboid has a thickness of 4 cubes, we would get 4 slices!\"\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200713_191424_n0322azaij_height_202_width_392.svg\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003e\"Now, what multiplication expression would we use to calculate the number of cubes in 1 slice?\" asked Omar.\u003c/p\u003e\n\n\u003cp\u003e\"3 * 7, because each slice is 3 cubes wide and 7 cubes long!\" said Aria.\u003c/p\u003e\n\n\u003cp\u003e\"Good! Now, which multiplication expression can we use to find the number of cubes in 4 slices?\" asked Omar.\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Recap 2": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eCorrect!\u003c/p\u003e"
+							},
+							"dest": "Recap 3",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 158000.0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not correct. First, write a multiplication expression to find the total number of grapes, and solve. Try again!\u003c/p\u003e"
+						},
+						"dest": "Recap 2",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {},
+					"confirmed_unclassified_answers": [],
+					"id": "NumericInput",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003eYou got it! There are 2,000 grape bunches on the fruit farm. If there are 79 grapes in each grape bunch, how many grapes are there on the farm in total?\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Recap 3": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eCorrect!\u003c/p\u003e"
+							},
+							"dest": "Two Multi-Digit Factors, Part 1",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 2115.0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not correct. First, write a multiplication expression to find the total blueberries, and write down your work using the \"carry method\" on paper. Try again!\u003c/p\u003e"
+						},
+						"dest": "Recap 3",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {},
+					"confirmed_unclassified_answers": [],
+					"id": "NumericInput",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003eWell done! Aria's friend Miguel also points out that there are\u0026nbsp;235 blueberry bushes on the farm.\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;Aria with her friends Nina and Miguel\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200618_185935_zgc4ln9bhg_height_287_width_392.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003eIf each blueberry bush has nine\u0026nbsp;blueberries, how many total blueberries are on the fruit\u0026nbsp;farm?\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Recap 1": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eCorrect!\u003c/p\u003e"
+							},
+							"dest": "Recap 2",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 2000.0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not correct. First, write a multiplication expression to find the total number of grape bunches, and solve. Try again!\u003c/p\u003e"
+						},
+						"dest": "Recap 1",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {},
+					"confirmed_unclassified_answers": [],
+					"id": "NumericInput",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003eBefore we begin our latest exploration of multiplication with Aria, let\u2019s recap what we learned in the last few lessons!\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;Aria and her friend, Nina, who is wearing a purple dress and purple shoes\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200618_185610_456x6pwok0_height_333_width_352.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003eLast week, Aria's friend Nina took everyone to visit her aunt's fruit farm. There were 400 grapevines on the farm! If each grapevine grows five grape bunches, how many total grape bunches are in the farm?\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Three factors": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": ""
+						},
+						"dest": "Three factors, Part 2",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {
+						"buttonText": {
+							"value": "Continue"
+						}
+					},
+					"confirmed_unclassified_answers": [],
+					"id": "Continue",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\u201cAwesome job!\u201d exclaimed Omar as Aria and her friends started planting their corn seeds.\u003c/p\u003e\n\u003coppia-noninteractive-image alt-with-value=\"\u0026amp;quot;Aria, Omar, and her friends in the middle of the school garden, surrounded by soil beds\u0026amp;quot;\" caption-with-value=\"\u0026amp;quot;\u0026amp;quot;\" filepath-with-value=\"\u0026amp;quot;img_20200619_132231_8d1etjif1i_height_243_width_441.png\u0026amp;quot;\"\u003e\u003c/oppia-noninteractive-image\u003e\n\n\u003cp\u003e\u201cWe just have one more topic left before you have learned all of Multiplication! So far, we have been multiplying two numbers together. But, now I need to figure out something a little trickier. I have four beds of soil. Each bed of soil can hold 93 corn seeds, and each corn seed needs 32 ml of water. If I completely fill all my beds with seeds, how much water will I need for all of them?\" Omar asked.\u003c/p\u003e\n\n\u003cp\u003e\"There's three factors here!\u201d said Aria. \"First, I would have to multiply 93 * 4 to get the total number of seeds, then I would have to multiply that by 32 to get the total amount of water.\"\u003c/p\u003e\n\n\u003cp\u003e\u201cSo, how about an expression like 93 * 4 * 32?\u201d Miguel suggested.\u003c/p\u003e\n\n\u003cp\u003e\u201cYep!\u201d replied Omar. \"That's great! Let's solve it now.\"\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {}
+					}
+				},
+				"solicit_answer_details": false
+			},
+			"Associative Property 2": {
+				"param_changes": [],
+				"interaction": {
+					"solution": null,
+					"answer_groups": [{
+						"tagged_skill_misconception_id": null,
+						"outcome": {
+							"param_changes": [],
+							"feedback": {
+								"content_id": "feedback_1",
+								"html": "\u003cp\u003eCorrect!\u003c/p\u003e"
+							},
+							"dest": "Associative Property 3",
+							"refresher_exploration_id": null,
+							"missing_prerequisite_skill_id": null,
+							"labelled_as_correct": true
+						},
+						"training_data": [],
+						"rule_specs": [{
+							"rule_type": "Equals",
+							"inputs": {
+								"x": 0
+							}
+						}]
+					}],
+					"default_outcome": {
+						"param_changes": [],
+						"feedback": {
+							"content_id": "default_outcome",
+							"html": "\u003cp\u003eNo, that's not right. The Associative Property of Multiplication is only used when two or more factors are grouped together using parentheses. Try again!\u003c/p\u003e"
+						},
+						"dest": "Associative Property 2",
+						"refresher_exploration_id": null,
+						"missing_prerequisite_skill_id": null,
+						"labelled_as_correct": false
+					},
+					"customization_args": {
+						"showChoicesInShuffledOrder": {
+							"value": true
+						},
+						"choices": {
+							"value": ["\u003cp\u003eCommutative Property of Multiplication\u003c/p\u003e", "\u003cp\u003eAssociative Property of Multiplication\u003c/p\u003e"]
+						}
+					},
+					"confirmed_unclassified_answers": [],
+					"id": "MultipleChoiceInput",
+					"hints": []
+				},
+				"recorded_voiceovers": {
+					"voiceovers_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"classifier_model_id": null,
+				"content": {
+					"content_id": "content",
+					"html": "\u003cp\u003e\u201cThat\u2019s cool!\u201d said Aria. \"So, in a three-factor multiplication problem, it doesn't matter which two numbers you multiply first! You will still get the same answer.\"\u003c/p\u003e\n\n\u003cp\u003e\u201cYes!\u201d said Omar. \u201cFor multiplication expressions where you have multiple factors, the order in which you multiply the numbers doesn't matter. This rule actually has a name: the Associative Property of Multiplication.\u201d\u003c/p\u003e\n\n\u003cp\u003e\u201cWait\u2026how is this different from the \u003cstrong\u003eCommutative Property of Multiplication\u003c/strong\u003e?\" asked Aria.\u003c/p\u003e\n\n\u003cp\u003e\u201cGood question!\" said Omar.\u0026nbsp;\u0026nbsp;The Commutative Property means that the order of factors\u0026nbsp;\u0026nbsp;doesn't change the product, but the Associative Property means that if there are lots of factors in a multiplication expression, you can group certain factors together to create an order for the multiplication, and it doesn't matter how you group them! The answer will be the same.\"\u003c/p\u003e\n\n\u003cp\u003eWhich rule makes this statement true: 23 * 5 * 34 = 25 * 34 * 5?\u003c/p\u003e"
+				},
+				"written_translations": {
+					"translations_mapping": {
+						"content": {},
+						"default_outcome": {},
+						"feedback_1": {}
+					}
+				},
+				"solicit_answer_details": false
+			}
+		},
+		"param_specs": {},
+		"title": "Multi-Digit Multiplication - Part 2",
+		"objective": "In this last part of our journey, you will finish learning multi-digit, multi-factor multiplication.",
+		"language_code": "en",
+		"init_state_name": "Introduction",
+		"correctness_feedback_enabled": true
+	},
+	"exploration_id": "zTg2hzTz37jP",
+	"state_classifier_mapping": {},
+	"version": 38,
+	"correctness_feedback_enabled": true,
+	"record_playthrough_probability": 0.2,
+	"preferred_audio_language_code": null
+}
