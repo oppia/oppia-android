@@ -21,7 +21,7 @@ import org.oppia.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
 import org.oppia.app.story.storyitemviewmodel.StoryHeaderViewModel
 import org.oppia.app.story.storyitemviewmodel.StoryItemViewModel
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.domain.oppialogger.OppiaLogger
 import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -29,7 +29,7 @@ import javax.inject.Inject
 class StoryFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val analyticsController: AnalyticsController,
+  private val oppiaLogger: OppiaLogger,
   private val oppiaClock: OppiaClock,
   private val viewModelProvider: ViewModelProvider<StoryViewModel>
 ) {
@@ -160,10 +160,10 @@ class StoryFragmentPresenter @Inject constructor(
   }
 
   private fun logStoryActivityEvent(topicId: String, storyId: String) {
-    analyticsController.logTransitionEvent(
+    oppiaLogger.logTransitionEvent(
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_STORY_ACTIVITY,
-      analyticsController.createStoryContext(topicId, storyId)
+      oppiaLogger.createStoryContext(topicId, storyId)
     )
   }
 }
