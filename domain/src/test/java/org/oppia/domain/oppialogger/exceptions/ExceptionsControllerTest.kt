@@ -23,7 +23,6 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
-import org.oppia.app.model.ExceptionLog
 import org.oppia.app.model.ExceptionLog.ExceptionType
 import org.oppia.app.model.OppiaExceptionLogs
 import org.oppia.domain.oppialogger.ExceptionLogStorageCacheSize
@@ -34,6 +33,7 @@ import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
+import org.oppia.util.logging.ExceptionsHelper
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.networking.NetworkConnectionUtil
@@ -118,7 +118,7 @@ class ExceptionsControllerTest {
       .onChanged(oppiaExceptionLogsResultCaptor.capture())
 
     val exceptionLog = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
-    val exception = exceptionLogToException(exceptionLog)
+    val exception = ExceptionsHelper().convertExceptionLogToException(exceptionLog)
     assertThat(exception.message).isEqualTo(exceptionThrown.message)
     assertThat(exception.stackTrace).isEqualTo(exceptionThrown.stackTrace)
     assertThat(exception.cause?.message).isEqualTo(exceptionThrown.cause?.message)
@@ -142,7 +142,7 @@ class ExceptionsControllerTest {
       .onChanged(oppiaExceptionLogsResultCaptor.capture())
 
     val exceptionLog = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
-    val exception = exceptionLogToException(exceptionLog)
+    val exception = ExceptionsHelper().convertExceptionLogToException(exceptionLog)
     assertThat(exception.message).isEqualTo(exceptionThrown.message)
     assertThat(exception.stackTrace).isEqualTo(exceptionThrown.stackTrace)
     assertThat(exception.cause?.message).isEqualTo(exceptionThrown.cause?.message)
@@ -179,7 +179,6 @@ class ExceptionsControllerTest {
 
     val exceptionOne = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
     val exceptionTwo = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(1)
-    val cacheStoreSize = oppiaExceptionLogsResultCaptor.value.getOrThrow().exceptionLogList.size
 
     // In this case, 3 fatal and 1 non-fatal exceptions were logged. So while pruning, none of the retained logs should have non-fatal exception type.
     assertThat(exceptionOne.exceptionType).isNotEqualTo(ExceptionType.NON_FATAL)
@@ -239,7 +238,7 @@ class ExceptionsControllerTest {
     val exceptionFromRemoteService = fakeExceptionLogger.getMostRecentException()
     val exceptionFromCacheStorage =
       oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
-    val exception = exceptionLogToException(exceptionFromCacheStorage)
+    val exception = ExceptionsHelper().convertExceptionLogToException(exceptionFromCacheStorage)
 
     assertThat(exceptionFromRemoteService).isEqualTo(exceptionThrown)
     assertThat(exception.message).isEqualTo(exceptionThrown.message)
@@ -275,42 +274,6 @@ class ExceptionsControllerTest {
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
-  }
-
-  private fun exceptionLogToException(exceptionLog: ExceptionLog): Exception {
-    val exceptionMessage = if (exceptionLog.message != "") {
-      exceptionLog.message
-    } else {
-      null
-    }
-    var exceptionCause: Throwable? = null
-    if (exceptionLog.cause != null) {
-      exceptionCause = if (exceptionLog.cause.message != "") {
-        Throwable(exceptionLog.cause.message)
-      } else {
-        Throwable()
-      }
-    }
-    exceptionCause?.let {
-      it.stackTrace = createErrorStackTrace(exceptionLog.cause)
-    }
-    val exception = Exception(exceptionMessage, exceptionCause)
-    exception.stackTrace = createErrorStackTrace(exceptionLog)
-    return exception
-  }
-
-  private fun createErrorStackTrace(exceptionLog: ExceptionLog): Array<StackTraceElement> {
-    return Array(
-      exceptionLog.stacktraceElementCount,
-      init = { i: Int ->
-        StackTraceElement(
-          exceptionLog.stacktraceElementList[i].declaringClass,
-          exceptionLog.stacktraceElementList[i].methodName,
-          exceptionLog.stacktraceElementList[i].fileName,
-          exceptionLog.stacktraceElementList[i].lineNumber
-        )
-      }
-    )
   }
 
   @Qualifier
