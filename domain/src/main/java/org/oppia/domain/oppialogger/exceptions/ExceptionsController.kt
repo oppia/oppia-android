@@ -29,18 +29,24 @@ class ExceptionsController @Inject constructor(
 
   /**
    * Logs a non-fatal [exception].
-   * The [timestamp], along with [ExceptionType] facilitate effective pruning records when [exceptionLogStorageCacheSize] is exceeded.
+   * Note that exceptions may not actually be logged depending on the network status of the device.
+   * Older exceptions will be pruned to make room for newer exceptions.
+   *
+   * @param timestampInMillis the time, in milliseconds, when the exception occurred
    */
-  fun logNonFatalException(exception: Exception, timestamp: Long) {
-    uploadOrCacheExceptionLog(exception, timestamp, ExceptionType.NON_FATAL)
+  fun logNonFatalException(exception: Exception, timestampInMillis: Long) {
+    uploadOrCacheExceptionLog(exception, timestampInMillis, ExceptionType.NON_FATAL)
   }
 
   /**
-   * Logs a FATAL exception.
-   * The [timestamp], along with [ExceptionType] facilitate effective pruning records when [exceptionLogStorageCacheSize] is exceeded.
+   * Logs a fatal [exception].
+   * Note that exceptions may not actually be logged depending on the network status of the device.
+   * Older exceptions will be pruned to make room for newer exceptions.
+   *
+   * @param timestampInMillis the time, in milliseconds, when the exception occurred
    */
-  fun logFatalException(exception: Exception, timestamp: Long) {
-    uploadOrCacheExceptionLog(exception, timestamp, ExceptionType.FATAL)
+  fun logFatalException(exception: Exception, timestampInMillis: Long) {
+    uploadOrCacheExceptionLog(exception, timestampInMillis, ExceptionType.FATAL)
   }
 
   /**
@@ -51,12 +57,18 @@ class ExceptionsController @Inject constructor(
    */
   private fun uploadOrCacheExceptionLog(
     exception: Exception,
-    timestamp: Long,
+    timestampInMillis: Long,
     exceptionType: ExceptionType
   ) {
     when (networkConnectionUtil.getCurrentConnectionStatus()) {
       NetworkConnectionUtil.ConnectionStatus.NONE ->
-        cacheExceptionLog(convertExceptionToExceptionLog(exception, timestamp, exceptionType))
+        cacheExceptionLog(
+          convertExceptionToExceptionLog(
+            exception,
+            timestampInMillis,
+            exceptionType
+          )
+        )
       else -> exceptionLogger.logException(exception)
     }
   }
@@ -64,16 +76,17 @@ class ExceptionsController @Inject constructor(
   /** Returns an [ExceptionLog] from a [throwable]. */
   private fun convertExceptionToExceptionLog(
     throwable: Throwable,
-    timestamp: Long,
+    timestampInMillis: Long,
     exceptionType: ExceptionType
   ): ExceptionLog {
     val exceptionLogBuilder = ExceptionLog.newBuilder()
     throwable.message?.let {
       exceptionLogBuilder.message = it
     }
-    exceptionLogBuilder.timestampInMillis = timestamp
+    exceptionLogBuilder.timestampInMillis = timestampInMillis
     throwable.cause?.let {
-      exceptionLogBuilder.cause = convertExceptionToExceptionLog(it, timestamp, exceptionType)
+      exceptionLogBuilder.cause =
+        convertExceptionToExceptionLog(it, timestampInMillis, exceptionType)
     }
     throwable.stackTrace?.let {
       exceptionLogBuilder.addAllStacktraceElement(it.map(this::convertStackTraceElementToLog))
@@ -82,7 +95,7 @@ class ExceptionsController @Inject constructor(
     return exceptionLogBuilder.build()
   }
 
-/** Builds the [ExceptionLog.StackTraceElement] from a [stackTraceElement]. */
+  /** Builds the [ExceptionLog.StackTraceElement] from a [stackTraceElement]. */
   private fun convertStackTraceElementToLog(
     stackTraceElement: StackTraceElement
   ): ExceptionLog.StackTraceElement {
@@ -117,7 +130,7 @@ class ExceptionsController @Inject constructor(
             NullPointerException(
               "Least Recent Exception index absent -- ExceptionLogCacheStoreSize is 0"
             )
-          consoleLogger.e("Exceptions Controller", exception.toString())
+          consoleLogger.e(EXCEPTIONS_CONTROLLER, exception.toString())
         }
       }
       return@storeDataAsync oppiaExceptionLogs.toBuilder().addExceptionLog(exceptionLog).build()
@@ -140,7 +153,7 @@ class ExceptionsController @Inject constructor(
    */
   private fun getLeastRecentExceptionIndex(oppiaExceptionLogs: OppiaExceptionLogs): Int? =
     oppiaExceptionLogs.exceptionLogList.withIndex()
-      .filter { it.value.exceptionType == ExceptionLog.ExceptionType.NON_FATAL }
+      .filter { it.value.exceptionType == ExceptionType.NON_FATAL }
       .minBy { it.value.timestampInMillis }?.index
       ?: getLeastRecentGeneralEventIndex(oppiaExceptionLogs)
 
@@ -156,4 +169,30 @@ class ExceptionsController @Inject constructor(
   fun getExceptionLogs(): LiveData<AsyncResult<OppiaExceptionLogs>> {
     return dataProviders.convertToLiveData(exceptionLogStore)
   }
+}
+
+fun ExceptionLog.toException(): Exception {
+  val exceptionMessage = if (this.message.isEmpty()) null else this.message
+  val exceptionCause: Throwable? =
+    if (this.hasCause())
+      this.cause.toException()
+    else null
+  val exception = Exception(exceptionMessage, exceptionCause)
+  exception.stackTrace = createErrorStackTrace(this)
+  return exception
+}
+
+/** Returns an array of [StackTraceElement] for an [exceptionLog]. */
+private fun createErrorStackTrace(exceptionLog: ExceptionLog): Array<StackTraceElement> {
+  return Array(
+    exceptionLog.stacktraceElementCount,
+    init = { i: Int ->
+      StackTraceElement(
+        exceptionLog.stacktraceElementList[i].declaringClass,
+        exceptionLog.stacktraceElementList[i].methodName,
+        exceptionLog.stacktraceElementList[i].fileName,
+        exceptionLog.stacktraceElementList[i].lineNumber
+      )
+    }
+  )
 }
