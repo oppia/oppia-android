@@ -171,6 +171,7 @@ class ExceptionsController @Inject constructor(
   }
 }
 
+/** Returns an [Exception] for an [ExceptionLog] object. */
 fun ExceptionLog.toException(): Exception {
   val exceptionMessage = if (this.message.isEmpty()) null else this.message
   val exceptionCause: Throwable? =
