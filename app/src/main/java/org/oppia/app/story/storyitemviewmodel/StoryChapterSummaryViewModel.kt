@@ -5,14 +5,13 @@ import androidx.lifecycle.Observer
 import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.LessonThumbnail
 import org.oppia.app.story.ExplorationSelectionListener
-import org.oppia.app.story.StoryFragment
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.ConsoleLogger
 
 private const val STORY_VIEWER_TAG = "StoryViewer"
 
-/** Chapter summary view model for the recycler view in [StoryFragment]. */
+/** Chapter summary view model for the recycler view in StoryFragment. */
 class StoryChapterSummaryViewModel(
   val index: Int,
   private val fragment: Fragment,

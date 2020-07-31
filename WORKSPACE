@@ -144,7 +144,6 @@ maven_install(
         "com.google.firebase:firebase-crashlytics:17.1.1",
         "androidx.constraintlayout:constraintlayout:1.1.3",
         "de.hdodenhof:circleimageview:3.0.1",
-        "com.jackandphantom.android:circularimageview:1.2.0",
         "com.chaos.view:pinview:1.4.3",
         "androidx.recyclerview:recyclerview:1.0.0",
     ],

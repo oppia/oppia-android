@@ -16,12 +16,7 @@ import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
-
-/** Corresponds to the type of input that should be used for an item selection interaction view. */
-enum class SelectionItemInputType {
-  CHECKBOXES,
-  RADIO_BUTTONS
-}
+import org.oppia.app.player.state.itemviewmodel.SelectionItemInputType
 
 /**
  * A custom [RecyclerView] for displaying a variable list of items that may be selected by a user as part of the item
