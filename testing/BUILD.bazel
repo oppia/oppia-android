@@ -44,16 +44,46 @@ kt_android_library(
      visibility = ["//visibility:private"],
 )
 
+DEPS = [
+    #"testing_tests",
+    ":FakeExceptionLoggerTest_lib",
+    ":dagger",
+    "@robolectric//bazel:android-all",
+    artifact("org.jetbrains.kotlin:kotlin-reflect"),
+    artifact("org.robolectric:robolectric"),
+    ":testing",
+    "//utility",
+    "//model",
+    artifact("com.google.truth:truth"),
+    artifact("androidx.test.ext:junit"),
+]
+
+DEPS2 = [
+    #"testing_tests",
+    ":dagger",
+    "@robolectric//bazel:android-all",
+    artifact("org.jetbrains.kotlin:kotlin-reflect"),
+    artifact("org.robolectric:robolectric"),
+    ":testing",
+    "//utility",
+    "//model",
+    artifact("com.google.truth:truth"),
+    artifact("androidx.test.ext:junit"),
+]
+
+
 testing_test(
     name = "FakeEventLoggerTest",
     src = ["src/test/java/org/oppia/testing/FakeEventLoggerTest.kt"],
     test_class = "org.oppia.testing.FakeEventLoggerTest",
+    deps = DEPS,
 )
 
 testing_test(
     name = "FakeExceptionLoggerTest",
     src = ["src/test/java/org/oppia/testing/FakeExceptionLoggerTest.kt"],
     test_class = "org.oppia.testing.FakeExceptionLoggerTest",
+    deps = DEPS2,
 )
 
 dagger_rules()
