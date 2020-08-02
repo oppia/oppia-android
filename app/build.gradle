@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
@@ -43,6 +45,9 @@ android {
     execution 'ANDROIDX_TEST_ORCHESTRATOR'
     unitTests {
       includeAndroidResources = true
+      all {
+        maxHeapSize = "1024m"
+      }
     }
     animationsDisabled = true
   }
@@ -82,12 +87,16 @@ dependencies {
       'com.github.bumptech.glide:glide:4.9.0',
       'com.google.android.material:material:1.2.0-alpha02',
       'com.google.dagger:dagger:2.24',
+      'com.google.firebase:firebase-analytics-ktx:17.4.2',
+      'com.google.firebase:firebase-core:17.4.2',
+      'com.google.firebase:firebase-crashlytics:17.0.0',
       'com.google.guava:guava:28.1-android',
+      'com.jackandphantom.android:circularimageview:1.2.0',
       'de.hdodenhof:circleimageview:3.0.1',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
       'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1',
       'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.1',
-      'org.mockito:mockito-core:2.7.22',
+      'org.mockito:mockito-core:2.7.22'
   )
   testImplementation(
       'androidx.test:core:1.2.0',
@@ -96,9 +105,11 @@ dependencies {
       'androidx.test.espresso:espresso-intents:3.1.0',
       'androidx.test.ext:junit:1.1.1',
       'com.google.truth:truth:0.43',
+      'org.robolectric:annotations:4.3',
       'org.robolectric:robolectric:4.3',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
       'org.mockito:mockito-core:2.7.22',
+      project(":testing"),
   )
   androidTestImplementation(
       'androidx.test:core:1.2.0',
@@ -110,7 +121,24 @@ dependencies {
       'com.google.truth:truth:0.43',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
       'org.mockito:mockito-android:2.7.22',
+      'org.robolectric:annotations:4.3',
   )
+  // Adding the testing module directly causes duplicates of the below groups so we need to
+  // exclude them before adding the testing module to the androidTestImplementation dependencies
+  androidTestImplementation (project(":testing")) {
+    exclude group: 'org.apache.maven', module: 'maven-artifact'
+    exclude group: 'org.apache.maven', module: 'maven-artifact-manager'
+    exclude group: 'org.apache.maven', module: 'maven-model'
+    exclude group: 'org.apache.maven', module: 'maven-plugin-registry'
+    exclude group: 'org.apache.maven', module: 'maven-profile'
+    exclude group: 'org.apache.maven', module: 'maven-project'
+    exclude group: 'org.apache.maven', module: 'maven-settings'
+    exclude group: 'org.apache.maven', module: 'maven-error-diagnostics'
+    exclude group: 'org.apache.maven', module: 'maven-ant-tasks'
+    exclude group: "org.apache.maven.wagon"
+    exclude group: "org.codehaus.plexus"
+    exclude group: "org.robolectric"
+  }
   androidTestUtil(
       'androidx.test:orchestrator:1.2.0',
   )
@@ -126,6 +154,8 @@ dependencies {
   // TODO (#59): Remove this once Bazel is introduced
   api project(':data')
   implementation project(":model")
+  testImplementation project(":model")
+  androidTestImplementation project(":model")
   implementation project(":domain")
   implementation project(":utility")
 }

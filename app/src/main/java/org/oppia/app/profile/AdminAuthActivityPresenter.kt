@@ -4,6 +4,8 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.app.R
@@ -30,7 +32,10 @@ class AdminAuthActivityPresenter @Inject constructor(
 
   /** Binds ViewModel and sets up text and button listeners. */
   fun handleOnCreate() {
-    binding = DataBindingUtil.setContentView<AdminAuthActivityBinding>(activity, R.layout.admin_auth_activity)
+    binding = DataBindingUtil.setContentView<AdminAuthActivityBinding>(
+      activity,
+      R.layout.admin_auth_activity
+    )
     binding.adminAuthToolbar.setNavigationOnClickListener {
       (activity as AdminAuthActivity).finish()
     }
@@ -52,6 +57,15 @@ class AdminAuthActivityPresenter @Inject constructor(
       override fun afterTextChanged(confirmPin: Editable?) {}
       override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {}
     })
+
+    binding.adminAuthInputPin.addEditorActionListener(
+      TextView.OnEditorActionListener { _, actionId, _ ->
+        if (actionId == EditorInfo.IME_ACTION_DONE) {
+          binding.adminAuthSubmitButton.callOnClick()
+        }
+        false
+      }
+    )
 
     binding.adminAuthSubmitButton.setOnClickListener {
       val inputPin = binding.adminAuthInputPin.getInput()
@@ -84,19 +98,23 @@ class AdminAuthActivityPresenter @Inject constructor(
   private fun setTitleAndSubTitle(binding: AdminAuthActivityBinding?) {
     when (activity.intent.getIntExtra(KEY_ADMIN_AUTH_ENUM, 0)) {
       AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
-        binding?.adminAuthToolbar?.title = context.resources.getString(R.string.administrator_controls)
-        binding?.adminAuthHeadingTextview?.text = context.resources.getString(R.string.admin_auth_heading)
-        binding?.adminAuthSubText?.text = context.resources.getString(R.string.admin_auth_admin_controls_sub)
+        binding?.adminAuthToolbar?.title =
+          context.resources.getString(R.string.administrator_controls)
+        binding?.adminAuthHeadingTextview?.text =
+          context.resources.getString(R.string.admin_auth_heading)
+        binding?.adminAuthSubText?.text =
+          context.resources.getString(R.string.admin_auth_admin_controls_sub)
       }
       AdminAuthEnum.PROFILE_ADD_PROFILE.value -> {
         binding?.adminAuthToolbar?.title = context.resources.getString(R.string.add_profile_title)
-        binding?.adminAuthHeadingTextview?.text = context.resources.getString(R.string.admin_auth_heading)
+        binding?.adminAuthHeadingTextview?.text =
+          context.resources.getString(R.string.admin_auth_heading)
         binding?.adminAuthSubText?.text = context.resources.getString(R.string.admin_auth_sub)
       }
     }
   }
 
-  fun   handleOnSavedInstanceState(bundle: Bundle) {
+  fun handleOnSavedInstanceState(bundle: Bundle) {
     bundle.putString(KEY_ADMIN_AUTH_INPUT_ERROR_MESSAGE, authViewModel.errorMessage.get())
     bundle.putString(KEY_ADMIN_AUTH_INPUT_PASSWORD, binding.adminAuthInputPin.getInput())
   }

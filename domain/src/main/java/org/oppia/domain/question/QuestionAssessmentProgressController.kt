@@ -4,18 +4,25 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.oppia.app.model.AnsweredQuestionOutcome
 import org.oppia.app.model.EphemeralQuestion
-import org.oppia.app.model.EphemeralState
-import org.oppia.app.model.InteractionObject
-import org.oppia.app.model.PendingState
+import org.oppia.app.model.Hint
 import org.oppia.app.model.Question
-import org.oppia.app.model.SubtitledHtml
+import org.oppia.app.model.Solution
+import org.oppia.app.model.State
+import org.oppia.app.model.UserAnswer
+import org.oppia.domain.classify.AnswerClassificationController
+import org.oppia.domain.question.QuestionAssessmentProgress.TrainStage
+import org.oppia.util.data.AsyncDataSubscriptionManager
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
+import org.oppia.util.data.DataProviders.NestedTransformedDataProvider
+import org.oppia.util.logging.ExceptionLogger
+import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.concurrent.withLock
 
-private const val EPHEMERAL_QUESTION_DATA_PROVIDER_ID = "EphemeralQuestionDataProvider"
+private const val CURRENT_QUESTION_DATA_PROVIDER_ID = "CurrentQuestionDataProvider"
 private const val EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID = "EmptyQuestionsListDataProvider"
 
 /**
@@ -28,25 +35,47 @@ private const val EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID = "EmptyQuestionsListDat
  * that uses of this class do not specifically depend on ordering.
  */
 @Singleton
-class QuestionAssessmentProgressController @Inject constructor(private val dataProviders: DataProviders) {
-  private var inProgressQuestionsListDataProvider: DataProvider<List<Question>> = createEmptyQuestionsListDataProvider()
-  private var playing: Boolean = false
-  private val ephemeralQuestionDataSource: DataProvider<EphemeralQuestion> by lazy {
-    dataProviders.transformAsync(
-      EPHEMERAL_QUESTION_DATA_PROVIDER_ID, inProgressQuestionsListDataProvider, this::computeEphemeralQuestionStateAsync
-    )
-  }
+class QuestionAssessmentProgressController @Inject constructor(
+  private val dataProviders: DataProviders,
+  private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
+  private val answerClassificationController: AnswerClassificationController,
+  private val exceptionLogger: ExceptionLogger
+) {
+  // TODO(#247): Add support for populating the list of skill IDs to review at the end of the training session.
+  // TODO(#248): Add support for the assessment ending prematurely due to learner demonstrating sufficient proficiency.
 
-  internal fun beginQuestionTrainingSession(questionsListDataProvider: DataProvider<List<Question>>) {
-    check(!playing) { "Cannot start a new training session until the previous one is completed" }
-    inProgressQuestionsListDataProvider = questionsListDataProvider
-    playing = true
+  private val progress = QuestionAssessmentProgress()
+  private val progressLock = ReentrantLock()
+  private val currentQuestionDataProvider: NestedTransformedDataProvider<EphemeralQuestion> =
+    createCurrentQuestionDataProvider(createEmptyQuestionsListDataProvider())
+
+  internal fun beginQuestionTrainingSession(
+    questionsListDataProvider: DataProvider<List<Question>>
+  ) {
+    progressLock.withLock {
+      check(progress.trainStage == TrainStage.NOT_IN_TRAINING_SESSION) {
+        "Cannot start a new training session until the previous one is completed."
+      }
+
+      progress.advancePlayStageTo(TrainStage.LOADING_TRAINING_SESSION)
+      currentQuestionDataProvider.setBaseDataProvider(
+        questionsListDataProvider,
+        this::retrieveCurrentQuestionAsync
+      )
+      asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_DATA_PROVIDER_ID)
+    }
   }
 
   internal fun finishQuestionTrainingSession() {
-    check(playing) { "Cannot stop a new training session which wasn't started" }
-    playing = false
-    inProgressQuestionsListDataProvider = createEmptyQuestionsListDataProvider()
+    progressLock.withLock {
+      check(progress.trainStage != TrainStage.NOT_IN_TRAINING_SESSION) {
+        "Cannot stop a new training session which wasn't started."
+      }
+      progress.advancePlayStageTo(TrainStage.NOT_IN_TRAINING_SESSION)
+      currentQuestionDataProvider.setBaseDataProvider(
+        createEmptyQuestionsListDataProvider(), this::retrieveCurrentQuestionAsync
+      )
+    }
   }
 
   /**
@@ -75,28 +104,132 @@ class QuestionAssessmentProgressController @Inject constructor(private val dataP
    * [getCurrentQuestion]. Also note that the returned [LiveData] will only have a single value and not be reused after
    * that point.
    */
-  fun submitAnswer(answer: InteractionObject): LiveData<AsyncResult<AnsweredQuestionOutcome>> {
-    val outcome = AnsweredQuestionOutcome.newBuilder()
-      .setFeedback(SubtitledHtml.newBuilder().setHtml("Response to answer: $answer"))
-      .setIsCorrectAnswer(true)
-      .build()
-    return MutableLiveData(AsyncResult.success(outcome))
+  fun submitAnswer(answer: UserAnswer): LiveData<AsyncResult<AnsweredQuestionOutcome>> {
+    try {
+      progressLock.withLock {
+        check(progress.trainStage != TrainStage.NOT_IN_TRAINING_SESSION) {
+          "Cannot submit an answer if a training session has not yet begun."
+        }
+        check(progress.trainStage != TrainStage.LOADING_TRAINING_SESSION) {
+          "Cannot submit an answer while the training session is being loaded."
+        }
+        check(progress.trainStage != TrainStage.SUBMITTING_ANSWER) {
+          "Cannot submit an answer while another answer is pending."
+        }
+
+        // Notify observers that the submitted answer is currently pending.
+        progress.advancePlayStageTo(TrainStage.SUBMITTING_ANSWER)
+        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_DATA_PROVIDER_ID)
+
+        lateinit var answeredQuestionOutcome: AnsweredQuestionOutcome
+        try {
+          val topPendingState = progress.stateDeck.getPendingTopState()
+          val outcome =
+            answerClassificationController.classify(topPendingState.interaction, answer.answer)
+          answeredQuestionOutcome = progress.stateList.computeAnswerOutcomeForResult(outcome)
+          progress.stateDeck.submitAnswer(answer, answeredQuestionOutcome.feedback)
+          // Do not proceed unless the user submitted the correct answer.
+          if (answeredQuestionOutcome.isCorrectAnswer) {
+            progress.completeCurrentQuestion()
+            if (!progress.isAssessmentCompleted()) {
+              // Only push the next state if the assessment isn't completed.
+              progress.stateDeck.pushState(progress.getNextState(), prohibitSameStateName = false)
+            } else {
+              // Otherwise, push a synthetic state for the end of the session.
+              progress.stateDeck.pushState(
+                State.getDefaultInstance(),
+                prohibitSameStateName = false
+              )
+            }
+          }
+        } finally {
+          // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always
+          // submitting answer' situation. This can specifically happen if answer classification throws an exception.
+          progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
+        }
+
+        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_DATA_PROVIDER_ID)
+
+        return MutableLiveData(AsyncResult.success(answeredQuestionOutcome))
+      }
+    } catch (e: Exception) {
+      exceptionLogger.logException(e)
+      return MutableLiveData(AsyncResult.failed(e))
+    }
   }
 
-  /**
-   * Navigates to the previous question already answered. If the learner is currently on the first question, this method
-   * will throw an exception. Calling code is responsible for ensuring this method is only called when it's possible to
-   * navigate backward.
-   *
-   * @return a one-time [LiveData] indicating whether the movement to the previous question was successful, or a failure
-   *     if question navigation was attempted at an invalid time (such as when viewing the first question). It's
-   *     recommended that calling code only listen to this result for failures, and instead rely on [getCurrentQuestion]
-   *     for observing a successful transition to another state.
-   */
-  fun moveToPreviousQuestion(): LiveData<AsyncResult<Any?>> {
-    check(playing) { "Cannot move to the previous question unless an active training session is ongoing" }
-    return MutableLiveData(AsyncResult.success<Any?>(null))
+  fun submitHintIsRevealed(state: State, hintIsRevealed: Boolean, hintIndex: Int): LiveData<AsyncResult<Hint>> { // ktlint-disable max-line-length
+    try {
+      progressLock.withLock {
+        check(progress.trainStage != TrainStage.NOT_IN_TRAINING_SESSION) {
+          "Cannot submit an answer if a training session has not yet begun."
+        }
+        check(progress.trainStage != TrainStage.LOADING_TRAINING_SESSION) {
+          "Cannot submit an answer while the training session is being loaded."
+        }
+        check(progress.trainStage != TrainStage.SUBMITTING_ANSWER) {
+          "Cannot submit an answer while another answer is pending."
+        }
+        lateinit var hint: Hint
+        try {
+          progress.stateDeck.submitHintRevealed(state, hintIsRevealed, hintIndex)
+          hint = progress.stateList.computeHintForResult(
+            state,
+            hintIsRevealed,
+            hintIndex
+          )
+          progress.stateDeck.pushStateForHint(state, hintIndex)
+        } finally {
+          // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always
+          // showing hint' situation. This can specifically happen if hint throws an exception.
+          progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
+        }
+        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_DATA_PROVIDER_ID)
+        return MutableLiveData(AsyncResult.success(hint))
+      }
+    } catch (e: Exception) {
+      exceptionLogger.logException(e)
+      return MutableLiveData(AsyncResult.failed(e))
+    }
   }
+
+  /* ktlint-disable max-line-length */
+  fun submitSolutionIsRevealed(state: State, solutionIsRevealed: Boolean): LiveData<AsyncResult<Solution>> {
+    try {
+      progressLock.withLock {
+        check(progress.trainStage != TrainStage.NOT_IN_TRAINING_SESSION) {
+          "Cannot submit an answer if a training session has not yet begun."
+        }
+        check(progress.trainStage != TrainStage.LOADING_TRAINING_SESSION) {
+          "Cannot submit an answer while the training session is being loaded."
+        }
+        check(progress.trainStage != TrainStage.SUBMITTING_ANSWER) {
+          "Cannot submit an answer while another answer is pending."
+        }
+        lateinit var solution: Solution
+        try {
+
+          progress.stateDeck.submitSolutionRevealed(state, solutionIsRevealed)
+          solution = progress.stateList.computeSolutionForResult(
+            state,
+            solutionIsRevealed
+          )
+          progress.stateDeck.pushStateForSolution(state)
+        } finally {
+          // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always
+          // showing solution' situation. This can specifically happen if solution throws an exception.
+          progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
+        }
+
+        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_DATA_PROVIDER_ID)
+        return MutableLiveData(AsyncResult.success(solution))
+      }
+    } catch (e: Exception) {
+      exceptionLogger.logException(e)
+      return MutableLiveData(AsyncResult.failed(e))
+    }
+  }
+  /* ktlint-enable max-line-length */
 
   /**
    * Navigates to the next question in the assessment. This method is only valid if the current [EphemeralQuestion]
@@ -112,15 +245,32 @@ class QuestionAssessmentProgressController @Inject constructor(private val dataP
    *     [getCurrentQuestion] for observing a successful transition to another question.
    */
   fun moveToNextQuestion(): LiveData<AsyncResult<Any?>> {
-    check(playing) { "Cannot move to the next question unless an active training session is ongoing" }
-    return MutableLiveData(AsyncResult.success<Any?>(null))
+    try {
+      progressLock.withLock {
+        check(progress.trainStage != TrainStage.NOT_IN_TRAINING_SESSION) {
+          "Cannot navigate to a next question if a training session has not begun."
+        }
+        check(progress.trainStage != TrainStage.SUBMITTING_ANSWER) {
+          "Cannot navigate to a next question if an answer submission is pending."
+        }
+        progress.stateDeck.navigateToNextState()
+        // Track whether the learner has moved to a new card.
+        if (progress.isViewingMostRecentQuestion()) {
+          progress.processNavigationToNewQuestion()
+        }
+        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_DATA_PROVIDER_ID)
+      }
+      return MutableLiveData(AsyncResult.success<Any?>(null))
+    } catch (e: Exception) {
+      exceptionLogger.logException(e)
+      return MutableLiveData(AsyncResult.failed(e))
+    }
   }
 
   /**
    * Returns a [LiveData] monitoring the current [EphemeralQuestion] the learner is currently viewing. If this state
    * corresponds to a a terminal state, then the learner has completed the training session. Note that
-   * [moveToPreviousQuestion] and [moveToNextQuestion] will automatically update observers of this live data when the
-   * next question is navigated to.
+   * [moveToNextQuestion] will automatically update observers of this live data when the next question is navigated to.
    *
    * This [LiveData] may switch from a completed to a pending result during transient operations like submitting an
    * answer via [submitAnswer]. Calling code should be made resilient to this by caching the current question object to
@@ -128,47 +278,81 @@ class QuestionAssessmentProgressController @Inject constructor(private val dataP
    * across configuration changes if needed since it cannot rely on this [LiveData] for immediate UI reconstitution
    * after configuration changes.
    *
-   * The underlying question returned by this function can only be changed by calls to [moveToNextQuestion] and
-   * [moveToPreviousQuestion], or the question training controller if another question session begins. UI code can be
-   * confident only calls from the UI layer will trigger changes here to ensure atomicity between receiving and making
-   * question state changes.
+   * The underlying question returned by this function can only be changed by calls to [moveToNextQuestion], or the
+   * question training controller if another question session begins. UI code can be confident only calls from the UI
+   * layer will trigger changes here to ensure atomicity between receiving and making question state changes.
    *
    * This method is safe to be called before a training session has started. If there is no ongoing session, it should
-   * return a pending state.
+   * return a pending state, which means the returned value can switch from a success or failure state back to pending.
    */
   fun getCurrentQuestion(): LiveData<AsyncResult<EphemeralQuestion>> {
-    return dataProviders.convertToLiveData(ephemeralQuestionDataSource)
+    return progressLock.withLock {
+      dataProviders.convertToLiveData(currentQuestionDataProvider)
+    }
+  }
+
+  private fun createCurrentQuestionDataProvider(
+    questionsListDataProvider: DataProvider<List<Question>>
+  ): NestedTransformedDataProvider<EphemeralQuestion> {
+    return dataProviders.createNestedTransformedDataProvider(
+      CURRENT_QUESTION_DATA_PROVIDER_ID,
+      questionsListDataProvider,
+      this::retrieveCurrentQuestionAsync
+    )
   }
 
   @Suppress("RedundantSuspendModifier") // 'suspend' expected by DataProviders.
-  private suspend fun computeEphemeralQuestionStateAsync(
+  private suspend fun retrieveCurrentQuestionAsync(
     questionsList: List<Question>
   ): AsyncResult<EphemeralQuestion> {
-    if (!playing) {
-      return AsyncResult.pending()
-    }
-    return try {
-      AsyncResult.success(computeEphemeralQuestionState(questionsList))
-    } catch (e: Exception) {
-      AsyncResult.failed(e)
+    progressLock.withLock {
+      return try {
+        when (progress.trainStage) {
+          TrainStage.NOT_IN_TRAINING_SESSION -> AsyncResult.pending()
+          TrainStage.LOADING_TRAINING_SESSION -> {
+            // If the assessment hasn't yet been initialized, initialize it
+            // now that a list of questions is available.
+            initializeAssessment(questionsList)
+            progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
+            AsyncResult.success(retrieveEphemeralQuestionState(questionsList))
+          }
+          TrainStage.VIEWING_STATE -> AsyncResult.success(
+            retrieveEphemeralQuestionState(
+              questionsList
+            )
+          )
+          TrainStage.SUBMITTING_ANSWER -> AsyncResult.pending()
+        }
+      } catch (e: Exception) {
+        exceptionLogger.logException(e)
+        AsyncResult.failed(e)
+      }
     }
   }
 
-  private fun computeEphemeralQuestionState(questionsList: List<Question>): EphemeralQuestion {
+  private fun retrieveEphemeralQuestionState(questionsList: List<Question>): EphemeralQuestion {
+    val ephemeralState = progress.stateDeck.getCurrentEphemeralState()
+    val currentQuestionIndex = progress.getCurrentQuestionIndex()
+    val ephemeralQuestionBuilder = EphemeralQuestion.newBuilder()
+      .setEphemeralState(ephemeralState)
+      .setCurrentQuestionIndex(currentQuestionIndex)
+      .setTotalQuestionCount(progress.getTotalQuestionCount())
+      .setInitialTotalQuestionCount(progress.getTotalQuestionCount())
+    if (currentQuestionIndex < questionsList.size) {
+      ephemeralQuestionBuilder.question = questionsList[currentQuestionIndex]
+    }
+    return ephemeralQuestionBuilder.build()
+  }
+
+  private fun initializeAssessment(questionsList: List<Question>) {
     check(questionsList.isNotEmpty()) { "Cannot start a training session with zero questions." }
-    val currentQuestion = questionsList.first()
-    return EphemeralQuestion.newBuilder()
-      .setEphemeralState(EphemeralState.newBuilder()
-        .setState(currentQuestion.questionState)
-        .setPendingState(PendingState.getDefaultInstance()))
-      .setCurrentQuestionIndex(0)
-      .setTotalQuestionCount(questionsList.size)
-      .setInitialTotalQuestionCount(questionsList.size)
-      .build()
+    progress.initialize(questionsList)
   }
 
   /** Returns a temporary [DataProvider] that always provides an empty list of [Question]s. */
   private fun createEmptyQuestionsListDataProvider(): DataProvider<List<Question>> {
-    return dataProviders.createInMemoryDataProvider(EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID) { listOf<Question>() }
+    return dataProviders.createInMemoryDataProvider(EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID) {
+      listOf<Question>()
+    }
   }
 }

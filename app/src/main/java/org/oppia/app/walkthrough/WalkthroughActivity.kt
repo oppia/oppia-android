@@ -8,7 +8,8 @@ import javax.inject.Inject
 
 /** Activity that contains the walkthrough flow for users. */
 class WalkthroughActivity : InjectableAppCompatActivity(), WalkthroughFragmentChangeListener {
-  @Inject lateinit var walkthroughActivityPresenter: WalkthroughActivityPresenter
+  @Inject
+  lateinit var walkthroughActivityPresenter: WalkthroughActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -30,7 +31,8 @@ class WalkthroughActivity : InjectableAppCompatActivity(), WalkthroughFragmentCh
   }
 
   companion object {
-    internal const val WALKTHROUGH_ACTIVITY_INTERNAL_PROFILE_ID_KEY = "WalkthroughActivity.internal_profile_id"
+    internal const val WALKTHROUGH_ACTIVITY_INTERNAL_PROFILE_ID_KEY =
+      "WalkthroughActivity.internal_profile_id"
 
     fun createWalkthroughActivityIntent(context: Context, internalProfileId: Int): Intent {
       val intent = Intent(context, WalkthroughActivity::class.java)

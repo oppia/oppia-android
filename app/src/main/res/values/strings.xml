@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="app_name">Oppia</string>
-  <string name="nav_header_title">Sean</string>
   <string name="nav_header_desc">Navigation header</string>
   <string name="menu_home">Home</string>
   <string name="menu_options">Options</string>
@@ -35,15 +34,17 @@
   <string name="stop_exploration_dialog_leave_button">Leave</string>
   <string name="topic_practice_master_these_skills">Master These Skills</string>
   <string name="topic_name_text_view">Ratios and Proportional Reasoning</string>
-  <string name="topic_practice_skills_description">Select or unselect skills that you want to practice</string>
+  <string name="topic_practice_skills_description">Select skills that you would like to practice.</string>
   <string name="topic_practice_start">Start</string>
   <string name="state_continue_button">Continue</string>
   <string name="state_continue_submit">Submit</string>
-  <string name="previous_state_description">Navigate to previous state</string>
-  <string name="next_state_description">Navigate to next state</string>
+  <string name="previous_state_description">Navigate to the previous card</string>
+  <string name="next_state_description">Navigate to the next card</string>
   <string name="state_submit_button">Submit</string>
+  <string name="lesson_replay_button_text">Replay</string>
   <string name="state_end_exploration_button">Return To Topic</string>
   <string name="previous_responses_header">Previous Responses (%d)</string>
+  <string name="image_interaction_answer_text">Clicks on %s</string>
   <string name="state_learn_again_button">Learn Again</string>
   <string name="topic_download_text">(%s)</string>
   <string name="see_more">See More</string>
@@ -56,6 +57,7 @@
   <string name="lessons">Lessons</string>
   <string name="practice">Practice</string>
   <string name="revision">Revision</string>
+  <string name="topic_name">Topic: %s</string>
   <string name="topic">Topic</string>
   <string name="topic_story_progress_percentage">%s\%%</string>
   <string name="topic_play_chapter_index">%s.</string>
@@ -78,6 +80,11 @@
   <string name="recently_played_activity">Recently-Played Stories</string>
   <string name="topic_downloaded">Topic Downloaded</string>
   <string name="downloaded">Downloaded</string>
+  <string name="question_player_title">Train Mode</string>
+  <string name="question_training_session_progress">Question %d of %d</string>
+  <string name="question_training_session_progress_finished">Complete</string>
+  <string name="question_training_session_finished_header">Finished</string>
+  <string name="question_training_session_finished_message">You have finished all of the questions! You can choose to play another set of questions, or return to the topic.</string>
   <string name="status_in_progress">In Progress</string>
   <string name="status_completed">Completed</string>
   <string name="show_hide_chapter_list">Show/Hide chapter list of %s</string>
@@ -91,7 +98,7 @@
   <string name="fraction_error_larger_than_seven_digits">None of the numbers in the fraction should have more than 7 digits.</string>
   <string name="number_error_starting_with_floating_point">Please begin your answer with a number (e.g.,”0” in 0.5).</string>
   <string name="number_error_invalid_format">Please enter a valid number.</string>
-  <string name="number_error_larger_than_fifteen_characters">The answer can contain at most 15 characters (i.e.,[0-9] or "." or "-").</string>
+  <string name="number_error_larger_than_fifteen_characters">The answer can contain at most 15 digits (0–9) or symbols (. or -).</string>
   <string name="unknown_size">Unknown size</string>
   <string name="size_bytes">%d Bytes</string>
   <string name="size_kb">%d KB</string>
@@ -135,12 +142,18 @@
     <item quantity="other">
       %d Stories Completed
     </item>
+    <item quantity="zero">
+      %d Stories Completed
+    </item>
   </plurals>
   <plurals name="ongoing_topic_count">
     <item quantity="one">
       1 Topic in Progress
     </item>
     <item quantity="other">
+      %d Topics in Progress
+    </item>
+    <item quantity="zero">
       %d Topics in Progress
     </item>
   </plurals>
@@ -150,7 +163,7 @@
   <string name="profile_chooser_select">Select your profile</string>
   <string name="profile_chooser_add">Add Profile</string>
   <string name="set_up_multiple_profiles">Set up Multiple Profiles</string>
-  <string name="set_up_multiple_profiles_description">Add up to 10 users to your account.Perfect for families and classrooms.</string>
+  <string name="set_up_multiple_profiles_description">Add up to 10 users to your account. Perfect for families and classrooms.</string>
   <string name="profile_chooser_administrator_controls">Administrator Controls</string>
   <string name="profile_chooser_language">Language</string>
   <!-- AdminAuthActivity -->
@@ -176,7 +189,7 @@
   <string name="add_profile_input_pin">3-Digit PIN*</string>
   <string name="add_profile_input_confirm_pin">Confirm 3-Digit PIN*</string>
   <string name="add_profile_allow_download_heading">Allow Download Access</string>
-  <string name="add_profile_allow_download_sub">User is able to download and delete content without Administrator password. Only available with PIN.</string>
+  <string name="add_profile_allow_download_sub">User is able to download and delete content without Administrator PIN.</string>
   <string name="add_profile_create_btn">Create</string>
   <string name="add_profile_close">Close</string>
   <string name="add_profile_pin_info">With a PIN, nobody else can access a profile besides this assigned user.</string>
@@ -228,9 +241,9 @@
   <string name="home_activity_back_dialog_message">Would you like to exit your profile?</string>
   <string name="home_activity_back_dialog_cancel">Cancel</string>
   <string name="home_activity_back_dialog_exit">Exit</string>
-  <!-- ProfileListActivity. -->
+  <!-- ProfileListActivity -->
   <string name="profile_list_activity_title">Profiles</string>
-  <!-- ProfileEditActivity. -->
+  <!-- ProfileEditActivity -->
   <string name="profile_edit_created">Created on %s</string>
   <string name="profile_last_used">Last used </string>
   <string name="profile_edit_rename">Rename</string>
@@ -247,11 +260,11 @@
   <string name="profile_picture_edit_alert_dialog_cancel_button">Cancel</string>
   <string name="profile_picture_edit_alert_dialog_view_profile_picture">View Profile Picture</string>
   <string name="profile_picture_edit_alert_dialog_choose_from_library">Choose From Library</string>
-  <!-- ProfileRenameActivity. -->
+  <!-- ProfileRenameActivity -->
   <string name="profile_rename_title">Rename Profile</string>
   <string name="profile_rename_label">New Name</string>
   <string name="profile_rename_save">save</string>
-  <!-- ProfileResetPinActivity. -->
+  <!-- ProfileResetPinActivity -->
   <string name="profile_reset_pin_title">Reset PIN</string>
   <string name="profile_reset_pin_main">Enter a new PIN for the user to enter when accessing their profile.</string>
   <string name="profile_reset_pin_user_pin_label">3-Digit PIN</string>
@@ -312,19 +325,26 @@
   <string name="no">No…</string>
   <string name="pick_a_different_topic">Pick a \ndifferent topic.</string>
   <string name="are_you_interested">Are you interested in:\n%s?</string>
-  <!-- HintsAndSolutionFragment -->
+  <!-- HintsAndSolutionDialogFragment -->
   <string name="hints_toolbar_title">Hints</string>
   <string name="reveal_solution">Reveal Solution</string>
   <string name="reveal_hint">Reveal Hint</string>
   <string name="show_hide_hint_list">Show/Hide hint list of %s</string>
   <string name="show_hide_solution_list">Show/Hide solution</string>
   <string name="the_only_solution_is">The only solution is :  </string>
-  <string name="this_will_reveal_the_solution">This will reveal the solution. Are you Sure</string>
+  <string name="this_will_reveal_the_solution">This will reveal the solution. Are you sure?</string>
   <string name="reveal">Reveal</string>
   <!-- TextViewBindingAdapters -->
   <string name="just_now">just now</string>
   <string name="time_ago">%s ago</string>
   <string name="yesterday">yesterday</string>
+  <string name="return_to_topic">Return to topic</string>
+  <string name="explanation">Explanation:</string>
+  <string name="drag_and_drop_interaction_group_merge_hint">If two items are equal, merge them.</string>
+  <string name="link_to_item_below">Link to item below</string>
+  <string name="unlink_items">Unlink Items</string>
+  <string name="move_item_down">Move Item Down</string>
+  <string name="move_item_up">Move Item Up</string>
   <plurals name="minutes">
     <item quantity="one">a minute</item>
     <item quantity="other">%d minutes</item>
@@ -337,4 +357,6 @@
     <item quantity="one">a day</item>
     <item quantity="other">%d days</item>
   </plurals>
+  <!-- ViewTags -->
+  <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
 </resources>

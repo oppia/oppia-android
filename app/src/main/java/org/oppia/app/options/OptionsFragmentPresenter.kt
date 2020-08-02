@@ -45,7 +45,11 @@ class OptionsFragmentPresenter @Inject constructor(
   private var isTablet = false
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    binding = OptionsFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding = OptionsFragmentBinding.inflate(
+      inflater,
+      container,
+      /* attachToRoot= */ false
+    )
     val viewModel = getOptionControlsItemViewModel()
 
     internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
@@ -98,17 +102,26 @@ class OptionsFragmentPresenter @Inject constructor(
       .build()
   }
 
-  private fun bindStoryTextSize(binding: OptionStoryTextSizeBinding, model: OptionsStoryTextViewViewModel) {
+  private fun bindStoryTextSize(
+    binding: OptionStoryTextSizeBinding,
+    model: OptionsStoryTextViewViewModel
+  ) {
     model.isTablet.set(isTablet)
     binding.viewModel = model
   }
 
-  private fun bindAppLanguage(binding: OptionAppLanguageBinding, model: OptionsAppLanguageViewModel) {
+  private fun bindAppLanguage(
+    binding: OptionAppLanguageBinding,
+    model: OptionsAppLanguageViewModel
+  ) {
     model.isTablet.set(isTablet)
     binding.viewModel = model
   }
 
-  private fun bindAudioLanguage(binding: OptionAudioLanguageBinding, model: OptionsAudioLanguageViewModel) {
+  private fun bindAudioLanguage(
+    binding: OptionAudioLanguageBinding,
+    model: OptionsAudioLanguageViewModel
+  ) {
     model.isTablet.set(isTablet)
     binding.viewModel = model
   }
@@ -138,7 +151,10 @@ class OptionsFragmentPresenter @Inject constructor(
         storyTextSize = StoryTextSize.LARGE_TEXT_SIZE
       }
       getOptionControlsItemViewModel().getStoryTextSize(StoryTextSize.EXTRA_LARGE_TEXT_SIZE) -> {
-        profileManagementController.updateStoryTextSize(profileId, StoryTextSize.EXTRA_LARGE_TEXT_SIZE)
+        profileManagementController.updateStoryTextSize(
+          profileId,
+          StoryTextSize.EXTRA_LARGE_TEXT_SIZE
+        )
         storyTextSize = StoryTextSize.EXTRA_LARGE_TEXT_SIZE
       }
     }
@@ -227,4 +243,3 @@ class OptionsFragmentPresenter @Inject constructor(
     fragmentManager.beginTransaction().add(R.id.sub_options_placeholder,appLanguageFragment).commitNow()
   }
 }
-

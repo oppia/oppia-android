@@ -5,5 +5,4 @@ object Constants {
 
   /** Constant which defines successful API call */
   const val HTTP_OK = 200
-
 }

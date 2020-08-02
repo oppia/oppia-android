@@ -32,10 +32,10 @@ import org.oppia.app.BuildConfig
 import org.oppia.app.R
 import org.oppia.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.util.system.OppiaDateTimeFormatter
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
-import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -43,7 +43,11 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 class AppVersionActivityTest {
 
-  @Inject lateinit var context: Context
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var oppiaDateTimeFormatter: OppiaDateTimeFormatter
   private lateinit var lastUpdateDate: String
 
   @Before
@@ -51,7 +55,11 @@ class AppVersionActivityTest {
     Intents.init()
     setUpTestApplicationComponent()
 
-    val lastUpdateDateTime = context.packageManager.getPackageInfo(context.packageName, /* flags= */ 0).lastUpdateTime
+    val lastUpdateDateTime =
+      context.packageManager.getPackageInfo(
+        context.packageName,
+        /* flags= */ 0
+      ).lastUpdateTime
     lastUpdateDate = getDateTime(lastUpdateDateTime)!!
   }
 
@@ -73,43 +81,66 @@ class AppVersionActivityTest {
           )
         )
       ).check(matches(isDisplayed()))
-      onView(withText(String.format(context.resources.getString(R.string.app_last_update_date), lastUpdateDate))).check(
+      onView(
+        withText(
+          String.format(
+            context.resources.getString(R.string.app_last_update_date),
+            lastUpdateDate
+          )
+        )
+      ).check(
         matches(isDisplayed())
       )
     }
   }
 
   @Test
-  fun testAppVersionActivity_configurationChange_appVersionIsDisplayedCorrectly(){
-    onView(isRoot()).perform(orientationLandscape())
-    onView(
-      withId(
-        R.id.app_version_text_view
-      )
-    ).check(
-      matches(
-        withText(
-          String.format(context.resources.getString(R.string.app_version_name), BuildConfig.VERSION_NAME)
+  fun testAppVersionActivity_configurationChange_appVersionIsDisplayedCorrectly() {
+    launchAppVersionActivityIntent().use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(
+        withId(
+          R.id.app_version_text_view
+        )
+      ).check(
+        matches(
+          withText(
+            String.format(
+              context.resources.getString(R.string.app_version_name),
+              BuildConfig.VERSION_NAME
+            )
+          )
         )
       )
-    )
-    onView(
-      withId(
-        R.id.app_last_update_date_text_view
-      )
-    ).check(
-      matches(
-        withText(
-          String.format(context.resources.getString(R.string.app_last_update_date), lastUpdateDate)
+      onView(
+        withId(
+          R.id.app_last_update_date_text_view
+        )
+      ).check(
+        matches(
+          withText(
+            String.format(
+              context.resources.getString(R.string.app_last_update_date),
+              lastUpdateDate
+            )
+          )
         )
       )
-    )
+    }
   }
 
   @Test
   fun testAppVersionActivity_loadFragment_onBackPressed_displaysAdministratorControlsActivity() {
-    ActivityScenario.launch<AdministratorControlsActivity>(launchAdministratorControlsActivityIntent(0)).use {
-      onView(withId(R.id.administrator_controls_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
+    ActivityScenario.launch<AdministratorControlsActivity>(
+      launchAdministratorControlsActivityIntent(
+        0
+      )
+    ).use {
+      onView(withId(R.id.administrator_controls_list)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          3
+        )
+      )
       onView(withText(R.string.administrator_controls_app_version)).perform(click())
       intended(hasComponent(AppVersionActivity::class.java.name))
       onView(isRoot()).perform(pressBack())
@@ -117,15 +148,12 @@ class AppVersionActivityTest {
     }
   }
 
-  // TODO(#555): Create one central utility file from where we should access date format or even convert date timestamp to string from that file.
-  private fun getDateTime(l: Long): String? {
-    return try {
-      val sdf = SimpleDateFormat("dd MMMM yyyy", Locale.US)
-      val netDate = Date(l)
-      sdf.format(netDate)
-    } catch (e: Exception) {
-      e.toString()
-    }
+  private fun getDateTime(dateTimeTimestamp: Long): String? {
+    return oppiaDateTimeFormatter.formatDateFromDateString(
+      OppiaDateTimeFormatter.DD_MMM_YYYY,
+      dateTimeTimestamp,
+      Locale.US
+    )
   }
 
   private fun launchAppVersionActivityIntent(): ActivityScenario<AppVersionActivity> {
@@ -162,7 +190,9 @@ class AppVersionActivityTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@BlockingDispatcher blockingDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @BlockingDispatcher blockingDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return blockingDispatcher
     }
   }

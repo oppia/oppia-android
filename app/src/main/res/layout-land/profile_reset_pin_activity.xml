@@ -53,6 +53,8 @@
         android:layout_height="wrap_content"
         android:overScrollMode="never"
         android:scrollbars="none"
+        android:paddingBottom="168dp"
+        android:clipToPadding="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -60,7 +62,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:background="@color/white"
+          android:background="@drawable/general_item_background_border"
           android:paddingBottom="108dp">
 
           <TextView
@@ -81,8 +83,9 @@
             android:id="@+id/input_pin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="140dp"
-            android:layout_marginEnd="140dp"
+            android:layout_marginStart="168dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="168dp"
             app:isPasswordInput="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -95,8 +98,9 @@
             android:id="@+id/input_confirm_pin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="140dp"
-            android:layout_marginEnd="140dp"
+            android:layout_marginStart="168dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="168dp"
             app:isPasswordInput="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -110,7 +114,7 @@
             style="@style/StateButtonActive"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="168dp"
             android:background="@{viewModel.isButtonActive() ? @drawable/state_button_primary_background : @drawable/start_button_transparent_background}"
             android:clickable="@{viewModel.isButtonActive()}"

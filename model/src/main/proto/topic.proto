@@ -24,17 +24,14 @@ message Topic {
   // A list of summarized stories contained within this topic.
   repeated StorySummary story = 4;
 
-  // A list of summarized skills contained within this topic.
-  repeated SkillSummary skill = 5;
+  // A list of subtopic contained within this topic.
+  repeated Subtopic subtopic = 5;
 
   // The thumbnail corresponding to this topic.
   LessonThumbnail topic_thumbnail = 6;
 
   // The number of on-disk bytes this topic consumes.
   int64 disk_size_bytes = 7;
-
-  // A list of subtopic contained within this topic.
-  repeated Subtopic subtopic = 8;
 }
 
 // Corresponds to a concept card that can be displayed for a specific skill.
@@ -100,13 +97,6 @@ message SkillSummary {
 
   // A brief description of the skill.
   string description = 2;
-
-  // A URL corresponding to a thumbnail associated with this skill. If this is absent, the UI should show a reasonable
-  // alternative.
-  string thumbnail_url = 3;
-
-  // The thumbnail corresponding to this skill.
-  SkillThumbnail skill_thumbnail = 4;
 }
 
 // Corresponds to the on-disk storage representing all available topics for play.
@@ -204,26 +194,11 @@ message TopicSummary {
   // The structural version of the topic.
   int32 version = 3;
 
-  // The number of subtopics.
-  int32 subtopic_count = 4;
-
-  // The number of canonical stories.
-  int32 canonical_story_count = 5;
-
-  // The number of skills that have yet to be categorized.
-  int32 uncategorized_skill_count = 6;
-
-  // The number of additional, non-canonical stories.
-  int32 additional_story_count = 7;
-
-  // The total number of skills associated with this topic.
-  int32 total_skill_count = 8;
-
   // The total number of lessons associated with this topic.
-  int32 total_chapter_count = 9;
+  int32 total_chapter_count = 4;
 
   // The associated thumbnail that should be displayed with this topic summary.
-  LessonThumbnail topic_thumbnail = 10;
+  LessonThumbnail topic_thumbnail = 5;
 }
 
 // Represents the play state of a single chapter.
@@ -292,7 +267,7 @@ message CellularDataPreference {
 // Corresponds to a single subtopic.
 message Subtopic {
   // The ID of the subtopic.
-  string subtopic_id = 1;
+  int32 subtopic_id = 1;
 
   // The title of the subtopic.
   string title = 2;
@@ -300,12 +275,8 @@ message Subtopic {
   // The list of skill ids associated with the subtopic.
   repeated string skill_ids = 3;
 
-  // A URL corresponding to a thumbnail associated with this subtopic. If this is absent, the UI should show a reasonable
-  // alternative.
-  string thumbnail_url = 4;
-
   // The thumbnail corresponding to this subtopic.
-  SubtopicThumbnail subtopic_thumbnail = 5;
+  LessonThumbnail subtopic_thumbnail = 4;
 }
 
 // Corresponds to a revision card that can be displayed for a specific subtopic.

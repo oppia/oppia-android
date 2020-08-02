@@ -9,15 +9,28 @@ import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import javax.inject.Inject
 
 /** The activity for setting user preferences. */
-class OptionsActivity : InjectableAppCompatActivity(), RouteToAppLanguageListListener, RouteToAudioLanguageListListener,
-  RouteToStoryTextSizeListener, LoadAppLanguageFragmentListener {
+class OptionsActivity :
+  InjectableAppCompatActivity(),
+  RouteToAppLanguageListListener,
+  RouteToAudioLanguageListListener,
+  RouteToStoryTextSizeListener,
+  LoadAppLanguageFragmentListener {
   @Inject
   lateinit var optionActivityPresenter: OptionsActivityPresenter
 
   companion object {
-    fun createOptionsActivity(context: Context, profileId: Int?): Intent {
+
+    internal const val BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY =
+      "BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY"
+
+    fun createOptionsActivity(
+      context: Context,
+      profileId: Int?,
+      isFromNavigationDrawer: Boolean
+    ): Intent {
       val intent = Intent(context, OptionsActivity::class.java)
       intent.putExtra(KEY_NAVIGATION_PROFILE_ID, profileId)
+      intent.putExtra(BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, isFromNavigationDrawer)
       return intent
     }
   }
@@ -25,7 +38,11 @@ class OptionsActivity : InjectableAppCompatActivity(), RouteToAppLanguageListLis
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    optionActivityPresenter.handleOnCreate()
+    val isFromNavigationDrawer = intent.getBooleanExtra(
+      BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
+      /* defaultValue= */ false
+    )
+    optionActivityPresenter.handleOnCreate(isFromNavigationDrawer)
     title = getString(R.string.menu_options)
   }
 
@@ -53,7 +70,8 @@ class OptionsActivity : InjectableAppCompatActivity(), RouteToAppLanguageListLis
         this,
         APP_LANGUAGE,
         appLanguage
-      ), REQUEST_CODE_APP_LANGUAGE
+      ),
+      REQUEST_CODE_APP_LANGUAGE
     )
   }
 
@@ -63,7 +81,8 @@ class OptionsActivity : InjectableAppCompatActivity(), RouteToAppLanguageListLis
         this,
         AUDIO_LANGUAGE,
         audioLanguage
-      ), REQUEST_CODE_AUDIO_LANGUAGE
+      ),
+      REQUEST_CODE_AUDIO_LANGUAGE
     )
   }
 
@@ -73,7 +92,8 @@ class OptionsActivity : InjectableAppCompatActivity(), RouteToAppLanguageListLis
         this,
         STORY_TEXT_SIZE,
         storyTextSize
-      ), REQUEST_CODE_TEXT_SIZE
+      ),
+      REQUEST_CODE_TEXT_SIZE
     )
   }
 

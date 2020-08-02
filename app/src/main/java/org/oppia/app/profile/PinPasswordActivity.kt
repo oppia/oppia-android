@@ -12,10 +12,15 @@ const val KEY_PIN_PASSWORD_ADMIN_PIN = "PIN_PASSWORD_ADMIN_PIN"
 
 /** Activity that allows user to input his or her PIN. */
 class PinPasswordActivity : InjectableAppCompatActivity(), ProfileRouteDialogInterface {
-  @Inject lateinit var pinPasswordActivityPresenter: PinPasswordActivityPresenter
+  @Inject
+  lateinit var pinPasswordActivityPresenter: PinPasswordActivityPresenter
 
   companion object {
-    fun createPinPasswordActivityIntent(context: Context, adminPin: String, profileId: Int): Intent {
+    fun createPinPasswordActivityIntent(
+      context: Context,
+      adminPin: String,
+      profileId: Int
+    ): Intent {
       val intent = Intent(context, PinPasswordActivity::class.java)
       intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
       intent.putExtra(KEY_PIN_PASSWORD_PROFILE_ID, profileId)

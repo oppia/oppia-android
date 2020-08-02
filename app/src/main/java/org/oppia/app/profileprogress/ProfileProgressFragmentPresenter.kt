@@ -14,6 +14,8 @@ import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
+private const val TAG_PROFILE_PICTURE_EDIT_DIALOG = "PROFILE_PICTURE_EDIT_DIALOG"
+
 /** The presenter for [ProfileProgressFragment]. */
 @FragmentScope
 class ProfileProgressFragmentPresenter @Inject constructor(
@@ -21,15 +23,20 @@ class ProfileProgressFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<ProfileProgressViewModel>
 ) {
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, internalProfileId: Int): View? {
-    val binding = ProfileProgressFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    internalProfileId: Int
+  ): View? {
+    val binding =
+      ProfileProgressFragmentBinding.inflate(
+        inflater,
+        container,
+        /* attachToRoot= */ false
+      )
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
     binding.lifecycleOwner = fragment
-
-    binding.profileProgressToolbar.setNavigationOnClickListener {
-      (activity as ProfileProgressActivity).finish()
-    }
     binding.profileProgressList.apply {
       layoutManager = LinearLayoutManager(activity)
       adapter = createRecyclerViewAdapter()
@@ -78,5 +85,15 @@ class ProfileProgressFragmentPresenter @Inject constructor(
   private enum class ViewType {
     VIEW_TYPE_HEADER,
     VIEW_TYPE_RECENTLY_PLAYED_STORY
+  }
+
+  fun showPictureEditDialog() {
+    val previousFragment =
+      activity.supportFragmentManager.findFragmentByTag(TAG_PROFILE_PICTURE_EDIT_DIALOG)
+    if (previousFragment != null) {
+      activity.supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
+    }
+    val dialogFragment = ProfilePictureEditDialogFragment.newInstance()
+    dialogFragment.showNow(activity.supportFragmentManager, TAG_PROFILE_PICTURE_EDIT_DIALOG)
   }
 }

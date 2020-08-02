@@ -22,7 +22,9 @@ class ResetPinDialogFragment : InjectableDialogFragment() {
       return resetPinDialogFragment
     }
   }
-  @Inject lateinit var resetPinDialogFragmentPresenter: ResetPinDialogFragmentPresenter
+
+  @Inject
+  lateinit var resetPinDialogFragmentPresenter: ResetPinDialogFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -31,6 +33,14 @@ class ResetPinDialogFragment : InjectableDialogFragment() {
 
   @ExperimentalCoroutinesApi
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    return resetPinDialogFragmentPresenter.handleOnCreateDialog(activity as ProfileRouteDialogInterface)
+    val profileId = arguments?.getInt(KEY_RESET_PIN_PROFILE_ID)
+    val name = arguments?.getString(KEY_RESET_PIN_NAME)
+    checkNotNull(profileId) { "Profile Id must not be null" }
+    checkNotNull(name) { "Name must not be null" }
+    return resetPinDialogFragmentPresenter.handleOnCreateDialog(
+      activity as ProfileRouteDialogInterface,
+      profileId,
+      name
+    )
   }
 }

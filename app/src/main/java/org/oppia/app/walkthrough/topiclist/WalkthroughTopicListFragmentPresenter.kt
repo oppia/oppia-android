@@ -1,5 +1,7 @@
 package org.oppia.app.walkthrough.topiclist
 
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,21 +30,32 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
 ) {
   private lateinit var binding: WalkthroughTopicListFragmentBinding
   private val routeToNextPage = activity as WalkthroughFragmentChangeListener
+  private val orientation = Resources.getSystem().configuration.orientation
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val viewModel = getWalkthroughTopicViewModel()
 
-    binding = WalkthroughTopicListFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding =
+      WalkthroughTopicListFragmentBinding.inflate(
+        inflater,
+        container,
+        /* attachToRoot= */ false
+      )
 
     binding.let {
       it.lifecycleOwner = fragment
       it.presenter = this
     }
-    val walkthroughLayoutManager = GridLayoutManager(activity.applicationContext, 2)
+    val spanCount = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+      2
+    } else {
+      3
+    }
+    val walkthroughLayoutManager = GridLayoutManager(activity.applicationContext, spanCount)
     walkthroughLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
       override fun getSpanSize(position: Int): Int {
         return if (position == 0) {
-          /* number of spaces this item should occupy = */ 2
+          /* number of spaces this item should occupy = */ spanCount
         } else {
           /* number of spaces this item should occupy = */ 1
         }

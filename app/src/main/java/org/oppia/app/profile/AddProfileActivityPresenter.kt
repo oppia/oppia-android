@@ -3,18 +3,27 @@ package org.oppia.app.profile
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.PorterDuff
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
@@ -52,9 +61,6 @@ class AddProfileActivityPresenter @Inject constructor(
 
   @ExperimentalCoroutinesApi
   fun handleOnCreate() {
-    activity.title = activity.getString(R.string.add_profile_title)
-    activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
 
     val binding = DataBindingUtil.setContentView<AddProfileActivityBinding>(
       activity,
@@ -65,25 +71,56 @@ class AddProfileActivityPresenter @Inject constructor(
       lifecycleOwner = activity
       viewModel = profileViewModel
     }
-
-    binding.allowDownloadSwitch.setOnCheckedChangeListener { _, isChecked ->
+    binding.addProfileActivityAllowDownloadSwitch.setOnCheckedChangeListener { _, isChecked ->
       allowDownloadAccess = isChecked
     }
-    binding.checkboxPin.setOnCheckedChangeListener { _, isChecked ->
+    binding.addProfileActivityPinCheckBox.setOnCheckedChangeListener { _, isChecked ->
       profileViewModel.createPin.set(isChecked)
       checkboxStateClicked = isChecked
     }
 
-    binding.infoIcon.setOnClickListener {
+    binding.addProfileActivityInfoImageView.setOnClickListener {
       showInfoDialog()
     }
+    val toolbar = activity.findViewById<View>(R.id.add_profile_activity_toolbar) as Toolbar
+    activity.setSupportActionBar(toolbar)
+    activity.supportActionBar?.title = activity.getString(R.string.add_profile_title)
+    activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
 
-    uploadImageView = binding.uploadImageButton
+    uploadImageView = binding.addProfileActivityUserImageView
+    Glide.with(activity)
+      .load(R.drawable.ic_default_avatar)
+      .listener(object : RequestListener<Drawable> {
+        override fun onLoadFailed(
+          e: GlideException?,
+          model: Any?,
+          target: Target<Drawable>?,
+          isFirstResource: Boolean
+        ): Boolean {
+          return false
+        }
+
+        override fun onResourceReady(
+          resource: Drawable?,
+          model: Any?,
+          target: Target<Drawable>?,
+          dataSource: DataSource?,
+          isFirstResource: Boolean
+        ): Boolean {
+          uploadImageView.setColorFilter(
+            ResourcesCompat.getColor(activity.resources, R.color.avatar_background_11, null),
+            PorterDuff.Mode.DST_OVER
+          )
+          return false
+        }
+      })
+      .into(uploadImageView)
 
     addButtonListeners(binding)
 
-    binding.inputName.post {
-      addTextChangedListener(binding.inputName) { name ->
+    binding.addProfileActivityUserNameProfileInputView.post {
+      addTextChangedListener(binding.addProfileActivityUserNameProfileInputView) { name ->
         name?.let {
           profileViewModel.isButtonActive.set(it.isNotEmpty())
           profileViewModel.nameErrorMsg.set("")
@@ -91,8 +128,8 @@ class AddProfileActivityPresenter @Inject constructor(
         }
       }
     }
-    binding.inputPin.post {
-      addTextChangedListener(binding.inputPin) { pin ->
+    binding.addProfileActivityPinProfileInputView.post {
+      addTextChangedListener(binding.addProfileActivityPinProfileInputView) { pin ->
         pin?.let {
           profileViewModel.inputPin.set(it.toString())
           profileViewModel.pinErrorMsg.set("")
@@ -101,8 +138,8 @@ class AddProfileActivityPresenter @Inject constructor(
         }
       }
     }
-    binding.inputConfirmPin.post {
-      addTextChangedListener(binding.inputConfirmPin) { confirmPin ->
+    binding.addProfileActivityConfirmPinProfileInputView.post {
+      addTextChangedListener(binding.addProfileActivityConfirmPinProfileInputView) { confirmPin ->
         confirmPin?.let {
           profileViewModel.inputConfirmPin.set(it.toString())
           profileViewModel.confirmPinErrorMsg.set("")
@@ -112,9 +149,15 @@ class AddProfileActivityPresenter @Inject constructor(
       }
     }
 
-    binding.inputName.setInput(profileViewModel.inputName.get().toString())
-    binding.inputPin.setInput(profileViewModel.inputPin.get().toString())
-    binding.inputConfirmPin.setInput(profileViewModel.inputConfirmPin.get().toString())
+    binding.addProfileActivityUserNameProfileInputView.setInput(
+      profileViewModel.inputName.get().toString()
+    )
+    binding.addProfileActivityPinProfileInputView.setInput(
+      profileViewModel.inputPin.get().toString()
+    )
+    binding.addProfileActivityConfirmPinProfileInputView.setInput(
+      profileViewModel.inputConfirmPin.get().toString()
+    )
     if (profileViewModel.showInfoAlertPopup.get()!!) {
       showInfoDialog()
     }
@@ -124,7 +167,7 @@ class AddProfileActivityPresenter @Inject constructor(
     if (inputtedPin && inputtedConfirmPin) {
       profileViewModel.validPin.set(true)
     } else {
-      binding.allowDownloadSwitch.isChecked = false
+      binding.addProfileActivityAllowDownloadSwitch.isChecked = false
       profileViewModel.validPin.set(false)
     }
   }
@@ -143,46 +186,52 @@ class AddProfileActivityPresenter @Inject constructor(
   }
 
   private fun addButtonListeners(binding: AddProfileActivityBinding) {
-    binding.uploadImageButton.setOnClickListener {
+    uploadImageView.setOnClickListener {
       openGalleryIntent()
     }
-    binding.editImageFab.setOnClickListener {
+    binding.addProfileActivityEditUserImageView.setOnClickListener {
       openGalleryIntent()
     }
 
-    binding.createButton.setOnClickListener {
+    binding.addProfileActivityCreateButton.setOnClickListener {
       profileViewModel.clearAllErrorMessages()
 
-      val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+      val imm = activity.getSystemService(
+        Context.INPUT_METHOD_SERVICE
+      ) as? InputMethodManager
       imm?.hideSoftInputFromWindow(activity.currentFocus?.windowToken, 0)
 
-      val name = binding.inputName.getInput()
+      val name = binding.addProfileActivityUserNameProfileInputView.getInput()
       var pin = ""
       var confirmPin = ""
       if (checkboxStateClicked) {
-        pin = binding.inputPin.getInput()
-        confirmPin = binding.inputConfirmPin.getInput()
+        pin = binding.addProfileActivityPinProfileInputView.getInput()
+        confirmPin = binding.addProfileActivityConfirmPinProfileInputView.getInput()
       }
 
       if (checkInputsAreValid(name, pin, confirmPin)) {
-        binding.scroll.smoothScrollTo(0, 0)
+        binding.addProfileActivityScrollView.smoothScrollTo(0, 0)
         return@setOnClickListener
       }
 
-      profileManagementController.addProfile(
-        name = name,
-        pin = pin,
-        avatarImagePath = selectedImage,
-        allowDownloadAccess = allowDownloadAccess,
-        colorRgb = activity.intent.getIntExtra(KEY_ADD_PROFILE_COLOR_RGB, -10710042),
-        isAdmin = false,
-        storyTextSize = DEFAULT_STORY_TEXT_SIZE,
-        appLanguage = DEFAULT_APP_LANGUAGE,
-        audioLanguage = DEFAULT_AUDIO_LANGUAGE
-      )
-        .observe(activity, Observer {
-          handleAddProfileResult(it, binding)
-        })
+      profileManagementController
+        .addProfile(
+          name = name,
+          pin = pin,
+          avatarImagePath = selectedImage,
+          allowDownloadAccess = allowDownloadAccess,
+          colorRgb = activity.intent.getIntExtra(KEY_ADD_PROFILE_COLOR_RGB, -10710042),
+          isAdmin = false,
+          storyTextSize = DEFAULT_STORY_TEXT_SIZE,
+          appLanguage = DEFAULT_APP_LANGUAGE,
+          audioLanguage = DEFAULT_AUDIO_LANGUAGE
+        )
+        .observe(
+          activity,
+          Observer {
+            handleAddProfileResult(it, binding)
+          }
+        )
     }
   }
 
@@ -194,15 +243,27 @@ class AddProfileActivityPresenter @Inject constructor(
   private fun checkInputsAreValid(name: String, pin: String, confirmPin: String): Boolean {
     var failed = false
     if (name.isEmpty()) {
-      profileViewModel.nameErrorMsg.set(activity.resources.getString(R.string.add_profile_error_name_empty))
+      profileViewModel.nameErrorMsg.set(
+        activity.resources.getString(
+          R.string.add_profile_error_name_empty
+        )
+      )
       failed = true
     }
     if (pin.isNotEmpty() && pin.length < 3) {
-      profileViewModel.pinErrorMsg.set(activity.resources.getString(R.string.add_profile_error_pin_length))
+      profileViewModel.pinErrorMsg.set(
+        activity.resources.getString(
+          R.string.add_profile_error_pin_length
+        )
+      )
       failed = true
     }
     if (pin != confirmPin) {
-      profileViewModel.confirmPinErrorMsg.set(activity.resources.getString(R.string.add_profile_error_pin_confirm_wrong))
+      profileViewModel.confirmPinErrorMsg.set(
+        activity.resources.getString(
+          R.string.add_profile_error_pin_confirm_wrong
+        )
+      )
       failed = true
     }
     return failed
@@ -218,18 +279,20 @@ class AddProfileActivityPresenter @Inject constructor(
       activity.startActivity(intent)
     } else if (result.isFailure()) {
       when (result.getErrorOrNull()) {
-        is ProfileManagementController.ProfileNameNotUniqueException -> profileViewModel.nameErrorMsg.set(
-          activity.resources.getString(
-            R.string.add_profile_error_name_not_unique
+        is ProfileManagementController.ProfileNameNotUniqueException ->
+          profileViewModel.nameErrorMsg.set(
+            activity.resources.getString(
+              R.string.add_profile_error_name_not_unique
+            )
           )
-        )
-        is ProfileManagementController.ProfileNameOnlyLettersException -> profileViewModel.nameErrorMsg.set(
-          activity.resources.getString(
-            R.string.add_profile_error_name_only_letters
+        is ProfileManagementController.ProfileNameOnlyLettersException ->
+          profileViewModel.nameErrorMsg.set(
+            activity.resources.getString(
+              R.string.add_profile_error_name_only_letters
+            )
           )
-        )
       }
-      binding.scroll.smoothScrollTo(0, 0)
+      binding.addProfileActivityScrollView.smoothScrollTo(0, 0)
     }
   }
 

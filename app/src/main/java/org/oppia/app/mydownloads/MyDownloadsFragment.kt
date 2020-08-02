@@ -10,14 +10,19 @@ import javax.inject.Inject
 
 /** Fragment that contains tabs for MyDownloads. */
 class MyDownloadsFragment : InjectableFragment() {
-  @Inject lateinit var myDownloadsFragmentPresenter: MyDownloadsFragmentPresenter
+  @Inject
+  lateinit var myDownloadsFragmentPresenter: MyDownloadsFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
     return myDownloadsFragmentPresenter.handleCreateView(inflater, container)
   }
 }

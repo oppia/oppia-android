@@ -19,6 +19,16 @@
     <item name="windowNoTitle">true</item>
     <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
   </style>
+
+  <style name="OppiaThemeNoActionBarColorAccentColorPrimary" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="colorAccent">@color/colorPrimary</item>
+    <item name="windowActionBar">false</item>
+    <item name="windowNoTitle">true</item>
+    <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
+  </style>
+
   <!-- Base style for animations.  This style specifies no animations. -->
   <style name="Animation" />
   <!-- Standard animations for a full-screen window or activity. -->
@@ -71,7 +81,7 @@
 
   <style name="FullScreenHintDialogStyle" parent="Theme.MaterialComponents.Dialog.Bridge">
     <item name="android:windowNoTitle">true</item>
-    <item name="colorPrimaryDark">@color/oppiaDarkBlue</item>
+    <item name="colorPrimaryDark">@color/hintFullDialogStatusBar</item>
     <!-- Set this to true if you want Full Screen without status bar -->
     <item name="android:windowFullscreen">false</item>
     <item name="android:windowIsFloating">false</item>

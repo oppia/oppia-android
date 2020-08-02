@@ -1,11 +1,12 @@
 package org.oppia.app.ongoingtopiclist
 
+import android.content.res.Configuration
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.app.databinding.OngoingTopicItemBinding
 import org.oppia.app.databinding.OngoingTopicListFragmentBinding
 import org.oppia.app.recyclerview.BindableAdapter
@@ -21,9 +22,18 @@ class OngoingTopicListFragmentPresenter @Inject constructor(
 
   private lateinit var binding: OngoingTopicListFragmentBinding
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, internalProfileId: Int): View? {
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    internalProfileId: Int
+  ): View? {
     val viewModel = getOngoingTopicListViewModel()
-    binding = OngoingTopicListFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding =
+      OngoingTopicListFragmentBinding.inflate(
+        inflater,
+        container,
+        /* attachToRoot= */ false
+      )
     viewModel.setProfileId(internalProfileId)
 
     binding.ongoingTopicListToolbar.setNavigationOnClickListener {
@@ -31,8 +41,14 @@ class OngoingTopicListFragmentPresenter @Inject constructor(
     }
 
     binding.ongoingTopicList.apply {
-      layoutManager = LinearLayoutManager(activity.applicationContext)
       adapter = createRecyclerViewAdapter()
+      val spanCount =
+        if (fragment.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+          3
+        } else {
+          2
+        }
+      layoutManager = GridLayoutManager(context, spanCount)
     }
 
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to

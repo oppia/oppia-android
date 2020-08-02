@@ -27,7 +27,6 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
@@ -35,10 +34,12 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -50,7 +51,6 @@ import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
@@ -67,9 +67,9 @@ import org.oppia.app.topic.TopicActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.profile.ProfileTestHelper
-import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
-import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
+import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -85,8 +85,10 @@ import javax.inject.Singleton
 
 // Time: Tue Apr 23 2019 23:22:00
 private const val EVENING_TIMESTAMP = 1556061720000
+
 // Time: Wed Apr 24 2019 08:22:00
 private const val MORNING_TIMESTAMP = 1556094120000
+
 // Time: Tue Apr 23 2019 14:22:00
 private const val AFTERNOON_TIMESTAMP = 1556029320000
 
@@ -94,8 +96,11 @@ private const val AFTERNOON_TIMESTAMP = 1556029320000
 @RunWith(AndroidJUnit4::class)
 class HomeActivityTest {
 
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var context: Context
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var context: Context
 
   private val internalProfileId: Int = 1
   private lateinit var oppiaClock: OppiaClock
@@ -107,6 +112,7 @@ class HomeActivityTest {
     setUpTestApplicationComponent()
     IdlingRegistry.getInstance().register(MainThreadExecutor.countingResource)
     profileTestHelper.initializeProfiles()
+    FirebaseApp.initializeApp(context)
   }
 
   @After
@@ -138,13 +144,21 @@ class HomeActivityTest {
       ).perform(click())
       onView(withId(R.id.nav_header_profile_name)).perform(click())
       intended(hasComponent(ProfileProgressActivity::class.java.name))
-      intended(hasExtra(ProfileProgressActivity.PROFILE_PROGRESS_ACTIVITY_PROFILE_ID_KEY, internalProfileId))
+      intended(
+        hasExtra(
+          ProfileProgressActivity.PROFILE_PROGRESS_ACTIVITY_PROFILE_ID_KEY,
+          internalProfileId
+        )
+      )
     }
   }
 
   @Test
-  @Ignore("This test case is incorrect as it depends on internalProfileId which is not guaranteed to be 0 for admin.")
-  fun testHomeActivity_recyclerViewIndex0_withProfileId0_displayProfileName_profileNameDisplayedSuccessfully() {
+  @Ignore(
+    "This test case is incorrect as it depends on internalProfileId " +
+      "which is not guaranteed to be 0 for admin."
+  )
+  fun testHomeActivity_recyclerViewIndex0_withProfileId0_displayProfileName_profileNameDisplayedSuccessfully() { // ktlint-disable max-line-length
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       onView(
         atPositionOnView(
@@ -157,10 +171,13 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodMorningMessageDisplayedSuccessful() {
+  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodMorningMessageDisplayedSuccessful() { // ktlint-disable max-line-length
     getApplicationDependencies()
     oppiaClock.setCurrentTimeMs(MORNING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
+      )
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
@@ -172,10 +189,13 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodAfternoonMessageDisplayedSuccessful() {
+  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodAfternoonMessageDisplayedSuccessful() { // ktlint-disable max-line-length
     getApplicationDependencies()
     oppiaClock.setCurrentTimeMs(AFTERNOON_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
+      )
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
@@ -187,10 +207,13 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodEveningMessageDisplayedSuccessful() {
+  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodEveningMessageDisplayedSuccessful() { // ktlint-disable max-line-length
     getApplicationDependencies()
     oppiaClock.setCurrentTimeMs(EVENING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
+      )
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
@@ -203,8 +226,11 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_recyclerViewIndex0_configurationChange_displaysWelcomeMessageCorrectly() {
-   launch<HomeActivity>(createHomeActivityIntent(0)).use {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
+      )
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
@@ -218,8 +244,16 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_displaysRecentlyPlayedStoriesText() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
-      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
-      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.recently_played_stories_text_view)).check(
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          1,
+          R.id.recently_played_stories_text_view
+        )
+      ).check(
         matches(
           withText(R.string.recently_played_stories)
         )
@@ -230,7 +264,9 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_displaysViewAllText() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
-      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.view_all_text_view)).check(
         matches(
           withText(R.string.view_all)
@@ -242,8 +278,14 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_clickViewAll_opensRecentlyPlayedActivity() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
-      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
-      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.view_all_text_view)).perform(click())
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view, 1, R.id.view_all_text_view
+        )
+      ).perform(click())
       intended(hasComponent(RecentlyPlayedActivity::class.java.name))
     }
   }
@@ -254,21 +296,23 @@ class HomeActivityTest {
       onView(
         allOf(
           withId(R.id.promoted_story_list_recycler_view),
-          ViewMatchers.withParent(
+          withParent(
             atPosition(R.id.home_recycler_view, 1)
           )
         )
-      ).check(matches(hasDescendant(withText(containsString("What is a Fraction?")))))
+      ).check(matches(hasDescendant(withText(containsString("Prototype Exploration")))))
     }
   }
 
   @Test
   fun testHomeActivity_recyclerViewIndex1_promotedCard_storyNameIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
-      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view)).check(
         matches(
-          withText(containsString("Matthew Goes to the Bakery"))
+          withText(containsString("First Story"))
         )
       )
     }
@@ -277,11 +321,13 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_configurationChange_promotedCard_storyNameIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
-      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
       onView(isRoot()).perform(orientationLandscape())
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view)).check(
         matches(
-          withText(containsString("Matthew Goes to the Bakery"))
+          withText(containsString("First Story"))
         )
       )
     }
@@ -290,29 +336,33 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex1_clickPromotedStory_opensTopicActivity() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
-      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
       onView(
-        Matchers.allOf(
+        allOf(
           withId(R.id.promoted_story_list_recycler_view),
-          ViewMatchers.withParent(
+          withParent(
             atPosition(R.id.home_recycler_view, 1)
           )
         )
       ).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId))
-      intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
-      intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
+      intended(hasExtra(TopicActivity.getTopicIdKey(), TEST_TOPIC_ID_0))
+      intended(hasExtra(TopicActivity.getStoryIdKey(), TEST_STORY_ID_0))
     }
   }
 
   @Test
   fun testHomeActivity_recyclerViewIndex1_promotedCard_topicNameIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
-      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.topic_name_text_view)).check(
         matches(
-          withText(containsString("FRACTIONS"))
+          withText(containsString("FIRST TEST TOPIC"))
         )
       )
     }
@@ -321,10 +371,12 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex3_topicSummary_topicNameIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
-      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(3)
+      )
       onView(atPositionOnView(R.id.home_recycler_view, 3, R.id.topic_name_text_view)).check(
         matches(
-          withText(containsString("First Topic"))
+          withText(containsString("First Test Topic"))
         )
       )
     }
@@ -333,10 +385,17 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex3_topicSummary_lessonCountIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
-      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
-      onView(atPositionOnView(R.id.home_recycler_view, 3, R.id.lesson_count_text_view)).check(
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(3)
+      )
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          3, R.id.lesson_count_text_view
+        )
+      ).check(
         matches(
-          withText(containsString("4 Lessons"))
+          withText(containsString("5 Lessons"))
         )
       )
     }
@@ -345,10 +404,12 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex4_topicSummary_topicNameIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
-      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(4))
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(4)
+      )
       onView(atPositionOnView(R.id.home_recycler_view, 4, R.id.topic_name_text_view)).check(
         matches(
-          withText(containsString("Second Topic"))
+          withText(containsString("Second Test Topic"))
         )
       )
     }
@@ -357,8 +418,15 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex4_topicSummary_lessonCountIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
-      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(4))
-      onView(atPositionOnView(R.id.home_recycler_view, 4, R.id.lesson_count_text_view)).check(
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(4)
+      )
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          4, R.id.lesson_count_text_view
+        )
+      ).check(
         matches(
           withText(containsString("1 Lesson"))
         )
@@ -370,8 +438,15 @@ class HomeActivityTest {
   fun testHomeActivity_recyclerViewIndex4_topicSummary_configurationChange_lessonCountIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(4))
-      onView(atPositionOnView(R.id.home_recycler_view, 4, R.id.lesson_count_text_view)).check(
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(4)
+      )
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          4, R.id.lesson_count_text_view
+        )
+      ).check(
         matches(
           withText(containsString("1 Lesson"))
         )
@@ -382,7 +457,9 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recyclerViewIndex3_clickTopicSummary_opensTopicActivity() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
-      onView(withId(R.id.home_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(3))
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(3)
+      )
       onView(atPosition(R.id.home_recycler_view, 3)).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.getTopicIdKey(), TEST_TOPIC_ID_0))
@@ -407,9 +484,13 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_checkSpanForItem0_spanSizeIsTwo() {
+  fun testHomeActivity_checkSpanForItem0_spanSizeIsTwoOrThree() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
-      onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(2, 0))
+      if (context.resources.getBoolean(R.bool.isTablet)) {
+        onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(3, 0))
+      } else {
+        onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(2, 0))
+      }
     }
   }
 
@@ -421,10 +502,14 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_configurationChange_checkSpanForItem0_spanSizeIsTwo() {
+  fun testHomeActivity_configurationChange_checkSpanForItem0_spanSizeIsThreeOrFour() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(3, 0))
+      if (context.resources.getBoolean(R.bool.isTablet)) {
+        onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(4, 0))
+      } else {
+        onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(3, 0))
+      }
     }
   }
 
@@ -507,7 +592,9 @@ class HomeActivityTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@BlockingDispatcher blockingDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @BlockingDispatcher blockingDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return blockingDispatcher
     }
 
@@ -534,7 +621,7 @@ class HomeActivityTest {
   }
 
   @Singleton
-  @Component(modules = [TestModule::class])
+  @Component(modules = [TestModule::class, TestLogReportingModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
@@ -590,14 +677,18 @@ class HomeActivityTest {
   }
 
   /** Custom class to check number of spans occupied by an item at a given position. */
-  private class RecyclerViewGridItemCountAssertion(private val count: Int, private val position: Int) : ViewAssertion {
+  private class RecyclerViewGridItemCountAssertion(
+    private val count: Int,
+    private val position: Int
+  ) : ViewAssertion {
     override fun check(view: View, noViewFoundException: NoMatchingViewException?) {
       if (noViewFoundException != null) {
         throw noViewFoundException
       }
       check(view is RecyclerView) { "The asserted view is not RecyclerView" }
       check(view.layoutManager is GridLayoutManager) { "RecyclerView must use GridLayoutManager" }
-      val spanCount = (view.layoutManager as GridLayoutManager).spanSizeLookup.getSpanSize(position)
+      val spanCount = (view.layoutManager as GridLayoutManager)
+        .spanSizeLookup.getSpanSize(position)
       assertThat(
         "RecyclerViewGrid span count", spanCount, equalTo(count)
       )

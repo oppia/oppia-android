@@ -24,9 +24,10 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
     getAdminSettingsViewModel()
   }
 
-  fun handleOnCreateDialog(routeDialogInterface: ProfileRouteDialogInterface): Dialog {
-    val adminPin = fragment.arguments?.getString(KEY_ADMIN_SETTINGS_PIN)
-    checkNotNull(adminPin) { "Admin Pin must not be null" }
+  fun handleOnCreateDialog(
+    routeDialogInterface: ProfileRouteDialogInterface,
+    adminPin: String?
+  ): Dialog {
     val binding: AdminSettingsDialogBinding =
       DataBindingUtil.inflate(
         activity.layoutInflater,
@@ -71,7 +72,11 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
         if (binding.inputPin.getInput() == adminPin) {
           routeDialogInterface.routeToResetPinDialog()
         } else {
-          adminViewModel.errorMessage.set(fragment.resources.getString(R.string.admin_settings_incorrect))
+          adminViewModel.errorMessage.set(
+            fragment.resources.getString(
+              R.string.admin_settings_incorrect
+            )
+          )
         }
       }
     }

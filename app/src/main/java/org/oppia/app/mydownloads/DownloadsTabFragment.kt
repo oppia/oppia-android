@@ -10,14 +10,19 @@ import javax.inject.Inject
 
 /** Fragment that contains downloaded topic list. */
 class DownloadsTabFragment : InjectableFragment() {
-  @Inject lateinit var downloadsTabFragmentPresenter: DownloadsTabFragmentPresenter
+  @Inject
+  lateinit var downloadsTabFragmentPresenter: DownloadsTabFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
     return downloadsTabFragmentPresenter.handleCreateView(inflater, container)
   }
 }

@@ -10,9 +10,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
-import javax.inject.Qualifier
-import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -34,6 +31,9 @@ import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowNetworkInfo
+import javax.inject.Inject
+import javax.inject.Qualifier
+import javax.inject.Singleton
 
 /** Tests for [NetworkConnectionUtil]. */
 @RunWith(AndroidJUnit4::class)
@@ -76,66 +76,90 @@ class NetworkConnectionUtilTest {
   @Test
   fun testGetCurrentConnectionStatus_activeWifiConnection_returnsWifi() {
     setNetworkConnectionStatus(ConnectivityManager.TYPE_WIFI, true)
-    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NetworkConnectionUtil.ConnectionStatus.LOCAL)
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
+      NetworkConnectionUtil.ConnectionStatus.LOCAL
+    )
   }
 
   @Test
   fun testGetCurrentConnectionStatus_nonActiveWifiConnection_returnsNone() {
     setNetworkConnectionStatus(ConnectivityManager.TYPE_WIFI, false)
-    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NetworkConnectionUtil.ConnectionStatus.NONE)
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
+      NetworkConnectionUtil.ConnectionStatus.NONE
+    )
   }
 
   @Test
   fun testGetCurrentConnectionStatus_activeEthernetConnection_returnsWifi() {
     setNetworkConnectionStatus(ConnectivityManager.TYPE_ETHERNET, true)
-    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NetworkConnectionUtil.ConnectionStatus.LOCAL)
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
+      NetworkConnectionUtil.ConnectionStatus.LOCAL
+    )
   }
 
   @Test
   fun testGetCurrentConnectionStatus_nonActiveEthernetConnection_returnsNone() {
     setNetworkConnectionStatus(ConnectivityManager.TYPE_ETHERNET, false)
-    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NetworkConnectionUtil.ConnectionStatus.NONE)
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
+      NetworkConnectionUtil.ConnectionStatus.NONE
+    )
   }
 
   @Test
   fun testGetCurrentConnectionStatus_activeCellularConnection_returnsCellular() {
     setNetworkConnectionStatus(ConnectivityManager.TYPE_MOBILE, true)
-    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
+      NetworkConnectionUtil.ConnectionStatus.CELLULAR
+    )
   }
 
   @Test
   fun testGetCurrentConnectionStatus_nonActiveCellularConnection_returnsNone() {
     setNetworkConnectionStatus(ConnectivityManager.TYPE_MOBILE, false)
-    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NetworkConnectionUtil.ConnectionStatus.NONE)
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
+      NetworkConnectionUtil.ConnectionStatus.NONE
+    )
   }
 
   @Test
   fun testGetCurrentConnectionStatus_activeWimaxConnection_returnsCellular() {
     setNetworkConnectionStatus(ConnectivityManager.TYPE_WIMAX, true)
-    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
+      NetworkConnectionUtil.ConnectionStatus.CELLULAR
+    )
   }
 
   @Test
   fun testGetCurrentConnectionStatus_nonActiveWimaxConnection_returnsNone() {
     setNetworkConnectionStatus(ConnectivityManager.TYPE_WIMAX, false)
-    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NetworkConnectionUtil.ConnectionStatus.NONE)
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
+      NetworkConnectionUtil.ConnectionStatus.NONE
+    )
   }
 
   @Test
   fun testGetCurrentConnectionStatus_noActiveNetworkConnection_returnsNone() {
     setNetworkConnectionStatus(NO_CONNECTION, false)
-    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NetworkConnectionUtil.ConnectionStatus.NONE)
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
+      NetworkConnectionUtil.ConnectionStatus.NONE
+    )
   }
 
   @Test
   fun testGetCurrentConnectionStatus_activeBluetoothConnection_returnsNone() {
     setNetworkConnectionStatus(ConnectivityManager.TYPE_BLUETOOTH, true)
-    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NetworkConnectionUtil.ConnectionStatus.NONE)
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
+      NetworkConnectionUtil.ConnectionStatus.NONE
+    )
   }
 
   private fun setNetworkConnectionStatus(status: Int, isConnected: Boolean) {
     shadowOf(context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
-      .setActiveNetworkInfo(ShadowNetworkInfo.newInstance(null, status, 0, /* isAvailable= */ true, isConnected))
+      .setActiveNetworkInfo(
+        ShadowNetworkInfo.newInstance(
+          null, status, 0, /* isAvailable= */ true, isConnected
+        )
+      )
   }
 
   @Qualifier
@@ -161,14 +185,18 @@ class NetworkConnectionUtilTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 
     @Singleton
     @Provides
     @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBlockingDispatcher(
+      @TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return testDispatcher
     }
 

@@ -11,14 +11,14 @@ import org.oppia.app.databinding.ProfileEditActivityBinding
 import org.oppia.app.model.ProfileId
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The presenter for [ProfileEditActivity]. */
 @ActivityScope
 class ProfileEditActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val profileManagementController: ProfileManagementController,
   private val viewModelProvider: ViewModelProvider<ProfileEditViewModel>
 ) {
@@ -30,7 +30,10 @@ class ProfileEditActivityPresenter @Inject constructor(
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
 
-    val binding = DataBindingUtil.setContentView<ProfileEditActivityBinding>(activity, R.layout.profile_edit_activity)
+    val binding = DataBindingUtil.setContentView<ProfileEditActivityBinding>(
+      activity,
+      R.layout.profile_edit_activity
+    )
     val profileId = activity.intent.getIntExtra(KEY_PROFILE_EDIT_PROFILE_ID, 0)
     editViewModel.setProfileId(profileId)
     binding.apply {
@@ -43,7 +46,13 @@ class ProfileEditActivityPresenter @Inject constructor(
     }
 
     binding.profileResetButton.setOnClickListener {
-      activity.startActivity(ProfileResetPinActivity.createProfileResetPinActivity(activity, profileId, editViewModel.isAdmin))
+      activity.startActivity(
+        ProfileResetPinActivity.createProfileResetPinActivity(
+          activity,
+          profileId,
+          editViewModel.isAdmin
+        )
+      )
     }
 
     binding.profileDeleteButton.setOnClickListener {
@@ -55,13 +64,24 @@ class ProfileEditActivityPresenter @Inject constructor(
         profileManagementController.updateAllowDownloadAccess(
           ProfileId.newBuilder().setInternalId(profileId).build(),
           checked
-        ).observe(activity, Observer {
-          if (it.isFailure()) {
-            logger.e("ProfileEditActivityPresenter", "Failed to updated allow download access", it.getErrorOrNull()!!)
+        ).observe(
+          activity,
+          Observer {
+            if (it.isFailure()) {
+              logger.e(
+                "ProfileEditActivityPresenter",
+                "Failed to updated allow download access",
+                it.getErrorOrNull()!!
+              )
+            }
           }
-        })
+        )
       }
     }
+  }
+
+  fun handleOnRestoreSavedInstanceState() {
+    activity.title = editViewModel.profileName
   }
 
   private fun showDeletionDialog(profileId: Int) {
@@ -72,14 +92,18 @@ class ProfileEditActivityPresenter @Inject constructor(
         dialog.dismiss()
       }
       .setPositiveButton(R.string.profile_edit_delete_dialog_positive) { dialog, _ ->
-        profileManagementController.deleteProfile(ProfileId.newBuilder().setInternalId(profileId).build())
-          .observe(activity, Observer {
-            if (it.isSuccess()) {
-              val intent = Intent(activity, ProfileListActivity::class.java)
-              intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-              activity.startActivity(intent)
+        profileManagementController
+          .deleteProfile(ProfileId.newBuilder().setInternalId(profileId).build())
+          .observe(
+            activity,
+            Observer {
+              if (it.isSuccess()) {
+                val intent = Intent(activity, ProfileListActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                activity.startActivity(intent)
+              }
             }
-          })
+          )
       }.create().show()
   }
 

@@ -14,6 +14,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.firebase.FirebaseApp
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -24,8 +25,10 @@ import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.domain.topic.TEST_EXPLORATION_ID_1
 import org.oppia.domain.topic.TEST_STORY_ID_1
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
+import org.robolectric.annotation.LooperMode
 
 /** Tests for [StoryActivity]. */
+@LooperMode(LooperMode.Mode.PAUSED)
 @RunWith(AndroidJUnit4::class)
 class StoryActivityTest {
 
@@ -34,6 +37,7 @@ class StoryActivityTest {
   @Before
   fun setUp() {
     Intents.init()
+    FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
   }
 
   @After
@@ -43,7 +47,13 @@ class StoryActivityTest {
 
   @Test
   fun clickOnStory_intentsToExplorationActivity() {
-    launch<StoryActivity>(createStoryActivityIntent(internalProfileId, TEST_TOPIC_ID_0, TEST_STORY_ID_1)).use {
+    launch<StoryActivity>(
+      createStoryActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_1
+      )
+    ).use {
       onView(withId(R.id.story_chapter_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -58,14 +68,21 @@ class StoryActivityTest {
 
       intended(
         allOf(
-          hasExtra(ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY, TEST_EXPLORATION_ID_1),
+          hasExtra(
+            ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY,
+            TEST_EXPLORATION_ID_1
+          ),
           hasComponent(ExplorationActivity::class.java.name)
         )
       )
     }
   }
 
-  private fun createStoryActivityIntent(internalProfileId: Int, topicId: String, storyId: String): Intent {
+  private fun createStoryActivityIntent(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String
+  ): Intent {
     return StoryActivity.createStoryActivityIntent(
       ApplicationProvider.getApplicationContext(),
       internalProfileId,

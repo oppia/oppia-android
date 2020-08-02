@@ -27,7 +27,8 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener {
     }
   }
 
-  @Inject lateinit var storyFragmentPresenter: StoryFragmentPresenter
+  @Inject
+  lateinit var storyFragmentPresenter: StoryFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -39,17 +40,41 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val args = checkNotNull(arguments) { "Expected arguments to be passed to StoryFragment" }
+    val args = checkNotNull(arguments) {
+      "Expected arguments to be passed to StoryFragment"
+    }
     val internalProfileId = args.getInt(KEY_INTERNAL_PROFILE_ID_ARGUMENT, -1)
     val topicId =
-      checkNotNull(args.getString(KEY_TOPIC_ID_ARGUMENT)) { "Expected topicId to be passed to StoryFragment" }
+      checkNotNull(args.getString(KEY_TOPIC_ID_ARGUMENT)) {
+        "Expected topicId to be passed to StoryFragment"
+      }
     val storyId =
-      checkNotNull(args.getString(KEY_STORY_ID_ARGUMENT)) { "Expected storyId to be passed to StoryFragment" }
-    return storyFragmentPresenter.handleCreateView(inflater, container, internalProfileId, topicId, storyId)
+      checkNotNull(args.getString(KEY_STORY_ID_ARGUMENT)) {
+        "Expected storyId to be passed to StoryFragment"
+      }
+    return storyFragmentPresenter.handleCreateView(
+      inflater,
+      container,
+      internalProfileId,
+      topicId,
+      storyId
+    )
   }
 
-  override fun selectExploration(internalProfileId: Int, topicId: String, storyId: String, explorationId: String) {
-    storyFragmentPresenter.handleSelectExploration(internalProfileId, topicId, storyId, explorationId)
+  override fun selectExploration(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    backflowScreen: Int?
+  ) {
+    storyFragmentPresenter.handleSelectExploration(
+      internalProfileId,
+      topicId,
+      storyId,
+      explorationId,
+      backflowScreen
+    )
   }
 
   fun smoothScrollToPosition(position: Int) {

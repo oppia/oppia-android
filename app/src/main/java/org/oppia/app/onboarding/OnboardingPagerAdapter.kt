@@ -4,15 +4,36 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.widget.ScrollView
 import androidx.viewpager.widget.PagerAdapter
 import org.oppia.app.databinding.OnboardingSlideBinding
+import org.oppia.app.databinding.OnboardingSlideFinalBinding
 
 /** Adapter to control the slide details in onboarding flow. */
-class OnboardingPagerAdapter(val context: Context) : PagerAdapter() {
+class OnboardingPagerAdapter(
+  val context: Context,
+  val onboardingSlideFinalViewModel: OnboardingSlideFinalViewModel
+) : PagerAdapter() {
   override fun instantiateItem(container: ViewGroup, position: Int): Any {
-    val binding = OnboardingSlideBinding.inflate(LayoutInflater.from(context), container, false)
-    val onboardingSlideViewModel = OnboardingSlideViewModel(context, ViewPagerSlide.getSlideForPosition(position))
+    if (position == TOTAL_NUMBER_OF_SLIDES - 1) {
+      val binding =
+        OnboardingSlideFinalBinding.inflate(
+          LayoutInflater.from(context),
+          container,
+          false
+        )
+      binding.viewModel = onboardingSlideFinalViewModel
+      container.addView(binding.root)
+      return binding.root
+    }
+
+    val binding = OnboardingSlideBinding.inflate(
+      LayoutInflater.from(context),
+      container,
+      false
+    )
+    val onboardingSlideViewModel =
+      OnboardingSlideViewModel(context, ViewPagerSlide.getSlideForPosition(position))
     binding.viewModel = onboardingSlideViewModel
     container.addView(binding.root)
     return binding.root
@@ -27,6 +48,6 @@ class OnboardingPagerAdapter(val context: Context) : PagerAdapter() {
   }
 
   override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-    container.removeView(`object` as ConstraintLayout)
+    container.removeView(`object` as ScrollView)
   }
 }

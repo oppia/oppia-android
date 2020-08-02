@@ -1,8 +1,11 @@
 package org.oppia.util.data
 
+import android.os.SystemClock
+
 /** Represents the result from a single asynchronous function. */
 class AsyncResult<T> private constructor(
   private val status: Status,
+  private val resultTimeMillis: Long,
   private val value: T? = null,
   private val error: Throwable? = null
 ) {
@@ -10,8 +13,10 @@ class AsyncResult<T> private constructor(
   enum class Status {
     /** Indicates that the asynchronous operation is not yet completed. */
     PENDING,
+
     /** Indicates that the asynchronous operation completed successfully and has a result. */
     SUCCEEDED,
+
     /** Indicates that the asynchronous operation failed and has an error. */
     FAILED
   }
@@ -34,6 +39,11 @@ class AsyncResult<T> private constructor(
   /** Returns whether this result has completed (successfully or unsuccessfully). */
   fun isCompleted(): Boolean {
     return isSuccess() || isFailure()
+  }
+
+  /** Returns whether this result is newer than, or the same age as, the specified result of the same type. */
+  fun <O> isNewerThanOrSameAgeAs(otherResult: AsyncResult<O>): Boolean {
+    return resultTimeMillis >= otherResult.resultTimeMillis
   }
 
   /** Returns the value of the result if it succeeded, otherwise the specified default value. */
@@ -93,7 +103,10 @@ class AsyncResult<T> private constructor(
    *
    * Note also that the specified combine function should have no side effects, and be non-blocking.
    */
-  fun <O, T2> combineWith(otherResult: AsyncResult<T2>, combineFunction: (T, T2) -> O): AsyncResult<O> {
+  fun <O, T2> combineWith(
+    otherResult: AsyncResult<T2>,
+    combineFunction: (T, T2) -> O
+  ): AsyncResult<O> {
     return transformWithResult { value1 ->
       otherResult.transformWithResult { value2 ->
         success(combineFunction(value1, value2))
@@ -125,7 +138,9 @@ class AsyncResult<T> private constructor(
     }
   }
 
-  private suspend fun <O> transformWithResultAsync(transformFunction: suspend (T) -> AsyncResult<O>): AsyncResult<O> {
+  private suspend fun <O> transformWithResultAsync(
+    transformFunction: suspend (T) -> AsyncResult<O>
+  ): AsyncResult<O> {
     return when (status) {
       Status.PENDING -> pending()
       Status.FAILED -> failed(ChainedFailureException(error!!))
@@ -163,17 +178,25 @@ class AsyncResult<T> private constructor(
   companion object {
     /** Returns a pending result. */
     fun <T> pending(): AsyncResult<T> {
-      return AsyncResult(status = Status.PENDING)
+      return AsyncResult(status = Status.PENDING, resultTimeMillis = SystemClock.uptimeMillis())
     }
 
     /** Returns a successful result with the specified payload. */
     fun <T> success(value: T): AsyncResult<T> {
-      return AsyncResult(status = Status.SUCCEEDED, value = value)
+      return AsyncResult(
+        status = Status.SUCCEEDED,
+        resultTimeMillis = SystemClock.uptimeMillis(),
+        value = value
+      )
     }
 
     /** Returns a failed result with the specified error. */
     fun <T> failed(error: Throwable): AsyncResult<T> {
-      return AsyncResult(status = Status.FAILED, error = error)
+      return AsyncResult(
+        status = Status.FAILED,
+        resultTimeMillis = SystemClock.uptimeMillis(),
+        error = error
+      )
     }
   }
 

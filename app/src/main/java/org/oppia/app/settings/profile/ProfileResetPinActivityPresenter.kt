@@ -35,13 +35,20 @@ class ProfileResetPinActivityPresenter @Inject constructor(
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
 
     val binding =
-      DataBindingUtil.setContentView<ProfileResetPinActivityBinding>(activity, R.layout.profile_reset_pin_activity)
-    val profileId = activity.intent.getIntExtra(KEY_PROFILE_RESET_PIN_PROFILE_ID, 0)
-    val isAdmin = activity.intent.getBooleanExtra(KEY_PROFILE_RESET_PIN_IS_ADMIN, false)
+      DataBindingUtil.setContentView<ProfileResetPinActivityBinding>(
+        activity,
+        R.layout.profile_reset_pin_activity
+      )
+    val profileId = activity.intent.getIntExtra(
+      KEY_PROFILE_RESET_PIN_PROFILE_ID, 0
+    )
+    val isAdmin = activity.intent.getBooleanExtra(
+      KEY_PROFILE_RESET_PIN_IS_ADMIN, false
+    )
     resetViewModel.isAdmin.set(isAdmin)
 
     binding.profileResetPinToolbar.setNavigationOnClickListener {
-      (activity as ProfileRenameActivity).finish()
+      (activity as ProfileResetPinActivity).finish()
     }
 
     binding.apply {
@@ -79,30 +86,46 @@ class ProfileResetPinActivityPresenter @Inject constructor(
       var failed = false
       if (isAdmin) {
         if (pin.length < 5) {
-          resetViewModel.pinErrorMsg.set(activity.resources.getString(R.string.profile_reset_pin_error_admin_pin_length))
+          resetViewModel.pinErrorMsg.set(
+            activity.resources.getString(
+              R.string.profile_reset_pin_error_admin_pin_length
+            )
+          )
           failed = true
         }
       } else {
         if (pin.length < 3) {
-          resetViewModel.pinErrorMsg.set(activity.resources.getString(R.string.profile_reset_pin_error_user_pin_length))
+          resetViewModel.pinErrorMsg.set(
+            activity.resources.getString(
+              R.string.profile_reset_pin_error_user_pin_length
+            )
+          )
           failed = true
         }
       }
       if (pin != confirmPin) {
-        resetViewModel.confirmErrorMsg.set(activity.resources.getString(R.string.add_profile_error_pin_confirm_wrong))
+        resetViewModel.confirmErrorMsg.set(
+          activity.resources.getString(
+            R.string.add_profile_error_pin_confirm_wrong
+          )
+        )
         failed = true
       }
       if (failed) {
         return@setOnClickListener
       }
-      profileManagementController.updatePin(ProfileId.newBuilder().setInternalId(profileId).build(), pin)
-        .observe(activity, Observer {
-          if (it.isSuccess()) {
-            val intent = ProfileEditActivity.createProfileEditActivity(activity, profileId)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            activity.startActivity(intent)
+      profileManagementController
+        .updatePin(ProfileId.newBuilder().setInternalId(profileId).build(), pin)
+        .observe(
+          activity,
+          Observer {
+            if (it.isSuccess()) {
+              val intent = ProfileEditActivity.createProfileEditActivity(activity, profileId)
+              intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+              activity.startActivity(intent)
+            }
           }
-        })
+        )
     }
   }
 
@@ -114,7 +137,10 @@ class ProfileResetPinActivityPresenter @Inject constructor(
     }
   }
 
-  private fun addTextChangedListener(profileInputView: ProfileInputView, onTextChanged: (CharSequence?) -> Unit) {
+  private fun addTextChangedListener(
+    profileInputView: ProfileInputView,
+    onTextChanged: (CharSequence?) -> Unit
+  ) {
     profileInputView.addTextChangedListener(object : TextWatcher {
       override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
         onTextChanged(p0)

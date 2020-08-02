@@ -3,6 +3,8 @@ package org.oppia.app.profile
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -37,7 +39,8 @@ class AdminPinActivityPresenter @Inject constructor(
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
 
-    val binding = DataBindingUtil.setContentView<AdminPinActivityBinding>(activity, R.layout.admin_pin_activity)
+    val binding =
+      DataBindingUtil.setContentView<AdminPinActivityBinding>(activity, R.layout.admin_pin_activity)
 
     binding.apply {
       lifecycleOwner = activity
@@ -69,16 +72,33 @@ class AdminPinActivityPresenter @Inject constructor(
     binding.inputPin.setInput(adminViewModel.savedPin.get().toString())
     binding.inputConfirmPin.setInput(adminViewModel.savedConfirmPin.get().toString())
 
+    binding.inputConfirmPin.addEditorActionListener(
+      TextView.OnEditorActionListener { _, actionId, _ ->
+        if (actionId == EditorInfo.IME_ACTION_DONE) {
+          binding.submitButton.callOnClick()
+        }
+        false
+      }
+    )
+
     binding.submitButton.setOnClickListener {
       val inputPin = binding.inputPin.getInput()
       val confirmPin = binding.inputConfirmPin.getInput()
       var failed = false
       if (inputPin.length < 5) {
-        adminViewModel.pinErrorMsg.set(activity.getString(R.string.admin_pin_error_pin_length))
+        adminViewModel.pinErrorMsg.set(
+          activity.getString(
+            R.string.admin_pin_error_pin_length
+          )
+        )
         failed = true
       }
       if (inputPin != confirmPin) {
-        adminViewModel.confirmPinErrorMsg.set(activity.getString(R.string.admin_pin_error_pin_confirm_wrong))
+        adminViewModel.confirmPinErrorMsg.set(
+          activity.getString(
+            R.string.admin_pin_error_pin_confirm_wrong
+          )
+        )
         failed = true
       }
       if (failed) {
@@ -89,26 +109,32 @@ class AdminPinActivityPresenter @Inject constructor(
           .setInternalId(activity.intent.getIntExtra(KEY_ADMIN_PIN_PROFILE_ID, -1))
           .build()
 
-      profileManagementController.updatePin(profileId, inputPin).observe(activity, Observer {
-        if (it.isSuccess()) {
-          when (activity.intent.getIntExtra(KEY_ADMIN_PIN_ENUM, 0)) {
-            AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
-              activity.startActivity(
-                AdministratorControlsActivity.createAdministratorControlsActivityIntent(
-                  context, activity.intent.getIntExtra(KEY_ADMIN_PIN_PROFILE_ID, -1)
+      profileManagementController.updatePin(profileId, inputPin).observe(
+        activity,
+        Observer {
+          if (it.isSuccess()) {
+            when (activity.intent.getIntExtra(KEY_ADMIN_PIN_ENUM, 0)) {
+              AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
+                activity.startActivity(
+                  AdministratorControlsActivity.createAdministratorControlsActivityIntent(
+                    context, activity.intent.getIntExtra(KEY_ADMIN_PIN_PROFILE_ID, -1)
+                  )
                 )
-              )
-            }
-            AdminAuthEnum.PROFILE_ADD_PROFILE.value -> {
-              activity.startActivity(
-                AddProfileActivity.createAddProfileActivityIntent(
-                  context, activity.intent.getIntExtra(KEY_ADMIN_PIN_COLOR_RGB, -10710042)
+              }
+              AdminAuthEnum.PROFILE_ADD_PROFILE.value -> {
+                activity.startActivity(
+                  AddProfileActivity.createAddProfileActivityIntent(
+                    context,
+                    activity.intent.getIntExtra(
+                      KEY_ADMIN_PIN_COLOR_RGB, -10710042
+                    )
+                  )
                 )
-              )
+              }
             }
           }
         }
-      })
+      )
     }
   }
 
@@ -121,6 +147,7 @@ class AdminPinActivityPresenter @Inject constructor(
       override fun afterTextChanged(p0: Editable?) {
         onTextChanged(p0)
       }
+
       override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
     })
   }

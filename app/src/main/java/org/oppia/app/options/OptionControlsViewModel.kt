@@ -14,7 +14,7 @@ import org.oppia.app.model.StoryTextSize
 import org.oppia.app.viewmodel.ObservableArrayList
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** [ViewModel] for [OptionsFragment]. */
@@ -22,7 +22,7 @@ import javax.inject.Inject
 class OptionControlsViewModel @Inject constructor(
   activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
-  private val logger: Logger
+  private val logger: ConsoleLogger
 ) : OptionsItemViewModel() {
   private val itemViewModelList: ObservableList<OptionsItemViewModel> = ObservableArrayList()
   private lateinit var profileId: ProfileId

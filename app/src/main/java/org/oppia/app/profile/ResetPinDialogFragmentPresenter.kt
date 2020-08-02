@@ -30,12 +30,11 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
   }
 
   @ExperimentalCoroutinesApi
-  fun handleOnCreateDialog(routeDialogInterface: ProfileRouteDialogInterface): Dialog {
-    val profileId = fragment.arguments?.getInt(KEY_RESET_PIN_PROFILE_ID)
-    val name = fragment.arguments?.getString(KEY_RESET_PIN_NAME)
-    checkNotNull(profileId) { "Profile Id must not be null" }
-    checkNotNull(name) { "Name must not be null" }
-
+  fun handleOnCreateDialog(
+    routeDialogInterface: ProfileRouteDialogInterface,
+    profileId: Int,
+    name: String
+  ): Dialog {
     val binding: ResetPinDialogBinding = DataBindingUtil.inflate(
       activity.layoutInflater,
       R.layout.reset_pin_dialog,
@@ -79,14 +78,22 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
           return@setOnClickListener
         }
         if (input.length == 3) {
-          profileManagementController.updatePin(ProfileId.newBuilder().setInternalId(profileId).build(), input)
-            .observe(fragment, Observer {
-              if (it.isSuccess()) {
-                routeDialogInterface.routeToSuccessDialog()
+          profileManagementController
+            .updatePin(ProfileId.newBuilder().setInternalId(profileId).build(), input)
+            .observe(
+              fragment,
+              Observer {
+                if (it.isSuccess()) {
+                  routeDialogInterface.routeToSuccessDialog()
+                }
               }
-            })
+            )
         } else {
-          resetViewModel.errorMessage.set(fragment.resources.getString(R.string.add_profile_error_pin_length))
+          resetViewModel.errorMessage.set(
+            fragment.resources.getString(
+              R.string.add_profile_error_pin_length
+            )
+          )
         }
       }
     }

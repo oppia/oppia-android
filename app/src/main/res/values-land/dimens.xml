@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <dimen name="home_padding_end">72dp</dimen>
+  <dimen name="home_padding_start">72dp</dimen>
+  <dimen name="home_margin_max">72dp</dimen>
+  <dimen name="home_margin_min">36dp</dimen>
+  <dimen name="recently_played_margin_max">72dp</dimen>
+  <dimen name="recently_played_margin_min">36dp</dimen>
+</resources>

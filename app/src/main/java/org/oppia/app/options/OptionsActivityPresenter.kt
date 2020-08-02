@@ -15,10 +15,19 @@ class OptionsActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
   private var navigationDrawerFragment: NavigationDrawerFragment? = null
+  private lateinit var toolbar: Toolbar
 
-  fun handleOnCreate() {
+  fun handleOnCreate(isFromNavigationDrawer: Boolean) {
     activity.setContentView(R.layout.option_activity)
-    setUpNavigationDrawer()
+    setUpToolbar()
+    if (isFromNavigationDrawer) {
+      setUpNavigationDrawer()
+    } else {
+      activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+      toolbar.setNavigationOnClickListener {
+        activity.finish()
+      }
+    }
     if (getOptionFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.options_fragment_placeholder,
@@ -27,12 +36,18 @@ class OptionsActivityPresenter @Inject constructor(
     }
   }
 
-  private fun setUpNavigationDrawer() {
-    val toolbar = activity.findViewById<View>(R.id.options_activity_toolbar) as Toolbar
+  private fun setUpToolbar() {
+    toolbar = activity.findViewById<View>(R.id.options_activity_toolbar) as Toolbar
     activity.setSupportActionBar(toolbar)
+  }
+
+  private fun setUpNavigationDrawer() {
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
-    navigationDrawerFragment =
-      activity.supportFragmentManager.findFragmentById(R.id.options_activity_fragment_navigation_drawer) as NavigationDrawerFragment
+    navigationDrawerFragment = activity
+      .supportFragmentManager
+      .findFragmentById(
+        R.id.options_activity_fragment_navigation_drawer
+      ) as NavigationDrawerFragment
     navigationDrawerFragment!!.setUpDrawer(
       activity.findViewById<View>(R.id.options_activity_drawer_layout) as DrawerLayout,
       toolbar, R.id.nav_options
@@ -40,7 +55,11 @@ class OptionsActivityPresenter @Inject constructor(
   }
 
   private fun getOptionFragment(): OptionsFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.options_fragment_placeholder) as OptionsFragment?
+    return activity
+      .supportFragmentManager
+      .findFragmentById(
+        R.id.options_fragment_placeholder
+      ) as OptionsFragment?
   }
 
   fun updateStoryTextSize(textSize: String) {

@@ -9,15 +9,20 @@ import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
 /** Fragment that contains app version and last update time of the Oppia application. */
-class AppVersionFragment : InjectableFragment(){
-  @Inject lateinit var appVersionFragmentPresenter: AppVersionFragmentPresenter
+class AppVersionFragment : InjectableFragment() {
+  @Inject
+  lateinit var appVersionFragmentPresenter: AppVersionFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
     return appVersionFragmentPresenter.handleCreateView(inflater, container)
   }
 }

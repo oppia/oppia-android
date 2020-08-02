@@ -10,7 +10,8 @@ const val KEY_PROFILE_EDIT_PROFILE_ID = "KEY_PROFILE_EDIT_PROFILE_ID"
 
 /** Activity that allows user to edit a profile. */
 class ProfileEditActivity : InjectableAppCompatActivity() {
-  @Inject lateinit var profileEditActivityPresenter: ProfileEditActivityPresenter
+  @Inject
+  lateinit var profileEditActivityPresenter: ProfileEditActivityPresenter
 
   companion object {
     fun createProfileEditActivity(context: Context, profileId: Int): Intent {
@@ -24,6 +25,11 @@ class ProfileEditActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     profileEditActivityPresenter.handleOnCreate()
+  }
+
+  override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+    super.onRestoreInstanceState(savedInstanceState)
+    profileEditActivityPresenter.handleOnRestoreSavedInstanceState()
   }
 
   override fun onSupportNavigateUp(): Boolean {

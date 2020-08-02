@@ -1,20 +1,18 @@
 package org.oppia.app.topic.revision
 
-import android.content.res.Configuration
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import org.oppia.app.R
 import org.oppia.app.databinding.TopicRevisionFragmentBinding
 import org.oppia.app.databinding.TopicRevisionSummaryViewBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Subtopic
 import org.oppia.app.recyclerview.BindableAdapter
-import org.oppia.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.app.topic.RouteToRevisionCardListener
-import org.oppia.app.topic.TOPIC_ID_ARGUMENT_KEY
 import org.oppia.app.topic.revision.revisionitemviewmodel.TopicRevisionItemViewModel
 import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
@@ -31,24 +29,29 @@ class TopicRevisionFragmentPresenter @Inject constructor(
   private lateinit var topicId: String
   private val routeToReviewListener = activity as RouteToRevisionCardListener
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    internalProfileId: Int,
+    topicId: String
+  ): View? {
     val viewModel = getTopicRevisionViewModel()
 
-    internalProfileId = fragment.arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)!!
-    topicId = checkNotNull(fragment.arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
-      "Expected topic ID to be included in arguments for TopicRevisionFragment."
-    }
-    binding = TopicRevisionFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    this.internalProfileId = internalProfileId
+    this.topicId = topicId
+    binding = TopicRevisionFragmentBinding.inflate(
+      inflater,
+      container,
+      /* attachToRoot= */ false
+    )
 
-    viewModel.setTopicId(topicId)
-    viewModel.setInternalProfileId(internalProfileId)
+    viewModel.setTopicId(this.topicId)
+    viewModel.setInternalProfileId(this.internalProfileId)
 
     binding.revisionRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
       // https://stackoverflow.com/a/50075019/3689782
-      val spanCount =
-        if (fragment.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 3 else 2
+      val spanCount = fragment.resources.getInteger(R.integer.topic_revision_span_count)
       layoutManager = GridLayoutManager(context, spanCount)
     }
     binding.apply {
@@ -59,7 +62,7 @@ class TopicRevisionFragmentPresenter @Inject constructor(
   }
 
   override fun onTopicRevisionSummaryClicked(subtopic: Subtopic) {
-    routeToReviewListener.routeToRevisionCard(topicId, subtopic.subtopicId)
+    routeToReviewListener.routeToRevisionCard(internalProfileId, topicId, subtopic.subtopicId)
   }
 
   private fun getTopicRevisionViewModel(): TopicRevisionViewModel {

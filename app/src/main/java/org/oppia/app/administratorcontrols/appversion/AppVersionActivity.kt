@@ -9,7 +9,8 @@ import javax.inject.Inject
 
 /** Activity for App Version. */
 class AppVersionActivity : InjectableAppCompatActivity() {
-  @Inject lateinit var appVersionActivityPresenter: AppVersionActivityPresenter
+  @Inject
+  lateinit var appVersionActivityPresenter: AppVersionActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
-import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.app.viewmodel.ObservableArrayList
 import org.oppia.app.viewmodel.ObservableViewModel
@@ -16,14 +15,21 @@ import javax.inject.Inject
 @FragmentScope
 class StateViewModel @Inject constructor() : ObservableViewModel() {
   val itemList: ObservableList<StateItemViewModel> = ObservableArrayList()
+  val rightItemList: ObservableList<StateItemViewModel> = ObservableArrayList()
 
-  val isAudioBarVisible = ObservableField<Boolean>(false)
+  val isSplitView = ObservableField(false)
+  val centerGuidelinePercentage = ObservableField(0.5f)
 
-  val isHintBulbVisible = ObservableField<Boolean>(false)
-  val isHintOpenedAndUnRevealed = ObservableField<Boolean>(false)
-  val isHintRevealed = ObservableField<Boolean>(false)
+  val isAudioBarVisible = ObservableField(false)
 
-  var currentStateName: String? = null
+  var newAvailableHintIndex = -1
+  var allHintsExhausted = false
+  val isHintBulbVisible = ObservableField(false)
+  val isHintOpenedAndUnRevealed = ObservableField(false)
+
+  var currentStateName = ObservableField<String>(null as? String?)
+
+  private val canSubmitAnswer = ObservableField(false)
 
   fun setAudioBarVisibility(audioBarVisible: Boolean) {
     isAudioBarVisible.set(audioBarVisible)
@@ -37,30 +43,30 @@ class StateViewModel @Inject constructor() : ObservableViewModel() {
     isHintOpenedAndUnRevealed.set(hintOpenedAndUnRevealedVisible)
   }
 
-  fun setHintRevealedVisibility(hintRevealedVisible: Boolean) {
-    isHintRevealed.set(hintRevealedVisible)
+  fun setCanSubmitAnswer(canSubmitAnswer: Boolean) = this.canSubmitAnswer.set(canSubmitAnswer)
+
+  fun getCanSubmitAnswer(): ObservableField<Boolean> = canSubmitAnswer
+
+  fun getPendingAnswer(
+    statePlayerRecyclerViewAssembler: StatePlayerRecyclerViewAssembler
+  ): UserAnswer {
+    return getPendingAnswerWithoutError(statePlayerRecyclerViewAssembler)
+      ?: UserAnswer.getDefaultInstance()
   }
 
-  /**
-   * Returns whether there is currently a pending interaction that requires an additional user action to submit the
-   * answer.
-   */
-  fun doesMostRecentInteractionRequireExplicitSubmission(itemList: List<StateItemViewModel>): Boolean {
-    return getPendingAnswerHandler(itemList)?.isExplicitAnswerSubmissionRequired() ?: true
-  }
-
-  // TODO(#164): Add a hasPendingAnswer() that binds to the enabled state of the Submit button.
-  fun getPendingAnswer(): UserAnswer {
-    return if (getPendingAnswerHandler(itemList)?.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME) != null) {
-      UserAnswer.getDefaultInstance()
-    } else
-      getPendingAnswerHandler(itemList)?.getPendingAnswer() ?: UserAnswer.getDefaultInstance()
-  }
-
-  private fun getPendingAnswerHandler(itemList: List<StateItemViewModel>): InteractionAnswerHandler? {
-    // Search through all items to find the latest InteractionAnswerHandler which should be the pending one. In the
-    // future, it may be ideal to make this more robust by actually tracking the handler corresponding to the pending
-    // interaction.
-    return itemList.findLast { it is InteractionAnswerHandler } as? InteractionAnswerHandler
+  private fun getPendingAnswerWithoutError(
+    statePlayerRecyclerViewAssembler: StatePlayerRecyclerViewAssembler
+  ): UserAnswer? {
+    val items = if (isSplitView.get() == true) {
+      rightItemList
+    } else {
+      itemList
+    }
+    val answerHandler = statePlayerRecyclerViewAssembler.getPendingAnswerHandler(items)
+    return if (answerHandler?.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME) == null) {
+      answerHandler?.getPendingAnswer()
+    } else {
+      null
+    }
   }
 }

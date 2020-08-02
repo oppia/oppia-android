@@ -2,9 +2,14 @@ package org.oppia.app.topic.revision
 
 import android.app.Application
 import android.content.Context
+import android.view.View
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.NoMatchingViewException
+import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
@@ -14,12 +19,14 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.Matchers.allOf
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -28,12 +35,11 @@ import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.topic.TopicTab
 import org.oppia.app.utility.EspressoTestsMatchers.withDrawable
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Singleton
-import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
-import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 
 /** Tests for [TopicRevisionFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -43,8 +49,15 @@ class TopicRevisionFragmentTest {
 
   @get:Rule
   var topicActivityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
-    TopicActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+    TopicActivity::class.java,
+    /* initialTouchMode= */ true,
+    /* launchActivity= */ false
   )
+
+  @Before
+  fun setUp() {
+    FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
+  }
 
   @Test
   fun testTopicRevisionFragment_loadFragment_displayReviewTopics_isSuccessful() {
@@ -79,7 +92,7 @@ class TopicRevisionFragmentTest {
   }
 
   @Test
-  fun testTopicRevisionFragment_loadFragment_selectReviewTopics_reviewCardDisplaysCorrectExplanation() {
+  fun testTopicRevisionFragment_loadFragment_selectReviewTopics_reviewCardDisplaysCorrectExplanation() { // ktlint-disable max-line-length
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(
         allOf(
@@ -87,8 +100,15 @@ class TopicRevisionFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPosition(R.id.revision_recycler_view, 0)).perform(click())
-      onView(withId(R.id.revision_card_explanation_text)).check(matches(withText("Description of subtopic is here.")))
+      onView(atPosition(R.id.revision_recycler_view, 1)).perform(click())
+      onView(withId(R.id.revision_card_explanation_text))
+        .check(
+          matches(
+            withText(
+              "Description of subtopic is here."
+            )
+          )
+        )
     }
   }
 
@@ -101,7 +121,15 @@ class TopicRevisionFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.revision_recycler_view)).check(matches(hasDescendant(withDrawable(subtopicThumbnail))))
+      onView(withId(R.id.revision_recycler_view)).check(
+        matches(
+          hasDescendant(
+            withDrawable(
+              subtopicThumbnail
+            )
+          )
+        )
+      )
     }
   }
 
@@ -114,7 +142,12 @@ class TopicRevisionFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.revision_recycler_view)).check(hasItemCount(2))
+      onView(withId(R.id.revision_recycler_view))
+        .check(
+          GridLayoutManagerColumnCountAssertion(
+            2
+          )
+        )
     }
   }
 
@@ -143,7 +176,15 @@ class TopicRevisionFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.revision_recycler_view)).check(matches(hasDescendant(withDrawable(subtopicThumbnail))))
+      onView(withId(R.id.revision_recycler_view)).check(
+        matches(
+          hasDescendant(
+            withDrawable(
+              subtopicThumbnail
+            )
+          )
+        )
+      )
     }
   }
 
@@ -157,14 +198,52 @@ class TopicRevisionFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(withId(R.id.revision_recycler_view)).check(hasItemCount(3))
+      onView(withId(R.id.revision_recycler_view))
+        .check(
+          GridLayoutManagerColumnCountAssertion(
+            3
+          )
+        )
     }
   }
 
-  private fun launchTopicActivityIntent(internalProfileId: Int, topicId: String): ActivityScenario<TopicActivity> {
+  private fun launchTopicActivityIntent(
+    internalProfileId: Int,
+    topicId: String
+  ): ActivityScenario<TopicActivity> {
     val intent =
-      TopicActivity.createTopicActivityIntent(ApplicationProvider.getApplicationContext(), internalProfileId, topicId)
+      TopicActivity.createTopicActivityIntent(
+        ApplicationProvider.getApplicationContext(),
+        internalProfileId,
+        topicId
+      )
     return ActivityScenario.launch(intent)
+  }
+
+  class GridLayoutManagerColumnCountAssertion(expectedColumnCount: Int) : ViewAssertion {
+    private var expectedColumnCount: Int = 0
+
+    init {
+      this.expectedColumnCount = expectedColumnCount
+    }
+
+    override fun check(view: View, noViewFoundException: NoMatchingViewException?) {
+      if (noViewFoundException != null) {
+        throw noViewFoundException
+      }
+      val recyclerView = view as RecyclerView
+      if (recyclerView.layoutManager is GridLayoutManager) {
+        val gridLayoutManager = recyclerView.layoutManager as GridLayoutManager
+        val spanCount = gridLayoutManager.spanCount
+        if (spanCount != expectedColumnCount) {
+          val errorMessage =
+            ("expected column count " + expectedColumnCount + " but was " + spanCount)
+          throw AssertionError(errorMessage)
+        }
+      } else {
+        throw IllegalStateException("no grid layout manager")
+      }
+    }
   }
 
   @Module
@@ -182,7 +261,9 @@ class TopicRevisionFragmentTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@BlockingDispatcher blockingDispatcher: CoroutineDispatcher): CoroutineDispatcher {
+    fun provideBackgroundDispatcher(
+      @BlockingDispatcher blockingDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
       return blockingDispatcher
     }
   }

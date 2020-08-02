@@ -12,7 +12,7 @@ import org.oppia.app.R
 import org.oppia.app.databinding.OnboardingFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.onboarding.OnboardingFlowController
+import org.oppia.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
 /** The presenter for [OnboardingFragment]. */
@@ -20,16 +20,19 @@ import javax.inject.Inject
 class OnboardingFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val onboardingFlowController: OnboardingFlowController,
-  private val viewModelProvider: ViewModelProvider<OnboardingViewModel>
+  private val viewModelProvider: ViewModelProvider<OnboardingViewModel>,
+  private val viewModelProviderFinalSlide: ViewModelProvider<OnboardingSlideFinalViewModel>
 ) {
   private val dotsList = ArrayList<ImageView>()
   private lateinit var onboardingPagerAdapter: OnboardingPagerAdapter
-  private val routeToProfileListener = activity as RouteToProfileListListener
   private lateinit var binding: OnboardingFragmentBinding
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    binding = OnboardingFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding = OnboardingFragmentBinding.inflate(
+      inflater,
+      container,
+      /* attachToRoot= */ false
+    )
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
     binding.let {
@@ -43,34 +46,92 @@ class OnboardingFragmentPresenter @Inject constructor(
   }
 
   private fun setUpViewPager() {
-    onboardingPagerAdapter = OnboardingPagerAdapter(fragment.requireContext())
+    onboardingPagerAdapter =
+      OnboardingPagerAdapter(fragment.requireContext(), getOnboardingSlideFinalViewModel())
     binding.onboardingSlideViewPager.adapter = onboardingPagerAdapter
-    binding.onboardingSlideViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-      override fun onPageScrollStateChanged(state: Int) {
-      }
+    binding.onboardingSlideViewPager.addOnPageChangeListener(
+      object :
+        ViewPager.OnPageChangeListener {
+        override fun onPageScrollStateChanged(state: Int) {
+        }
 
-      override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-      }
+        override fun onPageScrolled(
+          position: Int,
+          positionOffset: Float,
+          positionOffsetPixels: Int
+        ) {
+        }
 
-      override fun onPageSelected(position: Int) {
-        getOnboardingViewModel().slideChanged(ViewPagerSlide.getSlideForPosition(position))
-        selectDot(position)
-      }
-    })
+        override fun onPageSelected(position: Int) {
+          if (position == TOTAL_NUMBER_OF_SLIDES - 1) {
+            binding.onboardingSlideViewPager.currentItem = TOTAL_NUMBER_OF_SLIDES - 1
+            getOnboardingViewModel().slideChanged(TOTAL_NUMBER_OF_SLIDES - 1)
+          } else {
+            getOnboardingViewModel().slideChanged(
+              ViewPagerSlide.getSlideForPosition(position)
+                .ordinal
+            )
+          }
+          selectDot(position)
+          onboardingStatusBarColorUpdate(position)
+        }
+      })
   }
 
-  fun clickOnGetStarted() {
-    onboardingFlowController.markOnboardingFlowCompleted()
-    routeToProfileListener.routeToProfileList()
+  private fun onboardingStatusBarColorUpdate(position: Int) {
+    when (position) {
+      0 -> StatusBarColor.statusBarColorUpdate(
+        R.color.onboarding1StatusBar,
+        activity,
+        false
+      )
+      1 -> StatusBarColor.statusBarColorUpdate(
+        R.color.onboarding2StatusBar,
+        activity,
+        false
+      )
+      2 -> StatusBarColor.statusBarColorUpdate(
+        R.color.onboarding3StatusBar,
+        activity,
+        false
+      )
+      3 -> StatusBarColor.statusBarColorUpdate(
+        R.color.onboarding4StatusBar,
+        activity,
+        false
+      )
+      else -> StatusBarColor.statusBarColorUpdate(
+        R.color.colorPrimaryDark,
+        activity,
+        false
+      )
+    }
   }
 
   fun clickOnSkip() {
-    getOnboardingViewModel().slideChanged(ViewPagerSlide.SLIDE_3)
-    binding.onboardingSlideViewPager.currentItem = ViewPagerSlide.SLIDE_3.ordinal
+    binding.onboardingSlideViewPager.currentItem = TOTAL_NUMBER_OF_SLIDES - 1
+  }
+
+  fun clickOnNext() {
+    val position: Int = binding.onboardingSlideViewPager.currentItem + 1
+    binding.onboardingSlideViewPager.currentItem = position
+    if (position != TOTAL_NUMBER_OF_SLIDES - 1) {
+      getOnboardingViewModel().slideChanged(ViewPagerSlide.getSlideForPosition(position).ordinal)
+    } else {
+      getOnboardingViewModel().slideChanged(TOTAL_NUMBER_OF_SLIDES - 1)
+    }
+    selectDot(position)
   }
 
   private fun getOnboardingViewModel(): OnboardingViewModel {
     return viewModelProvider.getForFragment(fragment, OnboardingViewModel::class.java)
+  }
+
+  private fun getOnboardingSlideFinalViewModel(): OnboardingSlideFinalViewModel {
+    return viewModelProviderFinalSlide.getForFragment(
+      fragment,
+      OnboardingSlideFinalViewModel::class.java
+    )
   }
 
   private fun addDots() {
@@ -92,7 +153,7 @@ class OnboardingFragmentPresenter @Inject constructor(
       params.setMargins(
         activity.resources.getDimensionPixelSize(R.dimen.dot_gap),
         0,
-        activity.resources.getDimensionPixelSize(R.dimen.dot_gap),
+        0,
         0
       )
       dotsLayout.addView(dotView, params)

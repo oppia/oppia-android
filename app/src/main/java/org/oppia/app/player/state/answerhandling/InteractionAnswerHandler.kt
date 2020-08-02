@@ -14,6 +14,9 @@ interface InteractionAnswerHandler {
    */
   fun isExplicitAnswerSubmissionRequired(): Boolean = true
 
+  /** Returns whether this handler automatically navigates the user to a later state, including answer submission. */
+  fun isAutoNavigating(): Boolean = false
+
   /** Return the current answer's error messages  if not valid else return null. */
   fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
     return null
