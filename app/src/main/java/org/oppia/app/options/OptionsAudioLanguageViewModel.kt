@@ -1,5 +1,6 @@
 package org.oppia.app.options
 
+import android.util.Log
 import androidx.databinding.ObservableField
 
 /** Audio language settings view model for the recycler view in [OptionsFragment]. */
@@ -13,6 +14,11 @@ class OptionsAudioLanguageViewModel(
   }
 
   fun onAudioLanguageClicked() {
-    routeToAudioLanguageListListener.routeAudioLanguageList(audioLanguage.get())
+    if (isMultipaneOptions.get()!!) {
+      Log.d("Multipane", "OptionsAudioLanguageViewModel")
+      // TODO add this fragment to "multipaneOptionsContainer"
+    } else {
+      routeToAudioLanguageListListener.routeAudioLanguageList(audioLanguage.get())
+    }
   }
 }

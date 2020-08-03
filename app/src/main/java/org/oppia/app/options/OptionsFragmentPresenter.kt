@@ -48,12 +48,13 @@ class OptionsFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
     val viewModel = getOptionControlsItemViewModel()
+    viewModel.isMultipaneOptions.set(binding.multipaneOptionsContainer != null)
 
     internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     viewModel.setProfileId(profileId)
 
-    val optionsRecyclerViewAdapter = createRecyclerViewAdapter()
+    val optionsRecyclerViewAdapter = createRecyclerViewAdapter(viewModel.isMultipaneOptions.get()!!)
     binding.optionsRecyclerview.apply {
       adapter = optionsRecyclerViewAdapter
     }
@@ -65,9 +66,10 @@ class OptionsFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  private fun createRecyclerViewAdapter(): BindableAdapter<OptionsItemViewModel> {
+  private fun createRecyclerViewAdapter(isMultipane: Boolean): BindableAdapter<OptionsItemViewModel> {
     return BindableAdapter.MultiTypeBuilder
       .newBuilder<OptionsItemViewModel, ViewType> { viewModel ->
+        viewModel.isMultipaneOptions.set(isMultipane)
         when (viewModel) {
           is OptionsStoryTextViewViewModel -> ViewType.VIEW_TYPE_STORY_TEXT_SIZE
           is OptionsAppLanguageViewModel -> ViewType.VIEW_TYPE_APP_LANGUAGE

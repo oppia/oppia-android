@@ -1,5 +1,6 @@
 package org.oppia.app.options
 
+import android.util.Log
 import androidx.databinding.ObservableField
 
 /** App language settings view model for the recycler view in [OptionsFragment]. */
@@ -13,6 +14,11 @@ class OptionsAppLanguageViewModel(
   }
 
   fun onAppLanguageClicked() {
-    routeToAppLanguageListListener.routeAppLanguageList(appLanguage.get())
+    if (isMultipaneOptions.get()!!) {
+      Log.d("Multipane", "OptionsAppLanguageViewModel")
+      // TODO add this fragment to "multipaneOptionsContainer"
+    } else {
+      routeToAppLanguageListListener.routeAppLanguageList(appLanguage.get())
+    }
   }
 }
