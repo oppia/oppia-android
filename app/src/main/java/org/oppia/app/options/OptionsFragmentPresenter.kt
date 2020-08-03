@@ -68,36 +68,36 @@ class OptionsFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAdapter(isMultipane: Boolean):
     BindableAdapter<OptionsItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .newBuilder<OptionsItemViewModel, ViewType> { viewModel ->
-        viewModel.isMultipaneOptions.set(isMultipane)
-        when (viewModel) {
-          is OptionsStoryTextViewViewModel -> ViewType.VIEW_TYPE_STORY_TEXT_SIZE
-          is OptionsAppLanguageViewModel -> ViewType.VIEW_TYPE_APP_LANGUAGE
-          is OptionsAudioLanguageViewModel -> ViewType.VIEW_TYPE_AUDIO_LANGUAGE
-          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
+      return BindableAdapter.MultiTypeBuilder
+        .newBuilder<OptionsItemViewModel, ViewType> { viewModel ->
+          viewModel.isMultipaneOptions.set(isMultipane)
+          when (viewModel) {
+            is OptionsStoryTextViewViewModel -> ViewType.VIEW_TYPE_STORY_TEXT_SIZE
+            is OptionsAppLanguageViewModel -> ViewType.VIEW_TYPE_APP_LANGUAGE
+            is OptionsAudioLanguageViewModel -> ViewType.VIEW_TYPE_AUDIO_LANGUAGE
+            else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
+          }
         }
-      }
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_STORY_TEXT_SIZE,
-        inflateDataBinding = OptionStoryTextSizeBinding::inflate,
-        setViewModel = this::bindStoryTextSize,
-        transformViewModel = { it as OptionsStoryTextViewViewModel }
-      )
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_APP_LANGUAGE,
-        inflateDataBinding = OptionAppLanguageBinding::inflate,
-        setViewModel = this::bindAppLanguage,
-        transformViewModel = { it as OptionsAppLanguageViewModel }
-      )
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_AUDIO_LANGUAGE,
-        inflateDataBinding = OptionAudioLanguageBinding::inflate,
-        setViewModel = this::bindAudioLanguage,
-        transformViewModel = { it as OptionsAudioLanguageViewModel }
-      )
-      .build()
-  }
+        .registerViewDataBinder(
+          viewType = ViewType.VIEW_TYPE_STORY_TEXT_SIZE,
+          inflateDataBinding = OptionStoryTextSizeBinding::inflate,
+          setViewModel = this::bindStoryTextSize,
+          transformViewModel = { it as OptionsStoryTextViewViewModel }
+        )
+        .registerViewDataBinder(
+          viewType = ViewType.VIEW_TYPE_APP_LANGUAGE,
+          inflateDataBinding = OptionAppLanguageBinding::inflate,
+          setViewModel = this::bindAppLanguage,
+          transformViewModel = { it as OptionsAppLanguageViewModel }
+        )
+        .registerViewDataBinder(
+          viewType = ViewType.VIEW_TYPE_AUDIO_LANGUAGE,
+          inflateDataBinding = OptionAudioLanguageBinding::inflate,
+          setViewModel = this::bindAudioLanguage,
+          transformViewModel = { it as OptionsAudioLanguageViewModel }
+        )
+        .build()
+    }
 
   private fun bindStoryTextSize(
     binding: OptionStoryTextSizeBinding,
