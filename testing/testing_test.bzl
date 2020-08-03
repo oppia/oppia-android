@@ -1,6 +1,6 @@
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
-def testing_test(name, src, test_class, deps):
+def testing_test(name, srcs, test_class, deps):
   '''
   Creates individual tests for test files in the testing module.
 
@@ -14,7 +14,7 @@ def testing_test(name, src, test_class, deps):
 
   oppia_android_test(
     name = name,
-    srcs = src,
+    srcs = srcs,
     custom_package = "org.oppia.testing",
     test_class = test_class,
     test_manifest = "src/test/AndroidManifest.xml",
