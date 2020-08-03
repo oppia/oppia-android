@@ -29,31 +29,27 @@ kt_android_library(
      visibility = ["//visibility:public"],
  )
 
-# Library for tests of testing fakes.
-kt_android_library(
-     name = "testing_tests",
-     custom_package = "org.oppia.testing",
-     srcs = glob(["src/test/java/org/oppia/testing/*.kt"]),
-     manifest = "src/main/AndroidManifest.xml",
-     deps = [
-         ":testing",
-         ":dagger",
-         artifact("com.google.truth:truth"),
-         artifact("androidx.test.ext:junit"),
-     ],
-     visibility = ["//visibility:private"],
-)
+TEST_DEPS = [
+    ":testing",
+    ":dagger",
+    "@robolectric//bazel:android-all",
+    artifact("org.jetbrains.kotlin:kotlin-reflect"),
+    artifact("com.google.truth:truth"),
+    artifact("androidx.test.ext:junit"),
+]
 
 testing_test(
     name = "FakeEventLoggerTest",
     src = ["src/test/java/org/oppia/testing/FakeEventLoggerTest.kt"],
     test_class = "org.oppia.testing.FakeEventLoggerTest",
+    deps = TEST_DEPS,
 )
 
 testing_test(
     name = "FakeExceptionLoggerTest",
     src = ["src/test/java/org/oppia/testing/FakeExceptionLoggerTest.kt"],
     test_class = "org.oppia.testing.FakeExceptionLoggerTest",
+    deps = TEST_DEPS,
 )
 
 dagger_rules()
