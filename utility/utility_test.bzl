@@ -2,9 +2,7 @@ load("//:oppia_android_test.bzl", "oppia_android_test")
 
 def utility_test(name, src, test_class, deps):
   '''
-  This macro exists as a way to customize the oppia_android_test() macro for the utility module.
-  This macro calls the oppia_android_test() macro such that the only necessary parameters for this
-  macro are the parameters specific to the individual test being run.
+  Creates individual tests for test files in the utility module.
 
   Args:
       name: str. The name of the Kotlin test file without the '.kt' suffix.
