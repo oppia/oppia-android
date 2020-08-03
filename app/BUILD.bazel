@@ -114,6 +114,7 @@ VIEW_MODEL_FILES = [
 
 ACTIVITY_FILES = [
     "src/main/java/org/oppia/app/viewmodel/ObservableArrayList.kt",
+
     "src/main/java/org/oppia/app/onboarding/ViewPagerSlide.kt",
     #"src/main/java/org/oppia/app/profile/ProfileActivity.kt",
 ]
@@ -236,6 +237,10 @@ kt_android_library(
         ":dagger",
         "//model:model_lib",
         artifact("androidx.appcompat:appcompat"),
+        artifact("androidx.databinding:databinding-runtime"),
+        artifact("androidx.databinding:databinding-adapters"),
+        artifact("androidx.databinding:databinding-common"),
+        artifact("androidx.annotation:annotation"),
     ],
     visibility = ["//visibility:public"],
 )
