@@ -29,7 +29,7 @@ android_library(
     exports = [
         artifact("com.crashlytics.sdk.android:crashlytics"),
         artifact("io.fabric.sdk.android:fabric"),
-        artifact("com.google.firebase:firebase-analytics:17.4.4"),
-        artifact("com.google.firebase:firebase-crashlytics:17.1.1"),
+        artifact("com.google.firebase:firebase-analytics"),
+        artifact("com.google.firebase:firebase-crashlytics"),
     ],
 )
