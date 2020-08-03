@@ -8,7 +8,7 @@ load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 
 kt_android_library(
-    name = "cache_store",
+    name = "persistent_cache_store",
     custom_package = "org.oppia.data.persistence",
     srcs = glob(["src/main/java/org/oppia/data/persistence/*.kt"]),
     manifest = "src/main/AndroidManifest.xml",

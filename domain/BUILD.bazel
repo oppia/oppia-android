@@ -16,7 +16,7 @@ kt_android_library(
     manifest = "src/main/AndroidManifest.xml",
     deps = [
         ":dagger",
-        "//data:cache_store",
+        "//data:persistent_cache_store",
     ],
     visibility = ["//visibility:public"],
 )
@@ -31,7 +31,7 @@ kt_android_library(
         ":dagger",
         ":domain",
         "//model",
-        "//data:cache_store",
+        "//data:persistent_cache_store",
         "//testing",
         "@robolectric//bazel:android-all",
         artifact("com.google.truth:truth"),
