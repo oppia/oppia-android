@@ -121,8 +121,6 @@ maven_install(
         "org.jetbrains.kotlin:kotlin-stdlib-jdk7:jar:1.3.72",
         "org.jetbrains.kotlin:kotlin-test-junit:1.3.72",
         "com.google.truth:truth:0.43",
-        "com.google.gms:google-services:4.3.3",
-        "com.google.firebase:firebase-analytics-ktx:17.4.2",
         "com.google.firebase:firebase-analytics:17.4.4",
         "com.google.firebase:firebase-crashlytics:17.1.1",
         "com.crashlytics.sdk.android:crashlytics:2.9.8",
