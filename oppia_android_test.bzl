@@ -12,7 +12,6 @@ def oppia_android_test(name, srcs, test_manifest, custom_package,
       srcs: str. The name of the Kotlin test file to be run.
       test_manifest: str. The path to the test manifest file.
       custom_package: str. The module's package. Example: 'org.oppia.utility'.
-      resource_files: str. The path to the resource files. This is typically a glob([]).
       test_class: The package of the src file. For example, if the src is 'FakeEventLoggerTest.kt',
           then the test_class would be "org.oppia.testing.FakeEventLoggerTest".
       src_library_name: str. The name of the library that builds the module's test files.
