@@ -14,7 +14,7 @@ import javax.inject.Inject
  *
  * https://github.com/oppia/oppia/blob/132b9d8f059253548ea1efadf1ff76416dfa2832/extensions/interactions/DragAndDropSortInput/directives/drag-and-drop-sort-input-rules.service.ts#L72
  */
-class DragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProvider @Inject constructor(
+class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
 ) : RuleClassifierProvider,
   GenericRuleClassifier.SingleInputMatcher<ListOfSetsOfHtmlStrings> {

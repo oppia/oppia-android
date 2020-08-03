@@ -11,7 +11,7 @@ load("//domain:domain_test.bzl", "domain_test")
 kt_android_library(
     name = "domain",
     custom_package = "org.oppia.domain",
-    srcs = glob(["src/main/java/org/oppia/domain/**/*.kt"]),
+    srcs = glob(["src/main/java/org/oppia/domain/**"]),
     data = glob(["src/main/assets/**"]),
     manifest = "src/main/AndroidManifest.xml",
     deps = [
@@ -42,192 +42,232 @@ kt_android_library(
     visibility = ["//visibility:public"],
 )
 
+TEST_DEPS = [
+        ":dagger",
+        ":domain",
+        "//model",
+        "//data:persistent_cache_store",
+        "//testing",
+        "@robolectric//bazel:android-all",
+        artifact("com.google.truth:truth"),
+        artifact("androidx.test.ext:junit"),
+        artifact("org.jetbrains.kotlin:kotlin-test-junit"),
+        artifact("androidx.arch.core:core-testing"),
+        artifact("org.jetbrains.kotlin:kotlin-reflect"),
+]
+
 domain_test(
     name = "AudioPlayerControllerTest",
-    src = ["src/test/java/org/oppia/domain/audio/AudioPlayerControllerTest.kt"],
+    srcs = ["src/test/java/org/oppia/domain/audio/AudioPlayerControllerTest.kt"],
     test_class = "org.oppia.domain.audio.AudioPlayerControllerTest",
+    deps = TEST_DEPS,
 )
 
 domain_test(
     name = "CellularAudioDialogControllerTest",
-    src = ["src/test/java/org/oppia/domain/audio/CellularAudioDialogControllerTest.kt"],
+    srcs = ["src/test/java/org/oppia/domain/audio/CellularAudioDialogControllerTest.kt"],
     test_class = "org.oppia.domain.audio.CellularAudioDialogControllerTest",
+    deps = TEST_DEPS,
 )
 
 domain_test(
     name = "AnswerClassificationControllerTest",
-    src = ["src/test/java/org/oppia/domain/classify/AnswerClassificationControllerTest.kt"],
+    srcs = ["src/test/java/org/oppia/domain/classify/AnswerClassificationControllerTest.kt"],
     test_class = "org.oppia.domain.classify.AnswerClassificationControllerTest",
+    deps = TEST_DEPS,
 )
 
 domain_test(
     name = "NumericInputEqualsRuleClassifierProviderTest",
-    src = ["src/test/java/org/oppia/domain/classify/NumericInputEqualsRuleClassifierProviderTest.kt"],
+    srcs = ["src/test/java/org/oppia/domain/classify/NumericInputEqualsRuleClassifierProviderTest.kt"],
     test_class = "org.oppia.domain.classify.NumericInputEqualsRuleClassifierProviderTest",
+    deps = TEST_DEPS,
 )
 
 domain_test(
     name = "DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest",
-    src = [
+    srcs = [
         "src/test/java/org/oppia/domain/classify/rules/dragAndDropSortInput/"
         + "DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest.kt"
     ],
     test_class = "org.oppia.domain.classify.rules.dragAndDropSortInput."
     + "DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest",
+    deps = TEST_DEPS,
 )
 
 domain_test(
     name = "DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest",
-    src = [
+    srcs = [
         "src/test/java/org/oppia/domain/classify/rules/dragAndDropSortInput/"
         + "DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest.kt"
     ],
     test_class = "org.oppia.domain.classify.rules.dragAndDropSortInput."
     + "DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest",
+    deps = TEST_DEPS,
 )
 
 domain_test(
     name = "DragDropSortInputIsEqualToOrderingClassifierProviderTest",
-    src = [
+    srcs = [
         "src/test/java/org/oppia/domain/classify/rules/dragAndDropSortInput/"
         + "DragDropSortInputIsEqualToOrderingClassifierProviderTest.kt"
     ],
     test_class = "org.oppia.domain.classify.rules.dragAndDropSortInput."
     + "DragDropSortInputIsEqualToOrderingClassifierProviderTest",
+    deps = TEST_DEPS,
 )
 
 domain_test(
-    name = "DragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProviderTest",
-    src = [
+    name = "DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProviderTest",
+    srcs = [
         "src/test/java/org/oppia/domain/classify/rules/dragAndDropSortInput/"
-        + "DragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProviderTest.kt"
+        + "DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProviderTest.kt"
     ],
     test_class = "org.oppia.domain.classify.rules.dragAndDropSortInput."
-    + "DragDropSortInputIsEqualToOrderingWithOneItemIncorrectClassifierProviderTest",
+    + "DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProviderTest",
+    deps = TEST_DEPS,
 )
 
 domain_test(
     name = "ImageClickInputIsInRegionRuleClassifierProviderTest",
-    src = [
+    srcs = [
         "src/test/java/org/oppia/domain/classify/rules/imageClickInput/"
         + "ImageClickInputIsInRegionRuleClassifierProviderTest.kt"
     ],
     test_class = "org.oppia.domain.classify.rules.imageClickInput."
     + "ImageClickInputIsInRegionRuleClassifierProviderTest",
+    deps = TEST_DEPS,
 )
 
 domain_test(
     name = "MultipleChoiceInputEqualsRuleClassifierProviderTest",
-    src = [
+    srcs = [
         "src/test/java/org/oppia/domain/classify/rules/multiplechoiceinput/"
         + "MultipleChoiceInputEqualsRuleClassifierProviderTest.kt"
     ],
     test_class = "org.oppia.domain.classify.rules.multiplechoiceinput."
     + "MultipleChoiceInputEqualsRuleClassifierProviderTest",
+    deps = TEST_DEPS,
 )
 
 domain_test(
     name = "TextInputContainsRuleClassifierProviderTest",
-    src = [
+    srcs = [
         "src/test/java/org/oppia/domain/classify/rules/textinput/"
         + "TextInputContainsRuleClassifierProviderTest.kt"
     ],
     test_class = "org.oppia.domain.classify.rules.textinput."
     + "TextInputContainsRuleClassifierProviderTest",
+    deps = TEST_DEPS,
 )
 
 domain_test(
     name = "TextInputEqualsRuleClassifierProviderTest",
-    src = [
+    srcs = [
         "src/test/java/org/oppia/domain/classify/rules/textinput/"
         + "TextInputEqualsRuleClassifierProviderTest.kt"
     ],
     test_class = "org.oppia.domain.classify.rules.textinput."
     + "TextInputEqualsRuleClassifierProviderTest",
+    deps = TEST_DEPS,
 )
 
 domain_test(
     name = "ExplorationDataControllerTest",
-    src = ["src/test/java/org/oppia/domain/exploration/ExplorationDataControllerTest.kt"],
+    srcs = ["src/test/java/org/oppia/domain/exploration/ExplorationDataControllerTest.kt"],
     test_class = "org.oppia.domain.exploration.ExplorationDataControllerTest",
+    deps = TEST_DEPS,
 )
 
 domain_test(
     name = "ExplorationProgressControllerTest",
-    src = ["src/test/java/org/oppia/domain/exploration/ExplorationProgressControllerTest.kt"],
+    srcs = ["src/test/java/org/oppia/domain/exploration/ExplorationProgressControllerTest.kt"],
     test_class = "org.oppia.domain.exploration.ExplorationProgressControllerTest",
+    deps = TEST_DEPS,
 )
 
 domain_test(
     name = "OnboardingFlowControllerTest",
-    src = ["src/test/java/org/oppia/domain/onboarding/OnboardingFlowControllerTest.kt"],
+    srcs = ["src/test/java/org/oppia/domain/onboarding/OnboardingFlowControllerTest.kt"],
     test_class = "org.oppia.domain.onboarding.OnboardingFlowControllerTest",
+    deps = TEST_DEPS,
 )
 
 domain_test(
     name = "AnalyticsControllerTest",
-    src = ["src/test/java/org/oppia/domain/oppialogger/analytics/AnalyticsControllerTest.kt"],
+    srcs = ["src/test/java/org/oppia/domain/oppialogger/analytics/AnalyticsControllerTest.kt"],
     test_class = "org.oppia.domain.oppialogger.analytics.AnalyticsControllerTest",
+    deps = TEST_DEPS,
 )
 
 domain_test(
     name = "ProfileManagementControllerTest",
-    src = ["src/test/java/org/oppia/domain/profile/ProfileManagementControllerTest.kt"],
+    srcs = ["src/test/java/org/oppia/domain/profile/ProfileManagementControllerTest.kt"],
     test_class = "org.oppia.domain.profile.ProfileManagementControllerTest",
+    deps = TEST_DEPS,
 )
 
 domain_test(
     name = "ProfileTestHelperTest",
-    src = ["src/test/java/org/oppia/domain/profile/ProfileTestHelperTest.kt"],
+    srcs = ["src/test/java/org/oppia/domain/profile/ProfileTestHelperTest.kt"],
     test_class = "org.oppia.domain.profile.ProfileTestHelperTest",
+    deps = TEST_DEPS,
 )
 
 domain_test(
     name = "QuestionAssessmentProgressControllerTest",
-    src = ["src/test/java/org/oppia/domain/question/QuestionAssessmentProgressControllerTest.kt"],
+    srcs = ["src/test/java/org/oppia/domain/question/QuestionAssessmentProgressControllerTest.kt"],
     test_class = "org.oppia.domain.question.QuestionAssessmentProgressControllerTest",
+    deps = TEST_DEPS,
 )
 
 domain_test(
     name = "QuestionTrainingControllerTest",
-    src = ["src/test/java/org/oppia/domain/question/QuestionTrainingControllerTest.kt"],
+    srcs = ["src/test/java/org/oppia/domain/question/QuestionTrainingControllerTest.kt"],
     test_class = "org.oppia.domain.question.QuestionTrainingControllerTest",
+    deps = TEST_DEPS,
 )
 
 domain_test(
     name = "StoryProgressControllerTest",
-    src = ["src/test/java/org/oppia/domain/topic/StoryProgressControllerTest.kt"],
+    srcs = ["src/test/java/org/oppia/domain/topic/StoryProgressControllerTest.kt"],
     test_class = "org.oppia.domain.topic.StoryProgressControllerTest",
+    deps = TEST_DEPS,
 )
 
 domain_test(
     name = "StoryProgressTestHelperTest",
-    src = ["src/test/java/org/oppia/domain/topic/StoryProgressTestHelperTest.kt"],
+    srcs = ["src/test/java/org/oppia/domain/topic/StoryProgressTestHelperTest.kt"],
     test_class = "org.oppia.domain.topic.StoryProgressTestHelperTest",
+    deps = TEST_DEPS,
 )
 
 domain_test(
     name = "TopicControllerTest",
-    src = ["src/test/java/org/oppia/domain/topic/TopicControllerTest.kt"],
+    srcs = ["src/test/java/org/oppia/domain/topic/TopicControllerTest.kt"],
     test_class = "org.oppia.domain.topic.TopicControllerTest",
+    deps = TEST_DEPS,
 )
 
 domain_test(
     name = "TopicListControllerTest",
-    src = ["src/test/java/org/oppia/domain/topic/TopicListControllerTest.kt"],
+    srcs = ["src/test/java/org/oppia/domain/topic/TopicListControllerTest.kt"],
     test_class = "org.oppia.domain.topic.TopicListControllerTest",
+    deps = TEST_DEPS,
 )
 
 domain_test(
     name = "InteractionObjectExtensionsTest",
-    src = ["src/test/java/org/oppia/domain/util/InteractionObjectExtensionsTest.kt"],
+    srcs = ["src/test/java/org/oppia/domain/util/InteractionObjectExtensionsTest.kt"],
     test_class = "org.oppia.domain.util.InteractionObjectExtensionsTest",
+    deps = TEST_DEPS,
 )
 
 domain_test(
     name = "StateRetrieverTest",
-    src = ["src/test/java/org/oppia/domain/util/StateRetrieverTest.kt"],
+    srcs = ["src/test/java/org/oppia/domain/util/StateRetrieverTest.kt"],
     test_class = "org.oppia.domain.util.StateRetrieverTest",
+    deps = TEST_DEPS,
 )
 
 dagger_rules()

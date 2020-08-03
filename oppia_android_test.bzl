@@ -25,6 +25,7 @@ def oppia_android_test(name, srcs, test_manifest, custom_package, test_class, de
     srcs = srcs,
     deps = deps,
     testonly = True,
+    manifest = test_manifest,
     assets = assets,
     assets_dir = assets_dir,
   )
