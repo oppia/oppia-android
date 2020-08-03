@@ -35,14 +35,14 @@ TEST_DEPS = [
 
 testing_test(
     name = "FakeEventLoggerTest",
-    src = ["src/test/java/org/oppia/testing/FakeEventLoggerTest.kt"],
+    srcs = ["src/test/java/org/oppia/testing/FakeEventLoggerTest.kt"],
     test_class = "org.oppia.testing.FakeEventLoggerTest",
     deps = TEST_DEPS,
 )
 
 testing_test(
     name = "FakeExceptionLoggerTest",
-    src = ["src/test/java/org/oppia/testing/FakeExceptionLoggerTest.kt"],
+    srcs = ["src/test/java/org/oppia/testing/FakeExceptionLoggerTest.kt"],
     test_class = "org.oppia.testing.FakeExceptionLoggerTest",
     deps = TEST_DEPS,
 )
