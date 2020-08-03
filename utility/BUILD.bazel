@@ -33,27 +33,6 @@ kt_android_library(
     visibility = ["//visibility:public"],
 )
 
-kt_android_library(
-    name = "utility_tests",
-    custom_package = "org.oppia.util",
-    srcs = glob(["src/test/java/org/oppia/util/**/*.kt"],),
-    resource_files = glob(["src/main/res/**/*.xml"]),
-    manifest = "src/test/AndroidManifest.xml",
-    deps = [
-        ":dagger",
-        ":utility",
-        "//testing",
-        "//model",
-        "//firebase:crashlytics",
-        "//firebase:crashlytics_deps",
-        artifact("org.jetbrains.kotlin:kotlin-test-junit"),
-        artifact("com.google.truth:truth"),
-        artifact("androidx.test.ext:junit"),
-        artifact("org.mockito:mockito-core"),
-    ],
-    visibility = ["//visibility:public"],
-)
-
 TEST_DEPS = [
     ":utility",
     ":dagger",
@@ -70,11 +49,11 @@ TEST_DEPS = [
 ]
 
 utility_test(
-   name = "AsyncResultTest",
-   src = ["src/test/java/org/oppia/util/data/AsyncResultTest.kt"],
-   test_class = "org.oppia.util.data.AsyncResultTest",
-   deps = TEST_DEPS,
- )
+    name = "AsyncResultTest",
+    src = ["src/test/java/org/oppia/util/data/AsyncResultTest.kt"],
+    test_class = "org.oppia.util.data.AsyncResultTest",
+    deps = TEST_DEPS,
+)
 
 utility_test(
     name = "DataProvidersTest",
