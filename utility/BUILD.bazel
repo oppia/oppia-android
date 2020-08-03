@@ -46,56 +46,56 @@ TEST_DEPS = [
 
 utility_test(
     name = "AsyncResultTest",
-    src = ["src/test/java/org/oppia/util/data/AsyncResultTest.kt"],
+    srcs = ["src/test/java/org/oppia/util/data/AsyncResultTest.kt"],
     test_class = "org.oppia.util.data.AsyncResultTest",
     deps = TEST_DEPS,
 )
 
 utility_test(
     name = "DataProvidersTest",
-    src = ["src/test/java/org/oppia/util/data/DataProvidersTest.kt"],
+    srcs = ["src/test/java/org/oppia/util/data/DataProvidersTest.kt"],
     test_class = "org.oppia.util.data.DataProvidersTest",
     deps = TEST_DEPS,
 )
 
 utility_test(
     name = "InMemoryBlockingCacheTest",
-    src = ["src/test/java/org/oppia/util/data/InMemoryBlockingCacheTest.kt"],
+    srcs = ["src/test/java/org/oppia/util/data/InMemoryBlockingCacheTest.kt"],
     test_class = "org.oppia.util.data.InMemoryBlockingCacheTest",
     deps = TEST_DEPS,
 )
 
 utility_test(
     name = "DateTimeUtilTest",
-    src = ["src/test/java/org/oppia/util/datetime/DateTimeUtilTest.kt"],
+    srcs = ["src/test/java/org/oppia/util/datetime/DateTimeUtilTest.kt"],
     test_class = "org.oppia.util.datetime.DateTimeUtilTest",
     deps = TEST_DEPS,
 )
 
 utility_test(
     name = "EventBundleCreatorTest",
-    src = ["src/test/java/org/oppia/util/logging/EventBundleCreatorTest.kt"],
+    srcs = ["src/test/java/org/oppia/util/logging/EventBundleCreatorTest.kt"],
     test_class = "org.oppia.util.logging.EventBundleCreatorTest",
     deps = TEST_DEPS,
 )
 
 utility_test(
     name = "NetworkConnectionUtilTest",
-    src = ["src/test/java/org/oppia/util/networking/NetworkConnectionUtilTest.kt"],
+    srcs = ["src/test/java/org/oppia/util/networking/NetworkConnectionUtilTest.kt"],
     test_class = "org.oppia.util.networking.NetworkConnectionUtilTest",
     deps = TEST_DEPS,
 )
 
 utility_test(
     name = "DirectoryManagementUtilTest",
-    src = ["src/test/java/org/oppia/util/profile/DirectoryManagementUtilTest.kt"],
+    srcs = ["src/test/java/org/oppia/util/profile/DirectoryManagementUtilTest.kt"],
     test_class = "org.oppia.util.profile.DirectoryManagementUtilTest",
     deps = TEST_DEPS,
 )
 
 utility_test(
     name = "OppiaDateTimeFormatterTest",
-    src = ["src/test/java/org/oppia/util/system/OppiaDateTimeFormatterTest.kt"],
+    srcs = ["src/test/java/org/oppia/util/system/OppiaDateTimeFormatterTest.kt"],
     test_class = "org.oppia.util.system.OppiaDateTimeFormatterTest",
     deps = TEST_DEPS,
 )
