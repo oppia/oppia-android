@@ -9,12 +9,14 @@ def oppia_android_test(name, srcs, test_manifest, custom_package, test_class, de
 
   Args:
       name: str. The name of the Kotlin test file without the '.kt' suffix.
-      srcs: str. The name of the Kotlin test file to be run.
+      srcs: list of str. The name of the Kotlin test files to be run.
       test_manifest: str. The path to the test manifest file.
       custom_package: str. The module's package. Example: 'org.oppia.utility'.
       test_class: The package of the src file. For example, if the src is 'FakeEventLoggerTest.kt',
           then the test_class would be "org.oppia.testing.FakeEventLoggerTest".
-      src_library_name: str. The name of the library that builds the module's test files.
+      deps: list of str. The list of dependencies needed to run the tests.
+      assets: list of str. A list of assets needed to run the tests.
+      assets_dir: str. The path to the assets directory.
   '''
 
   kt_android_library(

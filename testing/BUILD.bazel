@@ -1,11 +1,6 @@
 # TODO(#1532): Rename file to 'BUILD' post-Gradle.
 '''
 This library contains fake objects used for testing as well as tests for these objects.
-In Bazel, Kotlin source files are built into a library using the kt_android_library() rule.
-Individual Kotlin test files must be built in their own kt_android_library() rules and added as a
-dependency to an android_local_test() rule which configures instrumentation tests in Bazel.
-In order to eliminate duplicate code, a custom macro testing_test() has been written to streamline
-testing in this module.
 '''
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
@@ -40,14 +35,14 @@ TEST_DEPS = [
 
 testing_test(
     name = "FakeEventLoggerTest",
-    src = ["src/test/java/org/oppia/testing/FakeEventLoggerTest.kt"],
+    srcs = ["src/test/java/org/oppia/testing/FakeEventLoggerTest.kt"],
     test_class = "org.oppia.testing.FakeEventLoggerTest",
     deps = TEST_DEPS,
 )
 
 testing_test(
     name = "FakeExceptionLoggerTest",
-    src = ["src/test/java/org/oppia/testing/FakeExceptionLoggerTest.kt"],
+    srcs = ["src/test/java/org/oppia/testing/FakeExceptionLoggerTest.kt"],
     test_class = "org.oppia.testing.FakeExceptionLoggerTest",
     deps = TEST_DEPS,
 )

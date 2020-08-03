@@ -122,6 +122,7 @@ maven_install(
         "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2",
         "org.jetbrains.kotlin:kotlin-stdlib-jdk7:jar:1.3.72",
         "org.jetbrains.kotlin:kotlin-test-junit:1.3.72",
+        "org.jetbrains.kotlin:kotlin-reflect:1.3.41",
         "com.google.truth:truth:0.43",
         "com.google.firebase:firebase-analytics:17.4.4",
         "com.google.firebase:firebase-crashlytics:17.1.1",
