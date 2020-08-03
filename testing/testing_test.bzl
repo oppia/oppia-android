@@ -8,9 +8,10 @@ def testing_test(name, src, test_class, deps):
 
   Args:
       name: str. The name of the Kotlin test file without the '.kt' suffix.
-      src: str. The name of the Kotlin test file to be run.
+      src: list of str. The list of test files to be run.
       test_class: str. The package of the src file. Example: If the src is 'FakeEventLoggerTest.kt',
           then the test_class would be "org.oppia.testing.FakeEventLoggerTest".
+      deps: list of str. The list of dependencies needed to build and run this test.
   '''
 
   oppia_android_test(
