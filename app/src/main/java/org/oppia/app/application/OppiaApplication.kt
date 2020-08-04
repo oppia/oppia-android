@@ -4,9 +4,8 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
 import androidx.multidex.MultiDexApplication
 import org.oppia.app.activity.ActivityComponent
-import org.oppia.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.domain.oppialogger.exceptions.OppiaUncaughtExceptionHandler
-import org.oppia.util.system.OppiaClock
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The root [Application] of the Oppia app. */
@@ -14,9 +13,9 @@ class OppiaApplication : MultiDexApplication(), ActivityComponentFactory {
   /** The root [ApplicationComponent]. */
 
   @Inject
-  lateinit var exceptionsController: ExceptionsController
+  lateinit var oppiaUncaughtExceptionHandler: OppiaUncaughtExceptionHandler
   @Inject
-  lateinit var oppiaClock: OppiaClock
+  lateinit var consoleLogger: ConsoleLogger
 
   private val component: ApplicationComponent by lazy {
     DaggerApplicationComponent.builder()
@@ -32,9 +31,9 @@ class OppiaApplication : MultiDexApplication(), ActivityComponentFactory {
   /** Sets the uncaughtExceptionHandler of the current thread to [OppiaUncaughtExceptionHandler]. */
   private fun setOppiaUncaughtExceptionHandler() {
     try {
-      Thread.currentThread().uncaughtExceptionHandler =
-        OppiaUncaughtExceptionHandler(exceptionsController, oppiaClock)
+      Thread.currentThread().uncaughtExceptionHandler = oppiaUncaughtExceptionHandler
     } catch (exception: Exception) {
+      consoleLogger.e("Oppia Application", "Problem with setting OppiaUncaughtExceptionHandler")
     } finally {
       Thread.currentThread().uncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
     }
