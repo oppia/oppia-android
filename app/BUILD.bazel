@@ -4,8 +4,8 @@ load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 
 VIEW_MODEL_FILES = [
-    "src/main/java/org/oppia/app/administratorcontrols/AdministratorControlsViewModel.kt",
-    "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel.kt",
+    #"src/main/java/org/oppia/app/administratorcontrols/AdministratorControlsViewModel.kt",
+    #"src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel.kt",
     "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAppInformationViewModel.kt",
     "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsDownloadPermissionsViewModel.kt",
     "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsGeneralViewModel.kt",
@@ -31,8 +31,8 @@ VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/home/recentlyplayed/RecentlyPlayedItemViewModel.kt",
     "src/main/java/org/oppia/app/home/recentlyplayed/OngoingStoryViewModel.kt",
     "src/main/java/org/oppia/app/home/topiclist/AllTopicsViewModel.kt",
-    "src/main/java/org/oppia/app/home/topiclist/PromotedStoryListViewModel.kt",
-    "src/main/java/org/oppia/app/home/topiclist/PromotedStoryViewModel.kt",
+    #"src/main/java/org/oppia/app/home/topiclist/PromotedStoryListViewModel.kt",
+    #"src/main/java/org/oppia/app/home/topiclist/PromotedStoryViewModel.kt",
     "src/main/java/org/oppia/app/home/topiclist/TopicSummaryViewModel.kt",
     "src/main/java/org/oppia/app/onboarding/OnboadingSlideViewModel.kt",
     "src/main/java/org/oppia/app/onboarding/OnboardingSlideFinalViewModel.kt",
@@ -117,7 +117,8 @@ VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/recyclerview/BindableAdapter.kt",
     "src/main/java/org/oppia/app/onboarding/ViewPagerSlide.kt",
     "src/main/java/org/oppia/app/help/HelpItems.kt",
-    "src/main/java/org/oppia/app/IntentFactoryShimInterface.kt",
+    "src/main/java/org/oppia/app/recyclerview/DividerItemDecorator.kt",
+    #"src/main/java/org/oppia/app/IntentFactoryShimInterface.kt",
 ]
 
 DATABINDING_ADAPTER_FILES = [
@@ -184,7 +185,7 @@ android_library(
     name = "resources",
     custom_package = "org.oppia.app",
     manifest = "src/main/AndroidManifest.xml",
-    resource_files = glob(["src/main/res/**",], exclude = ["src/main/res/layout*/**", "src/main/res/drawable/edit_text_background*"]),
+    resource_files = glob(["src/main/res/**",], exclude = ["src/main/res/layout*/**"]),
     exports_manifest = True,
     deps = [
         artifact("com.google.android.material:material"),
@@ -193,13 +194,15 @@ android_library(
 
 android_library(
     name = "databinding_resources",
-    custom_package = "org.oppia.app.databinding",
-    manifest = "src/main/java/org/oppia/app/databinding/AndroidManifest.xml",
-    resource_files = glob(["src/main/res/layout*/**", "src/main/res/drawable/edit_text_background*"]),
+    custom_package = "org.oppia.app.db",
+    manifest = "src/main/DbAndroidManifest.xml",
+    resource_files = glob(["src/main/res/layout*/**"]),
     enable_data_binding = 1,
     exports_manifest = True,
     deps = [
         ":resources",
+        ":databinding_adapters",
+        ":recyclerview_adapters",
         artifact("com.google.android.material:material"),
         artifact("androidx.databinding:databinding-runtime"),
         artifact("androidx.databinding:databinding-adapters"),
@@ -262,17 +265,17 @@ kt_android_library(
 
 android_library(
     name = "databinding_adapters",
-    custom_package = "org.oppia.app.adapters",
+    custom_package = "org.oppia.app.impl.adapters",
     srcs = DATABINDING_ADAPTER_FILES,
     enable_data_binding = 1,
     #resource_files = glob(["src/main/res/**"]),
-    #manifest = "src/main/java/org/oppia/app/databinding/AndroidManifest.xml",
+    manifest = "src/main/DbAdaptersAndroidManifest.xml",
     deps = [
         ":dagger",
         "//model:model_lib",
         "//utility:utility_lib",
         ":view_models",
-        ":databinding_resources",
+        ":resources",
         artifact("androidx.appcompat:appcompat"),
         artifact("com.chaos.view:pinview:1.4.3"),
         artifact("com.github.bumptech.glide:glide"),
@@ -285,6 +288,8 @@ android_library(
         artifact("com.google.android.material:material:1.2.0-alpha02"),
         artifact("androidx.constraintlayout:constraintlayout:1.1.3"),
         artifact("de.hdodenhof:circleimageview:3.0.1"),
+        artifact("javax.annotation:javax.annotation-api:jar"),
+        artifact("org.jetbrains:annotations:jar"),
         "@circularimageview//circularimageview:circular_image_view",
     ],
     visibility = ["//visibility:public"],
@@ -292,17 +297,18 @@ android_library(
 
 android_library(
     name = "recyclerview_adapters",
-    custom_package = "org.oppia.app.recyclerview",
+    custom_package = "org.oppia.app.rv",
     srcs = RECYCLERVIEW_ADAPTER_FILES,
     enable_data_binding = 1,
-    #resource_files = glob(["src/main/res/**"]),
-    manifest = "src/main/java/org/oppia/app/recyclerview/AndroidManifest.xml",
+    manifest = "src/main/RvAdaptersAndroidManifest.xml",
     deps = [
         ":dagger",
         "//model:model_lib",
         "//utility:utility_lib",
         ":view_models",
+        ":resources",
         artifact("androidx.appcompat:appcompat"),
+        artifact("com.chaos.view:pinview:1.4.3"),
         artifact("com.github.bumptech.glide:glide"),
         artifact("com.caverock:androidsvg-aar"),
         artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
@@ -313,7 +319,10 @@ android_library(
         artifact("com.google.android.material:material:1.2.0-alpha02"),
         artifact("androidx.constraintlayout:constraintlayout:1.1.3"),
         artifact("de.hdodenhof:circleimageview:3.0.1"),
+        artifact("javax.annotation:javax.annotation-api:jar"),
+        artifact("org.jetbrains:annotations:jar"),
         "@circularimageview//circularimageview:circular_image_view",
+        artifact("androidx.lifecycle:lifecycle-livedata-core:jar:2.0.0-alpha1"),
     ],
     visibility = ["//visibility:public"],
 )
@@ -332,6 +341,7 @@ kt_android_library(
         ":databinding_adapters",
         "//model:model_lib",
         "//utility:utility_lib",
+        "databinding_resources",
         artifact("androidx.appcompat:appcompat"),
         artifact("com.github.bumptech.glide:glide"),
         artifact("com.caverock:androidsvg-aar"),

@@ -146,6 +146,9 @@ maven_install(
         "de.hdodenhof:circleimageview:3.0.1",
         "com.chaos.view:pinview:1.4.3",
         "androidx.recyclerview:recyclerview:1.0.0",
+        "javax.annotation:javax.annotation-api:jar:1.3.2",
+        "org.jetbrains:annotations:jar:13.0",
+        "androidx.lifecycle:lifecycle-livedata-core:jar:2.0.0-alpha1",#
     ],
     repositories = DAGGER_REPOSITORIES + [
         "https://maven.google.com",
