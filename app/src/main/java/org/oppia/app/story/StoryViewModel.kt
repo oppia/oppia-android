@@ -17,8 +17,9 @@ import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
+import org.oppia.app.story.StoryFragmentInterface
 
-/** The ViewModel for [StoryFragment]. */
+/** The ViewModel for StoryFragment. */
 @FragmentScope
 class StoryViewModel @Inject constructor(
   private val fragment: Fragment,
@@ -81,7 +82,7 @@ class StoryViewModel @Inject constructor(
     val chapterList: List<ChapterSummary> = storySummary.chapterList
     for (position in chapterList.indices) {
       if (storySummary.chapterList[position].chapterPlayState == ChapterPlayState.NOT_STARTED) {
-        (fragment as StoryFragment).smoothScrollToPosition(position + 1)
+        (fragment as StoryFragmentInterface).smoothScrollToPosition(position + 1)
         break
       }
     }

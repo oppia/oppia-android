@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.domain.onboarding.OnboardingFlowController
 import javax.inject.Inject
+import org.oppia.app.administratorcontrols.RouteToProfileListListener
 
 /** [ViewModel] for final slide in onboarding flow. */
 class OnboardingSlideFinalViewModel @Inject constructor(

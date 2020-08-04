@@ -23,6 +23,7 @@ import org.oppia.app.model.Solution
 import org.oppia.app.model.State
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.StatePlayerRecyclerViewAssembler
+import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.stopplaying.RestartPlayingSessionListener
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
@@ -157,9 +158,29 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     (activity as StopStatePlayingSessionListener).stopSession()
   }
 
+//  fun getPendingAnswer(recyclerViewAssembler: StatePlayerRecyclerViewAssembler): UserAnswer {
+//    return getPendingAnswerWithoutError(recyclerViewAssembler) ?: UserAnswer.getDefaultInstance()
+//  }
+//
+//  fun getPendingAnswerWithoutError(recyclerViewAssembler: StatePlayerRecyclerViewAssembler): UserAnswer? {
+//    val answerHandler = recyclerViewAssembler
+//      .getPendingAnswerHandler(itemList)
+//    return if (answerHandler?.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME) == null) {
+//      answerHandler?.getPendingAnswer()
+//    } else {
+//      null
+//    }
+//  }
+
   fun onSubmitButtonClicked() {
     hideKeyboard()
-    handleSubmitAnswer(questionViewModel.getPendingAnswer(recyclerViewAssembler))
+    var answer = UserAnswer.getDefaultInstance()
+    if (recyclerViewAssembler.getPendingAnswerHandler(questionViewModel.itemList) != null) {
+      answer = questionViewModel.getPendingAnswerWithoutError(
+        recyclerViewAssembler.getPendingAnswerHandler(questionViewModel.itemList)!!
+      )
+    }
+    handleSubmitAnswer(answer)
   }
 
   fun onResponsesHeaderClicked() {

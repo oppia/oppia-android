@@ -29,13 +29,14 @@ class RevisionCardFragmentPresenter @Inject constructor(
         inflater,
         container,
         /* attachToRoot= */ false
-      )
+      );
+    val view = binding.revisionCardExplanationText;
     val viewModel = getReviewCardViewModel()
 
     topicId = fragment.activity!!.intent.getStringExtra(TOPIC_ID_ARGUMENT_KEY)
     subtopicId = fragment.activity!!.intent.getStringExtra(SUBTOPIC_ID_ARGUMENT_KEY)
 
-    viewModel.setSubtopicIdAndBinding(topicId, subtopicId, binding)
+    viewModel.setSubtopicIdAndBinding(topicId, subtopicId, view)
     logRevisionCardEvent(topicId, subtopicId)
 
     binding.let {

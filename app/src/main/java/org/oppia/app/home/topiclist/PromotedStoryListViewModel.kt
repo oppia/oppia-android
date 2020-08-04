@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import org.oppia.app.home.HomeItemViewModel
 import org.oppia.app.home.RouteToRecentlyPlayedListener
-import org.oppia.app.home.recentlyplayed.RecentlyPlayedActivity
+//import org.oppia.app.home.recentlyplayed.RecentlyPlayedActivity
 
 /** [ViewModel] promoted story list in [HomeFragment]. */
 class PromotedStoryListViewModel(

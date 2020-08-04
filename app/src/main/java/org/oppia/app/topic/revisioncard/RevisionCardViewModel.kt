@@ -1,11 +1,12 @@
 package org.oppia.app.topic.revisioncard
 
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import org.oppia.app.databinding.RevisionCardFragmentBinding
+//import org.oppia.app.databinding.RevisionCardFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.RevisionCard
 import org.oppia.domain.topic.TopicController
@@ -28,7 +29,7 @@ class RevisionCardViewModel @Inject constructor(
 ) : ViewModel() {
   private lateinit var topicId: String
   private lateinit var subtopicId: String
-  private lateinit var binding: RevisionCardFragmentBinding
+  private lateinit var view: TextView
   private val returnToTopicClickListener: ReturnToTopicClickListener =
     activity as ReturnToTopicClickListener
 
@@ -43,10 +44,10 @@ class RevisionCardViewModel @Inject constructor(
   }
 
   /** Sets the value of subtopicId and binding. Must be called before setting ViewModel to binding. */
-  fun setSubtopicIdAndBinding(topicId: String, id: String, binding: RevisionCardFragmentBinding) {
+  fun setSubtopicIdAndBinding(topicId: String, id: String, view: TextView) {
     subtopicId = id
     this.topicId = topicId
-    this.binding = binding
+    this.view = view
   }
 
   private val revisionCardResultLiveData: LiveData<AsyncResult<RevisionCard>> by lazy {
@@ -73,6 +74,6 @@ class RevisionCardViewModel @Inject constructor(
     subtopicTitle = revisionCard.subtopicTitle
     return htmlParserFactory.create(
       resourceBucketName, entityType, subtopicId, /* imageCenterAlign= */ true
-    ).parseOppiaHtml(revisionCard.pageContents.html, binding.revisionCardExplanationText)
+    ).parseOppiaHtml(revisionCard.pageContents.html, view)
   }
 }

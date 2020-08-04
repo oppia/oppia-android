@@ -1,6 +1,7 @@
 package org.oppia.app.settings.profile
 
 import android.content.Intent
+import android.widget.Switch
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -35,7 +36,7 @@ class ProfileEditActivityPresenter @Inject constructor(
       R.layout.profile_edit_activity
     )
     val profileId = activity.intent.getIntExtra(KEY_PROFILE_EDIT_PROFILE_ID, 0)
-    editViewModel.setProfileId(profileId)
+    editViewModel.setProfileId(profileId, activity.findViewById<Switch>(R.id.profile_edit_allow_download_switch))
     binding.apply {
       viewModel = editViewModel
       lifecycleOwner = activity

@@ -2,8 +2,7 @@ package org.oppia.app.parser
 
 import android.content.Context
 import androidx.annotation.StringRes
-import org.oppia.app.R
-import org.oppia.app.customview.interaction.FractionInputInteractionView
+import org.oppia.app.vm.R
 import org.oppia.app.model.Fraction
 import org.oppia.domain.util.normalizeWhitespace
 
@@ -109,7 +108,7 @@ class StringToFractionParser {
 
   private fun isInputNegative(inputText: String): Boolean = inputText.startsWith("-")
 
-  /** Enum to store the errors of [FractionInputInteractionView]. */
+  /** Enum to store the errors of FractionInputInteractionView. */
   enum class FractionParsingError(@StringRes private var error: Int?) {
     VALID(error = null),
     INVALID_CHARS(error = R.string.fraction_error_invalid_chars),

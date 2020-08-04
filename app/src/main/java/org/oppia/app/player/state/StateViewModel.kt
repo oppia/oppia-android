@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
+import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.app.viewmodel.ObservableArrayList
 import org.oppia.app.viewmodel.ObservableViewModel
@@ -43,17 +44,14 @@ class StateViewModel @Inject constructor() : ObservableViewModel() {
 
   fun getCanSubmitAnswer(): ObservableField<Boolean> = canSubmitAnswer
 
-  fun getPendingAnswer(
-    statePlayerRecyclerViewAssembler: StatePlayerRecyclerViewAssembler
-  ): UserAnswer {
-    return getPendingAnswerWithoutError(statePlayerRecyclerViewAssembler)
-      ?: UserAnswer.getDefaultInstance()
-  }
+//  fun getPendingAnswer(
+//    statePlayerRecyclerViewAssembler: StatePlayerRecyclerViewAssembler
+//  ): UserAnswer {
+//    return getPendingAnswerWithoutError(statePlayerRecyclerViewAssembler)
+//      ?: UserAnswer.getDefaultInstance()
+//  }
 
-  private fun getPendingAnswerWithoutError(
-    statePlayerRecyclerViewAssembler: StatePlayerRecyclerViewAssembler
-  ): UserAnswer? {
-    val answerHandler = statePlayerRecyclerViewAssembler.getPendingAnswerHandler(itemList)
+  fun getPendingAnswerWithoutError(answerHandler: InteractionAnswerHandler): UserAnswer? {
     return if (answerHandler?.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME) == null) {
       answerHandler?.getPendingAnswer()
     } else {
