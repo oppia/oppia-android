@@ -182,7 +182,8 @@ class ExceptionsControllerTest {
     val exceptionOne = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
     val exceptionTwo = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(1)
 
-    // In this case, 3 fatal and 1 non-fatal exceptions were logged. So while pruning, none of the retained logs should have non-fatal exception type.
+    // In this case, 3 fatal and 1 non-fatal exceptions were logged. The order of logging was fatal->non-fatal->fatal->fatal.
+    // So while pruning, none of the retained logs should have non-fatal exception type.
     assertThat(exceptionOne.exceptionType).isNotEqualTo(ExceptionType.NON_FATAL)
     assertThat(exceptionTwo.exceptionType).isNotEqualTo(ExceptionType.NON_FATAL)
     // If we analyse the order of logging of exceptions, we can see that record pruning will begin from the logging of the third record.
