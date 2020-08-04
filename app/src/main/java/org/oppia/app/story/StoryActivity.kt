@@ -6,7 +6,6 @@ import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.app.player.exploration.ExplorationActivity
-import org.oppia.app.topic.TopicActivity
 import javax.inject.Inject
 
 /** Activity for stories. */
