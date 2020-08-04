@@ -39,6 +39,10 @@ class AppLanguageFragmentPresenter @Inject constructor(private val fragment: Fra
     (fragment.activity as OptionsActivity).optionActivityPresenter.updateAppLanguage(appLanguage)
   }
 
+  fun getLanguageSelected(): String {
+    return languageSelectionAdapter.getSelectedLanguage()
+  }
+
   private fun createAdapter() {
     // TODO(#669): Replace dummy list with actual language list from backend.
     val languageList = ArrayList<String>()

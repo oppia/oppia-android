@@ -11,6 +11,7 @@ import javax.inject.Inject
 private const val KEY_APP_LANGUAGE_PREFERENCE_TITLE = "APP_LANGUAGE_PREFERENCE"
 private const val KEY_APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE =
   "APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE"
+private const val KEY_SELECTED_LANGUAGE = "SELECTED_LANGUAGE"
 
 /** The fragment to change the language of the app. */
 class AppLanguageFragment : InjectableFragment() {
@@ -43,12 +44,21 @@ class AppLanguageFragment : InjectableFragment() {
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to AppLanguageFragment" }
     val prefsKey = args.getString(KEY_APP_LANGUAGE_PREFERENCE_TITLE)
-    val prefsSummaryValue = args.getString(KEY_APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE)
+    val prefsSummaryValue = if (savedInstanceState == null) {
+      args.getString(KEY_APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE)
+    } else {
+      savedInstanceState.get(KEY_SELECTED_LANGUAGE) as String
+    }
     return appLanguageFragmentPresenter.handleOnCreateView(
       inflater,
       container,
       prefsKey!!,
       prefsSummaryValue!!
     )
+  }
+
+  override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    outState.putString(KEY_SELECTED_LANGUAGE, appLanguageFragmentPresenter.getLanguageSelected())
   }
 }
