@@ -27,6 +27,7 @@ class OptionControlsViewModel @Inject constructor(
   private val itemViewModelList: ObservableList<OptionsItemViewModel> = ObservableArrayList()
   private lateinit var profileId: ProfileId
   private val routeToStoryTextSizeListener = activity as RouteToStoryTextSizeListener
+  private val loadStoryTextSizeFragmentListener = activity as LoadStoryTextSizeFragmentListener
   private val routeToAudioLanguageListListener = activity as RouteToAudioLanguageListListener
   private val routeToAppLanguageListListener = activity as RouteToAppLanguageListListener
 
@@ -60,7 +61,7 @@ class OptionControlsViewModel @Inject constructor(
     itemViewModelList.clear()
 
     val optionsStoryTextViewViewModel =
-      OptionsStoryTextViewViewModel(routeToStoryTextSizeListener)
+      OptionsStoryTextViewViewModel(routeToStoryTextSizeListener, loadStoryTextSizeFragmentListener)
     val optionsAppLanguageViewModel =
       OptionsAppLanguageViewModel(routeToAppLanguageListListener)
     val optionAudioViewViewModel =
@@ -75,6 +76,11 @@ class OptionControlsViewModel @Inject constructor(
     itemViewModelList.add(optionsAppLanguageViewModel as OptionsItemViewModel)
 
     itemViewModelList.add(optionAudioViewViewModel as OptionsItemViewModel)
+
+    // Loading the initial options in the sub-options container
+    if (isMultipaneOptions.get()!!) {
+      optionsStoryTextViewViewModel.loadStoryTextSizeFragment()
+    }
 
     return itemViewModelList
   }

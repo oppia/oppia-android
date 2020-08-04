@@ -44,4 +44,8 @@ class OptionsFragment : InjectableFragment() {
   fun updateAudioLanguage(audioLanguage: String) {
     optionsFragmentPresenter.updateAudioLanguage(audioLanguage)
   }
+
+  fun loadStoryTextSizeFragment(textSize: String) {
+    optionsFragmentPresenter.loadStoryTextSizeFragment(activity!!.supportFragmentManager, textSize)
+  }
 }

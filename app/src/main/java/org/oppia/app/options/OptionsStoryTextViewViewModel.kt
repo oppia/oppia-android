@@ -1,11 +1,11 @@
 package org.oppia.app.options
 
-import android.util.Log
 import androidx.databinding.ObservableField
 
 /** StoryText size settings view model for the recycler view in [OptionsFragment]. */
 class OptionsStoryTextViewViewModel(
-  private val routeToStoryTextSizeListener: RouteToStoryTextSizeListener
+  private val routeToStoryTextSizeListener: RouteToStoryTextSizeListener,
+  private val loadStoryTextSizeFragmentListener: LoadStoryTextSizeFragmentListener
 ) : OptionsItemViewModel() {
   val storyTextSize = ObservableField<String>("")
 
@@ -13,10 +13,13 @@ class OptionsStoryTextViewViewModel(
     storyTextSize.set(storyTextSizeValue)
   }
 
+  fun loadStoryTextSizeFragment() {
+    loadStoryTextSizeFragmentListener.loadStoryTextSizeFragment(storyTextSize.get()!!)
+  }
+
   fun onStoryTextSizeClicked() {
     if (isMultipaneOptions.get()!!) {
-      Log.d("Multipane", "OptionsStoryTextViewViewModel")
-      // TODO add this fragment to "multipaneOptionsContainer"
+      loadStoryTextSizeFragment()
     } else {
       routeToStoryTextSizeListener.routeStoryTextSize(storyTextSize.get())
     }

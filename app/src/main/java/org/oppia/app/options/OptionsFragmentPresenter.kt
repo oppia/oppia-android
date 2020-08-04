@@ -5,7 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.app.R
 import org.oppia.app.databinding.OptionAppLanguageBinding
 import org.oppia.app.databinding.OptionAudioLanguageBinding
 import org.oppia.app.databinding.OptionStoryTextSizeBinding
@@ -230,5 +232,11 @@ class OptionsFragmentPresenter @Inject constructor(
     }
 
     recyclerViewAdapter.notifyItemChanged(2)
+  }
+
+  fun loadStoryTextSizeFragment(fragmentManager: FragmentManager, textSize: String) {
+    val storyTextSizeFragment = StoryTextSizeFragment.newInstance(textSize)
+    fragmentManager.beginTransaction()
+      .replace(R.id.multipane_options_container, storyTextSizeFragment).commitNow()
   }
 }
