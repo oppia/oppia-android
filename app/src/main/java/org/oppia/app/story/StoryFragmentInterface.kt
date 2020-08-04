@@ -17,13 +17,5 @@ interface StoryFragmentInterface {
     savedInstanceState: Bundle?
   ): View?
 
-  fun selectExploration(
-    internalProfileId: Int,
-    topicId: String,
-    storyId: String,
-    explorationId: String,
-    backflowScreen: Int?
-  )
-
   fun smoothScrollToPosition(position: Int)
 }

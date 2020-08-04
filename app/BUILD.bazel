@@ -83,6 +83,7 @@ VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/settings/profile/ProfileRenameViewModel.kt",
     "src/main/java/org/oppia/app/settings/profile/ProfileResetPinViewModel.kt",
     "src/main/java/org/oppia/app/story/StoryViewModel.kt",
+    "src/main/java/org/oppia/app/story/StoryFragmentInterface.kt",
     "src/main/java/org/oppia/app/story/storyitemviewmodel/StoryChapterSummaryViewModel.kt",
     "src/main/java/org/oppia/app/story/storyitemviewmodel/StoryHeaderViewModel.kt",
     "src/main/java/org/oppia/app/story/storyitemviewmodel/StoryItemViewModel.kt",
@@ -110,25 +111,13 @@ VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/walkthrough/topiclist/topiclistviewmodel/WalkthroughTopicHeaderViewModel.kt",
     "src/main/java/org/oppia/app/walkthrough/topiclist/topiclistviewmodel/WalkthroughTopicSummaryViewModel.kt",
     "src/main/java/org/oppia/app/walkthrough/end/WalkthroughFinalViewModel.kt",
-]
-
-ACTIVITY_FILES = [
     "src/main/java/org/oppia/app/viewmodel/ObservableArrayList.kt",
-
+    "src/main/java/org/oppia/app/parser/StringToNumberParser.kt",
+    "src/main/java/org/oppia/app/parser/StringToFractionParser.kt",
+    "src/main/java/org/oppia/app/recyclerview/BindableAdapter.kt",
     "src/main/java/org/oppia/app/onboarding/ViewPagerSlide.kt",
-    #"src/main/java/org/oppia/app/profile/ProfileActivity.kt",
-]
-
-PARSER_FILES = [
-    "src/main/java/org/oppia/app/parser/StringToNumberParser.kt", #
-    "src/main/java/org/oppia/app/parser/StringToFractionParser.kt", #
-]
-
-RESOURCE_FILES = [
-    "src/main/res/values/parser_strings.xml",
-#    "",
-#    "",
-#    "",
+    "src/main/java/org/oppia/app/help/HelpItems.kt",
+    "src/main/java/org/oppia/app/IntentFactoryShimInterface.kt",
 ]
 
 DATABINDING_ADAPTER_FILES = [
@@ -137,7 +126,6 @@ DATABINDING_ADAPTER_FILES = [
     "src/main/java/org/oppia/app/databinding/ImageViewBindingAdapters.java",
     "src/main/java/org/oppia/app/databinding/MarginBindingAdapters.java",
     "src/main/java/org/oppia/app/databinding/TextViewBindingAdapters.java",
-    #"src/main/java/org/oppia/app/recyclerview/BindableAdapter.kt",
 ]
 
 RECYCLERVIEW_ADAPTER_FILES = [
@@ -171,23 +159,55 @@ LISTENER_FILES = [
     "src/main/java/org/oppia/app/options/RouteToAppLanguageListListener.kt",
     "src/main/java/org/oppia/app/administratorcontrols/RouteToAppVersionListener.kt",
     "src/main/java/org/oppia/app/topic/revision/RevisionSubtopicSelector.kt",
-   #"src/main/java/org/oppia/app/player/state/StatePlayerRecyclerViewAssembler.kt",
     "src/main/java/org/oppia/app/topic/lessons/StorySummarySelector.kt",
     "src/main/java/org/oppia/app/player/state/answerhandling/InteractionAnswerHandler.kt",
     "src/main/java/org/oppia/app/player/state/answerhandling/InteractionAnswerErrorOrAvailabilityCheckReceiver.kt",
-#    "",
+    "src/main/java/org/oppia/app/topic/RouteToRevisionCardListener.kt",
+    "src/main/java/org/oppia/app/help/RouteToFAQListListener.kt",
+]
 
+LAYOUT_RES_FILES = [
+    "src/main/res/layout/**",
+    "src/main/res/layout-land/**",
+    "src/main/res/layout-sw600dp-land/**",
+    "src/main/res/layout-sw600dp-port/**",
 ]
 
 ANNOTATIONS = [
     "src/main/java/org/oppia/app/fragment/FragmentScope.kt",
     "src/main/java/org/oppia/app/activity/ActivityScope.kt",
-#    "",
-#    "",
-#    "",
 ]
 
 BINDING_ADAPTER_FILES = DATABINDING_ADAPTER_FILES + RECYCLERVIEW_ADAPTER_FILES
+
+android_library(
+    name = "resources",
+    custom_package = "org.oppia.app",
+    manifest = "src/main/AndroidManifest.xml",
+    resource_files = glob(["src/main/res/**",], exclude = ["src/main/res/layout*/**", "src/main/res/drawable/edit_text_background*"]),
+    exports_manifest = True,
+    deps = [
+        artifact("com.google.android.material:material"),
+    ],
+)
+
+android_library(
+    name = "databinding_resources",
+    custom_package = "org.oppia.app.databinding",
+    manifest = "src/main/java/org/oppia/app/databinding/AndroidManifest.xml",
+    resource_files = glob(["src/main/res/layout*/**", "src/main/res/drawable/edit_text_background*"]),
+    enable_data_binding = 1,
+    exports_manifest = True,
+    deps = [
+        ":resources",
+        artifact("com.google.android.material:material"),
+        artifact("androidx.databinding:databinding-runtime"),
+        artifact("androidx.databinding:databinding-adapters"),
+        artifact("androidx.databinding:databinding-common"),
+        artifact("androidx.annotation:annotation"),
+        artifact("androidx.constraintlayout:constraintlayout")
+    ],
+)
 
 kt_android_library(
     name = "listeners",
@@ -213,42 +233,11 @@ kt_android_library(
     visibility = ["//visibility:public"],
 )
 
-
-kt_android_library(
-    name = "parsers",
-    custom_package = "org.oppia.app",
-    srcs = PARSER_FILES,
-    manifest = "src/main/AndroidManifest.xml",
-    resource_files = RESOURCE_FILES,
-    deps = [
-        ":dagger",
-        "//model:model_lib",
-        "//domain:domain_lib",
-        artifact("androidx.recyclerview:recyclerview:1.0.0"),
-    ],
-    visibility = ["//visibility:public"],
-)
-
-kt_android_library(
-    name = "activities",
-    custom_package = "org.oppia.app",
-    srcs = ACTIVITY_FILES,
-    deps = [
-        ":dagger",
-        "//model:model_lib",
-        artifact("androidx.appcompat:appcompat"),
-        artifact("androidx.databinding:databinding-runtime"),
-        artifact("androidx.databinding:databinding-adapters"),
-        artifact("androidx.databinding:databinding-common"),
-        artifact("androidx.annotation:annotation"),
-    ],
-    visibility = ["//visibility:public"],
-)
-
 kt_android_library(
     name = "view_models",
-    custom_package = "org.oppia.app",
+    custom_package = "org.oppia.app.vm",
     srcs = VIEW_MODEL_FILES,
+    manifest = "src/main/ViewModelManifest.xml",
     deps = [
         ":dagger",
         "//model:model_lib",
@@ -256,7 +245,7 @@ kt_android_library(
         "//domain:domain_lib",
         ":listeners",
         ":annotations",
-        ":activities",
+        ":resources",
         artifact("androidx.appcompat:appcompat"),
         artifact("com.github.bumptech.glide:glide"),
         artifact("com.caverock:androidsvg-aar"),
@@ -273,16 +262,17 @@ kt_android_library(
 
 android_library(
     name = "databinding_adapters",
-    custom_package = "org.oppia.app",
+    custom_package = "org.oppia.app.adapters",
     srcs = DATABINDING_ADAPTER_FILES,
     enable_data_binding = 1,
-    resource_files = glob(["src/main/res/**"]),
-    manifest = "src/main/java/org/oppia/app/databinding/AndroidManifest.xml",
+    #resource_files = glob(["src/main/res/**"]),
+    #manifest = "src/main/java/org/oppia/app/databinding/AndroidManifest.xml",
     deps = [
         ":dagger",
         "//model:model_lib",
         "//utility:utility_lib",
-        #":view_models",
+        ":view_models",
+        ":databinding_resources",
         artifact("androidx.appcompat:appcompat"),
         artifact("com.chaos.view:pinview:1.4.3"),
         artifact("com.github.bumptech.glide:glide"),
@@ -334,7 +324,7 @@ kt_android_library(
     srcs = glob(["src/main/java/org/oppia/app/**/*.kt"],
                 exclude = VIEW_MODEL_FILES + BINDING_ADAPTER_FILES + LISTENER_FILES),
     enable_data_binding = 1,
-    resource_files = glob(["src/main/res/**"]),
+    resource_files = glob(LAYOUT_RES_FILES),
     manifest = "src/main/AndroidManifest.xml",
     deps = [
         ":dagger",
