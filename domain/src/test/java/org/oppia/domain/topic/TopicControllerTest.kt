@@ -196,7 +196,6 @@ class TopicControllerTest {
       val topic = topicResultCaptor.value!!.getOrThrow()
       assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
       assertThat(topic.storyCount).isEqualTo(1)
-      assertThat(topic.skillCount).isEqualTo(3)
     }
 
   @Test
@@ -223,7 +222,6 @@ class TopicControllerTest {
       val topic = topicResultCaptor.value!!.getOrThrow()
       assertThat(topic.topicId).isEqualTo(RATIOS_TOPIC_ID)
       assertThat(topic.storyCount).isEqualTo(2)
-      assertThat(topic.skillCount).isEqualTo(1)
     }
 
   @Test
@@ -784,19 +782,6 @@ class TopicControllerTest {
       assertThat(topic.subtopicList[0].subtopicThumbnail.thumbnailGraphic).isEqualTo(
         LessonThumbnailGraphic.WHAT_IS_A_FRACTION
       )
-    }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testRetrieveSubtopicTopic_validSubtopic_subtopicsHaveNoThumbnailUrls() =
-    runBlockingTest(coroutineContext) {
-      topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID).observeForever(mockTopicObserver)
-      advanceUntilIdle()
-
-      verifyGetTopicSucceeded()
-      val topic = topicResultCaptor.value!!.getOrThrow()
-      assertThat(topic.subtopicList[0].thumbnailUrl).isEmpty()
-      assertThat(topic.subtopicList[1].thumbnailUrl).isEmpty()
     }
 
   @Test
