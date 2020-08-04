@@ -50,14 +50,7 @@ class StoryActivity : InjectableAppCompatActivity(), RouteToExplorationListener 
   }
 
   override fun onBackPressed() {
-    startActivity(
-      TopicActivity.createTopicPlayStoryActivityIntent(
-        this,
-        internalProfileId,
-        topicId,
-        storyId
-      )
-    )
+    finish()
   }
 
   companion object {

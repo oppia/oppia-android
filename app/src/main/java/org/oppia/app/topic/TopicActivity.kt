@@ -93,12 +93,7 @@ class TopicActivity :
   }
 
   override fun onBackPressed() {
-    startActivity(
-      HomeActivity.createHomeActivity(
-        this,
-        internalProfileId
-      )
-    )
+    finish()
   }
 
   companion object {
