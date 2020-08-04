@@ -17,6 +17,7 @@ import org.oppia.app.mydownloads.MyDownloadsFragment
 import org.oppia.app.mydownloads.UpdatesTabFragment
 import org.oppia.app.onboarding.OnboardingFragment
 import org.oppia.app.ongoingtopiclist.OngoingTopicListFragment
+import org.oppia.app.options.AppLanguageFragment
 import org.oppia.app.options.OptionsFragment
 import org.oppia.app.options.StoryTextSizeFragment
 import org.oppia.app.player.audio.AudioFragment
@@ -64,6 +65,7 @@ interface FragmentComponent {
   fun inject(administratorControlsFragment: AdministratorControlsFragment)
   fun inject(adminSettingsDialogFragment: AdminSettingsDialogFragment)
   fun inject(appVersionFragment: AppVersionFragment)
+  fun inject(appLanguageFragment: AppLanguageFragment)
   fun inject(audioFragment: AudioFragment)
   fun inject(bindableAdapterTestFragment: BindableAdapterTestFragment)
   fun inject(completedStoryListFragment: CompletedStoryListFragment)

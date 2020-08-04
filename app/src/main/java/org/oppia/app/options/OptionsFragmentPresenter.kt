@@ -239,4 +239,10 @@ class OptionsFragmentPresenter @Inject constructor(
     fragmentManager.beginTransaction()
       .replace(R.id.multipane_options_container, storyTextSizeFragment).commitNow()
   }
+
+  fun loadAppLanguageFragment(fragmentManager: FragmentManager, appLanguage: String) {
+    val appLanguageFragment = AppLanguageFragment.newInstance(APP_LANGUAGE, appLanguage)
+    fragmentManager.beginTransaction()
+      .replace(R.id.multipane_options_container, appLanguageFragment).commitNow()
+  }
 }

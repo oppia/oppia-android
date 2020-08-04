@@ -48,4 +48,8 @@ class OptionsFragment : InjectableFragment() {
   fun loadStoryTextSizeFragment(textSize: String) {
     optionsFragmentPresenter.loadStoryTextSizeFragment(activity!!.supportFragmentManager, textSize)
   }
+
+  fun loadAppLanguageFragment(appLanguage: String) {
+    optionsFragmentPresenter.loadAppLanguageFragment(activity!!.supportFragmentManager, appLanguage)
+  }
 }

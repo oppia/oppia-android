@@ -30,6 +30,8 @@ class OptionControlsViewModel @Inject constructor(
   private val loadStoryTextSizeFragmentListener = activity as LoadStoryTextSizeFragmentListener
   private val routeToAudioLanguageListListener = activity as RouteToAudioLanguageListListener
   private val routeToAppLanguageListListener = activity as RouteToAppLanguageListListener
+  private val loadAppLanguageFragmentListener = activity as LoadAppLanguageFragmentListener
+  private var isFirstOpen = true
 
   private val profileResultLiveData: LiveData<AsyncResult<Profile>> by lazy {
     profileManagementController.getProfile(profileId)
@@ -63,7 +65,7 @@ class OptionControlsViewModel @Inject constructor(
     val optionsStoryTextViewViewModel =
       OptionsStoryTextViewViewModel(routeToStoryTextSizeListener, loadStoryTextSizeFragmentListener)
     val optionsAppLanguageViewModel =
-      OptionsAppLanguageViewModel(routeToAppLanguageListListener)
+      OptionsAppLanguageViewModel(routeToAppLanguageListListener, loadAppLanguageFragmentListener)
     val optionAudioViewViewModel =
       OptionsAudioLanguageViewModel(routeToAudioLanguageListListener)
 
@@ -78,8 +80,9 @@ class OptionControlsViewModel @Inject constructor(
     itemViewModelList.add(optionAudioViewViewModel as OptionsItemViewModel)
 
     // Loading the initial options in the sub-options container
-    if (isMultipaneOptions.get()!!) {
+    if (isMultipaneOptions.get()!! && isFirstOpen) {
       optionsStoryTextViewViewModel.loadStoryTextSizeFragment()
+      isFirstOpen = false
     }
 
     return itemViewModelList

@@ -77,4 +77,8 @@ class OptionsActivityPresenter @Inject constructor(
   fun loadStoryTextSizeFragment(textSize: String) {
     getOptionFragment()?.loadStoryTextSizeFragment(textSize)
   }
+
+  fun loadAppLanguageFragment(appLanguage: String) {
+    getOptionFragment()?.loadAppLanguageFragment(appLanguage)
+  }
 }
