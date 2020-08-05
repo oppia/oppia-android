@@ -46,7 +46,7 @@ class CompletedStoryListSpanTest {
   }
 
   @Test
-  fun testCompletedStoryListFragmentRecyclerViewHasCorrectSpanCount() {
+  fun testCompletedStoryList_checkRecyclerViewSpanCount_spanIsCorrect() {
     launch(CompletedStoryListActivity::class.java).use {
       it.onActivity { activity ->
         assertThat(getCompletedStoryListSpanCount(activity)).isEqualTo(2)
@@ -56,7 +56,7 @@ class CompletedStoryListSpanTest {
 
   @Test
   @Config(qualifiers = "land")
-  fun testCompletedStoryListFragmentRecyclerView_land_hasCorrectSpanCount() {
+  fun testCompletedStoryList_checkRecyclerViewSpanCount_land_spanIsCorrect() {
     launch(CompletedStoryListActivity::class.java).use {
       it.onActivity { activity ->
         assertThat(getCompletedStoryListSpanCount(activity)).isEqualTo(3)
@@ -66,7 +66,7 @@ class CompletedStoryListSpanTest {
 
   @Test
   @Config(qualifiers = "sw600dp-port")
-  fun testCompletedStoryListFragmentRecyclerView_tabletPort_hasCorrectSpanCount() {
+  fun testCompletedStoryList_checkRecyclerViewSpanCount_tabletPort_spanIsCorrect() {
     launch(CompletedStoryListActivity::class.java).use {
       it.onActivity { activity ->
         assertThat(getCompletedStoryListSpanCount(activity)).isEqualTo(3)
@@ -76,7 +76,7 @@ class CompletedStoryListSpanTest {
 
   @Test
   @Config(qualifiers = "sw600dp-land")
-  fun testCompletedStoryListFragmentRecyclerView_tabletLand_hasCorrectSpanCount() {
+  fun testCompletedStoryList_checkRecyclerViewSpanCount_tabletLand_spanIsCorrect() {
     launch(CompletedStoryListActivity::class.java).use {
       it.onActivity { activity ->
         assertThat(getCompletedStoryListSpanCount(activity)).isEqualTo(4)
