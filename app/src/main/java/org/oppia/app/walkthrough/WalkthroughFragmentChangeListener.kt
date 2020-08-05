@@ -4,4 +4,5 @@ package org.oppia.app.walkthrough
 interface WalkthroughFragmentChangeListener {
   fun currentPage(walkthroughPage: Int)
   fun pageWithTopicId(walkthroughPage: Int, topicId: String)
+  fun changePage()
 }

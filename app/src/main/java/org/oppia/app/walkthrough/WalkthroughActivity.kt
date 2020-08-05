@@ -26,6 +26,10 @@ class WalkthroughActivity : InjectableAppCompatActivity(), WalkthroughFragmentCh
     walkthroughActivityPresenter.changePage(walkthroughPage)
   }
 
+  override fun changePage() {
+    TODO("Just for interface")
+  }
+
   override fun onBackPressed() {
     walkthroughActivityPresenter.handleSystemBack()
   }

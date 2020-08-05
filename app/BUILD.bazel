@@ -171,14 +171,19 @@ LISTENER_FILES = [
     "src/main/java/org/oppia/app/help/RouteToFAQListListener.kt",
     "src/main/java/org/oppia/app/player/state/listener/StateKeyboardButtonListener.kt",
     "src/main/java/org/oppia/app/player/state/listener/RouteToHintsAndSolutionListener.kt",
+    "src/main/java/org/oppia/app/walkthrough/WalkthroughFragmentChangeListener.kt",
 ]
 
-PRESENTER_FILES = [
-    "src/main/java/org/oppia/app/player/state/StateFragmentPresenter.kt",
-#    "",
-#    "",
-#    "",
-]
+#PRESENTER_FILES = [
+#    "src/main/java/org/oppia/app/player/state/StateFragmentPresenter.kt",
+#    "src/main/java/org/oppia/app/walkthrough/WalkthroughActivityPresenter.kt",
+#    "src/main/java/org/oppia/app/home/HomeFragmentPresenter.kt",
+#    "src/main/java/org/oppia/app/profile/ProfileChooserFragmentPresenter.kt",
+#    "src/main/java/org/oppia/app/walkthrough/end/WalkthroughFinalFragmentPresenter.kt",
+#    "src/main/java/org/oppia/app/onboarding/OnboardingFragmentPresenter.kt",
+#    "src/main/java/org/oppia/app/walkthrough/topiclist/WalkthroughTopicListFragmentPresenter.kt",
+#    "src/main/java/org/oppia/app/walkthrough/welcome/WalkthroughWelcomeFragmentPresenter.kt",
+#]
 
 LAYOUT_RES_FILES = [
     "src/main/res/layout/**",
@@ -248,23 +253,6 @@ kt_android_library(
         ":dagger",
         "//model:model_lib",
         artifact("androidx.recyclerview:recyclerview:1.0.0"),
-    ],
-    visibility = ["//visibility:public"],
-)
-
-kt_android_library(
-    name = "presenters",
-    custom_package = "org.oppia.app",
-    srcs = PRESENTER_FILES,
-    deps = [
-        ":dagger",
-        ":listeners",
-        ":annotations_and_helpers",
-        ":view_models",
-        ":databinding_adapters",
-        artifact("androidx.databinding:databinding-runtime"),
-#        "//model:model_lib",
-#        artifact("androidx.recyclerview:recyclerview:1.0.0"),
     ],
     visibility = ["//visibility:public"],
 )
@@ -350,6 +338,7 @@ android_library(
         artifact("de.hdodenhof:circleimageview:3.0.1"),
         artifact("javax.annotation:javax.annotation-api:jar"),
         artifact("org.jetbrains:annotations:jar"),
+        artifact("androidx.constraintlayout:constraintlayout:1.1.3"),
         "@circularimageview//circularimageview:circular_image_view",
     ],
     visibility = ["//visibility:public"],

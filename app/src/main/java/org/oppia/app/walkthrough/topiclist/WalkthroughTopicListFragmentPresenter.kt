@@ -15,6 +15,7 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.TopicSummary
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.app.walkthrough.WalkthroughActivityPresenter
 import org.oppia.app.walkthrough.WalkthroughFragmentChangeListener
 import org.oppia.app.walkthrough.WalkthroughPages
 import org.oppia.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicHeaderViewModel
@@ -31,6 +32,7 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
   private lateinit var binding: WalkthroughTopicListFragmentBinding
   private val routeToNextPage = activity as WalkthroughFragmentChangeListener
   private val orientation = Resources.getSystem().configuration.orientation
+
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val viewModel = getWalkthroughTopicViewModel()
