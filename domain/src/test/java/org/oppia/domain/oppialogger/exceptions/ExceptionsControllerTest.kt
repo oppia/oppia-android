@@ -278,7 +278,7 @@ class ExceptionsControllerTest {
   @ExperimentalCoroutinesApi
   @InternalCoroutinesApi
   @Test
-  fun testExtension_logEmptyException_withNoNetwork_verifyRecreationOfLogs(){
+  fun testExtension_logEmptyException_withNoNetwork_verifyRecreationOfLogs() {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
     val exceptionThrown = Exception()
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
@@ -300,7 +300,7 @@ class ExceptionsControllerTest {
   @ExperimentalCoroutinesApi
   @InternalCoroutinesApi
   @Test
-  fun testExtension_logException_withNoCause_withNoNetwork_verifyRecreationOfLogs(){
+  fun testExtension_logException_withNoCause_withNoNetwork_verifyRecreationOfLogs() {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
     val exceptionThrown = Exception("TEST")
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
