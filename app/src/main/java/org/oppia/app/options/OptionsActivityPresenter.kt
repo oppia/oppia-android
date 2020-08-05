@@ -81,4 +81,8 @@ class OptionsActivityPresenter @Inject constructor(
   fun loadAppLanguageFragment(appLanguage: String) {
     getOptionFragment()?.loadAppLanguageFragment(appLanguage)
   }
+
+  fun loadDefaultAudioFragment(audioLanguage: String) {
+    getOptionFragment()?.loadDefaultAudioFragment(audioLanguage)
+  }
 }

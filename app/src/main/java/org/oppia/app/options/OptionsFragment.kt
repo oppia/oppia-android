@@ -52,4 +52,11 @@ class OptionsFragment : InjectableFragment() {
   fun loadAppLanguageFragment(appLanguage: String) {
     optionsFragmentPresenter.loadAppLanguageFragment(activity!!.supportFragmentManager, appLanguage)
   }
+
+  fun loadDefaultAudioFragment(audioLanguage: String) {
+    optionsFragmentPresenter.loadDefaultAudioFragment(
+      activity!!.supportFragmentManager,
+      audioLanguage
+    )
+  }
 }

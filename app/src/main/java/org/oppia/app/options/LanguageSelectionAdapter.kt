@@ -59,7 +59,7 @@ class LanguageSelectionAdapter(
       binding.setVariable(BR.languageString, language)
       binding.languageRadioButton.isChecked = position == selectedPosition
       binding.radioContainer.setOnClickListener {
-        if (prefKey == APP_LANGUAGE) {
+        if (prefKey == APP_LANGUAGE || prefKey == AUDIO_LANGUAGE) {
           selectedPosition = adapterPosition
           notifyDataSetChanged()
           onLanguageClicked.invoke(getSelectedLanguage())

@@ -29,6 +29,7 @@ class OptionControlsViewModel @Inject constructor(
   private val routeToStoryTextSizeListener = activity as RouteToStoryTextSizeListener
   private val loadStoryTextSizeFragmentListener = activity as LoadStoryTextSizeFragmentListener
   private val routeToAudioLanguageListListener = activity as RouteToAudioLanguageListListener
+  private val loadDefaultAudioFragmentListener = activity as LoadDefaultAudioFragmentListener
   private val routeToAppLanguageListListener = activity as RouteToAppLanguageListListener
   private val loadAppLanguageFragmentListener = activity as LoadAppLanguageFragmentListener
   private var isFirstOpen = true
@@ -67,7 +68,10 @@ class OptionControlsViewModel @Inject constructor(
     val optionsAppLanguageViewModel =
       OptionsAppLanguageViewModel(routeToAppLanguageListListener, loadAppLanguageFragmentListener)
     val optionAudioViewViewModel =
-      OptionsAudioLanguageViewModel(routeToAudioLanguageListListener)
+      OptionsAudioLanguageViewModel(
+        routeToAudioLanguageListListener,
+        loadDefaultAudioFragmentListener
+      )
 
     optionsStoryTextViewViewModel.storyTextSize.set(getStoryTextSize(profile.storyTextSize))
     optionsAppLanguageViewModel.appLanguage.set(getAppLanguage(profile.appLanguage))

@@ -245,4 +245,10 @@ class OptionsFragmentPresenter @Inject constructor(
     fragmentManager.beginTransaction()
       .replace(R.id.multipane_options_container, appLanguageFragment).commitNow()
   }
+
+  fun loadDefaultAudioFragment(fragmentManager: FragmentManager, audioLanguage: String) {
+    val defaultAudioFragment = DefaultAudioFragment.newInstance(AUDIO_LANGUAGE, audioLanguage)
+    fragmentManager.beginTransaction()
+      .replace(R.id.multipane_options_container, defaultAudioFragment).commitNow()
+  }
 }

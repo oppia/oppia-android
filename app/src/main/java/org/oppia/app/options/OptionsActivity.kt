@@ -15,7 +15,8 @@ class OptionsActivity :
   RouteToAudioLanguageListListener,
   RouteToStoryTextSizeListener,
   LoadStoryTextSizeFragmentListener,
-  LoadAppLanguageFragmentListener {
+  LoadAppLanguageFragmentListener,
+  LoadDefaultAudioFragmentListener {
   @Inject
   lateinit var optionActivityPresenter: OptionsActivityPresenter
 
@@ -104,5 +105,9 @@ class OptionsActivity :
 
   override fun loadAppLanguageFragment(appLanguage: String) {
     optionActivityPresenter.loadAppLanguageFragment(appLanguage)
+  }
+
+  override fun loadDefaultAudioFragment(audioLanguage: String) {
+    optionActivityPresenter.loadDefaultAudioFragment(audioLanguage)
   }
 }
