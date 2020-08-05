@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.hintsandsolution.HintsAndSolutionDialogFragment
@@ -11,6 +12,7 @@ import org.oppia.app.hintsandsolution.HintsAndSolutionListener
 import org.oppia.app.hintsandsolution.RevealHintListener
 import org.oppia.app.hintsandsolution.RevealSolutionInterface
 import org.oppia.app.model.State
+import org.oppia.app.model.StoryTextSize
 import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.state.listener.StateKeyboardButtonListener
@@ -31,6 +33,7 @@ class ExplorationActivity :
   RouteToHintsAndSolutionListener,
   RevealHintListener,
   RevealSolutionInterface,
+  DefaultFontSizeStateListener,
   HintsAndSolutionExplorationManagerListener {
 
   @Inject
@@ -108,8 +111,12 @@ class ExplorationActivity :
   }
 
   override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-    menuInflater.inflate(R.menu.menu_exploration_activity, menu)
+    menuInflater.inflate(R.menu.menu_reading_options, menu)
     return super.onCreateOptionsMenu(menu)
+  }
+
+  override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    return explorationActivityPresenter.handleOnOptionsItemSelected(item)
   }
 
   override fun showAudioButton() = explorationActivityPresenter.showAudioButton()
@@ -164,6 +171,10 @@ class ExplorationActivity :
 
   override fun dismiss() {
     getHintsAndSolution()?.dismiss()
+  }
+
+  override fun onDefaultFontSizeLoaded(storyTextSize: StoryTextSize) {
+    explorationActivityPresenter.loadExplorationFragment(storyTextSize)
   }
 
   override fun onExplorationStateLoaded(state: State) {

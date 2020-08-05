@@ -4,13 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.app.hintsandsolution.HintsAndSolutionListener
 import org.oppia.app.hintsandsolution.RevealHintListener
 import org.oppia.app.hintsandsolution.RevealSolutionInterface
-import org.oppia.app.model.HelpIndex
+import org.oppia.app.model.State
 import org.oppia.app.player.audio.AudioButtonListener
+import org.oppia.app.player.exploration.HintsAndSolutionExplorationManagerListener
+import org.oppia.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
-import org.oppia.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
 import javax.inject.Inject
@@ -30,8 +32,9 @@ class StateFragmentTestActivity :
   RouteToHintsAndSolutionListener,
   RevealHintListener,
   RevealSolutionInterface,
-  ShowHintAvailabilityListener {
+  HintsAndSolutionExplorationManagerListener {
   @Inject lateinit var stateFragmentTestActivityPresenter: StateFragmentTestActivityPresenter
+  private lateinit var state: State
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -80,11 +83,34 @@ class StateFragmentTestActivity :
     explorationId: String,
     newAvailableHintIndex: Int,
     allHintsExhausted: Boolean
-  ) {}
+  ) {
+    if (getHintsAndSolution() == null) {
+      val hintsAndSolutionFragment =
+        HintsAndSolutionDialogFragment.newInstance(
+          explorationId,
+          newAvailableHintIndex,
+          allHintsExhausted
+        )
+      hintsAndSolutionFragment.loadState(state)
+      hintsAndSolutionFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
+    }
+  }
 
-  override fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {}
+  override fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
+    stateFragmentTestActivityPresenter.revealHint(saveUserChoice, hintIndex)
+  }
 
-  override fun revealSolution(saveUserChoice: Boolean) {}
+  override fun revealSolution(saveUserChoice: Boolean) {
+    stateFragmentTestActivityPresenter.revealSolution(saveUserChoice)
+  }
 
-  override fun onHintAvailable(helpIndex: HelpIndex) {}
+  override fun onExplorationStateLoaded(state: State) {
+    this.state = state
+  }
+
+  private fun getHintsAndSolution(): HintsAndSolutionDialogFragment? {
+    return supportFragmentManager.findFragmentByTag(
+      TAG_HINTS_AND_SOLUTION_DIALOG
+    ) as HintsAndSolutionDialogFragment?
+  }
 }

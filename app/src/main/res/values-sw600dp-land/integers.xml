@@ -5,4 +5,5 @@
   <integer name="recently_played_span_count">4</integer>
   <integer name="topic_revision_span_count">4</integer>
   <integer name="ongoing_topics_span_count">4</integer>
+  <integer name="completed_story_span_count">4</integer>
 </resources>
