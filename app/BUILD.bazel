@@ -15,6 +15,7 @@ VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/completedstorylist/CompletedStoryItemViewModel.kt",
     "src/main/java/org/oppia/app/completedstorylist/CompletedStoryListViewModel.kt",
     "src/main/java/org/oppia/app/drawer/NavigationDrawerFooterViewModel.kt",
+    "src/main/java/org/oppia/app/drawer/NavigationDrawerHeaderViewModel.kt",
     "src/main/java/org/oppia/app/help/HelpItemViewModel.kt",
     "src/main/java/org/oppia/app/help/HelpListViewModel.kt",
     "src/main/java/org/oppia/app/help/faq/FAQListViewModel.kt",
@@ -119,6 +120,7 @@ VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/help/HelpItems.kt",
     "src/main/java/org/oppia/app/recyclerview/DividerItemDecorator.kt",
     "src/main/java/org/oppia/app/IntentFactoryShimInterface.kt",
+    "src/main/java/org/oppia/app/recyclerview/DragAndDropItemFacilitator.kt",#
 ]
 
 DATABINDING_ADAPTER_FILES = [
@@ -157,6 +159,7 @@ LISTENER_FILES = [
     "src/main/java/org/oppia/app/home/recentlyplayed/OngoingStoryClickListener.kt",
     "src/main/java/org/oppia/app/help/faq/RouteToFAQSingleListener.kt",
     "src/main/java/org/oppia/app/administratorcontrols/RouteToProfileListListener.kt",
+    "src/main/java/org/oppia/app/drawer/RouteToProfileProgressListener.kt",
     "src/main/java/org/oppia/app/options/RouteToAppLanguageListListener.kt",
     "src/main/java/org/oppia/app/administratorcontrols/RouteToAppVersionListener.kt",
     "src/main/java/org/oppia/app/topic/revision/RevisionSubtopicSelector.kt",
@@ -165,6 +168,15 @@ LISTENER_FILES = [
     "src/main/java/org/oppia/app/player/state/answerhandling/InteractionAnswerErrorOrAvailabilityCheckReceiver.kt",
     "src/main/java/org/oppia/app/topic/RouteToRevisionCardListener.kt",
     "src/main/java/org/oppia/app/help/RouteToFAQListListener.kt",
+    "src/main/java/org/oppia/app/player/state/listener/StateKeyboardButtonListener.kt",
+    "src/main/java/org/oppia/app/player/state/listener/RouteToHintsAndSolutionListener.kt",
+]
+
+PRESENTER_FILES = [
+    "src/main/java/org/oppia/app/player/state/StateFragmentPresenter.kt",
+#    "",
+#    "",
+#    "",
 ]
 
 LAYOUT_RES_FILES = [
@@ -174,9 +186,21 @@ LAYOUT_RES_FILES = [
     "src/main/res/layout-sw600dp-port/**",
 ]
 
-ANNOTATIONS = [
+ANNOTATIONS_AND_HELPERS = [
     "src/main/java/org/oppia/app/fragment/FragmentScope.kt",
     "src/main/java/org/oppia/app/activity/ActivityScope.kt",
+    "src/main/java/org/oppia/app/utility/KeyboardHelper.kt",
+]
+
+VIEW_FILES = [
+    "src/main/java/org/oppia/app/customview/interaction/FractionInputInteractionView.kt",
+    "src/main/java/org/oppia/app/customview/interaction/NumericInputInteractionView.kt",
+    "src/main/java/org/oppia/app/customview/interaction/TextInputInteractionView.kt",
+    "src/main/java/org/oppia/app/profile/ProfileInputView.kt",
+    "src/main/java/org/oppia/app/profile/ProfileInputVieBindingShimInterface.kt",
+#    "src/main/java/org/oppia/app/player/state/DragDropSortInteractionView.kt",
+#    "src/main/java/org/oppia/app/fragment/InjectableFragment.kt",
+#    "src/main/java/org/oppia/app/activity/InjectableAppCompatActivity.kt",
 ]
 
 BINDING_ADAPTER_FILES = DATABINDING_ADAPTER_FILES + RECYCLERVIEW_ADAPTER_FILES
@@ -203,6 +227,9 @@ android_library(
         ":resources",
         ":databinding_adapters",
         ":recyclerview_adapters",
+        ":view_models",
+        ":views",
+        #":presenters",
         artifact("com.google.android.material:material"),
         artifact("androidx.databinding:databinding-runtime"),
         artifact("androidx.databinding:databinding-adapters"),
@@ -225,9 +252,41 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "annotations",
+    name = "presenters",
     custom_package = "org.oppia.app",
-    srcs = ANNOTATIONS,
+    srcs = PRESENTER_FILES,
+    deps = [
+        ":dagger",
+        ":listeners",
+        ":annotations_and_helpers",
+        ":view_models",
+        ":databinding_adapters",
+        artifact("androidx.databinding:databinding-runtime"),
+#        "//model:model_lib",
+#        artifact("androidx.recyclerview:recyclerview:1.0.0"),
+    ],
+    visibility = ["//visibility:public"],
+)
+
+kt_android_library(
+    name = "views",
+    custom_package = "org.oppia.app.views",
+    manifest = "src/main/ViewsAndroidManifest.xml",
+    srcs = VIEW_FILES,
+    deps = [
+        ":listeners",
+        ":annotations_and_helpers",
+        ":view_models",
+        ":resources",
+        artifact("androidx.appcompat:appcompat"),
+    ],
+    visibility = ["//visibility:public"],
+)
+
+kt_android_library(
+    name = "annotations_and_helpers",
+    custom_package = "org.oppia.app",
+    srcs = ANNOTATIONS_AND_HELPERS,
     deps = [
         ":dagger",
         "//model:model_lib",
@@ -247,7 +306,7 @@ kt_android_library(
         "//utility:utility_lib",
         "//domain:domain_lib",
         ":listeners",
-        ":annotations",
+        ":annotations_and_helpers",
         ":resources",
         artifact("androidx.appcompat:appcompat"),
         artifact("com.github.bumptech.glide:glide"),
@@ -306,7 +365,6 @@ android_library(
         "//model:model_lib",
         "//utility:utility_lib",
         ":view_models",
-        ":resources",
         artifact("androidx.appcompat:appcompat"),
         artifact("com.chaos.view:pinview:1.4.3"),
         artifact("com.github.bumptech.glide:glide"),

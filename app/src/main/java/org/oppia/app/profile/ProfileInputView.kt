@@ -9,10 +9,13 @@ import android.view.LayoutInflater
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.databinding.ViewDataBinding
 import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
-import org.oppia.app.R
-import org.oppia.app.databinding.ProfileInputViewBinding
+import org.oppia.app.views.R
+import javax.inject.Inject
+
+//import org.oppia.app.databinding.ProfileInputViewBinding
 
 /** Custom view that is used for name or pin input with error messages. */
 class ProfileInputView @JvmOverloads constructor(
@@ -20,6 +23,10 @@ class ProfileInputView @JvmOverloads constructor(
   attrs: AttributeSet? = null,
   defStyle: Int = 0
 ) : LinearLayout(context, attrs, defStyle) {
+
+  @Inject
+  lateinit var profileInputVieBindingShimInterface: ProfileInputVieBindingShimInterface
+
   companion object {
     @JvmStatic
     @BindingAdapter("profile:label")
@@ -70,16 +77,23 @@ class ProfileInputView @JvmOverloads constructor(
   private var input: EditText
 
   init {
-    val binding = DataBindingUtil.inflate<ProfileInputViewBinding>(
-      LayoutInflater.from(context),
-      R.layout.profile_input_view, this,
-      /* attachToRoot= */ true
-    )
     val attributes = context.obtainStyledAttributes(attrs, R.styleable.ProfileInputView)
-    binding.labelText.text = attributes.getString(R.styleable.ProfileInputView_label)
-    label = binding.labelText
-    input = binding.input
-    errorText = binding.errorText
+    label = profileInputVieBindingShimInterface.provideProfileInputViewBindingLabelText(
+      LayoutInflater.from(context),
+      this,
+      true
+    )
+    label.text = attributes.getString(R.styleable.ProfileInputView_label)
+    input = profileInputVieBindingShimInterface.provideProfileInputViewBindingInput(
+      LayoutInflater.from(context),
+      this,
+      true
+    )
+    errorText = profileInputVieBindingShimInterface.provideProfileInputViewBindingErrorText(
+      LayoutInflater.from(context),
+      this,
+      true
+    )
     orientation = VERTICAL
     if (
       attributes.getBoolean(

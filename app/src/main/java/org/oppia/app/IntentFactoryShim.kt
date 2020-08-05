@@ -12,8 +12,6 @@ import javax.inject.Singleton
 @Singleton
 class IntentFactoryShim : IntentFactoryShimInterface {
 
-  //companion object: IntentFactoryShimInterface {
-
     private const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
     private const val TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY = "TopicActivity.story_id"
 
@@ -39,6 +37,4 @@ class IntentFactoryShim : IntentFactoryShimInterface {
       intent.putExtra(RecentlyPlayedActivity.RECENTLY_PLAYED_ACTIVITY_INTERNAL_PROFILE_ID_KEY, internalProfileId)
       return intent
     }
-  //}
-
 }
