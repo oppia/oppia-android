@@ -296,6 +296,7 @@ kt_android_library(
     name = "view_models",
     custom_package = "org.oppia.app.vm",
     srcs = VIEW_MODEL_FILES,
+    enable_data_binding = 1,
     manifest = "src/main/ViewModelManifest.xml",
     deps = [
         ":dagger",

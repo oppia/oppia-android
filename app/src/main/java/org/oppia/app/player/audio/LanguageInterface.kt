@@ -7,4 +7,8 @@ interface LanguageInterface {
 
   /** Open the language selection dialog. */
   fun languageSelectionClicked()
+
+  fun getUserIsSeeking(): Boolean
+
+  fun getUserPosition(): Int
 }
