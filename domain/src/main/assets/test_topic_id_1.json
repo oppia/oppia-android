@@ -1,0 +1,26 @@
+{
+  "canonical_story_dicts": [
+    {
+      "thumbnail_bg_color": "#B378F1",
+      "description": "",
+      "title": "Other Interesting Story",
+      "node_titles": [
+        "Fifth Exploration"
+      ],
+      "thumbnail_filename": "",
+      "published": true,
+      "id": "test_story_id_2"
+    }
+  ],
+  "uncategorized_skill_ids": [],
+  "additional_story_dicts": [],
+  "topic_description": "A topic considering the various implications of having especially long topic descriptions. These descriptions almost certainly need to wrap, which should be interesting in the UI (especially on small screens). Consider also that there may even be multiple points pertaining to a topic, some of which may require expanding the description section in order to read the whole topic description.",
+  "topic_name": "Second Test Topic",
+  "topic_id": "test_topic_id_1",
+  "version": 3,
+  "skill_descriptions": {
+    "test_skill_id_2": "A different skill in a different topic Another important skill",
+    "test_skill_id_3": "Another important skill 4"
+  },
+  "subtopics": []
+}

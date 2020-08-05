@@ -18,9 +18,18 @@ class OptionsActivity :
   lateinit var optionActivityPresenter: OptionsActivityPresenter
 
   companion object {
-    fun createOptionsActivity(context: Context, profileId: Int?): Intent {
+
+    internal const val BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY =
+      "BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY"
+
+    fun createOptionsActivity(
+      context: Context,
+      profileId: Int?,
+      isFromNavigationDrawer: Boolean
+    ): Intent {
       val intent = Intent(context, OptionsActivity::class.java)
       intent.putExtra(KEY_NAVIGATION_PROFILE_ID, profileId)
+      intent.putExtra(BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, isFromNavigationDrawer)
       return intent
     }
   }
@@ -28,7 +37,11 @@ class OptionsActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    optionActivityPresenter.handleOnCreate()
+    val isFromNavigationDrawer = intent.getBooleanExtra(
+      BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
+      /* defaultValue= */ false
+    )
+    optionActivityPresenter.handleOnCreate(isFromNavigationDrawer)
     title = getString(R.string.menu_options)
   }
 

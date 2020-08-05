@@ -203,7 +203,10 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           drawerLayout.closeDrawers()
         }
         NavigationDrawerItem.OPTIONS -> {
-          val intent = OptionsActivity.createOptionsActivity(activity, internalProfileId)
+          val intent = OptionsActivity.createOptionsActivity(
+            activity, internalProfileId,
+            /* isFromNavigationDrawer= */ true
+          )
           fragment.activity!!.startActivity(intent)
           if (checkIfPreviousActivityShouldGetFinished(menuItemId)) {
             fragment.activity!!.finish()
@@ -211,7 +214,10 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           drawerLayout.closeDrawers()
         }
         NavigationDrawerItem.HELP -> {
-          val intent = HelpActivity.createHelpActivityIntent(activity, internalProfileId)
+          val intent = HelpActivity.createHelpActivityIntent(
+            activity, internalProfileId,
+            /* isFromNavigationDrawer= */ true
+          )
           fragment.activity!!.startActivity(intent)
           if (checkIfPreviousActivityShouldGetFinished(menuItemId)) {
             fragment.activity!!.finish()

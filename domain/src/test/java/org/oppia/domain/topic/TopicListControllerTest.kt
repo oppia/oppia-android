@@ -147,7 +147,7 @@ class TopicListControllerTest {
     val topicList = topicListLiveData.value!!.getOrThrow()
     val firstTopic = topicList.getTopicSummary(0)
     assertThat(firstTopic.topicId).isEqualTo(TEST_TOPIC_ID_0)
-    assertThat(firstTopic.name).isEqualTo("First Topic")
+    assertThat(firstTopic.name).isEqualTo("First Test Topic")
   }
 
   @Test
@@ -157,7 +157,7 @@ class TopicListControllerTest {
     val topicList = topicListLiveData.value!!.getOrThrow()
     val firstTopic = topicList.getTopicSummary(0)
     assertThat(firstTopic.topicThumbnail.thumbnailGraphic)
-      .isEqualTo(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
+      .isEqualTo(LessonThumbnailGraphic.ADDING_AND_SUBTRACTING_FRACTIONS)
   }
 
   @Test
@@ -166,7 +166,7 @@ class TopicListControllerTest {
 
     val topicList = topicListLiveData.value!!.getOrThrow()
     val firstTopic = topicList.getTopicSummary(0)
-    assertThat(firstTopic.totalChapterCount).isEqualTo(4)
+    assertThat(firstTopic.totalChapterCount).isEqualTo(5)
   }
 
   @Test
@@ -176,7 +176,7 @@ class TopicListControllerTest {
     val topicList = topicListLiveData.value!!.getOrThrow()
     val secondTopic = topicList.getTopicSummary(1)
     assertThat(secondTopic.topicId).isEqualTo(TEST_TOPIC_ID_1)
-    assertThat(secondTopic.name).isEqualTo("Second Topic")
+    assertThat(secondTopic.name).isEqualTo("Second Test Topic")
   }
 
   @Test
@@ -186,7 +186,7 @@ class TopicListControllerTest {
     val topicList = topicListLiveData.value!!.getOrThrow()
     val secondTopic = topicList.getTopicSummary(1)
     assertThat(secondTopic.topicThumbnail.thumbnailGraphic)
-      .isEqualTo(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
+      .isEqualTo(LessonThumbnailGraphic.BAKER)
   }
 
   @Test
@@ -551,9 +551,35 @@ class TopicListControllerTest {
 
   private fun verifyDefaultOngoingStoryListSucceeded() {
     val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
-    assertThat(ongoingTopicList.recentStoryCount).isEqualTo(2)
-    verifyOngoingStoryAsFractionStory0Exploration0(ongoingTopicList.recentStoryList[0])
-    verifyOngoingStoryAsRatioStory0Exploration0(ongoingTopicList.recentStoryList[1])
+    assertThat(ongoingTopicList.recentStoryCount).isEqualTo(4)
+    verifyOngoingStoryAsFirstTopicStory0Exploration0(ongoingTopicList.recentStoryList[0])
+    verifyOngoingStoryAsSecondTopicStory0Exploration0(ongoingTopicList.recentStoryList[1])
+    verifyOngoingStoryAsFractionStory0Exploration0(ongoingTopicList.recentStoryList[2])
+    verifyOngoingStoryAsRatioStory0Exploration0(ongoingTopicList.recentStoryList[3])
+  }
+
+  private fun verifyOngoingStoryAsFirstTopicStory0Exploration0(promotedStory: PromotedStory) {
+    assertThat(promotedStory.explorationId).isEqualTo(TEST_EXPLORATION_ID_2)
+    assertThat(promotedStory.storyId).isEqualTo(TEST_STORY_ID_0)
+    assertThat(promotedStory.topicId).isEqualTo(TEST_TOPIC_ID_0)
+    assertThat(promotedStory.topicName).isEqualTo("First Test Topic")
+    assertThat(promotedStory.nextChapterName).isEqualTo("Prototype Exploration")
+    assertThat(promotedStory.lessonThumbnail.thumbnailGraphic)
+      .isEqualTo(LessonThumbnailGraphic.BAKER)
+    assertThat(promotedStory.completedChapterCount).isEqualTo(0)
+    assertThat(promotedStory.totalChapterCount).isEqualTo(2)
+  }
+
+  private fun verifyOngoingStoryAsSecondTopicStory0Exploration0(promotedStory: PromotedStory) {
+    assertThat(promotedStory.explorationId).isEqualTo(TEST_EXPLORATION_ID_4)
+    assertThat(promotedStory.storyId).isEqualTo(TEST_STORY_ID_2)
+    assertThat(promotedStory.topicId).isEqualTo(TEST_TOPIC_ID_1)
+    assertThat(promotedStory.topicName).isEqualTo("Second Test Topic")
+    assertThat(promotedStory.nextChapterName).isEqualTo("Fifth Exploration")
+    assertThat(promotedStory.lessonThumbnail.thumbnailGraphic)
+      .isEqualTo(LessonThumbnailGraphic.DERIVE_A_RATIO)
+    assertThat(promotedStory.completedChapterCount).isEqualTo(0)
+    assertThat(promotedStory.totalChapterCount).isEqualTo(1)
   }
 
   private fun verifyOngoingStoryAsFractionStory0Exploration0(promotedStory: PromotedStory) {

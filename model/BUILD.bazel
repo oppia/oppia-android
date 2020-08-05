@@ -1,0 +1,166 @@
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+'''
+This library contains all protos used in the app and is a dependency for all other modules.
+In Bazel, proto files are built using the proto_library() and java_lite_proto_library() rules.
+The proto_library() rule creates a proto file library to be used in multiple languages.
+The java_lite_proto_library() rule takes in a proto_library target and generates java code.
+'''
+
+load("@rules_proto//proto:defs.bzl", "proto_library")
+load("@rules_java//java:defs.bzl", "java_lite_proto_library")
+load("//model:src/main/proto/format_import_proto_library.bzl", "format_import_proto_library")
+
+proto_library(
+    name = "event_logger_proto",
+    srcs = ["src/main/proto/oppia_logger.proto"],
+)
+
+java_lite_proto_library(
+    name = "event_logger_java_proto_lite",
+    deps = [":event_logger_proto"],
+)
+
+proto_library(
+    name = "example_proto",
+    srcs = ["src/main/proto/example.proto"],
+)
+
+java_lite_proto_library(
+    name = "example_java_proto_lite",
+    deps = [":example_proto"],
+)
+
+proto_library(
+    name = "interaction_object_proto",
+    srcs = ["src/main/proto/interaction_object.proto"],
+)
+
+java_lite_proto_library(
+    name = "interaction_object_java_proto_lite",
+    deps = [":interaction_object_proto"],
+)
+
+proto_library(
+    name = "onboarding_proto",
+    srcs = ["src/main/proto/onboarding.proto"],
+)
+
+java_lite_proto_library(
+    name = "onboarding_java_proto_lite",
+    deps = [":onboarding_proto"],
+)
+
+proto_library(
+    name = "profile_proto",
+    srcs = ["src/main/proto/profile.proto"],
+)
+
+java_lite_proto_library(
+    name = "profile_java_proto_lite",
+    deps = [":profile_proto"],
+)
+
+proto_library(
+    name = "subtitled_html_proto",
+    srcs = ["src/main/proto/subtitled_html.proto"],
+)
+
+java_lite_proto_library(
+    name = "subtitled_html_java_proto_lite",
+    deps = [":subtitled_html_proto"],
+)
+
+proto_library(
+    name = "thumbnail_proto",
+    srcs = ["src/main/proto/thumbnail.proto"],
+)
+
+java_lite_proto_library(
+    name = "thumbnail_java_proto_lite",
+    deps = [":thumbnail_proto"],
+)
+
+proto_library(
+    name = "translation_proto",
+    srcs = ["src/main/proto/translation.proto"],
+)
+
+java_lite_proto_library(
+    name = "translation_java_proto_lite",
+    deps = [":translation_proto"],
+)
+
+proto_library(
+    name = "voiceover_proto",
+    srcs = ["src/main/proto/voiceover.proto"],
+)
+
+java_lite_proto_library(
+    name = "voiceover_java_proto_lite",
+    deps = [":voiceover_proto"],
+)
+
+format_import_proto_library(
+    name = "question",
+    src = "src/main/proto/question.proto",
+    deps = [
+        ":exploration_proto",
+        ":subtitled_html_proto",
+    ],
+)
+
+java_lite_proto_library(
+    name = "question_java_proto_lite",
+    deps = [":question_proto"],
+)
+
+format_import_proto_library(
+    name = "topic",
+    src = "src/main/proto/topic.proto",
+    deps = [
+        ":subtitled_html_proto",
+        ":thumbnail_proto",
+        ":translation_proto",
+        ":voiceover_proto",
+    ],
+)
+
+java_lite_proto_library(
+    name = "topic_java_proto_lite",
+    deps = [":topic_proto"],
+)
+
+format_import_proto_library(
+    name = "exploration",
+    src = "src/main/proto/exploration.proto",
+    deps = [
+        ":subtitled_html_proto",
+        ":interaction_object_proto",
+        ":translation_proto",
+        ":voiceover_proto",
+    ],
+)
+
+java_lite_proto_library(
+    name = "exploration_java_proto_lite",
+    deps = [":exploration_proto"],
+)
+
+android_library(
+    name = "model",
+    exports = [
+        ":event_logger_java_proto_lite",
+        ":example_java_proto_lite",
+        ":interaction_object_java_proto_lite",
+        ":onboarding_java_proto_lite",
+        ":profile_java_proto_lite",
+        ":subtitled_html_java_proto_lite",
+        ":thumbnail_java_proto_lite",
+        ":translation_java_proto_lite",
+        ":voiceover_java_proto_lite",
+        ":exploration_java_proto_lite",
+        ":question_java_proto_lite",
+        ":topic_java_proto_lite",
+    ],
+    visibility = ["//visibility:public"],
+)
