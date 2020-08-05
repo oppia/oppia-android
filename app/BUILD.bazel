@@ -120,6 +120,7 @@ VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/help/HelpItems.kt",
     "src/main/java/org/oppia/app/recyclerview/DividerItemDecorator.kt",
     "src/main/java/org/oppia/app/IntentFactoryShimInterface.kt",
+    "src/main/java/org/oppia/app/player/audio/AudioViewModel.kt",
     "src/main/java/org/oppia/app/recyclerview/DragAndDropItemFacilitator.kt",#
 ]
 
