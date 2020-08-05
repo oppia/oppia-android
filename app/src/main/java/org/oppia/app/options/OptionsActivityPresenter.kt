@@ -1,6 +1,7 @@
 package org.oppia.app.options
 
 import android.view.View
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
@@ -28,10 +29,12 @@ class OptionsActivityPresenter @Inject constructor(
         activity.finish()
       }
     }
+    val isMultipane = activity.findViewById<FrameLayout>(R.id.multipane_options_container) != null
     if (getOptionFragment() == null) {
+      val optionsFragment = OptionsFragment.newInstance(isMultipane)
       activity.supportFragmentManager.beginTransaction().add(
         R.id.options_fragment_placeholder,
-        OptionsFragment()
+        optionsFragment
       ).commitNow()
     }
   }
@@ -75,14 +78,20 @@ class OptionsActivityPresenter @Inject constructor(
   }
 
   fun loadStoryTextSizeFragment(textSize: String) {
-    getOptionFragment()?.loadStoryTextSizeFragment(textSize)
+    val storyTextSizeFragment = StoryTextSizeFragment.newInstance(textSize)
+    activity.supportFragmentManager.beginTransaction()
+      .replace(R.id.multipane_options_container, storyTextSizeFragment).commitNow()
   }
 
   fun loadAppLanguageFragment(appLanguage: String) {
-    getOptionFragment()?.loadAppLanguageFragment(appLanguage)
+    val appLanguageFragment = AppLanguageFragment.newInstance(APP_LANGUAGE, appLanguage)
+    activity.supportFragmentManager.beginTransaction()
+      .replace(R.id.multipane_options_container, appLanguageFragment).commitNow()
   }
 
   fun loadDefaultAudioFragment(audioLanguage: String) {
-    getOptionFragment()?.loadDefaultAudioFragment(audioLanguage)
+    val defaultAudioFragment = DefaultAudioFragment.newInstance(AUDIO_LANGUAGE, audioLanguage)
+    activity.supportFragmentManager.beginTransaction()
+      .replace(R.id.multipane_options_container, defaultAudioFragment).commitNow()
   }
 }
