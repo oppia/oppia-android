@@ -55,7 +55,7 @@ class TopicRevisionFragmentTest {
   )
 
   @Before
-  fun setUp(){
+  fun setUp() {
     FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
   }
 
@@ -100,7 +100,7 @@ class TopicRevisionFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPosition(R.id.revision_recycler_view, 0)).perform(click())
+      onView(atPosition(R.id.revision_recycler_view, 1)).perform(click())
       onView(withId(R.id.revision_card_explanation_text))
         .check(
           matches(

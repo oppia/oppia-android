@@ -8,5 +8,7 @@
   <integer name="home_span_count">2</integer>
   <integer name="promoted_story_list_limit">3</integer>
   <integer name="recently_played_span_count">2</integer>
+  <integer name="topic_revision_span_count">2</integer>
+  <integer name="ongoing_topics_span_count">2</integer>
   <integer name="completed_story_span_count">2</integer>
 </resources>

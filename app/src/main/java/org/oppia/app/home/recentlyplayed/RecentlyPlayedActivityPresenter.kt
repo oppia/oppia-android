@@ -20,6 +20,8 @@ class RecentlyPlayedActivityPresenter @Inject constructor(private val activity: 
   }
 
   private fun getRecentlyPlayedFragment(): RecentlyPlayedFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.recently_played_fragment_placeholder) as RecentlyPlayedFragment?
+    return activity.supportFragmentManager.findFragmentById(
+      R.id.recently_played_fragment_placeholder
+    ) as RecentlyPlayedFragment?
   }
 }

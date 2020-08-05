@@ -21,6 +21,11 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent" />
 
+    <FrameLayout
+      android:id="@+id/exploration_fragment_placeholder"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent" />
+
     <Button
       android:id="@+id/play_test_exploration_button"
       android:layout_width="wrap_content"

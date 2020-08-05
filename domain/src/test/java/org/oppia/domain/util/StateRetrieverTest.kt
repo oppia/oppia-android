@@ -33,7 +33,9 @@ import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
-const val DRAG_DROP_TEST_EXPLORATION_NAME = "drag_and_drop_test_exploration.json"
+const val DRAG_DROP_TEST_EXPLORATION_NAME = "test_exp_id_4.json"
+const val IMAGE_REGION_SELECTION_TEST_EXPLORATION_NAME =
+  "image_click_input_exploration.json"
 
 /** Tests for [StateRetriever]. */
 @RunWith(AndroidJUnit4::class)
@@ -209,6 +211,34 @@ class StateRetrieverTest {
     assertThat(ruleSpecMap.inputMap["y"]).isEqualTo(dragDropInputHasElementXAtPositionYValue)
   }
 
+  @Test
+  fun testParseState_withImageRegionSelectionInteraction_parsesRuleIsInRegionRuleSpec() {
+    val state = createStateFromJson(
+      "ImageClickInput",
+      IMAGE_REGION_SELECTION_TEST_EXPLORATION_NAME
+    )
+    val ruleSpecMap = state.interaction.answerGroupsList
+      .flatMap(AnswerGroup::getRuleSpecsList)
+      .associateBy(RuleSpec::getRuleType)
+    assertThat(ruleSpecMap).containsKey("IsInRegion")
+  }
+
+  @Test
+  fun testParseState_withImageRegionSelectioInteraction_parsesRuleWithIsInRegionWithValueAtX() {
+    val state = createStateFromJson(
+      "ImageClickInput",
+      IMAGE_REGION_SELECTION_TEST_EXPLORATION_NAME
+    )
+    val ruleSpecMap = lookUpRuleSpec(state, "IsInRegion")
+
+    val regionString = "Region1"
+
+    val imageRegionSelectionIsInRegionValue =
+      InteractionObject.newBuilder().setNormalizedString(regionString).build()
+
+    assertThat(ruleSpecMap.inputMap["x"]).isEqualTo(imageRegionSelectionIsInRegionValue)
+  }
+
   private fun lookUpRuleSpec(state: State, ruleSpecName: String): RuleSpec {
     return state.interaction.answerGroupsList
       .flatMap(AnswerGroup::getRuleSpecsList)
@@ -223,7 +253,7 @@ class StateRetrieverTest {
     val json = jsonAssetRetriever.loadJsonFromAsset(explorationName)
     return stateRetriever.createStateFromJson(
       stateName,
-      json?.getJSONObject("states")?.getJSONObject(stateName)
+      json?.getJSONObject("exploration")?.getJSONObject("states")?.getJSONObject(stateName)
     )
   }
 

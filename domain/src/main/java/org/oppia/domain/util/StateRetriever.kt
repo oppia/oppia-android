@@ -6,12 +6,17 @@ import org.oppia.app.model.AnswerGroup
 import org.oppia.app.model.CorrectAnswer
 import org.oppia.app.model.Fraction
 import org.oppia.app.model.Hint
+import org.oppia.app.model.ImageWithRegions
+import org.oppia.app.model.ImageWithRegions.LabeledRegion
+import org.oppia.app.model.ImageWithRegions.LabeledRegion.Region.NormalizedRectangle2d
+import org.oppia.app.model.ImageWithRegions.LabeledRegion.Region.RegionType
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.ListOfSetsOfHtmlStrings
 import org.oppia.app.model.NumberUnit
 import org.oppia.app.model.NumberWithUnits
 import org.oppia.app.model.Outcome
+import org.oppia.app.model.Point2d
 import org.oppia.app.model.RuleSpec
 import org.oppia.app.model.Solution
 import org.oppia.app.model.State
@@ -333,6 +338,10 @@ class StateRetriever @Inject constructor(
           .setFraction(parseFraction(inputJson.getJSONObject(keyName)))
           .build()
       "DragAndDropSortInput" -> createExactInputForDragDropAndSort(inputJson, keyName, ruleType)
+      "ImageClickInput" ->
+        InteractionObject.newBuilder()
+          .setNormalizedString(inputJson.getString(keyName))
+          .build()
       else -> throw IllegalStateException("Encountered unexpected interaction ID: $interactionId")
     }
   }
@@ -462,6 +471,13 @@ class StateRetriever @Inject constructor(
           ).build()
         }
       }
+      is JSONObject -> {
+        if (customizationArgValue.has("labeledRegions")) {
+          return interactionObjectBuilder.setImageWithRegions(
+            parseImageWithRegions(customizationArgValue)
+          ).build()
+        }
+      }
     }
     return InteractionObject.getDefaultInstance()
   }
@@ -472,5 +488,55 @@ class StateRetriever @Inject constructor(
       list.add(jsonArray.get(i).toString())
     }
     return StringList.newBuilder().addAllHtml(list).build()
+  }
+
+  private fun parseImageWithRegions(jsonObject: JSONObject): ImageWithRegions {
+    return ImageWithRegions.newBuilder()
+      .addAllLabelRegions(parseJsonToLabeledRegionsList(jsonObject.getJSONArray("labeledRegions")))
+      .setImagePath(jsonObject.getString("imagePath"))
+      .build()
+  }
+
+  private fun parseJsonToLabeledRegionsList(jsonArray: JSONArray): List<LabeledRegion> {
+    val regionList = mutableListOf<LabeledRegion>()
+    for (i in 0 until jsonArray.length()) {
+      regionList.add(parseLabeledRegion(jsonArray.getJSONObject(i)))
+    }
+    return regionList
+  }
+
+  private fun parseLabeledRegion(jsonObject: JSONObject): LabeledRegion {
+    return LabeledRegion.newBuilder()
+      .setLabel(jsonObject.getString("label"))
+      .setRegion(parseRegion(jsonObject.getJSONObject("region")))
+      .build()
+  }
+
+  private fun parseRegion(jsonObject: JSONObject): LabeledRegion.Region {
+    return LabeledRegion.Region.newBuilder()
+      .setRegionType(parseRegionType(jsonObject.get("regionType")))
+      .setArea(parseNormalizedRectangle2d(jsonObject.getJSONArray("area")))
+      .build()
+  }
+
+  private fun parseRegionType(regionTypeStr: Any): RegionType {
+    return when (regionTypeStr) {
+      RegionType.RECTANGLE.name -> RegionType.RECTANGLE
+      else -> RegionType.UNRECOGNIZED
+    }
+  }
+
+  private fun parseNormalizedRectangle2d(jsonArray: JSONArray): NormalizedRectangle2d {
+    return NormalizedRectangle2d.newBuilder()
+      .setUpperLeft(parsePoint2d(jsonArray.getJSONArray(0)))
+      .setLowerRight(parsePoint2d(jsonArray.getJSONArray(1)))
+      .build()
+  }
+
+  private fun parsePoint2d(points: JSONArray): Point2d {
+    return Point2d.newBuilder()
+      .setX(points.getDouble(0).toFloat())
+      .setY(points.getDouble(1).toFloat())
+      .build()
   }
 }

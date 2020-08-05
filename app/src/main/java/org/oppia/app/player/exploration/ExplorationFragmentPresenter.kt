@@ -9,7 +9,7 @@ import org.oppia.app.databinding.ExplorationFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.EventLog
 import org.oppia.app.player.state.StateFragment
-import org.oppia.domain.analytics.AnalyticsController
+import org.oppia.domain.oppialogger.OppiaLogger
 import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -17,7 +17,7 @@ import javax.inject.Inject
 @FragmentScope
 class ExplorationFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
-  private val analyticsController: AnalyticsController,
+  private val oppiaLogger: OppiaLogger,
   private val oppiaClock: OppiaClock
 ) {
   fun handleCreateView(
@@ -28,7 +28,8 @@ class ExplorationFragmentPresenter @Inject constructor(
     storyId: String,
     explorationId: String
   ): View? {
-    val binding = ExplorationFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false).root
+    val binding =
+      ExplorationFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false).root
     val stateFragment = StateFragment.newInstance(profileId, topicId, storyId, explorationId)
     logPracticeFragmentEvent(topicId, storyId, explorationId)
     if (getStateFragment() == null) {
@@ -44,7 +45,8 @@ class ExplorationFragmentPresenter @Inject constructor(
     getStateFragment()?.handlePlayAudio()
   }
 
-  fun setAudioBarVisibility(isVisible: Boolean) = getStateFragment()?.setAudioBarVisibility(isVisible)
+  fun setAudioBarVisibility(isVisible: Boolean) =
+    getStateFragment()?.setAudioBarVisibility(isVisible)
 
   fun scrollToTop() = getStateFragment()?.scrollToTop()
 
@@ -52,24 +54,27 @@ class ExplorationFragmentPresenter @Inject constructor(
     getStateFragment()?.handleKeyboardAction()
   }
 
-  fun revealHint(saveUserChoice: Boolean, hintIndex: Int){
+  fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
     getStateFragment()?.revealHint(saveUserChoice, hintIndex)
   }
 
-  fun revealSolution(saveUserChoice: Boolean){
+  fun revealSolution(saveUserChoice: Boolean) {
     getStateFragment()?.revealSolution(saveUserChoice)
   }
 
   private fun getStateFragment(): StateFragment? {
-    return fragment.childFragmentManager.findFragmentById(R.id.state_fragment_placeholder) as StateFragment?
+    return fragment
+      .childFragmentManager
+      .findFragmentById(
+        R.id.state_fragment_placeholder
+      ) as StateFragment?
   }
 
-  private fun logPracticeFragmentEvent(topicId: String, storyId: String, explorationId: String){
-    analyticsController.logTransitionEvent(
-      fragment.context!!.applicationContext,
+  private fun logPracticeFragmentEvent(topicId: String, storyId: String, explorationId: String) {
+    oppiaLogger.logTransitionEvent(
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_EXPLORATION_ACTIVITY,
-      analyticsController.createExplorationContext(topicId, storyId, explorationId)
+      oppiaLogger.createExplorationContext(topicId, storyId, explorationId)
     )
   }
 }

@@ -7,17 +7,17 @@ import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.domain.exploration.ExplorationDataController
-import org.oppia.domain.exploration.TEST_EXPLORATION_ID_5
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 private const val INTERNAL_PROFILE_ID = 0
 private const val TOPIC_ID = TEST_TOPIC_ID_0
 private const val STORY_ID = TEST_STORY_ID_0
-private const val EXPLORATION_ID = TEST_EXPLORATION_ID_5
+private const val EXPLORATION_ID = TEST_EXPLORATION_ID_2
 private const val TAG_EXPLORATION_TEST_ACTIVITY = "ExplorationTestActivity"
 
 /** The presenter for [ExplorationTestActivityPresenter]. */
@@ -25,7 +25,7 @@ private const val TAG_EXPLORATION_TEST_ACTIVITY = "ExplorationTestActivity"
 class ExplorationTestActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val explorationDataController: ExplorationDataController,
-  private val logger: Logger
+  private val logger: ConsoleLogger
 ) {
 
   private val routeToExplorationListener = activity as RouteToExplorationListener

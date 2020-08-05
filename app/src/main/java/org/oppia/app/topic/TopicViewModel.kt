@@ -8,14 +8,14 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Topic
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The ViewModel for [TopicFragment]. */
 @FragmentScope
 class TopicViewModel @Inject constructor(
   private val topicController: TopicController,
-  private val logger: Logger
+  private val logger: ConsoleLogger
 ) : ViewModel() {
   private var internalProfileId: Int = -1
   private lateinit var topicId: String

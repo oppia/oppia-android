@@ -16,9 +16,11 @@ import org.oppia.app.viewmodel.ObservableArrayList
 /** [StateItemViewModel] for multiple or item-selection input choice list. */
 class SelectionInteractionViewModel(
   val entityId: String,
+  val hasConversationView: Boolean,
   interaction: Interaction,
   private val interactionAnswerReceiver: InteractionAnswerReceiver,
-  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver
+  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
+  val isSplitView: Boolean
 ) : StateItemViewModel(ViewType.SELECTION_INTERACTION), InteractionAnswerHandler {
   private val interactionId: String = interaction.id
 
@@ -31,22 +33,25 @@ class SelectionInteractionViewModel(
   private val maxAllowableSelectionCount: Int by lazy {
     // Assume that at least 1 answer always needs to be submitted, and that the max can't be less than the min for cases
     // when either of the counts are not specified.
-    interaction.customizationArgsMap["maxAllowableSelectionCount"]?.signedInt ?: minAllowableSelectionCount
+    interaction.customizationArgsMap["maxAllowableSelectionCount"]?.signedInt
+      ?: minAllowableSelectionCount
   }
   private val selectedItems: MutableList<Int> = mutableListOf()
-  val choiceItems: ObservableList<SelectionInteractionContentViewModel> = computeChoiceItems(choiceStrings, this)
+  val choiceItems: ObservableList<SelectionInteractionContentViewModel> =
+    computeChoiceItems(choiceStrings, hasConversationView, this)
 
   private val isAnswerAvailable = ObservableField<Boolean>(false)
 
   init {
-    val callback: Observable.OnPropertyChangedCallback = object : Observable.OnPropertyChangedCallback() {
-      override fun onPropertyChanged(sender: Observable, propertyId: Int) {
-        interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
-          pendingAnswerError = null,
-          inputAnswerAvailable = selectedItems.isNotEmpty()
-        )
+    val callback: Observable.OnPropertyChangedCallback =
+      object : Observable.OnPropertyChangedCallback() {
+        override fun onPropertyChanged(sender: Observable, propertyId: Int) {
+          interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
+            pendingAnswerError = null,
+            inputAnswerAvailable = selectedItems.isNotEmpty()
+          )
+        }
       }
-    }
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
   }
 
@@ -64,7 +69,8 @@ class SelectionInteractionViewModel(
       ).build()
       userAnswerBuilder.htmlAnswer = convertSelectedItemsToHtmlString(selectedItemsHtml)
     } else if (selectedItems.size == 1) {
-      userAnswerBuilder.answer = InteractionObject.newBuilder().setNonNegativeInt(selectedItems.first()).build()
+      userAnswerBuilder.answer =
+        InteractionObject.newBuilder().setNonNegativeInt(selectedItems.first()).build()
       userAnswerBuilder.htmlAnswer = convertSelectedItemsToHtmlString(selectedItemsHtml)
     }
     return userAnswerBuilder.build()
@@ -94,7 +100,7 @@ class SelectionInteractionViewModel(
       if (isCurrentlySelected) {
         selectedItems -= itemIndex
         val wasSelectedItemListEmpty = isAnswerAvailable.get()
-        if(selectedItems.isNotEmpty() != wasSelectedItemListEmpty){
+        if (selectedItems.isNotEmpty() != wasSelectedItemListEmpty) {
           isAnswerAvailable.set(selectedItems.isNotEmpty())
         }
         return false
@@ -103,7 +109,7 @@ class SelectionInteractionViewModel(
         //  number required.
         selectedItems += itemIndex
         val wasSelectedItemListEmpty = isAnswerAvailable.get()
-        if(selectedItems.isNotEmpty() != wasSelectedItemListEmpty){
+        if (selectedItems.isNotEmpty() != wasSelectedItemListEmpty) {
           isAnswerAvailable.set(selectedItems.isNotEmpty())
         }
         return true
@@ -114,7 +120,7 @@ class SelectionInteractionViewModel(
       selectedItems.clear()
       selectedItems += itemIndex
       val wasSelectedItemListEmpty = isAnswerAvailable.get()
-      if(selectedItems.isNotEmpty() != wasSelectedItemListEmpty){
+      if (selectedItems.isNotEmpty() != wasSelectedItemListEmpty) {
         isAnswerAvailable.set(selectedItems.isNotEmpty())
       }
       // Only push the answer if explicit submission isn't required.
@@ -133,12 +139,17 @@ class SelectionInteractionViewModel(
 
   companion object {
     private fun computeChoiceItems(
-      choiceStrings: List<String>, selectionInteractionViewModel: SelectionInteractionViewModel
+      choiceStrings: List<String>,
+      hasConversationView: Boolean,
+      selectionInteractionViewModel: SelectionInteractionViewModel
     ): ObservableArrayList<SelectionInteractionContentViewModel> {
       val observableList = ObservableArrayList<SelectionInteractionContentViewModel>()
       observableList += choiceStrings.mapIndexed { index, choiceString ->
         SelectionInteractionContentViewModel(
-          htmlContent = choiceString, itemIndex = index, selectionInteractionViewModel = selectionInteractionViewModel
+          htmlContent = choiceString,
+          hasConversationView = hasConversationView,
+          itemIndex = index,
+          selectionInteractionViewModel = selectionInteractionViewModel
         )
       }
       return observableList
