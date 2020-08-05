@@ -6,7 +6,7 @@ import android.widget.TextView;
 import androidx.databinding.BindingAdapter;
 import com.bumptech.glide.load.engine.Resource;
 import org.jetbrains.annotations.NotNull;
-import org.oppia.app.R;
+import org.oppia.app.impl.adapters.R;
 import org.oppia.util.system.OppiaDateTimeFormatter;
 import java.util.Locale;
 

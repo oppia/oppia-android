@@ -7,7 +7,8 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.databinding.BindingAdapter;
 import org.jetbrains.annotations.NotNull;
-import org.oppia.app.R;
+//import org.oppia.app.R;
+import org.oppia.app.impl.adapters.R;
 
 public final class DrawableBindingAdapters {
   /**
