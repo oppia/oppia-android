@@ -20,7 +20,6 @@ import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.ConsoleLogger
-import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
 /** The presenter for [TopicLessonsFragment]. */
@@ -30,8 +29,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val logger: ConsoleLogger,
   private val explorationDataController: ExplorationDataController,
-  private val topicController: TopicController,
-  private val oppiaClock: OppiaClock
+  private val topicController: TopicController
 ) : StorySummarySelector, ChapterSummarySelector {
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToStoryListener = activity as RouteToStoryListener
@@ -93,6 +91,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
               currentExpandedChapterListIndex = index + 1
             }
           }
+          itemList.clear()
           itemList.add(TopicLessonsTitleViewModel())
           for (storySummary in it.storyList) {
             itemList.add(StorySummaryViewModel(storySummary, fragment as StorySummarySelector))
@@ -140,8 +139,8 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       internalProfileId,
       topicId,
       storyId,
-      chapterSummary.explorationId, /* backflowScreen= */
-      0
+      chapterSummary.explorationId,
+      /* backflowScreen= */ 0
     )
   }
 
