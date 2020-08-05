@@ -4,8 +4,8 @@ load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 
 VIEW_MODEL_FILES = [
-    #"src/main/java/org/oppia/app/administratorcontrols/AdministratorControlsViewModel.kt",
-    #"src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel.kt",
+    "src/main/java/org/oppia/app/administratorcontrols/AdministratorControlsViewModel.kt",
+    "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel.kt",
     "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAppInformationViewModel.kt",
     "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsDownloadPermissionsViewModel.kt",
     "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsGeneralViewModel.kt",
@@ -31,8 +31,8 @@ VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/home/recentlyplayed/RecentlyPlayedItemViewModel.kt",
     "src/main/java/org/oppia/app/home/recentlyplayed/OngoingStoryViewModel.kt",
     "src/main/java/org/oppia/app/home/topiclist/AllTopicsViewModel.kt",
-    #"src/main/java/org/oppia/app/home/topiclist/PromotedStoryListViewModel.kt",
-    #"src/main/java/org/oppia/app/home/topiclist/PromotedStoryViewModel.kt",
+    "src/main/java/org/oppia/app/home/topiclist/PromotedStoryListViewModel.kt",
+    "src/main/java/org/oppia/app/home/topiclist/PromotedStoryViewModel.kt",
     "src/main/java/org/oppia/app/home/topiclist/TopicSummaryViewModel.kt",
     "src/main/java/org/oppia/app/onboarding/OnboadingSlideViewModel.kt",
     "src/main/java/org/oppia/app/onboarding/OnboardingSlideFinalViewModel.kt",
@@ -118,7 +118,7 @@ VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/onboarding/ViewPagerSlide.kt",
     "src/main/java/org/oppia/app/help/HelpItems.kt",
     "src/main/java/org/oppia/app/recyclerview/DividerItemDecorator.kt",
-    #"src/main/java/org/oppia/app/IntentFactoryShimInterface.kt",
+    "src/main/java/org/oppia/app/IntentFactoryShimInterface.kt",
 ]
 
 DATABINDING_ADAPTER_FILES = [
