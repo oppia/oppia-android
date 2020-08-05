@@ -52,12 +52,12 @@ class OngoingTopicListSpanTest {
     return activity
       .supportFragmentManager
       .findFragmentByTag(
-        OngoingTopicListFragment.TAG_ONGOING_TOPIC_LIST_FRAGMENT
+        OngoingTopicListFragment.ONGOING_TOPIC_LIST_FRAGMENT_TAG
       ) as OngoingTopicListFragment
   }
 
   @Test
-  fun testOngoingTopicListFragmentRecyclerView_hasCorrectSpanCount() {
+  fun testOngoingTopicList_checkRecyclerView_hasCorrectSpanCount() {
     launch(OngoingTopicListActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
         assertThat(getOngoingRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(2)
@@ -67,7 +67,7 @@ class OngoingTopicListSpanTest {
 
   @Test
   @Config(qualifiers = "land")
-  fun testOngoingTopicListFragmentRecyclerView_land_hasCorrectSpanCount() {
+  fun testOngoingTopicList_checkRecyclerView_land_hasCorrectSpanCount() {
     launch(OngoingTopicListActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
         assertThat(getOngoingRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(3)
@@ -77,7 +77,7 @@ class OngoingTopicListSpanTest {
 
   @Test
   @Config(qualifiers = "sw600dp-port")
-  fun testOngoingTopicListFragmentRecyclerView_tablet_port_hasCorrectSpanCount() {
+  fun testOngoingTopicList_checkRecyclerView_tabletPort_hasCorrectSpanCount() {
     launch(OngoingTopicListActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
         assertThat(getOngoingRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(3)
@@ -87,7 +87,7 @@ class OngoingTopicListSpanTest {
 
   @Test
   @Config(qualifiers = "sw600dp-land")
-  fun testOngoingTopicListFragmentRecyclerView_tablet_land_hasCorrectSpanCount() {
+  fun testOngoingTopicList_checkRecyclerView_tabletLand_hasCorrectSpanCount() {
     launch(OngoingTopicListActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
         assertThat(getOngoingRecyclerViewGridLayoutManager(activity).spanCount).isEqualTo(4)
