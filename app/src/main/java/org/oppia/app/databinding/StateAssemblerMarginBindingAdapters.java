@@ -7,11 +7,11 @@ import androidx.databinding.BindingAdapter;
 public class StateAssemblerMarginBindingAdapters {
   /** Used to set a margin for exploration split-view. */
   @BindingAdapter(
-    "app:explorationSplitViewMarginApplicable",
-    "app:explorationSplitViewMarginStart",
-    "app:explorationSplitViewMarginTop",
-    "app:explorationSplitViewMarginEnd",
-    "app:explorationSplitViewMarginBottom",
+    "explorationSplitViewMarginApplicable",
+    "explorationSplitViewMarginStart",
+    "explorationSplitViewMarginTop",
+    "explorationSplitViewMarginEnd",
+    "explorationSplitViewMarginBottom",
     requireAll = false
   )
   public static void  setExplorationSplitViewMargin(
@@ -27,11 +27,11 @@ public class StateAssemblerMarginBindingAdapters {
 
   /** Used to set a margin for exploration view. */
   @BindingAdapter(
-    "app:explorationViewMarginApplicable",
-    "app:explorationViewMarginStart",
-    "app:explorationViewMarginTop",
-    "app:explorationViewMarginEnd",
-    "app:explorationViewMarginBottom",
+    "explorationViewMarginApplicable",
+    "explorationViewMarginStart",
+    "explorationViewMarginTop",
+    "explorationViewMarginEnd",
+    "explorationViewMarginBottom",
     requireAll = false
   )
   public static void  setExplorationViewMargin(
@@ -47,11 +47,11 @@ public class StateAssemblerMarginBindingAdapters {
 
   /** Used to set a margin for question view. */
   @BindingAdapter(
-    "app:questionViewMarginApplicable",
-    "app:questionViewMarginStart",
-    "app:questionViewMarginTop",
-    "app:questionViewMarginEnd",
-    "app:questionViewMarginBottom",
+    "questionViewMarginApplicable",
+    "questionViewMarginStart",
+    "questionViewMarginTop",
+    "questionViewMarginEnd",
+    "questionViewMarginBottom",
     requireAll = false
   )
   public static void  setQuestionViewMargin(
@@ -67,11 +67,11 @@ public class StateAssemblerMarginBindingAdapters {
 
   /** Used to set a margin for question split-view. */
   @BindingAdapter(
-    "app:questionSplitViewMarginApplicable",
-    "app:questionSplitViewMarginStart",
-    "app:questionSplitViewMarginTop",
-    "app:questionSplitViewMarginEnd",
-    "app:questionSplitViewMarginBottom",
+    "questionSplitViewMarginApplicable",
+    "questionSplitViewMarginStart",
+    "questionSplitViewMarginTop",
+    "questionSplitViewMarginEnd",
+    "questionSplitViewMarginBottom",
     requireAll = false
   )
   public static void  setQuestionSplitViewMargin(
