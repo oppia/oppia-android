@@ -13,7 +13,7 @@
 
     <variable
       name="presenter"
-      type="org.oppia.app.profile.ProfileChooserFragmentPresenter" />
+      type="org.oppia.app.profile.ProfileChooserListener" />
 
     <variable
       name="viewModel"

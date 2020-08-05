@@ -11,7 +11,7 @@
 
     <variable
       name="presenter"
-      type="org.oppia.app.walkthrough.end.WalkthroughFinalFragmentPresenter" />
+      type="org.oppia.app.walkthrough.end.WalkthroughFinalListener" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout

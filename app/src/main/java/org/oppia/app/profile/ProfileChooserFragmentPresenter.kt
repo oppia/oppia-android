@@ -73,6 +73,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private lateinit var binding: ProfileChooserFragmentBinding
   private val orientation = Resources.getSystem().configuration.orientation
 
+  // TODO
   val wasProfileEverBeenAddedValue = ObservableField<Boolean>(true)
 
   private val chooserViewModel: ProfileChooserViewModel by lazy {

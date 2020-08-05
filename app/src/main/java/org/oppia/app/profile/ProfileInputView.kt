@@ -9,13 +9,11 @@ import android.view.LayoutInflater
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.databinding.ViewDataBinding
 import androidx.databinding.BindingAdapter
-import androidx.databinding.DataBindingUtil
+import androidx.databinding.ObservableField
 import org.oppia.app.views.R
 import javax.inject.Inject
 
-//import org.oppia.app.databinding.ProfileInputViewBinding
 
 /** Custom view that is used for name or pin input with error messages. */
 class ProfileInputView @JvmOverloads constructor(
@@ -51,11 +49,22 @@ class ProfileInputView @JvmOverloads constructor(
     @JvmStatic
     @BindingAdapter("profile:error")
     fun setProfileImage(profileInputView: ProfileInputView, errorMessage: String?) {
-      var errMessage: String = errorMessage ?: ""
+      val errMessage: String = errorMessage ?: ""
       if (errMessage.isEmpty()) {
         profileInputView.clearErrorText()
       } else {
         profileInputView.setErrorText(errMessage)
+      }
+    }
+
+    @JvmStatic
+    @BindingAdapter("profile:error")
+    fun setProfileImage(profileInputView: ProfileInputView, errorMessage: ObservableField<String>?) {
+      val errMessage: ObservableField<String> = errorMessage ?: ObservableField("")
+      if (errMessage.toString().isEmpty()) {
+        profileInputView.clearErrorText()
+      } else {
+        profileInputView.setErrorText(errMessage.toString())
       }
     }
 

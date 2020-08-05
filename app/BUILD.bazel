@@ -172,6 +172,10 @@ LISTENER_FILES = [
     "src/main/java/org/oppia/app/player/state/listener/StateKeyboardButtonListener.kt",
     "src/main/java/org/oppia/app/player/state/listener/RouteToHintsAndSolutionListener.kt",
     "src/main/java/org/oppia/app/walkthrough/WalkthroughFragmentChangeListener.kt",
+    "src/main/java/org/oppia/app/profile/ProfileChooserListener.kt",
+    "src/main/java/org/oppia/app/onboarding/OnboardingListener.kt",
+    "src/main/java/org/oppia/app/walkthrough/end/WalkthroughFinalListener.kt",
+    "src/main/java/org/oppia/app/walkthrough/WalkthroughActivityListener.kt",
 ]
 
 #PRESENTER_FILES = [
@@ -235,13 +239,13 @@ android_library(
         ":recyclerview_adapters",
         ":view_models",
         ":views",
-        #":presenters",
+        ":annotations_and_helpers",
         artifact("com.google.android.material:material"),
         artifact("androidx.databinding:databinding-runtime"),
         artifact("androidx.databinding:databinding-adapters"),
         artifact("androidx.databinding:databinding-common"),
         artifact("androidx.annotation:annotation"),
-        artifact("androidx.constraintlayout:constraintlayout")
+        artifact("androidx.constraintlayout:constraintlayout"),
     ],
 )
 
@@ -253,6 +257,10 @@ kt_android_library(
         ":dagger",
         "//model:model_lib",
         artifact("androidx.recyclerview:recyclerview:1.0.0"),
+        artifact("androidx.databinding:databinding-runtime"),
+        artifact("androidx.databinding:databinding-adapters"),
+        artifact("androidx.databinding:databinding-common"),
+        artifact("androidx.annotation:annotation"),
     ],
     visibility = ["//visibility:public"],
 )
@@ -338,7 +346,6 @@ android_library(
         artifact("de.hdodenhof:circleimageview:3.0.1"),
         artifact("javax.annotation:javax.annotation-api:jar"),
         artifact("org.jetbrains:annotations:jar"),
-        artifact("androidx.constraintlayout:constraintlayout:1.1.3"),
         "@circularimageview//circularimageview:circular_image_view",
     ],
     visibility = ["//visibility:public"],
