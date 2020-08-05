@@ -20,6 +20,7 @@ import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.parser.CustomImageTarget
 import org.oppia.util.parser.DefaultGcsPrefix
 import org.oppia.util.parser.ImageLoader
+import org.oppia.util.parser.ImageViewTarget
 import org.oppia.util.parser.RevisionCardHtmlParserEntityType
 import org.oppia.util.parser.ThumbnailDownloadUrlTemplate
 import javax.inject.Inject
@@ -77,12 +78,17 @@ class LessonThumbnailImageView @JvmOverloads constructor(
     val imageUrl = "$gcsPrefix/$resourceBucketName/$imageName"
     val urlDrawable = UrlDrawable()
     if (imageUrl.endsWith("svg", ignoreCase = true)) {
-      val target = SvgTarget(urlDrawable)
-      imageLoader.loadSvg(imageUrl, CustomImageTarget(target))
+      imageLoader.loadSvg(imageUrl, ImageViewTarget(this))
     } else {
-      val target = BitmapTarget(urlDrawable)
-      imageLoader.loadBitmap(imageUrl, CustomImageTarget(target))
+      imageLoader.loadBitmap(imageUrl, ImageViewTarget(this))
     }
+//    if (imageUrl.endsWith("svg", ignoreCase = true)) {
+//      val target = SvgTarget(urlDrawable)
+//      imageLoader.loadSvg(imageUrl, CustomImageTarget(target))
+//    } else {
+//      val target = BitmapTarget(urlDrawable)
+//      imageLoader.loadBitmap(imageUrl, CustomImageTarget(target))
+//    }
   }
 
   fun setEntityId(entityId: String) {

@@ -54,8 +54,8 @@ class UrlImageParser private constructor(
     urlDrawable, { resource -> BitmapDrawable(context.resources, resource) }
   )
 
-  private inner class SvgTarget(urlDrawable: UrlDrawable) : CustomImageTarget<Picture>(
-    urlDrawable, { resource -> PictureDrawable(resource) }
+  private inner class SvgTarget(urlDrawable: UrlDrawable) : CustomImageTarget<PictureDrawable>(
+    urlDrawable, { it }
   )
 
   private open inner class CustomImageTarget<T>(
