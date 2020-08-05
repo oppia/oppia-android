@@ -29,6 +29,7 @@
         android:layout_height="0dp"
         android:adjustViewBounds="true"
         app:entityId="@{viewModel.topic.topicId}"
+        app:entityType="@{viewModel.entityType}"
         app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

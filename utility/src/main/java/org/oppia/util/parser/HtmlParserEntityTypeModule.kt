@@ -23,4 +23,10 @@ class HtmlParserEntityTypeModule {
   fun provideReviewCardHtmlParserEntityType(): String {
     return "topic"
   }
+
+  @Provides
+  @StoryHtmlParserEntityType
+  fun provideStoryHtmlParserEntityType(): String {
+    return "story"
+  }
 }

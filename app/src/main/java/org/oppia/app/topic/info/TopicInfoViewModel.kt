@@ -7,12 +7,15 @@ import org.oppia.app.R
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Topic
 import org.oppia.app.viewmodel.ObservableViewModel
+import org.oppia.util.parser.RevisionCardHtmlParserEntityType
+import org.oppia.util.parser.StoryHtmlParserEntityType
 import javax.inject.Inject
 
 /** [ViewModel] for showing topic info details. */
 @FragmentScope
 class TopicInfoViewModel @Inject constructor(
-  private val context: Context
+  private val context: Context,
+  @RevisionCardHtmlParserEntityType val entityType: String
 ) : ObservableViewModel() {
 
   val topic = ObservableField<Topic>(Topic.getDefaultInstance())

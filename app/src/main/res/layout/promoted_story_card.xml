@@ -31,13 +31,15 @@
       app:layout_constraintTop_toBottomOf="@id/recently_played_stories_text_view"
       app:roundedRectDrawableWithColor="@{viewModel.promotedStoryObservable.lessonThumbnail.backgroundColorRgb}">
 
-      <ImageView
+      <org.oppia.app.customview.LessonThumbnailImageView
         android:id="@+id/lesson_thumbnail"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        app:entityId="@{viewModel.promotedStoryObservable.storyId}"
+        app:entityType="@{viewModel.entityType}"
+        app:lessonThumbnail="@{viewModel.promotedStoryObservable.lessonThumbnail}"
         android:importantForAccessibility="no"
         android:scaleType="centerInside"
-        android:src="@{viewModel.promotedStoryObservable.lessonThumbnail.thumbnailGraphic}"
         app:layout_constraintDimensionRatio="H, 16:9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

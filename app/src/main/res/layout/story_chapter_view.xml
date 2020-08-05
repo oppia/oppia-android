@@ -35,17 +35,18 @@
         android:clipToPadding="true"
         android:contentDescription="@{viewModel.name}">
 
-        <ImageView
+        <org.oppia.app.customview.LessonThumbnailImageView
           android:id="@+id/chapter_thumbnail"
           android:layout_width="match_parent"
           android:layout_height="0dp"
           android:scaleType="centerInside"
-          android:src="@{viewModel.chapterThumbnail.thumbnailGraphic}"
+          app:entityId="@{viewModel.storyId}"
+          app:entityType="@{viewModel.entityType}"
+          app:lessonThumbnail="@{viewModel.chapterThumbnail}"
           app:layout_constraintDimensionRatio="16:9"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toTopOf="parent"
-          app:topRoundedRectDrawableWithColor="@{viewModel.chapterThumbnail.backgroundColorRgb}" />
+          app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
           android:layout_width="match_parent"

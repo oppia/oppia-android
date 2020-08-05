@@ -31,6 +31,7 @@ import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.datetime.DateTimeUtil
 import org.oppia.util.logging.ConsoleLogger
+import org.oppia.util.parser.StoryHtmlParserEntityType
 import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -43,7 +44,8 @@ class HomeFragmentPresenter @Inject constructor(
   private val topicListController: TopicListController,
   private val oppiaClock: OppiaClock,
   private val logger: ConsoleLogger,
-  private val oppiaLogger: OppiaLogger
+  private val oppiaLogger: OppiaLogger,
+  @StoryHtmlParserEntityType private val entityType: String
 ) {
   private val routeToTopicListener = activity as RouteToTopicListener
   private val itemList: MutableList<HomeItemViewModel> = ArrayList()
@@ -181,7 +183,7 @@ class HomeFragmentPresenter @Inject constructor(
       fragment,
       Observer<OngoingStoryList> {
         it.recentStoryList.take(limit).forEach { promotedStory ->
-          val recentStory = PromotedStoryViewModel(activity, internalProfileId)
+          val recentStory = PromotedStoryViewModel(activity, internalProfileId, entityType)
           recentStory.setPromotedStory(promotedStory)
           promotedStoryList.add(recentStory)
         }
