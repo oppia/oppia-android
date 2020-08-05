@@ -63,8 +63,7 @@ class ExceptionsController @Inject constructor(
     when (networkConnectionUtil.getCurrentConnectionStatus()) {
       NetworkConnectionUtil.ConnectionStatus.NONE ->
         cacheExceptionLog(
-          convertExceptionToExceptionLog(
-            exception,
+          exception.toExceptionLog(
             timestampInMillis,
             exceptionType
           )
@@ -74,22 +73,22 @@ class ExceptionsController @Inject constructor(
   }
 
   /** Returns an [ExceptionLog] from a [throwable]. */
-  private fun convertExceptionToExceptionLog(
-    throwable: Throwable,
+  private fun Throwable.toExceptionLog(
     timestampInMillis: Long,
     exceptionType: ExceptionType
   ): ExceptionLog {
     val exceptionLogBuilder = ExceptionLog.newBuilder()
-    throwable.message?.let {
+    this.message?.let {
       exceptionLogBuilder.message = it
     }
     exceptionLogBuilder.timestampInMillis = timestampInMillis
-    throwable.cause?.let {
-      exceptionLogBuilder.cause =
-        convertExceptionToExceptionLog(it, timestampInMillis, exceptionType)
+    this.cause?.let {
+      exceptionLogBuilder.cause = it.toExceptionLog(timestampInMillis, exceptionType)
     }
-    throwable.stackTrace?.let {
-      exceptionLogBuilder.addAllStacktraceElement(it.map(this::convertStackTraceElementToLog))
+    this.stackTrace?.let {
+      exceptionLogBuilder.addAllStacktraceElement(
+        it.map(this@ExceptionsController::convertStackTraceElementToLog)
+      )
     }
     exceptionLogBuilder.exceptionType = exceptionType
     return exceptionLogBuilder.build()

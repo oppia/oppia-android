@@ -275,6 +275,50 @@ class ExceptionsControllerTest {
     assertThat(exceptionTwo.exceptionType).isEqualTo(ExceptionType.FATAL)
   }
 
+  @ExperimentalCoroutinesApi
+  @InternalCoroutinesApi
+  @Test
+  fun testExtension_logEmptyException_withNoNetwork_verifyRecreationOfLogs(){
+    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
+    val exceptionThrown = Exception()
+    exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
+
+    val cachedExceptions = exceptionsController.getExceptionLogs()
+    cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    verify(mockOppiaExceptionLogsObserver, atLeastOnce())
+      .onChanged(oppiaExceptionLogsResultCaptor.capture())
+    val exceptionLog = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
+    val exception = exceptionLog.toException()
+
+    assertThat(exception.message).isEqualTo(null)
+    assertThat(exception.stackTrace).isEqualTo(exceptionThrown.stackTrace)
+    assertThat(exception.cause).isEqualTo(null)
+  }
+
+  @ExperimentalCoroutinesApi
+  @InternalCoroutinesApi
+  @Test
+  fun testExtension_logException_withNoCause_withNoNetwork_verifyRecreationOfLogs(){
+    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
+    val exceptionThrown = Exception("TEST")
+    exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
+
+    val cachedExceptions = exceptionsController.getExceptionLogs()
+    cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    verify(mockOppiaExceptionLogsObserver, atLeastOnce())
+      .onChanged(oppiaExceptionLogsResultCaptor.capture())
+    val exceptionLog = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
+    val exception = exceptionLog.toException()
+
+    assertThat(exception.message).isEqualTo("TEST")
+    assertThat(exception.stackTrace).isEqualTo(exceptionThrown.stackTrace)
+    assertThat(exception.cause).isEqualTo(null)
+  }
+
   private fun setUpTestApplicationComponent() {
     DaggerExceptionsControllerTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
