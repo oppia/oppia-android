@@ -3,12 +3,14 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
-    <import type="android.view.View"/>
-    <import type="org.oppia.app.model.Subtopic"/>
+
+    <import type="android.view.View" />
+
+    <import type="org.oppia.app.model.Subtopic" />
+
     <variable
       name="viewModel"
       type="org.oppia.app.topic.revision.revisionitemviewmodel.TopicRevisionItemViewModel" />
-
   </data>
 
   <com.google.android.material.card.MaterialCardView
@@ -18,11 +20,11 @@
     android:layout_marginTop="24dp"
     android:layout_marginEnd="24dp"
     android:clipToPadding="true"
+    android:onClick="@{(v) -> viewModel.onRevisionItemPressed.onTopicRevisionSummaryClicked(viewModel.subtopic)}"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp"
-    app:cardMaxElevation="4dp"
-    android:onClick="@{(v) -> viewModel.onRevisionItemPressed.onTopicRevisionSummaryClicked(viewModel.subtopic)}">
+    app:cardMaxElevation="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
@@ -36,11 +38,11 @@
         android:scaleType="centerInside"
         app:entityId="@{viewModel.topicId}"
         app:entityType="@{viewModel.entityType}"
-        app:lessonThumbnail="@{viewModel.subtopic.subtopicThumbnail}"
         app:layout_constraintDimensionRatio="H,4:3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:lessonThumbnail="@{viewModel.subtopic.subtopicThumbnail}" />
 
       <TextView
         android:id="@+id/subtopic_title"
@@ -49,7 +51,6 @@
         android:background="@color/oppiaBrownDark"
         android:ellipsize="end"
         android:fontFamily="sans-serif"
-        android:textStyle="bold"
         android:lines="3"
         android:paddingStart="8dp"
         android:paddingTop="8dp"
@@ -58,6 +59,7 @@
         android:text="@{viewModel.subtopic.title}"
         android:textColor="@color/white"
         android:textSize="14sp"
+        android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/subtopic_image_view" />
     </androidx.constraintlayout.widget.ConstraintLayout>
   </com.google.android.material.card.MaterialCardView>

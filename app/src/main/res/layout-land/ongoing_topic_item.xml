@@ -36,7 +36,6 @@
         android:layout_height="0dp"
         android:importantForAccessibility="no"
         android:scaleType="centerInside"
-        android:src="@{viewModel.topic.topicThumbnail.thumbnailGraphic}"
         app:entityId="@{viewModel.topic.topicId}"
         app:entityType="@{viewModel.entityType}"
         app:layout_constraintDimensionRatio="4:3"
