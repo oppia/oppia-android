@@ -213,8 +213,10 @@ VIEW_FILES = [
     "src/main/java/org/oppia/app/customview/interaction/NumericInputInteractionView.kt",
     "src/main/java/org/oppia/app/customview/interaction/TextInputInteractionView.kt",
     "src/main/java/org/oppia/app/profile/ProfileInputView.kt",
-    "src/main/java/org/oppia/app/profile/ProfileInputVieBindingShimInterface.kt",
-    #"src/main/java/org/oppia/app/player/state/DragDropSortInteractionView.kt",
+    "src/main/java/org/oppia/app/ViewBindingShimInterface.kt",
+    "src/main/java/org/oppia/app/player/state/SelectionInteractionView.kt",
+    #"src/main/java/org/oppia/app/view/ViewComponent.kt",
+    "src/main/java/org/oppia/app/player/state/DragDropSortInteractionView.kt",
 #    "src/main/java/org/oppia/app/fragment/InjectableFragment.kt",
 #    "src/main/java/org/oppia/app/activity/InjectableAppCompatActivity.kt",
 ]
@@ -283,6 +285,7 @@ kt_android_library(
         ":view_models",
         ":resources",
         artifact("androidx.appcompat:appcompat"),
+        artifact("androidx.core:core-ktx"),
     ],
     visibility = ["//visibility:public"],
 )

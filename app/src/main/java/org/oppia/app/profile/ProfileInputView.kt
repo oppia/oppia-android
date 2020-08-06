@@ -10,7 +10,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import androidx.databinding.ObservableField
+import org.oppia.app.ViewBindingShimInterface
 import org.oppia.app.views.R
 import javax.inject.Inject
 
@@ -23,7 +23,7 @@ class ProfileInputView @JvmOverloads constructor(
 ) : LinearLayout(context, attrs, defStyle) {
 
   @Inject
-  lateinit var profileInputVieBindingShimInterface: ProfileInputVieBindingShimInterface
+  lateinit var bindingInterface: ViewBindingShimInterface
 
   companion object {
     @JvmStatic
@@ -46,17 +46,6 @@ class ProfileInputView @JvmOverloads constructor(
       profileInputView.input.filters = arrayOf(InputFilter.LengthFilter(inputLength))
     }
 
-    @JvmStatic
-    @BindingAdapter("profile:error")
-    fun setProfileImage(profileInputView: ProfileInputView, errorMessage: String?) {
-      val errMessage: String = errorMessage ?: ""
-      if (errMessage.isEmpty()) {
-        profileInputView.clearErrorText()
-      } else {
-        profileInputView.setErrorText(errMessage)
-      }
-    }
-
     /** Binding adapter for setting a [TextWatcher] as a change listener for an [EditText]. */
     @BindingAdapter("android:addTextChangedListener")
     fun bindTextWatcher(editText: EditText, textWatcher: TextWatcher) {
@@ -76,18 +65,18 @@ class ProfileInputView @JvmOverloads constructor(
 
   init {
     val attributes = context.obtainStyledAttributes(attrs, R.styleable.ProfileInputView)
-    label = profileInputVieBindingShimInterface.provideProfileInputViewBindingLabelText(
+    label = bindingInterface.provideProfileInputViewBindingLabelText(
       LayoutInflater.from(context),
       this,
       true
     )
     label.text = attributes.getString(R.styleable.ProfileInputView_label)
-    input = profileInputVieBindingShimInterface.provideProfileInputViewBindingInput(
+    input = bindingInterface.provideProfileInputViewBindingInput(
       LayoutInflater.from(context),
       this,
       true
     )
-    errorText = profileInputVieBindingShimInterface.provideProfileInputViewBindingErrorText(
+    errorText = bindingInterface.provideProfileInputViewBindingErrorText(
       LayoutInflater.from(context),
       this,
       true
@@ -133,6 +122,15 @@ class ProfileInputView @JvmOverloads constructor(
   fun setErrorText(errorMessage: String) {
     input.background = context.resources.getDrawable(R.drawable.edit_text_red_border)
     errorText.text = errorMessage
+  }
+
+  fun setError(errorMessage: String) {
+    val errMessage: String = errorMessage ?: ""
+    if (errMessage.isEmpty()) {
+      clearErrorText()
+    } else {
+      setErrorText(errMessage)
+    }
   }
 
   fun setLabel(labelText: String) {
