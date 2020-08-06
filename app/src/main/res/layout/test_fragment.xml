@@ -9,10 +9,22 @@
       type="org.oppia.app.testing.BindableAdapterTestViewModel" />
   </data>
 
-  <androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/test_recycler_view"
+  <FrameLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-    app:data="@{viewModel.dataListLiveData}" />
+    android:layout_height="wrap_content">
+
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/test_recycler_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:data="@{viewModel.dataListLiveData}"
+      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/test_recycler_view_non_live_data"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+      app:list="@{viewModel.dataList}" />
+  </FrameLayout>
 </layout>

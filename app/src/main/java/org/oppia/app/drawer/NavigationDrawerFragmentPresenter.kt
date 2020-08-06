@@ -35,7 +35,7 @@ import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
@@ -48,7 +48,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
   private val topicController: TopicController,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val headerViewModelProvider: ViewModelProvider<NavigationDrawerHeaderViewModel>,
   private val footerViewModelProvider: ViewModelProvider<NavigationDrawerFooterViewModel>
 ) : NavigationView.OnNavigationItemSelectedListener {
@@ -203,7 +203,10 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           drawerLayout.closeDrawers()
         }
         NavigationDrawerItem.OPTIONS -> {
-          val intent = OptionsActivity.createOptionsActivity(activity, internalProfileId)
+          val intent = OptionsActivity.createOptionsActivity(
+            activity, internalProfileId,
+            /* isFromNavigationDrawer= */ true
+          )
           fragment.activity!!.startActivity(intent)
           if (checkIfPreviousActivityShouldGetFinished(menuItemId)) {
             fragment.activity!!.finish()
@@ -211,7 +214,10 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           drawerLayout.closeDrawers()
         }
         NavigationDrawerItem.HELP -> {
-          val intent = HelpActivity.createHelpActivityIntent(activity, internalProfileId)
+          val intent = HelpActivity.createHelpActivityIntent(
+            activity, internalProfileId,
+            /* isFromNavigationDrawer= */ true
+          )
           fragment.activity!!.startActivity(intent)
           if (checkIfPreviousActivityShouldGetFinished(menuItemId)) {
             fragment.activity!!.finish()

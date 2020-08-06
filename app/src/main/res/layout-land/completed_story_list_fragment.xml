@@ -57,6 +57,7 @@
         android:paddingTop="28dp"
         android:paddingBottom="88dp"
         android:scrollbars="none"
+        android:tag="@string/completed_story_list_recyclerview_tag"
         app:data="@{viewModel.completedStoryListLiveData}" />
 
       <View

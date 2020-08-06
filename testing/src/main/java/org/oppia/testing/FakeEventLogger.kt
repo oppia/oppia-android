@@ -1,9 +1,7 @@
 package org.oppia.testing
 
-import android.content.Context
 import org.oppia.app.model.EventLog
 import org.oppia.util.logging.EventLogger
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -12,7 +10,7 @@ import javax.inject.Singleton
 class FakeEventLogger @Inject constructor() : EventLogger {
   private val eventList = ArrayList<EventLog>()
 
-  override fun logEvent(context: Context, eventLog: EventLog) {
+  override fun logEvent(eventLog: EventLog) {
     eventList.add(eventLog)
   }
 

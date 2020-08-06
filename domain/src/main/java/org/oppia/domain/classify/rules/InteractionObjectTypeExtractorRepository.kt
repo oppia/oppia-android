@@ -74,6 +74,12 @@ internal class InteractionObjectTypeExtractorRepository @Inject constructor() {
         ),
         ObjectTypeCase.LIST_OF_SETS_OF_HTML_STRING to createMapping(
           InteractionObject::getListOfSetsOfHtmlString
+        ),
+        ObjectTypeCase.IMAGE_WITH_REGIONS to createMapping(
+          InteractionObject::getImageWithRegions
+        ),
+        ObjectTypeCase.CLICK_ON_IMAGE to createMapping(
+          InteractionObject::getClickOnImage
         )
       )
     }

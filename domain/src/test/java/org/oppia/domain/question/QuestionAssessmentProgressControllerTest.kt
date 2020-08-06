@@ -11,9 +11,7 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -31,12 +29,15 @@ import org.oppia.app.model.EphemeralQuestion
 import org.oppia.app.model.EphemeralState.StateTypeCase.COMPLETED_STATE
 import org.oppia.app.model.EphemeralState.StateTypeCase.PENDING_STATE
 import org.oppia.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
+import org.oppia.app.model.Hint
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.Solution
 import org.oppia.app.model.UserAnswer
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.domain.classify.rules.imageClickInput.ImageClickInputModule
 import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
@@ -59,16 +60,20 @@ import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 import kotlin.coroutines.EmptyCoroutineContext
+import kotlinx.coroutines.ExperimentalCoroutinesApi as ExperimentalCoroutinesApi1
+import kotlinx.coroutines.test.runBlockingTest as runBlockingTest1
 
 /** Tests for [QuestionAssessmentProgressController]. */
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
 class QuestionAssessmentProgressControllerTest {
   private val TEST_SKILL_ID_LIST_012 =
-    listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, TEST_SKILL_ID_2) // questions 0, 2, 3
-  private val TEST_SKILL_ID_LIST_02 = listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_2) // questions 2, 1, 5
-  private val TEST_SKILL_ID_LIST_01 = listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1) // questions 2, 0, 3
-  private val TEST_SKILL_ID_LIST_2 = listOf(TEST_SKILL_ID_2) // questions 4, 5, 2
+    listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, TEST_SKILL_ID_2) // questions 0, 1, 2, 3, 4, 5
+  private val TEST_SKILL_ID_LIST_02 =
+    listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_2) // questions 0, 1, 2, 4, 5
+  private val TEST_SKILL_ID_LIST_01 =
+    listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1) // questions 0, 1, 2, 3
+  private val TEST_SKILL_ID_LIST_2 = listOf(TEST_SKILL_ID_2) // questions 2, 4, 5
 
   @Rule
   @JvmField
@@ -83,7 +88,7 @@ class QuestionAssessmentProgressControllerTest {
   @Inject
   lateinit var fakeExceptionLogger: FakeExceptionLogger
 
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   @Inject
   @field:TestDispatcher
   lateinit var testDispatcher: TestCoroutineDispatcher
@@ -100,6 +105,12 @@ class QuestionAssessmentProgressControllerTest {
   @Mock
   lateinit var mockAsyncAnswerOutcomeObserver: Observer<AsyncResult<AnsweredQuestionOutcome>>
 
+  @Mock
+  lateinit var mockAsyncHintObserver: Observer<AsyncResult<Hint>>
+
+  @Mock
+  lateinit var mockAsyncSolutionObserver: Observer<AsyncResult<Solution>>
+
   @Captor
   lateinit var currentQuestionResultCaptor: ArgumentCaptor<AsyncResult<EphemeralQuestion>>
 
@@ -112,7 +123,7 @@ class QuestionAssessmentProgressControllerTest {
   @Captor
   lateinit var asyncAnswerOutcomeCaptor: ArgumentCaptor<AsyncResult<AnsweredQuestionOutcome>>
 
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   private val coroutineContext by lazy {
     EmptyCoroutineContext + testDispatcher
   }
@@ -123,9 +134,9 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   fun testGetCurrentQuestion_noSessionStarted_returnsPendingResult() =
-    runBlockingTest(coroutineContext) {
+    runBlockingTest1(coroutineContext) {
       val resultLiveData =
         questionAssessmentProgressController.getCurrentQuestion()
       resultLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
@@ -136,9 +147,9 @@ class QuestionAssessmentProgressControllerTest {
     }
 
   @Test
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   fun testGetCurrentQuestion_sessionStarted_withEmptyQuestionList_fails() =
-    runBlockingTest(coroutineContext) {
+    runBlockingTest1(coroutineContext) {
       questionTrainingController.startQuestionTrainingSession(listOf())
 
       val resultLiveData =
@@ -157,8 +168,8 @@ class QuestionAssessmentProgressControllerTest {
     }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testStartTrainingSession_succeeds() = runBlockingTest(coroutineContext) {
+  @ExperimentalCoroutinesApi1
+  fun testStartTrainingSession_succeeds() = runBlockingTest1(coroutineContext) {
     val resultLiveData =
       questionTrainingController.startQuestionTrainingSession(TEST_SKILL_ID_LIST_012)
     resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
@@ -169,29 +180,30 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testGetCurrentQuestion_playSession_returnsPendingResultFromLoadingSession() = runBlockingTest(
-    coroutineContext
-  ) {
-    val currentQuestionLiveData =
-      questionAssessmentProgressController.getCurrentQuestion()
-    currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
-    advanceUntilIdle()
+  @ExperimentalCoroutinesApi1
+  fun testGetCurrentQuestion_playSession_returnsPendingResultFromLoadingSession() =
+    runBlockingTest1(
+      coroutineContext
+    ) {
+      val currentQuestionLiveData =
+        questionAssessmentProgressController.getCurrentQuestion()
+      currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
+      advanceUntilIdle()
 
-    startTrainingSession(TEST_SKILL_ID_LIST_012)
+      startTrainingSession(TEST_SKILL_ID_LIST_012)
 
-    // The second-to-latest result stays pending since the session was loading (the actual result is the fully
-    // loaded session). This is only true if the observer begins before starting to load the session.
-    verify(mockCurrentQuestionLiveDataObserver, Mockito.atLeast(2)).onChanged(
-      currentQuestionResultCaptor.capture()
-    )
-    val results = currentQuestionResultCaptor.allValues
-    assertThat(results[results.size - 2].isPending()).isTrue()
-  }
+      // The second-to-latest result stays pending since the session was loading (the actual result is the fully
+      // loaded session). This is only true if the observer begins before starting to load the session.
+      verify(mockCurrentQuestionLiveDataObserver, Mockito.atLeast(2)).onChanged(
+        currentQuestionResultCaptor.capture()
+      )
+      val results = currentQuestionResultCaptor.allValues
+      assertThat(results[results.size - 2].isPending()).isTrue()
+    }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testGetCurrentQuestion_playSession_loaded_returnsInitialQuestionPending() = runBlockingTest(
+  @ExperimentalCoroutinesApi1
+  fun testGetCurrentQuestion_playSession_loaded_returnsInitialQuestionPending() = runBlockingTest1(
     coroutineContext
   ) {
     startTrainingSession(TEST_SKILL_ID_LIST_012)
@@ -215,9 +227,9 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   fun testGetCurrentQuestion_playInvalidSession_thenPlayValidExp_returnsInitialPendingQuestion() =
-    runBlockingTest(
+    runBlockingTest1(
       coroutineContext
     ) {
       // Start with starting an invalid training session.
@@ -245,8 +257,8 @@ class QuestionAssessmentProgressControllerTest {
     }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testStopTrainingSession_withoutStartingSession_fails() = runBlockingTest(coroutineContext) {
+  @ExperimentalCoroutinesApi1
+  fun testStopTrainingSession_withoutStartingSession_fails() = runBlockingTest1(coroutineContext) {
     val resultLiveData =
       questionTrainingController.stopQuestionTrainingSession()
     advanceUntilIdle()
@@ -259,9 +271,9 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   fun testStartTrainingSession_withoutFinishingPrevious_fails() =
-    runBlockingTest(coroutineContext) {
+    runBlockingTest1(coroutineContext) {
       questionTrainingController.startQuestionTrainingSession(TEST_SKILL_ID_LIST_012)
 
       val resultLiveData =
@@ -276,9 +288,9 @@ class QuestionAssessmentProgressControllerTest {
     }
 
   @Test
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   fun testStopTrainingSession_afterStartingPreviousSession_succeeds() =
-    runBlockingTest(coroutineContext) {
+    runBlockingTest1(coroutineContext) {
       questionTrainingController.startQuestionTrainingSession(TEST_SKILL_ID_LIST_012)
 
       val resultLiveData =
@@ -290,9 +302,9 @@ class QuestionAssessmentProgressControllerTest {
     }
 
   @Test
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   fun testGetCurrentQuestion_playSecondSession_afterFinishingPrev_loaded_returnsInitialQuestion() =
-    runBlockingTest(
+    runBlockingTest1(
       coroutineContext
     ) {
       val currentQuestionLiveData =
@@ -319,8 +331,8 @@ class QuestionAssessmentProgressControllerTest {
     }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testSubmitAnswer_beforePlaying_failsWithError() = runBlockingTest(coroutineContext) {
+  @ExperimentalCoroutinesApi1
+  fun testSubmitAnswer_beforePlaying_failsWithError() = runBlockingTest1(coroutineContext) {
     val result =
       questionAssessmentProgressController.submitAnswer(createMultipleChoiceAnswer(0))
     result.observeForever(mockAsyncAnswerOutcomeObserver)
@@ -338,9 +350,9 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   fun testSubmitAnswer_forMultipleChoice_correctAnswer_succeeds() =
-    runBlockingTest(coroutineContext) {
+    runBlockingTest1(coroutineContext) {
       setUpTestApplicationWithSeed(questionSeed = 6)
       subscribeToCurrentQuestionToAllowSessionToLoad()
       startTrainingSession(TEST_SKILL_ID_LIST_2)
@@ -359,9 +371,9 @@ class QuestionAssessmentProgressControllerTest {
     }
 
   @Test
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   fun testSubmitAnswer_forMultipleChoice_correctAnswer_returnsOutcomeWithTransition() =
-    runBlockingTest(
+    runBlockingTest1(
       coroutineContext
     ) {
       setUpTestApplicationWithSeed(questionSeed = 6)
@@ -384,8 +396,8 @@ class QuestionAssessmentProgressControllerTest {
     }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testSubmitAnswer_forMultipleChoice_wrongAnswer_succeeds() = runBlockingTest(
+  @ExperimentalCoroutinesApi1
+  fun testSubmitAnswer_forMultipleChoice_wrongAnswer_succeeds() = runBlockingTest1(
     coroutineContext
   ) {
     setUpTestApplicationWithSeed(questionSeed = 6)
@@ -406,9 +418,9 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   fun testSubmitAnswer_forMultChoice_wrongAnswer_providesDefaultFeedbackAndNewQuestionTransition() =
-    runBlockingTest(
+    runBlockingTest1(
       coroutineContext
     ) {
       setUpTestApplicationWithSeed(questionSeed = 6)
@@ -431,9 +443,9 @@ class QuestionAssessmentProgressControllerTest {
     }
 
   @Test
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   fun testGetCurrentQuestion_afterSubmittingCorrectMultiChoiceAnswer_becomesCompletedQuestion() =
-    runBlockingTest(
+    runBlockingTest1(
       coroutineContext
     ) {
       setUpTestApplicationWithSeed(questionSeed = 6)
@@ -464,9 +476,9 @@ class QuestionAssessmentProgressControllerTest {
     }
 
   @Test
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   fun testGetCurrentQuestion_afterSubmittingWrongMultiChoiceAnswer_updatesPendingQuestion() =
-    runBlockingTest(
+    runBlockingTest1(
       coroutineContext
     ) {
       setUpTestApplicationWithSeed(questionSeed = 6)
@@ -497,9 +509,9 @@ class QuestionAssessmentProgressControllerTest {
     }
 
   @Test
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   fun testGetCurrentQuestion_afterSubmittingWrongThenRightAnswer_updatesToQuestionWithBothAnswers() = // ktlint-disable max-line-length
-    runBlockingTest(
+    runBlockingTest1(
       coroutineContext
     ) {
       setUpTestApplicationWithSeed(questionSeed = 6)
@@ -533,8 +545,8 @@ class QuestionAssessmentProgressControllerTest {
     }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testMoveToNext_beforePlaying_failsWithError() = runBlockingTest(coroutineContext) {
+  @ExperimentalCoroutinesApi1
+  fun testMoveToNext_beforePlaying_failsWithError() = runBlockingTest1(coroutineContext) {
     val moveToStateResult =
       questionAssessmentProgressController.moveToNextQuestion()
     moveToStateResult.observeForever(mockAsyncNullableResultLiveDataObserver)
@@ -549,9 +561,9 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   fun testMoveToNext_forPendingInitialQuestion_failsWithError() =
-    runBlockingTest(coroutineContext) {
+    runBlockingTest1(coroutineContext) {
       subscribeToCurrentQuestionToAllowSessionToLoad()
       startTrainingSession(TEST_SKILL_ID_LIST_2)
 
@@ -571,8 +583,8 @@ class QuestionAssessmentProgressControllerTest {
     }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testMoveToNext_forCompletedQuestion_succeeds() = runBlockingTest(coroutineContext) {
+  @ExperimentalCoroutinesApi1
+  fun testMoveToNext_forCompletedQuestion_succeeds() = runBlockingTest1(coroutineContext) {
     setUpTestApplicationWithSeed(questionSeed = 6)
     subscribeToCurrentQuestionToAllowSessionToLoad()
     startTrainingSession(TEST_SKILL_ID_LIST_2)
@@ -590,9 +602,9 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   fun testMoveToNext_forCompletedQuestion_movesToNextQuestion() =
-    runBlockingTest(coroutineContext) {
+    runBlockingTest1(coroutineContext) {
       setUpTestApplicationWithSeed(questionSeed = 6)
       val currentQuestionLiveData =
         questionAssessmentProgressController.getCurrentQuestion()
@@ -607,13 +619,13 @@ class QuestionAssessmentProgressControllerTest {
       )
       assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
       val currentQuestion = currentQuestionResultCaptor.value.getOrThrow()
-      assertThat(currentQuestion.ephemeralState.state.content.html).contains("frac{1}{4}")
+      assertThat(currentQuestion.ephemeralState.state.content.html).contains("1/2 + 1/4")
     }
 
   @Test
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   fun testMoveToNext_afterMovingFromCompletedQuestion_failsWithError() =
-    runBlockingTest(coroutineContext) {
+    runBlockingTest1(coroutineContext) {
       setUpTestApplicationWithSeed(questionSeed = 6)
       subscribeToCurrentQuestionToAllowSessionToLoad()
       startTrainingSession(TEST_SKILL_ID_LIST_2)
@@ -637,9 +649,9 @@ class QuestionAssessmentProgressControllerTest {
     }
 
   @Test
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   fun testSubmitAnswer_forTextInput_correctAnswer_returnsOutcomeWithTransition() =
-    runBlockingTest(coroutineContext) {
+    runBlockingTest1(coroutineContext) {
       setUpTestApplicationWithSeed(questionSeed = 2)
       subscribeToCurrentQuestionToAllowSessionToLoad()
       startTrainingSession(TEST_SKILL_ID_LIST_01)
@@ -660,9 +672,9 @@ class QuestionAssessmentProgressControllerTest {
     }
 
   @Test
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   fun testSubmitAnswer_forTextInput_wrongAnswer_returnsDefaultOutcome() =
-    runBlockingTest(coroutineContext) {
+    runBlockingTest1(coroutineContext) {
       setUpTestApplicationWithSeed(questionSeed = 2)
       subscribeToCurrentQuestionToAllowSessionToLoad()
       startTrainingSession(TEST_SKILL_ID_LIST_01)
@@ -683,9 +695,9 @@ class QuestionAssessmentProgressControllerTest {
     }
 
   @Test
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   fun testGetCurrentQuestion_secondQuestion_submitRightAnswer_pendingQuestionBecomesCompleted() =
-    runBlockingTest(
+    runBlockingTest1(
       coroutineContext
     ) {
       subscribeToCurrentQuestionToAllowSessionToLoad()
@@ -714,9 +726,9 @@ class QuestionAssessmentProgressControllerTest {
     }
 
   @Test
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   fun testGetCurrentQuestion_secondQuestion_submitWrongAnswer_updatePendingQuestion() =
-    runBlockingTest(
+    runBlockingTest1(
       coroutineContext
     ) {
       subscribeToCurrentQuestionToAllowSessionToLoad()
@@ -745,16 +757,16 @@ class QuestionAssessmentProgressControllerTest {
     }
 
   @Test
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   fun testSubmitAnswer_forNumericInput_correctAnswer_returnsOutcomeWithTransition() =
-    runBlockingTest(
+    runBlockingTest1(
       coroutineContext
     ) {
       subscribeToCurrentQuestionToAllowSessionToLoad()
       startTrainingSession(TEST_SKILL_ID_LIST_2)
 
       val result =
-        questionAssessmentProgressController.submitAnswer(createNumericInputAnswer(3.0))
+        questionAssessmentProgressController.submitAnswer(createNumericInputAnswer(3.0)) // ktlint-disable max-line-length
       result.observeForever(mockAsyncAnswerOutcomeObserver)
       advanceUntilIdle()
 
@@ -769,14 +781,14 @@ class QuestionAssessmentProgressControllerTest {
     }
 
   @Test
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   fun testSubmitAnswer_forNumericInput_wrongAnswer_returnsOutcomeWithTransition() =
-    runBlockingTest(coroutineContext) {
+    runBlockingTest1(coroutineContext) {
       subscribeToCurrentQuestionToAllowSessionToLoad()
       startTrainingSession(TEST_SKILL_ID_LIST_2)
 
       val result =
-        questionAssessmentProgressController.submitAnswer(createNumericInputAnswer(2.0))
+        questionAssessmentProgressController.submitAnswer(createNumericInputAnswer(2.0)) // ktlint-disable max-line-length
       result.observeForever(mockAsyncAnswerOutcomeObserver)
       advanceUntilIdle()
 
@@ -791,9 +803,9 @@ class QuestionAssessmentProgressControllerTest {
     }
 
   @Test
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   fun testGetCurrentQuestion_thirdQuestion_isTerminalQuestion() =
-    runBlockingTest(coroutineContext) {
+    runBlockingTest1(coroutineContext) {
       val currentQuestionLiveData =
         questionAssessmentProgressController.getCurrentQuestion()
       currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
@@ -815,8 +827,8 @@ class QuestionAssessmentProgressControllerTest {
     }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testMoveToNext_onFinalQuestion_failsWithError() = runBlockingTest(coroutineContext) {
+  @ExperimentalCoroutinesApi1
+  fun testMoveToNext_onFinalQuestion_failsWithError() = runBlockingTest1(coroutineContext) {
     subscribeToCurrentQuestionToAllowSessionToLoad()
     startTrainingSession(TEST_SKILL_ID_LIST_2)
     submitNumericInputAnswerAndMoveToNextQuestion(3.0)
@@ -839,9 +851,9 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   fun testGetCurrentQuestion_afterPlayingSecondSession_returnsTerminalQuestion() =
-    runBlockingTest(coroutineContext) {
+    runBlockingTest1(coroutineContext) {
       val currentQuestionLiveData =
         questionAssessmentProgressController.getCurrentQuestion()
       currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
@@ -861,9 +873,9 @@ class QuestionAssessmentProgressControllerTest {
     }
 
   @Test
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   fun testGetCurrentQuestion_afterPlayingThroughPreviousSessions_returnsQuestionFromSecondSession() = // ktlint-disable max-line-length
-    runBlockingTest(
+    runBlockingTest1(
       coroutineContext
     ) {
       val currentQuestionLiveData =
@@ -890,9 +902,9 @@ class QuestionAssessmentProgressControllerTest {
     }
 
   @Test
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   fun testMoveToNext_onFinalQuestion_failsWithError_logsException() =
-    runBlockingTest(coroutineContext) {
+    runBlockingTest1(coroutineContext) {
       subscribeToCurrentQuestionToAllowSessionToLoad()
       startTrainingSession(TEST_SKILL_ID_LIST_2)
       submitNumericInputAnswerAndMoveToNextQuestion(3.0)
@@ -911,9 +923,9 @@ class QuestionAssessmentProgressControllerTest {
     }
 
   @Test
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   fun testSubmitAnswer_beforePlaying_failsWithError_logsException() =
-    runBlockingTest(coroutineContext) {
+    runBlockingTest1(coroutineContext) {
       val result =
         questionAssessmentProgressController.submitAnswer(createMultipleChoiceAnswer(0))
       result.observeForever(mockAsyncAnswerOutcomeObserver)
@@ -925,6 +937,164 @@ class QuestionAssessmentProgressControllerTest {
         .hasMessageThat()
         .contains("Cannot submit an answer if a training session has not yet begun.")
     }
+
+  @Test
+  @ExperimentalCoroutinesApi1
+  fun testSubmitAnswer_forTextInput_wrongAnswer_returnsDefaultOutcome_showHint() = runBlockingTest1(
+    coroutineContext
+  ) {
+    subscribeToCurrentQuestionToAllowSessionToLoad()
+    startTrainingSession(TEST_SKILL_ID_LIST_2)
+
+    val result =
+      questionAssessmentProgressController.submitAnswer(createNumericInputAnswer(2.0))
+    result.observeForever(mockAsyncAnswerOutcomeObserver)
+    advanceUntilIdle()
+
+    // Verify that the answer submission failed as expected.
+    verify(
+      mockAsyncAnswerOutcomeObserver,
+      atLeastOnce()
+    ).onChanged(asyncAnswerOutcomeCaptor.capture())
+    val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
+    assertThat(answerOutcome.isCorrectAnswer).isFalse()
+    assertThat(answerOutcome.feedback.html).isEmpty()
+
+    val currentQuestionLiveData =
+      questionAssessmentProgressController.getCurrentQuestion()
+    currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
+    advanceUntilIdle()
+
+    verify(
+      mockCurrentQuestionLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentQuestionResultCaptor.capture())
+    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
+    val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
+
+    assertThat(ephemeralQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
+    assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount).isEqualTo(1)
+
+    val hintAndSolution = ephemeralQuestion.ephemeralState.state.interaction.getHint(0)
+    assertThat(hintAndSolution.hintContent.html).contains("Hint text will appear here")
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi1
+  fun testRevealHint_forWrongAnswer_showHint_returnHintIsRevealed() = runBlockingTest1(
+    coroutineContext
+  ) {
+    val currentQuestionLiveData =
+      questionAssessmentProgressController.getCurrentQuestion()
+    currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
+    playThroughSessionWithSkillList2()
+
+    startTrainingSession(TEST_SKILL_ID_LIST_01)
+    submitTextInputAnswerAndMoveToNextQuestion("1/4") // question 0
+    submitMultipleChoiceAnswerAndMoveToNextQuestion(2) // question 1
+
+    // Verify that we're on the second-to-last state of the second session.
+    verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(
+      currentQuestionResultCaptor.capture()
+    )
+    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
+    val currentQuestion = currentQuestionResultCaptor.value.getOrThrow()
+    assertThat(currentQuestion.currentQuestionIndex).isEqualTo(1)
+    assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
+    // This question is not in the other test session.
+    assertThat(currentQuestion.ephemeralState.state.content.html)
+      .contains("If we talk about wanting")
+
+    verify(
+      mockCurrentQuestionLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentQuestionResultCaptor.capture())
+    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
+    val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
+
+    assertThat(ephemeralQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
+    assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount)
+      .isEqualTo(1)
+
+    val hintAndSolution = ephemeralQuestion.ephemeralState.state.interaction.getHint(0)
+    assertThat(hintAndSolution.hintContent.html).contains("Hint text will appear here")
+
+    val result = questionAssessmentProgressController.submitHintIsRevealed(
+      ephemeralQuestion.ephemeralState.state,
+      /* hintIsRevealed= */ true,
+      /* hintIndex= */ 0
+    )
+    result.observeForever(mockAsyncHintObserver)
+    advanceUntilIdle()
+
+    // Verify that the current state updates. Hint revealed is true.
+    verify(
+      mockCurrentQuestionLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentQuestionResultCaptor.capture())
+    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
+    val updatedState = currentQuestionResultCaptor.value.getOrThrow()
+    assertThat(updatedState.ephemeralState.state.interaction.getHint(0).hintIsRevealed)
+      .isTrue()
+  }
+
+  @Test
+  @ExperimentalCoroutinesApi1
+  fun testRevealSolution_forWrongAnswer_showSolution_returnSolutionIsRevealed() = runBlockingTest1(
+    coroutineContext
+  ) {
+    val currentQuestionLiveData =
+      questionAssessmentProgressController.getCurrentQuestion()
+    currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
+    playThroughSessionWithSkillList2()
+
+    startTrainingSession(TEST_SKILL_ID_LIST_01)
+    submitTextInputAnswerAndMoveToNextQuestion("1/4") // question 0
+    submitMultipleChoiceAnswerAndMoveToNextQuestion(2) // question 1
+
+    // Verify that we're on the second-to-last state of the second session.
+    verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(
+      currentQuestionResultCaptor.capture()
+    )
+    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
+    val currentQuestion = currentQuestionResultCaptor.value.getOrThrow()
+    assertThat(currentQuestion.currentQuestionIndex).isEqualTo(1)
+    assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
+    // This question is not in the other test session.
+    assertThat(currentQuestion.ephemeralState.state.content.html)
+      .contains("If we talk about wanting")
+
+    verify(
+      mockCurrentQuestionLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentQuestionResultCaptor.capture())
+    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
+    val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
+
+    assertThat(ephemeralQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
+    assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount)
+      .isEqualTo(1)
+
+    val hintAndSolution = ephemeralQuestion.ephemeralState.state.interaction.solution
+    assertThat(hintAndSolution.correctAnswer.correctAnswer)
+      .contains("<p>The number of pieces of cake I want.</p>")
+
+    val result = questionAssessmentProgressController.submitSolutionIsRevealed(
+      ephemeralQuestion.ephemeralState.state,
+      true
+    )
+    result.observeForever(mockAsyncSolutionObserver)
+    advanceUntilIdle()
+
+    // Verify that the current state updates. Hint revealed is true.
+    verify(
+      mockCurrentQuestionLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentQuestionResultCaptor.capture())
+    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
+    val updatedState = currentQuestionResultCaptor.value.getOrThrow()
+    assertThat(updatedState.ephemeralState.state.interaction.solution.solutionIsRevealed).isTrue()
+  }
 
   private fun setUpTestApplicationWithSeed(questionSeed: Long) {
     TestQuestionModule.questionSeed = questionSeed
@@ -944,61 +1114,61 @@ class QuestionAssessmentProgressControllerTest {
       .observeForever(mockCurrentQuestionLiveDataObserver)
   }
 
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   private fun startTrainingSession(skillIdList: List<String>) {
     questionTrainingController.startQuestionTrainingSession(skillIdList)
     testDispatcher.advanceUntilIdle()
   }
 
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   private fun submitMultipleChoiceAnswer(choiceIndex: Int) {
     questionAssessmentProgressController.submitAnswer(createMultipleChoiceAnswer(choiceIndex))
     testDispatcher.advanceUntilIdle()
   }
 
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   private fun submitTextInputAnswer(textAnswer: String) {
     questionAssessmentProgressController.submitAnswer(createTextInputAnswer(textAnswer))
     testDispatcher.advanceUntilIdle()
   }
 
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   private fun submitNumericInputAnswer(numericAnswer: Double) {
     questionAssessmentProgressController.submitAnswer(createNumericInputAnswer(numericAnswer))
     testDispatcher.advanceUntilIdle()
   }
 
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   private fun submitMultipleChoiceAnswerAndMoveToNextQuestion(choiceIndex: Int) {
     submitMultipleChoiceAnswer(choiceIndex)
     moveToNextQuestion()
   }
 
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   private fun submitTextInputAnswerAndMoveToNextQuestion(textAnswer: String) {
     submitTextInputAnswer(textAnswer)
     moveToNextQuestion()
   }
 
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   private fun submitNumericInputAnswerAndMoveToNextQuestion(numericAnswer: Double) {
     submitNumericInputAnswer(numericAnswer)
     moveToNextQuestion()
   }
 
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   private fun moveToNextQuestion() {
     questionAssessmentProgressController.moveToNextQuestion()
     testDispatcher.advanceUntilIdle()
   }
 
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   private fun endTrainingSession() {
     questionTrainingController.stopQuestionTrainingSession()
     testDispatcher.advanceUntilIdle()
   }
 
-  @ExperimentalCoroutinesApi
+  @ExperimentalCoroutinesApi1
   private fun playThroughSessionWithSkillList2() {
     startTrainingSession(TEST_SKILL_ID_LIST_2)
     submitNumericInputAnswerAndMoveToNextQuestion(3.0)
@@ -1040,7 +1210,7 @@ class QuestionAssessmentProgressControllerTest {
       return application
     }
 
-    @ExperimentalCoroutinesApi
+    @ExperimentalCoroutinesApi1
     @Singleton
     @Provides
     @TestDispatcher
@@ -1048,7 +1218,7 @@ class QuestionAssessmentProgressControllerTest {
       return TestCoroutineDispatcher()
     }
 
-    @ExperimentalCoroutinesApi
+    @ExperimentalCoroutinesApi1
     @Singleton
     @Provides
     @BackgroundDispatcher
@@ -1058,7 +1228,7 @@ class QuestionAssessmentProgressControllerTest {
       return testDispatcher
     }
 
-    @ExperimentalCoroutinesApi
+    @ExperimentalCoroutinesApi1
     @Singleton
     @Provides
     @BlockingDispatcher
@@ -1107,7 +1277,8 @@ class QuestionAssessmentProgressControllerTest {
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
       TextInputRuleModule::class, InteractionsModule::class,
-      DragDropSortInputModule::class, TestLogReportingModule::class
+      DragDropSortInputModule::class, TestLogReportingModule::class,
+      ImageClickInputModule::class
     ]
   )
   interface TestApplicationComponent {

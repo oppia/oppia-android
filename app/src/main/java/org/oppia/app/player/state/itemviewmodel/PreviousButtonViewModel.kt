@@ -7,5 +7,7 @@ import org.oppia.app.player.state.listener.PreviousNavigationButtonListener
  * backward navigation.
  */
 class PreviousButtonViewModel(
-  val previousNavigationButtonListener: PreviousNavigationButtonListener
+  val hasConversationView: Boolean,
+  val previousNavigationButtonListener: PreviousNavigationButtonListener,
+  val isSplitView: Boolean
 ) : StateItemViewModel(ViewType.PREVIOUS_NAVIGATION_BUTTON)

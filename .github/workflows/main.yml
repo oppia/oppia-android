@@ -39,7 +39,7 @@ jobs:
         chmod a+x buf
         
     - name: Kotlin lint check
-      run: ./ktlint --android domain/src/**/*.kt utility/src/**/*.kt data/src/**/*.kt && echo "Lint completed successfully"
+      run: ./ktlint --android domain/src/**/*.kt utility/src/**/*.kt data/src/**/*.kt app/src/**/*.kt && echo "Lint completed successfully"
     
     -  name: Protobuf lint check
        run: ./buf check lint --input=model/src/main/proto --input-config buf.yaml && echo "Protobuf lint check completed successfully"
@@ -65,15 +65,15 @@ jobs:
 
      - name: Install Dependencies
        if: steps.cache.outputs.cache-hit != 'true'
-       run: ./.circleci/gradle/gradlew androidDependencies
+       run: ./gradlew androidDependencies
      
      - name: Build App
        # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
-       run: sudo ./.circleci/gradle/gradlew assembleDebug
+       run: sudo ./gradlew assembleDebug
     
      - name: Utility tests
        # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
-       run:  sudo ./.circleci/gradle/gradlew :utility:testDebugUnitTest
+       run:  sudo ./gradlew :utility:testDebugUnitTest
      - name: Upload Utility Test Reports
        uses: actions/upload-artifact@v2
        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
@@ -83,7 +83,7 @@ jobs:
      
      - name: Domain tests
        # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
-       run:  sudo ./.circleci/gradle/gradlew :domain:testDebugUnitTest
+       run:  sudo ./gradlew :domain:testDebugUnitTest
      - name: Upload Domain Test Reports
        uses: actions/upload-artifact@v2
        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
@@ -113,11 +113,12 @@ jobs:
       - name: Robolectric tests - FAQ, Help, Mydownloads, Parser, ProfileProgress, RecyclerView, Story, Utility tests
         # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
         run: |
-          sudo ./.circleci/gradle/gradlew :app:testDebugUnitTest --tests org.oppia.app.faq* --tests org.oppia.app.help* --tests org.oppia.app.mydownloads* --tests org.oppia.app.parser* --tests org.oppia.app.profileprogress* --tests org.oppia.app.recyclerview* --tests org.oppia.app.story* --tests org.oppia.app.utility*
+          sudo ./gradlew :app:testDebugUnitTest --tests org.oppia.app.faq* --tests org.oppia.app.help* --tests org.oppia.app.mydownloads* --tests org.oppia.app.parser* --tests org.oppia.app.profileprogress* --tests org.oppia.app.recyclerview* --tests org.oppia.app.story* --tests org.oppia.app.utility*
       - name: Upload App Test Reports
         uses: actions/upload-artifact@v2
         if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
         with:
          name: app reports
          path: app/build/test-results
+      
       

@@ -12,17 +12,14 @@ import org.oppia.app.databinding.TopicLessonsFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.app.model.ChapterSummary
-import org.oppia.app.model.EventLog
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.Topic
 import org.oppia.app.topic.RouteToStoryListener
-import org.oppia.domain.analytics.AnalyticsController
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
-import org.oppia.util.system.OppiaClock
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The presenter for [TopicLessonsFragment]. */
@@ -30,11 +27,9 @@ import javax.inject.Inject
 class TopicLessonsFragmentPresenter @Inject constructor(
   activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val explorationDataController: ExplorationDataController,
-  private val topicController: TopicController,
-  private val analyticsController: AnalyticsController,
-  private val oppiaClock: OppiaClock
+  private val topicController: TopicController
 ) : StorySummarySelector, ChapterSummarySelector {
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToStoryListener = activity as RouteToStoryListener
@@ -73,7 +68,6 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       it.lifecycleOwner = fragment
     }
     subscribeToTopicLiveData()
-    logLessonsFragmentEvent(topicId)
     return binding.root
   }
 
@@ -97,6 +91,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
               currentExpandedChapterListIndex = index + 1
             }
           }
+          itemList.clear()
           itemList.add(TopicLessonsTitleViewModel())
           for (storySummary in it.storyList) {
             itemList.add(StorySummaryViewModel(storySummary, fragment as StorySummarySelector))
@@ -144,8 +139,8 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       internalProfileId,
       topicId,
       storyId,
-      chapterSummary.explorationId, /* backflowScreen= */
-      0
+      chapterSummary.explorationId,
+      /* backflowScreen= */ 0
     )
   }
 
@@ -185,14 +180,5 @@ class TopicLessonsFragmentPresenter @Inject constructor(
 
   fun storySummaryClicked(storySummary: StorySummary) {
     routeToStoryListener.routeToStory(internalProfileId, topicId, storySummary.storyId)
-  }
-
-  private fun logLessonsFragmentEvent(topicId: String){
-    analyticsController.logTransitionEvent(
-      fragment.requireActivity().applicationContext,
-      oppiaClock.getCurrentCalendar().timeInMillis,
-      EventLog.EventAction.OPEN_LESSONS_TAB,
-      analyticsController.createTopicContext(topicId)
-    )
   }
 }

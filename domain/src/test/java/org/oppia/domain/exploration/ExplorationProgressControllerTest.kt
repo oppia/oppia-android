@@ -40,11 +40,14 @@ import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.domain.classify.rules.imageClickInput.ImageClickInputModule
 import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_0
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_1
 import org.oppia.domain.util.toAnswerString
 import org.oppia.testing.FakeExceptionLogger
 import org.oppia.testing.TestLogReportingModule
@@ -56,6 +59,7 @@ import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
+import java.io.FileNotFoundException
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -187,14 +191,14 @@ class ExplorationProgressControllerTest {
       assertThat(currentStateResultCaptor.value.isFailure()).isTrue()
       assertThat(currentStateResultCaptor.value.getErrorOrNull())
         .hasMessageThat()
-        .contains("Invalid exploration ID: invalid_exp_id")
+        .contains("invalid_exp_id.json")
     }
 
   @Test
   @ExperimentalCoroutinesApi
   fun testPlayExploration_valid_returnsSuccess() = runBlockingTest(coroutineContext) {
     val resultLiveData =
-      explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_5)
+      explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_0)
     resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
     advanceUntilIdle()
 
@@ -213,7 +217,7 @@ class ExplorationProgressControllerTest {
       currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
       advanceUntilIdle()
 
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
 
       // The second-to-latest result stays pending since the exploration was loading (the actual result is the fully
       // loaded exploration). This is only true if the observer begins before starting to load the exploration.
@@ -231,7 +235,7 @@ class ExplorationProgressControllerTest {
     coroutineContext
   ) {
     val exploration = getTestExploration5()
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
 
     val currentStateLiveData =
       explorationProgressController.getCurrentState()
@@ -264,7 +268,7 @@ class ExplorationProgressControllerTest {
       endExploration()
 
       // Then a valid one.
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
       val currentStateLiveData =
         explorationProgressController.getCurrentState()
       currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
@@ -304,11 +308,11 @@ class ExplorationProgressControllerTest {
   fun testPlayExploration_withoutFinishingPrevious_failsWithError() =
     runBlockingTest(coroutineContext) {
       subscribeToCurrentStateToAllowExplorationToLoad()
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
 
       // Try playing another exploration without finishing the previous one.
       val resultLiveData =
-        explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_5)
+        explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_0)
       resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
       advanceUntilIdle()
 
@@ -327,11 +331,11 @@ class ExplorationProgressControllerTest {
         explorationProgressController.getCurrentState()
       currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
       // Start with playing a valid exploration, then stop.
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
       endExploration()
 
       // Then another valid one.
-      playExploration(TEST_EXPLORATION_ID_6)
+      playExploration(TEST_EXPLORATION_ID_1)
 
       // The latest result should correspond to the valid ID, and the progress controller should gracefully recover.
       verify(
@@ -372,7 +376,7 @@ class ExplorationProgressControllerTest {
   fun testSubmitAnswer_whileLoading_failsWithError() = runBlockingTest(coroutineContext) {
     // Start playing an exploration, but don't wait for it to complete.
     subscribeToCurrentStateToAllowExplorationToLoad()
-    explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_5)
+    explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_0)
 
     val result =
       explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
@@ -395,7 +399,7 @@ class ExplorationProgressControllerTest {
   fun testSubmitAnswer_forMultipleChoice_correctAnswer_succeeds() =
     runBlockingTest(coroutineContext) {
       subscribeToCurrentStateToAllowExplorationToLoad()
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
 
       val result =
         explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
@@ -417,7 +421,7 @@ class ExplorationProgressControllerTest {
       coroutineContext
     ) {
       subscribeToCurrentStateToAllowExplorationToLoad()
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
 
       val result =
         explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
@@ -440,7 +444,7 @@ class ExplorationProgressControllerTest {
     coroutineContext
   ) {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
 
     val result =
       explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
@@ -462,7 +466,7 @@ class ExplorationProgressControllerTest {
       coroutineContext
     ) {
       subscribeToCurrentStateToAllowExplorationToLoad()
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
 
       val result =
         explorationProgressController.submitAnswer(createMultipleChoiceAnswer(1))
@@ -488,7 +492,7 @@ class ExplorationProgressControllerTest {
       val currentStateLiveData =
         explorationProgressController.getCurrentState()
       currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
 
       submitMultipleChoiceAnswer(0)
 
@@ -518,7 +522,7 @@ class ExplorationProgressControllerTest {
       val currentStateLiveData =
         explorationProgressController.getCurrentState()
       currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
 
       submitMultipleChoiceAnswer(2)
 
@@ -548,7 +552,7 @@ class ExplorationProgressControllerTest {
       coroutineContext
     ) {
       subscribeToCurrentStateToAllowExplorationToLoad()
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
       submitMultipleChoiceAnswer(2)
 
       submitMultipleChoiceAnswer(0)
@@ -592,7 +596,7 @@ class ExplorationProgressControllerTest {
   fun testMoveToNext_whileLoadingExploration_failsWithError() = runBlockingTest(coroutineContext) {
     // Start playing an exploration, but don't wait for it to complete.
     subscribeToCurrentStateToAllowExplorationToLoad()
-    explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_5)
+    explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_0)
 
     val moveToStateResult = explorationProgressController.moveToNextState()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
@@ -608,7 +612,7 @@ class ExplorationProgressControllerTest {
   @ExperimentalCoroutinesApi
   fun testMoveToNext_forPendingInitialState_failsWithError() = runBlockingTest(coroutineContext) {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
 
     val moveToStateResult = explorationProgressController.moveToNextState()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
@@ -626,7 +630,7 @@ class ExplorationProgressControllerTest {
   @ExperimentalCoroutinesApi
   fun testMoveToNext_forCompletedState_succeeds() = runBlockingTest(coroutineContext) {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswer(0)
 
     val moveToStateResult = explorationProgressController.moveToNextState()
@@ -643,7 +647,7 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswer(0)
 
     moveToNextState()
@@ -663,7 +667,7 @@ class ExplorationProgressControllerTest {
   fun testMoveToNext_afterMovingFromCompletedState_failsWithError() =
     runBlockingTest(coroutineContext) {
       subscribeToCurrentStateToAllowExplorationToLoad()
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
       submitMultipleChoiceAnswer(0)
       moveToNextState()
 
@@ -702,7 +706,7 @@ class ExplorationProgressControllerTest {
     runBlockingTest(coroutineContext) {
       // Start playing an exploration, but don't wait for it to complete.
       subscribeToCurrentStateToAllowExplorationToLoad()
-      explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_5)
+      explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_0)
 
       val moveToStateResult =
         explorationProgressController.moveToPreviousState()
@@ -721,7 +725,7 @@ class ExplorationProgressControllerTest {
   fun testMoveToPrevious_onPendingInitialState_failsWithError() =
     runBlockingTest(coroutineContext) {
       subscribeToCurrentStateToAllowExplorationToLoad()
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
 
       val moveToStateResult =
         explorationProgressController.moveToPreviousState()
@@ -741,7 +745,7 @@ class ExplorationProgressControllerTest {
   fun testMoveToPrevious_onCompletedInitialState_failsWithError() =
     runBlockingTest(coroutineContext) {
       subscribeToCurrentStateToAllowExplorationToLoad()
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
       submitMultipleChoiceAnswer(0)
 
       val moveToStateResult =
@@ -762,7 +766,7 @@ class ExplorationProgressControllerTest {
   fun testMoveToPrevious_forStateWithCompletedPreviousState_succeeds() =
     runBlockingTest(coroutineContext) {
       subscribeToCurrentStateToAllowExplorationToLoad()
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
       submitMultipleChoiceAnswerAndMoveToNextState(0)
 
       val moveToStateResult =
@@ -782,7 +786,7 @@ class ExplorationProgressControllerTest {
       val currentStateLiveData =
         explorationProgressController.getCurrentState()
       currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
       submitMultipleChoiceAnswerAndMoveToNextState(0)
 
       moveToPreviousState()
@@ -804,7 +808,7 @@ class ExplorationProgressControllerTest {
   fun testMoveToPrevious_navigatedForwardThenBackToInitial_failsWithError() =
     runBlockingTest(coroutineContext) {
       subscribeToCurrentStateToAllowExplorationToLoad()
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
       submitMultipleChoiceAnswerAndMoveToNextState(0)
       moveToPreviousState()
 
@@ -827,7 +831,7 @@ class ExplorationProgressControllerTest {
   fun testSubmitAnswer_forTextInput_correctAnswer_returnsOutcomeWithTransition() =
     runBlockingTest(coroutineContext) {
       subscribeToCurrentStateToAllowExplorationToLoad()
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
       submitMultipleChoiceAnswerAndMoveToNextState(0)
 
       val result =
@@ -850,7 +854,7 @@ class ExplorationProgressControllerTest {
   fun testSubmitAnswer_forTextInput_wrongAnswer_returnsDefaultOutcome() =
     runBlockingTest(coroutineContext) {
       subscribeToCurrentStateToAllowExplorationToLoad()
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
       submitMultipleChoiceAnswerAndMoveToNextState(0)
 
       val result =
@@ -874,7 +878,7 @@ class ExplorationProgressControllerTest {
     coroutineContext
   ) {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
 
     val result =
@@ -904,7 +908,7 @@ class ExplorationProgressControllerTest {
     coroutineContext
   ) {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
 
     // Verify that the current state updates. It should stay pending, on submission of wrong answer.
@@ -945,7 +949,7 @@ class ExplorationProgressControllerTest {
     coroutineContext
   ) {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
 
     // Verify that the current state updates. It should stay pending, on submission of wrong answer.
@@ -983,7 +987,7 @@ class ExplorationProgressControllerTest {
       coroutineContext
     ) {
       subscribeToCurrentStateToAllowExplorationToLoad()
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
       submitMultipleChoiceAnswerAndMoveToNextState(0)
 
       val result =
@@ -1025,7 +1029,7 @@ class ExplorationProgressControllerTest {
       coroutineContext
     ) {
       subscribeToCurrentStateToAllowExplorationToLoad()
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
       submitMultipleChoiceAnswerAndMoveToNextState(0)
 
       val result =
@@ -1052,7 +1056,7 @@ class ExplorationProgressControllerTest {
   fun testSubmitAnswer_forTextInput_withSpaces_updatesStateWithVerbatimAnswer() =
     runBlockingTest(coroutineContext) {
       subscribeToCurrentStateToAllowExplorationToLoad()
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
       submitMultipleChoiceAnswerAndMoveToNextState(0)
 
       val result =
@@ -1085,7 +1089,7 @@ class ExplorationProgressControllerTest {
     coroutineContext
   ) {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
 
     val result =
@@ -1114,7 +1118,7 @@ class ExplorationProgressControllerTest {
       val currentStateLiveData =
         explorationProgressController.getCurrentState()
       currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
       submitMultipleChoiceAnswerAndMoveToNextState(0)
 
       moveToPreviousState()
@@ -1138,7 +1142,7 @@ class ExplorationProgressControllerTest {
       val currentStateLiveData =
         explorationProgressController.getCurrentState()
       currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
       submitMultipleChoiceAnswerAndMoveToNextState(0)
       submitTextInputAnswer("Finnish") // Submit the answer but do not proceed to the next state.
 
@@ -1163,7 +1167,7 @@ class ExplorationProgressControllerTest {
       coroutineContext
     ) {
       subscribeToCurrentStateToAllowExplorationToLoad()
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
       submitMultipleChoiceAnswerAndMoveToNextState(0) // First state -> second
       submitTextInputAnswerAndMoveToNextState("Finnish") // Second state -> third
 
@@ -1192,7 +1196,7 @@ class ExplorationProgressControllerTest {
       explorationProgressController.getCurrentState()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
 
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
 
     // The initial state should not have a next state.
     verify(
@@ -1212,7 +1216,7 @@ class ExplorationProgressControllerTest {
       val currentStateLiveData =
         explorationProgressController.getCurrentState()
       currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
 
       submitMultipleChoiceAnswer(0)
 
@@ -1233,7 +1237,7 @@ class ExplorationProgressControllerTest {
       val currentStateLiveData =
         explorationProgressController.getCurrentState()
       currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
 
       submitMultipleChoiceAnswerAndMoveToNextState(0)
 
@@ -1253,7 +1257,7 @@ class ExplorationProgressControllerTest {
       val currentStateLiveData =
         explorationProgressController.getCurrentState()
       currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
       submitMultipleChoiceAnswerAndMoveToNextState(0)
 
       moveToPreviousState()
@@ -1276,7 +1280,7 @@ class ExplorationProgressControllerTest {
       val currentStateLiveData =
         explorationProgressController.getCurrentState()
       currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
       submitMultipleChoiceAnswerAndMoveToNextState(0)
 
       moveToPreviousState()
@@ -1298,7 +1302,7 @@ class ExplorationProgressControllerTest {
       coroutineContext
     ) {
       subscribeToCurrentStateToAllowExplorationToLoad()
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
       submitMultipleChoiceAnswerAndMoveToNextState(0)
       submitTextInputAnswerAndMoveToNextState("Finnish")
 
@@ -1323,7 +1327,7 @@ class ExplorationProgressControllerTest {
   fun testSubmitAnswer_forNumericInput_wrongAnswer_returnsOutcomeWithTransition() =
     runBlockingTest(coroutineContext) {
       subscribeToCurrentStateToAllowExplorationToLoad()
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
       submitMultipleChoiceAnswerAndMoveToNextState(0)
       submitTextInputAnswerAndMoveToNextState("Finnish")
 
@@ -1348,7 +1352,7 @@ class ExplorationProgressControllerTest {
   fun testSubmitAnswer_forContinue_returnsOutcomeWithTransition() =
     runBlockingTest(coroutineContext) {
       subscribeToCurrentStateToAllowExplorationToLoad()
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
       submitMultipleChoiceAnswerAndMoveToNextState(0)
       submitTextInputAnswerAndMoveToNextState("Finnish")
       submitNumericInputAnswerAndMoveToNextState(121.0)
@@ -1375,7 +1379,7 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
     submitTextInputAnswerAndMoveToNextState("Finnish")
     submitNumericInputAnswerAndMoveToNextState(121.0)
@@ -1401,7 +1405,7 @@ class ExplorationProgressControllerTest {
       val currentStateLiveData =
         explorationProgressController.getCurrentState()
       currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
       submitMultipleChoiceAnswerAndMoveToNextState(0)
       submitTextInputAnswerAndMoveToNextState("Finnish")
 
@@ -1427,7 +1431,7 @@ class ExplorationProgressControllerTest {
   @ExperimentalCoroutinesApi
   fun testMoveToNext_onFinalState_failsWithError() = runBlockingTest(coroutineContext) {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
     submitTextInputAnswerAndMoveToNextState("Finnish")
     submitNumericInputAnswerAndMoveToNextState(121.0)
@@ -1453,7 +1457,7 @@ class ExplorationProgressControllerTest {
         explorationProgressController.getCurrentState()
       currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
 
-      playExploration(TEST_EXPLORATION_ID_6)
+      playExploration(TEST_EXPLORATION_ID_1)
       submitContinueButtonAnswerAndMoveToNextState()
       submitMultipleChoiceAnswerAndMoveToNextState(3) // Those were all the questions I had!
       submitContinueButtonAnswerAndMoveToNextState()
@@ -1478,7 +1482,7 @@ class ExplorationProgressControllerTest {
         explorationProgressController.getCurrentState()
       currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
 
-      playExploration(TEST_EXPLORATION_ID_6)
+      playExploration(TEST_EXPLORATION_ID_1)
       submitContinueButtonAnswerAndMoveToNextState()
       submitMultipleChoiceAnswerAndMoveToNextState(0) // How do your explorations work?
       submitTextInputAnswerAndMoveToNextState("Oppia Otter") // Can I ask your name?
@@ -1507,7 +1511,7 @@ class ExplorationProgressControllerTest {
       currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
       playThroughExploration5()
 
-      playExploration(TEST_EXPLORATION_ID_6)
+      playExploration(TEST_EXPLORATION_ID_1)
       submitContinueButtonAnswerAndMoveToNextState()
       // Those were all the questions I had!
       submitMultipleChoiceAnswerAndMoveToNextState(3)
@@ -1543,7 +1547,7 @@ class ExplorationProgressControllerTest {
   fun testMoveToPrevious_navigatedForwardThenBackToInitial_failsWithError_logsException() =
     runBlockingTest(coroutineContext) {
       subscribeToCurrentStateToAllowExplorationToLoad()
-      playExploration(TEST_EXPLORATION_ID_5)
+      playExploration(TEST_EXPLORATION_ID_0)
       submitMultipleChoiceAnswerAndMoveToNextState(0)
       moveToPreviousState()
 
@@ -1585,17 +1589,16 @@ class ExplorationProgressControllerTest {
       playExploration("invalid_exp_id")
       val exception = fakeExceptionLogger.getMostRecentException()
 
-      assertThat(exception).isInstanceOf(IllegalStateException::class.java)
-      assertThat(exception).hasMessageThat()
-        .contains("Invalid exploration ID: invalid_exp_id")
+      assertThat(exception).isInstanceOf(FileNotFoundException::class.java)
+      assertThat(exception).hasMessageThat().contains("invalid_exp_id.json")
     }
 
   private suspend fun getTestExploration5(): Exploration {
-    return explorationRetriever.loadExploration(TEST_EXPLORATION_ID_5)
+    return explorationRetriever.loadExploration(TEST_EXPLORATION_ID_0)
   }
 
   private suspend fun getTestExploration6(): Exploration {
-    return explorationRetriever.loadExploration(TEST_EXPLORATION_ID_6)
+    return explorationRetriever.loadExploration(TEST_EXPLORATION_ID_1)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -1688,7 +1691,7 @@ class ExplorationProgressControllerTest {
 
   @ExperimentalCoroutinesApi
   private fun playThroughExploration5() {
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
     submitTextInputAnswerAndMoveToNextState("Finnish")
     submitNumericInputAnswerAndMoveToNextState(121.0)
@@ -1781,7 +1784,7 @@ class ExplorationProgressControllerTest {
       MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
       NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, InteractionsModule::class,
-      TestLogReportingModule::class
+      TestLogReportingModule::class, ImageClickInputModule::class
     ]
   )
   interface TestApplicationComponent {

@@ -12,7 +12,7 @@ import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -27,6 +27,7 @@ const val TEST_EXPLORATION_ID_1 = "test_exp_id_1"
 const val TEST_EXPLORATION_ID_2 = "test_exp_id_2"
 const val TEST_EXPLORATION_ID_3 = "test_exp_id_3"
 const val TEST_EXPLORATION_ID_4 = "test_exp_id_4"
+const val TEST_EXPLORATION_ID_5 = "13"
 const val FRACTIONS_EXPLORATION_ID_0 = "umPkwp0L1M0-"
 const val FRACTIONS_EXPLORATION_ID_1 = "MjZzEVOG47_1"
 const val RATIOS_EXPLORATION_ID_0 = "2mzzFVDLuAj8"
@@ -51,7 +52,7 @@ private const val RECENTLY_PLAYED_CHAPTER_TRANSFORMED_PROVIDER_ID =
 class StoryProgressController @Inject constructor(
   private val cacheStoreFactory: PersistentCacheStore.Factory,
   private val dataProviders: DataProviders,
-  private val logger: Logger
+  private val logger: ConsoleLogger
 ) {
   // TODO(#21): Determine whether chapters can have missing prerequisites in the initial prototype, or if that just
   //  indicates that they can't be started due to previous chapter not yet being completed.

@@ -21,10 +21,11 @@ import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -40,26 +41,40 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
+import org.hamcrest.BaseMatcher
+import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.not
+import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FEEDBACK
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMITTED_ANSWER
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.app.utility.ChildViewCoordinatesProvider
 import org.oppia.app.utility.CustomGeneralLocation
 import org.oppia.app.utility.DragViewAction
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.app.utility.RecyclerViewCoordinatesProvider
-import org.oppia.domain.exploration.TEST_EXPLORATION_ID_30
-import org.oppia.domain.exploration.TEST_EXPLORATION_ID_5
+import org.oppia.app.utility.clickPoint
 import org.oppia.domain.profile.ProfileTestHelper
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_0
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_2
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_4
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_5
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.testing.TestLogReportingModule
+import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -77,6 +92,7 @@ import javax.inject.Singleton
 class StateFragmentTest {
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
+
   @Inject
   lateinit var context: Context
 
@@ -113,7 +129,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_explorationLoads() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       // Due to the exploration activity loading, the play button should no longer be visible.
       onView(withId(R.id.play_test_exploration_button)).check(matches(not(isDisplayed())))
@@ -122,7 +138,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_explorationLoads_changeConfiguration_buttonIsNotVisible() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(isRoot()).perform(orientationLandscape())
       // Due to the exploration activity loading, the play button should no longer be visible.
@@ -132,7 +148,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_explorationHasContinueButton() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(withId(R.id.continue_button)).check(matches(isDisplayed()))
     }
@@ -140,7 +156,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_changeConfiguration_explorationHasContinueButton() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.continue_button)).check(matches(isDisplayed()))
@@ -149,28 +165,32 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_secondState_hasSubmitButton() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(withId(R.id.continue_button)).perform(click())
-      onView(withId(R.id.submit_answer_button)).check(matches(withText(R.string.state_submit_button)))
+      onView(withId(R.id.submit_answer_button)).check(
+        matches(withText(R.string.state_submit_button))
+      )
       onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
     }
   }
 
   @Test
   fun testStateFragment_loadExp_changeConfiguration_secondState_hasSubmitButton() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.continue_button)).perform(click())
       onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
-      onView(withId(R.id.submit_answer_button)).check(matches(withText(R.string.state_submit_button)))
+      onView(withId(R.id.submit_answer_button)).check(
+        matches(withText(R.string.state_submit_button))
+      )
     }
   }
 
   @Test
   fun testStateFragment_loadExp_secondState_submitAnswer_submitChangesToContinueButton() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(withId(R.id.continue_button)).perform(click())
       onView(withId(R.id.fraction_input_interaction_view)).perform(
@@ -180,13 +200,15 @@ class StateFragmentTest {
       onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
       onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
       onView(withId(R.id.submit_answer_button)).perform(click())
-      onView(withId(R.id.continue_navigation_button)).check(matches(withText(R.string.state_continue_button)))
+      onView(withId(R.id.continue_navigation_button)).check(
+        matches(withText(R.string.state_continue_button))
+      )
     }
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfiguration_secondState_submitAnswer_submitChangesToContinueButton() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+  fun testStateFragment_loadExp_changeConfiguration_secondState_submitAnswer_submitChangesToContinueButton() { // ktlint-disable max-line-length
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
@@ -197,13 +219,15 @@ class StateFragmentTest {
       )
       onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
       onView(withId(R.id.submit_answer_button)).perform(click())
-      onView(withId(R.id.continue_navigation_button)).check(matches(withText(R.string.state_continue_button)))
+      onView(withId(R.id.continue_navigation_button)).check(
+        matches(withText(R.string.state_continue_button))
+      )
     }
   }
 
   @Test
   fun testStateFragment_loadExp_secondState_submitInvalidAnswer_disablesSubmitAndShowsError() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(withId(R.id.continue_button)).perform(click())
 
@@ -220,17 +244,19 @@ class StateFragmentTest {
     }
   }
 
-
   @Test
-  fun testStateFragment_loadExp_changeConfiguration_secondState_submitInvalidAnswer_disablesSubmitAndShowsError() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+  fun testStateFragment_loadExp_changeConfiguration_secondState_submitInvalidAnswer_disablesSubmitAndShowsError() { // ktlint-disable max-line-length
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.continue_button)).perform(click())
 
       // Attempt to submit an invalid answer.
       onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
-      onView(withId(R.id.fraction_input_interaction_view)).perform(typeText("1/"), closeSoftKeyboard())
+      onView(withId(R.id.fraction_input_interaction_view)).perform(
+        typeText("1/"),
+        closeSoftKeyboard()
+      )
       onView(withId(R.id.state_recycler_view)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
       onView(withId(R.id.submit_answer_button)).perform(click())
 
@@ -242,7 +268,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_secondState_invalidAnswer_updated_reenabledSubmitButton() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(withId(R.id.continue_button)).perform(click())
       onView(withId(R.id.fraction_input_interaction_view)).perform(
@@ -265,8 +291,8 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfiguration_secondState_invalidAnswer_updated_reenabledSubmitButton() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+  fun testStateFragment_loadExp_changeConfiguration_secondState_invalidAnswer_updated_reenabledSubmitButton() { // ktlint-disable max-line-length
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.continue_button)).perform(click())
@@ -288,10 +314,9 @@ class StateFragmentTest {
     }
   }
 
-
   @Test
   fun testStateFragment_loadExp_firstState_previousAndNextButtonIsNotDisplayed() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
 
       onView(withId(R.id.previous_state_navigation_button)).check(matches(not(isDisplayed())))
@@ -300,8 +325,305 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfiguration_firstState_previousAndNextButtonIsNotDisplayed() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+  fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_worksCorrectly() {
+    launchForExploration(TEST_EXPLORATION_ID_4).use {
+      startPlayingExploration()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_content_group_item
+        )
+      ).perform(click())
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_item_recyclerview
+        )
+      ).check(matches(hasChildCount(2)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_invalidAnswer_correctItemCount() {
+    launchForExploration(TEST_EXPLORATION_ID_4).use {
+      startPlayingExploration()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_content_group_item
+        )
+      ).perform(click())
+      onView(withId(R.id.submit_answer_button)).perform(click())
+      onView(withId(R.id.submitted_answer_recycler_view)).check(matches(hasChildCount(3)))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.submitted_answer_recycler_view,
+          position = 0,
+          targetViewId = R.id.submitted_html_answer_recycler_view
+        )
+      ).check(matches(hasChildCount(2)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_dragItem_worksCorrectly() {
+    launchForExploration(TEST_EXPLORATION_ID_4).use {
+      startPlayingExploration()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_content_group_item
+        )
+      ).perform(click())
+      onView(withId(R.id.drag_drop_interaction_recycler_view)).perform(
+        DragViewAction(
+          RecyclerViewCoordinatesProvider(
+            0,
+            ChildViewCoordinatesProvider(
+              R.id.drag_drop_item_container,
+              GeneralLocation.CENTER
+            )
+          ),
+          RecyclerViewCoordinatesProvider(2, CustomGeneralLocation.UNDER_RIGHT),
+          Press.FINGER
+        )
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 2,
+          targetViewId = R.id.drag_drop_content_text_view
+        )
+      ).check(matches(withText("a camera at the store")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_unlinkFirstItem_worksCorrectly() {
+    launchForExploration(TEST_EXPLORATION_ID_4).use {
+      startPlayingExploration()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_content_group_item
+        )
+      ).perform(click())
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_content_unlink_items
+        )
+      ).perform(click())
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_item_recyclerview
+        )
+      ).check(matches(hasChildCount(1)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadImageRegion_clickRegion6_region6Clicked() {
+    launchForExploration(TEST_EXPLORATION_ID_5).use {
+      startPlayingExploration()
+      waitForExplorationToBeLoaded()
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+      // TODO(#669): Remove explicit delay - https://github.com/oppia/oppia-android/issues/1523
+      waitForTheView(
+        allOf(
+          withId(R.id.image_click_interaction_image_view),
+          WithNonZeroDimensionsMatcher()
+        )
+      )
+      onView(withId(R.id.image_click_interaction_image_view)).perform(
+        clickPoint(0.5f, 0.5f)
+      )
+      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
+      onView(withId(R.id.submit_answer_button)).perform(click())
+      onView(withId(R.id.feedback_text_view)).check(
+        matches(
+          withText(containsString("Saturn"))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadImageRegion_submitButtonDisabled() {
+    launchForExploration(TEST_EXPLORATION_ID_5).use {
+      startPlayingExploration()
+      waitForExplorationToBeLoaded()
+      // TODO(#669): Remove explicit delay - https://github.com/oppia/oppia-android/issues/1523
+      waitForTheView(
+        allOf(
+          withId(R.id.image_click_interaction_image_view),
+          WithNonZeroDimensionsMatcher()
+        )
+      )
+      scrollToSubmit()
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+    }
+  }
+
+  @Test
+  fun loadImageRegion_defaultRegionClick_defaultRegionClicked_submitButtonDisabled() {
+    launchForExploration(TEST_EXPLORATION_ID_5).use {
+      startPlayingExploration()
+      waitForExplorationToBeLoaded()
+      // TODO(#669): Remove explicit delay - https://github.com/oppia/oppia-android/issues/1523
+      waitForTheView(
+        allOf(
+          withId(R.id.image_click_interaction_image_view),
+          WithNonZeroDimensionsMatcher()
+        )
+      )
+      onView(withId(R.id.image_click_interaction_image_view)).perform(
+        clickPoint(0.1f, 0.5f)
+      )
+      scrollToSubmit()
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_submitButtonEnabled() {
+    launchForExploration(TEST_EXPLORATION_ID_5).use {
+      startPlayingExploration()
+      waitForExplorationToBeLoaded()
+      // TODO(#669): Remove explicit delay - https://github.com/oppia/oppia-android/issues/1523
+      waitForTheView(
+        allOf(
+          withId(R.id.image_click_interaction_image_view),
+          WithNonZeroDimensionsMatcher()
+        )
+      )
+      onView(withId(R.id.image_click_interaction_image_view)).perform(
+        clickPoint(0.5f, 0.5f)
+      )
+      scrollToSubmit()
+      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_correctFeedback() {
+    launchForExploration(TEST_EXPLORATION_ID_5).use {
+      startPlayingExploration()
+      waitForExplorationToBeLoaded()
+      // TODO(#669): Remove explicit delay - https://github.com/oppia/oppia-android/issues/1523
+      waitForTheView(
+        allOf(
+          withId(R.id.image_click_interaction_image_view),
+          WithNonZeroDimensionsMatcher()
+        )
+      )
+      onView(withId(R.id.image_click_interaction_image_view)).perform(
+        clickPoint(0.5f, 0.5f)
+      )
+      scrollToSubmit()
+      onView(withId(R.id.submit_answer_button)).perform(click())
+      scrollToFeedback()
+      onView(withId(R.id.feedback_text_view)).check(
+        matches(
+          withText(containsString("Saturn"))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_correctAnswer() {
+    launchForExploration(TEST_EXPLORATION_ID_5).use {
+      startPlayingExploration()
+      waitForExplorationToBeLoaded()
+      // TODO(#669): Remove explicit delay - https://github.com/oppia/oppia-android/issues/1523
+      waitForTheView(
+        allOf(
+          withId(R.id.image_click_interaction_image_view),
+          WithNonZeroDimensionsMatcher()
+        )
+      )
+      onView(withId(R.id.image_click_interaction_image_view)).perform(
+        clickPoint(0.5f, 0.5f)
+      )
+      scrollToSubmit()
+      onView(withId(R.id.submit_answer_button)).perform(click())
+      scrollToAnswer()
+      onView(withId(R.id.submitted_answer_text_view)).check(
+        matches(
+          withText("Clicks on Saturn")
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_continueButtonIsDisplayed() {
+    launchForExploration(TEST_EXPLORATION_ID_5).use {
+      startPlayingExploration()
+      waitForExplorationToBeLoaded()
+      // TODO(#669): Remove explicit delay - https://github.com/oppia/oppia-android/issues/1523
+      waitForTheView(
+        allOf(
+          withId(R.id.image_click_interaction_image_view),
+          WithNonZeroDimensionsMatcher()
+        )
+      )
+      onView(withId(R.id.image_click_interaction_image_view)).perform(
+        clickPoint(0.5f, 0.5f)
+      )
+      scrollToSubmit()
+      onView(withId(R.id.submit_answer_button)).perform(click())
+      scrollToContinue()
+      onView(withId(R.id.continue_navigation_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun loadImageRegion_clickRegion6_clickedRegion5_region5Clicked_correctFeedback() {
+    launchForExploration(TEST_EXPLORATION_ID_5).use {
+      startPlayingExploration()
+      waitForExplorationToBeLoaded()
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+      // TODO(#669): Remove explicit delay - https://github.com/oppia/oppia-android/issues/1523
+      waitForTheView(
+        allOf(
+          withId(R.id.image_click_interaction_image_view),
+          WithNonZeroDimensionsMatcher()
+        )
+      )
+      onView(withId(R.id.image_click_interaction_image_view)).perform(
+        clickPoint(0.5f, 0.5f)
+      )
+      onView(withId(R.id.image_click_interaction_image_view)).perform(
+        clickPoint(0.2f, 0.5f)
+      )
+      scrollToSubmit()
+      onView(withId(R.id.submit_answer_button)).perform(click())
+      scrollToFeedback()
+      onView(withId(R.id.feedback_text_view)).check(
+        matches(
+          withText(containsString("Jupiter"))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_changeConfiguration_firstState_previousAndNextButtonIsNotDisplayed() { // ktlint-disable max-line-length
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.previous_state_navigation_button)).check(matches(not(isDisplayed())))
@@ -311,7 +633,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_submitAnswer_clickContinueButton_previousButtonIsDisplayed() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
 
       onView(withId(R.id.continue_button)).perform(click())
@@ -322,8 +644,8 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfiguration_submitAnswer_clickContinueButton_previousButtonIsDisplayed() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+  fun testStateFragment_loadExp_changeConfiguration_submitAnswer_clickContinueButton_previousButtonIsDisplayed() { // ktlint-disable max-line-length
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.continue_button)).perform(click())
@@ -335,7 +657,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_submitAnswer_clickContinueThenPrevious_onlyNextButtonIsShown() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(withId(R.id.continue_button)).perform(click())
 
@@ -349,8 +671,8 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfiguration_submitAnswer_clickContinueThenPrevious_onlyNextButtonIsShown() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+  fun testStateFragment_loadExp_changeConfiguration_submitAnswer_clickContinueThenPrevious_onlyNextButtonIsShown() { // ktlint-disable max-line-length
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.continue_button)).perform(click())
@@ -365,8 +687,8 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_submitAnswer_clickContinueThenPreviousThenNext_prevAndSubmitShown() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+  fun testStateFragment_loadExp_submitAnswer_clickContinueThenPreviousThenNext_prevAndSubmitShown() { // ktlint-disable max-line-length
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(withId(R.id.continue_button)).perform(click())
 
@@ -382,8 +704,8 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfiguration_submitAnswer_clickContinueThenPreviousThenNext_prevAndSubmitShown() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+  fun testStateFragment_loadExp_changeConfiguration_submitAnswer_clickContinueThenPreviousThenNext_prevAndSubmitShown() { // ktlint-disable max-line-length
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       onView(withId(R.id.continue_button)).perform(click())
 
@@ -400,31 +722,35 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_continueToEndExploration_hasReturnToTopicButton() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
 
       playThroughPrototypeExploration()
 
-      // Seventh state: end exploration.
-      onView(withId(R.id.return_to_topic_button)).check(matches(withText(R.string.state_end_exploration_button)))
+      // Ninth state: end exploration.
+      onView(withId(R.id.return_to_topic_button)).check(
+        matches(withText(R.string.state_end_exploration_button))
+      )
     }
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfiguration_continueToEndExploration_hasReturnToTopicButton() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+  fun testStateFragment_loadExp_changeConfiguration_continueToEndExploration_hasReturnToTopicButton() { // ktlint-disable max-line-length
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
 
       playThroughPrototypeExploration()
 
-      // Seventh state: end exploration.
-      onView(withId(R.id.return_to_topic_button)).check(matches(withText(R.string.state_end_exploration_button)))
+      // Ninth state: end exploration.
+      onView(withId(R.id.return_to_topic_button)).check(
+        matches(withText(R.string.state_end_exploration_button))
+      )
     }
   }
 
   @Test
   fun testStateFragment_loadExp_continueToEndExploration_clickReturnToTopic_destroysActivity() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       playThroughPrototypeExploration()
 
@@ -436,8 +762,8 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfiguration_continueToEndExploration_clickReturnToTopic_destroysActivity() {
-    launchForExploration(TEST_EXPLORATION_ID_30).use {
+  fun testStateFragment_loadExp_changeConfiguration_continueToEndExploration_clickReturnToTopic_destroysActivity() { // ktlint-disable max-line-length
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       playThroughPrototypeExploration()
 
@@ -450,12 +776,13 @@ class StateFragmentTest {
 
   @Test
   fun testContentCard_forDemoExploration_withCustomOppiaTags_displaysParsedHtml() {
-    launchForExploration(TEST_EXPLORATION_ID_5).use {
+    launchForExploration(TEST_EXPLORATION_ID_0).use {
       startPlayingExploration()
 
       val htmlResult =
-        "Hi, welcome to Oppia! is a tool that helps you create interactive learning activities that can be " +
-          "continually improved over time.\n\nIncidentally, do you know where the name 'Oppia' comes from?"
+        "Hi, welcome to Oppia! is a tool that helps you create interactive learning " +
+          "activities that can be continually improved over time.\n\nIncidentally, do you " +
+          "know where the name 'Oppia' comes from?"
       onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(
         matches(
           withText(htmlResult)
@@ -465,13 +792,14 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testContentCard_forDemoExploration_changeConfiguration_withCustomOppiaTags_displaysParsedHtml() {
-    launchForExploration(TEST_EXPLORATION_ID_5).use {
+  fun testContentCard_forDemoExploration_changeConfiguration_withCustomOppiaTags_displaysParsedHtml() { // ktlint-disable max-line-length
+    launchForExploration(TEST_EXPLORATION_ID_0).use {
       startPlayingExploration()
 
       val htmlResult =
-        "Hi, welcome to Oppia! is a tool that helps you create interactive learning activities that can be " +
-          "continually improved over time.\n\nIncidentally, do you know where the name 'Oppia' comes from?"
+        "Hi, welcome to Oppia! is a tool that helps you create interactive learning activities " +
+          "that can be continually improved over time.\n\nIncidentally, do you know where " +
+          "the name 'Oppia' comes from?"
       onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(
         matches(
           withText(htmlResult)
@@ -577,11 +905,56 @@ class StateFragmentTest {
     onView(withId(R.id.submit_answer_button)).perform(click())
     onView(withId(R.id.continue_navigation_button)).perform(click())
 
-    // Seventh state: Drag Drop Sort. Correct answer: Default Ordering.
-    onView(withId(R.id.drag_drop_interaction_recyclerview)).perform(
+    // Seventh state: Drag Drop Sort. Correct answer: Move 1st item to 4th position.
+    onView(withId(R.id.drag_drop_interaction_recycler_view)).perform(
       DragViewAction(
         RecyclerViewCoordinatesProvider(
           0,
+          ChildViewCoordinatesProvider(
+            R.id.drag_drop_item_container,
+            GeneralLocation.CENTER
+          )
+        ),
+        RecyclerViewCoordinatesProvider(3, CustomGeneralLocation.UNDER_RIGHT),
+        Press.FINGER
+      )
+    )
+    onView(withId(R.id.submit_answer_button)).perform(click())
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.submitted_answer_recycler_view,
+        position = 0,
+        targetViewId = R.id.submitted_answer_content_text_view
+      )
+    ).check(matches(withText("3/5")))
+    onView(withId(R.id.continue_navigation_button)).perform(click())
+
+    // Eighth state: Drag Drop Sort with grouping. Correct answer: Merge First Two and after merging move 2nd item to 3rd position .
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+        position = 1,
+        targetViewId = R.id.drag_drop_content_group_item
+      )
+    ).perform(click())
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+        position = 1,
+        targetViewId = R.id.drag_drop_content_unlink_items
+      )
+    ).perform(click())
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+        position = 0,
+        targetViewId = R.id.drag_drop_content_group_item
+      )
+    ).perform(click())
+    onView(withId(R.id.drag_drop_interaction_recycler_view)).perform(
+      DragViewAction(
+        RecyclerViewCoordinatesProvider(
+          1,
           ChildViewCoordinatesProvider(
             R.id.drag_drop_item_container,
             GeneralLocation.CENTER
@@ -592,11 +965,18 @@ class StateFragmentTest {
       )
     )
     onView(withId(R.id.submit_answer_button)).perform(click())
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.submitted_answer_recycler_view,
+        position = 0,
+        targetViewId = R.id.submitted_answer_content_text_view
+      )
+    ).check(matches(withText("0.6")))
     onView(withId(R.id.continue_navigation_button)).perform(click())
   }
 
   private fun waitForTheView(viewMatcher: Matcher<View>): ViewInteraction {
-    return onView(ViewMatchers.isRoot()).perform(waitForMatch(viewMatcher, 30000L))
+    return onView(isRoot()).perform(waitForMatch(viewMatcher, 30000L))
   }
 
   private fun setUpTestApplicationComponent() {
@@ -623,7 +1003,7 @@ class StateFragmentTest {
       }
 
       override fun getConstraints(): Matcher<View> {
-        return ViewMatchers.isRoot()
+        return isRoot()
       }
 
       override fun perform(uiController: UiController?, view: View?) {
@@ -664,9 +1044,10 @@ class StateFragmentTest {
     @Singleton
     @Provides
     @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@BlockingDispatcher blockingDispatcher: CoroutineDispatcher): CoroutineDispatcher {
-      return blockingDispatcher
-    }
+    fun provideBackgroundDispatcher(@BlockingDispatcher blockingDispatcher: CoroutineDispatcher):
+      CoroutineDispatcher {
+        return blockingDispatcher
+      }
 
     @Singleton
     @Provides
@@ -688,6 +1069,10 @@ class StateFragmentTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
+
+    @CacheAssetsLocally
+    @Provides
+    fun provideCacheAssetsLocally(): Boolean = true
   }
 
   @Singleton
@@ -742,6 +1127,64 @@ class StateFragmentTest {
 
     override fun awaitTermination(timeout: Long, unit: TimeUnit?): Boolean {
       throw UnsupportedOperationException()
+    }
+  }
+
+  private fun scrollToViewType(viewType: StateItemViewModel.ViewType): ViewAction {
+    return RecyclerViewActions.scrollToHolder(StateViewHolderTypeMatcher(viewType))
+  }
+
+  private fun scrollToSubmit() {
+    onView(withId(R.id.state_recycler_view)).perform(
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+    )
+  }
+
+  private fun scrollToFeedback() {
+    onView(withId(R.id.state_recycler_view)).perform(
+      scrollToViewType(FEEDBACK)
+    )
+  }
+
+  private fun scrollToAnswer() {
+    onView(withId(R.id.state_recycler_view)).perform(
+      scrollToViewType(SUBMITTED_ANSWER)
+    )
+  }
+
+  private fun scrollToContinue() {
+    onView(withId(R.id.state_recycler_view)).perform(
+      scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
+    )
+  }
+
+  /**
+   * [BaseMatcher] that matches against the first occurrence of the specified view holder type in
+   * StateFragment's RecyclerView.
+   */
+  private class StateViewHolderTypeMatcher(
+    private val viewType: StateItemViewModel.ViewType
+  ) : BaseMatcher<RecyclerView.ViewHolder>() {
+    override fun describeTo(description: Description?) {
+      description?.appendText("item view type of $viewType")
+    }
+
+    override fun matches(item: Any?): Boolean {
+      return (item as? RecyclerView.ViewHolder)?.itemViewType == viewType.ordinal
+    }
+  }
+
+  /*** Returns a matcher that matches view based on non-zero width and height.*/
+  private class WithNonZeroDimensionsMatcher : TypeSafeMatcher<View>() {
+
+    override fun matchesSafely(target: View): Boolean {
+      val targetWidth = target.width
+      val targetHeight = target.height
+      return targetWidth > 0 && targetHeight > 0
+    }
+
+    override fun describeTo(description: Description) {
+      description.appendText("with non-zero width and height")
     }
   }
 }

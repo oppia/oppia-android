@@ -15,7 +15,7 @@ import org.oppia.app.story.storyitemviewmodel.StoryItemViewModel
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The ViewModel for [StoryFragment]. */
@@ -24,7 +24,7 @@ class StoryViewModel @Inject constructor(
   private val fragment: Fragment,
   private val topicController: TopicController,
   private val explorationDataController: ExplorationDataController,
-  private val logger: Logger
+  private val logger: ConsoleLogger
 ) : ViewModel() {
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
