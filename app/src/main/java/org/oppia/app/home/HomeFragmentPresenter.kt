@@ -180,10 +180,20 @@ class HomeFragmentPresenter @Inject constructor(
     getAssumedSuccessfulOngoingStoryList().observe(
       fragment,
       Observer<OngoingStoryList> {
-        it.recentStoryList.take(limit).forEach { promotedStory ->
-          val recentStory = PromotedStoryViewModel(activity, internalProfileId)
-          recentStory.setPromotedStory(promotedStory)
-          promotedStoryList.add(recentStory)
+        promotedStoryList.clear()
+        if (it.recentStoryCount != 0) {
+          it.recentStoryList.take(limit).forEach { promotedStory ->
+            val recentStory = PromotedStoryViewModel(activity, internalProfileId)
+            recentStory.setPromotedStory(promotedStory)
+            promotedStoryList.add(recentStory)
+          }
+        } else {
+          // TODO(#936): Optimise this as part of recommended stories.
+          it.olderStoryList.take(limit).forEach { promotedStory ->
+            val oldStory = PromotedStoryViewModel(activity, internalProfileId)
+            oldStory.setPromotedStory(promotedStory)
+            promotedStoryList.add(oldStory)
+          }
         }
         topicListAdapter.notifyItemChanged(1)
       }
