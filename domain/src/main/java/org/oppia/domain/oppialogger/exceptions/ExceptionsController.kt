@@ -165,8 +165,8 @@ class ExceptionsController @Inject constructor(
    * Returns a [LiveData] result which can be used to get [OppiaExceptionLogs]
    * for the purpose of uploading in the presence of network connectivity.
    */
-  fun getExceptionLogs(): LiveData<AsyncResult<OppiaExceptionLogs>> {
-    return dataProviders.convertToLiveData(exceptionLogStore)
+  suspend fun getExceptionLogs(): OppiaExceptionLogs {
+    return exceptionLogStore.readDataAsync().await()
   }
 }
 

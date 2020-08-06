@@ -10,8 +10,17 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -26,6 +35,7 @@ import org.mockito.junit.MockitoRule
 import org.oppia.app.model.ExceptionLog.ExceptionType
 import org.oppia.app.model.OppiaExceptionLogs
 import org.oppia.domain.oppialogger.ExceptionLogStorageCacheSize
+import org.oppia.domain.topic.TopicControllerTest
 import org.oppia.testing.FakeExceptionLogger
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
@@ -36,10 +46,13 @@ import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.networking.NetworkConnectionUtil
+import org.oppia.util.threading.BackgroundDispatcher
+import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
+import kotlin.coroutines.EmptyCoroutineContext
 
 private const val TEST_TIMESTAMP_IN_MILLIS_ONE = 1556094120000
 private const val TEST_TIMESTAMP_IN_MILLIS_TWO = 1556094110000
@@ -73,10 +86,31 @@ class ExceptionsControllerTest {
   @Captor
   lateinit var oppiaExceptionLogsResultCaptor: ArgumentCaptor<AsyncResult<OppiaExceptionLogs>>
 
+  @Inject
+  @field:TopicControllerTest.TestDispatcher
+  lateinit var testDispatcher: CoroutineDispatcher
+
+  private val coroutineContext by lazy {
+    EmptyCoroutineContext + testDispatcher
+  }
+
+  // https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/
+  @ObsoleteCoroutinesApi
+  private val testThread = newSingleThreadContext("TestMain")
+
   @Before
   fun setUp() {
+    Dispatchers.setMain(testThread)
     networkConnectionUtil = NetworkConnectionUtil(ApplicationProvider.getApplicationContext())
     setUpTestApplicationComponent()
+  }
+
+  @After
+  @ExperimentalCoroutinesApi
+  @ObsoleteCoroutinesApi
+  fun tearDown() {
+    Dispatchers.resetMain()
+    testThread.close()
   }
 
   @Test
@@ -108,23 +142,20 @@ class ExceptionsControllerTest {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
     val exceptionThrown = Exception("TEST MESSAGE", Throwable("TEST CAUSE"))
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
+    runBlockingTest(coroutineContext) {
+      val cachedExceptions = exceptionsController.getExceptionLogs()
+      this.advanceUntilIdle()
 
-    val cachedExceptions = exceptionsController.getExceptionLogs()
-    cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
-    testCoroutineDispatchers.advanceUntilIdle()
-
-    verify(mockOppiaExceptionLogsObserver, atLeastOnce())
-      .onChanged(oppiaExceptionLogsResultCaptor.capture())
-
-    val exceptionLog = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
-    val exception = exceptionLog.toException()
-    assertThat(exception.message).isEqualTo(exceptionThrown.message)
-    assertThat(exception.stackTrace).isEqualTo(exceptionThrown.stackTrace)
-    assertThat(exception.cause?.message).isEqualTo(exceptionThrown.cause?.message)
-    assertThat(exception.cause?.stackTrace).isEqualTo(exceptionThrown.cause?.stackTrace)
-    assertThat(exceptionLog.exceptionType).isEqualTo(ExceptionType.NON_FATAL)
+      val exceptionLog = cachedExceptions.getExceptionLog(0)
+      val exception = exceptionLog.toException()
+      assertThat(exception.message).isEqualTo(exceptionThrown.message)
+      assertThat(exception.stackTrace).isEqualTo(exceptionThrown.stackTrace)
+      assertThat(exception.cause?.message).isEqualTo(exceptionThrown.cause?.message)
+      assertThat(exception.cause?.stackTrace).isEqualTo(exceptionThrown.cause?.stackTrace)
+      assertThat(exceptionLog.exceptionType).isEqualTo(ExceptionType.NON_FATAL)
+    }
   }
-
+/*
   @ExperimentalCoroutinesApi
   @InternalCoroutinesApi
   @Test
@@ -317,7 +348,7 @@ class ExceptionsControllerTest {
     assertThat(exception.message).isEqualTo("TEST")
     assertThat(exception.stackTrace).isEqualTo(exceptionThrown.stackTrace)
     assertThat(exception.cause).isEqualTo(null)
-  }
+  }*/
 
   private fun setUpTestApplicationComponent() {
     DaggerExceptionsControllerTest_TestApplicationComponent.builder()
@@ -337,6 +368,32 @@ class ExceptionsControllerTest {
     fun provideContext(application: Application): Context {
       return application
     }
+
+    @ExperimentalCoroutinesApi
+    @Singleton
+    @Provides
+    @TopicControllerTest.TestDispatcher
+    fun provideTestDispatcher(): CoroutineDispatcher {
+      return TestCoroutineDispatcher()
+    }
+/*
+    @Singleton
+    @Provides
+    @BackgroundDispatcher
+    fun provideBackgroundDispatcher(
+      @TopicControllerTest.TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
+      return testDispatcher
+    }
+
+    @Singleton
+    @Provides
+    @BlockingDispatcher
+    fun provideBlockingDispatcher(
+      @TopicControllerTest.TestDispatcher testDispatcher: CoroutineDispatcher
+    ): CoroutineDispatcher {
+      return testDispatcher
+    }*/
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
