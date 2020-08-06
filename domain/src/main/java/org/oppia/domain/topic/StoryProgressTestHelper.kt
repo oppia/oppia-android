@@ -21,6 +21,159 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /** Creates a partial story progress for a particular profile. */
+  fun markOngoingTopicList(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
+    val placeValuesTopic = "iX9kYCjnouWN"
+    val placeValuesStory = "RRVMHsZ5Mobh"
+    val placeValuesExploration0 = "K645IfRNzpKy"
+    val placeValuesExploration1 = "Knvx24p24qPO"
+    val placeValuesExploration2 = "aAkDKVDR53cG"
+    val placeValuesExploration3 = "avwshGklKLJE"
+
+    val multiplicationTopic = "C4fqwrvqWpRm"
+    val multiplicationStory = "vfJDB3JAdwIx"
+    val multiplicationExploration0 = "R7WpsSfmDQPV"
+    val multiplicationExploration1 = "zIBYaqfDJrJC"
+    val multiplicationExploration2 = "1904tpP0CYwY"
+    val multiplicationExploration3 = "cQDibOXQbpi7"
+    val multiplicationExploration4 = "MRJeVrKafW6G"
+    val multiplicationExploration5 = "hNOP3TwRJhsz"
+    val multiplicationExploration6 = "zTg2hzTz37jP"
+
+    val timestamp = if (!timestampOlderThanAWeek) {
+      getCurrentTimestamp()
+    } else {
+      getOldTimestamp()
+    }
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      placeValuesTopic,
+      placeValuesStory,
+      placeValuesExploration0,
+      timestamp
+    )
+
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      multiplicationTopic,
+      multiplicationStory,
+      multiplicationExploration0,
+      timestamp
+    )
+  }
+
+  fun markCompletedStoryList(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
+    val placeValuesTopic = "iX9kYCjnouWN"
+    val placeValuesStory = "RRVMHsZ5Mobh"
+    val placeValuesExploration0 = "K645IfRNzpKy"
+    val placeValuesExploration1 = "Knvx24p24qPO"
+    val placeValuesExploration2 = "aAkDKVDR53cG"
+    val placeValuesExploration3 = "avwshGklKLJE"
+
+    val multiplicationTopic = "C4fqwrvqWpRm"
+    val multiplicationStory = "vfJDB3JAdwIx"
+    val multiplicationExploration0 = "R7WpsSfmDQPV"
+    val multiplicationExploration1 = "zIBYaqfDJrJC"
+    val multiplicationExploration2 = "1904tpP0CYwY"
+    val multiplicationExploration3 = "cQDibOXQbpi7"
+    val multiplicationExploration4 = "MRJeVrKafW6G"
+    val multiplicationExploration5 = "hNOP3TwRJhsz"
+    val multiplicationExploration6 = "zTg2hzTz37jP"
+
+    val timestamp = if (!timestampOlderThanAWeek) {
+      getCurrentTimestamp()
+    } else {
+      getOldTimestamp()
+    }
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      placeValuesTopic,
+      placeValuesStory,
+      placeValuesExploration0,
+      timestamp
+    )
+
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      placeValuesTopic,
+      placeValuesStory,
+      placeValuesExploration1,
+      timestamp
+    )
+
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      placeValuesTopic,
+      placeValuesStory,
+      placeValuesExploration2,
+      timestamp
+    )
+
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      placeValuesTopic,
+      placeValuesStory,
+      placeValuesExploration3,
+      timestamp
+    )
+
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      multiplicationTopic,
+      multiplicationStory,
+      multiplicationExploration0,
+      timestamp
+    )
+
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      multiplicationTopic,
+      multiplicationStory,
+      multiplicationExploration1,
+      timestamp
+    )
+
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      multiplicationTopic,
+      multiplicationStory,
+      multiplicationExploration2,
+      timestamp
+    )
+
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      multiplicationTopic,
+      multiplicationStory,
+      multiplicationExploration3,
+      timestamp
+    )
+
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      multiplicationTopic,
+      multiplicationStory,
+      multiplicationExploration4,
+      timestamp
+    )
+
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      multiplicationTopic,
+      multiplicationStory,
+      multiplicationExploration5,
+      timestamp
+    )
+
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      multiplicationTopic,
+      multiplicationStory,
+      multiplicationExploration6,
+      timestamp
+    )
+  }
+
+  /** Creates a partial story progress for a particular profile. */
   fun markPartialStoryProgressForFractions(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
     val timestamp = if (!timestampOlderThanAWeek) {
       getCurrentTimestamp()
