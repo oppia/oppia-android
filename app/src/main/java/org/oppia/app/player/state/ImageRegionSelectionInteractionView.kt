@@ -7,8 +7,7 @@ import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.forEachIndexed
 import androidx.databinding.BindingAdapter
-import androidx.fragment.app.FragmentManager
-import org.oppia.app.fragment.InjectableFragment
+import org.oppia.app.ViewBindingShimInterface
 import org.oppia.app.model.ImageWithRegions
 import org.oppia.app.utility.ClickableAreasImage
 import org.oppia.app.utility.OnClickableAreaClickedListener
@@ -60,6 +59,9 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   @Inject
   @field:DefaultGcsPrefix
   lateinit var gcsPrefix: String
+
+  @Inject
+  lateinit var bindingInterface: ViewBindingShimInterface
 
   private lateinit var entityId: String
 
@@ -122,7 +124,7 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    FragmentManager.findFragment<InjectableFragment>(this).createViewComponent(this).inject(this)
+    bindingInterface.provideFragmentManager(this)
     isAccessibilityEnabled = accessibilityManager.isScreenReaderEnabled()
   }
 }

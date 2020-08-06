@@ -6,9 +6,11 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.core.view.forEachIndexed
 import androidx.core.view.isVisible
-import org.oppia.app.R
+import org.oppia.app.ViewBindingShimInterface
+import org.oppia.app.views.R
 import org.oppia.app.model.ImageWithRegions
 import org.oppia.app.player.state.ImageRegionSelectionInteractionView
+import javax.inject.Inject
 import kotlin.math.roundToInt
 
 /**
@@ -27,6 +29,10 @@ class ClickableAreasImage(
       return@setOnTouchListener false
     }
   }
+
+  @Inject
+  lateinit var bindingInterface: ViewBindingShimInterface
+
   /**
    * Called when an image is clicked.
    *
@@ -38,7 +44,7 @@ class ClickableAreasImage(
     // Show default region for non-accessibility cases and this will be only called when user taps on unspecified region.
     if (!imageView.isAccessibilityEnabled()) {
       resetRegionSelectionViews()
-      val defaultRegion = parentView.findViewById<View>(R.id.default_selected_region)
+      val defaultRegion = bindingInterface.getDefaultRegion(parentView)
       defaultRegion.setBackgroundResource(R.drawable.selected_region_background)
       defaultRegion.x = x
       defaultRegion.y = y
@@ -107,7 +113,7 @@ class ClickableAreasImage(
         }
         if (imageView.isAccessibilityEnabled()) {
           // Make default region visibility gone when talkback enabled to avoid any accidental touch.
-          val defaultRegion = parentView.findViewById<View>(R.id.default_selected_region)
+          val defaultRegion = bindingInterface.getDefaultRegion(parentView)
           defaultRegion.isVisible = false
           newView.setOnClickListener {
             showOrHideRegion(newView, clickableArea)

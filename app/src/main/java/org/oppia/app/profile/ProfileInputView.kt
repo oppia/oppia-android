@@ -32,30 +32,10 @@ class ProfileInputView @JvmOverloads constructor(
       profileInputView.label.text = label
     }
 
-    @JvmStatic
-    @BindingAdapter("profile:labelMargin")
-    fun setLayoutMarginStart(profileInputView: ProfileInputView, dimen: Float) {
-      val layoutParams = profileInputView.label.layoutParams as MarginLayoutParams
-      layoutParams.marginStart = dimen.toInt()
-      profileInputView.label.layoutParams = layoutParams
-    }
-
-    @JvmStatic
-    @BindingAdapter("profile:inputLength")
-    fun setInputLength(profileInputView: ProfileInputView, inputLength: Int) {
-      profileInputView.input.filters = arrayOf(InputFilter.LengthFilter(inputLength))
-    }
-
     /** Binding adapter for setting a [TextWatcher] as a change listener for an [EditText]. */
     @BindingAdapter("android:addTextChangedListener")
     fun bindTextWatcher(editText: EditText, textWatcher: TextWatcher) {
       editText.addTextChangedListener(textWatcher)
-    }
-
-    @JvmStatic
-    @BindingAdapter("profile:singleLine")
-    fun setSingleLine(profileInputView: ProfileInputView, type: Boolean) {
-      profileInputView.input.setSingleLine(type)
     }
   }
 
@@ -122,6 +102,20 @@ class ProfileInputView @JvmOverloads constructor(
   fun setErrorText(errorMessage: String) {
     input.background = context.resources.getDrawable(R.drawable.edit_text_red_border)
     errorText.text = errorMessage
+  }
+
+  fun setSingleLine(type: Boolean) {
+    input.setSingleLine(type)
+  }
+
+  fun setInputLength(inputLength: Int) {
+    input.filters = arrayOf(InputFilter.LengthFilter(inputLength))
+  }
+
+  fun setLayoutMarginStart(dimen: Float) {
+    val layoutParams = label.layoutParams as MarginLayoutParams
+    layoutParams.marginStart = dimen.toInt()
+    label.layoutParams = layoutParams
   }
 
   fun setError(errorMessage: String) {
