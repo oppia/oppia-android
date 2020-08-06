@@ -3,9 +3,6 @@ package org.oppia.app.testing
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
-import org.oppia.app.model.AppLanguage
-import org.oppia.app.model.AudioLanguage
-import org.oppia.app.model.StoryTextSize
 import org.oppia.app.profile.ProfileChooserFragment
 import org.oppia.domain.profile.ProfileManagementController
 import javax.inject.Inject

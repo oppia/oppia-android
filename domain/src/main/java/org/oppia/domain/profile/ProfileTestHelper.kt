@@ -1,10 +1,7 @@
 package org.oppia.domain.profile
 
 import androidx.lifecycle.LiveData
-import org.oppia.app.model.AppLanguage
-import org.oppia.app.model.AudioLanguage
 import org.oppia.app.model.ProfileId
-import org.oppia.app.model.StoryTextSize
 import org.oppia.util.data.AsyncResult
 import javax.inject.Inject
 
