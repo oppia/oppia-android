@@ -487,7 +487,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   ): SubmittedAnswerViewModel {
     val submittedAnswerViewModel =
       SubmittedAnswerViewModel(userAnswer, gcsEntityId, hasConversationView, isSplitView.get()!!)
-    submittedAnswerViewModel.isCorrectAnswer.set(isCorrectAnswer.get())
+    submittedAnswerViewModel.isCorrectAnswer.set(isAnswerCorrect)
     submittedAnswerViewModel.isExtraInteractionAnswerCorrect.set(isAnswerCorrect)
     return submittedAnswerViewModel
   }
