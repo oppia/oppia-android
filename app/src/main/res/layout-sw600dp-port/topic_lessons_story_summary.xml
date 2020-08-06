@@ -19,149 +19,156 @@
       type="org.oppia.app.topic.lessons.StorySummaryViewModel" />
   </data>
 
-  <com.google.android.material.card.MaterialCardView
-    android:id="@+id/story_container"
+  <FrameLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="20dp"
-    android:layout_marginTop="12dp"
-    android:layout_marginEnd="20dp"
-    android:layout_marginBottom="12dp"
-    app:cardBackgroundColor="@color/white"
-    app:cardCornerRadius="4dp"
-    app:cardElevation="4dp">
+    android:layout_height="wrap_content">
 
-    <LinearLayout
-      android:layout_width="match_parent"
+    <com.google.android.material.card.MaterialCardView
+      android:id="@+id/story_container"
+      android:layout_width="528dp"
       android:layout_height="wrap_content"
-      android:orientation="vertical">
+      android:layout_marginTop="12dp"
+      android:layout_marginBottom="12dp"
+      android:layout_gravity="center"
+      app:rippleColor="@color/transparent"
+      app:cardBackgroundColor="@color/white"
+      app:cardCornerRadius="4dp"
+      app:cardElevation="4dp">
 
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="24dp"
-        android:orientation="horizontal">
-
-        <LinearLayout
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:gravity="center"
-          android:layout_marginTop="24dp"
-          android:orientation="vertical">
-
-          <FrameLayout
-            android:id="@+id/story_progress_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <org.oppia.app.customview.SegmentedCircularProgressView
-              android:id="@+id/story_progress_view"
-              android:layout_width="48dp"
-              android:layout_height="48dp" />
-
-            <TextView
-              android:id="@+id/story_progress_percentage"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_gravity="center"
-              android:fontFamily="sans-serif-medium"
-              android:text="@{@string/topic_story_progress_percentage(storyPercentage)}"
-              android:textColor="@color/oppiaPrimaryText"
-              android:textSize="14sp"
-              android:visibility="@{storyPercentage != 0 ? View.VISIBLE : View.GONE}" />
-          </FrameLayout>
-
-          <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="4dp"
-            android:fontFamily="sans-serif"
-            android:text="@{storyPercentage != 100? @string/status_in_progress : @string/status_completed}"
-            android:textColor="@color/oppiaPrimaryText"
-            android:textSize="10sp"
-            android:visibility="@{storyPercentage != 0 ? View.VISIBLE : View.GONE}" />
-        </LinearLayout>
+        android:orientation="vertical">
 
         <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:layout_marginStart="12dp"
+          android:layout_marginEnd="12dp"
+          android:layout_marginBottom="24dp"
           android:orientation="horizontal">
 
           <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:orientation="vertical">
-
-            <TextView
-              android:id="@+id/story_name_text_view"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:paddingBottom="4dp"
-              android:paddingTop="24dp"
-              android:fontFamily="sans-serif-medium"
-              android:onClick="@{(v) -> viewModel.clickOnStorySummaryTitle()}"
-              android:text="@{viewModel.storySummary.storyName}"
-              android:textColor="@color/oppiaPrimaryText"
-              android:textSize="18sp" />
-
-            <TextView
-              android:id="@+id/chapter_count"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:fontFamily="sans-serif"
-              android:text="@{@plurals/chapter_count(viewModel.storySummary.chapterCount, viewModel.storySummary.chapterCount)}"
-              android:textColor="@color/oppiaPrimaryText"
-              android:textSize="16sp" />
-          </LinearLayout>
-
-          <FrameLayout
-            android:id="@+id/expand_list_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:minWidth="48dp"
-            android:minHeight="48dp">
+            android:gravity="center"
+            android:layout_marginTop="24dp"
+            android:orientation="vertical">
 
-            <ImageView
-              android:id="@+id/chapter_list_drop_down_icon"
+            <FrameLayout
+              android:id="@+id/story_progress_container"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content">
+
+              <org.oppia.app.customview.SegmentedCircularProgressView
+                android:id="@+id/story_progress_view"
+                android:layout_width="48dp"
+                android:layout_height="48dp" />
+
+              <TextView
+                android:id="@+id/story_progress_percentage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="sans-serif-medium"
+                android:text="@{@string/topic_story_progress_percentage(storyPercentage)}"
+                android:textColor="@color/oppiaPrimaryText"
+                android:textSize="14sp"
+                android:visibility="@{storyPercentage != 0 ? View.VISIBLE : View.GONE}" />
+            </FrameLayout>
+
+            <TextView
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:layout_gravity="center_horizontal|bottom"
-              android:contentDescription="@{@string/show_hide_chapter_list(viewModel.storySummary.storyName)}"
-              android:src="@{isListExpanded? @drawable/ic_arrow_drop_up_black_24dp : @drawable/ic_arrow_drop_down_black_24dp}" />
-          </FrameLayout>
+              android:layout_gravity="center_horizontal"
+              android:layout_marginTop="4dp"
+              android:fontFamily="sans-serif"
+              android:text="@{storyPercentage != 100? @string/status_in_progress : @string/status_completed}"
+              android:textColor="@color/oppiaPrimaryText"
+              android:textSize="10sp"
+              android:visibility="@{storyPercentage != 0 ? View.VISIBLE : View.GONE}" />
+          </LinearLayout>
+
+          <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_marginStart="12dp"
+              android:layout_weight="1"
+              android:gravity="center_vertical"
+              android:orientation="vertical">
+
+              <TextView
+                android:id="@+id/story_name_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="4dp"
+                android:paddingTop="24dp"
+                android:fontFamily="sans-serif-medium"
+                android:onClick="@{(v) -> viewModel.clickOnStorySummaryTitle()}"
+                android:text="@{viewModel.storySummary.storyName}"
+                android:textColor="@color/oppiaPrimaryText"
+                android:textSize="18sp" />
+
+              <TextView
+                android:id="@+id/chapter_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:text="@{@plurals/chapter_count(viewModel.storySummary.chapterCount, viewModel.storySummary.chapterCount)}"
+                android:textColor="@color/oppiaPrimaryText"
+                android:textSize="16sp" />
+            </LinearLayout>
+
+            <FrameLayout
+              android:id="@+id/expand_list_icon"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_gravity="bottom"
+              android:minWidth="48dp"
+              android:minHeight="48dp">
+
+              <ImageView
+                android:id="@+id/chapter_list_drop_down_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom"
+                android:contentDescription="@{@string/show_hide_chapter_list(viewModel.storySummary.storyName)}"
+                android:src="@drawable/ic_arrow_drop_down_black_24dp"
+                app:rotationAnimationAngle="@{180f}"
+                app:isRotationAnimationClockwise="@{isListExpanded}" />
+            </FrameLayout>
+          </LinearLayout>
         </LinearLayout>
-      </LinearLayout>
 
-      <LinearLayout
-        android:id="@+id/chapter_list_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/whiteLight"
-        android:orientation="vertical"
-        android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
-
-        <View
-          android:id="@+id/topic_play_story_dashed_line_view"
-          android:layout_width="match_parent"
-          android:layout_height="2dp"
-          android:layout_gravity="center_horizontal"
-          android:background="@drawable/dashed_divider" />
-
-        <androidx.recyclerview.widget.RecyclerView
-          android:id="@+id/chapter_recycler_view"
+        <LinearLayout
+          android:id="@+id/chapter_list_container"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="8dp"
-          android:layout_marginBottom="8dp"
-          app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+          android:background="@color/whiteLight"
+          android:orientation="vertical"
+          android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
+
+          <View
+            android:id="@+id/topic_play_story_dashed_line_view"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/dashed_divider" />
+
+          <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/chapter_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        </LinearLayout>
       </LinearLayout>
-    </LinearLayout>
-  </com.google.android.material.card.MaterialCardView>
+    </com.google.android.material.card.MaterialCardView>
+  </FrameLayout>
 </layout>

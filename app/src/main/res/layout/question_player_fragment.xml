@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
 
   <data>
 
@@ -57,12 +58,28 @@
         android:divider="@android:color/transparent"
         android:dividerHeight="8dp"
         android:overScrollMode="never"
-        android:padding="16dp"
+        android:paddingTop="24dp"
         app:data="@{viewModel.itemList}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@id/question_progress_bar"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/center_guideline"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/end_session_body_text_view" />
+
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/extra_interaction_recycler_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="8dp"
+        android:overScrollMode="never"
+        android:paddingTop="24dp"
+        android:visibility="@{viewModel.isSplitView ? View.VISIBLE : View.GONE}"
+        app:data="@{viewModel.rightItemList}"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@id/question_progress_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/center_guideline"
         app:layout_constraintTop_toBottomOf="@+id/end_session_body_text_view" />
 
       <ProgressBar
@@ -93,6 +110,14 @@
         android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+      <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/center_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:layout_constraintGuide_percent="0.5f"
+        app:layout_constraintGuide_percent="@{viewModel.centerGuidelinePercentage.floatValue()}" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout
@@ -107,6 +132,16 @@
       android:layout_gravity="bottom|start"
       android:background="@drawable/hints_background"
       android:visibility="@{viewModel.isHintBulbVisible() ? View.VISIBLE : View.GONE}">
+
+      <ImageView
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="3dp"
+        android:layout_marginEnd="4dp"
+        android:visibility="@{viewModel.isHintOpenedAndUnRevealed() ? View.VISIBLE : View.GONE}"
+        android:src="@drawable/radar_moving_circle"
+        app:flashingAnimation="@{viewModel.isHintOpenedAndUnRevealed()}" />
 
       <ImageView
         android:id="@+id/dot_hint"
