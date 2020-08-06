@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.completedstorylist.CompletedStoryListViewModel" />
+      type="org.oppia.app.ongoingtopiclist.OngoingTopicListViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,7 +15,7 @@
     android:background="@color/white">
 
     <com.google.android.material.appbar.AppBarLayout
-      android:id="@+id/completed_story_list_app_bar_layout"
+      android:id="@+id/ongoing_topic_list_app_bar_layout"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
@@ -24,17 +24,17 @@
       app:layout_constraintTop_toTopOf="parent">
 
       <androidx.appcompat.widget.Toolbar
-        android:id="@+id/completed_story_list_toolbar"
+        android:id="@+id/ongoing_topic_list_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
         android:textSize="20sp"
-        app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:navigationContentDescription="@string/go_to_previous_page"
         app:navigationIcon="?attr/homeAsUpIndicator"
-        app:title="@string/stories_completed"
+        app:title="@string/topics_in_progress"
+        app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -44,24 +44,24 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/completed_story_list_app_bar_layout">
+      app:layout_constraintTop_toBottomOf="@id/ongoing_topic_list_app_bar_layout">
 
       <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/completed_story_list"
+        android:id="@+id/ongoing_topic_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        android:paddingStart="64dp"
-        android:paddingEnd="64dp"
-        android:paddingTop="24dp"
-        android:paddingBottom="112dp"
+        android:paddingStart="56dp"
+        android:paddingEnd="56dp"
+        android:paddingTop="28dp"
+        android:paddingBottom="88dp"
         android:scrollbars="none"
-        android:tag="@string/completed_story_list_recyclerview_tag"
-        app:data="@{viewModel.completedStoryListLiveData}" />
+        android:tag="@string/ongoing_recycler_view_tag"
+        app:data="@{viewModel.ongoingTopicListViewModelLiveData}" />
 
       <View
-        android:id="@+id/completed_story_list_shadow_view"
+        android:id="@+id/ongoing_topic_list_shadow_view"
         android:layout_width="match_parent"
         android:layout_height="6dp"
         android:background="@drawable/toolbar_drop_shadow" />
