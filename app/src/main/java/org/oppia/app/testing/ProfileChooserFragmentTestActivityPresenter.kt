@@ -25,10 +25,7 @@ class ProfileChooserFragmentTestActivityPresenter @Inject constructor(
       avatarImagePath = null,
       allowDownloadAccess = true,
       colorRgb = -10710042,
-      isAdmin = true,
-      storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-      appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-      audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+      isAdmin = true
     )
     profileManagementController.addProfile(
       name = "Ben",
@@ -36,10 +33,7 @@ class ProfileChooserFragmentTestActivityPresenter @Inject constructor(
       avatarImagePath = null,
       allowDownloadAccess = false,
       colorRgb = -10710042,
-      isAdmin = false,
-      storyTextSize = StoryTextSize.MEDIUM_TEXT_SIZE,
-      appLanguage = AppLanguage.HINDI_APP_LANGUAGE,
-      audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+      isAdmin = false
     )
     activity.setContentView(R.layout.profile_test_activity)
     if (getProfileChooserFragment() == null) {

@@ -20,10 +20,7 @@ class ProfileTestHelper @Inject constructor(
       avatarImagePath = null,
       allowDownloadAccess = true,
       colorRgb = -10710042,
-      isAdmin = true,
-      storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-      appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-      audioLanguage = AudioLanguage.HINDI_AUDIO_LANGUAGE
+      isAdmin = true
     )
     profileManagementController.addProfile(
       name = "Ben",
@@ -31,10 +28,7 @@ class ProfileTestHelper @Inject constructor(
       avatarImagePath = null,
       allowDownloadAccess = false,
       colorRgb = -10710042,
-      isAdmin = false,
-      storyTextSize = StoryTextSize.MEDIUM_TEXT_SIZE,
-      appLanguage = AppLanguage.HINDI_APP_LANGUAGE,
-      audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+      isAdmin = false
     )
     profileManagementController.addProfile(
       name = "Nikita",
@@ -42,10 +36,7 @@ class ProfileTestHelper @Inject constructor(
       avatarImagePath = null,
       allowDownloadAccess = false,
       colorRgb = -10710042,
-      isAdmin = false,
-      storyTextSize = StoryTextSize.MEDIUM_TEXT_SIZE,
-      appLanguage = AppLanguage.CHINESE_APP_LANGUAGE,
-      audioLanguage = AudioLanguage.CHINESE_AUDIO_LANGUAGE
+      isAdmin = false
     )
     return profileManagementController.loginToProfile(
       ProfileId.newBuilder().setInternalId(0)
@@ -61,10 +52,7 @@ class ProfileTestHelper @Inject constructor(
       avatarImagePath = null,
       allowDownloadAccess = true,
       colorRgb = -10710042,
-      isAdmin = true,
-      storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-      appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-      audioLanguage = AudioLanguage.HINDI_AUDIO_LANGUAGE
+      isAdmin = true
     )
     return profileManagementController.loginToProfile(
       ProfileId.newBuilder().setInternalId(0).build()
@@ -80,10 +68,7 @@ class ProfileTestHelper @Inject constructor(
         avatarImagePath = null,
         allowDownloadAccess = false,
         colorRgb = -10710042,
-        isAdmin = false,
-        storyTextSize = StoryTextSize.LARGE_TEXT_SIZE,
-        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        isAdmin = false
       )
     }
   }
@@ -95,8 +80,4 @@ class ProfileTestHelper @Inject constructor(
   /** Login to user profile. */
   fun loginToUser() =
     profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(1).build())
-
-  /** Login to user profile. */
-  fun loginToUser2() =
-    profileManagementController.loginToProfile(ProfileId.newBuilder().setInternalId(2).build())
 }

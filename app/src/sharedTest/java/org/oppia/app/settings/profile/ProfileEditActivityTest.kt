@@ -301,15 +301,12 @@ class ProfileEditActivityTest {
       avatarImagePath = null,
       allowDownloadAccess = true,
       colorRgb = -10710042,
-      isAdmin = false,
-      storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-      appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-      audioLanguage = AudioLanguage.NO_AUDIO
+      isAdmin = false
     )
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        2
+        3
       )
     ).use {
       onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(isChecked()))
@@ -325,15 +322,12 @@ class ProfileEditActivityTest {
       avatarImagePath = null,
       allowDownloadAccess = true,
       colorRgb = -10710042,
-      isAdmin = false,
-      storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-      appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-      audioLanguage = AudioLanguage.NO_AUDIO
+      isAdmin = false
     )
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        2
+        3
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
