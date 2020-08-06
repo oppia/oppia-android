@@ -72,7 +72,7 @@ class HomeFragmentPresenter @Inject constructor(
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     logHomeActivityEvent()
 
-    storyProgressTestHelper.markOngoingTopicList(profileId, true)
+    storyProgressTestHelper.markCompletedStoryList(profileId, false)
 
     welcomeViewModel = WelcomeViewModel()
     promotedStoryListViewModel = PromotedStoryListViewModel(activity, internalProfileId)
