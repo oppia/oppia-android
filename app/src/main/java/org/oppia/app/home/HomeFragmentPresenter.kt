@@ -146,7 +146,11 @@ class HomeFragmentPresenter @Inject constructor(
       Observer<TopicList> { result ->
         for (topicSummary in result.topicSummaryList) {
           val topicSummaryViewModel =
-            TopicSummaryViewModel(topicSummary, topicEntityType, fragment as TopicSummaryClickListener)
+            TopicSummaryViewModel(
+              topicSummary,
+              topicEntityType,
+              fragment as TopicSummaryClickListener
+            )
           itemList.add(topicSummaryViewModel)
         }
         topicListAdapter.notifyDataSetChanged()

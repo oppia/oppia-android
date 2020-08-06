@@ -83,7 +83,11 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
           itemList.add(recentSectionTitleViewModel)
           for (promotedStory in it.recentStoryList) {
             val ongoingStoryViewModel =
-              OngoingStoryViewModel(promotedStory, entityType, fragment as OngoingStoryClickListener)
+              OngoingStoryViewModel(
+                promotedStory,
+                entityType,
+                fragment as OngoingStoryClickListener
+              )
             itemList.add(ongoingStoryViewModel)
           }
         }
@@ -98,7 +102,11 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
           itemList.add(olderSectionTitleViewModel)
           for (promotedStory in it.olderStoryList) {
             val ongoingStoryViewModel =
-              OngoingStoryViewModel(promotedStory, entityType, fragment as OngoingStoryClickListener)
+              OngoingStoryViewModel(
+                promotedStory,
+                entityType,
+                fragment as OngoingStoryClickListener
+              )
             itemList.add(ongoingStoryViewModel)
           }
         }
