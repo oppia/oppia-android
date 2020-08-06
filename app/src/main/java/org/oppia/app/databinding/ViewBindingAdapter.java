@@ -61,9 +61,9 @@ public class ViewBindingAdapter {
     view.setLayoutParams(layoutParams);
   }
 
-  @BindingAdapter(
+  @BindingAdapter( value = {
       "app:isRotationAnimationClockwise",
-      "app:rotationAnimationAngle",
+      "app:rotationAnimationAngle"},
       requireAll = true
   )
   public static void setRotationAnimation(View view, Boolean isClockwise, Float angle) {

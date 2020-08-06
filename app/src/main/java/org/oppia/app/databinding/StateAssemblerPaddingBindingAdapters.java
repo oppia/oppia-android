@@ -7,81 +7,81 @@ import org.jetbrains.annotations.NotNull;
 
 public class StateAssemblerPaddingBindingAdapters {
   /** Used to set a padding for exploration split-view. */
-  @BindingAdapter(
+  @BindingAdapter( value = {
     "explorationSplitViewPaddingApplicable",
     "explorationSplitViewPaddingStart",
     "explorationSplitViewPaddingTop",
     "explorationSplitViewPaddingEnd",
-    "explorationSplitViewPaddingBottom",
+    "explorationSplitViewPaddingBottom"},
     requireAll = false
   )
   public static void setExplorationSplitViewPadding(
     View view,
     Boolean isApplicable,
-    Float paddingStart,
-    Float paddingTop,
-    Float paddingEnd,
-    Float paddingBottom
+    float paddingStart,
+    float paddingTop,
+    float paddingEnd,
+    float paddingBottom
   ) {
     setPaddingIfApplicable(view, isApplicable, paddingStart, paddingTop, paddingEnd, paddingBottom);
   }
 
   /** Used to set a padding for exploration view. */
-  @BindingAdapter(
+  @BindingAdapter( value = {
     "explorationViewPaddingApplicable",
     "explorationViewPaddingStart",
     "explorationViewPaddingTop",
     "explorationViewPaddingEnd",
-    "explorationViewPaddingBottom",
+    "explorationViewPaddingBottom"},
     requireAll = false
   )
   public static void setExplorationViewPadding(
     View view,
     Boolean isApplicable,
-    Float paddingStart,
-    Float paddingTop,
-    Float paddingEnd,
-    Float paddingBottom
+    float paddingStart,
+    float paddingTop,
+    float paddingEnd,
+    float paddingBottom
   ) {
     setPaddingIfApplicable(view, isApplicable, paddingStart, paddingTop, paddingEnd, paddingBottom);
   }
 
   /** Used to set a padding for question view. */
-  @BindingAdapter(
+  @BindingAdapter( value = {
     "questionViewPaddingApplicable",
     "questionViewPaddingStart",
     "questionViewPaddingTop",
     "questionViewPaddingEnd",
-    "questionViewPaddingBottom",
+    "questionViewPaddingBottom"},
     requireAll = false
   )
   public static void setQuestionViewPadding(
     View view,
     Boolean isApplicable,
-    Float paddingStart,
-    Float paddingTop,
-    Float paddingEnd,
-    Float paddingBottom
+    float paddingStart,
+    float paddingTop,
+    float paddingEnd,
+    float paddingBottom
   ) {
     setPaddingIfApplicable(view, isApplicable, paddingStart, paddingTop, paddingEnd, paddingBottom);
   }
 
   /** Used to set a padding for question split-view. */
-  @BindingAdapter(
+  @BindingAdapter( value = {
     "questionSplitViewPaddingApplicable",
     "questionSplitViewPaddingStart",
     "questionSplitViewPaddingTop",
     "questionSplitViewPaddingEnd",
-    "questionSplitViewPaddingBottom",
+    "questionSplitViewPaddingBottom"},
     requireAll = false
   )
   public static void setQuestionSplitViewPadding(
     View view,
     Boolean isApplicable,
-    Float paddingStart,
-    Float paddingTop,
-    Float paddingEnd,
-    Float paddingBottom
+    float paddingStart,
+    float paddingTop,
+    float paddingEnd,
+    float paddingBottom
   ) {
     setPaddingIfApplicable(view, isApplicable, paddingStart, paddingTop, paddingEnd, paddingBottom);
   }
@@ -89,17 +89,17 @@ public class StateAssemblerPaddingBindingAdapters {
   private static void setPaddingIfApplicable(
       View view,
       @NotNull Boolean isApplicable,
-      Float paddingStart,
-      Float paddingTop,
-      Float paddingEnd,
-      Float paddingBottom
+      float paddingStart,
+      float paddingTop,
+      float paddingEnd,
+      float paddingBottom
   ) {
     if (isApplicable) {
       view.setPadding(
-          paddingStart.intValue(),
-          paddingTop.intValue(),
-          paddingEnd.intValue(),
-          paddingBottom.intValue()
+          (int) paddingStart,
+          (int) paddingTop,
+          (int) paddingEnd,
+          (int) paddingBottom
       );
       view.requestLayout();
     }

@@ -8,41 +8,51 @@ import org.jetbrains.annotations.NotNull;
 
 public final class MarginBindingAdapters {
   /** Used to set a margin-start for views. */
-  @BindingAdapter("layoutMarginStart")
-  public static void setLayoutMarginStart(@NotNull View view, Float marginStart) {
+  @BindingAdapter("app:layoutMarginStart")
+  public static void setLayoutMarginStart(@NotNull View view, float marginStart) {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
-      params.setMargins(marginStart.intValue(), params.topMargin, params.getMarginEnd(), params.bottomMargin);
+      params.setMargins((int) marginStart, params.topMargin, params.getMarginEnd(), params.bottomMargin);
       view.requestLayout();
     }
   }
 
   /** Used to set a margin-end for views. */
-  @BindingAdapter("layoutMarginEnd")
-  public static void setLayoutMarginEnd(@NotNull View view, Float marginEnd) {
+  @BindingAdapter("app:layoutMarginEnd")
+  public static void setLayoutMarginEnd(@NotNull View view, float marginEnd) {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
-      params.setMargins(params.getMarginStart(), params.topMargin, marginEnd.intValue(), params.bottomMargin);
+      params.setMargins(params.getMarginStart(), params.topMargin, (int) marginEnd, params.bottomMargin);
       view.requestLayout();
     }
   }
 
   /** Used to set a margin-top for views. */
-  @BindingAdapter("layoutMarginTop")
-  public static void setLayoutMarginTop(@NotNull View view, Float marginTop) {
+  @BindingAdapter("app:layoutMarginTop")
+  public static void setLayoutMarginTop(@NotNull View view, float marginTop) {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
-      params.setMargins(params.getMarginStart(), marginTop.intValue(), params.getMarginEnd(), params.bottomMargin);
+      params.setMargins(params.getMarginStart(), (int) marginTop, params.getMarginEnd(), params.bottomMargin);
       view.requestLayout();
     }
   }
 
   /** Used to set a margin-bottom for views. */
-  @BindingAdapter("layoutMarginBottom")
-  public static void setLayoutMarginBottom(@NotNull View view, Float marginBottom) {
+  @BindingAdapter("app:layoutMarginBottom")
+  public static void setLayoutMarginBottom(@NotNull View view, float marginBottom) {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
-      params.setMargins(params.getMarginStart(), params.topMargin, params.getMarginEnd(), marginBottom.intValue());
+      params.setMargins(params.getMarginStart(), params.topMargin, params.getMarginEnd(), (int) marginBottom);
+      view.requestLayout();
+    }
+  }
+
+  /** Used to set a margin for views. */
+  @BindingAdapter("app:layoutMargin")
+  public static void setLayoutMargin(@NotNull View view, float margin) {
+    if (view.getLayoutParams() instanceof MarginLayoutParams) {
+      MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
+      params.setMargins((int) margin, (int) margin, (int) margin, (int) margin);
       view.requestLayout();
     }
   }

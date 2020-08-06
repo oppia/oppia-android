@@ -12,7 +12,7 @@ import java.util.Locale;
 
 public final class TextViewBindingAdapters {
   /** Binds date text with relative time. */
-  @BindingAdapter("created")
+  @BindingAdapter("profile:created")
   public static void setProfileDataText(@NotNull TextView textView, Long timestamp) {
     OppiaDateTimeFormatter oppiaDateTimeFormatter = new OppiaDateTimeFormatter();
     String time = oppiaDateTimeFormatter.formatDateFromDateString(
@@ -23,7 +23,7 @@ public final class TextViewBindingAdapters {
     textView.setText(String.format(textView.getContext().getString(R.string.profile_edit_created, time)));
   }
 
-  @BindingAdapter("lastVisited")
+  @BindingAdapter("profile:lastVisited")
   public static void setProfileLastVisitedText(@NotNull TextView textView, Long timestamp) {
     textView.setText(String.format(textView.getContext().getString(R.string.profile_last_used)
         + " " + getTimeAgo(timestamp, textView.getContext())));
