@@ -37,6 +37,7 @@ import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.domain.classify.rules.imageClickInput.ImageClickInputModule
 import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
@@ -48,7 +49,10 @@ import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_1
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_2
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_3
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_0
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_1
 import org.oppia.domain.topic.TEST_EXPLORATION_ID_3
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_4
 import org.oppia.testing.FakeExceptionLogger
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
@@ -59,6 +63,7 @@ import org.oppia.util.logging.LogLevel
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
+import java.io.FileNotFoundException
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -128,7 +133,7 @@ class ExplorationDataControllerTest {
   fun testController_providesInitialLiveDataForTheWelcomeExploration() =
     runBlockingTest(coroutineContext) {
       val explorationLiveData =
-        explorationDataController.getExplorationById(TEST_EXPLORATION_ID_5)
+        explorationDataController.getExplorationById(TEST_EXPLORATION_ID_0)
       advanceUntilIdle()
       explorationLiveData.observeForever(mockExplorationObserver)
       val expectedExplorationStateSet = listOf(
@@ -151,7 +156,7 @@ class ExplorationDataControllerTest {
   fun testController_providesInitialLiveDataForTheAboutOppiaExploration() =
     runBlockingTest(coroutineContext) {
       val explorationLiveData =
-        explorationDataController.getExplorationById(TEST_EXPLORATION_ID_6)
+        explorationDataController.getExplorationById(TEST_EXPLORATION_ID_1)
       advanceUntilIdle()
       explorationLiveData.observeForever(mockExplorationObserver)
       val expectedExplorationStateSet = listOf(
@@ -284,8 +289,10 @@ class ExplorationDataControllerTest {
       explorationDataController.getExplorationById("NON_EXISTENT_TEST")
     advanceUntilIdle()
     explorationLiveData.observeForever(mockExplorationObserver)
-    verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
-    assertThat(explorationResultCaptor.value.isFailure()).isTrue()
+
+    val exception = fakeExceptionLogger.getMostRecentException()
+    assertThat(exception).isInstanceOf(FileNotFoundException::class.java)
+    assertThat(exception).hasMessageThat().contains("NON_EXISTENT_TEST.json")
   }
 
   @Test
@@ -295,10 +302,10 @@ class ExplorationDataControllerTest {
       explorationDataController.getExplorationById("NON_EXISTENT_TEST")
     advanceUntilIdle()
     explorationLiveData.observeForever(mockExplorationObserver)
-    val exception = fakeExceptionLogger.getMostRecentException()
 
-    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
-    assertThat(exception).hasMessageThat().contains("Invalid exploration ID: NON_EXISTENT_TEST")
+    val exception = fakeExceptionLogger.getMostRecentException()
+    assertThat(exception).isInstanceOf(FileNotFoundException::class.java)
+    assertThat(exception).hasMessageThat().contains("NON_EXISTENT_TEST.json")
   }
 
   @Test
@@ -320,7 +327,7 @@ class ExplorationDataControllerTest {
   fun testStartPlayingExploration_withoutStoppingSession_fails() =
     runBlockingTest(coroutineContext) {
       explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_3)
-      explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_7)
+      explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_4)
       advanceUntilIdle()
 
       val exception = fakeExceptionLogger.getMostRecentException()
@@ -392,7 +399,7 @@ class ExplorationDataControllerTest {
       MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
       NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, InteractionsModule::class,
-      TestLogReportingModule::class
+      TestLogReportingModule::class, ImageClickInputModule::class
     ]
   )
   interface TestApplicationComponent {

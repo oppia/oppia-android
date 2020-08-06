@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.completedstorylist.CompletedStoryItemViewModel" />
+  </data>
+
+  <com.google.android.material.card.MaterialCardView
+    android:id="@+id/topic_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="12dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="4dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:clickable="true"
+      android:focusable="true">
+
+      <ImageView
+        android:id="@+id/completed_story_lesson_thumbnail"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/topicThumbnailBackground"
+        android:importantForAccessibility="no"
+        android:contentDescription="@{viewModel.completedStory.storyName}"
+        android:scaleType="centerInside"
+        android:src="@{viewModel.completedStory.lessonThumbnail.thumbnailGraphic}"
+        app:layout_constraintDimensionRatio="4:3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/completed_story_lesson_thumbnail">
+
+        <TextView
+          android:id="@+id/completed_story_name_text_view"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="8dp"
+          android:layout_marginTop="8dp"
+          android:layout_marginEnd="8dp"
+          android:ellipsize="end"
+          android:fontFamily="sans-serif"
+          android:gravity="top"
+          android:maxLines="2"
+          android:minLines="2"
+          android:text="@{viewModel.completedStory.storyName}"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="14sp"
+          android:textStyle="bold"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+          android:id="@+id/completed_story_topic_name_text_view"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="8dp"
+          android:layout_marginTop="4dp"
+          android:layout_marginEnd="8dp"
+          android:fontFamily="sans-serif-light"
+          android:paddingBottom="12dp"
+          android:textAllCaps="true"
+          android:ellipsize="end"
+          android:text="@{viewModel.completedStory.topicName}"
+          android:textColor="@color/oppiaStrokeBlack"
+          android:textSize="14sp"
+          android:maxLines="1"
+          android:minLines="1"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/completed_story_name_text_view" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+  </com.google.android.material.card.MaterialCardView>
+</layout>

@@ -10,6 +10,11 @@ import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
  * there's a previous button enabled (only relevant for navigation-based interactions).
  */
 typealias InteractionViewModelFactory = (
-  entityId: String, interaction: Interaction, interactionAnswerReceiver: InteractionAnswerReceiver,
-  interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, hasPreviousButton: Boolean
+  entityId: String,
+  hasConversationView: Boolean,
+  interaction: Interaction,
+  interactionAnswerReceiver: InteractionAnswerReceiver,
+  interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
+  hasPreviousButton: Boolean,
+  isSplitView: Boolean
 ) -> StateItemViewModel

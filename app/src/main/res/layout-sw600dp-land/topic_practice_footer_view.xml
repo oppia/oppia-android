@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <variable
+      name="isSubmitButtonActive"
+      type="Boolean" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeFooterViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <Button
+      android:id="@+id/topic_practice_start_button"
+      style="@style/StateButtonInactive"
+      android:layout_width="160dp"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="24dp"
+      android:background="@{isSubmitButtonActive ? @drawable/state_button_primary_background :@drawable/state_button_inactive_background}"
+      android:clickable="@{isSubmitButtonActive}"
+      android:fontFamily="sans-serif-medium"
+      android:minHeight="36dp"
+      android:text="@string/topic_practice_start"
+      android:textColor="@{isSubmitButtonActive ? @color/white : @color/submitButtonTextInactive}"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

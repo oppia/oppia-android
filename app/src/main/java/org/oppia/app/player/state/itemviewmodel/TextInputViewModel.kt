@@ -14,7 +14,9 @@ import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 /** [StateItemViewModel] for the text input interaction. */
 class TextInputViewModel(
   interaction: Interaction,
-  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver
+  val hasConversationView: Boolean,
+  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
+  val isSplitView: Boolean
 ) : StateItemViewModel(ViewType.TEXT_INPUT_INTERACTION), InteractionAnswerHandler {
   var answerText: CharSequence = ""
   val hintText: CharSequence = deriveHintText(interaction)
@@ -22,11 +24,15 @@ class TextInputViewModel(
   var isAnswerAvailable = ObservableField<Boolean>(false)
 
   init {
-    val callback: Observable.OnPropertyChangedCallback = object : Observable.OnPropertyChangedCallback() {
-      override fun onPropertyChanged(sender: Observable, propertyId: Int) {
-        interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck( /* pendingAnswerError= */ null, answerText.isNotEmpty())
+    val callback: Observable.OnPropertyChangedCallback =
+      object : Observable.OnPropertyChangedCallback() {
+        override fun onPropertyChanged(sender: Observable, propertyId: Int) {
+          interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
+            /* pendingAnswerError= */ null,
+            answerText.isNotEmpty()
+          )
+        }
       }
-    }
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
   }
 
@@ -39,7 +45,7 @@ class TextInputViewModel(
       override fun onTextChanged(answer: CharSequence, start: Int, before: Int, count: Int) {
         answerText = answer.toString().trim()
         val isAnswerTextAvailable = answerText.isNotEmpty()
-        if(isAnswerTextAvailable != isAnswerAvailable.get()){
+        if (isAnswerTextAvailable != isAnswerAvailable.get()) {
           isAnswerAvailable.set(isAnswerTextAvailable)
         }
       }
@@ -53,7 +59,8 @@ class TextInputViewModel(
     val userAnswerBuilder = UserAnswer.newBuilder()
     if (answerText.isNotEmpty()) {
       val answerTextString = answerText.toString()
-      userAnswerBuilder.answer = InteractionObject.newBuilder().setNormalizedString(answerTextString).build()
+      userAnswerBuilder.answer =
+        InteractionObject.newBuilder().setNormalizedString(answerTextString).build()
       userAnswerBuilder.plainAnswer = answerTextString
     }
     return userAnswerBuilder.build()

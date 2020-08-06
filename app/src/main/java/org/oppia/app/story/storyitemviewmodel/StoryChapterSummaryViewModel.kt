@@ -8,7 +8,7 @@ import org.oppia.app.story.ExplorationSelectionListener
 import org.oppia.app.story.StoryFragment
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 
 private const val STORY_VIEWER_TAG = "StoryViewer"
 
@@ -18,7 +18,7 @@ class StoryChapterSummaryViewModel(
   private val fragment: Fragment,
   private val explorationSelectionListener: ExplorationSelectionListener,
   private val explorationDataController: ExplorationDataController,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   val internalProfileId: Int,
   val topicId: String,
   val storyId: String,

@@ -10,17 +10,14 @@ import androidx.lifecycle.Transformations
 import org.oppia.app.R
 import org.oppia.app.databinding.TopicInfoFragmentBinding
 import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.EventLog
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Topic
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.analytics.AnalyticsController
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.DefaultResourceBucketName
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.HtmlParser
-import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
 /** The presenter for [TopicInfoFragment]. */
@@ -28,11 +25,9 @@ import javax.inject.Inject
 class TopicInfoFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<TopicInfoViewModel>,
-  private val logger: Logger,
+  private val logger: ConsoleLogger,
   private val topicController: TopicController,
   private val htmlParserFactory: HtmlParser.Factory,
-  private val analyticsController: AnalyticsController,
-  private val oppiaClock: OppiaClock,
   @DefaultResourceBucketName private val resourceBucketName: String
 ) {
   private lateinit var binding: TopicInfoFragmentBinding
@@ -63,7 +58,6 @@ class TopicInfoFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
     subscribeToTopicLiveData()
-    logInfoFragmentEvent(topicId)
     binding.let {
       it.lifecycleOwner = fragment
       it.viewModel = topicInfoViewModel
@@ -82,12 +76,7 @@ class TopicInfoFragmentPresenter @Inject constructor(
       fragment,
       Observer<Topic> { topic ->
         topicInfoViewModel.topic.set(topic)
-        topicInfoViewModel.topicDescription.set(
-          htmlParser.parseOppiaHtml(
-            topic.description,
-            fragment.requireView().findViewById(R.id.topic_description_text_view)
-          )
-        )
+        topicInfoViewModel.topicDescription.set(topic.description)
         topicInfoViewModel.calculateTopicSizeWithUnit()
         controlSeeMoreTextVisibility()
       }
@@ -123,14 +112,5 @@ class TopicInfoFragmentPresenter @Inject constructor(
         getTopicInfoViewModel().isSeeMoreVisible.set(false)
       }
     }
-  }
-
-  private fun logInfoFragmentEvent(topicId: String){
-    analyticsController.logTransitionEvent(
-      fragment.requireActivity().applicationContext,
-      oppiaClock.getCurrentCalendar().timeInMillis,
-      EventLog.EventAction.OPEN_INFO_TAB,
-      analyticsController.createTopicContext(topicId)
-    )
   }
 }

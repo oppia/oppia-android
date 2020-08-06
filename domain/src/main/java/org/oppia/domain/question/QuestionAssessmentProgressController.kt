@@ -4,7 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.oppia.app.model.AnsweredQuestionOutcome
 import org.oppia.app.model.EphemeralQuestion
+import org.oppia.app.model.Hint
 import org.oppia.app.model.Question
+import org.oppia.app.model.Solution
 import org.oppia.app.model.State
 import org.oppia.app.model.UserAnswer
 import org.oppia.domain.classify.AnswerClassificationController
@@ -156,6 +158,79 @@ class QuestionAssessmentProgressController @Inject constructor(
     }
   }
 
+  fun submitHintIsRevealed(state: State, hintIsRevealed: Boolean, hintIndex: Int): LiveData<AsyncResult<Hint>> { // ktlint-disable max-line-length
+    try {
+      progressLock.withLock {
+        check(progress.trainStage != TrainStage.NOT_IN_TRAINING_SESSION) {
+          "Cannot submit an answer if a training session has not yet begun."
+        }
+        check(progress.trainStage != TrainStage.LOADING_TRAINING_SESSION) {
+          "Cannot submit an answer while the training session is being loaded."
+        }
+        check(progress.trainStage != TrainStage.SUBMITTING_ANSWER) {
+          "Cannot submit an answer while another answer is pending."
+        }
+        lateinit var hint: Hint
+        try {
+          progress.stateDeck.submitHintRevealed(state, hintIsRevealed, hintIndex)
+          hint = progress.stateList.computeHintForResult(
+            state,
+            hintIsRevealed,
+            hintIndex
+          )
+          progress.stateDeck.pushStateForHint(state, hintIndex)
+        } finally {
+          // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always
+          // showing hint' situation. This can specifically happen if hint throws an exception.
+          progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
+        }
+        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_DATA_PROVIDER_ID)
+        return MutableLiveData(AsyncResult.success(hint))
+      }
+    } catch (e: Exception) {
+      exceptionLogger.logException(e)
+      return MutableLiveData(AsyncResult.failed(e))
+    }
+  }
+
+  /* ktlint-disable max-line-length */
+  fun submitSolutionIsRevealed(state: State, solutionIsRevealed: Boolean): LiveData<AsyncResult<Solution>> {
+    try {
+      progressLock.withLock {
+        check(progress.trainStage != TrainStage.NOT_IN_TRAINING_SESSION) {
+          "Cannot submit an answer if a training session has not yet begun."
+        }
+        check(progress.trainStage != TrainStage.LOADING_TRAINING_SESSION) {
+          "Cannot submit an answer while the training session is being loaded."
+        }
+        check(progress.trainStage != TrainStage.SUBMITTING_ANSWER) {
+          "Cannot submit an answer while another answer is pending."
+        }
+        lateinit var solution: Solution
+        try {
+
+          progress.stateDeck.submitSolutionRevealed(state, solutionIsRevealed)
+          solution = progress.stateList.computeSolutionForResult(
+            state,
+            solutionIsRevealed
+          )
+          progress.stateDeck.pushStateForSolution(state)
+        } finally {
+          // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always
+          // showing solution' situation. This can specifically happen if solution throws an exception.
+          progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
+        }
+
+        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_DATA_PROVIDER_ID)
+        return MutableLiveData(AsyncResult.success(solution))
+      }
+    } catch (e: Exception) {
+      exceptionLogger.logException(e)
+      return MutableLiveData(AsyncResult.failed(e))
+    }
+  }
+  /* ktlint-enable max-line-length */
+
   /**
    * Navigates to the next question in the assessment. This method is only valid if the current [EphemeralQuestion]
    * reported by [getCurrentQuestion] is a completed question. Calling code is responsible for ensuring this method is
@@ -235,7 +310,8 @@ class QuestionAssessmentProgressController @Inject constructor(
         when (progress.trainStage) {
           TrainStage.NOT_IN_TRAINING_SESSION -> AsyncResult.pending()
           TrainStage.LOADING_TRAINING_SESSION -> {
-            // If the assessment hasn't yet been initialized, initialize it now that a list of questions is available.
+            // If the assessment hasn't yet been initialized, initialize it
+            // now that a list of questions is available.
             initializeAssessment(questionsList)
             progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
             AsyncResult.success(retrieveEphemeralQuestionState(questionsList))

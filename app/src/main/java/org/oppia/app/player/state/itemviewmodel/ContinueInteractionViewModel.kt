@@ -17,8 +17,11 @@ private const val DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER = "Please continue."
  * represents an actual interaction.
  */
 class ContinueInteractionViewModel(
-  private val interactionAnswerReceiver: InteractionAnswerReceiver, val hasPreviousButton: Boolean,
-  val previousNavigationButtonListener: PreviousNavigationButtonListener
+  private val interactionAnswerReceiver: InteractionAnswerReceiver,
+  val hasConversationView: Boolean,
+  val hasPreviousButton: Boolean,
+  val previousNavigationButtonListener: PreviousNavigationButtonListener,
+  val isSplitView: Boolean
 ) : StateItemViewModel(ViewType.CONTINUE_INTERACTION), InteractionAnswerHandler {
 
   override fun isExplicitAnswerSubmissionRequired(): Boolean = false
@@ -27,7 +30,9 @@ class ContinueInteractionViewModel(
 
   override fun getPendingAnswer(): UserAnswer {
     return UserAnswer.newBuilder()
-      .setAnswer(InteractionObject.newBuilder().setNormalizedString(DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER))
+      .setAnswer(
+        InteractionObject.newBuilder().setNormalizedString(DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER)
+      )
       .setPlainAnswer(DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER)
       .build()
   }

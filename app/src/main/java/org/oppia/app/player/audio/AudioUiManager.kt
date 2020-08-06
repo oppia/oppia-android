@@ -12,7 +12,7 @@ interface AudioUiManager {
   fun enableAudioPlayback(contentId: String?)
 
   /** Disables audio playback, stopping any currently playing tracks. */
-  fun disableAudioPlayback();
+  fun disableAudioPlayback()
 
   /**
    * Used to set the state and explorationId for the audio player

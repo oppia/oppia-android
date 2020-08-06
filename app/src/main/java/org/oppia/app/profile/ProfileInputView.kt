@@ -57,6 +57,12 @@ class ProfileInputView @JvmOverloads constructor(
     fun bindTextWatcher(editText: EditText, textWatcher: TextWatcher) {
       editText.addTextChangedListener(textWatcher)
     }
+
+    @JvmStatic
+    @BindingAdapter("profile:singleLine")
+    fun setSingleLine(profileInputView: ProfileInputView, type: Boolean) {
+      profileInputView.input.setSingleLine(type)
+    }
   }
 
   private var label: TextView
