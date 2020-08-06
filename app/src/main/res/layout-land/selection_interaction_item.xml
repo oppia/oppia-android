@@ -11,13 +11,14 @@
   </data>
 
   <LinearLayout
+    android:id="@+id/interaction_container_linear_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="28dp"
     android:layout_marginTop="@dimen/divider_margin_top"
     android:layout_marginEnd="28dp"
     android:layout_marginBottom="@dimen/divider_margin_bottom"
-    android:background="@drawable/rounded_rect_white_background"
+    android:background="@drawable/rounded_rect_grey_border_white_background"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
@@ -26,11 +27,12 @@
     tools:layout_editor_absoluteX="8dp">
 
     <org.oppia.app.player.state.SelectionInteractionView
+      android:id="@+id/selection_interaction_recyclerview"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginStart="12dp"
+      android:layout_marginStart="20dp"
       android:layout_marginTop="@dimen/divider_margin_top"
-      android:layout_marginEnd="12dp"
+      android:layout_marginEnd="20dp"
       android:layout_marginBottom="@dimen/divider_margin_bottom"
       android:divider="@android:color/transparent"
       app:allOptionsItemInputType="@{viewModel.getSelectionItemInputType()}"

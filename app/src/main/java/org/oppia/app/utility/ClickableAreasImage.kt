@@ -1,6 +1,5 @@
 package org.oppia.app.utility
 
-import android.graphics.Rect
 import android.graphics.RectF
 import android.view.MotionEvent
 import android.view.View
@@ -20,7 +19,6 @@ class ClickableAreasImage(
   private val parentView: FrameLayout,
   private val listener: OnClickableAreaClickedListener
 ) {
-  private var rect = Rect()
   init {
     imageView.setOnTouchListener { view, motionEvent ->
       if (motionEvent.action == MotionEvent.ACTION_DOWN) {
@@ -44,7 +42,7 @@ class ClickableAreasImage(
       defaultRegion.setBackgroundResource(R.drawable.selected_region_background)
       defaultRegion.x = x
       defaultRegion.y = y
-      listener.onClickableAreaTouched(DefaultRegionClickedEvent)
+      listener.onClickableAreaTouched(DefaultRegionClickedEvent())
     }
   }
 
@@ -78,7 +76,6 @@ class ClickableAreasImage(
 
   /** Add selectable regions to [FrameLayout].*/
   fun addRegionViews() {
-    rect = Rect(0, 0, getImageViewContentWidth(), getImageViewContentHeight())
     parentView.let {
       if (it.childCount > 2) {
         it.removeViews(2, it.childCount - 1) // remove all other views
@@ -102,7 +99,6 @@ class ClickableAreasImage(
         newView.isFocusable = true
         newView.isFocusableInTouchMode = true
         newView.tag = clickableArea.label
-        newView.contentDescription = clickableArea.regionDescription
         newView.setOnTouchListener { _, event ->
           if (event.action == MotionEvent.ACTION_DOWN) {
             showOrHideRegion(newView, clickableArea)

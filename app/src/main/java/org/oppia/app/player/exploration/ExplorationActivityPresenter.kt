@@ -17,7 +17,6 @@ import org.oppia.app.help.HelpActivity
 import org.oppia.app.model.Exploration
 import org.oppia.app.model.StoryTextSize
 import org.oppia.app.options.OptionsActivity
-import org.oppia.app.story.StoryActivity
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.utility.FontScaleConfigurationUtil
 import org.oppia.app.viewmodel.ViewModelProvider
@@ -134,7 +133,7 @@ class ExplorationActivityPresenter @Inject constructor(
         val intent = OptionsActivity.createOptionsActivity(
           activity,
           internalProfileId,
-          /* isFromExploration= */ true
+          /* isFromNavigationDrawer= */ false
         )
         context.startActivity(intent)
         true
@@ -142,7 +141,7 @@ class ExplorationActivityPresenter @Inject constructor(
       R.id.action_help -> {
         val intent = HelpActivity.createHelpActivityIntent(
           activity, internalProfileId,
-          /* isFromExploration= */true
+          /* isFromNavigationDrawer= */false
         )
         context.startActivity(intent)
         true
@@ -171,8 +170,8 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   private fun getExplorationFragment(): ExplorationFragment? {
-    return activity.supportFragmentManager.findFragmentById(
-      R.id.exploration_fragment_placeholder
+    return activity.supportFragmentManager.findFragmentByTag(
+      TAG_EXPLORATION_FRAGMENT
     ) as? ExplorationFragment
   }
 
@@ -255,17 +254,8 @@ class ExplorationActivityPresenter @Inject constructor(
 
   private fun backPressActivitySelector(backflowScreen: Int?) {
     when (backflowScreen) {
-      ParentActivityForExploration.BACKFLOW_SCREEN_STORY.value -> activity.startActivity(
-        StoryActivity.createStoryActivityIntent(context, internalProfileId, topicId, storyId)
-      )
-      ParentActivityForExploration.BACKFLOW_SCREEN_LESSONS.value -> activity.startActivity(
-        TopicActivity.createTopicPlayStoryActivityIntent(
-          activity,
-          internalProfileId,
-          topicId,
-          storyId
-        )
-      )
+      ParentActivityForExploration.BACKFLOW_SCREEN_STORY.value -> activity.finish()
+      ParentActivityForExploration.BACKFLOW_SCREEN_LESSONS.value -> activity.finish()
       else -> activity.startActivity(
         TopicActivity.createTopicActivityIntent(
           context,

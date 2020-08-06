@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
-import org.oppia.app.home.HomeActivity
 import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.story.StoryActivity
@@ -62,10 +61,11 @@ class TopicActivity :
     )
   }
 
-  override fun routeToRevisionCard(topicId: String, subtopicId: Int) {
+  override fun routeToRevisionCard(internalProfileId: Int, topicId: String, subtopicId: Int) {
     startActivity(
       RevisionCardActivity.createRevisionCardActivityIntent(
         this,
+        internalProfileId,
         topicId,
         subtopicId
       )
@@ -92,12 +92,7 @@ class TopicActivity :
   }
 
   override fun onBackPressed() {
-    startActivity(
-      HomeActivity.createHomeActivity(
-        this,
-        internalProfileId
-      )
-    )
+    finish()
   }
 
   companion object {

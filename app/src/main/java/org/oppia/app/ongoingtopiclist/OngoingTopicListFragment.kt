@@ -12,6 +12,7 @@ import javax.inject.Inject
 class OngoingTopicListFragment : InjectableFragment() {
 
   companion object {
+    internal const val ONGOING_TOPIC_LIST_FRAGMENT_TAG = "TAG_ONGOING_TOPIC_LIST_FRAGMENT"
     internal const val ONGOING_TOPIC_LIST_FRAGMENT_PROFILE_ID_KEY =
       "OngoingTopicListFragment.profile_id"
 
