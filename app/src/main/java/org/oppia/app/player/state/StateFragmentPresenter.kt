@@ -30,6 +30,7 @@ import org.oppia.app.player.audio.AudioUiManager
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.app.utility.LifecycleSafeTimerFactory
+import org.oppia.app.utility.SplitScreenManager
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationProgressController
 import org.oppia.domain.topic.StoryProgressController
@@ -58,7 +59,8 @@ class StateFragmentPresenter @Inject constructor(
   private val logger: ConsoleLogger,
   @DefaultResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
-  private var lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
+  private var lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
+  private val splitScreenManager: SplitScreenManager
 ) {
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
@@ -101,8 +103,12 @@ class StateFragmentPresenter @Inject constructor(
     )
 
     val stateRecyclerViewAdapter = recyclerViewAssembler.adapter
+    val rhsStateRecyclerViewAdapter = recyclerViewAssembler.rhsAdapter
     binding.stateRecyclerView.apply {
       adapter = stateRecyclerViewAdapter
+    }
+    binding.extraInteractionRecyclerView.apply {
+      adapter = rhsStateRecyclerViewAdapter
     }
     recyclerViewAdapter = stateRecyclerViewAdapter
     binding.let {
@@ -295,6 +301,14 @@ class StateFragmentPresenter @Inject constructor(
     }
 
     val ephemeralState = result.getOrThrow()
+    val shouldSplit = splitScreenManager.shouldSplitScreen(ephemeralState.state.interaction.id)
+    if (shouldSplit) {
+      viewModel.isSplitView.set(true)
+      viewModel.centerGuidelinePercentage.set(0.5f)
+    } else {
+      viewModel.isSplitView.set(false)
+      viewModel.centerGuidelinePercentage.set(1f)
+    }
 
     val isInNewState =
       ::currentStateName.isInitialized && currentStateName != ephemeralState.state.name
@@ -303,8 +317,16 @@ class StateFragmentPresenter @Inject constructor(
     currentStateName = ephemeralState.state.name
     showOrHideAudioByState(ephemeralState.state)
 
+    val dataPair = recyclerViewAssembler.compute(
+      ephemeralState,
+      explorationId,
+      shouldSplit
+    )
+
     viewModel.itemList.clear()
-    viewModel.itemList += recyclerViewAssembler.compute(ephemeralState, explorationId)
+    viewModel.itemList += dataPair.first
+    viewModel.rightItemList.clear()
+    viewModel.rightItemList += dataPair.second
 
     if (isInNewState) {
       (binding.stateRecyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(

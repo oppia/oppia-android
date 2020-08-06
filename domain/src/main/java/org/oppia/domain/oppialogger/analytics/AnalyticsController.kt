@@ -16,7 +16,10 @@ import org.oppia.util.networking.NetworkConnectionUtil
 import org.oppia.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
 import javax.inject.Inject
 
-/** Controller for handling analytics event logging. */
+/** Controller for handling analytics event logging.
+ * [OppiaLogger] should be the only caller of this class. Any other classes that want to log
+ * events should call either [OppiaLogger.logTransitionEvent] or [OppiaLogger.logClickEvent].
+ */
 class AnalyticsController @Inject constructor(
   private val eventLogger: EventLogger,
   cacheStoreFactory: PersistentCacheStore.Factory,
@@ -83,94 +86,6 @@ class AnalyticsController @Inject constructor(
       event.context = eventContext
 
     return event.build()
-  }
-
-  /** Returns the context of an event related to exploration. */
-  fun createExplorationContext(
-    topicId: String,
-    storyId: String,
-    explorationId: String
-  ): EventLog.Context {
-    return EventLog.Context.newBuilder()
-      .setExplorationContext(
-        EventLog.ExplorationContext.newBuilder()
-          .setTopicId(topicId)
-          .setStoryId(storyId)
-          .setExplorationId(explorationId)
-          .build()
-      )
-      .build()
-  }
-
-  /** Returns the context of an event related to question. */
-  fun createQuestionContext(
-    questionId: String,
-    skillId: List<String>
-  ): EventLog.Context {
-    return EventLog.Context.newBuilder()
-      .setQuestionContext(
-        EventLog.QuestionContext.newBuilder()
-          .setQuestionId(questionId)
-          .addAllSkillId(skillId)
-          .build()
-      )
-      .build()
-  }
-
-  /** Returns the context of an event related to topic. */
-  fun createTopicContext(
-    topicId: String
-  ): EventLog.Context {
-    return EventLog.Context.newBuilder()
-      .setTopicContext(
-        EventLog.TopicContext.newBuilder()
-          .setTopicId(topicId)
-          .build()
-      )
-      .build()
-  }
-
-  /** Returns the context of an event related to story. */
-  fun createStoryContext(
-    topicId: String,
-    storyId: String
-  ): EventLog.Context {
-    return EventLog.Context.newBuilder()
-      .setStoryContext(
-        EventLog.StoryContext.newBuilder()
-          .setTopicId(topicId)
-          .setStoryId(storyId)
-          .build()
-      )
-      .build()
-  }
-
-  /** Returns the context of an event related to concept card. */
-  fun createConceptCardContext(
-    skillId: String
-  ): EventLog.Context {
-    return EventLog.Context.newBuilder()
-      .setConceptCardContext(
-        EventLog.ConceptCardContext.newBuilder()
-          .setSkillId(skillId)
-          .build()
-      )
-      .build()
-  }
-
-  /** Returns the context of an event related to revision card. */
-  fun createRevisionCardContext(
-    topicId: String,
-    subTopicId: String
-  ): EventLog.Context {
-    return EventLog.Context.newBuilder()
-      .setRevisionCardContext(
-        EventLog.RevisionCardContext.newBuilder()
-          .setTopicId(topicId)
-          .setSubTopicId(subTopicId)
-          .build()
-      )
-      .build()
   }
 
   /**

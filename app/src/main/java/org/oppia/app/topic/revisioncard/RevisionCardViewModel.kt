@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-//import org.oppia.app.databinding.RevisionCardFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.RevisionCard
 import org.oppia.domain.topic.TopicController
@@ -28,12 +27,11 @@ class RevisionCardViewModel @Inject constructor(
   @RevisionCardHtmlParserEntityType private val entityType: String
 ) : ViewModel() {
   private lateinit var topicId: String
-  private lateinit var subtopicId: String
+  private var subtopicId: Int = 0
   private lateinit var view: TextView
+
   private val returnToTopicClickListener: ReturnToTopicClickListener =
     activity as ReturnToTopicClickListener
-
-  var subtopicTitle: String = ""
 
   val explanationLiveData: LiveData<CharSequence> by lazy {
     processExplanationLiveData()
@@ -43,10 +41,14 @@ class RevisionCardViewModel @Inject constructor(
     returnToTopicClickListener.onReturnToTopicClicked()
   }
 
-  /** Sets the value of subtopicId and binding. Must be called before setting ViewModel to binding. */
-  fun setSubtopicIdAndBinding(topicId: String, id: String, view: TextView) {
-    subtopicId = id
+  /** Sets the value of topicId, subtopicId and binding before anything else. */
+  fun setSubtopicIdAndBinding(
+    topicId: String,
+    subtopicId: Int,
+    view: TextView
+  ) {
     this.topicId = topicId
+    this.subtopicId = subtopicId
     this.view = view
   }
 
@@ -71,9 +73,9 @@ class RevisionCardViewModel @Inject constructor(
     val revisionCard = revisionCardResult.getOrDefault(
       RevisionCard.getDefaultInstance()
     )
-    subtopicTitle = revisionCard.subtopicTitle
     return htmlParserFactory.create(
-      resourceBucketName, entityType, subtopicId, /* imageCenterAlign= */ true
+
+      resourceBucketName, entityType, topicId, /* imageCenterAlign= */ true
     ).parseOppiaHtml(revisionCard.pageContents.html, view)
   }
 }

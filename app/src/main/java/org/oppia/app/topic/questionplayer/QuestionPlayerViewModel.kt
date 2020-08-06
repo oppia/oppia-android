@@ -5,7 +5,6 @@ import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
 import org.oppia.app.model.UserAnswer
-//import org.oppia.app.player.state.StatePlayerRecyclerViewAssembler
 import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
@@ -16,6 +15,11 @@ import javax.inject.Inject
 /** [ObservableViewModel] for the question player. */
 class QuestionPlayerViewModel @Inject constructor() : ObservableViewModel() {
   val itemList: ObservableList<StateItemViewModel> = ObservableArrayList<StateItemViewModel>()
+  val rightItemList: ObservableList<StateItemViewModel> = ObservableArrayList()
+
+  val isSplitView = ObservableField(false)
+  val centerGuidelinePercentage = ObservableField(0.5f)
+
   val questionCount = ObservableField(0)
   val currentQuestion = ObservableField(0)
   val progressPercentage = ObservableField(0)
@@ -39,13 +43,9 @@ class QuestionPlayerViewModel @Inject constructor() : ObservableViewModel() {
 
   fun getCanSubmitAnswer(): ObservableField<Boolean> = canSubmitAnswer
 
-//  fun getPendingAnswer(recyclerViewAssembler: StatePlayerRecyclerViewAssembler): UserAnswer {
-//    return getPendingAnswerWithoutError(recyclerViewAssembler) ?: UserAnswer.getDefaultInstance()
-//  }
-
   fun getPendingAnswerWithoutError(answerHandler: InteractionAnswerHandler): UserAnswer? {
-    return if (answerHandler?.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME) == null) {
-      answerHandler?.getPendingAnswer()
+    return if (answerHandler.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME) == null) {
+      answerHandler.getPendingAnswer()
     } else {
       null
     }

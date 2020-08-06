@@ -1,105 +1,104 @@
-# TODO: Rename file to 'BUILD' post-Gradle. See https://github.com/oppia/oppia-android/issues/1532.
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+'''
+This library contains utilities that all other modules, minus model, depend on.
+'''
+
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 load("//utility:utility_test.bzl", "utility_test")
 
-'''A kt_android_library() rule that builds utility module kotlin source files into a library.'''
+# Library for general-purpose utilities.
 kt_android_library(
-    name = "utility_lib",
+    name = "utility",
     custom_package = "org.oppia.util",
-    srcs = glob(["src/main/java/org/oppia/util/**/*.kt"],),
+    srcs = glob(["src/main/java/org/oppia/util/**/*.kt"]),
     resource_files = glob(["src/main/res/**/*.xml"]),
     manifest = "src/main/AndroidManifest.xml",
     exports_manifest = True,
     deps = [
         ":dagger",
-        "//model:model_lib",
-        "//firebase:crashlytics_lib",
-        "//firebase:crashlytics_deps",
-        artifact("com.google.firebase:firebase-analytics:17.4.4"),
-        artifact("com.google.firebase:firebase-crashlytics:17.1.1"),
-        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-android"),
-        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test"),
-        artifact("com.google.truth:truth"),
+        "//model",
+        "//app:crashlytics",
+        "//app:crashlytics_deps",
+        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-core"),
         artifact("androidx.appcompat:appcompat"),
         artifact("com.github.bumptech.glide:glide"),
         artifact("com.caverock:androidsvg-aar"),
-        artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
     ],
     visibility = ["//visibility:public"],
 )
 
-kt_android_library(
-    name = "utility_test_lib",
-    custom_package = "org.oppia.util",
-    srcs = glob(["src/test/java/org/oppia/util/**/*.kt"],),
-    resource_files = glob(["src/main/res/**/*.xml"]),
-    manifest = "src/test/TestManifest.xml",
-    deps = [
-        ":dagger",
-        ":utility_lib",
-        "//testing:testing_lib",
-        "//model:model_lib",
-        "//firebase:crashlytics_lib",
-        "//firebase:crashlytics_deps",
-        artifact("com.google.firebase:firebase-analytics:17.4.4"),
-        artifact("com.google.firebase:firebase-crashlytics:17.1.1"),
-        artifact("org.jetbrains.kotlin:kotlin-test-junit"),
-        artifact("com.google.truth:truth"),
-        artifact("androidx.test.ext:junit"),
-        artifact("org.mockito:mockito-core"),
-    ],
-    visibility = ["//visibility:public"],
-)
+TEST_DEPS = [
+    ":utility",
+    ":dagger",
+    "//testing",
+    "//model",
+    "//app:crashlytics",
+    "//app:crashlytics_deps",
+    "@robolectric//bazel:android-all",
+    artifact("org.jetbrains.kotlin:kotlin-reflect"),
+    artifact("com.google.truth:truth"),
+    artifact("androidx.test.ext:junit"),
+    artifact("org.jetbrains.kotlin:kotlin-test-junit"),
+    artifact("org.mockito:mockito-core"),
+]
 
 utility_test(
-   name = "AsyncResultTest",
-   src = ["src/test/java/org/oppia/util/data/AsyncResultTest.kt"],
-   test_class = "org.oppia.util.data.AsyncResultTest",
- )
+    name = "AsyncResultTest",
+    srcs = ["src/test/java/org/oppia/util/data/AsyncResultTest.kt"],
+    test_class = "org.oppia.util.data.AsyncResultTest",
+    deps = TEST_DEPS,
+)
 
 utility_test(
     name = "DataProvidersTest",
-    src = ["src/test/java/org/oppia/util/data/DataProvidersTest.kt"],
+    srcs = ["src/test/java/org/oppia/util/data/DataProvidersTest.kt"],
     test_class = "org.oppia.util.data.DataProvidersTest",
+    deps = TEST_DEPS,
 )
 
 utility_test(
     name = "InMemoryBlockingCacheTest",
-    src = ["src/test/java/org/oppia/util/data/InMemoryBlockingCacheTest.kt"],
+    srcs = ["src/test/java/org/oppia/util/data/InMemoryBlockingCacheTest.kt"],
     test_class = "org.oppia.util.data.InMemoryBlockingCacheTest",
+    deps = TEST_DEPS,
 )
 
 utility_test(
     name = "DateTimeUtilTest",
-    src = ["src/test/java/org/oppia/util/datetime/DateTimeUtilTest.kt"],
+    srcs = ["src/test/java/org/oppia/util/datetime/DateTimeUtilTest.kt"],
     test_class = "org.oppia.util.datetime.DateTimeUtilTest",
+    deps = TEST_DEPS,
 )
 
 utility_test(
     name = "EventBundleCreatorTest",
-    src = ["src/test/java/org/oppia/util/logging/EventBundleCreatorTest.kt"],
+    srcs = ["src/test/java/org/oppia/util/logging/EventBundleCreatorTest.kt"],
     test_class = "org.oppia.util.logging.EventBundleCreatorTest",
+    deps = TEST_DEPS,
 )
 
 utility_test(
     name = "NetworkConnectionUtilTest",
-    src = ["src/test/java/org/oppia/util/networking/NetworkConnectionUtilTest.kt"],
+    srcs = ["src/test/java/org/oppia/util/networking/NetworkConnectionUtilTest.kt"],
     test_class = "org.oppia.util.networking.NetworkConnectionUtilTest",
+    deps = TEST_DEPS,
 )
 
 utility_test(
     name = "DirectoryManagementUtilTest",
-    src = ["src/test/java/org/oppia/util/profile/DirectoryManagementUtilTest.kt"],
+    srcs = ["src/test/java/org/oppia/util/profile/DirectoryManagementUtilTest.kt"],
     test_class = "org.oppia.util.profile.DirectoryManagementUtilTest",
+    deps = TEST_DEPS,
 )
 
 utility_test(
     name = "OppiaDateTimeFormatterTest",
-    src = ["src/test/java/org/oppia/util/system/OppiaDateTimeFormatterTest.kt"],
+    srcs = ["src/test/java/org/oppia/util/system/OppiaDateTimeFormatterTest.kt"],
     test_class = "org.oppia.util.system.OppiaDateTimeFormatterTest",
+    deps = TEST_DEPS,
 )
 
 dagger_rules()

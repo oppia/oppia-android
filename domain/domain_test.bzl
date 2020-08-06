@@ -1,14 +1,14 @@
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
-def domain_test(name, src, test_class):
+def domain_test(name, srcs, test_class, deps):
 
-    oppia_android_test(
-        name = name,
-        srcs = src,
-        src_library_name = "domain_test_lib",
-        custom_package = "org.oppia.domain",
-        test_class = test_class,
-        test_manifest = "src/test/TestManifest.xml",
-        assets = native.glob(["src/main/assets/**"]),
-        assets_dir = "src/main/assets/",
-    )
+  oppia_android_test(
+    name = name,
+    srcs = srcs,
+    custom_package = "org.oppia.domain",
+    test_class = test_class,
+    test_manifest = "src/test/AndroidManifest.xml",
+    assets = native.glob(["src/main/assets/**"]),
+    assets_dir = "src/main/assets/",
+    deps = deps,
+  )

@@ -1,15 +1,17 @@
-'''This file lists and imports all external dependencies needed to build Oppia Android.
 '''
+This file lists and imports all external dependencies needed to build Oppia Android.
+'''
+
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:jvm.bzl", "jvm_maven_import_external")
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 # Android SDK configuration. For more details, see:
 # https://docs.bazel.build/versions/master/be/android.html#android_sdk_repository
+# TODO(#1542): Sync Android SDK version with the manifest.
 android_sdk_repository(
     name = "androidsdk",
     api_level = 28,
-    # build_tools_version = "28.0.2",
 )
 
 # Add support for JVM rules: https://github.com/bazelbuild/rules_jvm_external
@@ -33,9 +35,10 @@ http_archive(
    sha256 = RULES_KOTLIN_SHA,
 )
 
-# TODO: Remove kt_download_local_dev_dependencies() when switching to rules_kotlin release
+# TODO(#1535): Remove once rules_kotlin is released because these lines become unnecessary
 load("@io_bazel_rules_kotlin//kotlin:dependencies.bzl", "kt_download_local_dev_dependencies")
 kt_download_local_dev_dependencies()
+
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kotlin_repositories", "kt_register_toolchains")
 kotlin_repositories()
 kt_register_toolchains()
@@ -113,48 +116,50 @@ bind(
 )
 
 load("@rules_jvm_external//:defs.bzl", "maven_install")
+
 maven_install(
     artifacts = DAGGER_ARTIFACTS + [
-        "org.robolectric:robolectric:4.3",
-        "org.robolectric:annotations:4.3",
+        "androidx.annotation:annotation:1.1.0",
         "androidx.appcompat:appcompat:1.0.2",
-        "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.2",
-        "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2",
-        "org.jetbrains.kotlin:kotlin-test-junit:1.3.72",
-        "org.jetbrains.kotlin:kotlin-reflect:1.3.72",
-        "com.google.truth:truth:0.43",
-        "com.github.bumptech.glide:glide:4.11.0",
-        "com.caverock:androidsvg-aar:1.4",
+        "androidx.core:core-ktx:1.0.1",
+        "androidx.databinding:databinding-adapters:3.4.2",
+        "androidx.databinding:databinding-common:3.4.2",
+        "androidx.databinding:databinding-runtime:3.4.2",
+        "androidx.lifecycle:lifecycle-livedata-core:jar:2.0.0-alpha1",
         "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03",
-        "org.mockito:mockito-core:2.19.0",
         "androidx.test.ext:junit:1.1.1",
         "android.arch.core:core-testing:1.1.1",
         "androidx.arch.core:core-testing:2.1.0",
-        "androidx.databinding:databinding-runtime:3.4.2",
-        "androidx.databinding:databinding-adapters:3.4.2",
-        "androidx.databinding:databinding-common:3.4.2",
-        "androidx.annotation:annotation:1.1.0",
-        "org.jetbrains.kotlin:kotlin-stdlib-jdk7:jar:1.3.72",
-        "org.jetbrains.kotlin:kotlin-test-junit:1.3.72",
-        "org.robolectric:annotations:4.3",
-        "com.google.android.material:material:1.2.0-alpha02",
+        "androidx.constraintlayout:constraintlayout:1.1.3",
+        "androidx.recyclerview:recyclerview:1.0.0",
+        "com.android.support:support-annotations:28.0.0",
+        "com.caverock:androidsvg-aar:1.4",
+        "com.chaos.view:pinview:1.4.3",
         "com.crashlytics.sdk.android:crashlytics:2.9.8",
-        "io.fabric.sdk.android:fabric:1.4.7",
+        "com.github.bumptech.glide:glide:4.11.0",
         "com.google.firebase:firebase-analytics:17.4.4",
         "com.google.firebase:firebase-crashlytics:17.1.1",
-        "androidx.constraintlayout:constraintlayout:1.1.3",
+        "com.google.android.material:material:1.2.0-alpha02",
+        "com.google.truth:truth:0.43",
         "de.hdodenhof:circleimageview:3.0.1",
-        "com.chaos.view:pinview:1.4.3",
-        "androidx.recyclerview:recyclerview:1.0.0",
+        "io.fabric.sdk.android:fabric:1.4.7",
         "javax.annotation:javax.annotation-api:jar:1.3.2",
+        "junit:junit:4.12",
         "org.jetbrains:annotations:jar:13.0",
-        "androidx.lifecycle:lifecycle-livedata-core:jar:2.0.0-alpha1",#
+        "org.jetbrains.kotlin:kotlin-reflect:1.3.41",
+        "org.jetbrains.kotlin:kotlin-stdlib-jdk7:jar:1.3.72",
+        "org.jetbrains.kotlin:kotlin-test-junit:1.3.72",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.2",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2",
+        "org.mockito:mockito-core:2.19.0",
+        "org.robolectric:annotations:4.3",
+        "org.robolectric:robolectric:4.3",
     ],
     repositories = DAGGER_REPOSITORIES + [
+        "https://bintray.com/bintray/jcenter",
+        "https://jcenter.bintray.com/",
+        "https://maven.fabric.io/public",
         "https://maven.google.com",
         "https://repo1.maven.org/maven2",
-        "https://jcenter.bintray.com/",
-        "https://bintray.com/bintray/jcenter",
-        "https://maven.fabric.io/public",
     ],
 )

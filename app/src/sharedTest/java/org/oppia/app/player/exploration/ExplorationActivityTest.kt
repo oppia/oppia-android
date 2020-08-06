@@ -195,7 +195,7 @@ class ExplorationActivityTest {
       openActionBarOverflowOrOptionsMenu(context)
       onView(withText(context.getString(R.string.help))).perform(click())
       intended(hasComponent(HelpActivity::class.java.name))
-      intended(hasExtra(HelpActivity.BOOL_IS_FROM_EXPLORATION_EXTRA_KEY, /* value= */ true))
+      intended(hasExtra(HelpActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, /* value= */ false))
     }
     explorationDataController.stopPlayingExploration()
   }
@@ -214,7 +214,12 @@ class ExplorationActivityTest {
       openActionBarOverflowOrOptionsMenu(context)
       onView(withText(context.getString(R.string.menu_options))).perform(click())
       intended(hasComponent(OptionsActivity::class.java.name))
-      intended(hasExtra(OptionsActivity.BOOL_IS_FROM_EXPLORATION_EXTRA_KEY, /* value= */ true))
+      intended(
+        hasExtra(
+          OptionsActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
+          /* value= */ false
+        )
+      )
     }
     explorationDataController.stopPlayingExploration()
   }
@@ -465,6 +470,7 @@ class ExplorationActivityTest {
   }
 
   @Test
+  @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
   fun testAudioWithWifi_openRatioExploration_clickAudioIcon_checkAudioFragmentHasDefaultLanguageAndAutoPlays() { // ktlint-disable max-line-length
     getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)

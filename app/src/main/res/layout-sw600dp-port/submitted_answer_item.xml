@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="submittedAnswer"
+      type="CharSequence" />
+
+    <variable
+      name="submittedListAnswer"
+      type="org.oppia.app.model.ListOfSetsOfHtmlStrings" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.player.state.itemviewmodel.SubmittedAnswerViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:explorationSplitViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
+    app:explorationSplitViewMarginBottom="@{@dimen/margin_0}"
+    app:explorationSplitViewMarginEnd="@{viewModel.isExtraInteractionAnswerCorrect() ? @dimen/margin_64 : @dimen/margin_24}"
+    app:explorationSplitViewMarginStart="@{viewModel.isExtraInteractionAnswerCorrect() ? @dimen/margin_64 : @dimen/margin_40}"
+    app:explorationSplitViewMarginTop="@{viewModel.isExtraInteractionAnswerCorrect() ? @dimen/margin_40 : @dimen/margin_24}"
+    app:explorationSplitViewPaddingApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
+    app:explorationSplitViewPaddingBottom="@{@dimen/padding_0}"
+    app:explorationSplitViewPaddingEnd="@{@dimen/padding_0}"
+    app:explorationSplitViewPaddingStart="@{@dimen/padding_0}"
+    app:explorationSplitViewPaddingTop="@{@dimen/padding_0}"
+    app:explorationViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
+    app:explorationViewMarginBottom="@{@dimen/margin_0}"
+    app:explorationViewMarginEnd="@{@dimen/margin_112}"
+    app:explorationViewMarginStart="@{@dimen/margin_144}"
+    app:explorationViewMarginTop="@{@dimen/margin_24}"
+    app:explorationViewPaddingApplicable="@{viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
+    app:explorationViewPaddingBottom="@{@dimen/padding_0}"
+    app:explorationViewPaddingEnd="@{@dimen/padding_0}"
+    app:explorationViewPaddingStart="@{@dimen/padding_0}"
+    app:explorationViewPaddingTop="@{@dimen/padding_0}"
+    app:questionSplitViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
+    app:questionSplitViewMarginBottom="@{@dimen/margin_0}"
+    app:questionSplitViewMarginEnd="@{viewModel.isExtraInteractionAnswerCorrect() ? @dimen/margin_64 : @dimen/margin_24}"
+    app:questionSplitViewMarginStart="@{viewModel.isExtraInteractionAnswerCorrect() ? @dimen/margin_64 : @dimen/margin_40}"
+    app:questionSplitViewMarginTop="@{viewModel.isExtraInteractionAnswerCorrect() ? @dimen/margin_40 : @dimen/margin_24}"
+    app:questionSplitViewPaddingApplicable="@{!viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
+    app:questionSplitViewPaddingBottom="@{@dimen/padding_0}"
+    app:questionSplitViewPaddingEnd="@{@dimen/padding_0}"
+    app:questionSplitViewPaddingStart="@{@dimen/padding_0}"
+    app:questionSplitViewPaddingTop="@{@dimen/padding_0}"
+    app:questionViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
+    app:questionViewMarginBottom="@{@dimen/margin_0}"
+    app:questionViewMarginEnd="@{@dimen/margin_128}"
+    app:questionViewMarginStart="@{@dimen/margin_128}"
+    app:questionViewMarginTop="@{@dimen/margin_24}"
+    app:questionViewPaddingApplicable="@{!viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
+    app:questionViewPaddingBottom="@{@dimen/padding_0}"
+    app:questionViewPaddingEnd="@{@dimen/padding_0}"
+    app:questionViewPaddingStart="@{@dimen/padding_0}"
+    app:questionViewPaddingTop="@{@dimen/padding_0}">
+
+    <FrameLayout
+      android:id="@+id/submitted_answer_container"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+
+      <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:gravity="@{viewModel.hasConversationView ? Gravity.END : Gravity.START}"
+        android:layout_height="wrap_content">
+
+        <TextView
+          android:id="@+id/submitted_answer_text_view"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:background="@drawable/submitted_answer_background"
+          android:paddingStart="12dp"
+          android:paddingTop="8dp"
+          android:paddingEnd="12dp"
+          android:visibility="gone"
+          android:paddingBottom="8dp"
+          android:text="@{submittedAnswer}"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="16sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/submitted_answer_recycler_view"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="@drawable/submitted_answer_background"
+          android:paddingStart="8dp"
+          android:paddingEnd="8dp"
+          android:visibility="gone"
+          app:itemDecorator="@{@drawable/divider}"
+          app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          app:list="@{submittedListAnswer.setOfHtmlStringsList}" />
+
+        <ImageView
+          android:id="@+id/answer_tick"
+          android:layout_width="24dp"
+          android:layout_height="24dp"
+          android:layout_marginStart="8dp"
+          android:layout_gravity="center_vertical"
+          android:src="@drawable/ic_check_primary"
+          android:visibility="@{viewModel.isCorrectAnswer &amp;&amp; !viewModel.hasConversationView ? View.VISIBLE : View.GONE}" />
+      </LinearLayout>
+    </FrameLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
