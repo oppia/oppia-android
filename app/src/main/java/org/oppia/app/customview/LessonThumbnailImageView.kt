@@ -4,8 +4,10 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.FragmentManager
+import org.oppia.app.R
 import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.model.LessonThumbnail
+import org.oppia.app.model.LessonThumbnailGraphic
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.parser.DefaultGcsPrefix
 import org.oppia.util.parser.ImageLoader
@@ -20,6 +22,7 @@ class LessonThumbnailImageView @JvmOverloads constructor(
   defStyleAttr: Int = 0
 ) : AppCompatImageView(context, attrs, defStyleAttr) {
 
+  private val imageView = this
   private lateinit var lessonThumbnail: LessonThumbnail
   private lateinit var entityId: String
   private lateinit var entityType: String
@@ -63,7 +66,10 @@ class LessonThumbnailImageView @JvmOverloads constructor(
   private fun loadLessonThumbnail() {
     if (lessonThumbnail.thumbnailFilename.isNotEmpty()) {
       loadImage(lessonThumbnail.thumbnailFilename)
+    } else {
+      imageView.setImageResource(getLessonDrawableResource(lessonThumbnail))
     }
+    imageView.setBackgroundColor(lessonThumbnail.backgroundColorRgb)
   }
 
   /** Loads an image using Glide from [filename]. */
@@ -87,5 +93,50 @@ class LessonThumbnailImageView @JvmOverloads constructor(
     FragmentManager.findFragment<InjectableFragment>(this)
       .createViewComponent(this)
       .inject(this)
+  }
+
+  private fun getLessonDrawableResource(lessonThumbnail: LessonThumbnail): Int {
+    return when (lessonThumbnail.thumbnailGraphic) {
+      LessonThumbnailGraphic.BAKER ->
+        R.drawable.lesson_thumbnail_graphic_baker
+      LessonThumbnailGraphic.CHILD_WITH_BOOK ->
+        R.drawable.lesson_thumbnail_graphic_child_with_book
+      LessonThumbnailGraphic.CHILD_WITH_CUPCAKES ->
+        R.drawable.lesson_thumbnail_graphic_child_with_cupcakes
+      LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK ->
+        R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework
+      LessonThumbnailGraphic.DUCK_AND_CHICKEN ->
+        R.drawable.lesson_thumbnail_graphic_duck_and_chicken
+      LessonThumbnailGraphic.PERSON_WITH_PIE_CHART ->
+        R.drawable.lesson_thumbnail_graphic_person_with_pie_chart
+      LessonThumbnailGraphic.IDENTIFYING_THE_PARTS_OF_A_FRACTION ->
+        R.drawable.topic_fractions_01
+      LessonThumbnailGraphic.WRITING_FRACTIONS ->
+        R.drawable.topic_fractions_02
+      LessonThumbnailGraphic.EQUIVALENT_FRACTIONS ->
+        R.drawable.topic_fractions_03
+      LessonThumbnailGraphic.MIXED_NUMBERS_AND_IMPROPER_FRACTIONS ->
+        R.drawable.topic_fractions_04
+      LessonThumbnailGraphic.COMPARING_FRACTIONS ->
+        R.drawable.topic_fractions_05
+      LessonThumbnailGraphic.ADDING_AND_SUBTRACTING_FRACTIONS ->
+        R.drawable.topic_fractions_06
+      LessonThumbnailGraphic.MULTIPLYING_FRACTIONS ->
+        R.drawable.topic_fractions_07
+      LessonThumbnailGraphic.DIVIDING_FRACTIONS ->
+        R.drawable.topic_fractions_08
+      LessonThumbnailGraphic.DERIVE_A_RATIO ->
+        R.drawable.topic_ratios_01
+      LessonThumbnailGraphic.WHAT_IS_A_FRACTION ->
+        R.drawable.topic_fractions_01
+      LessonThumbnailGraphic.FRACTION_OF_A_GROUP ->
+        R.drawable.topic_fractions_02
+      LessonThumbnailGraphic.ADDING_FRACTIONS ->
+        R.drawable.topic_fractions_03
+      LessonThumbnailGraphic.MIXED_NUMBERS ->
+        R.drawable.topic_fractions_04
+      else ->
+        R.drawable.topic_fractions_01
+    }
   }
 }

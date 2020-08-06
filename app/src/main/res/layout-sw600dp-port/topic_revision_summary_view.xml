@@ -28,14 +28,15 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
 
-      <ImageView
+      <org.oppia.app.customview.LessonThumbnailImageView
         android:id="@+id/subtopic_image_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/white"
         android:importantForAccessibility="no"
         android:scaleType="centerInside"
-        android:src="@{viewModel.subtopic.subtopicThumbnail.thumbnailGraphic}"
+        app:entityId="@{viewModel.topicId}"
+        app:entityType="@{viewModel.entityType}"
+        app:lessonThumbnail="@{viewModel.subtopic.subtopicThumbnail}"
         app:layout_constraintDimensionRatio="H,4:3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

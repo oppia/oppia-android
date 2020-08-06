@@ -122,19 +122,21 @@
       app:layout_constraintStart_toStartOf="@+id/guideline6"
       app:layout_constraintTop_toTopOf="parent">
 
-      <ImageView
+      <org.oppia.app.customview.LessonThumbnailImageView
         android:id="@+id/topic_thumbnail_image_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_gravity="center"
         android:layout_marginStart="48dp"
         android:layout_marginEnd="48dp"
-        android:src="@{viewModel.topic.topicThumbnail.thumbnailGraphic}"
+        app:entityId="@{viewModel.topic.topicId}"
+        app:entityType="@{viewModel.entityType}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="4:3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:lessonThumbnail="@{viewModel.topic.topicThumbnail}" />
     </androidx.constraintlayout.widget.ConstraintLayout>
   </LinearLayout>
 </layout>
