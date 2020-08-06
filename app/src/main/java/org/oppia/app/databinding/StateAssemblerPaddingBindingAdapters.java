@@ -8,11 +8,11 @@ import org.jetbrains.annotations.NotNull;
 public class StateAssemblerPaddingBindingAdapters {
   /** Used to set a padding for exploration split-view. */
   @BindingAdapter( value = {
-    "explorationSplitViewPaddingApplicable",
-    "explorationSplitViewPaddingStart",
-    "explorationSplitViewPaddingTop",
-    "explorationSplitViewPaddingEnd",
-    "explorationSplitViewPaddingBottom"},
+    "app:explorationSplitViewPaddingApplicable",
+    "app:explorationSplitViewPaddingStart",
+    "app:explorationSplitViewPaddingTop",
+    "app:explorationSplitViewPaddingEnd",
+    "app:explorationSplitViewPaddingBottom"},
     requireAll = false
   )
   public static void setExplorationSplitViewPadding(
@@ -28,11 +28,11 @@ public class StateAssemblerPaddingBindingAdapters {
 
   /** Used to set a padding for exploration view. */
   @BindingAdapter( value = {
-    "explorationViewPaddingApplicable",
-    "explorationViewPaddingStart",
-    "explorationViewPaddingTop",
-    "explorationViewPaddingEnd",
-    "explorationViewPaddingBottom"},
+    "app:explorationViewPaddingApplicable",
+    "app:explorationViewPaddingStart",
+    "app:explorationViewPaddingTop",
+    "app:explorationViewPaddingEnd",
+    "app:explorationViewPaddingBottom"},
     requireAll = false
   )
   public static void setExplorationViewPadding(
@@ -48,11 +48,11 @@ public class StateAssemblerPaddingBindingAdapters {
 
   /** Used to set a padding for question view. */
   @BindingAdapter( value = {
-    "questionViewPaddingApplicable",
-    "questionViewPaddingStart",
-    "questionViewPaddingTop",
-    "questionViewPaddingEnd",
-    "questionViewPaddingBottom"},
+    "app:questionViewPaddingApplicable",
+    "app:questionViewPaddingStart",
+    "app:questionViewPaddingTop",
+    "app:questionViewPaddingEnd",
+    "app:questionViewPaddingBottom"},
     requireAll = false
   )
   public static void setQuestionViewPadding(
@@ -68,11 +68,11 @@ public class StateAssemblerPaddingBindingAdapters {
 
   /** Used to set a padding for question split-view. */
   @BindingAdapter( value = {
-    "questionSplitViewPaddingApplicable",
-    "questionSplitViewPaddingStart",
-    "questionSplitViewPaddingTop",
-    "questionSplitViewPaddingEnd",
-    "questionSplitViewPaddingBottom"},
+    "app:questionSplitViewPaddingApplicable",
+    "app:questionSplitViewPaddingStart",
+    "app:questionSplitViewPaddingTop",
+    "app:questionSplitViewPaddingEnd",
+    "app:questionSplitViewPaddingBottom"},
     requireAll = false
   )
   public static void setQuestionSplitViewPadding(

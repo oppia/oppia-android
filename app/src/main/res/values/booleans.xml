@@ -2,4 +2,5 @@
 <resources>
   <bool name="isTablet">false</bool>
   <bool name="shouldCheckForSplittingInteraction">false</bool>
+
 </resources>

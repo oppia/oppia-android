@@ -132,6 +132,10 @@ DATABINDING_ADAPTER_FILES = [
     "src/main/java/org/oppia/app/databinding/ImageViewBindingAdapters.java",
     "src/main/java/org/oppia/app/databinding/MarginBindingAdapters.java",
     "src/main/java/org/oppia/app/databinding/TextViewBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/ViewBindingAdapter.java",
+    "src/main/java/org/oppia/app/databinding/StateAssemblerPaddingBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/StateAssemblerMarginBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/GuidelineBindingAdapter.java",
 ]
 
 RECYCLERVIEW_ADAPTER_FILES = [
@@ -210,7 +214,7 @@ VIEW_FILES = [
     "src/main/java/org/oppia/app/customview/interaction/TextInputInteractionView.kt",
     "src/main/java/org/oppia/app/profile/ProfileInputView.kt",
     "src/main/java/org/oppia/app/profile/ProfileInputVieBindingShimInterface.kt",
-#    "src/main/java/org/oppia/app/player/state/DragDropSortInteractionView.kt",
+    #"src/main/java/org/oppia/app/player/state/DragDropSortInteractionView.kt",
 #    "src/main/java/org/oppia/app/fragment/InjectableFragment.kt",
 #    "src/main/java/org/oppia/app/activity/InjectableAppCompatActivity.kt",
 ]
@@ -230,8 +234,9 @@ android_library(
 
 android_library(
     name = "databinding_resources",
-    custom_package = "org.oppia.app.db",
+    custom_package = "org.oppia.app.databinding",
     manifest = "src/main/DbAndroidManifest.xml",
+    srcs = BINDING_ADAPTER_FILES,
     resource_files = glob(["src/main/res/layout*/**"]),
     enable_data_binding = 1,
     exports_manifest = True,
@@ -257,7 +262,7 @@ kt_android_library(
     srcs = LISTENER_FILES,
     deps = [
         ":dagger",
-        "//model:model_lib",
+        "//model",
         artifact("androidx.recyclerview:recyclerview:1.0.0"),
         artifact("androidx.databinding:databinding-runtime"),
         artifact("androidx.databinding:databinding-adapters"),
@@ -288,7 +293,7 @@ kt_android_library(
     srcs = ANNOTATIONS_AND_HELPERS,
     deps = [
         ":dagger",
-        "//model:model_lib",
+        "//model",
         artifact("androidx.recyclerview:recyclerview:1.0.0"),
     ],
     visibility = ["//visibility:public"],
@@ -302,9 +307,9 @@ kt_android_library(
     manifest = "src/main/ViewModelManifest.xml",
     deps = [
         ":dagger",
-        "//model:model_lib",
-        "//utility:utility_lib",
-        "//domain:domain_lib",
+        "//model",
+        "//utility",
+        "//domain",
         ":listeners",
         ":annotations_and_helpers",
         ":resources",
@@ -327,12 +332,11 @@ android_library(
     custom_package = "org.oppia.app.impl.adapters",
     srcs = DATABINDING_ADAPTER_FILES,
     enable_data_binding = 1,
-    #resource_files = glob(["src/main/res/**"]),
     manifest = "src/main/DbAdaptersAndroidManifest.xml",
     deps = [
         ":dagger",
-        "//model:model_lib",
-        "//utility:utility_lib",
+        "//model",
+        "//utility",
         ":view_models",
         ":resources",
         artifact("androidx.appcompat:appcompat"),
@@ -362,8 +366,8 @@ android_library(
     manifest = "src/main/RvAdaptersAndroidManifest.xml",
     deps = [
         ":dagger",
-        "//model:model_lib",
-        "//utility:utility_lib",
+        "//model",
+        "//utility",
         ":view_models",
         artifact("androidx.appcompat:appcompat"),
         artifact("com.chaos.view:pinview:1.4.3"),
@@ -397,8 +401,8 @@ kt_android_library(
         ":dagger",
         ":view_models",
         ":databinding_adapters",
-        "//model:model_lib",
-        "//utility:utility_lib",
+        "//model",
+        "//utility",
         "databinding_resources",
         artifact("androidx.appcompat:appcompat"),
         artifact("com.github.bumptech.glide:glide"),
@@ -444,3 +448,4 @@ android_library(
     ],
 )
 
+dagger_rules()

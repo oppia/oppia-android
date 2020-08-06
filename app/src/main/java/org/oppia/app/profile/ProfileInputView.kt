@@ -57,17 +57,6 @@ class ProfileInputView @JvmOverloads constructor(
       }
     }
 
-    @JvmStatic
-    @BindingAdapter("profile:error")
-    fun setProfileImage(profileInputView: ProfileInputView, errorMessage: ObservableField<String>?) {
-      val errMessage: ObservableField<String> = errorMessage ?: ObservableField("")
-      if (errMessage.toString().isEmpty()) {
-        profileInputView.clearErrorText()
-      } else {
-        profileInputView.setErrorText(errMessage.toString())
-      }
-    }
-
     /** Binding adapter for setting a [TextWatcher] as a change listener for an [EditText]. */
     @BindingAdapter("android:addTextChangedListener")
     fun bindTextWatcher(editText: EditText, textWatcher: TextWatcher) {

@@ -14,7 +14,7 @@ public class ViewBindingAdapter {
   private static AnimatorSet animatorSet = new AnimatorSet();
 
   @BindingAdapter("app:flashingAnimation")
-  public static void setFlashingAnimation(View view, Boolean isFlashing) {
+  public static void setFlashingAnimation(View view, boolean isFlashing) {
     appearAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
       public void onAnimationUpdate(ValueAnimator animation) {
         view.setScaleX((float) animation.getAnimatedValue());
@@ -55,9 +55,9 @@ public class ViewBindingAdapter {
 
   /** BindingAdapter to set the height of a View.*/
   @BindingAdapter("android:layout_height")
-  public static void setLayoutHeight(View view, Float height) {
+  public static void setLayoutHeight(View view, float height) {
     ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
-    layoutParams.height = height.intValue();
+    layoutParams.height = (int) height;
     view.setLayoutParams(layoutParams);
   }
 
@@ -66,7 +66,7 @@ public class ViewBindingAdapter {
       "app:rotationAnimationAngle"},
       requireAll = true
   )
-  public static void setRotationAnimation(View view, Boolean isClockwise, Float angle) {
+  public static void setRotationAnimation(View view, boolean isClockwise, float angle) {
     if (isClockwise) {
       ValueAnimator valueAnimator = ValueAnimator.ofFloat(0f, angle);
       valueAnimator.setDuration(300);
