@@ -1,9 +1,10 @@
 package org.oppia.app.databinding;
 
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.view.View;
-
+import android.view.ViewGroup;
 import androidx.databinding.BindingAdapter;
 
 public class ViewBindingAdapter {
@@ -14,41 +15,50 @@ public class ViewBindingAdapter {
 
   @BindingAdapter("app:flashingAnimation")
   public static void setFlashingAnimation(View view, Boolean isFlashing) {
-    ValueAnimator.AnimatorUpdateListener animatorUpdateListener = new ValueAnimator.AnimatorUpdateListener(); {
-        view.scaleX = (Float) it.animatedValue;
-    view.scaleY = (Float) it.animatedValue;
-    view.alpha = (Float) it.animatedValue;
-    }
-    appearAnimator.addUpdateListener(animatorUpdateListener);
-    appearAnimator.duration = 1500
+    appearAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+      public void onAnimationUpdate(ValueAnimator animation) {
+        view.setScaleX((float) animation.getAnimatedValue());
+        view.setScaleY((float) animation.getAnimatedValue());
+        view.setAlpha((float) animation.getAnimatedValue());
+      }
+    });
 
-    disappearAnimator.addUpdateListener {
-      view.scaleX = it.animatedValue as Float;
-      view.scaleY = it.animatedValue as Float;
-      view.alpha = 2f - it.animatedValue as Float;
-    }
-    disappearAnimator.duration = 500
+    appearAnimator.setDuration(1500);
+
+    disappearAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+      public void onAnimationUpdate(ValueAnimator animation) {
+        view.setScaleX((float) animation.getAnimatedValue());
+        view.setScaleY((float) animation.getAnimatedValue());
+        view.setAlpha(2f -  (float) animation.getAnimatedValue());
+      }
+    });
+
+    disappearAnimator.setDuration(500);
 
     if (isFlashing) {
-      animatorSet.playSequentially(appearAnimator, disappearAnimator)
-      animatorSet.start()
-      animatorSet.doOnEnd {
-        animatorSet.start()
-      }
+      animatorSet.playSequentially(appearAnimator, disappearAnimator);
+      animatorSet.start();
+
+      animatorSet.addListener(new AnimatorListenerAdapter() {
+        public void onAnimationEnd(ValueAnimator animatorSet)
+        {
+          animatorSet.start();
+        }
+      });
     } else {
-      animatorSet.cancel()
-      view.scaleX = 0f
-      view.scaleY = 0f
-      view.alpha = 0f
+      animatorSet.cancel();
+      view.setScaleX(0f);
+      view.setScaleY(0f);
+      view.setAlpha(0f);
     }
   }
 
   /** BindingAdapter to set the height of a View.*/
   @BindingAdapter("android:layout_height")
   public static void setLayoutHeight(View view, Float height) {
-    val layoutParams = view.layoutParams
-    layoutParams.height = height.toInt()
-    view.layoutParams = layoutParams
+    ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+    layoutParams.height = height.intValue();
+    view.setLayoutParams(layoutParams);
   }
 
   @BindingAdapter(
@@ -58,18 +68,26 @@ public class ViewBindingAdapter {
   )
   public static void setRotationAnimation(View view, Boolean isClockwise, Float angle) {
     if (isClockwise) {
-      val valueAnimator = ValueAnimator.ofFloat(0f, angle);
+      ValueAnimator valueAnimator = ValueAnimator.ofFloat(0f, angle);
       valueAnimator.setDuration(300);
-      valueAnimator.addUpdateListener {
-        view.rotation = it.animatedValue as Float;
-      }
-      valueAnimator.start()
+
+      valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        public void onAnimationUpdate(ValueAnimator animation) {
+          view.setRotation((float) animation.getAnimatedValue());
+        }
+      });
+
+      valueAnimator.start();
     } else {
-      val valueAnimator = ValueAnimator.ofFloat(angle, 0f);
-      valueAnimator.duration = 300
-      valueAnimator.addUpdateListener {
-        view.rotation = (Float) it.animatedValue;
-      }
+      ValueAnimator valueAnimator = ValueAnimator.ofFloat(angle, 0f);
+      valueAnimator.setDuration(300);
+
+      valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        public void onAnimationUpdate(ValueAnimator animation) {
+          view.setRotation((float) animation.getAnimatedValue());
+        }
+      });
+
       valueAnimator.start();
     }
   }
