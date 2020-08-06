@@ -19,8 +19,8 @@ kt_android_library(
     deps = [
         ":dagger",
         "//model",
-        "//firebase:crashlytics",
-        "//firebase:crashlytics_deps",
+        "//app:crashlytics",
+        "//app:crashlytics_deps",
         artifact("org.jetbrains.kotlinx:kotlinx-coroutines-core"),
         artifact("androidx.appcompat:appcompat"),
         artifact("com.github.bumptech.glide:glide"),
