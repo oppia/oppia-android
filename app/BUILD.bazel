@@ -11,6 +11,7 @@ load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
 
 package(default_visibility = ["//visibility:public"])
 
+# TODO(#1566): Move Firebase rules to their own package
 GOOGLE_SERVICES_RESOURCES = google_services_xml(
     package_name = "org.oppia.app",
     google_services_json = "google-services.json",
