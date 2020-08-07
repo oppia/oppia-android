@@ -19,8 +19,8 @@
     android:layout_marginTop="12dp"
     android:layout_marginEnd="16dp"
     android:layout_marginBottom="12dp"
-    app:cardElevation="4dp"
-    app:cardCornerRadius="4dp">
+    app:cardCornerRadius="4dp"
+    app:cardElevation="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
@@ -28,19 +28,20 @@
       android:clickable="true"
       android:focusable="true">
 
-      <ImageView
+      <org.oppia.app.customview.LessonThumbnailImageView
         android:id="@+id/completed_story_lesson_thumbnail"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/topicThumbnailBackground"
-        android:importantForAccessibility="no"
         android:contentDescription="@{viewModel.completedStory.storyName}"
+        android:importantForAccessibility="no"
         android:scaleType="centerInside"
-        android:src="@{viewModel.completedStory.lessonThumbnail.thumbnailGraphic}"
+        app:entityId="@{viewModel.completedStory.storyId}"
+        app:entityType="@{viewModel.entityType}"
         app:layout_constraintDimensionRatio="4:3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:lessonThumbnail="@{viewModel.completedStory.lessonThumbnail}" />
 
       <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
@@ -78,15 +79,15 @@
           android:layout_marginStart="8dp"
           android:layout_marginTop="4dp"
           android:layout_marginEnd="8dp"
-          android:fontFamily="sans-serif-light"
-          android:paddingBottom="12dp"
-          android:textAllCaps="true"
           android:ellipsize="end"
-          android:text="@{viewModel.completedStory.topicName}"
-          android:textColor="@color/oppiaStrokeBlack"
-          android:textSize="14sp"
+          android:fontFamily="sans-serif-light"
           android:maxLines="1"
           android:minLines="1"
+          android:paddingBottom="12dp"
+          android:text="@{viewModel.completedStory.topicName}"
+          android:textAllCaps="true"
+          android:textColor="@color/oppiaStrokeBlack"
+          android:textSize="14sp"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/completed_story_name_text_view" />
       </androidx.constraintlayout.widget.ConstraintLayout>

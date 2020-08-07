@@ -23,16 +23,19 @@
       android:layout_height="wrap_content"
       android:paddingBottom="24dp">
 
-      <ImageView
+      <org.oppia.app.customview.LessonThumbnailImageView
         android:id="@+id/topic_thumbnail_image_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:src="@{viewModel.topic.topicThumbnail.thumbnailGraphic}"
+        android:adjustViewBounds="true"
+        app:entityId="@{viewModel.topic.topicId}"
+        app:entityType="@{viewModel.entityType}"
         app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/download_status_image_view"
         app:layout_constraintTop_toTopOf="parent"
-        app:rectangleDrawableWithColor="@{viewModel.topic.topicThumbnail.backgroundColorRgb}" />
+        app:lessonThumbnail="@{viewModel.topic.topicThumbnail}" />
 
       <FrameLayout
         android:layout_width="match_parent"
