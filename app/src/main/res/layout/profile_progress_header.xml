@@ -22,7 +22,7 @@
       android:layout_height="100dp"
       android:clickable="true"
       android:focusable="true"
-      android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
+      app:onClick="@{() -> viewModel.clickOnProfilePicture()}"
       app:add_shadow="true"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +33,7 @@
     <ImageView
       android:layout_width="48dp"
       android:layout_height="48dp"
-      android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
+      app:onClick="@{() -> viewModel.clickOnProfilePicture()}"
       android:paddingStart="8dp"
       android:paddingTop="8dp"
       android:src="@drawable/rounded_white_background_with_shadow"

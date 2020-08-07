@@ -25,7 +25,7 @@
       android:layout_height="160dp"
       android:clickable="true"
       android:focusable="true"
-      android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
+      app:onClick="@{() -> viewModel.clickOnProfilePicture()}"
       app:add_shadow="true"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
@@ -35,7 +35,7 @@
     <ImageView
       android:layout_width="56dp"
       android:layout_height="56dp"
-      android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
+      app:onClick="@{() -> viewModel.clickOnProfilePicture()}"
       android:paddingStart="12dp"
       android:paddingTop="12dp"
       android:src="@drawable/rounded_white_background_with_shadow"
