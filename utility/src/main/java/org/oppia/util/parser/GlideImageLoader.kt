@@ -2,7 +2,7 @@ package org.oppia.util.parser
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Picture
+import android.graphics.drawable.PictureDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -32,7 +32,7 @@ class GlideImageLoader @Inject constructor(
       .intoTarget(target)
   }
 
-  override fun loadSvg(imageUrl: String, target: ImageTarget<Picture>) {
+  override fun loadSvg(imageUrl: String, target: ImageTarget<PictureDrawable>) {
     val model: Any = if (cacheAssetsLocally) {
       object : ImageAssetFetcher {
         override fun fetchImage(): ByteArray = assetRepository.loadRemoteBinaryAsset(imageUrl)()
@@ -43,7 +43,7 @@ class GlideImageLoader @Inject constructor(
 
     // TODO(#45): Ensure the image caching flow is properly hooked up.
     Glide.with(context)
-      .`as`(Picture::class.java)
+      .`as`(PictureDrawable::class.java)
       .fitCenter()
       .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE))
       .load(model)
