@@ -123,7 +123,8 @@ VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/recyclerview/DividerItemDecorator.kt",
     "src/main/java/org/oppia/app/IntentFactoryShimInterface.kt",
     "src/main/java/org/oppia/app/player/audio/AudioViewModel.kt",
-    "src/main/java/org/oppia/app/recyclerview/DragAndDropItemFacilitator.kt",#
+    "src/main/java/org/oppia/app/recyclerview/DragAndDropItemFacilitator.kt",
+    "src/main/java/org/oppia/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel.kt",
 ]
 
 DATABINDING_ADAPTER_FILES = [
@@ -184,7 +185,7 @@ LISTENER_FILES = [
     "src/main/java/org/oppia/app/walkthrough/WalkthroughActivityListener.kt",
     "src/main/java/org/oppia/app/utility/OnClickableAreaClickedListener.kt",
     "src/main/java/org/oppia/app/utility/RegionClickEvent.kt",
-
+    "src/main/java/org/oppia/app/player/audio/LanguageInterface.kt"
 ]
 
 LAYOUT_RES_FILES = [
@@ -211,6 +212,7 @@ VIEW_FILES = [
     "src/main/java/org/oppia/app/player/state/DragDropSortInteractionView.kt",
     "src/main/java/org/oppia/app/player/state/ImageRegionSelectionInteractionView.kt",
     "src/main/java/org/oppia/app/utility/ClickableAreasImage.kt",
+    "src/main/java/org/oppia/app/customview/SegmentedCircularProgressView.kt",
 #    "src/main/java/org/oppia/app/fragment/InjectableFragment.kt",
 #    "src/main/java/org/oppia/app/activity/InjectableAppCompatActivity.kt",
 ]
@@ -251,6 +253,12 @@ android_library(
         artifact("androidx.annotation:annotation"),
         artifact("androidx.constraintlayout:constraintlayout"),
         artifact("androidx.recyclerview:recyclerview:1.0.0"),
+        artifact("com.chaos.view:pinview:1.4.3"),
+        artifact("androidx.core:core:1.0.1"),
+        artifact("de.hdodenhof:circleimageview:3.0.1"),
+        artifact("androidx.viewpager:viewpager:1.0.0"),
+        artifact("javax.annotation:javax.annotation-api"),
+        artifact("androidx.lifecycle:lifecycle-livedata-core:jar:2.0.0-alpha1"),
         "@circularimageview//circularimageview:circular_image_view",
     ],
 )
@@ -284,6 +292,7 @@ kt_android_library(
         "//model",
         artifact("androidx.appcompat:appcompat"),
         artifact("androidx.core:core-ktx"),
+        "@circularimageview//circularimageview:circular_image_view",
     ],
     visibility = ["//visibility:public"],
 )
@@ -391,16 +400,17 @@ android_library(
 )
 
 kt_android_library(
-    name = "app_lib",
-    custom_package = "org.oppia.app",
+    name = "app",
+    custom_package = "org.oppia.app.ui",
     srcs = glob(["src/main/java/org/oppia/app/**/*.kt"],
-                exclude = VIEW_MODEL_FILES + BINDING_ADAPTER_FILES + LISTENER_FILES),
+                exclude = VIEW_MODEL_FILES + BINDING_ADAPTER_FILES + LISTENER_FILES + VIEW_FILES),
     enable_data_binding = 1,
     resource_files = glob(LAYOUT_RES_FILES),
-    manifest = "src/main/AndroidManifest.xml",
+    manifest = "src/main/AppAndroidManifest.xml",
     deps = [
         ":dagger",
         ":view_models",
+        ":views",
         ":databinding_adapters",
         "//model",
         "//utility",
@@ -408,12 +418,24 @@ kt_android_library(
         artifact("androidx.appcompat:appcompat"),
         artifact("com.github.bumptech.glide:glide"),
         artifact("com.caverock:androidsvg-aar"),
-        artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
+        artifact("com.chaos.view:pinview"),
+        artifact("androidx.core:core"),
+        artifact("androidx.lifecycle:lifecycle-extensions:2.2.0"),
+        artifact("androidx.lifecycle:lifecycle-livedata-core:2.2.0"),
+        artifact("androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"),
         artifact("androidx.databinding:databinding-runtime"),
         artifact("androidx.databinding:databinding-adapters"),
         artifact("androidx.databinding:databinding-common"),
         artifact("androidx.annotation:annotation"),
+        artifact("androidx.constraintlayout:constraintlayout:1.1.3"),
+        artifact("javax.annotation:javax.annotation-api:jar"),
+        artifact("de.hdodenhof:circleimageview:3.0.1"),
+        artifact("androidx.multidex:multidex:2.0.1"),
+        artifact("androidx.multidex:multidex-instrumentation:2.0.0"),
         artifact("com.google.android.material:material:1.2.0-alpha02"),
+
+        artifact("androidx.viewpager:viewpager:1.0.0"),
+        "@circularimageview//circularimageview:circular_image_view",
     ],
     visibility = ["//visibility:public"],
 )
