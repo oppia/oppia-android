@@ -37,11 +37,11 @@
         android:scaleType="centerInside"
         app:entityId="@{viewModel.completedStory.storyId}"
         app:entityType="@{viewModel.entityType}"
-        app:lessonThumbnail="@{viewModel.completedStory.lessonThumbnail}"
         app:layout_constraintDimensionRatio="4:3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:lessonThumbnail="@{viewModel.completedStory.lessonThumbnail}" />
 
       <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
