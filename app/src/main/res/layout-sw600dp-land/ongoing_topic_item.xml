@@ -29,18 +29,19 @@
       android:clickable="true"
       android:focusable="true">
 
-      <ImageView
+      <org.oppia.app.customview.LessonThumbnailImageView
         android:id="@+id/topic_thumbnail"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/topicThumbnailBackground"
         android:importantForAccessibility="no"
         android:scaleType="centerInside"
-        android:src="@{viewModel.topic.topicThumbnail.thumbnailGraphic}"
+        app:entityId="@{viewModel.topic.topicId}"
+        app:entityType="@{viewModel.entityType}"
         app:layout_constraintDimensionRatio="4:3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:lessonThumbnail="@{viewModel.topic.topicThumbnail}" />
 
       <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
