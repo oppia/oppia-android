@@ -9,6 +9,10 @@
     <import type="org.oppia.app.model.ChapterPlayState" />
 
     <variable
+      name="htmlContent"
+      type="CharSequence" />
+
+    <variable
       name="viewModel"
       type="org.oppia.app.story.storyitemviewmodel.StoryChapterSummaryViewModel" />
   </data>
@@ -74,7 +78,7 @@
             android:ellipsize="end"
             android:fontFamily="sans-serif"
             android:maxLines="3"
-            android:text="@{viewModel.summary}"
+            android:text="@{htmlContent}"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
