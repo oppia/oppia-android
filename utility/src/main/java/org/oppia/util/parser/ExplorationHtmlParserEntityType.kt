@@ -12,4 +12,8 @@ annotation class ConceptCardHtmlParserEntityType
 
 /** Qualifier for injecting the entity type for review card. */
 @Qualifier
-annotation class RevisionCardHtmlParserEntityType
+annotation class TopicHtmlParserEntityType
+
+/** Qualifier for injecting the entity type for story. */
+@Qualifier
+annotation class StoryHtmlParserEntityType

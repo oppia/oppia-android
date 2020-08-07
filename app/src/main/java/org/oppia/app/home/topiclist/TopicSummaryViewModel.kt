@@ -15,6 +15,7 @@ const val DARKEN_SATURATION_MULTIPLIER: Float = 1.2f
 /** The view model corresponding to topic summaries in the topic summary RecyclerView. */
 class TopicSummaryViewModel(
   val topicSummary: TopicSummary,
+  val entityType: String,
   private val topicSummaryClickListener: TopicSummaryClickListener
 ) : HomeItemViewModel() {
   val name: String = topicSummary.name

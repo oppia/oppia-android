@@ -22,18 +22,19 @@
       android:focusable="true"
       android:onClick="@{(v) -> viewModel.clickOnSummaryTile()}">
 
-      <ImageView
+      <org.oppia.app.customview.LessonThumbnailImageView
         android:id="@+id/topic_thumbnail_image_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/topicThumbnailBackground"
         android:importantForAccessibility="no"
         android:scaleType="centerInside"
-        android:src="@{viewModel.topicSummary.topicThumbnail.thumbnailGraphic}"
+        app:entityId="@{viewModel.topicSummary.topicId}"
+        app:entityType="@{viewModel.entityType}"
         app:layout_constraintDimensionRatio="4:3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:lessonThumbnail="@{viewModel.topicSummary.topicThumbnail}" />
 
       <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
