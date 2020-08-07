@@ -3,6 +3,8 @@
   package="org.oppia.app">
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
   <uses-permission android:name="android.permission.INTERNET" />
+  <uses-sdk android:minSdkVersion="19"
+    android:maxSdkVersion="28" />
   <!-- TODO(#56): Reenable landscape support. -->
   <application
     android:name=".application.OppiaApplication"
