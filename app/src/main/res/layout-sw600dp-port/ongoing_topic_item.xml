@@ -20,6 +20,7 @@
     android:layout_marginStart="24dp"
     android:layout_marginTop="36dp"
     android:layout_marginEnd="24dp"
+    app:cardElevation="@dimen/elevation_4dp"
     app:cardCornerRadius="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
