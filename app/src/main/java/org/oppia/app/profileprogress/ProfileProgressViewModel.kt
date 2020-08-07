@@ -17,6 +17,7 @@ import org.oppia.domain.topic.TopicController
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.ConsoleLogger
+import org.oppia.util.parser.StoryHtmlParserEntityType
 import javax.inject.Inject
 
 /** The [ViewModel] for [ProfileProgressFragment]. */
@@ -27,7 +28,8 @@ class ProfileProgressViewModel @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val topicController: TopicController,
   private val topicListController: TopicListController,
-  private val logger: ConsoleLogger
+  private val logger: ConsoleLogger,
+  @StoryHtmlParserEntityType private val entityType: String
 ) : ViewModel() {
   /** [internalProfileId] needs to be set before any of the live data members can be accessed. */
   private var internalProfileId: Int = -1
@@ -109,7 +111,7 @@ class ProfileProgressViewModel @Inject constructor(
     }
     itemViewModelList.addAll(
       itemList.map { story ->
-        RecentlyPlayedStorySummaryViewModel(story) as ProfileProgressItemViewModel
+        RecentlyPlayedStorySummaryViewModel(story, entityType)
       }
     )
     return itemViewModelList
