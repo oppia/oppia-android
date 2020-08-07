@@ -1,4 +1,4 @@
-package org.oppia.app.databinding
+package org.oppia.app.databinding;
 
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
