@@ -167,3 +167,7 @@ dependencies {
 configurations {
   all*.exclude module: 'protobuf-java'
 }
+
+screenshots {
+  multipleDevices true
+}
