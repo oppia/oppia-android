@@ -755,11 +755,9 @@ class TopicController @Inject constructor(
   private fun createChapterThumbnail(chapterJsonObject: JSONObject): LessonThumbnail {
     val explorationId = chapterJsonObject.optString("exploration_id")
     val thumbnailBgColor = chapterJsonObject
-      .optJSONObject("exp_summary_dict")
       .optString("thumbnail_bg_color")
     val thumbnailFilename = chapterJsonObject
-      .optJSONObject("exp_summary_dict")
-      .optString("thumbnail_icon_url")
+      .optString("thumbnail_filename")
 
     return if (thumbnailFilename.isNotEmpty() && thumbnailBgColor.isNotEmpty()) {
       LessonThumbnail.newBuilder()

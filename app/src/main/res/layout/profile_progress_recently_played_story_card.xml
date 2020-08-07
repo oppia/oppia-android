@@ -26,18 +26,20 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
 
-      <ImageView
+      <org.oppia.app.customview.LessonThumbnailImageView
         android:id="@+id/lesson_thumbnail"
         android:layout_width="80dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:contentDescription="@{@string/lesson_thumbnail_content_description(viewModel.promotedStory.nextChapterName)}"
         android:scaleType="centerInside"
-        android:src="@{viewModel.promotedStory.lessonThumbnail.thumbnailGraphic}"
+        app:entityId="@{viewModel.promotedStory.storyId}"
+        app:entityType="@{viewModel.entityType}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:lessonThumbnail="@{viewModel.promotedStory.lessonThumbnail}"
         app:roundedRectDrawableWithColor="@{viewModel.promotedStory.lessonThumbnail.backgroundColorRgb}" />
 
       <LinearLayout
