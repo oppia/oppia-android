@@ -99,7 +99,7 @@
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@id/admin_auth_sub_text"
           profile:error="@{viewModel.errorMessage}"
-          profile:labelMargin="@{@dimen/margin_8}" />
+          app:labelMargin="@{@dimen/margin_8}" />
 
         <Button
           android:id="@+id/admin_auth_submit_button"

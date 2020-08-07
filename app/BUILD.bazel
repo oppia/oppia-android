@@ -187,17 +187,6 @@ LISTENER_FILES = [
 
 ]
 
-#PRESENTER_FILES = [
-#    "src/main/java/org/oppia/app/player/state/StateFragmentPresenter.kt",
-#    "src/main/java/org/oppia/app/walkthrough/WalkthroughActivityPresenter.kt",
-#    "src/main/java/org/oppia/app/home/HomeFragmentPresenter.kt",
-#    "src/main/java/org/oppia/app/profile/ProfileChooserFragmentPresenter.kt",
-#    "src/main/java/org/oppia/app/walkthrough/end/WalkthroughFinalFragmentPresenter.kt",
-#    "src/main/java/org/oppia/app/onboarding/OnboardingFragmentPresenter.kt",
-#    "src/main/java/org/oppia/app/walkthrough/topiclist/WalkthroughTopicListFragmentPresenter.kt",
-#    "src/main/java/org/oppia/app/walkthrough/welcome/WalkthroughWelcomeFragmentPresenter.kt",
-#]
-
 LAYOUT_RES_FILES = [
     "src/main/res/layout/**",
     "src/main/res/layout-land/**",
@@ -249,6 +238,7 @@ android_library(
     exports_manifest = True,
     deps = [
         ":resources",
+        "//model",
         ":databinding_adapters",
         ":recyclerview_adapters",
         ":view_models",
@@ -291,6 +281,7 @@ kt_android_library(
         ":annotations_and_helpers",
         ":view_models",
         ":resources",
+        "//model",
         artifact("androidx.appcompat:appcompat"),
         artifact("androidx.core:core-ktx"),
     ],

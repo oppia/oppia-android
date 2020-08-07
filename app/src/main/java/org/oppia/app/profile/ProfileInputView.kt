@@ -112,7 +112,7 @@ class ProfileInputView @JvmOverloads constructor(
     input.filters = arrayOf(InputFilter.LengthFilter(inputLength))
   }
 
-  fun setLayoutMarginStart(dimen: Float) {
+  fun setLabelMargin(dimen: Float) {
     val layoutParams = label.layoutParams as MarginLayoutParams
     layoutParams.marginStart = dimen.toInt()
     label.layoutParams = layoutParams
