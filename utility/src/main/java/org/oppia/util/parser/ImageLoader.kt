@@ -1,7 +1,7 @@
 package org.oppia.util.parser
 
 import android.graphics.Bitmap
-import android.graphics.Picture
+import android.graphics.drawable.PictureDrawable
 
 /** Loads an image from the provided URL into the specified target, optionally caching it. */
 interface ImageLoader {
@@ -17,5 +17,5 @@ interface ImageLoader {
    * is an asynchronous operation, and may take a while if the image needs to be downloaded from the
    * internet.
    */
-  fun loadSvg(imageUrl: String, target: ImageTarget<Picture>)
+  fun loadSvg(imageUrl: String, target: ImageTarget<PictureDrawable>)
 }
