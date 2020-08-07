@@ -1,9 +1,10 @@
 package org.oppia.app.testing
 
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import kotlinx.android.synthetic.main.exploration_test_activity.*
-import org.oppia.app.R
+//import kotlinx.android.synthetic.main.exploration_test_activity.*
+import org.oppia.app.ui.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.domain.exploration.ExplorationDataController
@@ -32,8 +33,7 @@ class ExplorationTestActivityPresenter @Inject constructor(
 
   fun handleOnCreate() {
     activity.setContentView(R.layout.exploration_test_activity)
-
-    activity.play_exploration_button.setOnClickListener {
+    activity.findViewById<Button>(R.id.play_exploration_button).setOnClickListener {
       playExplorationButton()
     }
   }

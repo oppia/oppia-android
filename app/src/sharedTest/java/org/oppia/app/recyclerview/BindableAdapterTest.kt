@@ -19,7 +19,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.databinding.TestTextViewForIntWithDataBindingBinding
+import org.oppia.app.databinding.databinding.TestTextViewForIntWithDataBindingBinding
 import org.oppia.app.databinding.TestTextViewForStringWithDataBindingBinding
 import org.oppia.app.model.TestModel
 import org.oppia.app.model.TestModel.ModelTypeCase

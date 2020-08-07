@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import org.oppia.app.databinding.TopicPracticeFooterViewBinding
-import org.oppia.app.databinding.TopicPracticeFragmentBinding
-import org.oppia.app.databinding.TopicPracticeHeaderViewBinding
-import org.oppia.app.databinding.TopicPracticeSubtopicBinding
+import org.oppia.app.databinding.databinding.TopicPracticeFooterViewBinding
+import org.oppia.app.databinding.databinding.TopicPracticeFragmentBinding
+import org.oppia.app.databinding.databinding.TopicPracticeHeaderViewBinding
+import org.oppia.app.databinding.databinding.TopicPracticeSubtopicBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.topic.RouteToQuestionPlayerListener

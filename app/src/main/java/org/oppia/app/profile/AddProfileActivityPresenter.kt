@@ -25,9 +25,9 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.oppia.app.R
+import org.oppia.app.ui.R
 import org.oppia.app.activity.ActivityScope
-import org.oppia.app.databinding.AddProfileActivityBinding
+import org.oppia.app.databinding.databinding.AddProfileActivityBinding
 import org.oppia.app.model.AppLanguage
 import org.oppia.app.model.AudioLanguage
 import org.oppia.app.model.StoryTextSize

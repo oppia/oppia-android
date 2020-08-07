@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import org.oppia.app.R
-import org.oppia.app.databinding.HintsAndSolutionFragmentBinding
+import org.oppia.app.ui.R
+import org.oppia.app.databinding.databinding.HintsAndSolutionFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.State
 import org.oppia.app.viewmodel.ViewModelProvider

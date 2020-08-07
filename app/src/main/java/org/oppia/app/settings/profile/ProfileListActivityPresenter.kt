@@ -2,10 +2,10 @@ package org.oppia.app.settings.profile
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import org.oppia.app.R
+import org.oppia.app.ui.R
 import org.oppia.app.activity.ActivityScope
-import org.oppia.app.databinding.ProfileListActivityBinding
-import org.oppia.app.databinding.ProfileListProfileViewBinding
+import org.oppia.app.databinding.databinding.ProfileListActivityBinding
+import org.oppia.app.databinding.databinding.ProfileListProfileViewBinding
 import org.oppia.app.model.Profile
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider

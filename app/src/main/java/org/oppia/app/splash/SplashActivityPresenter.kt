@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import org.oppia.app.R
+import org.oppia.app.ui.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.model.OnboardingFlow
 import org.oppia.app.onboarding.OnboardingActivity

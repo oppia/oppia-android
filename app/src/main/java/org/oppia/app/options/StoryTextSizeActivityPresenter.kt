@@ -4,9 +4,9 @@ import android.content.Intent
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import org.oppia.app.R
+import org.oppia.app.ui.R
 import org.oppia.app.activity.ActivityScope
-import org.oppia.app.databinding.StoryTextSizeActivityBinding
+import org.oppia.app.databinding.databinding.StoryTextSizeActivityBinding
 import org.oppia.app.model.StoryTextSize
 import javax.inject.Inject
 

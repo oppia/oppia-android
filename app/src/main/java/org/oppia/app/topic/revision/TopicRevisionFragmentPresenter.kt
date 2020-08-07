@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import org.oppia.app.R
-import org.oppia.app.databinding.TopicRevisionFragmentBinding
-import org.oppia.app.databinding.TopicRevisionSummaryViewBinding
+import org.oppia.app.ui.R
+import org.oppia.app.databinding.databinding.TopicRevisionFragmentBinding
+import org.oppia.app.databinding.databinding.TopicRevisionSummaryViewBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Subtopic
 import org.oppia.app.recyclerview.BindableAdapter

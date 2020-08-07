@@ -7,9 +7,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.R
-import org.oppia.app.databinding.OngoingStoryCardBinding
-import org.oppia.app.databinding.SectionTitleBinding
+import org.oppia.app.ui.R
+import org.oppia.app.databinding.databinding.OngoingStoryCardBinding
+import org.oppia.app.databinding.databinding.SectionTitleBinding
 
 private const val VIEW_TYPE_SECTION_TITLE_TEXT = 1
 private const val VIEW_TYPE_SECTION_STORY_ITEM = 2

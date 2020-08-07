@@ -10,9 +10,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import org.oppia.app.R
+import org.oppia.app.ui.R
 import org.oppia.app.activity.ActivityScope
-import org.oppia.app.databinding.ExplorationActivityBinding
+import org.oppia.app.databinding.databinding.ExplorationActivityBinding
 import org.oppia.app.help.HelpActivity
 import org.oppia.app.model.Exploration
 import org.oppia.app.model.StoryTextSize

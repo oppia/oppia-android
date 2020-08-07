@@ -2,9 +2,9 @@ package org.oppia.app.walkthrough
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import org.oppia.app.R
+import org.oppia.app.ui.R
 import org.oppia.app.activity.ActivityScope
-import org.oppia.app.databinding.WalkthroughActivityBinding
+import org.oppia.app.databinding.databinding.WalkthroughActivityBinding
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.app.walkthrough.end.WalkthroughFinalFragment
 import org.oppia.app.walkthrough.topiclist.WalkthroughTopicListFragment

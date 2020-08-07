@@ -11,11 +11,11 @@ import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.databinding.DragDropInteractionItemsBinding
-import org.oppia.app.databinding.DragDropSingleItemBinding
-import org.oppia.app.databinding.ItemSelectionInteractionItemsBinding
-import org.oppia.app.databinding.MultipleChoiceInteractionItemsBinding
-import org.oppia.app.databinding.ProfileInputViewBinding
+import org.oppia.app.databinding.databinding.DragDropInteractionItemsBinding
+import org.oppia.app.databinding.databinding.DragDropSingleItemBinding
+import org.oppia.app.databinding.databinding.ItemSelectionInteractionItemsBinding
+import org.oppia.app.databinding.databinding.MultipleChoiceInteractionItemsBinding
+import org.oppia.app.databinding.databinding.ProfileInputViewBinding
 import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel

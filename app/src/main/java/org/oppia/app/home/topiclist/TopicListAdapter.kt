@@ -6,11 +6,11 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.R
-import org.oppia.app.databinding.AllTopicsBinding
-import org.oppia.app.databinding.PromotedStoryListBinding
-import org.oppia.app.databinding.TopicSummaryViewBinding
-import org.oppia.app.databinding.WelcomeBinding
+import org.oppia.app.ui.R
+import org.oppia.app.databinding.databinding.AllTopicsBinding
+import org.oppia.app.databinding.databinding.PromotedStoryListBinding
+import org.oppia.app.databinding.databinding.TopicSummaryViewBinding
+import org.oppia.app.databinding.databinding.WelcomeBinding
 import org.oppia.app.home.HomeItemViewModel
 import org.oppia.app.home.WelcomeViewModel
 import org.oppia.app.recyclerview.StartSnapHelper

@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import org.oppia.app.databinding.WalkthroughTopicHeaderViewBinding
-import org.oppia.app.databinding.WalkthroughTopicListFragmentBinding
-import org.oppia.app.databinding.WalkthroughTopicSummaryViewBinding
+import org.oppia.app.databinding.databinding.WalkthroughTopicHeaderViewBinding
+import org.oppia.app.databinding.databinding.WalkthroughTopicListFragmentBinding
+import org.oppia.app.databinding.databinding.WalkthroughTopicSummaryViewBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.TopicSummary
 import org.oppia.app.recyclerview.BindableAdapter
@@ -46,7 +46,6 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
 
     binding.let {
       it.lifecycleOwner = fragment
-      it.presenter = this
     }
     val spanCount = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
       2
@@ -70,7 +69,6 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
 
     binding.let {
       it.lifecycleOwner = fragment
-      it.presenter = this
       it.viewModel = viewModel
     }
     return binding.root

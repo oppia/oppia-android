@@ -3,7 +3,7 @@ package org.oppia.app.player.state.itemviewmodel
 import android.content.Context
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
-import org.oppia.app.R
+import org.oppia.app.vm.R
 import org.oppia.app.model.ClickOnImage
 import org.oppia.app.model.ImageWithRegions
 import org.oppia.app.model.Interaction

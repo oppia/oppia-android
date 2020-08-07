@@ -1,20 +1,30 @@
 package org.oppia.app.databinding;
 
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.view.View;
 import android.widget.ImageView;
 import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
-import org.jetbrains.annotations.NotNull;
+import com.bumptech.glide.request.target.Target;
+import com.jackandphantom.circularimageview.CircleImage;
 import org.oppia.app.impl.adapters.R;
 import org.oppia.app.model.LessonThumbnailGraphic;
+import org.oppia.app.model.ProfileAvatar;
+
 
 public final class ImageViewBindingAdapters {
   /**
    * Allows binding drawables to an [ImageView] via "android:src". Source: https://stackoverflow.com/a/35809319/3689782.
    */
   @BindingAdapter("android:src")
-  public static void setImageDrawable(@NotNull ImageView imageView, String imageUrl) {
+  public static void setImageDrawable(@NonNull ImageView imageView, String imageUrl) {
     RequestOptions requestOptions = new RequestOptions().placeholder(R.drawable.review_placeholder);
 
     Glide.with(imageView.getContext())
@@ -27,8 +37,24 @@ public final class ImageViewBindingAdapters {
    * Allows binding drawables to an [ImageView] via "android:src". Source: https://stackoverflow.com/a/35809319/3689782.
    */
   @BindingAdapter("android:src")
-  public static void setImageDrawable(@NotNull ImageView imageView, @DrawableRes int drawableResourceId) {
+  public static void setImageDrawable(@NonNull ImageView imageView, @DrawableRes int drawableResourceId) {
     imageView.setImageResource(drawableResourceId);
+  }
+
+  /**
+   *
+   */
+  @BindingAdapter("app:onClick")
+  public static void setOnClick(@NonNull ImageView imageView, View.OnClickListener listener) {
+    imageView.setOnClickListener(listener);
+  }
+
+  /**
+   *
+   */
+  @BindingAdapter("app:onClick")
+  public static void setOnClick(@NonNull CircleImage imageView, View.OnClickListener listener) {
+    imageView.setOnClickListener(listener);
   }
 
   /**
@@ -84,6 +110,45 @@ public final class ImageViewBindingAdapters {
         imageView,
         drawableResourceId
     );
+  }
+
+  /**
+   * Binding adapter for profile images. Used to either display a local image or custom colored avatar.
+   *
+   * @param imageView View where the profile avatar will be loaded into.
+   * @param profileAvatar Represents either a colorId or local image uri.
+   */
+  @BindingAdapter("profile:src")
+  public static void setProfileImage(ImageView imageView, ProfileAvatar profileAvatar) {
+    if (profileAvatar != null) {
+      if (profileAvatar.getAvatarTypeCase() == ProfileAvatar.AvatarTypeCase.AVATAR_COLOR_RGB) {
+        Glide.with(imageView.getContext())
+            .load(R.drawable.ic_default_avatar)
+            .listener(new RequestListener<Drawable>() {
+              @Override
+              public boolean onLoadFailed(
+                  GlideException e,
+                  Object model,
+                  Target<Drawable> target,
+                  boolean isFirstResource) {
+                return false;
+              }
+              @Override
+              public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                imageView.setColorFilter(
+                    profileAvatar.getAvatarColorRgb(),
+                    PorterDuff.Mode.DST_OVER
+                );
+                return false;
+              }
+            }).into(imageView);
+      } else {
+        Glide.with(imageView.getContext())
+            .load(profileAvatar.getAvatarImageUri())
+            .placeholder(R.drawable.ic_default_avatar)
+            .into(imageView);
+      }
+    }
   }
 
 }

@@ -6,9 +6,9 @@ import android.text.TextWatcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import org.oppia.app.R
+import org.oppia.app.ui.R
 import org.oppia.app.activity.ActivityScope
-import org.oppia.app.databinding.ProfileResetPinActivityBinding
+import org.oppia.app.databinding.databinding.ProfileResetPinActivityBinding
 import org.oppia.app.model.ProfileId
 import org.oppia.app.profile.ProfileInputView
 import org.oppia.app.viewmodel.ViewModelProvider

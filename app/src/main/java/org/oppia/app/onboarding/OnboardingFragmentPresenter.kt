@@ -8,8 +8,8 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
-import org.oppia.app.R
-import org.oppia.app.databinding.OnboardingFragmentBinding
+import org.oppia.app.ui.R
+import org.oppia.app.databinding.databinding.OnboardingFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.util.statusbar.StatusBarColor

@@ -5,9 +5,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import org.oppia.app.R
+import org.oppia.app.ui.R
 import org.oppia.app.activity.ActivityScope
-import org.oppia.app.databinding.ProfilePictureActivityBinding
+import org.oppia.app.databinding.databinding.ProfilePictureActivityBinding
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileAvatar
 import org.oppia.app.model.ProfileId

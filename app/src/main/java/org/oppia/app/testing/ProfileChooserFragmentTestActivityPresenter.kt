@@ -1,7 +1,7 @@
 package org.oppia.app.testing
 
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.app.R
+import org.oppia.app.ui.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.model.AppLanguage
 import org.oppia.app.model.AudioLanguage

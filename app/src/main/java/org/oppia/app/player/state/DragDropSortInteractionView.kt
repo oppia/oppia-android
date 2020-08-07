@@ -50,6 +50,8 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   lateinit var bindingInterface: ViewBindingShimInterface
 
   private lateinit var entityId: String
+  private lateinit var onDragEnd: OnDragEndedListener
+  private lateinit var onItemDrag: OnItemDragListener
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
@@ -123,20 +125,31 @@ class DragDropSortInteractionView @JvmOverloads constructor(
       )
       .build()
   }
-}
 
-/** Bind ItemTouchHelperSimpleCallback with RecyclerView for a [DragDropSortInteractionView] via data-binding. */
-@BindingAdapter(value = ["onDragEnded", "onItemDrag"], requireAll = false)
-fun setItemDragToRecyclerView(
-  dragDropSortInteractionView: DragDropSortInteractionView,
-  onDragEnd: OnDragEndedListener,
-  onItemDrag: OnItemDragListener
-) {
-  val dragCallback: ItemTouchHelper.Callback =
-    DragAndDropItemFacilitator(onItemDrag, onDragEnd)
+  fun setOnDragEnded(onDragEnd: OnDragEndedListener) {
+    this.onDragEnd = onDragEnd
+    checkIfSettingIsPossible()
+  }
 
-  val itemTouchHelper = ItemTouchHelper(dragCallback)
-  itemTouchHelper.attachToRecyclerView(dragDropSortInteractionView)
+  fun setOnItemDrag(onItemDrag: OnItemDragListener) {
+    this.onItemDrag = onItemDrag
+    checkIfSettingIsPossible()
+  }
+
+  private fun checkIfSettingIsPossible() {
+    if (::onDragEnd.isInitialized && ::onItemDrag.isInitialized) {
+      performAttachment()
+    }
+  }
+
+  private fun performAttachment() {
+    val dragCallback: ItemTouchHelper.Callback =
+      DragAndDropItemFacilitator(onItemDrag, onDragEnd)
+
+    val itemTouchHelper = ItemTouchHelper(dragCallback)
+    itemTouchHelper.attachToRecyclerView(this)
+  }
+
 }
 
 /** Sets the exploration ID for a specific [DragDropSortInteractionView] via data-binding. */

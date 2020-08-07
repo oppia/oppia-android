@@ -3,7 +3,7 @@ package org.oppia.app.topic.questionplayer
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import org.oppia.app.R
+import org.oppia.app.ui.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.domain.question.QuestionTrainingController
 import org.oppia.util.data.AsyncResult

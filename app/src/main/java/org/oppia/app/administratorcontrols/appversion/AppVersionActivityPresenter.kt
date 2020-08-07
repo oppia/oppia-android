@@ -2,7 +2,7 @@ package org.oppia.app.administratorcontrols.appversion
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import org.oppia.app.R
+import org.oppia.app.ui.R
 import org.oppia.app.activity.ActivityScope
 import javax.inject.Inject
 

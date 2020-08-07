@@ -36,7 +36,7 @@ class TextInputViewModel(
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
   }
 
-  @Bindable
+  //@Bindable
   fun getAnswerTextWatcher(): TextWatcher {
     return object : TextWatcher {
       override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {

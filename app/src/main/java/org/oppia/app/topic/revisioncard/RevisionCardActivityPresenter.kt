@@ -7,9 +7,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import org.oppia.app.R
+import org.oppia.app.ui.R
 import org.oppia.app.activity.ActivityScope
-import org.oppia.app.databinding.RevisionCardActivityBinding
+import org.oppia.app.databinding.databinding.RevisionCardActivityBinding
 import org.oppia.app.help.HelpActivity
 import org.oppia.app.model.RevisionCard
 import org.oppia.app.options.OptionsActivity

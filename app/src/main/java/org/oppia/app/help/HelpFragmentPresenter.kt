@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import org.oppia.app.databinding.HelpFragmentBinding
-import org.oppia.app.databinding.HelpItemBinding
+import org.oppia.app.databinding.databinding.HelpFragmentBinding
+import org.oppia.app.databinding.databinding.HelpItemBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider

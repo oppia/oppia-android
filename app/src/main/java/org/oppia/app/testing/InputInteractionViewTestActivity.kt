@@ -8,7 +8,7 @@ import org.oppia.app.R
 import org.oppia.app.customview.interaction.FractionInputInteractionView
 import org.oppia.app.customview.interaction.NumericInputInteractionView
 import org.oppia.app.customview.interaction.TextInputInteractionView
-import org.oppia.app.databinding.ActivityInputInteractionViewTestBinding
+import org.oppia.app.databinding.databinding.ActivityInputInteractionViewTestBinding
 import org.oppia.app.model.Interaction
 import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver

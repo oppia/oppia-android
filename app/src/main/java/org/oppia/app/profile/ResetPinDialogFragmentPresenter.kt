@@ -9,8 +9,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.oppia.app.R
-import org.oppia.app.databinding.ResetPinDialogBinding
+import org.oppia.app.ui.R
+import org.oppia.app.databinding.databinding.ResetPinDialogBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.ProfileId
 import org.oppia.app.viewmodel.ViewModelProvider

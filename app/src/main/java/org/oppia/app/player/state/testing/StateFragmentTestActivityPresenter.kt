@@ -4,9 +4,9 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import org.oppia.app.R
+import org.oppia.app.ui.R
 import org.oppia.app.activity.ActivityScope
-import org.oppia.app.databinding.StateFragmentTestActivityBinding
+import org.oppia.app.databinding.databinding.StateFragmentTestActivityBinding
 import org.oppia.app.player.exploration.HintsAndSolutionExplorationManagerFragment
 import org.oppia.app.player.exploration.TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
 import org.oppia.app.player.state.StateFragment

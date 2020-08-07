@@ -4,7 +4,7 @@ import android.widget.TextView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-//import org.oppia.app.databinding.ConceptCardFragmentBinding
+//import org.oppia.app.databinding.databinding.ConceptCardFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.ConceptCard
 import org.oppia.domain.topic.TopicController

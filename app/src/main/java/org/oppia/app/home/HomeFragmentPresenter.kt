@@ -9,8 +9,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
-import org.oppia.app.R
-import org.oppia.app.databinding.HomeFragmentBinding
+import org.oppia.app.ui.R
+import org.oppia.app.databinding.databinding.HomeFragmentBinding
 import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.topiclist.AllTopicsViewModel
@@ -94,7 +94,6 @@ class HomeFragmentPresenter @Inject constructor(
       layoutManager = homeLayoutManager
     }
     binding.let {
-      it.presenter = this
       it.lifecycleOwner = fragment
     }
 

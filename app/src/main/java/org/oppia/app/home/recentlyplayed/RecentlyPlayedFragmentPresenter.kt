@@ -11,8 +11,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.R
-import org.oppia.app.databinding.RecentlyPlayedFragmentBinding
+import org.oppia.app.ui.R
+import org.oppia.app.databinding.databinding.RecentlyPlayedFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.app.model.OngoingStoryList

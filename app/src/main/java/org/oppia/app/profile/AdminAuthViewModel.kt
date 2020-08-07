@@ -15,7 +15,7 @@ class AdminAuthViewModel @Inject constructor() : ObservableViewModel() {
 
   var isSubmitButtonActive = ObservableField<Boolean>(false)
 
-  @Bindable
+ // @Bindable
   fun getInputPinTextWatcher(): TextWatcher {
     return object : TextWatcher {
       override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {

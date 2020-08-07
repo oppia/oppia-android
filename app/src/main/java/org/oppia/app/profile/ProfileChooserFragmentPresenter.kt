@@ -13,10 +13,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
-import org.oppia.app.R
-import org.oppia.app.databinding.ProfileChooserAddViewBinding
-import org.oppia.app.databinding.ProfileChooserFragmentBinding
-import org.oppia.app.databinding.ProfileChooserProfileViewBinding
+import org.oppia.app.ui.R
+import org.oppia.app.databinding.databinding.ProfileChooserAddViewBinding
+import org.oppia.app.databinding.databinding.ProfileChooserFragmentBinding
+import org.oppia.app.databinding.databinding.ProfileChooserProfileViewBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.HomeActivity
 import org.oppia.app.model.EventLog

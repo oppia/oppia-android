@@ -3,9 +3,9 @@ package org.oppia.app.databinding;
 import android.content.Context;
 import android.content.res.Resources;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
-import com.bumptech.glide.load.engine.Resource;
-import org.jetbrains.annotations.NotNull;
 import org.oppia.app.impl.adapters.R;
 import org.oppia.util.system.OppiaDateTimeFormatter;
 import java.util.Locale;
@@ -13,7 +13,7 @@ import java.util.Locale;
 public final class TextViewBindingAdapters {
   /** Binds date text with relative time. */
   @BindingAdapter("profile:created")
-  public static void setProfileDataText(@NotNull TextView textView, long timestamp) {
+  public static void setProfileDataText(@NonNull TextView textView, long timestamp) {
     OppiaDateTimeFormatter oppiaDateTimeFormatter = new OppiaDateTimeFormatter();
     String time = oppiaDateTimeFormatter.formatDateFromDateString(
         OppiaDateTimeFormatter.DD_MMM_YYYY,
@@ -24,7 +24,7 @@ public final class TextViewBindingAdapters {
   }
 
   @BindingAdapter("profile:lastVisited")
-  public static void setProfileLastVisitedText(@NotNull TextView textView, long timestamp) {
+  public static void setProfileLastVisitedText(@NonNull TextView textView, long timestamp) {
     textView.setText(String.format(textView.getContext().getString(R.string.profile_last_used)
         + " " + getTimeAgo(timestamp, textView.getContext())));
   }

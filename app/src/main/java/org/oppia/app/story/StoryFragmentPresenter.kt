@@ -11,9 +11,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.databinding.StoryChapterViewBinding
-import org.oppia.app.databinding.StoryFragmentBinding
-import org.oppia.app.databinding.StoryHeaderViewBinding
+import org.oppia.app.databinding.databinding.StoryChapterViewBinding
+import org.oppia.app.databinding.databinding.StoryFragmentBinding
+import org.oppia.app.databinding.databinding.StoryHeaderViewBinding
 import org.oppia.app.home.RouteToExplorationListener
 import org.oppia.app.model.EventLog
 import org.oppia.app.recyclerview.BindableAdapter

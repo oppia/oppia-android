@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.databinding.HintsSummaryBinding
-import org.oppia.app.databinding.SolutionSummaryBinding
+import org.oppia.app.databinding.databinding.HintsSummaryBinding
+import org.oppia.app.databinding.databinding.SolutionSummaryBinding
 import org.oppia.util.parser.HtmlParser
 
 // TODO(#216): Make use of generic data-binding-enabled RecyclerView adapter.

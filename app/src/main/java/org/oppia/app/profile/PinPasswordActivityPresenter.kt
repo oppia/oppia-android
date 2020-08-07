@@ -12,8 +12,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.oppia.app.R
-import org.oppia.app.databinding.PinPasswordActivityBinding
+import org.oppia.app.ui.R
+import org.oppia.app.databinding.databinding.PinPasswordActivityBinding
 import org.oppia.app.home.HomeActivity
 import org.oppia.app.model.ProfileId
 import org.oppia.app.utility.LifecycleSafeTimerFactory

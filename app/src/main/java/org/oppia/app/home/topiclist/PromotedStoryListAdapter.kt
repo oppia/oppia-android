@@ -7,8 +7,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.R
-import org.oppia.app.databinding.PromotedStoryCardBinding
+import org.oppia.app.ui.R
+import org.oppia.app.databinding.databinding.PromotedStoryCardBinding
 
 /** Adapter to bind promoted stories to [RecyclerView] inside [HomeFragment] to create carousel. */
 class PromotedStoryListAdapter(

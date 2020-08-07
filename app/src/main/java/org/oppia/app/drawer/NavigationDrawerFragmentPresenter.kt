@@ -15,10 +15,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import com.google.android.material.navigation.NavigationView
-import org.oppia.app.R
+import org.oppia.app.ui.R
 import org.oppia.app.administratorcontrols.AdministratorControlsActivity
-import org.oppia.app.databinding.DrawerFragmentBinding
-import org.oppia.app.databinding.NavHeaderNavigationDrawerBinding
+import org.oppia.app.databinding.databinding.DrawerFragmentBinding
+import org.oppia.app.databinding.databinding.NavHeaderNavigationDrawerBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.help.HelpActivity
 import org.oppia.app.home.HomeActivity

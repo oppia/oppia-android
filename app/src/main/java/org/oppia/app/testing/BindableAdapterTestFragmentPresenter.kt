@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
 import androidx.fragment.app.Fragment
-import org.oppia.app.databinding.TestFragmentBinding
+import org.oppia.app.databinding.databinding.TestFragmentBinding
 import org.oppia.app.model.TestModel
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider

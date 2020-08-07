@@ -7,8 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import org.oppia.app.R
-import org.oppia.app.databinding.TopicFragmentBinding
+import org.oppia.app.ui.R
+import org.oppia.app.databinding.databinding.TopicFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.EventLog
 import org.oppia.app.viewmodel.ViewModelProvider

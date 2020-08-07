@@ -5,7 +5,7 @@ import android.provider.MediaStore
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import org.oppia.app.R
+import org.oppia.app.ui.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.model.ProfileId
 import org.oppia.app.profile.GALLERY_INTENT_RESULT_CODE

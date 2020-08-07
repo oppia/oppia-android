@@ -3,9 +3,9 @@ package org.oppia.app.options
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import org.oppia.app.R
+import org.oppia.app.ui.R
 import org.oppia.app.activity.ActivityScope
-import org.oppia.app.databinding.DefaultAudioActivityBinding
+import org.oppia.app.databinding.databinding.DefaultAudioActivityBinding
 import javax.inject.Inject
 
 /** The presenter for [DefaultAudioActivity]. */

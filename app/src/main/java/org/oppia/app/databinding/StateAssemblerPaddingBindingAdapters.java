@@ -1,9 +1,9 @@
 package org.oppia.app.databinding;
 
 import android.view.View;
-import androidx.databinding.BindingAdapter;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
+import androidx.databinding.BindingAdapter;
 
 public class StateAssemblerPaddingBindingAdapters {
   /** Used to set a padding for exploration split-view. */
@@ -88,7 +88,7 @@ public class StateAssemblerPaddingBindingAdapters {
 
   private static void setPaddingIfApplicable(
       View view,
-      @NotNull Boolean isApplicable,
+      @NonNull Boolean isApplicable,
       float paddingStart,
       float paddingTop,
       float paddingEnd,
