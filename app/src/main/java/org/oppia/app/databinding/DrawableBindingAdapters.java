@@ -1,12 +1,12 @@
-package org.oppia.app.databinding
+package org.oppia.app.databinding;
 
-import android.graphics.drawable.GradientDrawable
-import android.view.View
-import android.widget.Button
-import androidx.annotation.ColorInt
-import androidx.annotation.DrawableRes
-import androidx.databinding.BindingAdapter
-import org.oppia.app.R
+import android.graphics.drawable.GradientDrawable;
+import android.view.View;
+import android.widget.Button;
+import androidx.annotation.ColorInt;
+import androidx.annotation.DrawableRes;
+import androidx.databinding.BindingAdapter;
+import org.oppia.app.R;
 
 /** Used to set a rounded-rect background drawable with a data-bound color. */
 @BindingAdapter("app:roundedRectDrawableWithColor")
