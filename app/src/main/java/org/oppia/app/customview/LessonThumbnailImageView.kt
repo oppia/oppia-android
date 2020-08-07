@@ -34,6 +34,7 @@ class LessonThumbnailImageView @JvmOverloads constructor(
   @field:DefaultResourceBucketName
   lateinit var resourceBucketName: String
 
+  // TODO(#1571): Investigate this issue to fix the initialization error.
   @Inject
   @field:ThumbnailDownloadUrlTemplate
   lateinit var thumbnailDownloadUrlTemplate: String
@@ -58,7 +59,14 @@ class LessonThumbnailImageView @JvmOverloads constructor(
   }
 
   private fun checkIfLoadingIsPossible() {
-    if (::entityId.isInitialized && ::entityType.isInitialized && ::lessonThumbnail.isInitialized) {
+    if (::entityId.isInitialized &&
+      ::entityType.isInitialized &&
+      ::lessonThumbnail.isInitialized &&
+      ::thumbnailDownloadUrlTemplate.isInitialized &&
+      ::resourceBucketName.isInitialized &&
+      ::gcsPrefix.isInitialized &&
+      ::imageLoader.isInitialized
+    ) {
       loadLessonThumbnail()
     }
   }
