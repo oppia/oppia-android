@@ -25,7 +25,7 @@ import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.oppialogger.OppiaLogger
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.parser.HtmlParser
-import org.oppia.util.parser.RevisionCardHtmlParserEntityType
+import org.oppia.util.parser.TopicHtmlParserEntityType
 import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -38,7 +38,7 @@ class StoryFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<StoryViewModel>,
   private val htmlParserFactory: HtmlParser.Factory,
   @DefaultResourceBucketName private val resourceBucketName: String,
-  @RevisionCardHtmlParserEntityType private val entityType: String
+  @TopicHtmlParserEntityType private val entityType: String
 ) {
   private val routeToExplorationListener = activity as RouteToExplorationListener
 
