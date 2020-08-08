@@ -1,6 +1,5 @@
 package org.oppia.app.hintsandsolution
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -114,12 +113,6 @@ class HintsAndSolutionAdapter(
       }
       binding.isListExpanded = isHintListVisible
       binding.viewModel = hintsViewModel
-
-      /*if (hintsViewModel.isHintRevealed.get()!!) {
-        binding.root.visibility = View.VISIBLE
-      } else {
-        binding.root.visibility = View.GONE
-      }*/
 
       binding.hintTitle.text = hintsViewModel.title.get()!!.replace("_", " ").capitalize()
       binding.hintsAndSolutionSummary.text =
@@ -245,18 +238,16 @@ class HintsAndSolutionAdapter(
   }
 
   fun setRevealSolution(saveUserChoice: Boolean) {
-    if (itemList[itemList.size - 1] is SolutionViewModel) {
-      val solutionViewModel = itemList[itemList.size - 1] as SolutionViewModel
+    if (itemList[itemList.size - 2] is SolutionViewModel) {
+      val solutionViewModel = itemList[itemList.size - 2] as SolutionViewModel
       solutionViewModel.isSolutionRevealed.set(saveUserChoice)
       (fragment.requireActivity() as? RevealSolutionInterface)?.revealSolution(saveUserChoice)
-      notifyItemChanged(itemList.size - 1)
+      notifyItemChanged(itemList.size - 2)
     }
   }
 
   fun setNewHintIsAvailable(hintIndex: Int) {
-    Log.d("setNewHintIsAvailable", "$hintIndex")
     if (itemList[hintIndex * 2] is HintsViewModel) {
-      Log.d("setNewHintIsAvailable", "True, index*2 = ${hintIndex * 2}")
       val hintsViewModel = itemList[hintIndex * 2] as HintsViewModel
       hintsViewModel.hintCanBeRevealed.set(true)
       notifyItemChanged(hintIndex * 2)
@@ -264,12 +255,10 @@ class HintsAndSolutionAdapter(
   }
 
   fun setSolutionCanBeRevealed(allHintsExhausted: Boolean) {
-    Log.d("solutionCanBeRevealed", "allHintsExhausted $allHintsExhausted")
-    if (itemList[itemList.size - 1] is SolutionViewModel) {
-      Log.d("solutionCanBeRevealed", "true, is SolutionViewModel")
-      val solutionViewModel = itemList[itemList.size - 1] as SolutionViewModel
+    if (itemList[itemList.size - 2] is SolutionViewModel) {
+      val solutionViewModel = itemList[itemList.size - 2] as SolutionViewModel
       solutionViewModel.solutionCanBeRevealed.set(allHintsExhausted)
-      notifyItemChanged(itemList.size - 1)
+      notifyItemChanged(itemList.size - 2)
     }
   }
 }

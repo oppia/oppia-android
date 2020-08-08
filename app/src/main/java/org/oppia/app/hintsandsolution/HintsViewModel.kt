@@ -53,7 +53,8 @@ class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
       }
     }
 
-    if (solution.hasExplanation() && hintList.size == itemList.size) {
+    val isLastHintRevealed = (itemList[itemList.size - 1] as HintsViewModel).isHintRevealed.get()!!
+    if (solution.hasExplanation() && hintList.size == itemList.size && isLastHintRevealed) {
       val solutionViewModel = SolutionViewModel()
       solutionViewModel.title.set(solution.explanation.contentId)
       solutionViewModel.correctAnswer.set(solution.correctAnswer.correctAnswer)

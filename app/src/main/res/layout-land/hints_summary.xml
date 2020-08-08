@@ -18,6 +18,7 @@
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_marginTop="32dp"
       android:orientation="vertical">
 
       <androidx.constraintlayout.widget.ConstraintLayout
@@ -109,11 +110,5 @@
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="16sp" />
       </LinearLayout>
-
-      <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="32dp"
-        android:background="@color/grey_shade_29"/>
     </LinearLayout>
 </layout>
