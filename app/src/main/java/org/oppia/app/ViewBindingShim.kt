@@ -20,43 +20,62 @@ import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
 import org.oppia.util.parser.HtmlParser
+import org.oppia.app.ui.R
+import javax.inject.Inject
 
-class ViewBindingShim :
-  ViewBindingShimInterface {
+class ViewBindingShim @Inject constructor(): ViewBindingShimInterface {
 
   override fun provideProfileInputViewBindingLabelText(
     inflater: LayoutInflater,
     parent: ViewGroup,
-    attachToParent: Boolean): TextView {
-    val binding = DataBindingUtil.inflate<ProfileInputViewBinding>(inflater,
-      R.layout.profile_input_view,parent,attachToParent)
+    attachToParent: Boolean
+  ): TextView {
+    val binding = DataBindingUtil.inflate<ProfileInputViewBinding>(
+      inflater,
+      R.layout.profile_input_view,
+      parent,
+      attachToParent
+    )
     return binding.labelText
   }
 
   override fun provideProfileInputViewBindingInput(
     inflater: LayoutInflater,
     parent: ViewGroup,
-    attachToParent: Boolean): EditText {
-    val binding = DataBindingUtil.inflate<ProfileInputViewBinding>(inflater,
-      R.layout.profile_input_view,parent,attachToParent)
+    attachToParent: Boolean
+  ): EditText {
+    val binding = DataBindingUtil.inflate<ProfileInputViewBinding>(
+      inflater,
+      R.layout.profile_input_view,
+      parent,
+      attachToParent
+    )
     return binding.input
   }
 
   override fun provideProfileInputViewBindingErrorText(
     inflater: LayoutInflater,
     parent: ViewGroup,
-    attachToParent: Boolean): TextView {
-    val binding = DataBindingUtil.inflate<ProfileInputViewBinding>(inflater,
-      R.layout.profile_input_view,parent,attachToParent)
+    attachToParent: Boolean
+  ): TextView {
+    val binding = DataBindingUtil.inflate<ProfileInputViewBinding>(
+      inflater,
+      R.layout.profile_input_view,
+      parent,
+      attachToParent
+    )
     return binding.errorText
   }
 
   override fun provideSelectionInteractionViewInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
-    attachToParent: Boolean): View {
+    attachToParent: Boolean
+  ): View {
     return ItemSelectionInteractionItemsBinding.inflate(
-      LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
+      LayoutInflater.from(parent.context),
+      parent,
+      /* attachToParent= */ false
     ).root
   }
 
@@ -66,14 +85,19 @@ class ViewBindingShim :
     htmlParserFactory: HtmlParser.Factory,
     resourceBucketName: String,
     entityType: String,
-    entityId: String) {
+    entityId: String
+  ) {
     val binding =
       DataBindingUtil.findBinding<ItemSelectionInteractionItemsBinding>(view)!!
     binding.htmlContent =
       htmlParserFactory.create(
-        resourceBucketName, entityType, entityId, /* imageCenterAlign= */ false
+        resourceBucketName,
+        entityType,
+        entityId,
+        /* imageCenterAlign= */ false
       ).parseOppiaHtml(
-        viewModel.htmlContent, binding.itemSelectionContentsTextView
+        viewModel.htmlContent,
+        binding.itemSelectionContentsTextView
       )
     binding.viewModel = viewModel
   }
@@ -81,7 +105,8 @@ class ViewBindingShim :
   override fun provideMultipleChoiceInteractionItemsInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
-    attachToParent: Boolean): View {
+    attachToParent: Boolean
+  ): View {
     return MultipleChoiceInteractionItemsBinding.inflate(
       LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
     ).root
@@ -93,7 +118,8 @@ class ViewBindingShim :
     htmlParserFactory: HtmlParser.Factory,
     resourceBucketName: String,
     entityType: String,
-    entityId: String) {
+    entityId: String
+  ) {
     val binding =
       DataBindingUtil.findBinding<MultipleChoiceInteractionItemsBinding>(view)!!
     binding.htmlContent =
@@ -105,14 +131,11 @@ class ViewBindingShim :
     binding.viewModel = viewModel
   }
 
-  override fun provideFragmentManager(view: View) {
-    return FragmentManager.findFragment<InjectableFragment>(view).createViewComponent(view).inject(this)
-  }
-
   override fun provideDragDropSortInteractionInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
-    attachToParent: Boolean): View {
+    attachToParent: Boolean
+  ): View {
     return DragDropInteractionItemsBinding.inflate(
       LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
     ).root

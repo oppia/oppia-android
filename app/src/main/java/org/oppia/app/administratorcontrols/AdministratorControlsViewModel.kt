@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import org.oppia.app.IntentFactoryShimInterface
 import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsAccountActionsViewModel
 import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsAppInformationViewModel
 import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsDownloadPermissionsViewModel
@@ -26,7 +27,8 @@ class AdministratorControlsViewModel @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val logger: ConsoleLogger,
-  private val profileManagementController: ProfileManagementController
+  private val profileManagementController: ProfileManagementController,
+  private val intentFactoryShimInterface: IntentFactoryShimInterface
 ) : ObservableViewModel() {
   private val routeToProfileListListener = activity as RouteToProfileListListener
   private lateinit var userProfileId: ProfileId
@@ -72,7 +74,10 @@ class AdministratorControlsViewModel @Inject constructor(
       )
     )
     itemViewModelList.add(AdministratorControlsAppInformationViewModel(activity))
-    itemViewModelList.add(AdministratorControlsAccountActionsViewModel(fragment))
+    itemViewModelList.add(AdministratorControlsAccountActionsViewModel(
+      fragment,
+      intentFactoryShimInterface
+    ))
 
     return itemViewModelList
   }

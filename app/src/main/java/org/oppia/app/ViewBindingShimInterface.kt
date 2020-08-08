@@ -56,8 +56,6 @@ interface ViewBindingShimInterface {
     entityType: String,
     entityId: String)
 
-  fun provideFragmentManager(view: View)
-
   fun provideDragDropSortInteractionInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,

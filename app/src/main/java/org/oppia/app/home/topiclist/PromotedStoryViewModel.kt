@@ -15,7 +15,8 @@ import javax.inject.Inject
 /** [ViewModel] for displaying a promoted story. */
 class PromotedStoryViewModel(
   private val activity: AppCompatActivity,
-  private val internalProfileId: Int
+  private val internalProfileId: Int,
+  private val intentFactoryShimInterface: IntentFactoryShimInterface
 ) :
   ObservableViewModel(),
   RouteToTopicPlayStoryListener {
@@ -26,9 +27,6 @@ class PromotedStoryViewModel(
    * always in sync.
    */
   val promotedStoryObservable = ObservableField<PromotedStory>()
-
-  @Inject
-  lateinit var intentFactoryShimInterface: IntentFactoryShimInterface
 
   fun setPromotedStory(promotedStory: PromotedStory) {
     promotedStoryObservable.set(promotedStory)

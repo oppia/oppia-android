@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
-import org.oppia.app.R
+import org.oppia.app.ui.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID

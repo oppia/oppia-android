@@ -10,11 +10,9 @@ import javax.inject.Inject
 
 /** [ViewModel] for the recycler view in [AdministratorControlsFragment]. */
 class AdministratorControlsAccountActionsViewModel(
-  private val fragment: Fragment
+  private val fragment: Fragment,
+  private val intentFactoryShimInterface: IntentFactoryShimInterface
 ) : AdministratorControlsItemViewModel() {
-
-  @Inject
-  lateinit var intentFactoryShimInterface: IntentFactoryShimInterface
 
   fun onLogOutClicked() {
     AlertDialog.Builder(fragment.context!!, R.style.AlertDialogTheme)

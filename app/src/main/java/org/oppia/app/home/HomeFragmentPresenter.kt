@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
+import org.oppia.app.IntentFactoryShimInterface
 import org.oppia.app.ui.R
 import org.oppia.app.databinding.databinding.HomeFragmentBinding
 import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
@@ -43,7 +44,8 @@ class HomeFragmentPresenter @Inject constructor(
   private val topicListController: TopicListController,
   private val oppiaClock: OppiaClock,
   private val logger: ConsoleLogger,
-  private val oppiaLogger: OppiaLogger
+  private val oppiaLogger: OppiaLogger,
+  private val intentFactoryShimInterface: IntentFactoryShimInterface
 ) {
   private val routeToTopicListener = activity as RouteToTopicListener
   private val itemList: MutableList<HomeItemViewModel> = ArrayList()
@@ -67,7 +69,11 @@ class HomeFragmentPresenter @Inject constructor(
     logHomeActivityEvent()
 
     welcomeViewModel = WelcomeViewModel()
-    promotedStoryListViewModel = PromotedStoryListViewModel(activity, internalProfileId)
+    promotedStoryListViewModel = PromotedStoryListViewModel(
+      activity,
+      internalProfileId,
+      intentFactoryShimInterface
+    )
     allTopicsViewModel = AllTopicsViewModel()
     itemList.add(welcomeViewModel)
     itemList.add(promotedStoryListViewModel)
@@ -182,14 +188,22 @@ class HomeFragmentPresenter @Inject constructor(
         promotedStoryList.clear()
         if (it.recentStoryCount != 0) {
           it.recentStoryList.take(limit).forEach { promotedStory ->
-            val recentStory = PromotedStoryViewModel(activity, internalProfileId)
+            val recentStory = PromotedStoryViewModel(
+              activity,
+              internalProfileId,
+              intentFactoryShimInterface
+            )
             recentStory.setPromotedStory(promotedStory)
             promotedStoryList.add(recentStory)
           }
         } else {
           // TODO(#936): Optimise this as part of recommended stories.
           it.olderStoryList.take(limit).forEach { promotedStory ->
-            val oldStory = PromotedStoryViewModel(activity, internalProfileId)
+            val oldStory = PromotedStoryViewModel(
+              activity,
+              internalProfileId,
+              intentFactoryShimInterface
+            )
             oldStory.setPromotedStory(promotedStory)
             promotedStoryList.add(oldStory)
           }

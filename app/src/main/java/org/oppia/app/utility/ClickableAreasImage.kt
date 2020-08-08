@@ -19,7 +19,8 @@ import kotlin.math.roundToInt
 class ClickableAreasImage(
   private val imageView: ImageRegionSelectionInteractionView,
   private val parentView: FrameLayout,
-  private val listener: OnClickableAreaClickedListener
+  private val listener: OnClickableAreaClickedListener,
+  private val bindingInterface: ViewBindingShimInterface
 ) {
   init {
     imageView.setOnTouchListener { view, motionEvent ->
@@ -29,9 +30,6 @@ class ClickableAreasImage(
       return@setOnTouchListener false
     }
   }
-
-  @Inject
-  lateinit var bindingInterface: ViewBindingShimInterface
 
   /**
    * Called when an image is clicked.

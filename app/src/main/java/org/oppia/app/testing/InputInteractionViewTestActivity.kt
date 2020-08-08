@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import org.oppia.app.R
+import org.oppia.app.ui.R
 import org.oppia.app.customview.interaction.FractionInputInteractionView
 import org.oppia.app.customview.interaction.NumericInputInteractionView
 import org.oppia.app.customview.interaction.TextInputInteractionView

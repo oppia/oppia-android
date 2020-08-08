@@ -5,7 +5,8 @@ android_binary(
     custom_package = "org.oppia.app",
     enable_data_binding = True,
     manifest = "//app:src/main/AndroidManifest.xml",
-    multidex = "legacy",
+    multidex = "native",
+    manifest_values = {"applicationId": "org.oppia.app"},
     deps = [
       "//app",
     ],

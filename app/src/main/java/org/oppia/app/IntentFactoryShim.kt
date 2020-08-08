@@ -7,13 +7,12 @@ import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.topic.TopicActivity
-import javax.inject.Singleton
+import javax.inject.Inject
 
-@Singleton
-class IntentFactoryShim : IntentFactoryShimInterface {
+class IntentFactoryShim @Inject constructor(): IntentFactoryShimInterface {
 
-    private const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
-    private const val TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY = "TopicActivity.story_id"
+    private val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
+    private val TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY = "TopicActivity.story_id"
 
     override fun createProfileActivityIntent(fragment: FragmentActivity): Intent {
       return Intent(fragment, ProfileActivity::class.java)

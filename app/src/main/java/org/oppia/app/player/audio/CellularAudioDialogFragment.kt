@@ -8,7 +8,7 @@ import android.widget.CheckBox
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.DialogFragment
-import org.oppia.app.R
+import org.oppia.app.ui.R
 
 /**
  * DialogFragment that indicates to the user they are on cellular when trying to play an audio voiceover.

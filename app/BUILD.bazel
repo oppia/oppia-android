@@ -167,6 +167,7 @@ LISTENER_FILES = [
     "src/main/java/org/oppia/app/home/recentlyplayed/OngoingStoryClickListener.kt",
     "src/main/java/org/oppia/app/help/faq/RouteToFAQSingleListener.kt",
     "src/main/java/org/oppia/app/administratorcontrols/RouteToProfileListListener.kt",
+    "src/main/java/org/oppia/app/onboarding/RouteToProfileListListener.kt",
     "src/main/java/org/oppia/app/drawer/RouteToProfileProgressListener.kt",
     "src/main/java/org/oppia/app/options/RouteToAppLanguageListListener.kt",
     "src/main/java/org/oppia/app/administratorcontrols/RouteToAppVersionListener.kt",
@@ -213,6 +214,9 @@ VIEW_FILES = [
     "src/main/java/org/oppia/app/player/state/ImageRegionSelectionInteractionView.kt",
     "src/main/java/org/oppia/app/utility/ClickableAreasImage.kt",
     "src/main/java/org/oppia/app/customview/SegmentedCircularProgressView.kt",
+    "src/main/java/org/oppia/app/ViewComponentFactory.kt",
+    "src/main/java/org/oppia/app/view/ViewComponent.kt",
+    "src/main/java/org/oppia/app/view/ViewScope.kt",
 #    "src/main/java/org/oppia/app/fragment/InjectableFragment.kt",
 #    "src/main/java/org/oppia/app/activity/InjectableAppCompatActivity.kt",
 ]
@@ -433,7 +437,7 @@ kt_android_library(
         artifact("androidx.multidex:multidex:2.0.1"),
         artifact("androidx.multidex:multidex-instrumentation:2.0.0"),
         artifact("com.google.android.material:material:1.2.0-alpha02"),
-
+        #artifact("com.google.gms:google-services:4.3.3"),
         artifact("androidx.viewpager:viewpager:1.0.0"),
         "@circularimageview//circularimageview:circular_image_view",
     ],

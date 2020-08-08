@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.app.R
+import org.oppia.app.ui.R
 import org.oppia.app.fragment.InjectableDialogFragment
 import javax.inject.Inject
 

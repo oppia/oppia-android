@@ -10,13 +10,11 @@ import javax.inject.Inject
 /** [ViewModel] promoted story list in [HomeFragment]. */
 class PromotedStoryListViewModel(
   private val activity: AppCompatActivity,
-  private val internalProfileId: Int
+  private val internalProfileId: Int,
+  private val intentFactoryShimInterface: IntentFactoryShimInterface
 ) :
   HomeItemViewModel(),
   RouteToRecentlyPlayedListener {
-
-  @Inject
-  lateinit var intentFactoryShimInterface: IntentFactoryShimInterface
 
   fun clickOnViewAll() {
     routeToRecentlyPlayed()

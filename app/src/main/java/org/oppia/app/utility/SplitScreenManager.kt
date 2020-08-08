@@ -2,7 +2,7 @@ package org.oppia.app.utility
 
 import android.content.Context
 import android.content.res.Resources
-import org.oppia.app.R
+import org.oppia.app.ui.R
 import org.oppia.app.model.EphemeralQuestion
 import org.oppia.app.model.EphemeralState
 import org.oppia.app.player.state.StateFragment

@@ -24,6 +24,8 @@ import org.oppia.util.logging.LoggerModule
 import org.oppia.util.logging.firebase.LogReportingModule
 import org.oppia.util.parser.GlideImageLoaderModule
 import org.oppia.util.parser.HtmlParserEntityTypeModule
+import org.oppia.app.IntentFactoryShimModule
+import org.oppia.app.ViewBindingShimModule
 import org.oppia.util.parser.ImageParsingModule
 import org.oppia.util.threading.DispatcherModule
 import javax.inject.Provider
@@ -44,7 +46,8 @@ import javax.inject.Singleton
     HtmlParserEntityTypeModule::class, CachingModule::class,
     QuestionModule::class, LogReportingModule::class,
     AccessibilityModule::class, ImageClickInputModule::class,
-    LogStorageModule::class
+    LogStorageModule::class, IntentFactoryShimModule::class,
+    ViewBindingShimModule::class
   ]
 )
 

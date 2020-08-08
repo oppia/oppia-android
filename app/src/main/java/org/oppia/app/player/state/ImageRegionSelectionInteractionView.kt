@@ -7,8 +7,11 @@ import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.forEachIndexed
 import androidx.databinding.BindingAdapter
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import org.oppia.app.ViewBindingShimInterface
+import org.oppia.app.ViewComponentFactory
 import org.oppia.app.model.ImageWithRegions
 import org.oppia.app.recyclerview.DragAndDropItemFacilitator
 import org.oppia.app.recyclerview.OnDragEndedListener
@@ -115,7 +118,8 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
     val area = ClickableAreasImage(
       this,
       this.parent as FrameLayout,
-      listener
+      listener,
+      bindingInterface
     )
     area.addRegionViews()
   }
@@ -130,7 +134,8 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    bindingInterface.provideFragmentManager(this)
+    (FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory)
+      .createViewComponent(this).inject(this)
     isAccessibilityEnabled = accessibilityManager.isScreenReaderEnabled()
   }
 
@@ -154,7 +159,8 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
     val area = ClickableAreasImage(
       this,
       overlayView,
-      onRegionClicked
+      onRegionClicked,
+      bindingInterface
     )
 
     this.addOnLayoutChangeListener { _, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom -> // ktlint-disable max-line-length

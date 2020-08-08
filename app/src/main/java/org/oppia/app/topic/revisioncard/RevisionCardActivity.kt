@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import org.oppia.app.R
+import org.oppia.app.ui.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 

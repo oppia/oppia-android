@@ -1,7 +1,7 @@
 package org.oppia.app.testing
 
 import android.os.Bundle
-import org.oppia.app.R
+import org.oppia.app.ui.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 
 // TODO(#59): Make this activity only included in relevant tests instead of all prod builds.

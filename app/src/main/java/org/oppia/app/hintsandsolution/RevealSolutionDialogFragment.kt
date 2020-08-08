@@ -7,7 +7,7 @@ import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.DialogFragment
-import org.oppia.app.R
+import org.oppia.app.ui.R
 
 /**
  * DialogFragment that asks to the user if they want to reveal solution.

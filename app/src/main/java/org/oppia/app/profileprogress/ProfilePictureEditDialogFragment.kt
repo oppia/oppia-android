@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.DialogFragment
-import org.oppia.app.R
+import org.oppia.app.ui.R
 
 /** [DialogFragment] that gives option to either view the profile picture or change the current profile picture. */
 class ProfilePictureEditDialogFragment : DialogFragment() {

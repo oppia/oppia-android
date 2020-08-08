@@ -161,6 +161,9 @@ maven_install(
         "org.mockito:mockito-core:2.19.0",
         "org.robolectric:annotations:4.3",
         "org.robolectric:robolectric:4.3",
+        "com.squareup.retrofit2:retrofit:2.9.0",
+        "com.squareup.retrofit2:converter-gson:2.5.0",
+        "com.google.gms:google-services:4.3.3",
     ],
     repositories = DAGGER_REPOSITORIES + [
         "https://bintray.com/bintray/jcenter",
