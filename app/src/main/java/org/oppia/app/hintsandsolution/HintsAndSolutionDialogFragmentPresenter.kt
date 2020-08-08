@@ -104,15 +104,15 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun getHintListWithDividers(hintList: List<HintsAndSolutionItemViewModel>)
-    : List<HintsAndSolutionItemViewModel> {
-    val newHintList = mutableListOf<HintsAndSolutionItemViewModel>()
-    hintList.forEach {
-      newHintList.add(it)
-      newHintList.add(HintsDividerViewModel())
+  private fun getHintListWithDividers(hintList: List<HintsAndSolutionItemViewModel>):
+    List<HintsAndSolutionItemViewModel> {
+      val newHintList = mutableListOf<HintsAndSolutionItemViewModel>()
+      hintList.forEach {
+        newHintList.add(it)
+        newHintList.add(HintsDividerViewModel())
+      }
+      return newHintList
     }
-    return newHintList
-  }
 
   private fun handleAllHintsExhausted(allHintsExhausted: Boolean) {
     hintsAndSolutionAdapter.setSolutionCanBeRevealed(allHintsExhausted)

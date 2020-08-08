@@ -174,7 +174,6 @@ class HintsAndSolutionAdapter(
       }
       binding.isListExpanded = isHintListVisible
       binding.viewModel = solutionViewModel
-      //binding.root.visibility = View.GONE
       binding.solutionTitle.text = solutionViewModel.title.get()!!.capitalize()
       // TODO(#1050): Update to display answers for any answer type.
       if (solutionViewModel.correctAnswer.get().isNullOrEmpty()) {
