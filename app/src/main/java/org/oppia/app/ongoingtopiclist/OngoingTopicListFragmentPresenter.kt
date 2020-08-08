@@ -1,12 +1,12 @@
 package org.oppia.app.ongoingtopiclist
 
-import android.content.res.Configuration
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import org.oppia.app.R
 import org.oppia.app.databinding.OngoingTopicItemBinding
 import org.oppia.app.databinding.OngoingTopicListFragmentBinding
 import org.oppia.app.recyclerview.BindableAdapter
@@ -42,12 +42,7 @@ class OngoingTopicListFragmentPresenter @Inject constructor(
 
     binding.ongoingTopicList.apply {
       adapter = createRecyclerViewAdapter()
-      val spanCount =
-        if (fragment.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-          3
-        } else {
-          2
-        }
+      val spanCount = activity.resources.getInteger(R.integer.ongoing_topics_span_count)
       layoutManager = GridLayoutManager(context, spanCount)
     }
 

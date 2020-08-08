@@ -196,7 +196,6 @@ class TopicControllerTest {
       val topic = topicResultCaptor.value!!.getOrThrow()
       assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
       assertThat(topic.storyCount).isEqualTo(1)
-      assertThat(topic.skillCount).isEqualTo(3)
     }
 
   @Test
@@ -223,7 +222,6 @@ class TopicControllerTest {
       val topic = topicResultCaptor.value!!.getOrThrow()
       assertThat(topic.topicId).isEqualTo(RATIOS_TOPIC_ID)
       assertThat(topic.storyCount).isEqualTo(2)
-      assertThat(topic.skillCount).isEqualTo(1)
     }
 
   @Test
@@ -401,6 +399,20 @@ class TopicControllerTest {
       verifyGetStorySucceeded()
       val story = storySummaryResultCaptor.value!!.getOrThrow()
       assertThat(story.getChapter(0).name).isEqualTo("Fifth Exploration")
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testRetrieveStory_validStory_returnsStoryWithChapterSummary() =
+    runBlockingTest(coroutineContext) {
+      topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0)
+        .observeForever(mockStorySummaryObserver)
+      advanceUntilIdle()
+
+      verifyGetStorySucceeded()
+      val story = storySummaryResultCaptor.value!!.getOrThrow()
+      assertThat(story.getChapter(0).summary)
+        .isEqualTo("This is outline/summary for <b>What is a Fraction?</b>")
     }
 
   @Test
@@ -784,19 +796,6 @@ class TopicControllerTest {
       assertThat(topic.subtopicList[0].subtopicThumbnail.thumbnailGraphic).isEqualTo(
         LessonThumbnailGraphic.WHAT_IS_A_FRACTION
       )
-    }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testRetrieveSubtopicTopic_validSubtopic_subtopicsHaveNoThumbnailUrls() =
-    runBlockingTest(coroutineContext) {
-      topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID).observeForever(mockTopicObserver)
-      advanceUntilIdle()
-
-      verifyGetTopicSucceeded()
-      val topic = topicResultCaptor.value!!.getOrThrow()
-      assertThat(topic.subtopicList[0].thumbnailUrl).isEmpty()
-      assertThat(topic.subtopicList[1].thumbnailUrl).isEmpty()
     }
 
   @Test

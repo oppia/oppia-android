@@ -3,7 +3,6 @@ package org.oppia.util.parser
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Picture
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -54,8 +53,8 @@ class UrlImageParser private constructor(
     urlDrawable, { resource -> BitmapDrawable(context.resources, resource) }
   )
 
-  private inner class SvgTarget(urlDrawable: UrlDrawable) : CustomImageTarget<Picture>(
-    urlDrawable, { resource -> PictureDrawable(resource) }
+  private inner class SvgTarget(urlDrawable: UrlDrawable) : CustomImageTarget<PictureDrawable>(
+    urlDrawable, { it }
   )
 
   private open inner class CustomImageTarget<T>(

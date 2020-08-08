@@ -18,22 +18,23 @@
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:onClick="@{(v) -> viewModel.clickOnSummaryTile()}"
       android:clickable="true"
-      android:focusable="true">
+      android:focusable="true"
+      android:onClick="@{(v) -> viewModel.clickOnSummaryTile()}">
 
-      <ImageView
+      <org.oppia.app.customview.LessonThumbnailImageView
         android:id="@+id/topic_thumbnail_image_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:importantForAccessibility="no"
         android:scaleType="centerInside"
-        android:background="@color/topicThumbnailBackground"
-        android:src="@{viewModel.topicSummary.topicThumbnail.thumbnailGraphic}"
+        app:entityId="@{viewModel.topicSummary.topicId}"
+        app:entityType="@{viewModel.entityType}"
         app:layout_constraintDimensionRatio="4:3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:lessonThumbnail="@{viewModel.topicSummary.topicThumbnail}" />
 
       <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
@@ -49,13 +50,13 @@
           android:id="@+id/topic_name_text_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:layout_marginStart="8dp"
+          android:layout_marginTop="8dp"
+          android:layout_marginEnd="8dp"
           android:ellipsize="end"
           android:fontFamily="sans-serif"
           android:gravity="top"
           android:maxLines="2"
-          android:layout_marginTop="8dp"
-          android:layout_marginStart="8dp"
-          android:layout_marginEnd="8dp"
           android:minLines="2"
           android:text="@{viewModel.name}"
           android:textColor="@color/white"
@@ -68,15 +69,15 @@
           android:id="@+id/lesson_count_text_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:layout_marginStart="8dp"
+          android:layout_marginTop="4dp"
+          android:layout_marginEnd="8dp"
           android:fontFamily="sans-serif-light"
+          android:paddingBottom="8dp"
           android:text="@{@plurals/lesson_count(viewModel.totalChapterCount, viewModel.totalChapterCount)}"
           android:textColor="@color/white_80"
           android:textSize="14sp"
           android:textStyle="italic"
-          android:layout_marginTop="4dp"
-          android:layout_marginStart="8dp"
-          android:layout_marginEnd="8dp"
-          android:paddingBottom="8dp"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/topic_name_text_view" />
       </androidx.constraintlayout.widget.ConstraintLayout>
