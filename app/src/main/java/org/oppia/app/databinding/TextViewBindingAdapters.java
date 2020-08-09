@@ -9,6 +9,9 @@ import org.oppia.app.R;
 import org.oppia.util.system.OppiaDateTimeFormatter;
 import java.util.Locale;
 
+/**
+ * Holds all the custom binding adapters that bind to [TextView] adapters.
+ */
 public final class TextViewBindingAdapters {
   /**
    * Binds date text with relative time.

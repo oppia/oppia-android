@@ -3,6 +3,10 @@ package org.oppia.app.databinding;
 import android.view.View;
 import androidx.databinding.BindingAdapter;
 
+/**
+ * Holds all the custom binding adapters that set padding values for exploration view, exploration
+ * split-veiw, question view, and question split-view.
+ */
 public final class StateAssemblerPaddingBindingAdapters {
   /**
    * Used to set a padding for exploration split-view.

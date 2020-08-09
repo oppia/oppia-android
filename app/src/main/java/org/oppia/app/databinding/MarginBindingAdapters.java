@@ -5,6 +5,9 @@ import android.view.ViewGroup.MarginLayoutParams;
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 
+/**
+ * Holds all the custom binding adapters that set margin values.
+ */
 public final class MarginBindingAdapters {
   /**
    * Used to set a margin-start for views.

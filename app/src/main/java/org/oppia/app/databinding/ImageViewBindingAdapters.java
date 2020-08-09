@@ -16,6 +16,9 @@ import org.oppia.app.R;
 import org.oppia.app.model.LessonThumbnailGraphic;
 import org.oppia.app.model.ProfileAvatar;
 
+/**
+ * Holds all the custom binding adapters that bind to [ImageView] adapters.
+ */
 public final class ImageViewBindingAdapters {
   /**
    * Allows binding drawables to an [ImageView] via "android:src". Source: https://stackoverflow.com/a/35809319/3689782.
