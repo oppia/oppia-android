@@ -1,0 +1,40 @@
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+'''
+This library contains utilities that all other modules, minus model, depend on.
+It also contains Robolectric and JUnit tests for it's utilities.
+In Bazel, Kotlin source files are built into a library using the kt_android_library() rule.
+Kotlin test files must be built in their own kt_android_library() rule and added as a dependency to
+an android_local_test() rule which configures instrumentation tests in Bazel.
+'''
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+
+# Library for general-purpose utilities.
+kt_android_library(
+    name = "utility",
+    custom_package = "org.oppia.util",
+    srcs = glob(["src/main/java/org/oppia/util/**/*.kt"]),
+    resource_files = glob(["src/main/res/**/*.xml"]),
+    manifest = "src/main/AndroidManifest.xml",
+    deps = [
+        ":dagger",
+        "//model",
+        "//app:crashlytics",
+        "//app:crashlytics_deps",
+        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-core"),
+        artifact("androidx.appcompat:appcompat"),
+        artifact("com.github.bumptech.glide:glide"),
+        artifact("com.caverock:androidsvg-aar"),
+    ],
+    visibility = ["//visibility:public"],
+)
+
+# TODO(#59): Write a kt_android_library() rule to build test files and an android_local_test() rule.
+'''
+Because test files depend on the testing module source files being built, these rules have been left
+for a later PR.
+'''
+
+dagger_rules()
