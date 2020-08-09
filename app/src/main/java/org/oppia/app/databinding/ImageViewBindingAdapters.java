@@ -21,7 +21,8 @@ import org.oppia.app.model.ProfileAvatar;
  */
 public final class ImageViewBindingAdapters {
   /**
-   * Allows binding drawables to an [ImageView] via "android:src". Source: https://stackoverflow.com/a/35809319/3689782.
+   * Allows binding drawables to an [ImageView] via "android:src".
+   * Source: https://stackoverflow.com/a/35809319/3689782.
    */
   @BindingAdapter("android:src")
   public static void setImageDrawable(@NonNull ImageView imageView, String imageUrl) {
@@ -33,7 +34,8 @@ public final class ImageViewBindingAdapters {
   }
 
   /**
-   * Allows binding drawables to an [ImageView] via "android:src". Source: https://stackoverflow.com/a/35809319/3689782.
+   * Allows binding drawables to an [ImageView] via "android:src".
+   * Source: https://stackoverflow.com/a/35809319/3689782.
    */
   @BindingAdapter("android:src")
   public static void setImageDrawable(
@@ -44,8 +46,9 @@ public final class ImageViewBindingAdapters {
   }
 
   /**
-   * Binds the specified [LessonThumbnailGraphic] as the source for the [ImageView]. The view should be specified to have
-   * no width/height (when sized in a constraint layout), and use centerCrop for the image to appear correctly.
+   * Binds the specified [LessonThumbnailGraphic] as the source for the [ImageView].
+   * The view should be specified to have no width/height (when sized in a constraint layout), and
+   * use centerCrop for the image to appear correctly.
    */
   @BindingAdapter("android:src")
   public static void setImageDrawable(
@@ -102,7 +105,8 @@ public final class ImageViewBindingAdapters {
   }
 
   /**
-   * Binding adapter for profile images. Used to either display a local image or custom colored avatar.
+   * Binding adapter for profile images. Used to either display a local image or custom
+   * colored avatar.
    *
    * @param imageView View where the profile avatar will be loaded into.
    * @param profileAvatar Represents either a colorId or local image uri.

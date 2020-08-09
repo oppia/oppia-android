@@ -41,7 +41,9 @@ public final class RecyclerViewBindingAdapter {
     }
   }
 
-  /** A variant of [bindToRecyclerViewAdapterWithLiveData] that instead uses an observable list. */
+  /**
+   * A variant of [bindToRecyclerViewAdapterWithLiveData] that instead uses an observable list.
+   */
   @BindingAdapter("data")
   public static <T> void bindToRecyclerViewAdapterWithObservableList(
       @NonNull RecyclerView recyclerView,
