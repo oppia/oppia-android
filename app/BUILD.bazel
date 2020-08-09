@@ -188,7 +188,7 @@ kt_android_library(
         "//model",
         artifact("androidx.recyclerview:recyclerview:1.0.0"),
     ],
-    visibility = ["//visibility:public"],
+    visibility = ["//visibility:private"],
 )
 
 kt_android_library(
@@ -204,7 +204,7 @@ kt_android_library(
         artifact("androidx.databinding:databinding-common"),
         artifact("androidx.annotation:annotation"),
     ],
-    visibility = ["//visibility:public"],
+    visibility = ["//visibility:private"],
 )
 
 android_library(
@@ -216,6 +216,7 @@ android_library(
     deps = [
         artifact("com.google.android.material:material"),
     ],
+    visibility = ["//visibility:private"],
 )
 
 kt_android_library(
@@ -243,15 +244,17 @@ kt_android_library(
         artifact("com.google.android.material:material:1.2.0-alpha02"),
         artifact("androidx.recyclerview:recyclerview:1.0.0"),
     ],
-    visibility = ["//visibility:public"],
+    visibility = ["//visibility:private"],
 )
 
-# TODO(#1566): Move Firebase rules to their own package
+# TODO(#1566): Move Firebase rules to their own package & remove default visibility
 '''
 Package for all Firebase dependencies.
 To reference these dependencies, add '//app:crashlytics' and '//app:crashlytics_deps'
 to your build rule's dependency list.
 '''
+package(default_visibility = ["//visibility:public"])
+
 GOOGLE_SERVICES_RESOURCES = google_services_xml(
     package_name = "org.oppia.app",
     google_services_json = "google-services.json",
@@ -272,7 +275,6 @@ android_library(
         artifact("com.google.firebase:firebase-analytics"),
         artifact("com.google.firebase:firebase-crashlytics"),
     ],
-    visibility = ["//visibility:public"],
 )
 
 dagger_rules()
