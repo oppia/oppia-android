@@ -4,7 +4,7 @@ import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
 import androidx.databinding.BindingAdapter;
 
-public class StateAssemblerMarginBindingAdapters {
+public final class StateAssemblerMarginBindingAdapters {
   /**
    * Used to set a margin for exploration split-view.
    */

@@ -3,7 +3,7 @@ package org.oppia.app.databinding;
 import android.view.View;
 import androidx.databinding.BindingAdapter;
 
-public class StateAssemblerPaddingBindingAdapters {
+public final class StateAssemblerPaddingBindingAdapters {
   /**
    * Used to set a padding for exploration split-view.
    */

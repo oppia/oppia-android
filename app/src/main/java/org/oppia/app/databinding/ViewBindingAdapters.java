@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 
-public class ViewBindingAdapters {
+public final class ViewBindingAdapters {
 
   private static ValueAnimator appearAnimator = ValueAnimator.ofFloat(0f, 1f);
   private static ValueAnimator disappearAnimator = ValueAnimator.ofFloat(1f, 2f);
