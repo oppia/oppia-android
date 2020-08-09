@@ -6,6 +6,8 @@ This library contains utilities that all other modules, minus model, depend on.
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("//:oppia_android_test.bzl", "oppia_android_test")
+load("//utility:utility_test.bzl", "utility_test")
 
 # Library for general-purpose utilities.
 kt_android_library(
@@ -27,10 +29,75 @@ kt_android_library(
     visibility = ["//visibility:public"],
 )
 
-# TODO(#59): Write a kt_android_library() rule to build test files and an android_local_test() rule.
-'''
-Because test files depend on the testing module source files being built, these rules have been left
-for a later PR.
-'''
+TEST_DEPS = [
+    ":utility",
+    ":dagger",
+    "//testing",
+    "//model",
+    "//app:crashlytics",
+    "//app:crashlytics_deps",
+    "@robolectric//bazel:android-all",
+    artifact("org.jetbrains.kotlin:kotlin-reflect"),
+    artifact("com.google.truth:truth"),
+    artifact("androidx.test.ext:junit"),
+    artifact("org.jetbrains.kotlin:kotlin-test-junit"),
+    artifact("org.mockito:mockito-core"),
+]
+
+utility_test(
+    name = "AsyncResultTest",
+    srcs = ["src/test/java/org/oppia/util/data/AsyncResultTest.kt"],
+    test_class = "org.oppia.util.data.AsyncResultTest",
+    deps = TEST_DEPS,
+)
+
+utility_test(
+    name = "DataProvidersTest",
+    srcs = ["src/test/java/org/oppia/util/data/DataProvidersTest.kt"],
+    test_class = "org.oppia.util.data.DataProvidersTest",
+    deps = TEST_DEPS,
+)
+
+utility_test(
+    name = "InMemoryBlockingCacheTest",
+    srcs = ["src/test/java/org/oppia/util/data/InMemoryBlockingCacheTest.kt"],
+    test_class = "org.oppia.util.data.InMemoryBlockingCacheTest",
+    deps = TEST_DEPS,
+)
+
+utility_test(
+    name = "DateTimeUtilTest",
+    srcs = ["src/test/java/org/oppia/util/datetime/DateTimeUtilTest.kt"],
+    test_class = "org.oppia.util.datetime.DateTimeUtilTest",
+    deps = TEST_DEPS,
+)
+
+utility_test(
+    name = "EventBundleCreatorTest",
+    srcs = ["src/test/java/org/oppia/util/logging/EventBundleCreatorTest.kt"],
+    test_class = "org.oppia.util.logging.EventBundleCreatorTest",
+    deps = TEST_DEPS,
+)
+
+utility_test(
+    name = "NetworkConnectionUtilTest",
+    srcs = ["src/test/java/org/oppia/util/networking/NetworkConnectionUtilTest.kt"],
+    test_class = "org.oppia.util.networking.NetworkConnectionUtilTest",
+    deps = TEST_DEPS,
+)
+
+utility_test(
+    name = "DirectoryManagementUtilTest",
+    srcs = ["src/test/java/org/oppia/util/profile/DirectoryManagementUtilTest.kt"],
+    test_class = "org.oppia.util.profile.DirectoryManagementUtilTest",
+    deps = TEST_DEPS,
+)
+
+utility_test(
+    name = "OppiaDateTimeFormatterTest",
+    srcs = ["src/test/java/org/oppia/util/system/OppiaDateTimeFormatterTest.kt"],
+    test_class = "org.oppia.util.system.OppiaDateTimeFormatterTest",
+    deps = TEST_DEPS,
+)
 
 dagger_rules()
