@@ -14,7 +14,7 @@ public final class TextViewBindingAdapters {
    * Binds date text with relative time.
    */
   @BindingAdapter("profile:created")
-  public static void setProfileDataText(@NotNull TextView textView, Long timestamp) {
+  public static void setProfileDataText(@NotNull TextView textView, long timestamp) {
     OppiaDateTimeFormatter oppiaDateTimeFormatter = new OppiaDateTimeFormatter();
     String time = oppiaDateTimeFormatter.formatDateFromDateString(
         OppiaDateTimeFormatter.DD_MMM_YYYY,
@@ -28,7 +28,7 @@ public final class TextViewBindingAdapters {
   }
 
   @BindingAdapter("profile:lastVisited")
-  public static void setProfileLastVisitedText(@NotNull TextView textView, Long timestamp) {
+  public static void setProfileLastVisitedText(@NotNull TextView textView, long timestamp) {
     textView.setText(
         String.format(
             textView.getContext().getString(R.string.profile_last_used) + " " + getTimeAgo(

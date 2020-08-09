@@ -1,6 +1,8 @@
 package org.oppia.app.recyclerview;
 
 import android.graphics.drawable.Drawable;
+
+import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 import androidx.databinding.ObservableList;
 import androidx.lifecycle.LiveData;
@@ -16,7 +18,7 @@ public class RecyclerViewBindingAdapter {
    */
   @BindingAdapter("data")
   public static <T> void bindToRecyclerViewAdapterWithLiveData(
-      RecyclerView recyclerView,
+      @NonNull RecyclerView recyclerView,
       LiveData<List<T>> liveData
   ) {
     List<T> data = liveData.getValue();
@@ -30,7 +32,7 @@ public class RecyclerViewBindingAdapter {
    */
   @BindingAdapter("list")
   public static <T> void bindToRecyclerViewAdapterWithoutLiveData(
-      RecyclerView recyclerView,
+      @NonNull RecyclerView recyclerView,
       List<T> itemList
   ) {
     if (!(itemList == null) && !(itemList.isEmpty())) {
@@ -41,14 +43,16 @@ public class RecyclerViewBindingAdapter {
   /** A variant of [bindToRecyclerViewAdapterWithLiveData] that instead uses an observable list. */
   @BindingAdapter("data")
   public static <T> void bindToRecyclerViewAdapterWithObservableList(
-      RecyclerView recyclerView,
+      @NonNull RecyclerView recyclerView,
       ObservableList<T> dataList
   ) {
     bindToRecyclerViewAdapter(recyclerView, dataList);
   }
 
-  private static <T> void bindToRecyclerViewAdapter(RecyclerView recyclerView,
-                                                    List<T> dataList) {
+  private static <T> void bindToRecyclerViewAdapter(
+      @NonNull RecyclerView recyclerView,
+      List<T> dataList
+  ) {
 
     RecyclerView.Adapter adapter = recyclerView.getAdapter();
     if (adapter == null) {
@@ -68,7 +72,10 @@ public class RecyclerViewBindingAdapter {
   }
 
   @BindingAdapter("itemDecorator")
-  public static void addItemDecorator(RecyclerView recyclerView, Drawable drawable) {
+  public static void addItemDecorator(
+      @NonNull RecyclerView recyclerView,
+      Drawable drawable
+  ) {
     recyclerView.addItemDecoration(new DividerItemDecorator(drawable));
   }
 }

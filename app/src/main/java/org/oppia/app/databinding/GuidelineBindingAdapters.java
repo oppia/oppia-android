@@ -8,7 +8,7 @@ import androidx.databinding.BindingAdapter;
 public class GuidelineBindingAdapters {
   /** Binding adapter for setting the `guidePercent` for a [Guideline]. */
   @BindingAdapter("app:layout_constraintGuide_percent")
-  public static void setGuidelinePercentage(@NonNull Guideline guideline, Float percentage) {
+  public static void setGuidelinePercentage(@NonNull Guideline guideline, float percentage) {
     ConstraintLayout.LayoutParams params =
         (ConstraintLayout.LayoutParams) guideline.getLayoutParams();
     params.guidePercent = percentage;

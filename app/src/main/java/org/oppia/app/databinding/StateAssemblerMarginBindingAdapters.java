@@ -18,7 +18,7 @@ public class StateAssemblerMarginBindingAdapters {
       },
       requireAll = false
   )
-  public static void  setExplorationSplitViewMargin(
+  public static void setExplorationSplitViewMargin(
       View view,
       boolean isApplicable,
       float marginStart,
@@ -67,7 +67,7 @@ public class StateAssemblerMarginBindingAdapters {
       },
       requireAll = false
   )
-  public static void  setQuestionViewMargin(
+  public static void setQuestionViewMargin(
       View view,
       boolean isApplicable,
       float marginStart,
@@ -91,7 +91,7 @@ public class StateAssemblerMarginBindingAdapters {
       },
       requireAll = false
   )
-  public static void  setQuestionSplitViewMargin(
+  public static void setQuestionSplitViewMargin(
       View view,
       boolean isApplicable,
       float marginStart,
@@ -102,7 +102,7 @@ public class StateAssemblerMarginBindingAdapters {
     setMarginIfApplicable(view, isApplicable, marginStart, marginTop, marginEnd, marginBottom);
   }
 
-  private static void  setMarginIfApplicable(
+  private static void setMarginIfApplicable(
       View view,
       boolean isApplicable,
       float marginStart,

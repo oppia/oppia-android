@@ -2,7 +2,6 @@ package org.oppia.app.databinding;
 
 import android.view.View;
 import androidx.databinding.BindingAdapter;
-import org.jetbrains.annotations.NotNull;
 
 public class StateAssemblerPaddingBindingAdapters {
   /**
