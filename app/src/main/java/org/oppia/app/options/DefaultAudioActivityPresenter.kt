@@ -1,11 +1,8 @@
 package org.oppia.app.options
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
-import org.oppia.app.databinding.DefaultAudioActivityBinding
 import javax.inject.Inject
 
 /** The presenter for [DefaultAudioActivity]. */
@@ -13,42 +10,20 @@ import javax.inject.Inject
 class DefaultAudioActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
 
   private lateinit var prefSummaryValue: String
-  private lateinit var languageSelectionAdapter: LanguageSelectionAdapter
 
   fun handleOnCreate(prefKey: String, prefValue: String) {
-    val binding = DataBindingUtil.setContentView<DefaultAudioActivityBinding>(
-      activity,
-      R.layout.default_audio_activity
-    )
-    prefSummaryValue = prefValue
-    languageSelectionAdapter = LanguageSelectionAdapter(prefKey)
-    binding.audioLanguageRecyclerView.apply {
-      adapter = languageSelectionAdapter
-    }
+    activity.setContentView(R.layout.default_audio_activity)
+    setLanguageSelected(prefValue)
+    val defaultAudioFragment = DefaultAudioFragment.newInstance(prefKey, prefValue)
+    activity.supportFragmentManager.beginTransaction()
+      .add(R.id.default_audio_fragment_container, defaultAudioFragment).commitNow()
+  }
 
-    binding.audioLanguageToolbar.setNavigationOnClickListener {
-      val message = languageSelectionAdapter.getSelectedLanguage()
-      val intent = Intent()
-      intent.putExtra(KEY_MESSAGE_AUDIO_LANGUAGE, message)
-      (activity as DefaultAudioActivity).setResult(REQUEST_CODE_AUDIO_LANGUAGE, intent)
-      activity.finish()
-    }
-    createAdapter()
+  fun setLanguageSelected(audioLanguage: String) {
+    prefSummaryValue = audioLanguage
   }
 
   fun getLanguageSelected(): String {
-    return languageSelectionAdapter.getSelectedLanguage()
-  }
-
-  private fun createAdapter() {
-    // TODO(#669): Replace dummy list with actual language list from backend.
-    val languageList = ArrayList<String>()
-    languageList.add("No Audio")
-    languageList.add("English")
-    languageList.add("French")
-    languageList.add("Hindi")
-    languageList.add("Chinese")
-    languageSelectionAdapter.setLanguageList(languageList)
-    languageSelectionAdapter.setDefaultLanguageSelected(prefSummaryValue = prefSummaryValue)
+    return prefSummaryValue
   }
 }
