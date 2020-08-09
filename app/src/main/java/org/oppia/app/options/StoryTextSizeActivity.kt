@@ -50,12 +50,12 @@ class StoryTextSizeActivity : InjectableAppCompatActivity() {
     super.onSaveInstanceState(outState)
     outState.putString(
       KEY_STORY_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE,
-      storyTextSizeActivityPresenter.geSelectedStoryTextSize()
+      storyTextSizeActivityPresenter.getSelectedStoryTextSize()
     )
   }
 
   override fun onBackPressed() {
-    val message = storyTextSizeActivityPresenter.geSelectedStoryTextSize()
+    val message = storyTextSizeActivityPresenter.getSelectedStoryTextSize()
     val intent = Intent()
     intent.putExtra(KEY_MESSAGE_STORY_TEXT_SIZE, message)
     setResult(REQUEST_CODE_TEXT_SIZE, intent)
