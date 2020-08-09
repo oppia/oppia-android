@@ -104,17 +104,29 @@ git_repository(
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_workspace_dependencies")
 google_services_workspace_dependencies()
 
+git_repository(
+    name = "circularimageview",
+    commit = "6098dec76713b34eb8b10883cbe54189ddc08566",
+    remote = "https://github.com/oppia/CircularImageview",
+)
+
+bind(
+  name = "databinding_annotation_processor",
+  actual = "//tools/android:compiler_annotation_processor",
+)
+
 load("@rules_jvm_external//:defs.bzl", "maven_install")
 
 maven_install(
     artifacts = DAGGER_ARTIFACTS + [
+        "android.arch.core:core-testing:1.1.1",
         "androidx.annotation:annotation:1.1.0",
         "androidx.appcompat:appcompat:1.0.2",
+        "androidx.arch.core:core-testing:2.1.0",
         "androidx.core:core-ktx:1.0.1",
         "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03",
         "androidx.test.ext:junit:1.1.1",
-        "android.arch.core:core-testing:1.1.1",
-        "androidx.arch.core:core-testing:2.1.0",
+        "androidx.recyclerview:recyclerview:1.0.0",
         "com.android.support:support-annotations:28.0.0",
         "com.caverock:androidsvg-aar:1.4",
         "com.crashlytics.sdk.android:crashlytics:2.9.8",
