@@ -9,6 +9,7 @@ import org.oppia.app.model.PromotedStory
 /** [ViewModel] for displaying a promoted story. */
 class OngoingStoryViewModel(
   val ongoingStory: PromotedStory,
+  val entityType: String,
   private val ongoingStoryClickListener: OngoingStoryClickListener
 ) : RecentlyPlayedItemViewModel() {
   fun clickOnOngoingStoryTile(@Suppress("UNUSED_PARAMETER") v: View) {

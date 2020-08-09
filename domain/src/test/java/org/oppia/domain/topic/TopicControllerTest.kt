@@ -403,6 +403,20 @@ class TopicControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
+  fun testRetrieveStory_validStory_returnsStoryWithChapterSummary() =
+    runBlockingTest(coroutineContext) {
+      topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0)
+        .observeForever(mockStorySummaryObserver)
+      advanceUntilIdle()
+
+      verifyGetStorySucceeded()
+      val story = storySummaryResultCaptor.value!!.getOrThrow()
+      assertThat(story.getChapter(0).summary)
+        .isEqualTo("This is outline/summary for <b>What is a Fraction?</b>")
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
   fun testRetrieveStory_validStory_returnsStoryWithChapterThumbnail() =
     runBlockingTest(coroutineContext) {
       topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2)
