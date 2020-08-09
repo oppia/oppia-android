@@ -1,4 +1,7 @@
 # TODO(#1532): Rename file to 'BUILD' post-Gradle.
+'''
+This library contains the app's core source files and functionality
+'''
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@tools_android//tools/crashlytics:defs.bzl", "crashlytics_android_library")
@@ -196,6 +199,7 @@ ANNOTATION_FILES = [
     "src/main/java/org/oppia/app/view/ViewScope.kt",
 ]
 
+# Library for scope annotations required to build views and view_model libraries
 kt_android_library(
     name = "annotations",
     custom_package = "org.oppia.app",
@@ -208,6 +212,7 @@ kt_android_library(
     visibility = ["//visibility:private"],
 )
 
+# Library for listener files required to build views and view_model libraries
 kt_android_library(
     name = "listeners",
     custom_package = "org.oppia.app",
@@ -224,6 +229,7 @@ kt_android_library(
     visibility = ["//visibility:private"],
 )
 
+# Library for non-layout resource files
 android_library(
     name = "resources",
     custom_package = "org.oppia.app",
@@ -236,6 +242,7 @@ android_library(
     visibility = ["//visibility:private"],
 )
 
+# Library for all view model files
 kt_android_library(
     name = "view_models",
     custom_package = "org.oppia.app.vm",
@@ -264,6 +271,7 @@ kt_android_library(
     visibility = ["//visibility:private"],
 )
 
+# Library for all view files required to build layout files
 kt_android_library(
     name = "views",
     custom_package = "org.oppia.app.views",

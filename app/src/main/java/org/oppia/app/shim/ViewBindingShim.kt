@@ -21,6 +21,9 @@ import org.oppia.util.parser.HtmlParser
 import org.oppia.app.ui.R
 import javax.inject.Inject
 
+/**
+ * Extracts binding file dependencies from view files in order for Bazel to build.
+ */
 class ViewBindingShim @Inject constructor(): ViewBindingShimInterface {
 
   override fun provideProfileInputViewBindingLabelText(

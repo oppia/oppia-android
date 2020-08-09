@@ -13,6 +13,9 @@ import org.oppia.app.player.state.itemviewmodel.DragDropInteractionContentViewMo
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
 import org.oppia.util.parser.HtmlParser
 
+/**
+ * Extracts binding file dependencies from view files in order for Bazel to build.
+ */
 interface ViewBindingShimInterface {
 
   fun provideProfileInputViewBindingLabelText(
