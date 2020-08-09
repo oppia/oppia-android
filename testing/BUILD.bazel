@@ -1,0 +1,50 @@
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+'''
+This library contains fake objects used for testing as well as tests for these objects.
+'''
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("//:oppia_android_test.bzl", "oppia_android_test")
+load("//testing:testing_test.bzl", "testing_test")
+
+# Library for general-purpose testing fakes.
+kt_android_library(
+     name = "testing",
+     custom_package = "org.oppia.testing",
+     srcs = glob(["src/main/java/org/oppia/testing/*.kt"]),
+     manifest = "src/main/AndroidManifest.xml",
+     deps = [
+         ":dagger",
+         "//utility",
+         artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test"),
+         artifact("org.robolectric:robolectric"),
+     ],
+     visibility = ["//visibility:public"],
+ )
+
+TEST_DEPS = [
+    ":testing",
+    ":dagger",
+    "@robolectric//bazel:android-all",
+    artifact("org.jetbrains.kotlin:kotlin-reflect"),
+    artifact("com.google.truth:truth"),
+    artifact("androidx.test.ext:junit"),
+]
+
+testing_test(
+    name = "FakeEventLoggerTest",
+    srcs = ["src/test/java/org/oppia/testing/FakeEventLoggerTest.kt"],
+    test_class = "org.oppia.testing.FakeEventLoggerTest",
+    deps = TEST_DEPS,
+)
+
+testing_test(
+    name = "FakeExceptionLoggerTest",
+    srcs = ["src/test/java/org/oppia/testing/FakeExceptionLoggerTest.kt"],
+    test_class = "org.oppia.testing.FakeExceptionLoggerTest",
+    deps = TEST_DEPS,
+)
+
+dagger_rules()
