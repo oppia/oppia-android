@@ -9,13 +9,15 @@ import org.oppia.app.model.ProfileId
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.ConsoleLogger
+import org.oppia.util.parser.TopicHtmlParserEntityType
 import javax.inject.Inject
 
 /** The ViewModel for [OngoingTopicListFragment]. */
 @FragmentScope
 class OngoingTopicListViewModel @Inject constructor(
   private val topicController: TopicController,
-  private val logger: ConsoleLogger
+  private val logger: ConsoleLogger,
+  @TopicHtmlParserEntityType private val entityType: String
 ) : ViewModel() {
   /** [internalProfileId] needs to be set before any of the live data members can be accessed. */
   private var internalProfileId: Int = -1
@@ -57,7 +59,7 @@ class OngoingTopicListViewModel @Inject constructor(
     val itemViewModelList: MutableList<OngoingTopicItemViewModel> = mutableListOf()
     itemViewModelList.addAll(
       ongoingTopicList.topicList.map { topic ->
-        OngoingTopicItemViewModel(topic)
+        OngoingTopicItemViewModel(topic, entityType)
       }
     )
     return itemViewModelList

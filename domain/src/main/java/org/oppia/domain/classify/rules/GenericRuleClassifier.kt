@@ -12,6 +12,7 @@ import javax.inject.Inject
  * Child classes must ensure all specified types properly correspond to the type to which the parameter's specified
  * [InteractionObject.ObjectTypeCase] also corresponds.
  */
+// TODO(#1580): Re-restrict access using Bazel visibilities
 class GenericRuleClassifier constructor(
   val expectedAnswerObjectType: InteractionObject.ObjectTypeCase,
   val orderedExpectedParameterTypes: LinkedHashMap<
