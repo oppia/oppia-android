@@ -1,12 +1,13 @@
 package org.oppia.app.administratorcontrols.appversion
 
+import android.content.Context
 import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
-import org.oppia.app.BuildConfig
+import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.util.system.OppiaDateTimeFormatter
-import java.util.Locale
+import java.util.*
 import javax.inject.Inject
 
 /** [ViewModel] for [AppVersionFragment]*/
@@ -16,7 +17,11 @@ class AppVersionViewModel @Inject constructor(
   private val oppiaDateTimeFormatter: OppiaDateTimeFormatter
 ) : ObservableViewModel() {
 
-  val versionName = ObservableField<String>(BuildConfig.VERSION_NAME)
+  private lateinit var context: Context
+
+  var versionName = context.packageManager
+    .getPackageInfo(context.packageName, 0).versionName
+  //val versionName = ObservableField<String>(BuildConfig.VERSION_NAME)
 
   private val lastUpdateDateTime =
     fragment.activity!!.packageManager.getPackageInfo(

@@ -3,7 +3,6 @@ package org.oppia.app.parser
 import android.content.Context
 import androidx.annotation.StringRes
 import org.oppia.app.vm.R
-import org.oppia.app.customview.interaction.FractionInputInteractionView
 import org.oppia.app.model.Fraction
 import org.oppia.domain.util.normalizeWhitespace
 

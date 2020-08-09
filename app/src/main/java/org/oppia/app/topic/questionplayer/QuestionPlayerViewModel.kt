@@ -45,11 +45,6 @@ class QuestionPlayerViewModel @Inject constructor() : ObservableViewModel() {
   fun getPendingAnswerWithoutError(
     answerHandler: InteractionAnswerHandler
   ): UserAnswer? {
-    val items = if (isSplitView.get() == true) {
-      rightItemList
-    } else {
-      itemList
-    }
     return if (answerHandler.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME) == null) {
       answerHandler.getPendingAnswer()
     } else {

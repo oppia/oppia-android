@@ -2,7 +2,7 @@ package org.oppia.app.help
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
-import org.oppia.app.R
+import org.oppia.app.vm.R
 
 /** [ViewModel] for the recycler view of HelpActivity. */
 class HelpItemViewModel(

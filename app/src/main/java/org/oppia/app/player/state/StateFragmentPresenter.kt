@@ -13,8 +13,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.R
-import org.oppia.app.databinding.StateFragmentBinding
+import org.oppia.app.ui.R
+import org.oppia.app.databinding.databinding.StateFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.AnswerOutcome
 import org.oppia.app.model.EphemeralState
@@ -173,7 +173,13 @@ class StateFragmentPresenter @Inject constructor(
 
   fun onSubmitButtonClicked() {
     hideKeyboard()
-    handleSubmitAnswer(viewModel.getPendingAnswer(recyclerViewAssembler))
+    var answer = UserAnswer.getDefaultInstance()
+    if (recyclerViewAssembler.getPendingAnswerHandler(viewModel.itemList) != null) {
+      answer = viewModel.getPendingAnswerWithoutError(
+        recyclerViewAssembler.getPendingAnswerHandler(viewModel.itemList)!!
+      )
+    }
+    handleSubmitAnswer(answer)
   }
 
   fun onResponsesHeaderClicked() {
@@ -208,7 +214,13 @@ class StateFragmentPresenter @Inject constructor(
   fun handleKeyboardAction() {
     hideKeyboard()
     if (viewModel.getCanSubmitAnswer().get() == true) {
-      handleSubmitAnswer(viewModel.getPendingAnswer(recyclerViewAssembler))
+      var answer = UserAnswer.getDefaultInstance()
+      if (recyclerViewAssembler.getPendingAnswerHandler(viewModel.itemList) != null) {
+        answer = viewModel.getPendingAnswerWithoutError(
+          recyclerViewAssembler.getPendingAnswerHandler(viewModel.itemList)!!
+        )
+      }
+      handleSubmitAnswer(answer)
     }
   }
 
