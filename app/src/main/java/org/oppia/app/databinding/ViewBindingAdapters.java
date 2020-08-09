@@ -5,6 +5,7 @@ import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 
 public class ViewBindingAdapters {
@@ -15,22 +16,18 @@ public class ViewBindingAdapters {
 
   @BindingAdapter("app:flashingAnimation")
   public static void setFlashingAnimation(View view, boolean isFlashing) {
-    appearAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-      public void onAnimationUpdate(ValueAnimator animation) {
-        view.setScaleX((float) animation.getAnimatedValue());
-        view.setScaleY((float) animation.getAnimatedValue());
-        view.setAlpha((float) animation.getAnimatedValue());
-      }
+    appearAnimator.addUpdateListener(animation -> {
+      view.setScaleX((float) animation.getAnimatedValue());
+      view.setScaleY((float) animation.getAnimatedValue());
+      view.setAlpha((float) animation.getAnimatedValue());
     });
 
     appearAnimator.setDuration(1500);
 
-    disappearAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-      public void onAnimationUpdate(ValueAnimator animation) {
-        view.setScaleX((float) animation.getAnimatedValue());
-        view.setScaleY((float) animation.getAnimatedValue());
-        view.setAlpha(2f -  (float) animation.getAnimatedValue());
-      }
+    disappearAnimator.addUpdateListener(animation -> {
+      view.setScaleX((float) animation.getAnimatedValue());
+      view.setScaleY((float) animation.getAnimatedValue());
+      view.setAlpha(2f -  (float) animation.getAnimatedValue());
     });
 
     disappearAnimator.setDuration(500);
@@ -55,7 +52,7 @@ public class ViewBindingAdapters {
 
   /** BindingAdapter to set the height of a View.*/
   @BindingAdapter("android:layout_height")
-  public static void setLayoutHeight(View view, float height) {
+  public static void setLayoutHeight(@NonNull View view, float height) {
     ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
     layoutParams.height = (int) height;
     view.setLayoutParams(layoutParams);

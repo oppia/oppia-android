@@ -29,7 +29,6 @@ public class StateAssemblerMarginBindingAdapters {
     setMarginIfApplicable(view, isApplicable, marginStart, marginTop, marginEnd, marginBottom);
   }
 
-
   /**
    * Used to set a margin for exploration view.
    */
