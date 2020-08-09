@@ -7,6 +7,8 @@ import org.oppia.app.topic.revision.TopicRevisionFragment
 
 /** [ViewModel] for child views of recycler view present in the [TopicRevisionFragment]. */
 class TopicRevisionItemViewModel(
+  val topicId: String,
   val subtopic: Subtopic,
+  val entityType: String,
   val onRevisionItemPressed: RevisionSubtopicSelector
 ) : ViewModel()

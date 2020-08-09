@@ -21,16 +21,17 @@
       android:layout_height="wrap_content"
       android:paddingBottom="112dp">
 
-      <ImageView
+      <org.oppia.app.customview.LessonThumbnailImageView
         android:id="@+id/topic_thumbnail_image_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:src="@{viewModel.topic.topicThumbnail.thumbnailGraphic}"
-        android:background="@color/topicThumbnailBackground"
+        app:entityId="@{viewModel.topic.topicId}"
+        app:entityType="@{viewModel.entityType}"
         app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:lessonThumbnail="@{viewModel.topic.topicThumbnail}" />
 
       <FrameLayout
         android:layout_width="match_parent"
@@ -46,8 +47,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="120dp"
-        android:layout_marginEnd="120dp"
         android:layout_marginTop="12dp"
+        android:layout_marginEnd="120dp"
         android:fontFamily="sans-serif"
         android:text="@{viewModel.topic.name}"
         android:textColor="@color/oppiaPrimaryText"
