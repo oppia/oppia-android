@@ -23,7 +23,7 @@ class LiTagHandler : Html.TagHandler {
       output.setSpan(Bullet(), output.length, output.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
     }
     if (tag == "li" && !opening) {
-      output.append("<br>")
+      output.append("\n")
       val lastMark = output.getSpans(0, output.length, Bullet::class.java).lastOrNull()
       lastMark?.let {
         val start = output.getSpanStart(it)

@@ -14,7 +14,8 @@ import org.oppia.app.viewmodel.ObservableViewModel
 /** [ViewModel] for displaying a promoted story. */
 class PromotedStoryViewModel(
   private val activity: AppCompatActivity,
-  private val internalProfileId: Int
+  private val internalProfileId: Int,
+  val entityType: String
 ) :
   ObservableViewModel(),
   RouteToTopicPlayStoryListener {
