@@ -6,16 +6,11 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.forEachIndexed
-import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.recyclerview.widget.ItemTouchHelper
 import org.oppia.app.ViewBindingShimInterface
 import org.oppia.app.ViewComponentFactory
 import org.oppia.app.model.ImageWithRegions
-import org.oppia.app.recyclerview.DragAndDropItemFacilitator
-import org.oppia.app.recyclerview.OnDragEndedListener
-import org.oppia.app.recyclerview.OnItemDragListener
 import org.oppia.app.utility.ClickableAreasImage
 import org.oppia.app.utility.OnClickableAreaClickedListener
 import org.oppia.util.accessibility.CustomAccessibilityManager

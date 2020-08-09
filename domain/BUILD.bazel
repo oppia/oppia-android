@@ -23,27 +23,6 @@ kt_android_library(
     visibility = ["//visibility:public"],
 )
 
-kt_android_library(
-    name = "domain_tests",
-    custom_package = "org.oppia.domain",
-    srcs = glob(["src/test/java/org/oppia/domain/**"]),
-    data = glob(["src/main/assets/**"]),
-    manifest = "src/test/AndroidManifest.xml",
-    deps = [
-        ":dagger",
-        ":domain",
-        "//model",
-        "//data:persistent_cache_store",
-        "//testing",
-        "@robolectric//bazel:android-all",
-        artifact("com.google.truth:truth"),
-        artifact("androidx.test.ext:junit"),
-        artifact("org.jetbrains.kotlin:kotlin-test-junit"),
-        artifact("androidx.arch.core:core-testing"),
-    ],
-    visibility = ["//visibility:public"],
-)
-
 TEST_DEPS = [
         ":dagger",
         ":domain",

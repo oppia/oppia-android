@@ -13,7 +13,7 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.HtmlParser
-import org.oppia.util.parser.RevisionCardHtmlParserEntityType
+import org.oppia.util.parser.TopicHtmlParserEntityType
 import javax.inject.Inject
 
 /** [ViewModel] for revision card, providing rich text and worked examples */
@@ -24,7 +24,7 @@ class RevisionCardViewModel @Inject constructor(
   private val logger: ConsoleLogger,
   private val htmlParserFactory: HtmlParser.Factory,
   @DefaultResourceBucketName private val resourceBucketName: String,
-  @RevisionCardHtmlParserEntityType private val entityType: String
+  @TopicHtmlParserEntityType private val entityType: String
 ) : ViewModel() {
   private lateinit var topicId: String
   private var subtopicId: Int = 0

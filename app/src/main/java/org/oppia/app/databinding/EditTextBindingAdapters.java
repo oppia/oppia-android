@@ -2,9 +2,13 @@ package org.oppia.app.databinding;
 
 import android.text.TextWatcher;
 import android.widget.EditText;
+
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 
+/**
+ * Holds all the custom binding adapters that bind to [EditText] adapters.
+ */
 public final class EditTextBindingAdapters {
   /**
    * Binding adapter for setting a [TextWatcher] as a change listener for an [EditText].

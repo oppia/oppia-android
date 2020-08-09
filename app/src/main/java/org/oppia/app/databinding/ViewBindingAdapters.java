@@ -5,9 +5,14 @@ import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 
-public class ViewBindingAdapter {
+/**
+ * Holds all the custom binding adapters that set miscellaneous values.
+ */
+public final class ViewBindingAdapters {
 
   private static ValueAnimator appearAnimator = ValueAnimator.ofFloat(0f, 1f);
   private static ValueAnimator disappearAnimator = ValueAnimator.ofFloat(1f, 2f);
@@ -15,22 +20,18 @@ public class ViewBindingAdapter {
 
   @BindingAdapter("app:flashingAnimation")
   public static void setFlashingAnimation(View view, boolean isFlashing) {
-    appearAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-      public void onAnimationUpdate(ValueAnimator animation) {
-        view.setScaleX((float) animation.getAnimatedValue());
-        view.setScaleY((float) animation.getAnimatedValue());
-        view.setAlpha((float) animation.getAnimatedValue());
-      }
+    appearAnimator.addUpdateListener(animation -> {
+      view.setScaleX((float) animation.getAnimatedValue());
+      view.setScaleY((float) animation.getAnimatedValue());
+      view.setAlpha((float) animation.getAnimatedValue());
     });
 
     appearAnimator.setDuration(1500);
 
-    disappearAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-      public void onAnimationUpdate(ValueAnimator animation) {
-        view.setScaleX((float) animation.getAnimatedValue());
-        view.setScaleY((float) animation.getAnimatedValue());
-        view.setAlpha(2f -  (float) animation.getAnimatedValue());
-      }
+    disappearAnimator.addUpdateListener(animation -> {
+      view.setScaleX((float) animation.getAnimatedValue());
+      view.setScaleY((float) animation.getAnimatedValue());
+      view.setAlpha(2f - (float) animation.getAnimatedValue());
     });
 
     disappearAnimator.setDuration(500);
@@ -40,8 +41,7 @@ public class ViewBindingAdapter {
       animatorSet.start();
 
       animatorSet.addListener(new AnimatorListenerAdapter() {
-        public void onAnimationEnd(ValueAnimator animatorSet)
-        {
+        public void onAnimationEnd(ValueAnimator animatorSet) {
           animatorSet.start();
         }
       });
@@ -53,17 +53,21 @@ public class ViewBindingAdapter {
     }
   }
 
-  /** BindingAdapter to set the height of a View.*/
+  /**
+   * BindingAdapter to set the height of a View.
+   */
   @BindingAdapter("android:layout_height")
-  public static void setLayoutHeight(View view, float height) {
+  public static void setLayoutHeight(@NonNull View view, float height) {
     ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
     layoutParams.height = (int) height;
     view.setLayoutParams(layoutParams);
   }
 
-  @BindingAdapter( value = {
-      "app:isRotationAnimationClockwise",
-      "app:rotationAnimationAngle"},
+  @BindingAdapter(
+      value = {
+          "app:isRotationAnimationClockwise",
+          "app:rotationAnimationAngle"
+      },
       requireAll = true
   )
   public static void setRotationAnimation(View view, boolean isClockwise, float angle) {

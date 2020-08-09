@@ -9,13 +9,15 @@ import org.oppia.app.model.ProfileId
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.ConsoleLogger
+import org.oppia.util.parser.StoryHtmlParserEntityType
 import javax.inject.Inject
 
 /** The ViewModel for [CompletedStoryListFragment]. */
 @FragmentScope
 class CompletedStoryListViewModel @Inject constructor(
   private val topicController: TopicController,
-  private val logger: ConsoleLogger
+  private val logger: ConsoleLogger,
+  @StoryHtmlParserEntityType private val entityType: String
 ) : ViewModel() {
   /** [internalProfileId] needs to be set before any of the live data members can be accessed. */
   private var internalProfileId: Int = -1
@@ -57,7 +59,7 @@ class CompletedStoryListViewModel @Inject constructor(
     val itemViewModelList: MutableList<CompletedStoryItemViewModel> = mutableListOf()
     itemViewModelList.addAll(
       completedStoryList.completedStoryList.map { completedStory ->
-        CompletedStoryItemViewModel(completedStory)
+        CompletedStoryItemViewModel(completedStory, entityType)
       }
     )
     return itemViewModelList

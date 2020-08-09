@@ -3,12 +3,18 @@ package org.oppia.app.databinding;
 import android.graphics.drawable.GradientDrawable;
 import android.view.View;
 import android.widget.Button;
+
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 import androidx.annotation.NonNull;
+
 import org.oppia.app.impl.adapters.R;
 
+/**
+ * Holds all the custom binding adapters that set background drawables.
+ */
 public final class DrawableBindingAdapters {
   /**
    * Used to set a rounded-rect background drawable with a data-bound color.

@@ -32,6 +32,8 @@ import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.datetime.DateTimeUtil
 import org.oppia.util.logging.ConsoleLogger
+import org.oppia.util.parser.StoryHtmlParserEntityType
+import org.oppia.util.parser.TopicHtmlParserEntityType
 import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -45,7 +47,9 @@ class HomeFragmentPresenter @Inject constructor(
   private val oppiaClock: OppiaClock,
   private val logger: ConsoleLogger,
   private val oppiaLogger: OppiaLogger,
-  private val intentFactoryShimInterface: IntentFactoryShimInterface
+  private val intentFactoryShimInterface: IntentFactoryShimInterface,
+  @TopicHtmlParserEntityType private val topicEntityType: String,
+  @StoryHtmlParserEntityType private val storyEntityType: String
 ) {
   private val routeToTopicListener = activity as RouteToTopicListener
   private val itemList: MutableList<HomeItemViewModel> = ArrayList()
@@ -147,7 +151,11 @@ class HomeFragmentPresenter @Inject constructor(
       Observer<TopicList> { result ->
         for (topicSummary in result.topicSummaryList) {
           val topicSummaryViewModel =
-            TopicSummaryViewModel(topicSummary, fragment as TopicSummaryClickListener)
+            TopicSummaryViewModel(
+              topicSummary,
+              topicEntityType,
+              fragment as TopicSummaryClickListener
+            )
           itemList.add(topicSummaryViewModel)
         }
         topicListAdapter.notifyDataSetChanged()
@@ -191,7 +199,8 @@ class HomeFragmentPresenter @Inject constructor(
             val recentStory = PromotedStoryViewModel(
               activity,
               internalProfileId,
-              intentFactoryShimInterface
+              intentFactoryShimInterface,
+              storyEntityType
             )
             recentStory.setPromotedStory(promotedStory)
             promotedStoryList.add(recentStory)
@@ -202,7 +211,8 @@ class HomeFragmentPresenter @Inject constructor(
             val oldStory = PromotedStoryViewModel(
               activity,
               internalProfileId,
-              intentFactoryShimInterface
+              intentFactoryShimInterface,
+              storyEntityType
             )
             oldStory.setPromotedStory(promotedStory)
             promotedStoryList.add(oldStory)

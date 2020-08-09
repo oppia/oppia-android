@@ -6,12 +6,19 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
+
 import org.oppia.app.impl.adapters.R;
 import org.oppia.util.system.OppiaDateTimeFormatter;
+
 import java.util.Locale;
 
+/**
+ * Holds all the custom binding adapters that bind to [TextView] adapters.
+ */
 public final class TextViewBindingAdapters {
-  /** Binds date text with relative time. */
+  /**
+   * Binds date text with relative time.
+   */
   @BindingAdapter("profile:created")
   public static void setProfileDataText(@NonNull TextView textView, long timestamp) {
     OppiaDateTimeFormatter oppiaDateTimeFormatter = new OppiaDateTimeFormatter();
@@ -20,13 +27,22 @@ public final class TextViewBindingAdapters {
         timestamp,
         Locale.getDefault()
     );
-    textView.setText(String.format(textView.getContext().getString(R.string.profile_edit_created, time)));
+    textView.setText(textView.getContext().getString(
+        R.string.profile_edit_created,
+        time
+    ));
   }
 
   @BindingAdapter("profile:lastVisited")
   public static void setProfileLastVisitedText(@NonNull TextView textView, long timestamp) {
-    textView.setText(String.format(textView.getContext().getString(R.string.profile_last_used)
-        + " " + getTimeAgo(timestamp, textView.getContext())));
+    textView.setText(
+        String.format(
+            textView.getContext().getString(R.string.profile_last_used) + " " + getTimeAgo(
+                timestamp,
+                textView.getContext()
+            )
+        )
+    );
   }
 
   private static int SECOND_MILLIS = 1000;
@@ -37,15 +53,16 @@ public final class TextViewBindingAdapters {
   public static String getTimeAgo(long lastVisitedTimeStamp, Context context) {
 
     OppiaDateTimeFormatter oppiaDateTimeFormatter = new OppiaDateTimeFormatter();
-    Long timeStamp =
+    long timeStamp =
         oppiaDateTimeFormatter.checkAndConvertTimestampToMilliseconds(lastVisitedTimeStamp);
-    Long now = oppiaDateTimeFormatter.currentDate().getTime();
+    long now = oppiaDateTimeFormatter.currentDate().getTime();
 
-    if (timeStamp > now || timeStamp <= 0) { return ""; }
+    if (timeStamp > now || timeStamp <= 0) {
+      return "";
+    }
 
-    //TODO: Figure out what the type is
     Resources res = context.getResources();
-    Long timeDifference = now - timeStamp;
+    long timeDifference = now - timeStamp;
 
     if (timeDifference < MINUTE_MILLIS) {
       return context.getString(R.string.just_now);
@@ -54,7 +71,7 @@ public final class TextViewBindingAdapters {
           R.string.time_ago,
           res.getQuantityString(
               R.plurals.minutes,
-              timeDifference.intValue() / MINUTE_MILLIS,
+              (int) timeDifference / MINUTE_MILLIS,
               timeDifference / MINUTE_MILLIS
           )
       );
@@ -63,7 +80,7 @@ public final class TextViewBindingAdapters {
           R.string.time_ago,
           res.getQuantityString(
               R.plurals.hours,
-              timeDifference.intValue() / HOUR_MILLIS,
+              (int) timeDifference / HOUR_MILLIS,
               timeDifference / HOUR_MILLIS
           )
       );
@@ -74,7 +91,7 @@ public final class TextViewBindingAdapters {
         R.string.time_ago,
         res.getQuantityString(
             R.plurals.days,
-            timeDifference.intValue() / DAY_MILLIS,
+            (int) timeDifference / DAY_MILLIS,
             timeDifference / DAY_MILLIS
         ));
   }

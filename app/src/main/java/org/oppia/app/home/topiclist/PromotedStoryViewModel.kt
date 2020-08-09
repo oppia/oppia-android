@@ -8,7 +8,6 @@ import org.oppia.app.IntentFactoryShimInterface
 import org.oppia.app.home.RouteToTopicPlayStoryListener
 import org.oppia.app.model.PromotedStory
 import org.oppia.app.viewmodel.ObservableViewModel
-import javax.inject.Inject
 
 // TODO(#283): Add download status information to promoted-story-card.
 
@@ -16,7 +15,8 @@ import javax.inject.Inject
 class PromotedStoryViewModel(
   private val activity: AppCompatActivity,
   private val internalProfileId: Int,
-  private val intentFactoryShimInterface: IntentFactoryShimInterface
+  private val intentFactoryShimInterface: IntentFactoryShimInterface,
+  val entityType: String
 ) :
   ObservableViewModel(),
   RouteToTopicPlayStoryListener {

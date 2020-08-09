@@ -22,6 +22,7 @@ import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.ConsoleLogger
+import org.oppia.util.parser.StoryHtmlParserEntityType
 import javax.inject.Inject
 
 /** The presenter for [RecentlyPlayedFragment]. */
@@ -31,7 +32,8 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val logger: ConsoleLogger,
   private val explorationDataController: ExplorationDataController,
-  private val topicListController: TopicListController
+  private val topicListController: TopicListController,
+  @StoryHtmlParserEntityType private val entityType: String
 ) {
 
   private val routeToExplorationListener = activity as RouteToExplorationListener
@@ -81,7 +83,11 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
           itemList.add(recentSectionTitleViewModel)
           for (promotedStory in it.recentStoryList) {
             val ongoingStoryViewModel =
-              OngoingStoryViewModel(promotedStory, fragment as OngoingStoryClickListener)
+              OngoingStoryViewModel(
+                promotedStory,
+                entityType,
+                fragment as OngoingStoryClickListener
+              )
             itemList.add(ongoingStoryViewModel)
           }
         }
@@ -96,7 +102,11 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
           itemList.add(olderSectionTitleViewModel)
           for (promotedStory in it.olderStoryList) {
             val ongoingStoryViewModel =
-              OngoingStoryViewModel(promotedStory, fragment as OngoingStoryClickListener)
+              OngoingStoryViewModel(
+                promotedStory,
+                entityType,
+                fragment as OngoingStoryClickListener
+              )
             itemList.add(ongoingStoryViewModel)
           }
         }

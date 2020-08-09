@@ -133,10 +133,10 @@ DATABINDING_ADAPTER_FILES = [
     "src/main/java/org/oppia/app/databinding/ImageViewBindingAdapters.java",
     "src/main/java/org/oppia/app/databinding/MarginBindingAdapters.java",
     "src/main/java/org/oppia/app/databinding/TextViewBindingAdapters.java",
-    "src/main/java/org/oppia/app/databinding/ViewBindingAdapter.java",
+    "src/main/java/org/oppia/app/databinding/ViewBindingAdapters.java",
     "src/main/java/org/oppia/app/databinding/StateAssemblerPaddingBindingAdapters.java",
     "src/main/java/org/oppia/app/databinding/StateAssemblerMarginBindingAdapters.java",
-    "src/main/java/org/oppia/app/databinding/GuidelineBindingAdapter.java",
+    "src/main/java/org/oppia/app/databinding/GuidelineBindingAdapters.java",
 ]
 
 RECYCLERVIEW_ADAPTER_FILES = [
@@ -209,7 +209,6 @@ VIEW_FILES = [
     "src/main/java/org/oppia/app/profile/ProfileInputView.kt",
     "src/main/java/org/oppia/app/ViewBindingShimInterface.kt",
     "src/main/java/org/oppia/app/player/state/SelectionInteractionView.kt",
-    #"src/main/java/org/oppia/app/view/ViewComponent.kt",
     "src/main/java/org/oppia/app/player/state/DragDropSortInteractionView.kt",
     "src/main/java/org/oppia/app/player/state/ImageRegionSelectionInteractionView.kt",
     "src/main/java/org/oppia/app/utility/ClickableAreasImage.kt",
@@ -217,8 +216,7 @@ VIEW_FILES = [
     "src/main/java/org/oppia/app/ViewComponentFactory.kt",
     "src/main/java/org/oppia/app/view/ViewComponent.kt",
     "src/main/java/org/oppia/app/view/ViewScope.kt",
-#    "src/main/java/org/oppia/app/fragment/InjectableFragment.kt",
-#    "src/main/java/org/oppia/app/activity/InjectableAppCompatActivity.kt",
+    "src/main/java/org/oppia/app/customview/LessonThumbnailImageView.kt"
 ]
 
 BINDING_ADAPTER_FILES = DATABINDING_ADAPTER_FILES + RECYCLERVIEW_ADAPTER_FILES

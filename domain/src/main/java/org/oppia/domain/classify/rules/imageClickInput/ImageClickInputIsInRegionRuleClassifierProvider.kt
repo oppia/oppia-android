@@ -12,6 +12,7 @@ import javax.inject.Inject
  *
  * https://github.com/oppia/oppia/blob/37285a9b0e7866cbcdf5f8193a6ac2fab64458a7/extensions/interactions/ImageClickInput/directives/image-click-input-rules.service.ts#L29
  */
+// TODO(#1580): Re-restrict access using Bazel visibilities
 class ImageClickInputIsInRegionRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
 ) : RuleClassifierProvider,

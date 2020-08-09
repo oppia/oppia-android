@@ -3,9 +3,6 @@ package org.oppia.app.testing
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.ui.R
 import org.oppia.app.activity.ActivityScope
-import org.oppia.app.model.AppLanguage
-import org.oppia.app.model.AudioLanguage
-import org.oppia.app.model.StoryTextSize
 import org.oppia.app.profile.ProfileChooserFragment
 import org.oppia.domain.profile.ProfileManagementController
 import javax.inject.Inject
@@ -25,10 +22,7 @@ class ProfileChooserFragmentTestActivityPresenter @Inject constructor(
       avatarImagePath = null,
       allowDownloadAccess = true,
       colorRgb = -10710042,
-      isAdmin = true,
-      storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-      appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-      audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+      isAdmin = true
     )
     profileManagementController.addProfile(
       name = "Ben",
@@ -36,10 +30,7 @@ class ProfileChooserFragmentTestActivityPresenter @Inject constructor(
       avatarImagePath = null,
       allowDownloadAccess = false,
       colorRgb = -10710042,
-      isAdmin = false,
-      storyTextSize = StoryTextSize.MEDIUM_TEXT_SIZE,
-      appLanguage = AppLanguage.HINDI_APP_LANGUAGE,
-      audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+      isAdmin = false
     )
     activity.setContentView(R.layout.profile_test_activity)
     if (getProfileChooserFragment() == null) {

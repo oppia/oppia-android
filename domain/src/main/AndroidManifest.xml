@@ -1,1 +1,6 @@
-<manifest package="org.oppia.domain"/>
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  package="org.oppia.domain">
+  <uses-sdk android:minSdkVersion="19"
+    android:targetSdkVersion="28" />
+</manifest>

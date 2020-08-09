@@ -16,6 +16,7 @@ import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.ConsoleLogger
+import org.oppia.util.parser.StoryHtmlParserEntityType
 import javax.inject.Inject
 import org.oppia.app.story.StoryFragmentInterface
 
@@ -25,7 +26,8 @@ class StoryViewModel @Inject constructor(
   private val fragment: Fragment,
   private val topicController: TopicController,
   private val explorationDataController: ExplorationDataController,
-  private val logger: ConsoleLogger
+  private val logger: ConsoleLogger,
+  @StoryHtmlParserEntityType val entityType: String
 ) : ViewModel() {
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
@@ -107,7 +109,8 @@ class StoryViewModel @Inject constructor(
           internalProfileId,
           topicId,
           storyId,
-          chapter
+          chapter,
+          entityType
         )
       }
     )
