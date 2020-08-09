@@ -1,6 +1,7 @@
 package org.oppia.domain.oppialogger.exceptions
 
 import androidx.lifecycle.LiveData
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.oppia.app.model.ExceptionLog
 import org.oppia.app.model.ExceptionLog.ExceptionType
 import org.oppia.app.model.OppiaExceptionLogs
@@ -12,6 +13,7 @@ import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.logging.ExceptionLogger
 import org.oppia.util.networking.NetworkConnectionUtil
 import javax.inject.Inject
+import kotlin.coroutines.coroutineContext
 
 private const val EXCEPTIONS_CONTROLLER = "Exceptions Controller"
 
@@ -165,7 +167,7 @@ class ExceptionsController @Inject constructor(
    * Returns a [LiveData] result which can be used to get [OppiaExceptionLogs]
    * for the purpose of uploading in the presence of network connectivity.
    */
-  suspend fun getExceptionLogs(): OppiaExceptionLogs {
+   suspend fun getExceptionLogs(): OppiaExceptionLogs {
     return exceptionLogStore.readDataAsync().await()
   }
 }

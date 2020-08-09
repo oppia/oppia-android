@@ -2,6 +2,7 @@ package org.oppia.domain.oppialogger.exceptions
 
 import android.app.Application
 import android.content.Context
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -11,12 +12,16 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
@@ -35,7 +40,6 @@ import org.mockito.junit.MockitoRule
 import org.oppia.app.model.ExceptionLog.ExceptionType
 import org.oppia.app.model.OppiaExceptionLogs
 import org.oppia.domain.oppialogger.ExceptionLogStorageCacheSize
-import org.oppia.domain.topic.TopicControllerTest
 import org.oppia.testing.FakeExceptionLogger
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
@@ -87,7 +91,7 @@ class ExceptionsControllerTest {
   lateinit var oppiaExceptionLogsResultCaptor: ArgumentCaptor<AsyncResult<OppiaExceptionLogs>>
 
   @Inject
-  @field:TopicControllerTest.TestDispatcher
+  @field:TestDispatcher
   lateinit var testDispatcher: CoroutineDispatcher
 
   private val coroutineContext by lazy {
@@ -98,10 +102,14 @@ class ExceptionsControllerTest {
   @ObsoleteCoroutinesApi
   private val testThread = newSingleThreadContext("TestMain")
 
+  private val exceptionThrown = Exception("TEST MESSAGE", Throwable("TEST CAUSE"))
+
   @Before
+  @ExperimentalCoroutinesApi
+  @ObsoleteCoroutinesApi
   fun setUp() {
-    Dispatchers.setMain(testThread)
     networkConnectionUtil = NetworkConnectionUtil(ApplicationProvider.getApplicationContext())
+    Dispatchers.setMain(testThread)
     setUpTestApplicationComponent()
   }
 
@@ -138,23 +146,27 @@ class ExceptionsControllerTest {
   @ExperimentalCoroutinesApi
   @InternalCoroutinesApi
   @Test
-  fun testController_logException_nonFatal_withNoNetwork_logsToCacheStore() {
-    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
-    val exceptionThrown = Exception("TEST MESSAGE", Throwable("TEST CAUSE"))
-    exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
-    runBlockingTest(coroutineContext) {
+  fun testController_logException_nonFatal_withNoNetwork_logsToCacheStore() =
+    runBlockingTest(testDispatcher){
+      networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
+      exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
+
       val cachedExceptions = exceptionsController.getExceptionLogs()
-      this.advanceUntilIdle()
+      advanceUntilIdle()
 
       val exceptionLog = cachedExceptions.getExceptionLog(0)
+      advanceUntilIdle()
+
       val exception = exceptionLog.toException()
+      advanceUntilIdle()
+
       assertThat(exception.message).isEqualTo(exceptionThrown.message)
       assertThat(exception.stackTrace).isEqualTo(exceptionThrown.stackTrace)
       assertThat(exception.cause?.message).isEqualTo(exceptionThrown.cause?.message)
       assertThat(exception.cause?.stackTrace).isEqualTo(exceptionThrown.cause?.stackTrace)
       assertThat(exceptionLog.exceptionType).isEqualTo(ExceptionType.NON_FATAL)
     }
-  }
+
 /*
   @ExperimentalCoroutinesApi
   @InternalCoroutinesApi
@@ -372,7 +384,7 @@ class ExceptionsControllerTest {
     @ExperimentalCoroutinesApi
     @Singleton
     @Provides
-    @TopicControllerTest.TestDispatcher
+    @TestDispatcher
     fun provideTestDispatcher(): CoroutineDispatcher {
       return TestCoroutineDispatcher()
     }
