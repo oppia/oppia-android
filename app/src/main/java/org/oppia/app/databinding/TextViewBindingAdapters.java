@@ -21,7 +21,10 @@ public final class TextViewBindingAdapters {
         timestamp,
         Locale.getDefault()
     );
-    textView.setText(textView.getContext().getString(R.string.profile_edit_created, time));
+    textView.setText(textView.getContext().getString(
+        R.string.profile_edit_created,
+        time
+    ));
   }
 
   @BindingAdapter("profile:lastVisited")

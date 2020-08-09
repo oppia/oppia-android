@@ -4,6 +4,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -11,7 +12,6 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
-import org.jetbrains.annotations.NotNull;
 import org.oppia.app.R;
 import org.oppia.app.model.LessonThumbnailGraphic;
 import org.oppia.app.model.ProfileAvatar;
@@ -21,9 +21,8 @@ public final class ImageViewBindingAdapters {
    * Allows binding drawables to an [ImageView] via "android:src". Source: https://stackoverflow.com/a/35809319/3689782.
    */
   @BindingAdapter("android:src")
-  public static void setImageDrawable(@NotNull ImageView imageView, String imageUrl) {
+  public static void setImageDrawable(@NonNull ImageView imageView, String imageUrl) {
     RequestOptions requestOptions = new RequestOptions().placeholder(R.drawable.review_placeholder);
-
     Glide.with(imageView.getContext())
         .load(imageUrl)
         .apply(requestOptions)
@@ -34,7 +33,10 @@ public final class ImageViewBindingAdapters {
    * Allows binding drawables to an [ImageView] via "android:src". Source: https://stackoverflow.com/a/35809319/3689782.
    */
   @BindingAdapter("android:src")
-  public static void setImageDrawable(@NotNull ImageView imageView, @DrawableRes int drawableResourceId) {
+  public static void setImageDrawable(
+      @NonNull ImageView imageView,
+      @DrawableRes int drawableResourceId
+  ) {
     imageView.setImageResource(drawableResourceId);
   }
 
@@ -43,7 +45,10 @@ public final class ImageViewBindingAdapters {
    * no width/height (when sized in a constraint layout), and use centerCrop for the image to appear correctly.
    */
   @BindingAdapter("android:src")
-  public static void setImageDrawable(ImageView imageView, LessonThumbnailGraphic thumbnailGraphic) {
+  public static void setImageDrawable(
+      ImageView imageView,
+      LessonThumbnailGraphic thumbnailGraphic
+  ) {
     int drawableResourceId;
     switch (thumbnailGraphic) {
       case BAKER:
@@ -115,7 +120,13 @@ public final class ImageViewBindingAdapters {
                 return false;
               }
               @Override
-              public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+              public boolean onResourceReady(
+                  Drawable resource,
+                  Object model,
+                  Target<Drawable> target,
+                  DataSource dataSource,
+                  boolean isFirstResource
+              ) {
                 imageView.setColorFilter(
                     profileAvatar.getAvatarColorRgb(),
                     PorterDuff.Mode.DST_OVER

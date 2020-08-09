@@ -20,7 +20,7 @@ public class StateAssemblerPaddingBindingAdapters {
   )
   public static void setExplorationSplitViewPadding(
       View view,
-      Boolean isApplicable,
+      boolean isApplicable,
       float paddingStart,
       float paddingTop,
       float paddingEnd,
@@ -44,7 +44,7 @@ public class StateAssemblerPaddingBindingAdapters {
   )
   public static void setExplorationViewPadding(
       View view,
-      Boolean isApplicable,
+      boolean isApplicable,
       float paddingStart,
       float paddingTop,
       float paddingEnd,
@@ -68,7 +68,7 @@ public class StateAssemblerPaddingBindingAdapters {
   )
   public static void setQuestionViewPadding(
       View view,
-      Boolean isApplicable,
+      boolean isApplicable,
       float paddingStart,
       float paddingTop,
       float paddingEnd,
@@ -92,7 +92,7 @@ public class StateAssemblerPaddingBindingAdapters {
   )
   public static void setQuestionSplitViewPadding(
       View view,
-      Boolean isApplicable,
+      boolean isApplicable,
       float paddingStart,
       float paddingTop,
       float paddingEnd,
@@ -103,7 +103,7 @@ public class StateAssemblerPaddingBindingAdapters {
 
   private static void setPaddingIfApplicable(
       View view,
-      @NotNull Boolean isApplicable,
+      boolean isApplicable,
       float paddingStart,
       float paddingTop,
       float paddingEnd,
