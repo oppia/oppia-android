@@ -1,9 +1,9 @@
 package org.oppia.app.topic.conceptcard
 
+import android.widget.TextView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import org.oppia.app.databinding.ConceptCardFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.ConceptCard
 import org.oppia.domain.topic.TopicController
@@ -24,7 +24,7 @@ class ConceptCardViewModel @Inject constructor(
   @DefaultResourceBucketName private val resourceBucketName: String
 ) : ViewModel() {
   private lateinit var skillId: String
-  private lateinit var binding: ConceptCardFragmentBinding
+  private lateinit var view: TextView
 
   val conceptCardLiveData: LiveData<ConceptCard> by lazy {
     processConceptCardLiveData()
@@ -35,9 +35,9 @@ class ConceptCardViewModel @Inject constructor(
   }
 
   /** Sets the value of skillId and binding. Must be called before setting ViewModel to binding */
-  fun setSkillIdAndBinding(id: String, binding: ConceptCardFragmentBinding) {
+  fun setSkillIdAndBinding(id: String, view: TextView) {
     skillId = id
-    this.binding = binding
+    this.view = view
   }
 
   private val conceptCardResultLiveData: LiveData<AsyncResult<ConceptCard>> by lazy {
@@ -74,6 +74,6 @@ class ConceptCardViewModel @Inject constructor(
     val conceptCard = conceptCardResult.getOrDefault(ConceptCard.getDefaultInstance())
     return htmlParserFactory
       .create(resourceBucketName, entityType, skillId, /* imageCenterAlign= */true)
-      .parseOppiaHtml(conceptCard.explanation.html, binding.conceptCardExplanationText)
+      .parseOppiaHtml(conceptCard.explanation.html, view)
   }
 }
