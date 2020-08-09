@@ -5,6 +5,7 @@ import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 
@@ -30,7 +31,7 @@ public final class ViewBindingAdapters {
     disappearAnimator.addUpdateListener(animation -> {
       view.setScaleX((float) animation.getAnimatedValue());
       view.setScaleY((float) animation.getAnimatedValue());
-      view.setAlpha(2f -  (float) animation.getAnimatedValue());
+      view.setAlpha(2f - (float) animation.getAnimatedValue());
     });
 
     disappearAnimator.setDuration(500);
@@ -40,8 +41,7 @@ public final class ViewBindingAdapters {
       animatorSet.start();
 
       animatorSet.addListener(new AnimatorListenerAdapter() {
-        public void onAnimationEnd(ValueAnimator animatorSet)
-        {
+        public void onAnimationEnd(ValueAnimator animatorSet) {
           animatorSet.start();
         }
       });
@@ -63,9 +63,11 @@ public final class ViewBindingAdapters {
     view.setLayoutParams(layoutParams);
   }
 
-  @BindingAdapter( value = {
-      "app:isRotationAnimationClockwise",
-      "app:rotationAnimationAngle"},
+  @BindingAdapter(
+      value = {
+          "app:isRotationAnimationClockwise",
+          "app:rotationAnimationAngle"
+      },
       requireAll = true
   )
   public static void setRotationAnimation(View view, boolean isClockwise, float angle) {

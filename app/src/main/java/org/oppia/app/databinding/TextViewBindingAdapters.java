@@ -3,10 +3,13 @@ package org.oppia.app.databinding;
 import android.content.Context;
 import android.content.res.Resources;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
+
 import org.oppia.app.R;
 import org.oppia.util.system.OppiaDateTimeFormatter;
+
 import java.util.Locale;
 
 /**
@@ -54,7 +57,9 @@ public final class TextViewBindingAdapters {
         oppiaDateTimeFormatter.checkAndConvertTimestampToMilliseconds(lastVisitedTimeStamp);
     long now = oppiaDateTimeFormatter.currentDate().getTime();
 
-    if (timeStamp > now || timeStamp <= 0) { return ""; }
+    if (timeStamp > now || timeStamp <= 0) {
+      return "";
+    }
 
     Resources res = context.getResources();
     long timeDifference = now - timeStamp;

@@ -3,15 +3,18 @@ package org.oppia.app.databinding;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
+
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
+
 import org.oppia.app.R;
 import org.oppia.app.model.LessonThumbnailGraphic;
 import org.oppia.app.model.ProfileAvatar;
@@ -108,7 +111,7 @@ public final class ImageViewBindingAdapters {
    * Binding adapter for profile images. Used to either display a local image or custom
    * colored avatar.
    *
-   * @param imageView View where the profile avatar will be loaded into.
+   * @param imageView     View where the profile avatar will be loaded into.
    * @param profileAvatar Represents either a colorId or local image uri.
    */
   @BindingAdapter("profile:src")
@@ -126,6 +129,7 @@ public final class ImageViewBindingAdapters {
                   boolean isFirstResource) {
                 return false;
               }
+
               @Override
               public boolean onResourceReady(
                   Drawable resource,
