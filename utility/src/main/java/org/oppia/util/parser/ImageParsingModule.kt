@@ -20,4 +20,11 @@ class ImageParsingModule {
   fun provideImageDownloadUrlTemplate(): String {
     return "%s/%s/assets/image/%s"
   }
+
+  @Provides
+  @ThumbnailDownloadUrlTemplate
+  @Singleton
+  fun provideThumbnailDownloadUrlTemplate(): String {
+    return "%s/%s/assets/thumbnail/%s"
+  }
 }
