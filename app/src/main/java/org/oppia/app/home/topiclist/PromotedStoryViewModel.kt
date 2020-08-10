@@ -6,8 +6,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import org.oppia.app.home.RouteToTopicPlayStoryListener
 import org.oppia.app.model.PromotedStory
-import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.app.shim.IntentFactoryShimInterface
+import org.oppia.app.viewmodel.ObservableViewModel
 
 // TODO(#283): Add download status information to promoted-story-card.
 

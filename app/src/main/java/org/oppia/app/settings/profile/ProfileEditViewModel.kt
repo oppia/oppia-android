@@ -4,7 +4,6 @@ import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import org.oppia.app.vm.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId

@@ -21,22 +21,26 @@ interface ViewBindingShimInterface {
   fun provideProfileInputViewBindingLabelText(
     inflater: LayoutInflater,
     parent: ViewGroup,
-    attachToParent: Boolean): TextView
+    attachToParent: Boolean
+  ): TextView
 
   fun provideProfileInputViewBindingInput(
     inflater: LayoutInflater,
     parent: ViewGroup,
-    attachToParent: Boolean): EditText
+    attachToParent: Boolean
+  ): EditText
 
   fun provideProfileInputViewBindingErrorText(
     inflater: LayoutInflater,
     parent: ViewGroup,
-    attachToParent: Boolean): TextView
+    attachToParent: Boolean
+  ): TextView
 
   fun provideSelectionInteractionViewInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
-    attachToParent: Boolean): View
+    attachToParent: Boolean
+  ): View
 
   fun provideSelectionInteractionViewModel(
     view: View,
@@ -44,12 +48,14 @@ interface ViewBindingShimInterface {
     htmlParserFactory: HtmlParser.Factory,
     resourceBucketName: String,
     entityType: String,
-    entityId: String)
+    entityId: String
+  )
 
   fun provideMultipleChoiceInteractionItemsInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
-    attachToParent: Boolean): View
+    attachToParent: Boolean
+  ): View
 
   fun provideMultipleChoiceInteractionItemsViewModel(
     view: View,
@@ -57,12 +63,14 @@ interface ViewBindingShimInterface {
     htmlParserFactory: HtmlParser.Factory,
     resourceBucketName: String,
     entityType: String,
-    entityId: String)
+    entityId: String
+  )
 
   fun provideDragDropSortInteractionInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
-    attachToParent: Boolean): View
+    attachToParent: Boolean
+  ): View
 
   fun setDragDropInteractionItemsBinding(
     view: View
@@ -87,7 +95,8 @@ interface ViewBindingShimInterface {
   fun provideDragDropSingleItemInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
-    attachToParent: Boolean): View
+    attachToParent: Boolean
+  ): View
 
   fun setDragDropSingleItemBinding(
     view: View
@@ -102,5 +111,4 @@ interface ViewBindingShimInterface {
   )
 
   fun getDefaultRegion(parentView: FrameLayout): View
-
 }

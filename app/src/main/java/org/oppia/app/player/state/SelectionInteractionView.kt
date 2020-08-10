@@ -7,15 +7,15 @@ import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.shim.ViewComponentFactory
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
+import org.oppia.app.player.state.itemviewmodel.SelectionItemInputType
 import org.oppia.app.recyclerview.BindableAdapter
+import org.oppia.app.shim.ViewBindingShimInterface
+import org.oppia.app.shim.ViewComponentFactory
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
-import org.oppia.app.player.state.itemviewmodel.SelectionItemInputType
-import org.oppia.app.shim.ViewBindingShimInterface
 
 /**
  * A custom [RecyclerView] for displaying a variable list of items that may be selected by a user as part of the item
