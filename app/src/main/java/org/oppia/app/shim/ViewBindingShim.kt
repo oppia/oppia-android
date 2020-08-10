@@ -26,6 +26,9 @@ import javax.inject.Inject
  */
 class ViewBindingShim @Inject constructor(): ViewBindingShimInterface {
 
+  /**
+   * Handles binding inflation for [ProfileInputView] and returns the binding's labelText
+   */
   override fun provideProfileInputViewBindingLabelText(
     inflater: LayoutInflater,
     parent: ViewGroup,
@@ -40,6 +43,9 @@ class ViewBindingShim @Inject constructor(): ViewBindingShimInterface {
     return binding.labelText
   }
 
+  /**
+   * Handles binding inflation for [ProfileInputView] and returns the binding's input
+   */
   override fun provideProfileInputViewBindingInput(
     inflater: LayoutInflater,
     parent: ViewGroup,
@@ -54,6 +60,9 @@ class ViewBindingShim @Inject constructor(): ViewBindingShimInterface {
     return binding.input
   }
 
+  /**
+   * Handles binding inflation for [ProfileInputView] and returns the binding's errorText
+   */
   override fun provideProfileInputViewBindingErrorText(
     inflater: LayoutInflater,
     parent: ViewGroup,
@@ -68,6 +77,10 @@ class ViewBindingShim @Inject constructor(): ViewBindingShimInterface {
     return binding.errorText
   }
 
+  /**
+   * Handles binding inflation for [SelectionInteractionView]'s ItemSelectionInteraction and
+   * returns the binding's root
+   */
   override fun provideSelectionInteractionViewInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
@@ -80,6 +93,10 @@ class ViewBindingShim @Inject constructor(): ViewBindingShimInterface {
     ).root
   }
 
+  /**
+   * Handles binding inflation for [SelectionInteractionView]'s ItemSelectionInteraction and
+   * returns the binding's viewModel
+   */
   override fun provideSelectionInteractionViewModel(
     view: View,
     viewModel: SelectionInteractionContentViewModel,
@@ -95,7 +112,7 @@ class ViewBindingShim @Inject constructor(): ViewBindingShimInterface {
         resourceBucketName,
         entityType,
         entityId,
-        /* imageCenterAlign= */ false
+        false
       ).parseOppiaHtml(
         viewModel.htmlContent,
         binding.itemSelectionContentsTextView
@@ -103,16 +120,26 @@ class ViewBindingShim @Inject constructor(): ViewBindingShimInterface {
     binding.viewModel = viewModel
   }
 
+  /**
+   * Handles binding inflation for [SelectionInteractionView]'s MultipleChoiceInteraction and
+   * returns the binding's view
+   */
   override fun provideMultipleChoiceInteractionItemsInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
     attachToParent: Boolean
   ): View {
     return MultipleChoiceInteractionItemsBinding.inflate(
-      LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
+      LayoutInflater.from(parent.context),
+      parent,
+      false
     ).root
   }
 
+  /**
+   * Handles binding inflation for [SelectionInteractionView]'s MultipleChoiceInteraction and
+   * returns the binding's viewModel
+   */
   override fun provideMultipleChoiceInteractionItemsViewModel(
     view: View,
     viewModel: SelectionInteractionContentViewModel,
@@ -132,6 +159,9 @@ class ViewBindingShim @Inject constructor(): ViewBindingShimInterface {
     binding.viewModel = viewModel
   }
 
+  /**
+   * Handles binding inflation for [DragDropSortInteractionView] and returns the binding's view
+   */
   override fun provideDragDropSortInteractionInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
@@ -142,6 +172,9 @@ class ViewBindingShim @Inject constructor(): ViewBindingShimInterface {
     ).root
   }
 
+  /**
+   * Handles the binding for [DragDropSortInteractionView].
+   */
   private lateinit var dragDropInteractionItemsBinding: DragDropInteractionItemsBinding
 
   override fun setDragDropInteractionItemsBinding(
@@ -184,7 +217,9 @@ class ViewBindingShim @Inject constructor(): ViewBindingShimInterface {
     parent: ViewGroup,
     attachToParent: Boolean): View {
     return DragDropSingleItemBinding.inflate(
-      LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
+      LayoutInflater.from(parent.context),
+      parent,
+      false
     ).root
   }
 
@@ -208,9 +243,10 @@ class ViewBindingShim @Inject constructor(): ViewBindingShimInterface {
       resourceBucketName,
       entityType,
       entityId,
-      /* imageCenterAlign= */ false
+       false
     ).parseOppiaHtml(
-      viewModel, dragDropSingleItemBinding.dragDropContentTextView
+      viewModel,
+      dragDropSingleItemBinding.dragDropContentTextView
     )
   }
 
