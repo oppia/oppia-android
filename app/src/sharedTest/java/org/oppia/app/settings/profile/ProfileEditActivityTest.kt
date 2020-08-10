@@ -32,9 +32,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.model.AppLanguage
-import org.oppia.app.model.AudioLanguage
-import org.oppia.app.model.StoryTextSize
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.profile.ProfileManagementController
@@ -302,15 +299,12 @@ class ProfileEditActivityTest {
       avatarImagePath = null,
       allowDownloadAccess = true,
       colorRgb = -10710042,
-      isAdmin = false,
-      storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-      appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-      audioLanguage = AudioLanguage.NO_AUDIO
+      isAdmin = false
     )
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        2
+        3
       )
     ).use {
       onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(isChecked()))
@@ -326,15 +320,12 @@ class ProfileEditActivityTest {
       avatarImagePath = null,
       allowDownloadAccess = true,
       colorRgb = -10710042,
-      isAdmin = false,
-      storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-      appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-      audioLanguage = AudioLanguage.NO_AUDIO
+      isAdmin = false
     )
     ActivityScenario.launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context,
-        2
+        3
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())

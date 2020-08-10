@@ -154,10 +154,7 @@ class ProfileManagementControllerTest {
       avatarImagePath = null,
       allowDownloadAccess = true,
       colorRgb = -10710042,
-      isAdmin = true,
-      storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-      appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-      audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+      isAdmin = true
     ).observeForever(mockUpdateResultObserver)
     advanceUntilIdle()
 
@@ -169,6 +166,9 @@ class ProfileManagementControllerTest {
     assertThat(profile.pin).isEqualTo("123")
     assertThat(profile.allowDownloadAccess).isEqualTo(true)
     assertThat(profile.id.internalId).isEqualTo(0)
+    assertThat(profile.storyTextSize).isEqualTo(StoryTextSize.MEDIUM_TEXT_SIZE)
+    assertThat(profile.appLanguage).isEqualTo(AppLanguage.ENGLISH_APP_LANGUAGE)
+    assertThat(profile.audioLanguage).isEqualTo(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
     assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
   }
 
@@ -185,10 +185,7 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = false,
         colorRgb = -10710042,
-        isAdmin = true,
-        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        isAdmin = true
       ).observeForever(mockUpdateResultObserver)
 
       verifyUpdateFailed()
@@ -209,10 +206,7 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = false,
         colorRgb = -10710042,
-        isAdmin = true,
-        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        isAdmin = true
       ).observeForever(mockUpdateResultObserver)
 
       verifyUpdateFailed()
@@ -236,6 +230,9 @@ class ProfileManagementControllerTest {
       assertThat(profile.pin).isEqualTo("456")
       assertThat(profile.allowDownloadAccess).isEqualTo(false)
       assertThat(profile.id.internalId).isEqualTo(3)
+      assertThat(profile.storyTextSize).isEqualTo(StoryTextSize.MEDIUM_TEXT_SIZE)
+      assertThat(profile.appLanguage).isEqualTo(AppLanguage.ENGLISH_APP_LANGUAGE)
+      assertThat(profile.audioLanguage).isEqualTo(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
     }
 
   @Test
@@ -269,10 +266,7 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = false,
         colorRgb = -10710042,
-        isAdmin = false,
-        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        isAdmin = false
       )
       advanceUntilIdle()
       profileManagementController.getProfiles().observeForever(mockProfilesObserver)
@@ -525,10 +519,7 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = false,
         colorRgb = -10710042,
-        isAdmin = true,
-        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        isAdmin = true
       )
       advanceUntilIdle()
       profileManagementController.getProfiles().observeForever(mockProfilesObserver)
@@ -621,10 +612,7 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = true,
         colorRgb = -10710042,
-        isAdmin = true,
-        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        isAdmin = true
       ).observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
 
@@ -644,10 +632,7 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = true,
         colorRgb = -10710042,
-        isAdmin = true,
-        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        isAdmin = true
       ).observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
 
@@ -669,10 +654,7 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = true,
         colorRgb = -10710042,
-        isAdmin = true,
-        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        isAdmin = true
       ).observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
 
@@ -682,10 +664,7 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = true,
         colorRgb = -10710042,
-        isAdmin = false,
-        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        isAdmin = false
       ).observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
 
@@ -706,10 +685,7 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = true,
         colorRgb = -10710042,
-        isAdmin = true,
-        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        isAdmin = true
       ).observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
 
@@ -719,10 +695,7 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = true,
         colorRgb = -10710042,
-        isAdmin = false,
-        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        isAdmin = false
       ).observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
 
@@ -745,10 +718,7 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = true,
         colorRgb = -10710042,
-        isAdmin = true,
-        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        isAdmin = true
       ).observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
 
@@ -758,10 +728,7 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = true,
         colorRgb = -10710042,
-        isAdmin = false,
-        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        isAdmin = false
       ).observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
 
@@ -785,10 +752,7 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = true,
         colorRgb = -10710042,
-        isAdmin = true,
-        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        isAdmin = true
       ).observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
 
@@ -798,10 +762,7 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = true,
         colorRgb = -10710042,
-        isAdmin = false,
-        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        isAdmin = false
       ).observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
 
@@ -827,10 +788,7 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = true,
         colorRgb = -10710042,
-        isAdmin = true,
-        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        isAdmin = true
       ).observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
 
@@ -853,10 +811,7 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = true,
         colorRgb = -10710042,
-        isAdmin = true,
-        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        isAdmin = true
       ).observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
 
@@ -888,10 +843,7 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = true,
         colorRgb = -10710042,
-        isAdmin = true,
-        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        isAdmin = true
       ).observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
 
@@ -930,10 +882,7 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = true,
         colorRgb = -10710042,
-        isAdmin = true,
-        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        isAdmin = true
       ).observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
 
@@ -971,10 +920,7 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = true,
         colorRgb = -10710042,
-        isAdmin = true,
-        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        isAdmin = true
       ).observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
 
@@ -984,10 +930,7 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = true,
         colorRgb = -10710042,
-        isAdmin = false,
-        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        isAdmin = false
       ).observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
 
@@ -1010,10 +953,7 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = true,
         colorRgb = -10710042,
-        isAdmin = true,
-        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        isAdmin = true
       ).observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
 
@@ -1023,10 +963,7 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = true,
         colorRgb = -10710042,
-        isAdmin = false,
-        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE,
-        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE,
-        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        isAdmin = false
       ).observeForever(mockUpdateResultObserver)
       advanceUntilIdle()
 
@@ -1084,10 +1021,7 @@ class ProfileManagementControllerTest {
         avatarImagePath = null,
         allowDownloadAccess = it.allowDownloadAccess,
         colorRgb = -10710042,
-        isAdmin = false,
-        storyTextSize = it.storyTextSize,
-        appLanguage = it.appLanguage,
-        audioLanguage = it.audioLanguage
+        isAdmin = false
       )
     }
   }

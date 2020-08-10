@@ -17,10 +17,10 @@
     android:id="@+id/topic_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="12dp"
-    android:layout_marginEnd="8dp"
-    android:layout_marginBottom="12dp"
+    android:layout_marginStart="24dp"
+    android:layout_marginTop="36dp"
+    android:layout_marginEnd="24dp"
+    app:cardElevation="@dimen/elevation_4dp"
     app:cardCornerRadius="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -29,18 +29,19 @@
       android:clickable="true"
       android:focusable="true">
 
-      <ImageView
+      <org.oppia.app.customview.LessonThumbnailImageView
         android:id="@+id/topic_thumbnail"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/topicThumbnailBackground"
         android:importantForAccessibility="no"
         android:scaleType="centerInside"
-        android:src="@{viewModel.topic.topicThumbnail.thumbnailGraphic}"
+        app:entityId="@{viewModel.topic.topicId}"
+        app:entityType="@{viewModel.entityType}"
         app:layout_constraintDimensionRatio="4:3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:lessonThumbnail="@{viewModel.topic.topicThumbnail}" />
 
       <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
@@ -62,8 +63,7 @@
           android:ellipsize="end"
           android:fontFamily="sans-serif"
           android:gravity="top"
-          android:maxLines="2"
-          android:minLines="2"
+          android:lines="2"
           android:text="@{viewModel.topic.name}"
           android:textColor="@color/white"
           android:textSize="14sp"
