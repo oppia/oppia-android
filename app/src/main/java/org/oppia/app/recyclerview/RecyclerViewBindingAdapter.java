@@ -1,11 +1,13 @@
 package org.oppia.app.recyclerview;
 
 import android.graphics.drawable.Drawable;
+
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 import androidx.databinding.ObservableList;
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 
 /**
@@ -47,16 +49,16 @@ public final class RecyclerViewBindingAdapter {
   @BindingAdapter("data")
   public static <T> void bindToRecyclerViewAdapterWithObservableList(
       @NonNull RecyclerView recyclerView,
-      @NonNull ObservableList<T> dataList
+      ObservableList<T> dataList
   ) {
     bindToRecyclerViewAdapter(recyclerView, dataList);
   }
 
   private static <T> void bindToRecyclerViewAdapter(
       @NonNull RecyclerView recyclerView,
-      @NonNull List<T> dataList
+      List<T> dataList
   ) {
-    BindableAdapter<T> adapter = (BindableAdapter<T>) recyclerView.getAdapter();
+    RecyclerView.Adapter adapter = recyclerView.getAdapter();
     if (adapter == null) {
       throw new IllegalArgumentException(
           "Cannot bind data to a RecyclerView missing its adapter."
@@ -67,13 +69,15 @@ public final class RecyclerViewBindingAdapter {
           "Can only bind data to a BindableAdapter."
       );
     }
-    adapter.setDataUnchecked(dataList);
+    if (dataList != null) {
+      ((BindableAdapter<T>) adapter).setDataUnchecked(dataList);
+    }
   }
 
   @BindingAdapter("itemDecorator")
   public static void addItemDecorator(
       @NonNull RecyclerView recyclerView,
-      @NonNull Drawable drawable
+      Drawable drawable
   ) {
     recyclerView.addItemDecoration(new DividerItemDecorator(drawable));
   }

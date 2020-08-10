@@ -5,6 +5,7 @@ import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 
@@ -18,7 +19,7 @@ public final class ViewBindingAdapters {
   private static AnimatorSet animatorSet = new AnimatorSet();
 
   @BindingAdapter("app:flashingAnimation")
-  public static void setFlashingAnimation(@NonNull View view, boolean isFlashing) {
+  public static void setFlashingAnimation(View view, boolean isFlashing) {
     appearAnimator.addUpdateListener(animation -> {
       view.setScaleX((float) animation.getAnimatedValue());
       view.setScaleY((float) animation.getAnimatedValue());
@@ -69,7 +70,7 @@ public final class ViewBindingAdapters {
       },
       requireAll = true
   )
-  public static void setRotationAnimation(@NonNull View view, boolean isClockwise, float angle) {
+  public static void setRotationAnimation(View view, boolean isClockwise, float angle) {
     if (isClockwise) {
       ValueAnimator valueAnimator = ValueAnimator.ofFloat(0f, angle);
       valueAnimator.setDuration(300);
