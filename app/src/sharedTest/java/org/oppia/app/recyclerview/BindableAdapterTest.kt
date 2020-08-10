@@ -361,7 +361,6 @@ class BindableAdapterTest {
 
     ActivityScenario.launch(BindableAdapterTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-
         adapter.registerAdapterDataObserver(fakeObserver)
         val liveData = getRecyclerViewListLiveData(activity)
         liveData.value = oldList
