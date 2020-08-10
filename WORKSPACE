@@ -124,6 +124,7 @@ maven_install(
         "androidx.appcompat:appcompat:1.0.2",
         "androidx.arch.core:core-testing:2.1.0",
         "androidx.core:core-ktx:1.0.1",
+        "androidx.core:core:1.0.1",
         "androidx.databinding:databinding-adapters:3.4.2",
         "androidx.databinding:databinding-common:3.4.2",
         "androidx.databinding:databinding-runtime:3.4.2",
