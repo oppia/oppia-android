@@ -130,7 +130,8 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
     (FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory)
-      .createViewComponent(this).inject(this)
+      .createViewComponent(this)
+      .inject(this)
     isAccessibilityEnabled = accessibilityManager.isScreenReaderEnabled()
   }
 
