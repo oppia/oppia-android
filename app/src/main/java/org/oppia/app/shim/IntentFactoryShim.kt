@@ -31,9 +31,15 @@ class IntentFactoryShim @Inject constructor() : IntentFactoryShimInterface {
     return intent
   }
 
-  override fun createRecentlyPlayedActivityIntent(context: Context, internalProfileId: Int): Intent {
+  override fun createRecentlyPlayedActivityIntent(
+    context: Context,
+    internalProfileId: Int
+  ): Intent {
     val intent = Intent(context, RecentlyPlayedActivity::class.java)
-    intent.putExtra(RecentlyPlayedActivity.RECENTLY_PLAYED_ACTIVITY_INTERNAL_PROFILE_ID_KEY, internalProfileId)
+    intent.putExtra(
+      RecentlyPlayedActivity.RECENTLY_PLAYED_ACTIVITY_INTERNAL_PROFILE_ID_KEY,
+      internalProfileId
+    )
     return intent
   }
 }

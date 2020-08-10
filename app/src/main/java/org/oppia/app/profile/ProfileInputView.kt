@@ -12,9 +12,9 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import org.oppia.app.R
 import org.oppia.app.shim.ViewBindingShimInterface
 import org.oppia.app.shim.ViewComponentFactory
-import org.oppia.app.R
 import javax.inject.Inject
 
 /** Custom view that is used for name or pin input with error messages. */
