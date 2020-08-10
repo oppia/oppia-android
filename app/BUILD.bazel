@@ -140,7 +140,6 @@ LISTENER_FILES = [
     "src/main/java/org/oppia/app/home/recentlyplayed/OngoingStoryClickListener.kt",
     "src/main/java/org/oppia/app/home/RouteToRecentlyPlayedListener.kt",
     "src/main/java/org/oppia/app/home/RouteToTopicPlayStoryListener.kt",
-    "src/main/java/org/oppia/app/onboarding/OnboardingListener.kt",
     "src/main/java/org/oppia/app/onboarding/RouteToProfileListListener.kt",
     "src/main/java/org/oppia/app/options/RouteToAppLanguageListListener.kt",
     "src/main/java/org/oppia/app/options/RouteToAudioLanguageListListener.kt",
@@ -157,7 +156,6 @@ LISTENER_FILES = [
     "src/main/java/org/oppia/app/player/state/listener/RouteToHintsAndSolutionListener.kt",
     "src/main/java/org/oppia/app/player/state/listener/StateKeyboardButtonListener.kt",
     "src/main/java/org/oppia/app/player/state/listener/SubmitNavigationButtonListener.kt",
-    "src/main/java/org/oppia/app/profile/ProfileChooserListener.kt",
     "src/main/java/org/oppia/app/profile/RouteToAdminPinListener.kt",
     "src/main/java/org/oppia/app/profileprogress/ProfilePictureClickListener.kt",
     "src/main/java/org/oppia/app/profileprogress/RouteToCompletedStoryListListener.kt",
@@ -171,9 +169,6 @@ LISTENER_FILES = [
     "src/main/java/org/oppia/app/topic/RouteToRevisionCardListener.kt",
     "src/main/java/org/oppia/app/utility/OnClickableAreaClickedListener.kt",
     "src/main/java/org/oppia/app/utility/RegionClickEvent.kt",
-    "src/main/java/org/oppia/app/walkthrough/end/WalkthroughFinalListener.kt",
-    "src/main/java/org/oppia/app/walkthrough/WalkthroughActivityListener.kt",
-    "src/main/java/org/oppia/app/walkthrough/WalkthroughFragmentChangeListener.kt",
 ]
 
 ANNOTATION_FILES = [

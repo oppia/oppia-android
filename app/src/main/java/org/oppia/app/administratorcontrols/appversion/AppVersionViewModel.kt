@@ -21,7 +21,6 @@ class AppVersionViewModel @Inject constructor(
 
   var versionName = context.packageManager
     .getPackageInfo(context.packageName, 0).versionName
-  //val versionName = ObservableField<String>(BuildConfig.VERSION_NAME)
 
   private val lastUpdateDateTime =
     fragment.activity!!.packageManager.getPackageInfo(
