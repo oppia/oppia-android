@@ -418,6 +418,6 @@ class AppStartupStateControllerTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(onboardingFlowControllerTest: AppStartupStateControllerTest)
+    fun inject(appStartupStateControllerTest: AppStartupStateControllerTest)
   }
 }

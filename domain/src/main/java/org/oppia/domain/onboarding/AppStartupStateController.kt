@@ -10,7 +10,7 @@ import org.oppia.app.model.OnboardingState
 import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
-import org.oppia.util.logging.Logger
+import org.oppia.util.logging.ConsoleLogger
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -25,7 +25,7 @@ class AppStartupStateController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
   private val context: Context,
   private val dataProviders: DataProviders,
-  private val logger: Logger
+  private val consoleLogger: ConsoleLogger
 ) {
   private val expirationDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
 
@@ -43,7 +43,7 @@ class AppStartupStateController @Inject constructor(
     // markOnboardingFlowCompleted().
     onboardingFlowStore.primeCacheAsync().invokeOnCompletion {
       it?.let {
-        logger.e(
+        consoleLogger.e(
           "DOMAIN",
           "Failed to prime cache ahead of LiveData conversion for user onboarding data.",
           it)
@@ -61,7 +61,8 @@ class AppStartupStateController @Inject constructor(
       it.toBuilder().setAlreadyOnboardedApp(true).build()
     }.invokeOnCompletion {
       it?.let {
-        logger.e("DOMAIN", "Failed when storing that the user already onboarded the app.", it)
+        consoleLogger.e(
+          "DOMAIN", "Failed when storing that the user already onboarded the app.", it)
       }
     }
   }
@@ -106,7 +107,7 @@ class AppStartupStateController @Inject constructor(
     return try {
       expirationDateFormat.parse(dateString)
     } catch (e: ParseException) {
-      logger.e("DOMAIN", "Failed to parse date string: $dateString", e)
+      consoleLogger.e("DOMAIN", "Failed to parse date string: $dateString", e)
       null
     }
   }
