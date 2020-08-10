@@ -10,7 +10,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.R
 import org.oppia.app.databinding.databinding.DragDropInteractionItemsBinding
 import org.oppia.app.databinding.databinding.DragDropSingleItemBinding
 import org.oppia.app.databinding.databinding.ItemSelectionInteractionItemsBinding
