@@ -2,7 +2,6 @@ package org.oppia.domain.oppialogger.exceptions
 
 import android.app.Application
 import android.content.Context
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -12,20 +11,10 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.ObsoleteCoroutinesApi
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.TestCoroutineScope
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.setMain
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -45,18 +34,16 @@ import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.networking.NetworkConnectionUtil
-import org.oppia.util.threading.BackgroundDispatcher
-import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
-import kotlin.coroutines.EmptyCoroutineContext
 
 private const val TEST_TIMESTAMP_IN_MILLIS_ONE = 1556094120000
 private const val TEST_TIMESTAMP_IN_MILLIS_TWO = 1556094110000
@@ -70,6 +57,9 @@ class ExceptionsControllerTest {
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
+  @Inject
+  lateinit var dataProviders: DataProviders
 
   @Inject
   lateinit var exceptionsController: ExceptionsController
@@ -90,35 +80,12 @@ class ExceptionsControllerTest {
   @Captor
   lateinit var oppiaExceptionLogsResultCaptor: ArgumentCaptor<AsyncResult<OppiaExceptionLogs>>
 
-  @Inject
-  @field:TestDispatcher
-  lateinit var testDispatcher: CoroutineDispatcher
-
-  private val coroutineContext by lazy {
-    EmptyCoroutineContext + testDispatcher
-  }
-
-  // https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/
-  @ObsoleteCoroutinesApi
-  private val testThread = newSingleThreadContext("TestMain")
-
-  private val exceptionThrown = Exception("TEST MESSAGE", Throwable("TEST CAUSE"))
-
   @Before
   @ExperimentalCoroutinesApi
   @ObsoleteCoroutinesApi
   fun setUp() {
     networkConnectionUtil = NetworkConnectionUtil(ApplicationProvider.getApplicationContext())
-    Dispatchers.setMain(testThread)
     setUpTestApplicationComponent()
-  }
-
-  @After
-  @ExperimentalCoroutinesApi
-  @ObsoleteCoroutinesApi
-  fun tearDown() {
-    Dispatchers.resetMain()
-    testThread.close()
   }
 
   @Test
@@ -146,28 +113,29 @@ class ExceptionsControllerTest {
   @ExperimentalCoroutinesApi
   @InternalCoroutinesApi
   @Test
-  fun testController_logException_nonFatal_withNoNetwork_logsToCacheStore() =
-    runBlockingTest(testDispatcher){
-      networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
-      exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
+  fun testController_logException_nonFatal_withNoNetwork_logsToCacheStore() {
+    val exceptionThrown = Exception("TEST MESSAGE", Throwable("TEST CAUSE"))
+    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
+    exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
-      val cachedExceptions = exceptionsController.getExceptionLogs()
-      advanceUntilIdle()
+    val cachedExceptions = dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
+    cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
+    testCoroutineDispatchers.advanceUntilIdle()
 
-      val exceptionLog = cachedExceptions.getExceptionLog(0)
-      advanceUntilIdle()
+    verify(
+      mockOppiaExceptionLogsObserver,
+      atLeastOnce()
+    ).onChanged(oppiaExceptionLogsResultCaptor.capture())
 
-      val exception = exceptionLog.toException()
-      advanceUntilIdle()
+    val exceptionLog = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
+    val exception = exceptionLog.toException()
+    assertThat(exception.message).isEqualTo(exceptionThrown.message)
+    assertThat(exception.stackTrace).isEqualTo(exceptionThrown.stackTrace)
+    assertThat(exception.cause?.message).isEqualTo(exceptionThrown.cause?.message)
+    assertThat(exception.cause?.stackTrace).isEqualTo(exceptionThrown.cause?.stackTrace)
+    assertThat(exceptionLog.exceptionType).isEqualTo(ExceptionType.NON_FATAL)
+  }
 
-      assertThat(exception.message).isEqualTo(exceptionThrown.message)
-      assertThat(exception.stackTrace).isEqualTo(exceptionThrown.stackTrace)
-      assertThat(exception.cause?.message).isEqualTo(exceptionThrown.cause?.message)
-      assertThat(exception.cause?.stackTrace).isEqualTo(exceptionThrown.cause?.stackTrace)
-      assertThat(exceptionLog.exceptionType).isEqualTo(ExceptionType.NON_FATAL)
-    }
-
-/*
   @ExperimentalCoroutinesApi
   @InternalCoroutinesApi
   @Test
@@ -176,7 +144,7 @@ class ExceptionsControllerTest {
     val exceptionThrown = Exception("TEST MESSAGE", Throwable("TEST"))
     exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
-    val cachedExceptions = exceptionsController.getExceptionLogs()
+    val cachedExceptions = dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -215,7 +183,7 @@ class ExceptionsControllerTest {
       TEST_TIMESTAMP_IN_MILLIS_FOUR
     )
 
-    val cachedExceptions = exceptionsController.getExceptionLogs()
+    val cachedExceptions = dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -258,7 +226,7 @@ class ExceptionsControllerTest {
       TEST_TIMESTAMP_IN_MILLIS_THREE
     )
 
-    val cachedExceptions = exceptionsController.getExceptionLogs()
+    val cachedExceptions = dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -278,7 +246,7 @@ class ExceptionsControllerTest {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
     exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
-    val cachedExceptions = exceptionsController.getExceptionLogs()
+    val cachedExceptions = dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -306,7 +274,7 @@ class ExceptionsControllerTest {
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
     exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
-    val cachedExceptions = exceptionsController.getExceptionLogs()
+    val cachedExceptions = dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -326,7 +294,7 @@ class ExceptionsControllerTest {
     val exceptionThrown = Exception()
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
-    val cachedExceptions = exceptionsController.getExceptionLogs()
+    val cachedExceptions = dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -348,7 +316,7 @@ class ExceptionsControllerTest {
     val exceptionThrown = Exception("TEST")
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
-    val cachedExceptions = exceptionsController.getExceptionLogs()
+    val cachedExceptions = dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -360,7 +328,7 @@ class ExceptionsControllerTest {
     assertThat(exception.message).isEqualTo("TEST")
     assertThat(exception.stackTrace).isEqualTo(exceptionThrown.stackTrace)
     assertThat(exception.cause).isEqualTo(null)
-  }*/
+  }
 
   private fun setUpTestApplicationComponent() {
     DaggerExceptionsControllerTest_TestApplicationComponent.builder()
@@ -388,24 +356,6 @@ class ExceptionsControllerTest {
     fun provideTestDispatcher(): CoroutineDispatcher {
       return TestCoroutineDispatcher()
     }
-/*
-    @Singleton
-    @Provides
-    @BackgroundDispatcher
-    fun provideBackgroundDispatcher(
-      @TopicControllerTest.TestDispatcher testDispatcher: CoroutineDispatcher
-    ): CoroutineDispatcher {
-      return testDispatcher
-    }
-
-    @Singleton
-    @Provides
-    @BlockingDispatcher
-    fun provideBlockingDispatcher(
-      @TopicControllerTest.TestDispatcher testDispatcher: CoroutineDispatcher
-    ): CoroutineDispatcher {
-      return testDispatcher
-    }*/
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
