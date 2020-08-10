@@ -3,7 +3,7 @@ package org.oppia.app.parser
 import android.content.Context
 import androidx.annotation.StringRes
 import org.oppia.app.model.Fraction
-import org.oppia.app.vm.R
+import org.oppia.app.R
 import org.oppia.domain.util.normalizeWhitespace
 
 /** This class contains method that helps to parse string to fraction. */

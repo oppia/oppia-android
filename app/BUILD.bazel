@@ -53,8 +53,8 @@ VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/options/OptionsAudioLanguageViewModel.kt",
     "src/main/java/org/oppia/app/options/OptionsItemViewModel.kt",
     "src/main/java/org/oppia/app/options/OptionsStoryTextViewViewModel.kt",
-    "src/main/java/org/oppia/app/parser/StringToFractionParser.kt",
-    "src/main/java/org/oppia/app/parser/StringToNumberParser.kt",
+    "update_src/main/java/org/oppia/app/parser/StringToFractionParser",
+    "update_src/main/java/org/oppia/app/parser/StringToNumberParser",
     "src/main/java/org/oppia/app/player/audio/AudioViewModel.kt",
     "src/main/java/org/oppia/app/player/exploration/ExplorationViewModel.kt",
     "src/main/java/org/oppia/app/player/state/itemviewmodel/ContentViewModel.kt",
@@ -142,6 +142,8 @@ ALTERED_VIEW_MODELS = [
     "src/main/java/org/oppia/app/onboarding/OnboardingViewModel.kt",
     "src/main/java/org/oppia/app/help/faq/FAQListViewModel.kt",
     "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel.kt",
+    "src/main/java/org/oppia/app/parser/StringToNumberParser.kt",
+    "src/main/java/org/oppia/app/parser/StringToFractionParser.kt",
 ]
 
 genrule(
@@ -234,6 +236,26 @@ genrule(
     ''',
 )
 
+genrule(
+    name = "update_src/main/java/org/oppia/app/parser/StringToNumberParser",
+    srcs = ["src/main/java/org/oppia/app/parser/StringToNumberParser.kt"],
+    outs = ["src/main/java/org/oppia/app/parser/StringToNumberParser_updated.kt"],
+    cmd = '''
+    cat $(SRCS) |
+    sed 's/import org.oppia.app.R/import org.oppia.app.vm.R/g' > $(OUTS)
+    ''',
+)
+
+genrule(
+    name = "update_src/main/java/org/oppia/app/parser/StringToFractionParser",
+    srcs = ["src/main/java/org/oppia/app/parser/StringToFractionParser.kt"],
+    outs = ["src/main/java/org/oppia/app/parser/StringToFractionParser_updated.kt"],
+    cmd = '''
+    cat $(SRCS) |
+    sed 's/import org.oppia.app.R/import org.oppia.app.vm.R/g' > $(OUTS)
+    ''',
+)
+
 LISTENER_FILES = [
     "src/main/java/org/oppia/app/home/topiclist/TopicSummaryClickListener.kt",
     "src/main/java/org/oppia/app/administratorcontrols/RouteToAppVersionListener.kt",
@@ -311,7 +333,7 @@ genrule(
     outs = ["src/main/java/org/oppia/app/customview/LessonThumbnailImageView_updated.kt"],
     cmd = '''
     cat $(SRCS) |
-    sed 's/import org.oppia.app.R/import org.oppia.app.vm.R/g' > $(OUTS)
+    sed 's/import org.oppia.app.R/import org.oppia.app.views.R/g' > $(OUTS)
     ''',
 )
 
@@ -321,7 +343,7 @@ genrule(
     outs = ["src/main/java/org/oppia/app/customview/SegmentedCircularProgressView_updated.kt"],
     cmd = '''
     cat $(SRCS) |
-    sed 's/import org.oppia.app.R/import org.oppia.app.vm.R/g' > $(OUTS)
+    sed 's/import org.oppia.app.R/import org.oppia.app.views.R/g' > $(OUTS)
     ''',
 )
 
@@ -331,7 +353,7 @@ genrule(
     outs = ["src/main/java/org/oppia/app/profile/ProfileInputView_updated.kt"],
     cmd = '''
     cat $(SRCS) |
-    sed 's/import org.oppia.app.R/import org.oppia.app.vm.R/g' > $(OUTS)
+    sed 's/import org.oppia.app.R/import org.oppia.app.views.R/g' > $(OUTS)
     ''',
 )
 genrule(
@@ -340,7 +362,7 @@ genrule(
     outs = ["src/main/java/org/oppia/app/utility/ClickableAreasImage_updated.kt"],
     cmd = '''
     cat $(SRCS) |
-    sed 's/import org.oppia.app.R/import org.oppia.app.vm.R/g' > $(OUTS)
+    sed 's/import org.oppia.app.R/import org.oppia.app.views.R/g' > $(OUTS)
     ''',
 )
 
