@@ -1,47 +1,61 @@
 package org.oppia.app.splash
 
 import android.app.Application
+import android.app.Instrumentation
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
-import androidx.test.core.app.ActivityScenario.launch
+import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onIdle
-import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.InternalCoroutinesApi
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.app.activity.ActivityComponent
+import org.oppia.app.application.ActivityComponentFactory
+import org.oppia.app.application.ApplicationComponent
+import org.oppia.app.application.ApplicationModule
 import org.oppia.app.onboarding.OnboardingActivity
 import org.oppia.app.profile.ProfileActivity
+import org.oppia.data.backends.gae.NetworkModule
+import org.oppia.domain.classify.InteractionsModule
+import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
+import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.domain.classify.rules.imageClickInput.ImageClickInputModule
+import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
+import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.onboarding.OnboardingFlowController
+import org.oppia.domain.oppialogger.LogStorageModule
+import org.oppia.domain.question.QuestionModule
+import org.oppia.testing.TestAccessibilityModule
+import org.oppia.testing.TestCoroutineDispatchers
+import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
-import org.oppia.util.logging.EnableConsoleLog
-import org.oppia.util.logging.EnableFileLog
-import org.oppia.util.logging.GlobalLogLevel
-import org.oppia.util.logging.LogLevel
-import org.oppia.util.threading.BackgroundDispatcher
-import org.oppia.util.threading.BlockingDispatcher
-import java.util.concurrent.AbstractExecutorService
-import java.util.concurrent.TimeUnit
+import org.oppia.util.caching.CacheAssetsLocally
+import org.oppia.util.gcsresource.GcsResourceModule
+import org.oppia.util.logging.LoggerModule
+import org.oppia.util.parser.GlideImageLoaderModule
+import org.oppia.util.parser.HtmlParserEntityTypeModule
+import org.oppia.util.parser.ImageParsingModule
+import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
-import javax.inject.Qualifier
 import javax.inject.Singleton
 
 /**
@@ -49,21 +63,25 @@ import javax.inject.Singleton
  * https://jabknowsnothing.wordpress.com/2015/11/05/activitytestrule-espressos-test-lifecycle/.
  */
 @RunWith(AndroidJUnit4::class)
+@Config(application = SplashActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
+@LooperMode(LooperMode.Mode.PAUSED)
 class SplashActivityTest {
 
   @Inject lateinit var context: Context
+  @InternalCoroutinesApi @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
+  @ExperimentalCoroutinesApi
+  @InternalCoroutinesApi
   fun setUp() {
     Intents.init()
-    IdlingRegistry.getInstance().register(MainThreadExecutor.countingResource)
-    simulateNewAppInstance()
-    FirebaseApp.initializeApp(context)
   }
 
   @After
+  @ExperimentalCoroutinesApi
+  @InternalCoroutinesApi
   fun tearDown() {
-    IdlingRegistry.getInstance().unregister(MainThreadExecutor.countingResource)
+    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
@@ -77,91 +95,76 @@ class SplashActivityTest {
   )
 
   @Test
+  @ExperimentalCoroutinesApi
+  @InternalCoroutinesApi
   fun testSplashActivity_initialOpen_routesToOnboardingActivity() {
+    initializeTestApplication()
+
     activityTestRule.launchActivity(null)
+    testCoroutineDispatchers.advanceUntilIdle()
+
     intended(hasComponent(OnboardingActivity::class.java.name))
   }
 
   @Test
+  @ExperimentalCoroutinesApi
+  @InternalCoroutinesApi
   fun testSplashActivity_secondOpen_routesToChooseProfileActivity() {
     simulateAppAlreadyOnboarded()
-    launch(SplashActivity::class.java).use {
-      intended(hasComponent(ProfileActivity::class.java.name))
-    }
+    initializeTestApplication()
+
+    activityTestRule.launchActivity(null)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    intended(hasComponent(ProfileActivity::class.java.name))
   }
 
-  private fun simulateNewAppInstance() {
-    // Simulate a fresh app install by clearing any potential on-disk caches using an isolated onboarding flow controller.
-    createTestRootComponent()
-    onIdle()
-  }
-
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
   private fun simulateAppAlreadyOnboarded() {
-    // Simulate the app was already onboarded by creating an isolated onboarding flow controller and saving the onboarding status
-    // on the system before the activity is opened.
-    createTestRootComponent().getOnboardingFlowController().markOnboardingFlowCompleted()
-    onIdle()
+    // Simulate the app was already onboarded by creating an isolated onboarding flow controller and
+    // saving the onboarding status on the system before the activity is opened. Note that this has
+    // to be done in an isolated test application since the test application of this class shares
+    // state with production code under test. The isolated test application must be created through
+    // Instrumentation to ensure it's properly attached.
+    val testApplication = Instrumentation.newApplication(
+      TestApplication::class.java,
+      InstrumentationRegistry.getInstrumentation().targetContext
+    ) as TestApplication
+    testApplication.getOnboardingFlowController().markOnboardingFlowCompleted()
+    testApplication.getTestCoroutineDispatchers().advanceUntilIdle()
   }
 
-  private fun createTestRootComponent(): TestApplicationComponent {
-    return DaggerSplashActivityTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
+  @ExperimentalCoroutinesApi
+  @InternalCoroutinesApi
+  private fun initializeTestApplication() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    testCoroutineDispatchers.registerIdlingResource()
+    FirebaseApp.initializeApp(context)
   }
-
-  @Qualifier
-  annotation class TestDispatcher
 
   @Module
   class TestModule {
+    // Do not use caching to ensure URLs are always used as the main data source when loading audio.
     @Provides
-    @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
-
-    @ExperimentalCoroutinesApi
-    @Singleton
-    @Provides
-    @TestDispatcher
-    fun provideTestDispatcher(): CoroutineDispatcher {
-      return TestCoroutineDispatcher()
-    }
-
-    @Singleton
-    @Provides
-    @BackgroundDispatcher
-    fun provideBackgroundDispatcher(
-      @TestDispatcher testDispatcher: CoroutineDispatcher
-    ): CoroutineDispatcher {
-      return testDispatcher
-    }
-
-    // TODO(#59): Either isolate these to their own shared test module, or use the real logging
-    // module in tests to avoid needing to specify these settings for tests.
-    @EnableConsoleLog
-    @Provides
-    fun provideEnableConsoleLog(): Boolean = true
-
-    @EnableFileLog
-    @Provides
-    fun provideEnableFileLog(): Boolean = false
-
-    @GlobalLogLevel
-    @Provides
-    fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-
-    @Singleton
-    @Provides
-    @BlockingDispatcher
-    fun provideBlockingDispatcher(): CoroutineDispatcher {
-      return MainThreadExecutor.asCoroutineDispatcher()
-    }
+    @CacheAssetsLocally
+    fun provideCacheAssetsLocally(): Boolean = false
   }
 
   @Singleton
-  @Component(modules = [TestModule::class, TestLogReportingModule::class])
-  interface TestApplicationComponent {
+  @Component(
+    modules = [
+      TestModule::class, TestDispatcherModule::class, ApplicationModule::class,
+      NetworkModule::class, LoggerModule::class, ContinueModule::class, FractionInputModule::class,
+      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
+      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
+      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
+      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
+      TestAccessibilityModule::class, LogStorageModule::class
+    ]
+  )
+  interface TestApplicationComponent: ApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -171,48 +174,31 @@ class SplashActivityTest {
     }
 
     fun getOnboardingFlowController(): OnboardingFlowController
+
+    @InternalCoroutinesApi
+    fun getTestCoroutineDispatchers(): TestCoroutineDispatchers
+
     fun inject(splashActivityTest: SplashActivityTest)
   }
 
-  // TODO(#59): Move this to a general-purpose testing library that replaces all CoroutineExecutors with an
-  //  Espresso-enabled executor service. This service should also allow for background threads to run in both Espresso
-  //  and Robolectric to help catch potential race conditions, rather than forcing parallel execution to be sequential
-  //  and immediate.
-  //  NB: This also blocks on #59 to be able to actually create a test-only library.
-  /**
-   * An executor service that schedules all [Runnable]s to run asynchronously on the main thread. This is based on:
-   * https://android.googlesource.com/platform/packages/apps/TV/+/android-live-tv/src/com/android/tv/util/MainThreadExecutor.java.
-   */
-  private object MainThreadExecutor : AbstractExecutorService() {
-    override fun isTerminated(): Boolean = false
-
-    private val handler = Handler(Looper.getMainLooper())
-    val countingResource =
-      CountingIdlingResource("main_thread_executor_counting_idling_resource")
-
-    override fun execute(command: Runnable?) {
-      countingResource.increment()
-      handler.post {
-        try {
-          command?.run()
-        } finally {
-          countingResource.decrement()
-        }
-      }
+  class TestApplication : Application(), ActivityComponentFactory {
+    private val component: TestApplicationComponent by lazy {
+      DaggerSplashActivityTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
     }
 
-    override fun shutdown() {
-      throw UnsupportedOperationException()
+    fun inject(splashActivityTest: SplashActivityTest) {
+      component.inject(splashActivityTest)
     }
 
-    override fun shutdownNow(): MutableList<Runnable> {
-      throw UnsupportedOperationException()
-    }
+    fun getOnboardingFlowController() = component.getOnboardingFlowController()
 
-    override fun isShutdown(): Boolean = false
+    @InternalCoroutinesApi
+    fun getTestCoroutineDispatchers() = component.getTestCoroutineDispatchers()
 
-    override fun awaitTermination(timeout: Long, unit: TimeUnit?): Boolean {
-      throw UnsupportedOperationException()
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
+      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
     }
   }
 }
