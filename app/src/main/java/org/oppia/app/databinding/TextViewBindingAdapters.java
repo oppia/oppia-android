@@ -3,13 +3,10 @@ package org.oppia.app.databinding;
 import android.content.Context;
 import android.content.res.Resources;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
-
 import org.oppia.app.R;
 import org.oppia.util.system.OppiaDateTimeFormatter;
-
 import java.util.Locale;
 
 /**
@@ -50,7 +47,7 @@ public final class TextViewBindingAdapters {
   private static int HOUR_MILLIS = 60 * MINUTE_MILLIS;
   private static int DAY_MILLIS = 24 * HOUR_MILLIS;
 
-  public static String getTimeAgo(long lastVisitedTimeStamp, Context context) {
+  public static String getTimeAgo(long lastVisitedTimeStamp, @NonNull Context context) {
 
     OppiaDateTimeFormatter oppiaDateTimeFormatter = new OppiaDateTimeFormatter();
     long timeStamp =

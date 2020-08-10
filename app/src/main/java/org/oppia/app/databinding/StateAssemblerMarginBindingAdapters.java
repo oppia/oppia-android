@@ -2,7 +2,7 @@ package org.oppia.app.databinding;
 
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
-
+import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 
 /**
@@ -24,7 +24,7 @@ public final class StateAssemblerMarginBindingAdapters {
       requireAll = false
   )
   public static void setExplorationSplitViewMargin(
-      View view,
+      @NonNull View view,
       boolean isApplicable,
       float marginStart,
       float marginTop,
@@ -48,7 +48,7 @@ public final class StateAssemblerMarginBindingAdapters {
       requireAll = false
   )
   public static void setExplorationViewMargin(
-      View view,
+      @NonNull View view,
       boolean isApplicable,
       float marginStart,
       float marginTop,
@@ -72,7 +72,7 @@ public final class StateAssemblerMarginBindingAdapters {
       requireAll = false
   )
   public static void setQuestionViewMargin(
-      View view,
+      @NonNull View view,
       boolean isApplicable,
       float marginStart,
       float marginTop,
@@ -96,7 +96,7 @@ public final class StateAssemblerMarginBindingAdapters {
       requireAll = false
   )
   public static void setQuestionSplitViewMargin(
-      View view,
+      @NonNull View view,
       boolean isApplicable,
       float marginStart,
       float marginTop,
@@ -107,7 +107,7 @@ public final class StateAssemblerMarginBindingAdapters {
   }
 
   private static void setMarginIfApplicable(
-      View view,
+      @NonNull View view,
       boolean isApplicable,
       float marginStart,
       float marginTop,

@@ -3,18 +3,15 @@ package org.oppia.app.databinding;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
-
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
-
 import org.oppia.app.R;
 import org.oppia.app.model.LessonThumbnailGraphic;
 import org.oppia.app.model.ProfileAvatar;
@@ -28,7 +25,7 @@ public final class ImageViewBindingAdapters {
    * Source: https://stackoverflow.com/a/35809319/3689782.
    */
   @BindingAdapter("android:src")
-  public static void setImageDrawable(@NonNull ImageView imageView, String imageUrl) {
+  public static void setImageDrawable(@NonNull ImageView imageView, @NonNull String imageUrl) {
     RequestOptions requestOptions = new RequestOptions().placeholder(R.drawable.review_placeholder);
     Glide.with(imageView.getContext())
         .load(imageUrl)
@@ -55,8 +52,8 @@ public final class ImageViewBindingAdapters {
    */
   @BindingAdapter("android:src")
   public static void setImageDrawable(
-      ImageView imageView,
-      LessonThumbnailGraphic thumbnailGraphic
+      @NonNull ImageView imageView,
+      @NonNull LessonThumbnailGraphic thumbnailGraphic
   ) {
     int drawableResourceId;
     switch (thumbnailGraphic) {
@@ -115,7 +112,7 @@ public final class ImageViewBindingAdapters {
    * @param profileAvatar Represents either a colorId or local image uri.
    */
   @BindingAdapter("profile:src")
-  public static void setProfileImage(ImageView imageView, ProfileAvatar profileAvatar) {
+  public static void setProfileImage(@NonNull ImageView imageView, ProfileAvatar profileAvatar) {
     if (profileAvatar != null) {
       if (profileAvatar.getAvatarTypeCase() == ProfileAvatar.AvatarTypeCase.AVATAR_COLOR_RGB) {
         Glide.with(imageView.getContext())

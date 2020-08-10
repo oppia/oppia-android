@@ -1,7 +1,7 @@
 package org.oppia.app.databinding;
 
 import android.view.View;
-
+import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 
 /**
@@ -23,7 +23,7 @@ public final class StateAssemblerPaddingBindingAdapters {
       requireAll = false
   )
   public static void setExplorationSplitViewPadding(
-      View view,
+      @NonNull View view,
       boolean isApplicable,
       float paddingStart,
       float paddingTop,
@@ -47,7 +47,7 @@ public final class StateAssemblerPaddingBindingAdapters {
       requireAll = false
   )
   public static void setExplorationViewPadding(
-      View view,
+      @NonNull View view,
       boolean isApplicable,
       float paddingStart,
       float paddingTop,
@@ -71,7 +71,7 @@ public final class StateAssemblerPaddingBindingAdapters {
       requireAll = false
   )
   public static void setQuestionViewPadding(
-      View view,
+      @NonNull View view,
       boolean isApplicable,
       float paddingStart,
       float paddingTop,
@@ -95,7 +95,7 @@ public final class StateAssemblerPaddingBindingAdapters {
       requireAll = false
   )
   public static void setQuestionSplitViewPadding(
-      View view,
+      @NonNull View view,
       boolean isApplicable,
       float paddingStart,
       float paddingTop,
@@ -106,7 +106,7 @@ public final class StateAssemblerPaddingBindingAdapters {
   }
 
   private static void setPaddingIfApplicable(
-      View view,
+      @NonNull View view,
       boolean isApplicable,
       float paddingStart,
       float paddingTop,

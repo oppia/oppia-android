@@ -3,12 +3,10 @@ package org.oppia.app.databinding;
 import android.graphics.drawable.GradientDrawable;
 import android.view.View;
 import android.widget.Button;
-
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
-
 import org.oppia.app.R;
 
 /**

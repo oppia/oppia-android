@@ -2,7 +2,6 @@ package org.oppia.app.databinding;
 
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
-
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 

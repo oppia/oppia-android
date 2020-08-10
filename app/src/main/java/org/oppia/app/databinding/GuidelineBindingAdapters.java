@@ -1,8 +1,8 @@
 package org.oppia.app.databinding;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.Guideline;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.Guideline;
 import androidx.databinding.BindingAdapter;
 
 /**
