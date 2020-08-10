@@ -18,6 +18,10 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.never
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 import org.oppia.app.R
 import org.oppia.app.databinding.TestTextViewForIntWithDataBindingBinding
 import org.oppia.app.databinding.TestTextViewForStringWithDataBindingBinding
@@ -253,56 +257,118 @@ class BindableAdapterTest {
 
   @Test
   fun testBindableAdapter_incomingSameData_noRebindingShouldHappen() {
-
     val adapter = createMultiViewTypeNoDataBindingBindableAdapter()
     BindableAdapterTestFragmentPresenter.testBindableAdapter = adapter
 
-    lateinit var dataObserver: RecyclerView.AdapterDataObserver
-    var doesRebind = false
+    val oldList = listOf(STR_VALUE_1, STR_VALUE_0, INT_VALUE_1).toMutableList()
+    val newList = listOf(STR_VALUE_1, STR_VALUE_0, INT_VALUE_1).toMutableList()
 
-    val oldList = listOf(STR_VALUE_1, STR_VALUE_1, INT_VALUE_1).toMutableList()
-    val newList = listOf(STR_VALUE_1, STR_VALUE_1, INT_VALUE_1).toMutableList()
+    val fakeObserver = mock(RecyclerView.AdapterDataObserver::class.java)
 
     ActivityScenario.launch(BindableAdapterTestActivity::class.java).use { scenario ->
-
       scenario.onActivity { activity ->
-        dataObserver = object : RecyclerView.AdapterDataObserver() {
-          override fun onChanged() {
-            doesRebind = true
-          }
-
-          override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-            assertThat(positionStart).isEqualTo(0)
-            assertThat(itemCount).isEqualTo(3)
-          }
-
-          override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
-            doesRebind = true
-          }
-
-          override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) {
-            doesRebind = true
-          }
-        }
-        adapter.registerAdapterDataObserver(dataObserver)
-      }
-
-      scenario.onActivity { activity ->
+        adapter.registerAdapterDataObserver(fakeObserver)
         val liveData = getRecyclerViewListLiveData(activity)
         liveData.value = oldList
+        verify(fakeObserver, times(1)).onItemRangeInserted(0, 3)
+        val liveDataNew = getRecyclerViewListLiveData(activity)
+        liveDataNew.value = newList
+        verify(fakeObserver, never()).onChanged()
+        adapter.unregisterAdapterDataObserver(fakeObserver)
       }
-      safelyWaitUntilIdle()
+    }
+  }
 
+  @Test
+  fun testBindableAdapter_removeOneItem_verifyChangeOnlyOneItem() {
+    val adapter = createMultiViewTypeNoDataBindingBindableAdapter()
+    BindableAdapterTestFragmentPresenter.testBindableAdapter = adapter
+
+    val oldList = listOf(STR_VALUE_1, STR_VALUE_1, INT_VALUE_1).toMutableList()
+    val newList = listOf(STR_VALUE_1, INT_VALUE_1).toMutableList()
+
+    val fakeObserver = mock(RecyclerView.AdapterDataObserver::class.java)
+
+    ActivityScenario.launch(BindableAdapterTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
+        adapter.registerAdapterDataObserver(fakeObserver)
         val liveData = getRecyclerViewListLiveData(activity)
-        liveData.value = newList
+        liveData.value = oldList
+        val liveDataNew = getRecyclerViewListLiveData(activity)
+        liveDataNew.value = newList
+        verify(fakeObserver, times(1)).onItemRangeRemoved(0, 1)
+        adapter.unregisterAdapterDataObserver(fakeObserver)
       }
+    }
+  }
 
-      safelyWaitUntilIdle()
+  @Test
+  fun testBindableAdapter_insertOneItem_verifyChangeOnlyOneItem() {
+    val adapter = createMultiViewTypeNoDataBindingBindableAdapter()
+    BindableAdapterTestFragmentPresenter.testBindableAdapter = adapter
 
+    val oldList = listOf(STR_VALUE_1, INT_VALUE_1).toMutableList()
+    val newList = listOf(STR_VALUE_1, STR_VALUE_1, INT_VALUE_1).toMutableList()
+
+    val fakeObserver = mock(RecyclerView.AdapterDataObserver::class.java)
+
+    ActivityScenario.launch(BindableAdapterTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(doesRebind).isEqualTo(false)
-        adapter.unregisterAdapterDataObserver(dataObserver)
+        adapter.registerAdapterDataObserver(fakeObserver)
+        val liveData = getRecyclerViewListLiveData(activity)
+        liveData.value = oldList
+        val liveDataNew = getRecyclerViewListLiveData(activity)
+        liveDataNew.value = newList
+        verify(fakeObserver, times(1)).onItemRangeInserted(0, 1)
+        adapter.unregisterAdapterDataObserver(fakeObserver)
+      }
+    }
+  }
+
+  @Test
+  fun testBindableAdapter_moveOneItem_verifyNoRecreatingWholeList() {
+    val adapter = createMultiViewTypeNoDataBindingBindableAdapter()
+    BindableAdapterTestFragmentPresenter.testBindableAdapter = adapter
+
+    val oldList = listOf(STR_VALUE_1, STR_VALUE_0, INT_VALUE_1).toMutableList()
+    val newList = listOf(INT_VALUE_1, STR_VALUE_0, STR_VALUE_1).toMutableList()
+
+    val fakeObserver = mock(RecyclerView.AdapterDataObserver::class.java)
+
+    ActivityScenario.launch(BindableAdapterTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        adapter.registerAdapterDataObserver(fakeObserver)
+        val liveData = getRecyclerViewListLiveData(activity)
+        liveData.value = oldList
+        val liveDataNew = getRecyclerViewListLiveData(activity)
+        liveDataNew.value = newList
+        verify(fakeObserver, times(1)).onItemRangeChanged(2, 1, null)
+        verify(fakeObserver, times(1)).onItemRangeChanged(0, 1, null)
+        adapter.unregisterAdapterDataObserver(fakeObserver)
+      }
+    }
+  }
+
+  @Test
+  fun testBindableAdapter_updateOneItemContent_verifyOneItemUpdated() {
+    val adapter = createMultiViewTypeNoDataBindingBindableAdapter()
+    BindableAdapterTestFragmentPresenter.testBindableAdapter = adapter
+
+    val oldList = listOf(STR_VALUE_1, STR_VALUE_0, INT_VALUE_1).toMutableList()
+    val newList = listOf(STR_VALUE_1, STR_VALUE_1, INT_VALUE_1).toMutableList()
+
+    val fakeObserver = mock(RecyclerView.AdapterDataObserver::class.java)
+
+    ActivityScenario.launch(BindableAdapterTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+
+        adapter.registerAdapterDataObserver(fakeObserver)
+        val liveData = getRecyclerViewListLiveData(activity)
+        liveData.value = oldList
+        val liveDataNew = getRecyclerViewListLiveData(activity)
+        liveDataNew.value = newList
+        verify(fakeObserver, times(1)).onItemRangeChanged(1, 1, null)
+        adapter.unregisterAdapterDataObserver(fakeObserver)
       }
     }
   }
