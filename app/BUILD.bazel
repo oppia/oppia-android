@@ -130,23 +130,6 @@ VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/walkthrough/welcome/WalkthroughWelcomeViewModel.kt",
 ]
 
-VIEW_FILES = [
-    "src/main/java/org/oppia/app/customview/interaction/FractionInputInteractionView.kt",
-    "src/main/java/org/oppia/app/customview/interaction/NumericInputInteractionView.kt",
-    "src/main/java/org/oppia/app/customview/interaction/TextInputInteractionView.kt",
-    "src/main/java/org/oppia/app/customview/LessonThumbnailImageView.kt",
-    "src/main/java/org/oppia/app/customview/SegmentedCircularProgressView.kt",
-    "src/main/java/org/oppia/app/player/state/DragDropSortInteractionView.kt",
-    "src/main/java/org/oppia/app/player/state/ImageRegionSelectionInteractionView.kt",
-    "src/main/java/org/oppia/app/player/state/SelectionInteractionView.kt",
-    "src/main/java/org/oppia/app/profile/ProfileInputView.kt",
-    "src/main/java/org/oppia/app/utility/ClickableAreasImage.kt",
-    "src/main/java/org/oppia/app/view/ViewComponent.kt",
-    "src/main/java/org/oppia/app/view/ViewScope.kt",
-    "src/main/java/org/oppia/app/shim/ViewBindingShimInterface.kt",
-    "src/main/java/org/oppia/app/shim/ViewComponentFactory.kt",
-]
-
 LISTENER_FILES = [
     "src/main/java/org/oppia/app/home/topiclist/TopicSummaryClickListener.kt",
     "src/main/java/org/oppia/app/administratorcontrols/RouteToAppVersionListener.kt",
@@ -199,15 +182,32 @@ ANNOTATION_FILES = [
     "src/main/java/org/oppia/app/utility/KeyboardHelper.kt",
 ]
 
-# Library for scope annotations required to build views and view_model libraries
-kt_android_library(
-    name = "annotations",
+VIEW_FILES = [
+    "src/main/java/org/oppia/app/customview/interaction/FractionInputInteractionView.kt",
+    "src/main/java/org/oppia/app/customview/interaction/NumericInputInteractionView.kt",
+    "src/main/java/org/oppia/app/customview/interaction/TextInputInteractionView.kt",
+    "src/main/java/org/oppia/app/customview/LessonThumbnailImageView.kt",
+    "src/main/java/org/oppia/app/customview/SegmentedCircularProgressView.kt",
+    "src/main/java/org/oppia/app/player/state/DragDropSortInteractionView.kt",
+    "src/main/java/org/oppia/app/player/state/ImageRegionSelectionInteractionView.kt",
+    "src/main/java/org/oppia/app/player/state/SelectionInteractionView.kt",
+    "src/main/java/org/oppia/app/profile/ProfileInputView.kt",
+    "src/main/java/org/oppia/app/utility/ClickableAreasImage.kt",
+    "src/main/java/org/oppia/app/view/ViewComponent.kt",
+    "src/main/java/org/oppia/app/view/ViewScope.kt",
+    "src/main/java/org/oppia/app/shim/ViewBindingShimInterface.kt",
+    "src/main/java/org/oppia/app/shim/ViewComponentFactory.kt",
+]
+
+# Library for non-layout resource files
+android_library(
+    name = "resources",
     custom_package = "org.oppia.app",
-    srcs = ANNOTATION_FILES,
+    manifest = "src/main/AndroidManifest.xml",
+    resource_files = glob(["src/main/res/**",], exclude = ["src/main/res/layout*/**"]),
+    exports_manifest = True,
     deps = [
-        ":dagger",
-        "//model",
-        artifact("androidx.recyclerview:recyclerview:1.0.0"),
+        artifact("com.google.android.material:material"),
     ],
     visibility = ["//visibility:private"],
 )
@@ -229,15 +229,34 @@ kt_android_library(
     visibility = ["//visibility:private"],
 )
 
-# Library for non-layout resource files
-android_library(
-    name = "resources",
-    custom_package = "org.oppia.app",
-    manifest = "src/main/AndroidManifest.xml",
-    resource_files = glob(["src/main/res/**",], exclude = ["src/main/res/layout*/**"]),
-    exports_manifest = True,
+# Library for all view files required to build layout files
+kt_android_library(
+    name = "views",
+    custom_package = "org.oppia.app.views",
+    manifest = "src/main/ViewsManifest.xml",
+    srcs = VIEW_FILES,
     deps = [
-        artifact("com.google.android.material:material"),
+        ":listeners",
+        ":annotations",
+        ":view_models",
+        ":resources",
+        "//model",
+        artifact("androidx.appcompat:appcompat"),
+        artifact("androidx.core:core-ktx"),
+        "@circularimageview//circularimageview:circular_image_view",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+# Library for scope annotations required to build views and view_model libraries
+kt_android_library(
+    name = "annotations",
+    custom_package = "org.oppia.app",
+    srcs = ANNOTATION_FILES,
+    deps = [
+        ":dagger",
+        "//model",
+        artifact("androidx.recyclerview:recyclerview:1.0.0"),
     ],
     visibility = ["//visibility:private"],
 )
@@ -269,25 +288,6 @@ kt_android_library(
         artifact("androidx.recyclerview:recyclerview:1.0.0"),
     ],
     visibility = ["//visibility:private"],
-)
-
-# Library for all view files required to build layout files
-kt_android_library(
-    name = "views",
-    custom_package = "org.oppia.app.views",
-    manifest = "src/main/ViewsManifest.xml",
-    srcs = VIEW_FILES,
-    deps = [
-        ":listeners",
-        ":annotations",
-        ":view_models",
-        ":resources",
-        "//model",
-        artifact("androidx.appcompat:appcompat"),
-        artifact("androidx.core:core-ktx"),
-        "@circularimageview//circularimageview:circular_image_view",
-    ],
-    visibility = ["//visibility:public"],
 )
 
 # TODO(#1566): Move Firebase rules to their own package & remove default visibility
