@@ -24,8 +24,8 @@ import org.oppia.util.logging.LoggerModule
 import org.oppia.util.logging.firebase.LogReportingModule
 import org.oppia.util.parser.GlideImageLoaderModule
 import org.oppia.util.parser.HtmlParserEntityTypeModule
-import org.oppia.app.IntentFactoryShimModule
-import org.oppia.app.ViewBindingShimModule
+import org.oppia.app.shim.IntentFactoryShimModule
+import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.util.parser.ImageParsingModule
 import org.oppia.util.threading.DispatcherModule
 import javax.inject.Provider

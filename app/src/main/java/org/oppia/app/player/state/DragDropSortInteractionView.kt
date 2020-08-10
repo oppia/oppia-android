@@ -9,8 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.ViewBindingShimInterface
-import org.oppia.app.ViewComponentFactory
+import org.oppia.app.shim.ViewBindingShimInterface
+import org.oppia.app.shim.ViewComponentFactory
 import org.oppia.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.recyclerview.DragAndDropItemFacilitator

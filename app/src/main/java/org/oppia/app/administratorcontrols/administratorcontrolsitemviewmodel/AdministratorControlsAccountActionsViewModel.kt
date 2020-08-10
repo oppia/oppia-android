@@ -1,12 +1,10 @@
 package org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel
 
-import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import org.oppia.app.IntentFactoryShimInterface
+import org.oppia.app.shim.IntentFactoryShimInterface
 import org.oppia.app.vm.R
-import javax.inject.Inject
 
 /** [ViewModel] for the recycler view in [AdministratorControlsFragment]. */
 class AdministratorControlsAccountActionsViewModel(

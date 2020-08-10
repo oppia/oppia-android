@@ -8,8 +8,8 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.forEachIndexed
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import org.oppia.app.ViewBindingShimInterface
-import org.oppia.app.ViewComponentFactory
+import org.oppia.app.shim.ViewBindingShimInterface
+import org.oppia.app.shim.ViewComponentFactory
 import org.oppia.app.model.ImageWithRegions
 import org.oppia.app.utility.ClickableAreasImage
 import org.oppia.app.utility.OnClickableAreaClickedListener

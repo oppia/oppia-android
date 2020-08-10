@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import org.oppia.app.IntentFactoryShimInterface
+import org.oppia.app.shim.IntentFactoryShimInterface
 import org.oppia.app.home.RouteToTopicPlayStoryListener
 import org.oppia.app.model.PromotedStory
 import org.oppia.app.viewmodel.ObservableViewModel

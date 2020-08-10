@@ -1,4 +1,4 @@
-package org.oppia.app
+package org.oppia.app.shim
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,21 +9,21 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.app.R
 import org.oppia.app.databinding.databinding.DragDropInteractionItemsBinding
 import org.oppia.app.databinding.databinding.DragDropSingleItemBinding
 import org.oppia.app.databinding.databinding.ItemSelectionInteractionItemsBinding
 import org.oppia.app.databinding.databinding.MultipleChoiceInteractionItemsBinding
 import org.oppia.app.databinding.databinding.ProfileInputViewBinding
-import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
 import org.oppia.util.parser.HtmlParser
 import org.oppia.app.ui.R
 import javax.inject.Inject
 
-class ViewBindingShim @Inject constructor(): ViewBindingShimInterface {
+class ViewBindingShim @Inject constructor():
+  ViewBindingShimInterface {
 
   override fun provideProfileInputViewBindingLabelText(
     inflater: LayoutInflater,

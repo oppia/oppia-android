@@ -12,8 +12,8 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import org.oppia.app.ViewBindingShimInterface
-import org.oppia.app.ViewComponentFactory
+import org.oppia.app.shim.ViewBindingShimInterface
+import org.oppia.app.shim.ViewComponentFactory
 import org.oppia.app.views.R
 import javax.inject.Inject
 

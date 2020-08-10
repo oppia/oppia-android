@@ -1,4 +1,4 @@
-package org.oppia.app
+package org.oppia.app.shim
 
 import android.content.Context
 import android.content.Intent
