@@ -14,7 +14,7 @@ import org.oppia.app.utility.DefaultRegionClickedEvent
 import org.oppia.app.utility.NamedRegionClickedEvent
 import org.oppia.app.utility.OnClickableAreaClickedListener
 import org.oppia.app.utility.RegionClickedEvent
-import org.oppia.app.vm.R
+import org.oppia.app.R
 
 /** [StateItemViewModel] for image region selection. */
 class ImageRegionSelectionInteractionViewModel(

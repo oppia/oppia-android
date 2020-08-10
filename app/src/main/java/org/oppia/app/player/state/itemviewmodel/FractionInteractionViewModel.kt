@@ -13,7 +13,7 @@ import org.oppia.app.parser.StringToFractionParser
 import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
-import org.oppia.app.vm.R
+import org.oppia.app.R
 
 /** [StateItemViewModel] for the fraction input interaction. */
 class FractionInteractionViewModel(
