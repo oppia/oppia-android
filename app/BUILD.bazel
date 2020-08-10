@@ -130,6 +130,22 @@ VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/walkthrough/welcome/WalkthroughWelcomeViewModel.kt",
 ]
 
+DATABINDING_ADAPTER_FILES = [
+    "src/main/java/org/oppia/app/databinding/DrawableBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/EditTextBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/ImageViewBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/MarginBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/TextViewBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/ViewBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/StateAssemblerPaddingBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/StateAssemblerMarginBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/GuidelineBindingAdapters.java",
+]
+
+RECYCLERVIEW_ADAPTER_FILES = [
+    "src/main/java/org/oppia/app/recyclerview/RecyclerViewBindingAdapter.java"
+]
+
 LISTENER_FILES = [
     "src/main/java/org/oppia/app/home/topiclist/TopicSummaryClickListener.kt",
     "src/main/java/org/oppia/app/administratorcontrols/RouteToAppVersionListener.kt",
@@ -176,6 +192,13 @@ LISTENER_FILES = [
     "src/main/java/org/oppia/app/walkthrough/WalkthroughFragmentChangeListener.kt",
 ]
 
+LAYOUT_RES_FILES = [
+    "src/main/res/layout/**",
+    "src/main/res/layout-land/**",
+    "src/main/res/layout-sw600dp-land/**",
+    "src/main/res/layout-sw600dp-port/**",
+]
+
 ANNOTATION_FILES = [
     "src/main/java/org/oppia/app/activity/ActivityScope.kt",
     "src/main/java/org/oppia/app/fragment/FragmentScope.kt",
@@ -198,6 +221,8 @@ VIEW_FILES = [
     "src/main/java/org/oppia/app/shim/ViewBindingShimInterface.kt",
     "src/main/java/org/oppia/app/shim/ViewComponentFactory.kt",
 ]
+
+BINDING_ADAPTER_FILES = DATABINDING_ADAPTER_FILES + RECYCLERVIEW_ADAPTER_FILES
 
 # Library for non-layout resource files
 android_library(
@@ -288,6 +313,70 @@ kt_android_library(
         artifact("androidx.recyclerview:recyclerview:1.0.0"),
     ],
     visibility = ["//visibility:private"],
+)
+
+# Library for all custom data-binding adapters under org/oppia/app/databinding
+android_library(
+    name = "databinding_adapters",
+    custom_package = "org.oppia.app.impl.adapters",
+    srcs = DATABINDING_ADAPTER_FILES,
+    enable_data_binding = 1,
+    manifest = "src/main/DbAdaptersAndroidManifest.xml",
+    deps = [
+        ":dagger",
+        "//model",
+        "//utility",
+        ":view_models",
+        ":resources",
+        artifact("androidx.appcompat:appcompat"),
+        artifact("com.chaos.view:pinview:1.4.3"),
+        artifact("com.github.bumptech.glide:glide"),
+        artifact("com.caverock:androidsvg-aar"),
+        artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
+        artifact("androidx.databinding:databinding-runtime"),
+        artifact("androidx.databinding:databinding-adapters"),
+        artifact("androidx.databinding:databinding-common"),
+        artifact("androidx.annotation:annotation"),
+        artifact("com.google.android.material:material:1.2.0-alpha02"),
+        artifact("androidx.constraintlayout:constraintlayout:1.1.3"),
+        artifact("de.hdodenhof:circleimageview:3.0.1"),
+        artifact("javax.annotation:javax.annotation-api:jar"),
+        artifact("org.jetbrains:annotations:jar"),
+        "@circularimageview//circularimageview:circular_image_view",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+# Library for all custom databinding adapters under org/oppia/app/recyclerview
+android_library(
+    name = "recyclerview_adapters",
+    custom_package = "org.oppia.app.rv",
+    srcs = RECYCLERVIEW_ADAPTER_FILES,
+    enable_data_binding = 1,
+    manifest = "src/main/RvAdaptersAndroidManifest.xml",
+    deps = [
+        ":dagger",
+        "//model",
+        "//utility",
+        ":view_models",
+        artifact("androidx.appcompat:appcompat"),
+        artifact("com.chaos.view:pinview:1.4.3"),
+        artifact("com.github.bumptech.glide:glide"),
+        artifact("com.caverock:androidsvg-aar"),
+        artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
+        artifact("androidx.databinding:databinding-runtime"),
+        artifact("androidx.databinding:databinding-adapters"),
+        artifact("androidx.databinding:databinding-common"),
+        artifact("androidx.annotation:annotation"),
+        artifact("com.google.android.material:material:1.2.0-alpha02"),
+        artifact("androidx.constraintlayout:constraintlayout:1.1.3"),
+        artifact("de.hdodenhof:circleimageview:3.0.1"),
+        artifact("javax.annotation:javax.annotation-api:jar"),
+        artifact("org.jetbrains:annotations:jar"),
+        "@circularimageview//circularimageview:circular_image_view",
+        artifact("androidx.lifecycle:lifecycle-livedata-core:jar:2.0.0-alpha1"),
+    ],
+    visibility = ["//visibility:public"],
 )
 
 # TODO(#1566): Move Firebase rules to their own package & remove default visibility
