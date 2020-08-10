@@ -5,13 +5,12 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
-import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.databinding.DragDropInteractionItemsBinding
-import org.oppia.app.databinding.DragDropSingleItemBinding
-import org.oppia.app.fragment.InjectableFragment
+import org.oppia.app.shim.ViewBindingShimInterface
+import org.oppia.app.shim.ViewComponentFactory
 import org.oppia.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.recyclerview.DragAndDropItemFacilitator
@@ -50,11 +49,17 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   @field:DefaultResourceBucketName
   lateinit var resourceBucketName: String
 
+  @Inject
+  lateinit var bindingInterface: ViewBindingShimInterface
+
   private lateinit var entityId: String
+  private lateinit var onDragEnd: OnDragEndedListener
+  private lateinit var onItemDrag: OnItemDragListener
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    FragmentManager.findFragment<InjectableFragment>(this).createViewComponent(this).inject(this)
+    (FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory)
+      .createViewComponent(this).inject(this)
     isAccessibilityEnabled = accessibilityManager.isScreenReaderEnabled()
   }
 
@@ -78,18 +83,24 @@ class DragDropSortInteractionView @JvmOverloads constructor(
       .newBuilder<DragDropInteractionContentViewModel>()
       .registerViewBinder(
         inflateView = { parent ->
-          DragDropInteractionItemsBinding.inflate(
-            LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
-          ).root
+          bindingInterface.provideDragDropSortInteractionInflatedView(
+            LayoutInflater.from(parent.context),
+            parent,
+            /* attachToParent= */ false
+          )
         },
         bindView = { view, viewModel ->
-          val binding = DataBindingUtil.findBinding<DragDropInteractionItemsBinding>(view)!!
-          binding.dragDropItemRecyclerview.adapter = createNestedAdapter()
-          binding.adapter = adapter
-          binding.dragDropContentGroupItem.isVisible = isMultipleItemsInSamePositionAllowed
-          binding.dragDropContentUnlinkItems.isVisible = viewModel.htmlContent.htmlList.size > 1
-          binding.dragDropAccessibleContainer.isVisible = isAccessibilityEnabled
-          binding.viewModel = viewModel
+          bindingInterface.setDragDropInteractionItemsBinding(view)
+          bindingInterface.getDragDropInteractionItemsBindingRecyclerView().adapter =
+            createNestedAdapter()
+          adapter?.let { bindingInterface.setDragDropInteractionItemsBindingAdapter(it) };
+          bindingInterface.getDragDropInteractionItemsBindingGroupItem().isVisible =
+            isMultipleItemsInSamePositionAllowed
+          bindingInterface.getDragDropInteractionItemsBindingUnlinkItems().isVisible =
+            viewModel.htmlContent.htmlList.size > 1
+          bindingInterface.getDragDropInteractionItemsBindingAccessibleContainer().isVisible =
+            isAccessibilityEnabled
+          bindingInterface.setDragDropInteractionItemsBindingViewModel(viewModel)
         }
       )
       .build()
@@ -100,39 +111,49 @@ class DragDropSortInteractionView @JvmOverloads constructor(
       .newBuilder<String>()
       .registerViewBinder(
         inflateView = { parent ->
-          DragDropSingleItemBinding.inflate(
-            LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
-          ).root
+          bindingInterface.provideDragDropSingleItemInflatedView(
+            LayoutInflater.from(parent.context),
+            parent,
+            /* attachToParent= */ false
+          )
         },
         bindView = { view, viewModel ->
-          val binding = DataBindingUtil.findBinding<DragDropSingleItemBinding>(view)!!
-          binding.htmlContent = htmlParserFactory.create(
+          bindingInterface.setDragDropSingleItemBinding(view)
+          bindingInterface.setDragDropSingleItemBindingHtmlContent(
+            htmlParserFactory,
             resourceBucketName,
             entityType,
             entityId,
-            /* imageCenterAlign= */ false
-          )
-            .parseOppiaHtml(
-              viewModel, binding.dragDropContentTextView
-            )
+            viewModel)
         }
       )
       .build()
   }
-}
 
-/** Bind ItemTouchHelperSimpleCallback with RecyclerView for a [DragDropSortInteractionView] via data-binding. */
-@BindingAdapter(value = ["onDragEnded", "onItemDrag"], requireAll = false)
-fun setItemDragToRecyclerView(
-  dragDropSortInteractionView: DragDropSortInteractionView,
-  onDragEnd: OnDragEndedListener,
-  onItemDrag: OnItemDragListener
-) {
-  val dragCallback: ItemTouchHelper.Callback =
-    DragAndDropItemFacilitator(onItemDrag, onDragEnd)
+  fun setOnDragEnded(onDragEnd: OnDragEndedListener) {
+    this.onDragEnd = onDragEnd
+    checkIfSettingIsPossible()
+  }
 
-  val itemTouchHelper = ItemTouchHelper(dragCallback)
-  itemTouchHelper.attachToRecyclerView(dragDropSortInteractionView)
+  fun setOnItemDrag(onItemDrag: OnItemDragListener) {
+    this.onItemDrag = onItemDrag
+    checkIfSettingIsPossible()
+  }
+
+  private fun checkIfSettingIsPossible() {
+    if (::onDragEnd.isInitialized && ::onItemDrag.isInitialized) {
+      performAttachment()
+    }
+  }
+
+  private fun performAttachment() {
+    val dragCallback: ItemTouchHelper.Callback =
+      DragAndDropItemFacilitator(onItemDrag, onDragEnd)
+
+    val itemTouchHelper = ItemTouchHelper(dragCallback)
+    itemTouchHelper.attachToRecyclerView(this)
+  }
+
 }
 
 /** Sets the exploration ID for a specific [DragDropSortInteractionView] via data-binding. */

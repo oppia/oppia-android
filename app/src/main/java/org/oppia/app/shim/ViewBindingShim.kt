@@ -10,15 +10,15 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.databinding.databinding.DragDropInteractionItemsBinding
-import org.oppia.app.databinding.databinding.DragDropSingleItemBinding
-import org.oppia.app.databinding.databinding.ItemSelectionInteractionItemsBinding
-import org.oppia.app.databinding.databinding.MultipleChoiceInteractionItemsBinding
-import org.oppia.app.databinding.databinding.ProfileInputViewBinding
+import org.oppia.app.databinding.DragDropInteractionItemsBinding
+import org.oppia.app.databinding.DragDropSingleItemBinding
+import org.oppia.app.databinding.ItemSelectionInteractionItemsBinding
+import org.oppia.app.databinding.MultipleChoiceInteractionItemsBinding
+import org.oppia.app.databinding.ProfileInputViewBinding
 import org.oppia.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
 import org.oppia.util.parser.HtmlParser
-import org.oppia.app.ui.R
+import org.oppia.app.R
 import javax.inject.Inject
 
 /**

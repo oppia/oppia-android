@@ -6,10 +6,11 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.forEachIndexed
-import androidx.databinding.BindingAdapter
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.model.ImageWithRegions
+import org.oppia.app.shim.ViewBindingShimInterface
+import org.oppia.app.shim.ViewComponentFactory
 import org.oppia.app.utility.ClickableAreasImage
 import org.oppia.app.utility.OnClickableAreaClickedListener
 import org.oppia.util.accessibility.CustomAccessibilityManager
@@ -61,7 +62,12 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   @field:DefaultGcsPrefix
   lateinit var gcsPrefix: String
 
+  @Inject
+  lateinit var bindingInterface: ViewBindingShimInterface
+
   private lateinit var entityId: String
+  private lateinit var overlayView: FrameLayout
+  private lateinit var onRegionClicked: OnClickableAreaClickedListener
 
   /**
    * Sets the URL for the image & initiates loading it. This is intended to be called via data-binding.
@@ -107,7 +113,8 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
     val area = ClickableAreasImage(
       this,
       this.parent as FrameLayout,
-      listener
+      listener,
+      bindingInterface
     )
     area.addRegionViews()
   }
@@ -122,27 +129,39 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    FragmentManager.findFragment<InjectableFragment>(this).createViewComponent(this).inject(this)
+    (FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory)
+      .createViewComponent(this).inject(this)
     isAccessibilityEnabled = accessibilityManager.isScreenReaderEnabled()
   }
-}
 
-/** Bind ItemTouchHelperSimpleCallback with RecyclerView for a [DragDropSortInteractionView] via data-binding. */
-@BindingAdapter(value = ["onRegionClicked", "overlayView"], requireAll = false)
-fun setRegionClickToImageView(
-  imageRegionSelectionInteractionView: ImageRegionSelectionInteractionView,
-  onClickableAreaClickedListener: OnClickableAreaClickedListener,
-  parentView: FrameLayout
-) {
-  val area = ClickableAreasImage(
-    imageRegionSelectionInteractionView,
-    parentView,
-    onClickableAreaClickedListener
-  )
+  fun setOnRegionClicked(onRegionClicked: OnClickableAreaClickedListener) {
+    this.onRegionClicked = onRegionClicked
+    checkIfSettingIsPossible()
+  }
 
-  imageRegionSelectionInteractionView.addOnLayoutChangeListener { _, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom -> // ktlint-disable max-line-length
-    // Update the regions, as the bounds have changed
-    if (left != oldLeft || top != oldTop || right != oldRight || bottom != oldBottom)
-      area.addRegionViews()
+  fun setOverlayView(overlayView: FrameLayout) {
+    this.overlayView = overlayView
+    checkIfSettingIsPossible()
+  }
+
+  private fun checkIfSettingIsPossible() {
+    if (::onRegionClicked.isInitialized && ::overlayView.isInitialized) {
+      performAttachment()
+    }
+  }
+
+  private fun performAttachment() {
+    val area = ClickableAreasImage(
+      this,
+      overlayView,
+      onRegionClicked,
+      bindingInterface
+    )
+
+    this.addOnLayoutChangeListener { _, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom -> // ktlint-disable max-line-length
+      // Update the regions, as the bounds have changed
+      if (left != oldLeft || top != oldTop || right != oldRight || bottom != oldBottom)
+        area.addRegionViews()
+    }
   }
 }

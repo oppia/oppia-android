@@ -142,6 +142,7 @@ VIEW_FILES = [
     "src/main/java/org/oppia/app/profile/ProfileInputView.kt",
     "src/main/java/org/oppia/app/utility/ClickableAreasImage.kt",
     "src/main/java/org/oppia/app/view/ViewComponent.kt",
+    "src/main/java/org/oppia/app/view/ViewScope.kt",
     "src/main/java/org/oppia/app/shim/ViewBindingShimInterface.kt",
     "src/main/java/org/oppia/app/shim/ViewComponentFactory.kt",
 ]
@@ -196,7 +197,6 @@ ANNOTATION_FILES = [
     "src/main/java/org/oppia/app/activity/ActivityScope.kt",
     "src/main/java/org/oppia/app/fragment/FragmentScope.kt",
     "src/main/java/org/oppia/app/utility/KeyboardHelper.kt",
-    "src/main/java/org/oppia/app/view/ViewScope.kt",
 ]
 
 # Library for scope annotations required to build views and view_model libraries

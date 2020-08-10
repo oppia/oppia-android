@@ -3,11 +3,12 @@ package org.oppia.app.customview
 import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import org.oppia.app.R
-import org.oppia.app.fragment.InjectableFragment
+import org.oppia.app.views.R
 import org.oppia.app.model.LessonThumbnail
 import org.oppia.app.model.LessonThumbnailGraphic
+import org.oppia.app.shim.ViewComponentFactory
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.parser.DefaultGcsPrefix
 import org.oppia.util.parser.ImageLoader
@@ -98,9 +99,8 @@ class LessonThumbnailImageView @JvmOverloads constructor(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    FragmentManager.findFragment<InjectableFragment>(this)
-      .createViewComponent(this)
-      .inject(this)
+    (FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory)
+      .createViewComponent(this).inject(this)
   }
 
   private fun getLessonDrawableResource(lessonThumbnail: LessonThumbnail): Int {

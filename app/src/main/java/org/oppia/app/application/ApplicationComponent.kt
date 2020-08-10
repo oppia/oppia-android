@@ -44,7 +44,8 @@ import javax.inject.Singleton
     HtmlParserEntityTypeModule::class, CachingModule::class,
     QuestionModule::class, LogReportingModule::class,
     AccessibilityModule::class, ImageClickInputModule::class,
-    LogStorageModule::class
+    LogStorageModule::class, IntentFactoryShimModule::class,
+    ViewBindingShimModule::class
   ]
 )
 
