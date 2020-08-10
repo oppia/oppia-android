@@ -237,6 +237,40 @@ android_library(
     visibility = ["//visibility:private"],
 )
 
+# Library for layout resource files
+android_library(
+    name = "databinding_resources",
+    custom_package = "org.oppia.app.databinding",
+    manifest = "src/main/DbAndroidManifest.xml",
+    srcs = BINDING_ADAPTER_FILES,
+    resource_files = glob(["src/main/res/layout*/**"]),
+    enable_data_binding = 1,
+    exports_manifest = True,
+    deps = [
+        ":resources",
+        "//model",
+        ":databinding_adapters",
+        ":recyclerview_adapters",
+        ":view_models",
+        ":views",
+        ":annotations",
+        artifact("com.google.android.material:material"),
+        artifact("androidx.databinding:databinding-runtime"),
+        artifact("androidx.databinding:databinding-adapters"),
+        artifact("androidx.databinding:databinding-common"),
+        artifact("androidx.annotation:annotation"),
+        artifact("androidx.constraintlayout:constraintlayout"),
+        artifact("androidx.recyclerview:recyclerview:1.0.0"),
+        artifact("com.chaos.view:pinview:1.4.3"),
+        artifact("androidx.core:core:1.0.1"),
+        artifact("de.hdodenhof:circleimageview:3.0.1"),
+        artifact("androidx.viewpager:viewpager:1.0.0"),
+        artifact("javax.annotation:javax.annotation-api"),
+        artifact("androidx.lifecycle:lifecycle-livedata-core:jar:2.0.0-alpha1"),
+        "@circularimageview//circularimageview:circular_image_view",
+    ],
+)
+
 # Library for listener files required to build views and view_model libraries
 kt_android_library(
     name = "listeners",
