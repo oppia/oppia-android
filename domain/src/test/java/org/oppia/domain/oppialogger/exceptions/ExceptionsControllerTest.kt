@@ -118,7 +118,8 @@ class ExceptionsControllerTest {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
-    val cachedExceptions = dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
+    val cachedExceptions =
+      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -144,7 +145,8 @@ class ExceptionsControllerTest {
     val exceptionThrown = Exception("TEST MESSAGE", Throwable("TEST"))
     exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
-    val cachedExceptions = dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
+    val cachedExceptions =
+      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -183,7 +185,8 @@ class ExceptionsControllerTest {
       TEST_TIMESTAMP_IN_MILLIS_FOUR
     )
 
-    val cachedExceptions = dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
+    val cachedExceptions =
+      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -226,7 +229,8 @@ class ExceptionsControllerTest {
       TEST_TIMESTAMP_IN_MILLIS_THREE
     )
 
-    val cachedExceptions = dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
+    val cachedExceptions =
+      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -246,7 +250,8 @@ class ExceptionsControllerTest {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
     exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
-    val cachedExceptions = dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
+    val cachedExceptions =
+      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -274,7 +279,8 @@ class ExceptionsControllerTest {
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
     exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
-    val cachedExceptions = dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
+    val cachedExceptions =
+      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -294,7 +300,8 @@ class ExceptionsControllerTest {
     val exceptionThrown = Exception()
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
-    val cachedExceptions = dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
+    val cachedExceptions =
+      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -316,7 +323,8 @@ class ExceptionsControllerTest {
     val exceptionThrown = Exception("TEST")
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
-    val cachedExceptions = dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
+    val cachedExceptions =
+      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
