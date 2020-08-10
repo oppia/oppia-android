@@ -9,7 +9,7 @@ import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.topic.TopicActivity
 import javax.inject.Inject
 
-class IntentFactoryShim @Inject constructor(): IntentFactoryShimInterface {
+class IntentFactoryShim @Inject constructor() : IntentFactoryShimInterface {
 
   private val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
   private val TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY = "TopicActivity.story_id"

@@ -9,13 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.shim.ViewBindingShimInterface
-import org.oppia.app.shim.ViewComponentFactory
 import org.oppia.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.recyclerview.DragAndDropItemFacilitator
 import org.oppia.app.recyclerview.OnDragEndedListener
 import org.oppia.app.recyclerview.OnItemDragListener
+import org.oppia.app.shim.ViewBindingShimInterface
+import org.oppia.app.shim.ViewComponentFactory
 import org.oppia.util.accessibility.CustomAccessibilityManager
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
@@ -93,7 +93,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
           bindingInterface.setDragDropInteractionItemsBinding(view)
           bindingInterface.getDragDropInteractionItemsBindingRecyclerView().adapter =
             createNestedAdapter()
-          adapter?.let { bindingInterface.setDragDropInteractionItemsBindingAdapter(it) };
+          adapter?.let { bindingInterface.setDragDropInteractionItemsBindingAdapter(it) }
           bindingInterface.getDragDropInteractionItemsBindingGroupItem().isVisible =
             isMultipleItemsInSamePositionAllowed
           bindingInterface.getDragDropInteractionItemsBindingUnlinkItems().isVisible =
@@ -124,7 +124,8 @@ class DragDropSortInteractionView @JvmOverloads constructor(
             resourceBucketName,
             entityType,
             entityId,
-            viewModel)
+            viewModel
+          )
         }
       )
       .build()
@@ -153,7 +154,6 @@ class DragDropSortInteractionView @JvmOverloads constructor(
     val itemTouchHelper = ItemTouchHelper(dragCallback)
     itemTouchHelper.attachToRecyclerView(this)
   }
-
 }
 
 /** Sets the exploration ID for a specific [DragDropSortInteractionView] via data-binding. */

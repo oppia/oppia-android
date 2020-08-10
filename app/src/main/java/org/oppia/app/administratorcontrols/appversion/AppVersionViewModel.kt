@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.util.system.OppiaDateTimeFormatter
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 
 /** [ViewModel] for [AppVersionFragment]*/

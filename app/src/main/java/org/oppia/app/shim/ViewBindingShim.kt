@@ -10,6 +10,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.app.R
 import org.oppia.app.databinding.DragDropInteractionItemsBinding
 import org.oppia.app.databinding.DragDropSingleItemBinding
 import org.oppia.app.databinding.ItemSelectionInteractionItemsBinding
@@ -18,13 +19,12 @@ import org.oppia.app.databinding.ProfileInputViewBinding
 import org.oppia.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
 import org.oppia.util.parser.HtmlParser
-import org.oppia.app.R
 import javax.inject.Inject
 
 /**
  * Extracts binding file dependencies from view files in order for Bazel to build.
  */
-class ViewBindingShim @Inject constructor(): ViewBindingShimInterface {
+class ViewBindingShim @Inject constructor() : ViewBindingShimInterface {
 
   /**
    * Handles binding inflation for [ProfileInputView] and returns the binding's labelText
@@ -215,7 +215,8 @@ class ViewBindingShim @Inject constructor(): ViewBindingShimInterface {
   override fun provideDragDropSingleItemInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
-    attachToParent: Boolean): View {
+    attachToParent: Boolean
+  ): View {
     return DragDropSingleItemBinding.inflate(
       LayoutInflater.from(parent.context),
       parent,
@@ -243,7 +244,7 @@ class ViewBindingShim @Inject constructor(): ViewBindingShimInterface {
       resourceBucketName,
       entityType,
       entityId,
-       false
+      false
     ).parseOppiaHtml(
       viewModel,
       dragDropSingleItemBinding.dragDropContentTextView
@@ -253,5 +254,4 @@ class ViewBindingShim @Inject constructor(): ViewBindingShimInterface {
   override fun getDefaultRegion(parentView: FrameLayout): View {
     return parentView.findViewById<View>(R.id.default_selected_region)
   }
-
 }

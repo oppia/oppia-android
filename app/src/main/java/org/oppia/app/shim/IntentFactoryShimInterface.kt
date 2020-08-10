@@ -16,5 +16,4 @@ interface IntentFactoryShimInterface {
   ): Intent
 
   fun createRecentlyPlayedActivityIntent(context: Context, internalProfileId: Int): Intent
-
 }

@@ -74,10 +74,12 @@ class AdministratorControlsViewModel @Inject constructor(
       )
     )
     itemViewModelList.add(AdministratorControlsAppInformationViewModel(activity))
-    itemViewModelList.add(AdministratorControlsAccountActionsViewModel(
-      fragment,
-      intentFactoryShimInterface
-    ))
+    itemViewModelList.add(
+      AdministratorControlsAccountActionsViewModel(
+        fragment,
+        intentFactoryShimInterface
+      )
+    )
 
     return itemViewModelList
   }
