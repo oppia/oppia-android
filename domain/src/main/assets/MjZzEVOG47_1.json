@@ -582,7 +582,7 @@
             "content": {
               "es": {
                 "needs_update": false,
-                "html": "<p>\"¡Estás empezando a resolver problemas usando fracciones!\" dijo el Sr. Baker. \"Esa es una gran habilidad para tener!</p>\n\n<p>“Ahora, Mateo,”&nbsp;dijo, “mira si puedes resolver esto sin el pastel frente a ti. Digamos que tengo una torta, y <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac38&amp;quot;\"></oppia-noninteractive-math>&nbsp;de ella se come. ¿Qué fracción del pastel <strong>queda</strong>?\"</p>"
+                "html": "<p>\"¡Estás empezando a resolver problemas usando fracciones!\" dijo el Sr. Baker. \"Esa es una gran habilidad para tener!</p>\n\n<p>“Ahora, Mateo,”&nbsp;dijo, “mira si puedes resolver esto sin el pastel frente a ti. Digamos que tengo una torta, y 3/8 de ella se come. ¿Qué fracción del pastel <strong>queda</strong>?\"</p>"
               }
             },
             "feedback_4": {
@@ -606,7 +606,7 @@
             "feedback_3": {
               "es": {
                 "needs_update": false,
-                "html": "<p>No, eso no es correcto. Comienza por dibujar un pastel dividido en 8 partes iguales. Luego tacha <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac38&amp;quot;\"></oppia-noninteractive-math>&nbsp;de la torta. ¿Qué fracción del pastel queda?</p>"
+                "html": "<p>No, eso no es correcto. Comienza por dibujar un pastel dividido en 8 partes iguales. Luego tacha 3/8 de la torta. ¿Qué fracción del pastel queda?</p>"
               }
             },
             "feedback_1": {
@@ -1786,19 +1786,19 @@
             "feedback_2": {
               "es": {
                 "needs_update": false,
-                "html": "<p>No, eso no es correcto. Como Sr. Baker dijo, no te limites a mirar los números.</p>\n\n<p>En su lugar, <strong>haz un dibujo</strong> y colorea las partes correspondientes a&nbsp;<oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac12&amp;quot;\"></oppia-noninteractive-math> y <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac14&amp;quot;\"></oppia-noninteractive-math>. Eso te ayudará a descubrir qué está pasando. Siéntete libre de obtener una pista si estás atascado.</p>"
+                "html": "<p>No, eso no es correcto. Como Sr. Baker dijo, no te limites a mirar los números.</p>\n\n<p>En su lugar, <strong>haz un dibujo</strong> y colorea las partes correspondientes a 1/2 y 1/4. Eso te ayudará a descubrir qué está pasando. Siéntete libre de obtener una pista si estás atascado.</p>"
               }
             },
             "solution": {
               "es": {
                 "needs_update": false,
-                "html": "<p>Podemos dibujar un cuadrado y colorear <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac12&amp;quot;\"></oppia-noninteractive-math>&nbsp;y <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac14&amp;quot;\"></oppia-noninteractive-math>&nbsp;de esta manera:</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;La combinación de una mitad y un cuarto (1/2 + 1/4) del cuadrado&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_223258_e4p52fuag0_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Para encontrar la fracción resultante, dividimos el cuadrado en partes iguales:</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;La combinación de 1/2 y 1/4: dividido en partes iguales&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_223437_hn2miaru8q_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Hay 4 partes iguales, y 3 de ellas son rojas, por lo que la respuesta correcta es<strong> 3/4.</strong></p>\n\n<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;----------------------------------------------</p>\n\n<p>&nbsp;</p>\n\n<p>Nota: puedes pensar que solo podrías sumar los numeradores y denominadores de las fracciones para obtener 2/6, <strong>¡pero esa es la respuesta incorrecta! </strong>Lo importante es la <strong>cantidad</strong> representada por la fracción, no los números reales (como 1 y 2) que se utilizan para escribir la fracción.</p>\n\n<p>&nbsp;</p>\n\n<p><strong>Dibujar una imagen clara</strong> es una buena estrategia para ayudarlo a \"ver\" esa cantidad.</p>"
+                "html": "<p>Podemos dibujar un cuadrado y colorear 1/2 y 1/4 de esta manera:</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;La combinación de una mitad y un cuarto (1/2 + 1/4) del cuadrado&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_223258_e4p52fuag0_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Para encontrar la fracción resultante, dividimos el cuadrado en partes iguales:</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;La combinación de 1/2 y 1/4: dividido en partes iguales&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_223437_hn2miaru8q_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Hay 4 partes iguales, y 3 de ellas son rojas, por lo que la respuesta correcta es<strong> 3/4.</strong></p>\n\n<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;----------------------------------------------</p>\n\n<p>&nbsp;</p>\n\n<p>Nota: puedes pensar que solo podrías sumar los numeradores y denominadores de las fracciones para obtener 2/6, <strong>¡pero esa es la respuesta incorrecta! </strong>Lo importante es la <strong>cantidad</strong> representada por la fracción, no los números reales (como 1 y 2) que se utilizan para escribir la fracción.</p>\n\n<p>&nbsp;</p>\n\n<p><strong>Dibujar una imagen clara</strong> es una buena estrategia para ayudarlo a \"ver\" esa cantidad.</p>"
               }
             },
             "content": {
               "es": {
                 "needs_update": false,
-                "html": "<p>El Sr. Baker se rió entre dientes. \"Está bien, Mateo\", dijo. \"Dos preguntas más, y si las respondes correctamente, ¡también puedes tener mi pedazo de pastel!\"</p>\n\n<p>Mateo sonrió. Le gustaba el pastel!</p>\n\n<p>\"Está bien\", dijo el Sr. Baker. \"Digamos que quería agregar <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac12&amp;quot;\"></oppia-noninteractive-math>&nbsp;y <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac14&amp;quot;\"></oppia-noninteractive-math>. ¿Qué fracción me da eso?\"</p>\n\n<p>\"¡Oh, eso es fácil!\" dijo Mateo. \"1 + 1 es 2, y ...\"</p>\n\n<p>\"¿Estás seguro?\", dijo el Sr. Baker. \"No solo mires los números, eso sería engañoso. Tendrás que pensar en cuánta torta representan las fracciones. Es una buena idea <strong>hacer</strong> <strong>un dibujo.</strong>\"</p>\n\n<p>\"¿Qué es <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac12 + \\\\frac14&amp;quot;\"></oppia-noninteractive-math>?\"</p>"
+                "html": "<p>El Sr. Baker se rió entre dientes. \"Está bien, Mateo\", dijo. \"Dos preguntas más, y si las respondes correctamente, ¡también puedes tener mi pedazo de pastel!\"</p>\n\n<p>Mateo sonrió. Le gustaba el pastel!</p>\n\n<p>\"Está bien\", dijo el Sr. Baker. \"Digamos que quería agregar 1/2 y 1/4. ¿Qué fracción me da eso?\"</p>\n\n<p>\"¡Oh, eso es fácil!\" dijo Mateo. \"1 + 1 es 2, y ...\"</p>\n\n<p>\"¿Estás seguro?\", dijo el Sr. Baker. \"No solo mires los números, eso sería engañoso. Tendrás que pensar en cuánta torta representan las fracciones. Es una buena idea <strong>hacer</strong> <strong>un dibujo.</strong>\"</p>\n\n<p>\"¿Qué es 1/2 + 1/4 ?\"</p>"
               }
             },
             "hint_5": {
@@ -1816,25 +1816,25 @@
             "hint_4": {
               "es": {
                 "needs_update": false,
-                "html": "<p>Aquí es cómo se ve la combinación de <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac12&amp;quot;\"></oppia-noninteractive-math>&nbsp;y <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac14&amp;quot;\"></oppia-noninteractive-math>.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;La combinación de una mitad y un cuarto (1/2 y 1/4) del cuadrado&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_223110_gt261fg93z_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>¿Qué fracción representa esto?</p>"
+                "html": "<p>Aquí es cómo se ve la combinación de 1/2 y 1/4.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;La combinación de una mitad y un cuarto (1/2 y 1/4) del cuadrado&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_223110_gt261fg93z_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>¿Qué fracción representa esto?</p>"
               }
             },
             "hint_1": {
               "es": {
                 "needs_update": false,
-                "html": "<p>Como dijo el Sr. Baker, ¡haz un dibujo! Puedes empezar con un cuadrado. Lo dividimos por la mitad y sombreamos una de las mitades, esto representa <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac12&amp;quot;\"></oppia-noninteractive-math>.</p>\n\n<p>Ahora, ¿cómo puedes representar <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac14&amp;quot;\"></oppia-noninteractive-math>&nbsp;de una manera similar?</p>"
+                "html": "<p>Como dijo el Sr. Baker, ¡haz un dibujo! Puedes empezar con un cuadrado. Lo dividimos por la mitad y sombreamos una de las mitades, esto representa 1/2.</p>\n\n<p>Ahora, ¿cómo puedes representar 1/4 de una manera similar?</p>"
               }
             },
             "hint_2": {
               "es": {
                 "needs_update": false,
-                "html": "<p>Aquí es cómo podría verse el mismo cuadrado con un <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac12&amp;quot;\"></oppia-noninteractive-math>&nbsp;coloreado en rojo.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Un cuadrado dividido entre la mitad. Uno de los dos partes iguales está coloreado en rojo.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_222617_c52mln9i6w_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Ahora, ¿Qué fracción del pastel obtienes cuando sumas <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac12&amp;quot;\"></oppia-noninteractive-math>&nbsp;y <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac14&amp;quot;\"></oppia-noninteractive-math>&nbsp;?</p>"
+                "html": "<p>Aquí es cómo podría verse el mismo cuadrado con un 1/2 coloreado en rojo.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Un cuadrado dividido entre la mitad. Uno de los dos partes iguales está coloreado en rojo.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_222617_c52mln9i6w_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Ahora, ¿Qué fracción del pastel obtienes cuando sumas 1/2 y 1/4 ?</p>"
               }
             },
             "hint_3": {
               "es": {
                 "needs_update": false,
-                "html": "<p>Aquí es cómo podría verse el mismo cuadrado con un <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac14&amp;quot;\"></oppia-noninteractive-math>&nbsp;coloreado en rojo.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;El cuadrado dividido en 4 partes iguales. Un parte está coloreado en rojo.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_223001_gu6dq8su5v_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Ahora, ¿Qué fracción del pastel obtienes cuando sumas&nbsp;<oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac12&amp;quot;\"></oppia-noninteractive-math>&nbsp;y <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac14&amp;quot;\"></oppia-noninteractive-math>?</p>"
+                "html": "<p>Aquí es cómo podría verse el mismo cuadrado con un 1/4 coloreado en rojo.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;El cuadrado dividido en 4 partes iguales. Un parte está coloreado en rojo.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_223001_gu6dq8su5v_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Ahora, ¿Qué fracción del pastel obtienes cuando sumas 1/2 y 1/4 ?</p>"
               }
             },
             "default_outcome": {
@@ -2754,7 +2754,7 @@
             "feedback_2": {
               "es": {
                 "needs_update": false,
-                "html": "<p>En realidad eso no está bien. la palabra mitad significa exactamente lo mismo que <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac12&amp;quot;\"></oppia-noninteractive-math>. ¡Inténtalo de nuevo!</p>"
+                "html": "<p>En realidad eso no está bien. la palabra mitad significa exactamente lo mismo que 1/2. ¡Inténtalo de nuevo!</p>"
               }
             },
             "feedback_1": {
@@ -2766,7 +2766,7 @@
             "default_outcome": {
               "es": {
                 "needs_update": false,
-                "html": "<p>¿Estás seguro? Mateo le pidió a Crumb media (<oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac12&amp;quot;\"></oppia-noninteractive-math>)&nbsp;torta. ¿Qué significa la fracción <oppia-noninteractive-math raw_latex-with-value=\"&amp;quot;\\\\frac12&amp;quot;\"></oppia-noninteractive-math>? Piensa en la lección anterior.</p>\n\n<p>¡Inténtalo de nuevo!</p>"
+                "html": "<p>¿Estás seguro? Mateo le pidió a Crumb media (1/2 torta. ¿Qué significa la fracción 1/2? Piensa en la lección anterior.</p>\n\n<p>¡Inténtalo de nuevo!</p>"
               }
             }
           }

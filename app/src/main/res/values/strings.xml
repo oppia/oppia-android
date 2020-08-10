@@ -44,6 +44,7 @@
   <string name="lesson_replay_button_text">Replay</string>
   <string name="state_end_exploration_button">Return To Topic</string>
   <string name="previous_responses_header">Previous Responses (%d)</string>
+  <string name="image_interaction_answer_text">Clicks on %s</string>
   <string name="state_learn_again_button">Learn Again</string>
   <string name="topic_download_text">(%s)</string>
   <string name="see_more">See More</string>
@@ -358,4 +359,6 @@
   </plurals>
   <!-- ViewTags -->
   <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
+  <string name="ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
+  <string name="completed_story_list_recyclerview_tag">completed_story_list_recyclerview_tag</string>
 </resources>

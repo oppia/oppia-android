@@ -15,9 +15,10 @@ import org.oppia.app.activity.ActivityScope
 import org.oppia.app.databinding.ExplorationActivityBinding
 import org.oppia.app.help.HelpActivity
 import org.oppia.app.model.Exploration
+import org.oppia.app.model.StoryTextSize
 import org.oppia.app.options.OptionsActivity
-import org.oppia.app.story.StoryActivity
 import org.oppia.app.topic.TopicActivity
+import org.oppia.app.utility.FontScaleConfigurationUtil
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.util.data.AsyncResult
@@ -25,6 +26,7 @@ import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 const val TAG_EXPLORATION_FRAGMENT = "TAG_EXPLORATION_FRAGMENT"
+const val TAG_EXPLORATION_MANAGER_FRAGMENT = "TAG_EXPLORATION_MANAGER_FRAGMENT"
 const val TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER = "HINTS_AND_SOLUTION_EXPLORATION_MANAGER"
 
 /** The Presenter for [ExplorationActivity]. */
@@ -33,12 +35,14 @@ class ExplorationActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val explorationDataController: ExplorationDataController,
   private val viewModelProvider: ViewModelProvider<ExplorationViewModel>,
+  private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
   private val logger: ConsoleLogger
 ) {
   private lateinit var explorationToolbar: Toolbar
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
   private lateinit var storyId: String
+  private lateinit var explorationId: String
   private lateinit var context: Context
   private var backflowScreen: Int? = null
 
@@ -79,26 +83,36 @@ class ExplorationActivityPresenter @Inject constructor(
     this.internalProfileId = internalProfileId
     this.topicId = topicId
     this.storyId = storyId
+    this.explorationId = explorationId
     this.context = context
     this.backflowScreen = backflowScreen
-
-    if (getExplorationFragment() == null) {
-      val explorationFragment = ExplorationFragment()
+    if (getExplorationManagerFragment() == null) {
+      val explorationManagerFragment = ExplorationManagerFragment()
       val args = Bundle()
       args.putInt(
         ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY,
         internalProfileId
       )
-      args.putString(ExplorationActivity.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
-      args.putString(ExplorationActivity.EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
-      args.putString(
-        ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY,
-        explorationId
-      )
-      explorationFragment.arguments = args
+      explorationManagerFragment.arguments = args
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_fragment_placeholder,
-        explorationFragment,
+        explorationManagerFragment,
+        TAG_EXPLORATION_MANAGER_FRAGMENT
+      ).commitNow()
+    }
+  }
+
+  fun loadExplorationFragment(storyTextSize: StoryTextSize) {
+    if (getExplorationFragment() == null) {
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.exploration_fragment_placeholder,
+        ExplorationFragment.newInstance(
+          topicId = topicId,
+          internalProfileId = internalProfileId,
+          storyId = storyId,
+          storyTextSize = storyTextSize.name,
+          explorationId = explorationId
+        ),
         TAG_EXPLORATION_FRAGMENT
       ).commitNow()
     }
@@ -119,7 +133,7 @@ class ExplorationActivityPresenter @Inject constructor(
         val intent = OptionsActivity.createOptionsActivity(
           activity,
           internalProfileId,
-          /* isFromExploration= */ true
+          /* isFromNavigationDrawer= */ false
         )
         context.startActivity(intent)
         true
@@ -127,7 +141,7 @@ class ExplorationActivityPresenter @Inject constructor(
       R.id.action_help -> {
         val intent = HelpActivity.createHelpActivityIntent(
           activity, internalProfileId,
-          /* isFromExploration= */true
+          /* isFromNavigationDrawer= */false
         )
         context.startActivity(intent)
         true
@@ -149,10 +163,16 @@ class ExplorationActivityPresenter @Inject constructor(
 
   fun scrollToTop() = getExplorationFragment()?.scrollToTop()
 
+  private fun getExplorationManagerFragment(): ExplorationManagerFragment? {
+    return activity.supportFragmentManager.findFragmentByTag(
+      TAG_EXPLORATION_MANAGER_FRAGMENT
+    ) as? ExplorationManagerFragment
+  }
+
   private fun getExplorationFragment(): ExplorationFragment? {
     return activity.supportFragmentManager.findFragmentByTag(
       TAG_EXPLORATION_FRAGMENT
-    ) as ExplorationFragment?
+    ) as? ExplorationFragment
   }
 
   private fun getHintsAndSolutionManagerFragment(): HintsAndSolutionExplorationManagerFragment? {
@@ -162,6 +182,7 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   fun stopExploration() {
+    fontScaleConfigurationUtil.adjustFontScale(activity, StoryTextSize.MEDIUM_TEXT_SIZE.name)
     explorationDataController.stopPlayingExploration()
       .observe(
         activity,
@@ -233,17 +254,8 @@ class ExplorationActivityPresenter @Inject constructor(
 
   private fun backPressActivitySelector(backflowScreen: Int?) {
     when (backflowScreen) {
-      ParentActivityForExploration.BACKFLOW_SCREEN_STORY.value -> activity.startActivity(
-        StoryActivity.createStoryActivityIntent(context, internalProfileId, topicId, storyId)
-      )
-      ParentActivityForExploration.BACKFLOW_SCREEN_LESSONS.value -> activity.startActivity(
-        TopicActivity.createTopicPlayStoryActivityIntent(
-          activity,
-          internalProfileId,
-          topicId,
-          storyId
-        )
-      )
+      ParentActivityForExploration.BACKFLOW_SCREEN_STORY.value -> activity.finish()
+      ParentActivityForExploration.BACKFLOW_SCREEN_LESSONS.value -> activity.finish()
       else -> activity.startActivity(
         TopicActivity.createTopicActivityIntent(
           context,

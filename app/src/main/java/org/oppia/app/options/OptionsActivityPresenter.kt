@@ -17,16 +17,16 @@ class OptionsActivityPresenter @Inject constructor(
   private var navigationDrawerFragment: NavigationDrawerFragment? = null
   private lateinit var toolbar: Toolbar
 
-  fun handleOnCreate(isFromExploration: Boolean) {
+  fun handleOnCreate(isFromNavigationDrawer: Boolean) {
     activity.setContentView(R.layout.option_activity)
     setUpToolbar()
-    if (isFromExploration) {
+    if (isFromNavigationDrawer) {
+      setUpNavigationDrawer()
+    } else {
       activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
       toolbar.setNavigationOnClickListener {
         activity.finish()
       }
-    } else {
-      setUpNavigationDrawer()
     }
     if (getOptionFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(

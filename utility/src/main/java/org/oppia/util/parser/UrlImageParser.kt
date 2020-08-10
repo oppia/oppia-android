@@ -3,7 +3,6 @@ package org.oppia.util.parser
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Picture
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -42,10 +41,10 @@ class UrlImageParser private constructor(
     // TODO(#1039): Introduce custom type OppiaImage for rendering Bitmap and Svg.
     if (imageUrl.endsWith("svg", ignoreCase = true)) {
       val target = SvgTarget(urlDrawable)
-      imageLoader.loadSvg("$gcsPrefix/$gcsResourceName/$imageUrl", target)
+      imageLoader.loadSvg("$gcsPrefix/$gcsResourceName/$imageUrl", CustomImageTarget(target))
     } else {
       val target = BitmapTarget(urlDrawable)
-      imageLoader.load("$gcsPrefix/$gcsResourceName/$imageUrl", target)
+      imageLoader.loadBitmap("$gcsPrefix/$gcsResourceName/$imageUrl", CustomImageTarget(target))
     }
     return urlDrawable
   }
@@ -54,8 +53,8 @@ class UrlImageParser private constructor(
     urlDrawable, { resource -> BitmapDrawable(context.resources, resource) }
   )
 
-  private inner class SvgTarget(urlDrawable: UrlDrawable) : CustomImageTarget<Picture>(
-    urlDrawable, { resource -> PictureDrawable(resource) }
+  private inner class SvgTarget(urlDrawable: UrlDrawable) : CustomImageTarget<PictureDrawable>(
+    urlDrawable, { it }
   )
 
   private open inner class CustomImageTarget<T>(
@@ -79,11 +78,27 @@ class UrlImageParser private constructor(
             // Then multipleFactor will be 2 (120/60).
             // The new height will be 180 and new width will be 120.
             val multipleFactor = if (drawableHeight <= drawableWidth) {
-              // If height is less then the multipleFactor, value is determined by height.
+              // If height is less then the width, multipleFactor value is determined by height.
               (minimumImageSize.toDouble() / drawableHeight.toDouble())
             } else {
-              // If width is less then the multipleFactor, value is determined by width.
+              // If height is less then the width, multipleFactor value is determined by width.
               (minimumImageSize.toDouble() / drawableWidth.toDouble())
+            }
+            drawableHeight = (drawableHeight.toDouble() * multipleFactor).toInt()
+            drawableWidth = (drawableWidth.toDouble() * multipleFactor).toInt()
+          }
+          val maximumImageSize = it
+          if (drawableHeight >= maximumImageSize || drawableWidth >= maximumImageSize) {
+            // The multipleFactor value is used to make sure that the aspect ratio of the image remains the same.
+            // Example: Height is 420, width is 440 and maximumImageSize is 200.
+            // Then multipleFactor will be (200/440).
+            // The new height will be 191 and new width will be 200.
+            val multipleFactor = if (drawableHeight >= drawableWidth) {
+              // If height is greater then the width, multipleFactor value is determined by height.
+              (maximumImageSize.toDouble() / drawableHeight.toDouble())
+            } else {
+              // If height is greater then the width, multipleFactor value is determined by width.
+              (maximumImageSize.toDouble() / drawableWidth.toDouble())
             }
             drawableHeight = (drawableHeight.toDouble() * multipleFactor).toInt()
             drawableWidth = (drawableWidth.toDouble() * multipleFactor).toInt()
