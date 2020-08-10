@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentManager
 import org.oppia.app.model.LessonThumbnail
 import org.oppia.app.model.LessonThumbnailGraphic
 import org.oppia.app.shim.ViewComponentFactory
-import org.oppia.app.views.R
+import org.oppia.app.R
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.parser.DefaultGcsPrefix
 import org.oppia.util.parser.ImageLoader

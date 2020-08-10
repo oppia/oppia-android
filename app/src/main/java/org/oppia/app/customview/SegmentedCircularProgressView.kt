@@ -8,7 +8,7 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
 import androidx.core.content.ContextCompat
-import org.oppia.app.views.R
+import org.oppia.app.R
 
 private const val STROKE_DASH_GAP_IN_DEGREE = 12
 

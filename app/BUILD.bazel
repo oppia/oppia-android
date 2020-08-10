@@ -285,18 +285,64 @@ VIEW_FILES = [
     "src/main/java/org/oppia/app/customview/interaction/FractionInputInteractionView.kt",
     "src/main/java/org/oppia/app/customview/interaction/NumericInputInteractionView.kt",
     "src/main/java/org/oppia/app/customview/interaction/TextInputInteractionView.kt",
-    "src/main/java/org/oppia/app/customview/LessonThumbnailImageView.kt",
-    "src/main/java/org/oppia/app/customview/SegmentedCircularProgressView.kt",
+    "update_src/main/java/org/oppia/app/customview/LessonThumbnailImageView",
+    "update_src/main/java/org/oppia/app/customview/SegmentedCircularProgressView",
     "src/main/java/org/oppia/app/player/state/DragDropSortInteractionView.kt",
     "src/main/java/org/oppia/app/player/state/ImageRegionSelectionInteractionView.kt",
     "src/main/java/org/oppia/app/player/state/SelectionInteractionView.kt",
-    "src/main/java/org/oppia/app/profile/ProfileInputView.kt",
-    "src/main/java/org/oppia/app/utility/ClickableAreasImage.kt",
+    "update_src/main/java/org/oppia/app/profile/ProfileInputView",
+    "update_src/main/java/org/oppia/app/utility/ClickableAreasImage",
     "src/main/java/org/oppia/app/view/ViewComponent.kt",
     "src/main/java/org/oppia/app/view/ViewScope.kt",
     "src/main/java/org/oppia/app/shim/ViewBindingShimInterface.kt",
     "src/main/java/org/oppia/app/shim/ViewComponentFactory.kt",
 ]
+
+ALTERED_VIEWS = [
+    "src/main/java/org/oppia/app/customview/LessonThumbnailImageView.kt",
+    "src/main/java/org/oppia/app/customview/SegmentedCircularProgressView.kt",
+    "src/main/java/org/oppia/app/profile/ProfileInputView.kt",
+    "src/main/java/org/oppia/app/utility/ClickableAreasImage.kt",
+]
+
+genrule(
+    name = "update_src/main/java/org/oppia/app/customview/LessonThumbnailImageView",
+    srcs = ["src/main/java/org/oppia/app/customview/LessonThumbnailImageView.kt"],
+    outs = ["src/main/java/org/oppia/app/customview/LessonThumbnailImageView_updated.kt"],
+    cmd = '''
+    cat $(SRCS) |
+    sed 's/import org.oppia.app.R/import org.oppia.app.vm.R/g' > $(OUTS)
+    ''',
+)
+
+genrule(
+    name = "update_src/main/java/org/oppia/app/customview/SegmentedCircularProgressView",
+    srcs = ["src/main/java/org/oppia/app/customview/SegmentedCircularProgressView.kt"],
+    outs = ["src/main/java/org/oppia/app/customview/SegmentedCircularProgressView_updated.kt"],
+    cmd = '''
+    cat $(SRCS) |
+    sed 's/import org.oppia.app.R/import org.oppia.app.vm.R/g' > $(OUTS)
+    ''',
+)
+
+genrule(
+    name = "update_src/main/java/org/oppia/app/profile/ProfileInputView",
+    srcs = ["src/main/java/org/oppia/app/profile/ProfileInputView.kt"],
+    outs = ["src/main/java/org/oppia/app/profile/ProfileInputView_updated.kt"],
+    cmd = '''
+    cat $(SRCS) |
+    sed 's/import org.oppia.app.R/import org.oppia.app.vm.R/g' > $(OUTS)
+    ''',
+)
+genrule(
+    name = "update_src/main/java/org/oppia/app/utility/ClickableAreasImage",
+    srcs = ["src/main/java/org/oppia/app/utility/ClickableAreasImage.kt"],
+    outs = ["src/main/java/org/oppia/app/utility/ClickableAreasImage_updated.kt"],
+    cmd = '''
+    cat $(SRCS) |
+    sed 's/import org.oppia.app.R/import org.oppia.app.vm.R/g' > $(OUTS)
+    ''',
+)
 
 # Library for non-layout resource files
 android_library(
