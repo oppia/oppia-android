@@ -603,6 +603,22 @@ class ExplorationActivityTest {
     }
   }
 
+  @Test
+  fun testExplorationActivity_onToolbarClosePressed_showsStopExplorationDialog() {
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0
+      )
+    ).use {
+      onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+      onView(withText(R.string.stop_exploration_dialog_title)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
   // TODO(#89): Check this test case too. It works in pair with below test case.
   @Test
   fun testExplorationActivity_onBackPressed_showsStopExplorationDialog_clickCancel_dismissesDialog() { // ktlint-disable max-line-length
