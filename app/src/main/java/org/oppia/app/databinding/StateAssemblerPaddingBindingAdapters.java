@@ -1,17 +1,15 @@
 package org.oppia.app.databinding;
 
 import android.view.View;
-
 import androidx.databinding.BindingAdapter;
 
 /**
- * Holds all the custom binding adapters that set padding values for exploration view, exploration
+ * Holds all custom binding adapters that set padding values for exploration view, exploration
  * split-veiw, question view, and question split-view.
  */
 public final class StateAssemblerPaddingBindingAdapters {
-  /**
-   * Used to set a padding for exploration split-view.
-   */
+
+  /** Used to set a padding for exploration split-view. */
   @BindingAdapter(
       value = {
           "app:explorationSplitViewPaddingApplicable",
@@ -33,9 +31,7 @@ public final class StateAssemblerPaddingBindingAdapters {
     setPaddingIfApplicable(view, isApplicable, paddingStart, paddingTop, paddingEnd, paddingBottom);
   }
 
-  /**
-   * Used to set a padding for exploration view.
-   */
+  /** Used to set a padding for exploration view. */
   @BindingAdapter(
       value = {
           "app:explorationViewPaddingApplicable",
@@ -57,9 +53,7 @@ public final class StateAssemblerPaddingBindingAdapters {
     setPaddingIfApplicable(view, isApplicable, paddingStart, paddingTop, paddingEnd, paddingBottom);
   }
 
-  /**
-   * Used to set a padding for question view.
-   */
+  /** Used to set a padding for question view. */
   @BindingAdapter(
       value = {
           "app:questionViewPaddingApplicable",
@@ -81,9 +75,7 @@ public final class StateAssemblerPaddingBindingAdapters {
     setPaddingIfApplicable(view, isApplicable, paddingStart, paddingTop, paddingEnd, paddingBottom);
   }
 
-  /**
-   * Used to set a padding for question split-view.
-   */
+  /** Used to set a padding for question split-view. */
   @BindingAdapter(
       value = {
           "app:questionSplitViewPaddingApplicable",

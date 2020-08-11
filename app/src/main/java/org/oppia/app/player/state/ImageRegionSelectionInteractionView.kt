@@ -9,7 +9,7 @@ import androidx.core.view.forEachIndexed
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import org.oppia.app.model.ImageWithRegions
-import org.oppia.app.shim.ViewBindingShimInterface
+import org.oppia.app.shim.ViewBindingShim
 import org.oppia.app.shim.ViewComponentFactory
 import org.oppia.app.utility.ClickableAreasImage
 import org.oppia.app.utility.OnClickableAreaClickedListener
@@ -63,7 +63,7 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   lateinit var gcsPrefix: String
 
   @Inject
-  lateinit var bindingInterface: ViewBindingShimInterface
+  lateinit var bindingInterface: ViewBindingShim
 
   private lateinit var entityId: String
   private lateinit var overlayView: FrameLayout

@@ -2,7 +2,7 @@ package org.oppia.app.help
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
-import org.oppia.app.vm.R
+import org.oppia.app.R
 import javax.inject.Inject
 
 /** View model in [HelpFragment]. */

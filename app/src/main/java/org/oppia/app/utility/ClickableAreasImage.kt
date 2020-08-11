@@ -6,10 +6,10 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.core.view.forEachIndexed
 import androidx.core.view.isVisible
-import org.oppia.app.shim.ViewBindingShimInterface
-import org.oppia.app.views.R
+import org.oppia.app.R
 import org.oppia.app.model.ImageWithRegions
 import org.oppia.app.player.state.ImageRegionSelectionInteractionView
+import org.oppia.app.shim.ViewBindingShim
 import kotlin.math.roundToInt
 
 /**
@@ -19,7 +19,7 @@ class ClickableAreasImage(
   private val imageView: ImageRegionSelectionInteractionView,
   private val parentView: FrameLayout,
   private val listener: OnClickableAreaClickedListener,
-  private val bindingInterface: ViewBindingShimInterface
+  private val bindingInterface: ViewBindingShim
 ) {
   init {
     imageView.setOnTouchListener { view, motionEvent ->

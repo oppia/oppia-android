@@ -2,20 +2,18 @@ package org.oppia.app.player.state
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.LayoutInflater
-import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.shim.ViewBindingShimInterface
-import org.oppia.app.shim.ViewComponentFactory
 import org.oppia.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.recyclerview.DragAndDropItemFacilitator
 import org.oppia.app.recyclerview.OnDragEndedListener
 import org.oppia.app.recyclerview.OnItemDragListener
+import org.oppia.app.shim.ViewBindingShim
+import org.oppia.app.shim.ViewComponentFactory
 import org.oppia.util.accessibility.CustomAccessibilityManager
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
@@ -50,7 +48,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   lateinit var resourceBucketName: String
 
   @Inject
-  lateinit var bindingInterface: ViewBindingShimInterface
+  lateinit var bindingInterface: ViewBindingShim
 
   private lateinit var entityId: String
   private lateinit var onDragEnd: OnDragEndedListener
@@ -78,56 +76,31 @@ class DragDropSortInteractionView @JvmOverloads constructor(
     this.entityId = entityId
   }
 
+  /**
+   * Implemented in [ViewBindingShimImpl] in order to remove binding dependency
+   */
   private fun createAdapter(): BindableAdapter<DragDropInteractionContentViewModel> {
-    return BindableAdapter.SingleTypeBuilder
-      .newBuilder<DragDropInteractionContentViewModel>()
-      .registerViewBinder(
-        inflateView = { parent ->
-          bindingInterface.provideDragDropSortInteractionInflatedView(
-            LayoutInflater.from(parent.context),
-            parent,
-            /* attachToParent= */ false
-          )
-        },
-        bindView = { view, viewModel ->
-          bindingInterface.setDragDropInteractionItemsBinding(view)
-          bindingInterface.getDragDropInteractionItemsBindingRecyclerView().adapter =
-            createNestedAdapter()
-          adapter?.let { bindingInterface.setDragDropInteractionItemsBindingAdapter(it) };
-          bindingInterface.getDragDropInteractionItemsBindingGroupItem().isVisible =
-            isMultipleItemsInSamePositionAllowed
-          bindingInterface.getDragDropInteractionItemsBindingUnlinkItems().isVisible =
-            viewModel.htmlContent.htmlList.size > 1
-          bindingInterface.getDragDropInteractionItemsBindingAccessibleContainer().isVisible =
-            isAccessibilityEnabled
-          bindingInterface.setDragDropInteractionItemsBindingViewModel(viewModel)
-        }
-      )
-      .build()
+    return bindingInterface.createDragDropInteractionViewAdapter(
+      adapter as RecyclerView.Adapter<RecyclerView.ViewHolder>,
+      isMultipleItemsInSamePositionAllowed,
+      isAccessibilityEnabled,
+      htmlParserFactory,
+      resourceBucketName,
+      entityType,
+      entityId
+    )
   }
 
+  /**
+   * Implemented in [ViewBindingShimImpl] in order to remove binding dependency
+   */
   private fun createNestedAdapter(): BindableAdapter<String> {
-    return BindableAdapter.SingleTypeBuilder
-      .newBuilder<String>()
-      .registerViewBinder(
-        inflateView = { parent ->
-          bindingInterface.provideDragDropSingleItemInflatedView(
-            LayoutInflater.from(parent.context),
-            parent,
-            /* attachToParent= */ false
-          )
-        },
-        bindView = { view, viewModel ->
-          bindingInterface.setDragDropSingleItemBinding(view)
-          bindingInterface.setDragDropSingleItemBindingHtmlContent(
-            htmlParserFactory,
-            resourceBucketName,
-            entityType,
-            entityId,
-            viewModel)
-        }
-      )
-      .build()
+    return bindingInterface.createDragDropInteractionViewNestedAdapter<String>(
+      htmlParserFactory,
+      resourceBucketName,
+      entityType,
+      entityId
+    )
   }
 
   fun setOnDragEnded(onDragEnd: OnDragEndedListener) {
@@ -153,7 +126,6 @@ class DragDropSortInteractionView @JvmOverloads constructor(
     val itemTouchHelper = ItemTouchHelper(dragCallback)
     itemTouchHelper.attachToRecyclerView(this)
   }
-
 }
 
 /** Sets the exploration ID for a specific [DragDropSortInteractionView] via data-binding. */

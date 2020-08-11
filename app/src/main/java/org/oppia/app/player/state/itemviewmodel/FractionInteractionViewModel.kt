@@ -6,7 +6,7 @@ import android.text.TextWatcher
 import androidx.databinding.Bindable
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
-import org.oppia.app.vm.R
+import org.oppia.app.R
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.UserAnswer

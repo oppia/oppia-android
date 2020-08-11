@@ -13,7 +13,7 @@ private const val KEY_TOPIC_ID_ARGUMENT = "TOPIC_ID"
 private const val KEY_STORY_ID_ARGUMENT = "STORY_ID"
 
 /** Fragment for displaying a story. */
-class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryFragmentInterface {
+class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryFragmentScroller {
   companion object {
     /** Returns a new [StoryFragment] to display the story corresponding to the specified story ID. */
     fun newInstance(internalProfileId: Int, topicId: String, storyId: String): StoryFragment {

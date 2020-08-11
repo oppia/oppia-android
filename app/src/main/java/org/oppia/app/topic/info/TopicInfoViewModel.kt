@@ -3,7 +3,7 @@ package org.oppia.app.topic.info
 import android.content.Context
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
-import org.oppia.app.vm.R
+import org.oppia.app.R
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.Topic
 import org.oppia.app.viewmodel.ObservableViewModel

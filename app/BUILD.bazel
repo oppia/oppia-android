@@ -8,8 +8,65 @@ load("@tools_android//tools/crashlytics:defs.bzl", "crashlytics_android_library"
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
+# Source files for annotations library.
+ANNOTATION_FILES = [
+    "src/main/java/org/oppia/app/activity/ActivityScope.kt",
+    "src/main/java/org/oppia/app/fragment/FragmentScope.kt",
+    "src/main/java/org/oppia/app/utility/KeyboardHelper.kt",
+]
+
+# Source files for listener library.
+LISTENER_FILES = [
+    "src/main/java/org/oppia/app/administratorcontrols/RouteToAppVersionListener.kt",
+    "src/main/java/org/oppia/app/administratorcontrols/RouteToProfileListListener.kt",
+    "src/main/java/org/oppia/app/drawer/RouteToProfileProgressListener.kt",
+    "src/main/java/org/oppia/app/help/faq/RouteToFAQSingleListener.kt",
+    "src/main/java/org/oppia/app/help/RouteToFAQListListener.kt",
+    "src/main/java/org/oppia/app/home/recentlyplayed/OngoingStoryClickListener.kt",
+    "src/main/java/org/oppia/app/home/RouteToRecentlyPlayedListener.kt",
+    "src/main/java/org/oppia/app/home/RouteToTopicPlayStoryListener.kt",
+    "src/main/java/org/oppia/app/home/topiclist/TopicSummaryClickListener.kt",
+    "src/main/java/org/oppia/app/onboarding/RouteToProfileListListener.kt",
+    "src/main/java/org/oppia/app/options/RouteToAppLanguageListListener.kt",
+    "src/main/java/org/oppia/app/options/RouteToAudioLanguageListListener.kt",
+    "src/main/java/org/oppia/app/options/RouteToStoryTextSizeListener.kt",
+    "src/main/java/org/oppia/app/player/audio/LanguageInterface.kt",
+    "src/main/java/org/oppia/app/player/state/answerhandling/InteractionAnswerErrorOrAvailabilityCheckReceiver.kt",
+    "src/main/java/org/oppia/app/player/state/answerhandling/InteractionAnswerHandler.kt",
+    "src/main/java/org/oppia/app/player/state/listener/ContinueNavigationButtonListener.kt",
+    "src/main/java/org/oppia/app/player/state/listener/NextNavigationButtonListener.kt",
+    "src/main/java/org/oppia/app/player/state/listener/PreviousNavigationButtonListener.kt",
+    "src/main/java/org/oppia/app/player/state/listener/PreviousResponsesHeaderClickListener.kt",
+    "src/main/java/org/oppia/app/player/state/listener/ReplayButtonListener.kt",
+    "src/main/java/org/oppia/app/player/state/listener/ReturnToTopicNavigationButtonListener.kt",
+    "src/main/java/org/oppia/app/player/state/listener/RouteToHintsAndSolutionListener.kt",
+    "src/main/java/org/oppia/app/player/state/listener/StateKeyboardButtonListener.kt",
+    "src/main/java/org/oppia/app/player/state/listener/SubmitNavigationButtonListener.kt",
+    "src/main/java/org/oppia/app/profile/RouteToAdminPinListener.kt",
+    "src/main/java/org/oppia/app/profileprogress/ProfilePictureClickListener.kt",
+    "src/main/java/org/oppia/app/profileprogress/RouteToCompletedStoryListListener.kt",
+    "src/main/java/org/oppia/app/profileprogress/RouteToOngoingTopicListListener.kt",
+    "src/main/java/org/oppia/app/recyclerview/OnDragEndedListener.kt",
+    "src/main/java/org/oppia/app/recyclerview/OnItemDragListener.kt",
+    "src/main/java/org/oppia/app/story/ExplorationSelectionListener.kt",
+    "src/main/java/org/oppia/app/topic/lessons/StorySummarySelector.kt",
+    "src/main/java/org/oppia/app/topic/revision/RevisionSubtopicSelector.kt",
+    "src/main/java/org/oppia/app/topic/revisioncard/ReturnToTopicClickListener.kt",
+    "src/main/java/org/oppia/app/topic/RouteToRevisionCardListener.kt",
+    "src/main/java/org/oppia/app/utility/OnClickableAreaClickedListener.kt",
+    "src/main/java/org/oppia/app/utility/RegionClickEvent.kt",
+]
+
+# Layout files for databinding_resources library.
+LAYOUT_RES_FILES = [
+    "src/main/res/layout-land/**",
+    "src/main/res/layout-sw600dp-land/**",
+    "src/main/res/layout-sw600dp-port/**",
+    "src/main/res/layout/**",
+]
+
+# Source files and genrule targets for view_model library.
 VIEW_MODEL_FILES = [
-    "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel.kt",
     "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAppInformationViewModel.kt",
     "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsDownloadPermissionsViewModel.kt",
     "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsGeneralViewModel.kt",
@@ -24,10 +81,7 @@ VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/help/faq/faqItemViewModel/FAQContentViewModel.kt",
     "src/main/java/org/oppia/app/help/faq/faqItemViewModel/FAQHeaderViewModel.kt",
     "src/main/java/org/oppia/app/help/faq/faqItemViewModel/FAQItemViewModel.kt",
-    "src/main/java/org/oppia/app/help/faq/FAQListViewModel.kt",
     "src/main/java/org/oppia/app/help/HelpItems.kt",
-    "src/main/java/org/oppia/app/help/HelpItemViewModel.kt",
-    "src/main/java/org/oppia/app/help/HelpListViewModel.kt",
     "src/main/java/org/oppia/app/hintsandsolution/HintsAndSolutionItemViewModel.kt",
     "src/main/java/org/oppia/app/hintsandsolution/HintsViewModel.kt",
     "src/main/java/org/oppia/app/hintsandsolution/SolutionViewModel.kt",
@@ -41,9 +95,7 @@ VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/home/topiclist/TopicSummaryViewModel.kt",
     "src/main/java/org/oppia/app/home/UserAppHistoryViewModel.kt",
     "src/main/java/org/oppia/app/home/WelcomeViewModel.kt",
-    "src/main/java/org/oppia/app/onboarding/OnboadingSlideViewModel.kt",
     "src/main/java/org/oppia/app/onboarding/OnboardingSlideFinalViewModel.kt",
-    "src/main/java/org/oppia/app/onboarding/OnboardingViewModel.kt",
     "src/main/java/org/oppia/app/onboarding/ViewPagerSlide.kt",
     "src/main/java/org/oppia/app/ongoingtopiclist/OngoingTopicItemViewModel.kt",
     "src/main/java/org/oppia/app/ongoingtopiclist/OngoingTopicListViewModel.kt",
@@ -52,8 +104,6 @@ VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/options/OptionsAudioLanguageViewModel.kt",
     "src/main/java/org/oppia/app/options/OptionsItemViewModel.kt",
     "src/main/java/org/oppia/app/options/OptionsStoryTextViewViewModel.kt",
-    "src/main/java/org/oppia/app/parser/StringToFractionParser.kt",
-    "src/main/java/org/oppia/app/parser/StringToNumberParser.kt",
     "src/main/java/org/oppia/app/player/audio/AudioViewModel.kt",
     "src/main/java/org/oppia/app/player/exploration/ExplorationViewModel.kt",
     "src/main/java/org/oppia/app/player/state/itemviewmodel/ContentViewModel.kt",
@@ -62,8 +112,6 @@ VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/player/state/itemviewmodel/DragAndDropSortInteractionViewModel.kt",
     "src/main/java/org/oppia/app/player/state/itemviewmodel/DragDropInteractionContentViewModel.kt",
     "src/main/java/org/oppia/app/player/state/itemviewmodel/FeedbackViewModel.kt",
-    "src/main/java/org/oppia/app/player/state/itemviewmodel/FractionInteractionViewModel.kt",
-    "src/main/java/org/oppia/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel.kt",
     "src/main/java/org/oppia/app/player/state/itemviewmodel/NextButtonViewModel.kt",
     "src/main/java/org/oppia/app/player/state/itemviewmodel/NumericInputViewModel.kt",
     "src/main/java/org/oppia/app/player/state/itemviewmodel/PreviousButtonViewModel.kt",
@@ -97,15 +145,14 @@ VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/settings/profile/ProfileListViewModel.kt",
     "src/main/java/org/oppia/app/settings/profile/ProfileRenameViewModel.kt",
     "src/main/java/org/oppia/app/settings/profile/ProfileResetPinViewModel.kt",
-    "src/main/java/org/oppia/app/shim/IntentFactoryShimInterface.kt",
-    "src/main/java/org/oppia/app/story/StoryFragmentInterface.kt",
+    "src/main/java/org/oppia/app/shim/IntentFactoryShim.kt",
+    "src/main/java/org/oppia/app/story/StoryFragmentScroller.kt",
     "src/main/java/org/oppia/app/story/storyitemviewmodel/StoryChapterSummaryViewModel.kt",
     "src/main/java/org/oppia/app/story/storyitemviewmodel/StoryHeaderViewModel.kt",
     "src/main/java/org/oppia/app/story/storyitemviewmodel/StoryItemViewModel.kt",
     "src/main/java/org/oppia/app/story/StoryViewModel.kt",
     "src/main/java/org/oppia/app/testing/BindableAdapterTestViewModel.kt",
     "src/main/java/org/oppia/app/topic/conceptcard/ConceptCardViewModel.kt",
-    "src/main/java/org/oppia/app/topic/info/TopicInfoViewModel.kt",
     "src/main/java/org/oppia/app/topic/lessons/StorySummaryViewModel.kt",
     "src/main/java/org/oppia/app/topic/lessons/TopicLessonsItemViewModel.kt",
     "src/main/java/org/oppia/app/topic/lessons/TopicLessonsTitleViewModel.kt",
@@ -128,98 +175,162 @@ VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/walkthrough/topiclist/WalkthroughTopicViewModel.kt",
     "src/main/java/org/oppia/app/walkthrough/WalkthroughViewModel.kt",
     "src/main/java/org/oppia/app/walkthrough/welcome/WalkthroughWelcomeViewModel.kt",
+    "update_src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel",
+    "update_src/main/java/org/oppia/app/help/faq/FAQListViewModel",
+    "update_src/main/java/org/oppia/app/help/HelpItemViewModel",
+    "update_src/main/java/org/oppia/app/help/HelpListViewModel",
+    "update_src/main/java/org/oppia/app/onboarding/OnboadingSlideViewModel",
+    "update_src/main/java/org/oppia/app/onboarding/OnboardingViewModel",
+    "update_src/main/java/org/oppia/app/parser/StringToFractionParser",
+    "update_src/main/java/org/oppia/app/parser/StringToNumberParser",
+    "update_src/main/java/org/oppia/app/player/state/itemviewmodel/FractionInteractionViewModel",
+    "update_src/main/java/org/oppia/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel",
+    "update_src/main/java/org/oppia/app/topic/info/TopicInfoViewModel",
 ]
 
-DATABINDING_ADAPTER_FILES = [
-    "src/main/java/org/oppia/app/databinding/DrawableBindingAdapters.java",
-    "src/main/java/org/oppia/app/databinding/EditTextBindingAdapters.java",
-    "src/main/java/org/oppia/app/databinding/ImageViewBindingAdapters.java",
-    "src/main/java/org/oppia/app/databinding/MarginBindingAdapters.java",
-    "src/main/java/org/oppia/app/databinding/TextViewBindingAdapters.java",
-    "src/main/java/org/oppia/app/databinding/ViewBindingAdapters.java",
-    "src/main/java/org/oppia/app/databinding/StateAssemblerPaddingBindingAdapters.java",
-    "src/main/java/org/oppia/app/databinding/StateAssemblerMarginBindingAdapters.java",
-    "src/main/java/org/oppia/app/databinding/GuidelineBindingAdapters.java",
+# View model files altered by genrules to be excluded in the app library.
+ALTERED_VIEW_MODELS = [
+    "src/main/java/org/oppia/app/help/HelpListViewModel.kt",
+    "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel.kt",
+    "src/main/java/org/oppia/app/help/faq/FAQListViewModel.kt",
+    "src/main/java/org/oppia/app/help/HelpItemViewModel.kt",
+    "src/main/java/org/oppia/app/onboarding/OnboadingSlideViewModel.kt",
+    "src/main/java/org/oppia/app/onboarding/OnboardingViewModel.kt",
+    "src/main/java/org/oppia/app/parser/StringToFractionParser.kt",
+    "src/main/java/org/oppia/app/parser/StringToNumberParser.kt",
+    "src/main/java/org/oppia/app/player/state/itemviewmodel/FractionInteractionViewModel.kt",
+    "src/main/java/org/oppia/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel.kt",
+    "src/main/java/org/oppia/app/topic/info/TopicInfoViewModel.kt",
 ]
 
-RECYCLERVIEW_ADAPTER_FILES = [
-    "src/main/java/org/oppia/app/recyclerview/RecyclerViewBindingAdapter.java"
+# TODO(#1617): Remove genrules post-gradle
+# Inputs to the view_model genrule.
+GENRULE_VIEW_MODEL_FILES = [
+    "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel",
+    "src/main/java/org/oppia/app/help/faq/FAQListViewModel",
+    "src/main/java/org/oppia/app/help/HelpItemViewModel",
+    "src/main/java/org/oppia/app/help/HelpListViewModel",
+    "src/main/java/org/oppia/app/onboarding/OnboadingSlideViewModel",
+    "src/main/java/org/oppia/app/onboarding/OnboardingViewModel",
+    "src/main/java/org/oppia/app/parser/StringToFractionParser",
+    "src/main/java/org/oppia/app/parser/StringToNumberParser",
+    "src/main/java/org/oppia/app/player/state/itemviewmodel/FractionInteractionViewModel",
+    "src/main/java/org/oppia/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel",
+    "src/main/java/org/oppia/app/topic/info/TopicInfoViewModel",
 ]
 
-LISTENER_FILES = [
-    "src/main/java/org/oppia/app/home/topiclist/TopicSummaryClickListener.kt",
-    "src/main/java/org/oppia/app/administratorcontrols/RouteToAppVersionListener.kt",
-    "src/main/java/org/oppia/app/administratorcontrols/RouteToProfileListListener.kt",
-    "src/main/java/org/oppia/app/drawer/RouteToProfileProgressListener.kt",
-    "src/main/java/org/oppia/app/help/faq/RouteToFAQSingleListener.kt",
-    "src/main/java/org/oppia/app/help/RouteToFAQListListener.kt",
-    "src/main/java/org/oppia/app/home/recentlyplayed/OngoingStoryClickListener.kt",
-    "src/main/java/org/oppia/app/home/RouteToRecentlyPlayedListener.kt",
-    "src/main/java/org/oppia/app/home/RouteToTopicPlayStoryListener.kt",
-    "src/main/java/org/oppia/app/onboarding/OnboardingListener.kt",
-    "src/main/java/org/oppia/app/onboarding/RouteToProfileListListener.kt",
-    "src/main/java/org/oppia/app/options/RouteToAppLanguageListListener.kt",
-    "src/main/java/org/oppia/app/options/RouteToAudioLanguageListListener.kt",
-    "src/main/java/org/oppia/app/options/RouteToStoryTextSizeListener.kt",
-    "src/main/java/org/oppia/app/player/audio/LanguageInterface.kt",
-    "src/main/java/org/oppia/app/player/state/answerhandling/InteractionAnswerErrorOrAvailabilityCheckReceiver.kt",
-    "src/main/java/org/oppia/app/player/state/answerhandling/InteractionAnswerHandler.kt",
-    "src/main/java/org/oppia/app/player/state/listener/ContinueNavigationButtonListener.kt",
-    "src/main/java/org/oppia/app/player/state/listener/NextNavigationButtonListener.kt",
-    "src/main/java/org/oppia/app/player/state/listener/PreviousNavigationButtonListener.kt",
-    "src/main/java/org/oppia/app/player/state/listener/PreviousResponsesHeaderClickListener.kt",
-    "src/main/java/org/oppia/app/player/state/listener/ReplayButtonListener.kt",
-    "src/main/java/org/oppia/app/player/state/listener/ReturnToTopicNavigationButtonListener.kt",
-    "src/main/java/org/oppia/app/player/state/listener/RouteToHintsAndSolutionListener.kt",
-    "src/main/java/org/oppia/app/player/state/listener/StateKeyboardButtonListener.kt",
-    "src/main/java/org/oppia/app/player/state/listener/SubmitNavigationButtonListener.kt",
-    "src/main/java/org/oppia/app/profile/ProfileChooserListener.kt",
-    "src/main/java/org/oppia/app/profile/RouteToAdminPinListener.kt",
-    "src/main/java/org/oppia/app/profileprogress/ProfilePictureClickListener.kt",
-    "src/main/java/org/oppia/app/profileprogress/RouteToCompletedStoryListListener.kt",
-    "src/main/java/org/oppia/app/profileprogress/RouteToOngoingTopicListListener.kt",
-    "src/main/java/org/oppia/app/recyclerview/OnDragEndedListener.kt",
-    "src/main/java/org/oppia/app/recyclerview/OnItemDragListener.kt",
-    "src/main/java/org/oppia/app/story/ExplorationSelectionListener.kt",
-    "src/main/java/org/oppia/app/topic/lessons/StorySummarySelector.kt",
-    "src/main/java/org/oppia/app/topic/revision/RevisionSubtopicSelector.kt",
-    "src/main/java/org/oppia/app/topic/revisioncard/ReturnToTopicClickListener.kt",
-    "src/main/java/org/oppia/app/topic/RouteToRevisionCardListener.kt",
-    "src/main/java/org/oppia/app/utility/OnClickableAreaClickedListener.kt",
-    "src/main/java/org/oppia/app/utility/RegionClickEvent.kt",
-    "src/main/java/org/oppia/app/walkthrough/end/WalkthroughFinalListener.kt",
-    "src/main/java/org/oppia/app/walkthrough/WalkthroughActivityListener.kt",
-    "src/main/java/org/oppia/app/walkthrough/WalkthroughFragmentChangeListener.kt",
-]
+'''
+Genrule that alters resource import statements for view_model files in order to account for altered
+package name.
+'''
+[genrule(
+    name = "update_" + file,
+    srcs = [file + ".kt"],
+    outs = [file + "_updated.kt"],
+    cmd = '''
+    cat $(SRCS) |
+    sed 's/import org.oppia.app.R/import org.oppia.app.vm.R/g' > $(OUTS)
+    ''',
+)
+for file in GENRULE_VIEW_MODEL_FILES]
 
-LAYOUT_RES_FILES = [
-    "src/main/res/layout/**",
-    "src/main/res/layout-land/**",
-    "src/main/res/layout-sw600dp-land/**",
-    "src/main/res/layout-sw600dp-port/**",
-]
-
-ANNOTATION_FILES = [
-    "src/main/java/org/oppia/app/activity/ActivityScope.kt",
-    "src/main/java/org/oppia/app/fragment/FragmentScope.kt",
-    "src/main/java/org/oppia/app/utility/KeyboardHelper.kt",
-]
-
+# Source files and genrule targets for views library.
 VIEW_FILES = [
     "src/main/java/org/oppia/app/customview/interaction/FractionInputInteractionView.kt",
     "src/main/java/org/oppia/app/customview/interaction/NumericInputInteractionView.kt",
     "src/main/java/org/oppia/app/customview/interaction/TextInputInteractionView.kt",
-    "src/main/java/org/oppia/app/customview/LessonThumbnailImageView.kt",
-    "src/main/java/org/oppia/app/customview/SegmentedCircularProgressView.kt",
     "src/main/java/org/oppia/app/player/state/DragDropSortInteractionView.kt",
     "src/main/java/org/oppia/app/player/state/ImageRegionSelectionInteractionView.kt",
     "src/main/java/org/oppia/app/player/state/SelectionInteractionView.kt",
-    "src/main/java/org/oppia/app/profile/ProfileInputView.kt",
-    "src/main/java/org/oppia/app/utility/ClickableAreasImage.kt",
+    "src/main/java/org/oppia/app/shim/ViewBindingShim.kt",
+    "src/main/java/org/oppia/app/shim/ViewComponentFactory.kt",
     "src/main/java/org/oppia/app/view/ViewComponent.kt",
     "src/main/java/org/oppia/app/view/ViewScope.kt",
-    "src/main/java/org/oppia/app/shim/ViewBindingShimInterface.kt",
-    "src/main/java/org/oppia/app/shim/ViewComponentFactory.kt",
+    "update_src/main/java/org/oppia/app/customview/LessonThumbnailImageView",
+    "update_src/main/java/org/oppia/app/customview/SegmentedCircularProgressView",
+    "update_src/main/java/org/oppia/app/profile/ProfileInputView",
+    "update_src/main/java/org/oppia/app/utility/ClickableAreasImage",
+]
+
+# View files altered by genrules to be excluded in the app library.
+ALTERED_VIEWS = [
+    "src/main/java/org/oppia/app/customview/LessonThumbnailImageView.kt",
+    "src/main/java/org/oppia/app/customview/SegmentedCircularProgressView.kt",
+    "src/main/java/org/oppia/app/profile/ProfileInputView.kt",
+    "src/main/java/org/oppia/app/utility/ClickableAreasImage.kt",
+]
+
+# TODO(#1617): Remove genrules post-gradle
+# Inputs to the views genrule.
+GENRULE_VIEW_FILES = [
+    "src/main/java/org/oppia/app/customview/LessonThumbnailImageView",
+    "src/main/java/org/oppia/app/customview/SegmentedCircularProgressView",
+    "src/main/java/org/oppia/app/profile/ProfileInputView",
+    "src/main/java/org/oppia/app/utility/ClickableAreasImage",
+]
+
+'''
+Genrule that alters resource import statements for view files in order to account for altered
+package name.
+'''
+[genrule(
+     name = "update_" + file,
+     srcs = [file + ".kt"],
+     outs = [file + "_updated.kt"],
+     cmd = '''
+     cat $(SRCS) |
+     sed 's/import org.oppia.app.R/import org.oppia.app.views.R/g' > $(OUTS)
+     ''',
+ )
+for file in GENRULE_VIEW_FILES]
+
+# Source files and genrule targets for databinding_adapters library.
+DATABINDING_ADAPTER_FILES = [
+    "src/main/java/org/oppia/app/databinding/EditTextBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/GuidelineBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/MarginBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/StateAssemblerMarginBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/StateAssemblerPaddingBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/ViewBindingAdapters.java",
+    "update_src/main/java/org/oppia/app/databinding/DrawableBindingAdapters",
+    "update_src/main/java/org/oppia/app/databinding/ImageViewBindingAdapters",
+    "update_src/main/java/org/oppia/app/databinding/TextViewBindingAdapters",
+]
+
+# Adapter files altered by genrules to be excluded in the app library.
+ALTERED_DATABINDING_ADAPTERS = [
+    "src/main/java/org/oppia/app/databinding/DrawableBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/ImageViewBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/TextViewBindingAdapters.java",
+]
+
+# TODO(#1617): Remove genrules post-gradle
+# Inputs to the databinding_adapters genrule.
+GENRULE_DATABINDING_ADAPTER_FILES = [
+    "src/main/java/org/oppia/app/databinding/DrawableBindingAdapters",
+    "src/main/java/org/oppia/app/databinding/ImageViewBindingAdapters",
+    "src/main/java/org/oppia/app/databinding/TextViewBindingAdapters",
+]
+
+'''
+Genrule that alters both resource import statements and class names for adapter files in order to
+account for altered package and file name.
+'''
+[genrule(
+     name = "update_" + file,
+     srcs = [file + ".java"],
+     outs = [file + "_updated.java"],
+     cmd = '''
+     cat $(SRCS) |
+     sed 's/import org.oppia.app.R/import org.oppia.app.impl.adapters.R/g' |
+     sed 's/BindingAdapters {/BindingAdapters_updated {/g' > $(OUTS)
+     ''',
+ )
+for file in GENRULE_DATABINDING_ADAPTER_FILES]
+
+# Source files for recyclerview_adapters library.
+RECYCLERVIEW_ADAPTER_FILES = [
+    "src/main/java/org/oppia/app/recyclerview/RecyclerViewBindingAdapter.java"
 ]
 
 BINDING_ADAPTER_FILES = DATABINDING_ADAPTER_FILES + RECYCLERVIEW_ADAPTER_FILES
