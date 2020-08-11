@@ -48,11 +48,12 @@ public final class RecyclerViewBindingAdapter {
     bindToRecyclerViewAdapter(recyclerView, dataList);
   }
 
+  @SuppressWarnings("unchecked")
   private static <T> void bindToRecyclerViewAdapter(
       @NonNull RecyclerView recyclerView,
       List<T> dataList
   ) {
-    RecyclerView.Adapter adapter = recyclerView.getAdapter();
+    BindableAdapter<T> adapter = (BindableAdapter<T>) recyclerView.getAdapter();
     if (adapter == null) {
       throw new IllegalArgumentException(
           "Cannot bind data to a RecyclerView missing its adapter."
@@ -64,7 +65,7 @@ public final class RecyclerViewBindingAdapter {
       );
     }
     if (dataList != null) {
-      ((BindableAdapter<T>) adapter).setDataUnchecked(dataList);
+      adapter.setDataUnchecked(dataList);
     }
   }
 
