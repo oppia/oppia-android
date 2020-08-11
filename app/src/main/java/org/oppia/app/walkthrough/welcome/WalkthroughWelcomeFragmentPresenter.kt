@@ -28,7 +28,7 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
   private val logger: ConsoleLogger
-) {
+): WalkthroughFragmentChangeListener {
   private lateinit var binding: WalkthroughWelcomeFragmentBinding
   private val routeToNextPage = activity as WalkthroughFragmentChangeListener
   private lateinit var walkthroughWelcomeViewModel: WalkthroughWelcomeViewModel
@@ -99,7 +99,15 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
     }
   }
 
-  fun changePage() {
+  override fun currentPage(walkthroughPage: Int) {
+    // TODO: Temporary, just for interface
+  }
+
+  override fun pageWithTopicId(walkthroughPage: Int, topicId: String) {
+    // TODO: Temporary, just for interface
+  }
+
+  override fun changePage() {
     routeToNextPage.currentPage(WalkthroughPages.TOPIC_LIST.value)
   }
 }

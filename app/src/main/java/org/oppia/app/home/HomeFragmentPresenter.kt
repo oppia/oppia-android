@@ -104,7 +104,6 @@ class HomeFragmentPresenter @Inject constructor(
       layoutManager = homeLayoutManager
     }
     binding.let {
-      it.presenter = this
       it.lifecycleOwner = fragment
     }
 

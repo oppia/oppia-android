@@ -30,6 +30,10 @@ class WalkthroughActivity : InjectableAppCompatActivity(), WalkthroughFragmentCh
     walkthroughActivityPresenter.handleSystemBack()
   }
 
+  override fun changePage() {
+    // TODO: Just for interface
+  }
+
   companion object {
     internal const val WALKTHROUGH_ACTIVITY_INTERNAL_PROFILE_ID_KEY =
       "WalkthroughActivity.internal_profile_id"

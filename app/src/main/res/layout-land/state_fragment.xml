@@ -6,9 +6,6 @@
   <data>
 
     <import type="android.view.View" />
-    <variable
-      name="presenter"
-      type="org.oppia.app.player.state.StateFragmentPresenter" />
 
     <variable
       name="viewModel"

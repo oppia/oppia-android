@@ -59,6 +59,7 @@ LISTENER_FILES = [
     "src/main/java/org/oppia/app/utility/RegionClickEvent.kt",
     "src/main/java/org/oppia/app/walkthrough/end/WalkthroughFinalListener.kt",
     "src/main/java/org/oppia/app/walkthrough/WalkthroughActivityListener.kt",
+    "src/main/java/org/oppia/app/walkthrough/WalkthroughFragmentChangeListener.kt",
 ]
 
 # Layout files for databinding_resources library.
