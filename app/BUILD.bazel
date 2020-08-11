@@ -17,7 +17,6 @@ ANNOTATION_FILES = [
 
 # Source files for listener library.
 LISTENER_FILES = [
-    "src/main/java/org/oppia/app/home/topiclist/TopicSummaryClickListener.kt",
     "src/main/java/org/oppia/app/administratorcontrols/RouteToAppVersionListener.kt",
     "src/main/java/org/oppia/app/administratorcontrols/RouteToProfileListListener.kt",
     "src/main/java/org/oppia/app/drawer/RouteToProfileProgressListener.kt",
@@ -26,6 +25,7 @@ LISTENER_FILES = [
     "src/main/java/org/oppia/app/home/recentlyplayed/OngoingStoryClickListener.kt",
     "src/main/java/org/oppia/app/home/RouteToRecentlyPlayedListener.kt",
     "src/main/java/org/oppia/app/home/RouteToTopicPlayStoryListener.kt",
+    "src/main/java/org/oppia/app/home/topiclist/TopicSummaryClickListener.kt",
     "src/main/java/org/oppia/app/onboarding/RouteToProfileListListener.kt",
     "src/main/java/org/oppia/app/options/RouteToAppLanguageListListener.kt",
     "src/main/java/org/oppia/app/options/RouteToAudioLanguageListListener.kt",
@@ -183,17 +183,17 @@ VIEW_MODEL_FILES = [
 # TODO(#1617): Remove genrules post-gradle
 # Files altered by genrules to be excluded in the app library
 ALTERED_VIEW_MODELS = [
-    "src/main/java/org/oppia/app/help/HelpListViewModel.kt",
+    "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel.kt",
+    "src/main/java/org/oppia/app/help/faq/FAQListViewModel.kt",
     "src/main/java/org/oppia/app/help/HelpItemViewModel.kt",
-    "src/main/java/org/oppia/app/topic/info/TopicInfoViewModel.kt",
-    "src/main/java/org/oppia/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel.kt",
-    "src/main/java/org/oppia/app/player/state/itemviewmodel/FractionInteractionViewModel.kt",
+    "src/main/java/org/oppia/app/help/HelpListViewModel.kt",
     "src/main/java/org/oppia/app/onboarding/OnboadingSlideViewModel.kt",
     "src/main/java/org/oppia/app/onboarding/OnboardingViewModel.kt",
-    "src/main/java/org/oppia/app/help/faq/FAQListViewModel.kt",
-    "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel.kt",
-    "src/main/java/org/oppia/app/parser/StringToNumberParser.kt",
     "src/main/java/org/oppia/app/parser/StringToFractionParser.kt",
+    "src/main/java/org/oppia/app/parser/StringToNumberParser.kt",
+    "src/main/java/org/oppia/app/player/state/itemviewmodel/FractionInteractionViewModel.kt",
+    "src/main/java/org/oppia/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel.kt",
+    "src/main/java/org/oppia/app/topic/info/TopicInfoViewModel.kt",
 ]
 
 [genrule(
@@ -212,17 +212,17 @@ VIEW_FILES = [
     "src/main/java/org/oppia/app/customview/interaction/FractionInputInteractionView.kt",
     "src/main/java/org/oppia/app/customview/interaction/NumericInputInteractionView.kt",
     "src/main/java/org/oppia/app/customview/interaction/TextInputInteractionView.kt",
-    "update_src/main/java/org/oppia/app/customview/LessonThumbnailImageView",
-    "update_src/main/java/org/oppia/app/customview/SegmentedCircularProgressView",
     "src/main/java/org/oppia/app/player/state/DragDropSortInteractionView.kt",
     "src/main/java/org/oppia/app/player/state/ImageRegionSelectionInteractionView.kt",
     "src/main/java/org/oppia/app/player/state/SelectionInteractionView.kt",
-    "update_src/main/java/org/oppia/app/profile/ProfileInputView",
-    "update_src/main/java/org/oppia/app/utility/ClickableAreasImage",
-    "src/main/java/org/oppia/app/view/ViewComponent.kt",
-    "src/main/java/org/oppia/app/view/ViewScope.kt",
     "src/main/java/org/oppia/app/shim/ViewBindingShim.kt",
     "src/main/java/org/oppia/app/shim/ViewComponentFactory.kt",
+    "src/main/java/org/oppia/app/view/ViewComponent.kt",
+    "src/main/java/org/oppia/app/view/ViewScope.kt",
+    "update_src/main/java/org/oppia/app/customview/LessonThumbnailImageView",
+    "update_src/main/java/org/oppia/app/customview/SegmentedCircularProgressView",
+    "update_src/main/java/org/oppia/app/profile/ProfileInputView",
+    "update_src/main/java/org/oppia/app/utility/ClickableAreasImage",
 ]
 
 # View files altered by genrules to be excluded in the app library.
