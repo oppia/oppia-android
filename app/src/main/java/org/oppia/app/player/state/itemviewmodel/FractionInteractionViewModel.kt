@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import androidx.databinding.Bindable
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
+import org.oppia.app.R
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.UserAnswer
@@ -13,7 +14,6 @@ import org.oppia.app.parser.StringToFractionParser
 import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
-import org.oppia.app.vm.R
 
 /** [StateItemViewModel] for the fraction input interaction. */
 class FractionInteractionViewModel(

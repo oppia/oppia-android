@@ -3,22 +3,22 @@ package org.oppia.app.databinding;
 import android.content.Context;
 import android.content.res.Resources;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
+import androidx.annotation.PluralsRes;
 import androidx.databinding.BindingAdapter;
-
-import org.oppia.app.impl.adapters.R;
+import org.oppia.app.R;
 import org.oppia.util.system.OppiaDateTimeFormatter;
-
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
-/**
- * Holds all the custom binding adapters that bind to [TextView] adapters.
- */
+/** Holds all custom binding adapters that bind to [TextView]. */
 public final class TextViewBindingAdapters {
-  /**
-   * Binds date text with relative time.
-   */
+
+  private static int MINUTE_MILLIS = (int) TimeUnit.MINUTES.toMillis(1);
+  private static int HOUR_MILLIS = (int) TimeUnit.HOURS.toMillis(1);
+  private static int DAY_MILLIS = (int) TimeUnit.DAYS.toMillis(1);
+
+  /** Binds date text with relative time. */
   @BindingAdapter("profile:created")
   public static void setProfileDataText(@NonNull TextView textView, long timestamp) {
     OppiaDateTimeFormatter oppiaDateTimeFormatter = new OppiaDateTimeFormatter();
@@ -45,54 +45,56 @@ public final class TextViewBindingAdapters {
     );
   }
 
-  private static int SECOND_MILLIS = 1000;
-  private static int MINUTE_MILLIS = 60 * SECOND_MILLIS;
-  private static int HOUR_MILLIS = 60 * MINUTE_MILLIS;
-  private static int DAY_MILLIS = 24 * HOUR_MILLIS;
-
-  public static String getTimeAgo(long lastVisitedTimeStamp, Context context) {
-
+  private static String getTimeAgo(long lastVisitedTimeStamp, Context context) {
     OppiaDateTimeFormatter oppiaDateTimeFormatter = new OppiaDateTimeFormatter();
-    long timeStamp =
+    long timeStampMillis =
         oppiaDateTimeFormatter.checkAndConvertTimestampToMilliseconds(lastVisitedTimeStamp);
-    long now = oppiaDateTimeFormatter.currentDate().getTime();
+    long currentTimeMillis = oppiaDateTimeFormatter.currentDate().getTime();
 
-    if (timeStamp > now || timeStamp <= 0) {
+    if (timeStampMillis > currentTimeMillis || timeStampMillis <= 0) {
       return "";
     }
 
     Resources res = context.getResources();
-    long timeDifference = now - timeStamp;
+    long timeDifferenceMillis = currentTimeMillis - timeStampMillis;
 
-    if (timeDifference < MINUTE_MILLIS) {
+    if (timeDifferenceMillis < MINUTE_MILLIS) {
       return context.getString(R.string.just_now);
-    } else if (timeDifference < 50 * MINUTE_MILLIS) {
-      return context.getString(
-          R.string.time_ago,
-          res.getQuantityString(
-              R.plurals.minutes,
-              (int) timeDifference / MINUTE_MILLIS,
-              timeDifference / MINUTE_MILLIS
-          )
+    } else if (timeDifferenceMillis < 50 * MINUTE_MILLIS) {
+      return getPluralString(
+          context,
+          R.plurals.minutes,
+          (int) (timeDifferenceMillis / MINUTE_MILLIS)
       );
-    } else if (timeDifference < 24 * HOUR_MILLIS) {
-      return context.getString(
-          R.string.time_ago,
-          res.getQuantityString(
-              R.plurals.hours,
-              (int) timeDifference / HOUR_MILLIS,
-              timeDifference / HOUR_MILLIS
-          )
+    } else if (timeDifferenceMillis < 24 * HOUR_MILLIS) {
+      return getPluralString(
+          context,
+          R.plurals.hours,
+          (int) (timeDifferenceMillis / HOUR_MILLIS)
       );
-    } else if (timeDifference < 48 * HOUR_MILLIS) {
+    } else if (timeDifferenceMillis < 48 * HOUR_MILLIS) {
       return context.getString(R.string.yesterday);
     }
+    return getPluralString(
+        context,
+        R.plurals.days,
+        (int) (timeDifferenceMillis / DAY_MILLIS)
+    );
+  }
+
+  private static String getPluralString(
+      @NonNull Context context,
+      @PluralsRes int pluralsResId,
+      int count
+  ) {
+    Resources resources = context.getResources();
     return context.getString(
         R.string.time_ago,
-        res.getQuantityString(
-            R.plurals.days,
-            (int) timeDifference / DAY_MILLIS,
-            timeDifference / DAY_MILLIS
-        ));
+        resources.getQuantityString(
+            pluralsResId,
+            count,
+            count
+        )
+    );
   }
 }

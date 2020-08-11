@@ -7,5 +7,5 @@ import dagger.Module
 interface IntentFactoryShimModule {
 
   @Binds
-  fun provideIntentFactoryShim(intentFactoryShim: IntentFactoryShim): IntentFactoryShimInterface
+  fun provideIntentFactoryShim(intentFactoryShim: IntentFactoryShimImpl): IntentFactoryShim
 }
