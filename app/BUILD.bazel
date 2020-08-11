@@ -10,7 +10,6 @@ load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 # Source files for view_model library
 VIEW_MODEL_FILES = [
-    "update_src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel", ##
     "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAppInformationViewModel.kt",
     "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsDownloadPermissionsViewModel.kt",
     "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsGeneralViewModel.kt",
@@ -25,10 +24,7 @@ VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/help/faq/faqItemViewModel/FAQContentViewModel.kt",
     "src/main/java/org/oppia/app/help/faq/faqItemViewModel/FAQHeaderViewModel.kt",
     "src/main/java/org/oppia/app/help/faq/faqItemViewModel/FAQItemViewModel.kt",
-    "update_src/main/java/org/oppia/app/help/faq/FAQListViewModel", ##
     "src/main/java/org/oppia/app/help/HelpItems.kt",
-    "update_src/main/java/org/oppia/app/help/HelpItemViewModel", ##
-    "update_src/main/java/org/oppia/app/help/HelpListViewModel", ##
     "src/main/java/org/oppia/app/hintsandsolution/HintsAndSolutionItemViewModel.kt",
     "src/main/java/org/oppia/app/hintsandsolution/HintsViewModel.kt",
     "src/main/java/org/oppia/app/hintsandsolution/SolutionViewModel.kt",
@@ -42,9 +38,7 @@ VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/home/topiclist/TopicSummaryViewModel.kt",
     "src/main/java/org/oppia/app/home/UserAppHistoryViewModel.kt",
     "src/main/java/org/oppia/app/home/WelcomeViewModel.kt",
-    "update_src/main/java/org/oppia/app/onboarding/OnboadingSlideViewModel", ##
     "src/main/java/org/oppia/app/onboarding/OnboardingSlideFinalViewModel.kt",
-    "update_src/main/java/org/oppia/app/onboarding/OnboardingViewModel", ##
     "src/main/java/org/oppia/app/onboarding/ViewPagerSlide.kt",
     "src/main/java/org/oppia/app/ongoingtopiclist/OngoingTopicItemViewModel.kt",
     "src/main/java/org/oppia/app/ongoingtopiclist/OngoingTopicListViewModel.kt",
@@ -53,8 +47,6 @@ VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/options/OptionsAudioLanguageViewModel.kt",
     "src/main/java/org/oppia/app/options/OptionsItemViewModel.kt",
     "src/main/java/org/oppia/app/options/OptionsStoryTextViewViewModel.kt",
-    "update_src/main/java/org/oppia/app/parser/StringToFractionParser",
-    "update_src/main/java/org/oppia/app/parser/StringToNumberParser",
     "src/main/java/org/oppia/app/player/audio/AudioViewModel.kt",
     "src/main/java/org/oppia/app/player/exploration/ExplorationViewModel.kt",
     "src/main/java/org/oppia/app/player/state/itemviewmodel/ContentViewModel.kt",
@@ -63,8 +55,6 @@ VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/player/state/itemviewmodel/DragAndDropSortInteractionViewModel.kt",
     "src/main/java/org/oppia/app/player/state/itemviewmodel/DragDropInteractionContentViewModel.kt",
     "src/main/java/org/oppia/app/player/state/itemviewmodel/FeedbackViewModel.kt",
-    "update_src/main/java/org/oppia/app/player/state/itemviewmodel/FractionInteractionViewModel", ##
-    "update_src/main/java/org/oppia/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel", ##
     "src/main/java/org/oppia/app/player/state/itemviewmodel/NextButtonViewModel.kt",
     "src/main/java/org/oppia/app/player/state/itemviewmodel/NumericInputViewModel.kt",
     "src/main/java/org/oppia/app/player/state/itemviewmodel/PreviousButtonViewModel.kt",
@@ -106,7 +96,6 @@ VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/story/StoryViewModel.kt",
     "src/main/java/org/oppia/app/testing/BindableAdapterTestViewModel.kt",
     "src/main/java/org/oppia/app/topic/conceptcard/ConceptCardViewModel.kt",
-    "update_src/main/java/org/oppia/app/topic/info/TopicInfoViewModel", ####
     "src/main/java/org/oppia/app/topic/lessons/StorySummaryViewModel.kt",
     "src/main/java/org/oppia/app/topic/lessons/TopicLessonsItemViewModel.kt",
     "src/main/java/org/oppia/app/topic/lessons/TopicLessonsTitleViewModel.kt",
@@ -129,6 +118,17 @@ VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/walkthrough/topiclist/WalkthroughTopicViewModel.kt",
     "src/main/java/org/oppia/app/walkthrough/WalkthroughViewModel.kt",
     "src/main/java/org/oppia/app/walkthrough/welcome/WalkthroughWelcomeViewModel.kt",
+    "update_src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel",
+    "update_src/main/java/org/oppia/app/help/faq/FAQListViewModel",
+    "update_src/main/java/org/oppia/app/help/HelpItemViewModel",
+    "update_src/main/java/org/oppia/app/help/HelpListViewModel",
+    "update_src/main/java/org/oppia/app/onboarding/OnboadingSlideViewModel",
+    "update_src/main/java/org/oppia/app/onboarding/OnboardingViewModel",
+    "update_src/main/java/org/oppia/app/parser/StringToFractionParser",
+    "update_src/main/java/org/oppia/app/parser/StringToNumberParser",
+    "update_src/main/java/org/oppia/app/player/state/itemviewmodel/FractionInteractionViewModel",
+    "update_src/main/java/org/oppia/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel",
+    "update_src/main/java/org/oppia/app/topic/info/TopicInfoViewModel",
 ]
 
 # Files altered by genrules to be excluded in the app library
@@ -146,115 +146,32 @@ ALTERED_VIEW_MODELS = [
     "src/main/java/org/oppia/app/parser/StringToFractionParser.kt",
 ]
 
-genrule(
-    name = "update_src/main/java/org/oppia/app/help/HelpListViewModel",
-    srcs = ["src/main/java/org/oppia/app/help/HelpListViewModel.kt"],
-    outs = ["src/main/java/org/oppia/app/help/HelpListViewModel_updated.kt"],
-    cmd = '''
-    cat $(SRCS) |
-    sed 's/import org.oppia.app.R/import org.oppia.app.vm.R/g' > $(OUTS)
-    ''',
-)
+# TODO(#1617): Remove genrules post-gradle
+# Inputs to the view_model genrule
+GENRULE_VIEW_MODEL_FILES = [
+    "src/main/java/org/oppia/app/help/HelpListViewModel",
+    "src/main/java/org/oppia/app/help/HelpItemViewModel",
+    "src/main/java/org/oppia/app/topic/info/TopicInfoViewModel",
+    "src/main/java/org/oppia/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel",
+    "src/main/java/org/oppia/app/player/state/itemviewmodel/FractionInteractionViewModel",
+    "src/main/java/org/oppia/app/onboarding/OnboadingSlideViewModel",
+    "src/main/java/org/oppia/app/onboarding/OnboardingViewModel",
+    "src/main/java/org/oppia/app/help/faq/FAQListViewModel",
+    "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel",
+    "src/main/java/org/oppia/app/parser/StringToNumberParser",
+    "src/main/java/org/oppia/app/parser/StringToFractionParser",
+]
 
-genrule(
-    name = "update_src/main/java/org/oppia/app/help/HelpItemViewModel",
-    srcs = ["src/main/java/org/oppia/app/help/HelpItemViewModel.kt"],
-    outs = ["src/main/java/org/oppia/app/help/HelpItemViewModel_updated.kt"],
+[genrule(
+    name = "update_" + file,
+    srcs = [file + ".kt"],
+    outs = [file + "_updated.kt"],
     cmd = '''
     cat $(SRCS) |
     sed 's/import org.oppia.app.R/import org.oppia.app.vm.R/g' > $(OUTS)
     ''',
 )
-
-genrule(
-    name = "update_src/main/java/org/oppia/app/topic/info/TopicInfoViewModel",
-    srcs = ["src/main/java/org/oppia/app/topic/info/TopicInfoViewModel.kt"],
-    outs = ["src/main/java/org/oppia/app/topic/info/TopicInfoViewModel_updated.kt"],
-    cmd = '''
-    cat $(SRCS) |
-    sed 's/import org.oppia.app.R/import org.oppia.app.vm.R/g' > $(OUTS)
-    ''',
-)
-
-genrule(
-    name = "update_src/main/java/org/oppia/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel",
-    srcs = ["src/main/java/org/oppia/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel.kt"],
-    outs = ["src/main/java/org/oppia/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel_updated.kt"],
-    cmd = '''
-    cat $(SRCS) |
-    sed 's/import org.oppia.app.R/import org.oppia.app.vm.R/g' > $(OUTS)
-    ''',
-)
-
-genrule(
-    name = "update_src/main/java/org/oppia/app/player/state/itemviewmodel/FractionInteractionViewModel",
-    srcs = ["src/main/java/org/oppia/app/player/state/itemviewmodel/FractionInteractionViewModel.kt"],
-    outs = ["src/main/java/org/oppia/app/player/state/itemviewmodel/FractionInteractionViewModel_updated.kt"],
-    cmd = '''
-    cat $(SRCS) |
-    sed 's/import org.oppia.app.R/import org.oppia.app.vm.R/g' > $(OUTS)
-    ''',
-)
-
-genrule(
-    name = "update_src/main/java/org/oppia/app/onboarding/OnboadingSlideViewModel",
-    srcs = ["src/main/java/org/oppia/app/onboarding/OnboadingSlideViewModel.kt"],
-    outs = ["src/main/java/org/oppia/app/onboarding/OnboadingSlideViewModel_updated.kt"],
-    cmd = '''
-    cat $(SRCS) |
-    sed 's/import org.oppia.app.R/import org.oppia.app.vm.R/g' > $(OUTS)
-    ''',
-)
-
-genrule(
-    name = "update_src/main/java/org/oppia/app/onboarding/OnboardingViewModel",
-    srcs = ["src/main/java/org/oppia/app/onboarding/OnboardingViewModel.kt"],
-    outs = ["src/main/java/org/oppia/app/onboarding/OnboardingViewModel_updated.kt"],
-    cmd = '''
-    cat $(SRCS) |
-    sed 's/import org.oppia.app.R/import org.oppia.app.vm.R/g' > $(OUTS)
-    ''',
-)
-
-genrule(
-    name = "update_src/main/java/org/oppia/app/help/faq/FAQListViewModel",
-    srcs = ["src/main/java/org/oppia/app/help/faq/FAQListViewModel.kt"],
-    outs = ["src/main/java/org/oppia/app/help/faq/FAQListViewModel_updated.kt"],
-    cmd = '''
-    cat $(SRCS) |
-    sed 's/import org.oppia.app.R/import org.oppia.app.vm.R/g' > $(OUTS)
-    ''',
-)
-
-genrule(
-    name = "update_src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel",
-    srcs = ["src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel.kt"],
-    outs = ["src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel_updated.kt"],
-    cmd = '''
-    cat $(SRCS) |
-    sed 's/import org.oppia.app.R/import org.oppia.app.vm.R/g' > $(OUTS)
-    ''',
-)
-
-genrule(
-    name = "update_src/main/java/org/oppia/app/parser/StringToNumberParser",
-    srcs = ["src/main/java/org/oppia/app/parser/StringToNumberParser.kt"],
-    outs = ["src/main/java/org/oppia/app/parser/StringToNumberParser_updated.kt"],
-    cmd = '''
-    cat $(SRCS) |
-    sed 's/import org.oppia.app.R/import org.oppia.app.vm.R/g' > $(OUTS)
-    ''',
-)
-
-genrule(
-    name = "update_src/main/java/org/oppia/app/parser/StringToFractionParser",
-    srcs = ["src/main/java/org/oppia/app/parser/StringToFractionParser.kt"],
-    outs = ["src/main/java/org/oppia/app/parser/StringToFractionParser_updated.kt"],
-    cmd = '''
-    cat $(SRCS) |
-    sed 's/import org.oppia.app.R/import org.oppia.app.vm.R/g' > $(OUTS)
-    ''',
-)
+for file in GENRULE_VIEW_MODEL_FILES]
 
 LISTENER_FILES = [
     "src/main/java/org/oppia/app/home/topiclist/TopicSummaryClickListener.kt",
@@ -327,44 +244,24 @@ ALTERED_VIEWS = [
     "src/main/java/org/oppia/app/utility/ClickableAreasImage.kt",
 ]
 
-genrule(
-    name = "update_src/main/java/org/oppia/app/customview/LessonThumbnailImageView",
-    srcs = ["src/main/java/org/oppia/app/customview/LessonThumbnailImageView.kt"],
-    outs = ["src/main/java/org/oppia/app/customview/LessonThumbnailImageView_updated.kt"],
-    cmd = '''
-    cat $(SRCS) |
-    sed 's/import org.oppia.app.R/import org.oppia.app.views.R/g' > $(OUTS)
-    ''',
-)
+GENRULE_VIEW_FILES = [
+    "src/main/java/org/oppia/app/customview/LessonThumbnailImageView",
+    "src/main/java/org/oppia/app/customview/SegmentedCircularProgressView",
+    "src/main/java/org/oppia/app/profile/ProfileInputView",
+    "src/main/java/org/oppia/app/utility/ClickableAreasImage",
+]
 
-genrule(
-    name = "update_src/main/java/org/oppia/app/customview/SegmentedCircularProgressView",
-    srcs = ["src/main/java/org/oppia/app/customview/SegmentedCircularProgressView.kt"],
-    outs = ["src/main/java/org/oppia/app/customview/SegmentedCircularProgressView_updated.kt"],
-    cmd = '''
-    cat $(SRCS) |
-    sed 's/import org.oppia.app.R/import org.oppia.app.views.R/g' > $(OUTS)
-    ''',
-)
-
-genrule(
-    name = "update_src/main/java/org/oppia/app/profile/ProfileInputView",
-    srcs = ["src/main/java/org/oppia/app/profile/ProfileInputView.kt"],
-    outs = ["src/main/java/org/oppia/app/profile/ProfileInputView_updated.kt"],
-    cmd = '''
-    cat $(SRCS) |
-    sed 's/import org.oppia.app.R/import org.oppia.app.views.R/g' > $(OUTS)
-    ''',
-)
-genrule(
-    name = "update_src/main/java/org/oppia/app/utility/ClickableAreasImage",
-    srcs = ["src/main/java/org/oppia/app/utility/ClickableAreasImage.kt"],
-    outs = ["src/main/java/org/oppia/app/utility/ClickableAreasImage_updated.kt"],
-    cmd = '''
-    cat $(SRCS) |
-    sed 's/import org.oppia.app.R/import org.oppia.app.views.R/g' > $(OUTS)
-    ''',
-)
+# TODO(#1617): Remove genrules post-gradle
+[genrule(
+     name = "update_" + file,
+     srcs = [file + ".kt"],
+     outs = [file + "_updated.kt"],
+     cmd = '''
+     cat $(SRCS) |
+     sed 's/import org.oppia.app.R/import org.oppia.app.views.R/g' > $(OUTS)
+     ''',
+ )
+for file in GENRULE_VIEW_FILES]
 
 # Library for non-layout resource files
 android_library(
