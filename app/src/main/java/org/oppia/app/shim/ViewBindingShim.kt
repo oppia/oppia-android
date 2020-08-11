@@ -5,12 +5,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.FrameLayout
-import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
+import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.util.parser.HtmlParser
 
 /**
@@ -66,49 +65,22 @@ interface ViewBindingShim {
     entityId: String
   )
 
-  fun provideDragDropSortInteractionInflatedView(
-    inflater: LayoutInflater,
-    parent: ViewGroup,
-    attachToParent: Boolean
-  ): View
-
-  fun setDragDropInteractionItemsBinding(
-    view: View
-  )
-
-  fun setDragDropInteractionItemsBindingAdapter(
-    adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
-  )
-
-  fun getDragDropInteractionItemsBindingRecyclerView(): RecyclerView
-
-  fun getDragDropInteractionItemsBindingGroupItem(): ImageButton
-
-  fun getDragDropInteractionItemsBindingUnlinkItems(): ImageButton
-
-  fun getDragDropInteractionItemsBindingAccessibleContainer(): LinearLayout
-
-  fun setDragDropInteractionItemsBindingViewModel(
-    viewModel: DragDropInteractionContentViewModel
-  )
-
-  fun provideDragDropSingleItemInflatedView(
-    inflater: LayoutInflater,
-    parent: ViewGroup,
-    attachToParent: Boolean
-  ): View
-
-  fun setDragDropSingleItemBinding(
-    view: View
-  )
-
-  fun setDragDropSingleItemBindingHtmlContent(
+  fun createDragDropInteractionViewAdapter(
+    adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
+    isMultipleItemsInSamePositionAllowed: Boolean,
+    isAccessibilityEnabled: Boolean,
     htmlParserFactory: HtmlParser.Factory,
     resourceBucketName: String,
     entityType: String,
-    entityId: String,
-    viewModel: String
-  )
+    entityId: String
+  ): BindableAdapter<DragDropInteractionContentViewModel>
+
+  fun <T> createDragDropInteractionViewNestedAdapter(
+    htmlParserFactory: HtmlParser.Factory,
+    resourceBucketName: String,
+    entityType: String,
+    entityId: String
+  ): BindableAdapter<String>
 
   fun getDefaultRegion(parentView: FrameLayout): View
 }
