@@ -7,5 +7,5 @@ import dagger.Module
 interface ViewBindingShimModule {
 
   @Binds
-  fun provideViewBindingShim(viewBindingShim: ViewBindingShim): ViewBindingShimInterface
+  fun provideViewBindingShim(viewBindingShim: ViewBindingShimImpl): ViewBindingShim
 }

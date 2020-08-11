@@ -13,7 +13,7 @@ import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import org.oppia.app.R
-import org.oppia.app.shim.ViewBindingShimInterface
+import org.oppia.app.shim.ViewBindingShim
 import org.oppia.app.shim.ViewComponentFactory
 import javax.inject.Inject
 
@@ -25,7 +25,7 @@ class ProfileInputView @JvmOverloads constructor(
 ) : LinearLayout(context, attrs, defStyle) {
 
   @Inject
-  lateinit var bindingInterface: ViewBindingShimInterface
+  lateinit var bindingInterface: ViewBindingShim
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()

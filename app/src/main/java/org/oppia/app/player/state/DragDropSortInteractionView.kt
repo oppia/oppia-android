@@ -14,7 +14,7 @@ import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.recyclerview.DragAndDropItemFacilitator
 import org.oppia.app.recyclerview.OnDragEndedListener
 import org.oppia.app.recyclerview.OnItemDragListener
-import org.oppia.app.shim.ViewBindingShimInterface
+import org.oppia.app.shim.ViewBindingShim
 import org.oppia.app.shim.ViewComponentFactory
 import org.oppia.util.accessibility.CustomAccessibilityManager
 import org.oppia.util.gcsresource.DefaultResourceBucketName
@@ -50,7 +50,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   lateinit var resourceBucketName: String
 
   @Inject
-  lateinit var bindingInterface: ViewBindingShimInterface
+  lateinit var bindingInterface: ViewBindingShim
 
   private lateinit var entityId: String
   private lateinit var onDragEnd: OnDragEndedListener

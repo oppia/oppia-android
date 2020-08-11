@@ -6,15 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-interface StoryFragmentInterface {
-
-  fun onAttach(context: Context)
-
-  fun onCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View?
-
+interface StoryFragmentScroller {
   fun smoothScrollToPosition(position: Int)
 }

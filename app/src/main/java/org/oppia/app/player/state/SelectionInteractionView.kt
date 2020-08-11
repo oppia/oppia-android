@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionItemInputType
 import org.oppia.app.recyclerview.BindableAdapter
-import org.oppia.app.shim.ViewBindingShimInterface
+import org.oppia.app.shim.ViewBindingShim
 import org.oppia.app.shim.ViewComponentFactory
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
@@ -41,11 +41,10 @@ class SelectionInteractionView @JvmOverloads constructor(
   lateinit var resourceBucketName: String
 
   @Inject
-  lateinit var bindingInterface: ViewBindingShimInterface
+  lateinit var bindingInterface: ViewBindingShim
 
   private lateinit var entityId: String
 
-  // TODO: Cleanup
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
     (FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory)

@@ -83,7 +83,7 @@ class StoryViewModel @Inject constructor(
     val chapterList: List<ChapterSummary> = storySummary.chapterList
     for (position in chapterList.indices) {
       if (storySummary.chapterList[position].chapterPlayState == ChapterPlayState.NOT_STARTED) {
-        (fragment as StoryFragmentInterface).smoothScrollToPosition(position + 1)
+        (fragment as StoryFragmentScroller).smoothScrollToPosition(position + 1)
         break
       }
     }

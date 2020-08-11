@@ -4,13 +4,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import org.oppia.app.home.HomeItemViewModel
 import org.oppia.app.home.RouteToRecentlyPlayedListener
-import org.oppia.app.shim.IntentFactoryShimInterface
+import org.oppia.app.shim.IntentFactoryShim
 
 /** [ViewModel] promoted story list in [HomeFragment]. */
 class PromotedStoryListViewModel(
   private val activity: AppCompatActivity,
   private val internalProfileId: Int,
-  private val intentFactoryShimInterface: IntentFactoryShimInterface
+  private val IntentFactoryShim: IntentFactoryShim
 ) :
   HomeItemViewModel(),
   RouteToRecentlyPlayedListener {
@@ -20,7 +20,7 @@ class PromotedStoryListViewModel(
   }
 
   override fun routeToRecentlyPlayed() {
-    val intent = intentFactoryShimInterface.createRecentlyPlayedActivityIntent(
+    val intent = IntentFactoryShim.createRecentlyPlayedActivityIntent(
       activity.applicationContext,
       internalProfileId
     )
