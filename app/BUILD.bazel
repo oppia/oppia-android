@@ -43,7 +43,6 @@ LISTENER_FILES = [
     "src/main/java/org/oppia/app/player/state/listener/RouteToHintsAndSolutionListener.kt",
     "src/main/java/org/oppia/app/player/state/listener/StateKeyboardButtonListener.kt",
     "src/main/java/org/oppia/app/player/state/listener/SubmitNavigationButtonListener.kt",
-    "src/main/java/org/oppia/app/profile/ProfileChooserListener.kt",
     "src/main/java/org/oppia/app/profile/RouteToAdminPinListener.kt",
     "src/main/java/org/oppia/app/profileprogress/ProfilePictureClickListener.kt",
     "src/main/java/org/oppia/app/profileprogress/RouteToCompletedStoryListListener.kt",
