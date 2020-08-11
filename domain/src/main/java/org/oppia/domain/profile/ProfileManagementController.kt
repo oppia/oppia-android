@@ -201,10 +201,7 @@ class ProfileManagementController @Inject constructor(
     avatarImagePath: Uri?,
     allowDownloadAccess: Boolean,
     colorRgb: Int,
-    isAdmin: Boolean,
-    storyTextSize: StoryTextSize,
-    appLanguage: AppLanguage,
-    audioLanguage: AudioLanguage
+    isAdmin: Boolean
   ): LiveData<AsyncResult<Any?>> {
 
     if (!onlyLetters(name)) {
@@ -232,9 +229,9 @@ class ProfileManagementController @Inject constructor(
         .setAllowDownloadAccess(allowDownloadAccess)
         .setId(ProfileId.newBuilder().setInternalId(nextProfileId))
         .setDateCreatedTimestampMs(Date().time).setIsAdmin(isAdmin)
-        .setStoryTextSize(storyTextSize)
-        .setAppLanguage(appLanguage)
-        .setAudioLanguage(audioLanguage)
+        .setStoryTextSize(StoryTextSize.MEDIUM_TEXT_SIZE)
+        .setAppLanguage(AppLanguage.ENGLISH_APP_LANGUAGE)
+        .setAudioLanguage(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
 
       if (avatarImagePath != null) {
         val imageUri =

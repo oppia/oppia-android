@@ -6,8 +6,7 @@ import org.oppia.app.model.ExceptionLog.ExceptionType
 import org.oppia.app.model.OppiaExceptionLogs
 import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.domain.oppialogger.ExceptionLogStorageCacheSize
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.data.DataProviders
+import org.oppia.util.data.DataProvider
 import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.logging.ExceptionLogger
 import org.oppia.util.networking.NetworkConnectionUtil
@@ -18,7 +17,6 @@ private const val EXCEPTIONS_CONTROLLER = "Exceptions Controller"
 /** Controller for handling exception logging. */
 class ExceptionsController @Inject constructor(
   private val exceptionLogger: ExceptionLogger,
-  private val dataProviders: DataProviders,
   cacheStoreFactory: PersistentCacheStore.Factory,
   private val consoleLogger: ConsoleLogger,
   private val networkConnectionUtil: NetworkConnectionUtil,
@@ -63,8 +61,7 @@ class ExceptionsController @Inject constructor(
     when (networkConnectionUtil.getCurrentConnectionStatus()) {
       NetworkConnectionUtil.ConnectionStatus.NONE ->
         cacheExceptionLog(
-          convertExceptionToExceptionLog(
-            exception,
+          exception.toExceptionLog(
             timestampInMillis,
             exceptionType
           )
@@ -74,22 +71,22 @@ class ExceptionsController @Inject constructor(
   }
 
   /** Returns an [ExceptionLog] from a [throwable]. */
-  private fun convertExceptionToExceptionLog(
-    throwable: Throwable,
+  private fun Throwable.toExceptionLog(
     timestampInMillis: Long,
     exceptionType: ExceptionType
   ): ExceptionLog {
     val exceptionLogBuilder = ExceptionLog.newBuilder()
-    throwable.message?.let {
+    this.message?.let {
       exceptionLogBuilder.message = it
     }
     exceptionLogBuilder.timestampInMillis = timestampInMillis
-    throwable.cause?.let {
-      exceptionLogBuilder.cause =
-        convertExceptionToExceptionLog(it, timestampInMillis, exceptionType)
+    this.cause?.let {
+      exceptionLogBuilder.cause = it.toExceptionLog(timestampInMillis, exceptionType)
     }
-    throwable.stackTrace?.let {
-      exceptionLogBuilder.addAllStacktraceElement(it.map(this::convertStackTraceElementToLog))
+    this.stackTrace?.let {
+      exceptionLogBuilder.addAllStacktraceElement(
+        it.map(this@ExceptionsController::convertStackTraceElementToLog)
+      )
     }
     exceptionLogBuilder.exceptionType = exceptionType
     return exceptionLogBuilder.build()
@@ -166,8 +163,8 @@ class ExceptionsController @Inject constructor(
    * Returns a [LiveData] result which can be used to get [OppiaExceptionLogs]
    * for the purpose of uploading in the presence of network connectivity.
    */
-  fun getExceptionLogs(): LiveData<AsyncResult<OppiaExceptionLogs>> {
-    return dataProviders.convertToLiveData(exceptionLogStore)
+  fun getExceptionLogStore(): DataProvider<OppiaExceptionLogs> {
+    return exceptionLogStore
   }
 }
 

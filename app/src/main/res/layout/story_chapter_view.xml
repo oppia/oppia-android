@@ -9,6 +9,10 @@
     <import type="org.oppia.app.model.ChapterPlayState" />
 
     <variable
+      name="htmlContent"
+      type="CharSequence" />
+
+    <variable
       name="viewModel"
       type="org.oppia.app.story.storyitemviewmodel.StoryChapterSummaryViewModel" />
   </data>
@@ -35,17 +39,18 @@
         android:clipToPadding="true"
         android:contentDescription="@{viewModel.name}">
 
-        <ImageView
+        <org.oppia.app.customview.LessonThumbnailImageView
           android:id="@+id/chapter_thumbnail"
           android:layout_width="match_parent"
           android:layout_height="0dp"
           android:scaleType="centerInside"
-          android:src="@{viewModel.chapterThumbnail.thumbnailGraphic}"
+          app:entityId="@{viewModel.storyId}"
+          app:entityType="@{viewModel.entityType}"
           app:layout_constraintDimensionRatio="16:9"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent"
-          app:topRoundedRectDrawableWithColor="@{viewModel.chapterThumbnail.backgroundColorRgb}" />
+          app:lessonThumbnail="@{viewModel.chapterThumbnail}" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
           android:layout_width="match_parent"
@@ -86,7 +91,7 @@
             android:ellipsize="end"
             android:fontFamily="sans-serif"
             android:maxLines="4"
-            android:text="@{viewModel.summary}"
+            android:text="@{htmlContent}"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"

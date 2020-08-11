@@ -17,13 +17,13 @@
     android:layout_marginStart="8dp"
     android:layout_marginEnd="8dp"
     android:layout_marginBottom="8dp"
-    app:cardElevation="4dp"
-    app:cardCornerRadius="4dp">
+    app:cardCornerRadius="4dp"
+    app:cardElevation="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/promoted_story_card_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:id="@+id/promoted_story_card_container"
       android:onClick="@{(v) -> viewModel.clickOnStoryTile()}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
@@ -31,17 +31,19 @@
       app:layout_constraintTop_toBottomOf="@id/recently_played_stories_text_view"
       app:roundedRectDrawableWithColor="@{viewModel.promotedStoryObservable.lessonThumbnail.backgroundColorRgb}">
 
-      <ImageView
+      <org.oppia.app.customview.LessonThumbnailImageView
         android:id="@+id/lesson_thumbnail"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:importantForAccessibility="no"
         android:scaleType="centerInside"
-        android:src="@{viewModel.promotedStoryObservable.lessonThumbnail.thumbnailGraphic}"
+        app:entityId="@{viewModel.promotedStoryObservable.storyId}"
+        app:entityType="@{viewModel.entityType}"
         app:layout_constraintDimensionRatio="H, 16:9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:lessonThumbnail="@{viewModel.promotedStoryObservable.lessonThumbnail}" />
 
       <LinearLayout
         android:layout_width="match_parent"
@@ -59,13 +61,13 @@
           android:layout_height="wrap_content"
           android:layout_marginStart="16dp"
           android:layout_marginTop="8dp"
-          android:maxLines="1"
-          android:ellipsize="end"
           android:layout_marginEnd="16dp"
+          android:ellipsize="end"
           android:fontFamily="sans-serif-medium"
+          android:maxLines="1"
           android:text="@{viewModel.promotedStoryObservable.nextChapterName}"
-          android:textSize="18sp"
-          android:textColor="@color/oppiaPrimaryText" />
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="18sp" />
 
         <TextView
           android:id="@+id/story_name_text_view"
@@ -74,9 +76,9 @@
           android:layout_marginStart="16dp"
           android:layout_marginTop="4dp"
           android:layout_marginEnd="16dp"
-          android:maxLines="1"
           android:ellipsize="end"
           android:fontFamily="sans-serif"
+          android:maxLines="1"
           android:text="@{viewModel.promotedStoryObservable.storyName}"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="14sp" />
@@ -88,14 +90,14 @@
           android:layout_marginStart="16dp"
           android:layout_marginTop="8dp"
           android:layout_marginEnd="16dp"
-          android:maxLines="1"
           android:ellipsize="end"
-          android:paddingBottom="8dp"
           android:fontFamily="sans-serif-light"
+          android:maxLines="1"
+          android:paddingBottom="8dp"
           android:text="@{viewModel.promotedStoryObservable.topicName}"
           android:textAllCaps="true"
-          android:textSize="14sp"
-          android:textColor="@color/oppiaPrimaryText" />
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="14sp" />
       </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
   </com.google.android.material.card.MaterialCardView>

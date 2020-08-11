@@ -12,6 +12,7 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -31,6 +32,7 @@ import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -55,6 +57,9 @@ class ExceptionsControllerTest {
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Inject
+  lateinit var dataProviders: DataProviders
+
+  @Inject
   lateinit var exceptionsController: ExceptionsController
 
   @Inject
@@ -74,6 +79,8 @@ class ExceptionsControllerTest {
   lateinit var oppiaExceptionLogsResultCaptor: ArgumentCaptor<AsyncResult<OppiaExceptionLogs>>
 
   @Before
+  @ExperimentalCoroutinesApi
+  @ObsoleteCoroutinesApi
   fun setUp() {
     networkConnectionUtil = NetworkConnectionUtil(ApplicationProvider.getApplicationContext())
     setUpTestApplicationComponent()
@@ -105,16 +112,19 @@ class ExceptionsControllerTest {
   @InternalCoroutinesApi
   @Test
   fun testController_logException_nonFatal_withNoNetwork_logsToCacheStore() {
-    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
     val exceptionThrown = Exception("TEST MESSAGE", Throwable("TEST CAUSE"))
+    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
-    val cachedExceptions = exceptionsController.getExceptionLogs()
+    val cachedExceptions =
+      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
-    verify(mockOppiaExceptionLogsObserver, atLeastOnce())
-      .onChanged(oppiaExceptionLogsResultCaptor.capture())
+    verify(
+      mockOppiaExceptionLogsObserver,
+      atLeastOnce()
+    ).onChanged(oppiaExceptionLogsResultCaptor.capture())
 
     val exceptionLog = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
     val exception = exceptionLog.toException()
@@ -133,7 +143,8 @@ class ExceptionsControllerTest {
     val exceptionThrown = Exception("TEST MESSAGE", Throwable("TEST"))
     exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
-    val cachedExceptions = exceptionsController.getExceptionLogs()
+    val cachedExceptions =
+      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -172,7 +183,8 @@ class ExceptionsControllerTest {
       TEST_TIMESTAMP_IN_MILLIS_FOUR
     )
 
-    val cachedExceptions = exceptionsController.getExceptionLogs()
+    val cachedExceptions =
+      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -182,7 +194,8 @@ class ExceptionsControllerTest {
     val exceptionOne = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
     val exceptionTwo = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(1)
 
-    // In this case, 3 fatal and 1 non-fatal exceptions were logged. So while pruning, none of the retained logs should have non-fatal exception type.
+    // In this case, 3 fatal and 1 non-fatal exceptions were logged. The order of logging was fatal->non-fatal->fatal->fatal.
+    // So after pruning, none of the retained logs should have non-fatal exception type.
     assertThat(exceptionOne.exceptionType).isNotEqualTo(ExceptionType.NON_FATAL)
     assertThat(exceptionTwo.exceptionType).isNotEqualTo(ExceptionType.NON_FATAL)
     // If we analyse the order of logging of exceptions, we can see that record pruning will begin from the logging of the third record.
@@ -214,7 +227,8 @@ class ExceptionsControllerTest {
       TEST_TIMESTAMP_IN_MILLIS_THREE
     )
 
-    val cachedExceptions = exceptionsController.getExceptionLogs()
+    val cachedExceptions =
+      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -234,7 +248,8 @@ class ExceptionsControllerTest {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
     exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
-    val cachedExceptions = exceptionsController.getExceptionLogs()
+    val cachedExceptions =
+      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -262,7 +277,8 @@ class ExceptionsControllerTest {
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
     exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
-    val cachedExceptions = exceptionsController.getExceptionLogs()
+    val cachedExceptions =
+      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -272,6 +288,52 @@ class ExceptionsControllerTest {
     val exceptionTwo = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(1)
     assertThat(exceptionOne.exceptionType).isEqualTo(ExceptionType.NON_FATAL)
     assertThat(exceptionTwo.exceptionType).isEqualTo(ExceptionType.FATAL)
+  }
+
+  @ExperimentalCoroutinesApi
+  @InternalCoroutinesApi
+  @Test
+  fun testExtension_logEmptyException_withNoNetwork_verifyRecreationOfLogs() {
+    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
+    val exceptionThrown = Exception()
+    exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
+
+    val cachedExceptions =
+      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
+    cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    verify(mockOppiaExceptionLogsObserver, atLeastOnce())
+      .onChanged(oppiaExceptionLogsResultCaptor.capture())
+    val exceptionLog = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
+    val exception = exceptionLog.toException()
+
+    assertThat(exception.message).isEqualTo(null)
+    assertThat(exception.stackTrace).isEqualTo(exceptionThrown.stackTrace)
+    assertThat(exception.cause).isEqualTo(null)
+  }
+
+  @ExperimentalCoroutinesApi
+  @InternalCoroutinesApi
+  @Test
+  fun testExtension_logException_withNoCause_withNoNetwork_verifyRecreationOfLogs() {
+    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
+    val exceptionThrown = Exception("TEST")
+    exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
+
+    val cachedExceptions =
+      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
+    cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    verify(mockOppiaExceptionLogsObserver, atLeastOnce())
+      .onChanged(oppiaExceptionLogsResultCaptor.capture())
+    val exceptionLog = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
+    val exception = exceptionLog.toException()
+
+    assertThat(exception.message).isEqualTo("TEST")
+    assertThat(exception.stackTrace).isEqualTo(exceptionThrown.stackTrace)
+    assertThat(exception.cause).isEqualTo(null)
   }
 
   private fun setUpTestApplicationComponent() {
