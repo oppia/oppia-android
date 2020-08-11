@@ -44,10 +44,8 @@ class TopicPracticeFragment : InjectableFragment() {
     var selectedSkillId = HashMap<Int, MutableList<String>>()
     if (savedInstanceState != null) {
       selectedIdList = savedInstanceState.getIntegerArrayList(SUBTOPIC_ID_LIST_ARGUMENT_KEY)!!
-      selectedSkillId =
-        savedInstanceState.getSerializable(
-          SKILL_ID_LIST_ARGUMENT_KEY
-        )!! as HashMap<Int, MutableList<String>>
+      selectedSkillId = savedInstanceState
+        .getSerializable(SKILL_ID_LIST_ARGUMENT_KEY)!! as HashMap<Int, MutableList<String>>
     }
     val internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)!!
     val topicId = checkNotNull(arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
