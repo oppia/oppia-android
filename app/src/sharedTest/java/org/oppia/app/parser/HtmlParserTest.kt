@@ -21,9 +21,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
@@ -32,6 +29,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.testing.HtmlParserTestActivity
+import org.oppia.testing.TestDispatcherModule
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.EnableConsoleLog
@@ -44,10 +42,7 @@ import org.oppia.util.parser.GlideImageLoader
 import org.oppia.util.parser.HtmlParser
 import org.oppia.util.parser.ImageDownloadUrlTemplate
 import org.oppia.util.parser.ImageLoader
-import org.oppia.util.threading.BackgroundDispatcher
-import org.oppia.util.threading.BlockingDispatcher
 import javax.inject.Inject
-import javax.inject.Qualifier
 import javax.inject.Singleton
 
 // TODO(#277): Add tests for UrlImageParser.
@@ -68,10 +63,6 @@ class HtmlParserTest {
   var activityTestRule: ActivityTestRule<HtmlParserTestActivity> = ActivityTestRule(
     HtmlParserTestActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
-
-  @Inject
-  @field:TestDispatcher
-  lateinit var testDispatcher: CoroutineDispatcher
 
   @Before
   fun setUp() {
@@ -184,9 +175,6 @@ class HtmlParserTest {
     assertThat(bulletSpan1).isNotNull()
   }
 
-  @Qualifier
-  annotation class TestDispatcher
-
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
@@ -194,32 +182,6 @@ class HtmlParserTest {
     @Singleton
     fun provideContext(application: Application): Context {
       return application
-    }
-
-    @ExperimentalCoroutinesApi
-    @Singleton
-    @Provides
-    @TestDispatcher
-    fun provideTestDispatcher(): CoroutineDispatcher {
-      return TestCoroutineDispatcher()
-    }
-
-    @Singleton
-    @Provides
-    @BackgroundDispatcher
-    fun provideBackgroundDispatcher(
-      @TestDispatcher testDispatcher: CoroutineDispatcher
-    ): CoroutineDispatcher {
-      return testDispatcher
-    }
-
-    @Singleton
-    @Provides
-    @BlockingDispatcher
-    fun provideBlockingDispatcher(
-      @TestDispatcher testDispatcher: CoroutineDispatcher
-    ): CoroutineDispatcher {
-      return testDispatcher
     }
 
     @Provides
@@ -269,7 +231,7 @@ class HtmlParserTest {
   }
 
   @Singleton
-  @Component(modules = [TestModule::class, ImageTestModule::class])
+  @Component(modules = [TestModule::class, ImageTestModule::class, TestDispatcherModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

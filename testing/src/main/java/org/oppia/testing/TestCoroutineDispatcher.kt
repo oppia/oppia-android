@@ -1,10 +1,6 @@
 package org.oppia.testing
 
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Delay
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.test.DelayController
 
 /**
  * Replacement for Kotlin's test coroutine dispatcher that can be used to replace coroutine
@@ -21,16 +17,15 @@ import kotlinx.coroutines.test.DelayController
  * platforms, so tests should only rely on the API. See [TestCoroutineDispatchers] for more details
  * on how to properly integrate with the test coroutine dispatcher API.
  */
-@InternalCoroutinesApi
-@ExperimentalCoroutinesApi
-abstract class TestCoroutineDispatcher: CoroutineDispatcher(), Delay, DelayController {
+abstract class TestCoroutineDispatcher: CoroutineDispatcher() {
   /**
    * Returns whether there are any tasks known to the dispatcher that have not yet been started.
    *
    * Note that some of these tasks may be scheduled for the future. This is meant to be used in
-   * conjunction with [advanceTimeBy] since that will execute all tasks up to the new time. If the
-   * time returned by [getNextFutureTaskCompletionTimeMillis] is passed to [advanceTimeBy], this
-   * dispatcher guarantees that [hasPendingTasks] will return false after [advanceTimeBy] returns.
+   * conjunction with [FakeSystemClock.advanceTime] since that along with [runCurrent] will execute
+   * all tasks up to the new time. If the time returned by [getNextFutureTaskCompletionTimeMillis]
+   * plus the current time is passed to [FakeSystemClock.advanceTime], this dispatcher guarantees
+   * that [hasPendingTasks] will return false after a call to [runCurrent] returns.
    *
    * This function makes no guarantees about idleness with respect to other dispatchers (e.g. even
    * if all tasks are executed, another dispatcher could schedule another task on this dispatcher in
@@ -56,6 +51,12 @@ abstract class TestCoroutineDispatcher: CoroutineDispatcher(), Delay, DelayContr
 
   /** Sets a [TaskIdleListener] to observe when the dispatcher becomes idle/non-idle. */
   abstract fun setTaskIdleListener(taskIdleListener: TaskIdleListener)
+
+  /**
+   * Runs all tasks currently scheduled to be run in the dispatcher, but none scheduled for the
+   * future.
+   */
+  abstract fun runCurrent()
 
   /** A listener for whether the test coroutine dispatcher has become idle. */
   interface TaskIdleListener {

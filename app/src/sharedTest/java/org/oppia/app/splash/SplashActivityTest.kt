@@ -16,8 +16,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.InternalCoroutinesApi
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -68,18 +66,14 @@ import javax.inject.Singleton
 class SplashActivityTest {
 
   @Inject lateinit var context: Context
-  @InternalCoroutinesApi @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun setUp() {
     Intents.init()
   }
 
   @After
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
@@ -95,8 +89,6 @@ class SplashActivityTest {
   )
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testSplashActivity_initialOpen_routesToOnboardingActivity() {
     initializeTestApplication()
 
@@ -107,8 +99,6 @@ class SplashActivityTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testSplashActivity_secondOpen_routesToChooseProfileActivity() {
     simulateAppAlreadyOnboarded()
     initializeTestApplication()
@@ -119,8 +109,6 @@ class SplashActivityTest {
     intended(hasComponent(ProfileActivity::class.java.name))
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun simulateAppAlreadyOnboarded() {
     // Simulate the app was already onboarded by creating an isolated onboarding flow controller and
     // saving the onboarding status on the system before the activity is opened. Note that this has
@@ -135,8 +123,6 @@ class SplashActivityTest {
     testApplication.getTestCoroutineDispatchers().advanceUntilIdle()
   }
 
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   private fun initializeTestApplication() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     testCoroutineDispatchers.registerIdlingResource()
@@ -175,7 +161,6 @@ class SplashActivityTest {
 
     fun getOnboardingFlowController(): OnboardingFlowController
 
-    @InternalCoroutinesApi
     fun getTestCoroutineDispatchers(): TestCoroutineDispatchers
 
     fun inject(splashActivityTest: SplashActivityTest)
@@ -194,7 +179,6 @@ class SplashActivityTest {
 
     fun getOnboardingFlowController() = component.getOnboardingFlowController()
 
-    @InternalCoroutinesApi
     fun getTestCoroutineDispatchers() = component.getTestCoroutineDispatchers()
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

@@ -8,7 +8,6 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -21,7 +20,6 @@ import org.robolectric.annotation.Config
 class TopicRevisionSpanTest {
 
   @Before
-  @ExperimentalCoroutinesApi
   fun setUp() {
     Intents.init()
     FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())

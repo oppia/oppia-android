@@ -3,13 +3,9 @@ package org.oppia.testing
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.InternalCoroutinesApi
 import org.oppia.testing.TestCoroutineDispatcher.TaskIdleListener
 import javax.inject.Inject
 
-@InternalCoroutinesApi
-@ExperimentalCoroutinesApi
 class TestCoroutineDispatchersEspressoImpl @Inject constructor(
   @BackgroundTestDispatcher private val backgroundTestDispatcher: TestCoroutineDispatcher,
   @BlockingTestDispatcher private val blockingTestDispatcher: TestCoroutineDispatcher
@@ -28,19 +24,16 @@ class TestCoroutineDispatchersEspressoImpl @Inject constructor(
     IdlingRegistry.getInstance().unregister(idlingResource)
   }
 
-  @ExperimentalCoroutinesApi
   override fun runCurrent() {
     advanceUntilIdle()
   }
 
-  @ExperimentalCoroutinesApi
   override fun advanceTimeBy(delayTimeMillis: Long) {
     // No actual sleep is needed since Espresso will automatically run until all tasks are
     // completed since idleness ties to all tasks, even future ones.
     advanceUntilIdle()
   }
 
-  @ExperimentalCoroutinesApi
   override fun advanceUntilIdle() {
     // Test coroutine dispatchers run in real-time, so let Espresso run until it idles.
     onIdle()
