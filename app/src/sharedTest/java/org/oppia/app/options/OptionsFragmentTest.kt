@@ -43,6 +43,7 @@ import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.logging.EnableConsoleLog
@@ -657,7 +658,7 @@ class OptionsFragmentTest {
   }
 
   @Singleton
-  @Component(modules = [TestModule::class, TestLogReportingModule::class])
+  @Component(modules = [TestModule::class, TestLogReportingModule::class, LogStorageModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
