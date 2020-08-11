@@ -270,7 +270,8 @@ class BindableAdapterTest {
         adapter.registerAdapterDataObserver(fakeObserver)
         val liveData = getRecyclerViewListLiveData(activity)
         liveData.value = oldList
-        verify(fakeObserver, times(1)).onItemRangeInserted(0, 3)
+        verify(fakeObserver, times(/* wantedNumberOfInvocations= */ 1))
+          .onItemRangeInserted(/* positionStart= */ 0, /* itemCount= */ 3)
         val liveDataNew = getRecyclerViewListLiveData(activity)
         liveDataNew.value = newList
         verify(fakeObserver, never()).onChanged()
@@ -296,7 +297,8 @@ class BindableAdapterTest {
         liveData.value = oldList
         val liveDataNew = getRecyclerViewListLiveData(activity)
         liveDataNew.value = newList
-        verify(fakeObserver, times(1)).onItemRangeRemoved(0, 1)
+        verify(fakeObserver, times(/* wantedNumberOfInvocations= */ 1))
+          .onItemRangeRemoved(/* positionStart= */0, /* itemCount= */ 1)
         adapter.unregisterAdapterDataObserver(fakeObserver)
       }
     }
@@ -319,7 +321,8 @@ class BindableAdapterTest {
         liveData.value = oldList
         val liveDataNew = getRecyclerViewListLiveData(activity)
         liveDataNew.value = newList
-        verify(fakeObserver, times(1)).onItemRangeInserted(0, 1)
+        verify(fakeObserver, times(/* wantedNumberOfInvocations= */ 1))
+          .onItemRangeInserted(/* positionStart= */0, /* itemCount= */ 1)
         adapter.unregisterAdapterDataObserver(fakeObserver)
       }
     }
@@ -342,8 +345,10 @@ class BindableAdapterTest {
         liveData.value = oldList
         val liveDataNew = getRecyclerViewListLiveData(activity)
         liveDataNew.value = newList
-        verify(fakeObserver, times(1)).onItemRangeChanged(2, 1, null)
-        verify(fakeObserver, times(1)).onItemRangeChanged(0, 1, null)
+        verify(fakeObserver, times(/* wantedNumberOfInvocations= */ 1))
+          .onItemRangeChanged(/* positionStart= */2, /* itemCount= */ 1, /* payload= */ null)
+        verify(fakeObserver, times(/* wantedNumberOfInvocations= */ 1))
+          .onItemRangeChanged(/* positionStart= */0, /* itemCount= */ 1, /* payload= */ null)
         adapter.unregisterAdapterDataObserver(fakeObserver)
       }
     }
@@ -366,7 +371,8 @@ class BindableAdapterTest {
         liveData.value = oldList
         val liveDataNew = getRecyclerViewListLiveData(activity)
         liveDataNew.value = newList
-        verify(fakeObserver, times(1)).onItemRangeChanged(1, 1, null)
+        verify(fakeObserver, times(/* wantedNumberOfInvocations= */ 1))
+          .onItemRangeChanged(/* positionStart= */1, /* itemCount= */ 1, /* payload= */ null)
         adapter.unregisterAdapterDataObserver(fakeObserver)
       }
     }
