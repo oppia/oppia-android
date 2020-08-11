@@ -117,14 +117,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        tools:layout_constraintGuide_percent="0.5f"
-        app:layout_constraintGuide_percent="@{viewModel.centerGuidelinePercentage.floatValue()}" />
+        app:layout_constraintGuide_percent="@{viewModel.centerGuidelinePercentage.floatValue()}"
+        tools:layout_constraintGuide_percent="0.5f" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout
       android:id="@+id/hints_and_solution_fragment_placeholder"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"/>
+      android:layout_height="match_parent" />
 
     <FrameLayout
       android:id="@+id/hints_and_solution_fragment_container"
@@ -133,16 +133,6 @@
       android:layout_gravity="bottom|start"
       android:background="@drawable/hints_background"
       android:visibility="@{viewModel.isHintBulbVisible() ? View.VISIBLE : View.GONE}">
-
-      <ImageView
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_gravity="top|end"
-        android:layout_marginTop="3dp"
-        android:layout_marginEnd="4dp"
-        android:visibility="@{viewModel.isHintOpenedAndUnRevealed() ? View.VISIBLE : View.GONE}"
-        android:src="@drawable/radar_moving_circle"
-        app:flashingAnimation="@{viewModel.isHintOpenedAndUnRevealed()}" />
 
       <ImageView
         android:id="@+id/dot_hint"
