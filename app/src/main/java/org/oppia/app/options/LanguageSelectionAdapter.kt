@@ -53,7 +53,6 @@ class LanguageSelectionAdapter(private val prefKey: String) :
   inner class LanguageViewHolder(val binding: LanguageItemsBinding) :
     RecyclerView.ViewHolder(binding.root) {
     internal fun bind(language: String, position: Int) {
-      binding.setVariable(BR.languageString, language)
       binding.languageRadioButton.isChecked = position == selectedPosition
       binding.radioContainer.setOnClickListener {
         if (prefKey == APP_LANGUAGE) {
