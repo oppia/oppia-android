@@ -8,7 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
-/** Holds all the custom binding adapters that bind to [RecyclerView]. */
+/** Holds all custom binding adapters that bind to [RecyclerView]. */
 public final class RecyclerViewBindingAdapter {
   /**
    * Binds the specified generic data to the adapter of the [RecyclerView]. This is called by

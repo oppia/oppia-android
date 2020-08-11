@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 
-/** Holds all the custom binding adapters that set miscellaneous values. */
+/** Holds all custom binding adapters that set miscellaneous values. */
 public final class ViewBindingAdapters {
 
   private static ValueAnimator appearAnimator = ValueAnimator.ofFloat(0f, 1f);

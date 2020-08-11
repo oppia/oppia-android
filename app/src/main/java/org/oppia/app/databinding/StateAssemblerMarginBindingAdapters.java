@@ -5,7 +5,7 @@ import android.view.ViewGroup.MarginLayoutParams;
 import androidx.databinding.BindingAdapter;
 
 /**
- * Holds all the custom binding adapters that set margin values for exploration view, exploration
+ * Holds all custom binding adapters that set margin values for exploration view, exploration
  * split-veiw, question view, and question split-view.
  */
 public final class StateAssemblerMarginBindingAdapters {

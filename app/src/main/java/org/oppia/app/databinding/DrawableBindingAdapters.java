@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 import org.oppia.app.R;
 
-/** Holds all the custom binding adapters that set background drawables. */
+/** Holds all custom binding adapters that set background drawables. */
 public final class DrawableBindingAdapters {
 
   /** Used to set a rounded-rect background drawable with a data-bound color. */

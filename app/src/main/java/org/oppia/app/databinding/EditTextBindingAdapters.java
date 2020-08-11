@@ -5,7 +5,7 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 
-/** Holds all the custom binding adapters that bind to [EditText]. */
+/** Holds all custom binding adapters that bind to [EditText]. */
 public final class EditTextBindingAdapters {
 
   /** Binding adapter for setting a [TextWatcher] as a change listener for an [EditText] */
