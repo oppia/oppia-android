@@ -1,7 +1,5 @@
 package org.oppia.testing
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-
 // TODO(#1274): Add thorough testing for this class.
 
 /**
@@ -36,7 +34,6 @@ interface TestCoroutineDispatchers {
    * state since it doesn't change the clock time. If a test needs to advance time to complete some
    * operation, it should use [advanceTimeBy].
    */
-  @ExperimentalCoroutinesApi
   fun runCurrent()
 
   /**
@@ -52,7 +49,6 @@ interface TestCoroutineDispatchers {
    * should be used, instead. [advanceUntilIdle] should be reserved for cases when the test needs to
    * wait for a future operation, but doesn't know how long.
    */
-  @ExperimentalCoroutinesApi
   fun advanceTimeBy(delayTimeMillis: Long)
 
   /**
@@ -66,6 +62,5 @@ interface TestCoroutineDispatchers {
    * preferred methods for synchronizing execution with tests since this method may have the
    * unintentional side effect of executing future tasks before the test anticipates it.
    */
-  @ExperimentalCoroutinesApi
   fun advanceUntilIdle()
 }
