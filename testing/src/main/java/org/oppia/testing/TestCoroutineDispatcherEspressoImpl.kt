@@ -13,6 +13,15 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.min
 
+/**
+ * Espresso-specific implementation of [TestCoroutineDispatcher].
+ *
+ * This class forwards all execution immediately to the backing [CoroutineDispatcher] since it
+ * assumes all tasks are running with a real-time clock to mimic production behavior. This
+ * implementation also tracks the running state of tasks in order to support Espresso-specific
+ * idling resources (though it's up to the caller of this class to actually hook up an idling
+ * resource for this purpose).
+ */
 @InternalCoroutinesApi
 @ExperimentalCoroutinesApi
 class TestCoroutineDispatcherEspressoImpl private constructor(
@@ -156,6 +165,10 @@ class TestCoroutineDispatcherEspressoImpl private constructor(
     taskIdleListener?.takeIf { executingTaskCount.get() == 0 }?.onDispatcherIdle()
   }
 
+  /**
+   * Injectable implementation of [TestCoroutineDispatcher.Factory] for
+   * [TestCoroutineDispatcherEspressoImpl].
+   */
   class FactoryImpl @Inject constructor() : Factory {
     override fun createDispatcher(realDispatcher: CoroutineDispatcher): TestCoroutineDispatcher {
       return TestCoroutineDispatcherEspressoImpl(realDispatcher)

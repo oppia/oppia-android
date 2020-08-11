@@ -17,14 +17,15 @@ import kotlin.coroutines.CoroutineContext
 //  off of the internal coroutine API.
 
 /**
- * Replacement for Kotlin's test coroutine dispatcher that can be used to replace coroutine
- * dispatching functionality in a Robolectric test in a way that can be coordinated across multiple
- * dispatchers for execution synchronization.
+ * Robolectric-specific implementation of [TestCoroutineDispatcher].
  *
- * Developers should never use this dispatcher directly. Integrating with it should be done via
- * [TestDispatcherModule] and ensuring thread synchronization should be done via
- * [TestCoroutineDispatchers]. Attempting to interact directly with this dispatcher may cause timing
- * inconsistencies between the UI thread and other application coroutine dispatchers.
+ * This implementation makes use of a fake clock & event queue to manage tasks scheduled both for
+ * the present and the future. It executes tasks on a real coroutine dispatcher, but only when it's
+ * time for the task to run per the fake clock & the task's location in the event queue.
+ *
+ * Note that not all functionality in [TestCoroutineDispatcher]'s superclasses are implemented here,
+ * and other functionality is delegated to [TestCoroutineDispatchers] to ensure proper thread
+ * safety.
  */
 @InternalCoroutinesApi
 @ExperimentalCoroutinesApi
@@ -212,9 +213,13 @@ class TestCoroutineDispatcherRobolectricImpl private constructor(
     taskIdleListener?.takeIf { executingTaskCount.get() == 0 }?.onDispatcherIdle()
   }
 
+  /**
+   * Injectable implementation of [TestCoroutineDispatcher.Factory] for
+   * [TestCoroutineDispatcherEspressoImpl].
+   */
   class FactoryImpl @Inject constructor(
     private val fakeSystemClock: FakeSystemClock
-  ) : TestCoroutineDispatcher.Factory {
+  ) : Factory {
     override fun createDispatcher(realDispatcher: CoroutineDispatcher): TestCoroutineDispatcher {
       return TestCoroutineDispatcherRobolectricImpl(fakeSystemClock, realDispatcher)
     }
