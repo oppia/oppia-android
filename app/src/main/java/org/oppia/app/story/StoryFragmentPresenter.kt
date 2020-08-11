@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -21,7 +22,10 @@ import org.oppia.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
 import org.oppia.app.story.storyitemviewmodel.StoryHeaderViewModel
 import org.oppia.app.story.storyitemviewmodel.StoryItemViewModel
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.domain.oppialogger.OppiaLogger
+import org.oppia.util.gcsresource.DefaultResourceBucketName
+import org.oppia.util.parser.HtmlParser
+import org.oppia.util.parser.TopicHtmlParserEntityType
 import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -29,9 +33,12 @@ import javax.inject.Inject
 class StoryFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val analyticsController: AnalyticsController,
+  private val oppiaLogger: OppiaLogger,
   private val oppiaClock: OppiaClock,
-  private val viewModelProvider: ViewModelProvider<StoryViewModel>
+  private val viewModelProvider: ViewModelProvider<StoryViewModel>,
+  private val htmlParserFactory: HtmlParser.Factory,
+  @DefaultResourceBucketName private val resourceBucketName: String,
+  @TopicHtmlParserEntityType private val entityType: String
 ) {
   private val routeToExplorationListener = activity as RouteToExplorationListener
 
@@ -109,11 +116,29 @@ class StoryFragmentPresenter @Inject constructor(
         setViewModel = StoryHeaderViewBinding::setViewModel,
         transformViewModel = { it as StoryHeaderViewModel }
       )
-      .registerViewDataBinder(
+      .registerViewBinder(
         viewType = ViewType.VIEW_TYPE_CHAPTER,
-        inflateDataBinding = StoryChapterViewBinding::inflate,
-        setViewModel = StoryChapterViewBinding::setViewModel,
-        transformViewModel = { it as StoryChapterSummaryViewModel }
+        inflateView = { parent ->
+          StoryChapterViewBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            /* attachToParent= */ false
+          ).root
+        },
+        bindView = { view, viewModel ->
+          val binding = DataBindingUtil.findBinding<StoryChapterViewBinding>(view)!!
+          val storyItemViewModel = viewModel as StoryChapterSummaryViewModel
+          binding.viewModel = storyItemViewModel
+          binding.htmlContent =
+            htmlParserFactory.create(
+              resourceBucketName,
+              entityType,
+              storyItemViewModel.storyId,
+              imageCenterAlign = true
+            ).parseOppiaHtml(
+              storyItemViewModel.summary, binding.chapterSummary
+            )
+        }
       )
       .build()
   }
@@ -160,10 +185,10 @@ class StoryFragmentPresenter @Inject constructor(
   }
 
   private fun logStoryActivityEvent(topicId: String, storyId: String) {
-    analyticsController.logTransitionEvent(
+    oppiaLogger.logTransitionEvent(
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_STORY_ACTIVITY,
-      analyticsController.createStoryContext(topicId, storyId)
+      oppiaLogger.createStoryContext(topicId, storyId)
     )
   }
 }

@@ -12,16 +12,34 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="24dp"
     android:clickable="true"
     android:focusable="true"
-    android:layout_marginStart="72dp"
-    android:layout_marginEnd="72dp"
-    android:onClick="@{(v) -> viewModel.onResponsesHeaderClicked()}">
+    android:padding="0dp"
+    android:onClick="@{(v) -> viewModel.onResponsesHeaderClicked()}"
+    app:explorationSplitViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
+    app:explorationSplitViewMarginBottom="@{@dimen/margin_0}"
+    app:explorationSplitViewMarginEnd="@{@dimen/margin_80}"
+    app:explorationSplitViewMarginStart="@{@dimen/margin_80}"
+    app:explorationSplitViewMarginTop="@{@dimen/margin_24}"
+    app:explorationViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
+    app:explorationViewMarginBottom="@{@dimen/margin_0}"
+    app:explorationViewMarginEnd="@{@dimen/margin_80}"
+    app:explorationViewMarginStart="@{@dimen/margin_80}"
+    app:explorationViewMarginTop="@{@dimen/margin_24}"
+    app:questionSplitViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
+    app:questionSplitViewMarginBottom="@{@dimen/margin_0}"
+    app:questionSplitViewMarginEnd="@{@dimen/margin_80}"
+    app:questionSplitViewMarginStart="@{@dimen/margin_80}"
+    app:questionSplitViewMarginTop="@{@dimen/margin_24}"
+    app:questionViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
+    app:questionViewMarginBottom="@{@dimen/margin_0}"
+    app:questionViewMarginEnd="@{@dimen/margin_80}"
+    app:questionViewMarginStart="@{@dimen/margin_80}"
+    app:questionViewMarginTop="@{@dimen/margin_24}">
 
     <FrameLayout
       android:layout_width="0dp"
-      android:layout_height="1dp"
+      android:layout_height="2dp"
       android:background="@color/mid_grey"
       app:layout_constraintBottom_toBottomOf="@+id/previous_responses_header_text"
       app:layout_constraintEnd_toStartOf="@+id/previous_responses_header_text"
@@ -47,7 +65,7 @@
 
     <FrameLayout
       android:layout_width="0dp"
-      android:layout_height="1dp"
+      android:layout_height="2dp"
       android:background="@color/mid_grey"
       app:layout_constraintBottom_toBottomOf="@+id/previous_responses_header_text"
       app:layout_constraintEnd_toEndOf="parent"

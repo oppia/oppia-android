@@ -15,10 +15,6 @@
     android:id="@+id/ongoing_story_card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="12dp"
-    android:layout_marginEnd="8dp"
-    android:layout_marginBottom="12dp"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp">
@@ -30,18 +26,20 @@
       android:focusable="true"
       android:onClick="@{viewModel::clickOnOngoingStoryTile}">
 
-      <ImageView
+      <org.oppia.app.customview.LessonThumbnailImageView
         android:id="@+id/lesson_thumbnail"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:contentDescription="@{@string/lesson_thumbnail_content_description(viewModel.ongoingStory.nextChapterName)}"
         android:importantForAccessibility="no"
         android:scaleType="fitCenter"
-        android:src="@{viewModel.ongoingStory.lessonThumbnail.thumbnailGraphic}"
+        app:entityId="@{viewModel.ongoingStory.storyId}"
+        app:entityType="@{viewModel.entityType}"
         app:layout_constraintDimensionRatio="4:3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:lessonThumbnail="@{viewModel.ongoingStory.lessonThumbnail}"
         app:topRoundedRectDrawableWithColor="@{viewModel.ongoingStory.lessonThumbnail.backgroundColorRgb}" />
 
       <androidx.constraintlayout.widget.ConstraintLayout
