@@ -61,6 +61,7 @@ import org.oppia.app.mydownloads.MyDownloadsActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.domain.topic.StoryProgressTestHelper
 import org.oppia.testing.TestLogReportingModule
@@ -568,7 +569,7 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Singleton
-  @Component(modules = [TestModule::class, TestLogReportingModule::class])
+  @Component(modules = [TestModule::class, TestLogReportingModule::class, LogStorageModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

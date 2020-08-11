@@ -32,6 +32,7 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.app.model.ProfileId
+import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.caching.CacheAssetsLocally
@@ -212,7 +213,7 @@ class StoryProgressControllerTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class, TestLogReportingModule::class])
+  @Component(modules = [TestModule::class, TestLogReportingModule::class, LogStorageModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
