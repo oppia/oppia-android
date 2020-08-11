@@ -75,6 +75,10 @@ class ExplorationActivityPresenter @Inject constructor(
     explorationToolbar = binding.explorationToolbar
     activity.setSupportActionBar(explorationToolbar)
 
+    binding.explorationToolbar.setNavigationOnClickListener {
+      activity.onBackPressed()
+    }
+
     binding.actionAudioPlayer.setOnClickListener {
       getExplorationFragment()?.handlePlayAudio()
     }
