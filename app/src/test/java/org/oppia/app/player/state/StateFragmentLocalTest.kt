@@ -19,6 +19,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -50,6 +51,7 @@ import org.oppia.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.PREVIOUS_RESPONSES_HEADER
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
@@ -101,9 +103,16 @@ class StateFragmentLocalTest {
     createAudioUrl(explorationId = "MjZzEVOG47_1", audioFileName = "content-en-ouqm7j21vt8.mp3")
   private val audioDataSource1 = DataSource.toDataSource(AUDIO_URL_1, /* headers= */ null)
 
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @InternalCoroutinesApi @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject @field:ApplicationContext lateinit var context: Context
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
+  @InternalCoroutinesApi
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  @field:ApplicationContext
+  lateinit var context: Context
 
   private val internalProfileId: Int = 1
 
@@ -243,6 +252,73 @@ class StateFragmentLocalTest {
       openHintsAndSolutionsDialog()
 
       onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun testStateFragment_submitTwoWrongAnswers_checkPreviousHeaderVisible() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+
+      submitTwoWrongAnswers()
+
+      onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun testStateFragment_submitTwoWrongAnswers_checkPreviousHeaderCollapsed() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+
+      submitTwoWrongAnswers()
+
+      onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
+      onView(withId(R.id.state_recycler_view)).check(matches(hasChildCount(/* childCount= */ 5)))
+    }
+  }
+
+  @Test
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun testStateFragment_submitTwoWrongAnswers_expandPreviousResponse_checkPreviousHeaderExpanded() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+
+      submitTwoWrongAnswers()
+
+      onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      onView(withId(R.id.previous_response_header)).perform(click())
+      onView(withId(R.id.state_recycler_view)).check(matches(hasChildCount(/* childCount= */ 7)))
+    }
+  }
+
+  @Test
+  @InternalCoroutinesApi
+  @ExperimentalCoroutinesApi
+  fun testStateFragment_submitTwoWrongAnswers_expandPreviousResponse_collapsePreviousResponse_checkPreviousHeaderCollapsed() { // ktlint-disable max-line-length
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+
+      submitTwoWrongAnswers()
+
+      onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
+      onView(withId(R.id.state_recycler_view)).check(matches(hasChildCount(/* childCount= */ 5)))
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      onView(withSubstring("Previous Responses")).perform(click())
+      onView(withId(R.id.state_recycler_view)).check(matches(hasChildCount(/* childCount= */ 7)))
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      onView(withSubstring("Previous Responses")).perform(click())
+      onView(withId(R.id.state_recycler_view)).check(matches(hasChildCount(/* childCount= */ 5)))
     }
   }
 
