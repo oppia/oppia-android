@@ -13,8 +13,14 @@ import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.util.parser.HtmlParser
 
 /**
- * Extracts binding file dependencies from view files in order for Bazel to build.
+ * Creates bindings for Views in order to avoid View files directly depending on Binding files.
+ * When working on a View file, developers should refrain from directly referencing Binding files
+ * by adding all related functionality here.
+ *
+ * Please note that this file is temporary and all functionality will be returned to it's respective
+ * View once Gradle has been removed.
  */
+// TODO(#1619): Remove file post-Gradle
 interface ViewBindingShim {
 
   fun provideProfileInputViewBindingLabelText(

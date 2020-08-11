@@ -5,8 +5,14 @@ import android.content.Intent
 import androidx.fragment.app.FragmentActivity
 
 /**
- * Creates intents for view models in order to avoid view model files depending on activites.
+ * Creates intents for ViewModels in order to avoid ViewModel files directly depending on Activites.
+ * When working on a ViewModel file, developers should refrain from directly referencing Activities
+ * by adding all Intent functionality here.
+ *
+ * Please note that this file is temporary and all functionality will be returned to it's respective
+ * ViewModel once Gradle has been removed.
  */
+// TODO(#1619): Remove file post-Gradle
 interface IntentFactoryShim {
 
   fun createProfileActivityIntent(fragment: FragmentActivity): Intent

@@ -10,8 +10,14 @@ import org.oppia.app.topic.TopicActivity
 import javax.inject.Inject
 
 /**
- * Creates intents for view models in order to avoid view model files depending on activites.
+ * Creates intents for ViewModels in order to avoid ViewModel files directly depending on Activites.
+ * When working on a ViewModel file, developers should refrain from directly referencing Activities
+ * by adding all Intent functionality here.
+ *
+ * Please note that this file is temporary and all functionality will be returned to it's respective
+ * ViewModel once Gradle has been removed.
  */
+// TODO(#1619): Remove file post-Gradle
 class IntentFactoryShimImpl @Inject constructor() : IntentFactoryShim {
 
   private val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
