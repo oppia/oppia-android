@@ -8,16 +8,15 @@ load("@tools_android//tools/crashlytics:defs.bzl", "crashlytics_android_library"
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
-# Source files for annotations library
+# Source files for annotations library.
 ANNOTATION_FILES = [
     "src/main/java/org/oppia/app/activity/ActivityScope.kt",
     "src/main/java/org/oppia/app/fragment/FragmentScope.kt",
     "src/main/java/org/oppia/app/utility/KeyboardHelper.kt",
 ]
 
-#
+# Source files for listener library.
 LISTENER_FILES = [
-    "src/main/java/org/oppia/app/home/topiclist/TopicSummaryClickListener.kt",
     "src/main/java/org/oppia/app/administratorcontrols/RouteToAppVersionListener.kt",
     "src/main/java/org/oppia/app/administratorcontrols/RouteToProfileListListener.kt",
     "src/main/java/org/oppia/app/drawer/RouteToProfileProgressListener.kt",
@@ -26,6 +25,7 @@ LISTENER_FILES = [
     "src/main/java/org/oppia/app/home/recentlyplayed/OngoingStoryClickListener.kt",
     "src/main/java/org/oppia/app/home/RouteToRecentlyPlayedListener.kt",
     "src/main/java/org/oppia/app/home/RouteToTopicPlayStoryListener.kt",
+    "src/main/java/org/oppia/app/home/topiclist/TopicSummaryClickListener.kt",
     "src/main/java/org/oppia/app/onboarding/RouteToProfileListListener.kt",
     "src/main/java/org/oppia/app/options/RouteToAppLanguageListListener.kt",
     "src/main/java/org/oppia/app/options/RouteToAudioLanguageListListener.kt",
@@ -57,14 +57,15 @@ LISTENER_FILES = [
     "src/main/java/org/oppia/app/utility/RegionClickEvent.kt",
 ]
 
+# Layout files for databinding_resources library.
 LAYOUT_RES_FILES = [
-    "src/main/res/layout/**",
     "src/main/res/layout-land/**",
     "src/main/res/layout-sw600dp-land/**",
     "src/main/res/layout-sw600dp-port/**",
+    "src/main/res/layout/**",
 ]
 
-# Source files for view_model library
+# Source files and genrule targets for view_model library.
 VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAppInformationViewModel.kt",
     "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsDownloadPermissionsViewModel.kt",
@@ -187,37 +188,41 @@ VIEW_MODEL_FILES = [
     "update_src/main/java/org/oppia/app/topic/info/TopicInfoViewModel",
 ]
 
-# Files altered by genrules to be excluded in the app library
+# View model files altered by genrules to be excluded in the app library.
 ALTERED_VIEW_MODELS = [
     "src/main/java/org/oppia/app/help/HelpListViewModel.kt",
+    "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel.kt",
+    "src/main/java/org/oppia/app/help/faq/FAQListViewModel.kt",
     "src/main/java/org/oppia/app/help/HelpItemViewModel.kt",
-    "src/main/java/org/oppia/app/topic/info/TopicInfoViewModel.kt",
-    "src/main/java/org/oppia/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel.kt",
-    "src/main/java/org/oppia/app/player/state/itemviewmodel/FractionInteractionViewModel.kt",
     "src/main/java/org/oppia/app/onboarding/OnboadingSlideViewModel.kt",
     "src/main/java/org/oppia/app/onboarding/OnboardingViewModel.kt",
-    "src/main/java/org/oppia/app/help/faq/FAQListViewModel.kt",
-    "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel.kt",
-    "src/main/java/org/oppia/app/parser/StringToNumberParser.kt",
     "src/main/java/org/oppia/app/parser/StringToFractionParser.kt",
+    "src/main/java/org/oppia/app/parser/StringToNumberParser.kt",
+    "src/main/java/org/oppia/app/player/state/itemviewmodel/FractionInteractionViewModel.kt",
+    "src/main/java/org/oppia/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel.kt",
+    "src/main/java/org/oppia/app/topic/info/TopicInfoViewModel.kt",
 ]
 
 # TODO(#1617): Remove genrules post-gradle
-# Inputs to the view_model genrule
+# Inputs to the view_model genrule.
 GENRULE_VIEW_MODEL_FILES = [
-    "src/main/java/org/oppia/app/help/HelpListViewModel",
+    "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel",
+    "src/main/java/org/oppia/app/help/faq/FAQListViewModel",
     "src/main/java/org/oppia/app/help/HelpItemViewModel",
-    "src/main/java/org/oppia/app/topic/info/TopicInfoViewModel",
-    "src/main/java/org/oppia/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel",
-    "src/main/java/org/oppia/app/player/state/itemviewmodel/FractionInteractionViewModel",
+    "src/main/java/org/oppia/app/help/HelpListViewModel",
     "src/main/java/org/oppia/app/onboarding/OnboadingSlideViewModel",
     "src/main/java/org/oppia/app/onboarding/OnboardingViewModel",
-    "src/main/java/org/oppia/app/help/faq/FAQListViewModel",
-    "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel",
-    "src/main/java/org/oppia/app/parser/StringToNumberParser",
     "src/main/java/org/oppia/app/parser/StringToFractionParser",
+    "src/main/java/org/oppia/app/parser/StringToNumberParser",
+    "src/main/java/org/oppia/app/player/state/itemviewmodel/FractionInteractionViewModel",
+    "src/main/java/org/oppia/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel",
+    "src/main/java/org/oppia/app/topic/info/TopicInfoViewModel",
 ]
 
+'''
+Genrule that alters resource import statements for view_model files in order to account for altered
+package name.
+'''
 [genrule(
     name = "update_" + file,
     srcs = [file + ".kt"],
@@ -229,23 +234,25 @@ GENRULE_VIEW_MODEL_FILES = [
 )
 for file in GENRULE_VIEW_MODEL_FILES]
 
+# Source files and genrule targets for views library.
 VIEW_FILES = [
     "src/main/java/org/oppia/app/customview/interaction/FractionInputInteractionView.kt",
     "src/main/java/org/oppia/app/customview/interaction/NumericInputInteractionView.kt",
     "src/main/java/org/oppia/app/customview/interaction/TextInputInteractionView.kt",
-    "update_src/main/java/org/oppia/app/customview/LessonThumbnailImageView",
-    "update_src/main/java/org/oppia/app/customview/SegmentedCircularProgressView",
     "src/main/java/org/oppia/app/player/state/DragDropSortInteractionView.kt",
     "src/main/java/org/oppia/app/player/state/ImageRegionSelectionInteractionView.kt",
     "src/main/java/org/oppia/app/player/state/SelectionInteractionView.kt",
-    "update_src/main/java/org/oppia/app/profile/ProfileInputView",
-    "update_src/main/java/org/oppia/app/utility/ClickableAreasImage",
-    "src/main/java/org/oppia/app/view/ViewComponent.kt",
-    "src/main/java/org/oppia/app/view/ViewScope.kt",
     "src/main/java/org/oppia/app/shim/ViewBindingShim.kt",
     "src/main/java/org/oppia/app/shim/ViewComponentFactory.kt",
+    "src/main/java/org/oppia/app/view/ViewComponent.kt",
+    "src/main/java/org/oppia/app/view/ViewScope.kt",
+    "update_src/main/java/org/oppia/app/customview/LessonThumbnailImageView",
+    "update_src/main/java/org/oppia/app/customview/SegmentedCircularProgressView",
+    "update_src/main/java/org/oppia/app/profile/ProfileInputView",
+    "update_src/main/java/org/oppia/app/utility/ClickableAreasImage",
 ]
 
+# View files altered by genrules to be excluded in the app library.
 ALTERED_VIEWS = [
     "src/main/java/org/oppia/app/customview/LessonThumbnailImageView.kt",
     "src/main/java/org/oppia/app/customview/SegmentedCircularProgressView.kt",
@@ -253,6 +260,8 @@ ALTERED_VIEWS = [
     "src/main/java/org/oppia/app/utility/ClickableAreasImage.kt",
 ]
 
+# TODO(#1617): Remove genrules post-gradle
+# Inputs to the views genrule.
 GENRULE_VIEW_FILES = [
     "src/main/java/org/oppia/app/customview/LessonThumbnailImageView",
     "src/main/java/org/oppia/app/customview/SegmentedCircularProgressView",
@@ -260,7 +269,10 @@ GENRULE_VIEW_FILES = [
     "src/main/java/org/oppia/app/utility/ClickableAreasImage",
 ]
 
-# TODO(#1617): Remove genrules post-gradle
+'''
+Genrule that alters resource import statements for view files in order to account for altered
+package name.
+'''
 [genrule(
      name = "update_" + file,
      srcs = [file + ".kt"],
@@ -272,31 +284,38 @@ GENRULE_VIEW_FILES = [
  )
 for file in GENRULE_VIEW_FILES]
 
+# Source files and genrule targets for databinding_adapters library.
 DATABINDING_ADAPTER_FILES = [
-    "update_src/main/java/org/oppia/app/databinding/DrawableBindingAdapters",
     "src/main/java/org/oppia/app/databinding/EditTextBindingAdapters.java",
-    "update_src/main/java/org/oppia/app/databinding/ImageViewBindingAdapters",
-    "src/main/java/org/oppia/app/databinding/MarginBindingAdapters.java",
-    "update_src/main/java/org/oppia/app/databinding/TextViewBindingAdapters",
-    "src/main/java/org/oppia/app/databinding/ViewBindingAdapters.java",
-    "src/main/java/org/oppia/app/databinding/StateAssemblerPaddingBindingAdapters.java",
-    "src/main/java/org/oppia/app/databinding/StateAssemblerMarginBindingAdapters.java",
     "src/main/java/org/oppia/app/databinding/GuidelineBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/MarginBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/StateAssemblerMarginBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/StateAssemblerPaddingBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/ViewBindingAdapters.java",
+    "update_src/main/java/org/oppia/app/databinding/DrawableBindingAdapters",
+    "update_src/main/java/org/oppia/app/databinding/ImageViewBindingAdapters",
+    "update_src/main/java/org/oppia/app/databinding/TextViewBindingAdapters",
 ]
 
+# Adapter files altered by genrules to be excluded in the app library.
 ALTERED_DATABINDING_ADAPTERS = [
-    "src/main/java/org/oppia/app/databinding/TextViewBindingAdapters.java",
-    "src/main/java/org/oppia/app/databinding/ImageViewBindingAdapters.java",
     "src/main/java/org/oppia/app/databinding/DrawableBindingAdapters.java",
-]
-
-GENRULE_DATABINDING_ADAPTER_FILES = [
-    "src/main/java/org/oppia/app/databinding/TextViewBindingAdapters",
-    "src/main/java/org/oppia/app/databinding/ImageViewBindingAdapters",
-    "src/main/java/org/oppia/app/databinding/DrawableBindingAdapters",
+    "src/main/java/org/oppia/app/databinding/ImageViewBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/TextViewBindingAdapters.java",
 ]
 
 # TODO(#1617): Remove genrules post-gradle
+# Inputs to the databinding_adapters genrule.
+GENRULE_DATABINDING_ADAPTER_FILES = [
+    "src/main/java/org/oppia/app/databinding/DrawableBindingAdapters",
+    "src/main/java/org/oppia/app/databinding/ImageViewBindingAdapters",
+    "src/main/java/org/oppia/app/databinding/TextViewBindingAdapters",
+]
+
+'''
+Genrule that alters both resource import statements and class names for adapter files in order to
+account for altered package and file name.
+'''
 [genrule(
      name = "update_" + file,
      srcs = [file + ".java"],
@@ -309,6 +328,7 @@ GENRULE_DATABINDING_ADAPTER_FILES = [
  )
 for file in GENRULE_DATABINDING_ADAPTER_FILES]
 
+# Source files for recyclerview_adapters library.
 RECYCLERVIEW_ADAPTER_FILES = [
     "src/main/java/org/oppia/app/recyclerview/RecyclerViewBindingAdapter.java"
 ]
