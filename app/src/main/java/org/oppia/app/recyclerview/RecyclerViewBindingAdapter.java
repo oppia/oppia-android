@@ -1,18 +1,14 @@
 package org.oppia.app.recyclerview;
 
 import android.graphics.drawable.Drawable;
-
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 import androidx.databinding.ObservableList;
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.List;
 
-/**
- * Holds all the custom binding adapters that bind to [RecyclerView] adapters.
- */
+/** Holds all the custom binding adapters that bind to [RecyclerView] adapters. */
 public final class RecyclerViewBindingAdapter {
   /**
    * Binds the specified generic data to the adapter of the [RecyclerView]. This is called by
@@ -43,9 +39,7 @@ public final class RecyclerViewBindingAdapter {
     }
   }
 
-  /**
-   * A variant of [bindToRecyclerViewAdapterWithLiveData] that instead uses an observable list.
-   */
+  /** A variant of [bindToRecyclerViewAdapterWithLiveData] that instead uses an observable list. */
   @BindingAdapter("data")
   public static <T> void bindToRecyclerViewAdapterWithObservableList(
       @NonNull RecyclerView recyclerView,

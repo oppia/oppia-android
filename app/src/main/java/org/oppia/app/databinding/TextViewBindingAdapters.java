@@ -16,9 +16,8 @@ import java.util.Locale;
  * Holds all the custom binding adapters that bind to [TextView] adapters.
  */
 public final class TextViewBindingAdapters {
-  /**
-   * Binds date text with relative time.
-   */
+
+  /** Binds date text with relative time. */
   @BindingAdapter("profile:created")
   public static void setProfileDataText(@NonNull TextView textView, long timestamp) {
     OppiaDateTimeFormatter oppiaDateTimeFormatter = new OppiaDateTimeFormatter();
