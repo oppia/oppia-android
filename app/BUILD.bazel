@@ -209,6 +209,10 @@ ALTERED_VIEW_MODELS = [
     "src/main/java/org/oppia/app/topic/info/TopicInfoViewModel.kt",
 ]
 
+'''
+Genrule that alters the resource import statements for ViewModels in order to account for altered
+package name.
+'''
 [genrule(
     name = "update_" + file[0:-3],
     srcs = [file],
@@ -238,6 +242,7 @@ VIEW_FILES = [
     "update_src/main/java/org/oppia/app/utility/ClickableAreasImage",
 ]
 
+# TODO(#1617): Remove genrules post-gradle
 # View files altered by genrules to be excluded in the app library.
 ALTERED_VIEWS = [
     "src/main/java/org/oppia/app/customview/LessonThumbnailImageView.kt",
@@ -246,7 +251,10 @@ ALTERED_VIEWS = [
     "src/main/java/org/oppia/app/utility/ClickableAreasImage.kt",
 ]
 
-# TODO(#1617): Remove genrules post-gradle
+'''
+Genrule that alters the resource import statements for Views in order to account for altered
+package name.
+'''
 [genrule(
      name = "update_" + file[0:-3],
      srcs = [file],
