@@ -182,11 +182,11 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
         },
         bindView = { view, viewModel ->
           val binding = DataBindingUtil.findBinding<DragDropInteractionItemsBinding>(view)!!
-          binding.dragDropItemRecyclerview.adapter = 
+          binding.dragDropItemRecyclerview.adapter =
             createDragDropInteractionViewNestedAdapter<String>(
-              htmlParserFactory, 
-              resourceBucketName, 
-              entityType, 
+              htmlParserFactory,
+              resourceBucketName,
+              entityType,
               entityId
             )
           binding.adapter = adapter
@@ -204,9 +204,9 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
    * order for the file not to depend on [DragDropInteractionItemsBinding].
    */
   override fun <T> createDragDropInteractionViewNestedAdapter(
-    htmlParserFactory: HtmlParser.Factory, 
-    resourceBucketName: String, 
-    entityType: String, 
+    htmlParserFactory: HtmlParser.Factory,
+    resourceBucketName: String,
+    entityType: String,
     entityId: String
   ): BindableAdapter<String> {
     return BindableAdapter.SingleTypeBuilder
