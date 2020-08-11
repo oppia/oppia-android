@@ -14,6 +14,7 @@ import javax.inject.Inject
 class TopicPracticeFragment : InjectableFragment() {
   companion object {
     internal const val SUBTOPIC_ID_LIST_ARGUMENT_KEY = "SUBTOPIC_ID_LIST_ARGUMENT_KEY"
+    internal const val SKILL_ID_LIST_ARGUMENT_KEY = "SKILL_ID_LIST_ARGUMENT_KEY"
 
     /** Returns a new [TopicPracticeFragment]. */
     fun newInstance(internalProfileId: Int, topicId: String): TopicPracticeFragment {
@@ -40,8 +41,13 @@ class TopicPracticeFragment : InjectableFragment() {
     savedInstanceState: Bundle?
   ): View? {
     var selectedIdList = ArrayList<Int>()
+    var selectedSkillId = HashMap<Int, MutableList<String>>()
     if (savedInstanceState != null) {
       selectedIdList = savedInstanceState.getIntegerArrayList(SUBTOPIC_ID_LIST_ARGUMENT_KEY)!!
+      selectedSkillId =
+        savedInstanceState.getSerializable(
+          SKILL_ID_LIST_ARGUMENT_KEY
+        )!! as HashMap<Int, MutableList<String>>
     }
     val internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)!!
     val topicId = checkNotNull(arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
@@ -51,6 +57,7 @@ class TopicPracticeFragment : InjectableFragment() {
       inflater,
       container,
       selectedIdList,
+      selectedSkillId,
       internalProfileId,
       topicId
     )
@@ -61,6 +68,10 @@ class TopicPracticeFragment : InjectableFragment() {
     outState.putIntegerArrayList(
       SUBTOPIC_ID_LIST_ARGUMENT_KEY,
       topicPracticeFragmentPresenter.selectedSubtopicIdList
+    )
+    outState.putSerializable(
+      SKILL_ID_LIST_ARGUMENT_KEY,
+      topicPracticeFragmentPresenter.skillIdHashMap
     )
   }
 }
