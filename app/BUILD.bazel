@@ -8,12 +8,14 @@ load("@tools_android//tools/crashlytics:defs.bzl", "crashlytics_android_library"
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
+# Source files for annotations library
 ANNOTATION_FILES = [
     "src/main/java/org/oppia/app/activity/ActivityScope.kt",
     "src/main/java/org/oppia/app/fragment/FragmentScope.kt",
     "src/main/java/org/oppia/app/utility/KeyboardHelper.kt",
 ]
 
+#
 LISTENER_FILES = [
     "src/main/java/org/oppia/app/home/topiclist/TopicSummaryClickListener.kt",
     "src/main/java/org/oppia/app/administratorcontrols/RouteToAppVersionListener.kt",
@@ -271,16 +273,41 @@ GENRULE_VIEW_FILES = [
 for file in GENRULE_VIEW_FILES]
 
 DATABINDING_ADAPTER_FILES = [
-    "src/main/java/org/oppia/app/databinding/DrawableBindingAdapters.java",
+    "update_src/main/java/org/oppia/app/databinding/DrawableBindingAdapters",
     "src/main/java/org/oppia/app/databinding/EditTextBindingAdapters.java",
-    "src/main/java/org/oppia/app/databinding/ImageViewBindingAdapters.java",
+    "update_src/main/java/org/oppia/app/databinding/ImageViewBindingAdapters",
     "src/main/java/org/oppia/app/databinding/MarginBindingAdapters.java",
-    "src/main/java/org/oppia/app/databinding/TextViewBindingAdapters.java",
+    "update_src/main/java/org/oppia/app/databinding/TextViewBindingAdapters",
     "src/main/java/org/oppia/app/databinding/ViewBindingAdapters.java",
     "src/main/java/org/oppia/app/databinding/StateAssemblerPaddingBindingAdapters.java",
     "src/main/java/org/oppia/app/databinding/StateAssemblerMarginBindingAdapters.java",
     "src/main/java/org/oppia/app/databinding/GuidelineBindingAdapters.java",
 ]
+
+ALTERED_DATABINDING_ADAPTERS = [
+    "src/main/java/org/oppia/app/databinding/TextViewBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/ImageViewBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/DrawableBindingAdapters.java",
+]
+
+GENRULE_DATABINDING_ADAPTER_FILES = [
+    "src/main/java/org/oppia/app/databinding/TextViewBindingAdapters",
+    "src/main/java/org/oppia/app/databinding/ImageViewBindingAdapters",
+    "src/main/java/org/oppia/app/databinding/DrawableBindingAdapters",
+]
+
+# TODO(#1617): Remove genrules post-gradle
+[genrule(
+     name = "update_" + file,
+     srcs = [file + ".java"],
+     outs = [file + "_updated.java"],
+     cmd = '''
+     cat $(SRCS) |
+     sed 's/import org.oppia.app.R/import org.oppia.app.impl.adapters.R/g' |
+     sed 's/BindingAdapters {/BindingAdapters_updated {/g' > $(OUTS)
+     ''',
+ )
+for file in GENRULE_DATABINDING_ADAPTER_FILES]
 
 RECYCLERVIEW_ADAPTER_FILES = [
     "src/main/java/org/oppia/app/recyclerview/RecyclerViewBindingAdapter.java"
@@ -379,7 +406,6 @@ kt_android_library(
     visibility = ["//visibility:private"],
 )
 
-#import org.oppia.app.impl.adapters.R;
 # Library for all custom data-binding adapters under org/oppia/app/databinding
 android_library(
     name = "databinding_adapters",
