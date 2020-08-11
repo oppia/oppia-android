@@ -1,18 +1,14 @@
 package org.oppia.app.recyclerview;
 
 import android.graphics.drawable.Drawable;
-
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 import androidx.databinding.ObservableList;
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.List;
 
-/**
- * Holds all the custom binding adapters that bind to [RecyclerView] adapters.
- */
+/** Holds all custom binding adapters that bind to [RecyclerView]. */
 public final class RecyclerViewBindingAdapter {
   /**
    * Binds the specified generic data to the adapter of the [RecyclerView]. This is called by
@@ -43,9 +39,7 @@ public final class RecyclerViewBindingAdapter {
     }
   }
 
-  /**
-   * A variant of [bindToRecyclerViewAdapterWithLiveData] that instead uses an observable list.
-   */
+  /** A variant of [bindToRecyclerViewAdapterWithLiveData] that instead uses an observable list. */
   @BindingAdapter("data")
   public static <T> void bindToRecyclerViewAdapterWithObservableList(
       @NonNull RecyclerView recyclerView,
@@ -54,11 +48,12 @@ public final class RecyclerViewBindingAdapter {
     bindToRecyclerViewAdapter(recyclerView, dataList);
   }
 
+  @SuppressWarnings("unchecked")
   private static <T> void bindToRecyclerViewAdapter(
       @NonNull RecyclerView recyclerView,
       List<T> dataList
   ) {
-    RecyclerView.Adapter adapter = recyclerView.getAdapter();
+    BindableAdapter<T> adapter = (BindableAdapter<T>) recyclerView.getAdapter();
     if (adapter == null) {
       throw new IllegalArgumentException(
           "Cannot bind data to a RecyclerView missing its adapter."
@@ -70,7 +65,7 @@ public final class RecyclerViewBindingAdapter {
       );
     }
     if (dataList != null) {
-      ((BindableAdapter<T>) adapter).setDataUnchecked(dataList);
+      adapter.setDataUnchecked(dataList);
     }
   }
 
