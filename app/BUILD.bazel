@@ -8,6 +8,55 @@ load("@tools_android//tools/crashlytics:defs.bzl", "crashlytics_android_library"
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
+# Source files for annotations library.
+ANNOTATION_FILES = [
+    "src/main/java/org/oppia/app/activity/ActivityScope.kt",
+    "src/main/java/org/oppia/app/fragment/FragmentScope.kt",
+    "src/main/java/org/oppia/app/utility/KeyboardHelper.kt",
+]
+
+# Source files for listener library.
+LISTENER_FILES = [
+    "src/main/java/org/oppia/app/home/topiclist/TopicSummaryClickListener.kt",
+    "src/main/java/org/oppia/app/administratorcontrols/RouteToAppVersionListener.kt",
+    "src/main/java/org/oppia/app/administratorcontrols/RouteToProfileListListener.kt",
+    "src/main/java/org/oppia/app/drawer/RouteToProfileProgressListener.kt",
+    "src/main/java/org/oppia/app/help/faq/RouteToFAQSingleListener.kt",
+    "src/main/java/org/oppia/app/help/RouteToFAQListListener.kt",
+    "src/main/java/org/oppia/app/home/recentlyplayed/OngoingStoryClickListener.kt",
+    "src/main/java/org/oppia/app/home/RouteToRecentlyPlayedListener.kt",
+    "src/main/java/org/oppia/app/home/RouteToTopicPlayStoryListener.kt",
+    "src/main/java/org/oppia/app/onboarding/RouteToProfileListListener.kt",
+    "src/main/java/org/oppia/app/options/RouteToAppLanguageListListener.kt",
+    "src/main/java/org/oppia/app/options/RouteToAudioLanguageListListener.kt",
+    "src/main/java/org/oppia/app/options/RouteToStoryTextSizeListener.kt",
+    "src/main/java/org/oppia/app/player/audio/LanguageInterface.kt",
+    "src/main/java/org/oppia/app/player/state/answerhandling/InteractionAnswerErrorOrAvailabilityCheckReceiver.kt",
+    "src/main/java/org/oppia/app/player/state/answerhandling/InteractionAnswerHandler.kt",
+    "src/main/java/org/oppia/app/player/state/listener/ContinueNavigationButtonListener.kt",
+    "src/main/java/org/oppia/app/player/state/listener/NextNavigationButtonListener.kt",
+    "src/main/java/org/oppia/app/player/state/listener/PreviousNavigationButtonListener.kt",
+    "src/main/java/org/oppia/app/player/state/listener/PreviousResponsesHeaderClickListener.kt",
+    "src/main/java/org/oppia/app/player/state/listener/ReplayButtonListener.kt",
+    "src/main/java/org/oppia/app/player/state/listener/ReturnToTopicNavigationButtonListener.kt",
+    "src/main/java/org/oppia/app/player/state/listener/RouteToHintsAndSolutionListener.kt",
+    "src/main/java/org/oppia/app/player/state/listener/StateKeyboardButtonListener.kt",
+    "src/main/java/org/oppia/app/player/state/listener/SubmitNavigationButtonListener.kt",
+    "src/main/java/org/oppia/app/profile/RouteToAdminPinListener.kt",
+    "src/main/java/org/oppia/app/profileprogress/ProfilePictureClickListener.kt",
+    "src/main/java/org/oppia/app/profileprogress/RouteToCompletedStoryListListener.kt",
+    "src/main/java/org/oppia/app/profileprogress/RouteToOngoingTopicListListener.kt",
+    "src/main/java/org/oppia/app/recyclerview/OnDragEndedListener.kt",
+    "src/main/java/org/oppia/app/recyclerview/OnItemDragListener.kt",
+    "src/main/java/org/oppia/app/story/ExplorationSelectionListener.kt",
+    "src/main/java/org/oppia/app/topic/lessons/StorySummarySelector.kt",
+    "src/main/java/org/oppia/app/topic/revision/RevisionSubtopicSelector.kt",
+    "src/main/java/org/oppia/app/topic/revisioncard/ReturnToTopicClickListener.kt",
+    "src/main/java/org/oppia/app/topic/RouteToRevisionCardListener.kt",
+    "src/main/java/org/oppia/app/utility/OnClickableAreaClickedListener.kt",
+    "src/main/java/org/oppia/app/utility/RegionClickEvent.kt",
+]
+
 # Source files for view_model library
 VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAppInformationViewModel.kt",
@@ -131,6 +180,7 @@ VIEW_MODEL_FILES = [
     "update_src/main/java/org/oppia/app/topic/info/TopicInfoViewModel",
 ]
 
+# TODO(#1617): Remove genrules post-gradle
 # Files altered by genrules to be excluded in the app library
 ALTERED_VIEW_MODELS = [
     "src/main/java/org/oppia/app/help/HelpListViewModel.kt",
@@ -146,80 +196,18 @@ ALTERED_VIEW_MODELS = [
     "src/main/java/org/oppia/app/parser/StringToFractionParser.kt",
 ]
 
-# TODO(#1617): Remove genrules post-gradle
-# Inputs to the view_model genrule
-GENRULE_VIEW_MODEL_FILES = [
-    "src/main/java/org/oppia/app/help/HelpListViewModel",
-    "src/main/java/org/oppia/app/help/HelpItemViewModel",
-    "src/main/java/org/oppia/app/topic/info/TopicInfoViewModel",
-    "src/main/java/org/oppia/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel",
-    "src/main/java/org/oppia/app/player/state/itemviewmodel/FractionInteractionViewModel",
-    "src/main/java/org/oppia/app/onboarding/OnboadingSlideViewModel",
-    "src/main/java/org/oppia/app/onboarding/OnboardingViewModel",
-    "src/main/java/org/oppia/app/help/faq/FAQListViewModel",
-    "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel",
-    "src/main/java/org/oppia/app/parser/StringToNumberParser",
-    "src/main/java/org/oppia/app/parser/StringToFractionParser",
-]
-
 [genrule(
-    name = "update_" + file,
-    srcs = [file + ".kt"],
-    outs = [file + "_updated.kt"],
+    name = "update_" + file[0:-3],
+    srcs = [file],
+    outs = [file[0:-3] + "_updated.kt"],
     cmd = '''
     cat $(SRCS) |
     sed 's/import org.oppia.app.R/import org.oppia.app.vm.R/g' > $(OUTS)
     ''',
 )
-for file in GENRULE_VIEW_MODEL_FILES]
+for file in ALTERED_VIEW_MODELS]
 
-LISTENER_FILES = [
-    "src/main/java/org/oppia/app/home/topiclist/TopicSummaryClickListener.kt",
-    "src/main/java/org/oppia/app/administratorcontrols/RouteToAppVersionListener.kt",
-    "src/main/java/org/oppia/app/administratorcontrols/RouteToProfileListListener.kt",
-    "src/main/java/org/oppia/app/drawer/RouteToProfileProgressListener.kt",
-    "src/main/java/org/oppia/app/help/faq/RouteToFAQSingleListener.kt",
-    "src/main/java/org/oppia/app/help/RouteToFAQListListener.kt",
-    "src/main/java/org/oppia/app/home/recentlyplayed/OngoingStoryClickListener.kt",
-    "src/main/java/org/oppia/app/home/RouteToRecentlyPlayedListener.kt",
-    "src/main/java/org/oppia/app/home/RouteToTopicPlayStoryListener.kt",
-    "src/main/java/org/oppia/app/onboarding/RouteToProfileListListener.kt",
-    "src/main/java/org/oppia/app/options/RouteToAppLanguageListListener.kt",
-    "src/main/java/org/oppia/app/options/RouteToAudioLanguageListListener.kt",
-    "src/main/java/org/oppia/app/options/RouteToStoryTextSizeListener.kt",
-    "src/main/java/org/oppia/app/player/audio/LanguageInterface.kt",
-    "src/main/java/org/oppia/app/player/state/answerhandling/InteractionAnswerErrorOrAvailabilityCheckReceiver.kt",
-    "src/main/java/org/oppia/app/player/state/answerhandling/InteractionAnswerHandler.kt",
-    "src/main/java/org/oppia/app/player/state/listener/ContinueNavigationButtonListener.kt",
-    "src/main/java/org/oppia/app/player/state/listener/NextNavigationButtonListener.kt",
-    "src/main/java/org/oppia/app/player/state/listener/PreviousNavigationButtonListener.kt",
-    "src/main/java/org/oppia/app/player/state/listener/PreviousResponsesHeaderClickListener.kt",
-    "src/main/java/org/oppia/app/player/state/listener/ReplayButtonListener.kt",
-    "src/main/java/org/oppia/app/player/state/listener/ReturnToTopicNavigationButtonListener.kt",
-    "src/main/java/org/oppia/app/player/state/listener/RouteToHintsAndSolutionListener.kt",
-    "src/main/java/org/oppia/app/player/state/listener/StateKeyboardButtonListener.kt",
-    "src/main/java/org/oppia/app/player/state/listener/SubmitNavigationButtonListener.kt",
-    "src/main/java/org/oppia/app/profile/RouteToAdminPinListener.kt",
-    "src/main/java/org/oppia/app/profileprogress/ProfilePictureClickListener.kt",
-    "src/main/java/org/oppia/app/profileprogress/RouteToCompletedStoryListListener.kt",
-    "src/main/java/org/oppia/app/profileprogress/RouteToOngoingTopicListListener.kt",
-    "src/main/java/org/oppia/app/recyclerview/OnDragEndedListener.kt",
-    "src/main/java/org/oppia/app/recyclerview/OnItemDragListener.kt",
-    "src/main/java/org/oppia/app/story/ExplorationSelectionListener.kt",
-    "src/main/java/org/oppia/app/topic/lessons/StorySummarySelector.kt",
-    "src/main/java/org/oppia/app/topic/revision/RevisionSubtopicSelector.kt",
-    "src/main/java/org/oppia/app/topic/revisioncard/ReturnToTopicClickListener.kt",
-    "src/main/java/org/oppia/app/topic/RouteToRevisionCardListener.kt",
-    "src/main/java/org/oppia/app/utility/OnClickableAreaClickedListener.kt",
-    "src/main/java/org/oppia/app/utility/RegionClickEvent.kt",
-]
-
-ANNOTATION_FILES = [
-    "src/main/java/org/oppia/app/activity/ActivityScope.kt",
-    "src/main/java/org/oppia/app/fragment/FragmentScope.kt",
-    "src/main/java/org/oppia/app/utility/KeyboardHelper.kt",
-]
-
+# Source files and genrule targets for views library.
 VIEW_FILES = [
     "src/main/java/org/oppia/app/customview/interaction/FractionInputInteractionView.kt",
     "src/main/java/org/oppia/app/customview/interaction/NumericInputInteractionView.kt",
@@ -237,6 +225,7 @@ VIEW_FILES = [
     "src/main/java/org/oppia/app/shim/ViewComponentFactory.kt",
 ]
 
+# View files altered by genrules to be excluded in the app library.
 ALTERED_VIEWS = [
     "src/main/java/org/oppia/app/customview/LessonThumbnailImageView.kt",
     "src/main/java/org/oppia/app/customview/SegmentedCircularProgressView.kt",
@@ -244,24 +233,17 @@ ALTERED_VIEWS = [
     "src/main/java/org/oppia/app/utility/ClickableAreasImage.kt",
 ]
 
-GENRULE_VIEW_FILES = [
-    "src/main/java/org/oppia/app/customview/LessonThumbnailImageView",
-    "src/main/java/org/oppia/app/customview/SegmentedCircularProgressView",
-    "src/main/java/org/oppia/app/profile/ProfileInputView",
-    "src/main/java/org/oppia/app/utility/ClickableAreasImage",
-]
-
 # TODO(#1617): Remove genrules post-gradle
 [genrule(
-     name = "update_" + file,
-     srcs = [file + ".kt"],
-     outs = [file + "_updated.kt"],
+     name = "update_" + file[0:-3],
+     srcs = [file],
+     outs = [file[0:-3] + "_updated.kt"],
      cmd = '''
      cat $(SRCS) |
      sed 's/import org.oppia.app.R/import org.oppia.app.views.R/g' > $(OUTS)
      ''',
  )
-for file in GENRULE_VIEW_FILES]
+for file in ALTERED_VIEWS]
 
 # Library for non-layout resource files
 android_library(
