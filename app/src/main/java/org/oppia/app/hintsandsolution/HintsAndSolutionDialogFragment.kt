@@ -11,6 +11,7 @@ import org.oppia.app.model.State
 import javax.inject.Inject
 
 private const val CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY = "CURRENT_EXPANDED_LIST_INDEX"
+private const val STATE_SAVED_KEY = "STATE_SAVED_KEY"
 
 /* Fragment that displays a fullscreen dialog for Hints and Solutions. */
 class HintsAndSolutionDialogFragment :
@@ -74,6 +75,7 @@ class HintsAndSolutionDialogFragment :
       if (currentExpandedHintListIndex == -1) {
         currentExpandedHintListIndex = null
       }
+      state = State.parseFrom(savedInstanceState.getByteArray(STATE_SAVED_KEY)!!)
     }
     val args =
       checkNotNull(
@@ -114,6 +116,7 @@ class HintsAndSolutionDialogFragment :
     if (currentExpandedHintListIndex != null) {
       outState.putInt(CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY, currentExpandedHintListIndex!!)
     }
+    outState.putByteArray(STATE_SAVED_KEY, state.toByteArray())
   }
 
   override fun onExpandListIconClicked(index: Int?) {
