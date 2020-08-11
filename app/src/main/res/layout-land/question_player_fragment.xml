@@ -117,14 +117,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        tools:layout_constraintGuide_percent="0.5f"
-        app:layout_constraintGuide_percent="@{viewModel.centerGuidelinePercentage.floatValue()}" />
+        app:layout_constraintGuide_percent="@{viewModel.centerGuidelinePercentage.floatValue()}"
+        tools:layout_constraintGuide_percent="0.5f" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout
       android:id="@+id/hints_and_solution_fragment_placeholder"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"/>
+      android:layout_height="match_parent" />
 
     <FrameLayout
       android:id="@+id/hints_and_solution_fragment_container"
