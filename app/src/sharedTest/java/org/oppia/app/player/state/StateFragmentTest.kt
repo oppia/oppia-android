@@ -1052,10 +1052,12 @@ class StateFragmentTest {
   }
 
   @Singleton
-  @Component(modules = [
-    TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
-    TestDispatcherModule::class
-  ])
+  @Component(
+    modules = [
+      TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
+      TestDispatcherModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

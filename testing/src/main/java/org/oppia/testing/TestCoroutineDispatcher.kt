@@ -17,7 +17,7 @@ import kotlinx.coroutines.CoroutineDispatcher
  * platforms, so tests should only rely on the API. See [TestCoroutineDispatchers] for more details
  * on how to properly integrate with the test coroutine dispatcher API.
  */
-abstract class TestCoroutineDispatcher: CoroutineDispatcher() {
+abstract class TestCoroutineDispatcher : CoroutineDispatcher() {
   /**
    * Returns whether there are any tasks known to the dispatcher that have not yet been started.
    *
