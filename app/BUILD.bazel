@@ -167,17 +167,6 @@ VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/walkthrough/topiclist/WalkthroughTopicViewModel.kt",
     "src/main/java/org/oppia/app/walkthrough/WalkthroughViewModel.kt",
     "src/main/java/org/oppia/app/walkthrough/welcome/WalkthroughWelcomeViewModel.kt",
-    "update_src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel",
-    "update_src/main/java/org/oppia/app/help/faq/FAQListViewModel",
-    "update_src/main/java/org/oppia/app/help/HelpItemViewModel",
-    "update_src/main/java/org/oppia/app/help/HelpListViewModel",
-    "update_src/main/java/org/oppia/app/onboarding/OnboadingSlideViewModel",
-    "update_src/main/java/org/oppia/app/onboarding/OnboardingViewModel",
-    "update_src/main/java/org/oppia/app/parser/StringToFractionParser",
-    "update_src/main/java/org/oppia/app/parser/StringToNumberParser",
-    "update_src/main/java/org/oppia/app/player/state/itemviewmodel/FractionInteractionViewModel",
-    "update_src/main/java/org/oppia/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel",
-    "update_src/main/java/org/oppia/app/topic/info/TopicInfoViewModel",
 ]
 
 # TODO(#1617): Remove genrules post-gradle
@@ -196,6 +185,17 @@ ALTERED_VIEW_MODELS = [
     "src/main/java/org/oppia/app/topic/info/TopicInfoViewModel.kt",
 ]
 
+[VIEW_MODEL_FILES.append("update_" + altered_view_models[0:-3])
+for altered_view_models in ALTERED_VIEW_MODELS]
+
+# TODO(#1617): Remove genrules post-gradle
+'''
+Genrule for source files in the view_models library.
+
+Because each databinding library must have a unique package name and manifest, resources must be
+imported using the proper package name when building with Bazel. This genrule alters those imports
+in order to keep Gradle building.
+'''
 [genrule(
     name = "update_" + file[0:-3],
     srcs = [file],
@@ -219,12 +219,9 @@ VIEW_FILES = [
     "src/main/java/org/oppia/app/shim/ViewComponentFactory.kt",
     "src/main/java/org/oppia/app/view/ViewComponent.kt",
     "src/main/java/org/oppia/app/view/ViewScope.kt",
-    "update_src/main/java/org/oppia/app/customview/LessonThumbnailImageView",
-    "update_src/main/java/org/oppia/app/customview/SegmentedCircularProgressView",
-    "update_src/main/java/org/oppia/app/profile/ProfileInputView",
-    "update_src/main/java/org/oppia/app/utility/ClickableAreasImage",
 ]
 
+# TODO(#1617): Remove genrules post-gradle
 # View files altered by genrules to be excluded in the app library.
 ALTERED_VIEWS = [
     "src/main/java/org/oppia/app/customview/LessonThumbnailImageView.kt",
@@ -233,7 +230,17 @@ ALTERED_VIEWS = [
     "src/main/java/org/oppia/app/utility/ClickableAreasImage.kt",
 ]
 
+[VIEW_FILES.append("update_" + altered_views[0:-3])
+for altered_views in ALTERED_VIEWS]
+
 # TODO(#1617): Remove genrules post-gradle
+'''
+Genrule for source files in the views library.
+
+Because each databinding library must have a unique package name and manifest, resources must be
+imported using the proper package name when building with Bazel. This genrule alters those imports
+in order to keep Gradle building.
+'''
 [genrule(
      name = "update_" + file[0:-3],
      srcs = [file],
