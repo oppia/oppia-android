@@ -70,7 +70,6 @@ class TopicPracticeFragmentTest {
     Intents.init()
     skillIdList.add("5RM9KPfQxobH")
     skillIdList.add("B39yK4cbHZYI")
-    skillIdList.add("UxTGIJqaHMLa")
   }
 
   @Test
@@ -235,7 +234,7 @@ class TopicPracticeFragmentTest {
     )
     onView(withId(R.id.topic_practice_skill_list)).perform(
       scrollToPosition<RecyclerView.ViewHolder>(
-        10
+        5
       )
     )
     onView(withId(R.id.topic_practice_start_button)).perform(click())
@@ -283,14 +282,14 @@ class TopicPracticeFragmentTest {
       ).perform(click())
       onView(withId(R.id.topic_practice_skill_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          10
+          5
         )
       )
       onView(withId(R.id.topic_practice_start_button)).check(matches(not(isClickable())))
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.topic_practice_skill_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          10
+          5
         )
       )
       onView(withId(R.id.topic_practice_start_button)).check(matches(not(isClickable())))
@@ -317,7 +316,7 @@ class TopicPracticeFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.topic_practice_skill_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          10
+          5
         )
       )
       onView(withId(R.id.topic_practice_start_button)).check(matches(isClickable()))
