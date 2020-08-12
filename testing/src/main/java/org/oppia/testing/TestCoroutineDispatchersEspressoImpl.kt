@@ -8,6 +8,12 @@ import kotlinx.coroutines.InternalCoroutinesApi
 import org.oppia.testing.TestCoroutineDispatcher.TaskIdleListener
 import javax.inject.Inject
 
+/**
+ * Espresso-specific implementation of [TestCoroutineDispatchers].
+ *
+ * This utilizes a real-time clock and provides hooks for an [IdlingResource] that Espresso can use
+ * to monitor background coroutines being run as part of the application.
+ */
 @InternalCoroutinesApi
 @ExperimentalCoroutinesApi
 class TestCoroutineDispatchersEspressoImpl @Inject constructor(
@@ -52,9 +58,6 @@ class TestCoroutineDispatchersEspressoImpl @Inject constructor(
       blockingTestDispatcher.hasPendingCompletableTasks()
   }
 
-  // TODO: make this based on real-time. If running in Espresso, make the test coroutine dispatchers
-  // use real-time and no-op the runCurrent/advanceUntilIdle since they are implied (or, rather,
-  // make them call onIdle() since that's effectively what they're proxying in Robolectric land).
   private inner class TestCoroutineDispatcherIdlingResource : IdlingResource {
     private var resourceCallback: IdlingResource.ResourceCallback? = null
 

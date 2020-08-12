@@ -7,6 +7,13 @@ import java.time.Duration
 import java.util.*
 import javax.inject.Inject
 
+/**
+ * Robolectric-specific implementation of [TestCoroutineDispatchers].
+ *
+ * Unlike its Espresso counterpart, this implementation does not provide an idling resource.
+ * Instead, tests should leverage functions like [runCurrent] and [advanceTimeBy] to run tasks in a
+ * coordinated, deterministic, and thread-safe way.
+ */
 @InternalCoroutinesApi
 @ExperimentalCoroutinesApi
 class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
