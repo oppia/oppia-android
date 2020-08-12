@@ -3,9 +3,11 @@ package org.oppia.testing
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Delay
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.async
+import kotlinx.coroutines.test.DelayController
 import kotlinx.coroutines.test.UncompletedCoroutinesError
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
@@ -26,7 +28,7 @@ import kotlin.math.min
 @ExperimentalCoroutinesApi
 class TestCoroutineDispatcherEspressoImpl private constructor(
   private val realCoroutineDispatcher: CoroutineDispatcher
-) : TestCoroutineDispatcher() {
+) : TestCoroutineDispatcher(), Delay, DelayController {
 
   private val realCoroutineScope by lazy { CoroutineScope(realCoroutineDispatcher) }
   private val executingTaskCount = AtomicInteger(0)

@@ -39,7 +39,7 @@ jobs:
         chmod a+x buf
         
     - name: Kotlin lint check
-      run: ./ktlint --android domain/src/**/*.kt utility/src/**/*.kt data/src/**/*.kt app/src/**/*.kt && echo "Lint completed successfully"
+      run: ./ktlint --android domain/src/**/*.kt utility/src/**/*.kt data/src/**/*.kt app/src/**/*.kt testing/src/**/*.kt && echo "Lint completed successfully"
     
     -  name: Protobuf lint check
        run: ./buf check lint --input=model/src/main/proto --input-config buf.yaml && echo "Protobuf lint check completed successfully"
@@ -90,6 +90,16 @@ jobs:
        with:
          name: domain reports
          path: domain/build/test-results
+
+     - name: Testing tests
+       # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
+       run:  sudo ./gradlew :testing:testDebugUnitTest
+     - name: Upload Testing Test Reports
+       uses: actions/upload-artifact@v2
+       if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
+       with:
+         name: testing reports
+         path: testing/build/test-results
   
   app_tests:
     name: Robolectric Tests - App Module (Non-Flaky)
