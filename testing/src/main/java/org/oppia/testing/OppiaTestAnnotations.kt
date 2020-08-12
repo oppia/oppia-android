@@ -1,7 +1,7 @@
 package org.oppia.testing
 
-import org.oppia.testing.TestPlatform.ROBOLECTRIC
 import org.oppia.testing.TestPlatform.ESPRESSO
+import org.oppia.testing.TestPlatform.ROBOLECTRIC
 
 /** Specifies a test platform to target in conjunction with [RunOn]. */
 enum class TestPlatform {

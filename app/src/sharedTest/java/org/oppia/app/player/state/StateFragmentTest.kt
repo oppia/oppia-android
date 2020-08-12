@@ -1203,7 +1203,7 @@ class StateFragmentTest {
       TestAccessibilityModule::class, LogStorageModule::class
     ]
   )
-  interface TestApplicationComponent: ApplicationComponent {
+  interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
