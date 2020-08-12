@@ -835,12 +835,12 @@ class TopicControllerTest {
 
       assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
       val questionsList = questionListResultCaptor.value.getOrThrow()
-      assertThat(questionsList.size).isEqualTo(5)
+      assertThat(questionsList.size).isEqualTo(4)
       val questionIds = questionsList.map { it.questionId }
       assertThat(questionIds).containsExactlyElementsIn(
         mutableListOf(
           FRACTIONS_QUESTION_ID_0, FRACTIONS_QUESTION_ID_1,
-          FRACTIONS_QUESTION_ID_2, FRACTIONS_QUESTION_ID_3, FRACTIONS_QUESTION_ID_4
+          FRACTIONS_QUESTION_ID_2, FRACTIONS_QUESTION_ID_3
         )
       )
     }
@@ -859,12 +859,11 @@ class TopicControllerTest {
 
       assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
       val questionsList = questionListResultCaptor.value.getOrThrow()
-      assertThat(questionsList.size).isEqualTo(4)
+      assertThat(questionsList.size).isEqualTo(3)
       val questionIds = questionsList.map { it.questionId }
       assertThat(questionIds).containsExactlyElementsIn(
         mutableListOf(
-          FRACTIONS_QUESTION_ID_5, FRACTIONS_QUESTION_ID_6,
-          FRACTIONS_QUESTION_ID_7, FRACTIONS_QUESTION_ID_10
+          FRACTIONS_QUESTION_ID_8, FRACTIONS_QUESTION_ID_9, FRACTIONS_QUESTION_ID_10
         )
       )
     }
@@ -883,12 +882,12 @@ class TopicControllerTest {
 
       assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
       val questionsList = questionListResultCaptor.value.getOrThrow()
-      assertThat(questionsList.size).isEqualTo(3)
+      assertThat(questionsList.size).isEqualTo(4)
       val questionIds = questionsList.map { it.questionId }
       assertThat(questionIds).containsExactlyElementsIn(
         mutableListOf(
-          FRACTIONS_QUESTION_ID_8, FRACTIONS_QUESTION_ID_9,
-          FRACTIONS_QUESTION_ID_10
+          FRACTIONS_QUESTION_ID_4, FRACTIONS_QUESTION_ID_5,
+          FRACTIONS_QUESTION_ID_6, FRACTIONS_QUESTION_ID_7
         )
       )
     }
