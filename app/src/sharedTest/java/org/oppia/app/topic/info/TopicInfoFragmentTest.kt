@@ -31,6 +31,7 @@ import org.oppia.app.topic.TopicActivity
 import org.oppia.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.topic.RATIOS_TOPIC_ID
+import org.robolectric.annotation.LooperMode
 
 private const val TEST_TOPIC_ID = "GJ2rLXRKD5hw"
 private const val TOPIC_NAME = "Fractions"
@@ -49,9 +50,9 @@ private const val DUMMY_TOPIC_DESCRIPTION_LONG =
     "recently with desktop publishing software like Aldus PageMaker " +
     "including versions of Lorem Ipsum."
 
-// NOTE TO DEVELOPERS: this test must be annotated with @LooperMode(LooperMode.MODE.PAUSED) to pass on Robolectric.
 /** Tests for [TopicInfoFragment]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class TopicInfoFragmentTest {
   private val topicThumbnail = R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework
   private val internalProfileId = 0

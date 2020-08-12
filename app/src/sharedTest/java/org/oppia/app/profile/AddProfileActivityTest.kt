@@ -36,9 +36,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
@@ -49,19 +46,19 @@ import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.oppialogger.LogStorageModule
-import org.oppia.domain.profile.ProfileTestHelper
+import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
+import org.oppia.testing.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
-import org.oppia.util.threading.BackgroundDispatcher
-import org.oppia.util.threading.BlockingDispatcher
+import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
-import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class AddProfileActivityTest {
 
   @Inject
@@ -293,7 +290,6 @@ class AddProfileActivityTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
   fun testAddProfileActivity_inputName_checkCreateIsClickable() {
     profileTestHelper.initializeProfiles()
     launch(AddProfileActivity::class.java).use {
@@ -311,7 +307,6 @@ class AddProfileActivityTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
   fun testAddProfileActivity_inputName_changeConfiguration_checkCreateIsClickable() {
     profileTestHelper.initializeProfiles()
     launch(AddProfileActivity::class.java).use {
@@ -330,7 +325,6 @@ class AddProfileActivityTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
   fun testAddProfileActivity_inputNotUniqueName_clickCreate_checkNameNotUniqueError() {
     profileTestHelper.initializeProfiles()
     launch(AddProfileActivity::class.java).use {
@@ -355,7 +349,6 @@ class AddProfileActivityTest {
 
   /* ktlint-disable max-line-length */
   @Test
-  @ExperimentalCoroutinesApi
   fun testAddProfileActivity_changeConfiguration_inputNotUniqueName_clickCreate_checkNameNotUniqueError() {
     profileTestHelper.initializeProfiles()
     launch(AddProfileActivity::class.java).use {
@@ -381,7 +374,6 @@ class AddProfileActivityTest {
   /* ktlint-enable max-line-length */
 
   @Test
-  @ExperimentalCoroutinesApi
   fun testAddProfileActivity_inputNotUniqueName_clickCreate_inputName_checkErrorIsCleared() {
     profileTestHelper.initializeProfiles()
     launch(AddProfileActivity::class.java).use {
@@ -414,7 +406,6 @@ class AddProfileActivityTest {
 
   /* ktlint-disable max-line-length */
   @Test
-  @ExperimentalCoroutinesApi
   fun testAddProfileActivity_changeConfiguration_inputNotUniqueName_clickCreate_inputName_checkErrorIsCleared() {
     profileTestHelper.initializeProfiles()
     launch(AddProfileActivity::class.java).use {
@@ -1326,7 +1317,6 @@ class AddProfileActivityTest {
 
   /* ktlint-disable max-line-length */
   @Test
-  @ExperimentalCoroutinesApi
   fun testAddProfileActivity_inputNotUniqueName_clickCreate_changeConfiguration_checkErrorMessageDisplayed() {
     profileTestHelper.initializeProfiles()
     launch(AddProfileActivity::class.java).use {
@@ -1557,41 +1547,12 @@ class AddProfileActivityTest {
     return ActivityResult(RESULT_OK, resultIntent)
   }
 
-  @Qualifier
-  annotation class TestDispatcher
-
   @Module
   class TestModule {
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
       return application
-    }
-
-    @ExperimentalCoroutinesApi
-    @Singleton
-    @Provides
-    @TestDispatcher
-    fun provideTestDispatcher(): CoroutineDispatcher {
-      return TestCoroutineDispatcher()
-    }
-
-    @Singleton
-    @Provides
-    @BackgroundDispatcher
-    fun provideBackgroundDispatcher(
-      @TestDispatcher testDispatcher: CoroutineDispatcher
-    ): CoroutineDispatcher {
-      return testDispatcher
-    }
-
-    @Singleton
-    @Provides
-    @BlockingDispatcher
-    fun provideBlockingDispatcher(
-      @TestDispatcher testDispatcher: CoroutineDispatcher
-    ): CoroutineDispatcher {
-      return testDispatcher
     }
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
@@ -1610,7 +1571,12 @@ class AddProfileActivityTest {
   }
 
   @Singleton
-  @Component(modules = [TestModule::class, TestLogReportingModule::class, LogStorageModule::class])
+  @Component(
+    modules = [
+      TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
+      TestDispatcherModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

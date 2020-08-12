@@ -2,8 +2,10 @@ package org.oppia.testing
 
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Delay
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.test.DelayController
 import kotlinx.coroutines.test.UncompletedCoroutinesError
 import java.util.TreeSet
 import java.util.concurrent.CopyOnWriteArraySet
@@ -32,7 +34,7 @@ import kotlin.coroutines.CoroutineContext
 class TestCoroutineDispatcherRobolectricImpl private constructor(
   private val fakeSystemClock: FakeSystemClock,
   private val realCoroutineDispatcher: CoroutineDispatcher
-) : TestCoroutineDispatcher() {
+) : TestCoroutineDispatcher(), Delay, DelayController {
 
   /** Sorted set that first sorts on when a task should be executed, then insertion order. */
   private val taskQueue = CopyOnWriteArraySet<Task>()

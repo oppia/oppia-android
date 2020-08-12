@@ -1,7 +1,5 @@
 package org.oppia.testing
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.InternalCoroutinesApi
 import java.lang.reflect.Method
 import java.time.Duration
 import java.util.TreeSet
@@ -14,8 +12,6 @@ import javax.inject.Inject
  * Instead, tests should leverage functions like [runCurrent] and [advanceTimeBy] to run tasks in a
  * coordinated, deterministic, and thread-safe way.
  */
-@InternalCoroutinesApi
-@ExperimentalCoroutinesApi
 class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
   @BackgroundTestDispatcher private val backgroundTestDispatcher: TestCoroutineDispatcher,
   @BlockingTestDispatcher private val blockingTestDispatcher: TestCoroutineDispatcher,
@@ -31,14 +27,12 @@ class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
     // Do nothing; idling resources aren't used in Robolectric.
   }
 
-  @ExperimentalCoroutinesApi
   override fun runCurrent() {
     do {
       flushNextTasks()
     } while (hasPendingCompletableTasks())
   }
 
-  @ExperimentalCoroutinesApi
   override fun advanceTimeBy(delayTimeMillis: Long) {
     var remainingDelayMillis = delayTimeMillis
     while (remainingDelayMillis > 0) {
@@ -54,7 +48,6 @@ class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
     }
   }
 
-  @ExperimentalCoroutinesApi
   override fun advanceUntilIdle() {
     // First, run through all tasks that are currently pending and can be run immediately.
     runCurrent()
@@ -73,7 +66,6 @@ class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
     }
   }
 
-  @ExperimentalCoroutinesApi
   private fun advanceToNextFutureTask(
     currentTimeMillis: Long,
     maxDelayMs: Long = Long.MAX_VALUE
@@ -88,7 +80,6 @@ class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
     }
   }
 
-  @ExperimentalCoroutinesApi
   private fun flushNextTasks() {
     if (backgroundTestDispatcher.hasPendingCompletableTasks()) {
       backgroundTestDispatcher.runCurrent()

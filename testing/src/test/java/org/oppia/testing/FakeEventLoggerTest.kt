@@ -17,12 +17,14 @@ import org.oppia.app.model.EventLog
 import org.oppia.app.model.EventLog.Priority
 import org.oppia.util.logging.EventLogger
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass
 import kotlin.reflect.full.cast
 
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class FakeEventLoggerTest {
 
