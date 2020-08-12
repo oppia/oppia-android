@@ -13,6 +13,7 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
+// TODO(#1633): Fix ViewModel to not depend on View
 /** The ViewModel for [ProfileEditActivity]. */
 @ActivityScope
 class ProfileEditViewModel @Inject constructor(

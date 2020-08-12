@@ -9,7 +9,7 @@ import org.oppia.app.shim.IntentFactoryShim
 /** [ViewModel] for the recycler view in [AdministratorControlsFragment]. */
 class AdministratorControlsAccountActionsViewModel(
   private val fragment: Fragment,
-  private val IntentFactoryShim: IntentFactoryShim
+  private val intentFactoryShim: IntentFactoryShim
 ) : AdministratorControlsItemViewModel() {
 
   fun onLogOutClicked() {
@@ -20,7 +20,7 @@ class AdministratorControlsAccountActionsViewModel(
       }
       .setPositiveButton(R.string.log_out_dialog_okay_button) { _, _ ->
         // TODO(#762): Replace [ProfileChooserActivity] to [LoginActivity] once it is added.
-        val intent = IntentFactoryShim.createProfileActivityIntent(fragment.activity!!)
+        val intent = intentFactoryShim.createProfileActivityIntent(fragment.activity!!)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         fragment.activity!!.startActivity(intent)
         fragment.activity!!.finish()
