@@ -14,7 +14,7 @@ import org.oppia.util.parser.ConceptCardHtmlParserEntityType
 import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
 
-//TODO(#1633): Fix ViewModel to not depend on View
+// TODO(#1633): Fix ViewModel to not depend on View
 /** [ViewModel] for concept card, providing rich text and worked examples */
 @FragmentScope
 class ConceptCardViewModel @Inject constructor(
