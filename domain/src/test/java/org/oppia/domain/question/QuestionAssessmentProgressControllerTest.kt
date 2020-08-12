@@ -43,6 +43,7 @@ import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputMo
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.topic.TEST_SKILL_ID_0
 import org.oppia.domain.topic.TEST_SKILL_ID_1
 import org.oppia.domain.topic.TEST_SKILL_ID_2
@@ -68,10 +69,12 @@ import kotlinx.coroutines.test.runBlockingTest as runBlockingTest1
 @Config(manifest = Config.NONE)
 class QuestionAssessmentProgressControllerTest {
   private val TEST_SKILL_ID_LIST_012 =
-    listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, TEST_SKILL_ID_2) // questions 0, 2, 3
-  private val TEST_SKILL_ID_LIST_02 = listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_2) // questions 2, 1, 5
-  private val TEST_SKILL_ID_LIST_01 = listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1) // questions 2, 0, 3
-  private val TEST_SKILL_ID_LIST_2 = listOf(TEST_SKILL_ID_2) // questions 4, 5, 2
+    listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, TEST_SKILL_ID_2) // questions 0, 1, 2, 3, 4, 5
+  private val TEST_SKILL_ID_LIST_02 =
+    listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_2) // questions 0, 1, 2, 4, 5
+  private val TEST_SKILL_ID_LIST_01 =
+    listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1) // questions 0, 1, 2, 3
+  private val TEST_SKILL_ID_LIST_2 = listOf(TEST_SKILL_ID_2) // questions 2, 4, 5
 
   @Rule
   @JvmField
@@ -617,7 +620,7 @@ class QuestionAssessmentProgressControllerTest {
       )
       assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
       val currentQuestion = currentQuestionResultCaptor.value.getOrThrow()
-      assertThat(currentQuestion.ephemeralState.state.content.html).contains("frac{1}{4}")
+      assertThat(currentQuestion.ephemeralState.state.content.html).contains("1/2 + 1/4")
     }
 
   @Test
@@ -1276,7 +1279,7 @@ class QuestionAssessmentProgressControllerTest {
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
       TextInputRuleModule::class, InteractionsModule::class,
       DragDropSortInputModule::class, TestLogReportingModule::class,
-      ImageClickInputModule::class
+      ImageClickInputModule::class, LogStorageModule::class
     ]
   )
   interface TestApplicationComponent {

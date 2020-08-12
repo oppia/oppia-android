@@ -1,0 +1,73 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="htmlContent"
+      type="CharSequence" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.player.state.itemviewmodel.ContentViewModel" />
+  </data>
+
+  <FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@{viewModel.hasConversationView ? @drawable/content_blue_background : @drawable/transparent_background}"
+    app:explorationSplitViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
+    app:explorationSplitViewMarginBottom="@{@dimen/margin_0}"
+    app:explorationSplitViewMarginEnd="@{@dimen/margin_40}"
+    app:explorationSplitViewMarginStart="@{@dimen/margin_24}"
+    app:explorationSplitViewMarginTop="@{@dimen/margin_40}"
+    app:explorationSplitViewPaddingApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
+    app:explorationSplitViewPaddingBottom="@{@dimen/padding_16}"
+    app:explorationSplitViewPaddingEnd="@{@dimen/padding_12}"
+    app:explorationSplitViewPaddingStart="@{@dimen/padding_12}"
+    app:explorationSplitViewPaddingTop="@{@dimen/padding_16}"
+    app:explorationViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
+    app:explorationViewMarginBottom="@{@dimen/margin_0}"
+    app:explorationViewMarginEnd="@{@dimen/margin_80}"
+    app:explorationViewMarginStart="@{@dimen/margin_48}"
+    app:explorationViewMarginTop="@{@dimen/margin_16}"
+    app:explorationViewPaddingApplicable="@{viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
+    app:explorationViewPaddingBottom="@{@dimen/padding_16}"
+    app:explorationViewPaddingEnd="@{@dimen/padding_12}"
+    app:explorationViewPaddingStart="@{@dimen/padding_12}"
+    app:explorationViewPaddingTop="@{@dimen/padding_16}"
+    app:questionSplitViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
+    app:questionSplitViewMarginBottom="@{@dimen/margin_16}"
+    app:questionSplitViewMarginEnd="@{@dimen/margin_32}"
+    app:questionSplitViewMarginStart="@{@dimen/margin_32}"
+    app:questionSplitViewMarginTop="@{@dimen/margin_40}"
+    app:questionSplitViewPaddingApplicable="@{!viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
+    app:questionSplitViewPaddingBottom="@{@dimen/padding_0}"
+    app:questionSplitViewPaddingEnd="@{@dimen/padding_0}"
+    app:questionSplitViewPaddingStart="@{@dimen/padding_0}"
+    app:questionSplitViewPaddingTop="@{@dimen/padding_0}"
+    app:questionViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
+    app:questionViewMarginBottom="@{@dimen/margin_16}"
+    app:questionViewMarginEnd="@{@dimen/margin_64}"
+    app:questionViewMarginStart="@{@dimen/margin_64}"
+    app:questionViewMarginTop="@{@dimen/margin_32}"
+    app:questionViewPaddingApplicable="@{!viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
+    app:questionViewPaddingBottom="@{@dimen/padding_0}"
+    app:questionViewPaddingEnd="@{@dimen/padding_0}"
+    app:questionViewPaddingStart="@{@dimen/padding_0}"
+    app:questionViewPaddingTop="@{@dimen/padding_0}">
+
+    <TextView
+      android:id="@+id/content_text_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:breakStrategy="simple"
+      android:fontFamily="sans-serif"
+      android:text="@{htmlContent}"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textSize="16sp"
+      android:visibility="@{htmlContent.length() > 0 ? View.VISIBLE : View.GONE, default=gone}" />
+  </FrameLayout>
+</layout>

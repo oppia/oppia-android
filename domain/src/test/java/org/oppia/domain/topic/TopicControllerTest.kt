@@ -20,6 +20,7 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
+import org.json.JSONException
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -41,6 +42,7 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Question
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.Topic
+import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.testing.FakeExceptionLogger
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.caching.CacheAssetsLocally
@@ -195,7 +197,6 @@ class TopicControllerTest {
       val topic = topicResultCaptor.value!!.getOrThrow()
       assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
       assertThat(topic.storyCount).isEqualTo(1)
-      assertThat(topic.skillCount).isEqualTo(3)
     }
 
   @Test
@@ -222,7 +223,6 @@ class TopicControllerTest {
       val topic = topicResultCaptor.value!!.getOrThrow()
       assertThat(topic.topicId).isEqualTo(RATIOS_TOPIC_ID)
       assertThat(topic.storyCount).isEqualTo(2)
-      assertThat(topic.skillCount).isEqualTo(1)
     }
 
   @Test
@@ -400,6 +400,20 @@ class TopicControllerTest {
       verifyGetStorySucceeded()
       val story = storySummaryResultCaptor.value!!.getOrThrow()
       assertThat(story.getChapter(0).name).isEqualTo("Fifth Exploration")
+    }
+
+  @Test
+  @ExperimentalCoroutinesApi
+  fun testRetrieveStory_validStory_returnsStoryWithChapterSummary() =
+    runBlockingTest(coroutineContext) {
+      topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0)
+        .observeForever(mockStorySummaryObserver)
+      advanceUntilIdle()
+
+      verifyGetStorySucceeded()
+      val story = storySummaryResultCaptor.value!!.getOrThrow()
+      assertThat(story.getChapter(0).summary)
+        .isEqualTo("This is outline/summary for <b>What is a Fraction?</b>")
     }
 
   @Test
@@ -753,16 +767,17 @@ class TopicControllerTest {
 
   @Test
   fun testGetConceptCard_invalidSkillId_returnsFailure() {
-    val conceptCardLiveData = topicController
-      .getConceptCard("invalid_skill_id")
+    topicController.getConceptCard("invalid_skill_id")
 
-    assertThat(conceptCardLiveData.value!!.isFailure()).isTrue()
+    val exception = fakeExceptionLogger.getMostRecentException()
+
+    assertThat(exception).isInstanceOf(JSONException::class.java)
   }
 
   @Test
   fun testGetReviewCard_fractionSubtopicId1_isSuccessful() {
     val reviewCardLiveData = topicController
-      .getRevisionCard(FRACTIONS_TOPIC_ID, SUBTOPIC_TOPIC_ID)
+      .getRevisionCard(FRACTIONS_TOPIC_ID, SUBTOPIC_TOPIC_ID_2)
     val reviewCardResult = reviewCardLiveData.value
     assertThat(reviewCardResult).isNotNull()
     assertThat(reviewCardResult!!.isSuccess()).isTrue()
@@ -782,19 +797,6 @@ class TopicControllerTest {
       assertThat(topic.subtopicList[0].subtopicThumbnail.thumbnailGraphic).isEqualTo(
         LessonThumbnailGraphic.WHAT_IS_A_FRACTION
       )
-    }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testRetrieveSubtopicTopic_validSubtopic_subtopicsHaveNoThumbnailUrls() =
-    runBlockingTest(coroutineContext) {
-      topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID).observeForever(mockTopicObserver)
-      advanceUntilIdle()
-
-      verifyGetTopicSucceeded()
-      val topic = topicResultCaptor.value!!.getOrThrow()
-      assertThat(topic.subtopicList[0].thumbnailUrl).isEmpty()
-      assertThat(topic.subtopicList[1].thumbnailUrl).isEmpty()
     }
 
   @Test
@@ -916,16 +918,20 @@ class TopicControllerTest {
 
   @Test
   @ExperimentalCoroutinesApi
-  fun testRetrieveQuestionsForInvalidSkillIds_returnsFailure() = runBlockingTest(coroutineContext) {
-    val questionsListProvider = topicController
-      .retrieveQuestionsForSkillIds(
-        listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, "NON_EXISTENT_SKILL_ID")
-      )
-    dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
-    verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
+  fun testRetrieveQuestionsForInvalidSkillIds_returnsResultForValidSkillsOnly() =
+    runBlockingTest(coroutineContext) {
+      val questionsListProvider = topicController
+        .retrieveQuestionsForSkillIds(
+          listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, "NON_EXISTENT_SKILL_ID")
+        )
+      dataProviders.convertToLiveData(questionsListProvider)
+        .observeForever(mockQuestionListObserver)
+      verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
 
-    assertThat(questionListResultCaptor.value.isFailure()).isTrue()
-  }
+      assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+      val questionsList = questionListResultCaptor.value.getOrThrow()
+      assertThat(questionsList.size).isEqualTo(5)
+    }
 
   @Test
   @ExperimentalCoroutinesApi
@@ -1213,7 +1219,7 @@ class TopicControllerTest {
   @Test
   @ExperimentalCoroutinesApi
   fun testGetRevisionCard_noTopicAndSubtopicId_returnsFailure_logsException() {
-    topicController.getRevisionCard("", "")
+    topicController.getRevisionCard("", 0)
 
     val exception = fakeExceptionLogger.getMostRecentException()
 
@@ -1374,7 +1380,7 @@ class TopicControllerTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class, TestLogReportingModule::class])
+  @Component(modules = [TestModule::class, TestLogReportingModule::class, LogStorageModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

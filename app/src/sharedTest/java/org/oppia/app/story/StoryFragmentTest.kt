@@ -50,6 +50,7 @@ import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.app.testing.StoryFragmentTestActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
@@ -196,6 +197,41 @@ class StoryFragmentTest {
   }
 
   @Test
+  fun testStoryFragment_chapterSummaryIsShownCorrectly() {
+    launch<StoryFragmentTestActivity>(createStoryActivityIntent()).use {
+      waitForTheView(withText("Chapter 1: What is a Fraction?"))
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(atPositionOnView(R.id.story_chapter_list, 1, R.id.chapter_summary)).check(
+        matches(
+          withText("This is outline/summary for What is a Fraction?")
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStoryFragment_changeConfiguration_chapterSummaryIsShownCorrectly() {
+    launch<StoryFragmentTestActivity>(createStoryActivityIntent()).use {
+      onView(isRoot()).perform(orientationLandscape())
+      waitForTheView(withText("Chapter 1: What is a Fraction?"))
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(atPositionOnView(R.id.story_chapter_list, 1, R.id.chapter_summary)).check(
+        matches(
+          withText("This is outline/summary for What is a Fraction?")
+        )
+      )
+    }
+  }
+
+  @Test
   fun testStoryFragment_changeConfiguration_correctStoryCountInHeader() {
     launch<StoryFragmentTestActivity>(createStoryActivityIntent()).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -331,7 +367,7 @@ class StoryFragmentTest {
   }
 
   @Singleton
-  @Component(modules = [TestModule::class, TestLogReportingModule::class])
+  @Component(modules = [TestModule::class, TestLogReportingModule::class, LogStorageModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

@@ -74,10 +74,10 @@ class TopicTestActivity :
     )
   }
 
-  override fun routeToRevisionCard(topicId: String, subtopicId: String) {
+  override fun routeToRevisionCard(internalProfileId: Int, topicId: String, subtopicId: Int) {
     startActivity(
       RevisionCardActivity.createRevisionCardActivityIntent(
-        this, topicId, subtopicId
+        this, internalProfileId, topicId, subtopicId
       )
     )
   }

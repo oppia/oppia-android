@@ -64,6 +64,7 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.ongoingtopiclist.OngoingTopicListActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.domain.topic.StoryProgressTestHelper
 import org.oppia.testing.TestLogReportingModule
@@ -412,14 +413,14 @@ class ProfileProgressFragmentTest {
           1
         )
       )
-      waitForTheView(withText("What is a Fraction?"))
+      waitForTheView(withText("Prototype Exploration"))
       onView(
         atPositionOnView(
           R.id.profile_progress_list,
           1, R.id.chapter_name_text_view
         )
       ).check(
-        matches(withText(containsString("What is a Fraction?")))
+        matches(withText(containsString("Prototype Exploration")))
       )
     }
   }
@@ -431,11 +432,11 @@ class ProfileProgressFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_progress_list))
         .perform(scrollToPosition<RecyclerView.ViewHolder>(1))
-      waitForTheView(withText("What is a Fraction?"))
+      waitForTheView(withText("Prototype Exploration"))
       onView(
         atPositionOnView(R.id.profile_progress_list, 1, R.id.chapter_name_text_view)
       ).check(
-        matches(withText(containsString("What is a Fraction?")))
+        matches(withText(containsString("Prototype Exploration")))
       )
     }
   }
@@ -448,14 +449,14 @@ class ProfileProgressFragmentTest {
           1
         )
       )
-      waitForTheView(withText("Matthew Goes to the Bakery"))
+      waitForTheView(withText("First Story"))
       onView(
         atPositionOnView(
           R.id.profile_progress_list,
           1, R.id.story_name_text_view
         )
       ).check(
-        matches(withText(containsString("Matthew Goes to the Bakery")))
+        matches(withText(containsString("First Story")))
       )
     }
   }
@@ -468,14 +469,14 @@ class ProfileProgressFragmentTest {
           1
         )
       )
-      waitForTheView(withText("FRACTIONS"))
+      waitForTheView(withText("FIRST TEST TOPIC"))
       onView(
         atPositionOnView(
           R.id.profile_progress_list,
           1, R.id.topic_name_text_view
         )
       ).check(
-        matches(withText(containsString("FRACTIONS")))
+        matches(withText(containsString("FIRST TEST TOPIC")))
       )
     }
   }
@@ -716,7 +717,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Singleton
-  @Component(modules = [TestModule::class, TestLogReportingModule::class])
+  @Component(modules = [TestModule::class, TestLogReportingModule::class, LogStorageModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

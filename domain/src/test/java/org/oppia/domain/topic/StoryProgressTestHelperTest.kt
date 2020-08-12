@@ -38,6 +38,7 @@ import org.oppia.app.model.OngoingTopicList
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.StorySummary
 import org.oppia.app.model.Topic
+import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.data.AsyncResult
@@ -930,7 +931,7 @@ class StoryProgressTestHelperTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class, TestLogReportingModule::class])
+  @Component(modules = [TestModule::class, TestLogReportingModule::class, LogStorageModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

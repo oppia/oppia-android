@@ -1,0 +1,23 @@
+{
+  "subtopic_title":"What is Fraction?",
+  "topic_id": "GJ2rLXRKD5hw",
+  "page_contents":{
+    "subtitled_html":{
+      "content_id":"content",
+      "html":"\u003cp\u003eDescription of subtopic is here.\u003c/p\u003e.<p>This is sample subtopic with dummy content related to Fractions.<p>Fractions represent equal parts of a whole or a collection. Fraction of a whole: When we divide a whole into equal parts, each part is a fraction of the whole. A fraction has two parts. The number on the top of the line is called the numerator. It tells how many equal parts of the whole or collection are taken.  The number below the line is called the denominator.  It shows the total divisible number of equal parts the whole into or the total number of equal parts which are there in a collection."
+    },
+    "written_translations":{
+      "translations_mapping":{
+        "content":{
+
+        }
+      }
+    },
+    "recorded_voiceovers":{
+      "voiceovers_mapping":{
+        "content":{
+        }
+      }
+    }
+  }
+}
