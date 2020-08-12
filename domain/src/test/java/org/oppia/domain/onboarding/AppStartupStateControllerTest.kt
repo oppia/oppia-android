@@ -354,10 +354,12 @@ class AppStartupStateControllerTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [
-    TestModule::class, TestDispatcherModule::class, TestLogReportingModule::class,
-    ExpirationMetaDataRetrieverModule::class // Use the real implementation to test closer to prod.
-  ])
+  @Component(
+    modules = [
+      TestModule::class, TestDispatcherModule::class, TestLogReportingModule::class,
+      ExpirationMetaDataRetrieverModule::class // Use real implementation to test closer to prod.
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

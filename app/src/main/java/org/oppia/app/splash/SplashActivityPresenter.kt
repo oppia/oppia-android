@@ -43,29 +43,32 @@ class SplashActivityPresenter @Inject constructor(
   }
 
   private fun subscribeToOnboardingFlow() {
-    getOnboardingFlow().observe(activity, Observer { startupMode ->
-      when (startupMode) {
-        StartupMode.USER_IS_ONBOARDED -> {
-          activity.startActivity(ProfileActivity.createProfileActivity(activity))
-          activity.finish()
-        }
-        StartupMode.APP_IS_DEPRECATED -> {
-          if (getDeprecationNoticeDialogFragment() == null) {
-            activity.supportFragmentManager.beginTransaction()
-              .add(
-                AutomaticAppDeprecationNoticeDialogFragment.newInstance(),
-                AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG
-              ).commitNow()
+    getOnboardingFlow().observe(
+      activity,
+      Observer { startupMode ->
+        when (startupMode) {
+          StartupMode.USER_IS_ONBOARDED -> {
+            activity.startActivity(ProfileActivity.createProfileActivity(activity))
+            activity.finish()
+          }
+          StartupMode.APP_IS_DEPRECATED -> {
+            if (getDeprecationNoticeDialogFragment() == null) {
+              activity.supportFragmentManager.beginTransaction()
+                .add(
+                  AutomaticAppDeprecationNoticeDialogFragment.newInstance(),
+                  AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG
+                ).commitNow()
+            }
+          }
+          else -> {
+            // In all other cases (including errors when the startup state fails to load or is
+            // defaulted), assume the user needs to be onboarded.
+            activity.startActivity(OnboardingActivity.createOnboardingActivity(activity))
+            activity.finish()
           }
         }
-        else -> {
-          // In all other cases (including errors when the startup state fails to load or is
-          // defaulted), assume the user needs to be onboarded.
-          activity.startActivity(OnboardingActivity.createOnboardingActivity(activity))
-          activity.finish()
-        }
       }
-    })
+    )
   }
 
   private fun getOnboardingFlow(): LiveData<StartupMode> {

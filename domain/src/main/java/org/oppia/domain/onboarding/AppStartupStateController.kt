@@ -10,7 +10,8 @@ import org.oppia.util.data.DataProviders
 import org.oppia.util.logging.ConsoleLogger
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -43,7 +44,8 @@ class AppStartupStateController @Inject constructor(
         consoleLogger.e(
           "DOMAIN",
           "Failed to prime cache ahead of LiveData conversion for user onboarding data.",
-          it)
+          it
+        )
       }
     }
   }
@@ -59,7 +61,8 @@ class AppStartupStateController @Inject constructor(
     }.invokeOnCompletion {
       it?.let {
         consoleLogger.e(
-          "DOMAIN", "Failed when storing that the user already onboarded the app.", it)
+          "DOMAIN", "Failed when storing that the user already onboarded the app.", it
+        )
       }
     }
   }
@@ -84,7 +87,8 @@ class AppStartupStateController @Inject constructor(
     val applicationMetadata = expirationMetaDataRetriever.getMetaData()
     val isAppExpirationEnabled =
       applicationMetadata?.getBoolean(
-        "automatic_app_expiration_enabled", /* defaultValue= */ true) ?: true
+        "automatic_app_expiration_enabled", /* defaultValue= */ true
+      ) ?: true
     return if (isAppExpirationEnabled) {
       val expirationDateString = applicationMetadata?.getString("expiration_date")
       val expirationDate = expirationDateString?.let { parseDate(it) }

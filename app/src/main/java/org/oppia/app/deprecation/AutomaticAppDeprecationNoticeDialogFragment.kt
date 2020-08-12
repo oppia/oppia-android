@@ -14,7 +14,7 @@ import javax.inject.Inject
  * from the app being accessible to audience members for long-periods of time when it may not yet be
  * ready for broad use or distribution.
  */
-class AutomaticAppDeprecationNoticeDialogFragment: InjectableDialogFragment() {
+class AutomaticAppDeprecationNoticeDialogFragment : InjectableDialogFragment() {
   companion object {
     /** Returns a new instance of [AutomaticAppDeprecationNoticeDialogFragment]. */
     fun newInstance(): AutomaticAppDeprecationNoticeDialogFragment {

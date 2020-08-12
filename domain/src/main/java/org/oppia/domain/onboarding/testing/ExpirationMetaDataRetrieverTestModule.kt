@@ -1,8 +1,8 @@
 package org.oppia.domain.onboarding.testing
 
-import org.oppia.domain.onboarding.ExpirationMetaDataRetriever
 import dagger.Binds
 import dagger.Module
+import org.oppia.domain.onboarding.ExpirationMetaDataRetriever
 
 /** Module for providing a fake [ExpirationMetaDataRetriever] implementation. */
 @Module
