@@ -13,6 +13,8 @@ kt_android_library(
     custom_package = "org.oppia.domain",
     srcs = glob(["src/main/java/org/oppia/domain/**"]),
     data = glob(["src/main/assets/**"]),
+    assets = glob(["src/main/assets/**"]),
+    assets_dir = "src/main/assets/",
     manifest = "src/main/AndroidManifest.xml",
     deps = [
         ":dagger",
