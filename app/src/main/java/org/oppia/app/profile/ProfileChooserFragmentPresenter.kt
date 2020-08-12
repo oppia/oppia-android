@@ -170,6 +170,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     model: ProfileChooserUiModel
   ) {
     binding.viewModel = model
+    binding.wasProfileEverBeenAddedValue  = wasProfileEverBeenAddedValue
     binding.profileChooserItem.setOnClickListener {
       if (model.profile.pin.isEmpty()) {
         profileManagementController.loginToProfile(model.profile.id).observe(

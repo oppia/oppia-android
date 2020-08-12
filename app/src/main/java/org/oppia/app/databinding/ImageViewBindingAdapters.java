@@ -2,6 +2,7 @@ package org.oppia.app.databinding;
 
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.view.View;
 import android.widget.ImageView;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
@@ -12,6 +13,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
+import com.jackandphantom.circularimageview.CircleImage;
 import org.oppia.app.R;
 import org.oppia.app.model.LessonThumbnailGraphic;
 import org.oppia.app.model.ProfileAvatar;
@@ -148,5 +150,21 @@ public final class ImageViewBindingAdapters {
             .into(imageView);
       }
     }
+  }
+
+  /**
+   *
+   */
+  @BindingAdapter("app:onClick")
+  public static void setOnClick(@NonNull ImageView imageView, View.OnClickListener listener) {
+    imageView.setOnClickListener(listener);
+  }
+
+  /**
+   *
+   */
+  @BindingAdapter("app:onClick")
+  public static void setOnClick(@NonNull CircleImage imageView, View.OnClickListener listener) {
+    imageView.setOnClickListener(listener);
   }
 }
