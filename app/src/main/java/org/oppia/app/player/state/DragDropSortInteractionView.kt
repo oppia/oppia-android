@@ -93,7 +93,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
           viewBindingShim.setDragDropInteractionItemsBinding(view)
           viewBindingShim.getDragDropInteractionItemsBindingRecyclerView().adapter =
             createNestedAdapter()
-          adapter?.let { viewBindingShim.setDragDropInteractionItemsBindingAdapter(it) };
+          adapter?.let { viewBindingShim.setDragDropInteractionItemsBindingAdapter(it) }
           viewBindingShim.getDragDropInteractionItemsBindingGroupItem().isVisible =
             isMultipleItemsInSamePositionAllowed
           viewBindingShim.getDragDropInteractionItemsBindingUnlinkItems().isVisible =
@@ -124,7 +124,8 @@ class DragDropSortInteractionView @JvmOverloads constructor(
             resourceBucketName,
             entityType,
             entityId,
-            viewModel)
+            viewModel
+          )
         }
       )
       .build()

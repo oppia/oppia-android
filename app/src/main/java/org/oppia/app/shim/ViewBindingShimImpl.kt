@@ -8,7 +8,6 @@ import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
@@ -19,7 +18,6 @@ import org.oppia.app.databinding.MultipleChoiceInteractionItemsBinding
 import org.oppia.app.databinding.ProfileInputViewBinding
 import org.oppia.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
-import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
 
@@ -229,7 +227,8 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
   override fun provideDragDropSingleItemInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
-    attachToParent: Boolean): View {
+    attachToParent: Boolean
+  ): View {
     return DragDropSingleItemBinding.inflate(
       LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
     ).root
