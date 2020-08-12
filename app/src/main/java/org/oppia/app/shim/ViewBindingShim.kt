@@ -5,6 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.FrameLayout
+import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.databinding.DragDropInteractionItemsBinding
@@ -98,29 +100,54 @@ interface ViewBindingShim {
   )
 
   /**
-   * Handles implementation of createAdapter() function in [DragDropSortInteractionView] in order
-   * for the file not to depend on [DragDropInteractionItemsBinding].
+   * Handles binding inflation for [DragDropSortInteractionView]'s SortInteraction and returns the
+   * binding's view.
    */
-  fun createDragDropInteractionViewAdapter(
-    adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
-    isMultipleItemsInSamePositionAllowed: Boolean,
-    isAccessibilityEnabled: Boolean,
-    htmlParserFactory: HtmlParser.Factory,
-    resourceBucketName: String,
-    entityType: String,
-    entityId: String
-  ): BindableAdapter<DragDropInteractionContentViewModel>
+  fun provideDragDropSortInteractionInflatedView(
+    inflater: LayoutInflater,
+    parent: ViewGroup,
+    attachToParent: Boolean): View
+
+  fun setDragDropInteractionItemsBinding(
+    view: View
+  )
+
+  fun setDragDropInteractionItemsBindingAdapter(
+    adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
+  )
+
+  fun getDragDropInteractionItemsBindingRecyclerView(): RecyclerView
+
+  fun getDragDropInteractionItemsBindingGroupItem(): ImageButton
+
+  fun getDragDropInteractionItemsBindingUnlinkItems(): ImageButton
+
+  fun getDragDropInteractionItemsBindingAccessibleContainer(): LinearLayout
+
+  fun setDragDropInteractionItemsBindingViewModel(
+    viewModel: DragDropInteractionContentViewModel
+  )
 
   /**
-   * Handles implementation of createNestedAdapter() function in [DragDropSortInteractionView] in
-   * order for the file not to depend on [DragDropInteractionItemsBinding].
+   * Handles binding inflation for [DragDropSortInteractionView]'s SingleItemInteraction and returns
+   * the binding's view.
    */
-  fun <T> createDragDropInteractionViewNestedAdapter(
+  fun provideDragDropSingleItemInflatedView(
+    inflater: LayoutInflater,
+    parent: ViewGroup,
+    attachToParent: Boolean): View
+
+  fun setDragDropSingleItemBinding(
+    view: View
+  )
+
+  fun setDragDropSingleItemBindingHtmlContent(
     htmlParserFactory: HtmlParser.Factory,
     resourceBucketName: String,
     entityType: String,
-    entityId: String
-  ): BindableAdapter<String>
+    entityId: String,
+    viewModel: String
+  )
 
   fun getDefaultRegion(parentView: FrameLayout): View
 }

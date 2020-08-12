@@ -5,6 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.FrameLayout
+import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
@@ -165,81 +167,97 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     binding.viewModel = viewModel
   }
 
-  /**
-   * Handles implementation of createAdapter() function in [DragDropSortInteractionView] in order
-   * for the file not to depend on [DragDropInteractionItemsBinding].
-   */
-  override fun createDragDropInteractionViewAdapter(
-    adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
-    isMultipleItemsInSamePositionAllowed: Boolean,
-    isAccessibilityEnabled: Boolean,
-    htmlParserFactory: HtmlParser.Factory,
-    resourceBucketName: String,
-    entityType: String,
-    entityId: String
-  ): BindableAdapter<DragDropInteractionContentViewModel> {
-    return BindableAdapter.SingleTypeBuilder
-      .newBuilder<DragDropInteractionContentViewModel>()
-      .registerViewBinder(
-        inflateView = { parent ->
-          DragDropInteractionItemsBinding.inflate(
-            LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
-          ).root
-        },
-        bindView = { view, viewModel ->
-          val binding = DataBindingUtil.findBinding<DragDropInteractionItemsBinding>(view)!!
-          binding.dragDropItemRecyclerview.adapter =
-            createDragDropInteractionViewNestedAdapter<String>(
-              htmlParserFactory,
-              resourceBucketName,
-              entityType,
-              entityId
-            )
-          binding.adapter = adapter
-          binding.dragDropContentGroupItem.isVisible = isMultipleItemsInSamePositionAllowed
-          binding.dragDropContentUnlinkItems.isVisible = viewModel.htmlContent.htmlList.size > 1
-          binding.dragDropAccessibleContainer.isVisible = isAccessibilityEnabled
-          binding.viewModel = viewModel
-        }
-      )
-      .build()
-  }
-
-  /**
-   * Handles implementation of createNestedAdapter() function in [DragDropSortInteractionView] in
-   * order for the file not to depend on [DragDropInteractionItemsBinding].
-   */
-  override fun <T> createDragDropInteractionViewNestedAdapter(
-    htmlParserFactory: HtmlParser.Factory,
-    resourceBucketName: String,
-    entityType: String,
-    entityId: String
-  ): BindableAdapter<String> {
-    return BindableAdapter.SingleTypeBuilder
-      .newBuilder<String>()
-      .registerViewBinder(
-        inflateView = { parent ->
-          DragDropSingleItemBinding.inflate(
-            LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
-          ).root
-        },
-        bindView = { view, viewModel ->
-          val binding = DataBindingUtil.findBinding<DragDropSingleItemBinding>(view)!!
-          binding.htmlContent = htmlParserFactory.create(
-            resourceBucketName,
-            entityType,
-            entityId,
-            /* imageCenterAlign= */ false
-          )
-            .parseOppiaHtml(
-              viewModel, binding.dragDropContentTextView
-            )
-        }
-      )
-      .build()
-  }
-
   override fun getDefaultRegion(parentView: FrameLayout): View {
     return parentView.findViewById<View>(R.id.default_selected_region)
+  }
+
+  /**
+   * Handles binding inflation for [DragDropSortInteractionView]'s SortInteraction and returns the
+   * binding's view.
+   */
+  override fun provideDragDropSortInteractionInflatedView(
+    inflater: LayoutInflater,
+    parent: ViewGroup,
+    attachToParent: Boolean
+  ): View {
+    return DragDropInteractionItemsBinding.inflate(
+      LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
+    ).root
+  }
+
+  private lateinit var dragDropInteractionItemsBinding: DragDropInteractionItemsBinding
+
+  override fun setDragDropInteractionItemsBinding(
+    view: View
+  ) {
+    dragDropInteractionItemsBinding =
+      DataBindingUtil.findBinding<DragDropInteractionItemsBinding>(view)!!
+  }
+
+  override fun setDragDropInteractionItemsBindingAdapter(
+    adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
+  ) {
+    dragDropInteractionItemsBinding.adapter = adapter
+  }
+
+  override fun getDragDropInteractionItemsBindingRecyclerView(): RecyclerView {
+    return dragDropInteractionItemsBinding.dragDropItemRecyclerview
+  }
+
+  override fun getDragDropInteractionItemsBindingGroupItem(): ImageButton {
+    return dragDropInteractionItemsBinding.dragDropContentGroupItem
+  }
+
+  override fun getDragDropInteractionItemsBindingUnlinkItems(): ImageButton {
+    return dragDropInteractionItemsBinding.dragDropContentUnlinkItems
+  }
+
+  override fun getDragDropInteractionItemsBindingAccessibleContainer(): LinearLayout {
+    return dragDropInteractionItemsBinding.dragDropAccessibleContainer
+  }
+
+  override fun setDragDropInteractionItemsBindingViewModel(
+    viewModel: DragDropInteractionContentViewModel
+  ) {
+    dragDropInteractionItemsBinding.viewModel = viewModel
+  }
+
+  /**
+   * Handles binding inflation for [DragDropSortInteractionView]'s SingleItemInteraction and returns
+   * the binding's view.
+   */
+  override fun provideDragDropSingleItemInflatedView(
+    inflater: LayoutInflater,
+    parent: ViewGroup,
+    attachToParent: Boolean): View {
+    return DragDropSingleItemBinding.inflate(
+      LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
+    ).root
+  }
+
+  private lateinit var dragDropSingleItemBinding: DragDropSingleItemBinding
+
+  override fun setDragDropSingleItemBinding(
+    view: View
+  ) {
+    dragDropSingleItemBinding =
+      DataBindingUtil.findBinding<DragDropSingleItemBinding>(view)!!
+  }
+
+  override fun setDragDropSingleItemBindingHtmlContent(
+    htmlParserFactory: HtmlParser.Factory,
+    resourceBucketName: String,
+    entityType: String,
+    entityId: String,
+    viewModel: String
+  ) {
+    dragDropSingleItemBinding.htmlContent = htmlParserFactory.create(
+      resourceBucketName,
+      entityType,
+      entityId,
+      /* imageCenterAlign= */ false
+    ).parseOppiaHtml(
+      viewModel, dragDropSingleItemBinding.dragDropContentTextView
+    )
   }
 }

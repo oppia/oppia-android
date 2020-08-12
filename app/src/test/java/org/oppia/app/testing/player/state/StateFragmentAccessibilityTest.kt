@@ -3,6 +3,7 @@ package org.oppia.app.testing.player.state
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -29,6 +30,9 @@ import org.oppia.app.application.ApplicationModule
 import org.oppia.app.player.state.StateFragment
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher
+import org.oppia.app.shim.IntentFactoryShimModule
+import org.oppia.app.shim.ViewBindingShim
+import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.data.backends.gae.NetworkModule
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
@@ -80,6 +84,9 @@ class StateFragmentAccessibilityTest {
   @Inject
   lateinit var fakeAccessibilityManager: FakeAccessibilityManager
 
+  @Inject
+  lateinit var viewBindingShim: ViewBindingShim
+
   private val internalProfileId: Int = 1
 
   @Before
@@ -87,6 +94,7 @@ class StateFragmentAccessibilityTest {
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
     fakeAccessibilityManager.setTalkbackEnabled(true)
+
     FirebaseApp.initializeApp(context)
   }
 
@@ -176,7 +184,8 @@ class StateFragmentAccessibilityTest {
       DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
       GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
       QuestionModule::class, TestLogReportingModule::class, TestAccessibilityModule::class,
-      ImageClickInputModule::class, LogStorageModule::class
+      ImageClickInputModule::class, LogStorageModule::class, IntentFactoryShimModule::class,
+      ViewBindingShimModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
