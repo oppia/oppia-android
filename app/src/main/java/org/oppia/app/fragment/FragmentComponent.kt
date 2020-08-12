@@ -28,6 +28,8 @@ import org.oppia.app.profile.AdminSettingsDialogFragment
 import org.oppia.app.profile.ProfileChooserFragment
 import org.oppia.app.profile.ResetPinDialogFragment
 import org.oppia.app.profileprogress.ProfileProgressFragment
+import org.oppia.app.shim.IntentFactoryShimModule
+import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.app.story.StoryFragment
 import org.oppia.app.testing.BindableAdapterTestFragment
 import org.oppia.app.testing.ImageRegionSelectionTestFragment
@@ -47,7 +49,7 @@ import org.oppia.app.walkthrough.welcome.WalkthroughWelcomeFragment
 import javax.inject.Provider
 
 /** Root subcomponent for all fragments. */
-@Subcomponent(modules = [FragmentModule::class, InteractionViewModelModule::class])
+@Subcomponent(modules = [FragmentModule::class, InteractionViewModelModule::class, IntentFactoryShimModule::class, ViewBindingShimModule::class])
 @FragmentScope
 interface FragmentComponent {
   @Subcomponent.Builder

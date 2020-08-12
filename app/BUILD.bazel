@@ -7,6 +7,7 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@tools_android//tools/crashlytics:defs.bzl", "crashlytics_android_library")
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("//app:app_test.bzl", "app_test")
 
 # Source files for annotations library.
 ANNOTATION_FILES = [
@@ -569,8 +570,8 @@ kt_android_library(
         ":databinding_adapters",
         "//model",
         "//utility",
-        "resources",
-        "databinding_resources",
+        ":resources",
+        ":databinding_resources",
         "//data",
         artifact("androidx.appcompat:appcompat"),
         artifact("com.github.bumptech.glide:glide"),
@@ -590,11 +591,72 @@ kt_android_library(
         artifact("androidx.multidex:multidex:2.0.1"),
         artifact("androidx.multidex:multidex-instrumentation:2.0.0"),
         artifact("com.google.android.material:material:1.2.0-alpha02"),
-        #artifact("com.google.gms:google-services:4.3.3"),
         artifact("androidx.viewpager:viewpager:1.0.0"),
         "@circularimageview//circularimageview:circular_image_view",
     ],
     visibility = ["//visibility:public"],
+)
+
+TEST_DEPS = [
+    ":app",
+    ":dagger",
+    "//utility",
+    "//testing",
+    "//domain",
+    "//data",
+    ":resources",
+    "@robolectric//bazel:android-all",
+    artifact("org.jetbrains.kotlin:kotlin-reflect"),
+    artifact("com.google.truth:truth"),
+    artifact("androidx.test.ext:junit"),
+    artifact("androidx.databinding:databinding-runtime"),
+    artifact("androidx.databinding:databinding-adapters"),
+    artifact("androidx.databinding:databinding-common"),
+    artifact("androidx.annotation:annotation"),
+    artifact("androidx.databinding:databinding-compiler"),
+    artifact("androidx.test:runner:1.2.0"),
+    artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2"),
+    artifact("org.robolectric:annotations:4.3"),
+    artifact("org.mockito:mockito-core"),
+    artifact("androidx.test.espresso:espresso-contrib:3.1.0"),
+    artifact("androidx.test.espresso:espresso-core:3.2.0"),
+    artifact("androidx.test.espresso:espresso-intents:3.1.0"),
+]
+
+RUNTIME_DEPS = [
+    artifact("androidx.databinding:databinding-runtime"),
+    artifact("androidx.databinding:databinding-adapters"),
+    artifact("androidx.databinding:databinding-common"),
+]
+#
+#android_library(
+#    name = "DataBinderMapperImpl",
+#    srcs = ["src/test/java/DataBinderMapperImpl.java"],
+#    deps = [
+#        artifact("androidx.databinding:databinding-runtime"),
+#        artifact("androidx.databinding:databinding-adapters"),
+#        artifact("androidx.databinding:databinding-common"),
+#    ]
+#)
+
+app_test(
+    name = "HomeActivityLocalTest",
+    srcs = [
+        "src/test/java/org/oppia/app/home/HomeActivityLocalTest.kt",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.home.HomeActivityLocalTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "StateFragmentLocalTest",
+    srcs = [
+        "src/test/java/org/oppia/app/player/state/StateFragmentLocalTest.kt",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.player.state.StateFragmentLocalTest",
+    deps = TEST_DEPS,
 )
 
 # TODO(#1566): Move Firebase rules to their own package & remove default visibility

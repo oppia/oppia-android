@@ -28,6 +28,7 @@ def oppia_android_test(name, srcs, test_manifest, custom_package, test_class, de
     manifest = test_manifest,
     assets = assets,
     assets_dir = assets_dir,
+    enable_data_binding = 1,
   )
 
   native.android_local_test(
