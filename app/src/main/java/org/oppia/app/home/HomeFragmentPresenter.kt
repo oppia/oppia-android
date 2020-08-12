@@ -47,7 +47,7 @@ class HomeFragmentPresenter @Inject constructor(
   private val oppiaClock: OppiaClock,
   private val logger: ConsoleLogger,
   private val oppiaLogger: OppiaLogger,
-  private val intentFactoryShimInterface: IntentFactoryShim,
+  private val intentFactoryShim: IntentFactoryShim,
   @TopicHtmlParserEntityType private val topicEntityType: String,
   @StoryHtmlParserEntityType private val storyEntityType: String
 ) {
@@ -76,7 +76,7 @@ class HomeFragmentPresenter @Inject constructor(
     promotedStoryListViewModel = PromotedStoryListViewModel(
       activity,
       internalProfileId,
-      intentFactoryShimInterface
+      intentFactoryShim
     )
     allTopicsViewModel = AllTopicsViewModel()
     itemList.add(welcomeViewModel)
@@ -201,7 +201,7 @@ class HomeFragmentPresenter @Inject constructor(
               activity,
               internalProfileId,
               storyEntityType,
-              intentFactoryShimInterface
+              intentFactoryShim
             )
             recentStory.setPromotedStory(promotedStory)
             promotedStoryList.add(recentStory)
@@ -213,7 +213,7 @@ class HomeFragmentPresenter @Inject constructor(
               activity,
               internalProfileId,
               storyEntityType,
-              intentFactoryShimInterface
+              intentFactoryShim
             )
             oldStory.setPromotedStory(promotedStory)
             promotedStoryList.add(oldStory)

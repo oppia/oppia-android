@@ -42,11 +42,19 @@ class QuestionPlayerViewModel @Inject constructor() : ObservableViewModel() {
 
   fun getCanSubmitAnswer(): ObservableField<Boolean> = canSubmitAnswer
 
+  fun getAnswerItemList(): ObservableList<StateItemViewModel> {
+    return if (isSplitView.get() == true) {
+      rightItemList
+    } else {
+      itemList
+    }
+  }
+
   fun getPendingAnswerWithoutError(
-    answerHandler: InteractionAnswerHandler
+    answerHandler: InteractionAnswerHandler?
   ): UserAnswer? {
-    return if (answerHandler.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME) == null) {
-      answerHandler.getPendingAnswer()
+    return if (answerHandler?.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME) == null) {
+      answerHandler?.getPendingAnswer()
     } else {
       null
     }

@@ -2,6 +2,8 @@ package org.oppia.app.player.state
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
+import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -48,7 +50,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   lateinit var resourceBucketName: String
 
   @Inject
-  lateinit var bindingInterface: ViewBindingShim
+  lateinit var viewBindingShim: ViewBindingShim
 
   private lateinit var entityId: String
   private lateinit var onDragEnd: OnDragEndedListener
@@ -76,31 +78,57 @@ class DragDropSortInteractionView @JvmOverloads constructor(
     this.entityId = entityId
   }
 
-  /**
-   * Implemented in [ViewBindingShimImpl] in order to remove binding dependency
-   */
   private fun createAdapter(): BindableAdapter<DragDropInteractionContentViewModel> {
-    return bindingInterface.createDragDropInteractionViewAdapter(
-      adapter as RecyclerView.Adapter<RecyclerView.ViewHolder>,
-      isMultipleItemsInSamePositionAllowed,
-      isAccessibilityEnabled,
-      htmlParserFactory,
-      resourceBucketName,
-      entityType,
-      entityId
-    )
+    return BindableAdapter.SingleTypeBuilder
+      .newBuilder<DragDropInteractionContentViewModel>()
+      .registerViewBinder(
+        inflateView = { parent ->
+          viewBindingShim.provideDragDropSortInteractionInflatedView(
+            LayoutInflater.from(parent.context),
+            parent,
+            /* attachToParent= */ false
+          )
+        },
+        bindView = { view, viewModel ->
+          viewBindingShim.setDragDropInteractionItemsBinding(view)
+          viewBindingShim.getDragDropInteractionItemsBindingRecyclerView().adapter =
+            createNestedAdapter()
+          adapter?.let { viewBindingShim.setDragDropInteractionItemsBindingAdapter(it) }
+          viewBindingShim.getDragDropInteractionItemsBindingGroupItem().isVisible =
+            isMultipleItemsInSamePositionAllowed
+          viewBindingShim.getDragDropInteractionItemsBindingUnlinkItems().isVisible =
+            viewModel.htmlContent.htmlList.size > 1
+          viewBindingShim.getDragDropInteractionItemsBindingAccessibleContainer().isVisible =
+            isAccessibilityEnabled
+          viewBindingShim.setDragDropInteractionItemsBindingViewModel(viewModel)
+        }
+      )
+      .build()
   }
 
-  /**
-   * Implemented in [ViewBindingShimImpl] in order to remove binding dependency
-   */
   private fun createNestedAdapter(): BindableAdapter<String> {
-    return bindingInterface.createDragDropInteractionViewNestedAdapter<String>(
-      htmlParserFactory,
-      resourceBucketName,
-      entityType,
-      entityId
-    )
+    return BindableAdapter.SingleTypeBuilder
+      .newBuilder<String>()
+      .registerViewBinder(
+        inflateView = { parent ->
+          viewBindingShim.provideDragDropSingleItemInflatedView(
+            LayoutInflater.from(parent.context),
+            parent,
+            /* attachToParent= */ false
+          )
+        },
+        bindView = { view, viewModel ->
+          viewBindingShim.setDragDropSingleItemBinding(view)
+          viewBindingShim.setDragDropSingleItemBindingHtmlContent(
+            htmlParserFactory,
+            resourceBucketName,
+            entityType,
+            entityId,
+            viewModel
+          )
+        }
+      )
+      .build()
   }
 
   fun setOnDragEnded(onDragEnd: OnDragEndedListener) {
