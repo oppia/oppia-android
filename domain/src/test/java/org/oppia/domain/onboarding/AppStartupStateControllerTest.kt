@@ -14,14 +14,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.ObsoleteCoroutinesApi
-import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -56,7 +48,6 @@ import java.time.Instant
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
-import javax.inject.Qualifier
 import javax.inject.Singleton
 
 /** Tests for [AppStartupStateController]. */
@@ -81,7 +72,6 @@ class AppStartupStateControllerTest {
   lateinit var cacheFactory: PersistentCacheStore.Factory
 
   @Inject
-  @InternalCoroutinesApi
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Mock
@@ -90,29 +80,14 @@ class AppStartupStateControllerTest {
   @Captor
   lateinit var appStartupStateCaptor: ArgumentCaptor<AsyncResult<AppStartupState>>
 
-  // https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/
-  @ObsoleteCoroutinesApi
-  private val testThread = newSingleThreadContext("TestMain")
-
   private val expirationDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
 
   @Before
-  @ExperimentalCoroutinesApi
-  @ObsoleteCoroutinesApi
   fun setUp() {
-    Dispatchers.setMain(testThread)
     setUpTestApplicationComponent()
 
     // By default, set up the application to never expire.
     setUpOppiaApplication(expirationEnabled = false, expDate = "9999-12-31")
-  }
-
-  @After
-  @ExperimentalCoroutinesApi
-  @ObsoleteCoroutinesApi
-  fun tearDown() {
-    Dispatchers.resetMain()
-    testThread.close()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -127,8 +102,6 @@ class AppStartupStateControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testController_providesInitialLiveData_indicatesUserHasNotOnboardedTheApp() {
     val appStartupState = appStartupStateController.getAppStartupState()
     appStartupState.observeForever(mockOnboardingObserver)
@@ -140,8 +113,6 @@ class AppStartupStateControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testControllerObserver_observedAfterSettingAppOnboarded_providesLiveData_userDidNotOnboardApp() { // ktlint-disable max-line-length
     val appStartupState = appStartupStateController.getAppStartupState()
 
@@ -157,8 +128,6 @@ class AppStartupStateControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testController_settingAppOnboarded_observedNewController_userOnboardedApp() {
     appStartupStateController.markOnboardingFlowCompleted()
     testCoroutineDispatchers.runCurrent()
@@ -178,8 +147,6 @@ class AppStartupStateControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   @Suppress("DeferredResultUnused")
   fun testController_onboardedApp_cleared_observeNewController_userDidNotOnboardApp() {
     val onboardingFlowStore = cacheFactory.create(
@@ -204,8 +171,6 @@ class AppStartupStateControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testInitialAppOpen_appDeprecationEnabled_beforeDeprecationDate_appNotDeprecated() {
     setUpOppiaApplication(expirationEnabled = true, expDate = dateStringAfterToday())
 
@@ -219,8 +184,6 @@ class AppStartupStateControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testInitialAppOpen_appDeprecationEnabled_onDeprecationDate_appIsDeprecated() {
     setUpOppiaApplication(expirationEnabled = true, expDate = dateStringForToday())
 
@@ -234,8 +197,6 @@ class AppStartupStateControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testInitialAppOpen_appDeprecationEnabled_afterDeprecationDate_appIsDeprecated() {
     setUpOppiaApplication(expirationEnabled = true, expDate = dateStringBeforeToday())
 
@@ -249,8 +210,6 @@ class AppStartupStateControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testInitialAppOpen_appDeprecationDisabled_afterDeprecationDate_appIsNotDeprecated() {
     setUpOppiaApplication(expirationEnabled = false, expDate = dateStringBeforeToday())
 
@@ -264,8 +223,6 @@ class AppStartupStateControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testSecondAppOpen_onboardingFlowNotDone_deprecationEnabled_beforeDepDate_appNotDeprecated() {
     setUpOppiaApplication(expirationEnabled = true, expDate = dateStringAfterToday())
     simulateAppRestart()
@@ -280,8 +237,6 @@ class AppStartupStateControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testSecondAppOpen_onboardingFlowNotDone_deprecationEnabled_afterDepDate_appIsDeprecated() {
     setUpOppiaApplication(expirationEnabled = true, expDate = dateStringBeforeToday())
     simulateAppRestart()
@@ -296,8 +251,6 @@ class AppStartupStateControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testSecondAppOpen_onboardingFlowCompleted_depEnabled_beforeDepDate_appNotDeprecated() {
     setUpOppiaApplication(expirationEnabled = true, expDate = dateStringAfterToday())
     appStartupStateController.markOnboardingFlowCompleted()
@@ -315,8 +268,6 @@ class AppStartupStateControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testSecondAppOpen_onboardingFlowCompleted_deprecationEnabled_afterDepDate_appIsDeprecated() {
     setUpOppiaApplication(expirationEnabled = true, expDate = dateStringBeforeToday())
     appStartupStateController.markOnboardingFlowCompleted()
@@ -359,7 +310,7 @@ class AppStartupStateControllerTest {
     val packageManager = shadowOf(context.packageManager)
     val applicationInfo =
       ApplicationInfoBuilder.newBuilder()
-        .setPackageName("org.oppia.app")
+        .setPackageName(context.packageName)
         .setName("Oppia")
         .build()
     applicationInfo.metaData = Bundle()
@@ -367,7 +318,7 @@ class AppStartupStateControllerTest {
     applicationInfo.metaData.putString("expiration_date", expDate)
     val packageInfo =
       PackageInfoBuilder.newBuilder()
-        .setPackageName("org.oppia.app")
+        .setPackageName(context.packageName)
         .setApplicationInfo(applicationInfo)
         .build()
     packageManager.installPackage(packageInfo)
@@ -376,9 +327,6 @@ class AppStartupStateControllerTest {
   private fun ArgumentCaptor<AsyncResult<AppStartupState>>.getStartupMode(): StartupMode {
     return value.getOrThrow().startupMode
   }
-
-  @Qualifier
-  annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module
