@@ -7,6 +7,7 @@ import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.app.databinding.DragDropInteractionItemsBinding
 import org.oppia.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
 import org.oppia.app.recyclerview.BindableAdapter
@@ -23,30 +24,47 @@ import org.oppia.util.parser.HtmlParser
 // TODO(#1619): Remove file post-Gradle
 interface ViewBindingShim {
 
+  /**
+   * Handles binding inflation for [ProfileInputView] and returns the binding's labelText
+   */
   fun provideProfileInputViewBindingLabelText(
     inflater: LayoutInflater,
     parent: ViewGroup,
     attachToParent: Boolean
   ): TextView
 
+  /**
+   * Handles binding inflation for [ProfileInputView] and returns the binding's input
+   */
   fun provideProfileInputViewBindingInput(
     inflater: LayoutInflater,
     parent: ViewGroup,
     attachToParent: Boolean
   ): EditText
 
+  /**
+   * Handles binding inflation for [ProfileInputView] and returns the binding's errorText
+   */
   fun provideProfileInputViewBindingErrorText(
     inflater: LayoutInflater,
     parent: ViewGroup,
     attachToParent: Boolean
   ): TextView
 
+  /**
+   * Handles binding inflation for [SelectionInteractionView]'s ItemSelectionInteraction and
+   * returns the binding's root
+   */
   fun provideSelectionInteractionViewInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
     attachToParent: Boolean
   ): View
 
+  /**
+   * Handles binding inflation for [SelectionInteractionView]'s ItemSelectionInteraction and
+   * returns the binding's viewModel
+   */
   fun provideSelectionInteractionViewModel(
     view: View,
     viewModel: SelectionInteractionContentViewModel,
@@ -56,12 +74,20 @@ interface ViewBindingShim {
     entityId: String
   )
 
+  /**
+   * Handles binding inflation for [SelectionInteractionView]'s MultipleChoiceInteraction and
+   * returns the binding's view
+   */
   fun provideMultipleChoiceInteractionItemsInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
     attachToParent: Boolean
   ): View
 
+  /**
+   * Handles binding inflation for [SelectionInteractionView]'s MultipleChoiceInteraction and
+   * returns the binding's viewModel
+   */
   fun provideMultipleChoiceInteractionItemsViewModel(
     view: View,
     viewModel: SelectionInteractionContentViewModel,
@@ -71,6 +97,10 @@ interface ViewBindingShim {
     entityId: String
   )
 
+  /**
+   * Handles implementation of createAdapter() function in [DragDropSortInteractionView] in order
+   * for the file not to depend on [DragDropInteractionItemsBinding].
+   */
   fun createDragDropInteractionViewAdapter(
     adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
     isMultipleItemsInSamePositionAllowed: Boolean,
@@ -81,6 +111,10 @@ interface ViewBindingShim {
     entityId: String
   ): BindableAdapter<DragDropInteractionContentViewModel>
 
+  /**
+   * Handles implementation of createNestedAdapter() function in [DragDropSortInteractionView] in
+   * order for the file not to depend on [DragDropInteractionItemsBinding].
+   */
   fun <T> createDragDropInteractionViewNestedAdapter(
     htmlParserFactory: HtmlParser.Factory,
     resourceBucketName: String,
