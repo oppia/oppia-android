@@ -4,7 +4,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import java.lang.reflect.Method
 import java.time.Duration
-import java.util.*
+import java.util.TreeSet
 import javax.inject.Inject
 
 /**
@@ -75,7 +75,8 @@ class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
 
   @ExperimentalCoroutinesApi
   private fun advanceToNextFutureTask(
-    currentTimeMillis: Long, maxDelayMs: Long = Long.MAX_VALUE
+    currentTimeMillis: Long,
+    maxDelayMs: Long = Long.MAX_VALUE
   ): Long? {
     val nextFutureTimeMillis = getNextFutureTaskTimeMillis(currentTimeMillis)
     val timeToTaskMillis = nextFutureTimeMillis?.let { it - currentTimeMillis }

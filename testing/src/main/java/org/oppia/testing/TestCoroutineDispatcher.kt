@@ -23,7 +23,7 @@ import kotlinx.coroutines.test.DelayController
  */
 @InternalCoroutinesApi
 @ExperimentalCoroutinesApi
-abstract class TestCoroutineDispatcher: CoroutineDispatcher(), Delay, DelayController {
+abstract class TestCoroutineDispatcher : CoroutineDispatcher(), Delay, DelayController {
   /**
    * Returns whether there are any tasks known to the dispatcher that have not yet been started.
    *

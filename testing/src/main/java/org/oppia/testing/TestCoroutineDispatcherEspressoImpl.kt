@@ -26,7 +26,7 @@ import kotlin.math.min
 @ExperimentalCoroutinesApi
 class TestCoroutineDispatcherEspressoImpl private constructor(
   private val realCoroutineDispatcher: CoroutineDispatcher
-): TestCoroutineDispatcher() {
+) : TestCoroutineDispatcher() {
 
   private val realCoroutineScope by lazy { CoroutineScope(realCoroutineDispatcher) }
   private val executingTaskCount = AtomicInteger(0)
@@ -46,15 +46,18 @@ class TestCoroutineDispatcherEspressoImpl private constructor(
     // Tasks immediately will start running, so track the task immediately.
     executingTaskCount.incrementAndGet()
     notifyIfRunning()
-    realCoroutineDispatcher.dispatch(context, kotlinx.coroutines.Runnable {
-      try {
-        block.run()
-      } finally {
-        executingTaskCount.decrementAndGet()
-        taskCompletionTimes.remove(taskId)
+    realCoroutineDispatcher.dispatch(
+      context,
+      kotlinx.coroutines.Runnable {
+        try {
+          block.run()
+        } finally {
+          executingTaskCount.decrementAndGet()
+          taskCompletionTimes.remove(taskId)
+        }
+        notifyIfIdle()
       }
-      notifyIfIdle()
-    })
+    )
   }
 
   override fun scheduleResumeAfterDelay(

@@ -19,7 +19,7 @@ import java.lang.reflect.Field
  * contexts with the same code declaration.
  */
 @Suppress("unused") // This class is used directly by Gradle during instrumentation test setup.
-class OppiaTestRunner: AndroidJUnitRunner() {
+class OppiaTestRunner : AndroidJUnitRunner() {
   private lateinit var applicationClassLoader: ClassLoader
   private lateinit var application: Application
 
