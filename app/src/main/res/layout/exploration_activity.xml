@@ -32,6 +32,7 @@
         android:background="@color/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/Widget.AppCompat.ActionBar"
+        app:navigationIcon="@drawable/ic_close_white_24dp"
         app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:titleTextColor="@color/white">
 

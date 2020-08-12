@@ -3,9 +3,9 @@ package org.oppia.testing
 // TODO(#1274): Add thorough testing for this class.
 
 /**
- * Helper class to coordinate execution between all threads currently running in a test environment,
- * using both Robolectric for the main thread and [TestCoroutineDispatcher] for application-specific
- * threads.
+ * Helper class to coordinate execution between all threads currently running in a test environment
+ * in a way that's interoperable with both Robolectric & Espresso to guarantee background & UI
+ * thread synchronization and determinism.
  *
  * This class should be used at any point in a test where the test should ensure that a clean thread
  * synchronization point is needed (such as after an async operation is kicked off). This class can
@@ -17,13 +17,40 @@ package org.oppia.testing
  * mode so that clock coordination is consistent between Robolectric's scheduler and this utility
  * class, otherwise unexpected inconsistencies may arise.
  *
- * *NOTE TO DEVELOPERS*: This class is NOT yet ready for broad use until after #89 is resolved.
- * Please ask in oppia-android-dev if you have a use case that you think requires this class.
- * Specific cases will be allowed to integrate with if other options are infeasible. Other tests
- * should rely on existing mechanisms until this utility is ready for broad use.
+ * It's also recommended that all Espresso tests register the idling resource provided by this class
+ * (see [registerIdlingResource]) to get the same synchronization benefits of the
+ * Robolectric-specific API methods (e.g. [runCurrent], [advanceTimeBy], and [advanceUntilIdle]).
+ *
+ * *NOTE TO DEVELOPERS*: This class is NOT yet ready for broad use until after #89 is fully
+ * resolved. Please ask in oppia-android-dev if you have a use case that you think requires this
+ * class. Specific cases will be allowed to integrate with if other options are infeasible. Other
+ * tests should rely on existing mechanisms until this utility is ready for broad use.
  */
 interface TestCoroutineDispatchers {
+  /**
+   * Registers an Espresso idling resource.
+   *
+   * Espresso tests use a real-time clock which means the normal synchronization mechanisms that
+   * this API provides (e.g. [runCurrent] and [advanceTimeBy]) are insufficient for proper
+   * synchronization (in fact, these methods effectively do nothing for Espresso tests). Instead, an
+   * idling resource allows the Espresso framework to synchronize the main thread against background
+   * coroutine dispatchers--it will stop Espresso actions & matchers from running while there are
+   * pending tasks. To ensure deterministic behavior, this class guarantees *all* coroutines will be
+   * completed prior to Espresso reaching an idle state (even if those coroutines are scheduled for
+   * the feature or are scheduled as the result of another coroutine executing).
+   *
+   * All tests targeting Espresso & Robolectric should make use of both the idling resource & direct
+   * synchronization APIs that this class provides.
+   *
+   * [unregisterIdlingResource] should be used during test tear-down to ensure the resource is
+   * de-registered.
+   */
   fun registerIdlingResource()
+
+  /**
+   * Unregisters a previously registered idling resource. See [registerIdlingResource] for
+   * specifics.
+   */
   fun unregisterIdlingResource()
 
   /**

@@ -43,6 +43,7 @@ import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputMo
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.topic.TEST_QUESTION_ID_0
 import org.oppia.domain.topic.TEST_QUESTION_ID_1
 import org.oppia.domain.topic.TEST_QUESTION_ID_3
@@ -363,7 +364,7 @@ class QuestionTrainingControllerTest {
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
       TextInputRuleModule::class, InteractionsModule::class,
       TestQuestionModule::class, TestLogReportingModule::class,
-      ImageClickInputModule::class
+      ImageClickInputModule::class, LogStorageModule::class
     ]
   )
   interface TestApplicationComponent {

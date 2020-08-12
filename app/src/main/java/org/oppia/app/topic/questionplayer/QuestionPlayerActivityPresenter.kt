@@ -2,9 +2,11 @@ package org.oppia.app.topic.questionplayer
 
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
+import org.oppia.app.databinding.QuestionPlayerActivityBinding
 import org.oppia.domain.question.QuestionTrainingController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.ConsoleLogger
@@ -21,7 +23,21 @@ class QuestionPlayerActivityPresenter @Inject constructor(
   private val logger: ConsoleLogger
 ) {
   fun handleOnCreate() {
-    activity.setContentView(R.layout.question_player_activity)
+    val binding = DataBindingUtil.setContentView<QuestionPlayerActivityBinding>(
+      activity,
+      R.layout.question_player_activity
+    )
+
+    binding.apply {
+      lifecycleOwner = activity
+    }
+
+    activity.setSupportActionBar(binding.questionPlayerToolbar)
+
+    binding.questionPlayerToolbar.setNavigationOnClickListener {
+      activity.onBackPressed()
+    }
+
     if (getQuestionPlayerFragment() == null) {
       startTrainingSessionWithCallback {
         activity.supportFragmentManager.beginTransaction().add(
