@@ -29,8 +29,7 @@
       "thumbnail_bg_color": "#FF72FF",
       "skill_ids": [
         "5RM9KPfQxobH",
-        "B39yK4cbHZYI",
-        "UxTGIJqaHMLa"
+        "B39yK4cbHZYI"
       ],
       "id": 1,
       "thumbnail_filename": "",
@@ -49,7 +48,7 @@
     {
       "thumbnail_bg_color": "#FF72FF",
       "skill_ids": [
-        "B39yK4cbHZYI",
+        "5RM9KPfQxobH",
         "UxTGIJqaHMLa"
       ],
       "id": 3,
@@ -58,82 +57,14 @@
     },
     {
       "thumbnail_bg_color": "#FF72FF",
-      "skill_ids": [],
+      "skill_ids": [
+        "B39yK4cbHZYI",
+        "5RM9KPfQxobH",
+        "UxTGIJqaHMLa"
+      ],
       "id": 4,
       "thumbnail_filename": "",
       "title": "Adding Fractions"
-    },
-    {
-      "thumbnail_bg_color": "#FF72FF",
-      "skill_ids": [
-        "5RM9KPfQxobH",
-        "B39yK4cbHZYI"
-      ],
-      "id": 5,
-      "thumbnail_filename": "",
-      "title": "Equivalent Fractions"
-    },
-    {
-      "thumbnail_bg_color": "#FF72FF",
-      "skill_ids": [
-        "B39yK4cbHZYI",
-        "UxTGIJqaHMLa"
-      ],
-      "id": 6,
-      "thumbnail_filename": "",
-      "title": "Comparing Fractions"
-    },
-    {
-      "thumbnail_bg_color": "#FF72FF",
-      "skill_ids": [
-        "5RM9KPfQxobH",
-        "B39yK4cbHZYI"
-      ],
-      "id": 7,
-      "thumbnail_filename": "",
-      "title": "Adding Fractions"
-    },
-    {
-      "thumbnail_bg_color": "#FF72FF",
-      "skill_ids": [
-        "5RM9KPfQxobH",
-        "B39yK4cbHZYI",
-        "UxTGIJqaHMLa"
-      ],
-      "id": 8,
-      "thumbnail_filename": "",
-      "title": "Subtracting Fractions"
-    },
-    {
-      "thumbnail_bg_color": "#FF72FF",
-      "skill_ids": [
-        "5RM9KPfQxobH",
-        "UxTGIJqaHMLa"
-      ],
-      "id": 9,
-      "thumbnail_filename": "",
-      "title": "Multiplying Fractions"
-    },
-    {
-      "thumbnail_bg_color": "#FF72FF",
-      "skill_ids": [
-        "B39yK4cbHZYI",
-        "UxTGIJqaHMLa"
-      ],
-      "id": 10,
-      "thumbnail_filename": "",
-      "title": "Dividing Fractions"
-    },
-    {
-      "thumbnail_bg_color": "#FF72FF",
-      "skill_ids": [
-        "5RM9KPfQxobH",
-        "B39yK4cbHZYI",
-        "UxTGIJqaHMLa"
-      ],
-      "id": 11,
-      "thumbnail_filename": "",
-      "title": "General Skills"
     }
   ]
 }
