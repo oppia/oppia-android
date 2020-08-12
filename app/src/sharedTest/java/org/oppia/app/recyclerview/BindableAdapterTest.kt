@@ -1,5 +1,6 @@
 package org.oppia.app.recyclerview
 
+import android.app.Application
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
@@ -7,13 +8,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import dagger.BindsInstance
+import dagger.Component
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -33,7 +35,11 @@ import org.oppia.app.testing.BindableAdapterTestActivity
 import org.oppia.app.testing.BindableAdapterTestFragment
 import org.oppia.app.testing.BindableAdapterTestFragmentPresenter
 import org.oppia.app.testing.BindableAdapterTestViewModel
+import org.oppia.testing.TestCoroutineDispatchers
+import org.oppia.testing.TestDispatcherModule
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [BindableAdapter]. */
 @RunWith(AndroidJUnit4::class)
@@ -47,8 +53,13 @@ class BindableAdapterTest {
     private val INT_VALUE_1 = TestModel.newBuilder().setIntValue(42).build()
   }
 
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Before
   fun setUp() {
+    setUpTestApplication()
+
     // Ensure that the bindable fragment's test state is properly reset each time.
     BindableAdapterTestFragmentPresenter.testBindableAdapter = null
   }
@@ -86,7 +97,7 @@ class BindableAdapterTest {
         val liveData = getRecyclerViewListLiveData(activity)
         liveData.value = listOf(STR_VALUE_0)
       }
-      safelyWaitUntilIdle()
+      testCoroutineDispatchers.runCurrent()
 
       scenario.onActivity { activity ->
         val recyclerView: RecyclerView =
@@ -124,7 +135,7 @@ class BindableAdapterTest {
         val liveData = getRecyclerViewListLiveData(activity)
         liveData.value = listOf(STR_VALUE_1, STR_VALUE_0, STR_VALUE_2)
       }
-      safelyWaitUntilIdle()
+      testCoroutineDispatchers.runCurrent()
 
       scenario.onActivity { activity ->
         val recyclerView: RecyclerView =
@@ -148,7 +159,7 @@ class BindableAdapterTest {
         val liveData = getRecyclerViewListLiveData(activity)
         liveData.value = listOf(STR_VALUE_1, INT_VALUE_0, INT_VALUE_1)
       }
-      safelyWaitUntilIdle()
+      testCoroutineDispatchers.runCurrent()
 
       // Verify that all three values are bound in the correct order and with the correct values.
       scenario.onActivity { activity ->
@@ -184,7 +195,7 @@ class BindableAdapterTest {
         val liveData = getRecyclerViewListLiveData(activity)
         liveData.value = listOf(STR_VALUE_0)
       }
-      safelyWaitUntilIdle()
+      testCoroutineDispatchers.runCurrent()
 
       scenario.onActivity { activity ->
         val recyclerView: RecyclerView =
@@ -207,7 +218,7 @@ class BindableAdapterTest {
         val liveData = getRecyclerViewListLiveData(activity)
         liveData.value = listOf(STR_VALUE_1, STR_VALUE_0, STR_VALUE_2)
       }
-      safelyWaitUntilIdle()
+      testCoroutineDispatchers.runCurrent()
 
       scenario.onActivity { activity ->
         val recyclerView: RecyclerView =
@@ -232,7 +243,7 @@ class BindableAdapterTest {
         val liveData = getRecyclerViewListLiveData(activity)
         liveData.value = listOf(STR_VALUE_1, INT_VALUE_0, INT_VALUE_1)
       }
-      safelyWaitUntilIdle()
+      testCoroutineDispatchers.runCurrent()
 
       // Verify that all three values are bound in the correct order and with the correct values.
       scenario.onActivity { activity ->
@@ -272,10 +283,12 @@ class BindableAdapterTest {
         adapter.registerAdapterDataObserver(fakeObserver)
         val liveData = getRecyclerViewListLiveData(activity)
         liveData.value = oldList
+        testCoroutineDispatchers.runCurrent()
         verify(fakeObserver, times(/* wantedNumberOfInvocations= */ 1))
           .onItemRangeInserted(/* positionStart= */ 0, /* itemCount= */ 3)
         val liveDataNew = getRecyclerViewListLiveData(activity)
         liveDataNew.value = newList
+        testCoroutineDispatchers.runCurrent()
         verify(fakeObserver, never()).onChanged()
         adapter.unregisterAdapterDataObserver(fakeObserver)
       }
@@ -297,8 +310,10 @@ class BindableAdapterTest {
         adapter.registerAdapterDataObserver(fakeObserver)
         val liveData = getRecyclerViewListLiveData(activity)
         liveData.value = oldList
+        testCoroutineDispatchers.runCurrent()
         val liveDataNew = getRecyclerViewListLiveData(activity)
         liveDataNew.value = newList
+        testCoroutineDispatchers.runCurrent()
         verify(fakeObserver, times(/* wantedNumberOfInvocations= */ 1))
           .onItemRangeRemoved(/* positionStart= */0, /* itemCount= */ 1)
         adapter.unregisterAdapterDataObserver(fakeObserver)
@@ -321,8 +336,10 @@ class BindableAdapterTest {
         adapter.registerAdapterDataObserver(fakeObserver)
         val liveData = getRecyclerViewListLiveData(activity)
         liveData.value = oldList
+        testCoroutineDispatchers.runCurrent()
         val liveDataNew = getRecyclerViewListLiveData(activity)
         liveDataNew.value = newList
+        testCoroutineDispatchers.runCurrent()
         verify(fakeObserver, times(/* wantedNumberOfInvocations= */ 1))
           .onItemRangeInserted(/* positionStart= */0, /* itemCount= */ 1)
         adapter.unregisterAdapterDataObserver(fakeObserver)
@@ -345,8 +362,10 @@ class BindableAdapterTest {
         adapter.registerAdapterDataObserver(fakeObserver)
         val liveData = getRecyclerViewListLiveData(activity)
         liveData.value = oldList
+        testCoroutineDispatchers.runCurrent()
         val liveDataNew = getRecyclerViewListLiveData(activity)
         liveDataNew.value = newList
+        testCoroutineDispatchers.runCurrent()
         verify(fakeObserver, times(/* wantedNumberOfInvocations= */ 1))
           .onItemRangeChanged(/* positionStart= */2, /* itemCount= */ 1, /* payload= */ null)
         verify(fakeObserver, times(/* wantedNumberOfInvocations= */ 1))
@@ -371,13 +390,22 @@ class BindableAdapterTest {
         adapter.registerAdapterDataObserver(fakeObserver)
         val liveData = getRecyclerViewListLiveData(activity)
         liveData.value = oldList
+        testCoroutineDispatchers.runCurrent()
         val liveDataNew = getRecyclerViewListLiveData(activity)
         liveDataNew.value = newList
+        testCoroutineDispatchers.runCurrent()
         verify(fakeObserver, times(/* wantedNumberOfInvocations= */ 1))
           .onItemRangeChanged(/* positionStart= */1, /* itemCount= */ 1, /* payload= */ null)
         adapter.unregisterAdapterDataObserver(fakeObserver)
       }
     }
+  }
+
+  private fun setUpTestApplication() {
+    DaggerBindableAdapterTest_TestApplicationComponent.builder()
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
   }
 
   private fun createSingleViewTypeNoDataBindingBindableAdapter(): BindableAdapter<TestModel> {
@@ -480,8 +508,22 @@ class BindableAdapterTest {
     ) as BindableAdapterTestFragment
   }
 
-  private fun safelyWaitUntilIdle() {
-    // This must be done off the main thread for Espresso otherwise it deadlocks.
-    onIdle()
+  // TODO(#89): Move this to a common test application component.
+  @Singleton
+  @Component(
+    modules = [
+      TestDispatcherModule::class
+    ]
+  )
+  interface TestApplicationComponent {
+    @Component.Builder
+    interface Builder {
+      @BindsInstance
+      fun setApplication(application: Application): Builder
+
+      fun build(): TestApplicationComponent
+    }
+
+    fun inject(bindableAdapterTest: BindableAdapterTest)
   }
 }
