@@ -30,6 +30,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
@@ -354,7 +355,8 @@ class ProfileEditActivityTest {
 
   @Singleton
   @Component(modules = [
-    TestModule::class, TestLogReportingModule::class, TestDispatcherModule::class
+    TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
+    TestDispatcherModule::class
   ])
   interface TestApplicationComponent {
     @Component.Builder

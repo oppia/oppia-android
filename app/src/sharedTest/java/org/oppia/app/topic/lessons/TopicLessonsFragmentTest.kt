@@ -55,6 +55,7 @@ import org.oppia.app.topic.TopicActivity
 import org.oppia.app.topic.TopicTab
 import org.oppia.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.domain.topic.RATIOS_STORY_ID_0
 import org.oppia.domain.topic.RATIOS_TOPIC_ID
@@ -560,7 +561,8 @@ class TopicLessonsFragmentTest {
 
   @Singleton
   @Component(modules = [
-    TestModule::class, TestLogReportingModule::class, TestDispatcherModule::class
+    TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
+    TestDispatcherModule::class
   ])
   interface TestApplicationComponent {
     @Component.Builder

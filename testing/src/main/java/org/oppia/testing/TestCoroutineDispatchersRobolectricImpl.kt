@@ -5,6 +5,13 @@ import java.time.Duration
 import java.util.TreeSet
 import javax.inject.Inject
 
+/**
+ * Robolectric-specific implementation of [TestCoroutineDispatchers].
+ *
+ * Unlike its Espresso counterpart, this implementation does not provide an idling resource.
+ * Instead, tests should leverage functions like [runCurrent] and [advanceTimeBy] to run tasks in a
+ * coordinated, deterministic, and thread-safe way.
+ */
 class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
   @BackgroundTestDispatcher private val backgroundTestDispatcher: TestCoroutineDispatcher,
   @BlockingTestDispatcher private val blockingTestDispatcher: TestCoroutineDispatcher,
@@ -60,7 +67,8 @@ class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
   }
 
   private fun advanceToNextFutureTask(
-    currentTimeMillis: Long, maxDelayMs: Long = Long.MAX_VALUE
+    currentTimeMillis: Long,
+    maxDelayMs: Long = Long.MAX_VALUE
   ): Long? {
     val nextFutureTimeMillis = getNextFutureTaskTimeMillis(currentTimeMillis)
     val timeToTaskMillis = nextFutureTimeMillis?.let { it - currentTimeMillis }

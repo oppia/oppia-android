@@ -41,6 +41,7 @@ import org.oppia.app.R
 import org.oppia.app.testing.AudioFragmentTestActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.audio.AudioPlayerController
+import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.testing.profile.ProfileTestHelper
@@ -383,7 +384,8 @@ class AudioFragmentTest {
 
   @Singleton
   @Component(modules = [
-    TestModule::class, TestLogReportingModule::class, TestDispatcherModule::class
+    TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
+    TestDispatcherModule::class
   ])
   interface TestApplicationComponent {
     @Component.Builder

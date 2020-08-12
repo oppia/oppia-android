@@ -25,5 +25,4 @@ class FakeExceptionLogger @Inject constructor() : ExceptionLogger {
 
   /** Returns true if there are no exceptions logged. */
   fun noExceptionsPresent(): Boolean = exceptionList.isEmpty()
-
 }

@@ -61,6 +61,7 @@ import org.oppia.app.utility.DragViewAction
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.app.utility.RecyclerViewCoordinatesProvider
 import org.oppia.app.utility.clickPoint
+import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.topic.TEST_EXPLORATION_ID_0
 import org.oppia.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.domain.topic.TEST_EXPLORATION_ID_4
@@ -1052,7 +1053,8 @@ class StateFragmentTest {
 
   @Singleton
   @Component(modules = [
-    TestModule::class, TestLogReportingModule::class, TestDispatcherModule::class
+    TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
+    TestDispatcherModule::class
   ])
   interface TestApplicationComponent {
     @Component.Builder

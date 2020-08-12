@@ -54,6 +54,7 @@ import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.hasGridItemCount
 import org.oppia.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
@@ -761,7 +762,8 @@ class RecentlyPlayedFragmentTest {
 
   @Singleton
   @Component(modules = [
-    TestModule::class, TestLogReportingModule::class, TestDispatcherModule::class
+    TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
+    TestDispatcherModule::class
   ])
   interface TestApplicationComponent {
     @Component.Builder

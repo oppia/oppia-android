@@ -14,5 +14,4 @@ interface TestLogReportingModule {
 
   @Binds
   fun bindFakeEventLogger(fakeEventLogger: FakeEventLogger): EventLogger
-
 }

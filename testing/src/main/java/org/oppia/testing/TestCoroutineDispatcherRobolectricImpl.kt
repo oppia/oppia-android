@@ -34,7 +34,7 @@ import kotlin.coroutines.CoroutineContext
 class TestCoroutineDispatcherRobolectricImpl private constructor(
   private val fakeSystemClock: FakeSystemClock,
   private val realCoroutineDispatcher: CoroutineDispatcher
-): TestCoroutineDispatcher(), Delay, DelayController {
+) : TestCoroutineDispatcher(), Delay, DelayController {
 
   /** Sorted set that first sorts on when a task should be executed, then insertion order. */
   private val taskQueue = CopyOnWriteArraySet<Task>()
@@ -143,9 +143,9 @@ class TestCoroutineDispatcherRobolectricImpl private constructor(
         break
       }
     }
-    while (executingTaskCount.get() > 0);
+    while (executingTaskCount.get() > 0)
 
-    notifyIfIdle()
+      notifyIfIdle()
   }
 
   /** Flushes the current task queue and returns whether any tasks were executed. */
@@ -174,13 +174,16 @@ class TestCoroutineDispatcherRobolectricImpl private constructor(
   private fun createDeferredRunnable(context: CoroutineContext, block: Runnable): Runnable {
     return kotlinx.coroutines.Runnable {
       executingTaskCount.incrementAndGet()
-      realCoroutineDispatcher.dispatch(context, kotlinx.coroutines.Runnable {
-        try {
-          block.run()
-        } finally {
-          executingTaskCount.decrementAndGet()
+      realCoroutineDispatcher.dispatch(
+        context,
+        kotlinx.coroutines.Runnable {
+          try {
+            block.run()
+          } finally {
+            executingTaskCount.decrementAndGet()
+          }
         }
-      })
+      )
     }
   }
 

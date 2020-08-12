@@ -916,6 +916,7 @@ class AsyncResultTest {
     return deferred.getCompleted()
   }
 
+  @Suppress("EXPERIMENTAL_API_USAGE")
   private fun <T1, T2, O> AsyncResult<T1>.blockingCombineWithAsync(
     otherResult: AsyncResult<T2>,
     combineFunction: suspend (T1, T2) -> AsyncResult<O>
