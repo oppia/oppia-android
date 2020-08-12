@@ -12,6 +12,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.testing.FakeSystemClock
+import org.oppia.testing.TestDispatcherModule
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -916,7 +917,7 @@ class AsyncResultTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [])
+  @Component(modules = [TestDispatcherModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
