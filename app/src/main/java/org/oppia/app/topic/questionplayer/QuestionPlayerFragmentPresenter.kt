@@ -167,7 +167,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     var answer = UserAnswer.getDefaultInstance()
     if (recyclerViewAssembler.getPendingAnswerHandler(questionViewModel.itemList) != null) {
       answer = questionViewModel.getPendingAnswerWithoutError(
-        recyclerViewAssembler.getPendingAnswerHandler(questionViewModel.itemList)!!
+        recyclerViewAssembler.getPendingAnswerHandler(questionViewModel.itemList)
       )
     }
     handleSubmitAnswer(answer)
