@@ -53,6 +53,8 @@ dependencies {
       'com.google.protobuf:protobuf-lite:3.0.0',
       'com.squareup.moshi:moshi-kotlin:1.8.0',
       'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.2',
+      'com.google.code.gson:gson:2.8.6',
+      'com.squareup.retrofit2:converter-gson:2.5.0',
   )
   testImplementation(
       'android.arch.core:core-testing:1.1.1',
