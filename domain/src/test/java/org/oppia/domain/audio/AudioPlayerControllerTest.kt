@@ -22,6 +22,7 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import org.oppia.domain.audio.AudioPlayerController.PlayProgress
 import org.oppia.domain.audio.AudioPlayerController.PlayStatus
 import org.oppia.testing.FakeExceptionLogger
 import org.oppia.testing.TestCoroutineDispatchers
@@ -35,6 +36,7 @@ import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowMediaPlayer
 import org.robolectric.shadows.util.DataSource
 import java.io.IOException
@@ -46,6 +48,7 @@ import kotlin.test.fail
 
 /** Tests for [AudioPlayerControllerTest]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class AudioPlayerControllerTest {
 
@@ -54,11 +57,11 @@ class AudioPlayerControllerTest {
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Mock
-  lateinit var mockAudioPlayerObserver: Observer<AsyncResult<AudioPlayerController.PlayProgress>>
+  lateinit var mockAudioPlayerObserver: Observer<AsyncResult<PlayProgress>>
 
   @Captor
   lateinit var audioPlayerResultCaptor:
-    ArgumentCaptor<AsyncResult<AudioPlayerController.PlayProgress>>
+    ArgumentCaptor<AsyncResult<PlayProgress>>
 
   @Inject
   lateinit var context: Context
@@ -120,6 +123,7 @@ class AudioPlayerControllerTest {
     arrangeMediaPlayer()
 
     audioPlayerController.seekTo(500)
+    testCoroutineDispatchers.runCurrent()
 
     assertThat(shadowMediaPlayer.currentPositionRaw).isEqualTo(500)
   }
@@ -203,24 +207,23 @@ class AudioPlayerControllerTest {
   fun testObserver_preparePlayer_invokePlayAndAdvance_capturesManyPlayingStates() {
     arrangeMediaPlayer()
 
+    // Wait for 1 second for the player to enter a playing state, then forcibly trigger completion.
     audioPlayerController.play()
-    testCoroutineDispatchers.runCurrent()
-    testCoroutineDispatchers.advanceTimeBy(1000) // Wait for next schedule update call
+    testCoroutineDispatchers.advanceTimeBy(1000)
     shadowMediaPlayer.invokeCompletionListener()
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
-    assertThat(audioPlayerResultCaptor.allValues.size)
-      .isEqualTo(7)
-    assertThat(audioPlayerResultCaptor.allValues[2].isPending())
-      .isTrue()
-    assertThat(audioPlayerResultCaptor.allValues[3].getOrThrow().type)
-      .isEqualTo(PlayStatus.PREPARED)
-    assertThat(audioPlayerResultCaptor.allValues[4].getOrThrow().type)
-      .isEqualTo(PlayStatus.PLAYING)
-    assertThat(audioPlayerResultCaptor.allValues[5].getOrThrow().type)
-      .isEqualTo(PlayStatus.COMPLETED)
-    assertThat(audioPlayerResultCaptor.allValues[6].getOrThrow().type)
-      .isEqualTo(PlayStatus.COMPLETED)
+    val results = audioPlayerResultCaptor.allValues
+    val pendingIndex = results.indexOfLast { it.isPending() }
+    val preparedIndex = results.indexOfLast { it.hasStatus(PlayStatus.PREPARED) }
+    val playingIndex = results.indexOfLast { it.hasStatus(PlayStatus.PLAYING) }
+    val completedIndex = results.indexOfLast { it.hasStatus(PlayStatus.COMPLETED) }
+    // Verify that there are at least 4 statuses: pending, prepared, playing, and completed, and in
+    // that order.
+    assertThat(results.size).isGreaterThan(4)
+    assertThat(pendingIndex).isLessThan(preparedIndex)
+    assertThat(preparedIndex).isLessThan(playingIndex)
+    assertThat(playingIndex).isLessThan(completedIndex)
   }
 
   @Test
@@ -248,6 +251,7 @@ class AudioPlayerControllerTest {
     arrangeMediaPlayer()
 
     audioPlayerController.seekTo(500)
+    testCoroutineDispatchers.runCurrent()
     audioPlayerController.play()
     testCoroutineDispatchers.runCurrent()
 
@@ -262,7 +266,7 @@ class AudioPlayerControllerTest {
     audioPlayerController.play()
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
-    assertThat(audioPlayerResultCaptor.value.getOrThrow().duration).isEqualTo(1000)
+    assertThat(audioPlayerResultCaptor.value.getOrThrow().duration).isEqualTo(2000)
   }
 
   @Test
@@ -321,9 +325,9 @@ class AudioPlayerControllerTest {
 
   @Test
   fun testScheduling_observeData_removeObserver_verifyTestDoesNotHang() {
-    val playProgress =
-      audioPlayerController.initializeMediaPlayer()
+    val playProgress = audioPlayerController.initializeMediaPlayer()
     audioPlayerController.changeDataSource(TEST_URL)
+    testCoroutineDispatchers.runCurrent()
 
     playProgress.observeForever(mockAudioPlayerObserver)
     audioPlayerController.play()
@@ -338,6 +342,7 @@ class AudioPlayerControllerTest {
     val playProgress =
       audioPlayerController.initializeMediaPlayer()
     audioPlayerController.changeDataSource(TEST_URL)
+    testCoroutineDispatchers.runCurrent()
 
     audioPlayerController.play()
     testCoroutineDispatchers.advanceTimeBy(2000)
@@ -422,7 +427,7 @@ class AudioPlayerControllerTest {
     val dataSource2 = DataSource.toDataSource(context, Uri.parse(TEST_URL2))
     val dataSource3 = DataSource.toDataSource(context, Uri.parse(TEST_FAIL_URL))
     val mediaInfo = ShadowMediaPlayer.MediaInfo(
-      /* duration= */ 1000,
+      /* duration= */ 2000,
       /* preparationDelay= */ 0
     )
     ShadowMediaPlayer.addMediaInfo(dataSource, mediaInfo)
@@ -442,6 +447,10 @@ class AudioPlayerControllerTest {
       // Unexpected exception; throw it.
       throw t
     }
+  }
+
+  private fun AsyncResult<PlayProgress>.hasStatus(playStatus: PlayStatus): Boolean {
+    return isCompleted() && getOrThrow().type == playStatus
   }
 
   private fun setUpTestApplicationComponent() {

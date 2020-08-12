@@ -15,6 +15,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.profile.ProfileChooserFragment
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 
 private const val TAG_PROFILE_CHOOSER_FRAGMENT_RECYCLER_VIEW = "profile_recycler_view"
 
@@ -23,6 +24,7 @@ private const val TAG_PROFILE_CHOOSER_FRAGMENT_RECYCLER_VIEW = "profile_recycler
  * Reference document :https://developer.android.com/reference/androidx/test/core/app/ActivityScenario
  */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class ProfileChooserSpanTest {
 

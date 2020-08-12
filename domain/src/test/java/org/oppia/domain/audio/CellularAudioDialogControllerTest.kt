@@ -36,8 +36,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
-@Config(manifest = Config.NONE)
 @LooperMode(LooperMode.Mode.PAUSED)
+@Config(manifest = Config.NONE)
 class CellularAudioDialogControllerTest {
   @Rule
   @JvmField

@@ -52,12 +52,14 @@ import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 import java.io.FileNotFoundException
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [ExplorationDataController]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class ExplorationDataControllerTest {
   @Rule

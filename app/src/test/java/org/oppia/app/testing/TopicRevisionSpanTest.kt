@@ -15,8 +15,10 @@ import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.topic.revision.TopicRevisionFragment
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class TopicRevisionSpanTest {
 
   @Before

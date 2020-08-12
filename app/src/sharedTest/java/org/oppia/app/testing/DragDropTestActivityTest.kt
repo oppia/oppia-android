@@ -21,8 +21,10 @@ import org.oppia.app.utility.ChildViewCoordinatesProvider
 import org.oppia.app.utility.CustomGeneralLocation
 import org.oppia.app.utility.DragViewAction
 import org.oppia.app.utility.RecyclerViewCoordinatesProvider
+import org.robolectric.annotation.LooperMode
 
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class DragDropTestActivityTest {
 
   @Test

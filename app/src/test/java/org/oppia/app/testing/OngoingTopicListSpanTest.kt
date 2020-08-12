@@ -17,8 +17,10 @@ import org.oppia.app.R
 import org.oppia.app.ongoingtopiclist.OngoingTopicListActivity
 import org.oppia.app.ongoingtopiclist.OngoingTopicListFragment
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class OngoingTopicListSpanTest {
 
   @Before

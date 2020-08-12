@@ -43,6 +43,7 @@ import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 import java.io.FileNotFoundException
 import java.util.Date
 import javax.inject.Inject
@@ -53,6 +54,7 @@ private const val INVALID_TOPIC_ID_1 = "INVALID_TOPIC_ID_1"
 
 /** Tests for [TopicController]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class TopicControllerTest {
 

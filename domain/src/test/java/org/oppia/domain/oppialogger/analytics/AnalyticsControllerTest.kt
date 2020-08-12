@@ -45,6 +45,7 @@ import org.oppia.util.logging.LogLevel
 import org.oppia.util.networking.NetworkConnectionUtil
 import org.oppia.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -58,6 +59,7 @@ const val TEST_SKILL_LIST_ID = "test_skillListId"
 const val TEST_SUB_TOPIC_ID = 1
 
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class AnalyticsControllerTest {
 

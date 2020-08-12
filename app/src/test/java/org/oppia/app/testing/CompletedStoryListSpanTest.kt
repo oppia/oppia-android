@@ -16,8 +16,10 @@ import org.oppia.app.R
 import org.oppia.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.app.completedstorylist.CompletedStoryListFragment.Companion.COMPLETED_STORY_LIST_FRAGMENT_TAG
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class CompletedStoryListSpanTest {
 
   @Before

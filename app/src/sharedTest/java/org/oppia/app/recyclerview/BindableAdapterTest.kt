@@ -29,9 +29,11 @@ import org.oppia.app.testing.BindableAdapterTestActivity
 import org.oppia.app.testing.BindableAdapterTestFragment
 import org.oppia.app.testing.BindableAdapterTestFragmentPresenter
 import org.oppia.app.testing.BindableAdapterTestViewModel
+import org.robolectric.annotation.LooperMode
 
 /** Tests for [BindableAdapter]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class BindableAdapterTest {
   companion object {
     private val STR_VALUE_0 = TestModel.newBuilder().setStrValue("Item 0").build()

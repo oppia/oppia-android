@@ -20,6 +20,7 @@ import org.oppia.testing.TestCoroutineDispatcher
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 import java.util.concurrent.Executors
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -35,6 +36,7 @@ private const val UPDATED_ASYNC_VALUE = "updated async value"
 
 /** Tests for [InMemoryBlockingCache]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class InMemoryBlockingCacheTest {
   @Inject

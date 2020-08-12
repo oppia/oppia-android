@@ -49,6 +49,7 @@ import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
+import org.robolectric.annotation.LooperMode
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -64,6 +65,7 @@ private const val PROFILE_ID_INVALID_AUDIO_LANGUAGE = 2
  * Tests for [AudioFragment].
  */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class AudioFragmentTest {
 
   @Inject

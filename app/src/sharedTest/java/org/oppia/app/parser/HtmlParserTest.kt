@@ -42,12 +42,14 @@ import org.oppia.util.parser.GlideImageLoader
 import org.oppia.util.parser.HtmlParser
 import org.oppia.util.parser.ImageDownloadUrlTemplate
 import org.oppia.util.parser.ImageLoader
+import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
 // TODO(#277): Add tests for UrlImageParser.
 /** Tests for [HtmlParser]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class HtmlParserTest {
 
   private lateinit var launchedActivity: Activity

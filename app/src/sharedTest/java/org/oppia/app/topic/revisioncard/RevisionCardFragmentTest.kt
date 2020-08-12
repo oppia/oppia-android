@@ -36,10 +36,12 @@ import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandsc
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.domain.topic.SUBTOPIC_TOPIC_ID
 import org.oppia.domain.topic.SUBTOPIC_TOPIC_ID_2
+import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 
 /** Tests for [RevisionCardActivity]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class RevisionCardFragmentTest {
 
   private val internalProfileId = 1

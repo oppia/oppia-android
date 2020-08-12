@@ -31,12 +31,14 @@ import org.oppia.app.model.StoryTextSize
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
+import org.oppia.testing.profile.ProfileTestHelper
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 import java.io.File
 import java.io.FileInputStream
 import javax.inject.Inject
@@ -44,6 +46,7 @@ import javax.inject.Singleton
 
 /** Tests for [ProfileManagementControllerTest]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class ProfileManagementControllerTest {
   @Rule

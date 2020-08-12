@@ -67,6 +67,7 @@ import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.system.OppiaClock
+import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -75,6 +76,7 @@ private const val MORNING_TIMESTAMP = 1556094120000
 
 /** Tests for [NavigationDrawerTestActivity]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class NavigationDrawerTestActivityTest {
 
   @Inject

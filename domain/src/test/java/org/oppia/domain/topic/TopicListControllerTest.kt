@@ -39,6 +39,7 @@ import org.oppia.util.logging.LogLevel
 import org.oppia.util.parser.DefaultGcsPrefix
 import org.oppia.util.parser.ImageDownloadUrlTemplate
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -47,6 +48,7 @@ private const val NINE_DAYS_IN_MS = 9 * 24 * 60 * 60 * 1000
 
 /** Tests for [TopicListController]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class TopicListControllerTest {
 

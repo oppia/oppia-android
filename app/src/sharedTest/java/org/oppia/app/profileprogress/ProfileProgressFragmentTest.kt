@@ -79,9 +79,9 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [ProfileProgressFragment]. */
-@LooperMode(LooperMode.Mode.PAUSED)
 @Config(qualifiers = "port-xxhdpi")
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class ProfileProgressFragmentTest {
 
   @Inject

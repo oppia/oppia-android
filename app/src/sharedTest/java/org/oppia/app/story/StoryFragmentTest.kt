@@ -66,8 +66,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [StoryFragment]. */
-@LooperMode(LooperMode.Mode.PAUSED)
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class StoryFragmentTest {
 
   @Inject
