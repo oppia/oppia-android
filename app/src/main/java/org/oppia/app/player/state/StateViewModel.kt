@@ -48,6 +48,14 @@ class StateViewModel @Inject constructor() : ObservableViewModel() {
 
   fun getCanSubmitAnswer(): ObservableField<Boolean> = canSubmitAnswer
 
+  fun getAnswerItemList(): ObservableList<StateItemViewModel> {
+    return if (isSplitView.get() == true) {
+      rightItemList
+    } else {
+      itemList
+    }
+  }
+
   fun getPendingAnswerWithoutError(answerHandler: InteractionAnswerHandler?): UserAnswer? {
     return if (
       answerHandler != null &&

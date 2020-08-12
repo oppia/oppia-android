@@ -162,15 +162,17 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     (activity as StopStatePlayingSessionListener).stopSession()
   }
 
+  fun getPendingAnswer(
+    recyclerViewAssembler: StatePlayerRecyclerViewAssembler
+  ): UserAnswer {
+    return questionViewModel.getPendingAnswerWithoutError(
+      recyclerViewAssembler.getPendingAnswerHandler(questionViewModel.getAnswerItemList())
+    ) ?: UserAnswer.getDefaultInstance()
+  }
+
   fun onSubmitButtonClicked() {
     hideKeyboard()
-    var answer = UserAnswer.getDefaultInstance()
-    if (recyclerViewAssembler.getPendingAnswerHandler(questionViewModel.itemList) != null) {
-      answer = questionViewModel.getPendingAnswerWithoutError(
-        recyclerViewAssembler.getPendingAnswerHandler(questionViewModel.itemList)
-      )
-    }
-    handleSubmitAnswer(answer)
+    handleSubmitAnswer(getPendingAnswer(recyclerViewAssembler))
   }
 
   fun onResponsesHeaderClicked() {
