@@ -1,8 +1,5 @@
 package org.oppia.domain.onboarding
 
-import android.content.Context
-import android.content.pm.PackageManager
-import android.os.Bundle
 import androidx.lifecycle.LiveData
 import org.oppia.app.model.AppStartupState
 import org.oppia.app.model.AppStartupState.StartupMode
@@ -23,9 +20,9 @@ private const val APP_STARTUP_STATE_DATA_PROVIDER_ID = "app_startup_state_data_p
 @Singleton
 class AppStartupStateController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
-  private val context: Context,
   private val dataProviders: DataProviders,
-  private val consoleLogger: ConsoleLogger
+  private val consoleLogger: ConsoleLogger,
+  private val expirationMetaDataRetriever: ExpirationMetaDataRetriever
 ) {
   private val expirationDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
 
@@ -84,7 +81,7 @@ class AppStartupStateController @Inject constructor(
   }
 
   private fun hasAppExpired(): Boolean {
-    val applicationMetadata = getApplicationMetaData()
+    val applicationMetadata = expirationMetaDataRetriever.getMetaData()
     val isAppExpirationEnabled =
       applicationMetadata?.getBoolean(
         "automatic_app_expiration_enabled", /* defaultValue= */ true) ?: true
@@ -94,13 +91,6 @@ class AppStartupStateController @Inject constructor(
       // Assume the app is in an expired state if something fails when comparing the date.
       expirationDate?.before(Date()) ?: true
     } else false
-  }
-
-  private fun getApplicationMetaData(): Bundle? {
-    return context.packageManager.getApplicationInfo(
-      "org.oppia.app",
-      PackageManager.GET_META_DATA
-    ).metaData
   }
 
   private fun parseDate(dateString: String): Date? {

@@ -6,6 +6,14 @@ import android.os.Bundle
 import org.oppia.app.fragment.InjectableDialogFragment
 import javax.inject.Inject
 
+/**
+ * Dialog fragment to be shown when the pre-release version of the app should no longer be playable
+ * due to it being expired.
+ *
+ * This notice protects the app from unexpected issues being permanently shipped to individuals, and
+ * from the app being accessible to audience members for long-periods of time when it may not yet be
+ * ready for broad use or distribution.
+ */
 class AutomaticAppDeprecationNoticeDialogFragment: InjectableDialogFragment() {
   companion object {
     /** Returns a new instance of [AutomaticAppDeprecationNoticeDialogFragment]. */

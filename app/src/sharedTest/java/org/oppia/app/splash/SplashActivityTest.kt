@@ -5,12 +5,19 @@ import android.app.Instrumentation
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
+import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
@@ -21,6 +28,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.app.R
 import org.oppia.app.activity.ActivityComponent
 import org.oppia.app.application.ActivityComponentFactory
 import org.oppia.app.application.ApplicationComponent
@@ -39,6 +47,8 @@ import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.onboarding.AppStartupStateController
+import org.oppia.domain.onboarding.testing.ExpirationMetaDataRetrieverTestModule
+import org.oppia.domain.onboarding.testing.FakeExpirationMetaDataRetriever
 import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.testing.TestAccessibilityModule
@@ -53,6 +63,11 @@ import org.oppia.util.parser.HtmlParserEntityTypeModule
 import org.oppia.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.text.SimpleDateFormat
+import java.time.Duration
+import java.time.Instant
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -67,12 +82,13 @@ class SplashActivityTest {
 
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var fakeMetaDataRetriever: FakeExpirationMetaDataRetriever
+
+  private val expirationDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
 
   @Before
   fun setUp() {
     Intents.init()
-    initializeTestApplication()
-    FirebaseApp.initializeApp(context)
   }
 
   @After
@@ -92,6 +108,8 @@ class SplashActivityTest {
 
   @Test
   fun testSplashActivity_initialOpen_routesToOnboardingActivity() {
+    initializeTestApplication()
+
     activityTestRule.launchActivity(null)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -107,6 +125,96 @@ class SplashActivityTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     intended(hasComponent(ProfileActivity::class.java.name))
+  }
+
+  @Test
+  fun testOpenApp_initial_expirationEnabled_beforeExpDate_intentsToOnboardingFlow() {
+    initializeTestApplication()
+    setAutoAppExpirationEnabled(enabled = true)
+    setAutoAppExpirationDate(dateStringAfterToday())
+
+    activityTestRule.launchActivity(null)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // App deprecation is enabled, but this app hasn't yet expired.
+    intended(hasComponent(OnboardingActivity::class.java.name))
+  }
+
+  @Test
+  fun testOpenApp_initial_expirationEnabled_afterExpDate_intentsToDeprecationDialog() {
+    initializeTestApplication()
+    setAutoAppExpirationEnabled(enabled = true)
+    setAutoAppExpirationDate(dateStringBeforeToday())
+
+    activityTestRule.launchActivity(null)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // The current app is expired.
+    onView(withText(R.string.unsupported_app_version_dialog_title))
+      .inRoot(isDialog())
+      .check(matches(isDisplayed()))
+  }
+
+  @Test
+  fun testOpenApp_initial_expirationEnabled_afterExpDate_clickOnCloseDialog_endsActivity() {
+    initializeTestApplication()
+    setAutoAppExpirationEnabled(enabled = true)
+    setAutoAppExpirationDate(dateStringBeforeToday())
+    activityTestRule.launchActivity(null)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    onView(withText(R.string.unsupported_app_version_dialog_close_button_text))
+      .inRoot(isDialog())
+      .perform(click())
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // Closing the dialog should close the activity (and thus, the app).
+    assertThat(activityTestRule.activity.isFinishing).isTrue()
+  }
+
+  @Test
+  fun testOpenApp_initial_expirationDisabled_afterExpDate_intentsToOnboardingFlow() {
+    initializeTestApplication()
+    setAutoAppExpirationEnabled(enabled = false)
+    setAutoAppExpirationDate(dateStringBeforeToday())
+
+    activityTestRule.launchActivity(null)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // The app is technically deprecated, but because the deprecation check is disabled the
+    // onboarding flow should be shown, instead.
+    intended(hasComponent(OnboardingActivity::class.java.name))
+  }
+
+  @Test
+  fun testOpenApp_reopen_onboarded_expirationEnabled_beforeExpDate_intentsToProfileChooser() {
+    simulateAppAlreadyOnboarded()
+    initializeTestApplication()
+    setAutoAppExpirationEnabled(enabled = true)
+    setAutoAppExpirationDate(dateStringAfterToday())
+
+    activityTestRule.launchActivity(null)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // Reopening the app before it's expired should result in the profile activity showing since the
+    // user has already been onboarded.
+    intended(hasComponent(ProfileActivity::class.java.name))
+  }
+
+  @Test
+  fun testOpenApp_reopen_onboarded_expirationEnabled_afterExpDate_intentsToDeprecationDialog() {
+    simulateAppAlreadyOnboarded()
+    initializeTestApplication()
+    setAutoAppExpirationEnabled(enabled = true)
+    setAutoAppExpirationDate(dateStringBeforeToday())
+
+    activityTestRule.launchActivity(null)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // Reopening the app after it expires should prevent further access.
+    onView(withText(R.string.unsupported_app_version_dialog_title))
+      .inRoot(isDialog())
+      .check(matches(isDisplayed()))
   }
 
   private fun simulateAppAlreadyOnboarded() {
@@ -126,6 +234,34 @@ class SplashActivityTest {
   private fun initializeTestApplication() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     testCoroutineDispatchers.registerIdlingResource()
+    FirebaseApp.initializeApp(context)
+    setAutoAppExpirationEnabled(enabled = false) // Default to disabled.
+  }
+
+  private fun setAutoAppExpirationEnabled(enabled: Boolean) {
+    fakeMetaDataRetriever.putMetaDataBoolean("automatic_app_expiration_enabled", enabled)
+  }
+
+  private fun setAutoAppExpirationDate(dateString: String) {
+    fakeMetaDataRetriever.putMetaDataString("expiration_date", dateString)
+  }
+
+  /** Returns a date string occurring before today. */
+  private fun dateStringBeforeToday(): String {
+    return computeDateString(Instant.now() - Duration.ofDays(1))
+  }
+
+  /** Returns a date string occurring after today. */
+  private fun dateStringAfterToday(): String {
+    return computeDateString(Instant.now() + Duration.ofDays(1))
+  }
+
+  private fun computeDateString(instant: Instant): String {
+    return computeDateString(Date.from(instant))
+  }
+
+  private fun computeDateString(date: Date): String {
+    return expirationDateFormat.format(date)
   }
 
   @Module
@@ -146,7 +282,8 @@ class SplashActivityTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      TestAccessibilityModule::class, LogStorageModule::class
+      TestAccessibilityModule::class, LogStorageModule::class,
+      ExpirationMetaDataRetrieverTestModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
