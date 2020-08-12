@@ -28,8 +28,8 @@ import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.robolectric.annotation.LooperMode
 
 /** Tests for [StoryActivity]. */
-@LooperMode(LooperMode.Mode.PAUSED)
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class StoryActivityTest {
 
   private val internalProfileId = 0

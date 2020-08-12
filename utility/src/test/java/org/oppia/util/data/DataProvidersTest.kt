@@ -12,8 +12,6 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.async
 import org.junit.Before
 import org.junit.Rule
@@ -73,7 +71,6 @@ class DataProvidersTest {
   @Inject
   lateinit var fakeExceptionLogger: FakeExceptionLogger
 
-  @InternalCoroutinesApi
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
@@ -109,8 +106,6 @@ class DataProvidersTest {
   // through the providers created by DataProviders, and through other custom data providers in the stack.
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testConvertToLiveData_fakeDataProvider_noObserver_doesNotCallRetrieve() {
     val fakeDataProvider = object : DataProvider<Int> {
       var hasRetrieveBeenCalled = false
@@ -130,8 +125,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testConvertToLiveData_fakeDataProvider_withObserver_callsRetrieve() {
     val fakeDataProvider = object : DataProvider<Int> {
       var hasRetrieveBeenCalled = false
@@ -151,8 +144,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testConvertToLiveData_trivialDataProvider_withObserver_observerReceivesValue() {
     val simpleDataProvider = object : DataProvider<Int> {
       override fun getId(): Any = "simple_data_provider"
@@ -169,8 +160,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testConvertToLiveData_dataProviderChanges_withObserver_observerReceivesUpdatedValue() {
     var providerValue = 123
     val simpleDataProvider = object : DataProvider<Int> {
@@ -190,8 +179,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testConvertToLiveData_providerChanges_withoutObserver_newObserver_newObserverReceivesValue() {
     var providerValue = 123
     val simpleDataProvider = object : DataProvider<Int> {
@@ -214,8 +201,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testConvertToLiveData_dataProviderNotified_sameValue_withObserver_observerNotCalledAgain() {
     val simpleDataProvider = object : DataProvider<Int> {
       override fun getId(): Any = "simple_data_provider"
@@ -235,8 +220,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testConvertToLiveData_multipleUpdatesNoObserver_newObserver_observerReceivesLatest() {
     val providerOldResult = AsyncResult.success(123)
     testCoroutineDispatchers.advanceTimeBy(10)
@@ -273,8 +256,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testInMemoryDataProvider_toLiveData_deliversInMemoryValue() {
     val dataProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
 
@@ -287,8 +268,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testInMemoryDataProvider_toLiveData_notifies_doesNotDeliverSameValueAgain() {
     val dataProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     dataProviders.convertToLiveData(dataProvider).observeForever(mockStringLiveDataObserver)
@@ -303,8 +282,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testInMemoryDataProvider_toLiveData_withChangedValue_beforeReg_deliversSecondValue() {
     inMemoryCachedStr = STR_VALUE_0
     val dataProvider =
@@ -320,8 +297,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testInMemoryDataProvider_toLiveData_withChangedValue_afterReg_deliversFirstValue() {
     inMemoryCachedStr = STR_VALUE_0
     val dataProvider =
@@ -340,8 +315,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testInMemoryDataProvider_changedValueAfterReg_notified_deliversSecondValue() {
     inMemoryCachedStr = STR_VALUE_0
     val dataProvider =
@@ -358,8 +331,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testInMemoryDataProvider_changedValue_notifiesDiffProvider_deliversFirstVal() {
     inMemoryCachedStr = STR_VALUE_0
     val dataProvider =
@@ -380,8 +351,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testInMemoryDataProvider_toLiveData_withObserver_doesCallFunction() {
     // It would be nice to use a mock of the lambda (e.g. https://stackoverflow.com/a/53306974/3689782), but this
     // apparently does not work with Robolectric: https://github.com/robolectric/robolectric/issues/3688.
@@ -401,8 +370,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testInMemoryDataProvider_toLiveData_noObserver_doesNotCallFunction() {
     var fakeLoadMemoryCallbackCalled = false
     val fakeLoadMemoryCallback: () -> String = {
@@ -420,8 +387,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testInMemoryDataProvider_toLiveData_throwsException_deliversFailure() {
     val dataProvider =
       createThrowingDataProvider<String>(BASE_PROVIDER_ID_0, IllegalStateException("Failed"))
@@ -436,8 +401,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testAsyncInMemoryDataProvider_toLiveData_deliversInMemoryValue() {
     val dataProvider = dataProviders.createInMemoryDataProviderAsync(BASE_PROVIDER_ID_0) {
       AsyncResult.success(STR_VALUE_0)
@@ -452,8 +415,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testAsyncInMemoryDataProvider_toLiveData_withChangedValue_beforeReg_deliversSecondValue() {
     inMemoryCachedStr = STR_VALUE_0
     val dataProvider = dataProviders.createInMemoryDataProviderAsync(BASE_PROVIDER_ID_0) {
@@ -470,8 +431,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testAsyncInMemoryDataProvider_toLiveData_withChangedValue_afterReg_deliversFirstValue() {
     inMemoryCachedStr = STR_VALUE_0
     val dataProvider = dataProviders.createInMemoryDataProviderAsync(BASE_PROVIDER_ID_0) {
@@ -491,8 +450,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testAsyncInMemoryDataProvider_changedValueAfterReg_notified_deliversValueTwo() {
     inMemoryCachedStr = STR_VALUE_0
     val dataProvider = dataProviders.createInMemoryDataProviderAsync(BASE_PROVIDER_ID_0) {
@@ -510,8 +467,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testAsyncInMemoryDataProvider_blockingFunction_doesNotDeliver() {
     // Ensure the suspend operation is initially blocked.
     val blockingOperation = backgroundCoroutineScope.async { STR_VALUE_0 }
@@ -526,8 +481,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testAsyncInMemoryDataProvider_blockingFunctionCompleted_deliversValue() {
     // Ensure the suspend operation is initially blocked.
     val blockingOperation = backgroundCoroutineScope.async { STR_VALUE_0 }
@@ -548,8 +501,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testAsyncInMemoryDataProvider_toLiveData_withObserver_doesCallFunction() {
     var fakeLoadMemoryCallbackCalled = false
     val fakeLoadMemoryCallback: suspend () -> AsyncResult<String> = {
@@ -567,8 +518,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testAsyncInMemoryDataProvider_toLiveData_noObserver_doesNotCallFunction() {
     var fakeLoadMemoryCallbackCalled = false
     val fakeLoadMemoryCallback: suspend () -> AsyncResult<String> = {
@@ -586,8 +535,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testAsyncInMemoryDataProvider_toLiveData_pendingResult_deliversPendingResult() {
     val dataProvider = createPendingDataProvider<String>(BASE_PROVIDER_ID_0)
 
@@ -599,8 +546,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testAsyncInMemoryDataProvider_toLiveData_failure_deliversFailure() {
     val dataProvider =
       createFailingDataProvider<String>(BASE_PROVIDER_ID_0, IllegalStateException("Failure"))
@@ -616,8 +561,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testTransform_toLiveData_deliversTransformedValue() {
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val dataProvider =
@@ -632,8 +575,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testTransform_toLiveData_differentValue_notifiesBase_deliversXformedValueTwo() {
     inMemoryCachedStr = STR_VALUE_0
     val baseProvider =
@@ -653,8 +594,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testTransform_toLiveData_diffValue_notifiesXform_deliversXformedValueTwo() {
     inMemoryCachedStr = STR_VALUE_0
     val baseProvider =
@@ -674,8 +613,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testTransform_differentValue_notifiesBase_observeBase_deliversSecondValue() {
     inMemoryCachedStr = STR_VALUE_0
     val baseProvider =
@@ -696,8 +633,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testTransform_differentValue_notifiesXformed_observeBase_deliversFirstValue() {
     inMemoryCachedStr = STR_VALUE_0
     val baseProvider =
@@ -722,8 +657,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testTransform_toLiveData_basePending_deliversPending() {
     val baseProvider = createPendingDataProvider<String>(BASE_PROVIDER_ID_0)
     val dataProvider =
@@ -737,8 +670,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testTransform_toLiveData_baseFailure_deliversFailure() {
     val baseProvider =
       createFailingDataProvider<String>(BASE_PROVIDER_ID_0, IllegalStateException("Failure"))
@@ -758,8 +689,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testTransform_toLiveData_withObserver_callsTransform() {
     var fakeTransformCallbackCalled = false
     val fakeTransformCallback: (String) -> Int = {
@@ -778,8 +707,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testTransform_toLiveData_noObserver_doesNotCallTransform() {
     var fakeTransformCallbackCalled = false
     val fakeTransformCallback: (String) -> Int = {
@@ -798,8 +725,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testTransform_toLiveData_basePending_doesNotCallTransform() {
     var fakeTransformCallbackCalled = false
     val fakeTransformCallback: (String) -> Int = {
@@ -818,8 +743,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testTransform_toLiveData_baseFailure_doesNotCallTransform() {
     var fakeTransformCallbackCalled = false
     val fakeTransformCallback: (String) -> Int = {
@@ -839,8 +762,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testTransform_toLiveData_throwsException_deliversFailure() {
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val dataProvider = dataProviders.transform<String, Int>(TRANSFORMED_PROVIDER_ID, baseProvider) {
@@ -861,8 +782,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testTransform_toLiveData_baseThrowsException_deliversFailure() {
     val baseProvider =
       createThrowingDataProvider<String>(BASE_PROVIDER_ID_0, IllegalStateException("Base failure"))
@@ -885,8 +804,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testTransformAsync_toLiveData_deliversTransformedValue() {
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val dataProvider = dataProviders.transformAsync(
@@ -903,8 +820,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testTransformAsync_toLiveData_diffValue_notifiesBase_deliversXformedValueTwo() {
     inMemoryCachedStr = STR_VALUE_0
     val baseProvider =
@@ -926,8 +841,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testTransformAsync_toLiveData_diffVal_notifiesXform_deliversXformedValueTwo() {
     inMemoryCachedStr = STR_VALUE_0
     val baseProvider =
@@ -949,8 +862,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testTransformAsync_differentValue_notifiesBase_observeBase_deliversSecondVal() {
     inMemoryCachedStr = STR_VALUE_0
     val baseProvider =
@@ -973,8 +884,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testTransformAsync_diffValue_notifiesXformed_observeBase_deliversFirstVal() {
     inMemoryCachedStr = STR_VALUE_0
     val baseProvider =
@@ -1001,8 +910,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testTransformAsync_toLiveData_blockingFunction_doesNotDeliverValue() {
     // Block transformStringAsync().
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
@@ -1018,8 +925,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testTransformAsync_toLiveData_blockingFunction_completed_deliversXformedVal() {
     // Block transformStringAsync().
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
@@ -1038,8 +943,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testTransformAsync_toLiveData_blockingFunction_baseObserved_deliversFirstVal() {
     // Block transformStringAsync().
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
@@ -1060,8 +963,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testTransformAsync_toLiveData_transformedPending_deliversPending() {
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val dataProvider =
@@ -1078,8 +979,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testTransformAsync_toLiveData_transformedFailure_deliversFailure() {
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val dataProvider =
@@ -1101,8 +1000,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testTransformAsync_toLiveData_basePending_deliversPending() {
     val baseProvider = createPendingDataProvider<String>(BASE_PROVIDER_ID_0)
     val dataProvider = dataProviders.transformAsync(
@@ -1119,8 +1016,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testTransformAsync_toLiveData_baseFailure_deliversFailure() {
     val baseProvider =
       createThrowingDataProvider<String>(BASE_PROVIDER_ID_0, IllegalStateException("Base failure"))
@@ -1144,8 +1039,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testTransformAsync_toLiveData_withObserver_callsTransform() {
     var fakeTransformCallbackCalled = false
     val fakeTransformCallback: suspend (String) -> AsyncResult<Int> = {
@@ -1164,8 +1057,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testTransformAsync_toLiveData_noObserver_doesNotCallTransform() {
     var fakeTransformCallbackCalled = false
     val fakeTransformCallback: suspend (String) -> AsyncResult<Int> = {
@@ -1184,8 +1075,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testTransformAsync_toLiveData_basePending_doesNotCallTransform() {
     var fakeTransformCallbackCalled = false
     val fakeTransformCallback: suspend (String) -> AsyncResult<Int> = {
@@ -1204,8 +1093,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testTransformAsync_toLiveData_baseFailure_doesNotCallTransform() {
     var fakeTransformCallbackCalled = false
     val fakeTransformCallback: suspend (String) -> AsyncResult<Int> = {
@@ -1225,8 +1112,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombine_toLiveData_deliversCombinedValue() {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_1)
@@ -1244,8 +1129,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombine_firstProviderChanges_notifiesBase_deliversNewValue() {
     inMemoryCachedStr = STR_VALUE_0
     val baseProvider1 =
@@ -1268,8 +1151,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombine_firstProviderChanges_notifiesCombined_deliversNewValue() {
     inMemoryCachedStr = STR_VALUE_0
     val baseProvider1 =
@@ -1292,8 +1173,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombine_firstProviderChanges_observeBase_notifiesBase_deliversNewValue() {
     inMemoryCachedStr = STR_VALUE_0
     val baseProvider1 =
@@ -1315,8 +1194,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombine_firstProvChanges_observeBase_notifiesCombined_deliversOldValue() {
     inMemoryCachedStr = STR_VALUE_0
     val baseProvider1 =
@@ -1342,8 +1219,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombine_secondProviderChanges_notifiesBase_deliversNewValue() {
     inMemoryCachedStr = STR_VALUE_1
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
@@ -1366,8 +1241,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombine_secondProviderChanges_notifiesCombined_deliversNewValue() {
     inMemoryCachedStr = STR_VALUE_1
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
@@ -1390,8 +1263,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombine_secondProviderChanges_observeBase_notifiesBase_deliversNewValue() {
     inMemoryCachedStr = STR_VALUE_1
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
@@ -1413,8 +1284,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombine_secondProvChanges_observeBase_notifiesCombined_deliversOldValue() {
     inMemoryCachedStr = STR_VALUE_1
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
@@ -1440,8 +1309,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombine_firstProviderPending_deliversPending() {
     val baseProvider1 = createPendingDataProvider<String>(BASE_PROVIDER_ID_0)
     val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_1)
@@ -1458,8 +1325,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombine_secondProviderPending_deliversPending() {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 = createPendingDataProvider<String>(BASE_PROVIDER_ID_1)
@@ -1476,8 +1341,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombine_bothProvidersPending_deliversPending() {
     val baseProvider1 = createPendingDataProvider<String>(BASE_PROVIDER_ID_0)
     val baseProvider2 = createPendingDataProvider<String>(BASE_PROVIDER_ID_1)
@@ -1494,8 +1357,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombine_firstProviderFailing_deliversFailure() {
     val baseProvider1 =
       createFailingDataProvider<String>(BASE_PROVIDER_ID_0, IllegalStateException("Base 1 failure"))
@@ -1518,8 +1379,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombine_secondProviderFailing_deliversFailure() {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 =
@@ -1542,8 +1401,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombine_bothProvidersFailing_deliversFailure() {
     val baseProvider1 =
       createFailingDataProvider<String>(BASE_PROVIDER_ID_0, IllegalStateException("Base 1 failure"))
@@ -1567,8 +1424,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombine_toLiveData_withObserver_callsCombine() {
     var fakeCombineCallbackCalled = false
     val fakeCombineCallback: (String, String) -> String = { str1, str2 ->
@@ -1588,8 +1443,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombine_toLiveData_withObserver_firstProviderPending_doesNotCallCombine() {
     var fakeCombineCallbackCalled = false
     val fakeCombineCallback: (String, String) -> String = { str1, str2 ->
@@ -1609,8 +1462,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombine_toLiveData_withObserver_secondProviderPending_doesNotCallCombine() {
     var fakeCombineCallbackCalled = false
     val fakeCombineCallback: (String, String) -> String = { str1, str2 ->
@@ -1630,8 +1481,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombine_toLiveData_withObserver_bothProvidersPending_doesNotCallCombine() {
     var fakeCombineCallbackCalled = false
     val fakeCombineCallback: (String, String) -> String = { str1, str2 ->
@@ -1651,8 +1500,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombine_toLiveData_withObserver_firstProviderFailing_doesNotCallCombine() {
     var fakeCombineCallbackCalled = false
     val fakeCombineCallback: (String, String) -> String = { str1, str2 ->
@@ -1673,8 +1520,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombine_toLiveData_withObserver_secondProviderFailing_doesNotCallCombine() {
     var fakeCombineCallbackCalled = false
     val fakeCombineCallback: (String, String) -> String = { str1, str2 ->
@@ -1695,8 +1540,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombine_toLiveData_withObserver_bothProvidersFailing_doesNotCallCombine() {
     var fakeCombineCallbackCalled = false
     val fakeCombineCallback: (String, String) -> String = { str1, str2 ->
@@ -1718,8 +1561,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombine_firstProviderThrowsException_deliversFailure() {
     val baseProvider1 = createThrowingDataProvider<String>(
       BASE_PROVIDER_ID_0,
@@ -1744,8 +1585,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombine_secondProviderThrowsException_deliversFailure() {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 = createThrowingDataProvider<String>(
@@ -1770,8 +1609,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombine_bothProvidersThrowExceptions_deliversFailure() {
     val baseProvider1 = createThrowingDataProvider<String>(
       BASE_PROVIDER_ID_0,
@@ -1799,8 +1636,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombine_combinerThrowsException_deliversFailure() {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_1)
@@ -1821,8 +1656,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_toLiveData_deliversCombinedValue() {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_1)
@@ -1840,8 +1673,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_firstProviderChanges_notifiesBase_deliversNewValue() {
     inMemoryCachedStr = STR_VALUE_0
     val baseProvider1 =
@@ -1864,8 +1695,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_firstProviderChanges_notifiesCombined_deliversNewValue() {
     inMemoryCachedStr = STR_VALUE_0
     val baseProvider1 =
@@ -1888,8 +1717,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_firstProvChanges_observeBase_notifiesBase_deliversNewValue() {
     inMemoryCachedStr = STR_VALUE_0
     val baseProvider1 =
@@ -1911,8 +1738,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_firstProvChanges_obsrvBase_notifiesCombined_deliversOldVal() {
     inMemoryCachedStr = STR_VALUE_0
     val baseProvider1 =
@@ -1938,8 +1763,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_secondProviderChanges_notifiesBase_deliversNewValue() {
     inMemoryCachedStr = STR_VALUE_1
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
@@ -1962,8 +1785,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_secondProviderChanges_notifiesCombined_deliversNewValue() {
     inMemoryCachedStr = STR_VALUE_1
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
@@ -1986,8 +1807,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_secondProvChanges_observeBase_notifiesBase_deliversNewValue() {
     inMemoryCachedStr = STR_VALUE_1
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
@@ -2009,8 +1828,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_secondProvChanges_obsrvBase_notifiesCombined_deliversOldVal() {
     inMemoryCachedStr = STR_VALUE_1
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
@@ -2036,8 +1853,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_firstProviderPending_deliversPending() {
     val baseProvider1 = createPendingDataProvider<String>(BASE_PROVIDER_ID_0)
     val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_1)
@@ -2054,8 +1869,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_secondProviderPending_deliversPending() {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 = createPendingDataProvider<String>(BASE_PROVIDER_ID_1)
@@ -2072,8 +1885,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_bothProvidersPending_deliversPending() {
     val baseProvider1 = createPendingDataProvider<String>(BASE_PROVIDER_ID_0)
     val baseProvider2 = createPendingDataProvider<String>(BASE_PROVIDER_ID_1)
@@ -2090,8 +1901,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_firstProviderFailing_deliversFailure() {
     val baseProvider1 =
       createFailingDataProvider<String>(BASE_PROVIDER_ID_0, IllegalStateException("Base 1 failure"))
@@ -2114,8 +1923,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_secondProviderFailing_deliversFailure() {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 =
@@ -2138,8 +1945,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_bothProvidersFailing_deliversFailure() {
     val baseProvider1 =
       createFailingDataProvider<String>(BASE_PROVIDER_ID_0, IllegalStateException("Base 1 failure"))
@@ -2163,8 +1968,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_toLiveData_withObserver_callsCombine() {
     var fakeCombineCallbackCalled = false
     val fakeCombineCallback: suspend (String, String) -> AsyncResult<String> = { str1, str2 ->
@@ -2185,8 +1988,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_toLiveData_withObserver_firstProvPending_doesNotCallCombine() {
     var fakeCombineCallbackCalled = false
     val fakeCombineCallback: suspend (String, String) -> AsyncResult<String> = { str1, str2 ->
@@ -2207,8 +2008,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_toLiveData_withObserver_secondProvPending_doesNotCallFunc() {
     var fakeCombineCallbackCalled = false
     val fakeCombineCallback: suspend (String, String) -> AsyncResult<String> = { str1, str2 ->
@@ -2229,8 +2028,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_toLiveData_withObserver_bothProvsPending_doesNotCallCombine() {
     var fakeCombineCallbackCalled = false
     val fakeCombineCallback: suspend (String, String) -> AsyncResult<String> = { str1, str2 ->
@@ -2251,8 +2048,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_toLiveData_withObserver_firstProvFailing_doesNotCallCombine() {
     var fakeCombineCallbackCalled = false
     val fakeCombineCallback: suspend (String, String) -> AsyncResult<String> = { str1, str2 ->
@@ -2274,8 +2069,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_toLiveData_withObserver_secondProvFailing_doesNotCallFunc() {
     var fakeCombineCallbackCalled = false
     val fakeCombineCallback: suspend (String, String) -> AsyncResult<String> = { str1, str2 ->
@@ -2297,8 +2090,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_toLiveData_withObserver_bothProvsFailing_doesNotCallCombine() {
     var fakeCombineCallbackCalled = false
     val fakeCombineCallback: suspend (String, String) -> AsyncResult<String> = { str1, str2 ->
@@ -2321,8 +2112,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_firstProviderThrowsException_deliversFailure() {
     val baseProvider1 = createThrowingDataProvider<String>(
       BASE_PROVIDER_ID_0,
@@ -2347,8 +2136,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_secondProviderThrowsException_deliversFailure() {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 = createThrowingDataProvider<String>(
@@ -2373,8 +2160,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_bothProvidersThrowExceptions_deliversFailure() {
     val baseProvider1 = createThrowingDataProvider<String>(
       BASE_PROVIDER_ID_0,
@@ -2402,8 +2187,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_firstProviderIsBlocking_doesNotDeliver() {
     // Block the first provider.
     val baseProvider1 = createBlockingDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
@@ -2422,8 +2205,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_firstProviderIsBlocking_resumedAfterReg_valueDelivered() {
     // Block the first provider.
     val baseProvider1 = createBlockingDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
@@ -2446,8 +2227,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_secondProviderIsBlocking_doesNotDeliver() {
     // Block the second provider.
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
@@ -2466,8 +2245,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_secondProviderIsBlocking_resumedAfterReg_valueDelivered() {
     // Block first provider.
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
@@ -2490,8 +2267,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_combineFuncBlocked_doesNotDeliver() {
     // Block combineStringsAsync().
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
@@ -2508,8 +2283,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_combineFuncBlocked_resumedAfterRegistration_deliversValue() {
     // Block combineStringsAsync().
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
@@ -2531,8 +2304,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_combineReturnsPending_deliversPending() {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_1)
@@ -2550,8 +2321,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombineAsync_combineReturnsFailure_deliversFailure() {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_1)
@@ -2572,8 +2341,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testNestedXformedProvider_toLiveData_deliversTransformedValue() {
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val dataProvider =
@@ -2590,8 +2357,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testNestedXformedProvider_toLiveData_diffValue_notifiesBase_deliversXformedValueTwo() {
     inMemoryCachedStr = STR_VALUE_0
     val baseProvider =
@@ -2613,8 +2378,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testNestedXformedProvider_toLiveData_diffVal_notifiesXform_deliversXformedValueTwo() {
     inMemoryCachedStr = STR_VALUE_0
     val baseProvider =
@@ -2636,8 +2399,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testNestedXformedProvider_differentValue_notifiesBase_observeBase_deliversSecondVal() {
     inMemoryCachedStr = STR_VALUE_0
     val baseProvider =
@@ -2661,8 +2422,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testNestedXformedProvider_diffValue_notifiesXformed_observeBase_deliversFirstVal() {
     inMemoryCachedStr = STR_VALUE_0
     val baseProvider =
@@ -2689,8 +2448,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testNestedXformedProvider_toLiveData_blockingFunction_doesNotDeliverValue() {
     // Block transformStringAsync().
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
@@ -2706,8 +2463,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testNestedXformedProvider_toLiveData_blockingFunction_completed_deliversXformedVal() {
     // Block transformStringAsync().
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
@@ -2726,8 +2481,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testNestedXformedProvider_toLiveData_blockingFunction_baseObserved_deliversFirstVal() {
     // Block transformStringAsync().
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
@@ -2749,8 +2502,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testNestedXformedProvider_toLiveData_transformedPending_deliversPending() {
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val dataProvider =
@@ -2770,8 +2521,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testNestedXformedProvider_toLiveData_transformedFailure_deliversFailure() {
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val dataProvider =
@@ -2796,8 +2545,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testNestedXformedProvider_toLiveData_basePending_deliversPending() {
     val baseProvider = createPendingDataProvider<String>(BASE_PROVIDER_ID_0)
     val dataProvider =
@@ -2814,8 +2561,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testNestedXformedProvider_toLiveData_baseFailure_deliversFailure() {
     val baseProvider =
       createThrowingDataProvider<String>(BASE_PROVIDER_ID_0, IllegalStateException("Base failure"))
@@ -2840,8 +2585,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testNestedXformedProvider_toLiveData_withObserver_callsTransform() {
     var fakeTransformCallbackCalled = false
     val fakeTransformCallback: suspend (String) -> AsyncResult<Int> = {
@@ -2862,8 +2605,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testNestedXformedProvider_toLiveData_noObserver_doesNotCallTransform() {
     var fakeTransformCallbackCalled = false
     val fakeTransformCallback: suspend (String) -> AsyncResult<Int> = {
@@ -2884,8 +2625,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testNestedXformedProvider_toLiveData_basePending_doesNotCallTransform() {
     var fakeTransformCallbackCalled = false
     val fakeTransformCallback: suspend (String) -> AsyncResult<Int> = {
@@ -2906,8 +2645,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testNestedXformedProvider_toLiveData_baseFailure_doesNotCallTransform() {
     var fakeTransformCallbackCalled = false
     val fakeTransformCallback: suspend (String) -> AsyncResult<Int> = {
@@ -2929,8 +2666,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testNestedXformedProvider_toLiveData_newBaseProvider_newObserver_receivesLatestValue() {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_1)
@@ -2951,8 +2686,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testNestedXformedProvider_toLiveData_newBaseAndTransform_newObserver_receivesLatestValue() {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_0)
@@ -2973,8 +2706,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testNestedXformedProvider_toLiveData_newBaseProvider_notifiesObservers() {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_1)
@@ -2995,8 +2726,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testNestedXformedProvider_toLiveData_newBaseProvider_notifiedNewValue_isDelivered() {
     inMemoryCachedStr = STR_VALUE_1
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
@@ -3022,8 +2751,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testNestedXformedProvider_toLiveData_newBaseProvider_notifyOldBase_doesNotDeliver() {
     inMemoryCachedStr = STR_VALUE_0
     val baseProvider1 =
@@ -3049,8 +2776,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testNestedXformedProvider_toLiveData_newBaseProviderChanged_notifyOld_doesNotDeliverNewVal() {
     inMemoryCachedStr = STR_VALUE_0
     inMemoryCachedStr2 = STR_VALUE_1
@@ -3079,8 +2804,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testNestedXformedProvider_toLiveData_baseFailure_logsException() {
     val baseProvider =
       createThrowingDataProvider<String>(BASE_PROVIDER_ID_0, IllegalStateException("Base failure"))
@@ -3098,8 +2821,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testTransform_toLiveData_throwsException_deliversFailure_logsException() {
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val dataProvider = dataProviders.transform<String, Int>(TRANSFORMED_PROVIDER_ID, baseProvider) {
@@ -3115,8 +2836,6 @@ class DataProvidersTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testCombine_combinerThrowsException_deliversFailure_logsException() {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_1)
@@ -3142,7 +2861,6 @@ class DataProvidersTest {
    * Transforms the specified string into an integer in the same way as [transformString], except in a blocking context
    * using [backgroundCoroutineDispatcher].
    */
-  @ExperimentalCoroutinesApi
   private suspend fun transformStringAsync(str: String): AsyncResult<Int> {
     val deferred = backgroundCoroutineScope.async { transformString(str) }
     deferred.await()
@@ -3153,7 +2871,6 @@ class DataProvidersTest {
    * Transforms the specified string in a similar way as [transformStringAsync], but with a
    * different transformation method.
    */
-  @ExperimentalCoroutinesApi
   private suspend fun transformStringDoubledAsync(str: String): AsyncResult<Int> {
     val deferred = backgroundCoroutineScope.async { transformString(str) * 2 }
     deferred.await()
@@ -3168,7 +2885,6 @@ class DataProvidersTest {
    * Combines the specified strings into a new string in the same way as [combineStrings], except in a blocking context
    * using [backgroundCoroutineDispatcher].
    */
-  @ExperimentalCoroutinesApi
   private suspend fun combineStringsAsync(str1: String, str2: String): AsyncResult<String> {
     val deferred = backgroundCoroutineScope.async { combineStrings(str1, str2) }
     deferred.await()
@@ -3200,7 +2916,6 @@ class DataProvidersTest {
   }
 
   /** Returns a successful [DataProvider] that uses a background thread to return the value. */
-  @ExperimentalCoroutinesApi
   private fun <T> createBlockingDataProvider(id: Any, value: T): DataProvider<T> {
     return dataProviders.createInMemoryDataProviderAsync(id) {
       val deferred = backgroundCoroutineScope.async { value }

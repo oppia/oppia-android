@@ -10,16 +10,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.ObsoleteCoroutinesApi
-import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.setMain
-import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
@@ -37,6 +27,8 @@ import org.oppia.app.model.OngoingStoryList
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.PromotedStory
 import org.oppia.domain.oppialogger.LogStorageModule
+import org.oppia.testing.TestCoroutineDispatchers
+import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.data.AsyncResult
@@ -47,19 +39,17 @@ import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.parser.DefaultGcsPrefix
 import org.oppia.util.parser.ImageDownloadUrlTemplate
-import org.oppia.util.threading.BackgroundDispatcher
-import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 import java.util.Date
 import javax.inject.Inject
-import javax.inject.Qualifier
 import javax.inject.Singleton
-import kotlin.coroutines.EmptyCoroutineContext
 
 private const val NINE_DAYS_IN_MS = 9 * 24 * 60 * 60 * 1000
 
 /** Tests for [TopicListController]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class TopicListControllerTest {
 
@@ -76,41 +66,21 @@ class TopicListControllerTest {
   @Inject
   lateinit var storyProgressController: StoryProgressController
 
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Mock
   lateinit var mockOngoingStoryListObserver: Observer<AsyncResult<OngoingStoryList>>
 
   @Captor
   lateinit var ongoingStoryListResultCaptor: ArgumentCaptor<AsyncResult<OngoingStoryList>>
 
-  @Inject
-  @field:TestDispatcher
-  lateinit var testDispatcher: CoroutineDispatcher
-
-  private val coroutineContext by lazy {
-    EmptyCoroutineContext + testDispatcher
-  }
-
-  // https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/
-  @ObsoleteCoroutinesApi
-  private val testThread = newSingleThreadContext("TestMain")
-
   private lateinit var profileId0: ProfileId
 
   @Before
-  @ExperimentalCoroutinesApi
-  @ObsoleteCoroutinesApi
   fun setUp() {
     profileId0 = ProfileId.newBuilder().setInternalId(0).build()
-    Dispatchers.setMain(testThread)
     setUpTestApplicationComponent()
-  }
-
-  @After
-  @ExperimentalCoroutinesApi
-  @ObsoleteCoroutinesApi
-  fun tearDown() {
-    Dispatchers.resetMain()
-    testThread.close()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -258,289 +228,271 @@ class TopicListControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testRetrieveOngoingStoryList_defaultLesson_hasCorrectInfo() =
-    runBlockingTest(coroutineContext) {
-      topicListController.getOngoingStoryList(profileId0)
-        .observeForever(mockOngoingStoryListObserver)
-      advanceUntilIdle()
+  fun testRetrieveOngoingStoryList_defaultLesson_hasCorrectInfo() {
+    topicListController.getOngoingStoryList(profileId0)
+      .observeForever(mockOngoingStoryListObserver)
+    testCoroutineDispatchers.runCurrent()
 
-      verifyGetOngoingStoryListSucceeded()
-      verifyDefaultOngoingStoryListSucceeded()
-    }
+    verifyGetOngoingStoryListSucceeded()
+    verifyDefaultOngoingStoryListSucceeded()
+  }
 
   @Test
   @Ignore("Failing on Circle CI.")
-  @ExperimentalCoroutinesApi
-  fun testRetrieveOngoingStoryList_markRecentlyPlayedFractionStory0Exploration0_ongoingStoryListIsCorrect() = // ktlint-disable max-line-length
-    runBlockingTest(coroutineContext) {
-      storyProgressController.recordRecentlyPlayedChapter(
-        profileId0,
-        FRACTIONS_TOPIC_ID,
-        FRACTIONS_STORY_ID_0,
-        FRACTIONS_EXPLORATION_ID_0,
-        getCurrentTimestamp()
-      )
-      advanceUntilIdle()
+  fun testRetrieveOngoingStoryList_markRecentlyPlayedFracStory0Exp0_ongoingStoryListIsCorrect() {
+    storyProgressController.recordRecentlyPlayedChapter(
+      profileId0,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      getCurrentTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
 
-      topicListController.getOngoingStoryList(profileId0)
-        .observeForever(mockOngoingStoryListObserver)
-      advanceUntilIdle()
+    topicListController.getOngoingStoryList(profileId0)
+      .observeForever(mockOngoingStoryListObserver)
+    testCoroutineDispatchers.runCurrent()
 
-      verifyGetOngoingStoryListSucceeded()
+    verifyGetOngoingStoryListSucceeded()
 
-      val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
-      assertThat(ongoingTopicList.recentStoryCount).isEqualTo(1)
-      verifyOngoingStoryAsFractionStory0Exploration0(ongoingTopicList.recentStoryList[0])
-    }
+    val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
+    assertThat(ongoingTopicList.recentStoryCount).isEqualTo(1)
+    verifyOngoingStoryAsFractionStory0Exploration0(ongoingTopicList.recentStoryList[0])
+  }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testRetrieveOngoingStoryList_markChapterCompletedFractionStory0Exploration0_ongoingStoryListIsCorrect() = // ktlint-disable max-line-length
-    runBlockingTest(coroutineContext) {
-      storyProgressController.recordCompletedChapter(
-        profileId0,
-        FRACTIONS_TOPIC_ID,
-        FRACTIONS_STORY_ID_0,
-        FRACTIONS_EXPLORATION_ID_0,
-        getCurrentTimestamp()
-      )
-      advanceUntilIdle()
+  fun testRetrieveOngoingStoryList_markChapterCompletedFracStory0Exp0_ongoingStoryListIsCorrect() {
+    storyProgressController.recordCompletedChapter(
+      profileId0,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      getCurrentTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
 
-      topicListController.getOngoingStoryList(profileId0)
-        .observeForever(mockOngoingStoryListObserver)
-      advanceUntilIdle()
+    topicListController.getOngoingStoryList(profileId0)
+      .observeForever(mockOngoingStoryListObserver)
+    testCoroutineDispatchers.runCurrent()
 
-      verifyGetOngoingStoryListSucceeded()
+    verifyGetOngoingStoryListSucceeded()
 
-      val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
-      assertThat(ongoingTopicList.recentStoryCount).isEqualTo(1)
-      verifyOngoingStoryAsFractionStory0Exploration1(ongoingTopicList.recentStoryList[0])
-    }
+    val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
+    assertThat(ongoingTopicList.recentStoryCount).isEqualTo(1)
+    verifyOngoingStoryAsFractionStory0Exploration1(ongoingTopicList.recentStoryList[0])
+  }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testRetrieveOngoingStoryList_markChapterCompletedFractionStory0Exploration0_markRecentlyPlayedFractionStory0Exploration1_ongoingStoryListIsCorrect() = // ktlint-disable max-line-length
-    runBlockingTest(coroutineContext) {
-      storyProgressController.recordCompletedChapter(
-        profileId0,
-        FRACTIONS_TOPIC_ID,
-        FRACTIONS_STORY_ID_0,
-        FRACTIONS_EXPLORATION_ID_0,
-        getCurrentTimestamp()
-      )
-      advanceUntilIdle()
+  fun testRetrieveStoryList_markChapDoneFracStory0Exp0_playedFracStory0Exp1_ongoingListCorrect() {
+    storyProgressController.recordCompletedChapter(
+      profileId0,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      getCurrentTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
 
-      storyProgressController.recordRecentlyPlayedChapter(
-        profileId0,
-        FRACTIONS_TOPIC_ID,
-        FRACTIONS_STORY_ID_0,
-        FRACTIONS_EXPLORATION_ID_1,
-        getCurrentTimestamp()
-      )
-      advanceUntilIdle()
+    storyProgressController.recordRecentlyPlayedChapter(
+      profileId0,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_1,
+      getCurrentTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
 
-      topicListController.getOngoingStoryList(profileId0)
-        .observeForever(mockOngoingStoryListObserver)
-      advanceUntilIdle()
+    topicListController.getOngoingStoryList(profileId0)
+      .observeForever(mockOngoingStoryListObserver)
+    testCoroutineDispatchers.runCurrent()
 
-      verifyGetOngoingStoryListSucceeded()
+    verifyGetOngoingStoryListSucceeded()
 
-      val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
-      assertThat(ongoingTopicList.recentStoryCount).isEqualTo(1)
-      verifyOngoingStoryAsFractionStory0Exploration1(ongoingTopicList.recentStoryList[0])
-    }
+    val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
+    assertThat(ongoingTopicList.recentStoryCount).isEqualTo(1)
+    verifyOngoingStoryAsFractionStory0Exploration1(ongoingTopicList.recentStoryList[0])
+  }
 
   @Test
   @Ignore("Failing on Circle CI.")
-  @ExperimentalCoroutinesApi
-  fun testRetrieveOngoingStoryList_markAllChaptersCompletedInFractions_ongoingStoryListIsCorrect() =
-    runBlockingTest(coroutineContext) {
-      storyProgressController.recordCompletedChapter(
-        profileId0,
-        FRACTIONS_TOPIC_ID,
-        FRACTIONS_STORY_ID_0,
-        FRACTIONS_EXPLORATION_ID_0,
-        getCurrentTimestamp()
-      )
-      advanceUntilIdle()
+  fun testRetrieveOngoingStoryList_markAllChaptersCompletedInFractions_ongoingStoryListIsCorrect() {
+    storyProgressController.recordCompletedChapter(
+      profileId0,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      getCurrentTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
 
-      storyProgressController.recordCompletedChapter(
-        profileId0,
-        FRACTIONS_TOPIC_ID,
-        FRACTIONS_STORY_ID_0,
-        FRACTIONS_EXPLORATION_ID_1,
-        getCurrentTimestamp()
-      )
-      advanceUntilIdle()
+    storyProgressController.recordCompletedChapter(
+      profileId0,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_1,
+      getCurrentTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
 
-      topicListController.getOngoingStoryList(profileId0)
-        .observeForever(mockOngoingStoryListObserver)
-      advanceUntilIdle()
+    topicListController.getOngoingStoryList(profileId0)
+      .observeForever(mockOngoingStoryListObserver)
+    testCoroutineDispatchers.runCurrent()
 
-      verifyGetOngoingStoryListSucceeded()
+    verifyGetOngoingStoryListSucceeded()
 
-      val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
-      assertThat(ongoingTopicList.recentStoryCount).isEqualTo(2)
-      verifyDefaultOngoingStoryListSucceeded()
-    }
+    val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
+    assertThat(ongoingTopicList.recentStoryCount).isEqualTo(2)
+    verifyDefaultOngoingStoryListSucceeded()
+  }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testRetrieveOngoingStoryList_markRecentPlayedFirstChaptersInAllStoriesInRatios_ongoingStoryListIsCorrect() = // ktlint-disable max-line-length
-    runBlockingTest(coroutineContext) {
-      storyProgressController.recordRecentlyPlayedChapter(
-        profileId0,
-        RATIOS_TOPIC_ID,
-        RATIOS_STORY_ID_0,
-        RATIOS_EXPLORATION_ID_0,
-        getCurrentTimestamp()
-      )
-      advanceUntilIdle()
+  fun testRetrieveStoryList_markRecentPlayedFirstChapInAllStoriesInRatios_ongoingListIsCorrect() {
+    storyProgressController.recordRecentlyPlayedChapter(
+      profileId0,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_0,
+      RATIOS_EXPLORATION_ID_0,
+      getCurrentTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
 
-      storyProgressController.recordRecentlyPlayedChapter(
-        profileId0,
-        RATIOS_TOPIC_ID,
-        RATIOS_STORY_ID_1,
-        RATIOS_EXPLORATION_ID_2,
-        getCurrentTimestamp()
-      )
-      advanceUntilIdle()
+    storyProgressController.recordRecentlyPlayedChapter(
+      profileId0,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_1,
+      RATIOS_EXPLORATION_ID_2,
+      getCurrentTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
 
-      topicListController.getOngoingStoryList(profileId0)
-        .observeForever(mockOngoingStoryListObserver)
-      advanceUntilIdle()
+    topicListController.getOngoingStoryList(profileId0)
+      .observeForever(mockOngoingStoryListObserver)
+    testCoroutineDispatchers.runCurrent()
 
-      verifyGetOngoingStoryListSucceeded()
+    verifyGetOngoingStoryListSucceeded()
 
-      val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
-      assertThat(ongoingTopicList.recentStoryCount).isEqualTo(2)
-      verifyOngoingStoryAsRatioStory0Exploration0(ongoingTopicList.recentStoryList[0])
-      verifyOngoingStoryAsRatioStory1Exploration2(ongoingTopicList.recentStoryList[1])
-    }
+    val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
+    assertThat(ongoingTopicList.recentStoryCount).isEqualTo(2)
+    verifyOngoingStoryAsRatioStory0Exploration0(ongoingTopicList.recentStoryList[0])
+    verifyOngoingStoryAsRatioStory1Exploration2(ongoingTopicList.recentStoryList[1])
+  }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testRetrieveOngoingStoryList_markExploration0CompletedAndExploration2AsRecentlyPlayedInRatios_ongoingStoryListIsCorrect() = // ktlint-disable max-line-length
-    runBlockingTest(coroutineContext) {
-      storyProgressController.recordCompletedChapter(
-        profileId0,
-        RATIOS_TOPIC_ID,
-        RATIOS_STORY_ID_0,
-        RATIOS_EXPLORATION_ID_0,
-        getCurrentTimestamp()
-      )
-      advanceUntilIdle()
+  fun testRetrieveStoryList_markExp0DoneAndExp2AsPlayedInRatios_ongoingStoryListIsCorrect() {
+    storyProgressController.recordCompletedChapter(
+      profileId0,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_0,
+      RATIOS_EXPLORATION_ID_0,
+      getCurrentTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
 
-      storyProgressController.recordRecentlyPlayedChapter(
-        profileId0,
-        RATIOS_TOPIC_ID,
-        RATIOS_STORY_ID_1,
-        RATIOS_EXPLORATION_ID_2,
-        getCurrentTimestamp()
-      )
-      advanceUntilIdle()
+    storyProgressController.recordRecentlyPlayedChapter(
+      profileId0,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_1,
+      RATIOS_EXPLORATION_ID_2,
+      getCurrentTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
 
-      topicListController.getOngoingStoryList(profileId0)
-        .observeForever(mockOngoingStoryListObserver)
-      advanceUntilIdle()
+    topicListController.getOngoingStoryList(profileId0)
+      .observeForever(mockOngoingStoryListObserver)
+    testCoroutineDispatchers.runCurrent()
 
-      verifyGetOngoingStoryListSucceeded()
+    verifyGetOngoingStoryListSucceeded()
 
-      val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
-      assertThat(ongoingTopicList.recentStoryCount).isEqualTo(2)
-      verifyOngoingStoryAsRatioStory0Exploration1(ongoingTopicList.recentStoryList[0])
-      verifyOngoingStoryAsRatioStory1Exploration2(ongoingTopicList.recentStoryList[1])
-    }
+    val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
+    assertThat(ongoingTopicList.recentStoryCount).isEqualTo(2)
+    verifyOngoingStoryAsRatioStory0Exploration1(ongoingTopicList.recentStoryList[0])
+    verifyOngoingStoryAsRatioStory1Exploration2(ongoingTopicList.recentStoryList[1])
+  }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testRetrieveOngoingStoryList_markFirstExplorationOfEveryStoryCompletedWithinLastSevenDays_ongoingStoryListIsCorrect() = // ktlint-disable max-line-length
-    runBlockingTest(coroutineContext) {
-      storyProgressController.recordCompletedChapter(
-        profileId0,
-        FRACTIONS_TOPIC_ID,
-        FRACTIONS_STORY_ID_0,
-        FRACTIONS_EXPLORATION_ID_0,
-        getCurrentTimestamp()
-      )
-      advanceUntilIdle()
+  fun testRetrieveStoryList_markFirstExpOfEveryStoryDoneWithinLastSevenDays_ongoingListIsCorrect() {
+    storyProgressController.recordCompletedChapter(
+      profileId0,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      getCurrentTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
 
-      storyProgressController.recordCompletedChapter(
-        profileId0,
-        RATIOS_TOPIC_ID,
-        RATIOS_STORY_ID_0,
-        RATIOS_EXPLORATION_ID_0,
-        getCurrentTimestamp()
-      )
-      advanceUntilIdle()
+    storyProgressController.recordCompletedChapter(
+      profileId0,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_0,
+      RATIOS_EXPLORATION_ID_0,
+      getCurrentTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
 
-      storyProgressController.recordCompletedChapter(
-        profileId0,
-        RATIOS_TOPIC_ID,
-        RATIOS_STORY_ID_1,
-        RATIOS_EXPLORATION_ID_2,
-        getCurrentTimestamp()
-      )
-      advanceUntilIdle()
+    storyProgressController.recordCompletedChapter(
+      profileId0,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_1,
+      RATIOS_EXPLORATION_ID_2,
+      getCurrentTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
 
-      topicListController.getOngoingStoryList(profileId0)
-        .observeForever(mockOngoingStoryListObserver)
-      advanceUntilIdle()
+    topicListController.getOngoingStoryList(profileId0)
+      .observeForever(mockOngoingStoryListObserver)
+    testCoroutineDispatchers.runCurrent()
 
-      verifyGetOngoingStoryListSucceeded()
+    verifyGetOngoingStoryListSucceeded()
 
-      val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
-      assertThat(ongoingTopicList.recentStoryCount).isEqualTo(3)
-      verifyOngoingStoryAsFractionStory0Exploration1(ongoingTopicList.recentStoryList[0])
-      verifyOngoingStoryAsRatioStory0Exploration1(ongoingTopicList.recentStoryList[1])
-      verifyOngoingStoryAsRatioStory1Exploration3(ongoingTopicList.recentStoryList[2])
-    }
+    val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
+    assertThat(ongoingTopicList.recentStoryCount).isEqualTo(3)
+    verifyOngoingStoryAsFractionStory0Exploration1(ongoingTopicList.recentStoryList[0])
+    verifyOngoingStoryAsRatioStory0Exploration1(ongoingTopicList.recentStoryList[1])
+    verifyOngoingStoryAsRatioStory1Exploration3(ongoingTopicList.recentStoryList[2])
+  }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testRetrieveOngoingStoryList_markFirstExplorationOfEveryStoryCompletedWithinLastMonth_ongoingStoryListIsCorrect() = // ktlint-disable max-line-length
-    runBlockingTest(coroutineContext) {
-      storyProgressController.recordCompletedChapter(
-        profileId0,
-        FRACTIONS_TOPIC_ID,
-        FRACTIONS_STORY_ID_0,
-        FRACTIONS_EXPLORATION_ID_0,
-        getOldTimestamp()
-      )
-      advanceUntilIdle()
+  fun testRetrieveStoryList_markFirstExpOfEveryStoryDoneWithinLastMonth_ongoingListIsCorrect() {
+    storyProgressController.recordCompletedChapter(
+      profileId0,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      getOldTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
 
-      storyProgressController.recordCompletedChapter(
-        profileId0,
-        RATIOS_TOPIC_ID,
-        RATIOS_STORY_ID_0,
-        RATIOS_EXPLORATION_ID_0,
-        getOldTimestamp()
-      )
-      advanceUntilIdle()
+    storyProgressController.recordCompletedChapter(
+      profileId0,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_0,
+      RATIOS_EXPLORATION_ID_0,
+      getOldTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
 
-      storyProgressController.recordCompletedChapter(
-        profileId0,
-        RATIOS_TOPIC_ID,
-        RATIOS_STORY_ID_1,
-        RATIOS_EXPLORATION_ID_2,
-        getCurrentTimestamp()
-      )
-      advanceUntilIdle()
+    storyProgressController.recordCompletedChapter(
+      profileId0,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_1,
+      RATIOS_EXPLORATION_ID_2,
+      getCurrentTimestamp()
+    )
+    testCoroutineDispatchers.runCurrent()
 
-      topicListController.getOngoingStoryList(profileId0)
-        .observeForever(mockOngoingStoryListObserver)
-      advanceUntilIdle()
+    topicListController.getOngoingStoryList(profileId0)
+      .observeForever(mockOngoingStoryListObserver)
+    testCoroutineDispatchers.runCurrent()
 
-      verifyGetOngoingStoryListSucceeded()
+    verifyGetOngoingStoryListSucceeded()
 
-      val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
-      assertThat(ongoingTopicList.recentStoryCount).isEqualTo(1)
-      assertThat(ongoingTopicList.olderStoryCount).isEqualTo(2)
-      verifyOngoingStoryAsFractionStory0Exploration1(ongoingTopicList.olderStoryList[0])
-      verifyOngoingStoryAsRatioStory0Exploration1(ongoingTopicList.olderStoryList[1])
-      verifyOngoingStoryAsRatioStory1Exploration3(ongoingTopicList.recentStoryList[0])
-    }
+    val ongoingTopicList = ongoingStoryListResultCaptor.value.getOrThrow()
+    assertThat(ongoingTopicList.recentStoryCount).isEqualTo(1)
+    assertThat(ongoingTopicList.olderStoryCount).isEqualTo(2)
+    verifyOngoingStoryAsFractionStory0Exploration1(ongoingTopicList.olderStoryList[0])
+    verifyOngoingStoryAsRatioStory0Exploration1(ongoingTopicList.olderStoryList[1])
+    verifyOngoingStoryAsRatioStory1Exploration3(ongoingTopicList.recentStoryList[0])
+  }
 
   private fun verifyGetOngoingStoryListSucceeded() {
     verify(
@@ -664,9 +616,6 @@ class TopicListControllerTest {
     return Date().time - NINE_DAYS_IN_MS
   }
 
-  @Qualifier
-  annotation class TestDispatcher
-
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
@@ -674,32 +623,6 @@ class TopicListControllerTest {
     @Singleton
     fun provideContext(application: Application): Context {
       return application
-    }
-
-    @ExperimentalCoroutinesApi
-    @Singleton
-    @Provides
-    @TestDispatcher
-    fun provideTestDispatcher(): CoroutineDispatcher {
-      return TestCoroutineDispatcher()
-    }
-
-    @Singleton
-    @Provides
-    @BackgroundDispatcher
-    fun provideBackgroundDispatcher(
-      @TestDispatcher testDispatcher: CoroutineDispatcher
-    ): CoroutineDispatcher {
-      return testDispatcher
-    }
-
-    @Singleton
-    @Provides
-    @BlockingDispatcher
-    fun provideBlockingDispatcher(
-      @TestDispatcher testDispatcher: CoroutineDispatcher
-    ): CoroutineDispatcher {
-      return testDispatcher
     }
 
     @CacheAssetsLocally
@@ -742,7 +665,12 @@ class TopicListControllerTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class, TestLogReportingModule::class, LogStorageModule::class])
+  @Component(
+    modules = [
+      TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
+      TestDispatcherModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
