@@ -3,8 +3,9 @@ package org.oppia.app.shim
 import android.view.View
 import org.oppia.app.view.ViewComponent
 
-/** Removes [InjectableFragment] dependency from Views */
-// TODO(#1619): Remove file post-Gradle
 interface ViewComponentFactory {
+  /**
+   * Returns a new [ViewComponent] for the specified view.
+   */
   fun createViewComponent(view: View): ViewComponent
 }

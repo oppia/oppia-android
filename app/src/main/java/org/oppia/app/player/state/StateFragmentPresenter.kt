@@ -171,15 +171,17 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
+  fun getPendingAnswer(
+    recyclerViewAssembler: StatePlayerRecyclerViewAssembler
+  ): UserAnswer {
+    return viewModel.getPendingAnswerWithoutError(
+      recyclerViewAssembler.getPendingAnswerHandler(viewModel.getAnswerItemList())
+    ) ?: UserAnswer.getDefaultInstance()
+  }
+
   fun onSubmitButtonClicked() {
     hideKeyboard()
-    var answer = UserAnswer.getDefaultInstance()
-    if (recyclerViewAssembler.getPendingAnswerHandler(viewModel.itemList) != null) {
-      answer = viewModel.getPendingAnswerWithoutError(
-        recyclerViewAssembler.getPendingAnswerHandler(viewModel.itemList)!!
-      )
-    }
-    handleSubmitAnswer(answer)
+    handleSubmitAnswer(getPendingAnswer(recyclerViewAssembler))
   }
 
   fun onResponsesHeaderClicked() {
@@ -214,13 +216,7 @@ class StateFragmentPresenter @Inject constructor(
   fun handleKeyboardAction() {
     hideKeyboard()
     if (viewModel.getCanSubmitAnswer().get() == true) {
-      var answer = UserAnswer.getDefaultInstance()
-      if (recyclerViewAssembler.getPendingAnswerHandler(viewModel.itemList) != null) {
-        answer = viewModel.getPendingAnswerWithoutError(
-          recyclerViewAssembler.getPendingAnswerHandler(viewModel.itemList)!!
-        )
-      }
-      handleSubmitAnswer(answer)
+      handleSubmitAnswer(getPendingAnswer(recyclerViewAssembler))
     }
   }
 

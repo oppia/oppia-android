@@ -14,7 +14,7 @@ import javax.inject.Inject
  * When working on a ViewModel file, developers should refrain from directly referencing Activities
  * by adding all Intent functionality here.
  *
- * Please note that this file is temporary and all functionality will be returned to it's respective
+ * Please note that this file is temporary and all functionality will be returned to its respective
  * ViewModel once Gradle has been removed.
  */
 // TODO(#1619): Remove file post-Gradle
