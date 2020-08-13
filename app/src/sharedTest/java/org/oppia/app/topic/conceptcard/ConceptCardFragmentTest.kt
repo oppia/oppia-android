@@ -31,10 +31,12 @@ import org.oppia.app.testing.ConceptCardFragmentTestActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
+import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
 
 /** Tests for [ConceptCardFragment]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class ConceptCardFragmentTest {
 
   private lateinit var activityScenario: ActivityScenario<ConceptCardFragmentTestActivity>

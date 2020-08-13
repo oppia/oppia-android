@@ -15,9 +15,11 @@ import org.oppia.app.model.ListOfSetsOfHtmlStrings
 import org.oppia.app.model.Point2d
 import org.oppia.app.model.StringList
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 
 /** Tests for [InteractionObjectExtensions]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class InteractionObjectExtensionsTest {
 

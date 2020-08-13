@@ -43,9 +43,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.instanceOf
@@ -61,18 +58,18 @@ import org.oppia.app.mydownloads.MyDownloadsActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
-import org.oppia.domain.profile.ProfileTestHelper
+import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.topic.StoryProgressTestHelper
+import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
+import org.oppia.testing.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.system.OppiaClock
-import org.oppia.util.threading.BackgroundDispatcher
-import org.oppia.util.threading.BlockingDispatcher
+import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
-import javax.inject.Qualifier
 import javax.inject.Singleton
 
 // Time: Wed Apr 24 2019 08:22:00
@@ -80,6 +77,7 @@ private const val MORNING_TIMESTAMP = 1556094120000
 
 /** Tests for [NavigationDrawerTestActivity]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class NavigationDrawerTestActivityTest {
 
   @Inject
@@ -96,7 +94,6 @@ class NavigationDrawerTestActivityTest {
   private lateinit var oppiaClock: OppiaClock
 
   @Before
-  @ExperimentalCoroutinesApi
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
@@ -515,41 +512,12 @@ class NavigationDrawerTestActivityTest {
     return view.getParent()
   }
 
-  @Qualifier
-  annotation class TestDispatcher
-
   @Module
   class TestModule {
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
       return application
-    }
-
-    @ExperimentalCoroutinesApi
-    @Singleton
-    @Provides
-    @TestDispatcher
-    fun provideTestDispatcher(): CoroutineDispatcher {
-      return TestCoroutineDispatcher()
-    }
-
-    @Singleton
-    @Provides
-    @BackgroundDispatcher
-    fun provideBackgroundDispatcher(
-      @TestDispatcher testDispatcher: CoroutineDispatcher
-    ): CoroutineDispatcher {
-      return testDispatcher
-    }
-
-    @Singleton
-    @Provides
-    @BlockingDispatcher
-    fun provideBlockingDispatcher(
-      @TestDispatcher testDispatcher: CoroutineDispatcher
-    ): CoroutineDispatcher {
-      return testDispatcher
     }
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
@@ -568,7 +536,12 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Singleton
-  @Component(modules = [TestModule::class, TestLogReportingModule::class])
+  @Component(
+    modules = [
+      TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
+      TestDispatcherModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

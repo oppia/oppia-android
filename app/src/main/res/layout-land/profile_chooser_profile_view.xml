@@ -12,7 +12,7 @@
     <import type="android.view.View" />
 
     <variable
-      name="wasProfileEverBeenAddedValue"
+      name="hasProfileEverBeenAddedValue"
       type="androidx.databinding.ObservableField&lt;Boolean&gt;" />
 
     <variable
@@ -35,8 +35,8 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      app:layoutMarginBottom="@{wasProfileEverBeenAddedValue ? @dimen/margin_16 : @dimen/margin_28}"
-      app:layoutMarginTop="@{wasProfileEverBeenAddedValue ? @dimen/margin_16 : @dimen/margin_24}">
+      app:layoutMarginBottom="@{hasProfileEverBeenAddedValue ? @dimen/margin_16 : @dimen/margin_28}"
+      app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/margin_16 : @dimen/margin_24}">
 
       <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_avatar_img"
@@ -91,7 +91,7 @@
       android:layout_height="match_parent"
       android:layout_gravity="bottom"
       android:background="@color/oppiaProfileChooserDivider"
-      android:visibility="@{wasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}"
+      android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}"
       app:layout_constraintBottom_toBottomOf="@+id/profile_chooser_item"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="1.0"

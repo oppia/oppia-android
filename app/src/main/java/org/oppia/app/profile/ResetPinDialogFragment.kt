@@ -3,7 +3,6 @@ package org.oppia.app.profile
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.oppia.app.fragment.InjectableDialogFragment
 import javax.inject.Inject
 
@@ -31,7 +30,6 @@ class ResetPinDialogFragment : InjectableDialogFragment() {
     fragmentComponent.inject(this)
   }
 
-  @ExperimentalCoroutinesApi
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
     val profileId = arguments?.getInt(KEY_RESET_PIN_PROFILE_ID)
     val name = arguments?.getString(KEY_RESET_PIN_NAME)
