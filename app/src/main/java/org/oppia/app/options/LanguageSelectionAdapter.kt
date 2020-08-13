@@ -1,6 +1,5 @@
 package org.oppia.app.options
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil

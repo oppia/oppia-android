@@ -5,5 +5,4 @@ interface OnboardingListener {
 
   fun clickOnSkip()
   fun clickOnNext()
-
 }

@@ -17,7 +17,7 @@ import javax.inject.Inject
 class WalkthroughActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val viewModelProvider: ViewModelProvider<WalkthroughViewModel>
-): WalkthroughActivityListener {
+) : WalkthroughActivityListener {
   private lateinit var topicId: String
   private lateinit var binding: WalkthroughActivityBinding
 

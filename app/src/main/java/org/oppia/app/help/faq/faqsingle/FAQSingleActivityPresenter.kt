@@ -37,7 +37,7 @@ class FAQSingleActivityPresenter @Inject constructor(
       (activity as FAQSingleActivity).finish()
     }
     activity.findViewById<TextView>(R.id.faq_question_text_view).text = question
-    activity.findViewById<TextView>(R.id.faq_answer_text_view).text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)  {
+    activity.findViewById<TextView>(R.id.faq_answer_text_view).text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
       Html.fromHtml(answer, Html.FROM_HTML_MODE_COMPACT)
     } else {
       Html.fromHtml(answer)
