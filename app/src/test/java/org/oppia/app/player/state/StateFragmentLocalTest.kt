@@ -312,7 +312,8 @@ class StateFragmentLocalTest {
       submitTwoWrongAnswersToQuestionPlayer()
 
       onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
-      onView(withId(R.id.question_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      onView(withId(R.id.question_recycler_view))
+        .perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
       onView(withId(R.id.previous_response_header)).perform(click())
       onView(withId(R.id.question_recycler_view)).check(matches(hasChildCount(/* childCount= */ 8)))
     }
@@ -348,7 +349,8 @@ class StateFragmentLocalTest {
       onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
       onView(withId(R.id.question_recycler_view)).check(matches(hasChildCount(/* childCount= */ 6)))
 
-      onView(withId(R.id.question_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      onView(withId(R.id.question_recycler_view))
+        .perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
       onView(withId(R.id.previous_response_header)).perform(click())
       onView(withId(R.id.question_recycler_view)).check(matches(hasChildCount(/* childCount= */ 8)))
 
