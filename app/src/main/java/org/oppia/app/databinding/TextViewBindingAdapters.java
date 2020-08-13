@@ -60,19 +60,19 @@ public final class TextViewBindingAdapters {
 
     if (timeDifferenceMillis < MINUTE_MILLIS) {
       return context.getString(R.string.just_now);
-    } else if (timeDifferenceMillis < 50 * MINUTE_MILLIS) {
+    } else if (timeDifferenceMillis < TimeUnit.MINUTES.toMillis(50)) {
       return getPluralString(
           context,
           R.plurals.minutes,
           (int) (timeDifferenceMillis / MINUTE_MILLIS)
       );
-    } else if (timeDifferenceMillis < 24 * HOUR_MILLIS) {
+    } else if (timeDifferenceMillis < TimeUnit.DAYS.toMillis(1)) {
       return getPluralString(
           context,
           R.plurals.hours,
           (int) (timeDifferenceMillis / HOUR_MILLIS)
       );
-    } else if (timeDifferenceMillis < 48 * HOUR_MILLIS) {
+    } else if (timeDifferenceMillis < TimeUnit.DAYS.toMillis(2)) {
       return context.getString(R.string.yesterday);
     }
     return getPluralString(

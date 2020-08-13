@@ -18,9 +18,11 @@ import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.topic.TopicTab
 import org.oppia.app.utility.EspressoTestsMatchers.matchCurrentTabTitle
+import org.robolectric.annotation.LooperMode
 
 /** Tests for [TopicTestActivityForStory]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class TopicTestActivityForStoryTest {
 
   @Test
