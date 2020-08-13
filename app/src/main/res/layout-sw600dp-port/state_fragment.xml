@@ -101,16 +101,6 @@
       android:layout_gravity="bottom|start">
 
       <ImageView
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_gravity="top|end"
-        android:layout_marginTop="3dp"
-        android:layout_marginEnd="4dp"
-        android:visibility="@{viewModel.isHintOpenedAndUnRevealed() ? View.VISIBLE : View.GONE}"
-        android:src="@drawable/radar_moving_circle"
-        app:flashingAnimation="@{viewModel.isHintOpenedAndUnRevealed()}" />
-
-      <ImageView
         android:id="@+id/dot_hint"
         android:layout_width="8dp"
         android:layout_height="6dp"

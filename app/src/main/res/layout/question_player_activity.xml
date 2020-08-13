@@ -1,7 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:id="@+id/question_player_fragment_placeholder"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  tools:context=".topic.questionplayer.QuestionPlayerActivity" />
+<layout>
+
+  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".player.exploration.ExplorationActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+      android:id="@+id/question_player_app_bar_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+      <androidx.appcompat.widget.Toolbar
+        android:id="@+id/question_player_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:background="@color/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/Widget.AppCompat.ActionBar"
+        app:navigationIcon="@drawable/ic_close_white_24dp"
+        app:title="@string/question_player_title"
+        app:titleTextAppearance="@style/ToolbarTextAppearance"
+        app:titleTextColor="@color/white" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+      <FrameLayout
+        android:id="@+id/question_player_fragment_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".topic.questionplayer.QuestionPlayerActivity" />
+
+      <View
+        android:id="@+id/question_player_toolbar_shadow_view"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:background="@drawable/toolbar_drop_shadow" />
+    </FrameLayout>
+  </LinearLayout>
+</layout>

@@ -14,6 +14,7 @@ import org.oppia.app.model.ListOfSetsOfHtmlStrings
 import org.oppia.app.model.StringList
 import org.oppia.domain.classify.RuleClassifier
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass
@@ -22,6 +23,7 @@ import kotlin.test.fail
 
 /** Tests for [DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProviderTest {
   private val NON_NEGATIVE_VALUE_0 = createNonNegativeInt(value = 0)

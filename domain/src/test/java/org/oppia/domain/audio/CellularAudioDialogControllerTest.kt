@@ -10,9 +10,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -39,8 +36,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
-@Config(manifest = Config.NONE)
 @LooperMode(LooperMode.Mode.PAUSED)
+@Config(manifest = Config.NONE)
 class CellularAudioDialogControllerTest {
   @Rule
   @JvmField
@@ -50,7 +47,6 @@ class CellularAudioDialogControllerTest {
   lateinit var cellularAudioDialogController: CellularAudioDialogController
 
   @Inject
-  @InternalCoroutinesApi
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Mock
@@ -60,8 +56,6 @@ class CellularAudioDialogControllerTest {
   lateinit var cellularDataResultCaptor: ArgumentCaptor<AsyncResult<CellularDataPreference>>
 
   @Before
-  @ExperimentalCoroutinesApi
-  @ObsoleteCoroutinesApi
   fun setUp() {
     setUpTestApplicationComponent()
   }
@@ -74,8 +68,6 @@ class CellularAudioDialogControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testController_providesInitialLiveData_indicatesToNotHideDialogAndNotUseCellularData() {
     val cellularDataPreference =
       cellularAudioDialogController.getCellularDataPreference()
@@ -89,8 +81,6 @@ class CellularAudioDialogControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testController_setNeverUseCellularDataPref_providesLiveData_indicatesToHideDialogAndNotUseCellularData() { // ktlint-disable max-line-length
     val appHistory =
       cellularAudioDialogController.getCellularDataPreference()
@@ -106,8 +96,6 @@ class CellularAudioDialogControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testController_setAlwaysUseCellularDataPref_providesLiveData_indicatesToHideDialogAndUseCellularData() { // ktlint-disable max-line-length
     val appHistory =
       cellularAudioDialogController.getCellularDataPreference()
@@ -122,8 +110,6 @@ class CellularAudioDialogControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testController_setNeverUseCellularDataPref_observedNewController_indicatesToHideDialogAndNotUseCellularData() { // ktlint-disable max-line-length
     // Pause immediate dispatching to avoid an infinite loop within the provider pipeline.
     cellularAudioDialogController.setNeverUseCellularDataPreference()
@@ -142,8 +128,6 @@ class CellularAudioDialogControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testController_setAlwaysUseCellularDataPref_observedNewController_indicatesToHideDialogAndUseCellularData() { // ktlint-disable max-line-length
     cellularAudioDialogController.setAlwaysUseCellularDataPreference()
     testCoroutineDispatchers.advanceUntilIdle()

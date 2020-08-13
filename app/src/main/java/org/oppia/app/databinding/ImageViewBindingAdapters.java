@@ -151,20 +151,4 @@ public final class ImageViewBindingAdapters {
       }
     }
   }
-
-  /**
-   *
-   */
-  @BindingAdapter("app:onClick")
-  public static void setOnClick(@NonNull ImageView imageView, View.OnClickListener listener) {
-    imageView.setOnClickListener(listener);
-  }
-
-  /**
-   *
-   */
-  @BindingAdapter("app:onClick")
-  public static void setOnClick(@NonNull CircleImage imageView, View.OnClickListener listener) {
-    imageView.setOnClickListener(listener);
-  }
 }

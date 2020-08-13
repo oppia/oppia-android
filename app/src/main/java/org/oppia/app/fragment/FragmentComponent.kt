@@ -49,7 +49,12 @@ import org.oppia.app.walkthrough.welcome.WalkthroughWelcomeFragment
 import javax.inject.Provider
 
 /** Root subcomponent for all fragments. */
-@Subcomponent(modules = [FragmentModule::class, InteractionViewModelModule::class, IntentFactoryShimModule::class, ViewBindingShimModule::class])
+@Subcomponent(
+  modules = [
+    FragmentModule::class, InteractionViewModelModule::class, IntentFactoryShimModule::class,
+    ViewBindingShimModule::class
+  ]
+)
 @FragmentScope
 interface FragmentComponent {
   @Subcomponent.Builder

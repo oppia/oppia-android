@@ -13,6 +13,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -25,6 +26,7 @@ private const val TIMESTAMP_IN_SECONDS = 1586774460L
 
 /** Tests for [OppiaDateTimeFormatter]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class OppiaDateTimeFormatterTest {
 

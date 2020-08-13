@@ -17,9 +17,9 @@ class AppVersionViewModel @Inject constructor(
   private val oppiaDateTimeFormatter: OppiaDateTimeFormatter
 ) : ObservableViewModel() {
 
-  private lateinit var context: Context
+  private val context: Context = fragment.activity!!.applicationContext
 
-  var versionName = context.packageManager
+  val versionName: String = context.packageManager
     .getPackageInfo(context.packageName, 0).versionName
 
   private val lastUpdateDateTime =
