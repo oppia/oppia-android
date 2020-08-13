@@ -11,10 +11,10 @@
       type="org.oppia.app.player.state.itemviewmodel.DragAndDropSortInteractionViewModel" />
   </data>
   <!--  Margins -->
-  <!--  Exploration View -> 40, 24, 24, 0 -->
-  <!--  Question View -> 32, 24, 32, 0 -->
   <!--  Exploration Split View -> 32, 40, 32 ,0 -->
+  <!--  Exploration View -> 40, 24, 24, 0 -->
   <!--  Question Split View -> 32, 40, 32 ,0 -->
+  <!--  Question View -> 32, 24, 32, 0 -->
   <LinearLayout
     android:id="@+id/interaction_container_linear_layout"
     android:layout_width="match_parent"
