@@ -56,10 +56,10 @@ LISTENERS = [
     "src/main/java/org/oppia/app/topic/RouteToRevisionCardListener.kt",
     "src/main/java/org/oppia/app/utility/OnClickableAreaClickedListener.kt",
     "src/main/java/org/oppia/app/utility/RegionClickEvent.kt",
-    "src/main/java/org/oppia/app/walkthrough/end/WalkthroughFinalListener.kt",
+    "src/main/java/org/oppia/app/walkthrough/end/WalkthroughEndPageChanger.kt",
     "src/main/java/org/oppia/app/walkthrough/WalkthroughActivityListener.kt",
     "src/main/java/org/oppia/app/walkthrough/WalkthroughFragmentChangeListener.kt",
-    "src/main/java/org/oppia/app/walkthrough/WalkthroughFragmentListener.kt",
+    "src/main/java/org/oppia/app/walkthrough/WalkthroughPageChanger.kt",
 ]
 
 # Layout files for databinding_resources library.
@@ -326,7 +326,7 @@ android_library(
 # Library for layout resource files
 android_library(
     name = "databinding_resources",
-    custom_package = "org.oppia.app.databinding.resources",
+    custom_package = "org.oppia.app.databinding",
     manifest = "src/main/DatabindingResourcesManifest.xml",
     srcs = ADAPTERS,
     resource_files = glob(LAYOUTS),
