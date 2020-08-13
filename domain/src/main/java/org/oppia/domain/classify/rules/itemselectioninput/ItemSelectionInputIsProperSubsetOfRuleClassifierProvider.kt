@@ -15,10 +15,14 @@ import javax.inject.Inject
  */
 internal class ItemSelectionInputIsProperSubsetOfRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
-): RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<StringList> {
+) : RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<StringList> {
 
   override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createSingleInputClassifier(InteractionObject.ObjectTypeCase.SET_OF_HTML_STRING, "x", this)
+    return classifierFactory.createSingleInputClassifier(
+      InteractionObject.ObjectTypeCase.SET_OF_HTML_STRING,
+      "x",
+      this
+    )
   }
 
   // TODO(#210): Add tests for this classifier.

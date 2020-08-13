@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:orientation="vertical">
+
+  <TextView
+    android:id="@+id/profile_picture_edit_dialog_view_picture"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fontFamily="sans-serif"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="?attr/selectableItemBackground"
+    android:text="@string/profile_picture_edit_alert_dialog_view_profile_picture"
+    android:textColor="@color/black"
+    android:textSize="16sp" />
+
+  <TextView
+    android:id="@+id/profile_picture_edit_dialog_change_picture"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fontFamily="sans-serif"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="?attr/selectableItemBackground"
+    android:text="@string/profile_picture_edit_alert_dialog_choose_from_library"
+    android:textColor="@color/black"
+    android:textSize="16sp" />
+</LinearLayout>

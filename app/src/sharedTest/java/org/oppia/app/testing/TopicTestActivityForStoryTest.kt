@@ -18,9 +18,11 @@ import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.topic.TopicTab
 import org.oppia.app.utility.EspressoTestsMatchers.matchCurrentTabTitle
+import org.robolectric.annotation.LooperMode
 
 /** Tests for [TopicTestActivityForStory]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class TopicTestActivityForStoryTest {
 
   @Test
@@ -41,25 +43,25 @@ class TopicTestActivityForStoryTest {
     launch(TopicTestActivityForStory::class.java).use {
       onView(withId(R.id.story_summary_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          0
+          1
         )
       )
       onView(
         atPosition(
           R.id.story_summary_recycler_view,
-          0
+          1
         )
       ).check(matches(hasDescendant(withText(containsString("First Story")))))
     }
   }
 
   @Test
-  fun testTopicTestActivityForStory_playTopicTab_storyItemIsexpanded() {
+  fun testTopicTestActivityForStory_playTopicTab_storyItemIsExpanded() {
     launch(TopicTestActivityForStory::class.java).use {
       onView(
         atPositionOnView(
           R.id.story_summary_recycler_view,
-          7,
+          2,
           R.id.chapter_recycler_view
         )
       ).check(matches(isDisplayed()))

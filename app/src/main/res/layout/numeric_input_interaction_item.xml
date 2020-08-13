@@ -1,33 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
+
+    <import type="android.view.View" />
 
     <variable
       name="viewModel"
       type="org.oppia.app.player.state.itemviewmodel.NumericInputViewModel" />
   </data>
 
-  <FrameLayout
+  <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="28dp"
     android:layout_marginTop="24dp"
-    android:layout_marginEnd="28dp"
-    android:layout_marginBottom="24dp"
+    android:layout_marginBottom="0dp"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="0dp"
+    app:layoutMarginEnd="@{viewModel.hasConversationView ? @dimen/margin_24 : @dimen/margin_32}"
+    app:layoutMarginStart="@{viewModel.hasConversationView ? @dimen/margin_40 : @dimen/margin_32}">
 
     <org.oppia.app.customview.interaction.NumericInputInteractionView
       android:id="@+id/numeric_input_interaction_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:background="@drawable/edit_text_background"
-      android:digits="0123456789."
-      android:enabled="@{!viewModel.isReadOnly}"
+      android:contentDescription="@string/numeric_input_content_description"
+      android:digits="0123456789.-"
       android:fontFamily="sans-serif"
-      android:hint="@string/number_input_hint_text"
       android:imeOptions="actionDone"
       android:inputType="numberDecimal"
       android:longClickable="false"
@@ -39,8 +42,21 @@
       android:singleLine="true"
       android:text="@={viewModel.answerText}"
       android:textColor="@color/oppiaPrimaryText"
-      android:textColorHint="@color/edit_text_hint"
-      android:textSize="16sp"
-      android:textStyle="italic" />
-  </FrameLayout>
+      android:textColorHint="@color/editTextHint"
+      android:textSize="14sp"
+      android:textStyle="italic"
+      app:textChangedListener="@{viewModel.answerTextWatcher}" />
+
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="16dp"
+      android:layout_marginEnd="8dp"
+      android:fontFamily="sans-serif"
+      android:minHeight="32dp"
+      android:text="@{viewModel.errorMessage}"
+      android:textColor="@color/editTextError"
+      android:textSize="12sp"
+      android:visibility="@{viewModel.errorMessage.length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
+  </LinearLayout>
 </layout>

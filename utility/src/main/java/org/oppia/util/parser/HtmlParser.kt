@@ -2,7 +2,10 @@ package org.oppia.util.parser
 
 import android.text.Editable
 import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.Spanned
 import android.text.method.LinkMovementMethod
+import android.text.style.BulletSpan
 import android.text.style.ClickableSpan
 import android.view.View
 import android.widget.TextView
@@ -18,9 +21,11 @@ private const val CUSTOM_CONCEPT_CARD_TAG = "oppia-concept-card-link"
 
 /** Html Parser to parse custom Oppia tags with Android-compatible versions. */
 class HtmlParser private constructor(
-  private val urlImageParserFactory : UrlImageParser.Factory,
+  private val urlImageParserFactory: UrlImageParser.Factory,
+  private val gcsResourceName: String,
   private val entityType: String,
   private val entityId: String,
+  private val imageCenterAlign: Boolean,
   customOppiaTagActionListener: CustomOppiaTagActionListener?
 ) {
   private val conceptCardTagHandler = ConceptCardTagHandler(customOppiaTagActionListener)
@@ -36,9 +41,18 @@ class HtmlParser private constructor(
    */
   fun parseOppiaHtml(rawString: String, htmlContentTextView: TextView, supportsLinks: Boolean = false): Spannable {
     var htmlContent = rawString
+    if (htmlContent.contains("\n\t")) {
+      htmlContent = htmlContent.replace("\n\t", "")
+    }
+    if (htmlContent.contains("\n\n")) {
+      htmlContent = htmlContent.replace("\n\n", "")
+    }
+
+    // TODO: add support for imageCenterAlign & other fixes to HtmlParser since #422 (consider #731).
     if (htmlContent.contains(CUSTOM_IMG_TAG)) {
       htmlContent = htmlContent.replace(CUSTOM_IMG_TAG, REPLACE_IMG_TAG)
-      htmlContent = htmlContent.replace( CUSTOM_IMG_FILE_PATH_ATTRIBUTE, REPLACE_IMG_FILE_PATH_ATTRIBUTE)
+      htmlContent =
+        htmlContent.replace(CUSTOM_IMG_FILE_PATH_ATTRIBUTE, REPLACE_IMG_FILE_PATH_ATTRIBUTE)
       htmlContent = htmlContent.replace("&amp;quot;", "")
     }
 
@@ -47,10 +61,52 @@ class HtmlParser private constructor(
       htmlContentTextView.movementMethod = LinkMovementMethod.getInstance()
     }
 
-    val imageGetter =  urlImageParserFactory.create(htmlContentTextView, entityType, entityId)
-    return CustomHtmlContentHandler.fromHtml(
+    // TODO: simplify and/or consolidate this logic with the new custom content handler.
+    htmlContent = htmlContent.replace(
+      CUSTOM_IMG_TAG,
+      REPLACE_IMG_TAG,
+      /* ignoreCase= */ false
+    )
+    htmlContent = htmlContent.replace(
+      CUSTOM_IMG_FILE_PATH_ATTRIBUTE,
+      REPLACE_IMG_FILE_PATH_ATTRIBUTE,
+      /* ignoreCase= */ false
+    )
+    htmlContent = htmlContent.replace("&amp;quot;", "")
+
+    val imageGetter = urlImageParserFactory.create(
+      htmlContentTextView, gcsResourceName, entityType, entityId, imageCenterAlign
+    )
+    val htmlSpannable = CustomHtmlContentHandler.fromHtml(
       htmlContent, imageGetter, mapOf(CUSTOM_CONCEPT_CARD_TAG to conceptCardTagHandler)
     )
+
+//    val htmlSpannable = HtmlCompat.fromHtml(
+//      htmlContent,
+//      HtmlCompat.FROM_HTML_MODE_LEGACY,
+//      imageGetter,
+//      LiTagHandler()
+//    ) as Spannable
+
+    val spannableBuilder = SpannableStringBuilder(htmlSpannable)
+    val bulletSpans = spannableBuilder.getSpans(
+      /* queryStart= */ 0,
+      spannableBuilder.length,
+      BulletSpan::class.java
+    )
+    bulletSpans.forEach {
+      val start = spannableBuilder.getSpanStart(it)
+      val end = spannableBuilder.getSpanEnd(it)
+      spannableBuilder.removeSpan(it)
+      spannableBuilder.setSpan(
+        CustomBulletSpan(htmlContentTextView.context),
+        start,
+        end,
+        Spanned.SPAN_INCLUSIVE_EXCLUSIVE
+      )
+    }
+
+    return trimSpannable(spannableBuilder)
   }
 
   // https://mohammedlakkadshaw.com/blog/handling-custom-tags-in-android-using-html-taghandler.html/
@@ -65,6 +121,26 @@ class HtmlParser private constructor(
         }
       }, openIndex, closeIndex, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
     }
+  }
+
+  private fun trimSpannable(spannable: SpannableStringBuilder): SpannableStringBuilder {
+    // TODO: simplify.
+    var trimStart = 0
+    var trimEnd = 0
+
+    var text = spannable.toString()
+
+    if (text.startsWith("\n")) {
+      text = text.substring(1)
+      trimStart += 1
+    }
+
+    if (text.endsWith("\n")) {
+      text = text.substring(0, text.length - 1)
+      trimEnd += 2
+    }
+
+    return spannable.delete(0, trimStart).delete(spannable.length - trimEnd, spannable.length)
   }
 
   /** Listener that's called when a custom tag triggers an event. */
@@ -83,9 +159,9 @@ class HtmlParser private constructor(
      * [CustomOppiaTagActionListener] for handling custom Oppia tag events.
      */
     fun create(
-      entityType: String, entityId: String, customOppiaTagActionListener: CustomOppiaTagActionListener? = null
+      gcsResourceName: String, entityType: String, entityId: String, imageCenterAlign: Boolean, customOppiaTagActionListener: CustomOppiaTagActionListener? = null
     ): HtmlParser {
-      return HtmlParser(urlImageParserFactory, entityType, entityId, customOppiaTagActionListener)
+      return HtmlParser(urlImageParserFactory, gcsResourceName, entityType, entityId, imageCenterAlign, customOppiaTagActionListener)
     }
   }
 }

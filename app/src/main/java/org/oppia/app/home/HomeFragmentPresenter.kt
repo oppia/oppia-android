@@ -9,54 +9,83 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
+import org.oppia.app.R
 import org.oppia.app.databinding.HomeFragmentBinding
+import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.home.topiclist.AllTopicsViewModel
+import org.oppia.app.home.topiclist.PromotedStoryListViewModel
 import org.oppia.app.home.topiclist.PromotedStoryViewModel
 import org.oppia.app.home.topiclist.TopicListAdapter
 import org.oppia.app.home.topiclist.TopicSummaryClickListener
 import org.oppia.app.home.topiclist.TopicSummaryViewModel
+import org.oppia.app.model.EventLog
+import org.oppia.app.model.OngoingStoryList
+import org.oppia.app.model.Profile
+import org.oppia.app.model.ProfileId
 import org.oppia.app.model.TopicList
 import org.oppia.app.model.TopicSummary
-import org.oppia.app.model.UserAppHistory
-import org.oppia.domain.UserAppHistoryController
-import org.oppia.domain.exploration.ExplorationDataController
-import org.oppia.domain.exploration.TEST_EXPLORATION_ID_30
+import org.oppia.domain.oppialogger.OppiaLogger
+import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.datetime.DateTimeUtil
+import org.oppia.util.logging.ConsoleLogger
+import org.oppia.util.parser.StoryHtmlParserEntityType
+import org.oppia.util.parser.TopicHtmlParserEntityType
+import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
-
-private const val EXPLORATION_ID = TEST_EXPLORATION_ID_30
-private const val TAG_HOME_FRAGMENT = "HomeFragment"
 
 /** The presenter for [HomeFragment]. */
 @FragmentScope
 class HomeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val userAppHistoryController: UserAppHistoryController,
+  private val profileManagementController: ProfileManagementController,
   private val topicListController: TopicListController,
-  private val explorationDataController: ExplorationDataController,
-  private val logger: Logger
+  private val oppiaClock: OppiaClock,
+  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
+  @TopicHtmlParserEntityType private val topicEntityType: String,
+  @StoryHtmlParserEntityType private val storyEntityType: String
 ) {
-  private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToTopicListener = activity as RouteToTopicListener
   private val itemList: MutableList<HomeItemViewModel> = ArrayList()
+  private val promotedStoryList: MutableList<PromotedStoryViewModel> = ArrayList()
+  private lateinit var welcomeViewModel: WelcomeViewModel
+  private lateinit var promotedStoryListViewModel: PromotedStoryListViewModel
+  private lateinit var allTopicsViewModel: AllTopicsViewModel
   private lateinit var topicListAdapter: TopicListAdapter
   private lateinit var binding: HomeFragmentBinding
+  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
+  private lateinit var profileName: String
+
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
 
-    topicListAdapter = TopicListAdapter(itemList)
+    internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
+    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    logHomeActivityEvent()
 
-    val homeLayoutManager = GridLayoutManager(activity.applicationContext, 2)
+    welcomeViewModel = WelcomeViewModel()
+    promotedStoryListViewModel = PromotedStoryListViewModel(activity, internalProfileId)
+    allTopicsViewModel = AllTopicsViewModel()
+    itemList.add(welcomeViewModel)
+    itemList.add(promotedStoryListViewModel)
+    itemList.add(allTopicsViewModel)
+    topicListAdapter = TopicListAdapter(activity, itemList, promotedStoryList)
+
+    val spanCount = activity.resources.getInteger(R.integer.home_span_count)
+    topicListAdapter.setSpanCount(spanCount)
+
+    val homeLayoutManager = GridLayoutManager(activity.applicationContext, spanCount)
     homeLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
       override fun getSpanSize(position: Int): Int {
         return if (position == 0 || position == 1 || position == 2) {
-          /* number of spaces this item should occupy = */ 2
+          /* number of spaces this item should occupy = */ spanCount
         } else {
           /* number of spaces this item should occupy = */ 1
         }
@@ -73,26 +102,38 @@ class HomeFragmentPresenter @Inject constructor(
       it.lifecycleOwner = fragment
     }
 
-    userAppHistoryController.markUserOpenedApp()
-    subscribeToUserAppHistory()
+    subscribeToProfileLiveData()
+    subscribeToOngoingStoryList()
     subscribeToTopicList()
     return binding.root
   }
 
-  fun playExplorationButton(v: View) {
-    explorationDataController.stopPlayingExploration()
-    explorationDataController.startPlayingExploration(
-      EXPLORATION_ID
-    ).observe(fragment, Observer<AsyncResult<Any?>> { result ->
-      when {
-        result.isPending() -> logger.d(TAG_HOME_FRAGMENT, "Loading exploration")
-        result.isFailure() -> logger.e(TAG_HOME_FRAGMENT, "Failed to load exploration", result.getErrorOrNull()!!)
-        else -> {
-          logger.d(TAG_HOME_FRAGMENT, "Successfully loaded exploration")
-          routeToExplorationListener.routeToExploration(EXPLORATION_ID)
-        }
+  private val profileLiveData: LiveData<Profile> by lazy {
+    getProfileData()
+  }
+
+  private fun getProfileData(): LiveData<Profile> {
+    return Transformations.map(
+      profileManagementController.getProfile(profileId),
+      ::processGetProfileResult
+    )
+  }
+
+  private fun subscribeToProfileLiveData() {
+    profileLiveData.observe(
+      activity,
+      Observer<Profile> { result ->
+        profileName = result.name
+        setProfileName()
       }
-    })
+    )
+  }
+
+  private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
+    if (profileResult.isFailure()) {
+      logger.e("HomeFragment", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
+    }
+    return profileResult.getOrDefault(Profile.getDefaultInstance())
   }
 
   private val topicListSummaryResultLiveData: LiveData<AsyncResult<TopicList>> by lazy {
@@ -100,50 +141,91 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   private fun subscribeToTopicList() {
-    getAssumedSuccessfulTopicList().observe(fragment, Observer<TopicList> { result ->
-
-      val promotedStoryViewModel = PromotedStoryViewModel(activity)
-      promotedStoryViewModel.setPromotedStory(result.promotedStory)
-      itemList.add(promotedStoryViewModel)
-      if (result.topicSummaryList.isNotEmpty()) {
-        val allTopicsViewModel = AllTopicsViewModel()
-        itemList.add(allTopicsViewModel)
+    getAssumedSuccessfulTopicList().observe(
+      fragment,
+      Observer<TopicList> { result ->
+        for (topicSummary in result.topicSummaryList) {
+          val topicSummaryViewModel =
+            TopicSummaryViewModel(
+              topicSummary,
+              topicEntityType,
+              fragment as TopicSummaryClickListener
+            )
+          itemList.add(topicSummaryViewModel)
+        }
+        topicListAdapter.notifyDataSetChanged()
       }
-      for (topicSummary in result.topicSummaryList) {
-        val topicSummaryViewModel = TopicSummaryViewModel(topicSummary, fragment as TopicSummaryClickListener)
-        itemList.add(topicSummaryViewModel)
-      }
-      topicListAdapter.notifyDataSetChanged()
-    })
+    )
   }
 
   private fun getAssumedSuccessfulTopicList(): LiveData<TopicList> {
     // If there's an error loading the data, assume the default.
-    return Transformations.map(topicListSummaryResultLiveData) { it.getOrDefault(TopicList.getDefaultInstance()) }
-  }
-
-  private fun subscribeToUserAppHistory() {
-    getUserAppHistory().observe(fragment, Observer<UserAppHistory> { result ->
-      val userAppHistoryViewModel = UserAppHistoryViewModel()
-      userAppHistoryViewModel.setAlreadyAppOpened(result.alreadyOpenedApp)
-      itemList.add(0, userAppHistoryViewModel)
-      topicListAdapter.notifyDataSetChanged()
-    })
-  }
-
-  private fun getUserAppHistory(): LiveData<UserAppHistory> {
-    // If there's an error loading the data, assume the default.
-    return Transformations.map(userAppHistoryController.getUserAppHistory(), ::processUserAppHistoryResult)
-  }
-
-  private fun processUserAppHistoryResult(appHistoryResult: AsyncResult<UserAppHistory>): UserAppHistory {
-    if (appHistoryResult.isFailure()) {
-      logger.e("HomeFragment", "Failed to retrieve user app history" + appHistoryResult.getErrorOrNull())
+    return Transformations.map(topicListSummaryResultLiveData) {
+      it.getOrDefault(TopicList.getDefaultInstance())
     }
-    return appHistoryResult.getOrDefault(UserAppHistory.getDefaultInstance())
+  }
+
+  private fun setProfileName() {
+    if (::welcomeViewModel.isInitialized && ::profileName.isInitialized) {
+      welcomeViewModel.profileName.set(profileName)
+      welcomeViewModel.greeting.set(
+        DateTimeUtil(
+          fragment.requireContext(),
+          oppiaClock
+        ).getGreetingMessage()
+      )
+    }
+  }
+
+  private val ongoingStoryListSummaryResultLiveData:
+    LiveData<AsyncResult<OngoingStoryList>>
+    by lazy {
+      topicListController.getOngoingStoryList(profileId)
+    }
+
+  private fun subscribeToOngoingStoryList() {
+    val limit = activity.resources.getInteger(R.integer.promoted_story_list_limit)
+    getAssumedSuccessfulOngoingStoryList().observe(
+      fragment,
+      Observer<OngoingStoryList> {
+        promotedStoryList.clear()
+        if (it.recentStoryCount != 0) {
+          it.recentStoryList.take(limit).forEach { promotedStory ->
+            val recentStory = PromotedStoryViewModel(activity, internalProfileId, storyEntityType)
+            recentStory.setPromotedStory(promotedStory)
+            promotedStoryList.add(recentStory)
+          }
+        } else {
+          // TODO(#936): Optimise this as part of recommended stories.
+          it.olderStoryList.take(limit).forEach { promotedStory ->
+            val oldStory = PromotedStoryViewModel(activity, internalProfileId, storyEntityType)
+            oldStory.setPromotedStory(promotedStory)
+            promotedStoryList.add(oldStory)
+          }
+        }
+        topicListAdapter.notifyItemChanged(1)
+      }
+    )
+  }
+
+  private fun getAssumedSuccessfulOngoingStoryList(): LiveData<OngoingStoryList> {
+    // If there's an error loading the data, assume the default.
+    return Transformations.map(ongoingStoryListSummaryResultLiveData) {
+      it.getOrDefault(
+        OngoingStoryList.getDefaultInstance()
+      )
+    }
   }
 
   fun onTopicSummaryClicked(topicSummary: TopicSummary) {
-    routeToTopicListener.routeToTopic(topicSummary.topicId)
+    routeToTopicListener.routeToTopic(internalProfileId, topicSummary.topicId)
+  }
+
+  private fun logHomeActivityEvent() {
+    oppiaLogger.logTransitionEvent(
+      oppiaClock.getCurrentCalendar().timeInMillis,
+      EventLog.EventAction.OPEN_HOME,
+      /* eventContext= */ null
+    )
   }
 }

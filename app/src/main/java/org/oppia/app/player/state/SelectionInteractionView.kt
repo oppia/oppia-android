@@ -12,6 +12,7 @@ import org.oppia.app.databinding.MultipleChoiceInteractionItemsBinding
 import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
 import org.oppia.app.recyclerview.BindableAdapter
+import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
@@ -27,86 +28,106 @@ enum class SelectionItemInputType {
  * selection or multiple choice interactions.
  */
 class SelectionInteractionView @JvmOverloads constructor(
-  context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+  context: Context,
+  attrs: AttributeSet? = null,
+  defStyleAttr: Int = 0
 ) : RecyclerView(context, attrs, defStyleAttr) {
   // Default to checkboxes to ensure that something can render even if it may not be correct.
   private var selectionItemInputType: SelectionItemInputType = SelectionItemInputType.CHECKBOXES
 
-  @Inject lateinit var htmlParserFactory: HtmlParser.Factory
-  @Inject @field:ExplorationHtmlParserEntityType lateinit var entityType: String
-  private lateinit var explorationId: String
+  @Inject
+  lateinit var htmlParserFactory: HtmlParser.Factory
 
-  init {
-    adapter = createAdapter()
-  }
+  @Inject
+  @field:ExplorationHtmlParserEntityType
+  lateinit var entityType: String
+
+  @Inject
+  @field:DefaultResourceBucketName
+  lateinit var resourceBucketName: String
+
+  private lateinit var entityId: String
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
     FragmentManager.findFragment<InjectableFragment>(this).createViewComponent(this).inject(this)
   }
 
-  fun setItemInputType(selectionItemInputType: SelectionItemInputType) {
+  fun setAllOptionsItemInputType(selectionItemInputType: SelectionItemInputType) {
     // TODO(#299): Find a cleaner way to initialize the item input type. Using data-binding results in a race condition
     //  with setting the adapter data, so this needs to be done in an order-agnostic way. There should be a way to do
     //  this more efficiently and cleanly than always relying on notifying of potential changes in the adapter when the
     //  type is set (plus the type ought to be permanent).
     this.selectionItemInputType = selectionItemInputType
-    adapter!!.notifyDataSetChanged()
+    adapter = createAdapter()
   }
 
   // TODO(#264): Clean up HTML parser such that it can be handled completely through a binding adapter, allowing
   //  TextViews that require custom Oppia HTML parsing to be fully automatically bound through data-binding.
-  fun setExplorationId(explorationId: String) {
-    this.explorationId = explorationId
+  fun setEntityId(entityId: String) {
+    this.entityId = entityId
   }
 
   private fun createAdapter(): BindableAdapter<SelectionInteractionContentViewModel> {
-    return BindableAdapter.Builder
-      .newBuilder<SelectionInteractionContentViewModel>()
-      .registerViewTypeComputer { selectionItemInputType.ordinal }
-      .registerViewBinder(
-        viewType = SelectionItemInputType.CHECKBOXES.ordinal,
-        inflateView = { parent ->
-          ItemSelectionInteractionItemsBinding.inflate(
-            LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
-          ).root
-        },
-        bindView = { view, viewModel ->
-          val binding = DataBindingUtil.findBinding<ItemSelectionInteractionItemsBinding>(view)!!
-          binding.htmlContent = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
-            viewModel.htmlContent, binding.itemSelectionContentsTextView
+    return when (selectionItemInputType) {
+      SelectionItemInputType.CHECKBOXES ->
+        BindableAdapter.SingleTypeBuilder
+          .newBuilder<SelectionInteractionContentViewModel>()
+          .registerViewBinder(
+            inflateView = { parent ->
+              ItemSelectionInteractionItemsBinding.inflate(
+                LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
+              ).root
+            },
+            bindView = { view, viewModel ->
+              val binding =
+                DataBindingUtil.findBinding<ItemSelectionInteractionItemsBinding>(view)!!
+              binding.htmlContent =
+                htmlParserFactory.create(
+                  resourceBucketName, entityType, entityId, /* imageCenterAlign= */ false
+                ).parseOppiaHtml(
+                  viewModel.htmlContent, binding.itemSelectionContentsTextView
+                )
+              binding.viewModel = viewModel
+            }
           )
-          binding.viewModel = viewModel
-        }
-      )
-      .registerViewBinder(
-        viewType = SelectionItemInputType.RADIO_BUTTONS.ordinal,
-        inflateView = { parent ->
-          MultipleChoiceInteractionItemsBinding.inflate(
-            LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
-          ).root
-        },
-        bindView = { view, viewModel ->
-          val binding = DataBindingUtil.findBinding<MultipleChoiceInteractionItemsBinding>(view)!!
-          binding.htmlContent = htmlParserFactory.create(entityType, explorationId).parseOppiaHtml(
-            viewModel.htmlContent, binding.multipleChoiceContentTextView
+          .build()
+      SelectionItemInputType.RADIO_BUTTONS ->
+        BindableAdapter.SingleTypeBuilder
+          .newBuilder<SelectionInteractionContentViewModel>()
+          .registerViewBinder(
+            inflateView = { parent ->
+              MultipleChoiceInteractionItemsBinding.inflate(
+                LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
+              ).root
+            },
+            bindView = { view, viewModel ->
+              val binding =
+                DataBindingUtil.findBinding<MultipleChoiceInteractionItemsBinding>(view)!!
+              binding.htmlContent =
+                htmlParserFactory.create(
+                  resourceBucketName, entityType, entityId, /* imageCenterAlign= */ false
+                ).parseOppiaHtml(
+                  viewModel.htmlContent, binding.multipleChoiceContentTextView
+                )
+              binding.viewModel = viewModel
+            }
           )
-          binding.viewModel = viewModel
-        }
-      )
-      .build()
+          .build()
+    }
   }
 }
 
 /** Sets the [SelectionItemInputType] for a specific [SelectionInteractionView] via data-binding. */
-@BindingAdapter("itemInputType")
-fun setItemInputType(
-  selectionInteractionView: SelectionInteractionView, selectionItemInputType: SelectionItemInputType
-) = selectionInteractionView.setItemInputType(selectionItemInputType)
-
+@BindingAdapter("allOptionsItemInputType")
+fun setAllOptionsItemInputType(
+  selectionInteractionView: SelectionInteractionView,
+  selectionItemInputType: SelectionItemInputType
+) = selectionInteractionView.setAllOptionsItemInputType(selectionItemInputType)
 
 /** Sets the exploration ID for a specific [SelectionInteractionView] via data-binding. */
-@BindingAdapter("explorationId")
-fun setExplorationId(
-  selectionInteractionView: SelectionInteractionView, explorationId: String
-) = selectionInteractionView.setExplorationId(explorationId)
+@BindingAdapter("entityId")
+fun setEntityId(
+  selectionInteractionView: SelectionInteractionView,
+  entityId: String
+) = selectionInteractionView.setEntityId(entityId)

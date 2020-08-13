@@ -1,18 +1,16 @@
 package org.oppia.util.data
 
-import androidx.annotation.GuardedBy
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import org.oppia.util.logging.ExceptionLogger
 import org.oppia.util.threading.BackgroundDispatcher
-import java.util.concurrent.locks.ReentrantLock
+import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.concurrent.withLock
 
 /**
  * Various functions to create or manipulate [DataProvider]s.
@@ -23,8 +21,10 @@ import kotlin.concurrent.withLock
 @Singleton
 class DataProviders @Inject constructor(
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
-  private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager
+  private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
+  private val exceptionLogger: ExceptionLogger
 ) {
+
   /**
    * Returns a new [DataProvider] that applies the specified function each time new data is available to it, and
    * provides it to its own subscribers.
@@ -36,18 +36,23 @@ class DataProviders @Inject constructor(
    * it may be called on different background threads at different times. It should perform no UI operations or
    * otherwise interact with UI components.
    */
-  fun <T1, T2> transform(newId: Any, dataProvider: DataProvider<T1>, function: (T1) -> T2): DataProvider<T2> {
+  fun <T1, T2> transform(
+    newId: Any,
+    dataProvider: DataProvider<T1>,
+    function: (T1) -> T2
+  ): DataProvider<T2> {
     asyncDataSubscriptionManager.associateIds(newId, dataProvider.getId())
-    return object: DataProvider<T2> {
+    return object : DataProvider<T2> {
       override fun getId(): Any {
         return newId
       }
 
       override suspend fun retrieveData(): AsyncResult<T2> {
-        try {
-          return dataProvider.retrieveData().transform(function)
-        } catch (t: Throwable) {
-          return AsyncResult.failed(t)
+        return try {
+          dataProvider.retrieveData().transform(function)
+        } catch (e: Exception) {
+          exceptionLogger.logException(e)
+          AsyncResult.failed(e)
         }
       }
     }
@@ -58,16 +63,90 @@ class DataProviders @Inject constructor(
    * blocking.
    */
   fun <T1, T2> transformAsync(
-    newId: Any, dataProvider: DataProvider<T1>, function: suspend (T1) -> AsyncResult<T2>
+    newId: Any,
+    dataProvider: DataProvider<T1>,
+    function: suspend (T1) -> AsyncResult<T2>
   ): DataProvider<T2> {
     asyncDataSubscriptionManager.associateIds(newId, dataProvider.getId())
-    return object: DataProvider<T2> {
+    return object : DataProvider<T2> {
       override fun getId(): Any {
         return newId
       }
 
       override suspend fun retrieveData(): AsyncResult<T2> {
         return dataProvider.retrieveData().transformAsync(function)
+      }
+    }
+  }
+
+  /**
+   * Returns a new [NestedTransformedDataProvider]. By default, the data provider returned by this function behaves the
+   * same as [transformAsync]'s, except this one supports changing its based provider. If callers do not plan to change
+   * the underlying base provider, [transformAsync] should be used, instead.
+   */
+  fun <T1, T2> createNestedTransformedDataProvider(
+    newId: Any,
+    dataProvider: DataProvider<T1>,
+    function: suspend (T1) -> AsyncResult<T2>
+  ): NestedTransformedDataProvider<T2> {
+    return NestedTransformedDataProvider.createNestedTransformedDataProvider(
+      newId, dataProvider, function, asyncDataSubscriptionManager
+    )
+  }
+
+  /**
+   * Returns a new [DataProvider] that combines two other providers by applying the specified function to produce a new
+   * value each time either data provider changes.
+   *
+   * Notifications to the original data providers will also notify subscribers to the combined data provider of
+   * changes, but not vice versa.
+   *
+   * Note that the combine function should be non-blocking, have no side effects, and be thread-safe since it may be
+   * called on different background threads at different times. It should perform no UI operations or otherwise interact
+   * with UI components.
+   */
+  fun <O, T1, T2> combine(
+    newId: Any,
+    dataProvider1: DataProvider<T1>,
+    dataProvider2: DataProvider<T2>,
+    function: (T1, T2) -> O
+  ): DataProvider<O> {
+    asyncDataSubscriptionManager.associateIds(newId, dataProvider1.getId())
+    asyncDataSubscriptionManager.associateIds(newId, dataProvider2.getId())
+    return object : DataProvider<O> {
+      override fun getId(): Any {
+        return newId
+      }
+
+      override suspend fun retrieveData(): AsyncResult<O> {
+        return try {
+          dataProvider1.retrieveData().combineWith(dataProvider2.retrieveData(), function)
+        } catch (e: Exception) {
+          exceptionLogger.logException(e)
+          AsyncResult.failed(e)
+        }
+      }
+    }
+  }
+
+  /**
+   * Returns a transformed [DataProvider] in the same way as [combine] except the combine function can be blocking.
+   */
+  fun <O, T1, T2> combineAsync(
+    newId: Any,
+    dataProvider1: DataProvider<T1>,
+    dataProvider2: DataProvider<T2>,
+    function: suspend (T1, T2) -> AsyncResult<O>
+  ): DataProvider<O> {
+    asyncDataSubscriptionManager.associateIds(newId, dataProvider1.getId())
+    asyncDataSubscriptionManager.associateIds(newId, dataProvider2.getId())
+    return object : DataProvider<O> {
+      override fun getId(): Any {
+        return newId
+      }
+
+      override suspend fun retrieveData(): AsyncResult<O> {
+        return dataProvider1.retrieveData().combineWithAsync(dataProvider2.retrieveData(), function)
       }
     }
   }
@@ -84,7 +163,7 @@ class DataProviders @Inject constructor(
    * with the in-memory provider's identifier.
    */
   fun <T> createInMemoryDataProvider(id: Any, loadFromMemory: () -> T): DataProvider<T> {
-    return object: DataProvider<T> {
+    return object : DataProvider<T> {
       override fun getId(): Any {
         return id
       }
@@ -92,8 +171,9 @@ class DataProviders @Inject constructor(
       override suspend fun retrieveData(): AsyncResult<T> {
         return try {
           AsyncResult.success(loadFromMemory())
-        } catch (t: Throwable) {
-          AsyncResult.failed(t)
+        } catch (e: Exception) {
+          exceptionLogger.logException(e)
+          AsyncResult.failed(e)
         }
       }
     }
@@ -103,8 +183,11 @@ class DataProviders @Inject constructor(
    * Returns a new in-memory [DataProvider] in the same way as [createInMemoryDataProvider] except the load function can
    * be blocking.
    */
-  fun <T> createInMemoryDataProviderAsync(id: Any, loadFromMemoryAsync: suspend () -> AsyncResult<T>): DataProvider<T> {
-    return object: DataProvider<T> {
+  fun <T> createInMemoryDataProviderAsync(
+    id: Any,
+    loadFromMemoryAsync: suspend () -> AsyncResult<T>
+  ): DataProvider<T> {
+    return object : DataProvider<T> {
       override fun getId(): Any {
         return id
       }
@@ -124,118 +207,151 @@ class DataProviders @Inject constructor(
   }
 
   /**
-   * A version of [LiveData] which can be notified to execute a specified coroutine if there is a pending update.
-   *
-   * This [LiveData] also reports the pending, succeeding, and failing state of the [AsyncResult]. Note that it will
-   * immediately execute the specified async function upon initialization, so it's recommended to only initialize this
-   * object upon when its result is actually needed to avoid kicking off many async tasks with results that may never be
-   * used.
+   * A [DataProvider] that acts in the same way as [transformAsync] except the underlying base data
+   * provider can change.
    */
-  private class NotifiableAsyncLiveData<T>(
-    private val dispatcher: CoroutineDispatcher,
+  class NestedTransformedDataProvider<T2> private constructor(
+    private val id: Any,
+    private var baseId: Any,
     private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
-    private val dataProvider: DataProvider<T>
-  ) : MediatorLiveData<AsyncResult<T>>() {
-    private val coroutineLiveDataLock = ReentrantLock()
-    @GuardedBy("coroutineLiveDataLock") private var pendingCoroutineLiveData: LiveData<AsyncResult<T>>? = null
-    @GuardedBy("coroutineLiveDataLock") private var cachedValue: AsyncResult<T>? = null
-
-    // This field is only access on the main thread, so no additional locking is necessary.
-    private var dataProviderSubscriber: ObserveAsyncChange? = null
-
+    private var retrieveTransformedData: suspend () -> AsyncResult<T2>
+  ) : DataProvider<T2> {
     init {
-      // Schedule to retrieve data from the provider immediately.
-      enqueueAsyncFunctionAsLiveData()
+      initializeTransformer()
     }
 
-    override fun onActive() {
-      if (dataProviderSubscriber == null) {
-        val subscriber: ObserveAsyncChange = {
-          notifyUpdate()
-        }
-        asyncDataSubscriptionManager.subscribe(dataProvider.getId(), subscriber)
-        dataProviderSubscriber = subscriber
-      }
-      super.onActive()
-    }
+    override fun getId(): Any = id
 
-    override fun onInactive() {
-      super.onInactive()
-      dataProviderSubscriber?.let {
-        asyncDataSubscriptionManager.unsubscribe(dataProvider.getId(), it)
-        dataProviderSubscriber = null
-      }
-      dequeuePendingCoroutineLiveData()
+    override suspend fun retrieveData(): AsyncResult<T2> {
+      return retrieveTransformedData()
     }
 
     /**
-     * Notifies this live data that it should re-run its asynchronous function and propagate any results.
+     * Sets a new base [DataProvider] and transform function from which to derive this data
+     * provider.
      *
-     * Note that if an existing operation is pending, it may complete but its results will not be propagated in favor
-     * of the run started by this call. Note also that regardless of the current [AsyncResult] value of this live data,
-     * the new value will overwrite it (e.g. it's possible to go from a failed to success state or vice versa).
-     *
-     * This needs to be run on the main thread due to [LiveData] limitations.
+     * Note that this will notify any observers of this provider so that they receive the latest
+     * transformed value.
      */
-    private fun notifyUpdate() {
-      dequeuePendingCoroutineLiveData()
-      enqueueAsyncFunctionAsLiveData()
+    fun <T1> setBaseDataProvider(
+      dataProvider: DataProvider<T1>,
+      transform: suspend (T1) -> AsyncResult<T2>
+    ) {
+      asyncDataSubscriptionManager.dissociateIds(id, baseId)
+      baseId = dataProvider.getId()
+      retrieveTransformedData = { dataProvider.retrieveData().transformAsync(transform) }
+      initializeTransformer()
+
+      // Notify subscribers that the base provider has changed.
+      asyncDataSubscriptionManager.notifyChangeAsync(id)
     }
 
-    /**
-     * Enqueues the async function, but execution is based on whether this [LiveData] is active. See [MediatorLiveData]
-     * docs for context.
-     */
-    private fun enqueueAsyncFunctionAsLiveData() {
-      val coroutineLiveData = CoroutineLiveData(dispatcher) {
-        dataProvider.retrieveData()
-      }
-      coroutineLiveDataLock.withLock {
-        pendingCoroutineLiveData = coroutineLiveData
-        addSource(coroutineLiveData) { computedValue ->
-          // Only notify LiveData subscriptions if the value is actually different.
-          if (cachedValue != computedValue) {
-            value = computedValue
-            cachedValue = value
-          }
-        }
-      }
+    private fun initializeTransformer() {
+      asyncDataSubscriptionManager.associateIds(id, baseId)
     }
 
-    private fun dequeuePendingCoroutineLiveData() {
-      coroutineLiveDataLock.withLock {
-        pendingCoroutineLiveData?.let {
-          removeSource(it) // This can trigger onInactive() situations for long-standing operations, leading to them being cancelled.
-          pendingCoroutineLiveData = null
+    companion object {
+      /** Returns a new [NestedTransformedDataProvider]. */
+      internal fun <T1, T2> createNestedTransformedDataProvider(
+        id: Any,
+        baseDataProvider: DataProvider<T1>,
+        transform: suspend (T1) -> AsyncResult<T2>,
+        asyncDataSubscriptionManager: AsyncDataSubscriptionManager
+      ): NestedTransformedDataProvider<T2> {
+        return NestedTransformedDataProvider(
+          id, baseDataProvider.getId(), asyncDataSubscriptionManager
+        ) {
+          baseDataProvider.retrieveData().transformAsync(transform)
         }
       }
     }
   }
 
-  // TODO(#72): Replace this with AndroidX's CoroutineLiveData once the corresponding LiveData suspend job bug is fixed
-  //  and available.
-  /** A [LiveData] whose value is derived from a suspended function. */
-  private class CoroutineLiveData<T>(
+  /**
+   * A version of [LiveData] which automatically pipes data from a specified [DataProvider] to
+   * LiveData observers in a thread-safe and lifecycle-safe way.
+   *
+   * This class will immediately retrieve the latest state of its input [DataProvider] at the first
+   * occurrence of an active observer, but not before then. It guarantees that all active observers
+   * (including new ones) will receive an eventually consistent state of the data provider. It also
+   * will not deliver the same value more than once in a row to avoid over-alerting observers of
+   * changes.
+   */
+  private class NotifiableAsyncLiveData<T>(
     private val dispatcher: CoroutineDispatcher,
-    private val function: suspend () -> T
-  ) : MutableLiveData<T>() {
-    private var runningJob: Job? = null
+    private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
+    private val dataProvider: DataProvider<T>
+  ) : LiveData<AsyncResult<T>>() {
+    private val asyncSubscriber: ObserveAsyncChange = this::handleDataProviderUpdate
+    private val isActive = AtomicBoolean(false)
+    private val runningJob = AtomicReference<Job?>(null)
+    private var cache: AsyncResult<T>? = null // only accessed on the main thread
 
     override fun onActive() {
       super.onActive()
-      if (runningJob == null) {
-        val scope = CoroutineScope(dispatcher)
-        runningJob = scope.launch {
-          postValue(function())
-          runningJob = null
+      // Subscribe to the ID immediately in case there's a value in the data provider already ready.
+      asyncDataSubscriptionManager.subscribe(dataProvider.getId(), asyncSubscriber)
+      isActive.set(true)
+
+      // If there's no currently cached value or soon-to-be cached value, kick-off a data retrieval
+      // so that new observers can receive the most up-to-date value.
+      if (runningJob.get() == null) {
+        val job = CoroutineScope(dispatcher).launch {
+          handleDataProviderUpdate()
         }
+        // Note that this can race against handleDataProviderUpdate() clearing the job, but in
+        // either outcome the behavior should still be correct (eventual consistency).
+        runningJob.set(job)
       }
     }
 
     override fun onInactive() {
       super.onInactive()
-      runningJob?.cancel() // This can cancel downstream operations that may want to complete side effects.
-      runningJob = null
+      // Stop watching for updates immediately, then cancel any existing operations.
+      asyncDataSubscriptionManager.unsubscribe(dataProvider.getId(), asyncSubscriber)
+      isActive.set(false)
+      // This can cancel downstream operations that may want to complete side effects.
+      runningJob.getAndSet(null)?.cancel()
+    }
+
+    override fun setValue(value: AsyncResult<T>?) {
+      checkNotNull(value) { "Null values should not be posted to NotifiableAsyncLiveData." }
+      val currentCache = cache // This is safe because cache can only be changed on the main thread.
+      if (currentCache != null) {
+        if (value.isNewerThanOrSameAgeAs(currentCache) && currentCache != value) {
+          // Only propagate the value if it's changed and is newer since it's possible for observer
+          // callbacks to happen out-of-order.
+          cache = value
+          super.setValue(value)
+        }
+      } else {
+        cache = value
+        super.setValue(value)
+      }
+    }
+
+    private suspend fun handleDataProviderUpdate() {
+      // This doesn't guarantee that retrieveData() is only called when the live data is active
+      // (e.g. it can become inactive right after the value is posted & before it's dispatched), but
+      // it does guarantee that it won't be called when the live data is currently inactive. This
+      // also safely passes the value to the main thread and relies on LiveData's own internal
+      // mechanism which in turn always calls setValue(), even if there are no active observers. See
+      // the override of setValue() above for the adjusted semantics this class requires to ensure
+      // its own cache remains up-to-date.
+      retrieveFromDataProvider()?.let {
+        super.postValue(it)
+        runningJob.set(null)
+      }
+    }
+
+    private suspend fun retrieveFromDataProvider(): AsyncResult<T>? {
+      return if (isActive.get()) {
+        // Although it's possible for the live data to become inactive after this point, this
+        // follows the expected contract of the data provider (it may have its data retrieved and
+        // not delivered), and it guarantees eventual consistency since the class still caches the
+        // results in case a new observer is added later.
+        dataProvider.retrieveData()
+      } else null
     }
   }
 }

@@ -1,5 +1,6 @@
 package org.oppia.data.backends
 
+import org.json.JSONException
 import org.json.JSONObject
 import java.io.FileInputStream
 
@@ -8,10 +9,14 @@ class ApiUtils {
 
   companion object {
     fun getFakeJson(jsonPath: String): String {
-      val assetsPath: String = "../data/src/test/assets/api_mocks/" + jsonPath
+      val assetsPath: String = "../data/src/test/assets/api_mocks/$jsonPath"
       val inputStream = FileInputStream(assetsPath)
       val json: String = inputStream.bufferedReader().use { it.readText() }
-      return JSONObject(json).toString()
+      return try {
+        JSONObject(json).toString()
+      } catch (e: JSONException) {
+        return json
+      }
     }
   }
 }

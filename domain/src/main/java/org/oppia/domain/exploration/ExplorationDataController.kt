@@ -1,11 +1,12 @@
 package org.oppia.domain.exploration
 
-
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.oppia.app.model.Exploration
+import org.oppia.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
+import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
 private const val EXPLORATION_DATA_PROVIDER_ID = "ExplorationDataProvider"
@@ -19,11 +20,15 @@ private const val EXPLORATION_DATA_PROVIDER_ID = "ExplorationDataProvider"
 class ExplorationDataController @Inject constructor(
   private val explorationProgressController: ExplorationProgressController,
   private val explorationRetriever: ExplorationRetriever,
-  private val dataProviders: DataProviders
+  private val dataProviders: DataProviders,
+  private val exceptionsController: ExceptionsController,
+  private val oppiaClock: OppiaClock
 ) {
   /** Returns an [Exploration] given an ID. */
   fun getExplorationById(id: String): LiveData<AsyncResult<Exploration>> {
-    val dataProvider = dataProviders.createInMemoryDataProviderAsync(EXPLORATION_DATA_PROVIDER_ID) {
+    val dataProvider = dataProviders.createInMemoryDataProviderAsync(
+      EXPLORATION_DATA_PROVIDER_ID
+    ) {
       retrieveExplorationById(id)
     }
     return dataProviders.convertToLiveData(dataProvider)
@@ -45,6 +50,7 @@ class ExplorationDataController @Inject constructor(
       explorationProgressController.beginExplorationAsync(explorationId)
       MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
+      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
       MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -58,15 +64,18 @@ class ExplorationDataController @Inject constructor(
       explorationProgressController.finishExplorationAsync()
       MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
+      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
       MutableLiveData(AsyncResult.failed(e))
     }
   }
 
-  @Suppress("RedundantSuspendModifier") // DataProviders expects this function to be a suspend function.
+  // DataProviders expects this function to be a suspend function.
+  @Suppress("RedundantSuspendModifier")
   private suspend fun retrieveExplorationById(explorationId: String): AsyncResult<Exploration> {
     return try {
       AsyncResult.success(explorationRetriever.loadExploration(explorationId))
     } catch (e: Exception) {
+      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
       AsyncResult.failed(e)
     }
   }

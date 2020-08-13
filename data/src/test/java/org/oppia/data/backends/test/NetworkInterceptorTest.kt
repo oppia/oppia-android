@@ -15,6 +15,7 @@ import org.oppia.data.backends.ApiUtils
 import org.oppia.data.backends.api.MockTopicService
 import org.oppia.data.backends.gae.NetworkInterceptor
 import org.oppia.data.backends.gae.NetworkModule
+import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
 import javax.inject.Inject
 import javax.inject.Qualifier
@@ -22,29 +23,51 @@ import javax.inject.Singleton
 
 /** Tests for [NetworkInterceptor] */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class NetworkInterceptorTest {
 
-  @Inject lateinit var networkInterceptor: NetworkInterceptor
+  @Inject
+  lateinit var networkInterceptor: NetworkInterceptor
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
   }
 
+  private fun removeSpaces(raw: String): String {
+    return raw.replace(" ", "")
+  }
+
   @Test
   fun testNetworkInterceptor_withXssiPrefix_removesXssiPrefix() {
     val rawJson: String =
-      networkInterceptor.removeXSSIPrefix(ApiUtils.getFakeJson("dummy_response_with_xssi_prefix.json"))
+      networkInterceptor.removeXSSIPrefix(
+        ApiUtils.getFakeJson(
+          "dummy_response_with_xssi_prefix.json"
+        )
+      ).trim()
 
-    assertThat(rawJson).isEqualTo(ApiUtils.getFakeJson("dummy_response_without_xssi_prefix.json"))
+    assertThat(removeSpaces(rawJson)).isEqualTo(
+      ApiUtils.getFakeJson(
+        "dummy_response_without_xssi_prefix.json"
+      )
+    )
   }
 
   @Test
   fun testNetworkInterceptor_withoutXssiPrefix_removesXssiPrefix() {
     val rawJson: String =
-      networkInterceptor.removeXSSIPrefix(ApiUtils.getFakeJson("dummy_response_without_xssi_prefix.json"))
+      networkInterceptor.removeXSSIPrefix(
+        ApiUtils.getFakeJson(
+          "dummy_response_without_xssi_prefix.json"
+        )
+      )
 
-    assertThat(rawJson).isEqualTo(ApiUtils.getFakeJson("dummy_response_without_xssi_prefix.json"))
+    assertThat(rawJson).isEqualTo(
+      ApiUtils.getFakeJson(
+        "dummy_response_without_xssi_prefix.json"
+      )
+    )
   }
 
   private fun setUpTestApplicationComponent() {
@@ -54,7 +77,8 @@ class NetworkInterceptorTest {
       .inject(this)
   }
 
-  @Qualifier annotation class OppiaRetrofit
+  @Qualifier
+  annotation class OppiaRetrofit
 
   // TODO(#89): Move this to a common test application component.
   @Module

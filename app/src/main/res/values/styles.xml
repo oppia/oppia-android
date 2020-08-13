@@ -1,21 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <style name="OppiaTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+  <style name="OppiaTheme" parent="Theme.MaterialComponents.Light.DarkActionBar.Bridge">
     <item name="colorPrimary">@color/colorPrimary</item>
     <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     <item name="colorAccent">@color/colorPrimary</item>
   </style>
+  <!-- This style specifies the Text Size of the Toolbar Title. -->
+  <style name="ToolbarTitle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
+    <item name="android:textSize">20sp</item>
+  </style>
 
-  <style name="OppiaThemeWithoutActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+  <style name="OppiaThemeWithoutActionBar" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
     <item name="colorPrimary">@color/colorPrimary</item>
     <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     <item name="colorAccent">@color/colorAccent</item>
     <item name="windowActionBar">false</item>
     <item name="windowNoTitle">true</item>
+    <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
   </style>
 
-  <style name="OppiaDialogFragmentTheme" parent="OppiaTheme" >
+  <style name="OppiaThemeNoActionBarColorAccentColorPrimary" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="colorAccent">@color/colorPrimary</item>
+    <item name="windowActionBar">false</item>
+    <item name="windowNoTitle">true</item>
+    <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
+  </style>
+
+  <!-- Base style for animations.  This style specifies no animations. -->
+  <style name="Animation" />
+  <!-- Standard animations for a full-screen window or activity. -->
+  <style name="Animation.Activity">
+    <item name="android:activityOpenEnterAnimation">@anim/slide_in_right</item>
+    <item name="android:activityOpenExitAnimation">@anim/slide_out_left</item>
+  </style>
+
+  <style name="OppiaDialogFragmentTheme" parent="OppiaTheme">
     <item name="colorAccent">@color/colorPrimary</item>
   </style>
 
@@ -31,7 +53,7 @@
     <item name="android:activityOpenExitAnimation">@anim/fade_out</item>
   </style>
 
-  <style name="FullScreenDialogStyle" parent="Theme.AppCompat.Dialog">
+  <style name="FullScreenDialogStyle" parent="Theme.MaterialComponents.Dialog.Bridge">
     <item name="android:windowNoTitle">true</item>
     <item name="colorPrimaryDark">@color/colorConceptToolbarHeading</item>
     <!-- Set this to true if you want Full Screen without status bar -->
@@ -39,6 +61,32 @@
     <item name="android:windowIsFloating">false</item>
     <!-- This is important! Don't forget to set window background -->
     <item name="android:windowBackground">@color/colorConceptCardBackground</item>
+    <!-- Additionally if you want animations when dialog opening -->
+    <item name="android:windowEnterAnimation">@anim/slide_up</item>
+    <item name="android:windowExitAnimation">@anim/slide_down</item>
+  </style>
+
+  <style name="FullScreenReviewDialogStyle" parent="Theme.MaterialComponents.Dialog.Bridge">
+    <item name="android:windowNoTitle">true</item>
+    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <!-- Set this to true if you want Full Screen without status bar -->
+    <item name="android:windowFullscreen">false</item>
+    <item name="android:windowIsFloating">false</item>
+    <!-- This is important! Don't forget to set window background -->
+    <item name="android:windowBackground">@color/white</item>
+    <!-- Additionally if you want animations when dialog opening -->
+    <item name="android:windowEnterAnimation">@anim/slide_up</item>
+    <item name="android:windowExitAnimation">@anim/slide_down</item>
+  </style>
+
+  <style name="FullScreenHintDialogStyle" parent="Theme.MaterialComponents.Dialog.Bridge">
+    <item name="android:windowNoTitle">true</item>
+    <item name="colorPrimaryDark">@color/hintFullDialogStatusBar</item>
+    <!-- Set this to true if you want Full Screen without status bar -->
+    <item name="android:windowFullscreen">false</item>
+    <item name="android:windowIsFloating">false</item>
+    <!-- This is important! Don't forget to set window background -->
+    <item name="android:windowBackground">@color/white</item>
     <!-- Additionally if you want animations when dialog opening -->
     <item name="android:windowEnterAnimation">@anim/slide_up</item>
     <item name="android:windowExitAnimation">@anim/slide_down</item>
@@ -59,8 +107,17 @@
     <item name="android:clickable">true</item>
   </style>
 
+  <style name="SwitchCompatTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+    <item name="colorControlActivated">@color/colorPrimary</item>
+  </style>
+
   <style name="TabLayout" parent="Widget.Design.TabLayout">
     <item name="tabTextAppearance">@style/TabLayoutTextAppearance</item>
+  </style>
+
+  <style name="ToolbarTextAppearance" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+    <item name="android:textSize">20sp</item>
+    <item name="android:textColor">@color/white</item>
   </style>
 
   <style name="TabLayoutTextAppearance" parent="TextAppearance.Design.Tab">
@@ -83,6 +140,16 @@
     <item name="android:textSize">14sp</item>
     <item name="android:clickable">false</item>
   </style>
+
+  <style name="AlertDialogTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert.Bridge">
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="colorAccent">@color/colorPrimary</item>
+  </style>
+
+  <style name="textAllCaps">
+    <item name="android:textAllCaps">true</item>
+  </style>
   <!-- TOPIC TABLAYOUT STYLE -->
   <style name="AppTabLayout" parent="Widget.Design.TabLayout">
     <item name="tabIndicatorColor">@color/white</item>
@@ -100,5 +167,15 @@
     <item name="android:textColor">@color/tab_icon_color_selector</item>
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="textAllCaps">true</item>
+  </style>
+
+  <style name="LanguageRadioButton" parent="Base.Widget.AppCompat.CompoundButton.RadioButton">
+    <item name="android:button">@drawable/radio_button_drawable</item>
+    <item name="android:windowIsTranslucent">true</item>
+    <item name="android:windowBackground">@android:color/transparent</item>
+    <item name="android:windowContentOverlay">@null</item>
+    <item name="android:windowNoTitle">true</item>
+    <item name="android:windowIsFloating">false</item>
+    <item name="android:backgroundDimEnabled">true</item>
   </style>
 </resources>

@@ -5,238 +5,251 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
-import org.oppia.app.databinding.ContentItemBinding
-import org.oppia.app.databinding.ContinueInteractionItemBinding
-import org.oppia.app.databinding.FeedbackItemBinding
-import org.oppia.app.databinding.FractionInteractionItemBinding
-import org.oppia.app.databinding.NumericInputInteractionItemBinding
-import org.oppia.app.databinding.SelectionInteractionItemBinding
-import org.oppia.app.databinding.StateButtonItemBinding
 import org.oppia.app.databinding.StateFragmentBinding
-import org.oppia.app.databinding.TextInputInteractionItemBinding
 import org.oppia.app.fragment.FragmentScope
-import org.oppia.app.model.AnswerAndResponse
 import org.oppia.app.model.AnswerOutcome
-import org.oppia.app.model.CellularDataPreference
 import org.oppia.app.model.EphemeralState
-import org.oppia.app.model.Interaction
-import org.oppia.app.model.InteractionObject
-import org.oppia.app.model.SubtitledHtml
+import org.oppia.app.model.HelpIndex
+import org.oppia.app.model.Hint
+import org.oppia.app.model.ProfileId
+import org.oppia.app.model.Solution
+import org.oppia.app.model.State
+import org.oppia.app.model.UserAnswer
+import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.audio.AudioFragment
-import org.oppia.app.player.audio.CellularDataDialogFragment
-import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
-import org.oppia.app.player.state.itemviewmodel.ContentViewModel
-import org.oppia.app.player.state.itemviewmodel.ContinueInteractionViewModel
-import org.oppia.app.player.state.itemviewmodel.FeedbackViewModel
-import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
-import org.oppia.app.player.state.itemviewmodel.InteractionViewModelFactory
-import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
-import org.oppia.app.player.state.itemviewmodel.SelectionInteractionViewModel
-import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
-import org.oppia.app.player.state.itemviewmodel.StateNavigationButtonViewModel
-import org.oppia.app.player.state.itemviewmodel.StateNavigationButtonViewModel.ContinuationNavigationButtonType
-import org.oppia.app.player.state.itemviewmodel.TextInputViewModel
-import org.oppia.app.player.state.listener.StateNavigationButtonListener
-import org.oppia.app.recyclerview.BindableAdapter
-import org.oppia.app.topic.conceptcard.ConceptCardFragment
+import org.oppia.app.player.audio.AudioUiManager
+import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
+import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
+import org.oppia.app.utility.SplitScreenManager
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.audio.CellularDialogController
-import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.exploration.ExplorationProgressController
+import org.oppia.domain.topic.StoryProgressController
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.logging.Logger
+import org.oppia.util.gcsresource.DefaultResourceBucketName
+import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
-import org.oppia.util.parser.HtmlParser
+import java.util.Date
 import javax.inject.Inject
 
+const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY = "STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY"
+const val STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY = "STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY"
+const val STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY = "STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY"
 const val STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY = "STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY"
-private const val CELLULAR_DATA_DIALOG_FRAGMENT_TAG = "CELLULAR_DATA_DIALOG_FRAGMENT"
-private const val AUDIO_FRAGMENT_TAG = "AUDIO_FRAGMENT"
-private const val CONCEPT_CARD_DIALOG_FRAGMENT_TAG = "CONCEPT_CARD_FRAGMENT"
+private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
 
 /** The presenter for [StateFragment]. */
 @FragmentScope
 class StateFragmentPresenter @Inject constructor(
-  @ExplorationHtmlParserEntityType private val htmlParserEntityType: String,
+  @ExplorationHtmlParserEntityType private val entityType: String,
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val cellularDialogController: CellularDialogController,
   private val viewModelProvider: ViewModelProvider<StateViewModel>,
-  private val explorationDataController: ExplorationDataController,
   private val explorationProgressController: ExplorationProgressController,
-  private val logger: Logger,
-  private val htmlParserFactory: HtmlParser.Factory,
-  private val context: Context,
-  private val interactionViewModelFactoryMap: Map<String, @JvmSuppressWildcards InteractionViewModelFactory>
-) : StateNavigationButtonListener, HtmlParser.CustomOppiaTagActionListener {
+  private val storyProgressController: StoryProgressController,
+  private val logger: ConsoleLogger,
+  @DefaultResourceBucketName private val resourceBucketName: String,
+  private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
+  private val splitScreenManager: SplitScreenManager
+) {
 
-  private var showCellularDataDialog = true
-  private var useCellularData = false
+  private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
+  private val hasConversationView = true
+
+  private lateinit var currentState: State
+  private lateinit var profileId: ProfileId
+  private lateinit var topicId: String
+  private lateinit var storyId: String
   private lateinit var explorationId: String
-  private val htmlParser: HtmlParser by lazy {
-    htmlParserFactory.create(htmlParserEntityType, explorationId, customOppiaTagActionListener = this)
-  }
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
-  private lateinit var viewModel: StateViewModel
+
+  private val viewModel: StateViewModel by lazy {
+    getStateViewModel()
+  }
+  private lateinit var recyclerViewAssembler: StatePlayerRecyclerViewAssembler
   private val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
     explorationProgressController.getCurrentState()
   }
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    cellularDialogController.getCellularDataPreference()
-      .observe(fragment, Observer<AsyncResult<CellularDataPreference>> {
-        if (it.isSuccess()) {
-          val prefs = it.getOrDefault(CellularDataPreference.getDefaultInstance())
-          showCellularDataDialog = !(prefs.hideDialog)
-          useCellularData = prefs.useCellularData
-        }
-      })
-    explorationId = fragment.arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String
+  ): View? {
+    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    this.topicId = topicId
+    this.storyId = storyId
+    this.explorationId = explorationId
 
     binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
-    val stateRecyclerViewAdapter = createRecyclerViewAdapter()
+    recyclerViewAssembler = createRecyclerViewAssembler(
+      assemblerBuilderFactory.create(resourceBucketName, entityType),
+      binding.congratulationsTextView
+    )
+
+    val stateRecyclerViewAdapter = recyclerViewAssembler.adapter
+    val rhsStateRecyclerViewAdapter = recyclerViewAssembler.rhsAdapter
     binding.stateRecyclerView.apply {
       adapter = stateRecyclerViewAdapter
     }
+    binding.extraInteractionRecyclerView.apply {
+      adapter = rhsStateRecyclerViewAdapter
+    }
     recyclerViewAdapter = stateRecyclerViewAdapter
-    viewModel = getStateViewModel()
     binding.let {
       it.lifecycleOwner = fragment
       it.viewModel = this.viewModel
     }
 
-    subscribeToCurrentState()
+    binding.stateRecyclerView.addOnLayoutChangeListener { _, _, _, _, bottom, _, _, _, oldBottom ->
+      if (bottom < oldBottom) {
+        binding.stateRecyclerView.postDelayed(
+          {
+            binding.stateRecyclerView.scrollToPosition(stateRecyclerViewAdapter.itemCount - 1)
+          },
+          100
+        )
+      }
+    }
 
+    binding.hintsAndSolutionFragmentContainer.setOnClickListener {
+      routeToHintsAndSolutionListener.routeToHintsAndSolution(
+        this.explorationId,
+        viewModel.newAvailableHintIndex,
+        viewModel.allHintsExhausted
+      )
+    }
+
+    subscribeToCurrentState()
+    markExplorationAsRecentlyPlayed()
     return binding.root
   }
 
-  private fun createRecyclerViewAdapter(): BindableAdapter<StateItemViewModel> {
-    return BindableAdapter.Builder
-      .newBuilder<StateItemViewModel>()
-      .registerViewTypeComputer { viewModel ->
-        when (viewModel) {
-          is StateNavigationButtonViewModel -> ViewType.VIEW_TYPE_STATE_NAVIGATION_BUTTON.ordinal
-          is ContentViewModel -> ViewType.VIEW_TYPE_CONTENT.ordinal
-          is FeedbackViewModel -> ViewType.VIEW_TYPE_FEEDBACK.ordinal
-          is ContinueInteractionViewModel -> ViewType.VIEW_TYPE_CONTINUE_INTERACTION.ordinal
-          is SelectionInteractionViewModel -> ViewType.VIEW_TYPE_SELECTION_INTERACTION.ordinal
-          is FractionInteractionViewModel -> ViewType.VIEW_TYPE_FRACTION_INPUT_INTERACTION.ordinal
-          is NumericInputViewModel -> ViewType.VIEW_TYPE_NUMERIC_INPUT_INTERACTION.ordinal
-          is TextInputViewModel -> ViewType.VIEW_TYPE_TEXT_INPUT_INTERACTION.ordinal
-          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
-        }
-      }
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_STATE_NAVIGATION_BUTTON.ordinal,
-        inflateDataBinding = StateButtonItemBinding::inflate,
-        setViewModel = StateButtonItemBinding::setButtonViewModel,
-        transformViewModel = { it as StateNavigationButtonViewModel }
-      )
-      .registerViewBinder(
-        viewType = ViewType.VIEW_TYPE_CONTENT.ordinal,
-        inflateView = { parent ->
-          ContentItemBinding.inflate(LayoutInflater.from(parent.context), parent, /* attachToParent= */ false).root
-        },
-        bindView = { view, viewModel ->
-          val binding = DataBindingUtil.findBinding<ContentItemBinding>(view)!!
-          binding.htmlContent = htmlParser.parseOppiaHtml(
-            (viewModel as ContentViewModel).htmlContent.toString(), binding.contentTextView, supportsLinks = true
-          )
-        }
-      )
-      .registerViewBinder(
-        viewType = ViewType.VIEW_TYPE_FEEDBACK.ordinal,
-        inflateView = { parent ->
-          FeedbackItemBinding.inflate(LayoutInflater.from(parent.context), parent, /* attachToParent= */ false).root
-        },
-        bindView = { view, viewModel ->
-          val binding = DataBindingUtil.findBinding<FeedbackItemBinding>(view)!!
-          binding.htmlContent = htmlParser.parseOppiaHtml(
-            (viewModel as FeedbackViewModel).htmlContent.toString(), binding.feedbackTextView, supportsLinks = true
-          )
-        }
-      )
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_CONTINUE_INTERACTION.ordinal,
-        inflateDataBinding = ContinueInteractionItemBinding::inflate,
-        setViewModel = ContinueInteractionItemBinding::setViewModel,
-        transformViewModel = { it as ContinueInteractionViewModel }
-      )
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_SELECTION_INTERACTION.ordinal,
-        inflateDataBinding = SelectionInteractionItemBinding::inflate,
-        setViewModel = SelectionInteractionItemBinding::setViewModel,
-        transformViewModel = { it as SelectionInteractionViewModel }
-      )
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_FRACTION_INPUT_INTERACTION.ordinal,
-        inflateDataBinding = FractionInteractionItemBinding::inflate,
-        setViewModel = FractionInteractionItemBinding::setViewModel,
-        transformViewModel = { it as FractionInteractionViewModel }
-      )
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_NUMERIC_INPUT_INTERACTION.ordinal,
-        inflateDataBinding = NumericInputInteractionItemBinding::inflate,
-        setViewModel = NumericInputInteractionItemBinding::setViewModel,
-        transformViewModel = { it as NumericInputViewModel }
-      )
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_TEXT_INPUT_INTERACTION.ordinal,
-        inflateDataBinding = TextInputInteractionItemBinding::inflate,
-        setViewModel = TextInputInteractionItemBinding::setViewModel,
-        transformViewModel = { it as TextInputViewModel }
-      )
-      .build()
-  }
-
-  fun handleAudioClick() {
-    if (showCellularDataDialog) {
-      showHideAudioFragment(false)
-      showCellularDataDialogFragment()
-    } else {
-      if (useCellularData) {
-        showHideAudioFragment(getAudioFragment() == null)
-      } else {
-        showHideAudioFragment(false)
-      }
-    }
-  }
-
-  fun handleEnableAudio(saveUserChoice: Boolean) {
-    showHideAudioFragment(true)
-    if (saveUserChoice) {
-      cellularDialogController.setAlwaysUseCellularDataPreference()
-    }
-  }
-
-  fun handleDisableAudio(saveUserChoice: Boolean) {
-    if (saveUserChoice) {
-      cellularDialogController.setNeverUseCellularDataPreference()
-    }
-  }
-
-  fun handleAnswerReadyForSubmission(answer: InteractionObject) {
+  fun handleAnswerReadyForSubmission(answer: UserAnswer) {
     // An interaction has indicated that an answer is ready for submission.
     handleSubmitAnswer(answer)
   }
 
-  private fun showCellularDataDialogFragment() {
-    val previousFragment = fragment.childFragmentManager.findFragmentByTag(CELLULAR_DATA_DIALOG_FRAGMENT_TAG)
-    if (previousFragment != null) {
-      fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
+  fun onContinueButtonClicked() {
+    viewModel.setHintBulbVisibility(false)
+    hideKeyboard()
+    moveToNextState()
+  }
+
+  fun onNextButtonClicked() = moveToNextState()
+
+  fun onPreviousButtonClicked() {
+    explorationProgressController.moveToPreviousState()
+  }
+
+  fun onReturnToTopicButtonClicked() {
+    hideKeyboard()
+    markExplorationCompleted()
+    (activity as StopStatePlayingSessionListener).stopSession()
+  }
+
+  private fun showOrHideAudioByState(state: State) {
+    if (state.recordedVoiceoversCount == 0) {
+      (activity as AudioButtonListener).hideAudioButton()
+    } else {
+      (activity as AudioButtonListener).showAudioButton()
     }
-    val dialogFragment = CellularDataDialogFragment.newInstance()
-    dialogFragment.showNow(fragment.childFragmentManager, CELLULAR_DATA_DIALOG_FRAGMENT_TAG)
+  }
+
+  fun onSubmitButtonClicked() {
+    hideKeyboard()
+    handleSubmitAnswer(viewModel.getPendingAnswer(recyclerViewAssembler))
+  }
+
+  fun onResponsesHeaderClicked() {
+    recyclerViewAssembler.togglePreviousAnswers(viewModel.itemList)
+    recyclerViewAssembler.adapter.notifyDataSetChanged()
+  }
+
+  fun onHintAvailable(helpIndex: HelpIndex) {
+    when (helpIndex.indexTypeCase) {
+      HelpIndex.IndexTypeCase.HINT_INDEX, HelpIndex.IndexTypeCase.SHOW_SOLUTION -> {
+        if (helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.HINT_INDEX) {
+          viewModel.newAvailableHintIndex = helpIndex.hintIndex
+        }
+        viewModel.allHintsExhausted =
+          helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.SHOW_SOLUTION
+        viewModel.setHintOpenedAndUnRevealedVisibility(true)
+        viewModel.setHintBulbVisibility(true)
+      }
+      HelpIndex.IndexTypeCase.EVERYTHING_REVEALED -> {
+        viewModel.setHintOpenedAndUnRevealedVisibility(false)
+        viewModel.setHintBulbVisibility(true)
+      }
+      else -> {
+        viewModel.setHintOpenedAndUnRevealedVisibility(false)
+        viewModel.setHintBulbVisibility(false)
+      }
+    }
+  }
+
+  fun handleAudioClick() = recyclerViewAssembler.toggleAudioPlaybackState()
+
+  fun handleKeyboardAction() {
+    hideKeyboard()
+    if (viewModel.getCanSubmitAnswer().get() == true) {
+      handleSubmitAnswer(viewModel.getPendingAnswer(recyclerViewAssembler))
+    }
+  }
+
+  private fun createRecyclerViewAssembler(
+    builder: StatePlayerRecyclerViewAssembler.Builder,
+    congratulationsTextView: TextView
+  ): StatePlayerRecyclerViewAssembler {
+    return builder
+      .hasConversationView(hasConversationView)
+      .addContentSupport()
+      .addFeedbackSupport()
+      .addInteractionSupport(viewModel.getCanSubmitAnswer())
+      .addPastAnswersSupport()
+      .addWrongAnswerCollapsingSupport()
+      .addBackwardNavigationSupport()
+      .addForwardNavigationSupport()
+      .addReturnToTopicSupport()
+      .addCongratulationsForCorrectAnswers(congratulationsTextView)
+      .addHintsAndSolutionsSupport()
+      .addAudioVoiceoverSupport(
+        explorationId, viewModel.currentStateName, viewModel.isAudioBarVisible,
+        this::getAudioUiManager
+      )
+      .addConceptCardSupport().build()
+  }
+
+  fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
+    subscribeToHint(
+      explorationProgressController.submitHintIsRevealed(
+        currentState,
+        saveUserChoice,
+        hintIndex
+      )
+    )
+  }
+
+  fun revealSolution(saveUserChoice: Boolean) {
+    subscribeToSolution(
+      explorationProgressController.submitSolutionIsRevealed(
+        currentState,
+        saveUserChoice
+      )
+    )
   }
 
   private fun getStateViewModel(): StateViewModel {
@@ -244,35 +257,25 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun getAudioFragment(): Fragment? {
-    return fragment.childFragmentManager.findFragmentByTag(AUDIO_FRAGMENT_TAG)
+    return fragment.childFragmentManager.findFragmentByTag(TAG_AUDIO_FRAGMENT)
   }
 
-  private fun showHideAudioFragment(isVisible: Boolean) {
-    getStateViewModel().setAudioBarVisibility(isVisible)
-    if (isVisible) {
-      if (getAudioFragment() == null) {
-        val audioFragment = AudioFragment.newInstance(explorationId, currentStateName)
-        fragment.childFragmentManager.beginTransaction().add(
-          R.id.audio_fragment_placeholder, audioFragment,
-          AUDIO_FRAGMENT_TAG
-        ).commitNow()
-      }
-
-      val currentYOffset = binding.stateRecyclerView.computeVerticalScrollOffset()
-      if (currentYOffset == 0) {
-        binding.stateRecyclerView.smoothScrollToPosition(0)
-      }
-    } else {
-      if (getAudioFragment() != null) {
-        fragment.childFragmentManager.beginTransaction().remove(getAudioFragment()!!).commitNow()
-      }
+  private fun getAudioUiManager(): AudioUiManager? {
+    if (getAudioFragment() == null) {
+      val audioFragment: AudioFragment = AudioFragment.newInstance(profileId.internalId)
+      fragment.childFragmentManager.beginTransaction()
+        .add(R.id.audio_fragment_placeholder, audioFragment, TAG_AUDIO_FRAGMENT).commitNow()
     }
+    return getAudioFragment() as? AudioUiManager
   }
 
   private fun subscribeToCurrentState() {
-    ephemeralStateLiveData.observe(fragment, Observer<AsyncResult<EphemeralState>> { result ->
-      processEphemeralStateResult(result)
-    })
+    ephemeralStateLiveData.observe(
+      fragment,
+      Observer { result ->
+        processEphemeralStateResult(result)
+      }
+    )
   }
 
   private fun processEphemeralStateResult(result: AsyncResult<EphemeralState>) {
@@ -285,48 +288,75 @@ class StateFragmentPresenter @Inject constructor(
     }
 
     val ephemeralState = result.getOrThrow()
+    val shouldSplit = splitScreenManager.shouldSplitScreen(ephemeralState.state.interaction.id)
+    if (shouldSplit) {
+      viewModel.isSplitView.set(true)
+      viewModel.centerGuidelinePercentage.set(0.5f)
+    } else {
+      viewModel.isSplitView.set(false)
+      viewModel.centerGuidelinePercentage.set(1f)
+    }
 
-    val scrollToTop = ::currentStateName.isInitialized && currentStateName != ephemeralState.state.name
+    val isInNewState =
+      ::currentStateName.isInitialized && currentStateName != ephemeralState.state.name
 
+    currentState = ephemeralState.state
     currentStateName = ephemeralState.state.name
-    val pendingItemList = mutableListOf<StateItemViewModel>()
-    addContentItem(pendingItemList, ephemeralState)
-    val interaction = ephemeralState.state.interaction
-    if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE) {
-      addPreviousAnswers(pendingItemList, interaction, ephemeralState.pendingState.wrongAnswerList)
-      addInteractionForPendingState(pendingItemList, interaction)
-    } else if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE) {
-      addPreviousAnswers(pendingItemList, interaction, ephemeralState.completedState.answerList)
-    }
+    showOrHideAudioByState(ephemeralState.state)
 
-    val hasPreviousState = ephemeralState.hasPreviousState
-    var canContinueToNextState = false
-    var hasGeneralContinueButton = false
-
-    if (ephemeralState.stateTypeCase != EphemeralState.StateTypeCase.TERMINAL_STATE) {
-      if (ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.COMPLETED_STATE
-        && !ephemeralState.hasNextState
-      ) {
-        hasGeneralContinueButton = true
-      } else if (ephemeralState.completedState.answerList.size > 0 && ephemeralState.hasNextState) {
-        canContinueToNextState = true
-      }
-    }
-
-    updateNavigationButtonVisibility(
-      pendingItemList,
-      hasPreviousState,
-      canContinueToNextState,
-      hasGeneralContinueButton,
-      ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.TERMINAL_STATE
+    val dataPair = recyclerViewAssembler.compute(
+      ephemeralState,
+      explorationId,
+      shouldSplit
     )
 
     viewModel.itemList.clear()
-    viewModel.itemList += pendingItemList
+    viewModel.itemList += dataPair.first
+    viewModel.rightItemList.clear()
+    viewModel.rightItemList += dataPair.second
 
-    if (scrollToTop) {
-      binding.stateRecyclerView.smoothScrollToPosition(0)
+    if (isInNewState) {
+      (binding.stateRecyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
+        0,
+        200
+      )
     }
+  }
+
+  /**
+   * This function listens to the result of RevealHint.
+   * Whenever a hint is revealed using ExplorationProgressController.submitHintIsRevealed function,
+   * this function will wait for the response from that function and based on which we can move to next state.
+   */
+  private fun subscribeToHint(hintResultLiveData: LiveData<AsyncResult<Hint>>) {
+    val hintLiveData = getHintIsRevealed(hintResultLiveData)
+    hintLiveData.observe(
+      fragment,
+      Observer { result ->
+        // If the hint was revealed remove dot and radar.
+        if (result.hintIsRevealed) {
+          viewModel.setHintOpenedAndUnRevealedVisibility(false)
+        }
+      }
+    )
+  }
+
+  /**
+   * This function listens to the result of RevealSolution.
+   * Whenever a hint is revealed using ExplorationProgressController.submitHintIsRevealed function,
+   * this function will wait for the response from that function and based on which we can move to next state.
+   */
+  private fun subscribeToSolution(solutionResultLiveData: LiveData<AsyncResult<Solution>>) {
+    val solutionLiveData = getSolutionIsRevealed(solutionResultLiveData)
+    solutionLiveData.observe(
+      fragment,
+      Observer { result ->
+        // If the hint was revealed remove dot and radar.
+        if (result.solutionIsRevealed) {
+          viewModel.setHintOpenedAndUnRevealedVisibility(false)
+        }
+      }
+    )
   }
 
   /**
@@ -334,57 +364,89 @@ class StateFragmentPresenter @Inject constructor(
    * Whenever an answer is submitted using ExplorationProgressController.submitAnswer function,
    * this function will wait for the response from that function and based on which we can move to next state.
    */
-  private fun subscribeToAnswerOutcome(answerOutcomeResultLiveData: LiveData<AsyncResult<AnswerOutcome>>) {
+  private fun subscribeToAnswerOutcome(
+    answerOutcomeResultLiveData: LiveData<AsyncResult<AnswerOutcome>>
+  ) {
     val answerOutcomeLiveData = getAnswerOutcome(answerOutcomeResultLiveData)
-    answerOutcomeLiveData.observe(fragment, Observer<AnswerOutcome> { result ->
-      // If the answer was submitted on behalf of the Continue interaction, automatically continue to the next state.
-      if (result.state.interaction.id == "Continue") {
-        moveToNextState()
+    answerOutcomeLiveData.observe(
+      fragment,
+      Observer { result ->
+        // If the answer was submitted on behalf of the Continue interaction, automatically continue to the next state.
+        if (result.state.interaction.id == "Continue") {
+          recyclerViewAssembler.stopHintsFromShowing()
+          viewModel.setHintBulbVisibility(false)
+          moveToNextState()
+        } else {
+          if (result.labelledAsCorrectAnswer) {
+            recyclerViewAssembler.stopHintsFromShowing()
+            viewModel.setHintBulbVisibility(false)
+            recyclerViewAssembler.showCongratulationMessageOnCorrectAnswer()
+          } else {
+            viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
+          }
+          recyclerViewAssembler.readOutAnswerFeedback(result.feedback)
+        }
       }
-    })
+    )
+  }
+
+  /** Helper for [subscribeToSolution]. */
+  private fun getSolutionIsRevealed(hint: LiveData<AsyncResult<Solution>>): LiveData<Solution> {
+    return Transformations.map(hint, ::processSolution)
+  }
+
+  /** Helper for [subscribeToHint]. */
+  private fun getHintIsRevealed(hint: LiveData<AsyncResult<Hint>>): LiveData<Hint> {
+    return Transformations.map(hint, ::processHint)
   }
 
   /** Helper for subscribeToAnswerOutcome. */
-  private fun getAnswerOutcome(answerOutcome: LiveData<AsyncResult<AnswerOutcome>>): LiveData<AnswerOutcome> {
+  private fun getAnswerOutcome(
+    answerOutcome: LiveData<AsyncResult<AnswerOutcome>>
+  ): LiveData<AnswerOutcome> {
     return Transformations.map(answerOutcome, ::processAnswerOutcome)
   }
 
-  /** Helper for subscribeToAnswerOutcome. */
-  private fun processAnswerOutcome(ephemeralStateResult: AsyncResult<AnswerOutcome>): AnswerOutcome {
+  /** Helper for [subscribeToAnswerOutcome]. */
+  private fun processAnswerOutcome(
+    ephemeralStateResult: AsyncResult<AnswerOutcome>
+  ): AnswerOutcome {
     if (ephemeralStateResult.isFailure()) {
-      logger.e("StateFragment", "Failed to retrieve answer outcome", ephemeralStateResult.getErrorOrNull()!!)
+      logger.e(
+        "StateFragment",
+        "Failed to retrieve answer outcome",
+        ephemeralStateResult.getErrorOrNull()!!
+      )
     }
     return ephemeralStateResult.getOrDefault(AnswerOutcome.getDefaultInstance())
   }
 
-  override fun onReturnToTopicButtonClicked() {
-    hideKeyboard()
-    explorationDataController.stopPlayingExploration()
-    activity.finish()
+  /** Helper for [subscribeToHint]. */
+  private fun processHint(hintResult: AsyncResult<Hint>): Hint {
+    if (hintResult.isFailure()) {
+      logger.e(
+        "StateFragment",
+        "Failed to retrieve Hint",
+        hintResult.getErrorOrNull()!!
+      )
+    }
+    return hintResult.getOrDefault(Hint.getDefaultInstance())
   }
 
-  override fun onSubmitButtonClicked() {
-    hideKeyboard()
-    handleSubmitAnswer(viewModel.getPendingAnswer())
+  /** Helper for [subscribeToSolution]. */
+  private fun processSolution(solutionResult: AsyncResult<Solution>): Solution {
+    if (solutionResult.isFailure()) {
+      logger.e(
+        "StateFragment",
+        "Failed to retrieve Solution",
+        solutionResult.getErrorOrNull()!!
+      )
+    }
+    return solutionResult.getOrDefault(Solution.getDefaultInstance())
   }
 
-  override fun onContinueButtonClicked() {
-    hideKeyboard()
-    moveToNextState()
-  }
-
-  private fun handleSubmitAnswer(answer: InteractionObject) {
+  private fun handleSubmitAnswer(answer: UserAnswer) {
     subscribeToAnswerOutcome(explorationProgressController.submitAnswer(answer))
-  }
-
-  override fun onPreviousButtonClicked() {
-    explorationProgressController.moveToPreviousState()
-  }
-
-  override fun onNextButtonClicked() = moveToNextState()
-
-  override fun onConceptCardLinkClicked(view: View, skillId: String) {
-    ConceptCardFragment.newInstance(skillId).showNow(fragment.childFragmentManager, CONCEPT_CARD_DIALOG_FRAGMENT_TAG)
   }
 
   fun dismissConceptCard() {
@@ -394,105 +456,57 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun moveToNextState() {
-    explorationProgressController.moveToNextState()
-  }
-
-  private fun addInteractionForPendingState(
-    pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction
-  ) = addInteraction(pendingItemList, interaction)
-
-  private fun addInteractionForCompletedState(
-    pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction, existingAnswer: InteractionObject
-  ) = addInteraction(pendingItemList, interaction, existingAnswer = existingAnswer, isReadOnly = true)
-
-  private fun addInteraction(
-    pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction, existingAnswer:
-    InteractionObject? = null, isReadOnly: Boolean = false
-  ) {
-    val interactionViewModelFactory = interactionViewModelFactoryMap.getValue(interaction.id)
-    pendingItemList += interactionViewModelFactory(
-      explorationId, interaction, fragment as InteractionAnswerReceiver, existingAnswer, isReadOnly
+    viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
+    explorationProgressController.moveToNextState().observe(
+      fragment,
+      Observer {
+        recyclerViewAssembler.collapsePreviousResponses()
+      }
     )
   }
 
-  private fun addContentItem(pendingItemList: MutableList<StateItemViewModel>, ephemeralState: EphemeralState) {
-    val contentSubtitledHtml: SubtitledHtml = ephemeralState.state.content
-    pendingItemList += ContentViewModel(contentSubtitledHtml.html)
-  }
-
-  private fun addPreviousAnswers(
-    pendingItemList: MutableList<StateItemViewModel>, interaction: Interaction,
-    answersAndResponses: List<AnswerAndResponse>
-  ) {
-    // TODO: add support for displaying the previous answer, too.
-    for (answerAndResponse in answersAndResponses) {
-      addInteractionForCompletedState(pendingItemList, interaction, answerAndResponse.userAnswer)
-      addFeedbackItem(pendingItemList, answerAndResponse.feedback)
-    }
-  }
-
-  private fun addFeedbackItem(pendingItemList: MutableList<StateItemViewModel>, feedback: SubtitledHtml) {
-    // Only show feedback if there's some to show.
-    if (feedback.html.isNotEmpty()) {
-      pendingItemList += FeedbackViewModel(feedback.html)
-    }
-  }
-
-  private fun updateNavigationButtonVisibility(
-    pendingItemList: MutableList<StateItemViewModel>,
-    hasPreviousState: Boolean,
-    canContinueToNextState: Boolean,
-    hasGeneralContinueButton: Boolean,
-    stateIsTerminal: Boolean
-  ) {
-    val stateNavigationButtonViewModel = StateNavigationButtonViewModel(context, this as StateNavigationButtonListener)
-    stateNavigationButtonViewModel.updatePreviousButton(isEnabled = hasPreviousState)
-
-    // Set continuation button.
-    when {
-      hasGeneralContinueButton -> {
-        stateNavigationButtonViewModel.updateContinuationButton(
-          ContinuationNavigationButtonType.CONTINUE_BUTTON, isEnabled = true
-        )
-      }
-      canContinueToNextState -> {
-        stateNavigationButtonViewModel.updateContinuationButton(
-          ContinuationNavigationButtonType.NEXT_BUTTON, isEnabled = canContinueToNextState
-        )
-      }
-      stateIsTerminal -> {
-        stateNavigationButtonViewModel.updateContinuationButton(
-          ContinuationNavigationButtonType.RETURN_TO_TOPIC_BUTTON, isEnabled = true
-        )
-      }
-      viewModel.doesMostRecentInteractionRequireExplicitSubmission(pendingItemList) -> {
-        stateNavigationButtonViewModel.updateContinuationButton(
-          ContinuationNavigationButtonType.SUBMIT_BUTTON, isEnabled = true
-        )
-      }
-      else -> {
-        // No continuation button needs to be set since the interaction itself will push for answer submission.
-        stateNavigationButtonViewModel.updateContinuationButton(
-          ContinuationNavigationButtonType.CONTINUE_BUTTON, isEnabled = false
-        )
-      }
-    }
-    pendingItemList += stateNavigationButtonViewModel
-  }
-
   private fun hideKeyboard() {
-    val inputManager: InputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    inputManager.hideSoftInputFromWindow(fragment.view!!.windowToken, InputMethodManager.SHOW_FORCED)
+    val inputManager: InputMethodManager =
+      activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputManager.hideSoftInputFromWindow(
+      fragment.view!!.windowToken,
+      InputMethodManager.SHOW_FORCED
+    )
   }
 
-  private enum class ViewType {
-    VIEW_TYPE_CONTENT,
-    VIEW_TYPE_FEEDBACK,
-    VIEW_TYPE_STATE_NAVIGATION_BUTTON,
-    VIEW_TYPE_CONTINUE_INTERACTION,
-    VIEW_TYPE_SELECTION_INTERACTION,
-    VIEW_TYPE_FRACTION_INPUT_INTERACTION,
-    VIEW_TYPE_NUMERIC_INPUT_INTERACTION,
-    VIEW_TYPE_TEXT_INPUT_INTERACTION
+  fun setAudioBarVisibility(visibility: Boolean) =
+    getStateViewModel().setAudioBarVisibility(visibility)
+
+  fun scrollToTop() {
+    binding.stateRecyclerView.smoothScrollToPosition(0)
+  }
+
+  /** Updates submit button UI as active if pendingAnswerError null else inactive. */
+  fun updateSubmitButton(pendingAnswerError: String?, inputAnswerAvailable: Boolean) {
+    if (inputAnswerAvailable) {
+      viewModel.setCanSubmitAnswer(pendingAnswerError == null)
+    } else {
+      viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
+    }
+  }
+
+  private fun markExplorationAsRecentlyPlayed() {
+    storyProgressController.recordRecentlyPlayedChapter(
+      profileId,
+      topicId,
+      storyId,
+      explorationId,
+      Date().time
+    )
+  }
+
+  private fun markExplorationCompleted() {
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      topicId,
+      storyId,
+      explorationId,
+      Date().time
+    )
   }
 }

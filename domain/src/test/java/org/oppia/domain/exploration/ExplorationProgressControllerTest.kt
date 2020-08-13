@@ -10,10 +10,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -32,23 +28,38 @@ import org.oppia.app.model.EphemeralState.StateTypeCase.COMPLETED_STATE
 import org.oppia.app.model.EphemeralState.StateTypeCase.PENDING_STATE
 import org.oppia.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
 import org.oppia.app.model.Exploration
+import org.oppia.app.model.Hint
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.Solution
+import org.oppia.app.model.UserAnswer
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.domain.classify.rules.imageClickInput.ImageClickInputModule
 import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.domain.oppialogger.LogStorageModule
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_0
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_1
+import org.oppia.domain.util.toAnswerString
+import org.oppia.testing.FakeExceptionLogger
+import org.oppia.testing.TestCoroutineDispatchers
+import org.oppia.testing.TestDispatcherModule
+import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
-import org.oppia.util.threading.BackgroundDispatcher
-import org.oppia.util.threading.BlockingDispatcher
+import org.oppia.util.logging.EnableConsoleLog
+import org.oppia.util.logging.EnableFileLog
+import org.oppia.util.logging.GlobalLogLevel
+import org.oppia.util.logging.LogLevel
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
+import java.io.FileNotFoundException
 import javax.inject.Inject
-import javax.inject.Qualifier
 import javax.inject.Singleton
-import kotlin.coroutines.EmptyCoroutineContext
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -56,6 +67,7 @@ private const val DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER = "Please continue."
 
 /** Tests for [ExplorationProgressController]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class ExplorationProgressControllerTest {
   // TODO(#114): Add much more thorough tests for the integration pathway.
@@ -80,10 +92,11 @@ class ExplorationProgressControllerTest {
   @Inject
   lateinit var explorationRetriever: ExplorationRetriever
 
-  @ExperimentalCoroutinesApi
   @Inject
-  @field:TestDispatcher
-  lateinit var testDispatcher: TestCoroutineDispatcher
+  lateinit var fakeExceptionLogger: FakeExceptionLogger
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Mock
   lateinit var mockCurrentStateLiveDataObserver: Observer<AsyncResult<EphemeralState>>
@@ -97,6 +110,12 @@ class ExplorationProgressControllerTest {
   @Mock
   lateinit var mockAsyncAnswerOutcomeObserver: Observer<AsyncResult<AnswerOutcome>>
 
+  @Mock
+  lateinit var mockAsyncHintObserver: Observer<AsyncResult<Hint>>
+
+  @Mock
+  lateinit var mockAsyncSolutionObserver: Observer<AsyncResult<Solution>>
+
   @Captor
   lateinit var currentStateResultCaptor: ArgumentCaptor<AsyncResult<EphemeralState>>
 
@@ -106,39 +125,32 @@ class ExplorationProgressControllerTest {
   @Captor
   lateinit var asyncAnswerOutcomeCaptor: ArgumentCaptor<AsyncResult<AnswerOutcome>>
 
-  @ExperimentalCoroutinesApi
-  private val coroutineContext by lazy {
-    EmptyCoroutineContext + testDispatcher
-  }
-
   @Before
-  @ExperimentalCoroutinesApi
   fun setUp() {
     setUpTestApplicationComponent()
-
-    // Require coroutines to be flushed to avoid synchronous execution that could interfere with testing ordered async
-    // logic that behaves differently in prod.
-    testDispatcher.pauseDispatcher()
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testGetCurrentState_noExploration_isPending() = runBlockingTest(coroutineContext) {
-    val currentStateLiveData = explorationProgressController.getCurrentState()
+  fun testGetCurrentState_noExploration_isPending() {
+    val currentStateLiveData =
+      explorationProgressController.getCurrentState()
 
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isPending()).isTrue()
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testPlayExploration_invalid_returnsSuccess() = runBlockingTest(coroutineContext) {
-    val resultLiveData = explorationDataController.startPlayingExploration("invalid_exp_id")
+  fun testPlayExploration_invalid_returnsSuccess() {
+    val resultLiveData =
+      explorationDataController.startPlayingExploration("invalid_exp_id")
     resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
     // An invalid exploration is not known until it's fully loaded, and that's observed via getCurrentState.
     verify(mockAsyncResultLiveDataObserver).onChanged(asyncResultCaptor.capture())
@@ -146,98 +158,111 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testGetCurrentState_playInvalidExploration_returnsFailure() = runBlockingTest(coroutineContext) {
-    val currentStateLiveData = explorationProgressController.getCurrentState()
+  fun testGetCurrentState_playInvalidExploration_returnsFailure() {
+    val currentStateLiveData =
+      explorationProgressController.getCurrentState()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
 
     playExploration("invalid_exp_id")
 
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isFailure()).isTrue()
     assertThat(currentStateResultCaptor.value.getErrorOrNull())
       .hasMessageThat()
-      .contains("Invalid exploration ID: invalid_exp_id")
+      .contains("invalid_exp_id.json")
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testPlayExploration_valid_returnsSuccess() = runBlockingTest(coroutineContext) {
-    val resultLiveData = explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_5)
+  fun testPlayExploration_valid_returnsSuccess() {
+    val resultLiveData =
+      explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_0)
     resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
     verify(mockAsyncResultLiveDataObserver).onChanged(asyncResultCaptor.capture())
     assertThat(asyncResultCaptor.value.isSuccess()).isTrue()
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testGetCurrentState_playExploration_returnsPendingResultFromLoadingExploration() = runBlockingTest(
-    coroutineContext
-  ) {
-    val currentStateLiveData = explorationProgressController.getCurrentState()
+  fun testGetCurrentState_playExploration_returnsPendingResultFromLoadingExploration() {
+    val currentStateLiveData =
+      explorationProgressController.getCurrentState()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
 
     // The second-to-latest result stays pending since the exploration was loading (the actual result is the fully
     // loaded exploration). This is only true if the observer begins before starting to load the exploration.
-    verify(mockCurrentStateLiveDataObserver, atLeast(2)).onChanged(currentStateResultCaptor.capture())
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeast(2)
+    ).onChanged(currentStateResultCaptor.capture())
     val results = currentStateResultCaptor.allValues
     assertThat(results[results.size - 2].isPending()).isTrue()
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testGetCurrentState_playExploration_loaded_returnsInitialStatePending() = runBlockingTest(
-    coroutineContext
-  ) {
+  fun testGetCurrentState_playExploration_loaded_returnsInitialStatePending() {
     val exploration = getTestExploration5()
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
 
-    val currentStateLiveData = explorationProgressController.getCurrentState()
+    val currentStateLiveData =
+      explorationProgressController.getCurrentState()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
-    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
-    assertThat(currentStateResultCaptor.value.getOrThrow().stateTypeCase).isEqualTo(PENDING_STATE)
-    assertThat(currentStateResultCaptor.value.getOrThrow().hasPreviousState).isFalse()
-    assertThat(currentStateResultCaptor.value.getOrThrow().state.name).isEqualTo(exploration.initStateName)
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess())
+      .isTrue()
+    assertThat(currentStateResultCaptor.value.getOrThrow().stateTypeCase)
+      .isEqualTo(PENDING_STATE)
+    assertThat(currentStateResultCaptor.value.getOrThrow().hasPreviousState)
+      .isFalse()
+    assertThat(currentStateResultCaptor.value.getOrThrow().state.name)
+      .isEqualTo(exploration.initStateName)
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testGetCurrentState_playInvalidExploration_thenPlayValidExp_returnsInitialPendingState() = runBlockingTest(
-    coroutineContext
-  ) {
+  fun testGetCurrentState_playInvalidExploration_thenPlayValidExp_returnsInitialPendingState() {
     val exploration = getTestExploration5()
     // Start with playing an invalid exploration.
     playExploration("invalid_exp_id")
     endExploration()
 
     // Then a valid one.
-    playExploration(TEST_EXPLORATION_ID_5)
-    val currentStateLiveData = explorationProgressController.getCurrentState()
+    playExploration(TEST_EXPLORATION_ID_0)
+    val currentStateLiveData =
+      explorationProgressController.getCurrentState()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
     // The latest result should correspond to the valid ID, and the progress controller should gracefully recover.
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
-    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
-    assertThat(currentStateResultCaptor.value.getOrThrow().stateTypeCase).isEqualTo(PENDING_STATE)
-    assertThat(currentStateResultCaptor.value.getOrThrow().hasPreviousState).isFalse()
-    assertThat(currentStateResultCaptor.value.getOrThrow().state.name).isEqualTo(exploration.initStateName)
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess())
+      .isTrue()
+    assertThat(currentStateResultCaptor.value.getOrThrow().stateTypeCase)
+      .isEqualTo(PENDING_STATE)
+    assertThat(currentStateResultCaptor.value.getOrThrow().hasPreviousState)
+      .isFalse()
+    assertThat(currentStateResultCaptor.value.getOrThrow().state.name)
+      .isEqualTo(exploration.initStateName)
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testFinishExploration_beforePlaying_failWithError() = runBlockingTest(coroutineContext) {
+  fun testFinishExploration_beforePlaying_failWithError() {
     val resultLiveData = explorationDataController.stopPlayingExploration()
     resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
     verify(mockAsyncResultLiveDataObserver).onChanged(asyncResultCaptor.capture())
     assertThat(asyncResultCaptor.value.isFailure()).isTrue()
@@ -247,15 +272,15 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testPlayExploration_withoutFinishingPrevious_failsWithError() = runBlockingTest(coroutineContext) {
+  fun testPlayExploration_withoutFinishingPrevious_failsWithError() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
 
     // Try playing another exploration without finishing the previous one.
-    val resultLiveData = explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_5)
+    val resultLiveData =
+      explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_0)
     resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
     verify(mockAsyncResultLiveDataObserver).onChanged(asyncResultCaptor.capture())
     assertThat(asyncResultCaptor.value.isFailure()).isTrue()
@@ -265,36 +290,44 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testGetCurrentState_playSecondExploration_afterFinishingPrevious_loaded_returnsInitialState() = runBlockingTest(
-    coroutineContext
-  ) {
-    val currentStateLiveData = explorationProgressController.getCurrentState()
+  fun testGetCurrentState_playSecondExploration_afterFinishingPrev_loaded_returnsInitialState() {
+    val currentStateLiveData =
+      explorationProgressController.getCurrentState()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
     // Start with playing a valid exploration, then stop.
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     endExploration()
 
     // Then another valid one.
-    playExploration(TEST_EXPLORATION_ID_6)
+    playExploration(TEST_EXPLORATION_ID_1)
 
     // The latest result should correspond to the valid ID, and the progress controller should gracefully recover.
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
-    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
-    assertThat(currentStateResultCaptor.value.getOrThrow().stateTypeCase).isEqualTo(PENDING_STATE)
-    assertThat(currentStateResultCaptor.value.getOrThrow().hasPreviousState).isFalse()
-    assertThat(currentStateResultCaptor.value.getOrThrow().state.name).isEqualTo(getTestExploration6().initStateName)
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess())
+      .isTrue()
+    assertThat(currentStateResultCaptor.value.getOrThrow().stateTypeCase)
+      .isEqualTo(PENDING_STATE)
+    assertThat(currentStateResultCaptor.value.getOrThrow().hasPreviousState)
+      .isFalse()
+    assertThat(currentStateResultCaptor.value.getOrThrow().state.name)
+      .isEqualTo(getTestExploration6().initStateName)
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testSubmitAnswer_beforePlaying_failsWithError() = runBlockingTest(coroutineContext) {
-    val result = explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
+  fun testSubmitAnswer_beforePlaying_failsWithError() {
+    val result =
+      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
     result.observeForever(mockAsyncAnswerOutcomeObserver)
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
     // Verify that the answer submission failed.
-    verify(mockAsyncAnswerOutcomeObserver, atLeastOnce()).onChanged(asyncAnswerOutcomeCaptor.capture())
+    verify(
+      mockAsyncAnswerOutcomeObserver,
+      atLeastOnce()
+    ).onChanged(asyncAnswerOutcomeCaptor.capture())
     assertThat(asyncAnswerOutcomeCaptor.value.isFailure()).isTrue()
     assertThat(asyncAnswerOutcomeCaptor.value.getErrorOrNull())
       .hasMessageThat()
@@ -302,18 +335,21 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testSubmitAnswer_whileLoading_failsWithError() = runBlockingTest(coroutineContext) {
+  fun testSubmitAnswer_whileLoading_failsWithError() {
     // Start playing an exploration, but don't wait for it to complete.
     subscribeToCurrentStateToAllowExplorationToLoad()
-    explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_5)
+    explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_0)
 
-    val result = explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
+    val result =
+      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
     result.observeForever(mockAsyncAnswerOutcomeObserver)
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
     // Verify that the answer submission failed.
-    verify(mockAsyncAnswerOutcomeObserver, atLeastOnce()).onChanged(asyncAnswerOutcomeCaptor.capture())
+    verify(
+      mockAsyncAnswerOutcomeObserver,
+      atLeastOnce()
+    ).onChanged(asyncAnswerOutcomeCaptor.capture())
     assertThat(asyncAnswerOutcomeCaptor.value.isFailure()).isTrue()
     assertThat(asyncAnswerOutcomeCaptor.value.getErrorOrNull())
       .hasMessageThat()
@@ -321,143 +357,166 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testSubmitAnswer_forMultipleChoice_correctAnswer_succeeds() = runBlockingTest(coroutineContext) {
+  fun testSubmitAnswer_forMultipleChoice_correctAnswer_succeeds() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
 
-    val result = explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
+    val result =
+      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
     result.observeForever(mockAsyncAnswerOutcomeObserver)
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
     // Verify that the answer submission was successful.
-    verify(mockAsyncAnswerOutcomeObserver, atLeastOnce()).onChanged(asyncAnswerOutcomeCaptor.capture())
+    verify(
+      mockAsyncAnswerOutcomeObserver,
+      atLeastOnce()
+    ).onChanged(asyncAnswerOutcomeCaptor.capture())
     assertThat(asyncAnswerOutcomeCaptor.value.isSuccess()).isTrue()
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testSubmitAnswer_forMultipleChoice_correctAnswer_returnsOutcomeWithTransition() = runBlockingTest(
-    coroutineContext
-  ) {
+  fun testSubmitAnswer_forMultipleChoice_correctAnswer_returnsOutcomeWithTransition() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
 
-    val result = explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
+    val result =
+      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
     result.observeForever(mockAsyncAnswerOutcomeObserver)
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
     // Verify that the answer submission was successful.
-    verify(mockAsyncAnswerOutcomeObserver, atLeastOnce()).onChanged(asyncAnswerOutcomeCaptor.capture())
+    verify(
+      mockAsyncAnswerOutcomeObserver,
+      atLeastOnce()
+    ).onChanged(asyncAnswerOutcomeCaptor.capture())
     val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
     assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.STATE_NAME)
     assertThat(answerOutcome.feedback.html).isEqualTo("Yes!")
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testSubmitAnswer_forMultipleChoice_wrongAnswer_succeeds() = runBlockingTest(
-    coroutineContext
-  ) {
+  fun testSubmitAnswer_forMultipleChoice_wrongAnswer_succeeds() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
 
-    val result = explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
+    val result =
+      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
     result.observeForever(mockAsyncAnswerOutcomeObserver)
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
     // Verify that the answer submission was successful.
-    verify(mockAsyncAnswerOutcomeObserver, atLeastOnce()).onChanged(asyncAnswerOutcomeCaptor.capture())
+    verify(
+      mockAsyncAnswerOutcomeObserver,
+      atLeastOnce()
+    ).onChanged(asyncAnswerOutcomeCaptor.capture())
     assertThat(asyncAnswerOutcomeCaptor.value.isSuccess()).isTrue()
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testSubmitAnswer_forMultipleChoice_wrongAnswer_providesDefaultFeedbackAndNewStateTransition() = runBlockingTest(
-    coroutineContext
-  ) {
+  fun testSubmitAnswer_forMultipleChoice_wrongAnswer_providesDefFeedbackAndNewStateTransition() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
 
-    val result = explorationProgressController.submitAnswer(createMultipleChoiceAnswer(1))
+    val result =
+      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(1))
     result.observeForever(mockAsyncAnswerOutcomeObserver)
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
     // Verify that the answer submission was successful.
-    verify(mockAsyncAnswerOutcomeObserver, atLeastOnce()).onChanged(asyncAnswerOutcomeCaptor.capture())
+    verify(
+      mockAsyncAnswerOutcomeObserver,
+      atLeastOnce()
+    ).onChanged(asyncAnswerOutcomeCaptor.capture())
     val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
     assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.STATE_NAME)
     assertThat(answerOutcome.feedback.html).contains("Hm, it certainly looks like it")
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testGetCurrentState_afterSubmittingCorrectMultiChoiceAnswer_becomesCompletedState() = runBlockingTest(
-    coroutineContext
-  ) {
-    val currentStateLiveData = explorationProgressController.getCurrentState()
+  fun testGetCurrentState_afterSubmittingCorrectMultiChoiceAnswer_becomesCompletedState() {
+    val currentStateLiveData =
+      explorationProgressController.getCurrentState()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
 
     submitMultipleChoiceAnswer(0)
 
     // Verify that the current state updates. It should stay pending, and the wrong answer should be appended.
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
-    assertThat(currentState.stateTypeCase).isEqualTo(COMPLETED_STATE)
-    assertThat(currentState.completedState.answerCount).isEqualTo(1)
-    assertThat(currentState.completedState.getAnswer(0).userAnswer.nonNegativeInt).isEqualTo(0)
-    assertThat(currentState.completedState.getAnswer(0).feedback.html).isEqualTo("Yes!")
+    assertThat(currentState.stateTypeCase)
+      .isEqualTo(COMPLETED_STATE)
+    assertThat(currentState.completedState.answerCount)
+      .isEqualTo(1)
+    assertThat(currentState.completedState.getAnswer(0).userAnswer.answer.nonNegativeInt)
+      .isEqualTo(0)
+    assertThat(currentState.completedState.getAnswer(0).feedback.html)
+      .isEqualTo("Yes!")
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testGetCurrentState_afterSubmittingWrongMultiChoiceAnswer_updatesPendingState() = runBlockingTest(
-    coroutineContext
-  ) {
-    val currentStateLiveData = explorationProgressController.getCurrentState()
+  fun testGetCurrentState_afterSubmittingWrongMultiChoiceAnswer_updatesPendingState() {
+    val currentStateLiveData =
+      explorationProgressController.getCurrentState()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
 
     submitMultipleChoiceAnswer(2)
 
     // Verify that the current state updates. It should now be completed with the correct answer.
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
-    assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
-    assertThat(currentState.pendingState.wrongAnswerCount).isEqualTo(1)
-    assertThat(currentState.pendingState.getWrongAnswer(0).userAnswer.nonNegativeInt).isEqualTo(2)
-    assertThat(currentState.pendingState.getWrongAnswer(0).feedback.html).contains("Have another go?")
+    assertThat(currentState.stateTypeCase)
+      .isEqualTo(PENDING_STATE)
+    assertThat(currentState.pendingState.wrongAnswerCount)
+      .isEqualTo(1)
+    assertThat(currentState.pendingState.getWrongAnswer(0).userAnswer.answer.nonNegativeInt)
+      .isEqualTo(
+        2
+      )
+    assertThat(currentState.pendingState.getWrongAnswer(0).feedback.html)
+      .contains("Have another go?")
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testGetCurrentState_afterSubmittingWrongThenRightAnswer_updatesToStateWithBothAnswers() = runBlockingTest(
-    coroutineContext
-  ) {
+  fun testGetCurrentState_afterSubmittingWrongThenRightAnswer_updatesToStateWithBothAnswers() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswer(2)
 
     submitMultipleChoiceAnswer(0)
 
     // Verify that the current state updates. It should now be completed with both the wrong and correct answers.
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
-    assertThat(currentState.stateTypeCase).isEqualTo(COMPLETED_STATE)
-    assertThat(currentState.completedState.answerCount).isEqualTo(2)
-    assertThat(currentState.completedState.getAnswer(0).userAnswer.nonNegativeInt).isEqualTo(2)
-    assertThat(currentState.completedState.getAnswer(0).feedback.html).contains("Have another go?")
-    assertThat(currentState.completedState.getAnswer(1).userAnswer.nonNegativeInt).isEqualTo(0)
-    assertThat(currentState.completedState.getAnswer(1).feedback.html).isEqualTo("Yes!")
+    assertThat(currentState.stateTypeCase)
+      .isEqualTo(COMPLETED_STATE)
+    assertThat(currentState.completedState.answerCount)
+      .isEqualTo(2)
+    assertThat(currentState.completedState.getAnswer(0).userAnswer.answer.nonNegativeInt)
+      .isEqualTo(2)
+    assertThat(currentState.completedState.getAnswer(0).feedback.html)
+      .contains("Have another go?")
+    assertThat(currentState.completedState.getAnswer(1).userAnswer.answer.nonNegativeInt)
+      .isEqualTo(0)
+    assertThat(currentState.completedState.getAnswer(1).feedback.html)
+      .isEqualTo("Yes!")
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testMoveToNext_beforePlaying_failsWithError() = runBlockingTest(coroutineContext) {
+  fun testMoveToNext_beforePlaying_failsWithError() {
     val moveToStateResult = explorationProgressController.moveToNextState()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
 
@@ -469,11 +528,10 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testMoveToNext_whileLoadingExploration_failsWithError() = runBlockingTest(coroutineContext) {
+  fun testMoveToNext_whileLoadingExploration_failsWithError() {
     // Start playing an exploration, but don't wait for it to complete.
     subscribeToCurrentStateToAllowExplorationToLoad()
-    explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_5)
+    explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_0)
 
     val moveToStateResult = explorationProgressController.moveToNextState()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
@@ -486,14 +544,13 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testMoveToNext_forPendingInitialState_failsWithError() = runBlockingTest(coroutineContext) {
+  fun testMoveToNext_forPendingInitialState_failsWithError() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
 
     val moveToStateResult = explorationProgressController.moveToNextState()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
     // Verify that we can't move ahead since the current state isn't yet completed.
     verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
@@ -504,31 +561,33 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testMoveToNext_forCompletedState_succeeds() = runBlockingTest(coroutineContext) {
+  fun testMoveToNext_forCompletedState_succeeds() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswer(0)
 
     val moveToStateResult = explorationProgressController.moveToNextState()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
     verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
     assertThat(asyncResultCaptor.value.isSuccess()).isTrue()
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testMoveToNext_forCompletedState_movesToNextState() = runBlockingTest(coroutineContext) {
-    val currentStateLiveData = explorationProgressController.getCurrentState()
+  fun testMoveToNext_forCompletedState_movesToNextState() {
+    val currentStateLiveData =
+      explorationProgressController.getCurrentState()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswer(0)
 
     moveToNextState()
 
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.state.name).isEqualTo("What language")
@@ -536,17 +595,17 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testMoveToNext_afterMovingFromCompletedState_failsWithError() = runBlockingTest(coroutineContext) {
+  fun testMoveToNext_afterMovingFromCompletedState_failsWithError() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswer(0)
     moveToNextState()
 
     // Try skipping past the current state.
-    val moveToStateResult = explorationProgressController.moveToNextState()
+    val moveToStateResult =
+      explorationProgressController.moveToNextState()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
     // Verify we can't move ahead since the new state isn't yet completed.
     verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
@@ -557,11 +616,11 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testMoveToPrevious_beforePlaying_failsWithError() = runBlockingTest(coroutineContext) {
-    val moveToStateResult = explorationProgressController.moveToPreviousState()
+  fun testMoveToPrevious_beforePlaying_failsWithError() {
+    val moveToStateResult =
+      explorationProgressController.moveToPreviousState()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
     verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
     assertThat(asyncResultCaptor.value.isFailure()).isTrue()
@@ -571,15 +630,15 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testMoveToPrevious_whileLoadingExploration_failsWithError() = runBlockingTest(coroutineContext) {
+  fun testMoveToPrevious_whileLoadingExploration_failsWithError() {
     // Start playing an exploration, but don't wait for it to complete.
     subscribeToCurrentStateToAllowExplorationToLoad()
-    explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_5)
+    explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_0)
 
-    val moveToStateResult = explorationProgressController.moveToPreviousState()
+    val moveToStateResult =
+      explorationProgressController.moveToPreviousState()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
     verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
     assertThat(asyncResultCaptor.value.isFailure()).isTrue()
@@ -589,14 +648,14 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testMoveToPrevious_onPendingInitialState_failsWithError() = runBlockingTest(coroutineContext) {
+  fun testMoveToPrevious_onPendingInitialState_failsWithError() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
 
-    val moveToStateResult = explorationProgressController.moveToPreviousState()
+    val moveToStateResult =
+      explorationProgressController.moveToPreviousState()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
     // Verify we can't move behind since the current state is the initial exploration state.
     verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
@@ -607,15 +666,15 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testMoveToPrevious_onCompletedInitialState_failsWithError() = runBlockingTest(coroutineContext) {
+  fun testMoveToPrevious_onCompletedInitialState_failsWithError() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswer(0)
 
-    val moveToStateResult = explorationProgressController.moveToPreviousState()
+    val moveToStateResult =
+      explorationProgressController.moveToPreviousState()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
     // Still can't navigate behind for a completed initial state since there's no previous state.
     verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
@@ -626,15 +685,15 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testMoveToPrevious_forStateWithCompletedPreviousState_succeeds() = runBlockingTest(coroutineContext) {
+  fun testMoveToPrevious_forStateWithCompletedPreviousState_succeeds() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
 
-    val moveToStateResult = explorationProgressController.moveToPreviousState()
+    val moveToStateResult =
+      explorationProgressController.moveToPreviousState()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
     // Verify that we can navigate to the previous state since the current state is complete and not initial.
     verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
@@ -642,18 +701,21 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testMoveToPrevious_forCompletedState_movesToPreviousState() = runBlockingTest(coroutineContext) {
-    val currentStateLiveData = explorationProgressController.getCurrentState()
+  fun testMoveToPrevious_forCompletedState_movesToPreviousState() {
+    val currentStateLiveData =
+      explorationProgressController.getCurrentState()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
 
     moveToPreviousState()
 
     // Since the answer submission and forward navigation should work (see earlier tests), verify that the move to the
     // previous state does return us back to the initial exploration state (which is now completed).
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.state.name).isEqualTo("Welcome!")
@@ -661,16 +723,16 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testMoveToPrevious_navigatedForwardThenBackToInitial_failsWithError() = runBlockingTest(coroutineContext) {
+  fun testMoveToPrevious_navigatedForwardThenBackToInitial_failsWithError() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
     moveToPreviousState()
 
-    val moveToStateResult = explorationProgressController.moveToPreviousState()
+    val moveToStateResult =
+      explorationProgressController.moveToPreviousState()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
     // The first previous navigation should succeed (see above), but the second will fail since we're back at the
     // initial state.
@@ -682,100 +744,280 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testSubmitAnswer_forTextInput_correctAnswer_returnsOutcomeWithTransition() = runBlockingTest(coroutineContext) {
+  fun testSubmitAnswer_forTextInput_correctAnswer_returnsOutcomeWithTransition() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
 
-    val result = explorationProgressController.submitAnswer(createTextInputAnswer("Finnish"))
+    val result =
+      explorationProgressController.submitAnswer(createTextInputAnswer("Finnish"))
     result.observeForever(mockAsyncAnswerOutcomeObserver)
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
     // Verify that the answer submission was successful.
-    verify(mockAsyncAnswerOutcomeObserver, atLeastOnce()).onChanged(asyncAnswerOutcomeCaptor.capture())
+    verify(
+      mockAsyncAnswerOutcomeObserver,
+      atLeastOnce()
+    ).onChanged(asyncAnswerOutcomeCaptor.capture())
     val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
     assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.STATE_NAME)
     assertThat(answerOutcome.feedback.html).contains("Yes! Oppia is the Finnish word for learn.")
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testSubmitAnswer_forTextInput_wrongAnswer_returnsDefaultOutcome() = runBlockingTest(coroutineContext) {
+  fun testSubmitAnswer_forTextInput_wrongAnswer_returnsDefaultOutcome() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
 
-    val result = explorationProgressController.submitAnswer(createTextInputAnswer("Klingon"))
+    val result =
+      explorationProgressController.submitAnswer(createTextInputAnswer("Klingon"))
     result.observeForever(mockAsyncAnswerOutcomeObserver)
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
     // Verify that the answer was wrong, and that there's no handler for it so the default outcome is returned.
-    verify(mockAsyncAnswerOutcomeObserver, atLeastOnce()).onChanged(asyncAnswerOutcomeCaptor.capture())
+    verify(
+      mockAsyncAnswerOutcomeObserver,
+      atLeastOnce()
+    ).onChanged(asyncAnswerOutcomeCaptor.capture())
     val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
     assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.SAME_STATE)
     assertThat(answerOutcome.feedback.html).contains("Sorry, nope")
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testGetCurrentState_secondState_submitRightAnswer_pendingStateBecomesCompleted() = runBlockingTest(
-    coroutineContext
-  ) {
+  fun testSubmitAnswer_forTextInput_wrongAnswer_returnsDefaultOutcome_showHint() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
 
-    val result = explorationProgressController.submitAnswer(createTextInputAnswer("Finnish"))
+    val result =
+      explorationProgressController.submitAnswer(createTextInputAnswer("Klingon"))
     result.observeForever(mockAsyncAnswerOutcomeObserver)
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
     // Verify that the current state updates. It should stay pending, and the wrong answer should be appended.
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
-    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
-    val currentState = currentStateResultCaptor.value.getOrThrow()
-    assertThat(currentState.stateTypeCase).isEqualTo(COMPLETED_STATE)
-    assertThat(currentState.completedState.answerCount).isEqualTo(1)
-    assertThat(currentState.completedState.getAnswer(0).userAnswer.normalizedString).isEqualTo("Finnish")
-    assertThat(currentState.completedState.getAnswer(0).feedback.html).contains("Yes! Oppia is the Finnish word")
-  }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testGetCurrentState_secondState_submitWrongAnswer_updatePendingState() = runBlockingTest(
-    coroutineContext
-  ) {
-    subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_5)
-    submitMultipleChoiceAnswerAndMoveToNextState(0)
-
-    val result = explorationProgressController.submitAnswer(createTextInputAnswer("Klingon"))
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
-    advanceUntilIdle()
-
-    // Verify that the current state updates. It should now be completed with the correct answer.
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
     assertThat(currentState.pendingState.wrongAnswerCount).isEqualTo(1)
-    assertThat(currentState.pendingState.getWrongAnswer(0).userAnswer.normalizedString).isEqualTo("Klingon")
-    assertThat(currentState.pendingState.getWrongAnswer(0).feedback.html).contains("Sorry, nope")
+    val answerAndFeedback = currentState.pendingState.getWrongAnswer(0)
+    assertThat(answerAndFeedback.userAnswer.answer.normalizedString).isEqualTo("Klingon")
+    assertThat(answerAndFeedback.feedback.html).contains("Sorry, nope")
+    val hintAndSolution = currentState.state.interaction.getHint(0)
+    assertThat(hintAndSolution.hintContent.html).contains("Start by finding the denominator")
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testGetCurrentState_afterMovePreviousAndNext_returnsCurrentState() = runBlockingTest(coroutineContext) {
-    val currentStateLiveData = explorationProgressController.getCurrentState()
+  fun testRevealHint_forWrongAnswer_showHint_returnHintIsRevealed() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(TEST_EXPLORATION_ID_0)
+    submitMultipleChoiceAnswerAndMoveToNextState(0)
+
+    // Verify that the current state updates. It should stay pending, on submission of wrong answer.
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+
+    val result = explorationProgressController.submitHintIsRevealed(
+      currentState.state,
+      true,
+      0
+    )
+    result.observeForever(mockAsyncHintObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
+
+    val hintAndSolution = currentState.state.interaction.getHint(0)
+    assertThat(hintAndSolution.hintContent.html).contains("Start by finding the denominator")
+
+    // Verify that the current state updates. Hint revealed is true.
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val updatedState = currentStateResultCaptor.value.getOrThrow()
+
+    assertThat(updatedState.state.interaction.getHint(0).hintIsRevealed).isTrue()
+  }
+
+  @Test
+  fun testRevealSolution_forWrongAnswer_showSolution_returnSolutionIsRevealed() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(TEST_EXPLORATION_ID_0)
+    submitMultipleChoiceAnswerAndMoveToNextState(0)
+
+    // Verify that the current state updates. It should stay pending, on submission of wrong answer.
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+
+    val result = explorationProgressController.submitSolutionIsRevealed(
+      currentState.state,
+      true
+    )
+    result.observeForever(mockAsyncSolutionObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
+
+    // Verify that the current state updates. Solution revealed is true.
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val updatedState = currentStateResultCaptor.value.getOrThrow()
+
+    assertThat(updatedState.state.interaction.solution.solutionIsRevealed).isTrue()
+  }
+
+  @Test
+  fun testSubmitAnswer_forTextInput_wrongAnswer_afterAllHintsAreExhausted_showSolution() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(TEST_EXPLORATION_ID_0)
+    submitMultipleChoiceAnswerAndMoveToNextState(0)
+
+    val result =
+      explorationProgressController.submitAnswer(createTextInputAnswer("Klingon"))
+    result.observeForever(mockAsyncAnswerOutcomeObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    // Verify that the current state updates. It should stay pending, and the wrong answer should be appended.
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
+    assertThat(currentState.pendingState.wrongAnswerCount).isEqualTo(1)
+
+    val hint1 = currentState.state.interaction.getHint(0)
+    assertThat(hint1.hintContent.html)
+      .contains("Start by finding the denominator")
+    val hint2 = currentState.state.interaction.getHint(1)
+    assertThat(hint2.hintContent.html)
+      .contains("Next, find the numerator by counting the number of selected parts.")
+    val hint3 = currentState.state.interaction.getHint(2)
+    assertThat(hint3.hintContent.html)
+      .contains("Always be careful about what you're counting. The question will have clues!")
+
+    val solution = currentState.state.interaction.solution
+    assertThat(solution.correctAnswer.correctAnswer)
+      .isEqualTo("3")
+    assertThat(solution.explanation.html)
+      .contains("The denominator of a fraction is the second number in the fraction.")
+  }
+
+  @Test
+  fun testGetCurrentState_secondState_submitRightAnswer_pendingStateBecomesCompleted() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(TEST_EXPLORATION_ID_0)
+    submitMultipleChoiceAnswerAndMoveToNextState(0)
+
+    val result =
+      explorationProgressController.submitAnswer(createTextInputAnswer("Finnish"))
+    result.observeForever(mockAsyncAnswerOutcomeObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    // Verify that the current state updates. It should now be completed with the correct answer.
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.stateTypeCase).isEqualTo(COMPLETED_STATE)
+    assertThat(currentState.completedState.answerCount).isEqualTo(1)
+    val answerAndFeedback = currentState.completedState.getAnswer(0)
+    assertThat(answerAndFeedback.userAnswer.answer.normalizedString).isEqualTo("Finnish")
+    assertThat(answerAndFeedback.feedback.html).contains("Yes! Oppia is the Finnish word")
+  }
+
+  @Test
+  fun testSubmitAnswer_forTextInput_withSpaces_updatesStateWithVerbatimAnswer() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(TEST_EXPLORATION_ID_0)
+    submitMultipleChoiceAnswerAndMoveToNextState(0)
+
+    val result =
+      explorationProgressController.submitAnswer(createTextInputAnswer("Finnish  "))
+    result.observeForever(mockAsyncAnswerOutcomeObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    // Verify that the current state updates. The submitted answer should have a textual version that is a verbatim
+    // version of the user-submitted answer.
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.stateTypeCase)
+      .isEqualTo(COMPLETED_STATE)
+    assertThat(currentState.completedState.answerCount)
+      .isEqualTo(1)
+    val answerAndFeedback = currentState.completedState.getAnswer(0)
+    assertThat(answerAndFeedback.userAnswer.textualAnswerCase)
+      .isEqualTo(UserAnswer.TextualAnswerCase.PLAIN_ANSWER)
+    assertThat(answerAndFeedback.userAnswer.plainAnswer)
+      .isEqualTo("Finnish  ")
+  }
+
+  @Test
+  fun testGetCurrentState_secondState_submitWrongAnswer_updatePendingState() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(TEST_EXPLORATION_ID_0)
+    submitMultipleChoiceAnswerAndMoveToNextState(0)
+
+    val result =
+      explorationProgressController.submitAnswer(createTextInputAnswer("Klingon"))
+    result.observeForever(mockAsyncAnswerOutcomeObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    // Verify that the current state updates. It should stay pending, and the wrong answer should be appended.
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
+    assertThat(currentState.pendingState.wrongAnswerCount).isEqualTo(1)
+    val answerAndFeedback = currentState.pendingState.getWrongAnswer(0)
+    assertThat(answerAndFeedback.userAnswer.answer.normalizedString).isEqualTo("Klingon")
+    assertThat(answerAndFeedback.feedback.html).contains("Sorry, nope")
+  }
+
+  @Test
+  fun testGetCurrentState_afterMovePreviousAndNext_returnsCurrentState() {
+    val currentStateLiveData =
+      explorationProgressController.getCurrentState()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
 
     moveToPreviousState()
     moveToNextState()
 
     // The current state should stay the same.
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.state.name).isEqualTo("What language")
@@ -783,11 +1025,11 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testGetCurrentState_afterMoveNextAndPrevious_returnsCurrentState() = runBlockingTest(coroutineContext) {
-    val currentStateLiveData = explorationProgressController.getCurrentState()
+  fun testGetCurrentState_afterMoveNextAndPrevious_returnsCurrentState() {
+    val currentStateLiveData =
+      explorationProgressController.getCurrentState()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
     submitTextInputAnswer("Finnish") // Submit the answer but do not proceed to the next state.
 
@@ -795,7 +1037,10 @@ class ExplorationProgressControllerTest {
     moveToPreviousState()
 
     // The current state should stay the same.
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.state.name).isEqualTo("What language")
@@ -803,23 +1048,24 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testGetCurrentState_afterMoveToPrevious_onThirdState_newObserver_receivesCompletedSecondState() = runBlockingTest(
-    coroutineContext
-  ) {
+  fun testGetCurrentState_afterMoveToPrev_onThirdState_newObserver_receivesCompletedSecondState() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0) // First state -> second
     submitTextInputAnswerAndMoveToNextState("Finnish") // Second state -> third
 
     // Move to the previous state and register a new observer.
     moveToPreviousState() // Third state -> second
-    val currentStateLiveData = explorationProgressController.getCurrentState()
+    val currentStateLiveData =
+      explorationProgressController.getCurrentState()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver2)
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
     // The new observer should observe the completed second state since it's the current pending state.
-    verify(mockCurrentStateLiveDataObserver2, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    verify(
+      mockCurrentStateLiveDataObserver2,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.state.name).isEqualTo("What language")
@@ -827,153 +1073,174 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testGetCurrentState_forFirstState_doesNotHaveNextState() = runBlockingTest(coroutineContext) {
-    val currentStateLiveData = explorationProgressController.getCurrentState()
+  fun testGetCurrentState_forFirstState_doesNotHaveNextState() {
+    val currentStateLiveData =
+      explorationProgressController.getCurrentState()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
 
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
 
     // The initial state should not have a next state.
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     assertThat(currentStateResultCaptor.value.getOrThrow().hasNextState).isFalse()
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testGetCurrentState_forFirstState_afterAnswerSubmission_doesNotHaveNextState() = runBlockingTest(
-    coroutineContext
-  ) {
-    val currentStateLiveData = explorationProgressController.getCurrentState()
+  fun testGetCurrentState_forFirstState_afterAnswerSubmission_doesNotHaveNextState() {
+    val currentStateLiveData =
+      explorationProgressController.getCurrentState()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
 
     submitMultipleChoiceAnswer(0)
 
     // Simply completing the current state should not result in there being a next state since the user hasn't proceeded
     // to the following state, yet.
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     assertThat(currentStateResultCaptor.value.getOrThrow().hasNextState).isFalse()
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testGetCurrentState_forSecondState_doesNotHaveNextState() = runBlockingTest(coroutineContext) {
-    val currentStateLiveData = explorationProgressController.getCurrentState()
+  fun testGetCurrentState_forSecondState_doesNotHaveNextState() {
+    val currentStateLiveData =
+      explorationProgressController.getCurrentState()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
 
     submitMultipleChoiceAnswerAndMoveToNextState(0)
 
     // The current state should have a previous state.
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     assertThat(currentStateResultCaptor.value.getOrThrow().hasNextState).isFalse()
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testGetCurrentState_forSecondState_navigateBackward_hasNextState() = runBlockingTest(coroutineContext) {
-    val currentStateLiveData = explorationProgressController.getCurrentState()
+  fun testGetCurrentState_forSecondState_navigateBackward_hasNextState() {
+    val currentStateLiveData =
+      explorationProgressController.getCurrentState()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
 
     moveToPreviousState()
 
     // The previous state should have a next state.
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     assertThat(currentStateResultCaptor.value.getOrThrow().hasNextState).isTrue()
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testGetCurrentState_forSecondState_navigateBackwardThenForward_doesNotHaveNextState() = runBlockingTest(
-    coroutineContext
-  ) {
-    val currentStateLiveData = explorationProgressController.getCurrentState()
+  fun testGetCurrentState_forSecondState_navigateBackwardThenForward_doesNotHaveNextState() {
+    val currentStateLiveData =
+      explorationProgressController.getCurrentState()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
 
     moveToPreviousState()
     moveToNextState()
 
     // Iterating back to the current state should result in no longer having a next state.
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     assertThat(currentStateResultCaptor.value.getOrThrow().hasNextState).isFalse()
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testSubmitAnswer_forNumericInput_correctAnswer_returnsOutcomeWithTransition() = runBlockingTest(
-    coroutineContext
-  ) {
+  fun testSubmitAnswer_forNumericInput_correctAnswer_returnsOutcomeWithTransition() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
     submitTextInputAnswerAndMoveToNextState("Finnish")
 
-    val result = explorationProgressController.submitAnswer(createNumericInputAnswer(121.0))
+    val result = explorationProgressController.submitAnswer(
+      createNumericInputAnswer(121.0)
+    )
     result.observeForever(mockAsyncAnswerOutcomeObserver)
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
     // Verify that the answer submission was successful.
-    verify(mockAsyncAnswerOutcomeObserver, atLeastOnce()).onChanged(asyncAnswerOutcomeCaptor.capture())
+    verify(
+      mockAsyncAnswerOutcomeObserver,
+      atLeastOnce()
+    ).onChanged(asyncAnswerOutcomeCaptor.capture())
     val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
     assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.STATE_NAME)
     assertThat(answerOutcome.feedback.html).contains("Yes, that's correct: 11 times 11 is 121.")
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testSubmitAnswer_forNumericInput_wrongAnswer_returnsOutcomeWithTransition() = runBlockingTest(coroutineContext) {
+  fun testSubmitAnswer_forNumericInput_wrongAnswer_returnsOutcomeWithTransition() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
     submitTextInputAnswerAndMoveToNextState("Finnish")
 
-    val result = explorationProgressController.submitAnswer(createNumericInputAnswer(122.0))
+    val result = explorationProgressController.submitAnswer(
+      createNumericInputAnswer(122.0)
+    )
     result.observeForever(mockAsyncAnswerOutcomeObserver)
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
     // Verify that the answer submission failed as expected.
-    verify(mockAsyncAnswerOutcomeObserver, atLeastOnce()).onChanged(asyncAnswerOutcomeCaptor.capture())
+    verify(
+      mockAsyncAnswerOutcomeObserver,
+      atLeastOnce()
+    ).onChanged(asyncAnswerOutcomeCaptor.capture())
     val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
     assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.SAME_STATE)
     assertThat(answerOutcome.feedback.html).contains("You are actually very close.")
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testSubmitAnswer_forContinue_returnsOutcomeWithTransition() = runBlockingTest(coroutineContext) {
+  fun testSubmitAnswer_forContinue_returnsOutcomeWithTransition() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
     submitTextInputAnswerAndMoveToNextState("Finnish")
     submitNumericInputAnswerAndMoveToNextState(121.0)
 
-    val result = explorationProgressController.submitAnswer(createContinueButtonAnswer())
+    val result = explorationProgressController.submitAnswer(
+      createContinueButtonAnswer()
+    )
     result.observeForever(mockAsyncAnswerOutcomeObserver)
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
     // Verify that the continue button succeeds by default.
-    verify(mockAsyncAnswerOutcomeObserver, atLeastOnce()).onChanged(asyncAnswerOutcomeCaptor.capture())
+    verify(
+      mockAsyncAnswerOutcomeObserver,
+      atLeastOnce()
+    ).onChanged(asyncAnswerOutcomeCaptor.capture())
     val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
     assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.STATE_NAME)
     assertThat(answerOutcome.feedback.html).isEmpty()
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testGetCurrentState_fifthState_isTerminalState() = runBlockingTest(coroutineContext) {
-    val currentStateLiveData = explorationProgressController.getCurrentState()
+  fun testGetCurrentState_fifthState_isTerminalState() {
+    val currentStateLiveData =
+      explorationProgressController.getCurrentState()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
     submitTextInputAnswerAndMoveToNextState("Finnish")
     submitNumericInputAnswerAndMoveToNextState(121.0)
@@ -981,20 +1248,21 @@ class ExplorationProgressControllerTest {
     submitContinueButtonAnswerAndMoveToNextState()
 
     // Verify that the fifth state is terminal.
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.stateTypeCase).isEqualTo(TERMINAL_STATE)
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testGetCurrentState_afterMoveToPrevious_onThirdState_updatesToCompletedSecondState() = runBlockingTest(
-    coroutineContext
-  ) {
-    val currentStateLiveData = explorationProgressController.getCurrentState()
+  fun testGetCurrentState_afterMoveToPrevious_onThirdState_updatesToCompletedSecondState() {
+    val currentStateLiveData =
+      explorationProgressController.getCurrentState()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
     submitTextInputAnswerAndMoveToNextState("Finnish")
 
@@ -1002,19 +1270,24 @@ class ExplorationProgressControllerTest {
 
     // Verify that the current state is the second state, and is completed. It should also have the previously submitted
     // answer, allowing learners to potentially view past answers.
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
-    assertThat(currentState.stateTypeCase).isEqualTo(COMPLETED_STATE)
-    assertThat(currentState.state.name).isEqualTo("What language")
-    assertThat(currentState.completedState.getAnswer(0).userAnswer.normalizedString).isEqualTo("Finnish")
+    assertThat(currentState.stateTypeCase)
+      .isEqualTo(COMPLETED_STATE)
+    assertThat(currentState.state.name)
+      .isEqualTo("What language")
+    assertThat(currentState.completedState.getAnswer(0).userAnswer.answer.normalizedString)
+      .isEqualTo("Finnish")
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testMoveToNext_onFinalState_failsWithError() = runBlockingTest(coroutineContext) {
+  fun testMoveToNext_onFinalState_failsWithError() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
     submitTextInputAnswerAndMoveToNextState("Finnish")
     submitNumericInputAnswerAndMoveToNextState(121.0)
@@ -1022,7 +1295,7 @@ class ExplorationProgressControllerTest {
 
     val moveToStateResult = explorationProgressController.moveToNextState()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
     // Verify we can't navigate past the last state of the exploration.
     verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
@@ -1033,32 +1306,33 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testGetCurrentState_afterPlayingFullSecondExploration_returnsTerminalState() = runBlockingTest(coroutineContext) {
-    val currentStateLiveData = explorationProgressController.getCurrentState()
+  fun testGetCurrentState_afterPlayingFullSecondExploration_returnsTerminalState() {
+    val currentStateLiveData =
+      explorationProgressController.getCurrentState()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
 
-    playExploration(TEST_EXPLORATION_ID_6)
+    playExploration(TEST_EXPLORATION_ID_1)
     submitContinueButtonAnswerAndMoveToNextState()
     submitMultipleChoiceAnswerAndMoveToNextState(3) // Those were all the questions I had!
     submitContinueButtonAnswerAndMoveToNextState()
 
     // Verify that we're now on the final state.
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.stateTypeCase).isEqualTo(TERMINAL_STATE)
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testGetCurrentState_afterPlayingFullSecondExploration_diffPath_returnsTerminalState() = runBlockingTest(
-    coroutineContext
-  ) {
-    val currentStateLiveData = explorationProgressController.getCurrentState()
+  fun testGetCurrentState_afterPlayingFullSecondExploration_diffPath_returnsTerminalState() {
+    val currentStateLiveData =
+      explorationProgressController.getCurrentState()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
 
-    playExploration(TEST_EXPLORATION_ID_6)
+    playExploration(TEST_EXPLORATION_ID_1)
     submitContinueButtonAnswerAndMoveToNextState()
     submitMultipleChoiceAnswerAndMoveToNextState(0) // How do your explorations work?
     submitTextInputAnswerAndMoveToNextState("Oppia Otter") // Can I ask your name?
@@ -1067,39 +1341,102 @@ class ExplorationProgressControllerTest {
     submitContinueButtonAnswerAndMoveToNextState()
 
     // Verify that a different path can also result in reaching the end state.
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.stateTypeCase).isEqualTo(TERMINAL_STATE)
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testGetCurrentState_afterPlayingThroughPreviousExplorations_returnsStateFromSecondExp() = runBlockingTest(
-    coroutineContext
-  ) {
-    val currentStateLiveData = explorationProgressController.getCurrentState()
+  fun testGetCurrentState_afterPlayingThroughPreviousExplorations_returnsStateFromSecondExp() {
+    val currentStateLiveData =
+      explorationProgressController.getCurrentState()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
     playThroughExploration5()
 
-    playExploration(TEST_EXPLORATION_ID_6)
+    playExploration(TEST_EXPLORATION_ID_1)
     submitContinueButtonAnswerAndMoveToNextState()
-    submitMultipleChoiceAnswerAndMoveToNextState(3) // Those were all the questions I had!
+    // Those were all the questions I had!
+    submitMultipleChoiceAnswerAndMoveToNextState(3)
 
     // Verify that we're on the second-to-last state of the second exploration.
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce()).onChanged(currentStateResultCaptor.capture())
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
-    assertThat(currentState.state.name).isEqualTo("End Card") // This state is not in the other test exp.
+    // This state is not in the other test exp.
+    assertThat(currentState.state.name).isEqualTo("End Card")
   }
 
-  private suspend fun getTestExploration5(): Exploration {
-    return explorationRetriever.loadExploration(TEST_EXPLORATION_ID_5)
+  @Test
+  fun testMoveToNext_beforePlaying_failsWithError_logsException() {
+    val moveToStateResult =
+      explorationProgressController.moveToNextState()
+    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
+    val exception = fakeExceptionLogger.getMostRecentException()
+
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat()
+      .contains("Cannot navigate to a next state if an exploration is not being played.")
   }
 
-  private suspend fun getTestExploration6(): Exploration {
-    return explorationRetriever.loadExploration(TEST_EXPLORATION_ID_6)
+  @Test
+  fun testMoveToPrevious_navigatedForwardThenBackToInitial_failsWithError_logsException() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(TEST_EXPLORATION_ID_0)
+    submitMultipleChoiceAnswerAndMoveToNextState(0)
+    moveToPreviousState()
+
+    val moveToStateResult =
+      explorationProgressController.moveToPreviousState()
+    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
+    testCoroutineDispatchers.runCurrent()
+    val exception = fakeExceptionLogger.getMostRecentException()
+
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat()
+      .contains("Cannot navigate to previous state; at initial state.")
+  }
+
+  @Test
+  fun testSubmitAnswer_beforePlaying_failsWithError_logsException() {
+    val result = explorationProgressController.submitAnswer(
+      createMultipleChoiceAnswer(0)
+    )
+    result.observeForever(mockAsyncAnswerOutcomeObserver)
+    testCoroutineDispatchers.runCurrent()
+    val exception = fakeExceptionLogger.getMostRecentException()
+
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat()
+      .contains("Cannot submit an answer if an exploration is not being played.")
+  }
+
+  @Test
+  fun testGetCurrentState_playInvalidExploration_returnsFailure_logsException() {
+    val currentStateLiveData =
+      explorationProgressController.getCurrentState()
+    currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
+
+    playExploration("invalid_exp_id")
+    val exception = fakeExceptionLogger.getMostRecentException()
+
+    assertThat(exception).isInstanceOf(FileNotFoundException::class.java)
+    assertThat(exception).hasMessageThat().contains("invalid_exp_id.json")
+  }
+
+  private fun getTestExploration5(): Exploration {
+    return explorationRetriever.loadExploration(TEST_EXPLORATION_ID_0)
+  }
+
+  private fun getTestExploration6(): Exploration {
+    return explorationRetriever.loadExploration(TEST_EXPLORATION_ID_1)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -1118,81 +1455,68 @@ class ExplorationProgressControllerTest {
     explorationProgressController.getCurrentState().observeForever(mockCurrentStateLiveDataObserver)
   }
 
-  @ExperimentalCoroutinesApi
   private fun playExploration(explorationId: String) {
     explorationDataController.startPlayingExploration(explorationId)
-    testDispatcher.advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
   }
 
-  @ExperimentalCoroutinesApi
   private fun submitMultipleChoiceAnswer(choiceIndex: Int) {
     explorationProgressController.submitAnswer(createMultipleChoiceAnswer(choiceIndex))
-    testDispatcher.advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
   }
 
-  @ExperimentalCoroutinesApi
   private fun submitTextInputAnswer(textAnswer: String) {
     explorationProgressController.submitAnswer(createTextInputAnswer(textAnswer))
-    testDispatcher.advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
   }
 
-  @ExperimentalCoroutinesApi
   private fun submitNumericInputAnswer(numericAnswer: Double) {
     explorationProgressController.submitAnswer(createNumericInputAnswer(numericAnswer))
-    testDispatcher.advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
   }
 
-  @ExperimentalCoroutinesApi
   private fun submitContinueButtonAnswer() {
     explorationProgressController.submitAnswer(createContinueButtonAnswer())
-    testDispatcher.advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
   }
 
-  @ExperimentalCoroutinesApi
   private fun submitMultipleChoiceAnswerAndMoveToNextState(choiceIndex: Int) {
     submitMultipleChoiceAnswer(choiceIndex)
     moveToNextState()
   }
 
-  @ExperimentalCoroutinesApi
   private fun submitTextInputAnswerAndMoveToNextState(textAnswer: String) {
     submitTextInputAnswer(textAnswer)
     moveToNextState()
   }
 
-  @ExperimentalCoroutinesApi
   private fun submitNumericInputAnswerAndMoveToNextState(numericAnswer: Double) {
     submitNumericInputAnswer(numericAnswer)
     moveToNextState()
   }
 
-  @ExperimentalCoroutinesApi
   private fun submitContinueButtonAnswerAndMoveToNextState() {
     submitContinueButtonAnswer()
     moveToNextState()
   }
 
-  @ExperimentalCoroutinesApi
   private fun moveToNextState() {
     explorationProgressController.moveToNextState()
-    testDispatcher.advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
   }
 
-  @ExperimentalCoroutinesApi
   private fun moveToPreviousState() {
     explorationProgressController.moveToPreviousState()
-    testDispatcher.advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
   }
 
-  @ExperimentalCoroutinesApi
   private fun endExploration() {
     explorationDataController.stopPlayingExploration()
-    testDispatcher.advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
   }
 
-  @ExperimentalCoroutinesApi
   private fun playThroughExploration5() {
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
     submitTextInputAnswerAndMoveToNextState("Finnish")
     submitNumericInputAnswerAndMoveToNextState(121.0)
@@ -1200,21 +1524,28 @@ class ExplorationProgressControllerTest {
     endExploration()
   }
 
-  private fun createMultipleChoiceAnswer(choiceIndex: Int): InteractionObject {
-    return InteractionObject.newBuilder().setNonNegativeInt(choiceIndex).build()
+  private fun createMultipleChoiceAnswer(choiceIndex: Int): UserAnswer {
+    return convertToUserAnswer(
+      InteractionObject.newBuilder().setNonNegativeInt(choiceIndex).build()
+    )
   }
 
-  private fun createTextInputAnswer(textAnswer: String): InteractionObject {
-    return InteractionObject.newBuilder().setNormalizedString(textAnswer).build()
+  private fun createTextInputAnswer(textAnswer: String): UserAnswer {
+    val answer = InteractionObject.newBuilder().setNormalizedString(textAnswer)
+      .build()
+    return UserAnswer.newBuilder().setAnswer(answer).setPlainAnswer(textAnswer).build()
   }
 
-  private fun createNumericInputAnswer(numericAnswer: Double): InteractionObject {
-    return InteractionObject.newBuilder().setReal(numericAnswer).build()
+  private fun createNumericInputAnswer(numericAnswer: Double): UserAnswer {
+    return convertToUserAnswer(InteractionObject.newBuilder().setReal(numericAnswer).build())
   }
 
-  private fun createContinueButtonAnswer() = createTextInputAnswer(DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER)
+  private fun convertToUserAnswer(answer: InteractionObject): UserAnswer {
+    return UserAnswer.newBuilder().setAnswer(answer).setPlainAnswer(answer.toAnswerString()).build()
+  }
 
-  @Qualifier annotation class TestDispatcher
+  private fun createContinueButtonAnswer() =
+    createTextInputAnswer(DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER)
 
   // TODO(#89): Move this to a common test application component.
   @Module
@@ -1225,38 +1556,30 @@ class ExplorationProgressControllerTest {
       return application
     }
 
-    @ExperimentalCoroutinesApi
-    @Singleton
+    @EnableConsoleLog
     @Provides
-    @TestDispatcher
-    fun provideTestDispatcher(): TestCoroutineDispatcher {
-      return TestCoroutineDispatcher()
-    }
+    fun provideEnableConsoleLog(): Boolean = true
 
-    @ExperimentalCoroutinesApi
-    @Singleton
+    @EnableFileLog
     @Provides
-    @BackgroundDispatcher
-    fun provideBackgroundDispatcher(@TestDispatcher testDispatcher: TestCoroutineDispatcher): CoroutineDispatcher {
-      return testDispatcher
-    }
+    fun provideEnableFileLog(): Boolean = false
 
-    @ExperimentalCoroutinesApi
-    @Singleton
+    @GlobalLogLevel
     @Provides
-    @BlockingDispatcher
-    fun provideBlockingDispatcher(@TestDispatcher testDispatcher: TestCoroutineDispatcher): CoroutineDispatcher {
-      return testDispatcher
-    }
+    fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
   }
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [
-    TestModule::class, ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
-    MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
-    TextInputRuleModule::class, InteractionsModule::class
-  ])
+  @Component(
+    modules = [
+      TestModule::class, ContinueModule::class, FractionInputModule::class,
+      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
+      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
+      DragDropSortInputModule::class, InteractionsModule::class, TestLogReportingModule::class,
+      ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

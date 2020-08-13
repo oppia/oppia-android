@@ -1,7 +1,6 @@
 package org.oppia.app.home.topiclist
 
 import android.graphics.Color
-import android.view.View
 import androidx.annotation.ColorInt
 import org.oppia.app.home.HomeItemViewModel
 import org.oppia.app.model.TopicSummary
@@ -16,17 +15,18 @@ const val DARKEN_SATURATION_MULTIPLIER: Float = 1.2f
 /** The view model corresponding to topic summaries in the topic summary RecyclerView. */
 class TopicSummaryViewModel(
   val topicSummary: TopicSummary,
+  val entityType: String,
   private val topicSummaryClickListener: TopicSummaryClickListener
 ) : HomeItemViewModel() {
   val name: String = topicSummary.name
-  val canonicalStoryCount: Int = topicSummary.canonicalStoryCount
+  val totalChapterCount: Int = topicSummary.totalChapterCount
   @ColorInt
   val backgroundColor: Int = retrieveBackgroundColor()
   @ColorInt
   val darkerBackgroundOverlayColor: Int = computeDarkerBackgroundColor()
 
   /** Callback from data-binding for when the summary tile is clicked. */
-  fun clickOnSummaryTile(@Suppress("UNUSED_PARAMETER") v: View) {
+  fun clickOnSummaryTile() {
     topicSummaryClickListener.onTopicSummaryClicked(topicSummary)
   }
 

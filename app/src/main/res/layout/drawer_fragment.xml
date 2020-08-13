@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="footerViewModel"
+      type="org.oppia.app.drawer.NavigationDrawerFooterViewModel" />
+  </data>
+
+  <com.google.android.material.navigation.NavigationView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.core.widget.NestedScrollView
+      android:id="@+id/drawer_nested_scroll_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:fillViewport="true"
+      android:scrollbars="vertical">
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.google.android.material.navigation.NavigationView
+          android:id="@+id/fragment_drawer_nav_view"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_gravity="start"
+          android:fitsSystemWindows="true"
+          android:overScrollMode="never"
+          android:scrollbars="none"
+          app:elevation="0dp"
+          app:itemBackground="@android:color/transparent"
+          app:itemIconTint="@color/drawer_item"
+          app:itemTextColor="@color/drawer_item"
+          app:menu="@menu/navigation_drawer_menu" />
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:layout_weight="1"
+          android:minHeight="48dp"
+          android:orientation="vertical" />
+
+        <LinearLayout
+          android:id="@+id/administrator_controls_linear_layout"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_gravity="bottom"
+          android:layout_marginTop="16dp"
+          android:layout_marginBottom="36dp"
+          android:orientation="horizontal"
+          android:paddingStart="24dp"
+          android:paddingTop="16dp"
+          android:paddingEnd="24dp"
+          android:paddingBottom="16dp"
+          android:visibility="@{footerViewModel.isAdmin ? View.VISIBLE : View.GONE}">
+
+          <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_admin_settings_icon_brown_24dp"
+            android:tint="@{footerViewModel.isAdministratorControlsSelected ? @color/highlightedNavMenuItem : @color/oppiaPrimaryTextDark}" />
+
+          <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="12dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/administrator_controls"
+            android:textColor="@{footerViewModel.isAdministratorControlsSelected ? @color/highlightedNavMenuItem : @color/oppiaPrimaryTextDark}"
+            android:textSize="14sp" />
+        </LinearLayout>
+      </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+  </com.google.android.material.navigation.NavigationView>
+</layout>

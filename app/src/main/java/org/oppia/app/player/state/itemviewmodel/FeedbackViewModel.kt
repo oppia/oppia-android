@@ -1,4 +1,9 @@
 package org.oppia.app.player.state.itemviewmodel
 
-/** [ViewModel] for feedback blurbs. */
-class FeedbackViewModel(val htmlContent: CharSequence): StateItemViewModel()
+/** [StateItemViewModel] for feedback blurbs. */
+class FeedbackViewModel(
+  val htmlContent: CharSequence,
+  val gcsEntityId: String,
+  val hasConversationView: Boolean,
+  val isSplitView: Boolean
+) : StateItemViewModel(ViewType.FEEDBACK)

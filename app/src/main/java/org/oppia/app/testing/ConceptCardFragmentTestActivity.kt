@@ -9,7 +9,8 @@ import javax.inject.Inject
 /** Test Activity used for testing ConceptCardFragment */
 class ConceptCardFragmentTestActivity : InjectableAppCompatActivity(), ConceptCardListener {
 
-  @Inject lateinit var conceptCardFragmentTestActivityController: ConceptCardFragmentTestActivityPresenter
+  @Inject
+  lateinit var conceptCardFragmentTestActivityController: ConceptCardFragmentTestActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

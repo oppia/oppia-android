@@ -3,17 +3,81 @@ syntax = "proto3";
 package model;
 
 import "exploration.proto";
+import "subtitled_html.proto";
 
 option java_package = "org.oppia.app.model";
 option java_multiple_files = true;
 
-// Structure for a single question.
+// Represents a question that can be used to determine how well a learner understands specific skills.
 message Question {
+  // The ID of the question.
   string question_id = 1;
+
+  // The [State] representing the Q&A structure of the question.
   State question_state = 2;
+
+  // The language code to which this question is localized.
   string language_code = 3;
+
+  // The version of the question.
   int32 version = 4;
+
+  // The IDs of skills to which this question is associated.
   repeated string linked_skill_ids = 5;
+
+  // Number of milliseconds since the Unix epoch corresponding to when this question was created.
   int64 created_on_timestamp_ms = 6;
+
+  // Number of milliseconds since the Unix epoch corresponding to when this question was most recently updated.
   int64 updated_on_timestamp_ms = 7;
+}
+
+// Corresponds to a question that has been answered in an assessment, or is in the process of being answered, and will
+// disappear once the user finishes the assessment or navigates away from the training session. This has strong
+// correlation with the EphemeralState structure used when playing explorations, and contains an instance of that due to
+// the internal structure of Question also relying on a State. This also contains additional information to help report
+// the user's progress through the assessment. Note that the end of a training session will contain a synthetic
+// ephemeral question that has no question or state information, and whose only purpose is to provide a sentinel
+// indicator that the training session has ended (via the reported ephemeral state).
+message EphemeralQuestion {
+  // Corresponds to the current ephemeral state the question is in (including indicating whether the question has been
+  // completed, or if the learner has reached the end of the assessment). Note that a valid question can also be
+  // terminal (such as if it's the last question in the assessment). This differs from explorations which have a
+  // dedicated terminal state.
+  EphemeralState ephemeral_state = 1;
+
+  // The question being answered by the user. This will not be populated for the final 'question' of the session that
+  // indicates the session has ended.
+  Question question = 2;
+
+  // Corresponds the index of the current question in the assessment, starting at 0. This index is guaranteed to be
+  // unique for a specific question being assessed, even as different EphemeralQuestions are being dispatched to
+  // represent different states the question is going through. This index will be equal to the total question count if
+  // the learner has reached the end of the training session. This should not be used as a proxy that the session has
+  // ended; the ephemeral state reported above should be used for that check.
+  int32 current_question_index = 3;
+
+  // Corresponds to the number of questions in the assessment. This value will change across EphemeralQuestion instances
+  // for a single assessment if the controller decides to add/remove questions mid-assessment.
+  int32 total_question_count = 4;
+
+  // Corresponds to the number of questions in the assessment when it started. This value will never change across
+  // EphemeralQuestion instances for the same assessment. It can be compared with total_question_count to detect if the
+  // learner required extra questions during the assessment, or completed it early.
+  int32 initial_total_question_count = 5;
+
+  // Corresponds to skill IDs that the learner should review. This is expected only to be filled at the end of the
+  // assessment (for the terminal question), but this should not be used as an indicator of whether the assessment
+  // ended. If this has values outside the terminal state, they should be ignored. There's no guarantee any skill IDs
+  // will be suggested to review at the end of the assessment.
+  repeated string skill_ids_to_review = 6;
+}
+
+// The outcome of submitting an answer to a question during a training session.
+message AnsweredQuestionOutcome {
+  // Oppia's feedback to the learner's most recent answer.
+  SubtitledHtml feedback = 1;
+
+  // Whether the answer the learner submitted is the correct answer.
+  bool is_correct_answer = 2;
 }

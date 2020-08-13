@@ -24,13 +24,16 @@ import org.oppia.app.model.RuleSpec
 import org.oppia.app.model.StringList
 import org.oppia.app.model.SubtitledHtml
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.domain.classify.rules.imageClickInput.ImageClickInputModule
 import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass
@@ -42,11 +45,14 @@ private const val DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER = "Please continue."
 
 /** Tests for [AnswerClassificationController]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class AnswerClassificationControllerTest {
   companion object {
-    private val TEST_STRING_0 = InteractionObject.newBuilder().setNormalizedString("Test string 0").build()
-    private val TEST_STRING_1 = InteractionObject.newBuilder().setNormalizedString("Test string 1").build()
+    private val TEST_STRING_0 =
+      InteractionObject.newBuilder().setNormalizedString("Test string 0").build()
+    private val TEST_STRING_1 =
+      InteractionObject.newBuilder().setNormalizedString("Test string 1").build()
 
     private val TEST_FRACTION_0 = InteractionObject.newBuilder()
       .setFraction(
@@ -69,17 +75,26 @@ class AnswerClassificationControllerTest {
       .setSetOfHtmlString(StringList.newBuilder().addHtml("Elem 1").addHtml("Elem 2"))
       .build()
     private val TEST_ITEM_SELECTION_SET_1 = InteractionObject.newBuilder()
-      .setSetOfHtmlString(StringList.newBuilder().addHtml("Elem 0").addHtml("Elem 2").addHtml("Elem 3"))
+      .setSetOfHtmlString(
+        StringList.newBuilder().addHtml("Elem 0").addHtml("Elem 2")
+          .addHtml("Elem 3")
+      )
       .build()
 
-    private val TEST_MULTIPLE_CHOICE_OPTION_0 = InteractionObject.newBuilder().setNonNegativeInt(0).build()
-    private val TEST_MULTIPLE_CHOICE_OPTION_1 = InteractionObject.newBuilder().setNonNegativeInt(1).build()
+    private val TEST_MULTIPLE_CHOICE_OPTION_0 =
+      InteractionObject.newBuilder().setNonNegativeInt(0).build()
+    private val TEST_MULTIPLE_CHOICE_OPTION_1 =
+      InteractionObject.newBuilder().setNonNegativeInt(1).build()
 
     private val TEST_NUMBER_WITH_UNITS_0 = InteractionObject.newBuilder()
-      .setNumberWithUnits(NumberWithUnits.newBuilder().setReal(1.0).addUnit(NumberUnit.newBuilder().setUnit("cm")))
+      .setNumberWithUnits(
+        NumberWithUnits.newBuilder().setReal(1.0).addUnit(NumberUnit.newBuilder().setUnit("cm"))
+      )
       .build()
     private val TEST_NUMBER_WITH_UNITS_1 = InteractionObject.newBuilder()
-      .setNumberWithUnits(NumberWithUnits.newBuilder().setReal(1.0).addUnit(NumberUnit.newBuilder().setUnit("m")))
+      .setNumberWithUnits(
+        NumberWithUnits.newBuilder().setReal(1.0).addUnit(NumberUnit.newBuilder().setUnit("m"))
+      )
       .build()
 
     private val TEST_NUMBER_0 = InteractionObject.newBuilder().setReal(1.0).build()
@@ -91,7 +106,9 @@ class AnswerClassificationControllerTest {
 
     private val DEFAULT_OUTCOME = Outcome.newBuilder()
       .setDestStateName("Default state dest")
-      .setFeedback(SubtitledHtml.newBuilder().setContentId("content_id_def").setHtml("Default feedback."))
+      .setFeedback(
+        SubtitledHtml.newBuilder().setContentId("content_id_def").setHtml("Default feedback.")
+      )
       .build()
 
     private val OUTCOME_0 = Outcome.newBuilder()
@@ -134,7 +151,8 @@ class AnswerClassificationControllerTest {
       answerClassificationController.classify(interaction, TEST_STRING_0)
     }
 
-    assertThat(exception).hasMessageThat().contains("Expected interaction TextInput to have classifier for rule type")
+    assertThat(exception).hasMessageThat()
+      .contains("Expected interaction TextInput to have classifier for rule type")
   }
 
   @Test
@@ -154,9 +172,11 @@ class AnswerClassificationControllerTest {
     val interaction = Interaction.newBuilder()
       .setId("TextInput")
       .setDefaultOutcome(DEFAULT_OUTCOME)
-      .addAnswerGroups(AnswerGroup.newBuilder()
-        .addRuleSpecs(RuleSpec.newBuilder().putInput("x", TEST_STRING_1).setRuleType("Equals"))
-        .setOutcome(OUTCOME_0))
+      .addAnswerGroups(
+        AnswerGroup.newBuilder()
+          .addRuleSpecs(RuleSpec.newBuilder().putInput("x", TEST_STRING_1).setRuleType("Equals"))
+          .setOutcome(OUTCOME_0)
+      )
       .build()
 
     val outcome = answerClassificationController.classify(interaction, TEST_STRING_0)
@@ -182,9 +202,13 @@ class AnswerClassificationControllerTest {
   fun testClassify_forFractionInput_matches_returnAnswerGroup() {
     val interaction = Interaction.newBuilder()
       .setId("FractionInput")
-      .addAnswerGroups(AnswerGroup.newBuilder()
-        .addRuleSpecs(RuleSpec.newBuilder().setRuleType("IsEquivalentTo").putInput("f", TEST_FRACTION_0))
-        .setOutcome(OUTCOME_0))
+      .addAnswerGroups(
+        AnswerGroup.newBuilder()
+          .addRuleSpecs(
+            RuleSpec.newBuilder().setRuleType("IsEquivalentTo").putInput("f", TEST_FRACTION_0)
+          )
+          .setOutcome(OUTCOME_0)
+      )
       .setDefaultOutcome(DEFAULT_OUTCOME)
       .build()
 
@@ -198,9 +222,13 @@ class AnswerClassificationControllerTest {
   fun testClassify_forFractionInput_doesNotMatch_returnDefaultOutcome() {
     val interaction = Interaction.newBuilder()
       .setId("FractionInput")
-      .addAnswerGroups(AnswerGroup.newBuilder()
-        .addRuleSpecs(RuleSpec.newBuilder().setRuleType("IsEquivalentTo").putInput("f", TEST_FRACTION_0))
-        .setOutcome(OUTCOME_0))
+      .addAnswerGroups(
+        AnswerGroup.newBuilder()
+          .addRuleSpecs(
+            RuleSpec.newBuilder().setRuleType("IsEquivalentTo").putInput("f", TEST_FRACTION_0)
+          )
+          .setOutcome(OUTCOME_0)
+      )
       .setDefaultOutcome(DEFAULT_OUTCOME)
       .build()
 
@@ -214,13 +242,20 @@ class AnswerClassificationControllerTest {
   fun testClassify_forItemSelectionInput_matches_returnAnswerGroup() {
     val interaction = Interaction.newBuilder()
       .setId("ItemSelectionInput")
-      .addAnswerGroups(AnswerGroup.newBuilder()
-        .addRuleSpecs(RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_ITEM_SELECTION_SET_0))
-        .setOutcome(OUTCOME_0))
+      .addAnswerGroups(
+        AnswerGroup.newBuilder()
+          .addRuleSpecs(
+            RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_ITEM_SELECTION_SET_0)
+          )
+          .setOutcome(OUTCOME_0)
+      )
       .setDefaultOutcome(DEFAULT_OUTCOME)
       .build()
 
-    val outcome = answerClassificationController.classify(interaction, TEST_ITEM_SELECTION_SET_0)
+    val outcome = answerClassificationController.classify(
+      interaction,
+      TEST_ITEM_SELECTION_SET_0
+    )
 
     // The first group should match.
     assertThat(outcome).isEqualTo(OUTCOME_0)
@@ -230,13 +265,20 @@ class AnswerClassificationControllerTest {
   fun testClassify_forItemSelectionInput_doesNotMatch_returnDefaultOutcome() {
     val interaction = Interaction.newBuilder()
       .setId("ItemSelectionInput")
-      .addAnswerGroups(AnswerGroup.newBuilder()
-        .addRuleSpecs(RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_ITEM_SELECTION_SET_0))
-        .setOutcome(OUTCOME_0))
+      .addAnswerGroups(
+        AnswerGroup.newBuilder()
+          .addRuleSpecs(
+            RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_ITEM_SELECTION_SET_0)
+          )
+          .setOutcome(OUTCOME_0)
+      )
       .setDefaultOutcome(DEFAULT_OUTCOME)
       .build()
 
-    val outcome = answerClassificationController.classify(interaction, TEST_ITEM_SELECTION_SET_1)
+    val outcome = answerClassificationController.classify(
+      interaction,
+      TEST_ITEM_SELECTION_SET_1
+    )
 
     // The default outcome should be returned since the answer didn't match.
     assertThat(outcome).isEqualTo(DEFAULT_OUTCOME)
@@ -246,13 +288,18 @@ class AnswerClassificationControllerTest {
   fun testClassify_forMultipleChoiceInput_matches_returnAnswerGroup() {
     val interaction = Interaction.newBuilder()
       .setId("MultipleChoiceInput")
-      .addAnswerGroups(AnswerGroup.newBuilder()
-        .addRuleSpecs(RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_MULTIPLE_CHOICE_OPTION_0))
-        .setOutcome(OUTCOME_0))
+      .addAnswerGroups(
+        AnswerGroup.newBuilder()
+          .addRuleSpecs(
+            RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_MULTIPLE_CHOICE_OPTION_0)
+          )
+          .setOutcome(OUTCOME_0)
+      )
       .setDefaultOutcome(DEFAULT_OUTCOME)
       .build()
 
-    val outcome = answerClassificationController.classify(interaction, TEST_MULTIPLE_CHOICE_OPTION_0)
+    val outcome =
+      answerClassificationController.classify(interaction, TEST_MULTIPLE_CHOICE_OPTION_0)
 
     // The first group should match.
     assertThat(outcome).isEqualTo(OUTCOME_0)
@@ -262,13 +309,18 @@ class AnswerClassificationControllerTest {
   fun testClassify_forMultipleChoiceInput_doesNotMatch_returnDefaultOutcome() {
     val interaction = Interaction.newBuilder()
       .setId("MultipleChoiceInput")
-      .addAnswerGroups(AnswerGroup.newBuilder()
-        .addRuleSpecs(RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_MULTIPLE_CHOICE_OPTION_0))
-        .setOutcome(OUTCOME_0))
+      .addAnswerGroups(
+        AnswerGroup.newBuilder()
+          .addRuleSpecs(
+            RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_MULTIPLE_CHOICE_OPTION_0)
+          )
+          .setOutcome(OUTCOME_0)
+      )
       .setDefaultOutcome(DEFAULT_OUTCOME)
       .build()
 
-    val outcome = answerClassificationController.classify(interaction, TEST_MULTIPLE_CHOICE_OPTION_1)
+    val outcome =
+      answerClassificationController.classify(interaction, TEST_MULTIPLE_CHOICE_OPTION_1)
 
     // The default outcome should be returned since the answer didn't match.
     assertThat(outcome).isEqualTo(DEFAULT_OUTCOME)
@@ -278,13 +330,20 @@ class AnswerClassificationControllerTest {
   fun testClassify_forNumberWithUnits_matches_returnAnswerGroup() {
     val interaction = Interaction.newBuilder()
       .setId("NumberWithUnits")
-      .addAnswerGroups(AnswerGroup.newBuilder()
-        .addRuleSpecs(RuleSpec.newBuilder().setRuleType("IsEqualTo").putInput("f", TEST_NUMBER_WITH_UNITS_0))
-        .setOutcome(OUTCOME_0))
+      .addAnswerGroups(
+        AnswerGroup.newBuilder()
+          .addRuleSpecs(
+            RuleSpec.newBuilder().setRuleType("IsEqualTo").putInput("f", TEST_NUMBER_WITH_UNITS_0)
+          )
+          .setOutcome(OUTCOME_0)
+      )
       .setDefaultOutcome(DEFAULT_OUTCOME)
       .build()
 
-    val outcome = answerClassificationController.classify(interaction, TEST_NUMBER_WITH_UNITS_0)
+    val outcome = answerClassificationController.classify(
+      interaction,
+      TEST_NUMBER_WITH_UNITS_0
+    )
 
     // The first group should match.
     assertThat(outcome).isEqualTo(OUTCOME_0)
@@ -294,13 +353,20 @@ class AnswerClassificationControllerTest {
   fun testClassify_forNumberWithUnits_doesNotMatch_returnDefaultOutcome() {
     val interaction = Interaction.newBuilder()
       .setId("NumberWithUnits")
-      .addAnswerGroups(AnswerGroup.newBuilder()
-        .addRuleSpecs(RuleSpec.newBuilder().setRuleType("IsEqualTo").putInput("f", TEST_NUMBER_WITH_UNITS_0))
-        .setOutcome(OUTCOME_0))
+      .addAnswerGroups(
+        AnswerGroup.newBuilder()
+          .addRuleSpecs(
+            RuleSpec.newBuilder().setRuleType("IsEqualTo").putInput("f", TEST_NUMBER_WITH_UNITS_0)
+          )
+          .setOutcome(OUTCOME_0)
+      )
       .setDefaultOutcome(DEFAULT_OUTCOME)
       .build()
 
-    val outcome = answerClassificationController.classify(interaction, TEST_NUMBER_WITH_UNITS_1)
+    val outcome = answerClassificationController.classify(
+      interaction,
+      TEST_NUMBER_WITH_UNITS_1
+    )
 
     // The default outcome should be returned since the answer didn't match.
     assertThat(outcome).isEqualTo(DEFAULT_OUTCOME)
@@ -310,9 +376,11 @@ class AnswerClassificationControllerTest {
   fun testClassify_forNumericInput_matches_returnAnswerGroup() {
     val interaction = Interaction.newBuilder()
       .setId("NumericInput")
-      .addAnswerGroups(AnswerGroup.newBuilder()
-        .addRuleSpecs(RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_NUMBER_0))
-        .setOutcome(OUTCOME_0))
+      .addAnswerGroups(
+        AnswerGroup.newBuilder()
+          .addRuleSpecs(RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_NUMBER_0))
+          .setOutcome(OUTCOME_0)
+      )
       .setDefaultOutcome(DEFAULT_OUTCOME)
       .build()
 
@@ -326,9 +394,11 @@ class AnswerClassificationControllerTest {
   fun testClassify_forNumericInput_doesNotMatch_returnDefaultOutcome() {
     val interaction = Interaction.newBuilder()
       .setId("NumericInput")
-      .addAnswerGroups(AnswerGroup.newBuilder()
-        .addRuleSpecs(RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_NUMBER_0))
-        .setOutcome(OUTCOME_0))
+      .addAnswerGroups(
+        AnswerGroup.newBuilder()
+          .addRuleSpecs(RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_NUMBER_0))
+          .setOutcome(OUTCOME_0)
+      )
       .setDefaultOutcome(DEFAULT_OUTCOME)
       .build()
 
@@ -342,9 +412,11 @@ class AnswerClassificationControllerTest {
   fun testClassify_forTextInput_matches_returnAnswerGroup() {
     val interaction = Interaction.newBuilder()
       .setId("TextInput")
-      .addAnswerGroups(AnswerGroup.newBuilder()
-        .addRuleSpecs(RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_STRING_0))
-        .setOutcome(OUTCOME_0))
+      .addAnswerGroups(
+        AnswerGroup.newBuilder()
+          .addRuleSpecs(RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_STRING_0))
+          .setOutcome(OUTCOME_0)
+      )
       .setDefaultOutcome(DEFAULT_OUTCOME)
       .build()
 
@@ -358,9 +430,11 @@ class AnswerClassificationControllerTest {
   fun testClassify_forTextInput_doesNotMatch_returnDefaultOutcome() {
     val interaction = Interaction.newBuilder()
       .setId("TextInput")
-      .addAnswerGroups(AnswerGroup.newBuilder()
-        .addRuleSpecs(RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_STRING_0))
-        .setOutcome(OUTCOME_0))
+      .addAnswerGroups(
+        AnswerGroup.newBuilder()
+          .addRuleSpecs(RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_STRING_0))
+          .setOutcome(OUTCOME_0)
+      )
       .setDefaultOutcome(DEFAULT_OUTCOME)
       .build()
 
@@ -374,12 +448,16 @@ class AnswerClassificationControllerTest {
   fun testClassify_multipleAnswerGroups_matchesOneRuleSpec_returnsAnswerGroupOutcome() {
     val interaction = Interaction.newBuilder()
       .setId("TextInput")
-      .addAnswerGroups(AnswerGroup.newBuilder()
-        .addRuleSpecs(RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_STRING_0))
-        .setOutcome(OUTCOME_0))
-      .addAnswerGroups(AnswerGroup.newBuilder()
-        .addRuleSpecs(RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_STRING_1))
-        .setOutcome(OUTCOME_1))
+      .addAnswerGroups(
+        AnswerGroup.newBuilder()
+          .addRuleSpecs(RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_STRING_0))
+          .setOutcome(OUTCOME_0)
+      )
+      .addAnswerGroups(
+        AnswerGroup.newBuilder()
+          .addRuleSpecs(RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_STRING_1))
+          .setOutcome(OUTCOME_1)
+      )
       .setDefaultOutcome(DEFAULT_OUTCOME)
       .build()
 
@@ -393,13 +471,19 @@ class AnswerClassificationControllerTest {
   fun testClassify_multipleAnswerGroups_matchesMultipleRuleSpecs_returnsAnswerGroupOutcome() {
     val interaction = Interaction.newBuilder()
       .setId("TextInput")
-      .addAnswerGroups(AnswerGroup.newBuilder()
-        .addRuleSpecs(RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_STRING_0))
-        .addRuleSpecs(RuleSpec.newBuilder().setRuleType("CaseSensitiveEquals").putInput("x", TEST_STRING_0))
-        .setOutcome(OUTCOME_0))
-      .addAnswerGroups(AnswerGroup.newBuilder()
-        .addRuleSpecs(RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_STRING_1))
-        .setOutcome(OUTCOME_1))
+      .addAnswerGroups(
+        AnswerGroup.newBuilder()
+          .addRuleSpecs(RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_STRING_0))
+          .addRuleSpecs(
+            RuleSpec.newBuilder().setRuleType("CaseSensitiveEquals").putInput("x", TEST_STRING_0)
+          )
+          .setOutcome(OUTCOME_0)
+      )
+      .addAnswerGroups(
+        AnswerGroup.newBuilder()
+          .addRuleSpecs(RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_STRING_1))
+          .setOutcome(OUTCOME_1)
+      )
       .setDefaultOutcome(DEFAULT_OUTCOME)
       .build()
 
@@ -413,12 +497,18 @@ class AnswerClassificationControllerTest {
   fun testClassify_multipleAnswerGroups_matchesMultipleGroups_returnsFirstMatchedGroupOutcome() {
     val interaction = Interaction.newBuilder()
       .setId("TextInput")
-      .addAnswerGroups(AnswerGroup.newBuilder()
-        .addRuleSpecs(RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_STRING_0))
-        .setOutcome(OUTCOME_0))
-      .addAnswerGroups(AnswerGroup.newBuilder()
-        .addRuleSpecs(RuleSpec.newBuilder().setRuleType("CaseSensitiveEquals").putInput("x", TEST_STRING_0))
-        .setOutcome(OUTCOME_1))
+      .addAnswerGroups(
+        AnswerGroup.newBuilder()
+          .addRuleSpecs(RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_STRING_0))
+          .setOutcome(OUTCOME_0)
+      )
+      .addAnswerGroups(
+        AnswerGroup.newBuilder()
+          .addRuleSpecs(
+            RuleSpec.newBuilder().setRuleType("CaseSensitiveEquals").putInput("x", TEST_STRING_0)
+          )
+          .setOutcome(OUTCOME_1)
+      )
       .setDefaultOutcome(DEFAULT_OUTCOME)
       .build()
 
@@ -432,12 +522,18 @@ class AnswerClassificationControllerTest {
   fun testClassify_multipleAnswerGroups_matchesNone_returnsDefaultOutcome() {
     val interaction = Interaction.newBuilder()
       .setId("TextInput")
-      .addAnswerGroups(AnswerGroup.newBuilder()
-        .addRuleSpecs(RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_STRING_0))
-        .setOutcome(OUTCOME_0))
-      .addAnswerGroups(AnswerGroup.newBuilder()
-        .addRuleSpecs(RuleSpec.newBuilder().setRuleType("CaseSensitiveEquals").putInput("x", TEST_STRING_0))
-        .setOutcome(OUTCOME_1))
+      .addAnswerGroups(
+        AnswerGroup.newBuilder()
+          .addRuleSpecs(RuleSpec.newBuilder().setRuleType("Equals").putInput("x", TEST_STRING_0))
+          .setOutcome(OUTCOME_0)
+      )
+      .addAnswerGroups(
+        AnswerGroup.newBuilder()
+          .addRuleSpecs(
+            RuleSpec.newBuilder().setRuleType("CaseSensitiveEquals").putInput("x", TEST_STRING_0)
+          )
+          .setOutcome(OUTCOME_1)
+      )
       .setDefaultOutcome(DEFAULT_OUTCOME)
       .build()
 
@@ -456,7 +552,7 @@ class AnswerClassificationControllerTest {
 
   // TODO(#89): Move to a common test library.
   /** A replacement to JUnit5's assertThrows(). */
-  private fun <T: Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
+  private fun <T : Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
     try {
       operation()
       fail("Expected to encounter exception of $type")
@@ -467,7 +563,9 @@ class AnswerClassificationControllerTest {
       // Unexpected exception; throw it.
       throw t
     }
-    throw AssertionError("Reached an impossible state when verifying that an exception was thrown.")
+    throw AssertionError(
+      "Reached an impossible state when verifying that an exception was thrown."
+    )
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -482,11 +580,16 @@ class AnswerClassificationControllerTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [
-    TestModule::class, ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
-    MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
-    TextInputRuleModule::class, InteractionsModule::class
-  ])
+  @Component(
+    modules = [
+      TestModule::class, ContinueModule::class,
+      FractionInputModule::class, ItemSelectionInputModule::class,
+      MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
+      NumericInputRuleModule::class, TextInputRuleModule::class,
+      DragDropSortInputModule::class, InteractionsModule::class,
+      ImageClickInputModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

@@ -7,7 +7,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.DialogFragment
 import org.oppia.app.R
-import java.util.*
+import java.util.Locale
 import kotlin.collections.ArrayList
 
 private const val KEY_LANGUAGE_LIST = "LANGUAGE_LIST"
@@ -61,16 +61,19 @@ class LanguageDialogFragment : DialogFragment() {
 
     val languageInterface: LanguageInterface = parentFragment as AudioFragment
 
-    return AlertDialog.Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
+    return AlertDialog
+      .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
       .setTitle(R.string.audio_language_select_dialog_title)
       .setSingleChoiceItems(options, selectedIndex) { dialog, which ->
         selectedIndex = which
       }
-      .setPositiveButton(R.string.audio_language_select_dialog_okay_button) { dialog, whichButton ->
-        languageInterface.onLanguageSelected(languageCodeArrayList[selectedIndex])
+      .setPositiveButton(R.string.audio_language_select_dialog_okay_button) { _, _ ->
+        if (selectedIndex != -1) {
+          languageInterface.onLanguageSelected(languageCodeArrayList[selectedIndex])
+        }
         dismiss()
       }
-      .setNegativeButton(R.string.audio_language_select_dialog_cancel_button) { dialog, whichButton ->
+      .setNegativeButton(R.string.audio_language_select_dialog_cancel_button) { _, _ ->
         dismiss()
       }
       .create()

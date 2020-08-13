@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   package="org.oppia.app">
-
-  <!-- TODO(#56): Reenable landscape support. -->
-
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
   <uses-permission android:name="android.permission.INTERNET" />
+  <!-- TODO(#56): Reenable landscape support. -->
   <application
     android:name=".application.OppiaApplication"
     android:allowBackup="true"
@@ -13,32 +12,97 @@
     android:roundIcon="@mipmap/ic_launcher_round"
     android:supportsRtl="true"
     android:theme="@style/OppiaTheme">
+    <meta-data android:name="firebase_analytics_collection_deactivated" android:value="true" />
+    <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="false" />
     <activity
-      android:name=".home.continueplaying.ContinuePlayingActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar"
-      android:screenOrientation="portrait" />
+      android:name=".administratorcontrols.AdministratorControlsActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".administratorcontrols.appversion.AppVersionActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".completedstorylist.CompletedStoryListActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".help.faq.FAQListActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".help.faq.faqsingle.FAQSingleActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".help.HelpActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".home.HomeActivity"
-      android:screenOrientation="portrait" />
-    <activity android:name=".player.audio.testing.AudioFragmentTestActivity" />
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".home.recentlyplayed.RecentlyPlayedActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".mydownloads.MyDownloadsActivity"
+      android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".onboarding.OnboardingActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".ongoingtopiclist.OngoingTopicListActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".options.AppLanguageActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".options.DefaultAudioActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".options.OptionsActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".options.StoryTextSizeActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".player.exploration.ExplorationActivity"
       android:theme="@style/OppiaThemeWithoutActionBar"
-      android:screenOrientation="portrait" />
+      android:windowSoftInputMode="adjustResize" />
     <activity android:name=".player.state.testing.StateFragmentTestActivity" />
     <activity
+      android:name=".profile.AddProfileActivity"
+      android:theme="@style/OppiaThemeNoActionBarColorAccentColorPrimary" />
+    <activity
+      android:name=".profile.AdminAuthActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar"
+      android:windowSoftInputMode="adjustResize" />
+    <activity
+      android:name=".profile.AdminPinActivity"
+      android:windowSoftInputMode="adjustResize" />
+    <activity
+      android:name=".profile.PinPasswordActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar"
+      android:windowSoftInputMode="adjustResize" />
+    <activity
       android:name=".profile.ProfileActivity"
-      android:screenOrientation="portrait" />
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".profileprogress.ProfilePictureActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".profileprogress.ProfileProgressActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity android:name=".settings.profile.ProfileEditActivity" />
+    <activity
+      android:name=".settings.profile.ProfileListActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".settings.profile.ProfileRenameActivity"
-      android:screenOrientation="portrait" />
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".settings.profile.ProfileResetPinActivity"
-      android:screenOrientation="portrait" />
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".splash.SplashActivity"
-      android:theme="@style/SplashScreenTheme"
-      android:screenOrientation="portrait">
+      android:screenOrientation="portrait"
+      android:theme="@style/SplashScreenTheme">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
@@ -50,27 +114,48 @@
     </activity>
     <activity
       android:name=".story.StoryActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar"
-      android:screenOrientation="portrait" />
-    <activity android:name=".story.testing.StoryFragmentTestActivity" />
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity android:name=".testing.AudioFragmentTestActivity" />
     <activity android:name=".testing.BindableAdapterTestActivity" />
-    <activity android:name=".testing.ContentCardTestActivity" />
-    <activity android:name=".testing.ContinuePlayingFragmentTestActivity" />
+    <activity android:name=".testing.ConceptCardFragmentTestActivity" />
+    <activity android:name=".testing.DragDropTestActivity" />
+    <activity android:name=".testing.ExplorationInjectionActivity" />
+    <activity android:name=".testing.ExplorationTestActivity" />
+    <activity
+      android:name=".testing.TestFontScaleConfigurationUtilActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity android:name=".testing.HomeInjectionActivity" />
     <activity android:name=".testing.HtmlParserTestActivity" />
+    <activity android:name=".testing.HomeTestActivity" />
     <activity android:name=".testing.InputInteractionViewTestActivity" />
+    <activity android:name=".testing.ImageRegionSelectionTestActivity" />
+    <activity
+      android:name=".testing.NavigationDrawerTestActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".testing.ProfileChooserFragmentTestActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".testing.StoryFragmentTestActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".testing.TopicTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".testing.TopicTestActivityForStory"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity android:name=".testing.ConceptCardFragmentTestActivity" />
+    <activity android:name=".testing.TopicRevisionTestActivity" />
     <activity
       android:name=".topic.questionplayer.QuestionPlayerActivity"
-      android:screenOrientation="portrait" />
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".topic.revisioncard.RevisionCardActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".topic.TopicActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar"
-      android:screenOrientation="portrait" />
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".walkthrough.WalkthroughActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
   </application>
 </manifest>

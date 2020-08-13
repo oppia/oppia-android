@@ -1,41 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:orientation="vertical"
-  tools:context=".player.exploration.ExplorationActivity">
+<layout>
 
-  <com.google.android.material.appbar.AppBarLayout
-    android:id="@+id/exploration_app_bar_layout"
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.player.exploration.ExplorationViewModel" />
+  </data>
+
+  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".player.exploration.ExplorationActivity">
 
-    <androidx.appcompat.widget.Toolbar
-      android:id="@+id/exploration_toolbar"
+    <com.google.android.material.appbar.AppBarLayout
+      android:id="@+id/exploration_app_bar_layout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@color/colorPrimary"
-      android:minHeight="?attr/actionBarSize"
-      android:theme="@style/Widget.AppCompat.ActionBar"
-      app:titleTextColor="@color/white" />
-  </com.google.android.material.appbar.AppBarLayout>
+      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-  <FrameLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+      <androidx.appcompat.widget.Toolbar
+        android:id="@+id/exploration_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:background="@color/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/Widget.AppCompat.ActionBar"
+        app:navigationIcon="@drawable/ic_close_white_24dp"
+        app:titleTextAppearance="@style/ToolbarTextAppearance"
+        app:titleTextColor="@color/white">
+
+        <ImageView
+          android:id="@+id/action_audio_player"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          android:layout_gravity="end"
+          android:scaleType="center"
+          android:src="@{viewModel.isAudioStreamingOn ? @drawable/ic_audio_streaming_on_24dp :  @drawable/ic_audio_streaming_off_24dp}"
+          android:visibility="@{viewModel.showAudioButton ? View.VISIBLE : View.GONE}" />
+      </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
-      android:id="@+id/exploration_fragment_placeholder"
       android:layout_width="match_parent"
-      android:layout_height="match_parent" />
+      android:layout_height="match_parent">
 
-    <View
-      android:id="@+id/toolbar_shadow_view"
-      android:layout_width="match_parent"
-      android:layout_height="6dp"
-      android:background="@drawable/toolbar_drop_shadow" />
-  </FrameLayout>
-</LinearLayout>
+      <FrameLayout
+        android:id="@+id/exploration_fragment_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+      <View
+        android:id="@+id/exploration_shadow_view"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:background="@drawable/toolbar_drop_shadow" />
+    </FrameLayout>
+  </LinearLayout>
+</layout>

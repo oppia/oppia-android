@@ -5,5 +5,5 @@ package org.oppia.domain.util
  * https://github.com/oppia/oppia/blob/392323/core/templates/dev/head/filters/string-utility-filters/normalize-whitespace.filter.ts.
  */
 fun String.normalizeWhitespace(): String {
-  return trim().replace(Regex.fromLiteral("\\s{2,}"), " ")
+  return trim().replace("\\s{2,}".toRegex(), " ")
 }

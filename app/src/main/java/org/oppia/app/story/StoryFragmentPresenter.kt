@@ -2,31 +2,43 @@ package org.oppia.app.story
 
 import android.content.res.Resources
 import android.util.DisplayMetrics
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.databinding.StoryChapterViewBinding
 import org.oppia.app.databinding.StoryFragmentBinding
 import org.oppia.app.databinding.StoryHeaderViewBinding
 import org.oppia.app.home.RouteToExplorationListener
+import org.oppia.app.model.EventLog
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
 import org.oppia.app.story.storyitemviewmodel.StoryHeaderViewModel
 import org.oppia.app.story.storyitemviewmodel.StoryItemViewModel
 import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.domain.oppialogger.OppiaLogger
+import org.oppia.util.gcsresource.DefaultResourceBucketName
+import org.oppia.util.parser.HtmlParser
+import org.oppia.util.parser.TopicHtmlParserEntityType
+import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
-import android.util.TypedValue
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
-import androidx.recyclerview.widget.RecyclerView
 
 /** The presenter for [StoryFragment]. */
 class StoryFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<StoryViewModel>
+  private val oppiaLogger: OppiaLogger,
+  private val oppiaClock: OppiaClock,
+  private val viewModelProvider: ViewModelProvider<StoryViewModel>,
+  private val htmlParserFactory: HtmlParser.Factory,
+  @DefaultResourceBucketName private val resourceBucketName: String,
+  @TopicHtmlParserEntityType private val entityType: String
 ) {
   private val routeToExplorationListener = activity as RouteToExplorationListener
 
@@ -34,12 +46,25 @@ class StoryFragmentPresenter @Inject constructor(
   private lateinit var linearLayoutManager: LinearLayoutManager
   private lateinit var linearSmoothScroller: RecyclerView.SmoothScroller
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, storyId: String): View? {
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String
+  ): View? {
     val viewModel = getStoryViewModel()
-    binding = StoryFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding = StoryFragmentBinding.inflate(
+      inflater,
+      container,
+      /* attachToRoot= */ false
+    )
+    viewModel.setInternalProfileId(internalProfileId)
+    viewModel.setTopicId(topicId)
     viewModel.setStoryId(storyId)
+    logStoryActivityEvent(topicId, storyId)
 
-    binding.toolbar.setNavigationOnClickListener {
+    binding.storyToolbar.setNavigationOnClickListener {
       (activity as StoryActivity).finish()
     }
 
@@ -60,31 +85,60 @@ class StoryFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  fun handleSelectExploration(explorationId: String) {
-    routeToExplorationListener.routeToExploration(explorationId)
+  fun handleSelectExploration(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    backflowScreen: Int?
+  ) {
+    routeToExplorationListener.routeToExploration(
+      internalProfileId,
+      topicId,
+      storyId,
+      explorationId,
+      backflowScreen
+    )
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<StoryItemViewModel> {
-    return BindableAdapter.Builder
-      .newBuilder<StoryItemViewModel>()
-      .registerViewTypeComputer { viewModel ->
+    return BindableAdapter.MultiTypeBuilder
+      .newBuilder<StoryItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
-          is StoryHeaderViewModel -> ViewType.VIEW_TYPE_HEADER.ordinal
-          is StoryChapterSummaryViewModel -> ViewType.VIEW_TYPE_CHAPTER.ordinal
+          is StoryHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
+          is StoryChapterSummaryViewModel -> ViewType.VIEW_TYPE_CHAPTER
           else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
         }
       }
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_HEADER.ordinal,
+        viewType = ViewType.VIEW_TYPE_HEADER,
         inflateDataBinding = StoryHeaderViewBinding::inflate,
         setViewModel = StoryHeaderViewBinding::setViewModel,
         transformViewModel = { it as StoryHeaderViewModel }
       )
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_CHAPTER.ordinal,
-        inflateDataBinding = StoryChapterViewBinding::inflate,
-        setViewModel = StoryChapterViewBinding::setViewModel,
-        transformViewModel = { it as StoryChapterSummaryViewModel }
+      .registerViewBinder(
+        viewType = ViewType.VIEW_TYPE_CHAPTER,
+        inflateView = { parent ->
+          StoryChapterViewBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            /* attachToParent= */ false
+          ).root
+        },
+        bindView = { view, viewModel ->
+          val binding = DataBindingUtil.findBinding<StoryChapterViewBinding>(view)!!
+          val storyItemViewModel = viewModel as StoryChapterSummaryViewModel
+          binding.viewModel = storyItemViewModel
+          binding.htmlContent =
+            htmlParserFactory.create(
+              resourceBucketName,
+              entityType,
+              storyItemViewModel.storyId,
+              imageCenterAlign = true
+            ).parseOppiaHtml(
+              storyItemViewModel.summary, binding.chapterSummary
+            )
+        }
       )
       .build()
   }
@@ -128,5 +182,13 @@ class StoryFragmentPresenter @Inject constructor(
       dipValue.toFloat(),
       Resources.getSystem().displayMetrics
     ).toInt()
+  }
+
+  private fun logStoryActivityEvent(topicId: String, storyId: String) {
+    oppiaLogger.logTransitionEvent(
+      oppiaClock.getCurrentCalendar().timeInMillis,
+      EventLog.EventAction.OPEN_STORY_ACTIVITY,
+      oppiaLogger.createStoryContext(topicId, storyId)
+    )
   }
 }

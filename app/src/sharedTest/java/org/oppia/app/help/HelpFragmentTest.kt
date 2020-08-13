@@ -1,0 +1,134 @@
+package org.oppia.app.help
+
+import android.content.Intent
+import androidx.recyclerview.widget.RecyclerView
+import androidx.test.core.app.ActivityScenario.launch
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.DrawerActions.close
+import androidx.test.espresso.contrib.DrawerMatchers.isClosed
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.firebase.FirebaseApp
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.oppia.app.R
+import org.oppia.app.help.faq.FAQListActivity
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.robolectric.annotation.LooperMode
+
+@RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
+class HelpFragmentTest {
+  @Before
+  fun setUp() {
+    Intents.init()
+    FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
+  }
+
+  private fun createHelpActivityIntent(
+    internalProfileId: Int,
+    isFromNavigationDrawer: Boolean
+  ): Intent {
+    return HelpActivity.createHelpActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      internalProfileId,
+      isFromNavigationDrawer
+    )
+  }
+
+  @Test
+  fun testHelpFragment_parentIsExploration_checkBackArrowVisible() {
+    launch<HelpActivity>(createHelpActivityIntent(0, false)).use {
+      onView(withContentDescription(R.string.abc_action_bar_up_description))
+        .check(matches(isCompletelyDisplayed()))
+    }
+  }
+
+  @Test
+  fun testHelpFragment_parentIsNotExploration_checkBackArrowNotVisible() {
+    launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
+      onView(withContentDescription(R.string.abc_action_bar_up_description))
+        .check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun openHelpActivity_scrollRecyclerViewToZeroPosition_showsFAQSuccessfully() {
+    launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
+      onView(withId(R.id.help_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
+      )
+      onView(
+        atPositionOnView(R.id.help_fragment_recycler_view, 0, R.id.help_item_text_view)
+      ).check(
+        matches(withText(R.string.frequently_asked_questions_FAQ))
+      )
+    }
+  }
+
+  @Test
+  fun openHelpActivity_configurationChanged_scrollRecyclerViewToZeroPosition_showsFAQSuccessfully() { // ktlint-disable max-line-length
+    launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.help_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
+      )
+      onView(
+        atPositionOnView(
+          R.id.help_fragment_recycler_view, 0, R.id.help_item_text_view
+        )
+      ).check(matches(withText(R.string.frequently_asked_questions_FAQ)))
+    }
+  }
+
+  @Test
+  fun openHelpActivity_selectFAQ_showFAQActivitySuccessfully() {
+    launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
+      onView(atPosition(R.id.help_fragment_recycler_view, 0)).perform(click())
+      intended(hasComponent(FAQListActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun openHelpActivity_openNavigationDrawer_navigationDrawerOpeningIsVerifiedSuccessfully() {
+    launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
+      onView(withContentDescription(R.string.drawer_open_content_description)).check(
+        matches(isCompletelyDisplayed())
+      ).perform(click())
+      onView(withId(R.id.help_fragment_placeholder))
+        .check(matches(isCompletelyDisplayed()))
+      onView(withId(R.id.help_activity_drawer_layout)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun openHelpActivity_openNavigationDrawerAndClose_closingOfNavigationDrawerIsVerifiedSuccessfully() { // ktlint-disable max-line-length
+    launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
+      onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
+      onView(withId(R.id.help_activity_drawer_layout)).perform(close())
+      onView(withId(R.id.help_activity_drawer_layout)).check(matches(isClosed()))
+    }
+  }
+
+  @After
+  fun tearDown() {
+    Intents.release()
+  }
+}

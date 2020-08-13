@@ -2,7 +2,9 @@ package org.oppia.app.databinding
 
 import android.graphics.drawable.GradientDrawable
 import android.view.View
+import android.widget.Button
 import androidx.annotation.ColorInt
+import androidx.annotation.DrawableRes
 import androidx.databinding.BindingAdapter
 import org.oppia.app.R
 
@@ -10,6 +12,13 @@ import org.oppia.app.R
 @BindingAdapter("app:roundedRectDrawableWithColor")
 fun setBackgroundDrawable(view: View, @ColorInt colorRgb: Int) {
   view.setBackgroundResource(R.drawable.rounded_rect_background)
+  // The input color needs to have alpha channel prepended to it.
+  (view.background as GradientDrawable).setColor((0xff000000 or colorRgb.toLong()).toInt())
+}
+
+@BindingAdapter("app:topRoundedRectDrawableWithColor")
+fun setTopBackgroundDrawable(view: View, @ColorInt colorRgb: Int) {
+  view.setBackgroundResource(R.drawable.top_rounded_rect_background)
   // The input color needs to have alpha channel prepended to it.
   (view.background as GradientDrawable).setColor((0xff000000 or colorRgb.toLong()).toInt())
 }
@@ -26,4 +35,9 @@ fun setRectangleBackgroundDrawable(view: View, @ColorInt colorRgb: Int) {
   view.setBackgroundResource(R.drawable.rectangle_background)
   // The input color needs to have alpha channel prepended to it.
   (view.background as GradientDrawable).setColor((0xff000000 or colorRgb.toLong()).toInt())
+}
+
+@BindingAdapter("android:button")
+fun setBackgroundResource(button: Button, @DrawableRes resource: Int) {
+  button.setBackgroundResource(resource)
 }

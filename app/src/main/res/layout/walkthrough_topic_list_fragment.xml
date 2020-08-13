@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.walkthrough.topiclist.WalkthroughTopicViewModel" />
+    <variable
+      name="presenter"
+      type="org.oppia.app.walkthrough.topiclist.WalkthroughTopicListFragmentPresenter" />
+  </data>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/walkthrough_topic_recycler_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:clipToPadding="false"
+      android:overScrollMode="never"
+      android:paddingTop="36dp"
+      android:paddingBottom="@dimen/bottom_white_space"
+      android:scrollbars="none"
+      app:data="@{viewModel.walkthroughTopicViewModelLiveData}" />
+  </LinearLayout>
+</layout>

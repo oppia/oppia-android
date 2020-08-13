@@ -3,6 +3,9 @@ package org.oppia.app.view
 import android.view.View
 import dagger.BindsInstance
 import dagger.Subcomponent
+import org.oppia.app.customview.LessonThumbnailImageView
+import org.oppia.app.player.state.DragDropSortInteractionView
+import org.oppia.app.player.state.ImageRegionSelectionInteractionView
 import org.oppia.app.player.state.SelectionInteractionView
 
 /** Root subcomponent for custom views. */
@@ -18,4 +21,7 @@ interface ViewComponent {
   }
 
   fun inject(selectionInteractionView: SelectionInteractionView)
+  fun inject(dragDropSortInteractionView: DragDropSortInteractionView)
+  fun inject(imageRegionSelectionInteractionView: ImageRegionSelectionInteractionView)
+  fun inject(lessonThumbnailImageView: LessonThumbnailImageView)
 }

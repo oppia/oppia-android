@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.home.topiclist.PromotedStoryViewModel" />
+  </data>
+
+  <com.google.android.material.card.MaterialCardView
+    android:layout_width="280dp"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginBottom="8dp"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="4dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/promoted_story_card_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:onClick="@{(v) -> viewModel.clickOnStoryTile()}"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/recently_played_stories_text_view"
+      app:roundedRectDrawableWithColor="@{viewModel.promotedStoryObservable.lessonThumbnail.backgroundColorRgb}">
+
+      <org.oppia.app.customview.LessonThumbnailImageView
+        android:id="@+id/lesson_thumbnail"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:importantForAccessibility="no"
+        android:scaleType="centerInside"
+        app:entityId="@{viewModel.promotedStoryObservable.storyId}"
+        app:entityType="@{viewModel.entityType}"
+        app:layout_constraintDimensionRatio="H, 16:9"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lessonThumbnail="@{viewModel.promotedStoryObservable.lessonThumbnail}" />
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bottom_rounded_rect_white_background"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lesson_thumbnail">
+
+        <TextView
+          android:id="@+id/chapter_name_text_view"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="16dp"
+          android:layout_marginTop="8dp"
+          android:layout_marginEnd="16dp"
+          android:ellipsize="end"
+          android:fontFamily="sans-serif-medium"
+          android:maxLines="1"
+          android:text="@{viewModel.promotedStoryObservable.nextChapterName}"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="18sp" />
+
+        <TextView
+          android:id="@+id/story_name_text_view"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="16dp"
+          android:layout_marginTop="4dp"
+          android:layout_marginEnd="16dp"
+          android:ellipsize="end"
+          android:fontFamily="sans-serif"
+          android:maxLines="1"
+          android:text="@{viewModel.promotedStoryObservable.storyName}"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="14sp" />
+
+        <TextView
+          android:id="@+id/topic_name_text_view"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="16dp"
+          android:layout_marginTop="8dp"
+          android:layout_marginEnd="16dp"
+          android:ellipsize="end"
+          android:fontFamily="sans-serif-light"
+          android:maxLines="1"
+          android:paddingBottom="8dp"
+          android:text="@{viewModel.promotedStoryObservable.topicName}"
+          android:textAllCaps="true"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="14sp" />
+      </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+  </com.google.android.material.card.MaterialCardView>
+</layout>

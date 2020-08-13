@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="isListExpanded"
+      type="Boolean" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.hintsandsolution.SolutionViewModel" />
+  </data>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="28dp"
+      android:layout_marginEnd="28dp"
+      android:layout_marginBottom="20dp"
+      android:orientation="horizontal">
+
+      <TextView
+        android:id="@+id/solution_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@color/oppiaPrimaryText"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+      <Button
+        android:id="@+id/reveal_solution_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="160dp"
+        android:minHeight="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginBottom="32dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/reveal_solution_brown_background"
+        android:padding="4dp"
+        android:textSize="14sp"
+        android:text="@string/reveal_solution"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/solution_title"
+        android:visibility="@{viewModel.isSolutionRevealed? View.GONE : View.VISIBLE}" />
+
+      <FrameLayout
+        android:id="@+id/expand_list_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:minWidth="48dp"
+        android:minHeight="48dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.966"
+        app:layout_constraintStart_toEndOf="@+id/solution_title"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="@{viewModel.isSolutionRevealed? View.VISIBLE : View.GONE}"
+        app:layout_constraintVertical_bias="0.0">
+
+        <ImageView
+          android:id="@+id/solution_list_drop_down_icon"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          android:padding="8dp"
+          android:layout_gravity="center_vertical"
+          android:contentDescription="@{@string/show_hide_solution_list(viewModel.solutionSummary)}"
+          android:src="@{isListExpanded? @drawable/ic_arrow_drop_up_black_24dp : @drawable/ic_arrow_drop_down_black_24dp}" />
+      </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+      android:id="@+id/solution_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:layout_marginStart="40dp"
+      android:layout_marginEnd="40dp"
+      android:layout_marginTop="8dp"
+      android:layout_marginBottom="32dp"
+      android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+          android:id="@+id/solution_correct_answer_label"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="start"
+          android:fontFamily="sans-serif-black"
+          android:text="@string/the_only_solution_is"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="16sp" />
+
+        <TextView
+          android:id="@+id/solution_correct_answer"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:fontFamily="sans-serif"
+          android:layout_marginStart="8dp"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="16sp" />
+      </LinearLayout>
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+          android:id="@+id/solution_summary_label"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="start"
+          android:layout_marginTop="12dp"
+          android:fontFamily="sans-serif-black"
+          android:text="@string/explanation"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="16sp" />
+
+        <TextView
+          android:id="@+id/solution_summary"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="start"
+          android:fontFamily="sans-serif"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="16sp" />
+      </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:layout_marginBottom="32dp"
+      android:background="@color/grey_shade_29"/>
+  </LinearLayout>
+</layout>

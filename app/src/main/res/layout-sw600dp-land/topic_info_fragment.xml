@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.topic.info.TopicInfoViewModel" />
+  </data>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <ScrollView
+      android:layout_width="@dimen/elevation_0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1">
+
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="112dp">
+
+        <TextView
+          android:id="@+id/topic_name_text_view"
+          android:layout_width="@dimen/elevation_0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="64dp"
+          android:layout_marginTop="120dp"
+          android:layout_marginEnd="64dp"
+          android:fontFamily="sans-serif"
+          android:text="@{viewModel.topic.name}"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="24sp"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+          android:id="@+id/story_count_text_view"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="64dp"
+          android:layout_marginTop="8dp"
+          android:layout_marginEnd="64dp"
+          android:fontFamily="sans-serif"
+          android:text="@{@plurals/story_count(viewModel.topic.storyCount, viewModel.topic.storyCount)}"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="16sp"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/topic_name_text_view" />
+
+        <TextView
+          android:id="@+id/topic_description_text_view"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="64dp"
+          android:layout_marginTop="16dp"
+          android:layout_marginEnd="64dp"
+          android:ellipsize="end"
+          android:fontFamily="sans-serif"
+          android:gravity="start"
+          android:text="@{viewModel.topicDescription}"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="16sp"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/story_count_text_view" />
+
+        <ImageView
+          android:id="@+id/download_status_image_view"
+          android:layout_width="20dp"
+          android:layout_height="20dp"
+          android:layout_marginStart="64dp"
+          android:layout_marginTop="32dp"
+          android:src="@{viewModel.downloadStatusIndicatorDrawableResourceId, default=@drawable/ic_available_offline_primary_24dp}"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/topic_description_text_view" />
+
+        <TextView
+          android:id="@+id/download_story_count_text_view"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="12dp"
+          android:fontFamily="sans-serif"
+          android:gravity="center_vertical"
+          android:text="@string/topic_downloaded"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="18sp"
+          app:layout_constraintBottom_toBottomOf="@+id/download_status_image_view"
+          app:layout_constraintStart_toEndOf="@+id/download_status_image_view"
+          app:layout_constraintTop_toTopOf="@+id/download_status_image_view" />
+
+        <TextView
+          android:id="@+id/download_size_text_view"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="8dp"
+          android:layout_marginEnd="32dp"
+          android:fontFamily="sans-serif"
+          android:text="@{String.format(@string/topic_download_text, viewModel.topicSize)}"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="18sp"
+          android:textStyle="italic"
+          app:layout_constraintBottom_toBottomOf="@+id/download_status_image_view"
+          app:layout_constraintStart_toEndOf="@+id/download_story_count_text_view"
+          app:layout_constraintTop_toTopOf="@+id/download_status_image_view" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:background="@color/topicThumbnailBackground"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="@+id/guideline6"
+      app:layout_constraintTop_toTopOf="parent">
+
+      <org.oppia.app.customview.LessonThumbnailImageView
+        android:id="@+id/topic_thumbnail_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="48dp"
+        android:layout_marginEnd="48dp"
+        app:entityId="@{viewModel.topic.topicId}"
+        app:entityType="@{viewModel.entityType}"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="4:3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lessonThumbnail="@{viewModel.topic.topicThumbnail}" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+  </LinearLayout>
+</layout>
