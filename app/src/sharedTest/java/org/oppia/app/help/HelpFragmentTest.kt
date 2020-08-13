@@ -31,8 +31,10 @@ import org.oppia.app.help.faq.FAQListActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.robolectric.annotation.LooperMode
 
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class HelpFragmentTest {
   @Before
   fun setUp() {

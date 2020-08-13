@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.oppia.app.R
 import org.oppia.app.databinding.ResetPinDialogBinding
 import org.oppia.app.fragment.FragmentScope
@@ -29,7 +28,6 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
     getResetPinViewModel()
   }
 
-  @ExperimentalCoroutinesApi
   fun handleOnCreateDialog(
     routeDialogInterface: ProfileRouteDialogInterface,
     profileId: Int,

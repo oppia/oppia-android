@@ -15,12 +15,14 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.util.logging.ExceptionLogger
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass
 import kotlin.reflect.full.cast
 
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class FakeExceptionLoggerTest {
 

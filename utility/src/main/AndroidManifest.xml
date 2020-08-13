@@ -1,5 +1,4 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   package="org.oppia.util">
-  <uses-sdk android:minSdkVersion="19"
-    android:targetSdkVersion="28" />
+  <uses-sdk android:targetSdkVersion="28" />
 </manifest>
