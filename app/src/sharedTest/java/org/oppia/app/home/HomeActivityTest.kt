@@ -3,8 +3,6 @@ package org.oppia.app.home
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -12,7 +10,6 @@ import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
@@ -22,12 +19,10 @@ import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
-import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
@@ -35,6 +30,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.espresso.util.TreeIterables
@@ -44,14 +40,10 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.asCoroutineDispatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
@@ -66,21 +58,19 @@ import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.testing.HomeInjectionActivity
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.profile.ProfileManagementController
-import org.oppia.domain.profile.ProfileTestHelper
-import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
-import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
+import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
+import org.oppia.testing.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.system.OppiaClock
-import org.oppia.util.threading.BackgroundDispatcher
-import org.oppia.util.threading.BlockingDispatcher
-import java.util.concurrent.AbstractExecutorService
-import java.util.concurrent.TimeUnit
+import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -96,6 +86,7 @@ private const val AFTERNOON_TIMESTAMP = 1556029320000
 
 /** Tests for [HomeActivity]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class HomeActivityTest {
 
   @Inject
@@ -108,18 +99,15 @@ class HomeActivityTest {
   private lateinit var oppiaClock: OppiaClock
 
   @Before
-  @ExperimentalCoroutinesApi
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
-    IdlingRegistry.getInstance().register(MainThreadExecutor.countingResource)
     profileTestHelper.initializeProfiles()
     FirebaseApp.initializeApp(context)
   }
 
   @After
   fun tearDown() {
-    IdlingRegistry.getInstance().unregister(MainThreadExecutor.countingResource)
     Intents.release()
   }
 
@@ -298,11 +286,11 @@ class HomeActivityTest {
       onView(
         allOf(
           withId(R.id.promoted_story_list_recycler_view),
-          ViewMatchers.withParent(
+          withParent(
             atPosition(R.id.home_recycler_view, 1)
           )
         )
-      ).check(matches(hasDescendant(withText(containsString("What is a Fraction?")))))
+      ).check(matches(hasDescendant(withText(containsString("Prototype Exploration")))))
     }
   }
 
@@ -314,7 +302,7 @@ class HomeActivityTest {
       )
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view)).check(
         matches(
-          withText(containsString("Matthew Goes to the Bakery"))
+          withText(containsString("First Story"))
         )
       )
     }
@@ -329,7 +317,7 @@ class HomeActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view)).check(
         matches(
-          withText(containsString("Matthew Goes to the Bakery"))
+          withText(containsString("First Story"))
         )
       )
     }
@@ -342,17 +330,17 @@ class HomeActivityTest {
         scrollToPosition<RecyclerView.ViewHolder>(1)
       )
       onView(
-        Matchers.allOf(
+        allOf(
           withId(R.id.promoted_story_list_recycler_view),
-          ViewMatchers.withParent(
+          withParent(
             atPosition(R.id.home_recycler_view, 1)
           )
         )
       ).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId))
-      intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
-      intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
+      intended(hasExtra(TopicActivity.getTopicIdKey(), TEST_TOPIC_ID_0))
+      intended(hasExtra(TopicActivity.getStoryIdKey(), TEST_STORY_ID_0))
     }
   }
 
@@ -364,7 +352,7 @@ class HomeActivityTest {
       )
       onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.topic_name_text_view)).check(
         matches(
-          withText(containsString("FRACTIONS"))
+          withText(containsString("FIRST TEST TOPIC"))
         )
       )
     }
@@ -378,7 +366,7 @@ class HomeActivityTest {
       )
       onView(atPositionOnView(R.id.home_recycler_view, 3, R.id.topic_name_text_view)).check(
         matches(
-          withText(containsString("First Topic"))
+          withText(containsString("First Test Topic"))
         )
       )
     }
@@ -397,7 +385,7 @@ class HomeActivityTest {
         )
       ).check(
         matches(
-          withText(containsString("4 Lessons"))
+          withText(containsString("5 Lessons"))
         )
       )
     }
@@ -411,7 +399,7 @@ class HomeActivityTest {
       )
       onView(atPositionOnView(R.id.home_recycler_view, 4, R.id.topic_name_text_view)).check(
         matches(
-          withText(containsString("Second Topic"))
+          withText(containsString("Second Test Topic"))
         )
       )
     }
@@ -587,26 +575,6 @@ class HomeActivityTest {
       return application
     }
 
-    // TODO(#89): Introduce a proper IdlingResource for background dispatchers to ensure they all complete before
-    //  proceeding in an Espresso test. This solution should also be interoperative with Robolectric contexts by using a
-    //  test coroutine dispatcher.
-
-    @Singleton
-    @Provides
-    @BackgroundDispatcher
-    fun provideBackgroundDispatcher(
-      @BlockingDispatcher blockingDispatcher: CoroutineDispatcher
-    ): CoroutineDispatcher {
-      return blockingDispatcher
-    }
-
-    @Singleton
-    @Provides
-    @BlockingDispatcher
-    fun provideBlockingDispatcher(): CoroutineDispatcher {
-      return MainThreadExecutor.asCoroutineDispatcher()
-    }
-
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
     @EnableConsoleLog
@@ -623,7 +591,12 @@ class HomeActivityTest {
   }
 
   @Singleton
-  @Component(modules = [TestModule::class, TestLogReportingModule::class])
+  @Component(
+    modules = [
+      TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
+      TestDispatcherModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
@@ -635,47 +608,6 @@ class HomeActivityTest {
 
     fun getProfileManagementController(): ProfileManagementController
     fun inject(homeActivityTest: HomeActivityTest)
-  }
-
-// TODO(#59): Move this to a general-purpose testing library that replaces all CoroutineExecutors with an
-//  Espresso-enabled executor service. This service should also allow for background threads to run in both Espresso
-//  and Robolectric to help catch potential race conditions, rather than forcing parallel execution to be sequential
-//  and immediate.
-//  NB: This also blocks on #59 to be able to actually create a test-only library.
-  /**
-   * An executor service that schedules all [Runnable]s to run asynchronously on the main thread. This is based on:
-   * https://android.googlesource.com/platform/packages/apps/TV/+/android-live-tv/src/com/android/tv/util/MainThreadExecutor.java.
-   */
-  private object MainThreadExecutor : AbstractExecutorService() {
-    override fun isTerminated(): Boolean = false
-
-    private val handler = Handler(Looper.getMainLooper())
-    val countingResource = CountingIdlingResource("main_thread_executor_counting_idling_resource")
-
-    override fun execute(command: Runnable?) {
-      countingResource.increment()
-      handler.post {
-        try {
-          command?.run()
-        } finally {
-          countingResource.decrement()
-        }
-      }
-    }
-
-    override fun shutdown() {
-      throw UnsupportedOperationException()
-    }
-
-    override fun shutdownNow(): MutableList<Runnable> {
-      throw UnsupportedOperationException()
-    }
-
-    override fun isShutdown(): Boolean = false
-
-    override fun awaitTermination(timeout: Long, unit: TimeUnit?): Boolean {
-      throw UnsupportedOperationException()
-    }
   }
 
   /** Custom class to check number of spans occupied by an item at a given position. */

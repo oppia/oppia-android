@@ -13,7 +13,7 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.HtmlParser
-import org.oppia.util.parser.RevisionCardHtmlParserEntityType
+import org.oppia.util.parser.TopicHtmlParserEntityType
 import javax.inject.Inject
 
 /** [ViewModel] for revision card, providing rich text and worked examples */
@@ -24,15 +24,13 @@ class RevisionCardViewModel @Inject constructor(
   private val logger: ConsoleLogger,
   private val htmlParserFactory: HtmlParser.Factory,
   @DefaultResourceBucketName private val resourceBucketName: String,
-  @RevisionCardHtmlParserEntityType private val entityType: String
+  @TopicHtmlParserEntityType private val entityType: String
 ) : ViewModel() {
   private lateinit var topicId: String
-  private lateinit var subtopicId: String
+  private var subtopicId: Int = 0
   private lateinit var binding: RevisionCardFragmentBinding
   private val returnToTopicClickListener: ReturnToTopicClickListener =
     activity as ReturnToTopicClickListener
-
-  var subtopicTitle: String = ""
 
   val explanationLiveData: LiveData<CharSequence> by lazy {
     processExplanationLiveData()
@@ -42,10 +40,14 @@ class RevisionCardViewModel @Inject constructor(
     returnToTopicClickListener.onReturnToTopicClicked()
   }
 
-  /** Sets the value of subtopicId and binding. Must be called before setting ViewModel to binding. */
-  fun setSubtopicIdAndBinding(topicId: String, id: String, binding: RevisionCardFragmentBinding) {
-    subtopicId = id
+  /** Sets the value of topicId, subtopicId and binding before anything else. */
+  fun setSubtopicIdAndBinding(
+    topicId: String,
+    subtopicId: Int,
+    binding: RevisionCardFragmentBinding
+  ) {
     this.topicId = topicId
+    this.subtopicId = subtopicId
     this.binding = binding
   }
 
@@ -70,9 +72,8 @@ class RevisionCardViewModel @Inject constructor(
     val revisionCard = revisionCardResult.getOrDefault(
       RevisionCard.getDefaultInstance()
     )
-    subtopicTitle = revisionCard.subtopicTitle
     return htmlParserFactory.create(
-      resourceBucketName, entityType, subtopicId, /* imageCenterAlign= */ true
+      resourceBucketName, entityType, topicId, /* imageCenterAlign= */ true
     ).parseOppiaHtml(revisionCard.pageContents.html, binding.revisionCardExplanationText)
   }
 }

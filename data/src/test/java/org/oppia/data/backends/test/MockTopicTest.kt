@@ -10,6 +10,7 @@ import org.oppia.data.backends.api.MockTopicService
 import org.oppia.data.backends.gae.NetworkInterceptor
 import org.oppia.data.backends.gae.NetworkSettings
 import org.oppia.data.backends.gae.api.TopicService
+import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.mock.MockRetrofit
@@ -19,6 +20,7 @@ import retrofit2.mock.NetworkBehavior
  * Test for [TopicService] retrofit instance using [MockTopicService]
  */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class MockTopicTest {
   private lateinit var mockRetrofit: MockRetrofit
   private lateinit var retrofit: Retrofit

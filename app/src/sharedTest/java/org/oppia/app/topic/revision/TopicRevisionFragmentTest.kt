@@ -39,10 +39,12 @@ import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandsc
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
+import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
 
 /** Tests for [TopicRevisionFragment]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class TopicRevisionFragmentTest {
   private val subtopicThumbnail = R.drawable.topic_fractions_01
   private val internalProfileId = 0
@@ -100,7 +102,7 @@ class TopicRevisionFragmentTest {
           isDescendantOfA(withId(R.id.topic_tabs_container))
         )
       ).perform(click())
-      onView(atPosition(R.id.revision_recycler_view, 0)).perform(click())
+      onView(atPosition(R.id.revision_recycler_view, 1)).perform(click())
       onView(withId(R.id.revision_card_explanation_text))
         .check(
           matches(

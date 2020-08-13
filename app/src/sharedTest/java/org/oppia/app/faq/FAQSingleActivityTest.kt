@@ -14,9 +14,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.help.faq.faqsingle.FAQSingleActivity
+import org.robolectric.annotation.LooperMode
 
 /** Tests for [FAQSingleActivity]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class FAQSingleActivityTest {
 
   @Test

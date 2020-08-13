@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
 
   <data>
 
@@ -58,15 +59,26 @@
         android:divider="@android:color/transparent"
         android:dividerHeight="8dp"
         android:overScrollMode="never"
-        android:paddingStart="24dp"
-        android:paddingTop="16dp"
-        android:paddingEnd="24dp"
-        android:paddingBottom="16dp"
         app:data="@{viewModel.itemList}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@id/question_progress_bar"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/center_guideline"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/end_session_body_text_view" />
+
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/extra_interaction_recycler_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="8dp"
+        android:overScrollMode="never"
+        android:visibility="@{viewModel.isSplitView ? View.VISIBLE : View.GONE}"
+        app:data="@{viewModel.rightItemList}"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@id/question_progress_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/center_guideline"
         app:layout_constraintTop_toBottomOf="@+id/end_session_body_text_view" />
 
       <ProgressBar
@@ -94,12 +106,20 @@
         android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+      <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/center_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@{viewModel.centerGuidelinePercentage.floatValue()}"
+        tools:layout_constraintGuide_percent="0.5f" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout
       android:id="@+id/hints_and_solution_fragment_placeholder"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"/>
+      android:layout_height="match_parent" />
 
     <FrameLayout
       android:id="@+id/hints_and_solution_fragment_container"

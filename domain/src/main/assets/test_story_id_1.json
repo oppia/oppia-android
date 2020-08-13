@@ -1,0 +1,73 @@
+{
+  "story_nodes": [
+    {
+      "description": "Learning about oppia app in Second Story.",
+      "exploration_id": "test_exp_id_1",
+      "destination_node_ids": [
+        "node_2"
+      ],
+      "thumbnail_filename": "",
+      "outline_is_finalized": false,
+      "id": "node_1",
+      "prerequisite_skill_ids": [],
+      "thumbnail_bg_color": "#D68F78",
+      "exp_summary_dict": {
+        "thumbnail_bg_color": "#d68453",
+        "thumbnail_icon_url": "",
+        "title": "Second Exploration inner",
+        "language_code": "en",
+        "objective": "Learn about oppia app via testing in second exploration.",
+        "id": "test_exp_id_1"
+      },
+      "outline": "",
+      "title": "Second Exploration",
+      "acquired_skill_ids": []
+    },
+    {
+      "description": "Learning about oppia app in Second Story",
+      "exploration_id": "test_exp_id_0",
+      "destination_node_ids": [
+        "node_3"
+      ],
+      "thumbnail_filename": "",
+      "outline_is_finalized": false,
+      "id": "node_2",
+      "prerequisite_skill_ids": [],
+      "thumbnail_bg_color": "#D68F78",
+      "exp_summary_dict": {
+        "thumbnail_bg_color": "#d68453",
+        "thumbnail_icon_url": "",
+        "title": "Third Exploration inner",
+        "language_code": "en",
+        "objective": "Learn about oppia app via testing in third exploration.",
+        "id": "test_exp_id_0"
+      },
+      "outline": "",
+      "title": "Third Exploration",
+      "acquired_skill_ids": []
+    },
+    {
+      "description": "Learning about oppia app in Second Story",
+      "exploration_id": "test_exp_id_3",
+      "destination_node_ids": [],
+      "thumbnail_filename": "",
+      "outline_is_finalized": false,
+      "id": "node_3",
+      "prerequisite_skill_ids": [],
+      "thumbnail_bg_color": "#D68F78",
+      "exp_summary_dict": {
+        "thumbnail_bg_color": "#d68453",
+        "thumbnail_icon_url": "",
+        "title": "Fourth Exploration inner",
+        "language_code": "en",
+        "objective": "Learn about oppia app via testing in fourth exploration",
+        "id": "test_exp_id_3"
+      },
+      "outline": "",
+      "title": "Fourth Exploration",
+      "acquired_skill_ids": []
+    }
+  ],
+  "story_description": "",
+  "story_title": "Second Story"
+}

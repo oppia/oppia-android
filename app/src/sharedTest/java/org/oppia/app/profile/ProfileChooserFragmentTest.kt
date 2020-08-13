@@ -40,9 +40,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.instanceOf
 import org.hamcrest.Matchers.not
@@ -52,29 +49,27 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.home.HomeActivity
-import org.oppia.app.model.AppLanguage
-import org.oppia.app.model.AudioLanguage
-import org.oppia.app.model.StoryTextSize
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.profile.ProfileManagementController
-import org.oppia.domain.profile.ProfileTestHelper
+import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
+import org.oppia.testing.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
-import org.oppia.util.threading.BackgroundDispatcher
-import org.oppia.util.threading.BlockingDispatcher
+import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
-import javax.inject.Qualifier
 import javax.inject.Singleton
 
 private const val TIMEOUT = 1000L
 private const val CONDITION_CHECK_INTERVAL = 100L
 
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class ProfileChooserFragmentTest {
 
   @Inject
@@ -87,7 +82,6 @@ class ProfileChooserFragmentTest {
   lateinit var context: Context
 
   @Before
-  @ExperimentalCoroutinesApi
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
@@ -158,13 +152,13 @@ class ProfileChooserFragmentTest {
       )
       onView(withId(R.id.profile_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          2
+          3
         )
       )
       onView(
         atPositionOnView(
           R.id.profile_recycler_view,
-          2, R.id.add_profile_text
+          3, R.id.add_profile_text
         )
       ).check(
         matches(
@@ -273,7 +267,6 @@ class ProfileChooserFragmentTest {
   /* ktlint-enable max-line-length */
 
   @Test
-  @ExperimentalCoroutinesApi
   fun testProfileChooserFragment_addManyProfiles_checkProfilesSortedAndNoAddProfile() {
     profileTestHelper.initializeProfiles()
     profileTestHelper.addMoreProfiles(8)
@@ -445,7 +438,7 @@ class ProfileChooserFragmentTest {
   fun testProfileChooserFragment_clickAddProfile_checkOpensAdminAuthActivity_onBackButton_opensProfileChooserFragment() {
     profileTestHelper.initializeProfiles()
     launch<ProfileActivity>(createProfileActivityIntent()).use {
-      onView(atPosition(R.id.profile_recycler_view, 2)).perform(click())
+      onView(atPosition(R.id.profile_recycler_view, 3)).perform(click())
       intended(hasComponent(AdminAuthActivity::class.java.name))
       intended(hasExtra(AdminAuthActivity.getIntentKey(), 1))
       onView(allOf(instanceOf(TextView::class.java), withParent(withId(R.id.admin_auth_toolbar))))
@@ -498,13 +491,16 @@ class ProfileChooserFragmentTest {
       null,
       true,
       -10710042,
-      true,
-      StoryTextSize.SMALL_TEXT_SIZE,
-      AppLanguage.ENGLISH_APP_LANGUAGE,
-      AudioLanguage.NO_AUDIO
+      true
     )
     launch<ProfileActivity>(createProfileActivityIntent()).use {
-      onView(atPosition(R.id.profile_recycler_view, 1)).perform(click())
+      onView(
+        atPositionOnView(
+          R.id.profile_recycler_view,
+          1,
+          R.id.add_profile_item
+        )
+      ).perform(click())
       waitUntilActivityVisible<AdminPinActivity>()
       intended(hasComponent(AdminPinActivity::class.java.name))
     }
@@ -518,10 +514,7 @@ class ProfileChooserFragmentTest {
       null,
       true,
       -10710042,
-      true,
-      StoryTextSize.SMALL_TEXT_SIZE,
-      AppLanguage.ENGLISH_APP_LANGUAGE,
-      AudioLanguage.NO_AUDIO
+      true
     )
     launch<ProfileActivity>(createProfileActivityIntent()).use {
       onView(withId(R.id.administrator_controls_linear_layout)).perform(click())
@@ -589,7 +582,7 @@ class ProfileChooserFragmentTest {
   fun testProfileChooserFragment_multipleProfiles_checkText_addProfileIsVisible() {
     profileTestHelper.initializeProfiles()
     launch<ProfileActivity>(createProfileActivityIntent()).use {
-      onView(atPositionOnView(R.id.profile_recycler_view, 2, R.id.add_profile_text))
+      onView(atPositionOnView(R.id.profile_recycler_view, 3, R.id.add_profile_text))
         .check(matches(withText(R.string.profile_chooser_add)))
     }
   }
@@ -601,10 +594,9 @@ class ProfileChooserFragmentTest {
       onView(
         atPositionOnView(
           R.id.profile_recycler_view,
-          2, R.id.add_profile_description_text
+          3, R.id.add_profile_description_text
         )
-      )
-        .check(matches(not(isDisplayed())))
+      ).check(matches(not(isDisplayed())))
     }
   }
 
@@ -649,41 +641,12 @@ class ProfileChooserFragmentTest {
     return ApplicationProvider.getApplicationContext<Context>().resources
   }
 
-  @Qualifier
-  annotation class TestDispatcher
-
   @Module
   class TestModule {
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
       return application
-    }
-
-    @ExperimentalCoroutinesApi
-    @Singleton
-    @Provides
-    @TestDispatcher
-    fun provideTestDispatcher(): CoroutineDispatcher {
-      return TestCoroutineDispatcher()
-    }
-
-    @Singleton
-    @Provides
-    @BackgroundDispatcher
-    fun provideBackgroundDispatcher(
-      @TestDispatcher testDispatcher: CoroutineDispatcher
-    ): CoroutineDispatcher {
-      return testDispatcher
-    }
-
-    @Singleton
-    @Provides
-    @BlockingDispatcher
-    fun provideBlockingDispatcher(
-      @TestDispatcher testDispatcher: CoroutineDispatcher
-    ): CoroutineDispatcher {
-      return testDispatcher
     }
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
@@ -702,7 +665,12 @@ class ProfileChooserFragmentTest {
   }
 
   @Singleton
-  @Component(modules = [TestModule::class, TestLogReportingModule::class])
+  @Component(
+    modules = [
+      TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
+      TestDispatcherModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.player.state.itemviewmodel.SelectionInteractionViewModel" />
+  </data>
+
+  <LinearLayout
+    android:id="@+id/interaction_container_linear_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="24dp"
+    android:layout_marginBottom="0dp"
+    android:background="@{viewModel.hasConversationView ? @drawable/rounded_rect_grey_border_white_background : @drawable/rounded_rect_white_background}"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    android:padding="0dp"
+    app:layoutMarginEnd="@{viewModel.hasConversationView ? @dimen/margin_176 : @dimen/margin_192}"
+    app:layoutMarginStart="@{viewModel.hasConversationView ? @dimen/margin_208 : @dimen/margin_192}"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <org.oppia.app.player.state.SelectionInteractionView
+      android:id="@+id/selection_interaction_recyclerview"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:divider="@android:color/transparent"
+      app:allOptionsItemInputType="@{viewModel.getSelectionItemInputType()}"
+      app:data="@{viewModel.choiceItems}"
+      app:entityId="@{viewModel.entityId}"
+      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+  </LinearLayout>
+</layout>

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
@@ -20,6 +21,10 @@ import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -44,23 +49,26 @@ import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.not
+import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.help.HelpActivity
+import org.oppia.app.options.OptionsActivity
 import org.oppia.app.testing.ExplorationInjectionActivity
 import org.oppia.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.exploration.ExplorationDataController
-import org.oppia.domain.exploration.TEST_EXPLORATION_ID_30
 import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.domain.topic.RATIOS_STORY_ID_0
 import org.oppia.domain.topic.RATIOS_TOPIC_ID
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.util.networking.NetworkConnectionUtil
@@ -85,8 +93,14 @@ class ExplorationActivityTest {
 
   @Before
   fun setUp() {
+    Intents.init()
     setUpTestApplicationComponent()
     FirebaseApp.initializeApp(context)
+  }
+
+  @After
+  fun tearDown() {
+    Intents.release()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -114,13 +128,13 @@ class ExplorationActivityTest {
 
   @Test
   fun testExploration_toolbarTitle_isDisplayedSuccessfully() {
-    getApplicationDependencies(TEST_EXPLORATION_ID_30)
+    getApplicationDependencies(TEST_EXPLORATION_ID_2)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_30
+        TEST_EXPLORATION_ID_2
       )
     ).use {
       waitForTheView(withText("Prototype Exploration"))
@@ -132,13 +146,13 @@ class ExplorationActivityTest {
 
   @Test
   fun testExploration_configurationChange_toolbarTitle_isDisplayedSuccessfully() {
-    getApplicationDependencies(TEST_EXPLORATION_ID_30)
+    getApplicationDependencies(TEST_EXPLORATION_ID_2)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_30
+        TEST_EXPLORATION_ID_2
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -150,14 +164,75 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithNoVoiceover_openPrototypeExploration_checkAudioButtonIsHidden() {
-    getApplicationDependencies(TEST_EXPLORATION_ID_30)
+  fun testExploration_overflowMenu_isDisplayedSuccessfully() {
+    getApplicationDependencies(TEST_EXPLORATION_ID_2)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_30
+        TEST_EXPLORATION_ID_2
+      )
+    ).use {
+      openActionBarOverflowOrOptionsMenu(context)
+      onView(withText(context.getString(R.string.menu_options))).check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.help))).check(matches(isDisplayed()))
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
+  fun testExploration_openOverflowMenu_selectHelpInOverflowMenu_opensHelpActivity() {
+    getApplicationDependencies(TEST_EXPLORATION_ID_2)
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
+      )
+    ).use {
+      openActionBarOverflowOrOptionsMenu(context)
+      onView(withText(context.getString(R.string.help))).perform(click())
+      intended(hasComponent(HelpActivity::class.java.name))
+      intended(hasExtra(HelpActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, /* value= */ false))
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
+  fun testExploration_openOverflowMenu_selectOptionsInOverflowMenu_opensOptionsActivity() {
+    getApplicationDependencies(TEST_EXPLORATION_ID_2)
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
+      )
+    ).use {
+      openActionBarOverflowOrOptionsMenu(context)
+      onView(withText(context.getString(R.string.menu_options))).perform(click())
+      intended(hasComponent(OptionsActivity::class.java.name))
+      intended(
+        hasExtra(
+          OptionsActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
+          /* value= */ false
+        )
+      )
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
+  fun testAudioWithNoVoiceover_openPrototypeExploration_checkAudioButtonIsHidden() {
+    getApplicationDependencies(TEST_EXPLORATION_ID_2)
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
       )
     ).use {
       onView(withId(R.id.action_audio_player)).check(matches(not(isDisplayed())))
@@ -167,13 +242,13 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWithNoVoiceover_openPrototypeExploration_configurationChange_checkAudioButtonIsHidden() { // ktlint-disable max-line-length
-    getApplicationDependencies(TEST_EXPLORATION_ID_30)
+    getApplicationDependencies(TEST_EXPLORATION_ID_2)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_30
+        TEST_EXPLORATION_ID_2
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -395,6 +470,7 @@ class ExplorationActivityTest {
   }
 
   @Test
+  @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
   fun testAudioWithWifi_openRatioExploration_clickAudioIcon_checkAudioFragmentHasDefaultLanguageAndAutoPlays() { // ktlint-disable max-line-length
     getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
@@ -522,6 +598,22 @@ class ExplorationActivityTest {
       )
     ).use {
       pressBack()
+      onView(withText(R.string.stop_exploration_dialog_title)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testExplorationActivity_onToolbarClosePressed_showsStopExplorationDialog() {
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0
+      )
+    ).use {
+      onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
       onView(withText(R.string.stop_exploration_dialog_title)).inRoot(isDialog())
         .check(matches(isDisplayed()))
     }

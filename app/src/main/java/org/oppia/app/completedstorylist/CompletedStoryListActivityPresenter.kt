@@ -18,7 +18,8 @@ class CompletedStoryListActivityPresenter @Inject constructor(
         .beginTransaction()
         .add(
           R.id.completed_story_list_fragment_placeholder,
-          CompletedStoryListFragment.newInstance(internalProfileId)
+          CompletedStoryListFragment.newInstance(internalProfileId),
+          CompletedStoryListFragment.COMPLETED_STORY_LIST_FRAGMENT_TAG
         ).commitNow()
     }
   }

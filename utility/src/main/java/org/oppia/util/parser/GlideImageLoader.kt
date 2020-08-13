@@ -2,11 +2,11 @@ package org.oppia.util.parser
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Picture
+import android.graphics.drawable.PictureDrawable
 import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.CustomTarget
 import org.oppia.util.caching.AssetRepository
 import org.oppia.util.caching.CacheAssetsLocally
 import javax.inject.Inject
@@ -18,7 +18,7 @@ class GlideImageLoader @Inject constructor(
   private val assetRepository: AssetRepository
 ) : ImageLoader {
 
-  override fun load(imageUrl: String, target: CustomTarget<Bitmap>) {
+  override fun loadBitmap(imageUrl: String, target: ImageTarget<Bitmap>) {
     val model: Any = if (cacheAssetsLocally) {
       object : ImageAssetFetcher {
         override fun fetchImage(): ByteArray = assetRepository.loadRemoteBinaryAsset(imageUrl)()
@@ -29,10 +29,10 @@ class GlideImageLoader @Inject constructor(
     Glide.with(context)
       .asBitmap()
       .load(model)
-      .into(target)
+      .intoTarget(target)
   }
 
-  override fun loadSvg(imageUrl: String, target: CustomTarget<Picture>) {
+  override fun loadSvg(imageUrl: String, target: ImageTarget<PictureDrawable>) {
     val model: Any = if (cacheAssetsLocally) {
       object : ImageAssetFetcher {
         override fun fetchImage(): ByteArray = assetRepository.loadRemoteBinaryAsset(imageUrl)()
@@ -43,10 +43,17 @@ class GlideImageLoader @Inject constructor(
 
     // TODO(#45): Ensure the image caching flow is properly hooked up.
     Glide.with(context)
-      .`as`(Picture::class.java)
+      .`as`(PictureDrawable::class.java)
       .fitCenter()
       .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE))
       .load(model)
-      .into(target)
+      .intoTarget(target)
+  }
+
+  private fun <T> RequestBuilder<T>.intoTarget(target: ImageTarget<T>) {
+    when (target) {
+      is CustomImageTarget -> into(target.customTarget)
+      is ImageViewTarget -> into(target.imageView)
+    }
   }
 }

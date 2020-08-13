@@ -27,8 +27,8 @@ import org.oppia.app.utility.ProgressMatcher.Companion.withProgress
 import org.robolectric.annotation.LooperMode
 
 /** Tests for [WalkthroughFinalFragment]. */
-@LooperMode(LooperMode.Mode.PAUSED)
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class WalkthroughFinalFragmentTest {
 
   @Before

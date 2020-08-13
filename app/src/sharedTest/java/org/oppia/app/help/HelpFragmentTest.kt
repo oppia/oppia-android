@@ -1,10 +1,12 @@
 package org.oppia.app.help
 
+import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.DrawerActions.close
 import androidx.test.espresso.contrib.DrawerMatchers.isClosed
@@ -29,8 +31,10 @@ import org.oppia.app.help.faq.FAQListActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.robolectric.annotation.LooperMode
 
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class HelpFragmentTest {
   @Before
   fun setUp() {
@@ -38,9 +42,36 @@ class HelpFragmentTest {
     FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
   }
 
+  private fun createHelpActivityIntent(
+    internalProfileId: Int,
+    isFromNavigationDrawer: Boolean
+  ): Intent {
+    return HelpActivity.createHelpActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      internalProfileId,
+      isFromNavigationDrawer
+    )
+  }
+
+  @Test
+  fun testHelpFragment_parentIsExploration_checkBackArrowVisible() {
+    launch<HelpActivity>(createHelpActivityIntent(0, false)).use {
+      onView(withContentDescription(R.string.abc_action_bar_up_description))
+        .check(matches(isCompletelyDisplayed()))
+    }
+  }
+
+  @Test
+  fun testHelpFragment_parentIsNotExploration_checkBackArrowNotVisible() {
+    launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
+      onView(withContentDescription(R.string.abc_action_bar_up_description))
+        .check(doesNotExist())
+    }
+  }
+
   @Test
   fun openHelpActivity_scrollRecyclerViewToZeroPosition_showsFAQSuccessfully() {
-    launch(HelpActivity::class.java).use {
+    launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
       onView(withId(R.id.help_fragment_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(0)
       )
@@ -54,7 +85,7 @@ class HelpFragmentTest {
 
   @Test
   fun openHelpActivity_configurationChanged_scrollRecyclerViewToZeroPosition_showsFAQSuccessfully() { // ktlint-disable max-line-length
-    launch(HelpActivity::class.java).use {
+    launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.help_fragment_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(0)
@@ -69,7 +100,7 @@ class HelpFragmentTest {
 
   @Test
   fun openHelpActivity_selectFAQ_showFAQActivitySuccessfully() {
-    launch(HelpActivity::class.java).use {
+    launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
       onView(atPosition(R.id.help_fragment_recycler_view, 0)).perform(click())
       intended(hasComponent(FAQListActivity::class.java.name))
     }
@@ -77,7 +108,7 @@ class HelpFragmentTest {
 
   @Test
   fun openHelpActivity_openNavigationDrawer_navigationDrawerOpeningIsVerifiedSuccessfully() {
-    launch(HelpActivity::class.java).use {
+    launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).check(
         matches(isCompletelyDisplayed())
       ).perform(click())
@@ -89,7 +120,7 @@ class HelpFragmentTest {
 
   @Test
   fun openHelpActivity_openNavigationDrawerAndClose_closingOfNavigationDrawerIsVerifiedSuccessfully() { // ktlint-disable max-line-length
-    launch(HelpActivity::class.java).use {
+    launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
       onView(withId(R.id.help_activity_drawer_layout)).perform(close())
       onView(withId(R.id.help_activity_drawer_layout)).check(matches(isClosed()))
