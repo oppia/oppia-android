@@ -67,7 +67,7 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
   @DefaultResourceBucketName private val gcsResource: String,
   @ImageDownloadUrlTemplate private val imageDownloadUrlTemplate: String,
   @TopicListToCache private val topicListToCache: List<String>
-  ) : PrimeTopicAssetsController {
+) : PrimeTopicAssetsController {
 
   // NOTE TO DEVELOPERS: Don't ever do this. The application should use shared dispatchers to
   // control resources & coordinate tests. This custom dispatcher is needed since priming is a
@@ -169,15 +169,18 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
         if (!dialogDismissed.get()) {
           activity?.let {
             val appCompatActivity = it as AppCompatActivity
-            primeDownloadStatus.observe(appCompatActivity, object : Observer<PrimeAssetsStatus> {
-              override fun onChanged(primeAssetsStatus: PrimeAssetsStatus?) {
-                primeAssetsStatus?.let { status ->
-                  if (status.totalDownloadCount > 0 && !dialogShown.get()) {
-                    showProgressDialog(appCompatActivity, dialogStyleResId)
+            primeDownloadStatus.observe(
+              appCompatActivity,
+              object : Observer<PrimeAssetsStatus> {
+                override fun onChanged(primeAssetsStatus: PrimeAssetsStatus?) {
+                  primeAssetsStatus?.let { status ->
+                    if (status.totalDownloadCount > 0 && !dialogShown.get()) {
+                      showProgressDialog(appCompatActivity, dialogStyleResId)
+                    }
                   }
                 }
               }
-            })
+            )
           }
         }
       }
@@ -332,7 +335,7 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
   }
 
   private fun getUriForVoiceover(explorationId: String, voiceover: Voiceover): String {
-    return "https://storage.googleapis.com/${gcsResource}/exploration" +
+    return "https://storage.googleapis.com/$gcsResource/exploration" +
       "/$explorationId/assets/audio/${voiceover.fileName}"
   }
 
@@ -344,6 +347,8 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
   }
 
   private data class PrimeAssetsStatus(
-    val currentDownloadCount: Int, val totalDownloadCount: Int, val failedDownloadCount: Int = 0
+    val currentDownloadCount: Int,
+    val totalDownloadCount: Int,
+    val failedDownloadCount: Int = 0
   )
 }
