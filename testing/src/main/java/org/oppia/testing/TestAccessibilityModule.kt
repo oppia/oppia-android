@@ -10,5 +10,7 @@ import org.oppia.util.accessibility.FakeAccessibilityManager
 interface TestAccessibilityModule {
 
   @Binds
-  fun bindFakeAccessibilityManager(fakeAccessibilityManager: FakeAccessibilityManager): CustomAccessibilityManager
+  fun bindFakeAccessibilityManager(
+    fakeAccessibilityManager: FakeAccessibilityManager
+  ): CustomAccessibilityManager
 }

@@ -27,11 +27,12 @@ import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
-import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class OppiaLoggerTest {
   @Before
@@ -125,9 +126,6 @@ class OppiaLoggerTest {
       .build()
       .inject(this)
   }
-
-  @Qualifier
-  annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module

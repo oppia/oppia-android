@@ -1,5 +1,6 @@
 package org.oppia.app.recyclerview
 
+import android.app.Application
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
@@ -7,13 +8,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import dagger.BindsInstance
+import dagger.Component
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -29,9 +31,15 @@ import org.oppia.app.testing.BindableAdapterTestActivity
 import org.oppia.app.testing.BindableAdapterTestFragment
 import org.oppia.app.testing.BindableAdapterTestFragmentPresenter
 import org.oppia.app.testing.BindableAdapterTestViewModel
+import org.oppia.testing.TestCoroutineDispatchers
+import org.oppia.testing.TestDispatcherModule
+import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [BindableAdapter]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class BindableAdapterTest {
   companion object {
     private val STR_VALUE_0 = TestModel.newBuilder().setStrValue("Item 0").build()
@@ -41,8 +49,13 @@ class BindableAdapterTest {
     private val INT_VALUE_1 = TestModel.newBuilder().setIntValue(42).build()
   }
 
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Before
   fun setUp() {
+    setUpTestApplication()
+
     // Ensure that the bindable fragment's test state is properly reset each time.
     BindableAdapterTestFragmentPresenter.testBindableAdapter = null
   }
@@ -80,7 +93,7 @@ class BindableAdapterTest {
         val liveData = getRecyclerViewListLiveData(activity)
         liveData.value = listOf(STR_VALUE_0)
       }
-      safelyWaitUntilIdle()
+      testCoroutineDispatchers.runCurrent()
 
       scenario.onActivity { activity ->
         val recyclerView: RecyclerView =
@@ -118,7 +131,7 @@ class BindableAdapterTest {
         val liveData = getRecyclerViewListLiveData(activity)
         liveData.value = listOf(STR_VALUE_1, STR_VALUE_0, STR_VALUE_2)
       }
-      safelyWaitUntilIdle()
+      testCoroutineDispatchers.runCurrent()
 
       scenario.onActivity { activity ->
         val recyclerView: RecyclerView =
@@ -142,7 +155,7 @@ class BindableAdapterTest {
         val liveData = getRecyclerViewListLiveData(activity)
         liveData.value = listOf(STR_VALUE_1, INT_VALUE_0, INT_VALUE_1)
       }
-      safelyWaitUntilIdle()
+      testCoroutineDispatchers.runCurrent()
 
       // Verify that all three values are bound in the correct order and with the correct values.
       scenario.onActivity { activity ->
@@ -178,7 +191,7 @@ class BindableAdapterTest {
         val liveData = getRecyclerViewListLiveData(activity)
         liveData.value = listOf(STR_VALUE_0)
       }
-      safelyWaitUntilIdle()
+      testCoroutineDispatchers.runCurrent()
 
       scenario.onActivity { activity ->
         val recyclerView: RecyclerView =
@@ -201,7 +214,7 @@ class BindableAdapterTest {
         val liveData = getRecyclerViewListLiveData(activity)
         liveData.value = listOf(STR_VALUE_1, STR_VALUE_0, STR_VALUE_2)
       }
-      safelyWaitUntilIdle()
+      testCoroutineDispatchers.runCurrent()
 
       scenario.onActivity { activity ->
         val recyclerView: RecyclerView =
@@ -226,7 +239,7 @@ class BindableAdapterTest {
         val liveData = getRecyclerViewListLiveData(activity)
         liveData.value = listOf(STR_VALUE_1, INT_VALUE_0, INT_VALUE_1)
       }
-      safelyWaitUntilIdle()
+      testCoroutineDispatchers.runCurrent()
 
       // Verify that all three values are bound in the correct order and with the correct values.
       scenario.onActivity { activity ->
@@ -249,6 +262,13 @@ class BindableAdapterTest {
         )
       ).check(matches(withSubstring(INT_VALUE_1.intValue.toString())))
     }
+  }
+
+  private fun setUpTestApplication() {
+    DaggerBindableAdapterTest_TestApplicationComponent.builder()
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
   }
 
   private fun createSingleViewTypeNoDataBindingBindableAdapter(): BindableAdapter<TestModel> {
@@ -341,8 +361,22 @@ class BindableAdapterTest {
     return activity.supportFragmentManager.findFragmentByTag(BINDABLE_TEST_FRAGMENT_TAG) as BindableAdapterTestFragment // ktlint-disable max-line-length
   }
 
-  private fun safelyWaitUntilIdle() {
-    // This must be done off the main thread for Espresso otherwise it deadlocks.
-    onIdle()
+  // TODO(#89): Move this to a common test application component.
+  @Singleton
+  @Component(
+    modules = [
+      TestDispatcherModule::class
+    ]
+  )
+  interface TestApplicationComponent {
+    @Component.Builder
+    interface Builder {
+      @BindsInstance
+      fun setApplication(application: Application): Builder
+
+      fun build(): TestApplicationComponent
+    }
+
+    fun inject(bindableAdapterTest: BindableAdapterTest)
   }
 }
