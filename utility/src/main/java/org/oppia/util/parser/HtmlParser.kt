@@ -35,11 +35,16 @@ class HtmlParser private constructor(
    *
    * @param rawString raw HTML to parse
    * @param htmlContentTextView the [TextView] that will contain the returned [Spannable]
-   * @param supportsLinks whether the provided [TextView] should support link forwarding (it's recommended not to use
-   *     this for [TextView]s that are within other layouts that need to support clicking (default false)
+   * @param supportsLinks whether the provided [TextView] should support link forwarding (it's
+   *     recommended not to use this for [TextView]s that are within other layouts that need to
+   *     support clicking (default false)
    * @return a [Spannable] representing the styled text.
    */
-  fun parseOppiaHtml(rawString: String, htmlContentTextView: TextView, supportsLinks: Boolean = false): Spannable {
+  fun parseOppiaHtml(
+    rawString: String,
+    htmlContentTextView: TextView,
+    supportsLinks: Boolean = false
+  ): Spannable {
     var htmlContent = rawString
     if (htmlContent.contains("\n\t")) {
       htmlContent = htmlContent.replace("\n\t", "")
@@ -48,7 +53,7 @@ class HtmlParser private constructor(
       htmlContent = htmlContent.replace("\n\n", "")
     }
 
-    // TODO: add support for imageCenterAlign & other fixes to HtmlParser since #422 (consider #731).
+    // TODO: support for imageCenterAlign & other fixes to HtmlParser since #422 (consider #731).
     if (htmlContent.contains(CUSTOM_IMG_TAG)) {
       htmlContent = htmlContent.replace(CUSTOM_IMG_TAG, REPLACE_IMG_TAG)
       htmlContent =
@@ -112,14 +117,22 @@ class HtmlParser private constructor(
   // https://mohammedlakkadshaw.com/blog/handling-custom-tags-in-android-using-html-taghandler.html/
   private class ConceptCardTagHandler(
     private val customOppiaTagActionListener: CustomOppiaTagActionListener?
-  ): CustomHtmlContentHandler.CustomTagHandler {
-    override fun handleTag(attributes: Attributes, openIndex: Int, closeIndex: Int, output: Editable) {
+  ) : CustomHtmlContentHandler.CustomTagHandler {
+    override fun handleTag(
+      attributes: Attributes,
+      openIndex: Int,
+      closeIndex: Int,
+      output: Editable
+    ) {
       val skillId = attributes.getValue("skill-id")
-      output.setSpan(object : ClickableSpan() {
-        override fun onClick(view: View) {
-          customOppiaTagActionListener?.onConceptCardLinkClicked(view, skillId)
-        }
-      }, openIndex, closeIndex, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+      output.setSpan(
+        object : ClickableSpan() {
+          override fun onClick(view: View) {
+            customOppiaTagActionListener?.onConceptCardLinkClicked(view, skillId)
+          }
+        },
+        openIndex, closeIndex, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+      )
     }
   }
 
@@ -146,8 +159,8 @@ class HtmlParser private constructor(
   /** Listener that's called when a custom tag triggers an event. */
   interface CustomOppiaTagActionListener {
     /**
-     * Called when an embedded concept card link is clicked in the specified view with the skillId corresponding to the
-     * card that should be shown.
+     * Called when an embedded concept card link is clicked in the specified view with the skillId
+     * corresponding to the card that should be shown.
      */
     fun onConceptCardLinkClicked(view: View, skillId: String)
   }
@@ -155,13 +168,24 @@ class HtmlParser private constructor(
   /** Factory for creating new [HtmlParser]s. */
   class Factory @Inject constructor(private val urlImageParserFactory: UrlImageParser.Factory) {
     /**
-     * Returns a new [HtmlParser] with the specified entity type and ID for loading images, and an optionally specified
-     * [CustomOppiaTagActionListener] for handling custom Oppia tag events.
+     * Returns a new [HtmlParser] with the specified entity type and ID for loading images, and an
+     * optionally specified [CustomOppiaTagActionListener] for handling custom Oppia tag events.
      */
     fun create(
-      gcsResourceName: String, entityType: String, entityId: String, imageCenterAlign: Boolean, customOppiaTagActionListener: CustomOppiaTagActionListener? = null
+      gcsResourceName: String,
+      entityType: String,
+      entityId: String,
+      imageCenterAlign: Boolean,
+      customOppiaTagActionListener: CustomOppiaTagActionListener? = null
     ): HtmlParser {
-      return HtmlParser(urlImageParserFactory, gcsResourceName, entityType, entityId, imageCenterAlign, customOppiaTagActionListener)
+      return HtmlParser(
+        urlImageParserFactory,
+        gcsResourceName,
+        entityType,
+        entityId,
+        imageCenterAlign,
+        customOppiaTagActionListener
+      )
     }
   }
 }

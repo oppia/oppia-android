@@ -91,7 +91,6 @@ private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 /** The fragment tag corresponding to the concept card dialog fragment. */
 const val CONCEPT_CARD_DIALOG_FRAGMENT_TAG = "CONCEPT_CARD_FRAGMENT"
 
-
 /**
  * An assembler for generating the list of view models to bind to the state player recycler view.
  * This class also handles some non-recycler view feature management, such as the congratulations
@@ -170,7 +169,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private val isSplitView = ObservableField<Boolean>(false)
 
   override fun onConceptCardLinkClicked(view: View, skillId: String) {
-    ConceptCardFragment.newInstance(skillId).showNow(fragment.childFragmentManager, CONCEPT_CARD_DIALOG_FRAGMENT_TAG)
+    ConceptCardFragment
+      .newInstance(skillId)
+      .showNow(fragment.childFragmentManager, CONCEPT_CARD_DIALOG_FRAGMENT_TAG)
   }
 
   /**

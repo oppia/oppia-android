@@ -450,7 +450,9 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun dismissConceptCard() {
-    fragment.childFragmentManager.findFragmentByTag(CONCEPT_CARD_DIALOG_FRAGMENT_TAG)?.let { dialogFragment ->
+    fragment.childFragmentManager.findFragmentByTag(
+      CONCEPT_CARD_DIALOG_FRAGMENT_TAG
+    )?.let { dialogFragment ->
       fragment.childFragmentManager.beginTransaction().remove(dialogFragment).commitNow()
     }
   }
