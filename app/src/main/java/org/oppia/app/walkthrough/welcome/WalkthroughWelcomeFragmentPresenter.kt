@@ -29,7 +29,7 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
   private val logger: ConsoleLogger
-): WalkthroughFragmentListener {
+) : WalkthroughFragmentListener {
   private lateinit var binding: WalkthroughWelcomeFragmentBinding
   private val routeToNextPage = activity as WalkthroughFragmentChangeListener
   private lateinit var walkthroughWelcomeViewModel: WalkthroughWelcomeViewModel
