@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.oppia.app.R
 import org.oppia.app.databinding.PinPasswordActivityBinding
 import org.oppia.app.home.HomeActivity
@@ -38,7 +37,6 @@ class PinPasswordActivityPresenter @Inject constructor(
   private var profileId = -1
   private lateinit var alertDialog: AlertDialog
 
-  @ExperimentalCoroutinesApi
   fun handleOnCreate() {
     StatusBarColor.statusBarColorUpdate(R.color.pinInputStatusBar, activity, true)
     val adminPin = activity.intent.getStringExtra(KEY_PIN_PASSWORD_ADMIN_PIN)

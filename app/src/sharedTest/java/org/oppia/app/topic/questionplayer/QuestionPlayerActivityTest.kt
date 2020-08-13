@@ -15,10 +15,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
+import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
 
 /** Tests for [QuestionPlayerActivity]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class QuestionPlayerActivityTest {
   // TODO(#503): add tests for QuestionPlayerActivity (use StateFragmentTest for a reference).
   // TODO(#1273): add tests for Hints and Solution in Question Player .

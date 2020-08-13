@@ -10,6 +10,7 @@ import org.oppia.data.backends.api.MockStoryService
 import org.oppia.data.backends.gae.NetworkInterceptor
 import org.oppia.data.backends.gae.NetworkSettings
 import org.oppia.data.backends.gae.api.StoryService
+import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.mock.MockRetrofit
@@ -19,6 +20,7 @@ import retrofit2.mock.NetworkBehavior
  * Test for [StoryService] retrofit instance using [MockStoryService]
  */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class MockStoryTest {
   private lateinit var mockRetrofit: MockRetrofit
   private lateinit var retrofit: Retrofit

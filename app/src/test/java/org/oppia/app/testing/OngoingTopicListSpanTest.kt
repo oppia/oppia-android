@@ -9,7 +9,6 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -18,12 +17,13 @@ import org.oppia.app.R
 import org.oppia.app.ongoingtopiclist.OngoingTopicListActivity
 import org.oppia.app.ongoingtopiclist.OngoingTopicListFragment
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class OngoingTopicListSpanTest {
 
   @Before
-  @ExperimentalCoroutinesApi
   fun setUp() {
     Intents.init()
     FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())

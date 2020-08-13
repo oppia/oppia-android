@@ -32,7 +32,7 @@ class TopicPracticeFragmentPresenter @Inject constructor(
   private lateinit var binding: TopicPracticeFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
   lateinit var selectedSubtopicIdList: ArrayList<Int>
-  private var skillIdHashMap = HashMap<Int, MutableList<String>>()
+  var skillIdHashMap = HashMap<Int, MutableList<String>>()
   private lateinit var topicId: String
   private lateinit var topicPracticeFooterViewBinding: TopicPracticeFooterViewBinding
   private val routeToQuestionPlayerListener = activity as RouteToQuestionPlayerListener
@@ -41,6 +41,7 @@ class TopicPracticeFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     subtopicList: ArrayList<Int>,
+    selectedSkillId: HashMap<Int, MutableList<String>>,
     internalProfileId: Int,
     topicId: String
   ): View? {
@@ -50,6 +51,7 @@ class TopicPracticeFragmentPresenter @Inject constructor(
     viewModel.setInternalProfileId(internalProfileId)
 
     selectedSubtopicIdList = subtopicList
+    skillIdHashMap = selectedSkillId
     binding = TopicPracticeFragmentBinding.inflate(
       inflater,
       container,
