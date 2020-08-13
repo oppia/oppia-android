@@ -444,6 +444,7 @@ kt_android_library(
     visibility = ["//visibility:private"],
 )
 
+# TODO(#1639): Translate binding adapters back to Kotlin post-Bazel modularization.
 # Library for all custom data-binding adapters under org/oppia/app/databinding
 android_library(
     name = "databinding_adapters",
@@ -464,6 +465,7 @@ android_library(
     visibility = ["//visibility:private"],
 )
 
+# TODO(#1639): Translate binding adapters back to Kotlin post-Bazel modularization.
 # Library for all custom databinding adapters under org/oppia/app/recyclerview
 android_library(
     name = "recyclerview_adapters",
@@ -488,7 +490,6 @@ kt_android_library(
     custom_package = "org.oppia.app.ui",
     srcs = APP_FILES,
     enable_data_binding = 1,
-    resource_files = glob(LAYOUTS),
     manifest = "src/main/AppAndroidManifest.xml",
     deps = [
         "//data",
@@ -496,30 +497,20 @@ kt_android_library(
         "//utility",
         ":dagger",
         ":databinding_adapters",
+        ":databinding_resources",
         ":resources",
         ":view_models",
         ":views",
-        "databinding_resources",
-        artifact("androidx.appcompat:appcompat"),
-        artifact("com.github.bumptech.glide:glide"),
-        artifact("com.caverock:androidsvg-aar"),
-        artifact("com.chaos.view:pinview"),
-        artifact("androidx.core:core"),
+        artifact("androidx.databinding:databinding-adapters"),
+        artifact("androidx.databinding:databinding-common"),
+        artifact("androidx.databinding:databinding-runtime"),
         artifact("androidx.lifecycle:lifecycle-extensions:2.2.0"),
         artifact("androidx.lifecycle:lifecycle-livedata-core:2.2.0"),
         artifact("androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"),
-        artifact("androidx.databinding:databinding-runtime"),
-        artifact("androidx.databinding:databinding-adapters"),
-        artifact("androidx.databinding:databinding-common"),
-        artifact("androidx.annotation:annotation"),
-        artifact("androidx.constraintlayout:constraintlayout:1.1.3"),
-        artifact("javax.annotation:javax.annotation-api:jar"),
-        artifact("de.hdodenhof:circleimageview:3.0.1"),
         artifact("androidx.multidex:multidex:2.0.1"),
-        artifact("androidx.multidex:multidex-instrumentation:2.0.0"),
-        artifact("com.google.android.material:material:1.2.0-alpha02"),
         artifact("androidx.viewpager:viewpager:1.0.0"),
-        "@circularimageview//circularimageview:circular_image_view",
+        artifact("com.caverock:androidsvg-aar"),
+        artifact("javax.annotation:javax.annotation-api:jar"),
     ],
     visibility = ["//visibility:public"],
 )
