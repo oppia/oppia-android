@@ -134,7 +134,8 @@ class HtmlParser private constructor(
             customOppiaTagActionListener?.onConceptCardLinkClicked(view, skillId)
           }
         },
-        0, text.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+        0, text.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+      )
       output.replace(openIndex, closeIndex, spannableBuilder)
     }
   }
