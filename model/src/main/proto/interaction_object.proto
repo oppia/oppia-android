@@ -22,12 +22,18 @@ message InteractionObject {
     ListOfSetsOfHtmlStrings list_of_sets_of_html_string = 9;
     ImageWithRegions image_with_regions = 10;
     ClickOnImage click_on_image = 11;
+    RatioExpression ratio_expression = 12;
   }
 }
 
 // Structure containing a string list.
 message StringList {
   repeated string html = 1;
+}
+
+// Structure containing a ratio object.
+message RatioExpression {
+  string html = 1;
 }
 
 // Structure for a number with units object.
