@@ -16,6 +16,7 @@ import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.oppialogger.LogStorageModule
+import org.oppia.domain.oppialogger.exceptions.OppiaUncaughtExceptionHandler
 import org.oppia.domain.question.QuestionModule
 import org.oppia.util.accessibility.AccessibilityModule
 import org.oppia.util.caching.CachingModule
@@ -57,4 +58,15 @@ interface ApplicationComponent {
   }
 
   fun getActivityComponentBuilderProvider(): Provider<ActivityComponent.Builder>
+}
+
+@Component(modules = [OppiaExceptionHandlerModule::class])
+interface HandlerComponent{
+  @Component.Builder
+  interface Builder{
+    @BindsInstance
+    fun setApplication(application: Application): Builder
+    fun build(): HandlerComponent
+  }
+  fun inject(oppiaUncaughtExceptionHandler: OppiaUncaughtExceptionHandler)
 }
