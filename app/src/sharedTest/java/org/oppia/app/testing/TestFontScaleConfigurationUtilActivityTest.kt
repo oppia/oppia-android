@@ -16,9 +16,11 @@ import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.model.StoryTextSize
 import org.oppia.app.utility.FontSizeMatcher.Companion.withFontSize
+import org.robolectric.annotation.LooperMode
 
 /** Tests for [TestFontScaleConfigurationUtilActivity]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class TestFontScaleConfigurationUtilActivityTest {
   lateinit var context: Context
 

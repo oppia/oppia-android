@@ -24,7 +24,6 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.databinding.AddProfileActivityBinding
@@ -53,7 +52,6 @@ class AddProfileActivityPresenter @Inject constructor(
   private var inputtedConfirmPin = false
   private lateinit var alertDialog: AlertDialog
 
-  @ExperimentalCoroutinesApi
   fun handleOnCreate() {
 
     val binding = DataBindingUtil.setContentView<AddProfileActivityBinding>(

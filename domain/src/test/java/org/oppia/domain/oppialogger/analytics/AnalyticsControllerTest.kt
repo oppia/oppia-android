@@ -10,8 +10,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.InternalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -47,8 +45,8 @@ import org.oppia.util.logging.LogLevel
 import org.oppia.util.networking.NetworkConnectionUtil
 import org.oppia.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
-import javax.inject.Qualifier
 import javax.inject.Singleton
 
 const val TEST_TIMESTAMP = 1556094120000
@@ -61,6 +59,7 @@ const val TEST_SKILL_LIST_ID = "test_skillListId"
 const val TEST_SUB_TOPIC_ID = 1
 
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class AnalyticsControllerTest {
 
@@ -80,7 +79,6 @@ class AnalyticsControllerTest {
   @Inject
   lateinit var fakeEventLogger: FakeEventLogger
 
-  @InternalCoroutinesApi
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
@@ -354,8 +352,6 @@ class AnalyticsControllerTest {
 
   // TODO(#1106): Addition of tests tracking behaviour of the controller after uploading of logs to the remote service.
 
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   @Test
   fun testController_logTransitionEvent_withNoNetwork_checkLogsEventToStore() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
@@ -386,8 +382,6 @@ class AnalyticsControllerTest {
     assertThat(eventLog.actionName).isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
   }
 
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   @Test
   fun testController_logClickEvent_withNoNetwork_checkLogsEventToStore() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
@@ -418,8 +412,6 @@ class AnalyticsControllerTest {
     assertThat(eventLog.actionName).isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
   }
 
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   @Test
   fun testController_logTransitionEvent_withNoNetwork_exceedLimit_checkEventLogStoreSize() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
@@ -437,8 +429,6 @@ class AnalyticsControllerTest {
     assertThat(eventLogStoreSize).isEqualTo(2)
   }
 
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   @Test
   fun testController_logTransitionEvent_logClickEvent_withNoNetwork_checkOrderinCache() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
@@ -480,8 +470,6 @@ class AnalyticsControllerTest {
     assertThat(secondEventLog.priority).isEqualTo(Priority.ESSENTIAL)
   }
 
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   @Test
   fun testController_logTransitionEvent_switchToNoNetwork_logClickEvent_checkManagement() {
     analyticsController.logTransitionEvent(
@@ -530,8 +518,6 @@ class AnalyticsControllerTest {
     assertThat(cachedEventLog.actionName).isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
   }
 
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   @Test
   fun testController_logEvents_exceedLimit_withNoNetwork_checkCorrectEventIsEvicted() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
@@ -612,9 +598,6 @@ class AnalyticsControllerTest {
       )
     )
   }
-
-  @Qualifier
-  annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module

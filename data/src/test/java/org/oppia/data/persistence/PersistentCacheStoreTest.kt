@@ -13,8 +13,6 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.async
 import org.junit.Before
 import org.junit.Rule
@@ -67,7 +65,6 @@ class PersistentCacheStoreTest {
   @Inject
   lateinit var dataProviders: DataProviders
 
-  @InternalCoroutinesApi
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
@@ -92,15 +89,12 @@ class PersistentCacheStoreTest {
   }
 
   @Before
-  @ExperimentalCoroutinesApi
   fun setUp() {
     setUpTestApplicationComponent()
   }
 
   // TODO(#59): Create a test-only proto for this test rather than needing to reuse a production-facing proto.
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testCache_toLiveData_initialState_isPending() {
     val cacheStore = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
 
@@ -121,8 +115,6 @@ class PersistentCacheStoreTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testCache_toLiveData_loaded_providesInitialValue() {
     val cacheStore = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
 
@@ -140,8 +132,6 @@ class PersistentCacheStoreTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testCache_nonDefaultInitialState_toLiveData_loaded_providesCorrectInitialVal() {
     val cacheStore = cacheFactory.create(CACHE_NAME_1, TEST_MESSAGE_VERSION_1)
 
@@ -157,8 +147,6 @@ class PersistentCacheStoreTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testCache_registerObserver_updateAfter_observerNotifiedOfNewValue() {
     val cacheStore = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
 
@@ -175,8 +163,6 @@ class PersistentCacheStoreTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testCache_registerObserver_updateBefore_observesUpdatedStateInitially() {
     val cacheStore = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
 
@@ -192,8 +178,6 @@ class PersistentCacheStoreTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testCache_noMemoryCacheUpdate_updateAfterReg_observerNotNotified() {
     val cacheStore = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
 
@@ -209,8 +193,6 @@ class PersistentCacheStoreTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testCache_noMemoryCacheUpdate_updateBeforeReg_observesUpdatedState() {
     val cacheStore = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
 
@@ -232,8 +214,6 @@ class PersistentCacheStoreTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testCache_updated_newCache_newObserver_observesNewValue() {
     val cacheStore1 = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
     val storeOp = cacheStore1.storeDataAsync { TEST_MESSAGE_VERSION_1 }
@@ -256,8 +236,6 @@ class PersistentCacheStoreTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testCache_updated_noInMemoryCacheUpdate_newCache_newObserver_observesNewVal() {
     val cacheStore1 = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
     val storeOp = cacheStore1.storeDataAsync(updateInMemoryCache = false) { TEST_MESSAGE_VERSION_1 }
@@ -281,8 +259,6 @@ class PersistentCacheStoreTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testExistingDiskCache_newCacheObject_updateNoMemThenRead_receivesNewValue() {
     val cacheStore1 = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
     val storeOp1 =
@@ -309,8 +285,6 @@ class PersistentCacheStoreTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testExistingDiskCache_newObject_updateNoMemThenRead_primed_receivesPrevVal() {
     val cacheStore1 = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
     val storeOp1 =
@@ -340,8 +314,6 @@ class PersistentCacheStoreTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testExistingDiskCache_newObject_updateMemThenRead_primed_receivesNewVal() {
     val cacheStore1 = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
     val storeOp1 =
@@ -370,8 +342,6 @@ class PersistentCacheStoreTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testCache_primed_afterStoreUpdateWithoutMemUpdate_notForced_observesOldValue() {
     val cacheStore = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
     observeCache(
@@ -400,8 +370,6 @@ class PersistentCacheStoreTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testCache_primed_afterStoreUpdateWithoutMemoryUpdate_forced_observesNewValue() {
     val cacheStore = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
     observeCache(
@@ -428,8 +396,6 @@ class PersistentCacheStoreTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testCache_clear_initialState_keepsCacheStateTheSame() {
     val cacheStore = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
 
@@ -450,8 +416,6 @@ class PersistentCacheStoreTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testCache_update_clear_resetsCacheToInitialState() {
     val cacheStore = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
     val storeOp = cacheStore.storeDataAsync { TEST_MESSAGE_VERSION_1 }
@@ -475,8 +439,6 @@ class PersistentCacheStoreTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testCache_update_existingObserver_clear_isNotifiedOfClear() {
     val cacheStore = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
     val storeOp = cacheStore.storeDataAsync { TEST_MESSAGE_VERSION_1 }
@@ -501,8 +463,6 @@ class PersistentCacheStoreTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testCache_update_newCache_observesInitialState() {
     val cacheStore1 = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
     val storeOp = cacheStore1.storeDataAsync { TEST_MESSAGE_VERSION_1 }
@@ -526,8 +486,6 @@ class PersistentCacheStoreTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testMultipleCaches_oneUpdates_newCacheSameNameDiffInit_observesUpdatedValue() {
     val cacheStore1 = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
     val storeOp = cacheStore1.storeDataAsync { TEST_MESSAGE_VERSION_1 }
@@ -550,8 +508,6 @@ class PersistentCacheStoreTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testMultipleCaches_differentNames_oneUpdates_otherDoesNotObserveChange() {
     val cacheStore1 = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
     val cacheStore2 = cacheFactory.create(CACHE_NAME_2, TestMessage.getDefaultInstance())
@@ -569,8 +525,6 @@ class PersistentCacheStoreTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testMultipleCaches_diffNames_oneUpdates_cachesRecreated_onlyOneObservesVal() {
     val cacheStore1a = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
     cacheFactory.create(CACHE_NAME_2, TestMessage.getDefaultInstance())
@@ -602,8 +556,6 @@ class PersistentCacheStoreTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   fun testNewCache_fileCorrupted_providesError() {
     val cacheStore1 = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
     val storeOp = cacheStore1.storeDataAsync { TEST_MESSAGE_VERSION_1 }
@@ -626,8 +578,6 @@ class PersistentCacheStoreTest {
     )
   }
 
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   private fun <T : MessageLite> observeCache(
     cacheStore: PersistentCacheStore<T>,
     observer: Observer<AsyncResult<T>>
