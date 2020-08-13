@@ -1,5 +1,7 @@
 # TODO(#1532): Rename file to 'BUILD' post-Gradle.
-
+'''
+Oppia Android binary
+'''
 android_binary(
     name = "oppia",
     custom_package = "org.oppia.app",

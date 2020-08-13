@@ -9,14 +9,14 @@ load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 # Source files for annotations library.
-ANNOTATION_FILES = [
+ANNOTATIONS = [
     "src/main/java/org/oppia/app/activity/ActivityScope.kt",
     "src/main/java/org/oppia/app/fragment/FragmentScope.kt",
     "src/main/java/org/oppia/app/utility/KeyboardHelper.kt",
 ]
 
 # Source files for listener library.
-LISTENER_FILES = [
+LISTENERS = [
     "src/main/java/org/oppia/app/administratorcontrols/RouteToAppVersionListener.kt",
     "src/main/java/org/oppia/app/administratorcontrols/RouteToProfileListListener.kt",
     "src/main/java/org/oppia/app/drawer/RouteToProfileProgressListener.kt",
@@ -63,15 +63,12 @@ LISTENER_FILES = [
 ]
 
 # Layout files for databinding_resources library.
-LAYOUT_RES_FILES = [
-    "src/main/res/layout-land/**",
-    "src/main/res/layout-sw600dp-land/**",
-    "src/main/res/layout-sw600dp-port/**",
-    "src/main/res/layout/**",
+LAYOUTS = [
+    "src/main/res/layout*/**"
 ]
 
 # Source files for view_model library
-VIEW_MODEL_FILES = [
+VIEW_MODELS = [
     "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAppInformationViewModel.kt",
     "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsDownloadPermissionsViewModel.kt",
     "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsGeneralViewModel.kt",
@@ -198,7 +195,7 @@ ALTERED_VIEW_MODELS = [
     "src/main/java/org/oppia/app/topic/info/TopicInfoViewModel.kt",
 ]
 
-[VIEW_MODEL_FILES.append("update_" + altered_view_models[0:-3])
+[VIEW_MODELS.append("update_" + altered_view_models[0:-3])
 for altered_view_models in ALTERED_VIEW_MODELS]
 
 # TODO(#1617): Remove genrules post-gradle
@@ -208,7 +205,6 @@ Genrule for source files in the view_models library.
 Because each databinding library must have a unique package name and manifest, resources must be
 imported using the proper package name when building with Bazel. This genrule alters those imports
 in order to keep Gradle building.
->>>>>>> f782cee29e8496b4742943c22a4836039d7df2ba
 '''
 [genrule(
     name = "update_" + file[0:-3],
@@ -222,7 +218,7 @@ in order to keep Gradle building.
 for file in ALTERED_VIEW_MODELS]
 
 # Source files and genrule targets for views library.
-VIEW_FILES = [
+VIEWS = [
     "src/main/java/org/oppia/app/customview/interaction/FractionInputInteractionView.kt",
     "src/main/java/org/oppia/app/customview/interaction/NumericInputInteractionView.kt",
     "src/main/java/org/oppia/app/customview/interaction/TextInputInteractionView.kt",
@@ -244,7 +240,7 @@ ALTERED_VIEWS = [
     "src/main/java/org/oppia/app/utility/ClickableAreasImage.kt",
 ]
 
-[VIEW_FILES.append("update_" + altered_views[0:-3])
+[VIEWS.append("update_" + altered_views[0:-3])
 for altered_views in ALTERED_VIEWS]
 
 # TODO(#1617): Remove genrules post-gradle
@@ -254,7 +250,6 @@ Genrule for source files in the views library.
 Because each databinding library must have a unique package name and manifest, resources must be
 imported using the proper package name when building with Bazel. This genrule alters those imports
 in order to keep Gradle building.
->>>>>>> f782cee29e8496b4742943c22a4836039d7df2ba
 '''
 [genrule(
      name = "update_" + file[0:-3],
@@ -268,7 +263,7 @@ in order to keep Gradle building.
 for file in ALTERED_VIEWS]
 
 # Source files and genrule targets for databinding_adapters library.
-DATABINDING_ADAPTER_FILES = [
+DATABINDING_ADAPTERS = [
     "src/main/java/org/oppia/app/databinding/EditTextBindingAdapters.java",
     "src/main/java/org/oppia/app/databinding/GuidelineBindingAdapters.java",
     "src/main/java/org/oppia/app/databinding/MarginBindingAdapters.java",
@@ -305,15 +300,15 @@ account for altered package and file name.
 for file in ALTERED_DATABINDING_ADAPTERS]
 
 # Source files for recyclerview_adapters library.
-RECYCLERVIEW_ADAPTER_FILES = [
+RECYCLERVIEW_ADAPTERS = [
     "src/main/java/org/oppia/app/recyclerview/RecyclerViewBindingAdapter.java"
 ]
 
-BINDING_ADAPTER_FILES = DATABINDING_ADAPTER_FILES + RECYCLERVIEW_ADAPTER_FILES
+BINDING_ADAPTERS = DATABINDING_ADAPTERS + RECYCLERVIEW_ADAPTERS + ALTERED_DATABINDING_ADAPTERS
 
-EXCLUDED_APP_LIB_FILES = VIEW_MODEL_FILES + ALTERED_VIEW_MODELS + VIEW_FILES + ALTERED_VIEWS + BINDING_ADAPTER_FILES + ALTERED_DATABINDING_ADAPTERS + LISTENER_FILES + ANNOTATION_FILES
+EXCLUDED_APP_LIB_FILES = VIEW_MODELS + ALTERED_VIEW_MODELS + VIEWS + ALTERED_VIEWS + BINDING_ADAPTERS + LISTENERS + ANNOTATIONS
 
-GENRULE_APP_FILES = glob(["src/main/java/org/oppia/app/**/*.kt"], exclude = VIEW_MODEL_FILES + ALTERED_VIEW_MODELS + VIEW_FILES + ALTERED_VIEWS + BINDING_ADAPTER_FILES + ALTERED_DATABINDING_ADAPTERS + LISTENER_FILES + ANNOTATION_FILES)
+GENRULE_APP_FILES = glob(["src/main/java/org/oppia/app/**/*.kt"], exclude = EXCLUDED_APP_LIB_FILES)
 
 APP_FILES = []
 
@@ -321,7 +316,6 @@ APP_FILES = []
 Genrule that alters both resource import statements and class names for adapter files in order to
 account for altered package and file name.
 '''
-
 [genrule(
      name = "update_" + file[0:-3],
      srcs = [file[0:-3] + ".kt"],
@@ -355,18 +349,18 @@ android_library(
     name = "databinding_resources",
     custom_package = "org.oppia.app.databinding",
     manifest = "src/main/DbAndroidManifest.xml",
-    srcs = BINDING_ADAPTER_FILES,
+    srcs = BINDING_ADAPTERS,
     resource_files = glob(["src/main/res/layout*/**"]),
     enable_data_binding = 1,
     exports_manifest = True,
     deps = [
-        ":resources",
         "//model",
+        ":annotations",
         ":databinding_adapters",
         ":recyclerview_adapters",
+        ":resources",
         ":view_models",
         ":views",
-        ":annotations",
         artifact("com.google.android.material:material"),
         artifact("androidx.databinding:databinding-runtime"),
         artifact("androidx.databinding:databinding-adapters"),
@@ -388,10 +382,10 @@ android_library(
 kt_android_library(
     name = "listeners",
     custom_package = "org.oppia.app",
-    srcs = LISTENER_FILES,
+    srcs = LISTENERS,
     deps = [
-        ":dagger",
         "//model",
+        ":dagger",
         artifact("androidx.recyclerview:recyclerview:1.0.0"),
         artifact("androidx.databinding:databinding-runtime"),
         artifact("androidx.databinding:databinding-adapters"),
@@ -406,13 +400,13 @@ kt_android_library(
     name = "views",
     custom_package = "org.oppia.app.views",
     manifest = "src/main/ViewsManifest.xml",
-    srcs = VIEW_FILES,
+    srcs = VIEWS,
     deps = [
-        ":listeners",
-        ":annotations",
-        ":view_models",
-        ":resources",
         "//model",
+        ":annotations",
+        ":listeners",
+        ":resources",
+        ":view_models",
         artifact("androidx.appcompat:appcompat"),
         artifact("androidx.core:core-ktx"),
         "@circularimageview//circularimageview:circular_image_view",
@@ -424,10 +418,10 @@ kt_android_library(
 kt_android_library(
     name = "annotations",
     custom_package = "org.oppia.app",
-    srcs = ANNOTATION_FILES,
+    srcs = ANNOTATIONS,
     deps = [
-        ":dagger",
         "//model",
+        ":dagger",
         artifact("androidx.recyclerview:recyclerview:1.0.0"),
     ],
     visibility = ["//visibility:private"],
@@ -437,16 +431,16 @@ kt_android_library(
 kt_android_library(
     name = "view_models",
     custom_package = "org.oppia.app.vm",
-    srcs = VIEW_MODEL_FILES,
+    srcs = VIEW_MODELS,
     enable_data_binding = 1,
     manifest = "src/main/ViewModelManifest.xml",
     deps = [
-        ":dagger",
+        "//domain",
         "//model",
         "//utility",
-        "//domain",
-        ":listeners",
         ":annotations",
+        ":dagger",
+        ":listeners",
         ":resources",
         artifact("androidx.appcompat:appcompat"),
         artifact("com.github.bumptech.glide:glide"),
@@ -466,15 +460,15 @@ kt_android_library(
 android_library(
     name = "databinding_adapters",
     custom_package = "org.oppia.app.impl.adapters",
-    srcs = DATABINDING_ADAPTER_FILES,
+    srcs = DATABINDING_ADAPTERS,
     enable_data_binding = 1,
     manifest = "src/main/DbAdaptersAndroidManifest.xml",
     deps = [
-        ":dagger",
         "//model",
         "//utility",
-        ":view_models",
+        ":dagger",
         ":resources",
+        ":view_models",
         artifact("androidx.appcompat:appcompat"),
         artifact("com.chaos.view:pinview:1.4.3"),
         artifact("com.github.bumptech.glide:glide"),
@@ -498,13 +492,13 @@ android_library(
 android_library(
     name = "recyclerview_adapters",
     custom_package = "org.oppia.app.rv",
-    srcs = RECYCLERVIEW_ADAPTER_FILES,
+    srcs = RECYCLERVIEW_ADAPTERS,
     enable_data_binding = 1,
     manifest = "src/main/RvAdaptersAndroidManifest.xml",
     deps = [
-        ":dagger",
         "//model",
         "//utility",
+        ":dagger",
         ":view_models",
         artifact("androidx.appcompat:appcompat"),
         artifact("com.chaos.view:pinview:1.4.3"),
@@ -531,18 +525,18 @@ kt_android_library(
     custom_package = "org.oppia.app.ui",
     srcs = APP_FILES,
     enable_data_binding = 1,
-    resource_files = glob(LAYOUT_RES_FILES),
+    resource_files = glob(LAYOUTS),
     manifest = "src/main/AppAndroidManifest.xml",
     deps = [
-        ":dagger",
-        ":view_models",
-        ":views",
-        ":databinding_adapters",
+        "//data",
         "//model",
         "//utility",
-        "resources",
+        ":dagger",
+        ":databinding_adapters",
+        ":resources",
+        ":view_models",
+        ":views",
         "databinding_resources",
-        "//data",
         artifact("androidx.appcompat:appcompat"),
         artifact("com.github.bumptech.glide:glide"),
         artifact("com.caverock:androidsvg-aar"),
@@ -561,7 +555,6 @@ kt_android_library(
         artifact("androidx.multidex:multidex:2.0.1"),
         artifact("androidx.multidex:multidex-instrumentation:2.0.0"),
         artifact("com.google.android.material:material:1.2.0-alpha02"),
-        #artifact("com.google.gms:google-services:4.3.3"),
         artifact("androidx.viewpager:viewpager:1.0.0"),
         "@circularimageview//circularimageview:circular_image_view",
     ],
