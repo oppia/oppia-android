@@ -17,7 +17,7 @@ private const val REPLACE_IMG_TAG = "img"
 private const val CUSTOM_IMG_FILE_PATH_ATTRIBUTE = "filepath-with-value"
 private const val REPLACE_IMG_FILE_PATH_ATTRIBUTE = "src"
 
-private const val CUSTOM_CONCEPT_CARD_TAG = "oppia-concept-card-link"
+private const val CUSTOM_CONCEPT_CARD_TAG = "oppia-noninteractive-skillreview"
 
 /** Html Parser to parse custom Oppia tags with Android-compatible versions. */
 class HtmlParser private constructor(
@@ -124,15 +124,18 @@ class HtmlParser private constructor(
       closeIndex: Int,
       output: Editable
     ) {
-      val skillId = attributes.getValue("skill-id")
-      output.setSpan(
+      // Replace the custom tag with a clickable piece of text based on the tag's customizations.
+      val skillId = attributes.getValue("skill_id-with-value")
+      val text = attributes.getValue("text-with-value")
+      val spannableBuilder = SpannableStringBuilder(text)
+      spannableBuilder.setSpan(
         object : ClickableSpan() {
           override fun onClick(view: View) {
             customOppiaTagActionListener?.onConceptCardLinkClicked(view, skillId)
           }
         },
-        openIndex, closeIndex, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
-      )
+        0, text.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+      output.replace(openIndex, closeIndex, spannableBuilder)
     }
   }
 
