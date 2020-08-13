@@ -49,10 +49,12 @@ import org.oppia.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.PREVIOUS_RESPONSES_HEADER
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
+import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.data.backends.gae.NetworkModule
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
@@ -112,6 +114,8 @@ class StateFragmentLocalTest {
   lateinit var context: Context
 
   private val internalProfileId: Int = 1
+
+  private val SKILL_ID_LIST = arrayListOf("B39yK4cbHZYI")
 
   @Before
   fun setUp() {
@@ -247,6 +251,18 @@ class StateFragmentLocalTest {
   }
 
   @Test
+  fun testQuestionPlayer_submitTwoWrongAnswers_checkPreviousHeaderVisible() {
+    launchForQuestionPlayer(SKILL_ID_LIST).use {
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
+      onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
+
+      submitTwoWrongAnswersToQuestionPlayer()
+
+      onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
   fun testStateFragment_submitTwoWrongAnswers_checkPreviousHeaderCollapsed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -260,7 +276,20 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  fun testStateFragment_submitTwoWrongAnswers_expandPreviousResponse_checkPreviousHeaderExpanded() {
+  fun testQuestionPlayer_submitTwoWrongAnswers_checkPreviousHeaderCollapsed() {
+    launchForQuestionPlayer(SKILL_ID_LIST).use {
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
+      onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
+
+      submitTwoWrongAnswersToQuestionPlayer()
+
+      onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
+      onView(withId(R.id.question_recycler_view)).check(matches(hasChildCount(/* childCount= */ 6)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_submitTwoWrongAnswers_expandResponse_checkPreviousHeaderExpanded() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
@@ -275,7 +304,22 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  fun testStateFragment_submitTwoWrongAnswers_expandPreviousResponse_collapsePreviousResponse_checkPreviousHeaderCollapsed() { // ktlint-disable max-line-length
+  fun testQuestionPlayer_submitTwoWrongAnswers_expandResponse_checkPreviousHeaderExpanded() {
+    launchForQuestionPlayer(SKILL_ID_LIST).use {
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
+      onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
+
+      submitTwoWrongAnswersToQuestionPlayer()
+
+      onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
+      onView(withId(R.id.question_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      onView(withId(R.id.previous_response_header)).perform(click())
+      onView(withId(R.id.question_recycler_view)).check(matches(hasChildCount(/* childCount= */ 8)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_expandCollapseResponse_checkPreviousHeaderCollapsed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
@@ -290,6 +334,26 @@ class StateFragmentLocalTest {
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
       onView(withSubstring("Previous Responses")).perform(click())
       onView(withId(R.id.state_recycler_view)).check(matches(hasChildCount(/* childCount= */ 5)))
+    }
+  }
+
+  @Test
+  fun testQuestionPlayer_expandCollapseResponse_checkPreviousHeaderCollapsed() {
+    launchForQuestionPlayer(SKILL_ID_LIST).use {
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
+      onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
+
+      submitTwoWrongAnswersToQuestionPlayer()
+
+      onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
+      onView(withId(R.id.question_recycler_view)).check(matches(hasChildCount(/* childCount= */ 6)))
+
+      onView(withId(R.id.question_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      onView(withId(R.id.previous_response_header)).perform(click())
+      onView(withId(R.id.question_recycler_view)).check(matches(hasChildCount(/* childCount= */ 8)))
+
+      onView(withId(R.id.previous_response_header)).perform(click())
+      onView(withId(R.id.question_recycler_view)).check(matches(hasChildCount(/* childCount= */ 6)))
     }
   }
 
@@ -716,6 +780,16 @@ class StateFragmentLocalTest {
     )
   }
 
+  private fun launchForQuestionPlayer(
+    skillIdList: ArrayList<String>
+  ): ActivityScenario<QuestionPlayerActivity> {
+    return ActivityScenario.launch(
+      QuestionPlayerActivity.createQuestionPlayerActivityIntent(
+        context, skillIdList
+      )
+    )
+  }
+
   private fun startPlayingExploration() {
     onView(withId(R.id.play_test_exploration_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
@@ -889,6 +963,21 @@ class StateFragmentLocalTest {
     submitWrongAnswerToState2()
     submitWrongAnswerToState2()
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+  }
+
+  private fun submitTwoWrongAnswersToQuestionPlayer() {
+    submitTwoWrongAnswerToQuestionPlayerNumericInput()
+    submitTwoWrongAnswerToQuestionPlayerNumericInput()
+  }
+
+  private fun submitTwoWrongAnswerToQuestionPlayerNumericInput() {
+    onView(withId(R.id.question_recycler_view)).perform(scrollToViewType(NUMERIC_INPUT_INTERACTION))
+    onView(withId(R.id.numeric_input_interaction_view)).perform(appendText("1"))
+    testCoroutineDispatchers.runCurrent()
+
+    onView(withId(R.id.question_recycler_view)).perform(scrollToViewType(SUBMIT_ANSWER_BUTTON))
+    onView(withId(R.id.submit_answer_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
   }
 
   private fun produceAndViewFirstHint() {
