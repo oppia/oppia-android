@@ -11,7 +11,7 @@ load("//domain:domain_test.bzl", "domain_test")
 kt_android_library(
     name = "domain",
     custom_package = "org.oppia.domain",
-    srcs = glob(["src/main/java/org/oppia/domain/**"]),
+    srcs = glob(["src/main/java/org/oppia/domain/**/*.kt"]),
     data = glob(["src/main/assets/**"]),
     assets = glob(["src/main/assets/**"]),
     assets_dir = "src/main/assets/",
@@ -169,13 +169,6 @@ domain_test(
     name = "ProfileManagementControllerTest",
     srcs = ["src/test/java/org/oppia/domain/profile/ProfileManagementControllerTest.kt"],
     test_class = "org.oppia.domain.profile.ProfileManagementControllerTest",
-    deps = TEST_DEPS,
-)
-
-domain_test(
-    name = "ProfileTestHelperTest",
-    srcs = ["src/test/java/org/oppia/domain/profile/ProfileTestHelperTest.kt"],
-    test_class = "org.oppia.domain.profile.ProfileTestHelperTest",
     deps = TEST_DEPS,
 )
 
