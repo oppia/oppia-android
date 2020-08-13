@@ -205,7 +205,7 @@ in order to keep Gradle building.
     outs = [file[0:-3] + "_updated.kt"],
     cmd = '''
     cat $(SRCS) |
-    sed 's/import org.oppia.app.R/import org.oppia.app.vm.R/g' > $(OUTS)
+    sed 's/import org.oppia.app.R/import org.oppia.app.view.models.R/g' > $(OUTS)
     ''',
 )
 for file in ALTERED_VIEW_MODELS]
@@ -290,7 +290,7 @@ in order to keep Gradle building.
      outs = [file[0:-5] + "_updated.java"],
      cmd = '''
      cat $(SRCS) |
-     sed 's/import org.oppia.app.R/import org.oppia.app.impl.adapters.R/g' |
+     sed 's/import org.oppia.app.R/import org.oppia.app.databinding.adapters.R/g' |
      sed 's/BindingAdapters {/BindingAdapters_updated {/g' > $(OUTS)
      ''',
  )
@@ -363,10 +363,10 @@ kt_android_library(
 # Library for all view model files
 kt_android_library(
     name = "view_models",
-    custom_package = "org.oppia.app.vm",
+    custom_package = "org.oppia.app.view.models",
     srcs = VIEW_MODELS,
     enable_data_binding = 1,
-    manifest = "src/main/ViewModelManifest.xml",
+    manifest = "src/main/ViewModelsManifest.xml",
     deps = [
         ":annotations",
         ":dagger",
@@ -384,10 +384,10 @@ kt_android_library(
 # Library for all custom data-binding adapters under org/oppia/app/databinding
 android_library(
     name = "databinding_adapters",
-    custom_package = "org.oppia.app.impl.adapters",
+    custom_package = "org.oppia.app.databinding.adapters",
     srcs = DATABINDING_ADAPTERS,
     enable_data_binding = 1,
-    manifest = "src/main/DbAdaptersAndroidManifest.xml",
+    manifest = "src/main/DatabindingAdaptersManifest.xml",
     deps = [
         ":dagger",
         ":resources",
@@ -404,10 +404,10 @@ android_library(
 # Library for all custom databinding adapters under org/oppia/app/recyclerview
 android_library(
     name = "recyclerview_adapters",
-    custom_package = "org.oppia.app.rv",
+    custom_package = "org.oppia.app.recyclerview.adapters",
     srcs = RECYCLERVIEW_ADAPTERS,
     enable_data_binding = 1,
-    manifest = "src/main/RvAdaptersAndroidManifest.xml",
+    manifest = "src/main/RecyclerviewAdaptersManifest.xml",
     deps = [
         ":dagger",
         ":view_models",
