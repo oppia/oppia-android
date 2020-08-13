@@ -29,14 +29,10 @@
       android:id="@+id/selection_interaction_recyclerview"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/divider_margin_top"
-      android:layout_marginBottom="@dimen/divider_margin_bottom"
       android:divider="@android:color/transparent"
       app:allOptionsItemInputType="@{viewModel.getSelectionItemInputType()}"
       app:data="@{viewModel.choiceItems}"
       app:entityId="@{viewModel.entityId}"
-      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-      app:layoutMarginEnd="@{viewModel.hasConversationView ? @dimen/margin_20 : @dimen/margin_12}"
-      app:layoutMarginStart="@{viewModel.hasConversationView ? @dimen/margin_20 : @dimen/margin_12}" />
+      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
   </LinearLayout>
 </layout>
