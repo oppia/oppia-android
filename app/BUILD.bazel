@@ -58,12 +58,7 @@ LISTENER_FILES = [
 ]
 
 # Layout files for databinding_resources library.
-LAYOUT_RES_FILES = [
-    "src/main/res/layout-land/**",
-    "src/main/res/layout-sw600dp-land/**",
-    "src/main/res/layout-sw600dp-port/**",
-    "src/main/res/layout/**",
-]
+LAYOUT_RES_FILES = ["src/main/res/layout*/**"]
 
 # Source files for view_model library
 VIEW_MODEL_FILES = [
@@ -268,9 +263,6 @@ DATABINDING_ADAPTER_FILES = [
     "src/main/java/org/oppia/app/databinding/StateAssemblerMarginBindingAdapters.java",
     "src/main/java/org/oppia/app/databinding/StateAssemblerPaddingBindingAdapters.java",
     "src/main/java/org/oppia/app/databinding/ViewBindingAdapters.java",
-    "update_src/main/java/org/oppia/app/databinding/DrawableBindingAdapters",
-    "update_src/main/java/org/oppia/app/databinding/ImageViewBindingAdapters",
-    "update_src/main/java/org/oppia/app/databinding/TextViewBindingAdapters",
 ]
 
 # TODO(#1617): Remove genrules post-gradle
@@ -281,6 +273,10 @@ ALTERED_DATABINDING_ADAPTERS = [
     "src/main/java/org/oppia/app/databinding/TextViewBindingAdapters.java",
 ]
 
+[DATABINDING_ADAPTER_FILES.append("update_" + altered_adapters[0:-5])
+for altered_adapters in ALTERED_DATABINDING_ADAPTERS]
+
+# TODO(#1617): Remove genrules post-gradle
 '''
 Genrule that alters both resource import statements and class names for adapter files in order to
 account for altered package and file name.
