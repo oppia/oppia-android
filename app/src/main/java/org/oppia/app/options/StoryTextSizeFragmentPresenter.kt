@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 /** The presenter for [StoryTextSizeFragment]. */
 class StoryTextSizeFragmentPresenter @Inject constructor(private val fragment: Fragment) {
-  private var fontSize: String = getStoryTextSize(StoryTextSize.SMALL_TEXT_SIZE)
+  private var fontSize: String = getStoryTextSize(StoryTextSize.MEDIUM_TEXT_SIZE)
 
   fun handleOnCreateView(
     inflater: LayoutInflater,
@@ -28,8 +28,8 @@ class StoryTextSizeFragmentPresenter @Inject constructor(private val fragment: F
     fontSize = storyTextSize
     updateTextSize(fontSize)
 
-    // The non-null receiver (?) is introduced here because the toolbar will be removed in the multipane
-    binding.storyTextSizeToolbar?.setNavigationOnClickListener {
+    // TODO(#1200): stop the toolbar functionality in the multipane (add non-null receiver (?))
+    binding.storyTextSizeToolbar.setNavigationOnClickListener {
       val intent = Intent()
       intent.putExtra(KEY_MESSAGE_STORY_TEXT_SIZE, fontSize)
       (fragment.activity as StoryTextSizeActivity).setResult(REQUEST_CODE_TEXT_SIZE, intent)
@@ -120,6 +120,7 @@ class StoryTextSizeFragmentPresenter @Inject constructor(private val fragment: F
     }
   }
 
+  // TODO(#1584): Update this function to use multiplier instead of direct font size.
   fun getStoryTextSize(storyTextSize: StoryTextSize): String {
     return when (storyTextSize) {
       StoryTextSize.SMALL_TEXT_SIZE -> "Small"

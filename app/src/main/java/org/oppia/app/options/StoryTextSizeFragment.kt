@@ -11,7 +11,7 @@ import javax.inject.Inject
 private const val KEY_STORY_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE =
   "STORY_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE"
 
-/** The fragment to change the Text size of the Story content in the app. */
+/** The fragment to change the text size of the story content in the app. */
 class StoryTextSizeFragment : InjectableFragment() {
   @Inject
   lateinit var storyTextSizeFragmentPresenter: StoryTextSizeFragmentPresenter
