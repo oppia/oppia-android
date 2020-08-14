@@ -6,12 +6,16 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.testing.BackgroundTestDispatcher
 import org.oppia.testing.FakeSystemClock
+import org.oppia.testing.TestCoroutineDispatcher
+import org.oppia.testing.TestCoroutineDispatchers
+import org.oppia.testing.TestDispatcherModule
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -24,6 +28,15 @@ class AsyncResultTest {
 
   @Inject
   lateinit var fakeSystemClock: FakeSystemClock
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  @field:BackgroundTestDispatcher
+  lateinit var backgroundTestDispatcher: TestCoroutineDispatcher
+
+  private val backgroundTestDispatcherScope by lazy { CoroutineScope(backgroundTestDispatcher) }
 
   @Before
   fun setUp() {
@@ -91,11 +104,10 @@ class AsyncResultTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testPendingAsyncResult_transformedAsync_isStillPending() = runBlockingTest {
+  fun testPendingAsyncResult_transformedAsync_isStillPending() {
     val original = AsyncResult.pending<String>()
 
-    val transformed = original.transformAsync { AsyncResult.success(0) }
+    val transformed = original.blockingTransformAsync { AsyncResult.success(0) }
 
     assertThat(transformed.isPending()).isTrue()
   }
@@ -131,34 +143,31 @@ class AsyncResultTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testPendingAsyncResult_combinedAsyncWithPending_isStillPending() = runBlockingTest {
+  fun testPendingAsyncResult_combinedAsyncWithPending_isStillPending() {
     val result1 = AsyncResult.pending<String>()
     val result2 = AsyncResult.pending<Float>()
 
-    val combined = result1.combineWithAsync(result2) { _, _ -> AsyncResult.success(0) }
+    val combined = result1.blockingCombineWithAsync(result2) { _, _ -> AsyncResult.success(0) }
 
     assertThat(combined.isPending()).isTrue()
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testPendingAsyncResult_combinedAsyncWithFailure_isStillPending() = runBlockingTest {
+  fun testPendingAsyncResult_combinedAsyncWithFailure_isStillPending() {
     val result1 = AsyncResult.pending<String>()
     val result2 = AsyncResult.failed<Float>(RuntimeException())
 
-    val combined = result1.combineWithAsync(result2) { _, _ -> AsyncResult.success(0) }
+    val combined = result1.blockingCombineWithAsync(result2) { _, _ -> AsyncResult.success(0) }
 
     assertThat(combined.isPending()).isTrue()
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testPendingAsyncResult_combinedAsyncWithSuccess_isStillPending() = runBlockingTest {
+  fun testPendingAsyncResult_combinedAsyncWithSuccess_isStillPending() {
     val result1 = AsyncResult.pending<String>()
     val result2 = AsyncResult.success(1.0f)
 
-    val combined = result1.combineWithAsync(result2) { _, _ -> AsyncResult.success(0) }
+    val combined = result1.blockingCombineWithAsync(result2) { _, _ -> AsyncResult.success(0) }
 
     assertThat(combined.isPending()).isTrue()
   }
@@ -333,31 +342,28 @@ class AsyncResultTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testSucceededAsyncResult_transformedAsyncPending_isPending() = runBlockingTest {
+  fun testSucceededAsyncResult_transformedAsyncPending_isPending() {
     val original = AsyncResult.success("value")
 
-    val transformed = original.transformAsync { AsyncResult.pending<Int>() }
+    val transformed = original.blockingTransformAsync { AsyncResult.pending<Int>() }
 
     assertThat(transformed.isPending()).isTrue()
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testSucceededAsyncResult_transformedAsyncSuccess_hasTransformedValue() = runBlockingTest {
+  fun testSucceededAsyncResult_transformedAsyncSuccess_hasTransformedValue() {
     val original = AsyncResult.success("value")
 
-    val transformed = original.transformAsync { AsyncResult.success(0) }
+    val transformed = original.blockingTransformAsync { AsyncResult.success(0) }
 
     assertThat(transformed.getOrThrow()).isEqualTo(0)
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testSucceededAsyncResult_transformedAsyncFailed_isFailure() = runBlockingTest {
+  fun testSucceededAsyncResult_transformedAsyncFailed_isFailure() {
     val original = AsyncResult.success("value")
 
-    val transformed = original.transformAsync {
+    val transformed = original.blockingTransformAsync {
       AsyncResult.failed<Int>(UnsupportedOperationException())
     }
 
@@ -401,53 +407,47 @@ class AsyncResultTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testSucceededAsyncResult_combinedAsyncWithPending_isPending() = runBlockingTest {
+  fun testSucceededAsyncResult_combinedAsyncWithPending_isPending() {
     val result1 = AsyncResult.success("value")
     val result2 = AsyncResult.pending<Float>()
 
-    val combined = result1.combineWithAsync(result2) { _, _ -> AsyncResult.success(0) }
+    val combined = result1.blockingCombineWithAsync(result2) { _, _ -> AsyncResult.success(0) }
 
     assertThat(combined.isPending()).isTrue()
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testSucceededAsyncResult_combinedAsyncWithFailure_isFailedWithCorrectChainedFailure() =
-    runBlockingTest {
-      val result1 = AsyncResult.success("value")
-      val result2 = AsyncResult.failed<Float>(RuntimeException())
+  fun testSucceededAsyncResult_combinedAsyncWithFailure_isFailedWithCorrectChainedFailure() {
+    val result1 = AsyncResult.success("value")
+    val result2 = AsyncResult.failed<Float>(RuntimeException())
 
-      val combined = result1.combineWithAsync(result2) { _, _ -> AsyncResult.success(0) }
+    val combined = result1.blockingCombineWithAsync(result2) { _, _ -> AsyncResult.success(0) }
 
-      assertThat(combined.isFailure()).isTrue()
-      assertThat(combined.getErrorOrNull()).isInstanceOf(
-        AsyncResult.ChainedFailureException::class.java
-      )
-      assertThat(combined.getErrorOrNull()).hasCauseThat().isInstanceOf(
-        RuntimeException::class.java
-      )
-    }
+    assertThat(combined.isFailure()).isTrue()
+    assertThat(combined.getErrorOrNull()).isInstanceOf(
+      AsyncResult.ChainedFailureException::class.java
+    )
+    assertThat(combined.getErrorOrNull()).hasCauseThat().isInstanceOf(
+      RuntimeException::class.java
+    )
+  }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testSucceededAsyncResult_combinedAsyncWithSuccess_resultPending_isPending() =
-    runBlockingTest {
-      val result1 = AsyncResult.success("value")
-      val result2 = AsyncResult.success(1.0)
-
-      val combined = result1.combineWithAsync(result2) { _, _ -> AsyncResult.pending<Int>() }
-
-      assertThat(combined.isPending()).isTrue()
-    }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testSucceededAsyncResult_combinedAsyncWithSuccess_resultFailure_isFailed() = runBlockingTest {
+  fun testSucceededAsyncResult_combinedAsyncWithSuccess_resultPending_isPending() {
     val result1 = AsyncResult.success("value")
     val result2 = AsyncResult.success(1.0)
 
-    val combined = result1.combineWithAsync(result2) { _, _ ->
+    val combined = result1.blockingCombineWithAsync(result2) { _, _ -> AsyncResult.pending<Int>() }
+
+    assertThat(combined.isPending()).isTrue()
+  }
+
+  @Test
+  fun testSucceededAsyncResult_combinedAsyncWithSuccess_resultFailure_isFailed() {
+    val result1 = AsyncResult.success("value")
+    val result2 = AsyncResult.success(1.0)
+
+    val combined = result1.blockingCombineWithAsync(result2) { _, _ ->
       AsyncResult.failed<Int>(RuntimeException())
     }
 
@@ -457,19 +457,17 @@ class AsyncResultTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testSucceededAsyncResult_combinedAsyncWithSuccess_resultSuccess_hasCombinedSuccessValue() =
-    runBlockingTest {
-      val result1 = AsyncResult.success("value")
-      val result2 = AsyncResult.success(1.0)
+  fun testSucceededAsyncResult_combinedAsyncWithSuccess_resultSuccess_hasCombinedSuccessValue() {
+    val result1 = AsyncResult.success("value")
+    val result2 = AsyncResult.success(1.0)
 
-      val combined = result1.combineWithAsync(result2) { v1, v2 ->
-        AsyncResult.success(v1 + v2)
-      }
-
-      assertThat(combined.getOrThrow()).contains("value")
-      assertThat(combined.getOrThrow()).contains("1.0")
+    val combined = result1.blockingCombineWithAsync(result2) { v1, v2 ->
+      AsyncResult.success(v1 + v2)
     }
+
+    assertThat(combined.getOrThrow()).contains("value")
+    assertThat(combined.getOrThrow()).contains("1.0")
+  }
 
   @Test
   fun testSucceededResult_isNotEqualToPendingResult() {
@@ -671,20 +669,18 @@ class AsyncResultTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testFailedAsyncResult_transformedAsync_throwsChainedFailureException_withCorrectRootCause() =
-    runBlockingTest {
-      val result = AsyncResult.failed<String>(UnsupportedOperationException())
+  fun testFailedAsyncResult_transformedAsync_throwsChainedFailureException_withCorrectRootCause() {
+    val result = AsyncResult.failed<String>(UnsupportedOperationException())
 
-      val transformed = result.transformAsync { AsyncResult.success(0) }
+    val transformed = result.blockingTransformAsync { AsyncResult.success(0) }
 
-      assertThat(transformed.getErrorOrNull()).isInstanceOf(
-        AsyncResult.ChainedFailureException::class.java
-      )
-      assertThat(transformed.getErrorOrNull()).hasCauseThat().isInstanceOf(
-        UnsupportedOperationException::class.java
-      )
-    }
+    assertThat(transformed.getErrorOrNull()).isInstanceOf(
+      AsyncResult.ChainedFailureException::class.java
+    )
+    assertThat(transformed.getErrorOrNull()).hasCauseThat().isInstanceOf(
+      UnsupportedOperationException::class.java
+    )
+  }
 
   @Test
   fun testFailedAsyncResult_combinedWithPending_isStillChainedFailure() {
@@ -732,12 +728,11 @@ class AsyncResultTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testFailedAsyncResult_combinedAsyncWithPending_isStillChainedFailure() = runBlockingTest {
+  fun testFailedAsyncResult_combinedAsyncWithPending_isStillChainedFailure() {
     val result1 = AsyncResult.failed<String>(UnsupportedOperationException())
     val result2 = AsyncResult.pending<Float>()
 
-    val combined = result1.combineWithAsync(result2) { _, _ -> AsyncResult.success(0) }
+    val combined = result1.blockingCombineWithAsync(result2) { _, _ -> AsyncResult.success(0) }
 
     assertThat(combined.getErrorOrNull()).isInstanceOf(
       AsyncResult.ChainedFailureException::class.java
@@ -748,12 +743,11 @@ class AsyncResultTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testFailedAsyncResult_combinedAsyncWithFailure_isStillChainedFailure() = runBlockingTest {
+  fun testFailedAsyncResult_combinedAsyncWithFailure_isStillChainedFailure() {
     val result1 = AsyncResult.failed<String>(UnsupportedOperationException())
     val result2 = AsyncResult.failed<Float>(RuntimeException())
 
-    val combined = result1.combineWithAsync(result2) { _, _ -> AsyncResult.success(0) }
+    val combined = result1.blockingCombineWithAsync(result2) { _, _ -> AsyncResult.success(0) }
 
     assertThat(combined.getErrorOrNull()).isInstanceOf(
       AsyncResult.ChainedFailureException::class.java
@@ -764,12 +758,11 @@ class AsyncResultTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testFailedAsyncResult_combinedAsyncWithSuccess_isStillChainedFailure() = runBlockingTest {
+  fun testFailedAsyncResult_combinedAsyncWithSuccess_isStillChainedFailure() {
     val result1 = AsyncResult.failed<String>(UnsupportedOperationException())
     val result2 = AsyncResult.success(1.0f)
 
-    val combined = result1.combineWithAsync(result2) { _, _ -> AsyncResult.success(0) }
+    val combined = result1.blockingCombineWithAsync(result2) { _, _ -> AsyncResult.success(0) }
 
     assertThat(combined.getErrorOrNull()).isInstanceOf(
       AsyncResult.ChainedFailureException::class.java
@@ -914,9 +907,30 @@ class AsyncResultTest {
       .inject(this)
   }
 
+  @Suppress("EXPERIMENTAL_API_USAGE")
+  private fun <T, O> AsyncResult<T>.blockingTransformAsync(
+    transformFunction: suspend (T) -> AsyncResult<O>
+  ): AsyncResult<O> {
+    val deferred = backgroundTestDispatcherScope.async { transformAsync(transformFunction) }
+    testCoroutineDispatchers.runCurrent()
+    return deferred.getCompleted()
+  }
+
+  @Suppress("EXPERIMENTAL_API_USAGE")
+  private fun <T1, T2, O> AsyncResult<T1>.blockingCombineWithAsync(
+    otherResult: AsyncResult<T2>,
+    combineFunction: suspend (T1, T2) -> AsyncResult<O>
+  ): AsyncResult<O> {
+    val deferred = backgroundTestDispatcherScope.async {
+      combineWithAsync(otherResult, combineFunction)
+    }
+    testCoroutineDispatchers.runCurrent()
+    return deferred.getCompleted()
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [])
+  @Component(modules = [TestDispatcherModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

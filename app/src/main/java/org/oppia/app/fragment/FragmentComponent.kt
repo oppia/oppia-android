@@ -19,6 +19,7 @@ import org.oppia.app.onboarding.OnboardingFragment
 import org.oppia.app.ongoingtopiclist.OngoingTopicListFragment
 import org.oppia.app.options.DefaultAudioFragment
 import org.oppia.app.options.OptionsFragment
+import org.oppia.app.options.StoryTextSizeFragment
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.exploration.ExplorationFragment
 import org.oppia.app.player.exploration.ExplorationManagerFragment
@@ -92,6 +93,7 @@ interface FragmentComponent {
   fun inject(revisionCardFragment: RevisionCardFragment)
   fun inject(stateFragment: StateFragment)
   fun inject(storyFragment: StoryFragment)
+  fun inject(storyTextSizeFragment: StoryTextSizeFragment)
   fun inject(topicFragment: TopicFragment)
   fun inject(topicInfoFragment: TopicInfoFragment)
   fun inject(topicLessonsFragment: TopicLessonsFragment)

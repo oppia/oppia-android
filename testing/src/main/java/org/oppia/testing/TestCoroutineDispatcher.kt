@@ -1,216 +1,84 @@
-package org.oppia.testing;
+package org.oppia.testing
 
-import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Delay
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.Runnable
-import kotlinx.coroutines.test.DelayController
-import kotlinx.coroutines.test.UncompletedCoroutinesError
-import java.util.TreeSet
-import java.util.concurrent.CopyOnWriteArraySet
-import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.atomic.AtomicInteger
-import javax.inject.Inject
-import kotlin.Comparator
-import kotlin.coroutines.CoroutineContext
-
-// TODO(#89): Audit & adjust the thread safety of this class, and determine if there's a way to move
-//  off of the internal coroutine API.
 
 /**
  * Replacement for Kotlin's test coroutine dispatcher that can be used to replace coroutine
- * dispatching functionality in a Robolectric test in a way that can be coordinated across multiple
- * dispatchers for execution synchronization.
+ * dispatching functionality in Robolectric & Espresso tests in a way that can be coordinated across
+ * multiple dispatchers for execution synchronization.
  *
  * Developers should never use this dispatcher directly. Integrating with it should be done via
  * [TestDispatcherModule] and ensuring thread synchronization should be done via
  * [TestCoroutineDispatchers]. Attempting to interact directly with this dispatcher may cause timing
  * inconsistencies between the UI thread and other application coroutine dispatchers.
+ *
+ * Further, no assumptions should be made about the coordination functionality of this utility on
+ * Robolectric or Espresso. The implementation carefully manages the differences between these two
+ * platforms, so tests should only rely on the API. See [TestCoroutineDispatchers] for more details
+ * on how to properly integrate with the test coroutine dispatcher API.
  */
-@InternalCoroutinesApi
-@Suppress("EXPERIMENTAL_API_USAGE")
-class TestCoroutineDispatcher private constructor(
-  private val fakeSystemClock: FakeSystemClock,
-  private val realCoroutineDispatcher: CoroutineDispatcher
-): CoroutineDispatcher(), Delay, DelayController {
-
-  /** Sorted set that first sorts on when a task should be executed, then insertion order. */
-  private val taskQueue = CopyOnWriteArraySet<Task>()
-  private val isRunning = AtomicBoolean(true)
-  private val executingTaskCount = AtomicInteger(0)
-  private val totalTaskCount = AtomicInteger(0)
-
-  @ExperimentalCoroutinesApi
-  override val currentTime: Long
-    get() = fakeSystemClock.getTimeMillis()
-
-  override fun dispatch(context: CoroutineContext, block: Runnable) {
-    enqueueTask(createDeferredRunnable(context, block))
-  }
-
-  override fun scheduleResumeAfterDelay(
-    timeMillis: Long,
-    continuation: CancellableContinuation<Unit>
-  ) {
-    enqueueTask(createContinuationRunnable(continuation), delayMillis = timeMillis)
-  }
-
-  @ExperimentalCoroutinesApi
-  override fun advanceTimeBy(delayTimeMillis: Long): Long {
-    flushTaskQueue(fakeSystemClock.advanceTime(delayTimeMillis))
-    return delayTimeMillis
-  }
-
-  @ExperimentalCoroutinesApi
-  override fun advanceUntilIdle(): Long {
-    throw UnsupportedOperationException(
-      "Use TestCoroutineDispatchers.advanceUntilIdle() to ensure the dispatchers are properly " +
-        "coordinated"
-    )
-  }
-
-  @ExperimentalCoroutinesApi
-  override fun cleanupTestCoroutines() {
-    flushTaskQueue(fakeSystemClock.getTimeMillis())
-    val remainingTaskCount = taskQueue.size
-    if (remainingTaskCount != 0) {
-      throw UncompletedCoroutinesError(
-        "Expected no remaining tasks for test dispatcher, but found $remainingTaskCount"
-      )
-    }
-  }
-
-  @ExperimentalCoroutinesApi
-  override fun pauseDispatcher() {
-    isRunning.set(false)
-  }
-
-  @ExperimentalCoroutinesApi
-  override suspend fun pauseDispatcher(block: suspend () -> Unit) {
-    // There's not a clear way to handle this block while maintaining the thread of the dispatcher,
-    // so disable it for now until it's later needed.
-    throw UnsupportedOperationException()
-  }
-
-  @ExperimentalCoroutinesApi
-  override fun resumeDispatcher() {
-    isRunning.set(true)
-    flushTaskQueue(fakeSystemClock.getTimeMillis())
-  }
-
-  @ExperimentalCoroutinesApi
-  override fun runCurrent() {
-    flushTaskQueue(fakeSystemClock.getTimeMillis())
-  }
-
-  internal fun hasPendingTasks(): Boolean = taskQueue.isNotEmpty()
+abstract class TestCoroutineDispatcher : CoroutineDispatcher() {
+  /**
+   * Returns whether there are any tasks known to the dispatcher that have not yet been started.
+   *
+   * Note that some of these tasks may be scheduled for the future. This is meant to be used in
+   * conjunction with [FakeSystemClock.advanceTime] since that along with [runCurrent] will execute
+   * all tasks up to the new time. If the time returned by [getNextFutureTaskCompletionTimeMillis]
+   * plus the current time is passed to [FakeSystemClock.advanceTime], this dispatcher guarantees
+   * that [hasPendingTasks] will return false after a call to [runCurrent] returns.
+   *
+   * This function makes no guarantees about idleness with respect to other dispatchers (e.g. even
+   * if all tasks are executed, another dispatcher could schedule another task on this dispatcher in
+   * response to a task from this dispatcher being executed). Cross-thread communication should be
+   * managed using [TestCoroutineDispatchers], instead.
+   */
+  abstract fun hasPendingTasks(): Boolean
 
   /**
    * Returns the clock time at which the next future task will execute ('future' indicates that the
    * task cannot execute right now due to its execution time being in the future).
    */
-  internal fun getNextFutureTaskCompletionTimeMillis(timeMillis: Long): Long? {
-    return createSortedTaskSet().firstOrNull { task -> task.timeMillis > timeMillis }?.timeMillis
+  abstract fun getNextFutureTaskCompletionTimeMillis(timeMillis: Long): Long?
+
+  /**
+   * Returns whether there are any tasks that are immediately executable and pending.
+   *
+   * If [runCurrent] is used, this function is guaranteed to return false after that function
+   * returns. Note that the same threading caveats mentioned for [hasPendingTasks] also pertains to
+   * this function.
+   */
+  abstract fun hasPendingCompletableTasks(): Boolean
+
+  /** Sets a [TaskIdleListener] to observe when the dispatcher becomes idle/non-idle. */
+  abstract fun setTaskIdleListener(taskIdleListener: TaskIdleListener)
+
+  /**
+   * Runs all tasks currently scheduled to be run in the dispatcher, but none scheduled for the
+   * future.
+   */
+  abstract fun runCurrent()
+
+  /** A listener for whether the test coroutine dispatcher has become idle. */
+  interface TaskIdleListener {
+    /**
+     * Called when the dispatcher has become non-idle. This may be called immediately after
+     * registration, and may be called on different threads.
+     */
+    fun onDispatcherRunning()
+
+    /**
+     * Called when the dispatcher has become idle. This may be called immediately after
+     * registration, and may be called on different threads.
+     */
+    fun onDispatcherIdle()
   }
 
-  internal fun hasPendingCompletableTasks(): Boolean {
-    return taskQueue.hasPendingCompletableTasks(fakeSystemClock.getTimeMillis())
+  /** Injectable factory for creating the correct dispatcher for current test platform. */
+  interface Factory {
+    /**
+     * Returns a new [TestCoroutineDispatcher] with the specified [CoroutineDispatcher] to back it
+     * up for actual task execution.
+     */
+    fun createDispatcher(realDispatcher: CoroutineDispatcher): TestCoroutineDispatcher
   }
-
-  private fun enqueueTask(block: Runnable, delayMillis: Long = 0L) {
-    taskQueue += Task(
-      timeMillis = fakeSystemClock.getTimeMillis() + delayMillis,
-      block = block,
-      insertionOrder = totalTaskCount.incrementAndGet()
-    )
-  }
-
-  @Suppress("ControlFlowWithEmptyBody")
-  private fun flushTaskQueue(currentTimeMillis: Long) {
-    // TODO(#89): Add timeout support so that the dispatcher can't effectively deadlock or livelock
-    // for inappropriately behaved tests.
-    while (isRunning.get()) {
-      if (!flushActiveTaskQueue(currentTimeMillis)) {
-        break
-      }
-    }
-    while (executingTaskCount.get() > 0) {}
-  }
-
-  /** Flushes the current task queue and returns whether any tasks were executed. */
-  private fun flushActiveTaskQueue(currentTimeMillis: Long): Boolean {
-    if (isTaskQueueActive(currentTimeMillis)) {
-      // Create a copy of the task queue in case it's changed during modification.
-      val tasksToRemove = createSortedTaskSet().filter { task ->
-        if (isRunning.get()) {
-          if (task.timeMillis <= currentTimeMillis) {
-            // Only remove the task if it was executed.
-            task.block.run()
-            return@filter true
-          }
-        }
-        return@filter false
-      }
-      return taskQueue.removeAll(tasksToRemove)
-    }
-    return false
-  }
-
-  private fun isTaskQueueActive(currentTimeMillis: Long): Boolean {
-    return taskQueue.hasPendingCompletableTasks(currentTimeMillis) || executingTaskCount.get() != 0
-  }
-
-  private fun createDeferredRunnable(context: CoroutineContext, block: Runnable): Runnable {
-    return Runnable {
-      executingTaskCount.incrementAndGet()
-      realCoroutineDispatcher.dispatch(context, Runnable {
-        try {
-          block.run()
-        } finally {
-          executingTaskCount.decrementAndGet()
-        }
-      })
-    }
-  }
-
-  private fun createContinuationRunnable(continuation: CancellableContinuation<Unit>): Runnable {
-    val block: CancellableContinuation<Unit>.() -> Unit = {
-      realCoroutineDispatcher.resumeUndispatched(Unit)
-    }
-    return Runnable {
-      try {
-        executingTaskCount.incrementAndGet()
-        continuation.block()
-      } finally {
-        executingTaskCount.decrementAndGet()
-      }
-    }
-  }
-
-  private fun createSortedTaskSet(): Set<Task> {
-    val sortedSet = TreeSet(
-      Comparator.comparingLong(Task::timeMillis)
-        .thenComparing(Task::insertionOrder)
-    )
-    sortedSet.addAll(taskQueue)
-    return sortedSet
-  }
-
-  class Factory @Inject constructor(private val fakeSystemClock: FakeSystemClock) {
-    fun createDispatcher(realDispatcher: CoroutineDispatcher): TestCoroutineDispatcher {
-      return TestCoroutineDispatcher(fakeSystemClock, realDispatcher)
-    }
-  }
-}
-
-private data class Task(
-  internal val block: Runnable,
-  internal val timeMillis: Long,
-  internal val insertionOrder: Int
-)
-
-private fun CopyOnWriteArraySet<Task>.hasPendingCompletableTasks(currentTimeMilis: Long): Boolean {
-  return any { task -> task.timeMillis <= currentTimeMilis }
 }

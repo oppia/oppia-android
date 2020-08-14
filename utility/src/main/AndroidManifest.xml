@@ -1,1 +1,4 @@
-<manifest package="org.oppia.util"/>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  package="org.oppia.util">
+  <uses-sdk android:targetSdkVersion="28" />
+</manifest>
