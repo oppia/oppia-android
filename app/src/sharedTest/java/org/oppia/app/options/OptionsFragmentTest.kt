@@ -1,6 +1,8 @@
 package org.oppia.app.options
 
+import android.app.Activity
 import android.app.Application
+import android.app.Instrumentation.ActivityResult
 import android.content.Context
 import android.content.Intent
 import android.widget.SeekBar
@@ -26,6 +28,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
 import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
@@ -130,19 +133,27 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun testOptionFragment_clickStoryTextSize_changeTextSizeToLargeSuccessfully() {
+  fun testOptionsFragment_testOnActivityResult() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          0,
-          R.id.story_text_size_item_layout
-        )
-      ).perform(
-        click()
+      val resultDataIntent = Intent()
+      resultDataIntent.putExtra(KEY_MESSAGE_STORY_TEXT_SIZE, "Large")
+      val activityResult = ActivityResult(Activity.RESULT_OK, resultDataIntent)
+
+      val activityMonitor = getInstrumentation().addMonitor(
+        StoryTextSizeActivity::class.java.name,
+        activityResult,
+        true
       )
-      onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(10))
-      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
+
+      it.onActivity { activity ->
+        activity.startActivityForResult(
+          createStoryTextSizeActivityIntent("Small"),
+          REQUEST_CODE_TEXT_SIZE
+        )
+      }
+
+      getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 3)
+
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
@@ -150,134 +161,6 @@ class OptionsFragmentTest {
         )
       ).check(
         matches(withText("Large"))
-      )
-    }
-  }
-
-  @Test
-  fun testOptionFragment_clickStoryTextSize_changeTextSizeToLarge_changeConfiguration_checkTextSizeLargeIsSelected() { // ktlint-disable max-length-line
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          0,
-          R.id.story_text_size_item_layout
-        )
-      ).perform(
-        click()
-      )
-      onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(10))
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          0, R.id.story_text_size_text_view
-        )
-      ).check(
-        matches(withText("Large"))
-      )
-    }
-  }
-
-  @Test
-  fun testOptionFragment_clickStoryTextSize_changeTextSizeToMediumSuccessfully() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          0,
-          R.id.story_text_size_item_layout
-        )
-      ).perform(
-        click()
-      )
-      onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(5))
-      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          0, R.id.story_text_size_text_view
-        )
-      ).check(
-        matches(withText("Medium"))
-      )
-    }
-  }
-
-  @Test
-  fun testOptionFragment_clickStoryTextSize_changeTextSizeToMedium_changeConfiguration_checkTextSizeMediumIsSelected() { // ktlint-disable max-length-line
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          0,
-          R.id.story_text_size_item_layout
-        )
-      ).perform(
-        click()
-      )
-      onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(5))
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          0, R.id.story_text_size_text_view
-        )
-      ).check(
-        matches(withText("Medium"))
-      )
-    }
-  }
-
-  @Test
-  fun testOptionFragment_clickStoryTextSize_changeTextSizeToExtraLargeSuccessfully() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          0,
-          R.id.story_text_size_item_layout
-        )
-      ).perform(
-        click()
-      )
-      onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(15))
-      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          0, R.id.story_text_size_text_view
-        )
-      ).check(
-        matches(withText("Extra Large"))
-      )
-    }
-  }
-
-  @Test
-  fun testOptionFragment_clickStoryTextSize_changeTextSizeToExtraLarge_changeConfiguration_checkTextSizeExtraLargeIsSelected() { // ktlint-disable max-length-line
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          0,
-          R.id.story_text_size_item_layout
-        )
-      ).perform(
-        click()
-      )
-      onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(15))
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          0, R.id.story_text_size_text_view
-        )
-      ).check(
-        matches(withText("Extra Large"))
       )
     }
   }
@@ -536,21 +419,6 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun testOptionFragment_changeConfiguration_checkTextSizeLargeIsSmall() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      onView(isRoot()).perform(orientationLandscape())
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          0, R.id.story_text_size_text_view
-        )
-      ).check(
-        matches(withText("Small"))
-      )
-    }
-  }
-
-  @Test
   fun testOptionFragment_changeConfiguration_checkAppLanguageIsEnglish() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -578,6 +446,14 @@ class OptionsFragmentTest {
         matches(withText("Hindi"))
       )
     }
+  }
+
+  private fun createStoryTextSizeActivityIntent(summaryValue: String): Intent {
+    return StoryTextSizeActivity.createStoryTextSizeActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      STORY_TEXT_SIZE,
+      summaryValue
+    )
   }
 
   private fun clickSeekBar(position: Int): ViewAction {
