@@ -21,15 +21,14 @@
 
       <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="112dp">
+        android:layout_gravity="center"
+        android:layout_height="wrap_content">
 
         <TextView
           android:id="@+id/topic_name_text_view"
           android:layout_width="@dimen/elevation_0dp"
           android:layout_height="wrap_content"
           android:layout_marginStart="64dp"
-          android:layout_marginTop="120dp"
           android:layout_marginEnd="64dp"
           android:fontFamily="sans-serif"
           android:text="@{viewModel.topic.name}"
@@ -64,12 +63,33 @@
           android:ellipsize="end"
           android:fontFamily="sans-serif"
           android:gravity="start"
+          android:maxLines="@{viewModel.isDescriptionExpanded() ? @integer/topic_description_expanded : @integer/topic_description_collapsed}"
           android:text="@{viewModel.topicDescription}"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="16sp"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/story_count_text_view" />
+
+        <TextView
+          android:id="@+id/see_more_text_view"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="64dp"
+          android:layout_marginEnd="64dp"
+          android:fontFamily="sans-serif"
+          android:gravity="start"
+          android:minHeight="48dp"
+          android:onClick="@{(v) -> viewModel.clickSeeMore()}"
+          android:paddingTop="8dp"
+          android:text="@{viewModel.isDescriptionExpanded() ? @string/see_less : @string/see_more}"
+          android:textColor="@color/colorPrimary"
+          android:textSize="16sp"
+          android:textStyle="bold"
+          android:visibility="@{viewModel.isSeeMoreVisible() ? View.VISIBLE : View.GONE}"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/topic_description_text_view" />
 
         <ImageView
           android:id="@+id/download_status_image_view"
@@ -78,8 +98,9 @@
           android:layout_marginStart="64dp"
           android:layout_marginTop="32dp"
           android:src="@{viewModel.downloadStatusIndicatorDrawableResourceId, default=@drawable/ic_available_offline_primary_24dp}"
+          app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/topic_description_text_view" />
+          app:layout_constraintTop_toBottomOf="@+id/see_more_text_view" />
 
         <TextView
           android:id="@+id/download_story_count_text_view"
