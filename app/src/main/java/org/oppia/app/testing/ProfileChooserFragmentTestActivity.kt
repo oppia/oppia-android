@@ -18,6 +18,6 @@ class ProfileChooserFragmentTestActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-    internal const val TAG_PROFILE_CHOOSER_FRAGMENT = "TAG_PROFILE_CHOOSER_FRAGMENT"
+    const val TAG_PROFILE_CHOOSER_FRAGMENT = "TAG_PROFILE_CHOOSER_FRAGMENT"
   }
 }
