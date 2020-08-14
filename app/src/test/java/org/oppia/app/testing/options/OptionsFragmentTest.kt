@@ -60,7 +60,7 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun clickAppLanguage_checkSendingTheCorrectIntent() {
+  fun testAppLanguage_clickAppLanguage_checkSendingTheCorrectIntent() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       onView(
         atPositionOnView(

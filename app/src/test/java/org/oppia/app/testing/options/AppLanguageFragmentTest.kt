@@ -23,12 +23,13 @@ class AppLanguageFragmentTest {
 
   @Test
   @LooperMode(LooperMode.Mode.PAUSED)
-  fun changeAppLanguageToFrench_changeConfiguration_selectedLanguageIsFrench() {
+  fun testAppLanguage_changeAppLanguageToFrench_changeConfiguration_selectedLanguageIsFrench() {
     launch<AppLanguageActivity>(createAppLanguageActivityIntent("English")).use {
       onView(
         atPositionOnView(
           R.id.language_recycler_view,
-          1, R.id.language_radio_button
+          1,
+          R.id.language_radio_button
         )
       ).perform(
         click()
@@ -37,7 +38,8 @@ class AppLanguageFragmentTest {
       onView(
         atPositionOnView(
           R.id.language_recycler_view,
-          1, R.id.language_radio_button
+          1,
+          R.id.language_radio_button
         )
       ).check(matches(isChecked()))
     }
