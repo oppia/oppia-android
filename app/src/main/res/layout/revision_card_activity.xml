@@ -25,11 +25,26 @@
         android:background="@color/oppiaPrimaryDark"
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
-        android:textSize="20sp"
         app:navigationContentDescription="@string/go_to_previous_page"
-        app:navigationIcon="?attr/homeAsUpIndicator"
-        app:titleTextAppearance="@style/ToolbarTextAppearance"
-        app:titleTextColor="@color/white" />
+        app:navigationIcon="?attr/homeAsUpIndicator">
+
+        <TextView
+          android:id="@+id/revision_card_toolbar_title"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="20dp"
+          android:ellipsize="marquee"
+          android:fadingEdge="horizontal"
+          android:fadingEdgeLength="20dp"
+          android:focusable="true"
+          android:focusableInTouchMode="true"
+          android:marqueeRepeatLimit="1"
+          android:requiresFadingEdge="horizontal"
+          android:scrollHorizontally="true"
+          android:singleLine="true"
+          android:textColor="@color/white"
+          android:textSize="20sp" />
+      </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout

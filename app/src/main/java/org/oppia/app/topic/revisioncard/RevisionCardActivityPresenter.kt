@@ -1,6 +1,7 @@
 package org.oppia.app.topic.revisioncard
 
 import android.view.MenuItem
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
@@ -27,6 +28,7 @@ class RevisionCardActivityPresenter @Inject constructor(
 ) {
 
   private lateinit var revisionCardToolbar: Toolbar
+  private lateinit var revisionCardToolbarTitle: TextView
 
   private var internalProfileId = 0
   private lateinit var topicId: String
@@ -42,9 +44,13 @@ class RevisionCardActivityPresenter @Inject constructor(
     this.subtopicId = subtopicId
 
     revisionCardToolbar = binding.revisionCardToolbar
-    activity.setSupportActionBar(revisionCardToolbar)
+    revisionCardToolbarTitle = binding.revisionCardToolbarTitle
+    
     binding.revisionCardToolbar.setNavigationOnClickListener {
       (activity as RevisionCardActivity).finish()
+    }
+    binding.revisionCardToolbar.setOnClickListener {
+      binding.revisionCardToolbarTitle.isSelected = true
     }
     subscribeToSubtopicTitle()
 
@@ -84,7 +90,7 @@ class RevisionCardActivityPresenter @Inject constructor(
     subtopicLiveData.observe(
       activity,
       Observer<String> {
-        activity.supportActionBar?.title = it
+        revisionCardToolbarTitle.text = it
       }
     )
   }
