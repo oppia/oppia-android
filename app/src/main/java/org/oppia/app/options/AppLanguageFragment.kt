@@ -20,7 +20,6 @@ class AppLanguageFragment : InjectableFragment() {
   lateinit var appLanguageFragmentPresenter: AppLanguageFragmentPresenter
 
   companion object {
-    internal const val APP_LANGUAGE_FRAGMENT_TAG = "APP_LANGUAGE_FRAGMENT_TAG"
     fun newInstance(prefsKey: String, prefsSummaryValue: String): AppLanguageFragment {
       val fragment = AppLanguageFragment()
       val args = Bundle()

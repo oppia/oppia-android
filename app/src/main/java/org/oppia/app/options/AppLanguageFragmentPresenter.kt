@@ -32,8 +32,8 @@ class AppLanguageFragmentPresenter @Inject constructor(private val fragment: Fra
       adapter = languageSelectionAdapter
     }
 
-    // The non-null receiver (?) is used because the toolbar will be removed in the case of multipane
-    binding.appLanguageToolbar?.setNavigationOnClickListener {
+    // TODO(#1200): Stop the toolbar functionality in the multipane (add non-null receiver (?)).
+    binding.appLanguageToolbar.setNavigationOnClickListener {
       val message = languageSelectionAdapter.getSelectedLanguage()
       val intent = Intent()
       intent.putExtra(KEY_MESSAGE_APP_LANGUAGE, message)
