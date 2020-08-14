@@ -49,10 +49,10 @@ import org.oppia.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
-import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.PREVIOUS_RESPONSES_HEADER
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.data.backends.gae.NetworkModule
@@ -69,6 +69,7 @@ import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_1
+import org.oppia.domain.topic.TEST_SKILL_ID_1
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.testing.TestAccessibilityModule
@@ -115,7 +116,7 @@ class StateFragmentLocalTest {
 
   private val internalProfileId: Int = 1
 
-  private val SKILL_ID_LIST = arrayListOf("B39yK4cbHZYI")
+  private val SKILL_ID_LIST = arrayListOf(TEST_SKILL_ID_1)
 
   @Before
   fun setUp() {
@@ -284,7 +285,7 @@ class StateFragmentLocalTest {
       submitTwoWrongAnswersToQuestionPlayer()
 
       onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
-      onView(withId(R.id.question_recycler_view)).check(matches(hasChildCount(/* childCount= */ 6)))
+      onView(withId(R.id.question_recycler_view)).check(matches(hasChildCount(/* childCount= */ 5)))
     }
   }
 
@@ -315,7 +316,7 @@ class StateFragmentLocalTest {
       onView(withId(R.id.question_recycler_view))
         .perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
       onView(withId(R.id.previous_response_header)).perform(click())
-      onView(withId(R.id.question_recycler_view)).check(matches(hasChildCount(/* childCount= */ 8)))
+      onView(withId(R.id.question_recycler_view)).check(matches(hasChildCount(/* childCount= */ 6)))
     }
   }
 
@@ -347,15 +348,15 @@ class StateFragmentLocalTest {
       submitTwoWrongAnswersToQuestionPlayer()
 
       onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
-      onView(withId(R.id.question_recycler_view)).check(matches(hasChildCount(/* childCount= */ 6)))
+      onView(withId(R.id.question_recycler_view)).check(matches(hasChildCount(/* childCount= */ 5)))
 
       onView(withId(R.id.question_recycler_view))
         .perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
       onView(withId(R.id.previous_response_header)).perform(click())
-      onView(withId(R.id.question_recycler_view)).check(matches(hasChildCount(/* childCount= */ 8)))
+      onView(withId(R.id.question_recycler_view)).check(matches(hasChildCount(/* childCount= */ 6)))
 
       onView(withId(R.id.previous_response_header)).perform(click())
-      onView(withId(R.id.question_recycler_view)).check(matches(hasChildCount(/* childCount= */ 6)))
+      onView(withId(R.id.question_recycler_view)).check(matches(hasChildCount(/* childCount= */ 5)))
     }
   }
 
@@ -968,13 +969,13 @@ class StateFragmentLocalTest {
   }
 
   private fun submitTwoWrongAnswersToQuestionPlayer() {
-    submitTwoWrongAnswerToQuestionPlayerNumericInput()
-    submitTwoWrongAnswerToQuestionPlayerNumericInput()
+    submitTwoWrongAnswerToQuestionPlayerFractionInput()
+    submitTwoWrongAnswerToQuestionPlayerFractionInput()
   }
 
-  private fun submitTwoWrongAnswerToQuestionPlayerNumericInput() {
-    onView(withId(R.id.question_recycler_view)).perform(scrollToViewType(NUMERIC_INPUT_INTERACTION))
-    onView(withId(R.id.numeric_input_interaction_view)).perform(appendText("1"))
+  private fun submitTwoWrongAnswerToQuestionPlayerFractionInput() {
+    onView(withId(R.id.question_recycler_view)).perform(scrollToViewType(TEXT_INPUT_INTERACTION))
+    onView(withId(R.id.text_input_interaction_view)).perform(appendText("1"))
     testCoroutineDispatchers.runCurrent()
 
     onView(withId(R.id.question_recycler_view)).perform(scrollToViewType(SUBMIT_ANSWER_BUTTON))
