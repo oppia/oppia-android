@@ -24,7 +24,11 @@ class HintsAndSolutionAdapter(
   private val explorationId: String?,
   private val htmlParserFactory: HtmlParser.Factory,
   private val resourceBucketName: String,
-  private val entityType: String
+  private val entityType: String,
+  private val hintIndex: Int?,
+  private val isHintRevealed: Boolean?,
+  private val solutionIndex: Int?,
+  private val isSolutionRevealed: Boolean?
 ) :
   RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -94,6 +98,15 @@ class HintsAndSolutionAdapter(
         isHintListVisible = currentExpandedHintListIndex!! == position
       }
       binding.isListExpanded = isHintListVisible
+
+      hintIndex?.let {
+        isHintRevealed?.let {
+          if (hintIndex == position && isHintRevealed) {
+            hintsViewModel.isHintRevealed.set(true)
+          }
+        }
+      }
+
       binding.viewModel = hintsViewModel
 
       if (hintsViewModel.isHintRevealed.get()!!) {
@@ -114,6 +127,7 @@ class HintsAndSolutionAdapter(
         binding.root.visibility = View.VISIBLE
         binding.revealHintButton.setOnClickListener {
           hintsViewModel.isHintRevealed.set(true)
+          expandedHintListIndexListener.onRevealHintClicked(position, /* isHintRevealed= */ true)
           (fragment.requireActivity() as? RevealHintListener)?.revealHint(true, position)
           currentExpandedHintListIndex =
             if (currentExpandedHintListIndex != null && currentExpandedHintListIndex == position) {
@@ -161,6 +175,15 @@ class HintsAndSolutionAdapter(
         isHintListVisible = currentExpandedHintListIndex!! == position
       }
       binding.isListExpanded = isHintListVisible
+
+      solutionIndex?.let {
+        isSolutionRevealed?.let {
+          if (solutionIndex == position && isSolutionRevealed) {
+            solutionViewModel.isSolutionRevealed.set(true)
+          }
+        }
+      }
+
       binding.viewModel = solutionViewModel
       binding.root.visibility = View.GONE
       binding.solutionTitle.text = solutionViewModel.title.get()!!.capitalize()
@@ -226,6 +249,10 @@ class HintsAndSolutionAdapter(
     if (itemList[itemList.size - 1] is SolutionViewModel) {
       val solutionViewModel = itemList[itemList.size - 1] as SolutionViewModel
       solutionViewModel.isSolutionRevealed.set(saveUserChoice)
+      expandedHintListIndexListener.onRevealSolutionClicked(
+        /* solutionIndex= */ itemList.size - 1,
+        /* isSolutionRevealed= */ true
+      )
       (fragment.requireActivity() as? RevealSolutionInterface)?.revealSolution(saveUserChoice)
       notifyItemChanged(itemList.size - 1)
     }
