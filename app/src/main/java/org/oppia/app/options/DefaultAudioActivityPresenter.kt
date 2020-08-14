@@ -14,9 +14,11 @@ class DefaultAudioActivityPresenter @Inject constructor(private val activity: Ap
   fun handleOnCreate(prefKey: String, prefValue: String) {
     activity.setContentView(R.layout.default_audio_activity)
     setLanguageSelected(prefValue)
-    val defaultAudioFragment = DefaultAudioFragment.newInstance(prefKey, prefValue)
-    activity.supportFragmentManager.beginTransaction()
-      .add(R.id.default_audio_fragment_container, defaultAudioFragment).commitNow()
+    if (getDefaultAudioFragment() == null) {
+      val defaultAudioFragment = DefaultAudioFragment.newInstance(prefKey, prefValue)
+      activity.supportFragmentManager.beginTransaction()
+        .add(R.id.default_audio_fragment_container, defaultAudioFragment).commitNow()
+    }
   }
 
   fun setLanguageSelected(audioLanguage: String) {
@@ -25,5 +27,10 @@ class DefaultAudioActivityPresenter @Inject constructor(private val activity: Ap
 
   fun getLanguageSelected(): String {
     return prefSummaryValue
+  }
+
+  private fun getDefaultAudioFragment(): DefaultAudioFragment? {
+    return activity.supportFragmentManager
+      .findFragmentById(R.id.default_audio_fragment_container) as DefaultAudioFragment?
   }
 }

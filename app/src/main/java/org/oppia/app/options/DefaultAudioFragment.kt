@@ -13,7 +13,7 @@ private const val KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE =
   "AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE"
 private const val KEY_SELECTED_AUDIO_LANGUAGE = "SELECTED_AUDIO_LANGUAGE"
 
-/** The fragment to change the Default Audio language of the app. */
+/** The fragment to change the default audio language of the app. */
 class DefaultAudioFragment : InjectableFragment() {
 
   @Inject

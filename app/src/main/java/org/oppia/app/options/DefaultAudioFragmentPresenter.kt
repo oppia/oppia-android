@@ -33,7 +33,8 @@ class DefaultAudioFragmentPresenter @Inject constructor(private val fragment: Fr
       adapter = languageSelectionAdapter
     }
 
-    binding.audioLanguageToolbar?.setNavigationOnClickListener {
+    // TODO(#1200): Stop the toolbar functionality in the multipane (add non-null receiver (?)).
+    binding.audioLanguageToolbar.setNavigationOnClickListener {
       val message = languageSelectionAdapter.getSelectedLanguage()
       val intent = Intent()
       intent.putExtra(KEY_MESSAGE_AUDIO_LANGUAGE, message)
@@ -49,6 +50,7 @@ class DefaultAudioFragmentPresenter @Inject constructor(private val fragment: Fr
   }
 
   private fun updateAudioLanguage(audioLanguage: String) {
+    // The first branch of (when) will be used in the case of multipane
     when (val parentActivity = fragment.activity) {
       is OptionsActivity ->
         parentActivity.optionActivityPresenter.updateAudioLanguage(audioLanguage)

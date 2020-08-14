@@ -150,7 +150,8 @@ class OptionsFragmentTest {
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
-          0, R.id.story_text_size_text_view
+          0,
+          R.id.story_text_size_text_view
         )
       ).check(
         matches(withText("Large"))
@@ -183,7 +184,8 @@ class OptionsFragmentTest {
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
-          2, R.id.audio_language_text_view
+          2,
+          R.id.audio_language_text_view
         )
       ).check(
         matches(withText("French"))

@@ -38,7 +38,7 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun clickStoryTextSize_checkSendingTheCorrectIntent() {
+  fun testStoryTextSize_clickStoryTextSize_checkSendingTheCorrectIntent() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       onView(
         atPositionOnView(
@@ -60,7 +60,7 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun clickDefaultAudioLanguage_checkSendingTheCorrectIntent() {
+  fun testAudioLanguage_clickDefaultAudioLanguage_checkSendingTheCorrectIntent() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       onView(
         atPositionOnView(
