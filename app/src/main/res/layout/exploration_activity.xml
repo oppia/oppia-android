@@ -50,6 +50,7 @@
             android:fadingEdgeLength="20dp"
             android:focusable="true"
             android:focusableInTouchMode="true"
+            android:fontFamily="sans-serif"
             android:marqueeRepeatLimit="1"
             android:requiresFadingEdge="horizontal"
             android:scrollHorizontally="true"

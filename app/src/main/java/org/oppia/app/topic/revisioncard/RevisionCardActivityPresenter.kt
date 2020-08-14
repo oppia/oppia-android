@@ -45,7 +45,7 @@ class RevisionCardActivityPresenter @Inject constructor(
 
     revisionCardToolbar = binding.revisionCardToolbar
     revisionCardToolbarTitle = binding.revisionCardToolbarTitle
-    
+
     binding.revisionCardToolbar.setNavigationOnClickListener {
       (activity as RevisionCardActivity).finish()
     }
