@@ -1,0 +1,35 @@
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+'''
+Package for all Firebase dependencies.
+To reference these dependencies, add '//app:crashlytics' and '//app:crashlytics_deps'
+to your build rule's dependency list.
+'''
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@tools_android//tools/crashlytics:defs.bzl", "crashlytics_android_library")
+load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
+
+package(default_visibility = ["//visibility:public"])
+
+# TODO(#1566): Move Firebase rules to their own package
+GOOGLE_SERVICES_RESOURCES = google_services_xml(
+    package_name = "org.oppia.app",
+    google_services_json = "google-services.json",
+)
+
+crashlytics_android_library(
+    name = "crashlytics",
+    package_name = "org.oppia.app",
+    build_id = "48fc9d17-e102-444c-8e0d-638d75ec0942",
+    resource_files = GOOGLE_SERVICES_RESOURCES,
+)
+
+android_library(
+    name = "crashlytics_deps",
+    exports = [
+        artifact("com.crashlytics.sdk.android:crashlytics"),
+        artifact("io.fabric.sdk.android:fabric"),
+        artifact("com.google.firebase:firebase-analytics"),
+        artifact("com.google.firebase:firebase-crashlytics"),
+    ],
+)

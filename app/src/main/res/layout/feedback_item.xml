@@ -3,6 +3,8 @@
 
   <data>
 
+    <import type="android.view.View" />
+
     <variable
       name="htmlContent"
       type="CharSequence" />
@@ -27,10 +29,10 @@
     app:explorationSplitViewPaddingStart="@{@dimen/padding_12}"
     app:explorationSplitViewPaddingTop="@{@dimen/padding_16}"
     app:explorationViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
-    app:explorationViewMarginBottom="@{@dimen/margin_8}"
+    app:explorationViewMarginBottom="@{@dimen/margin_0}"
     app:explorationViewMarginEnd="@{@dimen/margin_40}"
-    app:explorationViewMarginStart="@{@dimen/margin_20}"
-    app:explorationViewMarginTop="@{@dimen/margin_8}"
+    app:explorationViewMarginStart="@{@dimen/margin_24}"
+    app:explorationViewMarginTop="@{@dimen/margin_24}"
     app:explorationViewPaddingApplicable="@{viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
     app:explorationViewPaddingBottom="@{@dimen/padding_12}"
     app:explorationViewPaddingEnd="@{@dimen/padding_8}"
@@ -39,18 +41,18 @@
     app:questionSplitViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
     app:questionSplitViewMarginBottom="@{@dimen/margin_0}"
     app:questionSplitViewMarginEnd="@{@dimen/margin_40}"
-    app:questionSplitViewMarginStart="@{@dimen/margin_24}"
-    app:questionSplitViewMarginTop="@{@dimen/margin_24}"
+    app:questionSplitViewMarginStart="@{@dimen/margin_32}"
+    app:questionSplitViewMarginTop="@{@dimen/margin_32}"
     app:questionSplitViewPaddingApplicable="@{!viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
     app:questionSplitViewPaddingBottom="@{@dimen/padding_0}"
     app:questionSplitViewPaddingEnd="@{@dimen/padding_0}"
     app:questionSplitViewPaddingStart="@{@dimen/padding_0}"
     app:questionSplitViewPaddingTop="@{@dimen/padding_0}"
     app:questionViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
-    app:questionViewMarginBottom="@{@dimen/margin_28}"
+    app:questionViewMarginBottom="@{@dimen/margin_0}"
     app:questionViewMarginEnd="@{@dimen/margin_32}"
-    app:questionViewMarginStart="@{@dimen/margin_28}"
-    app:questionViewMarginTop="@{@dimen/margin_28}"
+    app:questionViewMarginStart="@{@dimen/margin_32}"
+    app:questionViewMarginTop="@{@dimen/margin_24}"
     app:questionViewPaddingApplicable="@{!viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
     app:questionViewPaddingBottom="@{@dimen/padding_0}"
     app:questionViewPaddingEnd="@{@dimen/padding_0}"
@@ -59,12 +61,13 @@
 
     <TextView
       android:id="@+id/feedback_text_view"
-      android:layout_width="match_parent"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:breakStrategy="simple"
       android:fontFamily="sans-serif"
       android:text="@{htmlContent}"
       android:textColor="@color/oppiaPrimaryText"
-      android:textSize="16sp" />
+      android:textSize="16sp"
+      android:visibility="@{htmlContent.length() > 0 ? View.VISIBLE : View.GONE, default=gone}" />
   </FrameLayout>
 </layout>
