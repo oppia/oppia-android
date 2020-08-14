@@ -29,21 +29,37 @@
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:fontFamily="sans-serif"
-        app:title="@{String.format(@string/topic_name, viewModel.topicNameLiveData)}"
         android:minHeight="?attr/actionBarSize"
         app:navigationContentDescription="@string/go_to_previous_page"
-        app:navigationIcon="?attr/homeAsUpIndicator"
-        app:titleTextAppearance="@style/ToolbarTextAppearance"
-        app:titleTextColor="@color/white" />
+        app:navigationIcon="?attr/homeAsUpIndicator">
+
+        <TextView
+          android:id="@+id/topic_toolbar_title"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="20dp"
+          android:ellipsize="marquee"
+          android:fadingEdge="horizontal"
+          android:fadingEdgeLength="20dp"
+          android:focusable="true"
+          android:focusableInTouchMode="true"
+          android:marqueeRepeatLimit="1"
+          android:requiresFadingEdge="horizontal"
+          android:scrollHorizontally="true"
+          android:singleLine="true"
+          android:text="@{String.format(@string/topic_name, viewModel.topicNameLiveData)}"
+          android:textColor="@color/white"
+          android:textSize="20sp" />
+      </androidx.appcompat.widget.Toolbar>
 
       <com.google.android.material.tabs.TabLayout
         android:id="@+id/topic_tabs_container"
         style="@style/AppTabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
         android:layout_marginStart="64dp"
         android:layout_marginEnd="64dp"
+        android:textSize="14sp"
         app:layout_constraintTop_toTopOf="parent"
         app:tabBackground="@color/oppiaPrimaryDark"
         app:tabGravity="fill"
