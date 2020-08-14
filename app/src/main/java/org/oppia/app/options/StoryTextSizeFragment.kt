@@ -17,7 +17,6 @@ class StoryTextSizeFragment : InjectableFragment() {
   lateinit var storyTextSizeFragmentPresenter: StoryTextSizeFragmentPresenter
 
   companion object {
-    internal const val STORY_TEXT_SIZE_FRAGMENT_TAG = "STORY_TEXT_SIZE_FRAGMENT_TAG"
     fun newInstance(storyTextSize: String): StoryTextSizeFragment {
       val args = Bundle()
       args.putString(KEY_STORY_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE, storyTextSize)

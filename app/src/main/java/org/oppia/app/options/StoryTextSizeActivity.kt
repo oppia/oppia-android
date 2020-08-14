@@ -6,10 +6,6 @@ import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
-private const val KEY_STORY_TEXT_SIZE_PREFERENCE_TITLE = "STORY_TEXT_SIZE_PREFERENCE"
-private const val KEY_STORY_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE =
-  "STORY_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE"
-
 /** The activity to change the Text size of the Story content in the app. */
 class StoryTextSizeActivity : InjectableAppCompatActivity() {
 
@@ -33,6 +29,9 @@ class StoryTextSizeActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
+    internal const val KEY_STORY_TEXT_SIZE_PREFERENCE_TITLE = "STORY_TEXT_SIZE_PREFERENCE"
+    internal const val KEY_STORY_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE =
+      "STORY_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE"
     /** Returns a new [Intent] to route to [StoryTextSizeActivity]. */
     fun createStoryTextSizeActivityIntent(
       context: Context,

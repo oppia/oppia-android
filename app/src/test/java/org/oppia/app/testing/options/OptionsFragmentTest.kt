@@ -1,4 +1,4 @@
-package org.oppia.app.testing
+package org.oppia.app.testing.options
 
 import android.content.Intent
 import androidx.test.core.app.ActivityScenario.launch
@@ -20,8 +20,6 @@ import org.oppia.app.options.OptionsActivity
 import org.oppia.app.options.STORY_TEXT_SIZE
 import org.oppia.app.options.StoryTextSizeActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
-
-private const val KEY_STORY_TEXT_SIZE_PREFERENCE_TITLE = "STORY_TEXT_SIZE_PREFERENCE"
 
 @RunWith(AndroidJUnit4::class)
 class OptionsFragmentTest {
@@ -52,7 +50,7 @@ class OptionsFragmentTest {
       intended(hasComponent(StoryTextSizeActivity::class.java.name))
       intended(
         hasExtra(
-          KEY_STORY_TEXT_SIZE_PREFERENCE_TITLE,
+          StoryTextSizeActivity.KEY_STORY_TEXT_SIZE_PREFERENCE_TITLE,
           STORY_TEXT_SIZE
         )
       )

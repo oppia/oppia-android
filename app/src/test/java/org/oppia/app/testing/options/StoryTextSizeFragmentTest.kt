@@ -1,4 +1,4 @@
-package org.oppia.app.testing
+package org.oppia.app.testing.options
 
 import android.content.Intent
 import android.view.View
@@ -29,7 +29,7 @@ class StoryTextSizeFragmentTest {
 
   @Test
   fun changeTextSizeToLarge_changeConfiguration_checkTextSizeLargeIsSelected() {
-    launch<StoryTextSizeActivity>(createStoryTextSizeActivityIntent("small")).use {
+    launch<StoryTextSizeActivity>(createStoryTextSizeActivityIntent("Small")).use {
       onView(withId(R.id.story_text_size_seekBar)).check(matches(seekBarProgress(0)))
       onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(10))
       onView(isRoot()).perform(orientationLandscape())
