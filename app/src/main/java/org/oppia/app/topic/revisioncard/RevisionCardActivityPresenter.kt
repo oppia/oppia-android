@@ -43,8 +43,14 @@ class RevisionCardActivityPresenter @Inject constructor(
     this.topicId = topicId
     this.subtopicId = subtopicId
 
+    binding.apply {
+      lifecycleOwner = activity
+    }
+
     revisionCardToolbar = binding.revisionCardToolbar
     revisionCardToolbarTitle = binding.revisionCardToolbarTitle
+    activity.setSupportActionBar(revisionCardToolbar)
+    activity.supportActionBar?.setDisplayShowTitleEnabled(false)
 
     binding.revisionCardToolbar.setNavigationOnClickListener {
       (activity as RevisionCardActivity).finish()

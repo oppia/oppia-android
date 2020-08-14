@@ -22,9 +22,9 @@
         android:id="@+id/revision_card_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/oppiaPrimaryDark"
-        android:fontFamily="sans-serif"
+        android:background="@color/colorPrimary"
         android:minHeight="?attr/actionBarSize"
+        android:theme="@style/Widget.AppCompat.ActionBar"
         app:navigationContentDescription="@string/go_to_previous_page"
         app:navigationIcon="?attr/homeAsUpIndicator">
 
