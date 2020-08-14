@@ -17,9 +17,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:paddingStart="24dp"
-      android:paddingEnd="24dp">
+      android:layout_height="match_parent">
 
       <TextView
         android:id="@+id/end_session_header_text_view"
@@ -59,6 +57,7 @@
         android:divider="@android:color/transparent"
         android:dividerHeight="8dp"
         android:overScrollMode="never"
+        android:paddingBottom="108dp"
         app:data="@{viewModel.itemList}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@id/question_progress_bar"
@@ -73,6 +72,7 @@
         android:divider="@android:color/transparent"
         android:dividerHeight="8dp"
         android:overScrollMode="never"
+        android:paddingBottom="108dp"
         android:visibility="@{viewModel.isSplitView ? View.VISIBLE : View.GONE}"
         app:data="@{viewModel.rightItemList}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
