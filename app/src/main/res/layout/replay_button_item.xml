@@ -4,6 +4,8 @@
 
   <data>
 
+    <import type="android.view.View" />
+
     <variable
       name="buttonViewModel"
       type="org.oppia.app.player.state.itemviewmodel.ReplayButtonViewModel" />
@@ -12,56 +14,21 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginStart="24dp"
+    android:layout_marginTop="68dp"
+    android:layout_marginEnd="24dp"
+    android:layout_marginBottom="0dp"
     android:gravity="center_vertical"
-    app:explorationSplitViewMarginApplicable="@{buttonViewModel.hasConversationView &amp;&amp; buttonViewModel.isSplitView}"
-    app:explorationSplitViewMarginBottom="@{@dimen/margin_0}"
-    app:explorationSplitViewMarginEnd="@{@dimen/margin_0}"
-    app:explorationSplitViewMarginStart="@{@dimen/margin_0}"
-    app:explorationSplitViewMarginTop="@{@dimen/margin_0}"
-    app:explorationSplitViewPaddingApplicable="@{buttonViewModel.hasConversationView &amp;&amp; buttonViewModel.isSplitView}"
-    app:explorationSplitViewPaddingBottom="@{@dimen/padding_0}"
-    app:explorationSplitViewPaddingEnd="@{@dimen/padding_0}"
-    app:explorationSplitViewPaddingStart="@{@dimen/padding_0}"
-    app:explorationSplitViewPaddingTop="@{@dimen/padding_0}"
-    app:explorationViewMarginApplicable="@{buttonViewModel.hasConversationView &amp;&amp; !buttonViewModel.isSplitView}"
-    app:explorationViewMarginBottom="@{@dimen/margin_0}"
-    app:explorationViewMarginEnd="@{@dimen/margin_0}"
-    app:explorationViewMarginStart="@{@dimen/margin_0}"
-    app:explorationViewMarginTop="@{@dimen/margin_56}"
-    app:explorationViewPaddingApplicable="@{buttonViewModel.hasConversationView &amp;&amp; !buttonViewModel.isSplitView}"
-    app:explorationViewPaddingBottom="@{@dimen/padding_12}"
-    app:explorationViewPaddingEnd="@{@dimen/padding_24}"
-    app:explorationViewPaddingStart="@{@dimen/padding_24}"
-    app:explorationViewPaddingTop="@{@dimen/padding_0}"
-    app:questionSplitViewMarginApplicable="@{!buttonViewModel.hasConversationView &amp;&amp; buttonViewModel.isSplitView}"
-    app:questionSplitViewMarginBottom="@{@dimen/margin_0}"
-    app:questionSplitViewMarginEnd="@{@dimen/margin_64}"
-    app:questionSplitViewMarginStart="@{@dimen/margin_0}"
-    app:questionSplitViewMarginTop="@{@dimen/margin_72}"
-    app:questionSplitViewPaddingApplicable="@{!buttonViewModel.hasConversationView &amp;&amp; buttonViewModel.isSplitView}"
-    app:questionSplitViewPaddingBottom="@{@dimen/padding_0}"
-    app:questionSplitViewPaddingEnd="@{@dimen/padding_0}"
-    app:questionSplitViewPaddingStart="@{@dimen/padding_0}"
-    app:questionSplitViewPaddingTop="@{@dimen/padding_0}"
-    app:questionViewMarginApplicable="@{!buttonViewModel.hasConversationView &amp;&amp; !buttonViewModel.isSplitView}"
-    app:questionViewMarginBottom="@{@dimen/margin_0}"
-    app:questionViewMarginEnd="@{@dimen/margin_0}"
-    app:questionViewMarginStart="@{@dimen/margin_0}"
-    app:questionViewMarginTop="@{@dimen/margin_56}"
-    app:questionViewPaddingApplicable="@{!buttonViewModel.hasConversationView &amp;&amp; !buttonViewModel.isSplitView}"
-    app:questionViewPaddingBottom="@{@dimen/padding_12}"
-    app:questionViewPaddingEnd="@{@dimen/padding_24}"
-    app:questionViewPaddingStart="@{@dimen/padding_24}"
-    app:questionViewPaddingTop="@{@dimen/padding_0}">
+    android:visibility="@{buttonViewModel.hasConversationView ? View.GONE : View.VISIBLE}">
 
     <Button
       android:id="@+id/replay_button"
       style="@style/StateButtonActive"
-      android:layout_height="48dp"
       android:layout_margin="4dp"
       android:background="@drawable/state_button_orange_background"
       android:drawableStart="@drawable/ic_refresh_white_24dp"
       android:drawablePadding="4dp"
+      android:minHeight="48dp"
       android:onClick="@{(v) -> buttonViewModel.replayButtonListener.onReplayButtonClicked()}"
       android:text="@string/lesson_replay_button_text"
       android:textColor="@color/white"
