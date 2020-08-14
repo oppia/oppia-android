@@ -18,8 +18,8 @@ class OptionsActivity :
   lateinit var optionActivityPresenter: OptionsActivityPresenter
 
   companion object {
-
-    internal const val BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY =
+    // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
+    const val BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY =
       "BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY"
 
     fun createOptionsActivity(

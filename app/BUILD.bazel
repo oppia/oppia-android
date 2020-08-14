@@ -524,6 +524,14 @@ TEST_DEPS = [
     "//domain",
     "//data",
     ":resources",
+    ":test_deps",
+    ":OrientationChangeAction_lib",
+    ":RecyclerViewMatcher_lib",
+    ":ProgressMatcher_lib",
+    ":RichTextViewMatcher_lib",
+    ":TabMatcher_lib",
+    ":DrawableMatcher_lib",
+    ":EspressoTestsMatchers_lib",
     "@robolectric//bazel:android-all",
     artifact("org.jetbrains.kotlin:kotlin-reflect"),
     artifact("com.google.truth:truth"),
@@ -542,13 +550,17 @@ TEST_DEPS = [
     artifact("androidx.test.espresso:espresso-intents:3.1.0"),
 ]
 
-RUNTIME_DEPS = [
-    artifact("androidx.databinding:databinding-runtime"),
-    artifact("androidx.databinding:databinding-adapters"),
-    artifact("androidx.databinding:databinding-common"),
-]
-
 ''' App module tests'''
+
+kt_android_library(
+    name = "test_deps",
+    srcs = [
+        "src/sharedTest/java/org/oppia/app/utility/MockitoKotlinHelper.kt"
+    ],
+    deps = [
+       artifact("org.mockito:mockito-core"),
+    ]
+)
 
 ALTERED_TESTS = [
     "src/test/java/org/oppia/app/player/state/StateFragmentLocalTest.kt",
@@ -556,6 +568,55 @@ ALTERED_TESTS = [
     "src/test/java/org/oppia/app/testing/CompletedStoryListSpanTest.kt",
     "src/test/java/org/oppia/app/testing/OngoingTopicListSpanTest.kt",
     "src/test/java/org/oppia/app/testing/TopicRevisionSpanTest.kt",
+    "src/sharedTest/java/org/oppia/app/profile/AdminAuthActivityTest.kt",
+    "src/sharedTest/java/org/oppia/app/profile/AddProfileActivityTest.kt",
+    "src/sharedTest/java/org/oppia/app/walkthrough/WalkthroughWelcomeFragmentTest.kt",
+    "src/sharedTest/java/org/oppia/app/profile/AdminPinActivityTest.kt",
+    "src/sharedTest/java/org/oppia/app/topic/practice/TopicPracticeFragmentTest.kt",
+    "src/sharedTest/java/org/oppia/app/walkthrough/WalkthroughTopicListFragmentTest.kt",
+    "src/sharedTest/java/org/oppia/app/administratorcontrols/AppVersionActivityTest.kt",
+    "src/sharedTest/java/org/oppia/app/recyclerview/BindableAdapterTest.kt",
+    "src/sharedTest/java/org/oppia/app/walkthrough/WalkthroughFinalFragmentTest.kt",
+    "src/sharedTest/java/org/oppia/app/testing/TopicTestActivityForStoryTest.kt",
+    "src/sharedTest/java/org/oppia/app/player/audio/AudioFragmentTest.kt",
+    "src/sharedTest/java/org/oppia/app/testing/TestFontScaleConfigurationUtilActivityTest.kt",
+    "src/sharedTest/java/org/oppia/app/help/HelpFragmentTest.kt",
+    "src/sharedTest/java/org/oppia/app/topic/conceptcard/ConceptCardFragmentTest.kt",
+    "src/sharedTest/java/org/oppia/app/testing/DragDropTestActivityTest.kt",
+    "src/sharedTest/java/org/oppia/app/settings/profile/ProfileListActivityTest.kt",
+    "src/sharedTest/java/org/oppia/app/administratorcontrols/AdministratorControlsActivityTest.kt",
+    "src/sharedTest/java/org/oppia/app/options/OptionsFragmentTest.kt",
+    "src/sharedTest/java/org/oppia/app/settings/profile/ProfileEditActivityTest.kt",
+    "src/sharedTest/java/org/oppia/app/profile/ProfileChooserFragmentTest.kt",
+    "src/sharedTest/java/org/oppia/app/faq/FAQSingleActivityTest.kt",
+    "src/sharedTest/java/org/oppia/app/ongoingtopiclist/OngoingTopicListActivityTest.kt",
+    "src/sharedTest/java/org/oppia/app/onboarding/OnboardingFragmentTest.kt",
+    "src/sharedTest/java/org/oppia/app/profile/PinPasswordActivityTest.kt",
+    "src/sharedTest/java/org/oppia/app/topic/revision/TopicRevisionFragmentTest.kt",
+    "src/sharedTest/java/org/oppia/app/parser/HtmlParserTest.kt",
+    "src/sharedTest/java/org/oppia/app/profileprogress/ProfileProgressFragmentTest.kt",
+    "src/sharedTest/java/org/oppia/app/completedstorylist/CompletedStoryListActivityTest.kt",
+    "src/sharedTest/java/org/oppia/app/walkthrough/WalkthroughActivityTest.kt",
+    "src/sharedTest/java/org/oppia/app/testing/ImageRegionSelectionInteractionViewTest.kt",
+    "src/sharedTest/java/org/oppia/app/topic/info/TopicInfoFragmentTest.kt",
+    "src/sharedTest/java/org/oppia/app/mydownloads/MyDownloadsFragmentTest.kt",
+    "src/sharedTest/java/org/oppia/app/player/state/StateFragmentTest.kt",
+    "src/sharedTest/java/org/oppia/app/story/StoryFragmentTest.kt",
+    "src/sharedTest/java/org/oppia/app/home/RecentlyPlayedFragmentTest.kt",
+    "src/sharedTest/java/org/oppia/app/faq/FAQListFragmentTest.kt",
+    "src/sharedTest/java/org/oppia/app/settings/profile/ProfileRenameActivityTest.kt",
+    "src/sharedTest/java/org/oppia/app/home/HomeActivityTest.kt",
+    "src/sharedTest/java/org/oppia/app/topic/revisioncard/RevisionCardFragmentTest.kt",
+    "src/sharedTest/java/org/oppia/app/settings/profile/ProfileResetPinActivityTest.kt",
+    "src/sharedTest/java/org/oppia/app/splash/SplashActivityTest.kt",
+    "src/sharedTest/java/org/oppia/app/story/StoryActivityTest.kt",
+    "src/sharedTest/java/org/oppia/app/testing/InputInteractionViewTestActivityTest.kt",
+    "src/sharedTest/java/org/oppia/app/testing/NavigationDrawerTestActivityTest.kt",
+    "src/sharedTest/java/org/oppia/app/topic/questionplayer/QuestionPlayerActivityTest.kt",
+    "src/sharedTest/java/org/oppia/app/profileprogress/ProfilePictureActivityTest.kt",
+    "src/sharedTest/java/org/oppia/app/topic/TopicFragmentTest.kt",
+    "src/sharedTest/java/org/oppia/app/utility/ClickActions.kt",
+    "src/sharedTest/java/org/oppia/app/utility/FontSizeMatcher.kt",
 ]
 
 '''
@@ -568,7 +629,8 @@ account for altered package and file name.
      outs = [file[0:-3] + "_updated.kt"],
      cmd = '''
      cat $(SRCS) |
-     sed 's/import org.oppia.app.R/import org.oppia.app.test.R/g' > $(OUTS)
+     sed 's/import org.oppia.app.R/import org.oppia.app.test.R/g' |
+     sed 's/import org.oppia.app.databinding./import org.oppia.app.databinding.databinding./g' > $(OUTS)
      ''',
  )
 for file in ALTERED_TESTS]
@@ -583,6 +645,7 @@ app_test(
     deps = TEST_DEPS,
 )
 
+# TODO: Test doesn't pass
 app_test(
     name = "ExplorationActivityLocalTest",
     srcs = [
@@ -678,7 +741,6 @@ app_test(
     srcs = [
         "update_src/test/java/org/oppia/app/testing/player/state/StateFragmentAccessibilityTest",
         "src/test/java/DataBinderMapperImpl.java",
-        "src/sharedTest/java/org/oppia/app/recyclerview/RecyclerViewMatcher.kt"
     ],
     test_class = "org.oppia.app.testing.player.state.StateFragmentAccessibilityTest",
     deps = TEST_DEPS,
@@ -711,6 +773,633 @@ app_test(
         "src/test/java/DataBinderMapperImpl.java"
     ],
     test_class = "org.oppia.app.topic.revisioncard.RevisionCardActivityLocalTest",
+    deps = TEST_DEPS,
+)
+
+''' App Module Shared Tests '''
+
+TEST_DEPS_SPECIAL = [
+    ":app",
+    ":dagger",
+    "//utility",
+    "//testing",
+    "//domain",
+    "//data",
+    ":resources",
+    "@robolectric//bazel:android-all",
+    artifact("org.jetbrains.kotlin:kotlin-reflect"),
+    artifact("com.google.truth:truth"),
+    artifact("androidx.test.ext:junit"),
+    artifact("androidx.databinding:databinding-runtime"),
+    artifact("androidx.databinding:databinding-adapters"),
+    artifact("androidx.databinding:databinding-common"),
+    artifact("androidx.annotation:annotation"),
+    artifact("androidx.databinding:databinding-compiler"),
+    artifact("androidx.test:runner:1.2.0"),
+    artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2"),
+    artifact("org.robolectric:annotations:4.3"),
+    artifact("org.mockito:mockito-core"),
+    artifact("androidx.test.espresso:espresso-contrib:3.1.0"),
+    artifact("androidx.test.espresso:espresso-core:3.2.0"),
+    artifact("androidx.test.espresso:espresso-intents:3.1.0"),
+]
+
+app_test(
+    name = "OrientationChangeAction",
+    srcs = [
+        "src/sharedTest/java/org/oppia/app/utility/OrientationChangeAction.kt",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.utility.OrientationChangeAction",
+    deps = TEST_DEPS_SPECIAL,
+)
+
+app_test(
+    name = "RecyclerViewMatcher",
+    srcs = [
+        "src/sharedTest/java/org/oppia/app/recyclerview/RecyclerViewMatcher.kt",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.recyclerview.RecyclerViewMatcher",
+    deps = TEST_DEPS_SPECIAL,
+)
+
+app_test(
+    name = "ProgressMatcher",
+    srcs = [
+        "src/sharedTest/java/org/oppia/app/utility/ProgressMatcher.kt",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.utility.ProgressMatcher",
+    deps = TEST_DEPS_SPECIAL,
+)
+
+app_test(
+    name = "RichTextViewMatcher",
+    srcs = [
+        "src/sharedTest/java/org/oppia/app/parser/RichTextViewMatcher.kt",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.parser.RichTextViewMatcher",
+    deps = TEST_DEPS_SPECIAL,
+)
+
+app_test(
+    name = "EspressoTestsMatchers",
+    srcs = [
+        "src/sharedTest/java/org/oppia/app/utility/EspressoTestsMatchers.kt",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.utility.EspressoTestsMatchers",
+    deps = TEST_DEPS_SPECIAL + [":TabMatcher_lib", ":DrawableMatcher_lib"],
+)
+
+app_test(
+    name = "DrawableMatcher",
+    srcs = [
+        "src/sharedTest/java/org/oppia/app/utility/DrawableMatcher.kt",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.utility.DrawableMatcher",
+    deps = TEST_DEPS_SPECIAL,
+)
+
+app_test(
+    name = "TabMatcher",
+    srcs = [
+        "src/sharedTest/java/org/oppia/app/utility/TabMatcher.kt",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.utility.TabMatcher",
+    deps = TEST_DEPS_SPECIAL,
+)
+
+# TODO: Solve weird error.
+#app_test(
+#    name = "DragViewAction",
+#    srcs = [
+#        "src/sharedTest/java/org/oppia/app/utility/DragViewAction.kt",
+#        "src/test/java/DataBinderMapperImpl.java"
+#    ],
+#    test_class = "org.oppia.app.utility.DragViewAction",
+#    deps = TEST_DEPS_SPECIAL,
+#)
+
+app_test(
+    name = "AdministratorControlsActivityTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/administratorcontrols/AdministratorControlsActivityTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.administratorcontrols.AdministratorControlsActivityTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "AppVersionActivityTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/administratorcontrols/AppVersionActivityTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.administratorcontrols.AppVersionActivityTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "CompletedStoryListActivityTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/completedstorylist/CompletedStoryListActivityTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.completedstorylist.CompletedStoryListActivityTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "FAQListFragmentTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/faq/FAQListFragmentTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.faq.FAQListFragmentTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "FAQSingleActivityTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/faq/FAQSingleActivityTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.faq.FAQSingleActivityTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "HelpFragmentTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/help/HelpFragmentTest",
+        "src/test/java/DataBinderMapperImpl.java",
+    ],
+    test_class = "org.oppia.app.help.HelpFragmentTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "HomeActivityTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/home/HomeActivityTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.home.HomeActivityTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "RecentlyPlayedFragmentTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/home/RecentlyPlayedFragmentTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.home.RecentlyPlayedFragmentTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "MyDownloadsFragmentTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/mydownloads/MyDownloadsFragmentTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.mydownloads.MyDownloadsFragmentTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "OnboardingFragmentTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/onboarding/OnboardingFragmentTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.onboarding.OnboardingFragmentTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "OngoingTopicListActivityTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/ongoingtopiclist/OngoingTopicListActivityTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.ongoingtopiclist.OngoingTopicListActivityTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "OptionsFragmentTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/options/OptionsFragmentTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.options.OptionsFragmentTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "HtmlParserTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/parser/HtmlParserTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.parser.HtmlParserTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "AudioFragmentTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/player/audio/AudioFragmentTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.player.audio.AudioFragmentTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "ExplorationActivityTest",
+    srcs = [
+        "src/sharedTest/java/org/oppia/app/player/exploration/ExplorationActivityTest.kt",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.player.exploration.ExplorationActivityTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "StateFragmentTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/player/state/StateFragmentTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.player.state.StateFragmentTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "AddProfileActivityTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/profile/AddProfileActivityTest",
+        "src/test/java/DataBinderMapperImpl.java",
+        "src/sharedTest/java/org/oppia/app/utility/OrientationChangeAction.kt",
+    ],
+    test_class = "org.oppia.app.profile.AddProfileActivityTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "AdminAuthActivityTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/profile/AdminAuthActivityTest",
+        "src/test/java/DataBinderMapperImpl.java",
+        "src/sharedTest/java/org/oppia/app/utility/OrientationChangeAction.kt"
+    ],
+    test_class = "org.oppia.app.profile.AdminAuthActivityTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "AdminPinActivityTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/profile/AdminPinActivityTest",
+        "src/test/java/DataBinderMapperImpl.java",
+        "src/sharedTest/java/org/oppia/app/utility/OrientationChangeAction.kt"
+    ],
+    test_class = "org.oppia.app.profile.AdminPinActivityTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "PinPasswordActivityTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/profile/PinPasswordActivityTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.profile.PinPasswordActivityTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "ProfileChooserFragmentTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/profile/ProfileChooserFragmentTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.profile.ProfileChooserFragmentTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "ProfilePictureActivityTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/profileprogress/ProfilePictureActivityTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.profileprogress.ProfilePictureActivityTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "ProfileProgressFragmentTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/profileprogress/ProfileProgressFragmentTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.profileprogress.ProfileProgressFragmentTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "BindableAdapterTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/recyclerview/BindableAdapterTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.recyclerview.BindableAdapterTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "ProfileEditActivityTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/settings/profile/ProfileEditActivityTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.settings.profile.ProfileEditActivityTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "ProfileListActivityTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/settings/profile/ProfileListActivityTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.settings.profile.ProfileListActivityTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "ProfileRenameActivityTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/settings/profile/ProfileRenameActivityTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.settings.profile.ProfileRenameActivityTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "ProfileResetPinActivityTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/settings/profile/ProfileResetPinActivityTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.settings.profile.ProfileResetPinActivityTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "SplashActivityTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/splash/SplashActivityTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.splash.SplashActivityTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "StoryActivityTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/story/StoryActivityTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.story.StoryActivityTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "StoryFragmentTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/story/StoryFragmentTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.story.StoryFragmentTest",
+    deps = TEST_DEPS,
+)
+
+# TODO: Not building or passing
+#app_test(
+#    name = "DragDropTestActivityTest",
+#    srcs = [
+#        "update_src/sharedTest/java/org/oppia/app/testing/DragDropTestActivityTest",
+#        "src/test/java/DataBinderMapperImpl.java",
+#        "src/sharedTest/java/org/oppia/app/utility/DragViewAction.kt",
+#    ],
+#    test_class = "org.oppia.app.testing.DragDropTestActivityTest",
+#    deps = TEST_DEPS,
+#)
+
+app_test(
+    name = "ImageRegionSelectionInteractionViewTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/testing/ImageRegionSelectionInteractionViewTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.testing.ImageRegionSelectionInteractionViewTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "InputInteractionViewTestActivityTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/testing/InputInteractionViewTestActivityTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.testing.InputInteractionViewTestActivityTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "NavigationDrawerTestActivityTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/testing/NavigationDrawerTestActivityTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.testing.NavigationDrawerTestActivityTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "TestFontScaleConfigurationUtilActivityTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/testing/TestFontScaleConfigurationUtilActivityTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.testing.TestFontScaleConfigurationUtilActivityTest",
+    deps = TEST_DEPS,
+)
+
+# TODO: Not building
+#app_test(
+#    name = "TopicTestActivityForStoryTest",
+#    srcs = [
+#        "update_src/sharedTest/java/org/oppia/app/testing/TopicTestActivityForStoryTest",
+#        "src/test/java/DataBinderMapperImpl.java",
+#    ],
+#    test_class = "org.oppia.app.testing.TopicTestActivityForStoryTest",
+#    deps = TEST_DEPS,
+#)
+
+app_test(
+    name = "TopicFragmentTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/topic/TopicFragmentTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.topic.TopicFragmentTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "ConceptCardFragmentTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/topic/conceptcard/ConceptCardFragmentTest",
+        "src/test/java/DataBinderMapperImpl.java",
+    ],
+    test_class = "org.oppia.app.topic.conceptcard.ConceptCardFragmentTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "TopicInfoFragmentTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/topic/info/TopicInfoFragmentTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.topic.info.TopicInfoFragmentTest",
+    deps = TEST_DEPS,
+)
+
+# TODO
+#app_test(
+#    name = "TopicLessonsFragmentTest",
+#    srcs = [
+#        "src/sharedTest/java/org/oppia/app/topic/lessons/TopicLessonsFragmentTest.kt",
+#        "src/test/java/DataBinderMapperImpl.java"
+#    ],
+#    test_class = "org.oppia.app.topic.lessons.TopicLessonsFragmentTest",
+#    deps = TEST_DEPS,
+#)
+
+app_test(
+    name = "TopicPracticeFragmentTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/topic/practice/TopicPracticeFragmentTest",
+        "src/test/java/DataBinderMapperImpl.java",
+    ],
+    test_class = "org.oppia.app.topic.practice.TopicPracticeFragmentTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "QuestionPlayerActivityTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/topic/questionplayer/QuestionPlayerActivityTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.topic.questionplayer.QuestionPlayerActivityTest",
+    deps = TEST_DEPS,
+)
+
+# TODO
+#app_test(
+#    name = "TopicRevisionFragmentTest",
+#    srcs = [
+#        "update_src/sharedTest/java/org/oppia/app/topic/revision/TopicRevisionFragmentTest",
+#        "src/test/java/DataBinderMapperImpl.java"
+#    ],
+#    test_class = "org.oppia.app.topic.revision.TopicRevisionFragmentTest",
+#    deps = TEST_DEPS,
+#)
+
+app_test(
+    name = "RevisionCardFragmentTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/topic/revisioncard/RevisionCardFragmentTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.topic.revisioncard.RevisionCardFragmentTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "ClickActions",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/utility/ClickActions",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.utility.ClickActions",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "FontSizeMatcher",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/utility/FontSizeMatcher",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.utility.FontSizeMatcher",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "WalkthroughActivityTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/walkthrough/WalkthroughActivityTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.walkthrough.WalkthroughActivityTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "WalkthroughFinalFragmentTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/walkthrough/WalkthroughFinalFragmentTest",
+        "src/test/java/DataBinderMapperImpl.java",
+    ],
+    test_class = "org.oppia.app.walkthrough.WalkthroughFinalFragmentTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "WalkthroughTopicListFragmentTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/walkthrough/WalkthroughTopicListFragmentTest",
+        "src/test/java/DataBinderMapperImpl.java",
+    ],
+    test_class = "org.oppia.app.walkthrough.WalkthroughTopicListFragmentTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "WalkthroughWelcomeFragmentTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/walkthrough/WalkthroughWelcomeFragmentTest",
+        "src/test/java/DataBinderMapperImpl.java",
+    ],
+    test_class = "org.oppia.app.walkthrough.WalkthroughWelcomeFragmentTest",
     deps = TEST_DEPS,
 )
 
