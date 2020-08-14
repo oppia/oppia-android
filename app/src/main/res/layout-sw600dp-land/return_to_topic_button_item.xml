@@ -13,8 +13,8 @@
   <!-- Margins -->
   <!-- Exploration Split View: 24, 72, 64, 0 -->
   <!-- Exploration View: 176, 24, 176, 0 -->
-  <!-- Question Split View: 24, 72, 64, 0 -->
-  <!-- Question View: 192, 24, 192, 0 -->
+  <!-- Question Split View: 24, 12, 64, 0 -->
+  <!-- Question View: 192, 12, 192, 0 -->
   <!-- Note: Start/End margins are 4dp less which is getting adjusted in child views. -->
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
@@ -34,12 +34,12 @@
     app:questionSplitViewMarginBottom="@{@dimen/margin_0}"
     app:questionSplitViewMarginEnd="@{@dimen/margin_60}"
     app:questionSplitViewMarginStart="@{@dimen/margin_20}"
-    app:questionSplitViewMarginTop="@{@dimen/margin_72}"
+    app:questionSplitViewMarginTop="@{@dimen/margin_8}"
     app:questionViewMarginApplicable="@{!buttonViewModel.hasConversationView &amp;&amp; !buttonViewModel.isSplitView}"
     app:questionViewMarginBottom="@{@dimen/margin_0}"
     app:questionViewMarginEnd="@{@dimen/margin_188}"
     app:questionViewMarginStart="@{@dimen/margin_188}"
-    app:questionViewMarginTop="@{@dimen/margin_24}">
+    app:questionViewMarginTop="@{@dimen/margin_8}">
 
     <ImageButton
       android:id="@+id/previous_state_navigation_button"
