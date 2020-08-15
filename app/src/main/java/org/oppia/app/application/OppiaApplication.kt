@@ -3,6 +3,7 @@ package org.oppia.app.application
 import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
 import androidx.multidex.MultiDexApplication
+import com.google.firebase.FirebaseApp
 import org.oppia.app.activity.ActivityComponent
 import org.oppia.domain.oppialogger.exceptions.OppiaUncaughtExceptionHandler
 
@@ -24,6 +25,7 @@ class OppiaApplication : MultiDexApplication(), ActivityComponentFactory {
 
   override fun onCreate() {
     super.onCreate()
+    FirebaseApp.initializeApp(applicationContext)
     oppiaUncaughtExceptionHandler = component.getOppiaExceptionHandler()
     setOppiaUncaughtExceptionHandler()
   }
