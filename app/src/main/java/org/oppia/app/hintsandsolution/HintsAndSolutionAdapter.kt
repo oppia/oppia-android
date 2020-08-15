@@ -260,7 +260,9 @@ class HintsAndSolutionAdapter(
       (fragment.requireActivity() as? RevealSolutionInterface)?.revealSolution(saveUserChoice)
       val previousIndex: Int? = currentExpandedHintListIndex
       currentExpandedHintListIndex =
-        if (currentExpandedHintListIndex != null && currentExpandedHintListIndex == itemList.size - 1) {
+        if (currentExpandedHintListIndex != null &&
+          currentExpandedHintListIndex == itemList.size - 1
+        ) {
           null
         } else {
           itemList.size - 1
