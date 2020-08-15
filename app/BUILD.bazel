@@ -512,8 +512,34 @@ kt_android_library(
         artifact("androidx.viewpager:viewpager:1.0.0"),
         artifact("com.caverock:androidsvg-aar"),
         artifact("javax.annotation:javax.annotation-api:jar"),
+        artifact("androidx.navigation:navigation-fragment:2.0.0"),
+        artifact("androidx.navigation:navigation-fragment-ktx:2.0.0"),
+        artifact("androidx.navigation:navigation-ui:2.0.0"),
+        artifact("androidx.navigation:navigation-ui-ktx:2.0.0"),
     ],
     visibility = ["//visibility:public"],
+)
+
+kt_android_library(
+    name = "test_deps",
+    srcs = [
+        "src/sharedTest/java/org/oppia/app/utility/OrientationChangeAction.kt",
+        "src/sharedTest/java/org/oppia/app/recyclerview/RecyclerViewMatcher.kt",
+        "src/sharedTest/java/org/oppia/app/utility/ProgressMatcher.kt",
+        "src/sharedTest/java/org/oppia/app/parser/RichTextViewMatcher.kt",
+        "src/sharedTest/java/org/oppia/app/utility/DrawableMatcher.kt",
+        "src/sharedTest/java/org/oppia/app/utility/EspressoTestsMatchers.kt",
+        "src/sharedTest/java/org/oppia/app/utility/TabMatcher.kt",
+        "src/sharedTest/java/org/oppia/app/utility/FontSizeMatcher.kt",
+        "src/sharedTest/java/org/oppia/app/utility/MockitoKotlinHelper.kt",
+        "src/sharedTest/java/org/oppia/app/utility/DragViewAction.kt",
+        "src/sharedTest/java/org/oppia/app/utility/ClickActions.kt",
+    ],
+    deps = [
+        ":app",
+        "//testing",
+        artifact("org.mockito:mockito-core"),
+    ]
 )
 
 TEST_DEPS = [
@@ -525,13 +551,6 @@ TEST_DEPS = [
     "//data",
     ":resources",
     ":test_deps",
-    ":OrientationChangeAction_lib",
-    ":RecyclerViewMatcher_lib",
-    ":ProgressMatcher_lib",
-    ":RichTextViewMatcher_lib",
-    ":TabMatcher_lib",
-    ":DrawableMatcher_lib",
-    ":EspressoTestsMatchers_lib",
     "@robolectric//bazel:android-all",
     artifact("org.jetbrains.kotlin:kotlin-reflect"),
     artifact("com.google.truth:truth"),
@@ -549,18 +568,6 @@ TEST_DEPS = [
     artifact("androidx.test.espresso:espresso-core:3.2.0"),
     artifact("androidx.test.espresso:espresso-intents:3.1.0"),
 ]
-
-''' App module tests'''
-
-kt_android_library(
-    name = "test_deps",
-    srcs = [
-        "src/sharedTest/java/org/oppia/app/utility/MockitoKotlinHelper.kt"
-    ],
-    deps = [
-       artifact("org.mockito:mockito-core"),
-    ]
-)
 
 ALTERED_TESTS = [
     "src/test/java/org/oppia/app/player/state/StateFragmentLocalTest.kt",
@@ -615,8 +622,8 @@ ALTERED_TESTS = [
     "src/sharedTest/java/org/oppia/app/topic/questionplayer/QuestionPlayerActivityTest.kt",
     "src/sharedTest/java/org/oppia/app/profileprogress/ProfilePictureActivityTest.kt",
     "src/sharedTest/java/org/oppia/app/topic/TopicFragmentTest.kt",
-    "src/sharedTest/java/org/oppia/app/utility/ClickActions.kt",
-    "src/sharedTest/java/org/oppia/app/utility/FontSizeMatcher.kt",
+    "src/sharedTest/java/org/oppia/app/player/exploration/ExplorationActivityTest.kt",
+    "src/sharedTest/java/org/oppia/app/topic/lessons/TopicLessonsFragmentTest.kt",
 ]
 
 '''
@@ -634,6 +641,8 @@ account for altered package and file name.
      ''',
  )
 for file in ALTERED_TESTS]
+
+''' App module tests'''
 
 app_test(
     name = "HomeActivityLocalTest",
@@ -778,113 +787,6 @@ app_test(
 
 ''' App Module Shared Tests '''
 
-TEST_DEPS_SPECIAL = [
-    ":app",
-    ":dagger",
-    "//utility",
-    "//testing",
-    "//domain",
-    "//data",
-    ":resources",
-    "@robolectric//bazel:android-all",
-    artifact("org.jetbrains.kotlin:kotlin-reflect"),
-    artifact("com.google.truth:truth"),
-    artifact("androidx.test.ext:junit"),
-    artifact("androidx.databinding:databinding-runtime"),
-    artifact("androidx.databinding:databinding-adapters"),
-    artifact("androidx.databinding:databinding-common"),
-    artifact("androidx.annotation:annotation"),
-    artifact("androidx.databinding:databinding-compiler"),
-    artifact("androidx.test:runner:1.2.0"),
-    artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2"),
-    artifact("org.robolectric:annotations:4.3"),
-    artifact("org.mockito:mockito-core"),
-    artifact("androidx.test.espresso:espresso-contrib:3.1.0"),
-    artifact("androidx.test.espresso:espresso-core:3.2.0"),
-    artifact("androidx.test.espresso:espresso-intents:3.1.0"),
-]
-
-app_test(
-    name = "OrientationChangeAction",
-    srcs = [
-        "src/sharedTest/java/org/oppia/app/utility/OrientationChangeAction.kt",
-        "src/test/java/DataBinderMapperImpl.java"
-    ],
-    test_class = "org.oppia.app.utility.OrientationChangeAction",
-    deps = TEST_DEPS_SPECIAL,
-)
-
-app_test(
-    name = "RecyclerViewMatcher",
-    srcs = [
-        "src/sharedTest/java/org/oppia/app/recyclerview/RecyclerViewMatcher.kt",
-        "src/test/java/DataBinderMapperImpl.java"
-    ],
-    test_class = "org.oppia.app.recyclerview.RecyclerViewMatcher",
-    deps = TEST_DEPS_SPECIAL,
-)
-
-app_test(
-    name = "ProgressMatcher",
-    srcs = [
-        "src/sharedTest/java/org/oppia/app/utility/ProgressMatcher.kt",
-        "src/test/java/DataBinderMapperImpl.java"
-    ],
-    test_class = "org.oppia.app.utility.ProgressMatcher",
-    deps = TEST_DEPS_SPECIAL,
-)
-
-app_test(
-    name = "RichTextViewMatcher",
-    srcs = [
-        "src/sharedTest/java/org/oppia/app/parser/RichTextViewMatcher.kt",
-        "src/test/java/DataBinderMapperImpl.java"
-    ],
-    test_class = "org.oppia.app.parser.RichTextViewMatcher",
-    deps = TEST_DEPS_SPECIAL,
-)
-
-app_test(
-    name = "EspressoTestsMatchers",
-    srcs = [
-        "src/sharedTest/java/org/oppia/app/utility/EspressoTestsMatchers.kt",
-        "src/test/java/DataBinderMapperImpl.java"
-    ],
-    test_class = "org.oppia.app.utility.EspressoTestsMatchers",
-    deps = TEST_DEPS_SPECIAL + [":TabMatcher_lib", ":DrawableMatcher_lib"],
-)
-
-app_test(
-    name = "DrawableMatcher",
-    srcs = [
-        "src/sharedTest/java/org/oppia/app/utility/DrawableMatcher.kt",
-        "src/test/java/DataBinderMapperImpl.java"
-    ],
-    test_class = "org.oppia.app.utility.DrawableMatcher",
-    deps = TEST_DEPS_SPECIAL,
-)
-
-app_test(
-    name = "TabMatcher",
-    srcs = [
-        "src/sharedTest/java/org/oppia/app/utility/TabMatcher.kt",
-        "src/test/java/DataBinderMapperImpl.java"
-    ],
-    test_class = "org.oppia.app.utility.TabMatcher",
-    deps = TEST_DEPS_SPECIAL,
-)
-
-# TODO: Solve weird error.
-#app_test(
-#    name = "DragViewAction",
-#    srcs = [
-#        "src/sharedTest/java/org/oppia/app/utility/DragViewAction.kt",
-#        "src/test/java/DataBinderMapperImpl.java"
-#    ],
-#    test_class = "org.oppia.app.utility.DragViewAction",
-#    deps = TEST_DEPS_SPECIAL,
-#)
-
 app_test(
     name = "AdministratorControlsActivityTest",
     srcs = [
@@ -1028,7 +930,7 @@ app_test(
 app_test(
     name = "ExplorationActivityTest",
     srcs = [
-        "src/sharedTest/java/org/oppia/app/player/exploration/ExplorationActivityTest.kt",
+        "update_src/sharedTest/java/org/oppia/app/player/exploration/ExplorationActivityTest",
         "src/test/java/DataBinderMapperImpl.java"
     ],
     test_class = "org.oppia.app.player.exploration.ExplorationActivityTest",
@@ -1198,17 +1100,15 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO: Not building or passing
-#app_test(
-#    name = "DragDropTestActivityTest",
-#    srcs = [
-#        "update_src/sharedTest/java/org/oppia/app/testing/DragDropTestActivityTest",
-#        "src/test/java/DataBinderMapperImpl.java",
-#        "src/sharedTest/java/org/oppia/app/utility/DragViewAction.kt",
-#    ],
-#    test_class = "org.oppia.app.testing.DragDropTestActivityTest",
-#    deps = TEST_DEPS,
-#)
+app_test(
+    name = "DragDropTestActivityTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/testing/DragDropTestActivityTest",
+        "src/test/java/DataBinderMapperImpl.java",
+    ],
+    test_class = "org.oppia.app.testing.DragDropTestActivityTest",
+    deps = TEST_DEPS,
+)
 
 app_test(
     name = "ImageRegionSelectionInteractionViewTest",
@@ -1250,16 +1150,15 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO: Not building
-#app_test(
-#    name = "TopicTestActivityForStoryTest",
-#    srcs = [
-#        "update_src/sharedTest/java/org/oppia/app/testing/TopicTestActivityForStoryTest",
-#        "src/test/java/DataBinderMapperImpl.java",
-#    ],
-#    test_class = "org.oppia.app.testing.TopicTestActivityForStoryTest",
-#    deps = TEST_DEPS,
-#)
+app_test(
+    name = "TopicTestActivityForStoryTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/testing/TopicTestActivityForStoryTest",
+        "src/test/java/DataBinderMapperImpl.java",
+    ],
+    test_class = "org.oppia.app.testing.TopicTestActivityForStoryTest",
+    deps = TEST_DEPS,
+)
 
 app_test(
     name = "TopicFragmentTest",
@@ -1291,16 +1190,15 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO
-#app_test(
-#    name = "TopicLessonsFragmentTest",
-#    srcs = [
-#        "src/sharedTest/java/org/oppia/app/topic/lessons/TopicLessonsFragmentTest.kt",
-#        "src/test/java/DataBinderMapperImpl.java"
-#    ],
-#    test_class = "org.oppia.app.topic.lessons.TopicLessonsFragmentTest",
-#    deps = TEST_DEPS,
-#)
+app_test(
+    name = "TopicLessonsFragmentTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/topic/lessons/TopicLessonsFragmentTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.topic.lessons.TopicLessonsFragmentTest",
+    deps = TEST_DEPS,
+)
 
 app_test(
     name = "TopicPracticeFragmentTest",
@@ -1322,16 +1220,15 @@ app_test(
     deps = TEST_DEPS,
 )
 
-# TODO
-#app_test(
-#    name = "TopicRevisionFragmentTest",
-#    srcs = [
-#        "update_src/sharedTest/java/org/oppia/app/topic/revision/TopicRevisionFragmentTest",
-#        "src/test/java/DataBinderMapperImpl.java"
-#    ],
-#    test_class = "org.oppia.app.topic.revision.TopicRevisionFragmentTest",
-#    deps = TEST_DEPS,
-#)
+app_test(
+    name = "TopicRevisionFragmentTest",
+    srcs = [
+        "update_src/sharedTest/java/org/oppia/app/topic/revision/TopicRevisionFragmentTest",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
+    test_class = "org.oppia.app.topic.revision.TopicRevisionFragmentTest",
+    deps = TEST_DEPS,
+)
 
 app_test(
     name = "RevisionCardFragmentTest",
@@ -1340,26 +1237,6 @@ app_test(
         "src/test/java/DataBinderMapperImpl.java"
     ],
     test_class = "org.oppia.app.topic.revisioncard.RevisionCardFragmentTest",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "ClickActions",
-    srcs = [
-        "update_src/sharedTest/java/org/oppia/app/utility/ClickActions",
-        "src/test/java/DataBinderMapperImpl.java"
-    ],
-    test_class = "org.oppia.app.utility.ClickActions",
-    deps = TEST_DEPS,
-)
-
-app_test(
-    name = "FontSizeMatcher",
-    srcs = [
-        "update_src/sharedTest/java/org/oppia/app/utility/FontSizeMatcher",
-        "src/test/java/DataBinderMapperImpl.java"
-    ],
-    test_class = "org.oppia.app.utility.FontSizeMatcher",
     deps = TEST_DEPS,
 )
 

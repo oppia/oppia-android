@@ -63,17 +63,17 @@ class ExplorationActivity :
     )
   }
 
+  // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
   companion object {
     /** Returns a new [Intent] to route to [ExplorationActivity] for a specified exploration. */
 
-    internal const val EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY =
+    const val EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY =
       "ExplorationActivity.profile_id"
-    internal const val EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "ExplorationActivity.topic_id"
-    internal const val EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY = "ExplorationActivity.story_id"
-    // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
+    const val EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "ExplorationActivity.topic_id"
+    const val EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY = "ExplorationActivity.story_id"
     const val EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY =
       "ExplorationActivity.exploration_id"
-    internal const val EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY =
+    const val EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY =
       "ExplorationActivity.backflow_screen"
 
     fun createExplorationActivityIntent(

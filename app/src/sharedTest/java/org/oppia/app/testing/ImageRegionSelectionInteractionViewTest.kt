@@ -16,7 +16,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.android.synthetic.main.image_region_selection_test_fragment.*
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matchers.allOf
@@ -31,6 +30,7 @@ import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import org.oppia.app.R
+import org.oppia.app.player.state.ImageRegionSelectionInteractionView
 import org.oppia.app.player.state.StateFragment
 import org.oppia.app.utility.DefaultRegionClickedEvent
 import org.oppia.app.utility.NamedRegionClickedEvent
@@ -80,7 +80,7 @@ class ImageRegionSelectionInteractionViewTest {
   fun testImageRegionSelectionInteractionView_clickRegion3_region3Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
-        it.clickable_image_view.setListener(onClickableAreaClickedListener)
+        it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view).setListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
         clickPoint(0.3f, 0.3f)
@@ -98,7 +98,7 @@ class ImageRegionSelectionInteractionViewTest {
   fun testImageRegionSelectionInteractionView_clickRegion3_clickRegion2_region2Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
-        it.clickable_image_view.setListener(onClickableAreaClickedListener)
+        it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view).setListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
         clickPoint(0.3f, 0.3f)
@@ -132,7 +132,7 @@ class ImageRegionSelectionInteractionViewTest {
   fun testImageRegionSelectionInteractionView_clickOnDefaultRegion_defaultRegionClicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
-        it.clickable_image_view.setListener(onClickableAreaClickedListener)
+        it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view).setListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
         clickPoint(0.0f, 0.0f)
@@ -153,7 +153,7 @@ class ImageRegionSelectionInteractionViewTest {
   fun testView_withTalkbackEnabled_clickRegion3_clickRegion2_region2Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
-        it.clickable_image_view.setListener(onClickableAreaClickedListener)
+        it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view).setListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
         clickPoint(0.3f, 0.3f)
@@ -188,7 +188,7 @@ class ImageRegionSelectionInteractionViewTest {
   fun testImageRegionSelectionInteractionView_withTalkbackEnabled_clickRegion3_region3Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
-        it.clickable_image_view.setListener(onClickableAreaClickedListener)
+        it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view).setListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
         clickPoint(0.3f, 0.3f)
@@ -211,7 +211,7 @@ class ImageRegionSelectionInteractionViewTest {
   fun testView_withTalkbackEnabled_clickOnDefaultRegion_defaultRegionNotClicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use { scenario ->
       scenario.onActivity {
-        it.clickable_image_view.setListener(onClickableAreaClickedListener)
+        it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view).setListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
         clickPoint(0.0f, 0.0f)
