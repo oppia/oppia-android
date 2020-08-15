@@ -2,7 +2,6 @@ package org.oppia.domain.question
 
 import android.app.Application
 import android.content.Context
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -11,16 +10,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.ObsoleteCoroutinesApi
-import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.setMain
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -51,31 +40,27 @@ import org.oppia.domain.topic.TEST_SKILL_ID_0
 import org.oppia.domain.topic.TEST_SKILL_ID_1
 import org.oppia.domain.topic.TEST_SKILL_ID_2
 import org.oppia.testing.FakeExceptionLogger
+import org.oppia.testing.TestCoroutineDispatchers
+import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
-import org.oppia.util.threading.BackgroundDispatcher
-import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
-import javax.inject.Qualifier
 import javax.inject.Singleton
-import kotlin.coroutines.EmptyCoroutineContext
 
 /** Tests for [QuestionTrainingController]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class QuestionTrainingControllerTest {
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-  @Rule
-  @JvmField
-  val executorRule = InstantTaskExecutorRule()
 
   @Inject
   lateinit var questionTrainingController: QuestionTrainingController
@@ -85,6 +70,9 @@ class QuestionTrainingControllerTest {
 
   @Inject
   lateinit var fakeExceptionLogger: FakeExceptionLogger
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Mock
   lateinit var mockQuestionListObserver: Observer<AsyncResult<Any>>
@@ -98,33 +86,10 @@ class QuestionTrainingControllerTest {
   @Captor
   lateinit var currentQuestionResultCaptor: ArgumentCaptor<AsyncResult<EphemeralQuestion>>
 
-  @Inject
-  @field:TestDispatcher
-  lateinit var testDispatcher: CoroutineDispatcher
-
-  private val coroutineContext by lazy {
-    EmptyCoroutineContext + testDispatcher
-  }
-
-  // https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-test/
-  @ObsoleteCoroutinesApi
-  private val testThread = newSingleThreadContext("TestMain")
-
   @Before
-  @ExperimentalCoroutinesApi
-  @ObsoleteCoroutinesApi
   fun setUp() {
     TestQuestionModule.questionSeed = 0
-    Dispatchers.setMain(testThread)
     setUpTestApplicationComponent()
-  }
-
-  @After
-  @ExperimentalCoroutinesApi
-  @ObsoleteCoroutinesApi
-  fun tearDown() {
-    Dispatchers.resetMain()
-    testThread.close()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -135,159 +100,148 @@ class QuestionTrainingControllerTest {
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testController_startTrainingSession_succeeds() = runBlockingTest(coroutineContext) {
+  fun testController_startTrainingSession_succeeds() {
     val questionListLiveData =
       questionTrainingController.startQuestionTrainingSession(
         listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
       )
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
     questionListLiveData.observeForever(mockQuestionListObserver)
+    testCoroutineDispatchers.runCurrent()
+
     verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
     assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testController_startTrainingSession_sessionStartsWithInitialQuestion() =
-    runBlockingTest(coroutineContext) {
+  fun testController_startTrainingSession_sessionStartsWithInitialQuestion() {
+    questionTrainingController.startQuestionTrainingSession(
+      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val resultLiveData =
+      questionAssessmentProgressController.getCurrentQuestion()
+    resultLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockCurrentQuestionLiveDataObserver).onChanged(currentQuestionResultCaptor.capture())
+    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
+    assertThat(currentQuestionResultCaptor.value.getOrThrow().question.questionId).isEqualTo(
+      TEST_QUESTION_ID_1
+    )
+  }
+
+  @Test
+  fun testController_startTrainingSession_differentSeed_succeeds() {
+    TestQuestionModule.questionSeed = 2
+    setUpTestApplicationComponent() // Recreate with the new seed
+    val questionListLiveData =
       questionTrainingController.startQuestionTrainingSession(
         listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
       )
-      advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
-      val resultLiveData =
-        questionAssessmentProgressController.getCurrentQuestion()
-      resultLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
-      advanceUntilIdle()
+    questionListLiveData.observeForever(mockQuestionListObserver)
+    testCoroutineDispatchers.runCurrent()
 
-      verify(mockCurrentQuestionLiveDataObserver).onChanged(currentQuestionResultCaptor.capture())
-      assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-      assertThat(currentQuestionResultCaptor.value.getOrThrow().question.questionId).isEqualTo(
-        TEST_QUESTION_ID_1
-      )
-    }
+    verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
+    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+  }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testController_startTrainingSession_differentSeed_succeeds() =
-    runBlockingTest(coroutineContext) {
-      TestQuestionModule.questionSeed = 2
-      setUpTestApplicationComponent() // Recreate with the new seed
-      val questionListLiveData =
-        questionTrainingController.startQuestionTrainingSession(
-          listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
-        )
-      advanceUntilIdle()
+  fun testController_startTrainingSession_differentSeed_sessionStartsWithInitialQuestion() {
+    TestQuestionModule.questionSeed = 2
+    setUpTestApplicationComponent() // Recreate with the new seed
+    questionTrainingController.startQuestionTrainingSession(
+      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
+    )
+    testCoroutineDispatchers.runCurrent()
 
-      questionListLiveData.observeForever(mockQuestionListObserver)
-      verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
-      assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
-    }
+    val resultLiveData =
+      questionAssessmentProgressController.getCurrentQuestion()
+    resultLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
+    testCoroutineDispatchers.runCurrent()
 
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testController_startTrainingSession_differentSeed_sessionStartsWithInitialQuestion() =
-    runBlockingTest(coroutineContext) {
-      TestQuestionModule.questionSeed = 2
-      setUpTestApplicationComponent() // Recreate with the new seed
-      questionTrainingController.startQuestionTrainingSession(
-        listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
-      )
-      advanceUntilIdle()
-
-      val resultLiveData =
-        questionAssessmentProgressController.getCurrentQuestion()
-      resultLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
-      advanceUntilIdle()
-
-      verify(mockCurrentQuestionLiveDataObserver).onChanged(currentQuestionResultCaptor.capture())
-      assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-      assertThat(currentQuestionResultCaptor.value.getOrThrow().question.questionId).isEqualTo(
-        TEST_QUESTION_ID_0
-      )
-    }
+    verify(mockCurrentQuestionLiveDataObserver).onChanged(currentQuestionResultCaptor.capture())
+    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
+    assertThat(currentQuestionResultCaptor.value.getOrThrow().question.questionId).isEqualTo(
+      TEST_QUESTION_ID_0
+    )
+  }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testController_startTrainingSession_differentSkills_succeeds() =
-    runBlockingTest(coroutineContext) {
-      val questionListLiveData =
-        questionTrainingController.startQuestionTrainingSession(
-          listOf(TEST_SKILL_ID_1, TEST_SKILL_ID_2)
-        )
-      advanceUntilIdle()
-
-      questionListLiveData.observeForever(mockQuestionListObserver)
-      verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
-      assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
-    }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testController_startTrainingSession_differentSkills_sessionStartsWithInitialQuestion() =
-    runBlockingTest(coroutineContext) {
+  fun testController_startTrainingSession_differentSkills_succeeds() {
+    val questionListLiveData =
       questionTrainingController.startQuestionTrainingSession(
         listOf(TEST_SKILL_ID_1, TEST_SKILL_ID_2)
       )
-      advanceUntilIdle()
-
-      val resultLiveData =
-        questionAssessmentProgressController.getCurrentQuestion()
-      resultLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
-      advanceUntilIdle()
-
-      verify(mockCurrentQuestionLiveDataObserver).onChanged(currentQuestionResultCaptor.capture())
-      assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-      assertThat(currentQuestionResultCaptor.value.getOrThrow().question.questionId).isEqualTo(
-        TEST_QUESTION_ID_3
-      )
-    }
-
-  @Test
-  @ExperimentalCoroutinesApi
-  fun testController_startTrainingSession_noSkills_fails() = runBlockingTest(coroutineContext) {
-    val questionListLiveData =
-      questionTrainingController.startQuestionTrainingSession(listOf())
-    advanceUntilIdle()
+    testCoroutineDispatchers.runCurrent()
 
     questionListLiveData.observeForever(mockQuestionListObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
+    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+  }
+
+  @Test
+  fun testController_startTrainingSession_differentSkills_sessionStartsWithInitialQuestion() {
+    questionTrainingController.startQuestionTrainingSession(
+      listOf(TEST_SKILL_ID_1, TEST_SKILL_ID_2)
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val resultLiveData =
+      questionAssessmentProgressController.getCurrentQuestion()
+    resultLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockCurrentQuestionLiveDataObserver).onChanged(currentQuestionResultCaptor.capture())
+    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
+    assertThat(currentQuestionResultCaptor.value.getOrThrow().question.questionId).isEqualTo(
+      TEST_QUESTION_ID_3
+    )
+  }
+
+  @Test
+  fun testController_startTrainingSession_noSkills_fails() {
+    val questionListLiveData =
+      questionTrainingController.startQuestionTrainingSession(listOf())
+    testCoroutineDispatchers.runCurrent()
+
+    questionListLiveData.observeForever(mockQuestionListObserver)
+    testCoroutineDispatchers.runCurrent()
+
     verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
     assertThat(questionListResultCaptor.value.isFailure()).isTrue()
   }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testController_startTrainingSession_noSkills_fails_logsException() =
-    runBlockingTest(coroutineContext) {
-      questionTrainingController.startQuestionTrainingSession(listOf())
-      questionTrainingController.startQuestionTrainingSession(listOf())
-      advanceUntilIdle()
+  fun testController_startTrainingSession_noSkills_fails_logsException() {
+    questionTrainingController.startQuestionTrainingSession(listOf())
+    questionTrainingController.startQuestionTrainingSession(listOf())
+    testCoroutineDispatchers.runCurrent()
 
-      val exception = fakeExceptionLogger.getMostRecentException()
+    val exception = fakeExceptionLogger.getMostRecentException()
 
-      assertThat(exception).isInstanceOf(IllegalStateException::class.java)
-      assertThat(exception).hasMessageThat()
-        .contains("Cannot start a new training session until the previous one is completed.")
-    }
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat()
+      .contains("Cannot start a new training session until the previous one is completed.")
+  }
 
   @Test
-  @ExperimentalCoroutinesApi
-  fun testStopTrainingSession_withoutStartingSession_fails_logsException() =
-    runBlockingTest(coroutineContext) {
-      questionTrainingController.stopQuestionTrainingSession()
-      advanceUntilIdle()
+  fun testStopTrainingSession_withoutStartingSession_fails_logsException() {
+    questionTrainingController.stopQuestionTrainingSession()
+    testCoroutineDispatchers.runCurrent()
 
-      val exception = fakeExceptionLogger.getMostRecentException()
+    val exception = fakeExceptionLogger.getMostRecentException()
 
-      assertThat(exception).isInstanceOf(IllegalStateException::class.java)
-      assertThat(exception).hasMessageThat()
-        .contains("Cannot stop a new training session which wasn't started")
-    }
-
-  @Qualifier
-  annotation class TestDispatcher
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat()
+      .contains("Cannot stop a new training session which wasn't started")
+  }
 
   // TODO(#89): Move this to a common test application component.
   @Module
@@ -296,32 +250,6 @@ class QuestionTrainingControllerTest {
     @Singleton
     fun provideContext(application: Application): Context {
       return application
-    }
-
-    @ExperimentalCoroutinesApi
-    @Singleton
-    @Provides
-    @TestDispatcher
-    fun provideTestDispatcher(): CoroutineDispatcher {
-      return TestCoroutineDispatcher()
-    }
-
-    @Singleton
-    @Provides
-    @BackgroundDispatcher
-    fun provideBackgroundDispatcher(
-      @TestDispatcher testDispatcher: CoroutineDispatcher
-    ): CoroutineDispatcher {
-      return testDispatcher
-    }
-
-    @Singleton
-    @Provides
-    @BlockingDispatcher
-    fun provideBlockingDispatcher(
-      @TestDispatcher testDispatcher: CoroutineDispatcher
-    ): CoroutineDispatcher {
-      return testDispatcher
     }
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
@@ -358,13 +286,12 @@ class QuestionTrainingControllerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, ContinueModule::class,
-      FractionInputModule::class, ItemSelectionInputModule::class,
-      MultipleChoiceInputModule::class, DragDropSortInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
-      TextInputRuleModule::class, InteractionsModule::class,
-      TestQuestionModule::class, TestLogReportingModule::class,
-      ImageClickInputModule::class, LogStorageModule::class
+      TestModule::class, ContinueModule::class, FractionInputModule::class,
+      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
+      DragDropSortInputModule::class, NumberWithUnitsRuleModule::class,
+      NumericInputRuleModule::class, TextInputRuleModule::class, InteractionsModule::class,
+      TestQuestionModule::class, TestLogReportingModule::class, ImageClickInputModule::class,
+      LogStorageModule::class, TestDispatcherModule::class
     ]
   )
   interface TestApplicationComponent {

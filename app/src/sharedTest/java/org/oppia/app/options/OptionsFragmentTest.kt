@@ -1,6 +1,8 @@
 package org.oppia.app.options
 
+import android.app.Activity
 import android.app.Application
+import android.app.Instrumentation.ActivityResult
 import android.content.Context
 import android.content.Intent
 import android.widget.SeekBar
@@ -26,15 +28,13 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
 import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -44,20 +44,20 @@ import org.oppia.app.R
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.oppialogger.LogStorageModule
-import org.oppia.domain.profile.ProfileTestHelper
+import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
+import org.oppia.testing.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
-import org.oppia.util.threading.BackgroundDispatcher
-import org.oppia.util.threading.BlockingDispatcher
+import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
-import javax.inject.Qualifier
 import javax.inject.Singleton
 
 /** Tests for [OptionsFragment]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class OptionsFragmentTest {
 
   @Inject
@@ -67,7 +67,6 @@ class OptionsFragmentTest {
   lateinit var context: Context
 
   @Before
-  @ExperimentalCoroutinesApi
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
@@ -134,19 +133,27 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun testOptionFragment_clickStoryTextSize_changeTextSizeToLargeSuccessfully() {
+  fun testOptionsFragment_testOnActivityResult() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          0,
-          R.id.story_text_size_item_layout
-        )
-      ).perform(
-        click()
+      val resultDataIntent = Intent()
+      resultDataIntent.putExtra(KEY_MESSAGE_STORY_TEXT_SIZE, "Large")
+      val activityResult = ActivityResult(Activity.RESULT_OK, resultDataIntent)
+
+      val activityMonitor = getInstrumentation().addMonitor(
+        StoryTextSizeActivity::class.java.name,
+        activityResult,
+        true
       )
-      onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(10))
-      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
+
+      it.onActivity { activity ->
+        activity.startActivityForResult(
+          createStoryTextSizeActivityIntent("Small"),
+          REQUEST_CODE_TEXT_SIZE
+        )
+      }
+
+      getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 3)
+
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
@@ -154,134 +161,6 @@ class OptionsFragmentTest {
         )
       ).check(
         matches(withText("Large"))
-      )
-    }
-  }
-
-  @Test
-  fun testOptionFragment_clickStoryTextSize_changeTextSizeToLarge_changeConfiguration_checkTextSizeLargeIsSelected() { // ktlint-disable max-length-line
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          0,
-          R.id.story_text_size_item_layout
-        )
-      ).perform(
-        click()
-      )
-      onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(10))
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          0, R.id.story_text_size_text_view
-        )
-      ).check(
-        matches(withText("Large"))
-      )
-    }
-  }
-
-  @Test
-  fun testOptionFragment_clickStoryTextSize_changeTextSizeToMediumSuccessfully() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          0,
-          R.id.story_text_size_item_layout
-        )
-      ).perform(
-        click()
-      )
-      onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(5))
-      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          0, R.id.story_text_size_text_view
-        )
-      ).check(
-        matches(withText("Medium"))
-      )
-    }
-  }
-
-  @Test
-  fun testOptionFragment_clickStoryTextSize_changeTextSizeToMedium_changeConfiguration_checkTextSizeMediumIsSelected() { // ktlint-disable max-length-line
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          0,
-          R.id.story_text_size_item_layout
-        )
-      ).perform(
-        click()
-      )
-      onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(5))
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          0, R.id.story_text_size_text_view
-        )
-      ).check(
-        matches(withText("Medium"))
-      )
-    }
-  }
-
-  @Test
-  fun testOptionFragment_clickStoryTextSize_changeTextSizeToExtraLargeSuccessfully() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          0,
-          R.id.story_text_size_item_layout
-        )
-      ).perform(
-        click()
-      )
-      onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(15))
-      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          0, R.id.story_text_size_text_view
-        )
-      ).check(
-        matches(withText("Extra Large"))
-      )
-    }
-  }
-
-  @Test
-  fun testOptionFragment_clickStoryTextSize_changeTextSizeToExtraLarge_changeConfiguration_checkTextSizeExtraLargeIsSelected() { // ktlint-disable max-length-line
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          0,
-          R.id.story_text_size_item_layout
-        )
-      ).perform(
-        click()
-      )
-      onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(15))
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          0, R.id.story_text_size_text_view
-        )
-      ).check(
-        matches(withText("Extra Large"))
       )
     }
   }
@@ -540,21 +419,6 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun testOptionFragment_changeConfiguration_checkTextSizeLargeIsSmall() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      onView(isRoot()).perform(orientationLandscape())
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          0, R.id.story_text_size_text_view
-        )
-      ).check(
-        matches(withText("Small"))
-      )
-    }
-  }
-
-  @Test
   fun testOptionFragment_changeConfiguration_checkAppLanguageIsEnglish() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -584,6 +448,14 @@ class OptionsFragmentTest {
     }
   }
 
+  private fun createStoryTextSizeActivityIntent(summaryValue: String): Intent {
+    return StoryTextSizeActivity.createStoryTextSizeActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      STORY_TEXT_SIZE,
+      summaryValue
+    )
+  }
+
   private fun clickSeekBar(position: Int): ViewAction {
     return GeneralClickAction(
       Tap.SINGLE,
@@ -605,41 +477,12 @@ class OptionsFragmentTest {
     )
   }
 
-  @Qualifier
-  annotation class TestDispatcher
-
   @Module
   class TestModule {
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
       return application
-    }
-
-    @ExperimentalCoroutinesApi
-    @Singleton
-    @Provides
-    @TestDispatcher
-    fun provideTestDispatcher(): CoroutineDispatcher {
-      return TestCoroutineDispatcher()
-    }
-
-    @Singleton
-    @Provides
-    @BackgroundDispatcher
-    fun provideBackgroundDispatcher(
-      @TestDispatcher testDispatcher: CoroutineDispatcher
-    ): CoroutineDispatcher {
-      return testDispatcher
-    }
-
-    @Singleton
-    @Provides
-    @BlockingDispatcher
-    fun provideBlockingDispatcher(
-      @TestDispatcher testDispatcher: CoroutineDispatcher
-    ): CoroutineDispatcher {
-      return testDispatcher
     }
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
@@ -658,7 +501,12 @@ class OptionsFragmentTest {
   }
 
   @Singleton
-  @Component(modules = [TestModule::class, TestLogReportingModule::class, LogStorageModule::class])
+  @Component(
+    modules = [
+      TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
+      TestDispatcherModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

@@ -3,7 +3,6 @@ package org.oppia.app.topic
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
@@ -19,7 +18,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
@@ -31,7 +29,6 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
-import org.hamcrest.CoreMatchers.instanceOf
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -43,12 +40,14 @@ import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandsc
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
+import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
 
 private const val TOPIC_NAME = "Fractions"
 
 /** Tests for [TopicFragment]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class TopicFragmentTest {
 
   private val internalProfileId = 0
@@ -61,12 +60,7 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_toolbarTitle_isDisplayedSuccessfully() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      onView(
-        allOf(
-          instanceOf(TextView::class.java),
-          withParent(withId(R.id.topic_toolbar))
-        )
-      ).check(matches(withText("Topic: Fractions")))
+      onView(withId(R.id.topic_toolbar_title)).check(matches(withText("Topic: Fractions")))
     }
   }
 

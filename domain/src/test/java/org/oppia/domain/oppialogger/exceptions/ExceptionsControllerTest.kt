@@ -10,9 +10,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -39,8 +36,8 @@ import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.networking.NetworkConnectionUtil
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
-import javax.inject.Qualifier
 import javax.inject.Singleton
 
 private const val TEST_TIMESTAMP_IN_MILLIS_ONE = 1556094120000
@@ -50,6 +47,7 @@ private const val TEST_TIMESTAMP_IN_MILLIS_FOUR = 1556094000000
 
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
+@LooperMode(LooperMode.Mode.PAUSED)
 class ExceptionsControllerTest {
 
   @Rule
@@ -68,7 +66,6 @@ class ExceptionsControllerTest {
   @Inject
   lateinit var fakeExceptionLogger: FakeExceptionLogger
 
-  @InternalCoroutinesApi
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
@@ -79,8 +76,6 @@ class ExceptionsControllerTest {
   lateinit var oppiaExceptionLogsResultCaptor: ArgumentCaptor<AsyncResult<OppiaExceptionLogs>>
 
   @Before
-  @ExperimentalCoroutinesApi
-  @ObsoleteCoroutinesApi
   fun setUp() {
     networkConnectionUtil = NetworkConnectionUtil(ApplicationProvider.getApplicationContext())
     setUpTestApplicationComponent()
@@ -108,8 +103,6 @@ class ExceptionsControllerTest {
 
   // TODO(#1106): Addition of tests tracking behaviour of the controller after uploading of logs to the remote service.
 
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   @Test
   fun testController_logException_nonFatal_withNoNetwork_logsToCacheStore() {
     val exceptionThrown = Exception("TEST MESSAGE", Throwable("TEST CAUSE"))
@@ -135,8 +128,6 @@ class ExceptionsControllerTest {
     assertThat(exceptionLog.exceptionType).isEqualTo(ExceptionType.NON_FATAL)
   }
 
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   @Test
   fun testController_logFatalException_withNoNetwork_logsToCacheStore() {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
@@ -160,8 +151,6 @@ class ExceptionsControllerTest {
     assertThat(exceptionLog.exceptionType).isEqualTo(ExceptionType.FATAL)
   }
 
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   @Test
   fun testController_logExceptions_exceedLimit_checkCorrectEviction() {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
@@ -208,8 +197,6 @@ class ExceptionsControllerTest {
     assertThat(exceptionTwo.message).isEqualTo("TEST4")
   }
 
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   @Test
   fun testController_logExceptions_exceedLimit_cacheSizeDoesNotExceedLimit() {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
@@ -239,8 +226,6 @@ class ExceptionsControllerTest {
     assertThat(cacheStoreSize).isEqualTo(2)
   }
 
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   @Test
   fun testController_logException_switchToNoNetwork_logException_verifyLoggingAndCaching() {
     val exceptionThrown = Exception("TEST", Throwable())
@@ -268,8 +253,6 @@ class ExceptionsControllerTest {
     assertThat(exceptionFromCacheStorage.exceptionType).isEqualTo(ExceptionType.FATAL)
   }
 
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   @Test
   fun testController_logExceptions_withNoNetwork_verifyCachedInCorrectOrder() {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
@@ -290,8 +273,6 @@ class ExceptionsControllerTest {
     assertThat(exceptionTwo.exceptionType).isEqualTo(ExceptionType.FATAL)
   }
 
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   @Test
   fun testExtension_logEmptyException_withNoNetwork_verifyRecreationOfLogs() {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
@@ -313,8 +294,6 @@ class ExceptionsControllerTest {
     assertThat(exception.cause).isEqualTo(null)
   }
 
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   @Test
   fun testExtension_logException_withNoCause_withNoNetwork_verifyRecreationOfLogs() {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
@@ -342,9 +321,6 @@ class ExceptionsControllerTest {
       .build()
       .inject(this)
   }
-
-  @Qualifier
-  annotation class TestDispatcher
 
   // TODO(#89): Move this to a common test application component.
   @Module
@@ -382,8 +358,8 @@ class ExceptionsControllerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class,
-      TestDispatcherModule::class, TestLogStorageModule::class
+      TestModule::class, TestLogReportingModule::class, TestDispatcherModule::class,
+      TestLogStorageModule::class
     ]
   )
   interface TestApplicationComponent {
