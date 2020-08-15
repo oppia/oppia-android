@@ -5,15 +5,14 @@ import android.content.Context
 import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import kotlinx.coroutines.InternalCoroutinesApi
-import org.junit.Before
-
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.InternalCoroutinesApi
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -31,6 +30,7 @@ import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -48,6 +48,9 @@ class OppiaUncaughtExceptionHandlerTest {
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
+  @Inject
+  lateinit var dataProviders: DataProviders
 
   @Inject
   lateinit var oppiaUncaughtExceptionHandler: OppiaUncaughtExceptionHandler
@@ -75,19 +78,18 @@ class OppiaUncaughtExceptionHandlerTest {
   fun setUp() {
     networkConnectionUtil = NetworkConnectionUtil(ApplicationProvider.getApplicationContext())
     setUpTestApplicationComponent()
-
   }
 
   @ExperimentalCoroutinesApi
   @InternalCoroutinesApi
   @Test
-  fun testHandler_throwException_withNoNetwork_verifyLogInCache(){
+  fun testHandler_throwException_withNoNetwork_verifyLogInCache() {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
     val exceptionThrown = Exception("TEST")
     oppiaUncaughtExceptionHandler.uncaughtException(Thread.currentThread(), exceptionThrown)
 
-    val cachedExceptions = exceptionsController.getExceptionLogs()
-    cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
+    val cachedExceptions = exceptionsController.getExceptionLogStore()
+    dataProviders.convertToLiveData(cachedExceptions).observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockOppiaExceptionLogsObserver, atLeastOnce())
@@ -100,7 +102,7 @@ class OppiaUncaughtExceptionHandlerTest {
   }
 
   @Test
-  fun testHandler_throwException_verifyLogToRemoteService(){
+  fun testHandler_throwException_verifyLogToRemoteService() {
     val exceptionThrown = Exception("TEST")
     oppiaUncaughtExceptionHandler.uncaughtException(Thread.currentThread(), exceptionThrown)
 
