@@ -140,12 +140,12 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       hintsAndSolutionAdapter.notifyItemChanged(index)
   }
 
-  fun onRevealHintClicked(index: Int, isHintRevealed: Boolean) {
+  fun onRevealHintClicked(index: Int?, isHintRevealed: Boolean?) {
     this.index = index
     this.isHintRevealed = isHintRevealed
   }
 
-  fun onRevealSolutionClicked(solutionIndex: Int, isSolutionRevealed: Boolean) {
+  fun onRevealSolutionClicked(solutionIndex: Int?, isSolutionRevealed: Boolean?) {
     this.solutionIndex = solutionIndex
     this.isSolutionRevealed = isSolutionRevealed
   }

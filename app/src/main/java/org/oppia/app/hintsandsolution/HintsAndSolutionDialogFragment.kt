@@ -159,13 +159,13 @@ class HintsAndSolutionDialogFragment :
     hintsAndSolutionDialogFragmentPresenter.handleRevealSolution(saveUserChoice)
   }
 
-  override fun onRevealHintClicked(index: Int, isHintRevealed: Boolean) {
+  override fun onRevealHintClicked(index: Int?, isHintRevealed: Boolean?) {
     this.index = index
     this.isHintRevealed = isHintRevealed
     hintsAndSolutionDialogFragmentPresenter.onRevealHintClicked(index, isHintRevealed)
   }
 
-  override fun onRevealSolutionClicked(solutionIndex: Int, isSolutionRevealed: Boolean) {
+  override fun onRevealSolutionClicked(solutionIndex: Int?, isSolutionRevealed: Boolean?) {
     this.solutionIndex = solutionIndex
     this.isSolutionRevealed = isSolutionRevealed
     hintsAndSolutionDialogFragmentPresenter.onRevealSolutionClicked(

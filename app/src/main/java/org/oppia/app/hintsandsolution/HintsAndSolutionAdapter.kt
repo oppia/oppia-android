@@ -129,6 +129,7 @@ class HintsAndSolutionAdapter(
           hintsViewModel.isHintRevealed.set(true)
           expandedHintListIndexListener.onRevealHintClicked(position, /* isHintRevealed= */ true)
           (fragment.requireActivity() as? RevealHintListener)?.revealHint(true, position)
+          val previousIndex: Int? = currentExpandedHintListIndex
           currentExpandedHintListIndex =
             if (currentExpandedHintListIndex != null && currentExpandedHintListIndex == position) {
               null
@@ -136,6 +137,9 @@ class HintsAndSolutionAdapter(
               position
             }
           expandedHintListIndexListener.onExpandListIconClicked(currentExpandedHintListIndex)
+          if (previousIndex != null && previousIndex != currentExpandedHintListIndex) {
+            notifyItemChanged(previousIndex)
+          }
         }
       }
 
@@ -254,7 +258,17 @@ class HintsAndSolutionAdapter(
         /* isSolutionRevealed= */ true
       )
       (fragment.requireActivity() as? RevealSolutionInterface)?.revealSolution(saveUserChoice)
-      notifyItemChanged(itemList.size - 1)
+      val previousIndex: Int? = currentExpandedHintListIndex
+      currentExpandedHintListIndex =
+        if (currentExpandedHintListIndex != null && currentExpandedHintListIndex == itemList.size - 1) {
+          null
+        } else {
+          itemList.size - 1
+        }
+      expandedHintListIndexListener.onExpandListIconClicked(currentExpandedHintListIndex)
+      if (previousIndex != null && previousIndex != currentExpandedHintListIndex) {
+        notifyItemChanged(previousIndex)
+      }
     }
   }
 

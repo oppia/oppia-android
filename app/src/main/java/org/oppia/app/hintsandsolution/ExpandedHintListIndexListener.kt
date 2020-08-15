@@ -10,8 +10,8 @@ interface ExpandedHintListIndexListener {
   fun onExpandListIconClicked(index: Int?)
 
   /** Manage reveal hint button visibility while orientation change */
-  fun onRevealHintClicked(index: Int, isHintRevealed: Boolean)
+  fun onRevealHintClicked(index: Int?, isHintRevealed: Boolean?)
 
   /** Manage reveal solution button visibility while orientation change */
-  fun onRevealSolutionClicked(solutionIndex: Int, isSolutionRevealed: Boolean)
+  fun onRevealSolutionClicked(solutionIndex: Int?, isSolutionRevealed: Boolean?)
 }
