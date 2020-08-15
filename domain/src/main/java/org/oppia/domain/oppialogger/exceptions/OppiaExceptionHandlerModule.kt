@@ -1,8 +1,7 @@
-package org.oppia.app.application
+package org.oppia.domain.oppialogger.exceptions
 
 import dagger.Module
 import dagger.Provides
-import org.oppia.domain.oppialogger.exceptions.OppiaUncaughtExceptionHandler
 
 @Module
 class OppiaExceptionHandlerModule {
