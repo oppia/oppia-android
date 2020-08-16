@@ -15,6 +15,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardBackgroundColor="@color/white"
+    android:layout_marginStart="24dp"
+    android:layout_marginEnd="24dp"
+    android:layout_marginTop="28dp"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp">
 
@@ -38,7 +41,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:lessonThumbnail="@{viewModel.promotedStory.lessonThumbnail}"
-        app:roundedRectDrawableWithColor="@{viewModel.promotedStory.lessonThumbnail.backgroundColorRgb}" />
+        app:topRoundedRectDrawableWithColor="@{viewModel.promotedStory.lessonThumbnail.backgroundColorRgb}" />
 
       <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
