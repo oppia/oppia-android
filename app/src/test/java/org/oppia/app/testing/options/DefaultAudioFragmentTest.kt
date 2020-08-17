@@ -28,7 +28,7 @@ class DefaultAudioFragmentTest {
   @Test
   @LooperMode(LooperMode.Mode.PAUSED)
   fun testAudioLanguage_changeLanguageToEnglish_changeConfiguration_checkEnglishLanguageIsSelected() { // ktlint-disable max-line-length
-    launch<OptionsActivity>(createDefaultAudioActivityIntent("Hindi")).use {
+    launch<DefaultAudioActivity>(createDefaultAudioActivityIntent("Hindi")).use {
       onView(withId(R.id.audio_language_recycler_view))
         .perform(
           actionOnItemAtPosition<RecyclerView.ViewHolder>(
