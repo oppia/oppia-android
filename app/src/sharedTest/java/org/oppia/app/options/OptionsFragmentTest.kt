@@ -5,19 +5,15 @@ import android.app.Application
 import android.app.Instrumentation.ActivityResult
 import android.content.Context
 import android.content.Intent
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.DrawerMatchers
-import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -36,7 +32,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
@@ -151,10 +146,45 @@ class OptionsFragmentTest {
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
-          0, R.id.story_text_size_text_view
+          0,
+          R.id.story_text_size_text_view
         )
       ).check(
         matches(withText("Large"))
+      )
+    }
+  }
+
+  @Test
+  fun testOptionsFragment_audioLanguage_testOnActivityResult() {
+    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+      val resultDataIntent = Intent()
+      resultDataIntent.putExtra(KEY_MESSAGE_AUDIO_LANGUAGE, "French")
+      val activityResult = ActivityResult(Activity.RESULT_OK, resultDataIntent)
+
+      val activityMonitor = getInstrumentation().addMonitor(
+        DefaultAudioActivity::class.java.name,
+        activityResult,
+        true
+      )
+
+      it.onActivity { activity ->
+        activity.startActivityForResult(
+          createDefaultAudioActivityIntent("Hindi"),
+          REQUEST_CODE_AUDIO_LANGUAGE
+        )
+      }
+
+      getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 3)
+
+      onView(
+        atPositionOnView(
+          R.id.options_recyclerview,
+          2,
+          R.id.audio_language_text_view
+        )
+      ).check(
+        matches(withText("French"))
       )
     }
   }
@@ -192,181 +222,6 @@ class OptionsFragmentTest {
     }
   }
 
-  @Test
-  fun testOptionFragment_clickDefaultAudioLanguage_changeDefaultAudioLanguageToEnglishSuccessfully() { // ktlint-disable max-length-line
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          2,
-          R.id.audio_laguage_item_layout
-        )
-      ).perform(
-        click()
-      )
-
-      onView(withId(R.id.audio_language_recycler_view))
-        .perform(
-          actionOnItemAtPosition<RecyclerView.ViewHolder>(
-            1,
-            click()
-          )
-        )
-      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          2, R.id.audio_language_text_view
-        )
-      ).check(
-        matches(withText("English"))
-      )
-    }
-  }
-
-  @Test
-  fun testOptionFragment_checkDefaultAudioLanguage_changeLanguageToEnglish_changeConfiguration_checkEnglishLanguageIsSelected() { // ktlint-disable max-length-line
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          2,
-          R.id.audio_laguage_item_layout
-        )
-      ).perform(
-        click()
-      )
-      onView(withId(R.id.audio_language_recycler_view))
-        .perform(
-          actionOnItemAtPosition<RecyclerView.ViewHolder>(
-            1,
-            click()
-          )
-        )
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          2, R.id.audio_language_text_view
-        )
-      ).check(
-        matches(withText("English"))
-      )
-    }
-  }
-
-  @Test
-  fun testOptionFragment_checkDefaultAudioLanguage_changeLanguageToChinese_changeConfiguration_checkChineseLanguageIsSelected() { // ktlint-disable max-length-line
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          2,
-          R.id.audio_laguage_item_layout
-        )
-      ).perform(
-        click()
-      )
-      onView(withId(R.id.audio_language_recycler_view))
-        .perform(
-          actionOnItemAtPosition<RecyclerView.ViewHolder>(
-            4,
-            click()
-          )
-        )
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
-      swipeUp()
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          2, R.id.audio_language_text_view
-        )
-      ).check(
-        matches(withText("Chinese"))
-      )
-    }
-  }
-
-  @Test
-  fun testOptionFragment_checkDefaultAudioLanguage_changeLanguageToHindi_changeConfiguration_checkHindiLanguageIsSelected() { // ktlint-disable max-length-line
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          2,
-          R.id.audio_laguage_item_layout
-        )
-      ).perform(
-        click()
-      )
-      onView(withId(R.id.audio_language_recycler_view))
-        .perform(
-          actionOnItemAtPosition<RecyclerView.ViewHolder>(
-            3,
-            click()
-          )
-        )
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          2, R.id.audio_language_text_view
-        )
-      ).check(
-        matches(withText("Hindi"))
-      )
-    }
-  }
-
-  @Test
-  fun testOptionFragment_clickDefaultAudioLanguage_changeDefaultAudioLanguageToChineseSuccessfully() { // ktlint-disable max-length-line
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          2,
-          R.id.audio_laguage_item_layout
-        )
-      ).perform(
-        click()
-      )
-      onView(withId(R.id.audio_language_recycler_view))
-        .perform(
-          actionOnItemAtPosition<RecyclerView.ViewHolder>(
-            4,
-            click()
-          )
-        )
-      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          2, R.id.audio_language_text_view
-        )
-      ).check(
-        matches(withText("Chinese"))
-      )
-    }
-  }
-
-  @Test
-  fun testOptionFragment_changeConfiguration_checkAudioLanguageIsHindi() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      onView(isRoot()).perform(orientationLandscape())
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          2, R.id.audio_language_text_view
-        )
-      ).check(
-        matches(withText("Hindi"))
-      )
-    }
-  }
-
   private fun createStoryTextSizeActivityIntent(summaryValue: String): Intent {
     return StoryTextSizeActivity.createStoryTextSizeActivityIntent(
       ApplicationProvider.getApplicationContext(),
@@ -379,6 +234,14 @@ class OptionsFragmentTest {
     return AppLanguageActivity.createAppLanguageActivityIntent(
       ApplicationProvider.getApplicationContext(),
       APP_LANGUAGE,
+      summaryValue
+    )
+  }
+
+  private fun createDefaultAudioActivityIntent(summaryValue: String): Intent {
+    return DefaultAudioActivity.createDefaultAudioActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      AUDIO_LANGUAGE,
       summaryValue
     )
   }
