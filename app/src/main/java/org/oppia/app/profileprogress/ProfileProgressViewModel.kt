@@ -37,7 +37,6 @@ class ProfileProgressViewModel @Inject constructor(
   private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
   private var limit: Int = 0
-  private var subset: Int = 0
 
   private val headerViewModel = ProfileProgressHeaderViewModel(activity, fragment)
 
@@ -97,7 +96,6 @@ class ProfileProgressViewModel @Inject constructor(
    */
   fun handleOnConfigurationChange() {
     limit = fragment.resources.getInteger(R.integer.profile_progress_limit)
-    subset = fragment.resources.getInteger(R.integer.profile_progress_subset)
     refreshedOngoingStoryListViewModelLiveData =
       Transformations.map(ongoingStoryListLiveData, ::processOngoingStoryList) as MutableLiveData
   }
@@ -119,9 +117,8 @@ class ProfileProgressViewModel @Inject constructor(
     ongoingStoryList: OngoingStoryList
   ): List<ProfileProgressItemViewModel> {
     limit = fragment.resources.getInteger(R.integer.profile_progress_limit)
-    subset = fragment.resources.getInteger(R.integer.profile_progress_subset)
     val itemList = if (ongoingStoryList.recentStoryList.size > limit) {
-      ongoingStoryList.recentStoryList.subList(0, subset)
+      ongoingStoryList.recentStoryList.subList(0, limit)
     } else {
       ongoingStoryList.recentStoryList
     }

@@ -9,5 +9,4 @@
   <integer name="completed_story_span_count">4</integer>
   <integer name="profile_progress_span_count">4</integer>
   <integer name="profile_progress_limit">4</integer>
-  <integer name="profile_progress_subset">4</integer>
 </resources>
