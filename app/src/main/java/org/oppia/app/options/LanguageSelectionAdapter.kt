@@ -11,7 +11,10 @@ import org.oppia.app.databinding.LanguageItemsBinding
 // TODO(#216): Make use of generic data-binding-enabled RecyclerView adapter.
 
 /** Adapter to bind languages to [RecyclerView] inside [AppLanguageActivityPresenter] and [DefaultAudioActivityPresenter]. */
-class LanguageSelectionAdapter(private val prefKey: String) :
+class LanguageSelectionAdapter(
+  private val prefKey: String,
+  private val onLanguageClicked: (language: String) -> Unit = {}
+) :
   RecyclerView.Adapter<LanguageSelectionAdapter.LanguageViewHolder>() {
 
   private var prefSummaryValue: String? = null
@@ -46,7 +49,7 @@ class LanguageSelectionAdapter(private val prefKey: String) :
   }
 
   fun getSelectedLanguage(): String {
-    selectedLanguage = languageList.get(selectedPosition)
+    selectedLanguage = languageList[selectedPosition]
     return selectedLanguage
   }
 
@@ -59,6 +62,7 @@ class LanguageSelectionAdapter(private val prefKey: String) :
         if (prefKey == APP_LANGUAGE) {
           selectedPosition = adapterPosition
           notifyDataSetChanged()
+          onLanguageClicked.invoke(getSelectedLanguage())
         } else {
           selectedPosition = adapterPosition
           notifyDataSetChanged()
