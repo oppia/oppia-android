@@ -26,14 +26,14 @@ kt_android_library(
 TEST_DEPS = [
         ":dagger",
         ":domain",
-        "//model",
         "//data:persistent_cache_store",
+        "//model",
         "//testing",
         "@robolectric//bazel:android-all",
-        artifact("com.google.truth:truth"),
-        artifact("androidx.test.ext:junit"),
-        artifact("org.jetbrains.kotlin:kotlin-test-junit"),
         artifact("androidx.arch.core:core-testing"),
+        artifact("androidx.test.ext:junit"),
+        artifact("com.google.truth:truth"),
+        artifact("org.jetbrains.kotlin:kotlin-test-junit"),
         artifact("org.jetbrains.kotlin:kotlin-reflect"),
 ]
 
@@ -221,6 +221,7 @@ domain_test(
     deps = TEST_DEPS,
 )
 
+# TODO(#1671): Test is passing with Gradle but not with Bazel
 domain_test(
     name = "StateRetrieverTest",
     srcs = ["src/test/java/org/oppia/domain/util/StateRetrieverTest.kt"],
