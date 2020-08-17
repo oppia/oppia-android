@@ -44,9 +44,9 @@ class ProfileProgressFragmentPresenter @Inject constructor(
     profileProgressLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
       override fun getSpanSize(position: Int): Int {
         return if (position == 0) {
-          /* number of spaces this item should occupy = */ spanCount
+          /* number of spaces this item should occupy= */ spanCount
         } else {
-          /* number of spaces this item should occupy = */ 1
+          /* number of spaces this item should occupy= */ 1
         }
       }
     }
@@ -58,7 +58,7 @@ class ProfileProgressFragmentPresenter @Inject constructor(
 
     val viewModel = getProfileProgressViewModel()
     viewModel.setProfileId(internalProfileId)
-    viewModel.refresh()
+    viewModel.handleOnConfigurationChange()
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
     binding.let {
