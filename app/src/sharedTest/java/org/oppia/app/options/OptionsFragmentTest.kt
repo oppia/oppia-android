@@ -5,7 +5,6 @@ import android.app.Application
 import android.app.Instrumentation.ActivityResult
 import android.content.Context
 import android.content.Intent
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -13,10 +12,8 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.DrawerMatchers
-import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -35,7 +32,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
@@ -194,25 +190,27 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun testOptionFragment_clickAppLanguage_changeAppLanguageToFrenchSuccessfully() {
+  fun testOptionsFragment_appLanguage_testOnActivityResult() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          1, R.id.app_language_item_layout
-        )
-      ).perform(
-        click()
+      val resultDataIntent = Intent()
+      resultDataIntent.putExtra(KEY_MESSAGE_APP_LANGUAGE, "French")
+      val activityResult = ActivityResult(Activity.RESULT_OK, resultDataIntent)
+
+      val activityMonitor = getInstrumentation().addMonitor(
+        AppLanguageActivity::class.java.name,
+        activityResult,
+        true
       )
-      onView(
-        atPositionOnView(
-          R.id.language_recycler_view,
-          1, R.id.language_radio_button
+
+      it.onActivity { activity ->
+        activity.startActivityForResult(
+          createAppLanguageActivityIntent("English"),
+          REQUEST_CODE_APP_LANGUAGE
         )
-      ).perform(
-        click()
-      )
-      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
+      }
+
+      getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 3)
+
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
@@ -220,83 +218,6 @@ class OptionsFragmentTest {
         )
       ).check(
         matches(withText("French"))
-      )
-    }
-  }
-
-  @Test
-  fun testOptionFragment_clickAppLanguage_changeAppLanguageToFrench_changeConfiguration_selectedLanguageIsFrench() { // ktlint-disable max-length-line
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          1, R.id.app_language_item_layout
-        )
-      ).perform(
-        click()
-      )
-      onView(
-        atPositionOnView(
-          R.id.language_recycler_view,
-          1, R.id.language_radio_button
-        )
-      ).perform(
-        click()
-      )
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          1, R.id.app_language_text_view
-        )
-      ).check(
-        matches(withText("French"))
-      )
-    }
-  }
-
-  @Test
-  fun testOptionFragment_clickAppLanguage_changeAppLanguageHindiSuccessfully() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          1, R.id.app_language_item_layout
-        )
-      ).perform(
-        click()
-      )
-      onView(withId(R.id.language_recycler_view))
-        .perform(
-          actionOnItemAtPosition<RecyclerView.ViewHolder>(
-            2,
-            click()
-          )
-        )
-      onView(withContentDescription(R.string.go_to_previous_page)).perform(click())
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          1, R.id.app_language_text_view
-        )
-      ).check(
-        matches(withText("Hindi"))
-      )
-    }
-  }
-
-  @Test
-  fun testOptionFragment_changeConfiguration_checkAppLanguageIsEnglish() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      onView(isRoot()).perform(orientationLandscape())
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          1, R.id.app_language_text_view
-        )
-      ).check(
-        matches(withText("English"))
       )
     }
   }
@@ -305,6 +226,14 @@ class OptionsFragmentTest {
     return StoryTextSizeActivity.createStoryTextSizeActivityIntent(
       ApplicationProvider.getApplicationContext(),
       STORY_TEXT_SIZE,
+      summaryValue
+    )
+  }
+
+  private fun createAppLanguageActivityIntent(summaryValue: String): Intent {
+    return AppLanguageActivity.createAppLanguageActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      APP_LANGUAGE,
       summaryValue
     )
   }
