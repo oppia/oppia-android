@@ -12,7 +12,6 @@ kt_android_library(
     name = "domain",
     custom_package = "org.oppia.domain",
     srcs = glob(["src/main/java/org/oppia/domain/**/*.kt"]),
-    data = glob(["src/main/assets/**"]),
     assets = glob(["src/main/assets/**"]),
     assets_dir = "src/main/assets/",
     manifest = "src/main/AndroidManifest.xml",
