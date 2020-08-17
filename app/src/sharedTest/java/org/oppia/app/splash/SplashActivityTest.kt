@@ -21,8 +21,6 @@ import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
-import dagger.Module
-import dagger.Provides
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -51,11 +49,12 @@ import org.oppia.domain.onboarding.testing.ExpirationMetaDataRetrieverTestModule
 import org.oppia.domain.onboarding.testing.FakeExpirationMetaDataRetriever
 import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.question.QuestionModule
+import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.testing.TestAccessibilityModule
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
-import org.oppia.util.caching.CacheAssetsLocally
+import org.oppia.util.caching.testing.CachingTestModule
 import org.oppia.util.gcsresource.GcsResourceModule
 import org.oppia.util.logging.LoggerModule
 import org.oppia.util.parser.GlideImageLoaderModule
@@ -264,26 +263,18 @@ class SplashActivityTest {
     return expirationDateFormat.format(date)
   }
 
-  @Module
-  class TestModule {
-    // Do not use caching to ensure URLs are always used as the main data source when loading audio.
-    @Provides
-    @CacheAssetsLocally
-    fun provideCacheAssetsLocally(): Boolean = false
-  }
-
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestDispatcherModule::class, ApplicationModule::class,
-      NetworkModule::class, LoggerModule::class, ContinueModule::class, FractionInputModule::class,
+      TestDispatcherModule::class, ApplicationModule::class, NetworkModule::class,
+      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      TestAccessibilityModule::class, LogStorageModule::class,
-      ExpirationMetaDataRetrieverTestModule::class
+      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
+      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverTestModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

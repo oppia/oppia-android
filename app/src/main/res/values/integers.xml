@@ -11,4 +11,6 @@
   <integer name="topic_revision_span_count">2</integer>
   <integer name="ongoing_topics_span_count">2</integer>
   <integer name="completed_story_span_count">2</integer>
+  <integer name="profile_progress_span_count">2</integer>
+  <integer name="profile_progress_limit">3</integer>
 </resources>

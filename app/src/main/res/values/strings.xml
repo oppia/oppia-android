@@ -361,6 +361,7 @@
   <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
   <string name="ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
   <string name="completed_story_list_recyclerview_tag">completed_story_list_recyclerview_tag</string>
+<<<<<<< HEAD
   <!-- SplashActivity -->
   <string
     name="unsupported_app_version_dialog_title"
@@ -378,4 +379,7 @@
     Close app
   </string>
 
+=======
+  <string name="item_selection_text">Please select at least one choice.</string>
+>>>>>>> develop
 </resources>

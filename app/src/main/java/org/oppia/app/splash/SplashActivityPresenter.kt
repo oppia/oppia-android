@@ -13,6 +13,7 @@ import org.oppia.app.model.AppStartupState.StartupMode
 import org.oppia.app.onboarding.OnboardingActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.domain.onboarding.AppStartupStateController
+import org.oppia.domain.topic.PrimeTopicAssetsController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
@@ -25,6 +26,7 @@ class SplashActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val logger: ConsoleLogger,
   private val appStartupStateController: AppStartupStateController
+  private val primeTopicAssetsController: PrimeTopicAssetsController
 ) {
 
   fun handleOnCreate() {
@@ -33,6 +35,8 @@ class SplashActivityPresenter @Inject constructor(
       WindowManager.LayoutParams.FLAG_FULLSCREEN,
       WindowManager.LayoutParams.FLAG_FULLSCREEN
     )
+    // Initiate download support before any additional processing begins.
+    primeTopicAssetsController.downloadAssets(R.style.AlertDialogTheme)
     subscribeToOnboardingFlow()
   }
 
