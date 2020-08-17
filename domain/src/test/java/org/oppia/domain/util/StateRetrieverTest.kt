@@ -30,8 +30,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 const val DRAG_DROP_TEST_EXPLORATION_NAME = "test_exp_id_4.json"
-const val IMAGE_REGION_SELECTION_TEST_EXPLORATION_NAME =
-  "image_click_input_exploration.json"
+const val IMAGE_REGION_SELECTION_TEST_EXPLORATION_NAME = "image_click_input_exploration.json"
 
 /** Tests for [StateRetriever]. */
 @RunWith(AndroidJUnit4::class)
@@ -221,7 +220,7 @@ class StateRetrieverTest {
   }
 
   @Test
-  fun testParseState_withImageRegionSelectioInteraction_parsesRuleWithIsInRegionWithValueAtX() {
+  fun testParseState_withImageRegionSelectionInteraction_parsesRuleWithIsInRegionWithValueAtX() {
     val state = createStateFromJson(
       "ImageClickInput",
       IMAGE_REGION_SELECTION_TEST_EXPLORATION_NAME
