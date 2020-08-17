@@ -3,6 +3,7 @@ package org.oppia.app.settings.profile
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.app.databinding.ProfileListFragmentBinding
 import org.oppia.app.databinding.ProfileListProfileViewBinding
@@ -15,6 +16,7 @@ import javax.inject.Inject
 /** The presenter for [ProfileListFragment]. */
 @FragmentScope
 class ProfileListFragmentPresenter @Inject constructor(
+  private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<ProfileListViewModel>
 ) {
@@ -31,11 +33,11 @@ class ProfileListFragmentPresenter @Inject constructor(
 
     // TODO(#1196): Stop the toolbar functionality in the multipane (add non-null receiver (?)).
     binding.profileListToolbar.setNavigationOnClickListener {
-      (fragment.activity as ProfileListActivity).finish()
+      (activity as ProfileListActivity).finish()
     }
     binding.apply {
       viewModel = getProfileListViewModel()
-      lifecycleOwner = fragment.activity
+      lifecycleOwner = activity
     }
 
     binding.profileListRecyclerView.apply {
@@ -60,9 +62,9 @@ class ProfileListFragmentPresenter @Inject constructor(
   ) {
     binding.profile = profile
     binding.root.setOnClickListener {
-      fragment.activity?.startActivity(
+      activity.startActivity(
         ProfileEditActivity.createProfileEditActivity(
-          fragment.activity!!,
+          activity,
           profile.id.internalId
         )
       )

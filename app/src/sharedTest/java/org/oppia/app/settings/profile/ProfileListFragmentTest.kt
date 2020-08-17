@@ -45,7 +45,7 @@ import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-class ProfileListActivityTest {
+class ProfileListFragmentTest {
 
   @Inject
   lateinit var context: Context
@@ -273,6 +273,6 @@ class ProfileListActivityTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(profileListActivityTest: ProfileListActivityTest)
+    fun inject(profileListFragmentTest: ProfileListFragmentTest)
   }
 }

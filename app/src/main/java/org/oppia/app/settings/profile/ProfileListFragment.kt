@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-/** Activity that allows users to select a profile to edit from settings. */
+/** Fragment to display all profiles to admin. */
 class ProfileListFragment : InjectableFragment() {
   @Inject
   lateinit var profileListFragmentPresenter: ProfileListFragmentPresenter
