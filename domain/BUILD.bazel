@@ -220,7 +220,6 @@ domain_test(
     deps = TEST_DEPS,
 )
 
-# TODO(#1671): Test is passing with Gradle but not with Bazel
 domain_test(
     name = "StateRetrieverTest",
     srcs = ["src/test/java/org/oppia/domain/util/StateRetrieverTest.kt"],
