@@ -1,8 +1,8 @@
 load("//:oppia_android_test.bzl", "oppia_android_test")
 # TODO(#1620): Remove module-specific test macros once Gradle is removed
-def utility_test(name, srcs, test_class, deps):
+def domain_test(name, srcs, test_class, deps):
   '''
-  Creates individual tests for test files in the utility module.
+  Creates individual tests for test files in the domain module.
 
   Args:
       name: str. The name of the Kotlin test file without the '.kt' suffix.
@@ -15,8 +15,10 @@ def utility_test(name, srcs, test_class, deps):
   oppia_android_test(
     name = name,
     srcs = srcs,
-    custom_package = "org.oppia.util",
+    custom_package = "org.oppia.domain",
     test_class = test_class,
     test_manifest = "src/test/AndroidManifest.xml",
+    assets = native.glob(["src/main/assets/**"]),
+    assets_dir = "src/main/assets/",
     deps = deps,
   )
