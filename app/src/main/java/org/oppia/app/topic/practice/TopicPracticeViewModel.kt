@@ -62,6 +62,7 @@ class TopicPracticeViewModel @Inject constructor(
   }
 
   private fun processTopicPracticeSkillList(topic: Topic): List<TopicPracticeItemViewModel> {
+    itemViewModelList.clear()
     itemViewModelList.add(TopicPracticeHeaderViewModel() as TopicPracticeItemViewModel)
 
     itemViewModelList.addAll(

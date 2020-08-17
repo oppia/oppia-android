@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <integer name="topic_description_collapsed">9</integer>
   <integer name="home_span_count">4</integer>
   <integer name="promoted_story_list_limit">4</integer>
   <integer name="recently_played_span_count">4</integer>
   <integer name="topic_revision_span_count">4</integer>
   <integer name="ongoing_topics_span_count">4</integer>
   <integer name="completed_story_span_count">4</integer>
+  <integer name="profile_progress_span_count">4</integer>
+  <integer name="profile_progress_limit">4</integer>
 </resources>
