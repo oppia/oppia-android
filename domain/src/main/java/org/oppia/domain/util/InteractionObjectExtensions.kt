@@ -20,7 +20,6 @@ import org.oppia.app.model.InteractionObject.ObjectTypeCase.SIGNED_INT
 import org.oppia.app.model.ListOfSetsOfHtmlStrings
 import org.oppia.app.model.NumberUnit
 import org.oppia.app.model.NumberWithUnits
-import org.oppia.app.model.RatioExpression
 import org.oppia.app.model.StringList
 
 /** Returns a parsable string representation of a user-submitted answer version of this [InteractionObject]. */
