@@ -15,8 +15,6 @@ import java.util.concurrent.TimeUnit;
 public final class TextViewBindingAdapters {
 
   private static int MINUTE_MILLIS = (int) TimeUnit.MINUTES.toMillis(1);
-  private static int HOUR_MILLIS = (int) TimeUnit.HOURS.toMillis(1);
-  private static int DAY_MILLIS = (int) TimeUnit.DAYS.toMillis(1);
 
   /** Binds date text with relative time. */
   @BindingAdapter("profile:created")
@@ -35,6 +33,7 @@ public final class TextViewBindingAdapters {
 
   @BindingAdapter("profile:lastVisited")
   public static void setProfileLastVisitedText(@NonNull TextView textView, long timestamp) {
+    // TODO(#1672): Remove string concatenation in favor of multi-variable strings.
     textView.setText(
         String.format(
             textView.getContext().getString(R.string.profile_last_used) + " " + getTimeAgo(
@@ -64,13 +63,13 @@ public final class TextViewBindingAdapters {
       return getPluralString(
           context,
           R.plurals.minutes,
-          (int) (timeDifferenceMillis / MINUTE_MILLIS)
+          (int) TimeUnit.MILLISECONDS.toMinutes(timeDifferenceMillis)
       );
     } else if (timeDifferenceMillis < TimeUnit.DAYS.toMillis(1)) {
       return getPluralString(
           context,
           R.plurals.hours,
-          (int) (timeDifferenceMillis / HOUR_MILLIS)
+          (int) TimeUnit.MILLISECONDS.toHours(timeDifferenceMillis)
       );
     } else if (timeDifferenceMillis < TimeUnit.DAYS.toMillis(2)) {
       return context.getString(R.string.yesterday);
@@ -78,7 +77,7 @@ public final class TextViewBindingAdapters {
     return getPluralString(
         context,
         R.plurals.days,
-        (int) (timeDifferenceMillis / DAY_MILLIS)
+        (int) TimeUnit.MILLISECONDS.toDays((timeDifferenceMillis)
     );
   }
 
