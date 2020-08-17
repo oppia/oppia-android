@@ -25,7 +25,7 @@ private const val AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "auto_deprecatio
 class SplashActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val logger: ConsoleLogger,
-  private val appStartupStateController: AppStartupStateController
+  private val appStartupStateController: AppStartupStateController,
   private val primeTopicAssetsController: PrimeTopicAssetsController
 ) {
 
