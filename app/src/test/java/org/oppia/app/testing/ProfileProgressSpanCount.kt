@@ -45,7 +45,7 @@ class ProfileProgressSpanCount {
   fun testProfileProgress_checkRecyclerViewSpanCount_spanIsCorrect() {
     launch<ProfileProgressActivity>(ProfileProgressActivity::class.java).use {
       it.onActivity { activity ->
-        assertThat(getProfileProgressSpanCount(activity)).isEqualTo(1)
+        assertThat(getProfileProgressSpanCount(activity)).isEqualTo(2)
       }
     }
   }
@@ -55,7 +55,7 @@ class ProfileProgressSpanCount {
   fun testProfileProgress_checkRecyclerViewSpanCount_land_spanIsCorrect() {
     launch<ProfileProgressActivity>(ProfileProgressActivity::class.java).use {
       it.onActivity { activity ->
-        assertThat(getProfileProgressSpanCount(activity)).isEqualTo(1)
+        assertThat(getProfileProgressSpanCount(activity)).isEqualTo(3)
       }
     }
   }
