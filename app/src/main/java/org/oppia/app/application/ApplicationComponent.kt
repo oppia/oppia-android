@@ -15,6 +15,7 @@ import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputMo
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
@@ -44,7 +45,8 @@ import javax.inject.Singleton
     InteractionsModule::class, GcsResourceModule::class, GlideImageLoaderModule::class,
     ImageParsingModule::class, HtmlParserEntityTypeModule::class, CachingModule::class,
     QuestionModule::class, LogReportingModule::class, AccessibilityModule::class,
-    ImageClickInputModule::class, LogStorageModule::class, PrimeTopicAssetsControllerModule::class
+    ImageClickInputModule::class, LogStorageModule::class, PrimeTopicAssetsControllerModule::class,
+    ExpirationMetaDataRetrieverModule::class
   ]
 )
 
