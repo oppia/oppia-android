@@ -143,7 +143,7 @@ jobs:
       - name: Clone Patch
         run: cd bazel-databinding | git clone https://gist.github.com/c7f7ad43a5d4581b9b8caffc1123aaa3.git databinding-patch
       - name: Apply Patch
-        run: patch apply ./databinding-patch
+        run: patch apply ./databinding-patch/androidx_databinding_bazel.patch
       - name: Build Bazel
         run: bazel build //src:bazel //tools/android/runtime_deps:android_tools.tar.gz
       - name: Extract Android Tools
