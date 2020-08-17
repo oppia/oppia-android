@@ -14,8 +14,6 @@ import androidx.test.rule.ActivityTestRule
 import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
-import dagger.Module
-import dagger.Provides
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -46,8 +44,6 @@ import org.oppia.testing.TestAccessibilityModule
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
-import org.oppia.util.caching.CacheAssetsLocally
-import org.oppia.util.caching.TopicListToCache
 import org.oppia.util.caching.testing.CachingTestModule
 import org.oppia.util.gcsresource.GcsResourceModule
 import org.oppia.util.logging.LoggerModule
