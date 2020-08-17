@@ -40,6 +40,7 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
+    setRetainInstance(true)
     val args = checkNotNull(arguments) {
       "Expected arguments to be passed to StoryFragment"
     }
