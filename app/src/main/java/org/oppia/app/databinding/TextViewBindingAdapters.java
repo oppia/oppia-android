@@ -64,13 +64,13 @@ public final class TextViewBindingAdapters {
       return getPluralString(
           context,
           R.plurals.minutes,
-          (int) (timeDifferenceMillis / MINUTE_MILLIS)
+          (int) TimeUnit.MILLISECONDS.toMinutes(timeDifferenceMillis)
       );
     } else if (timeDifferenceMillis < TimeUnit.DAYS.toMillis(1)) {
       return getPluralString(
           context,
           R.plurals.hours,
-          (int) (timeDifferenceMillis / HOUR_MILLIS)
+          (int) TimeUnit.MILLISECONDS.toHours(timeDifferenceMillis)
       );
     } else if (timeDifferenceMillis < TimeUnit.DAYS.toMillis(2)) {
       return context.getString(R.string.yesterday);
@@ -78,7 +78,7 @@ public final class TextViewBindingAdapters {
     return getPluralString(
         context,
         R.plurals.days,
-        (int) (timeDifferenceMillis / DAY_MILLIS)
+        (int) TimeUnit.MILLISECONDS.toDays(timeDifferenceMillis)
     );
   }
 
