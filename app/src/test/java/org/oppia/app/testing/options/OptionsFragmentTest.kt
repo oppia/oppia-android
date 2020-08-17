@@ -16,6 +16,10 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.options.APP_LANGUAGE
+import org.oppia.app.options.AUDIO_LANGUAGE
+import org.oppia.app.options.AppLanguageActivity
+import org.oppia.app.options.DefaultAudioActivity
 import org.oppia.app.options.OptionsActivity
 import org.oppia.app.options.STORY_TEXT_SIZE
 import org.oppia.app.options.StoryTextSizeActivity
@@ -36,7 +40,7 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun clickStoryTextSize_checkSendingTheCorrectIntent() {
+  fun testStoryTextSize_clickStoryTextSize_checkSendingTheCorrectIntent() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       onView(
         atPositionOnView(
@@ -52,6 +56,50 @@ class OptionsFragmentTest {
         hasExtra(
           StoryTextSizeActivity.KEY_STORY_TEXT_SIZE_PREFERENCE_TITLE,
           STORY_TEXT_SIZE
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testAppLanguage_clickAppLanguage_checkSendingTheCorrectIntent() {
+    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+      onView(
+        atPositionOnView(
+          R.id.options_recyclerview,
+          1,
+          R.id.app_language_item_layout
+        )
+      ).perform(
+        click()
+      )
+      intended(hasComponent(AppLanguageActivity::class.java.name))
+      intended(
+        hasExtra(
+          AppLanguageActivity.KEY_APP_LANGUAGE_PREFERENCE_TITLE,
+          APP_LANGUAGE
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testAudioLanguage_clickDefaultAudioLanguage_checkSendingTheCorrectIntent() {
+    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+      onView(
+        atPositionOnView(
+          R.id.options_recyclerview,
+          2,
+          R.id.audio_laguage_item_layout
+        )
+      ).perform(
+        click()
+      )
+      intended(hasComponent(DefaultAudioActivity::class.java.name))
+      intended(
+        hasExtra(
+          DefaultAudioActivity.KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE,
+          AUDIO_LANGUAGE
         )
       )
     }
