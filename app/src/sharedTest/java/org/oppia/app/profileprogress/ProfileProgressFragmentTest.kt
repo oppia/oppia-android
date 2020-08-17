@@ -410,7 +410,6 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  @Config(qualifiers = "port-xxhdpi")
   fun testProfileProgressActivity_changeConfiguration_recyclerViewItem1_storyNameIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       onView(isRoot()).perform(orientationLandscape())
