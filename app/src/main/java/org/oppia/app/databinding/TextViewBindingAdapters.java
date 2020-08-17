@@ -77,7 +77,7 @@ public final class TextViewBindingAdapters {
     return getPluralString(
         context,
         R.plurals.days,
-        (int) TimeUnit.MILLISECONDS.toDays((timeDifferenceMillis)
+        (int) TimeUnit.MILLISECONDS.toDays(timeDifferenceMillis)
     );
   }
 
