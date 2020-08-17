@@ -131,8 +131,5 @@ jobs:
          name: app reports
          path: app/build/test-results
       - name: Bazel tests
-         # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
          run: |
            sudo ~/bazel-databinding-new/bazel-bin/src/bazel mobile-install //:oppia --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=/tmp/android_tools --subcommands --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx
-
-
