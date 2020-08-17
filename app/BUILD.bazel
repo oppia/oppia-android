@@ -103,7 +103,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/app/options/OptionsAppLanguageViewModel.kt",
     "src/main/java/org/oppia/app/options/OptionsAudioLanguageViewModel.kt",
     "src/main/java/org/oppia/app/options/OptionsItemViewModel.kt",
-    "src/main/java/org/oppia/app/options/OptionsStoryTextViewViewModel.kt",
+    #"src/main/java/org/oppia/app/options/OptionsStoryTextViewViewModel.kt",
     "src/main/java/org/oppia/app/player/audio/AudioViewModel.kt",
     "src/main/java/org/oppia/app/player/exploration/ExplorationViewModel.kt",
     "src/main/java/org/oppia/app/player/state/itemviewmodel/ContentViewModel.kt",
