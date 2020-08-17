@@ -91,7 +91,11 @@ class ProfileProgressViewModel @Inject constructor(
   var refreshedOngoingStoryListViewModelLiveData =
     MutableLiveData<List<ProfileProgressItemViewModel>>()
 
-  fun refresh() {
+  /**
+   * Reprocesses the data of the [refreshedOngoingStoryListViewModelLiveData] so that we have the
+   * correct number of items on configuration changes
+   */
+  fun handleOnConfigurationChange() {
     limit = fragment.resources.getInteger(R.integer.profile_progress_limit)
     subset = fragment.resources.getInteger(R.integer.profile_progress_subset)
     refreshedOngoingStoryListViewModelLiveData =
