@@ -38,7 +38,7 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
-import java.util.Date
+import java.util.*
 import javax.inject.Inject
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY = "STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY"
@@ -74,6 +74,7 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
+  private val hintBulbVibisilityStack: MutableList<Boolean> = mutableListOf()
 
   private val viewModel: StateViewModel by lazy {
     getStateViewModel()
@@ -151,9 +152,20 @@ class StateFragmentPresenter @Inject constructor(
     moveToNextState()
   }
 
-  fun onNextButtonClicked() = moveToNextState()
+  fun onNextButtonClicked() {
+    val item = hintBulbVibisilityStack.lastOrNull()
+    if (!hintBulbVibisilityStack.isEmpty()) {
+      hintBulbVibisilityStack.removeAt(hintBulbVibisilityStack.size - 1)
+    }
+    item?.let {
+      viewModel.setHintBulbVisibility(it)
+    }
+    moveToNextState()
+  }
 
   fun onPreviousButtonClicked() {
+    hintBulbVibisilityStack.add(viewModel.isHintBulbVisible.get() ?: false)
+    viewModel.setHintBulbVisibility(false)
     explorationProgressController.moveToPreviousState()
   }
 
