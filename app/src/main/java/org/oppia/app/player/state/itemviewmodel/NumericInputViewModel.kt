@@ -3,6 +3,7 @@ package org.oppia.app.player.state.itemviewmodel
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
+import androidx.databinding.Bindable
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.app.model.InteractionObject
@@ -55,6 +56,7 @@ class NumericInputViewModel(
     return pendingAnswerError
   }
 
+  @Bindable
   fun getAnswerTextWatcher(): TextWatcher {
     return object : TextWatcher {
       override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {

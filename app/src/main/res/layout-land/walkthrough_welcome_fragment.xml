@@ -11,7 +11,7 @@
 
     <variable
       name="presenter"
-      type="org.oppia.app.walkthrough.WalkthroughPageChanger" />
+      type="org.oppia.app.walkthrough.welcome.WalkthroughWelcomeFragmentPresenter" />
   </data>
 
   <ScrollView

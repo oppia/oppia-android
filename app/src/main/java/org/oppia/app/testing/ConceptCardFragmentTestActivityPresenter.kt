@@ -1,7 +1,7 @@
 package org.oppia.app.testing
 
-import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.concept_card_fragment_test_activity.*
 import org.oppia.app.R
 import org.oppia.app.testing.ConceptCardFragmentTestActivity.Companion.TAG_CONCEPT_CARD_DIALOG
 import org.oppia.app.topic.conceptcard.ConceptCardFragment
@@ -15,11 +15,11 @@ class ConceptCardFragmentTestActivityPresenter @Inject constructor(
 ) {
   fun handleOnCreate() {
     activity.setContentView(R.layout.concept_card_fragment_test_activity)
-    activity.findViewById<Button>(R.id.open_dialog_0).setOnClickListener {
+    activity.open_dialog_0.setOnClickListener {
       val frag = ConceptCardFragment.newInstance(TEST_SKILL_ID_0)
       frag.showNow(activity.supportFragmentManager, TAG_CONCEPT_CARD_DIALOG)
     }
-    activity.findViewById<Button>(R.id.open_dialog_1).setOnClickListener {
+    activity.open_dialog_1.setOnClickListener {
       val frag = ConceptCardFragment.newInstance(TEST_SKILL_ID_1)
       frag.showNow(activity.supportFragmentManager, TAG_CONCEPT_CARD_DIALOG)
     }

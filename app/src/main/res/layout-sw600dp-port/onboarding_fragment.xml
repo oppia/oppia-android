@@ -8,7 +8,7 @@
 
     <variable
       name="presenter"
-      type="org.oppia.app.onboarding.OnboardingListener" />
+      type="org.oppia.app.onboarding.OnboardingFragmentPresenter" />
 
     <variable
       name="viewModel"

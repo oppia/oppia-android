@@ -26,7 +26,7 @@ class WalkthroughFinalFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val logger: ConsoleLogger,
   private val topicController: TopicController
-) : WalkthroughEndPageChanger {
+) {
   private lateinit var binding: WalkthroughFinalFragmentBinding
   private lateinit var walkthroughFinalViewModel: WalkthroughFinalViewModel
   private lateinit var topicId: String
@@ -100,7 +100,7 @@ class WalkthroughFinalFragmentPresenter @Inject constructor(
     return topic.getOrDefault(Topic.getDefaultInstance())
   }
 
-  override fun goBack() {
+  fun goBack() {
     activity.onBackPressed()
   }
 }

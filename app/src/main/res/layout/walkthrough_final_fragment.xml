@@ -11,7 +11,7 @@
 
     <variable
       name="presenter"
-      type="org.oppia.app.walkthrough.end.WalkthroughEndPageChanger" />
+      type="org.oppia.app.walkthrough.end.WalkthroughFinalFragmentPresenter" />
   </data>
 
   <ScrollView

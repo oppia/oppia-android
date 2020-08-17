@@ -15,7 +15,6 @@ import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
 import org.oppia.app.walkthrough.WalkthroughActivity
 import org.oppia.app.walkthrough.WalkthroughFragmentChangeListener
-import org.oppia.app.walkthrough.WalkthroughPageChanger
 import org.oppia.app.walkthrough.WalkthroughPages
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
@@ -29,7 +28,7 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
   private val logger: ConsoleLogger
-) : WalkthroughPageChanger {
+) {
   private lateinit var binding: WalkthroughWelcomeFragmentBinding
   private val routeToNextPage = activity as WalkthroughFragmentChangeListener
   private lateinit var walkthroughWelcomeViewModel: WalkthroughWelcomeViewModel
@@ -100,7 +99,7 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
     }
   }
 
-  override fun changePage() {
+  fun changePage() {
     routeToNextPage.currentPage(WalkthroughPages.TOPIC_LIST.value)
   }
 }
