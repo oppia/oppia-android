@@ -138,5 +138,15 @@ jobs:
       matrix:
         os: [ubuntu-18.04]
     steps:
+      - name: Clone Bazel
+        run: git clone https://github.com/bazelbuild/bazel.git bazel-databinding
+      - name: Clone Patch
+        run: cd bazel-databinding | git clone https://gist.github.com/c7f7ad43a5d4581b9b8caffc1123aaa3.git databinding-patch
+      - name: Apply Patch
+        run: patch apply ./databinding-patch
+      - name: Build Bazel
+        run: bazel build //src:bazel //tools/android/runtime_deps:android_tools.tar.gz
+      - name: Extract Android Tools
+        run: mkdir /tmp/android_tools | tar -xf bazel-bin/tools/android/runtime_deps/android_tools.tar.gz -C /tmp/android_tools
       - name: Build Oppia binary with Bazel
-        run: sudo ~/bazel-databinding-new/bazel-bin/src/bazel mobile-install //:oppia --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=/tmp/android_tools --subcommands --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx
+        run: sudo ~/bazel-databinding/bazel-bin/src/bazel mobile-install //:oppia --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=/tmp/android_tools --subcommands --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx
