@@ -95,7 +95,6 @@ VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/options/OptionsAppLanguageViewModel.kt",
     "src/main/java/org/oppia/app/options/OptionsAudioLanguageViewModel.kt",
     "src/main/java/org/oppia/app/options/OptionsItemViewModel.kt",
-    #"src/main/java/org/oppia/app/options/OptionsStoryTextViewViewModel.kt",
     "src/main/java/org/oppia/app/player/audio/AudioViewModel.kt",
     "src/main/java/org/oppia/app/player/exploration/ExplorationViewModel.kt",
     "src/main/java/org/oppia/app/player/state/itemviewmodel/ContentViewModel.kt",
@@ -271,8 +270,8 @@ kt_android_library(
     custom_package = "org.oppia.app",
     srcs = LISTENER_FILES,
     deps = [
-        "//model",
         ":dagger",
+        "//model",
         artifact("androidx.recyclerview:recyclerview:1.0.0"),
     ],
     visibility = ["//visibility:private"],
@@ -285,11 +284,11 @@ kt_android_library(
     manifest = "src/main/ViewsManifest.xml",
     srcs = VIEW_FILES,
     deps = [
-        "//model",
         ":annotations",
         ":listeners",
         ":resources",
         ":view_models",
+        "//model",
         "@circularimageview//circularimageview:circular_image_view",
         artifact("androidx.appcompat:appcompat"),
         artifact("androidx.core:core-ktx"),
@@ -303,8 +302,8 @@ kt_android_library(
     custom_package = "org.oppia.app",
     srcs = ANNOTATION_FILES,
     deps = [
-        "//model",
         ":dagger",
+        "//model",
     ],
     visibility = ["//visibility:private"],
 )
@@ -317,13 +316,13 @@ kt_android_library(
     enable_data_binding = 1,
     manifest = "src/main/ViewModelManifest.xml",
     deps = [
-        "//domain",
-        "//model",
-        "//utility",
         ":annotations",
         ":dagger",
         ":listeners",
         ":resources",
+        "//domain",
+        "//model",
+        "//utility",
     ],
     visibility = ["//visibility:private"],
 )
