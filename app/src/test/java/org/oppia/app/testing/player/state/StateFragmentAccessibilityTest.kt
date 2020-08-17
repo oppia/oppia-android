@@ -82,9 +82,6 @@ class StateFragmentAccessibilityTest {
   @Inject
   lateinit var fakeAccessibilityManager: FakeAccessibilityManager
 
-  @Inject
-  lateinit var viewBindingShim: ViewBindingShim
-
   private val internalProfileId: Int = 1
 
   @Before
