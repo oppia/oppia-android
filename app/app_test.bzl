@@ -2,7 +2,7 @@ load("//:oppia_android_test.bzl", "oppia_android_test")
 # TODO(#1620): Remove module-specific test macros once Gradle is removed
 def app_test(name, srcs, test_class, deps):
   '''
-  Creates individual tests for test files in the testing module.
+  Creates individual tests for test files in the app module.
 
   Args:
       name: str. The name of the Kotlin test file without the '.kt' suffix.
@@ -19,4 +19,5 @@ def app_test(name, srcs, test_class, deps):
     test_class = test_class,
     test_manifest = "src/test/AndroidManifest.xml",
     deps = deps,
+    enable_data_binding = 1,
   )

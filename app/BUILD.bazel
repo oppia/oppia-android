@@ -550,7 +550,6 @@ TEST_DEPS = [
     "//utility",
     "//testing",
     "//domain",
-    "//data",
     ":resources",
     ":test_deps",
     "@robolectric//bazel:android-all",
