@@ -14,6 +14,8 @@
     android:theme="@style/OppiaTheme">
     <meta-data android:name="firebase_analytics_collection_deactivated" android:value="true" />
     <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="false" />
+    <meta-data android:name="automatic_app_expiration_enabled" android:value="false" />
+    <meta-data android:name="expiration_date" android:value="2020-09-01" />
     <activity
       android:name=".administratorcontrols.AdministratorControlsActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />

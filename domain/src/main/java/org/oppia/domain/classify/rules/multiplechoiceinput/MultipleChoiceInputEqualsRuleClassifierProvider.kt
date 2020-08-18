@@ -12,7 +12,8 @@ import javax.inject.Inject
  *
  * https://github.com/oppia/oppia/blob/37285a/extensions/interactions/MultipleChoiceInput/directives/multiple-choice-input-rules.service.ts#L21
  */
-internal class MultipleChoiceInputEqualsRuleClassifierProvider @Inject constructor(
+// TODO(#1580): Re-restrict access using Bazel visibilities
+class MultipleChoiceInputEqualsRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
 ) : RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<Int> {
 
