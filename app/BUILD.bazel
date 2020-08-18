@@ -385,8 +385,8 @@ kt_android_library(
     custom_package = "org.oppia.app",
     srcs = LISTENERS,
     deps = [
-        "//model",
         ":dagger",
+        "//model",
         artifact("androidx.recyclerview:recyclerview:1.0.0"),
     ],
     visibility = ["//visibility:private"],
@@ -419,8 +419,8 @@ kt_android_library(
     custom_package = "org.oppia.app",
     srcs = ANNOTATIONS,
     deps = [
-        "//model",
         ":dagger",
+        "//model",
     ],
     visibility = ["//visibility:private"],
 )
@@ -495,15 +495,14 @@ kt_android_library(
     enable_data_binding = 1,
     manifest = "src/main/AppAndroidManifest.xml",
     deps = [
-        #"//data",
-        "//model",
-        "//utility",
         ":dagger",
         ":databinding_adapters",
         ":databinding_resources",
         ":resources",
         ":view_models",
         ":views",
+        "//model",
+        "//utility",
         artifact("androidx.databinding:databinding-adapters"),
         artifact("androidx.databinding:databinding-common"),
         artifact("androidx.databinding:databinding-runtime"),
