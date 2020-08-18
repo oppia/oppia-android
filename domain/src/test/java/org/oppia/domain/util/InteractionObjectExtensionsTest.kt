@@ -75,7 +75,7 @@ class InteractionObjectExtensionsTest {
   @Test
   fun testToAnswerStr_ratioExpression_correctlyFormatsElements() {
     val ratioExpression = RatioExpression.newBuilder()
-      .setHtml("1:2:3")
+      .addAllRatioComponent(listOf(1, 2, 3))
       .build()
 
     val interactionObject =
