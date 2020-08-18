@@ -138,12 +138,18 @@ jobs:
       matrix:
         os: [ubuntu-18.04]
     steps:
-      - name: Clone Bazel
-        run: git clone https://github.com/bazelbuild/bazel.git bazel-databinding
-      - name: Clone Patch
-        run: git clone https://gist.github.com/c7f7ad43a5d4581b9b8caffc1123aaa3.git databinding-patch | cd bazel-databinding | patch -p1 < ../databinding-patch/androidx_databinding_bazel.patch
-      #- name: Apply Patch
-      #  run: cd bazel-databinding  patch -p1 < ../databinding-patch/androidx_databinding_bazel.patch
+      - name: Setup bazel
+        uses: jwlawson/actions-setup-bazel@v1
+        with:
+          bazel-version: '2.0.0'
+      - name: Use bazel
+        run: bazel --version
+      - name: Clone Oppia Bazel
+        run: git clone https://github.com/bazelbuild/bazel.git $HOME/oppia-bazel
+      - name: Clone patch
+        run: git clone https://gist.github.com/c7f7ad43a5d4581b9b8caffc1123aaa3.git $HOME/databinding-patch | cd $HOME/oppia-bazel
+      - name: Apply Patch
+        run: patch -p1 < $HOME/databinding-patch/androidx_databinding_bazel.patch
       - name: Build Bazel
         run: bazel build //src:bazel //tools/android/runtime_deps:android_tools.tar.gz
       - name: Extract Android Tools
