@@ -26,6 +26,6 @@ internal class RatioInputEqualsRuleClassifierProvider @Inject constructor(
   }
 
   override fun matches(answer: RatioExpression, input: RatioExpression): Boolean {
-    return answer.html.normalizeWhitespace() == input.html.normalizeWhitespace()
+    return answer.ratioComponentList == input.ratioComponentList
   }
 }
