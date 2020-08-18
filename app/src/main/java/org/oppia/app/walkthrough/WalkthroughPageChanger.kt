@@ -1,8 +1,6 @@
 package org.oppia.app.walkthrough
 
 /** Listener for when an activity should change pages. */
-interface
-WalkthroughPageChanger {
-
+interface WalkthroughPageChanger {
   fun changePage()
 }
