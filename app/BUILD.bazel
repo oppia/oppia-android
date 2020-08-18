@@ -26,7 +26,7 @@ LISTENERS = [
     "src/main/java/org/oppia/app/home/RouteToRecentlyPlayedListener.kt",
     "src/main/java/org/oppia/app/home/RouteToTopicPlayStoryListener.kt",
     "src/main/java/org/oppia/app/home/topiclist/TopicSummaryClickListener.kt",
-    "src/main/java/org/oppia/app/onboarding/OnboardingListener.kt",
+    "src/main/java/org/oppia/app/onboarding/OnboardingNavigationListener.kt",
     "src/main/java/org/oppia/app/onboarding/RouteToProfileListListener.kt",
     "src/main/java/org/oppia/app/options/RouteToAppLanguageListListener.kt",
     "src/main/java/org/oppia/app/options/RouteToAudioLanguageListListener.kt",
@@ -63,7 +63,7 @@ LISTENERS = [
 ]
 
 # Layout files for databinding_resources library.
-LAYOUTS = ["src/main/res/layout*/**"]
+DATABINDING_LAYOUTS = ["src/main/res/layout*/**"]
 
 # Source files for view_model library
 VIEW_MODELS = [
@@ -203,7 +203,6 @@ Genrule for source files in the view_models library.
 Because each databinding library must have a unique package name and manifest, resources must be
 imported using the proper package name when building with Bazel. This genrule alters those imports
 in order to keep Gradle building.
->>>>>>> f782cee29e8496b4742943c22a4836039d7df2ba
 '''
 [genrule(
     name = "update_" + file[0:-3],
@@ -249,7 +248,6 @@ Genrule for source files in the views library.
 Because each databinding library must have a unique package name and manifest, resources must be
 imported using the proper package name when building with Bazel. This genrule alters those imports
 in order to keep Gradle building.
->>>>>>> f782cee29e8496b4742943c22a4836039d7df2ba
 '''
 [genrule(
      name = "update_" + file[0:-3],
@@ -315,7 +313,7 @@ android_library(
     name = "resources",
     custom_package = "org.oppia.app",
     manifest = "src/main/AndroidManifest.xml",
-    resource_files = glob(["src/main/res/**",], exclude = LAYOUTS),
+    resource_files = glob(["src/main/res/**",], exclude = DATABINDING_LAYOUTS),
     exports_manifest = True,
     deps = [
         artifact("com.google.android.material:material"),
@@ -329,8 +327,8 @@ android_library(
     custom_package = "org.oppia.app.databinding",
     manifest = "src/main/DatabindingResourcesManifest.xml",
     srcs = ADAPTERS,
-    resource_files = glob(LAYOUTS),
-    enable_data_binding = 1,
+    resource_files = glob(DATABINDING_LAYOUTS),
+    enable_data_binding = True,
     exports_manifest = True,
     deps = [
         ":annotations",
@@ -408,7 +406,7 @@ kt_android_library(
     name = "view_models",
     custom_package = "org.oppia.app.view.models",
     srcs = VIEW_MODELS,
-    enable_data_binding = 1,
+    enable_data_binding = True,
     manifest = "src/main/ViewModelsManifest.xml",
     deps = [
         ":annotations",
@@ -429,7 +427,7 @@ android_library(
     name = "databinding_adapters",
     custom_package = "org.oppia.app.databinding.adapters",
     srcs = DATABINDING_ADAPTERS,
-    enable_data_binding = 1,
+    enable_data_binding = True,
     manifest = "src/main/DatabindingAdaptersManifest.xml",
     deps = [
         ":dagger",
@@ -449,7 +447,7 @@ android_library(
     name = "recyclerview_adapters",
     custom_package = "org.oppia.app.recyclerview.adapters",
     srcs = RECYCLERVIEW_ADAPTERS,
-    enable_data_binding = 1,
+    enable_data_binding = True,
     manifest = "src/main/RecyclerviewAdaptersManifest.xml",
     deps = [
         ":dagger",

@@ -132,7 +132,7 @@ class WalkthroughActivityPresenter @Inject constructor(
   }
 
   fun handleSystemBack() {
-    previousPage(getWalkthroughViewModel().currentProgress.get() ?: 1)
+    moveToPreviousPage(getWalkthroughViewModel().currentProgress.get() ?: 1)
   }
 
   fun setTopicId(topicId: String) {
