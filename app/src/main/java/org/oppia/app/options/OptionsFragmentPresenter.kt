@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.databinding.OptionAppLanguageBinding
 import org.oppia.app.databinding.OptionAudioLanguageBinding
@@ -40,19 +41,20 @@ class OptionsFragmentPresenter @Inject constructor(
   private var storyTextSize = StoryTextSize.SMALL_TEXT_SIZE
   private var appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
   private var audioLanguage = AudioLanguage.NO_AUDIO
+  val viewModel = getOptionControlsItemViewModel()
 
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     isMultipane: Boolean
   ): View? {
+    viewModel.isUIInitialized(false)
+    viewModel.isMultipane.set(isMultipane)
     binding = OptionsFragmentBinding.inflate(
       inflater,
       container,
       /* attachToRoot= */ false
     )
-    val viewModel = getOptionControlsItemViewModel()
-    viewModel.isMultipane.set(isMultipane)
 
     internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
@@ -67,6 +69,7 @@ class OptionsFragmentPresenter @Inject constructor(
       it.lifecycleOwner = fragment
       it.viewModel = viewModel
     }
+    viewModel.isUIInitialized(true)
     return binding.root
   }
 
@@ -233,5 +236,18 @@ class OptionsFragmentPresenter @Inject constructor(
     }
 
     recyclerViewAdapter.notifyItemChanged(2)
+  }
+
+  /**
+   * Used to fix the race condition that happens when the presenter tries to call a function before
+   * [handleCreateView] is completely executed.
+   * @param action what to execute after the UI is initialized.
+   */
+  fun runAfterUIInitialization(action: () -> Unit) {
+    viewModel.uiLiveData.observe(fragment, Observer {
+      if (it) {
+        action.invoke()
+      }
+    })
   }
 }

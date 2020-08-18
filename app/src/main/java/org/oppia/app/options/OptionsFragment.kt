@@ -50,14 +50,20 @@ class OptionsFragment : InjectableFragment() {
   }
 
   fun updateStoryTextSize(textSize: String) {
-    optionsFragmentPresenter.updateStoryTextSize(textSize)
+    optionsFragmentPresenter.runAfterUIInitialization {
+      optionsFragmentPresenter.updateStoryTextSize(textSize)
+    }
   }
 
   fun updateAppLanguage(appLanguage: String) {
-    optionsFragmentPresenter.updateAppLanguage(appLanguage)
+    optionsFragmentPresenter.runAfterUIInitialization {
+      optionsFragmentPresenter.updateAppLanguage(appLanguage)
+    }
   }
 
   fun updateAudioLanguage(audioLanguage: String) {
-    optionsFragmentPresenter.updateAudioLanguage(audioLanguage)
+    optionsFragmentPresenter.runAfterUIInitialization {
+      optionsFragmentPresenter.updateAudioLanguage(audioLanguage)
+    }
   }
 }

@@ -3,6 +3,7 @@ package org.oppia.app.options
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ObservableList
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
@@ -32,7 +33,16 @@ class OptionControlsViewModel @Inject constructor(
   private val loadStoryTextSizeListener = activity as LoadStoryTextSizeListener
   private val loadAudioLanguageListListener = activity as LoadAudioLanguageListListener
   private val loadAppLanguageListListener = activity as LoadAppLanguageListListener
-  private var isFirstOpen = true
+  private var isFirstOpen = (activity as OptionsActivity).isFirstRun
+  val uiLiveData = MutableLiveData<Boolean>()
+
+  /**
+   * Should be called with `false` when the UI starts to load, then with `true` after the UI
+   * finishes loading
+   */
+  fun isUIInitialized(isInitialized: Boolean) {
+    uiLiveData.value = isInitialized
+  }
 
   private val profileResultLiveData: LiveData<AsyncResult<Profile>> by lazy {
     profileManagementController.getProfile(profileId)
@@ -72,7 +82,10 @@ class OptionControlsViewModel @Inject constructor(
     val optionsAppLanguageViewModel =
       OptionsAppLanguageViewModel(routeToAppLanguageListListener, loadAppLanguageListListener)
     val optionAudioViewViewModel =
-      OptionsAudioLanguageViewModel(routeToAudioLanguageListListener, loadAudioLanguageListListener) // ktlint-disable max-line-length
+      OptionsAudioLanguageViewModel(
+        routeToAudioLanguageListListener,
+        loadAudioLanguageListListener
+      )
 
     optionsStoryTextSizeViewModel.storyTextSize.set(getStoryTextSize(profile.storyTextSize))
     optionsAppLanguageViewModel.appLanguage.set(getAppLanguage(profile.appLanguage))

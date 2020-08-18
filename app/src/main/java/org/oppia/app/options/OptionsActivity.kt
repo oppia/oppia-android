@@ -19,6 +19,8 @@ class OptionsActivity :
   LoadAudioLanguageListListener {
   @Inject
   lateinit var optionActivityPresenter: OptionsActivityPresenter
+  // used to initially load the suitable fragment in the case of multipane.
+  var isFirstRun = true
 
   companion object {
 
@@ -44,6 +46,9 @@ class OptionsActivity :
       BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
       /* defaultValue= */ false
     )
+    if (savedInstanceState != null) {
+      isFirstRun = false
+    }
     optionActivityPresenter.handleOnCreate(isFromNavigationDrawer)
     title = getString(R.string.menu_options)
   }
