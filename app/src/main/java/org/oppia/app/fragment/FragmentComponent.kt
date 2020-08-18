@@ -6,6 +6,7 @@ import dagger.Subcomponent
 import org.oppia.app.administratorcontrols.AdministratorControlsFragment
 import org.oppia.app.administratorcontrols.appversion.AppVersionFragment
 import org.oppia.app.completedstorylist.CompletedStoryListFragment
+import org.oppia.app.deprecation.AutomaticAppDeprecationNoticeDialogFragment
 import org.oppia.app.drawer.NavigationDrawerFragment
 import org.oppia.app.help.HelpFragment
 import org.oppia.app.help.faq.FAQListFragment
@@ -17,6 +18,8 @@ import org.oppia.app.mydownloads.MyDownloadsFragment
 import org.oppia.app.mydownloads.UpdatesTabFragment
 import org.oppia.app.onboarding.OnboardingFragment
 import org.oppia.app.ongoingtopiclist.OngoingTopicListFragment
+import org.oppia.app.options.AppLanguageFragment
+import org.oppia.app.options.DefaultAudioFragment
 import org.oppia.app.options.OptionsFragment
 import org.oppia.app.options.StoryTextSizeFragment
 import org.oppia.app.player.audio.AudioFragment
@@ -63,11 +66,14 @@ interface FragmentComponent {
 
   fun inject(administratorControlsFragment: AdministratorControlsFragment)
   fun inject(adminSettingsDialogFragment: AdminSettingsDialogFragment)
+  fun inject(appLanguageFragment: AppLanguageFragment)
   fun inject(appVersionFragment: AppVersionFragment)
   fun inject(audioFragment: AudioFragment)
+  fun inject(autoAppDeprecationNoticeDialogFragment: AutomaticAppDeprecationNoticeDialogFragment)
   fun inject(bindableAdapterTestFragment: BindableAdapterTestFragment)
   fun inject(completedStoryListFragment: CompletedStoryListFragment)
   fun inject(conceptCardFragment: ConceptCardFragment)
+  fun inject(defaultAudioFragment: DefaultAudioFragment)
   fun inject(downloadsTabFragment: DownloadsTabFragment)
   fun inject(explorationFragment: ExplorationFragment)
   fun inject(explorationManagerFragment: ExplorationManagerFragment)
