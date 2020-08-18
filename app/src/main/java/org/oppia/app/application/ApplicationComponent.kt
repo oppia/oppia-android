@@ -6,6 +6,7 @@ import dagger.Component
 import org.oppia.app.activity.ActivityComponent
 import org.oppia.app.shim.IntentFactoryShimModule
 import org.oppia.app.shim.ViewBindingShimModule
+import org.oppia.data.backends.gae.MoshiProviderShimModule
 import org.oppia.data.backends.gae.NetworkModule
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
@@ -47,7 +48,7 @@ import javax.inject.Singleton
     QuestionModule::class, LogReportingModule::class,
     AccessibilityModule::class, ImageClickInputModule::class,
     LogStorageModule::class, IntentFactoryShimModule::class,
-    ViewBindingShimModule::class
+    ViewBindingShimModule::class, MoshiProviderShimModule::class
   ]
 )
 

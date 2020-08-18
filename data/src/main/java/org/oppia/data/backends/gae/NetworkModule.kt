@@ -4,7 +4,7 @@ import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -19,6 +19,9 @@ class NetworkModule {
   @Qualifier
   private annotation class OppiaRetrofit
 
+  @Inject
+  private lateinit var moshiProviderShim: MoshiProviderShim
+
   /**
    * Provides the Retrofit object.
    * @return the Retrofit object
@@ -32,7 +35,7 @@ class NetworkModule {
 
     return retrofit2.Retrofit.Builder()
       .baseUrl(NetworkSettings.getBaseUrl())
-      .addConverterFactory(GsonConverterFactory.create())
+      .addConverterFactory(moshiProviderShim.getConverterFactory())
       .client(client.build())
       .build()
   }
