@@ -53,7 +53,11 @@ class QuestionPlayerViewModel @Inject constructor() : ObservableViewModel() {
   fun getPendingAnswer(
     answerHandlerRetriever: (List<StateItemViewModel>) -> InteractionAnswerHandler?
   ): UserAnswer {
-    return getPendingAnswerWithoutError(answerHandlerRetriever(getAnswerItemList())) ?: UserAnswer.getDefaultInstance()
+    return getPendingAnswerWithoutError(
+      answerHandlerRetriever(
+        getAnswerItemList()
+      )
+    ) ?: UserAnswer.getDefaultInstance()
   }
 
   private fun getPendingAnswerWithoutError(
