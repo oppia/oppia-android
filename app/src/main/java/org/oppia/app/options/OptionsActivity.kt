@@ -13,7 +13,10 @@ class OptionsActivity :
   InjectableAppCompatActivity(),
   RouteToAppLanguageListListener,
   RouteToAudioLanguageListListener,
-  RouteToStoryTextSizeListener {
+  RouteToStoryTextSizeListener,
+  LoadStoryTextSizeListener,
+  LoadAppLanguageListListener,
+  LoadAudioLanguageListListener {
   @Inject
   lateinit var optionActivityPresenter: OptionsActivityPresenter
 
@@ -94,5 +97,17 @@ class OptionsActivity :
       ),
       REQUEST_CODE_TEXT_SIZE
     )
+  }
+
+  override fun loadStoryTextSizeFragment(textSize: String) {
+    optionActivityPresenter.loadStoryTextSizeFragment(textSize)
+  }
+
+  override fun loadAppLanguageFragment(appLanguage: String) {
+    optionActivityPresenter.loadAppLanguageFragment(appLanguage)
+  }
+
+  override fun loadAudioLanguageFragment(audioLanguage: String) {
+    optionActivityPresenter.loadAudioLanguageFragment(audioLanguage)
   }
 }

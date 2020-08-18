@@ -1,6 +1,7 @@
 package org.oppia.app.options
 
 import android.view.View
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
@@ -28,12 +29,15 @@ class OptionsActivityPresenter @Inject constructor(
         activity.finish()
       }
     }
-    if (getOptionFragment() == null) {
-      activity.supportFragmentManager.beginTransaction().add(
-        R.id.options_fragment_placeholder,
-        OptionsFragment()
-      ).commitNow()
+    val isMultipane = activity.findViewById<FrameLayout>(R.id.multipane_options_container) != null
+    val previousFragment = getOptionFragment()
+    if (previousFragment != null) {
+      activity.supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
+    activity.supportFragmentManager.beginTransaction().add(
+      R.id.options_fragment_placeholder,
+      OptionsFragment.newInstance(isMultipane)
+    ).commitNow()
   }
 
   private fun setUpToolbar() {
@@ -72,5 +76,31 @@ class OptionsActivityPresenter @Inject constructor(
 
   fun updateAudioLanguage(audioLanguage: String) {
     getOptionFragment()?.updateAudioLanguage(audioLanguage)
+  }
+
+  fun loadStoryTextSizeFragment(textSize: String) {
+    val storyTextSizeFragment = StoryTextSizeFragment.newInstance(textSize)
+    activity.supportFragmentManager
+      .beginTransaction()
+      .add(R.id.multipane_options_container, storyTextSizeFragment)
+      .commitNow()
+  }
+
+  fun loadAppLanguageFragment(appLanguage: String) {
+    val appLanguageFragment =
+      AppLanguageFragment.newInstance(APP_LANGUAGE, appLanguage)
+    activity.supportFragmentManager
+      .beginTransaction()
+      .add(R.id.multipane_options_container, appLanguageFragment)
+      .commitNow()
+  }
+
+  fun loadAudioLanguageFragment(audioLanguage: String) {
+    val defaultAudioFragment =
+      DefaultAudioFragment.newInstance(AUDIO_LANGUAGE, audioLanguage)
+    activity.supportFragmentManager
+      .beginTransaction()
+      .add(R.id.multipane_options_container, defaultAudioFragment)
+      .commitNow()
   }
 }

@@ -29,6 +29,10 @@ class OptionControlsViewModel @Inject constructor(
   private val routeToStoryTextSizeListener = activity as RouteToStoryTextSizeListener
   private val routeToAudioLanguageListListener = activity as RouteToAudioLanguageListListener
   private val routeToAppLanguageListListener = activity as RouteToAppLanguageListListener
+  private val loadStoryTextSizeListener = activity as LoadStoryTextSizeListener
+  private val loadAudioLanguageListListener = activity as LoadAudioLanguageListListener
+  private val loadAppLanguageListListener = activity as LoadAppLanguageListListener
+  private var isFirstOpen = true
 
   private val profileResultLiveData: LiveData<AsyncResult<Profile>> by lazy {
     profileManagementController.getProfile(profileId)
@@ -48,6 +52,10 @@ class OptionControlsViewModel @Inject constructor(
     this.profileId = profileId
   }
 
+  fun getProfileId(): ProfileId {
+    return this.profileId
+  }
+
   private fun processProfileResult(profile: AsyncResult<Profile>): Profile {
     if (profile.isFailure()) {
       logger.e("OptionsFragment", "Failed to retrieve profile", profile.getErrorOrNull()!!)
@@ -60,11 +68,11 @@ class OptionControlsViewModel @Inject constructor(
     itemViewModelList.clear()
 
     val optionsStoryTextSizeViewModel =
-      OptionsStoryTextSizeViewModel(routeToStoryTextSizeListener)
+      OptionsStoryTextSizeViewModel(routeToStoryTextSizeListener, loadStoryTextSizeListener)
     val optionsAppLanguageViewModel =
-      OptionsAppLanguageViewModel(routeToAppLanguageListListener)
+      OptionsAppLanguageViewModel(routeToAppLanguageListListener, loadAppLanguageListListener)
     val optionAudioViewViewModel =
-      OptionsAudioLanguageViewModel(routeToAudioLanguageListListener)
+      OptionsAudioLanguageViewModel(routeToAudioLanguageListListener, loadAudioLanguageListListener) // ktlint-disable max-line-length
 
     optionsStoryTextSizeViewModel.storyTextSize.set(getStoryTextSize(profile.storyTextSize))
     optionsAppLanguageViewModel.appLanguage.set(getAppLanguage(profile.appLanguage))
@@ -75,6 +83,12 @@ class OptionControlsViewModel @Inject constructor(
     itemViewModelList.add(optionsAppLanguageViewModel as OptionsItemViewModel)
 
     itemViewModelList.add(optionAudioViewViewModel as OptionsItemViewModel)
+
+    // Loading the initial options in the sub-options container
+    if (isMultipane.get()!! && isFirstOpen) {
+      optionsStoryTextSizeViewModel.loadStoryTextSizeFragment()
+      isFirstOpen = false
+    }
 
     return itemViewModelList
   }

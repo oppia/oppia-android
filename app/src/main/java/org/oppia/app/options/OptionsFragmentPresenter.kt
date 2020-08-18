@@ -41,19 +41,24 @@ class OptionsFragmentPresenter @Inject constructor(
   private var appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
   private var audioLanguage = AudioLanguage.NO_AUDIO
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    isMultipane: Boolean
+  ): View? {
     binding = OptionsFragmentBinding.inflate(
       inflater,
       container,
       /* attachToRoot= */ false
     )
     val viewModel = getOptionControlsItemViewModel()
+    viewModel.isMultipane.set(isMultipane)
 
     internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     viewModel.setProfileId(profileId)
 
-    val optionsRecyclerViewAdapter = createRecyclerViewAdapter()
+    val optionsRecyclerViewAdapter = createRecyclerViewAdapter(isMultipane)
     binding.optionsRecyclerview.apply {
       adapter = optionsRecyclerViewAdapter
     }
@@ -65,9 +70,10 @@ class OptionsFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  private fun createRecyclerViewAdapter(): BindableAdapter<OptionsItemViewModel> {
+  private fun createRecyclerViewAdapter(isMultipane: Boolean): BindableAdapter<OptionsItemViewModel> { // ktlint-disable max-line-length
     return BindableAdapter.MultiTypeBuilder
       .newBuilder<OptionsItemViewModel, ViewType> { viewModel ->
+        viewModel.isMultipane.set(isMultipane)
         when (viewModel) {
           is OptionsStoryTextSizeViewModel -> ViewType.VIEW_TYPE_STORY_TEXT_SIZE
           is OptionsAppLanguageViewModel -> ViewType.VIEW_TYPE_APP_LANGUAGE
