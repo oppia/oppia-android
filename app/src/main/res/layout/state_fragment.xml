@@ -33,6 +33,7 @@
         android:divider="@android:color/transparent"
         android:overScrollMode="never"
         android:paddingTop="@{viewModel.isSplitView() ? (viewModel.isAudioBarVisible ? @dimen/padding_96 : @dimen/padding_0) : (viewModel.isAudioBarVisible ? @dimen/padding_72 : @dimen/padding_0)}"
+        android:paddingBottom="160dp"
         android:scrollbars="none"
         app:data="@{viewModel.itemList}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -48,6 +49,7 @@
         android:clipToPadding="false"
         android:divider="@android:color/transparent"
         android:overScrollMode="never"
+        android:paddingBottom="160dp"
         android:scrollbars="none"
         android:visibility="@{viewModel.isSplitView ? View.VISIBLE : View.GONE}"
         app:data="@{viewModel.rightItemList}"
@@ -70,8 +72,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
-        app:layoutMarginEnd="@{viewModel.isSplitView() ? @dimen/margin_64 : @dimen/margin_24}"
-        app:layoutMarginStart="@{viewModel.isSplitView() ? @dimen/margin_64 : @dimen/margin_24}"
+        app:layoutMarginEnd="@{viewModel.isSplitView() ? @dimen/margin_32 : @dimen/margin_28}"
+        app:layoutMarginStart="@{viewModel.isSplitView() ? @dimen/margin_32 : @dimen/margin_28}"
         app:layout_constraintEnd_toStartOf="@id/center_guideline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -83,6 +85,12 @@
           android:visibility="@{viewModel.isAudioBarVisible ? View.VISIBLE : View.GONE}" />
       </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <FrameLayout
+      android:id="@+id/hints_and_solution_fragment_placeholder"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+    </FrameLayout>
 
     <FrameLayout
       android:id="@+id/hints_and_solution_fragment_container"
@@ -113,9 +121,9 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_gravity="bottom"
-      android:layout_marginStart="28dp"
+      android:layout_marginStart="24dp"
       android:layout_marginTop="8dp"
-      android:layout_marginEnd="28dp"
+      android:layout_marginEnd="24dp"
       android:layout_marginBottom="16dp"
       android:elevation="8dp"
       android:translationZ="4dp">

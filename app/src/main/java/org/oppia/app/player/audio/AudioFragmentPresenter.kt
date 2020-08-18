@@ -21,6 +21,7 @@ import org.oppia.app.model.CellularDataPreference
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.State
+import org.oppia.app.player.audio.AudioViewModel.UiAudioPlayStatus
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.audio.CellularAudioDialogController
 import org.oppia.domain.profile.ProfileManagementController
@@ -95,7 +96,7 @@ class AudioFragmentPresenter @Inject constructor(
     viewModel.playStatusLiveData.observe(
       fragment,
       Observer {
-        prepared = it != AudioViewModel.UiAudioPlayStatus.LOADING
+        prepared = it != UiAudioPlayStatus.LOADING && it != UiAudioPlayStatus.FAILED
         binding.sbAudioProgress.isEnabled = prepared
       }
     )
