@@ -9,6 +9,8 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.app.databinding.DragDropInteractionItemsBinding
+import org.oppia.app.databinding.DragDropSingleItemBinding
 import org.oppia.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
 import org.oppia.util.parser.HtmlParser
@@ -25,7 +27,7 @@ import org.oppia.util.parser.HtmlParser
 interface ViewBindingShim {
 
   /**
-   * Handles binding inflation for [ProfileInputView] and returns the binding's labelText
+   * Handles binding inflation for [ProfileInputView] and returns the binding's labelText.
    */
   fun provideProfileInputViewBindingLabelText(
     inflater: LayoutInflater,
@@ -34,7 +36,7 @@ interface ViewBindingShim {
   ): TextView
 
   /**
-   * Handles binding inflation for [ProfileInputView] and returns the binding's input
+   * Handles binding inflation for [ProfileInputView] and returns the binding's input.
    */
   fun provideProfileInputViewBindingInput(
     inflater: LayoutInflater,
@@ -43,7 +45,7 @@ interface ViewBindingShim {
   ): EditText
 
   /**
-   * Handles binding inflation for [ProfileInputView] and returns the binding's errorText
+   * Handles binding inflation for [ProfileInputView] and returns the binding's errorText.
    */
   fun provideProfileInputViewBindingErrorText(
     inflater: LayoutInflater,
@@ -53,7 +55,7 @@ interface ViewBindingShim {
 
   /**
    * Handles binding inflation for [SelectionInteractionView]'s ItemSelectionInteraction and
-   * returns the binding's root
+   * returns the binding's root.
    */
   fun provideSelectionInteractionViewInflatedView(
     inflater: LayoutInflater,
@@ -63,7 +65,7 @@ interface ViewBindingShim {
 
   /**
    * Handles binding inflation for [SelectionInteractionView]'s ItemSelectionInteraction and
-   * returns the binding's viewModel
+   * returns the binding's viewModel.
    */
   fun provideSelectionInteractionViewModel(
     view: View,
@@ -76,7 +78,7 @@ interface ViewBindingShim {
 
   /**
    * Handles binding inflation for [SelectionInteractionView]'s MultipleChoiceInteraction and
-   * returns the binding's view
+   * returns the binding's view.
    */
   fun provideMultipleChoiceInteractionItemsInflatedView(
     inflater: LayoutInflater,
@@ -86,7 +88,7 @@ interface ViewBindingShim {
 
   /**
    * Handles binding inflation for [SelectionInteractionView]'s MultipleChoiceInteraction and
-   * returns the binding's viewModel
+   * returns the binding's viewModel.
    */
   fun provideMultipleChoiceInteractionItemsViewModel(
     view: View,
@@ -107,22 +109,29 @@ interface ViewBindingShim {
     attachToParent: Boolean
   ): View
 
+  /** Handles setting [DragDropInteractionItemsBinding]. */
   fun setDragDropInteractionItemsBinding(
     view: View
   )
 
+  /** Handles setting [DragDropInteractionItemsBinding]'s adapter. */
   fun setDragDropInteractionItemsBindingAdapter(
     adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
   )
 
+  /** Returns [DragDropInteractionItemsBinding]'s RecyclerView. */
   fun getDragDropInteractionItemsBindingRecyclerView(): RecyclerView
 
+  /** Returns [DragDropInteractionItemsBinding]'s dragDropContentGroupItem. */
   fun getDragDropInteractionItemsBindingGroupItem(): ImageButton
 
+  /** Returns [DragDropInteractionItemsBinding]'s dragDropContentUnlinkItems. */
   fun getDragDropInteractionItemsBindingUnlinkItems(): ImageButton
 
+  /** Returns [DragDropInteractionItemsBinding]'s dragDropAccessibleContainer. */
   fun getDragDropInteractionItemsBindingAccessibleContainer(): LinearLayout
 
+  /** Handles setting [DragDropInteractionItemsBinding]'s viewModel. */
   fun setDragDropInteractionItemsBindingViewModel(
     viewModel: DragDropInteractionContentViewModel
   )
@@ -137,10 +146,12 @@ interface ViewBindingShim {
     attachToParent: Boolean
   ): View
 
+  /** Handles setting [DragDropSingleItemBinding]. */
   fun setDragDropSingleItemBinding(
     view: View
   )
 
+  /** Handles setting [DragDropSingleItemBinding]'s htmlContent. */
   fun setDragDropSingleItemBindingHtmlContent(
     htmlParserFactory: HtmlParser.Factory,
     resourceBucketName: String,
@@ -149,5 +160,6 @@ interface ViewBindingShim {
     viewModel: String
   )
 
+  /** Returns [ClickableAreasImage]'s defaultRegion. */
   fun getDefaultRegion(parentView: FrameLayout): View
 }
