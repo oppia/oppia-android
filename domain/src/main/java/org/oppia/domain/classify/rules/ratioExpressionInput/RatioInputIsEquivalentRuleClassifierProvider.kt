@@ -26,16 +26,15 @@ internal class RatioInputIsEquivalentRuleClassifierProvider @Inject constructor(
   }
 
   override fun matches(answer: RatioExpression, input: RatioExpression): Boolean {
-    return answer.html == getLowestForm(input)
+    return answer.ratioComponentList == getLowestForm(input)
   }
 
-  private fun getLowestForm(input: RatioExpression): String {
-    val ratios = input.html.split(':').map { it.toInt() }
-    val value = ratios.reduce { x, y -> gcd(x, y) }
+  private fun getLowestForm(input: RatioExpression): List<Int> {
+    val value = input.ratioComponentList.reduce { x, y -> gcd(x, y) }
     return if (value == 1) {
-      input.html
+      input.ratioComponentList
     } else {
-      ratios.map { x -> x / value }.joinToString(separator = ":") { it.toString() }
+      input.ratioComponentList.map { x -> x / value }
     }
   }
 }

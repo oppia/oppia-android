@@ -27,8 +27,8 @@ import kotlin.test.fail
 @Config(manifest = Config.NONE)
 class RatioInputIsEquivalentRuleClassifierProviderTest {
   private val NON_NEGATIVE_VALUE_0 = createNonNegativeInt(value = 0)
-  private val ITEM_RATIO_1 = "1:2:3"
-  private val ITEM_RATIO_2 = "2:4:6"
+  private val ITEM_RATIO_1 = listOf(1, 2, 3)
+  private val ITEM_RATIO_2 = listOf(2, 4, 6)
 
   @Inject
   internal lateinit var ratioInputIsEquivalentRuleClassifierProvider:
@@ -102,9 +102,9 @@ class RatioInputIsEquivalentRuleClassifierProviderTest {
       .contains("Expected classifier inputs to contain parameter with name 'x' but had: [y]")
   }
 
-  private fun createRatio(value: String): InteractionObject {
+  private fun createRatio(value: List<Int>): InteractionObject {
     return InteractionObject.newBuilder().setRatioExpression(
-      RatioExpression.newBuilder().setHtml(value)
+      RatioExpression.newBuilder().addAllRatioComponent(value)
     ).build()
   }
 
