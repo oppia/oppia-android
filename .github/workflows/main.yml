@@ -146,8 +146,8 @@ jobs:
         run: bazel --version
       - name: Clone Oppia Bazel
         run: |
-        git clone https://github.com/miaboloix/bazel.git $HOME/oppia-bazel
-        cd $HOME/oppia-bazel
+          git clone https://github.com/miaboloix/bazel.git $HOME/oppia-bazel
+          cd $HOME/oppia-bazel
       - name: Build Oppia Bazel
         run: bazel build //src:bazel //tools/android/runtime_deps:android_tools.tar.gz
       - name: Extract Android Tools
