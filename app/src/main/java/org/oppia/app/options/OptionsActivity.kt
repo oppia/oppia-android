@@ -3,10 +3,13 @@ package org.oppia.app.options
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.TextView
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import javax.inject.Inject
+
+private const val SELECTED_OPTIONS_TITLE_KEY = "SELECTED_OPTIONS_TITLE_KEY"
 
 /** The activity for setting user preferences. */
 class OptionsActivity :
@@ -49,7 +52,8 @@ class OptionsActivity :
     if (savedInstanceState != null) {
       isFirstRun = false
     }
-    optionActivityPresenter.handleOnCreate(isFromNavigationDrawer)
+    val extraOptionsTitle = savedInstanceState?.getString(SELECTED_OPTIONS_TITLE_KEY)
+    optionActivityPresenter.handleOnCreate(isFromNavigationDrawer, extraOptionsTitle)
     title = getString(R.string.menu_options)
   }
 
@@ -105,14 +109,25 @@ class OptionsActivity :
   }
 
   override fun loadStoryTextSizeFragment(textSize: String) {
+    optionActivityPresenter.setExtraOptionTitle(getString(R.string.story_text_size))
     optionActivityPresenter.loadStoryTextSizeFragment(textSize)
   }
 
   override fun loadAppLanguageFragment(appLanguage: String) {
+    optionActivityPresenter.setExtraOptionTitle(getString(R.string.app_language))
     optionActivityPresenter.loadAppLanguageFragment(appLanguage)
   }
 
   override fun loadAudioLanguageFragment(audioLanguage: String) {
+    optionActivityPresenter.setExtraOptionTitle(getString(R.string.audio_language))
     optionActivityPresenter.loadAudioLanguageFragment(audioLanguage)
+  }
+
+  override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    val titleTextView = findViewById<TextView>(R.id.options_activity_selected_options_title)
+    if (titleTextView != null) {
+      outState.putString(SELECTED_OPTIONS_TITLE_KEY, titleTextView.text.toString())
+    }
   }
 }

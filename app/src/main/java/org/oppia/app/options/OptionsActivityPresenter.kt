@@ -2,6 +2,7 @@ package org.oppia.app.options
 
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
@@ -18,8 +19,13 @@ class OptionsActivityPresenter @Inject constructor(
   private var navigationDrawerFragment: NavigationDrawerFragment? = null
   private lateinit var toolbar: Toolbar
 
-  fun handleOnCreate(isFromNavigationDrawer: Boolean) {
+  fun handleOnCreate(isFromNavigationDrawer: Boolean, extraOptionsTitle: String?) {
     activity.setContentView(R.layout.option_activity)
+    val titleTextView =
+      activity.findViewById<TextView>(R.id.options_activity_selected_options_title)
+    if (titleTextView != null) {
+      titleTextView.text = extraOptionsTitle
+    }
     setUpToolbar()
     if (isFromNavigationDrawer) {
       setUpNavigationDrawer()
@@ -102,5 +108,9 @@ class OptionsActivityPresenter @Inject constructor(
       .beginTransaction()
       .add(R.id.multipane_options_container, defaultAudioFragment)
       .commitNow()
+  }
+
+  fun setExtraOptionTitle(title: String) {
+    activity.findViewById<TextView>(R.id.options_activity_selected_options_title).text = title
   }
 }

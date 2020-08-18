@@ -28,8 +28,7 @@ class StoryTextSizeFragmentPresenter @Inject constructor(private val fragment: F
     fontSize = storyTextSize
     updateTextSize(fontSize)
 
-    // TODO(#1200): Stop the toolbar functionality in the multipane (add non-null receiver (?)).
-    binding.storyTextSizeToolbar.setNavigationOnClickListener {
+    binding.storyTextSizeToolbar?.setNavigationOnClickListener {
       val intent = Intent()
       intent.putExtra(KEY_MESSAGE_STORY_TEXT_SIZE, fontSize)
       (fragment.activity as StoryTextSizeActivity).setResult(REQUEST_CODE_TEXT_SIZE, intent)
