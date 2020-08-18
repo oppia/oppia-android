@@ -165,10 +165,6 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     binding.viewModel = viewModel
   }
 
-  override fun getDefaultRegion(parentView: FrameLayout): View {
-    return parentView.findViewById<View>(R.id.default_selected_region)
-  }
-
   /**
    * Handles binding inflation for [DragDropSortInteractionView]'s SortInteraction and returns the
    * binding's view.
@@ -185,6 +181,7 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
 
   private lateinit var dragDropInteractionItemsBinding: DragDropInteractionItemsBinding
 
+  /** Handles setting [DragDropInteractionItemsBinding]. */
   override fun setDragDropInteractionItemsBinding(
     view: View
   ) {
@@ -192,28 +189,34 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
       DataBindingUtil.findBinding<DragDropInteractionItemsBinding>(view)!!
   }
 
+  /** Handles setting [DragDropInteractionItemsBinding]'s adapter. */
   override fun setDragDropInteractionItemsBindingAdapter(
     adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
   ) {
     dragDropInteractionItemsBinding.adapter = adapter
   }
 
+  /** Returns [DragDropInteractionItemsBinding]'s RecyclerView. */
   override fun getDragDropInteractionItemsBindingRecyclerView(): RecyclerView {
     return dragDropInteractionItemsBinding.dragDropItemRecyclerview
   }
 
+  /** Returns [DragDropInteractionItemsBinding]'s dragDropContentGroupItem. */
   override fun getDragDropInteractionItemsBindingGroupItem(): ImageButton {
     return dragDropInteractionItemsBinding.dragDropContentGroupItem
   }
 
+  /** Returns [DragDropInteractionItemsBinding]'s dragDropContentUnlinkItems. */
   override fun getDragDropInteractionItemsBindingUnlinkItems(): ImageButton {
     return dragDropInteractionItemsBinding.dragDropContentUnlinkItems
   }
 
+  /** Returns [DragDropInteractionItemsBinding]'s dragDropAccessibleContainer. */
   override fun getDragDropInteractionItemsBindingAccessibleContainer(): LinearLayout {
     return dragDropInteractionItemsBinding.dragDropAccessibleContainer
   }
 
+  /** Handles setting [DragDropInteractionItemsBinding]'s viewModel. */
   override fun setDragDropInteractionItemsBindingViewModel(
     viewModel: DragDropInteractionContentViewModel
   ) {
@@ -236,6 +239,7 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
 
   private lateinit var dragDropSingleItemBinding: DragDropSingleItemBinding
 
+  /** Handles setting [DragDropSingleItemBinding]. */
   override fun setDragDropSingleItemBinding(
     view: View
   ) {
@@ -243,6 +247,7 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
       DataBindingUtil.findBinding<DragDropSingleItemBinding>(view)!!
   }
 
+  /** Handles setting [DragDropSingleItemBinding]'s htmlContent. */
   override fun setDragDropSingleItemBindingHtmlContent(
     htmlParserFactory: HtmlParser.Factory,
     resourceBucketName: String,
@@ -258,5 +263,10 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     ).parseOppiaHtml(
       viewModel, dragDropSingleItemBinding.dragDropContentTextView
     )
+  }
+
+  /** Returns [ClickableAreasImage]'s defaultRegion. */
+  override fun getDefaultRegion(parentView: FrameLayout): View {
+    return parentView.findViewById<View>(R.id.default_selected_region)
   }
 }

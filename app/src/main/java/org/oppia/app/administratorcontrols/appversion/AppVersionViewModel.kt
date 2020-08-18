@@ -14,10 +14,9 @@ import javax.inject.Inject
 @FragmentScope
 class AppVersionViewModel @Inject constructor(
   fragment: Fragment,
-  private val oppiaDateTimeFormatter: OppiaDateTimeFormatter
+  private val oppiaDateTimeFormatter: OppiaDateTimeFormatter,
+  context: Context
 ) : ObservableViewModel() {
-
-  private val context: Context = fragment.activity!!.applicationContext
 
   val versionName: String = context.packageManager
     .getPackageInfo(context.packageName, 0).versionName

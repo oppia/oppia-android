@@ -18,8 +18,10 @@ import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputMo
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.question.QuestionModule
+import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.util.accessibility.AccessibilityModule
 import org.oppia.util.caching.CachingModule
 import org.oppia.util.gcsresource.GcsResourceModule
@@ -32,7 +34,10 @@ import org.oppia.util.threading.DispatcherModule
 import javax.inject.Provider
 import javax.inject.Singleton
 
-/** Root Dagger component for the application. All application-scoped modules should be included in this component. */
+/**
+ * Root Dagger component for the application. All application-scoped modules should be included in
+ * this component.
+ */
 @Singleton
 @Component(
   modules = [
@@ -48,7 +53,8 @@ import javax.inject.Singleton
     QuestionModule::class, LogReportingModule::class,
     AccessibilityModule::class, ImageClickInputModule::class,
     LogStorageModule::class, IntentFactoryShimModule::class,
-    ViewBindingShimModule::class, MoshiProviderShimModule::class
+    ViewBindingShimModule::class, MoshiProviderShimModule::class,
+    PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class
   ]
 )
 
