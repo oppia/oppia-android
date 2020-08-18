@@ -160,3 +160,13 @@ jobs:
           tar -xf $HOME/oppia-bazel/bazel-bin/tools/android/runtime_deps/android_tools.tar.gz -C $HOME/tmp/android_tools
       - name: Build Oppia binary with Bazel
         run: sudo $HOME/oppia-bazel/bazel-bin/src/bazel test //:oppia --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=$HOME/oppia-bazel/tmp/android_tools --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx
+      
+      - uses: actions/checkout@v2
+
+      - uses: actions/download-artifact@v2
+        with:
+          path: bazel-out/darwin-fastbuild/bin/src/bazel
+
+      - name: Display structure of downloaded files
+        run: ls -R
+        working-directory: bazel-out/darwin-fastbuild/bin/src/bazel
