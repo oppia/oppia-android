@@ -145,14 +145,10 @@ jobs:
       - name: Use bazel
         run: bazel --version
       - name: Clone Oppia Bazel
-        run: git clone https://github.com/bazelbuild/bazel.git $HOME/oppia-bazel
-      - name: Clone patch
-        run: git clone https://gist.github.com/c7f7ad43a5d4581b9b8caffc1123aaa3.git $HOME/databinding-patch | cd $HOME/oppia-bazel
-      - name: Apply Patch
-        run: patch -p1 < $HOME/databinding-patch/androidx_databinding_bazel.patch
-      - name: Build Bazel
-        run: bazel build //src:bazel //tools/android/runtime_deps:android_tools.tar.gz
+        run: git clone https://github.com/miaboloix/bazel.git $HOME/oppia-bazel
+      - name: Build Oppia Bazel
+        run: cd $HOME/oppia-bazel | bazel build //src:bazel //tools/android/runtime_deps:android_tools.tar.gz
       - name: Extract Android Tools
         run: mkdir /tmp/android_tools | tar -xf bazel-bin/tools/android/runtime_deps/android_tools.tar.gz -C /tmp/android_tools
       - name: Build Oppia binary with Bazel
-        run: sudo ~/bazel-databinding/bazel-bin/src/bazel mobile-install //:oppia --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=/tmp/android_tools --subcommands --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx
+        run: sudo $HOME/oppia-bazel/bazel-bin/src/bazel mobile-install //:oppia --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=/tmp/android_tools --subcommands --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx
