@@ -495,7 +495,7 @@ kt_android_library(
     enable_data_binding = 1,
     manifest = "src/main/AppAndroidManifest.xml",
     deps = [
-        "//data",
+        #"//data",
         "//model",
         "//utility",
         ":dagger",

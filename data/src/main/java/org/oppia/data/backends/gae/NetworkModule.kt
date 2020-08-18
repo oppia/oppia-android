@@ -20,7 +20,7 @@ class NetworkModule {
   private annotation class OppiaRetrofit
 
   @Inject
-  private lateinit var moshiProviderShim: MoshiProviderShim
+  lateinit var moshiProviderShim: MoshiProviderShim
 
   /**
    * Provides the Retrofit object.
