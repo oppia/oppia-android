@@ -146,11 +146,17 @@ jobs:
         run: bazel --version
       - name: Clone Oppia Bazel
         run: git clone https://github.com/miaboloix/bazel.git $HOME/oppia-bazel
+      - name: Set up JDK 9
+        uses: actions/setup-java@v1
+        with:
+          java-version: 9
       - name: Build Oppia Bazel
         run: |
           cd $HOME/oppia-bazel
           bazel build //src:bazel //tools/android/runtime_deps:android_tools.tar.gz
       - name: Extract Android Tools
-        run: mkdir /tmp/android_tools | tar -xf bazel-bin/tools/android/runtime_deps/android_tools.tar.gz -C /tmp/android_tools
+        run: |
+          mkdir /tmp/android_tools
+          tar -xf bazel-bin/tools/android/runtime_deps/android_tools.tar.gz -C /tmp/android_tools
       - name: Build Oppia binary with Bazel
-        run: sudo $HOME/oppia-bazel/bazel-bin/src/bazel mobile-install //:oppia --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=/tmp/android_tools --subcommands --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx
+        run: sudo $HOME/oppia-bazel/bazel-bin/src/bazel mobile-install //:oppia --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=/tmp/android_tools --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx
