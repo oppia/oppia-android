@@ -27,7 +27,7 @@ LISTENERS = [
     "src/main/java/org/oppia/app/home/RouteToRecentlyPlayedListener.kt",
     "src/main/java/org/oppia/app/home/RouteToTopicPlayStoryListener.kt",
     "src/main/java/org/oppia/app/home/topiclist/TopicSummaryClickListener.kt",
-    "src/main/java/org/oppia/app/onboarding/OnboardingListener.kt",
+    "src/main/java/org/oppia/app/onboarding/OnboardingNavigationListener.kt",
     "src/main/java/org/oppia/app/onboarding/RouteToProfileListListener.kt",
     "src/main/java/org/oppia/app/options/RouteToAppLanguageListListener.kt",
     "src/main/java/org/oppia/app/options/RouteToAudioLanguageListListener.kt",
@@ -64,7 +64,23 @@ LISTENERS = [
 ]
 
 # Layout files for databinding_resources library.
-LAYOUTS = ["src/main/res/layout*/**"]
+DATABINDING_LAYOUTS = ["src/main/res/layout*/**"]
+
+# TODO(#1617): Remove genrules post-gradle
+# Files altered by genrules to be excluded in the app library
+ALTERED_VIEW_MODELS = [
+    "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel.kt",
+    "src/main/java/org/oppia/app/help/faq/FAQListViewModel.kt",
+    "src/main/java/org/oppia/app/help/HelpItemViewModel.kt",
+    "src/main/java/org/oppia/app/help/HelpListViewModel.kt",
+    "src/main/java/org/oppia/app/onboarding/OnboadingSlideViewModel.kt",
+    "src/main/java/org/oppia/app/onboarding/OnboardingViewModel.kt",
+    "src/main/java/org/oppia/app/parser/StringToFractionParser.kt",
+    "src/main/java/org/oppia/app/parser/StringToNumberParser.kt",
+    "src/main/java/org/oppia/app/player/state/itemviewmodel/FractionInteractionViewModel.kt",
+    "src/main/java/org/oppia/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel.kt",
+    "src/main/java/org/oppia/app/topic/info/TopicInfoViewModel.kt",
+]
 
 # Source files for view_model library
 VIEW_MODELS = [
@@ -176,28 +192,11 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/app/walkthrough/topiclist/WalkthroughTopicViewModel.kt",
     "src/main/java/org/oppia/app/walkthrough/WalkthroughViewModel.kt",
     "src/main/java/org/oppia/app/walkthrough/welcome/WalkthroughWelcomeViewModel.kt",
+] + [
+    "update_" + altered_view_models[0:-3]
+    for altered_view_models in ALTERED_VIEW_MODELS
 ]
 
-# TODO(#1617): Remove genrules post-gradle
-# Files altered by genrules to be excluded in the app library
-ALTERED_VIEW_MODELS = [
-    "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel.kt",
-    "src/main/java/org/oppia/app/help/faq/FAQListViewModel.kt",
-    "src/main/java/org/oppia/app/help/HelpItemViewModel.kt",
-    "src/main/java/org/oppia/app/help/HelpListViewModel.kt",
-    "src/main/java/org/oppia/app/onboarding/OnboadingSlideViewModel.kt",
-    "src/main/java/org/oppia/app/onboarding/OnboardingViewModel.kt",
-    "src/main/java/org/oppia/app/parser/StringToFractionParser.kt",
-    "src/main/java/org/oppia/app/parser/StringToNumberParser.kt",
-    "src/main/java/org/oppia/app/player/state/itemviewmodel/FractionInteractionViewModel.kt",
-    "src/main/java/org/oppia/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel.kt",
-    "src/main/java/org/oppia/app/topic/info/TopicInfoViewModel.kt",
-]
-
-[VIEW_MODELS.append("update_" + altered_view_models[0:-3])
-for altered_view_models in ALTERED_VIEW_MODELS]
-
-# TODO(#1617): Remove genrules post-gradle
 '''
 Genrule for source files in the view_models library.
 
@@ -216,6 +215,15 @@ in order to keep Gradle building.
 )
 for file in ALTERED_VIEW_MODELS]
 
+# TODO(#1617): Remove genrules post-gradle
+# View files altered by genrules to be excluded in the app library.
+ALTERED_VIEWS = [
+    "src/main/java/org/oppia/app/customview/LessonThumbnailImageView.kt",
+    "src/main/java/org/oppia/app/customview/SegmentedCircularProgressView.kt",
+    "src/main/java/org/oppia/app/profile/ProfileInputView.kt",
+    "src/main/java/org/oppia/app/utility/ClickableAreasImage.kt",
+]
+
 # Source files and genrule targets for views library.
 VIEWS = [
     "src/main/java/org/oppia/app/customview/interaction/FractionInputInteractionView.kt",
@@ -228,21 +236,11 @@ VIEWS = [
     "src/main/java/org/oppia/app/shim/ViewComponentFactory.kt",
     "src/main/java/org/oppia/app/view/ViewComponent.kt",
     "src/main/java/org/oppia/app/view/ViewScope.kt",
+] + [
+    "update_" + altered_views[0:-3]
+    for altered_views in ALTERED_VIEWS
 ]
 
-# TODO(#1617): Remove genrules post-gradle
-# View files altered by genrules to be excluded in the app library.
-ALTERED_VIEWS = [
-    "src/main/java/org/oppia/app/customview/LessonThumbnailImageView.kt",
-    "src/main/java/org/oppia/app/customview/SegmentedCircularProgressView.kt",
-    "src/main/java/org/oppia/app/profile/ProfileInputView.kt",
-    "src/main/java/org/oppia/app/utility/ClickableAreasImage.kt",
-]
-
-[VIEWS.append("update_" + altered_views[0:-3])
-for altered_views in ALTERED_VIEWS]
-
-# TODO(#1617): Remove genrules post-gradle
 '''
 Genrule for source files in the views library.
 
@@ -261,15 +259,6 @@ in order to keep Gradle building.
  )
 for file in ALTERED_VIEWS]
 
-# Source files and genrule targets for databinding_adapters library.
-DATABINDING_ADAPTERS = [
-    "src/main/java/org/oppia/app/databinding/EditTextBindingAdapters.java",
-    "src/main/java/org/oppia/app/databinding/GuidelineBindingAdapters.java",
-    "src/main/java/org/oppia/app/databinding/MarginBindingAdapters.java",
-    "src/main/java/org/oppia/app/databinding/StateAssemblerMarginBindingAdapters.java",
-    "src/main/java/org/oppia/app/databinding/StateAssemblerPaddingBindingAdapters.java",
-    "src/main/java/org/oppia/app/databinding/ViewBindingAdapters.java",
-]
 
 # TODO(#1617): Remove genrules post-gradle
 # Adapter files altered by genrules to be excluded in the app library.
@@ -279,8 +268,18 @@ ALTERED_DATABINDING_ADAPTERS = [
     "src/main/java/org/oppia/app/databinding/TextViewBindingAdapters.java",
 ]
 
-[DATABINDING_ADAPTERS.append("update_" + altered_adapters[0:-5])
-for altered_adapters in ALTERED_DATABINDING_ADAPTERS]
+# Source files and genrule targets for databinding_adapters library.
+DATABINDING_ADAPTERS = [
+    "src/main/java/org/oppia/app/databinding/EditTextBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/GuidelineBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/MarginBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/StateAssemblerMarginBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/StateAssemblerPaddingBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/ViewBindingAdapters.java",
+] + [
+    "update_" + altered_adapters[0:-5]
+    for altered_adapters in ALTERED_DATABINDING_ADAPTERS
+]
 
 # TODO(#1617): Remove genrules post-gradle
 '''
@@ -338,7 +337,7 @@ android_library(
     name = "resources",
     custom_package = "org.oppia.app",
     manifest = "src/main/AndroidManifest.xml",
-    resource_files = glob(["src/main/res/**",], exclude = LAYOUTS),
+    resource_files = glob(["src/main/res/**",], exclude = DATABINDING_LAYOUTS),
     exports_manifest = True,
     deps = [
         artifact("com.google.android.material:material"),
@@ -352,8 +351,8 @@ android_library(
     custom_package = "org.oppia.app.databinding",
     manifest = "src/main/DatabindingResourcesManifest.xml",
     srcs = ADAPTERS,
-    resource_files = glob(LAYOUTS),
-    enable_data_binding = 1,
+    resource_files = glob(DATABINDING_LAYOUTS),
+    enable_data_binding = True,
     exports_manifest = True,
     deps = [
         ":annotations",
@@ -408,8 +407,8 @@ kt_android_library(
         "@circularimageview//circularimageview:circular_image_view",
         artifact("androidx.appcompat:appcompat"),
         artifact("androidx.core:core-ktx"),
-        artifact("androidx.databinding:databinding-runtime"),
         artifact("androidx.databinding:databinding-common"),
+        artifact("androidx.databinding:databinding-runtime"),
     ],
     visibility = ["//visibility:private"],
 )
@@ -431,7 +430,7 @@ kt_android_library(
     name = "view_models",
     custom_package = "org.oppia.app.view.models",
     srcs = VIEW_MODELS,
-    enable_data_binding = 1,
+    enable_data_binding = True,
     manifest = "src/main/ViewModelsManifest.xml",
     deps = [
         ":annotations",
@@ -441,8 +440,8 @@ kt_android_library(
         "//domain",
         "//model",
         "//utility",
-        artifact("androidx.databinding:databinding-runtime"),
         artifact("androidx.databinding:databinding-common"),
+        artifact("androidx.databinding:databinding-runtime"),
     ],
     visibility = ["//visibility:private"],
 )
@@ -453,7 +452,7 @@ android_library(
     name = "databinding_adapters",
     custom_package = "org.oppia.app.databinding.adapters",
     srcs = DATABINDING_ADAPTERS,
-    enable_data_binding = 1,
+    enable_data_binding = True,
     manifest = "src/main/DatabindingAdaptersManifest.xml",
     deps = [
         ":dagger",
@@ -474,7 +473,7 @@ android_library(
     name = "recyclerview_adapters",
     custom_package = "org.oppia.app.recyclerview.adapters",
     srcs = RECYCLERVIEW_ADAPTERS,
-    enable_data_binding = 1,
+    enable_data_binding = True,
     manifest = "src/main/RecyclerviewAdaptersManifest.xml",
     deps = [
         ":dagger",
