@@ -138,20 +138,23 @@ jobs:
       matrix:
         os: [ubuntu-18.04]
     steps:
-      - name: Setup bazel
-        uses: jwlawson/actions-setup-bazel@v1
-        with:
-          bazel-version: '3.4.1'
-      - name: Use bazel
-        run: bazel --version
-      - name: Clone Oppia Bazel
-        run: git clone https://github.com/miaboloix/bazel.git ~/oppia-bazel
-      - name: Set up JDK 9
-        uses: actions/setup-java@v1
-        with:
-          java-version: 9
+#       - name: Setup bazel
+#         uses: jwlawson/actions-setup-bazel@v1
+#         with:
+#           bazel-version: '3.4.1'
+#       - name: Use bazel
+#         run: bazel --version
+#       - name: Clone Oppia Bazel
+#         run: git clone https://github.com/miaboloix/bazel.git ~/oppia-bazel
+#       - name: Set up JDK 9
+#         uses: actions/setup-java@v1
+#         with:
+#           java-version: 9
       - name: Build Oppia Bazel
-        run: zip ~/oppia-android/bazel-build.zip
+        run: |
+         pwd
+         ls
+         zip bazel-build.zip
       - name: Extract Android ToolsCurr
         run: tar -xf ~/oppia-android/bazel-tools.zip -C ~/tmp/android_tools
       - name: Build Oppia binary with Bazel
