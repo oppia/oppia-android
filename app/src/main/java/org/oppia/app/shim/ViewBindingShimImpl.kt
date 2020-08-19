@@ -32,9 +32,6 @@ import javax.inject.Inject
 // TODO(#1619): Remove file post-Gradle
 class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
 
-  /**
-   * Handles binding inflation for [ProfileInputView] and returns the binding's labelText
-   */
   override fun provideProfileInputViewBindingLabelText(
     inflater: LayoutInflater,
     parent: ViewGroup,
@@ -49,9 +46,6 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     return binding.labelText
   }
 
-  /**
-   * Handles binding inflation for [ProfileInputView] and returns the binding's input
-   */
   override fun provideProfileInputViewBindingInput(
     inflater: LayoutInflater,
     parent: ViewGroup,
@@ -66,9 +60,6 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     return binding.input
   }
 
-  /**
-   * Handles binding inflation for [ProfileInputView] and returns the binding's errorText
-   */
   override fun provideProfileInputViewBindingErrorText(
     inflater: LayoutInflater,
     parent: ViewGroup,
@@ -83,10 +74,6 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     return binding.errorText
   }
 
-  /**
-   * Handles binding inflation for [SelectionInteractionView]'s ItemSelectionInteraction and
-   * returns the binding's root
-   */
   override fun provideSelectionInteractionViewInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
@@ -99,10 +86,6 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     ).root
   }
 
-  /**
-   * Handles binding inflation for [SelectionInteractionView]'s ItemSelectionInteraction and
-   * returns the binding's viewModel
-   */
   override fun provideSelectionInteractionViewModel(
     view: View,
     viewModel: SelectionInteractionContentViewModel,
@@ -126,10 +109,6 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     binding.viewModel = viewModel
   }
 
-  /**
-   * Handles binding inflation for [SelectionInteractionView]'s MultipleChoiceInteraction and
-   * returns the binding's view
-   */
   override fun provideMultipleChoiceInteractionItemsInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
@@ -142,10 +121,6 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     ).root
   }
 
-  /**
-   * Handles binding inflation for [SelectionInteractionView]'s MultipleChoiceInteraction and
-   * returns the binding's viewModel
-   */
   override fun provideMultipleChoiceInteractionItemsViewModel(
     view: View,
     viewModel: SelectionInteractionContentViewModel,
@@ -165,10 +140,6 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     binding.viewModel = viewModel
   }
 
-  /**
-   * Handles binding inflation for [DragDropSortInteractionView]'s SortInteraction and returns the
-   * binding's view.
-   */
   override fun provideDragDropSortInteractionInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
@@ -181,7 +152,6 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
 
   private lateinit var dragDropInteractionItemsBinding: DragDropInteractionItemsBinding
 
-  /** Handles setting [DragDropInteractionItemsBinding]. */
   override fun setDragDropInteractionItemsBinding(
     view: View
   ) {
@@ -189,44 +159,34 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
       DataBindingUtil.findBinding<DragDropInteractionItemsBinding>(view)!!
   }
 
-  /** Handles setting [DragDropInteractionItemsBinding]'s adapter. */
   override fun setDragDropInteractionItemsBindingAdapter(
     adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
   ) {
     dragDropInteractionItemsBinding.adapter = adapter
   }
 
-  /** Returns [DragDropInteractionItemsBinding]'s RecyclerView. */
   override fun getDragDropInteractionItemsBindingRecyclerView(): RecyclerView {
     return dragDropInteractionItemsBinding.dragDropItemRecyclerview
   }
 
-  /** Returns [DragDropInteractionItemsBinding]'s dragDropContentGroupItem. */
   override fun getDragDropInteractionItemsBindingGroupItem(): ImageButton {
     return dragDropInteractionItemsBinding.dragDropContentGroupItem
   }
 
-  /** Returns [DragDropInteractionItemsBinding]'s dragDropContentUnlinkItems. */
   override fun getDragDropInteractionItemsBindingUnlinkItems(): ImageButton {
     return dragDropInteractionItemsBinding.dragDropContentUnlinkItems
   }
 
-  /** Returns [DragDropInteractionItemsBinding]'s dragDropAccessibleContainer. */
   override fun getDragDropInteractionItemsBindingAccessibleContainer(): LinearLayout {
     return dragDropInteractionItemsBinding.dragDropAccessibleContainer
   }
 
-  /** Handles setting [DragDropInteractionItemsBinding]'s viewModel. */
   override fun setDragDropInteractionItemsBindingViewModel(
     viewModel: DragDropInteractionContentViewModel
   ) {
     dragDropInteractionItemsBinding.viewModel = viewModel
   }
 
-  /**
-   * Handles binding inflation for [DragDropSortInteractionView]'s SingleItemInteraction and returns
-   * the binding's view.
-   */
   override fun provideDragDropSingleItemInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
@@ -239,7 +199,6 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
 
   private lateinit var dragDropSingleItemBinding: DragDropSingleItemBinding
 
-  /** Handles setting [DragDropSingleItemBinding]. */
   override fun setDragDropSingleItemBinding(
     view: View
   ) {
@@ -247,7 +206,6 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
       DataBindingUtil.findBinding<DragDropSingleItemBinding>(view)!!
   }
 
-  /** Handles setting [DragDropSingleItemBinding]'s htmlContent. */
   override fun setDragDropSingleItemBindingHtmlContent(
     htmlParserFactory: HtmlParser.Factory,
     resourceBucketName: String,
@@ -265,7 +223,6 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     )
   }
 
-  /** Returns [ClickableAreasImage]'s defaultRegion. */
   override fun getDefaultRegion(parentView: FrameLayout): View {
     return parentView.findViewById<View>(R.id.default_selected_region)
   }

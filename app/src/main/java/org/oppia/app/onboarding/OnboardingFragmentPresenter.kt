@@ -22,7 +22,7 @@ class OnboardingFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<OnboardingViewModel>,
   private val viewModelProviderFinalSlide: ViewModelProvider<OnboardingSlideFinalViewModel>
-) : OnboardingListener {
+) : OnboardingNavigationListener {
   private val dotsList = ArrayList<ImageView>()
   private lateinit var onboardingPagerAdapter: OnboardingPagerAdapter
   private lateinit var binding: OnboardingFragmentBinding

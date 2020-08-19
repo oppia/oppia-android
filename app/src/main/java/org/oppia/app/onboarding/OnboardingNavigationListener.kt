@@ -1,7 +1,7 @@
 package org.oppia.app.onboarding
 
-/** Listener for [OnboardingFragment] */
-interface OnboardingListener {
+/** Listener for buttons in OnboardingFragment */
+interface OnboardingNavigationListener {
 
   /** Skips onboarding slide. */
   fun clickOnSkip()

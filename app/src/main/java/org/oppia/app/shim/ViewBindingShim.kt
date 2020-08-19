@@ -25,7 +25,7 @@ import org.oppia.util.parser.HtmlParser
 interface ViewBindingShim {
 
   /**
-   * Handles binding inflation for [ProfileInputView] and returns the binding's labelText.
+   * Handles binding inflation for [ProfileInputView] and returns the binding's label text.
    */
   fun provideProfileInputViewBindingLabelText(
     inflater: LayoutInflater,
@@ -43,7 +43,7 @@ interface ViewBindingShim {
   ): EditText
 
   /**
-   * Handles binding inflation for [ProfileInputView] and returns the binding's errorText.
+   * Handles binding inflation for [ProfileInputView] and returns the binding's error text.
    */
   fun provideProfileInputViewBindingErrorText(
     inflater: LayoutInflater,
@@ -63,7 +63,7 @@ interface ViewBindingShim {
 
   /**
    * Handles binding inflation for [SelectionInteractionView]'s ItemSelectionInteraction and
-   * returns the binding's viewModel.
+   * returns the binding's view model.
    */
   fun provideSelectionInteractionViewModel(
     view: View,
@@ -86,7 +86,7 @@ interface ViewBindingShim {
 
   /**
    * Handles binding inflation for [SelectionInteractionView]'s MultipleChoiceInteraction and
-   * returns the binding's viewModel.
+   * returns the binding's view model.
    */
   fun provideMultipleChoiceInteractionItemsViewModel(
     view: View,
@@ -129,7 +129,7 @@ interface ViewBindingShim {
   /** Returns [DragDropInteractionItemsBinding]'s dragDropAccessibleContainer. */
   fun getDragDropInteractionItemsBindingAccessibleContainer(): LinearLayout
 
-  /** Handles setting [DragDropInteractionItemsBinding]'s viewModel. */
+  /** Handles setting [DragDropInteractionItemsBinding]'s view model. */
   fun setDragDropInteractionItemsBindingViewModel(
     viewModel: DragDropInteractionContentViewModel
   )
@@ -149,7 +149,7 @@ interface ViewBindingShim {
     view: View
   )
 
-  /** Handles setting [DragDropSingleItemBinding]'s htmlContent. */
+  /** Handles setting [DragDropSingleItemBinding]'s html content. */
   fun setDragDropSingleItemBindingHtmlContent(
     htmlParserFactory: HtmlParser.Factory,
     resourceBucketName: String,
@@ -158,6 +158,6 @@ interface ViewBindingShim {
     viewModel: String
   )
 
-  /** Returns [ClickableAreasImage]'s defaultRegion. */
+  /** Returns [ClickableAreasImage]'s default region. */
   fun getDefaultRegion(parentView: FrameLayout): View
 }

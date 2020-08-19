@@ -1,7 +1,12 @@
 package org.oppia.app.walkthrough
 
-/** Listener for when an activity should change pages. */
+/** Listener for when an activity should move to a previous page during a walkthrough flow. */
 interface WalkthroughActivityListener {
 
-  fun previousPage(currentProgress: Int)
+  /**
+   * Navigates user to the previous page in a [WalkthroughActivity].
+   *
+   * @param currentProgress Integer describing this current page a user is on.
+   */
+  fun moveToPreviousPage(currentProgress: Int)
 }

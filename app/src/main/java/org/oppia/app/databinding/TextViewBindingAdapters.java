@@ -14,8 +14,6 @@ import java.util.concurrent.TimeUnit;
 /** Holds all custom binding adapters that bind to [TextView]. */
 public final class TextViewBindingAdapters {
 
-  private static int MINUTE_MILLIS = (int) TimeUnit.MINUTES.toMillis(1);
-
   /** Binds date text with relative time. */
   @BindingAdapter("profile:created")
   public static void setProfileDataText(@NonNull TextView textView, long timestamp) {
@@ -57,7 +55,7 @@ public final class TextViewBindingAdapters {
     Resources res = context.getResources();
     long timeDifferenceMillis = currentTimeMillis - timeStampMillis;
 
-    if (timeDifferenceMillis < MINUTE_MILLIS) {
+    if (timeDifferenceMillis < (int) TimeUnit.MINUTES.toMillis(1)) {
       return context.getString(R.string.just_now);
     } else if (timeDifferenceMillis < TimeUnit.MINUTES.toMillis(50)) {
       return getPluralString(
