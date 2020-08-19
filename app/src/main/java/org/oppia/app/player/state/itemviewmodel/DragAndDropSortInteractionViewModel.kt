@@ -29,10 +29,10 @@ class DragAndDropSortInteractionViewModel(
     interaction.customizationArgsMap["allowMultipleItemsInSamePosition"]?.boolValue ?: false
   }
   private val choiceStrings: List<String> by lazy {
-    //interaction.customizationArgsMap["choices"]?.setOfHtmlString?.htmlList ?: listOf()
     val choicesList = mutableListOf<String>()
-    val schemaObjectList = interaction.customizationArgsMap["choices"]?.schemaObjectList?.schemaObjectList
-    schemaObjectList?.forEach {schemaObject ->
+    val schemaObjectList =
+      interaction.customizationArgsMap["choices"]?.schemaObjectList?.schemaObjectList
+    schemaObjectList?.forEach { schemaObject ->
       choicesList.add(schemaObject.subtitledHtml.html)
     }
     choicesList

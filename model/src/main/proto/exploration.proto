@@ -134,7 +134,7 @@ message SubtitledUnicode {
 }
 
 
-// Structure to unicode or none structure
+// Structure to support UnicodeOrNone
 message UnicodeOrNone {
   oneof unicode_is_present {
     bool unicode_is_absent = 1;
