@@ -17,9 +17,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:paddingStart="24dp"
-      android:paddingEnd="24dp">
+      android:layout_height="match_parent">
 
       <TextView
         android:id="@+id/end_session_header_text_view"
@@ -59,6 +57,7 @@
         android:divider="@android:color/transparent"
         android:dividerHeight="8dp"
         android:overScrollMode="never"
+        android:paddingBottom="108dp"
         app:data="@{viewModel.itemList}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@id/question_progress_bar"
@@ -73,6 +72,7 @@
         android:divider="@android:color/transparent"
         android:dividerHeight="8dp"
         android:overScrollMode="never"
+        android:paddingBottom="108dp"
         android:visibility="@{viewModel.isSplitView ? View.VISIBLE : View.GONE}"
         app:data="@{viewModel.rightItemList}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -86,9 +86,9 @@
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="8dp"
         android:max="100"
         android:progress="@{viewModel.progressPercentage}"
         android:progressDrawable="@drawable/progress_bar"
@@ -100,7 +100,7 @@
         android:id="@+id/question_progress_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="30dp"
+        android:layout_marginEnd="32dp"
         android:layout_marginBottom="20dp"
         android:text="@{viewModel.isAtEndOfSession ? @string/question_training_session_progress_finished : @string/question_training_session_progress(viewModel.currentQuestion, viewModel.questionCount)}"
         android:textStyle="italic"
@@ -150,9 +150,9 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_gravity="bottom"
-      android:layout_marginStart="52dp"
+      android:layout_marginStart="64dp"
       android:layout_marginTop="8dp"
-      android:layout_marginEnd="52dp"
+      android:layout_marginEnd="64dp"
       android:layout_marginBottom="16dp"
       android:elevation="8dp"
       android:translationZ="4dp">

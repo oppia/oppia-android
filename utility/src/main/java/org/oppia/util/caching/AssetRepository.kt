@@ -62,12 +62,19 @@ class AssetRepository @Inject constructor(
 
   /** Ensures the contents corresponding to the specified URL are available for quick retrieval. */
   fun primeRemoteBinaryAsset(url: String) {
-    if (!getLocalCacheFile(url).exists()) {
+    if (!isRemoteBinarAssetDownloaded(url)) {
       // Otherwise, download it remotely and cache it locally.
       logger.d("AssetRepo", "Downloading binary asset: $url")
       val contents = openRemoteStream(url).use { it.readBytes() }
       saveLocalCacheFile(url, contents)
     }
+  }
+
+  /**
+   * Returns whether a binary asset corresponding to the specified URL has already been downloaded.
+   */
+  fun isRemoteBinarAssetDownloaded(url: String): Boolean {
+    return getLocalCacheFile(url).exists()
   }
 
   private fun openRemoteStream(url: String): InputStream {

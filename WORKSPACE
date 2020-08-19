@@ -97,11 +97,17 @@ load("@rules_jvm_external//:defs.bzl", "maven_install")
 
 maven_install(
     artifacts = DAGGER_ARTIFACTS + [
+        "android.arch.core:core-testing:1.1.1",
         "androidx.annotation:annotation:1.1.0",
         "androidx.appcompat:appcompat:1.0.2",
+        "androidx.arch.core:core-testing:2.1.0",
         "androidx.core:core-ktx:1.0.1",
         "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03",
+        "androidx.test.espresso:espresso-contrib:3.1.0",
+        "androidx.test.espresso:espresso-core:3.2.0",
+        "androidx.test.espresso:espresso-intents:3.1.0",
         "androidx.test.ext:junit:1.1.1",
+        "androidx.test:runner:1.2.0",
         "com.android.support:support-annotations:28.0.0",
         "com.caverock:androidsvg-aar:1.4",
         "com.crashlytics.sdk.android:crashlytics:2.9.8",
