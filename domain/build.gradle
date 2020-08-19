@@ -48,6 +48,7 @@ dependencies {
       'androidx.appcompat:appcompat:1.0.2',
       'androidx.exifinterface:exifinterface:1.0.0-rc01',
       'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03',
+      'androidx.work:work-runtime-ktx:2.4.0',
       'com.google.dagger:dagger:2.24',
       'com.google.firebase:firebase-analytics-ktx:17.4.2',
       'com.google.firebase:firebase-crashlytics:17.0.0',
