@@ -164,13 +164,13 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     (activity as StopStatePlayingSessionListener).stopSession()
   }
 
-  //TODO
+  // TODO
   private val answerHandlerRetriever: (List<StateItemViewModel>) -> InteractionAnswerHandler? = {
     items ->
     recyclerViewAssembler.getPendingAnswerHandler(items)
   }
 
-  //TODO
+  // TODO
   fun onSubmitButtonClicked() {
     hideKeyboard()
     handleSubmitAnswer(questionViewModel.getPendingAnswer(answerHandlerRetriever))
