@@ -153,7 +153,7 @@ jobs:
       - name: Build Oppia Bazel
         run: |
          pwd
-         unzip bazel-build.zip
+         unzip -t bazel-build.zip
       - name: Extract Android ToolsCurr
         run: tar -xf ~/oppia-android/bazel-tools.zip -C ~/tmp/android_tools
       - name: Build Oppia binary with Bazel
