@@ -171,7 +171,6 @@ jobs:
 #          path: ~/oppia-bazel/bazel-bin/tools/android/runtime_deps/android_tools.tar.gz
       - name: Extract Android ToolsCurr
         run: |
-           mkdir /tmp/android_tools
            tar -xf ~/oppia-bazel/bazel-bin/tools/android/runtime_deps/android_tools.tar.gz -C /tmp/android_tools
       - name: Build Oppia binary with Bazel
         run: |
