@@ -10,6 +10,7 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import org.junit.After
 import org.junit.Before
@@ -19,11 +20,16 @@ import org.oppia.app.R
 import org.oppia.app.options.APP_LANGUAGE
 import org.oppia.app.options.AUDIO_LANGUAGE
 import org.oppia.app.options.AppLanguageActivity
+import org.oppia.app.options.AppLanguageFragment
 import org.oppia.app.options.DefaultAudioActivity
+import org.oppia.app.options.DefaultAudioFragment
 import org.oppia.app.options.OptionsActivity
 import org.oppia.app.options.STORY_TEXT_SIZE
 import org.oppia.app.options.StoryTextSizeActivity
+import org.oppia.app.options.StoryTextSizeFragment
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 
 @RunWith(AndroidJUnit4::class)
 class OptionsFragmentTest {
@@ -102,6 +108,85 @@ class OptionsFragmentTest {
           AUDIO_LANGUAGE
         )
       )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  @LooperMode(LooperMode.Mode.PAUSED)
+  fun testStoryTextSize_checkInitiallyLoadedFragmentIsStoryTextSizeFragment() {
+    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+      it.onActivity { activity ->
+        val loadedFragment =
+          activity.supportFragmentManager.findFragmentById(R.id.multipane_options_container)
+        assertThat(loadedFragment is StoryTextSizeFragment).isTrue()
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  @LooperMode(LooperMode.Mode.PAUSED)
+  fun testStoryTextSize_clickStoryTextSize_checkLoadingTheCorrectFragment() {
+    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+      onView(
+        atPositionOnView(
+          R.id.options_recyclerview,
+          0,
+          R.id.story_text_size_item_layout
+        )
+      ).perform(
+        click()
+      )
+      it.onActivity { activity ->
+        val loadedFragment =
+          activity.supportFragmentManager.findFragmentById(R.id.multipane_options_container)
+        assertThat(loadedFragment is StoryTextSizeFragment).isTrue()
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  @LooperMode(LooperMode.Mode.PAUSED)
+  fun testStoryTextSize_clickAppLanguage_checkLoadingTheCorrectFragment() {
+    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+      onView(
+        atPositionOnView(
+          R.id.options_recyclerview,
+          1,
+          R.id.app_language_item_layout
+        )
+      ).perform(
+        click()
+      )
+      it.onActivity { activity ->
+        val loadedFragment =
+          activity.supportFragmentManager.findFragmentById(R.id.multipane_options_container)
+        assertThat(loadedFragment is AppLanguageFragment).isTrue()
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  @LooperMode(LooperMode.Mode.PAUSED)
+  fun testStoryTextSize_clickDefaultAudio_checkLoadingTheCorrectFragment() {
+    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+      onView(
+        atPositionOnView(
+          R.id.options_recyclerview,
+          2,
+          R.id.audio_laguage_item_layout
+        )
+      ).perform(
+        click()
+      )
+      it.onActivity { activity ->
+        val loadedFragment =
+          activity.supportFragmentManager.findFragmentById(R.id.multipane_options_container)
+        assertThat(loadedFragment is DefaultAudioFragment).isTrue()
+      }
     }
   }
 
