@@ -8,7 +8,7 @@ import javax.inject.Singleton
 @Module
 class OppiaWorkManagerModule {
   @Provides
-  fun providesOppiaWorkManager(oppiaWorkManager: OppiaWorkManager): OppiaWorkManager{
+  fun providesOppiaWorkManager(oppiaWorkManager: OppiaWorkManager): OppiaWorkManager {
     return oppiaWorkManager
   }
 }
