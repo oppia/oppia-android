@@ -22,14 +22,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 1
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -45,14 +44,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 0
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -68,14 +66,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 2
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -91,14 +88,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 3
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -115,10 +111,22 @@
           "customization_args": {
             "choices": {
               "value": [
-                "<p>You add the same number to both sides.</p>",
-                "<p>You multiply both sides by the same number.</p>",
-                "<p>You multiply the left side by a number, and keep the right side the same.</p>",
-                "<p>You add a number to the left side, and keep the right side the same.</p>"
+                {
+                  "html": "<p>You add the same number to both sides.</p>",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>You multiply both sides by the same number.</p>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>You multiply the left side by a number, and keep the right side the same.</p>",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>You add a number to the left side, and keep the right side the same.</p>",
+                  "content_id": "ca_choices_3"
+                }
               ]
             }
           },
@@ -208,14 +216,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "1:2"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -231,14 +238,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Contains",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Contains": [
+                  {
                     "x": "1:"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -254,14 +260,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "2:1"
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -361,14 +366,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "4:2"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -384,14 +388,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Contains",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Contains": [
+                  {
                     "x": ":2"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -407,14 +410,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Contains",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Contains": [
+                  {
                     "x": "2:"
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -593,14 +595,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "2:1:4"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -616,14 +617,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Contains",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Contains": [
+                  {
                     "x": ":1:"
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -730,14 +730,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "9:6"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -753,14 +752,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "6:4"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -776,14 +774,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "6:5"
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -883,14 +880,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 1
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -906,14 +902,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 4
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -929,14 +924,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 2
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -953,11 +947,26 @@
           "customization_args": {
             "choices": {
               "value": [
-                "<p>1:2</p>",
-                "<p>3:4</p>",
-                "<p>4:6</p>",
-                "<p>8:6</p>",
-                "<p>12:16</p>"
+                {
+                  "html": "<p>1:2</p>",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>3:4</p>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>4:6</p>",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>8:6</p>",
+                  "content_id": "ca_choices_3"
+                },
+                {
+                  "html": "<p>12:16</p>",
+                  "content_id": "ca_choices_4"
+                }
               ]
             }
           },
@@ -1039,17 +1048,16 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": [
                       "<p>For every 1 unit of white chocolate, there should be twice that amount of dark chocolate.</p>",
                       "<p>For any amount of white chocolate, there should be twice that amount of dark chocolate.</p>"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1065,17 +1073,16 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "ContainsAtLeastOneOf",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "ContainsAtLeastOneOf": [
+                  {
                     "x": [
                       "<p>There should be exactly 1 piece of white chocolate and 2 pieces of dark chocolate.</p>",
                       "<p>There should always be 1 bar of white chocolate and 2 bars of dark chocolate.</p>"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1091,16 +1098,15 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "ContainsAtLeastOneOf",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "ContainsAtLeastOneOf": [
+                  {
                     "x": [
                       "<p>I don't know!</p>"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1116,24 +1122,20 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": [
                       "<p>For every 1 unit of white chocolate, there should be twice that amount of dark chocolate.</p>"
                     ]
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+                  },
+                  {
                     "x": [
                       "<p>For any amount of white chocolate, there should be twice that amount of dark chocolate.</p>"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -1156,11 +1158,26 @@
             },
             "choices": {
               "value": [
-                "<p>There should be exactly 1 piece of white chocolate and 2 pieces of dark chocolate.</p>",
-                "<p>For every 1 unit of white chocolate, there should be twice that amount of dark chocolate.</p>",
-                "<p>There should always be 1 bar of white chocolate and 2 bars of dark chocolate.</p>",
-                "<p>For any amount of white chocolate, there should be twice that amount of dark chocolate.</p>",
-                "<p>I don't know!</p>"
+                {
+                  "html": "<p>There should be exactly 1 piece of white chocolate and 2 pieces of dark chocolate.</p>",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>For every 1 unit of white chocolate, there should be twice that amount of dark chocolate.</p>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>There should always be 1 bar of white chocolate and 2 bars of dark chocolate.</p>",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>For any amount of white chocolate, there should be twice that amount of dark chocolate.</p>",
+                  "content_id": "ca_choices_3"
+                },
+                {
+                  "html": "<p>I don't know!</p>",
+                  "content_id": "ca_choices_4"
+                }
               ]
             }
           },
@@ -1300,20 +1317,16 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "4:10"
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+                  },
+                  {
                     "x": "2:5"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1329,14 +1342,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Contains",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Contains": [
+                  {
                     "x": "4 to 10"
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -1428,14 +1440,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "1:3:2"
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -1519,17 +1530,16 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": [
                       "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 2-unit tall glass fully filled with mango puree. On the right there are 5 1-unit tall glasses, fully filled with strawberry puree.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_161900_jw61qt7ott_height_163_width_392.png&amp;quot;\"></oppia-noninteractive-image>",
                       "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 2-units tall glass fully filled with milk. On the right, there is 5-units tall glass fully filled with strawberry puree.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_161944_fqdts0567o_height_259_width_392.png&amp;quot;\"></oppia-noninteractive-image>"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1545,24 +1555,22 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": [
                       "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 2-unit tall glass fully filled with mango puree. On the right there are 5 1-unit tall glasses, fully filled with strawberry puree.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_161900_jw61qt7ott_height_163_width_392.png&amp;quot;\"></oppia-noninteractive-image>"
                     ]
                   }
-                },
-                {
-                  "rule_type": "DoesNotContainAtLeastOneOf",
-                  "inputs": {
+                ],
+                "DoesNotContainAtLeastOneOf": [
+                  {
                     "x": [
                       "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 2-units tall glass fully filled with milk. On the right, there is 5-units tall glass fully filled with strawberry puree.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_161944_fqdts0567o_height_259_width_392.png&amp;quot;\"></oppia-noninteractive-image>"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -1585,10 +1593,22 @@
             },
             "choices": {
               "value": [
-                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is a 2-unit tall glass fully filled with mango puree. On the right, there is a 4-units tall glass fully filled with strawberry puree.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_161841_6oqulrb5wr_height_218_width_392.png&amp;quot;\"></oppia-noninteractive-image>",
-                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 2-unit tall glass fully filled with mango puree. On the right there are 5 1-unit tall glasses, fully filled with strawberry puree.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_161900_jw61qt7ott_height_163_width_392.png&amp;quot;\"></oppia-noninteractive-image>",
-                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there are two 1-unit tall glasses fully filled with mango puree. On the right, there are three 2-units tall glasses fully filled with strawberry puree.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_161919_1bh2ytwrmj_height_134_width_392.png&amp;quot;\"></oppia-noninteractive-image>",
-                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 2-units tall glass fully filled with milk. On the right, there is 5-units tall glass fully filled with strawberry puree.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_161944_fqdts0567o_height_259_width_392.png&amp;quot;\"></oppia-noninteractive-image>"
+                {
+                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is a 2-unit tall glass fully filled with mango puree. On the right, there is a 4-units tall glass fully filled with strawberry puree.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_161841_6oqulrb5wr_height_218_width_392.png&amp;quot;\"></oppia-noninteractive-image>",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 2-unit tall glass fully filled with mango puree. On the right there are 5 1-unit tall glasses, fully filled with strawberry puree.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_161900_jw61qt7ott_height_163_width_392.png&amp;quot;\"></oppia-noninteractive-image>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there are two 1-unit tall glasses fully filled with mango puree. On the right, there are three 2-units tall glasses fully filled with strawberry puree.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_161919_1bh2ytwrmj_height_134_width_392.png&amp;quot;\"></oppia-noninteractive-image>",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 2-units tall glass fully filled with milk. On the right, there is 5-units tall glass fully filled with strawberry puree.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_161944_fqdts0567o_height_259_width_392.png&amp;quot;\"></oppia-noninteractive-image>",
+                  "content_id": "ca_choices_3"
+                }
               ]
             }
           },
@@ -1700,17 +1720,16 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": [
                       "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there are four glasses of blueberry puree. On the right, there are 6 glasses of mango puree. The glasses are all same size&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_223455_z2b5likty7_height_182_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
                       "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left side, there are 6 glasses of blueberry puree. On the right side, there are 9 glasses of mango puree. The glasses are all same size.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_223511_cx7j3xq7qq_height_172_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1726,16 +1745,15 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "ContainsAtLeastOneOf",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "ContainsAtLeastOneOf": [
+                  {
                     "x": [
                       "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left side, there are 9 glasses of blueberry puree. On the right side, there are 6 glasses of mango puree. The glasses are all same size.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_223529_oeltknb8z8_height_178_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1751,16 +1769,15 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "ContainsAtLeastOneOf",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "ContainsAtLeastOneOf": [
+                  {
                     "x": [
                       "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left side, there are 4 glasses of blueberry puree. On the right side, there are 5 glasses of mango puree. The glasses are all same size.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_223617_h010ya3h8y_height_183_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1776,17 +1793,16 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "ContainsAtLeastOneOf",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "ContainsAtLeastOneOf": [
+                  {
                     "x": [
                       "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left side, there are 6 glasses of blueberry puree. On the right side, there are 9 glasses of mango puree. The glasses are all same size.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_223511_cx7j3xq7qq_height_172_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
                       "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there are four glasses of blueberry puree. On the right, there are 6 glasses of mango puree. The glasses are all same size&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_223455_z2b5likty7_height_182_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -1809,10 +1825,22 @@
             },
             "choices": {
               "value": [
-                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there are four glasses of blueberry puree. On the right, there are 6 glasses of mango puree. The glasses are all same size&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_223455_z2b5likty7_height_182_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
-                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left side, there are 6 glasses of blueberry puree. On the right side, there are 9 glasses of mango puree. The glasses are all same size.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_223511_cx7j3xq7qq_height_172_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
-                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left side, there are 9 glasses of blueberry puree. On the right side, there are 6 glasses of mango puree. The glasses are all same size.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_223529_oeltknb8z8_height_178_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
-                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left side, there are 4 glasses of blueberry puree. On the right side, there are 5 glasses of mango puree. The glasses are all same size.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_223617_h010ya3h8y_height_183_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
+                {
+                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there are four glasses of blueberry puree. On the right, there are 6 glasses of mango puree. The glasses are all same size&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_223455_z2b5likty7_height_182_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left side, there are 6 glasses of blueberry puree. On the right side, there are 9 glasses of mango puree. The glasses are all same size.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_223511_cx7j3xq7qq_height_172_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left side, there are 9 glasses of blueberry puree. On the right side, there are 6 glasses of mango puree. The glasses are all same size.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_223529_oeltknb8z8_height_178_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left side, there are 4 glasses of blueberry puree. On the right side, there are 5 glasses of mango puree. The glasses are all same size.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_223617_h010ya3h8y_height_183_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
+                  "content_id": "ca_choices_3"
+                }
               ]
             }
           },
@@ -1917,17 +1945,16 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": [
                       "<p>8:2</p>\n",
                       "<p>12:3</p>\n"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1943,17 +1970,16 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "ContainsAtLeastOneOf",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "ContainsAtLeastOneOf": [
+                  {
                     "x": [
                       "<p>16:2</p>\n",
                       "<p>20:4</p>\n"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1969,24 +1995,20 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": [
                       "<p>8:2</p>\n"
                     ]
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+                  },
+                  {
                     "x": [
                       "<p>12:3</p>\n"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -2009,10 +2031,22 @@
             },
             "choices": {
               "value": [
-                "<p>8:2</p>\n",
-                "<p>12:3</p>\n",
-                "<p>16:2</p>\n",
-                "<p>20:4</p>\n"
+                {
+                  "html": "<p>8:2</p>\n",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>12:3</p>\n",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>16:2</p>\n",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>20:4</p>\n",
+                  "content_id": "ca_choices_3"
+                }
               ]
             }
           },
@@ -2123,14 +2157,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 0
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -2146,14 +2179,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 1
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -2169,14 +2201,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 3
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -2193,10 +2224,22 @@
           "customization_args": {
             "choices": {
               "value": [
-                "<p>2:1</p>\n",
-                "<p>6:12</p>\n",
-                "<p>6:4</p>",
-                "<p>1:2</p>\n"
+                {
+                  "html": "<p>2:1</p>\n",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>6:12</p>\n",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>6:4</p>",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>1:2</p>\n",
+                  "content_id": "ca_choices_3"
+                }
               ]
             }
           },
@@ -2293,14 +2336,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "1:2"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -2316,14 +2358,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Contains",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "0:4"
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -2415,14 +2456,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 3
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -2438,14 +2478,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 0
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -2462,10 +2501,22 @@
           "customization_args": {
             "choices": {
               "value": [
-                "<p>10:9</p>\n",
-                "<p>30:16</p>\n",
-                "<p>20:15</p>\n",
-                "<p>15:12</p>\n"
+                {
+                  "html": "<p>10:9</p>\n",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>30:16</p>\n",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>20:15</p>\n",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>15:12</p>\n",
+                  "content_id": "ca_choices_3"
+                }
               ]
             }
           },
@@ -2539,14 +2590,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 1
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -2562,14 +2612,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 0
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -2585,14 +2634,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 2
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -2609,10 +2657,22 @@
           "customization_args": {
             "choices": {
               "value": [
-                "<p>8:6:5</p>\n",
-                "<p>12:8:6</p>\n",
-                "<p>18:12:3</p>",
-                "<p>36:16:9</p>"
+                {
+                  "html": "<p>8:6:5</p>\n",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>12:8:6</p>\n",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>18:12:3</p>",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>36:16:9</p>",
+                  "content_id": "ca_choices_3"
+                }
               ]
             }
           },
@@ -2694,17 +2754,16 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": [
                       "<p>1:4</p>\n",
                       "<p>4:16</p>\n"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -2720,24 +2779,20 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": [
                       "<p>1:4</p>\n"
                     ]
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+                  },
+                  {
                     "x": [
                       "<p>4:16</p>\n"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -2760,13 +2815,34 @@
             },
             "choices": {
               "value": [
-                "<p>1:4</p>\n",
-                "<p>2:26</p>",
-                "<p>3:7</p>\n",
-                "<p>4:16</p>\n",
-                "<p>5:15</p>\n",
-                "<p>6:21</p>\n",
-                "<p>7:30</p>\n"
+                {
+                  "html": "<p>1:4</p>\n",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>2:26</p>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>3:7</p>\n",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>4:16</p>\n",
+                  "content_id": "ca_choices_3"
+                },
+                {
+                  "html": "<p>5:15</p>\n",
+                  "content_id": "ca_choices_4"
+                },
+                {
+                  "html": "<p>6:21</p>\n",
+                  "content_id": "ca_choices_5"
+                },
+                {
+                  "html": "<p>7:30</p>\n",
+                  "content_id": "ca_choices_6"
+                }
               ]
             }
           },
@@ -2840,14 +2916,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 1
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -2863,14 +2938,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 3
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -2887,10 +2961,22 @@
           "customization_args": {
             "choices": {
               "value": [
-                "<p>1:3:7</p>",
-                "<p>2:6:7</p>",
-                "<p>3:6:8</p>",
-                "<p>5:17:20</p>"
+                {
+                  "html": "<p>1:3:7</p>",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>2:6:7</p>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>3:6:8</p>",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>5:17:20</p>",
+                  "content_id": "ca_choices_3"
+                }
               ]
             }
           },
@@ -2964,18 +3050,17 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": [
                       "<p>6:9:12</p>\n",
                       "<p>10:15:20</p>\n",
                       "<p>12:18:24</p>\n"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -2991,32 +3076,25 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": [
                       "<p>12:18:24</p>\n"
                     ]
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+                  },
+                  {
                     "x": [
                       "<p>6:9:12</p>\n"
                     ]
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+                  },
+                  {
                     "x": [
                       "<p>10:15:20</p>\n"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -3032,16 +3110,15 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "ContainsAtLeastOneOf",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "ContainsAtLeastOneOf": [
+                  {
                     "x": [
                       "<p>4:5:6</p>\n"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -3064,11 +3141,26 @@
             },
             "choices": {
               "value": [
-                "<p>4:5:6</p>\n",
-                "<p>6:9:12</p>\n",
-                "<p>8:24:32</p>\n",
-                "<p>10:15:20</p>\n",
-                "<p>12:18:24</p>\n"
+                {
+                  "html": "<p>4:5:6</p>\n",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>6:9:12</p>\n",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>8:24:32</p>\n",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>10:15:20</p>\n",
+                  "content_id": "ca_choices_3"
+                },
+                {
+                  "html": "<p>12:18:24</p>\n",
+                  "content_id": "ca_choices_3"
+                }
               ]
             }
           },

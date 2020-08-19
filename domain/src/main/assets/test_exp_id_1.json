@@ -17,14 +17,13 @@
                 "feedback": "",
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 1
-                  },
-                  "rule_type": "Equals"
-                }
-              ]
+                  }
+                ]
+              }
             },
             {
               "outcome": {
@@ -33,14 +32,13 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 0
-                  },
-                  "rule_type": "Equals"
-                }
-              ]
+                  }
+                ]
+              }
             },
             {
               "outcome": {
@@ -49,24 +47,35 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 2
-                  },
-                  "rule_type": "Equals"
-                }
-              ]
+                  }
+                ]
+              }
             }
           ],
           "confirmed_unclassified_answers": [],
           "customization_args": {
             "choices": {
               "value": [
-                "Who created this site?",
-                "How can I contact the creators of Oppia?",
-                "Can I use the content on this site?",
-                "I want to go back to my earlier questions."
+                {
+                  "html": "Who created this site?",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "How can I contact the creators of Oppia?",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "Can I use the content on this site?",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "I want to go back to my earlier questions.",
+                  "content_id": "ca_choices_3"
+                }
               ]
             }
           },
@@ -97,14 +106,13 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 2
-                  },
-                  "rule_type": "Equals"
-                }
-              ]
+                  }
+                ]
+              }
             },
             {
               "outcome": {
@@ -113,14 +121,13 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 0
-                  },
-                  "rule_type": "Equals"
-                }
-              ]
+                  }
+                ]
+              }
             },
             {
               "outcome": {
@@ -129,23 +136,31 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 1
-                  },
-                  "rule_type": "Equals"
-                }
-              ]
+                  }
+                ]
+              }
             }
           ],
           "confirmed_unclassified_answers": [],
           "customization_args": {
             "choices": {
               "value": [
-                "So who created this site?",
-                "Can I use the content on this site?",
-                "I want to go back to my earlier questions."
+                {
+                  "html": "So who created this site?",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "Can I use the content on this site?",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "I want to go back to my earlier questions.",
+                  "content_id": "ca_choices_2"
+                }
               ]
             }
           },
@@ -202,14 +217,13 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 0
-                  },
-                  "rule_type": "Equals"
-                }
-              ]
+                  }
+                ]
+              }
             },
             {
               "outcome": {
@@ -218,14 +232,13 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 2
-                  },
-                  "rule_type": "Equals"
-                }
-              ]
+                  }
+                ]
+              }
             },
             {
               "outcome": {
@@ -234,23 +247,31 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 1
-                  },
-                  "rule_type": "Equals"
-                }
-              ]
+                  }
+                ]
+              }
             }
           ],
           "confirmed_unclassified_answers": [],
           "customization_args": {
             "choices": {
               "value": [
-                "How can I contact the creators of Oppia?",
-                "Can I use the site content?",
-                "I want to go back to my earlier questions."
+                {
+                  "html": "How can I contact the creators of Oppia?",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "Can I use the site content?",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "I want to go back to my earlier questions.",
+                  "content_id": "ca_choices_2"
+                }
               ]
             }
           },
@@ -409,14 +430,13 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 0
-                  },
-                  "rule_type": "Equals"
-                }
-              ]
+                  }
+                ]
+              }
             },
             {
               "outcome": {
@@ -425,14 +445,13 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 1
-                  },
-                  "rule_type": "Equals"
-                }
-              ]
+                  }
+                ]
+              }
             },
             {
               "outcome": {
@@ -441,23 +460,31 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 2
-                  },
-                  "rule_type": "Equals"
-                }
-              ]
+                  }
+                ]
+              }
             }
           ],
           "confirmed_unclassified_answers": [],
           "customization_args": {
             "choices": {
               "value": [
-                "So who created this site?",
-                "How can I contact the creators of Oppia?",
-                "I want to go back to my earlier questions."
+                {
+                  "html": "So who created this site?",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "How can I contact the creators of Oppia?",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "I want to go back to my earlier questions.",
+                  "content_id": "ca_choices_2"
+                }
               ]
             }
           },
@@ -488,14 +515,13 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 1
-                  },
-                  "rule_type": "Equals"
-                }
-              ]
+                  }
+                ]
+              }
             },
             {
               "outcome": {
@@ -504,14 +530,13 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 3
-                  },
-                  "rule_type": "Equals"
-                }
-              ]
+                  }
+                ]
+              }
             },
             {
               "outcome": {
@@ -520,14 +545,13 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 0
-                  },
-                  "rule_type": "Equals"
-                }
-              ]
+                  }
+                ]
+              }
             },
             {
               "outcome": {
@@ -536,24 +560,35 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 2
-                  },
-                  "rule_type": "Equals"
-                }
-              ]
+                  }
+                ]
+              }
             }
           ],
           "confirmed_unclassified_answers": [],
           "customization_args": {
             "choices": {
               "value": [
-                "How do your explorations work?",
-                "What can you tell me about this website?",
-                "How can I contribute to Oppia?",
-                "Those were all the questions I had!"
+                {
+                  "html": "How do your explorations work?",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "What can you tell me about this website?",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "How can I contribute to Oppia?",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "Those were all the questions I had!",
+                  "content_id": "ca_choices_3"
+                }
               ]
             }
           },

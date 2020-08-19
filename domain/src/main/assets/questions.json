@@ -31,20 +31,16 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "1/4"
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+                  },
+                  {
                     "x": "2/8"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": "5RM9KPfQxobH-0",
@@ -60,14 +56,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "1/5"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -83,14 +78,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "1/9"
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -187,14 +181,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "1/4"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -210,14 +203,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "1/8"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": "5RM9KPfQxobH-0",
@@ -233,14 +225,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "1/2"
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -337,20 +328,16 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "3/4"
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+                  },
+                  {
                     "x": "6/8"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -366,14 +353,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "1/8"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": "5RM9KPfQxobH-0",
@@ -389,20 +375,16 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "4/6"
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+                  },
+                  {
                     "x": "2/3"
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -492,14 +474,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 2
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": "5RM9KPfQxobH-0",
@@ -515,14 +496,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 0
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -538,14 +518,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 1
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -561,14 +540,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 3
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -585,10 +563,22 @@
           "customization_args": {
             "choices": {
               "value": [
-                "<p>Yes, because there are three parts and only one is shaded.</p>",
-                "<p>No. There are three parts and two of them are white, so the correct fraction is 2/3.</p>",
-                "<p>No. Amir needs to divide the picture into equal-sized&nbsp;triangles before writing the fraction.</p>",
-                "<p>No. Amir has mixed up the numerator and denominator. The correct fraction is 3/1.</p>"
+                {
+                  "html": "<p>Yes, because there are three parts and only one is shaded.</p>",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>No. There are three parts and two of them are white, so the correct fraction is 2/3.</p>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>No. Amir needs to divide the picture into equal-sized&nbsp;triangles before writing the fraction.</p>",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>No. Amir has mixed up the numerator and denominator. The correct fraction is 3/1.</p>",
+                  "content_id": "ca_choices_3"
+                }
               ]
             }
           },
@@ -660,14 +650,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 0
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": "5RM9KPfQxobH-0",
@@ -683,14 +672,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 1
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": "T8kGrGsZWhEy-0",
@@ -706,14 +694,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 2
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": "T8kGrGsZWhEy-1",
@@ -729,14 +716,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 3
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": "T8kGrGsZWhEy-2",
@@ -752,14 +738,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 4
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -776,11 +761,26 @@
           "customization_args": {
             "choices": {
               "value": [
-                "<p>Correct</p>",
-                "<p>Wrong 1</p>",
-                "<p>Wrong 2</p>",
-                "<p>Wrong 3</p>",
-                "<p>Wrong 4</p>"
+                {
+                  "html": "<p>Correct</p>",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>Wrong 1</p>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>Wrong 2</p>",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>Wrong 3</p>",
+                  "content_id": "ca_choices_3"
+                },
+                {
+                  "html": "<p>Wrong 4</p>",
+                  "content_id": "ca_choices_4"
+                }
               ]
             }
           },
@@ -861,14 +861,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 3
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": "UxTGIJqaHMLa-0",
@@ -884,14 +883,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 2
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -972,14 +970,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 1
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": "UxTGIJqaHMLa-0",
@@ -995,14 +992,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 0
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1018,20 +1014,16 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 2
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+                  },
+                  {
                     "x": 3
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -1048,10 +1040,22 @@
           "customization_args": {
             "choices": {
               "value": [
-                "<p>The first (or top) number.</p>",
-                "<p>The second (or bottom) number.</p>",
-                "<p>The larger number.</p>",
-                "<p>The smaller number.</p>"
+                {
+                  "html": "<p>The first (or top) number.</p>",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>The second (or bottom) number.</p>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>The larger number.</p>",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>The smaller number.</p>",
+                  "content_id": "ca_choices_3"
+                }
               ]
             }
           },
@@ -1128,14 +1132,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 8
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": "UxTGIJqaHMLa-0",
@@ -1151,14 +1154,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 5
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -1239,14 +1241,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 2
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": "B39yK4cbHZYI-0",
@@ -1262,20 +1263,16 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 0
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+                  },
+                  {
                     "x": 1
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -1292,9 +1289,18 @@
           "customization_args": {
             "choices": {
               "value": [
-                "<p>The number of selected parts.</p>",
-                "<p>The number of non-selected parts.</p>",
-                "<p>The total number of parts in the whole object.</p>"
+                {
+                  "html": "<p>The number of selected parts.</p>",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>The number of non-selected parts.</p>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>The total number of parts in the whole object.</p>",
+                  "content_id": "ca_choices_2"
+                }
               ]
             }
           },
@@ -1362,14 +1368,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 1
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": "B39yK4cbHZYI-0",
@@ -1385,14 +1390,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 0
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1408,14 +1412,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 2
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -1432,9 +1435,18 @@
           "customization_args": {
             "choices": {
               "value": [
-                "<p>The number of selected parts.</p>",
-                "<p>The total number of parts in the whole.</p>",
-                "<p>The number of non-selected parts.</p>"
+                {
+                  "html": "<p>The number of selected parts.</p>",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>The total number of parts in the whole.</p>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>The number of non-selected parts.</p>",
+                  "content_id": "ca_choices_2"
+                }
               ]
             }
           },
@@ -1504,14 +1516,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 0
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": "B39yK4cbHZYI-0",
@@ -1527,14 +1538,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 1
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1550,20 +1560,16 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 2
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+                  },
+                  {
                     "x": 3
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -1580,10 +1586,22 @@
           "customization_args": {
             "choices": {
               "value": [
-                "<p>The number of selected parts.</p>",
-                "<p>The total number of parts that the whole is divided into.</p>",
-                "<p>The number of parts that are not selected.</p>",
-                "<p>The number of selected parts + The number of non-selected parts.</p>"
+                {
+                  "html": "<p>The number of selected parts.</p>",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>The total number of parts that the whole is divided into.</p>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>The number of parts that are not selected.</p>",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>The number of selected parts + The number of non-selected parts.</p>",
+                  "content_id": "ca_choices_3"
+                }
               ]
             }
           },
@@ -1653,14 +1671,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 1
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1676,14 +1693,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 0
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1699,26 +1715,19 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 2
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+                  },
+                  {
                     "x": 3
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+                  },
+                  {
                     "x": 4
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -1735,11 +1744,26 @@
           "customization_args": {
             "choices": {
               "value": [
-                "<p>9:6</p>",
-                "<p>9:3</p>",
-                "<p>3:9</p>",
-                "<p>6:9</p>",
-                "<p>12:9</p>"
+                {
+                  "html": "<p>9:6</p>",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>9:3</p>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>3:9</p>",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>6:9</p>",
+                  "content_id": "ca_choices_3"
+                },
+                {
+                  "html": "<p>12:9</p>",
+                  "content_id": "ca_choices_4"
+                }
               ]
             }
           },
@@ -1801,14 +1825,13 @@
           "confirmed_unclassified_answers": [],
           "answer_groups": [
             {
-              "rule_specs": [
-                {
-                  "rule_type": "Contains",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "1/4"
                   }
-                }
-              ],
+                ]
+              },
               "outcome": {
                 "dest": null,
                 "feedback": {
@@ -1883,14 +1906,13 @@
           "confirmed_unclassified_answers": [],
           "answer_groups": [
             {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 1
                   }
-                }
-              ],
+                ]
+              },
               "outcome": {
                 "dest": null,
                 "feedback": {
@@ -1910,9 +1932,18 @@
           "customizationArgs": {
             "choices": {
               "value": [
-                "<p>The number of pieces of cake I want.</p>",
-                "<p>The number of pieces the whole cake is cut into.</p>",
-                "<p>None of the above.</p>"
+                {
+                  "html": "<p>The number of pieces of cake I want.</p>",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>The number of pieces the whole cake is cut into.</p>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>None of the above.</p>",
+                  "content_id": "ca_choices_2"
+                }
               ]
             }
           },
@@ -1971,15 +2002,14 @@
           "confirmed_unclassified_answers": [],
           "answer_groups": [
             {
-              "rule_specs": [
-                {
-                  "rule_type": "IsInclusivelyBetween",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsInclusivelyBetween": [
+                  {
                     "a": 3,
                     "b": 3
                   }
-                }
-              ],
+                ]
+              },
               "outcome": {
                 "dest": null,
                 "feedback": "<p>That's correct!</p>",
@@ -2044,14 +2074,13 @@
           "confirmed_unclassified_answers": [],
           "answer_groups": [
             {
-              "rule_specs": [
-                {
-                  "rule_type": "Contains",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Contains": [
+                  {
                     "x": "1/2"
                   }
-                }
-              ],
+                ]
+              },
               "outcome": {
                 "dest": null,
                 "feedback": {
@@ -2126,14 +2155,13 @@
           "confirmed_unclassified_answers": [],
           "answer_groups": [
             {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 1
                   }
-                }
-              ],
+                ]
+              },
               "outcome": {
                 "dest": null,
                 "feedback": {
@@ -2153,9 +2181,18 @@
           "customizationArgs": {
             "choices": {
               "value": [
-                "<p>The number of pieces of cake I want.</p>",
-                "<p>The number of pieces the whole cake is cut into.</p>",
-                "<p>None of the above.</p>"
+                {
+                  "html": "<p>The number of pieces of cake I want.</p>",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>The number of pieces the whole cake is cut into.</p>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>None of the above.</p>",
+                  "content_id": "ca_choices_2"
+                }
               ]
             }
           },
@@ -2202,15 +2239,14 @@
           "confirmed_unclassified_answers": [],
           "answer_groups": [
             {
-              "rule_specs": [
-                {
-                  "rule_type": "IsInclusivelyBetween",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsInclusivelyBetween": [
+                  {
                     "a": 5,
                     "b": 5
                   }
-                }
-              ],
+                ]
+              },
               "outcome": {
                 "dest": null,
                 "feedback": "<p>That's correct!</p>",

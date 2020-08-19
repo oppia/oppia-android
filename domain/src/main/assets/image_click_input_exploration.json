@@ -20,14 +20,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsInRegion",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsInRegion": [
+                  {
                     "x": "Region1"
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {

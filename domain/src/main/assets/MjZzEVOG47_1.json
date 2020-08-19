@@ -22,10 +22,9 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsEquivalentTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsEquivalentTo": [
+                  {
                     "f": {
                       "denominator": 4,
                       "numerator": 2,
@@ -33,8 +32,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -50,14 +49,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 3
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -73,10 +71,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 4,
                       "numerator": 1,
@@ -84,8 +81,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -326,10 +323,9 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsEquivalentTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsEquivalentTo": [
+                  {
                     "f": {
                       "denominator": 8,
                       "numerator": 5,
@@ -337,8 +333,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -354,10 +350,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsEquivalentTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsEquivalentTo": [
+                  {
                     "f": {
                       "denominator": 8,
                       "numerator": 3,
@@ -365,8 +360,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -382,14 +377,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 9
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -405,14 +399,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 8
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -674,10 +667,9 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsEquivalentTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsEquivalentTo": [
+                  {
                     "f": {
                       "denominator": 9,
                       "numerator": 4,
@@ -685,8 +677,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -702,10 +694,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsEquivalentTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsEquivalentTo": [
+                  {
                     "f": {
                       "denominator": 9,
                       "numerator": 5,
@@ -713,8 +704,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -730,43 +721,33 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 18,
                       "numerator": 5,
                       "wholeNumber": 0,
                       "isNegative": false
                     }
-                  }
-                },
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+                  },
+                  {
                     "f": {
                       "denominator": 5,
                       "numerator": 18,
                       "wholeNumber": 0,
                       "isNegative": false
                     }
-                  }
-                },
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+                  },
+                  {
                     "f": {
                       "denominator": 18,
                       "numerator": 13,
                       "wholeNumber": 0,
                       "isNegative": false
                     }
-                  }
-                },
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+                  },
+                  {
                     "f": {
                       "denominator": 13,
                       "numerator": 18,
@@ -774,20 +755,18 @@
                       "isNegative": false
                     }
                   }
-                },
-                {
-                  "rule_type": "HasNumeratorEqualTo",
-                  "inputs": {
+                ],
+                "HasNumeratorEqualTo": [
+                  {
                     "x": 5
                   }
-                },
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+                ],
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 18
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -803,14 +782,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 9
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -1082,10 +1060,9 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsEquivalentTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsEquivalentTo": [
+                  {
                     "f": {
                       "denominator": 9,
                       "numerator": 7,
@@ -1093,8 +1070,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1110,10 +1087,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 9,
                       "numerator": 2,
@@ -1121,8 +1097,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1138,32 +1114,25 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 7,
                       "numerator": 2,
                       "wholeNumber": 0,
                       "isNegative": false
                     }
-                  }
-                },
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+                  },
+                  {
                     "f": {
                       "denominator": 2,
                       "numerator": 7,
                       "wholeNumber": 0,
                       "isNegative": false
                     }
-                  }
-                },
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+                  },
+                  {
                     "f": {
                       "denominator": 7,
                       "numerator": 9,
@@ -1171,8 +1140,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1188,14 +1157,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 9
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1211,14 +1179,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 7
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -1498,10 +1465,9 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsEquivalentTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsEquivalentTo": [
+                  {
                     "f": {
                       "denominator": 4,
                       "numerator": 3,
@@ -1509,8 +1475,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1526,61 +1492,33 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 6,
                       "numerator": 2,
                       "wholeNumber": 0,
                       "isNegative": false
                     }
-                  }
-                },
-                {
-                  "rule_type": "HasNumeratorEqualTo",
-                  "inputs": {
-                    "x": 1
-                  }
-                },
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+                  },
+                  {
                     "f": {
                       "denominator": 4,
                       "numerator": 2,
                       "wholeNumber": 0,
                       "isNegative": false
                     }
-                  }
-                },
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+                  },
+                  {
                     "f": {
                       "denominator": 8,
                       "numerator": 2,
                       "wholeNumber": 0,
                       "isNegative": false
                     }
-                  }
-                },
-                {
-                  "rule_type": "HasNumeratorEqualTo",
-                  "inputs": {
-                    "x": 2
-                  }
-                },
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
-                    "x": 6
-                  }
-                },
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+                  },
+                  {
                     "f": {
                       "denominator": 8,
                       "numerator": 3,
@@ -1588,8 +1526,19 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ],
+                "HasNumeratorEqualTo": [
+                  {
+                    "x": 1
+                  },
+                  {
+                    "x": 2
+                  },
+                  {
+                    "x": 6
+                  }
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -1878,10 +1827,9 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsEquivalentTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsEquivalentTo": [
+                  {
                     "f": {
                       "denominator": 4,
                       "numerator": 3,
@@ -1889,8 +1837,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1906,10 +1854,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 3,
                       "numerator": 4,
@@ -1917,8 +1864,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1934,10 +1881,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 2,
                       "numerator": 3,
@@ -1945,8 +1891,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1962,10 +1908,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 1,
                       "numerator": 3,
@@ -1973,8 +1918,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1990,10 +1935,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 3,
                       "numerator": 2,
@@ -2001,8 +1945,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -2018,10 +1962,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 4,
                       "numerator": 2,
@@ -2029,8 +1972,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -2046,14 +1989,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 3
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -2069,14 +2011,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 4
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -2092,14 +2033,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasNumeratorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasNumeratorEqualTo": [
+                  {
                     "x": 2
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -2115,10 +2055,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsEquivalentTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsEquivalentTo": [
+                  {
                     "f": {
                       "denominator": 2,
                       "numerator": 1,
@@ -2126,8 +2065,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -2604,14 +2543,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 3
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -2627,14 +2565,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 2
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -2651,10 +2588,22 @@
           "customization_args": {
             "choices": {
               "value": [
-                "<p>Yes, because the cake is cut into two pieces, and Crumb is giving one piece to Matthew.<br></p>",
-                "<p>Yes, because Crumb can cut any piece of cake he likes, and that results in two halves.<br></p>",
-                "<p>No, because the word \"half\" has a different meaning from the fraction ½.<br></p>",
-                "<p>No, because, in a fraction, the pieces must be the same size.<br></p>"
+                {
+                  "html": "<p>Yes, because the cake is cut into two pieces, and Crumb is giving one piece to Matthew.<br></p>",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>Yes, because Crumb can cut any piece of cake he likes, and that results in two halves.<br></p>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>No, because the word \"half\" has a different meaning from the fraction ½.<br></p>",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>No, because, in a fraction, the pieces must be the same size.<br></p>",
+                  "content_id": "ca_choices_3"
+                }
               ]
             }
           },
@@ -2804,10 +2753,9 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsEquivalentTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsEquivalentTo": [
+                  {
                     "f": {
                       "denominator": 2,
                       "numerator": 1,
@@ -2815,8 +2763,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -2832,10 +2780,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 5,
                       "numerator": 3,
@@ -2843,14 +2790,13 @@
                       "isNegative": false
                     }
                   }
-                },
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+                ],
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 5
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -2866,32 +2812,25 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 16,
                       "numerator": 3,
                       "wholeNumber": 0,
                       "isNegative": false
                     }
-                  }
-                },
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+                  },
+                  {
                     "f": {
                       "denominator": 8,
                       "numerator": 3,
                       "wholeNumber": 0,
                       "isNegative": false
                     }
-                  }
-                },
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+                  },
+                  {
                     "f": {
                       "denominator": 4,
                       "numerator": 1,
@@ -2899,8 +2838,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -2916,43 +2855,33 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 32,
                       "numerator": 17,
                       "wholeNumber": 0,
                       "isNegative": false
                     }
-                  }
-                },
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+                  },
+                  {
                     "f": {
                       "denominator": 32,
                       "numerator": 15,
                       "wholeNumber": 0,
                       "isNegative": false
                     }
-                  }
-                },
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+                  },
+                  {
                     "f": {
                       "denominator": 16,
                       "numerator": 7,
                       "wholeNumber": 0,
                       "isNegative": false
                     }
-                  }
-                },
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+                  },
+                  {
                     "f": {
                       "denominator": 16,
                       "numerator": 9,
@@ -2960,8 +2889,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -2977,21 +2906,17 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 8,
                       "numerator": 5,
                       "wholeNumber": 0,
                       "isNegative": false
                     }
-                  }
-                },
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+                  },
+                  {
                     "f": {
                       "denominator": 4,
                       "numerator": 3,
@@ -2999,8 +2924,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -3016,14 +2941,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 16
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -3372,10 +3296,9 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsEquivalentTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsEquivalentTo": [
+                  {
                     "f": {
                       "denominator": 9,
                       "numerator": 2,
@@ -3383,8 +3306,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -3400,10 +3323,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 9,
                       "numerator": 7,
@@ -3411,8 +3333,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -3428,43 +3350,33 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 8,
                       "numerator": 1,
                       "wholeNumber": 0,
                       "isNegative": false
                     }
-                  }
-                },
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+                  },
+                  {
                     "f": {
                       "denominator": 8,
                       "numerator": 7,
                       "wholeNumber": 0,
                       "isNegative": false
                     }
-                  }
-                },
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+                  },
+                  {
                     "f": {
                       "denominator": 2,
                       "numerator": 1,
                       "wholeNumber": 0,
                       "isNegative": false
                     }
-                  }
-                },
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+                  },
+                  {
                     "f": {
                       "denominator": 7,
                       "numerator": 1,
@@ -3472,8 +3384,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -3489,32 +3401,25 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsEquivalentTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsEquivalentTo": [
+                  {
                     "f": {
                       "denominator": 2,
                       "numerator": 9,
                       "wholeNumber": 0,
                       "isNegative": false
                     }
-                  }
-                },
-                {
-                  "rule_type": "IsEquivalentTo",
-                  "inputs": {
+                  },
+                  {
                     "f": {
                       "denominator": 7,
                       "numerator": 2,
                       "wholeNumber": 0,
                       "isNegative": false
                     }
-                  }
-                },
-                {
-                  "rule_type": "IsEquivalentTo",
-                  "inputs": {
+                  },
+                  {
                     "f": {
                       "denominator": 2,
                       "numerator": 7,
@@ -3522,8 +3427,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -3539,10 +3444,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 8,
                       "numerator": 2,
@@ -3550,8 +3454,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -3567,10 +3471,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 9,
                       "numerator": 1,
@@ -3578,8 +3481,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -3595,10 +3498,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 6,
                       "numerator": 2,
@@ -3606,8 +3508,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -3827,10 +3729,9 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsEquivalentTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsEquivalentTo": [
+                  {
                     "f": {
                       "denominator": 4,
                       "numerator": 1,
@@ -3838,8 +3739,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -3855,10 +3756,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 4,
                       "numerator": 2,
@@ -3866,8 +3766,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -3883,10 +3783,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 3,
                       "numerator": 2,
@@ -3894,8 +3793,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -3911,10 +3810,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsEquivalentTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsEquivalentTo": [
+                  {
                     "f": {
                       "denominator": 8,
                       "numerator": 6,
@@ -3922,8 +3820,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -3939,10 +3837,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsEquivalentTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsEquivalentTo": [
+                  {
                     "f": {
                       "denominator": 2,
                       "numerator": 8,
@@ -3950,8 +3847,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -3967,14 +3864,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 8
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -3990,14 +3886,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 6
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -4013,14 +3908,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 10
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -4036,20 +3930,16 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 7
-                  }
-                },
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+                  },
+                  {
                     "x": 9
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -4452,10 +4342,9 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsEquivalentTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsEquivalentTo": [
+                  {
                     "f": {
                       "denominator": 8,
                       "numerator": 1,
@@ -4463,8 +4352,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -4480,10 +4369,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 5,
                       "numerator": 1,
@@ -4491,14 +4379,13 @@
                       "isNegative": false
                     }
                   }
-                },
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+                ],
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 5
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -4514,10 +4401,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 4,
                       "numerator": 1,
@@ -4525,8 +4411,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -4542,10 +4428,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 2,
                       "numerator": 1,
@@ -4553,8 +4438,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -4570,10 +4455,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsEquivalentTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsEquivalentTo": [
+                  {
                     "f": {
                       "denominator": 1,
                       "numerator": 8,
@@ -4581,8 +4465,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -4598,14 +4482,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 6
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -4621,14 +4504,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 7
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -4644,14 +4526,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 3
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -4667,14 +4548,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 8
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -4690,14 +4570,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 4
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -5152,10 +5031,9 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsEquivalentTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsEquivalentTo": [
+                  {
                     "f": {
                       "denominator": 9,
                       "numerator": 4,
@@ -5163,8 +5041,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -5180,10 +5058,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsEquivalentTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsEquivalentTo": [
+                  {
                     "f": {
                       "denominator": 9,
                       "numerator": 5,
@@ -5191,8 +5068,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -5208,10 +5085,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 3,
                       "numerator": 2,
@@ -5219,14 +5095,13 @@
                       "isNegative": false
                     }
                   }
-                },
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+                ],
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 3
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -5242,21 +5117,17 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 9,
                       "numerator": 2,
                       "wholeNumber": 0,
                       "isNegative": false
                     }
-                  }
-                },
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+                  },
+                  {
                     "f": {
                       "denominator": 9,
                       "numerator": 1,
@@ -5264,8 +5135,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -5281,20 +5152,16 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasNumeratorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasNumeratorEqualTo": [
+                  {
                     "x": 2
-                  }
-                },
-                {
-                  "rule_type": "HasNumeratorEqualTo",
-                  "inputs": {
+                  },
+                  {
                     "x": 1
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -5310,43 +5177,33 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 4,
                       "numerator": 9,
                       "wholeNumber": 0,
                       "isNegative": false
                     }
-                  }
-                },
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+                  },
+                  {
                     "f": {
                       "denominator": 5,
                       "numerator": 4,
                       "wholeNumber": 0,
                       "isNegative": false
                     }
-                  }
-                },
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+                  },
+                  {
                     "f": {
                       "denominator": 4,
                       "numerator": 5,
                       "wholeNumber": 0,
                       "isNegative": false
                     }
-                  }
-                },
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+                  },
+                  {
                     "f": {
                       "denominator": 5,
                       "numerator": 9,
@@ -5354,8 +5211,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -5371,14 +5228,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 9
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -5868,10 +5724,9 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsEquivalentTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsEquivalentTo": [
+                  {
                     "f": {
                       "denominator": 4,
                       "numerator": 2,
@@ -5879,8 +5734,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -5896,14 +5751,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 3
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -6041,10 +5895,9 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsEquivalentTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsEquivalentTo": [
+                  {
                     "f": {
                       "denominator": 10,
                       "numerator": 6,
@@ -6052,8 +5905,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -6069,14 +5922,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 9
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -6214,10 +6066,9 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsEquivalentTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsEquivalentTo": [
+                  {
                     "f": {
                       "denominator": 4,
                       "numerator": 1,
@@ -6225,8 +6076,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -6242,14 +6093,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 5
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -6387,10 +6237,9 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsEquivalentTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsEquivalentTo": [
+                  {
                     "f": {
                       "denominator": 10,
                       "numerator": 6,
@@ -6398,8 +6247,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -6415,14 +6264,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 9
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {

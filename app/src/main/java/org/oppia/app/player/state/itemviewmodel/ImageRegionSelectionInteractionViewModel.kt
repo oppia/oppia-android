@@ -27,12 +27,12 @@ class ImageRegionSelectionInteractionViewModel(
   OnClickableAreaClickedListener {
   var answerText: CharSequence = ""
   val selectableRegions: List<ImageWithRegions.LabeledRegion> by lazy {
-    interaction.customizationArgsMap["imageAndRegions"]?.imageWithRegions?.labelRegionsList
+    interaction.customizationArgsMap["imageAndRegions"]?.customSchemaValue?.imageWithRegions?.labelRegionsList
       ?: listOf()
   }
 
   val imagePath: String by lazy {
-    interaction.customizationArgsMap["imageAndRegions"]?.imageWithRegions?.imagePath ?: ""
+    interaction.customizationArgsMap["imageAndRegions"]?.customSchemaValue?.imageWithRegions?.imagePath ?: ""
   }
 
   val isAnswerAvailable = ObservableField<Boolean>(false)
