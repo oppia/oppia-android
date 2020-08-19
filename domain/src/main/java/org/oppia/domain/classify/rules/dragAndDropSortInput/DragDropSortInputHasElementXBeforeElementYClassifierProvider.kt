@@ -13,7 +13,8 @@ import javax.inject.Inject
  *
  * https://github.com/oppia/oppia/blob/132b9d8f059253548ea1efadf1ff76416dfa2832/extensions/interactions/DragAndDropSortInput/directives/drag-and-drop-sort-input-rules.service.ts#L88
  */
-internal class DragDropSortInputHasElementXBeforeElementYClassifierProvider @Inject constructor(
+// TODO(#1580): Re-restrict access using Bazel visibilities
+class DragDropSortInputHasElementXBeforeElementYClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
 ) : RuleClassifierProvider,
   GenericRuleClassifier.MultiTypeDoubleInputMatcher<ListOfSetsOfHtmlStrings, String, String> {

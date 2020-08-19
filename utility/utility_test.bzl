@@ -1,5 +1,5 @@
 load("//:oppia_android_test.bzl", "oppia_android_test")
-
+# TODO(#1620): Remove module-specific test macros once Gradle is removed
 def utility_test(name, srcs, test_class, deps):
   '''
   Creates individual tests for test files in the utility module.
