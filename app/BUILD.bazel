@@ -258,15 +258,6 @@ in order to keep Gradle building.
  )
 for file in ALTERED_VIEWS]
 
-# Source files and genrule targets for databinding_adapters library.
-DATABINDING_ADAPTERS = [
-    "src/main/java/org/oppia/app/databinding/EditTextBindingAdapters.java",
-    "src/main/java/org/oppia/app/databinding/GuidelineBindingAdapters.java",
-    "src/main/java/org/oppia/app/databinding/MarginBindingAdapters.java",
-    "src/main/java/org/oppia/app/databinding/StateAssemblerMarginBindingAdapters.java",
-    "src/main/java/org/oppia/app/databinding/StateAssemblerPaddingBindingAdapters.java",
-    "src/main/java/org/oppia/app/databinding/ViewBindingAdapters.java",
-]
 
 # TODO(#1617): Remove genrules post-gradle
 # Adapter files altered by genrules to be excluded in the app library.
@@ -276,8 +267,18 @@ ALTERED_DATABINDING_ADAPTERS = [
     "src/main/java/org/oppia/app/databinding/TextViewBindingAdapters.java",
 ]
 
-[DATABINDING_ADAPTERS.append("update_" + altered_adapters[0:-5])
-for altered_adapters in ALTERED_DATABINDING_ADAPTERS]
+# Source files and genrule targets for databinding_adapters library.
+DATABINDING_ADAPTERS = [
+    "src/main/java/org/oppia/app/databinding/EditTextBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/GuidelineBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/MarginBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/StateAssemblerMarginBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/StateAssemblerPaddingBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/ViewBindingAdapters.java",
+] + [
+    "update_" + altered_adapters[0:-5]
+    for altered_adapters in ALTERED_DATABINDING_ADAPTERS
+]
 
 # TODO(#1617): Remove genrules post-gradle
 '''
