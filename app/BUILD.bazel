@@ -261,6 +261,7 @@ VIEW_MODELS = [
     for altered_view_models in ALTERED_VIEW_MODELS
 ]
 
+# TODO(#1617): Remove genrules post-gradle
 '''
 Genrule for source files in the view_models library.
 
@@ -329,6 +330,7 @@ VIEWS = [
     for altered_views in ALTERED_VIEWS
 ]
 
+# TODO(#1617): Remove genrules post-gradle
 '''
 Genrule for source files in the views library.
 
