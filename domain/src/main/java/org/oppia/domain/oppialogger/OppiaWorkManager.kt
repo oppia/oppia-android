@@ -1,8 +1,10 @@
 package org.oppia.domain.oppialogger
 
 import android.content.Context
+import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import androidx.work.Worker
@@ -40,6 +42,12 @@ class OppiaWorkManager @Inject constructor(
     const val WORKER_CASE_KEY = "worker_case_key"
   }
 
+  private val workerConstraints = Constraints.Builder()
+    .setRequiredNetworkType(NetworkType.CONNECTED)
+    .setRequiresBatteryNotLow(true)
+    .setRequiresStorageNotLow(true)
+    .build()
+
   override fun doWork(): Result {
     return when (inputData.getString(WORKER_CASE_KEY)) {
       WorkerCase.EVENT_WORKER.toString() -> {
@@ -62,6 +70,7 @@ class OppiaWorkManager @Inject constructor(
       PeriodicWorkRequest
         .Builder(OppiaWorkManager::class.java, 6, TimeUnit.HOURS)
         .setInputData(workerCase)
+        .setConstraints(workerConstraints)
         .build()
     workManager.enqueueUniquePeriodicWork(
       OPPIA_EVENT_WORK,
@@ -80,6 +89,7 @@ class OppiaWorkManager @Inject constructor(
       PeriodicWorkRequest
         .Builder(OppiaWorkManager::class.java, 6, TimeUnit.HOURS)
         .setInputData(workerCase)
+        .setConstraints(workerConstraints)
         .build()
     workManager.enqueueUniquePeriodicWork(
       OPPIA_EXCEPTION_WORK,
@@ -88,7 +98,7 @@ class OppiaWorkManager @Inject constructor(
     )
   }
 
-  private fun exceptionWork(): Result{
+  private fun exceptionWork(): Result {
     val storeLiveData = dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
     val storeSize = storeLiveData.value?.getOrThrow()?.exceptionLogCount?.minus(1)
     for (i in 0..storeSize!!) {
@@ -96,13 +106,13 @@ class OppiaWorkManager @Inject constructor(
       exceptionLog?.toException()?.let { exceptionLogger.logException(it) }
       storeLiveData.value?.getOrThrow()!!.exceptionLogList.remove(exceptionLog)
     }
-    return when(storeSize){
+    return when (storeSize) {
       0 -> Result.success()
       else -> Result.failure()
     }
   }
 
-  private fun eventWork(): Result{
+  private fun eventWork(): Result {
     val storeLiveData = analyticsController.getEventLogs()
     val storeSize = storeLiveData.value?.getOrThrow()?.eventLogCount?.minus(1)
     for (i in 0..storeSize!!) {
@@ -110,7 +120,7 @@ class OppiaWorkManager @Inject constructor(
       eventLog?.let { eventLogger.logEvent(it) }
       storeLiveData.value?.getOrThrow()!!.eventLogList.remove(eventLog)
     }
-    return when(storeSize){
+    return when (storeSize) {
       0 -> Result.success()
       else -> Result.failure()
     }
