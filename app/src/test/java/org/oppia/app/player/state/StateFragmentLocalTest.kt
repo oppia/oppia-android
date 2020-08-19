@@ -50,9 +50,7 @@ import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRAC
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.PREVIOUS_RESPONSES_HEADER
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
-import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
-import org.oppia.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.data.backends.gae.NetworkModule
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
@@ -69,7 +67,6 @@ import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.domain.topic.TEST_SKILL_ID_1
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.testing.TestAccessibilityModule
@@ -115,8 +112,6 @@ class StateFragmentLocalTest {
   lateinit var context: Context
 
   private val internalProfileId: Int = 1
-
-  private val SKILL_ID_LIST = arrayListOf(TEST_SKILL_ID_1)
 
   @Before
   fun setUp() {
@@ -246,19 +241,7 @@ class StateFragmentLocalTest {
       playThroughState1()
 
       submitTwoWrongAnswers()
-
-      onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testQuestionPlayer_submitTwoWrongAnswers_checkPreviousHeaderVisible() {
-    launchForQuestionPlayer(SKILL_ID_LIST).use {
-      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
-      onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
-
-      submitTwoWrongAnswersToQuestionPlayer()
-
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
       onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
     }
   }
@@ -270,22 +253,9 @@ class StateFragmentLocalTest {
       playThroughState1()
 
       submitTwoWrongAnswers()
-
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
       onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
       onView(withId(R.id.state_recycler_view)).check(matches(hasChildCount(/* childCount= */ 5)))
-    }
-  }
-
-  @Test
-  fun testQuestionPlayer_submitTwoWrongAnswers_checkPreviousHeaderCollapsed() {
-    launchForQuestionPlayer(SKILL_ID_LIST).use {
-      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
-      onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
-
-      submitTwoWrongAnswersToQuestionPlayer()
-
-      onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
-      onView(withId(R.id.question_recycler_view)).check(matches(hasChildCount(/* childCount= */ 5)))
     }
   }
 
@@ -297,26 +267,9 @@ class StateFragmentLocalTest {
 
       submitTwoWrongAnswers()
 
-      onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
       onView(withId(R.id.previous_response_header)).perform(click())
       onView(withId(R.id.state_recycler_view)).check(matches(hasChildCount(/* childCount= */ 6)))
-    }
-  }
-
-  @Test
-  fun testQuestionPlayer_submitTwoWrongAnswers_expandResponse_checkPreviousHeaderExpanded() {
-    launchForQuestionPlayer(SKILL_ID_LIST).use {
-      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
-      onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
-
-      submitTwoWrongAnswersToQuestionPlayer()
-
-      onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
-      onView(withId(R.id.question_recycler_view))
-        .perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
-      onView(withId(R.id.previous_response_header)).perform(click())
-      onView(withId(R.id.question_recycler_view)).check(matches(hasChildCount(/* childCount= */ 6)))
     }
   }
 
@@ -328,6 +281,7 @@ class StateFragmentLocalTest {
 
       submitTwoWrongAnswers()
 
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
       onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
       onView(withId(R.id.state_recycler_view)).check(matches(hasChildCount(/* childCount= */ 5)))
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
@@ -336,27 +290,6 @@ class StateFragmentLocalTest {
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
       onView(withSubstring("Previous Responses")).perform(click())
       onView(withId(R.id.state_recycler_view)).check(matches(hasChildCount(/* childCount= */ 5)))
-    }
-  }
-
-  @Test
-  fun testQuestionPlayer_expandCollapseResponse_checkPreviousHeaderCollapsed() {
-    launchForQuestionPlayer(SKILL_ID_LIST).use {
-      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
-      onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
-
-      submitTwoWrongAnswersToQuestionPlayer()
-
-      onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
-      onView(withId(R.id.question_recycler_view)).check(matches(hasChildCount(/* childCount= */ 5)))
-
-      onView(withId(R.id.question_recycler_view))
-        .perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
-      onView(withId(R.id.previous_response_header)).perform(click())
-      onView(withId(R.id.question_recycler_view)).check(matches(hasChildCount(/* childCount= */ 6)))
-
-      onView(withId(R.id.previous_response_header)).perform(click())
-      onView(withId(R.id.question_recycler_view)).check(matches(hasChildCount(/* childCount= */ 5)))
     }
   }
 
@@ -783,16 +716,6 @@ class StateFragmentLocalTest {
     )
   }
 
-  private fun launchForQuestionPlayer(
-    skillIdList: ArrayList<String>
-  ): ActivityScenario<QuestionPlayerActivity> {
-    return ActivityScenario.launch(
-      QuestionPlayerActivity.createQuestionPlayerActivityIntent(
-        context, skillIdList
-      )
-    )
-  }
-
   private fun startPlayingExploration() {
     onView(withId(R.id.play_test_exploration_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
@@ -966,21 +889,6 @@ class StateFragmentLocalTest {
     submitWrongAnswerToState2()
     submitWrongAnswerToState2()
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
-  }
-
-  private fun submitTwoWrongAnswersToQuestionPlayer() {
-    submitTwoWrongAnswerToQuestionPlayerFractionInput()
-    submitTwoWrongAnswerToQuestionPlayerFractionInput()
-  }
-
-  private fun submitTwoWrongAnswerToQuestionPlayerFractionInput() {
-    onView(withId(R.id.question_recycler_view)).perform(scrollToViewType(TEXT_INPUT_INTERACTION))
-    onView(withId(R.id.text_input_interaction_view)).perform(appendText("1"))
-    testCoroutineDispatchers.runCurrent()
-
-    onView(withId(R.id.question_recycler_view)).perform(scrollToViewType(SUBMIT_ANSWER_BUTTON))
-    onView(withId(R.id.submit_answer_button)).perform(click())
-    testCoroutineDispatchers.runCurrent()
   }
 
   private fun produceAndViewFirstHint() {
