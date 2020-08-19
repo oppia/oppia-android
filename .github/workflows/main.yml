@@ -151,7 +151,7 @@ jobs:
         with:
           java-version: 9
       - name: Build Oppia Bazel
-        run: unzip ~/oppia-android/bazel-build.zip
+        run: zip ~/oppia-android/bazel-build.zip
       - name: Extract Android ToolsCurr
         run: tar -xf ~/oppia-android/bazel-tools.zip -C ~/tmp/android_tools
       - name: Build Oppia binary with Bazel
