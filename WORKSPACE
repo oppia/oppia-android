@@ -136,6 +136,10 @@ maven_install(
         "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0",
         "androidx.multidex:multidex-instrumentation:2.0.0",
         "androidx.multidex:multidex:2.0.1",
+        "androidx.navigation:navigation-fragment:2.0.0",
+        "androidx.navigation:navigation-fragment-ktx:2.0.0",
+        "androidx.navigation:navigation-ui:2.0.0",
+        "androidx.navigation:navigation-ui-ktx:2.0.0",
         "androidx.recyclerview:recyclerview:1.0.0",
         "androidx.test.espresso:espresso-contrib:3.1.0",
         "androidx.test.espresso:espresso-core:3.2.0",
@@ -169,10 +173,6 @@ maven_install(
         "org.mockito:mockito-core:2.7.22",
         "org.robolectric:annotations:4.3",
         "org.robolectric:robolectric:4.3",
-        "androidx.navigation:navigation-fragment:2.0.0", #
-        "androidx.navigation:navigation-fragment-ktx:2.0.0",#
-        "androidx.navigation:navigation-ui:2.0.0",#
-        "androidx.navigation:navigation-ui-ktx:2.0.0",#
     ],
     repositories = DAGGER_REPOSITORIES + [
         "https://bintray.com/bintray/jcenter",
