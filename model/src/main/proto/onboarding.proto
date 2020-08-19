@@ -5,8 +5,32 @@ package model;
 option java_package = "org.oppia.app.model";
 option java_multiple_files = true;
 
-// Structure for user onboarding flow.
-message OnboardingFlow {
-  // Determines whether user already onboarded.
+// Describes the state the user is in upon opening the app.
+message AppStartupState {
+  // Describes the state the app should be in upon the user opening it.
+  enum StartupMode {
+    // Indicates that the startup mode is unknown.
+    STARTUP_MODE_UNSPECIFIED = 0;
+
+    // Indicates that the user hasn't yet completed the app onboarding flow.
+    USER_NOT_YET_ONBOARDED = 1;
+
+    // Indicates that the user has completed the onboarding flow, and shouldn't be shown it again.
+    USER_IS_ONBOARDED = 2;
+
+    // Indicates that the app is in a deprecated state and the user should not be allowed to
+    // continue using it. Instead, they should be shown a prompt suggesting that they update the app
+    // via the Play Store.
+    APP_IS_DEPRECATED = 3;
+  }
+
+  // Contains the user's startup state upon opening the app. This may change from app open to app
+  // open, but should remain constant throughout the lifetime of a single process.
+  StartupMode startup_mode = 1;
+}
+
+// Stores the completion state of the user's progress through the app onboarding flow.
+message OnboardingState {
+  // Indicates whether user has fully completed the onboarding flow.
   bool already_onboarded_app = 1;
 }
