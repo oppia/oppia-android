@@ -57,6 +57,22 @@ LISTENER_FILES = [
     "src/main/java/org/oppia/app/utility/RegionClickEvent.kt",
 ]
 
+# TODO(#1617): Remove genrules post-gradle
+# Files altered by genrules to be excluded in the app library
+ALTERED_VIEW_MODELS = [
+    "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel.kt",
+    "src/main/java/org/oppia/app/help/faq/FAQListViewModel.kt",
+    "src/main/java/org/oppia/app/help/HelpItemViewModel.kt",
+    "src/main/java/org/oppia/app/help/HelpListViewModel.kt",
+    "src/main/java/org/oppia/app/onboarding/OnboadingSlideViewModel.kt",
+    "src/main/java/org/oppia/app/onboarding/OnboardingViewModel.kt",
+    "src/main/java/org/oppia/app/parser/StringToFractionParser.kt",
+    "src/main/java/org/oppia/app/parser/StringToNumberParser.kt",
+    "src/main/java/org/oppia/app/player/state/itemviewmodel/FractionInteractionViewModel.kt",
+    "src/main/java/org/oppia/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel.kt",
+    "src/main/java/org/oppia/app/topic/info/TopicInfoViewModel.kt",
+]
+
 # Source files for view_model library
 VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAppInformationViewModel.kt",
@@ -167,26 +183,10 @@ VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/walkthrough/topiclist/WalkthroughTopicViewModel.kt",
     "src/main/java/org/oppia/app/walkthrough/WalkthroughViewModel.kt",
     "src/main/java/org/oppia/app/walkthrough/welcome/WalkthroughWelcomeViewModel.kt",
+] + [
+    "update_" + altered_view_models[0:-3]
+    for altered_view_models in ALTERED_VIEW_MODELS
 ]
-
-# TODO(#1617): Remove genrules post-gradle
-# Files altered by genrules to be excluded in the app library
-ALTERED_VIEW_MODELS = [
-    "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel.kt",
-    "src/main/java/org/oppia/app/help/faq/FAQListViewModel.kt",
-    "src/main/java/org/oppia/app/help/HelpItemViewModel.kt",
-    "src/main/java/org/oppia/app/help/HelpListViewModel.kt",
-    "src/main/java/org/oppia/app/onboarding/OnboadingSlideViewModel.kt",
-    "src/main/java/org/oppia/app/onboarding/OnboardingViewModel.kt",
-    "src/main/java/org/oppia/app/parser/StringToFractionParser.kt",
-    "src/main/java/org/oppia/app/parser/StringToNumberParser.kt",
-    "src/main/java/org/oppia/app/player/state/itemviewmodel/FractionInteractionViewModel.kt",
-    "src/main/java/org/oppia/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel.kt",
-    "src/main/java/org/oppia/app/topic/info/TopicInfoViewModel.kt",
-]
-
-[VIEW_MODEL_FILES.append("update_" + altered_view_models[0:-3])
-for altered_view_models in ALTERED_VIEW_MODELS]
 
 # TODO(#1617): Remove genrules post-gradle
 '''
@@ -207,6 +207,15 @@ in order to keep Gradle building.
 )
 for file in ALTERED_VIEW_MODELS]
 
+# TODO(#1617): Remove genrules post-gradle
+# View files altered by genrules to be excluded in the app library.
+ALTERED_VIEWS = [
+    "src/main/java/org/oppia/app/customview/LessonThumbnailImageView.kt",
+    "src/main/java/org/oppia/app/customview/SegmentedCircularProgressView.kt",
+    "src/main/java/org/oppia/app/profile/ProfileInputView.kt",
+    "src/main/java/org/oppia/app/utility/ClickableAreasImage.kt",
+]
+
 # Source files and genrule targets for views library.
 VIEW_FILES = [
     "src/main/java/org/oppia/app/customview/interaction/FractionInputInteractionView.kt",
@@ -219,19 +228,10 @@ VIEW_FILES = [
     "src/main/java/org/oppia/app/shim/ViewComponentFactory.kt",
     "src/main/java/org/oppia/app/view/ViewComponent.kt",
     "src/main/java/org/oppia/app/view/ViewScope.kt",
+] + [
+    "update_" + altered_views[0:-3]
+    for altered_views in ALTERED_VIEWS
 ]
-
-# TODO(#1617): Remove genrules post-gradle
-# View files altered by genrules to be excluded in the app library.
-ALTERED_VIEWS = [
-    "src/main/java/org/oppia/app/customview/LessonThumbnailImageView.kt",
-    "src/main/java/org/oppia/app/customview/SegmentedCircularProgressView.kt",
-    "src/main/java/org/oppia/app/profile/ProfileInputView.kt",
-    "src/main/java/org/oppia/app/utility/ClickableAreasImage.kt",
-]
-
-[VIEW_FILES.append("update_" + altered_views[0:-3])
-for altered_views in ALTERED_VIEWS]
 
 # TODO(#1617): Remove genrules post-gradle
 '''
@@ -293,8 +293,8 @@ kt_android_library(
         "@circularimageview//circularimageview:circular_image_view",
         artifact("androidx.appcompat:appcompat"),
         artifact("androidx.core:core-ktx"),
-        artifact("androidx.databinding:databinding-runtime"),
         artifact("androidx.databinding:databinding-common"),
+        artifact("androidx.databinding:databinding-runtime"),
     ],
     visibility = ["//visibility:public"],
 )
@@ -326,8 +326,8 @@ kt_android_library(
         "//domain",
         "//model",
         "//utility",
-        artifact("androidx.databinding:databinding-runtime"),
         artifact("androidx.databinding:databinding-common"),
+        artifact("androidx.databinding:databinding-runtime"),
     ],
     visibility = ["//visibility:private"],
 )

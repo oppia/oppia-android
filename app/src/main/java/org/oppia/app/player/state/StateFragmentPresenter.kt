@@ -27,6 +27,8 @@ import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.AudioUiManager
+import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.app.utility.LifecycleSafeTimerFactory
@@ -171,17 +173,14 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
-  fun getPendingAnswer(
-    recyclerViewAssembler: StatePlayerRecyclerViewAssembler
-  ): UserAnswer {
-    return viewModel.getPendingAnswerWithoutError(
-      recyclerViewAssembler.getPendingAnswerHandler(viewModel.getAnswerItemList())
-    ) ?: UserAnswer.getDefaultInstance()
+  private val answerHandlerRetriever: (List<StateItemViewModel>) -> InteractionAnswerHandler? = {
+      items ->
+    recyclerViewAssembler.getPendingAnswerHandler(items)
   }
 
   fun onSubmitButtonClicked() {
     hideKeyboard()
-    handleSubmitAnswer(getPendingAnswer(recyclerViewAssembler))
+    handleSubmitAnswer(viewModel.getPendingAnswer(answerHandlerRetriever))
   }
 
   fun onResponsesHeaderClicked() {
@@ -216,7 +215,7 @@ class StateFragmentPresenter @Inject constructor(
   fun handleKeyboardAction() {
     hideKeyboard()
     if (viewModel.getCanSubmitAnswer().get() == true) {
-      handleSubmitAnswer(getPendingAnswer(recyclerViewAssembler))
+      handleSubmitAnswer(viewModel.getPendingAnswer(answerHandlerRetriever))
     }
   }
 
