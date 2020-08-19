@@ -1,5 +1,6 @@
 package org.oppia.app.application
 
+// TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
 import android.app.Application
 import dagger.BindsInstance
 import dagger.Component
