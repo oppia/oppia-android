@@ -12,20 +12,40 @@ import androidx.test.espresso.action.GeneralClickAction
 import androidx.test.espresso.action.Press
 import androidx.test.espresso.action.Tap
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.firebase.FirebaseApp
 import org.hamcrest.Description
 import org.hamcrest.TypeSafeMatcher
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.options.OptionsActivity
 import org.oppia.app.options.STORY_TEXT_SIZE
 import org.oppia.app.options.StoryTextSizeActivity
+import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 
 @RunWith(AndroidJUnit4::class)
 class StoryTextSizeFragmentTest {
+
+  @Before
+  fun setUp() {
+    Intents.init()
+    FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
+  }
+
+  @After
+  fun tearDown() {
+    Intents.release()
+  }
 
   @Test
   fun testTextSize_changeTextSizeToLarge_changeConfiguration_checkTextSizeLargeIsSelected() {
@@ -37,11 +57,40 @@ class StoryTextSizeFragmentTest {
     }
   }
 
+  @Test
+  @Config(qualifiers = "sw600dp")
+  @LooperMode(LooperMode.Mode.PAUSED)
+  fun testTextSize_clickTextSize_changeTextSizeToLarge_checkOptionsFragmentIsUpdatedCorrectly() {
+    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+      onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(10))
+      onView(
+        atPositionOnView(
+          R.id.options_recyclerview,
+          0,
+          R.id.story_text_size_text_view
+        )
+      ).check(
+        matches(withText("Large"))
+      )
+    }
+  }
+
   private fun createStoryTextSizeActivityIntent(summaryValue: String): Intent {
     return StoryTextSizeActivity.createStoryTextSizeActivityIntent(
       ApplicationProvider.getApplicationContext(),
       STORY_TEXT_SIZE,
       summaryValue
+    )
+  }
+
+  private fun createOptionActivityIntent(
+    internalProfileId: Int,
+    isFromNavigationDrawer: Boolean
+  ): Intent {
+    return OptionsActivity.createOptionsActivity(
+      ApplicationProvider.getApplicationContext(),
+      internalProfileId,
+      isFromNavigationDrawer
     )
   }
 
