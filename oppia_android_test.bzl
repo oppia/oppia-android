@@ -2,7 +2,7 @@ load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 def oppia_android_test(name, srcs, test_manifest, custom_package, test_class, deps,
-                       enable_data_binding=0, assets=None, assets_dir=None):
+                       enable_data_binding=False, assets=None, assets_dir=None):
   '''
   Creates an Oppia test target for running the specified test as an Android local test with Kotlin
   support. Note that this creates an additional, internal library.

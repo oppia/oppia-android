@@ -19,5 +19,5 @@ def app_test(name, srcs, test_class, deps):
     test_class = test_class,
     test_manifest = "src/test/AndroidManifest.xml",
     deps = deps,
-    enable_data_binding = 1,
+    enable_data_binding = True,
   )

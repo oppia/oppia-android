@@ -151,6 +151,13 @@ domain_test(
 )
 
 domain_test(
+    name = "AppStartupStateControllerTest",
+    srcs = ["src/test/java/org/oppia/domain/onboarding/AppStartupStateControllerTest.kt"],
+    test_class = "org.oppia.domain.onboarding.AppStartupStateControllerTest",
+    deps = TEST_DEPS,
+)
+
+domain_test(
     name = "AnalyticsControllerTest",
     srcs = ["src/test/java/org/oppia/domain/oppialogger/analytics/AnalyticsControllerTest.kt"],
     test_class = "org.oppia.domain.oppialogger.analytics.AnalyticsControllerTest",
