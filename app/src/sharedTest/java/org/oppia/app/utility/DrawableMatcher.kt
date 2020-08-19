@@ -16,7 +16,7 @@ class DrawableMatcher constructor(
 ) : TypeSafeMatcher<View>(View::class.java) {
   companion object {
     const val NONE = -1
-    internal const val ANY = -2
+    const val ANY = -2
   }
 
   private var resourceName: String? = null

@@ -14,7 +14,7 @@ def app_test(name, srcs, test_class, deps):
 
   oppia_android_test(
     name = name,
-    srcs = srcs,
+    srcs = srcs + ["src/test/java/DataBinderMapperImpl.java"],
     custom_package = "org.oppia.app.test",
     test_class = test_class,
     test_manifest = "src/test/AndroidManifest.xml",

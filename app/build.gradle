@@ -61,7 +61,7 @@ android {
     test {
       java.srcDirs += "src/sharedTest/java"
       kotlin.srcDirs += "src/sharedTest/java"
-      java.exclude('**/DataBinderMapperImpl.java')
+      java.exclude('**/DataBinderMapperImpl.java') // Bazel-specific file used to run tests
     }
   }
 }
