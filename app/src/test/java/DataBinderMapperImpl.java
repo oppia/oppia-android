@@ -1,5 +1,5 @@
 package androidx.databinding;
-
+//TODO(#1683): Remove when android_local_test works with data-binding.
 /**
  * Generated code necessary to run tests with Bazel.
  *

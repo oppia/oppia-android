@@ -102,6 +102,7 @@ DATABINDING_LAYOUTS = ["src/main/res/layout*/**"]
 
 # View Models
 
+# TODO(#1617): Remove genrules post-gradle
 '''
 Source files for the view_models library that need to be altered by the view model genrule.
 
@@ -116,11 +117,6 @@ DO NOT place your file here if:
  - It depends on any file not contained in the listeners, annotations, or resources libraries
  - It does not import any resources
  - It uses Kotlin synthetic imports
-'''
-# TODO(#1617): Remove genrules post-gradle
-'''
-View model files to be processed by genrules. View models should be processed if they import
-resource or binding files of any kind.
 '''
 ALTERED_VIEW_MODELS = [
     "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel.kt",
@@ -681,8 +677,15 @@ kt_android_library(
 )
 
 '''
-Library that builds test-only source files. These files should not be included in the app library or
-the final binary but should be depedencies for tests.
+Library that builds test-only source files.
+
+All app-specific files that are only used for testing
+purposes but are not tests should be included in this list. These files should not be included in
+the app library or the final binary but should be dependencies for tests.
+
+Place your file here if:
+ - It is not a test file
+ - Only test files depend on it
 '''
 kt_android_library(
     name = "test_deps",
@@ -734,8 +737,11 @@ TEST_DEPS = [
 ]
 
 '''
-Tests to be processed using the test genrule. Test files should be processed if they import resource
-or binding files of any kind.
+Test files for ap module that need to be altered by the test genrule.
+
+Place your file here if:
+ - It is a test file
+ - It imports resources or depends on bindings
 '''
 ALTERED_TESTS = [
     "src/sharedTest/java/org/oppia/app/administratorcontrols/AdministratorControlsActivityTest.kt",
