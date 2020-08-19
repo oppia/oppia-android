@@ -244,10 +244,13 @@ class OptionsFragmentPresenter @Inject constructor(
    * @param action what to execute after the UI is initialized.
    */
   fun runAfterUIInitialization(action: () -> Unit) {
-    viewModel.uiLiveData.observe(fragment, Observer {
-      if (it) {
-        action.invoke()
+    viewModel.uiLiveData.observe(
+      fragment,
+      Observer {
+        if (it) {
+          action.invoke()
+        }
       }
-    })
+    )
   }
 }
