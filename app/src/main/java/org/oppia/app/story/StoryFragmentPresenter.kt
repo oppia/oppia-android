@@ -62,6 +62,7 @@ class StoryFragmentPresenter @Inject constructor(
     viewModel.setInternalProfileId(internalProfileId)
     viewModel.setTopicId(topicId)
     viewModel.setStoryId(storyId)
+    viewModel.setStoryResultLiveData(fragment)
     logStoryActivityEvent(topicId, storyId)
 
     binding.storyToolbar.setNavigationOnClickListener {
