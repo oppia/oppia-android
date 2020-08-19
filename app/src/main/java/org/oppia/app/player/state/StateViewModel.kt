@@ -48,19 +48,11 @@ class StateViewModel @Inject constructor() : ObservableViewModel() {
 
   fun getCanSubmitAnswer(): ObservableField<Boolean> = canSubmitAnswer
 
-  private fun getAnswerItemList(): List<StateItemViewModel> {
-    return if (isSplitView.get() == true) {
-      rightItemList
-    } else {
-      itemList
-    }
-  }
-
   fun getPendingAnswer(
-    answerHandlerRetriever: (List<StateItemViewModel>) -> InteractionAnswerHandler?
+    retrieveAnswerHandler: (List<StateItemViewModel>) -> InteractionAnswerHandler?
   ): UserAnswer {
     return getPendingAnswerWithoutError(
-      answerHandlerRetriever(
+      retrieveAnswerHandler(
         getAnswerItemList()
       )
     ) ?: UserAnswer.getDefaultInstance()
@@ -73,6 +65,14 @@ class StateViewModel @Inject constructor() : ObservableViewModel() {
       answerHandler?.getPendingAnswer()
     } else {
       null
+    }
+  }
+
+  private fun getAnswerItemList(): List<StateItemViewModel> {
+    return if (isSplitView.get() == true) {
+      rightItemList
+    } else {
+      itemList
     }
   }
 }
