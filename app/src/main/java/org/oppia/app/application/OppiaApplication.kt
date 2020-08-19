@@ -17,4 +17,11 @@ class OppiaApplication : MultiDexApplication(), ActivityComponentFactory {
   override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
     return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
   }
+
+  override fun onCreate() {
+    super.onCreate()
+    val workManager = component.getOppiaWorkManager()
+    workManager.setWorkerRequestForEvents()
+    workManager.setWorkerRequestForException()
+  }
 }

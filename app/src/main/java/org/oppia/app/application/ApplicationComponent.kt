@@ -16,6 +16,8 @@ import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.oppialogger.LogStorageModule
+import org.oppia.domain.oppialogger.OppiaWorkManager
+import org.oppia.domain.oppialogger.OppiaWorkManagerModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.util.accessibility.AccessibilityModule
 import org.oppia.util.caching.CachingModule
@@ -44,7 +46,7 @@ import javax.inject.Singleton
     HtmlParserEntityTypeModule::class, CachingModule::class,
     QuestionModule::class, LogReportingModule::class,
     AccessibilityModule::class, ImageClickInputModule::class,
-    LogStorageModule::class
+    LogStorageModule::class, OppiaWorkManagerModule::class
   ]
 )
 
@@ -57,4 +59,6 @@ interface ApplicationComponent {
   }
 
   fun getActivityComponentBuilderProvider(): Provider<ActivityComponent.Builder>
+
+  fun getOppiaWorkManager(): OppiaWorkManager
 }
