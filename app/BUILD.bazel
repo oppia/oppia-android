@@ -9,10 +9,8 @@ load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 '''
-Source files for the annotations library.
-
-The files inside the annotations library and the listeners library are dependencies for all other
-libraries in app module.
+Source files for the annotations library. The files inside the annotations library and the listeners
+library are dependencies for all other libraries in app module.
 
 Place your file here if:
  - A view, view model, or layout file depends on it
@@ -97,7 +95,7 @@ LISTENERS = [
 Source files for the databinding_resources library.
 
 The files inside this list include all layout files. Please note that layouts MUST NOT depend on
-presenters. Instead, they should depend on a listener or interface as an abstraction instead.
+presenters or fragments. Instead, they should depend on a listener or interface as an abstraction.
 '''
 DATABINDING_LAYOUTS = ["src/main/res/layout*/**"]
 
@@ -116,6 +114,7 @@ Place your file here if:
 DO NOT place your file here if:
  - It depends on any file not contained in the listeners, annotations, or resources libraries
  - It does not import any resources
+ - It uses Kotlin synthetic imports
 '''
 # TODO(#1617): Remove genrules post-gradle
 # Files altered by genrules to be excluded in the app library
@@ -146,6 +145,7 @@ Place your file here if:
 DO NOT place your file here if:
  - It depends on any file not contained in the listeners, annotations, or resources libraries
  - It imports any resources
+ - It uses Kotlin synthetic imports
 '''
 VIEW_MODELS = [
     "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAppInformationViewModel.kt",
@@ -292,6 +292,7 @@ Place your file here if:
 DO NOT place your file here if:
  - It depends on any file not contained in the listeners, annotations, or resources libraries
  - It does not import any resources
+ - It uses Kotlin synthetic imports
 '''
 ALTERED_VIEWS = [
     "src/main/java/org/oppia/app/customview/LessonThumbnailImageView.kt",
@@ -310,6 +311,7 @@ Place your file here if:
 DO NOT place your file here if:
  - It depends on any file not contained in the listeners, annotations, or resources libraries
  - It imports any resources
+ - It uses Kotlin synthetic imports
 '''
 VIEWS = [
     "src/main/java/org/oppia/app/customview/interaction/FractionInputInteractionView.kt",
@@ -366,6 +368,7 @@ DO NOT place your file here if:
  - It depends on layout files
  - It does not import any resources
  - It is found under org/oppia/app/recyclerview
+ - It uses Kotlin synthetic imports
 '''
 ALTERED_DATABINDING_ADAPTERS = [
     "src/main/java/org/oppia/app/databinding/DrawableBindingAdapters.java",
@@ -391,6 +394,7 @@ DO NOT place your file here if:
  - It depends on layout files
  - It imports resources
  - It is found under org/oppia/app/recyclerview
+ - It uses Kotlin synthetic imports
 '''
 DATABINDING_ADAPTERS = [
     "src/main/java/org/oppia/app/databinding/EditTextBindingAdapters.java",
@@ -442,6 +446,7 @@ DO NOT place your file here if:
  - It depends on layout files
  - It imports resources
  - It is found under org/oppia/app/databinding
+ - It uses Kotlin synthetic imports
 '''
 RECYCLERVIEW_ADAPTERS = [
     "src/main/java/org/oppia/app/recyclerview/RecyclerViewBindingAdapter.java"
