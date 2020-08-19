@@ -6,7 +6,7 @@ interface WalkthroughActivityListener {
   /**
    * Navigates user to the previous page in a [WalkthroughActivity].
    *
-   * @param currentProgress Integer describing this current page a user is on.
+   * @param currentProgress Integer describing the current page a user is on.
    */
   fun moveToPreviousPage(currentProgress: Int)
 }
