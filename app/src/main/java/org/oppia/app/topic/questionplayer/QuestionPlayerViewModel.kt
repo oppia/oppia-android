@@ -42,19 +42,14 @@ class QuestionPlayerViewModel @Inject constructor() : ObservableViewModel() {
 
   fun getCanSubmitAnswer(): ObservableField<Boolean> = canSubmitAnswer
 
-  private fun getAnswerItemList(): List<StateItemViewModel> {
-    return if (isSplitView.get() == true) {
-      rightItemList
-    } else {
-      itemList
-    }
-  }
-
   fun getPendingAnswer(
-    answerHandlerRetriever: (List<StateItemViewModel>) -> InteractionAnswerHandler?
+    retrieveAnswerHandler: (List<StateItemViewModel>) -> InteractionAnswerHandler?
   ): UserAnswer {
-    return getPendingAnswerWithoutError(answerHandlerRetriever(getAnswerItemList()))
-      ?: UserAnswer.getDefaultInstance()
+    return getPendingAnswerWithoutError(
+      retrieveAnswerHandler(
+        getAnswerItemList()
+      )
+    ) ?: UserAnswer.getDefaultInstance()
   }
 
   private fun getPendingAnswerWithoutError(
@@ -64,6 +59,14 @@ class QuestionPlayerViewModel @Inject constructor() : ObservableViewModel() {
       answerHandler?.getPendingAnswer()
     } else {
       null
+    }
+  }
+
+  private fun getAnswerItemList(): List<StateItemViewModel> {
+    return if (isSplitView.get() == true) {
+      rightItemList
+    } else {
+      itemList
     }
   }
 }
