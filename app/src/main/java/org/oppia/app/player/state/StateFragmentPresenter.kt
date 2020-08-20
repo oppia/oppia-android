@@ -146,7 +146,6 @@ class StateFragmentPresenter @Inject constructor(
 
   fun onContinueButtonClicked() {
     viewModel.setHintBulbVisibility(false)
-    currentStateNameOfVisibleHint = null
     hideKeyboard()
     moveToNextState()
   }
@@ -387,11 +386,13 @@ class StateFragmentPresenter @Inject constructor(
         // If the answer was submitted on behalf of the Continue interaction, automatically continue to the next state.
         if (result.state.interaction.id == "Continue") {
           recyclerViewAssembler.stopHintsFromShowing()
+          currentStateNameOfVisibleHint = null
           viewModel.setHintBulbVisibility(false)
           moveToNextState()
         } else {
           if (result.labelledAsCorrectAnswer) {
             recyclerViewAssembler.stopHintsFromShowing()
+            currentStateNameOfVisibleHint = null
             viewModel.setHintBulbVisibility(false)
             recyclerViewAssembler.showCongratulationMessageOnCorrectAnswer()
           } else {

@@ -46,6 +46,7 @@ import org.oppia.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NEXT_NAVIGATION_BUTTON
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
@@ -99,9 +100,15 @@ class StateFragmentLocalTest {
     createAudioUrl(explorationId = "MjZzEVOG47_1", audioFileName = "content-en-ouqm7j21vt8.mp3")
   private val audioDataSource1 = DataSource.toDataSource(AUDIO_URL_1, /* headers= */ null)
 
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject @field:ApplicationContext lateinit var context: Context
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  @field:ApplicationContext
+  lateinit var context: Context
 
   private val internalProfileId: Int = 1
 
@@ -276,6 +283,34 @@ class StateFragmentLocalTest {
       submitTwoWrongAnswers()
 
       // Submitting two wrong answers should make the hint immediately available.
+      onView(withId(R.id.hint_bulb)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_submitTwoWrongAnswers_hintAvailable_prevState_hintNotAvailable() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+      submitTwoWrongAnswers()
+      onView(withId(R.id.hint_bulb)).check(matches(isDisplayed()))
+      onView(withId(R.id.previous_state_navigation_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.hint_bulb)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testStateFragment_submitTwoWrongAnswers_prevState_nextState_hintAvailable() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+      submitTwoWrongAnswers()
+      onView(withId(R.id.previous_state_navigation_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(NEXT_NAVIGATION_BUTTON))
+      onView(withId(R.id.next_state_navigation_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.hint_bulb)).check(matches(isDisplayed()))
     }
   }
