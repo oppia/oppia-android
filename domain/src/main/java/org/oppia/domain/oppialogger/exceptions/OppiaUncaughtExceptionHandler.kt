@@ -11,9 +11,15 @@ class OppiaUncaughtExceptionHandler @Inject constructor(
 
   /** Logs an uncaught exception to the [exceptionsController]. */
   override fun uncaughtException(thread: Thread?, throwable: Throwable?) {
-    exceptionsController.logFatalException(
-      Exception(throwable),
-      oppiaClock.getCurrentCalendar().timeInMillis
-    )
+    try {
+      exceptionsController.logFatalException(
+        Exception(throwable),
+        oppiaClock.getCurrentCalendar().timeInMillis
+      )
+    } catch (e: Exception) {
+      e.printStackTrace()
+    } finally {
+      Thread.getDefaultUncaughtExceptionHandler().uncaughtException(thread, throwable)
+    }
   }
 }

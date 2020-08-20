@@ -26,17 +26,6 @@ class OppiaApplication : MultiDexApplication(), ActivityComponentFactory {
   override fun onCreate() {
     super.onCreate()
     FirebaseApp.initializeApp(applicationContext)
-    oppiaUncaughtExceptionHandler = component.getOppiaExceptionHandler()
-    setOppiaUncaughtExceptionHandler()
-  }
-
-  private fun setOppiaUncaughtExceptionHandler() {
-    try {
-      Thread.currentThread().uncaughtExceptionHandler = oppiaUncaughtExceptionHandler
-    } catch (e: Exception) {
-      e.printStackTrace()
-    } finally {
-      Thread.currentThread().uncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
-    }
+    Thread.currentThread().uncaughtExceptionHandler = component.getOppiaExceptionHandler()
   }
 }
