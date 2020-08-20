@@ -156,35 +156,33 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 9
-      - name: Build Oppia Bazel
+      - name: Unzip Build binary
         run: |
           cd ~/oppia-bazel
-          bazel build //src:bazel //tools/android/runtime_deps:android_tools.tar.gz
-      - uses: actions/checkout@v2
-      - uses: actions/upload-artifact@v2
-        with:
-         name: bazel-build
-         path: ~/oppia-bazel/bazel-bin/src/bazel
-      - uses: actions/upload-artifact@v2
-        with:
-         name: bazel-tools
-         path: ~/oppia-bazel/bazel-bin/tools/android/runtime_deps/android_tools.tar.gz
+          unzip bazel-build.zip 
+#       - uses: actions/checkout@v2
+#       - uses: actions/upload-artifact@v2
+#         with:
+#          name: bazel-build
+#          path: ~/oppia-bazel/bazel-bin/src/bazel
+#       - uses: actions/upload-artifact@v2
+#         with:
+#          name: bazel-tools
+#          path: ~/oppia-bazel/bazel-bin/tools/android/runtime_deps/android_tools.tar.gz
       - name: Extract Android ToolsCurr
         run: |
-          mkdir tmp
-          cd tmp
-          mkdir android_tools
-          cd ..
-          tar -xf ~/oppia-bazel/bazel-bin/tools/android/runtime_deps/android_tools.tar.gz -C ~/oppia-android/oppia-android/tmp/android_tools
+          cd ~/oppia-bazel
+          unzip bazel-tools.zip
+          tar -xf ~/oppia-bazel/android_tools.tar.gz -C ~/oppia-android/oppia-android/tmp/android_tools
       - name: Build Oppia binary with Bazel
         run: |
-         sudo ~/oppia-bazel/bazel-bin/src/bazel test //:oppia --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=$HOME/oppia-bazel/tmp/android_tools --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx
-      
+         sudo ~/oppia-bazel/bazel build //:oppia --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=~/oppia-bazel/tmp/android_tools --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx
 #       - uses: actions/checkout@v2   
 #       - uses: actions/upload-artifact@v2
 #         with:
-#           name: bazel-build
-#           path: ~/oppia-bazel/bazel-bin/src/bazel
+#           name: oppia-bazel-apk
+#           path: 
+
 #       - uses: actions/upload-artifact@v2
 #         with:
 #           name: bazel-tools
