@@ -156,19 +156,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 9
-#       - name: Unzip Build binary
-#         run: |
-#           cd ~/oppia-bazel
-#           unzip bazel-build.zip 
-#       - uses: actions/checkout@v2
-#       - uses: actions/upload-artifact@v2
-#         with:
-#          name: bazel-build
-#          path: ~/oppia-bazel/bazel-bin/src/bazel
-#       - uses: actions/upload-artifact@v2
-#         with:
-#          name: bazel-tools
-#          path: ~/oppia-bazel/bazel-bin/tools/android/runtime_deps/android_tools.tar.gz
       - name: Create tmp/android_tools
         run: |
           mkdir tmp
@@ -193,23 +180,4 @@ jobs:
           name: oppia-bazel-apk
           path: /home/runner/work/oppia-android/oppia-android/oppia.apk
       - uses: actions/checkout@v2
-
-#       - uses: actions/upload-artifact@v2
-#         with:
-#           name: bazel-tools
-#           path: ~/oppia-bazel/bazel-bin/tools/android/runtime_deps/android_tools.tar.gz
-#      - uses: actions/checkout@v2
-#
-#      - uses: actions/upload-artifact@v2
-#        with:
-#          name: bazel-build
-#          path: ~/oppia-bazel/bazel-bin/src/bazel
-#      - uses: actions/upload-artifact@v2
-#        with:
-#          name: bazel-tools
-#          path: ~/oppia-bazel/bazel-bin/tools/android/runtime_deps/android_tools.tar.gz
-#      name: Build Oppia Bazel
-#        run: |
-#          cd ~/oppia-bazel
-#          bazel build //src:bazel //tools/android/runtime_deps:android_tools.tar.gz
 
