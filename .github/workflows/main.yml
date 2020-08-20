@@ -171,17 +171,14 @@ jobs:
 #          path: ~/oppia-bazel/bazel-bin/tools/android/runtime_deps/android_tools.tar.gz
       - name: Create tmp/android_tools
         run: |
-          pwd
           mkdir tmp
           cd tmp
           mkdir android_tools
-          cd android_tools
-          pwd
       - name: Extract Android ToolsCurr
         run: |
           cd ~/oppia-bazel
           unzip bazel-tools.zip
-          tar -xf ~/oppia-bazel/android_tools.tar.gz -C ~/oppia-android/oppia-android/tmp/android_tools
+          tar -xf ~/oppia-bazel/android_tools.tar.gz -C /home/runner/work/oppia-android/oppia-android/tmp/android_tools
       - name: Build Oppia binary with Bazel
         run: |
          sudo ~/oppia-bazel/bazel build //:oppia --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=~/oppia-bazel/tmp/android_tools --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx
