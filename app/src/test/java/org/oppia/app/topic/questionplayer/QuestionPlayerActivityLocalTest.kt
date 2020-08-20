@@ -11,7 +11,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
-import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
@@ -95,7 +95,7 @@ class QuestionPlayerActivityLocalTest {
   @Test
   fun testQuestionPlayer_submitTwoWrongAnswers_checkPreviousHeaderVisible() {
     launchForQuestionPlayer(SKILL_ID_LIST).use {
-      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
 
       submitTwoWrongAnswersToQuestionPlayer()
@@ -107,7 +107,7 @@ class QuestionPlayerActivityLocalTest {
   @Test
   fun testQuestionPlayer_submitTwoWrongAnswers_checkPreviousHeaderCollapsed() {
     launchForQuestionPlayer(SKILL_ID_LIST).use {
-      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
 
       submitTwoWrongAnswersToQuestionPlayer()
@@ -115,7 +115,7 @@ class QuestionPlayerActivityLocalTest {
       onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
       onView(withId(R.id.question_recycler_view)).check(
         matches(
-          hasChildCount(/* childCount= */5)
+          hasChildCount(/* childCount= */ 5)
         )
       )
     }
@@ -124,7 +124,7 @@ class QuestionPlayerActivityLocalTest {
   @Test
   fun testQuestionPlayer_submitTwoWrongAnswers_expandResponse_checkPreviousHeaderExpanded() {
     launchForQuestionPlayer(SKILL_ID_LIST).use {
-      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
 
       submitTwoWrongAnswersToQuestionPlayer()
@@ -132,10 +132,10 @@ class QuestionPlayerActivityLocalTest {
       onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
       onView(withId(R.id.question_recycler_view))
         .perform(scrollToViewType(StateItemViewModel.ViewType.PREVIOUS_RESPONSES_HEADER))
-      onView(withId(R.id.previous_response_header)).perform(ViewActions.click())
+      onView(withId(R.id.previous_response_header)).perform(click())
       onView(withId(R.id.question_recycler_view)).check(
         matches(
-          hasChildCount(/* childCount= */6)
+          hasChildCount(/* childCount= */ 6)
         )
       )
     }
@@ -144,7 +144,7 @@ class QuestionPlayerActivityLocalTest {
   @Test
   fun testQuestionPlayer_expandCollapseResponse_checkPreviousHeaderCollapsed() {
     launchForQuestionPlayer(SKILL_ID_LIST).use {
-      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
 
       submitTwoWrongAnswersToQuestionPlayer()
@@ -152,23 +152,23 @@ class QuestionPlayerActivityLocalTest {
       onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
       onView(withId(R.id.question_recycler_view)).check(
         matches(
-          hasChildCount(/* childCount= */5)
+          hasChildCount(/* childCount= */ 5)
         )
       )
 
       onView(withId(R.id.question_recycler_view))
         .perform(scrollToViewType(StateItemViewModel.ViewType.PREVIOUS_RESPONSES_HEADER))
-      onView(withId(R.id.previous_response_header)).perform(ViewActions.click())
+      onView(withId(R.id.previous_response_header)).perform(click())
       onView(withId(R.id.question_recycler_view)).check(
         matches(
-          hasChildCount(/* childCount= */6)
+          hasChildCount(/* childCount= */ 6)
         )
       )
 
-      onView(withId(R.id.previous_response_header)).perform(ViewActions.click())
+      onView(withId(R.id.previous_response_header)).perform(click())
       onView(withId(R.id.question_recycler_view)).check(
         matches(
-          hasChildCount(/* childCount= */5)
+          hasChildCount(/* childCount= */ 5)
         )
       )
     }
@@ -197,7 +197,7 @@ class QuestionPlayerActivityLocalTest {
 
     onView(withId(R.id.question_recycler_view))
       .perform(scrollToViewType(StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON))
-    onView(withId(R.id.submit_answer_button)).perform(ViewActions.click())
+    onView(withId(R.id.submit_answer_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
 
