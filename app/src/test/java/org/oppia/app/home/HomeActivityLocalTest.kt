@@ -19,6 +19,8 @@ import org.oppia.app.application.ApplicationComponent
 import org.oppia.app.application.ApplicationModule
 import org.oppia.app.model.EventLog
 import org.oppia.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
+import org.oppia.app.shim.IntentFactoryShimModule
+import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.data.backends.gae.NetworkModule
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
@@ -103,7 +105,8 @@ class HomeActivityLocalTest {
       DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
       GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
       QuestionModule::class, TestLogReportingModule::class, TestAccessibilityModule::class,
-      ImageClickInputModule::class, LogStorageModule::class, CachingTestModule::class,
+      ImageClickInputModule::class, LogStorageModule::class, IntentFactoryShimModule::class,
+      ViewBindingShimModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class
     ]
   )

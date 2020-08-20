@@ -25,6 +25,8 @@ import org.oppia.app.application.ApplicationModule
 import org.oppia.app.player.state.StateFragment
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher
+import org.oppia.app.shim.IntentFactoryShimModule
+import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.data.backends.gae.NetworkModule
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
@@ -86,6 +88,7 @@ class StateFragmentAccessibilityTest {
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
     fakeAccessibilityManager.setTalkbackEnabled(true)
+
     FirebaseApp.initializeApp(context)
   }
 
@@ -161,7 +164,8 @@ class StateFragmentAccessibilityTest {
       DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
       GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
       QuestionModule::class, TestLogReportingModule::class, TestAccessibilityModule::class,
-      ImageClickInputModule::class, LogStorageModule::class, CachingTestModule::class,
+      ImageClickInputModule::class, LogStorageModule::class, IntentFactoryShimModule::class,
+      ViewBindingShimModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class
     ]
   )

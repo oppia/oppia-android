@@ -17,6 +17,8 @@ import org.oppia.app.application.ApplicationComponent
 import org.oppia.app.application.ApplicationModule
 import org.oppia.app.model.EventLog
 import org.oppia.app.model.EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT
+import org.oppia.app.shim.IntentFactoryShimModule
+import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.app.testing.ExplorationInjectionActivity
 import org.oppia.data.backends.gae.NetworkModule
 import org.oppia.domain.classify.InteractionsModule
@@ -140,7 +142,8 @@ class ExplorationActivityLocalTest {
       DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
       GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
       QuestionModule::class, TestLogReportingModule::class, TestAccessibilityModule::class,
-      ImageClickInputModule::class, LogStorageModule::class, CachingTestModule::class,
+      ImageClickInputModule::class, LogStorageModule::class, IntentFactoryShimModule::class,
+      ViewBindingShimModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class
     ]
   )
