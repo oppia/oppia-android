@@ -262,7 +262,7 @@ for file in VIEW_MODELS_WITH_RESOURCE_IMPORTS]
 
 # TODO(#1617): Remove genrules post-gradle
 '''
-Source files for the views library import resources.
+Source files for the views library that import resources.
 
 Place your file here if:
  - It is a view file
