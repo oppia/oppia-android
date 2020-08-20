@@ -156,10 +156,10 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 9
-      - name: Unzip Build binary
-        run: |
-          cd ~/oppia-bazel
-          unzip bazel-build.zip 
+#       - name: Unzip Build binary
+#         run: |
+#           cd ~/oppia-bazel
+#           unzip bazel-build.zip 
 #       - uses: actions/checkout@v2
 #       - uses: actions/upload-artifact@v2
 #         with:
@@ -179,9 +179,11 @@ jobs:
           cd ~/oppia-bazel
           unzip bazel-tools.zip
           tar -xf ~/oppia-bazel/android_tools.tar.gz -C /home/runner/work/oppia-android/oppia-android/tmp/android_tools
-      - name: Build Oppia binary with Bazel
+      - name: Unzip Bazel Binary and Build Oppia
         run: |
-         sudo ~/oppia-bazel/bazel build //:oppia --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=/home/runner/work/oppia-android/oppia-android/tmp/android_tools --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx
+          cd ~/oppia-bazel
+          unzip bazel-build.zip 
+          sudo ~/oppia-bazel/bazel build //:oppia --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=/home/runner/work/oppia-android/oppia-android/tmp/android_tools --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx
 #       - uses: actions/checkout@v2   
 #       - uses: actions/upload-artifact@v2
 #         with:
