@@ -1,4 +1,4 @@
-package org.oppia.domain.classify.rules.ratioExpressionInput
+package org.oppia.domain.classify.rules.ratioInput
 
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.RatioExpression
@@ -10,8 +10,7 @@ import javax.inject.Inject
 
 /**
  * Provider for a classifier that determines whether two object are equal by converting them into
- * their lowest as per the ratio input interaction.
- *
+ * their lowest form as per the ratio input interaction.
  */
 internal class RatioInputIsEquivalentRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
@@ -30,11 +29,7 @@ internal class RatioInputIsEquivalentRuleClassifierProvider @Inject constructor(
   }
 
   private fun getLowestForm(input: RatioExpression): List<Int> {
-    val value = input.ratioComponentList.reduce { x, y -> gcd(x, y) }
-    return if (value == 1) {
-      input.ratioComponentList
-    } else {
-      input.ratioComponentList.map { x -> x / value }
-    }
+    val gcdResult = input.ratioComponentList.reduce { x, y -> gcd(x, y) }
+    return input.ratioComponentList.map { x -> x / gcdResult }
   }
 }

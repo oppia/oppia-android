@@ -31,7 +31,7 @@ import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModu
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
-import org.oppia.domain.classify.rules.ratioExpressionInput.RatioExpressionInputModule
+import org.oppia.domain.classify.rules.ratioInput.RatioInputModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -588,7 +588,7 @@ class AnswerClassificationControllerTest {
       MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
       NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, InteractionsModule::class,
-      ImageClickInputModule::class, RatioExpressionInputModule::class
+      ImageClickInputModule::class, RatioInputModule::class
     ]
   )
   interface TestApplicationComponent {
