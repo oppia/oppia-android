@@ -6,6 +6,7 @@ import dagger.Subcomponent
 import org.oppia.app.administratorcontrols.AdministratorControlsFragment
 import org.oppia.app.administratorcontrols.appversion.AppVersionFragment
 import org.oppia.app.completedstorylist.CompletedStoryListFragment
+import org.oppia.app.deprecation.AutomaticAppDeprecationNoticeDialogFragment
 import org.oppia.app.drawer.NavigationDrawerFragment
 import org.oppia.app.help.HelpFragment
 import org.oppia.app.help.faq.FAQListFragment
@@ -31,6 +32,8 @@ import org.oppia.app.profile.AdminSettingsDialogFragment
 import org.oppia.app.profile.ProfileChooserFragment
 import org.oppia.app.profile.ResetPinDialogFragment
 import org.oppia.app.profileprogress.ProfileProgressFragment
+import org.oppia.app.shim.IntentFactoryShimModule
+import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.app.story.StoryFragment
 import org.oppia.app.testing.BindableAdapterTestFragment
 import org.oppia.app.testing.ImageRegionSelectionTestFragment
@@ -50,7 +53,12 @@ import org.oppia.app.walkthrough.welcome.WalkthroughWelcomeFragment
 import javax.inject.Provider
 
 /** Root subcomponent for all fragments. */
-@Subcomponent(modules = [FragmentModule::class, InteractionViewModelModule::class])
+@Subcomponent(
+  modules = [
+    FragmentModule::class, InteractionViewModelModule::class, IntentFactoryShimModule::class,
+    ViewBindingShimModule::class
+  ]
+)
 @FragmentScope
 interface FragmentComponent {
   @Subcomponent.Builder
@@ -68,6 +76,7 @@ interface FragmentComponent {
   fun inject(appLanguageFragment: AppLanguageFragment)
   fun inject(appVersionFragment: AppVersionFragment)
   fun inject(audioFragment: AudioFragment)
+  fun inject(autoAppDeprecationNoticeDialogFragment: AutomaticAppDeprecationNoticeDialogFragment)
   fun inject(bindableAdapterTestFragment: BindableAdapterTestFragment)
   fun inject(completedStoryListFragment: CompletedStoryListFragment)
   fun inject(conceptCardFragment: ConceptCardFragment)

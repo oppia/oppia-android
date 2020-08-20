@@ -4,24 +4,18 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.databinding.BindingAdapter
-import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.app.databinding.ItemSelectionInteractionItemsBinding
-import org.oppia.app.databinding.MultipleChoiceInteractionItemsBinding
-import org.oppia.app.fragment.InjectableFragment
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
+import org.oppia.app.player.state.itemviewmodel.SelectionItemInputType
 import org.oppia.app.recyclerview.BindableAdapter
+import org.oppia.app.shim.ViewBindingShim
+import org.oppia.app.shim.ViewComponentFactory
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
-
-/** Corresponds to the type of input that should be used for an item selection interaction view. */
-enum class SelectionItemInputType {
-  CHECKBOXES,
-  RADIO_BUTTONS
-}
 
 /**
  * A custom [RecyclerView] for displaying a variable list of items that may be selected by a user as part of the item
@@ -46,11 +40,15 @@ class SelectionInteractionView @JvmOverloads constructor(
   @field:DefaultResourceBucketName
   lateinit var resourceBucketName: String
 
+  @Inject
+  lateinit var bindingInterface: ViewBindingShim
+
   private lateinit var entityId: String
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    FragmentManager.findFragment<InjectableFragment>(this).createViewComponent(this).inject(this)
+    (FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory)
+      .createViewComponent(this).inject(this)
   }
 
   fun setAllOptionsItemInputType(selectionItemInputType: SelectionItemInputType) {
@@ -75,20 +73,21 @@ class SelectionInteractionView @JvmOverloads constructor(
           .newBuilder<SelectionInteractionContentViewModel>()
           .registerViewBinder(
             inflateView = { parent ->
-              ItemSelectionInteractionItemsBinding.inflate(
-                LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
-              ).root
+              bindingInterface.provideSelectionInteractionViewInflatedView(
+                LayoutInflater.from(parent.context),
+                parent,
+                /* attachToParent= */ false
+              )
             },
             bindView = { view, viewModel ->
-              val binding =
-                DataBindingUtil.findBinding<ItemSelectionInteractionItemsBinding>(view)!!
-              binding.htmlContent =
-                htmlParserFactory.create(
-                  resourceBucketName, entityType, entityId, /* imageCenterAlign= */ false
-                ).parseOppiaHtml(
-                  viewModel.htmlContent, binding.itemSelectionContentsTextView
-                )
-              binding.viewModel = viewModel
+              bindingInterface.provideSelectionInteractionViewModel(
+                view,
+                viewModel,
+                htmlParserFactory,
+                resourceBucketName,
+                entityType,
+                entityId
+              )
             }
           )
           .build()
@@ -97,20 +96,21 @@ class SelectionInteractionView @JvmOverloads constructor(
           .newBuilder<SelectionInteractionContentViewModel>()
           .registerViewBinder(
             inflateView = { parent ->
-              MultipleChoiceInteractionItemsBinding.inflate(
-                LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
-              ).root
+              bindingInterface.provideMultipleChoiceInteractionItemsInflatedView(
+                LayoutInflater.from(parent.context),
+                parent,
+                /* attachToParent= */ false
+              )
             },
             bindView = { view, viewModel ->
-              val binding =
-                DataBindingUtil.findBinding<MultipleChoiceInteractionItemsBinding>(view)!!
-              binding.htmlContent =
-                htmlParserFactory.create(
-                  resourceBucketName, entityType, entityId, /* imageCenterAlign= */ false
-                ).parseOppiaHtml(
-                  viewModel.htmlContent, binding.multipleChoiceContentTextView
-                )
-              binding.viewModel = viewModel
+              bindingInterface.provideMultipleChoiceInteractionItemsViewModel(
+                view,
+                viewModel,
+                htmlParserFactory,
+                resourceBucketName,
+                entityType,
+                entityId
+              )
             }
           )
           .build()
@@ -118,12 +118,9 @@ class SelectionInteractionView @JvmOverloads constructor(
   }
 }
 
-/** Sets the [SelectionItemInputType] for a specific [SelectionInteractionView] via data-binding. */
-@BindingAdapter("allOptionsItemInputType")
-fun setAllOptionsItemInputType(
-  selectionInteractionView: SelectionInteractionView,
-  selectionItemInputType: SelectionItemInputType
-) = selectionInteractionView.setAllOptionsItemInputType(selectionItemInputType)
+fun setAllOptionsItemInputType(selectionItemInputType: SelectionItemInputType) {
+  setAllOptionsItemInputType(selectionItemInputType)
+}
 
 /** Sets the exploration ID for a specific [SelectionInteractionView] via data-binding. */
 @BindingAdapter("entityId")
