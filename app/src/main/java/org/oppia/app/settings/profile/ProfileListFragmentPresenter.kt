@@ -37,7 +37,7 @@ class ProfileListFragmentPresenter @Inject constructor(
     }
     binding.apply {
       viewModel = getProfileListViewModel()
-      lifecycleOwner = activity
+      lifecycleOwner = fragment
     }
 
     binding.profileListRecyclerView.apply {
