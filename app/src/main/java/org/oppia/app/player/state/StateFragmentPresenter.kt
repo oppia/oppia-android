@@ -29,7 +29,6 @@ import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.AudioUiManager
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
-import org.oppia.app.utility.LifecycleSafeTimerFactory
 import org.oppia.app.utility.SplitScreenManager
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationProgressController
@@ -59,7 +58,6 @@ class StateFragmentPresenter @Inject constructor(
   private val logger: ConsoleLogger,
   @DefaultResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
-  private var lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
   private val splitScreenManager: SplitScreenManager
 ) {
 
@@ -74,7 +72,7 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
-  private val hintBulbVibisilityStack: MutableList<Boolean> = mutableListOf()
+  private var currentStateNameOfVisibleHint: String? = null
 
   private val viewModel: StateViewModel by lazy {
     getStateViewModel()
@@ -148,24 +146,16 @@ class StateFragmentPresenter @Inject constructor(
 
   fun onContinueButtonClicked() {
     viewModel.setHintBulbVisibility(false)
+    currentStateNameOfVisibleHint = null
     hideKeyboard()
     moveToNextState()
   }
 
   fun onNextButtonClicked() {
-    val item = hintBulbVibisilityStack.lastOrNull()
-    if (!hintBulbVibisilityStack.isEmpty()) {
-      hintBulbVibisilityStack.removeAt(hintBulbVibisilityStack.size - 1)
-    }
-    item?.let {
-      viewModel.setHintBulbVisibility(it)
-    }
     moveToNextState()
   }
 
   fun onPreviousButtonClicked() {
-    hintBulbVibisilityStack.add(viewModel.isHintBulbVisible.get() ?: false)
-    viewModel.setHintBulbVisibility(false)
     explorationProgressController.moveToPreviousState()
   }
 
@@ -203,10 +193,12 @@ class StateFragmentPresenter @Inject constructor(
           helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.SHOW_SOLUTION
         viewModel.setHintOpenedAndUnRevealedVisibility(true)
         viewModel.setHintBulbVisibility(true)
+        currentStateNameOfVisibleHint = currentStateName
       }
       HelpIndex.IndexTypeCase.EVERYTHING_REVEALED -> {
         viewModel.setHintOpenedAndUnRevealedVisibility(false)
         viewModel.setHintBulbVisibility(true)
+        currentStateNameOfVisibleHint = currentStateName
       }
       else -> {
         viewModel.setHintOpenedAndUnRevealedVisibility(false)
@@ -312,6 +304,14 @@ class StateFragmentPresenter @Inject constructor(
 
     val isInNewState =
       ::currentStateName.isInitialized && currentStateName != ephemeralState.state.name
+
+    if (currentStateNameOfVisibleHint != null &&
+      currentStateNameOfVisibleHint == ephemeralState.state.name
+    ) {
+      viewModel.setHintBulbVisibility(true)
+    } else {
+      viewModel.setHintBulbVisibility(false)
+    }
 
     currentState = ephemeralState.state
     currentStateName = ephemeralState.state.name
