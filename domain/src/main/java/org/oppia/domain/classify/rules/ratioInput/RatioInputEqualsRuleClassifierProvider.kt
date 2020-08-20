@@ -1,17 +1,15 @@
-package org.oppia.domain.classify.rules.ratioExpressionInput
+package org.oppia.domain.classify.rules.ratioInput
 
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.RatioExpression
 import org.oppia.domain.classify.RuleClassifier
 import org.oppia.domain.classify.rules.GenericRuleClassifier
 import org.oppia.domain.classify.rules.RuleClassifierProvider
-import org.oppia.domain.util.normalizeWhitespace
 import javax.inject.Inject
 
 /**
  * Provider for a classifier that determines whether two object are equal per the ratio input
  * interaction.
- *
  */
 internal class RatioInputEqualsRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory

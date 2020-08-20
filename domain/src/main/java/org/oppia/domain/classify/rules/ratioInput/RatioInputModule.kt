@@ -1,4 +1,4 @@
-package org.oppia.domain.classify.rules.ratioExpressionInput
+package org.oppia.domain.classify.rules.ratioInput
 
 import dagger.Module
 import dagger.Provides
@@ -9,7 +9,7 @@ import org.oppia.domain.classify.rules.RatioExpressionInputRules
 
 /** Module that binds rule classifiers corresponding to the ratio input interaction. */
 @Module
-class RatioExpressionInputModule {
+class RatioInputModule {
   @Provides
   @IntoMap
   @StringKey("Equals")
