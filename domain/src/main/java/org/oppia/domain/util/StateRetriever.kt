@@ -478,7 +478,7 @@ class StateRetriever @Inject constructor(
       is JSONArray -> {
         if (customizationArgValue.length() > 0) {
           return schemaObjectBuilder.setSchemaObjectList(
-            parseSchemaObjectList(customizationArgValue)
+            parseSubtitledHtmlList(customizationArgValue)
           ).build()
         }
       }
@@ -493,7 +493,7 @@ class StateRetriever @Inject constructor(
     return SchemaObject.getDefaultInstance()
   }
 
-  private fun parseSchemaObjectList(jsonArray: JSONArray): SchemaObjectList {
+  private fun parseSubtitledHtmlList(jsonArray: JSONArray): SchemaObjectList {
     val schemaObjectListBuilder = SchemaObjectList.newBuilder()
     for (i in 0 until jsonArray.length()) {
       val subtitledHtmlJsonObject = jsonArray.getJSONObject(i)

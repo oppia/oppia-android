@@ -99,9 +99,9 @@ message SchemaObject {
     int32 signed_int = 6;
     SchemaObjectList schema_object_list = 7;
     string unicode_value = 8;
-    UnicodeOrNone unicode_or_none = 9;
-    SubtitledHtml subtitled_html = 10;
-    SubtitledUnicode subtitled_unicode = 11;
+    SubtitledHtml subtitled_html = 9;
+    SubtitledUnicode subtitled_unicode = 10;
+    double real = 11;
   }
 }
 
@@ -129,14 +129,6 @@ message CustomSchemaValue {
 message SubtitledUnicode {
   string unicode = 1;
   string content_id = 2;
-}
-
-// Structure to support UnicodeOrNone
-message UnicodeOrNone {
-  oneof unicode_is_present {
-    bool unicode_is_absent = 1;
-    string unicode = 2;
-  }
 }
 
 // Structure for a single answer group
