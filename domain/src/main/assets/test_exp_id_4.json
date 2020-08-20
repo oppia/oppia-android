@@ -228,5 +228,6 @@
     "init_state_name": "DragDropSortInput"
   },
   "exploration_id": "test_exp_id_4",
+  "states_schema_version": 39,
   "version": 1
 }

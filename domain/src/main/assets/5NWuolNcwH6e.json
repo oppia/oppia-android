@@ -2427,9 +2427,6 @@
                     "x": "6:1:2:5"
                   },
                   {
-                    "x": "5:2:1:6"
-                  },
-                  {
                     "x": "6:1:5:2"
                   },
                   {
@@ -2880,5 +2877,6 @@
     "title": "Order is Important"
   },
   "exploration_id": "5NWuolNcwH6e",
+  "states_schema_version": 39,
   "version": 77
 }

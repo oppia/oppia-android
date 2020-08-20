@@ -4,7 +4,7 @@
       "linked_skill_ids": [
         "5RM9KPfQxobH"
       ],
-      "question_state_data_schema_version": 30,
+      "question_state_data_schema_version": 39,
       "question_state_data": {
         "param_changes": [],
         "interaction": {
@@ -154,7 +154,7 @@
       "linked_skill_ids": [
         "5RM9KPfQxobH"
       ],
-      "question_state_data_schema_version": 30,
+      "question_state_data_schema_version": 39,
       "question_state_data": {
         "param_changes": [],
         "interaction": {
@@ -301,7 +301,7 @@
       "linked_skill_ids": [
         "5RM9KPfQxobH"
       ],
-      "question_state_data_schema_version": 30,
+      "question_state_data_schema_version": 39,
       "question_state_data": {
         "param_changes": [],
         "interaction": {
@@ -454,7 +454,7 @@
       "linked_skill_ids": [
         "5RM9KPfQxobH"
       ],
-      "question_state_data_schema_version": 30,
+      "question_state_data_schema_version": 39,
       "question_state_data": {
         "param_changes": [],
         "interaction": {
@@ -630,7 +630,7 @@
       "linked_skill_ids": [
         "B39yK4cbHZYI"
       ],
-      "question_state_data_schema_version": 30,
+      "question_state_data_schema_version": 39,
       "question_state_data": {
         "param_changes": [],
         "interaction": {
@@ -834,7 +834,7 @@
       "linked_skill_ids": [
         "B39yK4cbHZYI"
       ],
-      "question_state_data_schema_version": 30,
+      "question_state_data_schema_version": 39,
       "question_state_data": {
         "param_changes": [],
         "interaction": {
@@ -950,7 +950,7 @@
       "linked_skill_ids": [
         "B39yK4cbHZYI"
       ],
-      "question_state_data_schema_version": 30,
+      "question_state_data_schema_version": 39,
       "question_state_data": {
         "param_changes": [],
         "interaction": {
@@ -1105,7 +1105,7 @@
       "linked_skill_ids": [
         "B39yK4cbHZYI"
       ],
-      "question_state_data_schema_version": 30,
+      "question_state_data_schema_version": 39,
       "question_state_data": {
         "param_changes": [],
         "interaction": {
@@ -1221,7 +1221,7 @@
       "linked_skill_ids": [
         "UxTGIJqaHMLa"
       ],
-      "question_state_data_schema_version": 30,
+      "question_state_data_schema_version": 39,
       "question_state_data": {
         "param_changes": [],
         "interaction": {
@@ -1348,7 +1348,7 @@
       "linked_skill_ids": [
         "UxTGIJqaHMLa"
       ],
-      "question_state_data_schema_version": 30,
+      "question_state_data_schema_version": 39,
       "question_state_data": {
         "param_changes": [],
         "interaction": {
@@ -1496,7 +1496,7 @@
       "linked_skill_ids": [
         "UxTGIJqaHMLa"
       ],
-      "question_state_data_schema_version": 30,
+      "question_state_data_schema_version": 39,
       "question_state_data": {
         "param_changes": [],
         "interaction": {
@@ -1651,7 +1651,7 @@
       "linked_skill_ids": [
         "NGZ89uMw0IGV"
       ],
-      "question_state_data_schema_version": 30,
+      "question_state_data_schema_version": 39,
       "question_state_data": {
         "param_changes": [],
         "interaction": {
@@ -1814,7 +1814,7 @@
         "test_skill_id_0",
         "test_skill_id_1"
       ],
-      "question_state_data_schema_version": 1,
+      "question_state_data_schema_version": 39,
       "version": 1,
       "language_code": "en",
       "id": "question_id_0",
@@ -1895,7 +1895,7 @@
       "linked_skill_ids": [
         "test_skill_id_0"
       ],
-      "question_state_data_schema_version": 1,
+      "question_state_data_schema_version": 39,
       "version": 1,
       "language_code": "en",
       "id": "question_id_1",
@@ -1987,7 +1987,7 @@
         "test_skill_id_0",
         "test_skill_id_2"
       ],
-      "question_state_data_schema_version": 1,
+      "question_state_data_schema_version": 39,
       "version": 1,
       "language_code": "en",
       "id": "question_id_2",
@@ -2059,7 +2059,7 @@
       "linked_skill_ids": [
         "test_skill_id_1"
       ],
-      "question_state_data_schema_version": 1,
+      "question_state_data_schema_version": 39,
       "version": 1,
       "language_code": "en",
       "id": "question_id_3",
@@ -2140,7 +2140,7 @@
       "linked_skill_ids": [
         "test_skill_id_2"
       ],
-      "question_state_data_schema_version": 1,
+      "question_state_data_schema_version": 39,
       "version": 1,
       "language_code": "en",
       "id": "question_id_4",
@@ -2224,7 +2224,7 @@
       "linked_skill_ids": [
         "test_skill_id_2"
       ],
-      "question_state_data_schema_version": 1,
+      "question_state_data_schema_version": 39,
       "version": 1,
       "language_code": "en",
       "id": "question_id_5",

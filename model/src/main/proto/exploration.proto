@@ -88,7 +88,7 @@ message Interaction {
   map<string, SchemaObject> customization_args = 7;
 }
 
-// Structure for a customization args
+// Structure for schema objects. See https://github.com/oppia/oppia/blob/fcb44f8/schema_utils.py#L50 for context.
 message SchemaObject {
   oneof object_type {
     bool bool_value = 1;
@@ -102,8 +102,6 @@ message SchemaObject {
     UnicodeOrNone unicode_or_none = 9;
     SubtitledHtml subtitled_html = 10;
     SubtitledUnicode subtitled_unicode = 11;
-    uint32 non_negative_int = 12;
-    double real = 13;
   }
 }
 
@@ -132,7 +130,6 @@ message SubtitledUnicode {
   string unicode = 1;
   string content_id = 2;
 }
-
 
 // Structure to support UnicodeOrNone
 message UnicodeOrNone {

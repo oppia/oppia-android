@@ -25,13 +25,11 @@ class SelectionInteractionViewModel(
   private val interactionId: String = interaction.id
 
   private val choiceStrings: List<String> by lazy {
-    val choicesList = mutableListOf<String>()
-    val schemaObjectList =
-      interaction.customizationArgsMap["choices"]?.schemaObjectList?.schemaObjectList
-    schemaObjectList?.forEach { schemaObject ->
-      choicesList.add(schemaObject.subtitledHtml.html)
-    }
-    choicesList
+    interaction.customizationArgsMap["choices"]
+      ?.schemaObjectList
+      ?.schemaObjectList
+      ?.map { schemaObject -> schemaObject.subtitledHtml.html }
+      ?: listOf()
   }
   private val minAllowableSelectionCount: Int by lazy {
     interaction.customizationArgsMap["minAllowableSelectionCount"]?.signedInt ?: 1

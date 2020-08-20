@@ -612,5 +612,6 @@
     "init_state_name": "First State"
   },
   "exploration_id": "test_exp_id_1",
+  "states_schema_version": 39,
   "version": 1
 }

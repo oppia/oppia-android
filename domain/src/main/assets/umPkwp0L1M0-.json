@@ -269,7 +269,7 @@
                 "IsExactlyEqualTo": [
                   {
                     "f": {
-                      "denominator": 3,
+                      "denominator": 7,
                       "numerator": 3,
                       "wholeNumber": 0,
                       "isNegative": false
@@ -7627,5 +7627,6 @@
     "title": "What is a Fraction?"
   },
   "exploration_id": "umPkwp0L1M0-",
+  "states_schema_version": 39,
   "version": 85
 }

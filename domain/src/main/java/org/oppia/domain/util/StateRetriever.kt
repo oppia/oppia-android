@@ -477,9 +477,9 @@ class StateRetriever @Inject constructor(
       is Boolean -> return schemaObjectBuilder.setBoolValue(customizationArgValue).build()
       is JSONArray -> {
         if (customizationArgValue.length() > 0) {
-          return schemaObjectBuilder
-            .setSchemaObjectList(parseSchemaObjectList(customizationArgValue))
-            .build()
+          return schemaObjectBuilder.setSchemaObjectList(
+            parseSchemaObjectList(customizationArgValue)
+          ).build()
         }
       }
       is JSONObject -> {

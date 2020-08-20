@@ -563,5 +563,6 @@
     "title": "Welcome to Oppia!"
   },
   "exploration_id": "test_exp_id_0",
+  "states_schema_version": 39,
   "version": 1
 }

@@ -4121,7 +4121,7 @@
               "rule_types_to_inputs": {
                 "ContainsAtLeastOneOf": [
                   {
-                    "x":  [
+                    "x": [
                       "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 1 by 2 block of white chocolate. On the write there are 4 by 6 block of dark chocolate (12 of 1 by 2 blocks)&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_164311_brh9c84al7_height_268_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
                       "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 cups of milk and 7 cups of blueberry puree&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181230_132852_rxu1gj1uuw_height_329_width_441.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
                     ]
@@ -4636,5 +4636,6 @@
     "title": "What is a Ratio?"
   },
   "exploration_id": "2mzzFVDLuAj8",
+  "states_schema_version": 39,
   "version": 123
 }

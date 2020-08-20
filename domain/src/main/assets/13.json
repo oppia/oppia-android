@@ -454,5 +454,6 @@
     "init_state_name": "ImageClickInput"
   },
   "exploration_id": "13",
+  "states_schema_version": 39,
   "version": 1
 }
