@@ -35,7 +35,7 @@ message StringList {
 message RatioExpression {
   // It's also expected that list should have more than 1 elements with
   // 0 and 1 elements are invalid states.
-  repeated uint32 ratio_component s= 1;
+  repeated uint32 ratio_component = 1;
 }
 
 // Structure for a number with units object.
