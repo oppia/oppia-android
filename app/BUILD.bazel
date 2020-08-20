@@ -2,12 +2,13 @@
 '''
 This library contains the app's core source files and functionality.
 
-Note that most files should be built inside of app library. However, listener files, annotation
+Note that:
+ - Most files should be built inside of app library. However, listener files, annotation
 files, view files, view model files, and binding adapter files need to be manually added. The
 documentation below specifies where these files should be added.
-
-Note that if your file uses Data-binding views or Kotlin synthetic imports these must be removed in
+- If your file uses Data-binding views or Kotlin synthetic imports these must be removed in
 order to build with Bazel.
+- All binding adapters must be written in Java.
 '''
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
