@@ -12,11 +12,12 @@ import javax.inject.Inject
  * Child classes must ensure all specified types properly correspond to the type to which the parameter's specified
  * [InteractionObject.ObjectTypeCase] also corresponds.
  */
-internal class GenericRuleClassifier private constructor(
-  private val expectedAnswerObjectType: InteractionObject.ObjectTypeCase,
-  private val orderedExpectedParameterTypes: LinkedHashMap<
+// TODO(#1580): Re-restrict access using Bazel visibilities
+class GenericRuleClassifier constructor(
+  val expectedAnswerObjectType: InteractionObject.ObjectTypeCase,
+  val orderedExpectedParameterTypes: LinkedHashMap<
     String, InteractionObject.ObjectTypeCase>,
-  private val matcherDelegate: MatcherDelegate
+  val matcherDelegate: MatcherDelegate
 ) : RuleClassifier {
   override fun matches(answer: InteractionObject, inputs: Map<String, InteractionObject>): Boolean {
     check(answer.objectTypeCase == expectedAnswerObjectType) {
@@ -47,7 +48,7 @@ internal class GenericRuleClassifier private constructor(
     return input
   }
 
-  internal interface NoInputInputMatcher<T> {
+  interface NoInputInputMatcher<T> {
     /**
      * Returns whether the validated and extracted answer matches the expectations per the specification of this
      * classifier.
@@ -55,7 +56,7 @@ internal class GenericRuleClassifier private constructor(
     fun matches(answer: T): Boolean
   }
 
-  internal interface SingleInputMatcher<T> {
+  interface SingleInputMatcher<T> {
     /**
      * Returns whether the validated and extracted answer matches the single validated and extracted input parameter per
      * the specification of this classifier.
@@ -63,7 +64,7 @@ internal class GenericRuleClassifier private constructor(
     fun matches(answer: T, input: T): Boolean
   }
 
-  internal interface MultiTypeSingleInputMatcher<AT, IT> {
+  interface MultiTypeSingleInputMatcher<AT, IT> {
     /**
      * Returns whether the validated and extracted answer matches the single validated and extracted input parameter per
      * the specification of this classifier.
@@ -71,7 +72,7 @@ internal class GenericRuleClassifier private constructor(
     fun matches(answer: AT, input: IT): Boolean
   }
 
-  internal interface MultiTypeDoubleInputMatcher<AT, ITF, ITS> {
+  interface MultiTypeDoubleInputMatcher<AT, ITF, ITS> {
     /**
      * Returns whether the validated and extracted answer matches the two validated and extracted input parameters per
      * the specification of this classifier.
@@ -79,7 +80,7 @@ internal class GenericRuleClassifier private constructor(
     fun matches(answer: AT, firstInput: ITF, secondInput: ITS): Boolean
   }
 
-  internal interface DoubleInputMatcher<T> {
+  interface DoubleInputMatcher<T> {
     /**
      * Returns whether the validated and extracted answer matches the two validated and extracted input parameters per
      * the specification of this classifier.
@@ -87,11 +88,11 @@ internal class GenericRuleClassifier private constructor(
     fun matches(answer: T, firstInput: T, secondInput: T): Boolean
   }
 
-  internal sealed class MatcherDelegate {
+  sealed class MatcherDelegate {
 
     abstract fun matches(answer: InteractionObject, inputs: List<InteractionObject>): Boolean
 
-    internal class NoInputMatcherDelegate<T : Any>(
+    class NoInputMatcherDelegate<T : Any>(
       private val matcher: NoInputInputMatcher<T>,
       private val extractObject: (InteractionObject) -> T
     ) : MatcherDelegate() {
@@ -101,7 +102,7 @@ internal class GenericRuleClassifier private constructor(
       }
     }
 
-    internal class SingleInputMatcherDelegate<T : Any>(
+    class SingleInputMatcherDelegate<T : Any>(
       private val matcher: SingleInputMatcher<T>,
       private val extractObject: (InteractionObject) -> T
     ) : MatcherDelegate() {
@@ -111,7 +112,7 @@ internal class GenericRuleClassifier private constructor(
       }
     }
 
-    internal class MultiTypeSingleInputMatcherDelegate<AT : Any, IT : Any>(
+    class MultiTypeSingleInputMatcherDelegate<AT : Any, IT : Any>(
       private val matcher: MultiTypeSingleInputMatcher<AT, IT>,
       private val extractAnswerObject: (InteractionObject) -> AT,
       private val extractInputObject: (InteractionObject) -> IT
@@ -122,7 +123,7 @@ internal class GenericRuleClassifier private constructor(
       }
     }
 
-    internal class DoubleInputMatcherDelegate<T : Any>(
+    class DoubleInputMatcherDelegate<T : Any>(
       private val matcher: DoubleInputMatcher<T>,
       private val extractObject: (InteractionObject) -> T
     ) : MatcherDelegate() {
@@ -136,7 +137,7 @@ internal class GenericRuleClassifier private constructor(
       }
     }
 
-    internal class MultiTypeDoubleInputMatcherDelegate<AT : Any, ITF : Any, ITS : Any>(
+    class MultiTypeDoubleInputMatcherDelegate<AT : Any, ITF : Any, ITS : Any>(
       private val matcher: MultiTypeDoubleInputMatcher<AT, ITF, ITS>,
       private val extractAnswerObject: (InteractionObject) -> AT,
       private val extractFirstParamObject: (InteractionObject) -> ITF,
@@ -154,8 +155,8 @@ internal class GenericRuleClassifier private constructor(
   }
 
   /** Factory to create new [GenericRuleClassifier]s. */
-  internal class Factory @Inject constructor(
-    private val interactionObjectTypeExtractorRepository: InteractionObjectTypeExtractorRepository
+  class Factory @Inject constructor(
+    val interactionObjectTypeExtractorRepository: InteractionObjectTypeExtractorRepository
   ) {
     /** Returns a new [GenericRuleClassifier] for an answer that is not matched to any input values. */
     inline fun <reified T : Any> createNoInputClassifier(
