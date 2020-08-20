@@ -1,6 +1,14 @@
 # TODO(#1532): Rename file to 'BUILD' post-Gradle.
 '''
-This library contains the app's core source files and functionality
+This library contains the app's core source files and functionality.
+
+Note that:
+ - Most files should be built inside of app library. However, listener files, annotation
+files, view files, view model files, and binding adapter files need to be manually added. The
+documentation below specifies where these files should be added.
+- If your file uses Data-binding views or Kotlin synthetic imports these must be removed in
+order to build with Bazel.
+- All binding adapters must be written in Java.
 '''
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
@@ -11,19 +19,14 @@ load("//app:app_test.bzl", "app_test")
 load("//app:test_with_resources.bzl", "test_with_resources")
 
 '''
-Source files for the annotations library. The files inside the annotations library and the listeners
-library are dependencies for all other libraries in app module.
+Source files for the annotations library. The files inside the annotations library are dependencies
+for all other libraries in app module, except the listeners library.
 
 Place your file here if:
  - A view, view model, or layout file depends on it
  - It is an annotation or helper file of some kind
  - It is not considered a listener
-
-DO NOT place your file here if:
- - It depends on any other file not included in this list
- - Any files in the listeners library depends on it
- - It uses Kotlin synthetic imports
- - Only test files depend on it
+ - It does not depend on any other file not included in this list
 '''
 ANNOTATIONS = [
     "src/main/java/org/oppia/app/activity/ActivityScope.kt",
@@ -32,20 +35,12 @@ ANNOTATIONS = [
 ]
 
 '''
-Source files for the listeners library.
-
-The files inside the listeners library and the annotations library are dependencies for all other
-libraries in app module.
+Source files for the listeners library. The files inside the listeners library are dependencies for
+all other libraries in app module, except the annotations library.
 
 Place your file here if:
  - A view, view model, or layout file depends on it
  - It is either a listener, an interface, or a direct dependency of one in this list
-
-DO NOT place your file here if:
- - You cannot place all of it's dependencies in this list
- - It uses Kotlin synthetic imports
- - Only test files depend on it
- - It imports resources
 '''
 LISTENERS = [
     "src/main/java/org/oppia/app/administratorcontrols/RouteToAppVersionListener.kt",
@@ -105,21 +100,13 @@ DATABINDING_LAYOUTS = ["src/main/res/layout*/**"]
 
 # TODO(#1617): Remove genrules post-gradle
 '''
-Source files for the view_models library that need to be altered by the view model genrule.
-
-Please not that the @Bindable annotation is not supported with Bazel. If your file contains this
-annotation, please remove it.
+Source files for the view_models library that import resources.
 
 Place your file here if:
  - It is a view model
  - It imports resources (ex: `import org.oppia.app.R`)
-
-DO NOT place your file here if:
- - It depends on any file not contained in the listeners, annotations, or resources libraries
- - It does not import any resources
- - It uses Kotlin synthetic imports
 '''
-ALTERED_VIEW_MODELS = [
+VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel.kt",
     "src/main/java/org/oppia/app/help/faq/FAQListViewModel.kt",
     "src/main/java/org/oppia/app/help/HelpItemViewModel.kt",
@@ -134,19 +121,11 @@ ALTERED_VIEW_MODELS = [
 ]
 
 '''
-Source files for the view_models library that DO NOT need to be altered by the view model genrule.
-
-Please not that the @Bindable annotation is not supported with Bazel. If your file contains this
-annotation, please remove it.
+Source files for the view_models library that DO NOT import resources.
 
 Place your file here if:
  - It is a view model
  - It does not import resources
-
-DO NOT place your file here if:
- - It depends on any file not contained in the listeners, annotations, or resources libraries
- - It imports any resources
- - It uses Kotlin synthetic imports
 '''
 VIEW_MODELS = [
     "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAppInformationViewModel.kt",
@@ -258,8 +237,8 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/app/walkthrough/WalkthroughViewModel.kt",
     "src/main/java/org/oppia/app/walkthrough/welcome/WalkthroughWelcomeViewModel.kt",
 ] + [
-    "update_" + altered_view_models[0:-3]
-    for altered_view_models in ALTERED_VIEW_MODELS
+    "update_" + view_models_with_resource_imports[0:-3]
+    for view_models_with_resource_imports in VIEW_MODELS_WITH_RESOURCE_IMPORTS
 ]
 
 # TODO(#1617): Remove genrules post-gradle
@@ -279,24 +258,19 @@ in order to keep Gradle building.
     sed 's/import org.oppia.app.R/import org.oppia.app.view.models.R/g' > $(OUTS)
     ''',
 )
-for file in ALTERED_VIEW_MODELS]
+for file in VIEW_MODELS_WITH_RESOURCE_IMPORTS]
 
 # Views
 
 # TODO(#1617): Remove genrules post-gradle
 '''
-Source files for the views library that need to be altered by the view genrule.
+Source files for the views library import resources.
 
 Place your file here if:
  - It is a view file
  - It imports resources (ex: `import org.oppia.app.R`)
-
-DO NOT place your file here if:
- - It depends on any file not contained in the listeners, annotations, or resources libraries
- - It does not import any resources
- - It uses Kotlin synthetic imports
 '''
-ALTERED_VIEWS = [
+VIEWS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/app/customview/LessonThumbnailImageView.kt",
     "src/main/java/org/oppia/app/customview/SegmentedCircularProgressView.kt",
     "src/main/java/org/oppia/app/profile/ProfileInputView.kt",
@@ -304,16 +278,11 @@ ALTERED_VIEWS = [
 ]
 
 '''
-Source files for the views library that DO NOT need to be altered by the view genrule.
+Source files for the views library that DO NOT import resources.
 
 Place your file here if:
  - It is a view file
  - It does not import resources
-
-DO NOT place your file here if:
- - It depends on any file not contained in the listeners, annotations, or resources libraries
- - It imports any resources
- - It uses Kotlin synthetic imports
 '''
 VIEWS = [
     "src/main/java/org/oppia/app/customview/interaction/FractionInputInteractionView.kt",
@@ -327,8 +296,8 @@ VIEWS = [
     "src/main/java/org/oppia/app/view/ViewComponent.kt",
     "src/main/java/org/oppia/app/view/ViewScope.kt",
 ] + [
-    "update_" + altered_views[0:-3]
-    for altered_views in ALTERED_VIEWS
+    "update_" + views_with_resource_imports[0:-3]
+    for views_with_resource_imports in VIEWS_WITH_RESOURCE_IMPORTS
 ]
 
 # TODO(#1617): Remove genrules post-gradle
@@ -348,75 +317,47 @@ in order to keep Gradle building.
      sed 's/import org.oppia.app.R/import org.oppia.app.views.R/g' > $(OUTS)
      ''',
  )
-for file in ALTERED_VIEWS]
+for file in VIEWS_WITH_RESOURCE_IMPORTS]
 
 # Binding Adapters
 
 # TODO(#1617): Remove genrules post-gradle
 '''
-Adapter files to be processed by genrules. Adapter files should be processed if they import resource
-or binding files of any kind.
-
-Binding adapter files under the org/oppia/app/databinding folder that need to be altered by the
-databinding binding adapter genrule.
-
-Please note that binding adapters have been split up into two types based on their location:
-databinding_adapters can be found under org/oppia/app/databinding and recyclerview_adapters can be
-found under org/oppia/app/recyclerview. Note that a genrule has not been created for
-recyclerview_adapters as it is not currently needed.
+Binding adapter files that import resources.
 
 Place your file here if:
  - It is a binding adapter
  - It imports resources (ex: `import org.oppia.app.R`)
- - It is filed under org/oppia/app/databinding
-
-DO NOT place your file here if:
- - It depends on layout files
- - It does not import any resources
- - It is found under org/oppia/app/recyclerview
- - It uses Kotlin synthetic imports
 '''
-ALTERED_DATABINDING_ADAPTERS = [
+BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/app/databinding/DrawableBindingAdapters.java",
     "src/main/java/org/oppia/app/databinding/ImageViewBindingAdapters.java",
     "src/main/java/org/oppia/app/databinding/TextViewBindingAdapters.java",
 ]
 
 '''
-Binding adapter files under the org/oppia/app/databinding folder that DO NOT need to be altered by
-the databinding binding adapter genrule.
-
-Please note that binding adapters have been split up into two types based on their location:
-databinding_adapters can be found under org/oppia/app/databinding and recyclerview_adapters can be
-found under org/oppia/app/recyclerview. Note that a genrule has not been created for
-recyclerview_adapters as it is not currently needed.
+Binding adapter files that DO NOT import resources.
 
 Place your file here if:
  - It is a binding adapter
  - It does not import resources
- - It is filed under org/oppia/app/databinding
-
-DO NOT place your file here if:
- - It depends on layout files
- - It imports resources
- - It is found under org/oppia/app/recyclerview
- - It uses Kotlin synthetic imports
 '''
-DATABINDING_ADAPTERS = [
+BINDING_ADAPTERS = [
     "src/main/java/org/oppia/app/databinding/EditTextBindingAdapters.java",
     "src/main/java/org/oppia/app/databinding/GuidelineBindingAdapters.java",
     "src/main/java/org/oppia/app/databinding/MarginBindingAdapters.java",
     "src/main/java/org/oppia/app/databinding/StateAssemblerMarginBindingAdapters.java",
     "src/main/java/org/oppia/app/databinding/StateAssemblerPaddingBindingAdapters.java",
     "src/main/java/org/oppia/app/databinding/ViewBindingAdapters.java",
+    "src/main/java/org/oppia/app/recyclerview/RecyclerViewBindingAdapter.java"
 ] + [
-    "update_" + altered_adapters[0:-5]
-    for altered_adapters in ALTERED_DATABINDING_ADAPTERS
+    "update_" + binding_adapters_with_resource_imports[0:-5]
+    for binding_adapters_with_resource_imports in BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS
 ]
 
 # TODO(#1617): Remove genrules post-gradle
 '''
-Genrule for source files in the databinding_adapters library.
+Genrule for source files in the binding_adapters library.
 
 Because each databinding library must have a unique package name and manifest, resources must be
 imported using the proper package name when building with Bazel. This genrule alters those imports
@@ -431,40 +372,24 @@ in order to keep Gradle building.
      sed 's/import org.oppia.app.R/import org.oppia.app.databinding.adapters.R/g' |
      sed 's/BindingAdapters {/BindingAdapters_updated {/g' > $(OUTS)
      ''',
- )
-for file in ALTERED_DATABINDING_ADAPTERS]
-
+ ) for file in BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS]
 
 '''
-Binding adapter files under the org/oppia/app/recycerview folder that DO NOT import resources.
-
-Please note that binding adapters have been split up into two types based on their location:
-databinding_adapters can be found under org/oppia/app/databinding and recyclerview_adapters can be
-found under org/oppia/app/recyclerview. Note that a genrule has not been created for
-recyclerview_adapters as it is not currently needed.
-
-Place your file here if:
- - It is a binding adapter
- - It does not import resources
- - It is filed under org/oppia/app/recyclerview
-
-DO NOT place your file here if:
- - It depends on layout files
- - It imports resources
- - It is found under org/oppia/app/databinding
- - It uses Kotlin synthetic imports
+Files to be excluded from the source list for the app library. This list includes all the files
+built by the following libraries:
+- view_models
+- views
+- listeners
+- annotations
+- binding_adapters
 '''
-RECYCLERVIEW_ADAPTERS = [
-    "src/main/java/org/oppia/app/recyclerview/RecyclerViewBindingAdapter.java"
-]
+EXCLUDED_APP_LIB_FILES = VIEW_MODELS + VIEW_MODELS_WITH_RESOURCE_IMPORTS + VIEWS + VIEWS_WITH_RESOURCE_IMPORTS + BINDING_ADAPTERS + BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS + LISTENERS + ANNOTATIONS
 
-ADAPTERS = DATABINDING_ADAPTERS + RECYCLERVIEW_ADAPTERS + ALTERED_DATABINDING_ADAPTERS
-
-EXCLUDED_APP_LIB_FILES = VIEW_MODELS + ALTERED_VIEW_MODELS + VIEWS + ALTERED_VIEWS + ADAPTERS + LISTENERS + ANNOTATIONS
-
-GENRULE_APP_FILES = glob(["src/main/java/org/oppia/app/**/*.kt"], exclude = EXCLUDED_APP_LIB_FILES)
-
-APP_FILES = []
+'''
+Files to be built by the app library. All of these files are assumed to have resource import and
+will be processed by the app library genrule regardless in order to avoid any import issues.
+'''
+APP_FILES_WITH_RESOURCE_IMPORTS = glob(["src/main/java/org/oppia/app/**/*.kt"], exclude = EXCLUDED_APP_LIB_FILES)
 
 '''
 Genrule for source files in the app library.
@@ -483,9 +408,13 @@ in order to keep Gradle building.
      sed 's/import org.oppia.app.databinding./import org.oppia.app.databinding.databinding./g' > $(OUTS)
      ''',
  )
-for file in GENRULE_APP_FILES]
+for file in APP_FILES_WITH_RESOURCE_IMPORTS]
 
-[APP_FILES.append("update_" + file[0:-3]) for file in GENRULE_APP_FILES]
+# Files to be built by the app library.
+APP_FILES = [] + [
+    "update_" + app_files_with_resource_imports[0:-3]
+    for app_files_with_resource_imports in APP_FILES_WITH_RESOURCE_IMPORTS
+]
 
 # Library for non-layout resource files
 android_library(
@@ -505,14 +434,13 @@ android_library(
     name = "databinding_resources",
     custom_package = "org.oppia.app.databinding",
     manifest = "src/main/DatabindingResourcesManifest.xml",
-    srcs = ADAPTERS,
+    srcs = BINDING_ADAPTERS,
     resource_files = glob(DATABINDING_LAYOUTS),
     enable_data_binding = True,
     exports_manifest = True,
     deps = [
         ":annotations",
-        ":databinding_adapters",
-        ":recyclerview_adapters",
+        ":binding_adapters",
         ":resources",
         ":view_models",
         ":views",
@@ -604,9 +532,9 @@ kt_android_library(
 # TODO(#1639): Translate binding adapters back to Kotlin post-Bazel modularization.
 # Library for all custom data-binding adapters under org/oppia/app/databinding
 android_library(
-    name = "databinding_adapters",
+    name = "binding_adapters",
     custom_package = "org.oppia.app.databinding.adapters",
-    srcs = DATABINDING_ADAPTERS,
+    srcs = BINDING_ADAPTERS,
     enable_data_binding = True,
     manifest = "src/main/DatabindingAdaptersManifest.xml",
     deps = [
@@ -618,25 +546,6 @@ android_library(
         "@circularimageview//circularimageview:circular_image_view",
         artifact("androidx.annotation:annotation"),
         artifact("androidx.constraintlayout:constraintlayout:1.1.3"),
-    ],
-    visibility = ["//visibility:private"],
-)
-
-# TODO(#1639): Translate binding adapters back to Kotlin post-Bazel modularization.
-# Library for all custom databinding adapters under org/oppia/app/recyclerview
-android_library(
-    name = "recyclerview_adapters",
-    custom_package = "org.oppia.app.recyclerview.adapters",
-    srcs = RECYCLERVIEW_ADAPTERS,
-    enable_data_binding = True,
-    manifest = "src/main/RecyclerviewAdaptersManifest.xml",
-    deps = [
-        ":dagger",
-        ":view_models",
-        "//model",
-        "//domain",
-        "//utility",
-        artifact("androidx.annotation:annotation"),
         artifact("androidx.lifecycle:lifecycle-livedata-core:jar:2.0.0-alpha1"),
         artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
     ],
@@ -651,8 +560,8 @@ kt_android_library(
     enable_data_binding = 1,
     manifest = "src/main/AppAndroidManifest.xml",
     deps = [
+        ":binding_adapters",
         ":dagger",
-        ":databinding_adapters",
         ":databinding_resources",
         ":resources",
         ":view_models",
