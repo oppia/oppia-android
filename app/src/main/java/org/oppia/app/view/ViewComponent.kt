@@ -7,6 +7,7 @@ import org.oppia.app.customview.LessonThumbnailImageView
 import org.oppia.app.player.state.DragDropSortInteractionView
 import org.oppia.app.player.state.ImageRegionSelectionInteractionView
 import org.oppia.app.player.state.SelectionInteractionView
+import org.oppia.app.profile.ProfileInputView
 
 /** Root subcomponent for custom views. */
 @Subcomponent
@@ -23,5 +24,6 @@ interface ViewComponent {
   fun inject(selectionInteractionView: SelectionInteractionView)
   fun inject(dragDropSortInteractionView: DragDropSortInteractionView)
   fun inject(imageRegionSelectionInteractionView: ImageRegionSelectionInteractionView)
+  fun inject(profileInputView: ProfileInputView)
   fun inject(lessonThumbnailImageView: LessonThumbnailImageView)
 }

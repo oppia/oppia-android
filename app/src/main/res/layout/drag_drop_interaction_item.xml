@@ -23,7 +23,10 @@
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
-    android:padding="0dp"
+    android:paddingStart="8dp"
+    android:paddingTop="16dp"
+    android:paddingEnd="8dp"
+    android:paddingBottom="20dp"
     app:explorationSplitViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.splitView}"
     app:explorationSplitViewMarginBottom="@{@dimen/margin_0}"
     app:explorationSplitViewMarginEnd="@{@dimen/margin_40}"
@@ -49,12 +52,13 @@
       android:id="@+id/drag_drop_grouping_hint_text_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_marginStart="16dp"
+      android:layout_marginEnd="16dp"
+      android:layout_marginBottom="8dp"
       android:text="@string/drag_and_drop_interaction_group_merge_hint"
       android:textSize="14sp"
       android:textStyle="italic"
-      android:visibility="@{viewModel.getGroupingStatus()? View.VISIBLE : View.GONE}"
-      app:layoutMarginStart="@{viewModel.isSplitView ? @dimen/margin_16 : @dimen/margin_12}"
-      app:layoutMarginTop="@{viewModel.isSplitView ? @dimen/margin_16 : @dimen/margin_8}" />
+      android:visibility="@{viewModel.getGroupingStatus()? View.VISIBLE : View.GONE}" />
 
     <org.oppia.app.player.state.DragDropSortInteractionView
       android:id="@+id/drag_drop_interaction_recycler_view"
