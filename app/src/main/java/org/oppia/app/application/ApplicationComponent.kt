@@ -17,8 +17,6 @@ import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.domain.oppialogger.LogStorageModule
-import org.oppia.domain.oppialogger.OppiaWorkManager
-import org.oppia.domain.oppialogger.OppiaWorkManagerModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.util.accessibility.AccessibilityModule
@@ -48,7 +46,7 @@ import javax.inject.Singleton
     ImageParsingModule::class, HtmlParserEntityTypeModule::class, CachingModule::class,
     QuestionModule::class, LogReportingModule::class, AccessibilityModule::class,
     ImageClickInputModule::class, LogStorageModule::class, PrimeTopicAssetsControllerModule::class,
-    ExpirationMetaDataRetrieverModule::class, OppiaWorkManagerModule::class
+    ExpirationMetaDataRetrieverModule::class
   ]
 )
 
@@ -61,6 +59,4 @@ interface ApplicationComponent {
   }
 
   fun getActivityComponentBuilderProvider(): Provider<ActivityComponent.Builder>
-
-  fun getOppiaWorkManager(): OppiaWorkManager
 }

@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
 import androidx.multidex.MultiDexApplication
 import org.oppia.app.activity.ActivityComponent
+import org.oppia.domain.oppialogger.OppiaLogUploader
 
 /** The root [Application] of the Oppia app. */
 class OppiaApplication : MultiDexApplication(), ActivityComponentFactory {
@@ -14,14 +15,15 @@ class OppiaApplication : MultiDexApplication(), ActivityComponentFactory {
       .build()
   }
 
+  private val oppiaLogUploader = OppiaLogUploader()
+
   override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
     return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
   }
 
   override fun onCreate() {
     super.onCreate()
-    val workManager = component.getOppiaWorkManager()
-    workManager.setWorkerRequestForEvents()
-    workManager.setWorkerRequestForException()
+    oppiaLogUploader.setWorkerRequestForEvents()
+    oppiaLogUploader.setWorkerRequestForExceptions()
   }
 }
