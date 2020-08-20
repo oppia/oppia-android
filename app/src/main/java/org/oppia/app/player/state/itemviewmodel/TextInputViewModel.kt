@@ -2,7 +2,6 @@ package org.oppia.app.player.state.itemviewmodel
 
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.databinding.Bindable
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.app.model.Interaction
@@ -36,7 +35,6 @@ class TextInputViewModel(
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
   }
 
-  @Bindable
   fun getAnswerTextWatcher(): TextWatcher {
     return object : TextWatcher {
       override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
