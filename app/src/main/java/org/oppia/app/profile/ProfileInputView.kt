@@ -10,9 +10,12 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import org.oppia.app.R
-import org.oppia.app.databinding.ProfileInputViewBinding
+import org.oppia.app.shim.ViewBindingShim
+import org.oppia.app.shim.ViewComponentFactory
+import javax.inject.Inject
 
 /** Custom view that is used for name or pin input with error messages. */
 class ProfileInputView @JvmOverloads constructor(
@@ -20,6 +23,16 @@ class ProfileInputView @JvmOverloads constructor(
   attrs: AttributeSet? = null,
   defStyle: Int = 0
 ) : LinearLayout(context, attrs, defStyle) {
+
+  @Inject
+  lateinit var bindingInterface: ViewBindingShim
+
+  override fun onAttachedToWindow() {
+    super.onAttachedToWindow()
+    (FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory)
+      .createViewComponent(this).inject(this)
+  }
+
   companion object {
     @JvmStatic
     @BindingAdapter("profile:label")
@@ -27,41 +40,10 @@ class ProfileInputView @JvmOverloads constructor(
       profileInputView.label.text = label
     }
 
-    @JvmStatic
-    @BindingAdapter("profile:labelMargin")
-    fun setLayoutMarginStart(profileInputView: ProfileInputView, dimen: Float) {
-      val layoutParams = profileInputView.label.layoutParams as MarginLayoutParams
-      layoutParams.marginStart = dimen.toInt()
-      profileInputView.label.layoutParams = layoutParams
-    }
-
-    @JvmStatic
-    @BindingAdapter("profile:inputLength")
-    fun setInputLength(profileInputView: ProfileInputView, inputLength: Int) {
-      profileInputView.input.filters = arrayOf(InputFilter.LengthFilter(inputLength))
-    }
-
-    @JvmStatic
-    @BindingAdapter("profile:error")
-    fun setProfileImage(profileInputView: ProfileInputView, errorMessage: String?) {
-      var errMessage: String = errorMessage ?: ""
-      if (errMessage.isEmpty()) {
-        profileInputView.clearErrorText()
-      } else {
-        profileInputView.setErrorText(errMessage)
-      }
-    }
-
     /** Binding adapter for setting a [TextWatcher] as a change listener for an [EditText]. */
     @BindingAdapter("android:addTextChangedListener")
     fun bindTextWatcher(editText: EditText, textWatcher: TextWatcher) {
       editText.addTextChangedListener(textWatcher)
-    }
-
-    @JvmStatic
-    @BindingAdapter("profile:singleLine")
-    fun setSingleLine(profileInputView: ProfileInputView, type: Boolean) {
-      profileInputView.input.setSingleLine(type)
     }
   }
 
@@ -70,16 +52,23 @@ class ProfileInputView @JvmOverloads constructor(
   private var input: EditText
 
   init {
-    val binding = DataBindingUtil.inflate<ProfileInputViewBinding>(
-      LayoutInflater.from(context),
-      R.layout.profile_input_view, this,
-      /* attachToRoot= */ true
-    )
     val attributes = context.obtainStyledAttributes(attrs, R.styleable.ProfileInputView)
-    binding.labelText.text = attributes.getString(R.styleable.ProfileInputView_label)
-    label = binding.labelText
-    input = binding.input
-    errorText = binding.errorText
+    label = bindingInterface.provideProfileInputViewBindingLabelText(
+      LayoutInflater.from(context),
+      this,
+      true
+    )
+    label.text = attributes.getString(R.styleable.ProfileInputView_label)
+    input = bindingInterface.provideProfileInputViewBindingInput(
+      LayoutInflater.from(context),
+      this,
+      true
+    )
+    errorText = bindingInterface.provideProfileInputViewBindingErrorText(
+      LayoutInflater.from(context),
+      this,
+      true
+    )
     orientation = VERTICAL
     if (
       attributes.getBoolean(
@@ -121,6 +110,29 @@ class ProfileInputView @JvmOverloads constructor(
   fun setErrorText(errorMessage: String) {
     input.background = context.resources.getDrawable(R.drawable.edit_text_red_border)
     errorText.text = errorMessage
+  }
+
+  fun setSingleLine(type: Boolean) {
+    input.setSingleLine(type)
+  }
+
+  fun setInputLength(inputLength: Int) {
+    input.filters = arrayOf(InputFilter.LengthFilter(inputLength))
+  }
+
+  fun setLabelMargin(dimen: Float) {
+    val layoutParams = label.layoutParams as MarginLayoutParams
+    layoutParams.marginStart = dimen.toInt()
+    label.layoutParams = layoutParams
+  }
+
+  fun setError(errorMessage: String) {
+    val errMessage: String = errorMessage ?: ""
+    if (errMessage.isEmpty()) {
+      clearErrorText()
+    } else {
+      setErrorText(errMessage)
+    }
   }
 
   fun setLabel(labelText: String) {

@@ -3,6 +3,7 @@ package org.oppia.app.administratorcontrols
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -28,7 +29,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.BuildConfig
 import org.oppia.app.R
 import org.oppia.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -79,7 +79,7 @@ class AppVersionActivityTest {
         withText(
           String.format(
             context.resources.getString(R.string.app_version_name),
-            BuildConfig.VERSION_NAME
+            context.packageManager.getVersionName()
           )
         )
       ).check(matches(isDisplayed()))
@@ -109,7 +109,7 @@ class AppVersionActivityTest {
           withText(
             String.format(
               context.resources.getString(R.string.app_version_name),
-              BuildConfig.VERSION_NAME
+              context.packageManager.getVersionName()
             )
           )
         )
@@ -148,6 +148,10 @@ class AppVersionActivityTest {
       onView(isRoot()).perform(pressBack())
       onView(withId(R.id.administrator_controls_list)).check(matches(isDisplayed()))
     }
+  }
+
+  private fun PackageManager.getVersionName(): String {
+    return getPackageInfo(context.packageName, 0).versionName
   }
 
   private fun getDateTime(dateTimeTimestamp: Long): String? {
