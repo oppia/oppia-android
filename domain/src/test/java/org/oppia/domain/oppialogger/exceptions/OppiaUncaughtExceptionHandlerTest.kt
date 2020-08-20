@@ -124,7 +124,7 @@ class OppiaUncaughtExceptionHandlerTest {
   }
 
   @Test
-  fun testHandler_throwException_verifyLogToDefaultHandler(){
+  fun testHandler_throwException_verifyLogToDefaultHandler() {
     val exceptionThrown = Exception("TEST")
     oppiaUncaughtExceptionHandler.uncaughtException(Thread.currentThread(), exceptionThrown)
 
@@ -191,7 +191,7 @@ class OppiaUncaughtExceptionHandlerTest {
 
 class FakeDefaultExceptionHandler @Inject constructor(
   private val fakeExceptionLogger: ExceptionLogger
-): Thread.UncaughtExceptionHandler{
+) : Thread.UncaughtExceptionHandler {
 
   private val exceptionList = mutableListOf<Exception>()
 
