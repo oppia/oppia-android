@@ -183,6 +183,7 @@ jobs:
         run: |
           cd ~/oppia-bazel
           unzip bazel-build.zip 
+          cd
           chmod a+x ~/oppia-bazel/bazel
           ~/oppia-bazel/bazel build //:oppia --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=/home/runner/work/oppia-android/oppia-android/tmp/android_tools --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx
 #       - uses: actions/checkout@v2   
