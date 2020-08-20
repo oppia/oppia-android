@@ -8,6 +8,7 @@ load("@tools_android//tools/crashlytics:defs.bzl", "crashlytics_android_library"
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("//app:app_test.bzl", "app_test")
+load("//app:test_with_resources.bzl", "test_with_resources")
 
 '''
 Source files for the annotations library. The files inside the annotations library and the listeners
@@ -839,7 +840,7 @@ app_test(
 
 app_test(
     name = "StateFragmentLocalTest",
-    srcs = ["update_src/test/java/org/oppia/app/player/state/StateFragmentLocalTest"],
+    srcs = [test_with_resources("src/test/java/org/oppia/app/player/state/StateFragmentLocalTest.kt")],
     test_class = "org.oppia.app.player.state.StateFragmentLocalTest",
     deps = TEST_DEPS,
 )
