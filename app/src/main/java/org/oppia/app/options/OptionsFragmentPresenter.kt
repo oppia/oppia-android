@@ -41,14 +41,16 @@ class OptionsFragmentPresenter @Inject constructor(
   private var storyTextSize = StoryTextSize.SMALL_TEXT_SIZE
   private var appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
   private var audioLanguage = AudioLanguage.NO_AUDIO
-  val viewModel = getOptionControlsItemViewModel()
+  private val viewModel = getOptionControlsItemViewModel()
 
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    isMultipane: Boolean
+    isMultipane: Boolean,
+    isFirstOpen: Boolean
   ): View? {
     viewModel.isUIInitialized(false)
+    viewModel.isFirstOpen(isFirstOpen)
     viewModel.isMultipane.set(isMultipane)
     binding = OptionsFragmentBinding.inflate(
       inflater,

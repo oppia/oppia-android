@@ -19,7 +19,11 @@ class OptionsActivityPresenter @Inject constructor(
   private var navigationDrawerFragment: NavigationDrawerFragment? = null
   private lateinit var toolbar: Toolbar
 
-  fun handleOnCreate(isFromNavigationDrawer: Boolean, extraOptionsTitle: String?) {
+  fun handleOnCreate(
+    isFromNavigationDrawer: Boolean,
+    extraOptionsTitle: String?,
+    isFirstOpen: Boolean
+  ) {
     activity.setContentView(R.layout.option_activity)
     val titleTextView =
       activity.findViewById<TextView>(R.id.options_activity_selected_options_title)
@@ -42,7 +46,7 @@ class OptionsActivityPresenter @Inject constructor(
     }
     activity.supportFragmentManager.beginTransaction().add(
       R.id.options_fragment_placeholder,
-      OptionsFragment.newInstance(isMultipane)
+      OptionsFragment.newInstance(isMultipane, isFirstOpen)
     ).commitNow()
   }
 

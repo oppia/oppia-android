@@ -33,12 +33,12 @@ class OptionControlsViewModel @Inject constructor(
   private val loadStoryTextSizeListener = activity as LoadStoryTextSizeListener
   private val loadAudioLanguageListListener = activity as LoadAudioLanguageListListener
   private val loadAppLanguageListListener = activity as LoadAppLanguageListListener
-  private var isFirstOpen = (activity as OptionsActivity).isFirstRun
+  private var isFirstOpen = true
   val uiLiveData = MutableLiveData<Boolean>()
 
   /**
    * Should be called with `false` when the UI starts to load, then with `true` after the UI
-   * finishes loading
+   * finishes loading.
    */
   fun isUIInitialized(isInitialized: Boolean) {
     uiLiveData.value = isInitialized
@@ -104,6 +104,14 @@ class OptionControlsViewModel @Inject constructor(
     }
 
     return itemViewModelList
+  }
+
+  /**
+   * Used to set [isFirstOpen] value which controls the loading of the initial extra-option fragment
+   * in the case of multipane.
+   */
+  fun isFirstOpen(isFirstOpen: Boolean) {
+    this.isFirstOpen = isFirstOpen
   }
 
   fun getStoryTextSize(storyTextSize: StoryTextSize): String {

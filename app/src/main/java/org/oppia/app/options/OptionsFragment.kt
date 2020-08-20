@@ -16,6 +16,7 @@ const val REQUEST_CODE_APP_LANGUAGE = 2
 const val REQUEST_CODE_AUDIO_LANGUAGE = 3
 
 private const val IS_MULTIPANE_EXTRA = "IS_MULTIPANE"
+private const val IS_FIRST_OPEN_EXTRA = "IS_FIRST_OPEN_EXTRA"
 
 /** Fragment that contains an introduction to the app. */
 class OptionsFragment : InjectableFragment() {
@@ -23,9 +24,10 @@ class OptionsFragment : InjectableFragment() {
   lateinit var optionsFragmentPresenter: OptionsFragmentPresenter
 
   companion object {
-    fun newInstance(isMultipane: Boolean): OptionsFragment {
+    fun newInstance(isMultipane: Boolean, isFirstOpen: Boolean): OptionsFragment {
       val args = Bundle()
       args.putBoolean(IS_MULTIPANE_EXTRA, isMultipane)
+      args.putBoolean(IS_FIRST_OPEN_EXTRA, isFirstOpen)
       val fragment = OptionsFragment()
       fragment.arguments = args
       return fragment
@@ -45,7 +47,8 @@ class OptionsFragment : InjectableFragment() {
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to OptionsFragment" }
     val isMultipane = args.getBoolean(IS_MULTIPANE_EXTRA)
-    return optionsFragmentPresenter.handleCreateView(inflater, container, isMultipane)
+    val isFirstOpen = args.getBoolean(IS_FIRST_OPEN_EXTRA)
+    return optionsFragmentPresenter.handleCreateView(inflater, container, isMultipane, isFirstOpen)
   }
 
   fun updateStoryTextSize(textSize: String) {

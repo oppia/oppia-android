@@ -23,7 +23,7 @@ class OptionsActivity :
   @Inject
   lateinit var optionActivityPresenter: OptionsActivityPresenter
   // used to initially load the suitable fragment in the case of multipane.
-  var isFirstRun = true
+  private var isFirstOpen = true
 
   companion object {
 
@@ -50,10 +50,10 @@ class OptionsActivity :
       /* defaultValue= */ false
     )
     if (savedInstanceState != null) {
-      isFirstRun = false
+      isFirstOpen = false
     }
     val extraOptionsTitle = savedInstanceState?.getString(SELECTED_OPTIONS_TITLE_KEY)
-    optionActivityPresenter.handleOnCreate(isFromNavigationDrawer, extraOptionsTitle)
+    optionActivityPresenter.handleOnCreate(isFromNavigationDrawer, extraOptionsTitle, isFirstOpen)
     title = getString(R.string.menu_options)
   }
 
