@@ -150,9 +150,7 @@ class StateFragmentPresenter @Inject constructor(
     moveToNextState()
   }
 
-  fun onNextButtonClicked() {
-    moveToNextState()
-  }
+  fun onNextButtonClicked() = moveToNextState()
 
   fun onPreviousButtonClicked() {
     explorationProgressController.moveToPreviousState()
