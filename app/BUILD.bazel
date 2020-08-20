@@ -1,6 +1,14 @@
 # TODO(#1532): Rename file to 'BUILD' post-Gradle.
 '''
-This library contains the app's core source files and functionality
+This library contains the app's core source files and functionality.
+
+Note that:
+ - Most files should be built inside of app library. However, listener files, annotation
+files, view files, view model files, and binding adapter files need to be manually added. The
+documentation below specifies where these files should be added.
+- If your file uses Data-binding views or Kotlin synthetic imports these must be removed in
+order to build with Bazel.
+- All binding adapters must be written in Java.
 '''
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
@@ -8,15 +16,31 @@ load("@tools_android//tools/crashlytics:defs.bzl", "crashlytics_android_library"
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
-# Source files for annotations library.
-ANNOTATION_FILES = [
+'''
+Source files for the annotations library. The files inside the annotations library are dependencies
+for all other libraries in app module, except the listeners library.
+
+Place your file here if:
+ - A view, view model, or layout file depends on it
+ - It is an annotation or helper file of some kind
+ - It is not considered a listener
+ - It does not depend on any other file not included in this list
+'''
+ANNOTATIONS = [
     "src/main/java/org/oppia/app/activity/ActivityScope.kt",
     "src/main/java/org/oppia/app/fragment/FragmentScope.kt",
     "src/main/java/org/oppia/app/utility/KeyboardHelper.kt",
 ]
 
-# Source files for listener library.
-LISTENER_FILES = [
+'''
+Source files for the listeners library. The files inside the listeners library are dependencies for
+all other libraries in app module, except the annotations library.
+
+Place your file here if:
+ - A view, view model, or layout file depends on it
+ - It is either a listener, an interface, or a direct dependency of one in this list
+'''
+LISTENERS = [
     "src/main/java/org/oppia/app/administratorcontrols/RouteToAppVersionListener.kt",
     "src/main/java/org/oppia/app/administratorcontrols/RouteToProfileListListener.kt",
     "src/main/java/org/oppia/app/drawer/RouteToProfileProgressListener.kt",
@@ -26,6 +50,7 @@ LISTENER_FILES = [
     "src/main/java/org/oppia/app/home/RouteToRecentlyPlayedListener.kt",
     "src/main/java/org/oppia/app/home/RouteToTopicPlayStoryListener.kt",
     "src/main/java/org/oppia/app/home/topiclist/TopicSummaryClickListener.kt",
+    "src/main/java/org/oppia/app/onboarding/OnboardingNavigationListener.kt",
     "src/main/java/org/oppia/app/onboarding/RouteToProfileListListener.kt",
     "src/main/java/org/oppia/app/options/RouteToAppLanguageListListener.kt",
     "src/main/java/org/oppia/app/options/RouteToAudioLanguageListListener.kt",
@@ -55,11 +80,31 @@ LISTENER_FILES = [
     "src/main/java/org/oppia/app/topic/RouteToRevisionCardListener.kt",
     "src/main/java/org/oppia/app/utility/OnClickableAreaClickedListener.kt",
     "src/main/java/org/oppia/app/utility/RegionClickEvent.kt",
+    "src/main/java/org/oppia/app/walkthrough/end/WalkthroughEndPageChanger.kt",
+    "src/main/java/org/oppia/app/walkthrough/WalkthroughActivityListener.kt",
+    "src/main/java/org/oppia/app/walkthrough/WalkthroughFragmentChangeListener.kt",
+    "src/main/java/org/oppia/app/walkthrough/WalkthroughPageChanger.kt",
 ]
 
+'''
+Source files for the databinding_resources library.
+
+The files inside this list include all layout files. Please note that layouts MUST NOT depend on
+presenters or fragments. Instead, they should depend on a listener or interface as an abstraction.
+'''
+DATABINDING_LAYOUTS = ["src/main/res/layout*/**"]
+
+# View Models
+
 # TODO(#1617): Remove genrules post-gradle
-# Files altered by genrules to be excluded in the app library
-ALTERED_VIEW_MODELS = [
+'''
+Source files for the view_models library that import resources.
+
+Place your file here if:
+ - It is a view model
+ - It imports resources (ex: `import org.oppia.app.R`)
+'''
+VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel.kt",
     "src/main/java/org/oppia/app/help/faq/FAQListViewModel.kt",
     "src/main/java/org/oppia/app/help/HelpItemViewModel.kt",
@@ -73,8 +118,14 @@ ALTERED_VIEW_MODELS = [
     "src/main/java/org/oppia/app/topic/info/TopicInfoViewModel.kt",
 ]
 
-# Source files for view_model library
-VIEW_MODEL_FILES = [
+'''
+Source files for the view_models library that DO NOT import resources.
+
+Place your file here if:
+ - It is a view model
+ - It does not import resources
+'''
+VIEW_MODELS = [
     "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAppInformationViewModel.kt",
     "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsDownloadPermissionsViewModel.kt",
     "src/main/java/org/oppia/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsGeneralViewModel.kt",
@@ -184,8 +235,8 @@ VIEW_MODEL_FILES = [
     "src/main/java/org/oppia/app/walkthrough/WalkthroughViewModel.kt",
     "src/main/java/org/oppia/app/walkthrough/welcome/WalkthroughWelcomeViewModel.kt",
 ] + [
-    "update_" + altered_view_models[0:-3]
-    for altered_view_models in ALTERED_VIEW_MODELS
+    "update_" + view_models_with_resource_imports[0:-3]
+    for view_models_with_resource_imports in VIEW_MODELS_WITH_RESOURCE_IMPORTS
 ]
 
 # TODO(#1617): Remove genrules post-gradle
@@ -202,22 +253,36 @@ in order to keep Gradle building.
     outs = [file[0:-3] + "_updated.kt"],
     cmd = '''
     cat $(SRCS) |
-    sed 's/import org.oppia.app.R/import org.oppia.app.vm.R/g' > $(OUTS)
+    sed 's/import org.oppia.app.R/import org.oppia.app.view.models.R/g' > $(OUTS)
     ''',
 )
-for file in ALTERED_VIEW_MODELS]
+for file in VIEW_MODELS_WITH_RESOURCE_IMPORTS]
+
+# Views
 
 # TODO(#1617): Remove genrules post-gradle
-# View files altered by genrules to be excluded in the app library.
-ALTERED_VIEWS = [
+'''
+Source files for the views library that import resources.
+
+Place your file here if:
+ - It is a view file
+ - It imports resources (ex: `import org.oppia.app.R`)
+'''
+VIEWS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/app/customview/LessonThumbnailImageView.kt",
     "src/main/java/org/oppia/app/customview/SegmentedCircularProgressView.kt",
     "src/main/java/org/oppia/app/profile/ProfileInputView.kt",
     "src/main/java/org/oppia/app/utility/ClickableAreasImage.kt",
 ]
 
-# Source files and genrule targets for views library.
-VIEW_FILES = [
+'''
+Source files for the views library that DO NOT import resources.
+
+Place your file here if:
+ - It is a view file
+ - It does not import resources
+'''
+VIEWS = [
     "src/main/java/org/oppia/app/customview/interaction/FractionInputInteractionView.kt",
     "src/main/java/org/oppia/app/customview/interaction/NumericInputInteractionView.kt",
     "src/main/java/org/oppia/app/customview/interaction/TextInputInteractionView.kt",
@@ -229,8 +294,8 @@ VIEW_FILES = [
     "src/main/java/org/oppia/app/view/ViewComponent.kt",
     "src/main/java/org/oppia/app/view/ViewScope.kt",
 ] + [
-    "update_" + altered_views[0:-3]
-    for altered_views in ALTERED_VIEWS
+    "update_" + views_with_resource_imports[0:-3]
+    for views_with_resource_imports in VIEWS_WITH_RESOURCE_IMPORTS
 ]
 
 # TODO(#1617): Remove genrules post-gradle
@@ -250,14 +315,70 @@ in order to keep Gradle building.
      sed 's/import org.oppia.app.R/import org.oppia.app.views.R/g' > $(OUTS)
      ''',
  )
-for file in ALTERED_VIEWS]
+for file in VIEWS_WITH_RESOURCE_IMPORTS]
+
+# Binding Adapters
+
+# TODO(#1617): Remove genrules post-gradle
+'''
+Binding adapter files that import resources.
+
+Place your file here if:
+ - It is a binding adapter
+ - It imports resources (ex: `import org.oppia.app.R`)
+'''
+BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS = [
+    "src/main/java/org/oppia/app/databinding/DrawableBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/ImageViewBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/TextViewBindingAdapters.java",
+]
+
+'''
+Binding adapter files that DO NOT import resources.
+
+Place your file here if:
+ - It is a binding adapter
+ - It does not import resources
+'''
+BINDING_ADAPTERS = [
+    "src/main/java/org/oppia/app/databinding/EditTextBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/GuidelineBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/MarginBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/StateAssemblerMarginBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/StateAssemblerPaddingBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/ViewBindingAdapters.java",
+    "src/main/java/org/oppia/app/recyclerview/RecyclerViewBindingAdapter.java"
+] + [
+    "update_" + binding_adapters_with_resource_imports[0:-5]
+    for binding_adapters_with_resource_imports in BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS
+]
+
+# TODO(#1617): Remove genrules post-gradle
+'''
+Genrule for source files in the binding_adapters library.
+
+Because each databinding library must have a unique package name and manifest, resources must be
+imported using the proper package name when building with Bazel. This genrule alters those imports
+in order to keep Gradle building.
+'''
+[genrule(
+     name = "update_" + file[0:-5],
+     srcs = [file],
+     outs = [file[0:-5] + "_updated.java"],
+     cmd = '''
+     cat $(SRCS) |
+     sed 's/import org.oppia.app.R/import org.oppia.app.databinding.adapters.R/g' |
+     sed 's/BindingAdapters {/BindingAdapters_updated {/g' > $(OUTS)
+     ''',
+ )
+for file in BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS]
 
 # Library for non-layout resource files
 android_library(
     name = "resources",
     custom_package = "org.oppia.app",
     manifest = "src/main/AndroidManifest.xml",
-    resource_files = glob(["src/main/res/**",], exclude = ["src/main/res/layout*/**"]),
+    resource_files = glob(["src/main/res/**",], exclude = DATABINDING_LAYOUTS),
     exports_manifest = True,
     deps = [
         artifact("com.google.android.material:material"),
@@ -265,11 +386,44 @@ android_library(
     visibility = ["//visibility:private"],
 )
 
+# Library for layout resource files
+android_library(
+    name = "databinding_resources",
+    custom_package = "org.oppia.app.databinding",
+    manifest = "src/main/DatabindingResourcesManifest.xml",
+    srcs = BINDING_ADAPTERS,
+    resource_files = glob(DATABINDING_LAYOUTS),
+    enable_data_binding = True,
+    exports_manifest = True,
+    deps = [
+        ":annotations",
+        ":binding_adapters",
+        ":resources",
+        ":view_models",
+        ":views",
+        "//model",
+        "@circularimageview//circularimageview:circular_image_view",
+        artifact("androidx.annotation:annotation"),
+        artifact("androidx.constraintlayout:constraintlayout"),
+        artifact("androidx.core:core:1.0.1"),
+        artifact("androidx.databinding:databinding-adapters"),
+        artifact("androidx.databinding:databinding-common"),
+        artifact("androidx.databinding:databinding-runtime"),
+        artifact("androidx.lifecycle:lifecycle-livedata-core:jar:2.0.0-alpha1"),
+        artifact("androidx.recyclerview:recyclerview:1.0.0"),
+        artifact("androidx.viewpager:viewpager:1.0.0"),
+        artifact("com.chaos.view:pinview:1.4.3"),
+        artifact("com.google.android.material:material"),
+        artifact("de.hdodenhof:circleimageview:3.0.1"),
+        artifact("javax.annotation:javax.annotation-api"),
+    ],
+)
+
 # Library for listener files required to build views and view_model libraries
 kt_android_library(
     name = "listeners",
     custom_package = "org.oppia.app",
-    srcs = LISTENER_FILES,
+    srcs = LISTENERS,
     deps = [
         ":dagger",
         "//model",
@@ -283,7 +437,7 @@ kt_android_library(
     name = "views",
     custom_package = "org.oppia.app.views",
     manifest = "src/main/ViewsManifest.xml",
-    srcs = VIEW_FILES,
+    srcs = VIEWS,
     deps = [
         ":annotations",
         ":listeners",
@@ -296,14 +450,14 @@ kt_android_library(
         artifact("androidx.databinding:databinding-common"),
         artifact("androidx.databinding:databinding-runtime"),
     ],
-    visibility = ["//visibility:public"],
+    visibility = ["//visibility:private"],
 )
 
 # Library for scope annotations required to build views and view_model libraries
 kt_android_library(
     name = "annotations",
     custom_package = "org.oppia.app",
-    srcs = ANNOTATION_FILES,
+    srcs = ANNOTATIONS,
     deps = [
         ":dagger",
         "//model",
@@ -314,10 +468,10 @@ kt_android_library(
 # Library for all view model files
 kt_android_library(
     name = "view_models",
-    custom_package = "org.oppia.app.vm",
-    srcs = VIEW_MODEL_FILES,
-    enable_data_binding = 1,
-    manifest = "src/main/ViewModelManifest.xml",
+    custom_package = "org.oppia.app.view.models",
+    srcs = VIEW_MODELS,
+    enable_data_binding = True,
+    manifest = "src/main/ViewModelsManifest.xml",
     deps = [
         ":annotations",
         ":dagger",
@@ -328,6 +482,28 @@ kt_android_library(
         "//utility",
         artifact("androidx.databinding:databinding-common"),
         artifact("androidx.databinding:databinding-runtime"),
+    ],
+    visibility = ["//visibility:private"],
+)
+
+# Library for all custom data-binding adapters under org/oppia/app/databinding
+android_library(
+    name = "binding_adapters",
+    custom_package = "org.oppia.app.databinding.adapters",
+    srcs = BINDING_ADAPTERS,
+    enable_data_binding = True,
+    manifest = "src/main/DatabindingAdaptersManifest.xml",
+    deps = [
+        ":dagger",
+        ":resources",
+        ":view_models",
+        "//model",
+        "//utility",
+        "@circularimageview//circularimageview:circular_image_view",
+        artifact("androidx.annotation:annotation"),
+        artifact("androidx.constraintlayout:constraintlayout:1.1.3"),
+        artifact("androidx.lifecycle:lifecycle-livedata-core:jar:2.0.0-alpha1"),
+        artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
     ],
     visibility = ["//visibility:private"],
 )

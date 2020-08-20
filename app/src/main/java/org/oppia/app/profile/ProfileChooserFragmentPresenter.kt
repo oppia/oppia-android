@@ -90,7 +90,6 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     binding.apply {
       viewModel = chooserViewModel
       lifecycleOwner = fragment
-      presenter = this@ProfileChooserFragmentPresenter
     }
     logProfileChooserEvent()
     binding.profileRecyclerView.isNestedScrollingEnabled = false
@@ -171,7 +170,6 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     model: ProfileChooserUiModel
   ) {
     binding.viewModel = model
-    binding.presenter = this
     binding.profileChooserItem.setOnClickListener {
       if (model.profile.pin.isEmpty()) {
         profileManagementController.loginToProfile(model.profile.id).observe(
@@ -204,7 +202,6 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     binding: ProfileChooserAddViewBinding,
     @Suppress("UNUSED_PARAMETER") model: ProfileChooserUiModel
   ) {
-    binding.presenter = this
     binding.addProfileItem.setOnClickListener {
       if (chooserViewModel.adminPin.isEmpty()) {
         activity.startActivity(

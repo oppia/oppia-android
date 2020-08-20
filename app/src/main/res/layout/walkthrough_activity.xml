@@ -8,7 +8,7 @@
 
     <variable
       name="presenter"
-      type="org.oppia.app.walkthrough.WalkthroughActivityPresenter" />
+      type="org.oppia.app.walkthrough.WalkthroughActivityListener" />
 
     <variable
       name="viewModel"
@@ -36,7 +36,7 @@
       android:clickable="true"
       android:contentDescription="@string/back_button"
       android:focusable="true"
-      android:onClick="@{(v) -> presenter.previousPage(viewModel.currentProgress)}"
+      android:onClick="@{(v) -> presenter.moveToPreviousPage(viewModel.currentProgress)}"
       android:src="@drawable/ic_arrow_back_white_24dp"
       android:tint="@color/grey"
       app:layout_constraintStart_toStartOf="parent"
