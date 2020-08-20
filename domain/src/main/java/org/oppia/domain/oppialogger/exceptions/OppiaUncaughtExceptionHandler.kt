@@ -1,12 +1,14 @@
 package org.oppia.domain.oppialogger.exceptions
 
+import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
 /** Handler for catching fatal exceptions before the defaultUncaughtExceptionHandler. */
 class OppiaUncaughtExceptionHandler @Inject constructor(
-  private var exceptionsController: ExceptionsController,
-  private var oppiaClock: OppiaClock
+  private val exceptionsController: ExceptionsController,
+  private val oppiaClock: OppiaClock,
+  private val consoleLogger: ConsoleLogger
 ) : Thread.UncaughtExceptionHandler {
 
   /** Logs an uncaught exception to the [exceptionsController]. */
@@ -17,7 +19,7 @@ class OppiaUncaughtExceptionHandler @Inject constructor(
         oppiaClock.getCurrentCalendar().timeInMillis
       )
     } catch (e: Exception) {
-      e.printStackTrace()
+      consoleLogger.e("OPPIA_EXCEPTION_HANDLER", "Problem in logging exception", e)
     } finally {
       Thread.getDefaultUncaughtExceptionHandler().uncaughtException(thread, throwable)
     }
