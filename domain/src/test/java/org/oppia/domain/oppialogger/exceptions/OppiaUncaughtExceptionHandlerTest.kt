@@ -33,6 +33,7 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
+import org.oppia.util.logging.ExceptionLogger
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.networking.NetworkConnectionUtil
@@ -59,6 +60,9 @@ class OppiaUncaughtExceptionHandlerTest {
   lateinit var networkConnectionUtil: NetworkConnectionUtil
 
   @Inject
+  lateinit var fakeDefaultExceptionHandler: FakeDefaultExceptionHandler
+
+  @Inject
   lateinit var exceptionsController: ExceptionsController
 
   @Inject
@@ -78,6 +82,7 @@ class OppiaUncaughtExceptionHandlerTest {
   fun setUp() {
     networkConnectionUtil = NetworkConnectionUtil(ApplicationProvider.getApplicationContext())
     setUpTestApplicationComponent()
+    Thread.setDefaultUncaughtExceptionHandler(fakeDefaultExceptionHandler)
   }
 
   @ExperimentalCoroutinesApi
@@ -102,7 +107,7 @@ class OppiaUncaughtExceptionHandlerTest {
   }
 
   @Test
-  fun testHandler_throwException_verifyLogToRemoteService() {
+  fun testHandler_throwException_withNetwork_verifyLogToRemoteService() {
     val exceptionThrown = Exception("TEST")
     oppiaUncaughtExceptionHandler.uncaughtException(Thread.currentThread(), exceptionThrown)
 
@@ -116,6 +121,17 @@ class OppiaUncaughtExceptionHandlerTest {
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
+  }
+
+  @Test
+  fun testHandler_throwException_verifyLogToDefaultHandler(){
+    val exceptionThrown = Exception("TEST")
+    oppiaUncaughtExceptionHandler.uncaughtException(Thread.currentThread(), exceptionThrown)
+
+    val exceptionCaught = fakeDefaultExceptionHandler.getMostRecentException()
+    assertThat(exceptionCaught).hasMessageThat().matches("java.lang.Exception: TEST")
+    assertThat(exceptionCaught.cause).isEqualTo(Exception(exceptionThrown).cause)
+    assertThat(Thread.getDefaultUncaughtExceptionHandler()).isEqualTo(fakeDefaultExceptionHandler)
   }
 
   @Qualifier
@@ -171,4 +187,17 @@ class OppiaUncaughtExceptionHandlerTest {
 
     fun inject(oppiaUncaughtExceptionHandlerTest: OppiaUncaughtExceptionHandlerTest)
   }
+}
+
+class FakeDefaultExceptionHandler @Inject constructor(
+  private val fakeExceptionLogger: ExceptionLogger
+): Thread.UncaughtExceptionHandler{
+
+  private val exceptionList = mutableListOf<Exception>()
+
+  override fun uncaughtException(p0: Thread?, p1: Throwable?) {
+    exceptionList.add(Exception(p1))
+  }
+
+  fun getMostRecentException() = exceptionList.last()
 }
