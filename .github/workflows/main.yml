@@ -169,6 +169,14 @@ jobs:
 #         with:
 #          name: bazel-tools
 #          path: ~/oppia-bazel/bazel-bin/tools/android/runtime_deps/android_tools.tar.gz
+      - name: Create tmp/android_tools
+        run: |
+          pwd
+          mkdir tmp
+          cd tmp
+          mkdir android_tools
+          cd android_tools
+          pwd
       - name: Extract Android ToolsCurr
         run: |
           cd ~/oppia-bazel
