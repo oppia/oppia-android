@@ -31,6 +31,7 @@ Place your file here if:
 ANNOTATIONS = [
     "src/main/java/org/oppia/app/activity/ActivityScope.kt",
     "src/main/java/org/oppia/app/fragment/FragmentScope.kt",
+    "src/main/java/org/oppia/app/utility/ContextExtensions.kt",
     "src/main/java/org/oppia/app/utility/KeyboardHelper.kt",
 ]
 
@@ -264,7 +265,7 @@ for file in VIEW_MODELS_WITH_RESOURCE_IMPORTS]
 
 # TODO(#1617): Remove genrules post-gradle
 '''
-Source files for the views library import resources.
+Source files for the views library that import resources.
 
 Place your file here if:
  - It is a view file
@@ -400,7 +401,7 @@ in order to keep Gradle building.
 '''
 [genrule(
      name = "update_" + file[0:-3],
-     srcs = [file[0:-3] + ".kt"],
+     srcs = [file],
      outs = [file[0:-3] + "_updated.kt"],
      cmd = '''
      cat $(SRCS) |
@@ -416,7 +417,7 @@ APP_FILES = [] + [
     for app_files_with_resource_imports in APP_FILES_WITH_RESOURCE_IMPORTS
 ]
 
-# Library for non-layout resource files
+# Library for non-layout resource files.
 android_library(
     name = "resources",
     custom_package = "org.oppia.app",
@@ -429,7 +430,7 @@ android_library(
     visibility = ["//visibility:private"],
 )
 
-# Library for layout resource files
+# Library for layout resource files.
 android_library(
     name = "databinding_resources",
     custom_package = "org.oppia.app.databinding",
@@ -462,7 +463,7 @@ android_library(
     ],
 )
 
-# Library for listener files required to build views and view_model libraries
+# Library for listener files required to build views and view_model libraries.
 kt_android_library(
     name = "listeners",
     custom_package = "org.oppia.app",
@@ -475,7 +476,7 @@ kt_android_library(
     visibility = ["//visibility:private"],
 )
 
-# Library for all view files required to build layout files
+# Library for all view files required to build layout files.
 kt_android_library(
     name = "views",
     custom_package = "org.oppia.app.views",
@@ -496,7 +497,7 @@ kt_android_library(
     visibility = ["//visibility:private"],
 )
 
-# Library for scope annotations required to build views and view_model libraries
+# Library for scope annotations required to build views and view_model libraries.
 kt_android_library(
     name = "annotations",
     custom_package = "org.oppia.app",
@@ -508,7 +509,7 @@ kt_android_library(
     visibility = ["//visibility:private"],
 )
 
-# Library for all view model files
+# Library for all view model files.
 kt_android_library(
     name = "view_models",
     custom_package = "org.oppia.app.view.models",
@@ -530,7 +531,7 @@ kt_android_library(
 )
 
 # TODO(#1639): Translate binding adapters back to Kotlin post-Bazel modularization.
-# Library for all custom data-binding adapters under org/oppia/app/databinding
+# Library for all custom data-binding adapters under org/oppia/app/databinding.
 android_library(
     name = "binding_adapters",
     custom_package = "org.oppia.app.databinding.adapters",
@@ -552,7 +553,7 @@ android_library(
     visibility = ["//visibility:private"],
 )
 
-# App library
+# Library containing all activity, fragment, and view-based UI flows in the app.
 kt_android_library(
     name = "app",
     custom_package = "org.oppia.app.ui",
