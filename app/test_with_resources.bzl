@@ -8,7 +8,7 @@ def test_with_resources(file):
   '''
   native.genrule(
     name = "update_" + file[0:-3],
-    srcs = [file[0:-3] + ".kt"],
+    srcs = [file],
     outs = [file[0:-3] + "_updated.kt"],
     cmd = '''
         cat $(SRCS) |

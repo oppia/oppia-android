@@ -404,7 +404,7 @@ in order to keep Gradle building.
 '''
 [genrule(
      name = "update_" + file[0:-3],
-     srcs = [file[0:-3] + ".kt"],
+     srcs = [file],
      outs = [file[0:-3] + "_updated.kt"],
      cmd = '''
      cat $(SRCS) |
@@ -556,7 +556,7 @@ android_library(
     visibility = ["//visibility:private"],
 )
 
-# App library
+# Library containing all activity, fragment, and view-based UI flows in the app
 kt_android_library(
     name = "app",
     custom_package = "org.oppia.app.ui",
