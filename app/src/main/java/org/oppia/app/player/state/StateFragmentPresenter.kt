@@ -27,6 +27,8 @@ import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.AudioUiManager
+import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.app.utility.LifecycleSafeTimerFactory
@@ -96,7 +98,11 @@ class StateFragmentPresenter @Inject constructor(
     this.storyId = storyId
     this.explorationId = explorationId
 
-    binding = StateFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding = StateFragmentBinding.inflate(
+      inflater,
+      container,
+      /* attachToRoot= */ false
+    )
     recyclerViewAssembler = createRecyclerViewAssembler(
       assemblerBuilderFactory.create(resourceBucketName, entityType),
       binding.congratulationsTextView
@@ -120,7 +126,9 @@ class StateFragmentPresenter @Inject constructor(
       if (bottom < oldBottom) {
         binding.stateRecyclerView.postDelayed(
           {
-            binding.stateRecyclerView.scrollToPosition(stateRecyclerViewAdapter.itemCount - 1)
+            binding.stateRecyclerView.scrollToPosition(
+              stateRecyclerViewAdapter.itemCount - 1
+            )
           },
           100
         )
@@ -281,7 +289,11 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun processEphemeralStateResult(result: AsyncResult<EphemeralState>) {
     if (result.isFailure()) {
-      logger.e("StateFragment", "Failed to retrieve ephemeral state", result.getErrorOrNull()!!)
+      logger.e(
+        "StateFragment",
+        "Failed to retrieve ephemeral state",
+        result.getErrorOrNull()!!
+      )
       return
     } else if (result.isPending()) {
       // Display nothing until a valid result is available.
@@ -327,7 +339,8 @@ class StateFragmentPresenter @Inject constructor(
   /**
    * This function listens to the result of RevealHint.
    * Whenever a hint is revealed using ExplorationProgressController.submitHintIsRevealed function,
-   * this function will wait for the response from that function and based on which we can move to next state.
+   * this function will wait for the response from that function and based on which we can move to
+   * next state.
    */
   private fun subscribeToHint(hintResultLiveData: LiveData<AsyncResult<Hint>>) {
     val hintLiveData = getHintIsRevealed(hintResultLiveData)
@@ -345,7 +358,8 @@ class StateFragmentPresenter @Inject constructor(
   /**
    * This function listens to the result of RevealSolution.
    * Whenever a hint is revealed using ExplorationProgressController.submitHintIsRevealed function,
-   * this function will wait for the response from that function and based on which we can move to next state.
+   * this function will wait for the response from that function and based on which we can move to
+   * next state.
    */
   private fun subscribeToSolution(solutionResultLiveData: LiveData<AsyncResult<Solution>>) {
     val solutionLiveData = getSolutionIsRevealed(solutionResultLiveData)
@@ -363,7 +377,8 @@ class StateFragmentPresenter @Inject constructor(
   /**
    * This function listens to the result of submitAnswer.
    * Whenever an answer is submitted using ExplorationProgressController.submitAnswer function,
-   * this function will wait for the response from that function and based on which we can move to next state.
+   * this function will wait for the response from that function and based on which we can move to
+   * next state.
    */
   private fun subscribeToAnswerOutcome(
     answerOutcomeResultLiveData: LiveData<AsyncResult<AnswerOutcome>>

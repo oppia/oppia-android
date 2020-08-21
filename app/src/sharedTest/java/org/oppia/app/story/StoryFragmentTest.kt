@@ -7,7 +7,6 @@ import android.content.res.Resources
 import android.os.Handler
 import android.os.Looper
 import android.view.View
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -24,7 +23,6 @@ import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.espresso.util.TreeIterables
@@ -35,7 +33,6 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
@@ -135,12 +132,8 @@ class StoryFragmentTest {
   fun testStoryFragment_toolbarTitle_isDisplayedSuccessfully() {
     launch<StoryFragmentTestActivity>(createStoryActivityIntent()).use {
       waitForTheView(withText("Chapter 1: What is a Fraction?"))
-      onView(
-        allOf(
-          instanceOf(TextView::class.java),
-          withParent(withId(R.id.story_toolbar))
-        )
-      ).check(matches(withText("Matthew Goes to the Bakery")))
+      onView(withId(R.id.story_toolbar_title))
+        .check(matches(withText("Matthew Goes to the Bakery")))
     }
   }
 
