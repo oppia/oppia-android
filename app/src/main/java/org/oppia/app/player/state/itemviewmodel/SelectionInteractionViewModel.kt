@@ -7,11 +7,16 @@ import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.StringList
 import org.oppia.app.model.UserAnswer
-import org.oppia.app.player.state.SelectionItemInputType
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.viewmodel.ObservableArrayList
+
+/** Corresponds to the type of input that should be used for an item selection interaction view. */
+enum class SelectionItemInputType {
+  CHECKBOXES,
+  RADIO_BUTTONS
+}
 
 /** [StateItemViewModel] for multiple or item-selection input choice list. */
 class SelectionInteractionViewModel(

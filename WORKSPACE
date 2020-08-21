@@ -104,6 +104,17 @@ git_repository(
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_workspace_dependencies")
 google_services_workspace_dependencies()
 
+git_repository(
+    name = "circularimageview",
+    commit = "6098dec76713b34eb8b10883cbe54189ddc08566",
+    remote = "https://github.com/oppia/CircularImageview",
+)
+
+bind(
+  name = "databinding_annotation_processor",
+  actual = "//tools/android:compiler_annotation_processor",
+)
+
 load("@rules_jvm_external//:defs.bzl", "maven_install")
 
 maven_install(
@@ -112,27 +123,47 @@ maven_install(
         "androidx.annotation:annotation:1.1.0",
         "androidx.appcompat:appcompat:1.0.2",
         "androidx.arch.core:core-testing:2.1.0",
+        "androidx.constraintlayout:constraintlayout:1.1.3",
         "androidx.core:core-ktx:1.0.1",
-        "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03",
+        "androidx.core:core:1.0.1",
+        "androidx.databinding:databinding-adapters:3.4.2",
+        "androidx.databinding:databinding-common:3.4.2",
+        "androidx.databinding:databinding-runtime:3.4.2",
+        "androidx.lifecycle:lifecycle-extensions:2.2.0",
+        "androidx.lifecycle:lifecycle-livedata-core:2.2.0",
+        "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0",
+        "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0",
+        "androidx.multidex:multidex-instrumentation:2.0.0",
+        "androidx.multidex:multidex:2.0.1",
+        "androidx.recyclerview:recyclerview:1.0.0",
         "androidx.test.espresso:espresso-contrib:3.1.0",
         "androidx.test.espresso:espresso-core:3.2.0",
         "androidx.test.espresso:espresso-intents:3.1.0",
         "androidx.test.ext:junit:1.1.1",
         "androidx.test:runner:1.2.0",
+        "androidx.viewpager:viewpager:1.0.0",
         "com.android.support:support-annotations:28.0.0",
         "com.caverock:androidsvg-aar:1.4",
+        "com.chaos.view:pinview:1.4.3",
         "com.crashlytics.sdk.android:crashlytics:2.9.8",
         "com.github.bumptech.glide:glide:4.11.0",
+        "com.google.android.material:material:1.2.0-alpha02",
         "com.google.firebase:firebase-analytics:17.4.4",
         "com.google.firebase:firebase-crashlytics:17.1.1",
+        "com.google.gms:google-services:4.3.3",
         "com.google.truth:truth:0.43",
+        "com.squareup.retrofit2:converter-gson:2.5.0",
+        "com.squareup.retrofit2:retrofit:2.9.0",
+        "de.hdodenhof:circleimageview:3.0.1",
         "io.fabric.sdk.android:fabric:1.4.7",
+        "javax.annotation:javax.annotation-api:jar:1.3.2",
         "junit:junit:4.12",
         "org.jetbrains.kotlin:kotlin-reflect:1.3.41",
         "org.jetbrains.kotlin:kotlin-stdlib-jdk7:jar:1.3.72",
         "org.jetbrains.kotlin:kotlin-test-junit:1.3.72",
         "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.2",
         "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2",
+        "org.jetbrains:annotations:jar:13.0",
         "org.mockito:mockito-core:2.19.0",
         "org.robolectric:annotations:4.3",
         "org.robolectric:robolectric:4.3",
