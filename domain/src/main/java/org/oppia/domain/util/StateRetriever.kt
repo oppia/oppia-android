@@ -80,7 +80,8 @@ class StateRetriever @Inject constructor(
       )
       .putAllCustomizationArgs(
         createCustomizationArgsMapFromJson(
-          getJsonObject(interactionJson, "customization_args")
+          getJsonObject(interactionJson, "customization_args"),
+          interactionJson.getString("id")
         )
       )
       .addAllHint(
@@ -448,52 +449,178 @@ class StateRetriever @Inject constructor(
 
   // Creates a customization arg mapping from JSON
   private fun createCustomizationArgsMapFromJson(
-    customizationArgsJson: JSONObject?
+    customizationArgsJson: JSONObject?,
+    interactionId: String
+  ): MutableMap<String, SchemaObject> {
+    if (customizationArgsJson == null) {
+      return mutableMapOf()
+    }
+    return when (interactionId) {
+      "DragAndDropSortInput" -> {
+        createDragAndDropSortInputCustomizationArgsMap(customizationArgsJson)
+      }
+      "FractionInput" -> {
+        createFractionInputCustomizationArgsMap(customizationArgsJson)
+      }
+      "ImageClickInput" -> {
+        createImageClickInputCustomizationArgsMap(customizationArgsJson)
+      }
+      "ItemSelectionInput" -> {
+        createItemSelectionInputCustomizationArgsMap(customizationArgsJson)
+      }
+      "MultipleChoiceInput" -> {
+        createMultipleChoiceInputCustomizationArgsMap(customizationArgsJson)
+      }
+      "NumericInput" -> {
+        mutableMapOf()
+      }
+      "TextInput" -> {
+        createTextInputCustomizationArgsMap(customizationArgsJson)
+      }
+      else -> mutableMapOf()
+    }
+  }
+
+  private fun createDragAndDropSortInputCustomizationArgsMap(
+    customizationArgsJson: JSONObject
   ): MutableMap<String, SchemaObject> {
     val customizationArgsMap: MutableMap<String, SchemaObject> = mutableMapOf()
-    if (customizationArgsJson == null) {
-      return customizationArgsMap
-    }
-    val customizationArgsKeys =
-      customizationArgsJson.keys() ?: return customizationArgsMap
-    val customizationArgsIterator = customizationArgsKeys.iterator()
-    while (customizationArgsIterator.hasNext()) {
-      val key = customizationArgsIterator.next()
-      customizationArgsMap[key] = createCustomizationArgValueFromJson(
-        customizationArgsJson.getJSONObject(key).get("value")
+    customizationArgsMap["allowMultipleItemsInSamePosition"] =
+      parseBooleanSchemaObject(
+        getJsonObject(
+          customizationArgsJson,
+          "allowMultipleItemsInSamePosition"
+        )!!.getBoolean("value")
       )
-    }
+    customizationArgsMap["choices"] =
+      parseSubtitledHtmlList(
+        getJsonObject(
+          customizationArgsJson, "choices"
+        )!!.getJSONArray("value")
+      )
     return customizationArgsMap
   }
 
-  // Creates a customization arg value interaction object from JSON
-  private fun createCustomizationArgValueFromJson(customizationArgValue: Any): SchemaObject {
-    val schemaObjectBuilder = SchemaObject.newBuilder()
-    when (customizationArgValue) {
-      is String ->
-        return schemaObjectBuilder.setNormalizedString(customizationArgValue).build()
-      is Int -> return schemaObjectBuilder.setSignedInt(customizationArgValue).build()
-      is Double -> return schemaObjectBuilder.setReal(customizationArgValue).build()
-      is Boolean -> return schemaObjectBuilder.setBoolValue(customizationArgValue).build()
-      is JSONArray -> {
-        if (customizationArgValue.length() > 0) {
-          return schemaObjectBuilder.setSchemaObjectList(
-            parseSubtitledHtmlList(customizationArgValue)
-          ).build()
-        }
-      }
-      is JSONObject -> {
-        if (customizationArgValue.has("labeledRegions")) {
-          val customSchemaBuilder = CustomSchemaValue.newBuilder()
-          customSchemaBuilder.imageWithRegions = parseImageWithRegions(customizationArgValue)
-          return schemaObjectBuilder.setCustomSchemaValue(customSchemaBuilder.build()).build()
-        }
-      }
-    }
-    return SchemaObject.getDefaultInstance()
+  private fun createFractionInputCustomizationArgsMap(
+    customizationArgsJson: JSONObject
+  ): MutableMap<String, SchemaObject> {
+    val customizationArgsMap: MutableMap<String, SchemaObject> = mutableMapOf()
+    customizationArgsMap["allowNonzeroIntegerPart"] =
+      parseBooleanSchemaObject(
+        getJsonObject(
+          customizationArgsJson, "allowNonzeroIntegerPart"
+        )!!.getBoolean("value")
+      )
+    customizationArgsMap["requireSimplestForm"] =
+      parseBooleanSchemaObject(
+        getJsonObject(
+          customizationArgsJson, "requireSimplestForm"
+        )!!.getBoolean("value")
+      )
+    customizationArgsMap["allowImproperFraction"] =
+      parseBooleanSchemaObject(
+        getJsonObject(
+          customizationArgsJson, "allowImproperFraction"
+        )!!.getBoolean("value")
+      )
+    customizationArgsMap["customPlaceholder"] =
+      parseNormalizedStringSchemaObject(
+        getJsonObject(
+          customizationArgsJson, "customPlaceholder"
+        )!!.getString("value")
+      )
+    return customizationArgsMap
   }
 
-  private fun parseSubtitledHtmlList(jsonArray: JSONArray): SchemaObjectList {
+  private fun createImageClickInputCustomizationArgsMap(
+    customizationArgsJson: JSONObject
+  ): MutableMap<String, SchemaObject> {
+    val customizationArgsMap: MutableMap<String, SchemaObject> = mutableMapOf()
+    customizationArgsMap["highlightRegionsOnHover"] =
+      parseBooleanSchemaObject(
+        getJsonObject(
+          customizationArgsJson, "highlightRegionsOnHover"
+        )!!.getBoolean("value")
+      )
+    customizationArgsMap["imageAndRegions"] =
+      parseImageWithRegions(
+        getJsonObject(
+          customizationArgsJson, "imageAndRegions"
+        )!!.getJSONObject("value")
+      )
+    return customizationArgsMap
+  }
+
+  private fun createItemSelectionInputCustomizationArgsMap(
+    customizationArgsJson: JSONObject
+  ): MutableMap<String, SchemaObject> {
+    val customizationArgsMap: MutableMap<String, SchemaObject> = mutableMapOf()
+    customizationArgsMap["minAllowableSelectionCount"] =
+      parseIntegerSchemaObject(
+        getJsonObject(
+          customizationArgsJson, "minAllowableSelectionCount"
+        )!!.getInt("value")
+      )
+    customizationArgsMap["maxAllowableSelectionCount"] =
+      parseIntegerSchemaObject(
+        getJsonObject(
+          customizationArgsJson, "maxAllowableSelectionCount"
+        )!!.getInt("value")
+      )
+    customizationArgsMap["choices"] =
+      parseSubtitledHtmlList(
+        getJsonObject(
+          customizationArgsJson, "choices"
+        )!!.getJSONArray("value")
+      )
+    return customizationArgsMap
+  }
+
+  private fun createMultipleChoiceInputCustomizationArgsMap(
+    customizationArgsJson: JSONObject
+  ): MutableMap<String, SchemaObject> {
+    val customizationArgsMap: MutableMap<String, SchemaObject> = mutableMapOf()
+    customizationArgsMap["choices"] =
+      parseSubtitledHtmlList(
+        getJsonObject(
+          customizationArgsJson, "choices"
+        )!!.getJSONArray("value")
+      )
+    return customizationArgsMap
+  }
+
+  private fun createTextInputCustomizationArgsMap(
+    customizationArgsJson: JSONObject
+  ): MutableMap<String, SchemaObject> {
+    val customizationArgsMap: MutableMap<String, SchemaObject> = mutableMapOf()
+    customizationArgsMap["placeholder"] =
+      parseNormalizedStringSchemaObject(
+        getJsonObject(
+          customizationArgsJson, "placeholder"
+        )!!.getString("value")
+      )
+    customizationArgsMap["rows"] =
+      parseIntegerSchemaObject(
+        getJsonObject(
+          customizationArgsJson, "rows"
+        )!!.getInt("value")
+      )
+    return customizationArgsMap
+  }
+
+  private fun parseIntegerSchemaObject(value: Int): SchemaObject {
+    return SchemaObject.newBuilder().setSignedInt(value).build()
+  }
+
+  private fun parseNormalizedStringSchemaObject(value: String): SchemaObject {
+    return SchemaObject.newBuilder().setNormalizedString(value).build()
+  }
+
+  private fun parseBooleanSchemaObject(value: Boolean): SchemaObject {
+    return SchemaObject.newBuilder().setBoolValue(value).build()
+  }
+
+  private fun parseSubtitledHtmlList(jsonArray: JSONArray): SchemaObject {
     val schemaObjectListBuilder = SchemaObjectList.newBuilder()
     for (i in 0 until jsonArray.length()) {
       val subtitledHtmlJsonObject = jsonArray.getJSONObject(i)
@@ -504,14 +631,20 @@ class StateRetriever @Inject constructor(
       schemaObjectBuilder.setSubtitledHtml(subtitledHtmlBuilder)
       schemaObjectListBuilder.addSchemaObject(schemaObjectBuilder.build())
     }
-    return schemaObjectListBuilder.build()
+    return SchemaObject.newBuilder().setSchemaObjectList(
+      schemaObjectListBuilder.build()
+    ).build()
   }
 
-  private fun parseImageWithRegions(jsonObject: JSONObject): ImageWithRegions {
-    return ImageWithRegions.newBuilder()
+  private fun parseImageWithRegions(jsonObject: JSONObject): SchemaObject {
+    val imageWithRegions = ImageWithRegions.newBuilder()
       .addAllLabelRegions(parseJsonToLabeledRegionsList(jsonObject.getJSONArray("labeledRegions")))
       .setImagePath(jsonObject.getString("imagePath"))
       .build()
+
+    return SchemaObject.newBuilder().setCustomSchemaValue(
+      CustomSchemaValue.newBuilder().setImageWithRegions(imageWithRegions).build()
+    ).build()
   }
 
   private fun parseJsonToLabeledRegionsList(jsonArray: JSONArray): List<LabeledRegion> {
