@@ -11,5 +11,5 @@ fun Context.getVersionName(): String {
 
 /** Returns the time at which the app was last updated. */
 fun Context.getLastUpdateTime(): Long {
-  return this.packageManager.getPackageInfo(this.packageName,/* flags= */ 0).lastUpdateTime
+  return this.packageManager.getPackageInfo(this.packageName, /* flags= */ 0).lastUpdateTime
 }
