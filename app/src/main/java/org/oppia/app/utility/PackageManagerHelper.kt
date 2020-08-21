@@ -9,7 +9,7 @@ import javax.inject.Inject
 lateinit var context: Context
 
 fun PackageManager.getVersionName(): String {
-  return getPackageInfo(context.packageName, /* flags=*/0).versionName
+  return getPackageInfo(context.packageName, /* flags=*/ 0).versionName
 }
 
 fun PackageManager.getLastUpdateTime(): Long {
