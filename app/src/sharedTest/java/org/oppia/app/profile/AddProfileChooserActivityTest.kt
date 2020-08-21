@@ -59,7 +59,7 @@ import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-class AddProfileActivityTest {
+class AddProfileChooserActivityTest {
 
   @Inject
   lateinit var context: Context
@@ -99,7 +99,7 @@ class AddProfileActivityTest {
       )
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
-      intended(hasComponent(ProfileActivity::class.java.name))
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
 
@@ -118,7 +118,7 @@ class AddProfileActivityTest {
       )
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
-      intended(hasComponent(ProfileActivity::class.java.name))
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
 
@@ -215,7 +215,7 @@ class AddProfileActivityTest {
       )
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
-      intended(hasComponent(ProfileActivity::class.java.name))
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
 
@@ -267,7 +267,7 @@ class AddProfileActivityTest {
       )
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
-      intended(hasComponent(ProfileActivity::class.java.name))
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
   /* ktlint-enable max-line-length */
@@ -1310,7 +1310,7 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
-      intended(hasComponent(ProfileActivity::class.java.name))
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
   /* ktlint-enable max-line-length */
@@ -1586,6 +1586,6 @@ class AddProfileActivityTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(addProfileActivityTest: AddProfileActivityTest)
+    fun inject(addProfileActivityTest: AddProfileChooserActivityTest)
   }
 }

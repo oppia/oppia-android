@@ -7,7 +7,7 @@ import androidx.appcompat.app.AlertDialog
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
-import org.oppia.app.profile.ProfileActivity
+import org.oppia.app.profile.ProfileChooserActivity
 import org.oppia.app.topic.TopicActivity
 import javax.inject.Inject
 
@@ -44,7 +44,7 @@ class HomeActivity : InjectableAppCompatActivity(), RouteToTopicListener {
       }
       .setPositiveButton(R.string.home_activity_back_dialog_exit) { _, _ ->
         // TODO(#322): Need to start intent for ProfileActivity to get update. Change to finish when live data bug is fixed.
-        val intent = Intent(this, ProfileActivity::class.java)
+        val intent = Intent(this, ProfileChooserActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(intent)
       }.create().show()

@@ -55,7 +55,7 @@ import org.oppia.app.R
 import org.oppia.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.app.model.ProfileId
 import org.oppia.app.mydownloads.MyDownloadsActivity
-import org.oppia.app.profile.ProfileActivity
+import org.oppia.app.profile.ProfileChooserActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.oppialogger.LogStorageModule
@@ -351,7 +351,7 @@ class NavigationDrawerTestActivityTest {
       onView(withText(R.string.menu_switch_profile)).perform(click())
       onView(withText(R.string.home_activity_back_dialog_message)).check(matches(isDisplayed()))
       onView(withText(R.string.home_activity_back_dialog_exit)).perform(click())
-      intended(hasComponent(ProfileActivity::class.java.name))
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
 

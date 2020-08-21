@@ -5,7 +5,7 @@ import android.content.Intent
 import androidx.fragment.app.FragmentActivity
 import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.app.home.recentlyplayed.RecentlyPlayedActivity
-import org.oppia.app.profile.ProfileActivity
+import org.oppia.app.profile.ProfileChooserActivity
 import org.oppia.app.topic.TopicActivity
 import javax.inject.Inject
 
@@ -23,9 +23,9 @@ class IntentFactoryShimImpl @Inject constructor() : IntentFactoryShim {
   private val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
   private val TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY = "TopicActivity.story_id"
 
-  /** Returns [ProfileActivity] intent for [AdministratorControlsAccountActionsViewModel]. */
+  /** Returns [ProfileChooserActivity] intent for [AdministratorControlsAccountActionsViewModel]. */
   override fun createProfileActivityIntent(fragment: FragmentActivity): Intent {
-    return Intent(fragment, ProfileActivity::class.java)
+    return Intent(fragment, ProfileChooserActivity::class.java)
   }
 
   /**

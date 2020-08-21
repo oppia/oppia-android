@@ -7,13 +7,13 @@ import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
 /** Activity that controls profile creation and selection. */
-class ProfileActivity : InjectableAppCompatActivity() {
+class ProfileChooserActivity : InjectableAppCompatActivity() {
   @Inject
-  lateinit var profileActivityPresenter: ProfileActivityPresenter
+  lateinit var profileChooserActivityPresenter: ProfileChooserActivityPresenter
 
   companion object {
     fun createProfileActivity(context: Context): Intent {
-      val intent = Intent(context, ProfileActivity::class.java)
+      val intent = Intent(context, ProfileChooserActivity::class.java)
       intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
       return intent
     }
@@ -22,6 +22,6 @@ class ProfileActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    profileActivityPresenter.handleOnCreate()
+    profileChooserActivityPresenter.handleOnCreate()
   }
 }

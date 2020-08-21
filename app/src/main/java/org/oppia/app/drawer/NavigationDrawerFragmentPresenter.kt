@@ -8,7 +8,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.forEach
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -28,7 +27,7 @@ import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
 import org.oppia.app.mydownloads.MyDownloadsActivity
 import org.oppia.app.options.OptionsActivity
-import org.oppia.app.profile.ProfileActivity
+import org.oppia.app.profile.ProfileChooserActivity
 import org.oppia.app.profileprogress.ProfileProgressActivity
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.viewmodel.ViewModelProvider
@@ -254,7 +253,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
             }
             .setPositiveButton(R.string.home_activity_back_dialog_exit) { _, _ ->
               // TODO(#322): Need to start intent for ProfileActivity to get update. Change to finish when live data bug is fixed.
-              val intent = ProfileActivity.createProfileActivity(fragment.context!!)
+              val intent = ProfileChooserActivity.createProfileActivity(fragment.context!!)
               fragment.activity!!.startActivity(intent)
             }.create().show()
         }

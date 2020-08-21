@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
-import org.oppia.app.profile.ProfileActivity
+import org.oppia.app.profile.ProfileChooserActivity
 import javax.inject.Inject
 
 /** Activity that contains the onboarding flow for learners. */
@@ -27,7 +27,7 @@ class OnboardingActivity : InjectableAppCompatActivity(), RouteToProfileListList
   }
 
   override fun routeToProfileList() {
-    startActivity(ProfileActivity.createProfileActivity(this))
+    startActivity(ProfileChooserActivity.createProfileActivity(this))
     finish()
   }
 }

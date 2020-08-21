@@ -32,7 +32,7 @@ import org.oppia.app.application.ActivityComponentFactory
 import org.oppia.app.application.ApplicationComponent
 import org.oppia.app.application.ApplicationModule
 import org.oppia.app.onboarding.OnboardingActivity
-import org.oppia.app.profile.ProfileActivity
+import org.oppia.app.profile.ProfileChooserActivity
 import org.oppia.data.backends.gae.NetworkModule
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
@@ -123,7 +123,7 @@ class SplashActivityTest {
     activityTestRule.launchActivity(null)
     testCoroutineDispatchers.advanceUntilIdle()
 
-    intended(hasComponent(ProfileActivity::class.java.name))
+    intended(hasComponent(ProfileChooserActivity::class.java.name))
   }
 
   @Test
@@ -197,7 +197,7 @@ class SplashActivityTest {
 
     // Reopening the app before it's expired should result in the profile activity showing since the
     // user has already been onboarded.
-    intended(hasComponent(ProfileActivity::class.java.name))
+    intended(hasComponent(ProfileChooserActivity::class.java.name))
   }
 
   @Test
