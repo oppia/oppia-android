@@ -20,9 +20,9 @@ class AppVersionViewModel @Inject constructor(
   context: Context
 ) : ObservableViewModel() {
 
-  val versionName: String = context.packageManager.getVersionName()
+  val versionName: String = context.getVersionName()
 
-  private val lastUpdateDateTime = context.packageManager.getLastUpdateTime()
+  private val lastUpdateDateTime = context.getLastUpdateTime()
   val lastUpdateDate = ObservableField<String>(getDateTime(lastUpdateDateTime))
 
   private fun getDateTime(lastUpdateTime: Long): String? {

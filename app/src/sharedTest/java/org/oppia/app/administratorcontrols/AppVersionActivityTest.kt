@@ -58,8 +58,7 @@ class AppVersionActivityTest {
     Intents.init()
     setUpTestApplicationComponent()
 
-    val lastUpdateDateTime =
-      context.packageManager.getLastUpdateTime()
+    val lastUpdateDateTime = context.getLastUpdateTime()
     lastUpdateDate = getDateTime(lastUpdateDateTime)!!
   }
 
@@ -77,7 +76,7 @@ class AppVersionActivityTest {
         withText(
           String.format(
             context.resources.getString(R.string.app_version_name),
-            context.packageManager.getVersionName()
+            context.getVersionName()
           )
         )
       ).check(matches(isDisplayed()))
@@ -107,7 +106,7 @@ class AppVersionActivityTest {
           withText(
             String.format(
               context.resources.getString(R.string.app_version_name),
-              context.packageManager.getVersionName()
+              context.getVersionName()
             )
           )
         )
