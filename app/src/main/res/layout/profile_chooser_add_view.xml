@@ -11,7 +11,7 @@
     <import type="android.view.View" />
 
     <variable
-      name="wasProfileEverBeenAddedValue"
+      name="hasProfileEverBeenAddedValue"
       type="androidx.databinding.ObservableField&lt;Boolean&gt;" />
   </data>
 
@@ -27,17 +27,17 @@
       android:layout_height="0.5dp"
       android:layout_marginBottom="60dp"
       android:background="@color/oppiaProfileChooserDivider"
-      android:visibility="@{wasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
+      android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
 
     <LinearLayout
       android:id="@+id/add_profile_item"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:gravity="@{wasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
-      android:orientation="@{wasProfileEverBeenAddedValue ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL}"
-      app:layoutMarginEnd="@{wasProfileEverBeenAddedValue ? @dimen/margin_16 : @dimen/margin_20}"
-      app:layoutMarginStart="@{wasProfileEverBeenAddedValue ? @dimen/margin_16 : @dimen/margin_20}"
-      app:layoutMarginTop="@{wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_24}">
+      android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
+      android:orientation="@{hasProfileEverBeenAddedValue ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL}"
+      app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/margin_16 : @dimen/margin_20}"
+      app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/margin_16 : @dimen/margin_20}"
+      app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_24}">
 
       <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_add_button"
@@ -50,17 +50,17 @@
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="@{wasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
+        android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
         android:orientation="vertical"
-        app:layoutMarginTop="@{wasProfileEverBeenAddedValue ? @dimen/margin_8 : @dimen/margin_0}"
-        app:layoutMarginStart="@{wasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_24}">
+        app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/margin_8 : @dimen/margin_0}"
+        app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/margin_0 : @dimen/margin_24}">
 
         <TextView
           android:id="@+id/add_profile_text"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif-medium"
-          android:text="@{wasProfileEverBeenAddedValue ? @string/profile_chooser_add : @string/set_up_multiple_profiles}"
+          android:text="@{hasProfileEverBeenAddedValue ? @string/profile_chooser_add : @string/set_up_multiple_profiles}"
           android:textColor="@color/white"
           android:textSize="14sp" />
 
@@ -74,7 +74,7 @@
           android:text="@string/set_up_multiple_profiles_description"
           android:textColor="@color/white"
           android:textSize="12sp"
-          android:visibility="@{wasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
+          android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
       </LinearLayout>
     </LinearLayout>
   </LinearLayout>
