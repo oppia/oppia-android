@@ -73,7 +73,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private lateinit var binding: ProfileChooserFragmentBinding
   private val orientation = Resources.getSystem().configuration.orientation
 
-  val wasProfileEverBeenAddedValue = ObservableField<Boolean>(true)
+  val hasProfileEverBeenAddedValue = ObservableField<Boolean>(true)
 
   private val chooserViewModel: ProfileChooserViewModel by lazy {
     getProfileChooserViewModel()
@@ -104,7 +104,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     wasProfileEverBeenAdded.observe(
       activity,
       Observer<Boolean> {
-        wasProfileEverBeenAddedValue.set(it)
+        hasProfileEverBeenAddedValue.set(it)
         val spanCount = if (it) {
           activity.resources.getInteger(R.integer.profile_chooser_span_count)
         } else {
@@ -170,6 +170,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     model: ProfileChooserUiModel
   ) {
     binding.viewModel = model
+    binding.hasProfileEverBeenAddedValue = hasProfileEverBeenAddedValue
     binding.profileChooserItem.setOnClickListener {
       if (model.profile.pin.isEmpty()) {
         profileManagementController.loginToProfile(model.profile.id).observe(
