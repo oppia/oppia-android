@@ -131,25 +131,18 @@ jobs:
          name: app reports
          path: app/build/test-results
 
-  bazel_tests:
-    name: Bazel tests
+  bazel_build_app:
+    name: Build Binary with Bazel
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-18.04]
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/cache@v2
-        id: cache
-        with:
-          path: ~/oppia-bazel/bazel-bin/src/bazel
-          key: ${{ runner.os }}-bazel-${{ hashFiles('**/*.bazel') }}}
       - name: Setup bazel
         uses: jwlawson/actions-setup-bazel@v1
         with:
           bazel-version: '3.4.1'
-      - name: Use bazel
-        run: bazel --version
       - name: Clone Oppia Bazel
         run: git clone https://github.com/miaboloix/bazel.git ~/oppia-bazel
       - name: Set up JDK 9
@@ -158,10 +151,8 @@ jobs:
           java-version: 9
       - name: Create tmp/android_tools
         run: |
-          mkdir tmp
-          cd tmp
-          mkdir android_tools
-      - name: Extract Android ToolsCurr
+          mkdir -p tmp/android_tools
+      - name: Extract Android Tools
         run: |
           cd ~/oppia-bazel
           unzip bazel-tools.zip
