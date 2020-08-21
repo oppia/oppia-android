@@ -39,7 +39,6 @@ class TopicRevisionViewModel @Inject constructor(
   }
 
   private fun processTopic(topic: Topic): List<TopicRevisionItemViewModel> {
-    subtopicList.clear()
     subtopicList.addAll(
       topic.subtopicList.map {
         TopicRevisionItemViewModel(topicId, it, entityType, revisionSubtopicSelector)

@@ -14,8 +14,9 @@ class DrawableMatcher constructor(
   private val expectedId: Int
 ) : TypeSafeMatcher<View>(View::class.java) {
   companion object {
+    // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
     const val NONE = -1
-    const val ANY = -2
+    internal const val ANY = -2
   }
 
   private var resourceName: String? = null

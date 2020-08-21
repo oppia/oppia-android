@@ -8,12 +8,9 @@ interface LanguageInterface {
   /** Open the language selection dialog. */
   fun languageSelectionClicked()
 
-  /**
-   * Returns whether the user is actively seeking a new audio position, that is, dragging the
-   * knob to a new position in the audio track.
-   * */
+  /** Getter for userIsSeeking in AudioFragment */
   fun getUserIsSeeking(): Boolean
 
-  /** Returns the position of the knob on the audio track. */
+  /** Getter for userPosition in AudioFragment */
   fun getUserPosition(): Int
 }

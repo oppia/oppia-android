@@ -32,6 +32,9 @@ import javax.inject.Inject
 // TODO(#1619): Remove file post-Gradle
 class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
 
+  /**
+   * Handles binding inflation for [ProfileInputView] and returns the binding's labelText
+   */
   override fun provideProfileInputViewBindingLabelText(
     inflater: LayoutInflater,
     parent: ViewGroup,
@@ -46,6 +49,9 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     return binding.labelText
   }
 
+  /**
+   * Handles binding inflation for [ProfileInputView] and returns the binding's input
+   */
   override fun provideProfileInputViewBindingInput(
     inflater: LayoutInflater,
     parent: ViewGroup,
@@ -60,6 +66,9 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     return binding.input
   }
 
+  /**
+   * Handles binding inflation for [ProfileInputView] and returns the binding's errorText
+   */
   override fun provideProfileInputViewBindingErrorText(
     inflater: LayoutInflater,
     parent: ViewGroup,
@@ -74,6 +83,10 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     return binding.errorText
   }
 
+  /**
+   * Handles binding inflation for [SelectionInteractionView]'s ItemSelectionInteraction and
+   * returns the binding's root
+   */
   override fun provideSelectionInteractionViewInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
@@ -86,6 +99,10 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     ).root
   }
 
+  /**
+   * Handles binding inflation for [SelectionInteractionView]'s ItemSelectionInteraction and
+   * returns the binding's viewModel
+   */
   override fun provideSelectionInteractionViewModel(
     view: View,
     viewModel: SelectionInteractionContentViewModel,
@@ -109,6 +126,10 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     binding.viewModel = viewModel
   }
 
+  /**
+   * Handles binding inflation for [SelectionInteractionView]'s MultipleChoiceInteraction and
+   * returns the binding's view
+   */
   override fun provideMultipleChoiceInteractionItemsInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
@@ -121,6 +142,10 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     ).root
   }
 
+  /**
+   * Handles binding inflation for [SelectionInteractionView]'s MultipleChoiceInteraction and
+   * returns the binding's viewModel
+   */
   override fun provideMultipleChoiceInteractionItemsViewModel(
     view: View,
     viewModel: SelectionInteractionContentViewModel,
@@ -140,6 +165,14 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     binding.viewModel = viewModel
   }
 
+  override fun getDefaultRegion(parentView: FrameLayout): View {
+    return parentView.findViewById<View>(R.id.default_selected_region)
+  }
+
+  /**
+   * Handles binding inflation for [DragDropSortInteractionView]'s SortInteraction and returns the
+   * binding's view.
+   */
   override fun provideDragDropSortInteractionInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
@@ -187,6 +220,10 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     dragDropInteractionItemsBinding.viewModel = viewModel
   }
 
+  /**
+   * Handles binding inflation for [DragDropSortInteractionView]'s SingleItemInteraction and returns
+   * the binding's view.
+   */
   override fun provideDragDropSingleItemInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
@@ -221,9 +258,5 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     ).parseOppiaHtml(
       viewModel, dragDropSingleItemBinding.dragDropContentTextView
     )
-  }
-
-  override fun getDefaultRegion(parentView: FrameLayout): View {
-    return parentView.findViewById<View>(R.id.default_selected_region)
   }
 }

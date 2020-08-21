@@ -14,14 +14,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="48dp"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
+    android:layout_margin="4dp"
     android:gravity="center_vertical"
     android:onClick="@{(v) -> viewModel.handleItemClicked()}">
     <androidx.appcompat.widget.AppCompatCheckBox
       android:id="@+id/item_selection_checkbox"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:padding="4dp"
       android:clickable="false"
       android:checked="@{viewModel.answerSelected}"
       app:buttonTint="@color/oppiaDarkBlue"/>
@@ -34,7 +34,6 @@
       android:fontFamily="sans-serif"
       android:layout_marginStart="4dp"
       android:paddingTop="4dp"
-      android:paddingBottom="4dp"
       android:text="@{htmlContent}"
       android:textColor="@color/oppiaDarkBlue"/>
   </RelativeLayout>

@@ -1,9 +1,6 @@
 package org.oppia.app.story
 
 interface StoryFragmentScroller {
-  /**
-   * Scrolls smoothly (with animation) to the specified vertical pixel position in
-   * [StoryFragment].
-   * */
+  /** Handles scrolling for [StoryFragment]. */
   fun smoothScrollToPosition(position: Int)
 }

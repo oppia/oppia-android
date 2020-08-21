@@ -28,7 +28,7 @@
         android:overScrollMode="never"
         android:paddingBottom="108dp"
         android:scrollbars="none"
-        app:data="@{viewModel.refreshedOngoingStoryListViewModelLiveData}" />
+        app:data="@{viewModel.ongoingStoryListViewModelLiveData}" />
     </FrameLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

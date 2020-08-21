@@ -361,22 +361,4 @@
   <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
   <string name="ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
   <string name="completed_story_list_recyclerview_tag">completed_story_list_recyclerview_tag</string>
-  <string name="item_selection_text">Please select at least one choice.</string>
-  <!-- SplashActivity -->
-  <string
-    name="unsupported_app_version_dialog_title"
-    description="The title of the dialog shown when a user's pre-release app has expired.">
-    Unsupported app version
-  </string>
-  <string
-    name="unsupported_app_version_dialog_message"
-    description="The main message of the dialog shown when a user's pre-release app has expired.">
-    This version of the app is no longer supported. Please update it through the Play Store.
-  </string>
-  <string
-    name="unsupported_app_version_dialog_close_button_text"
-    description="The close button text of the dialog shown when a user's pre-release app has expired.">
-    Close app
-  </string>
-
 </resources>

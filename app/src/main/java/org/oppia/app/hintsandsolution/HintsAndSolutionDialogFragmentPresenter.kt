@@ -10,6 +10,7 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.State
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.util.gcsresource.DefaultResourceBucketName
+import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
@@ -20,15 +21,12 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<HintsViewModel>,
   private val htmlParserFactory: HtmlParser.Factory,
+  private val logger: ConsoleLogger,
   @DefaultResourceBucketName private val resourceBucketName: String,
   @ExplorationHtmlParserEntityType private val entityType: String
 ) {
 
   private var currentExpandedHintListIndex: Int? = null
-  private var index: Int? = null
-  private var isHintRevealed: Boolean? = null
-  private var solutionIndex: Int? = null
-  private var isSolutionRevealed: Boolean? = null
   private lateinit var expandedHintListIndexListener: ExpandedHintListIndexListener
   private lateinit var hintsAndSolutionAdapter: HintsAndSolutionAdapter
   private lateinit var binding: HintsAndSolutionFragmentBinding
@@ -50,21 +48,13 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     currentExpandedHintListIndex: Int?,
     newAvailableHintIndex: Int,
     allHintsExhausted: Boolean,
-    expandedHintListIndexListener: ExpandedHintListIndexListener,
-    index: Int?,
-    isHintRevealed: Boolean?,
-    solutionIndex: Int?,
-    isSolutionRevealed: Boolean?
+    expandedHintListIndexListener: ExpandedHintListIndexListener
   ): View? {
 
     binding =
       HintsAndSolutionFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     this.currentExpandedHintListIndex = currentExpandedHintListIndex
     this.expandedHintListIndexListener = expandedHintListIndexListener
-    this.index = index
-    this.isHintRevealed = isHintRevealed
-    this.solutionIndex = solutionIndex
-    this.isSolutionRevealed = isSolutionRevealed
     binding.hintsAndSolutionToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
     binding.hintsAndSolutionToolbar.setNavigationOnClickListener {
       (fragment.requireActivity() as? HintsAndSolutionListener)?.dismiss()
@@ -99,11 +89,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
           viewModel.explorationId.get(),
           htmlParserFactory,
           resourceBucketName,
-          entityType,
-          index,
-          isHintRevealed,
-          solutionIndex,
-          isSolutionRevealed
+          entityType
         )
 
       binding.hintsAndSolutionRecyclerView.apply {
@@ -138,15 +124,5 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     currentExpandedHintListIndex = index
     if (index != null)
       hintsAndSolutionAdapter.notifyItemChanged(index)
-  }
-
-  fun onRevealHintClicked(index: Int?, isHintRevealed: Boolean?) {
-    this.index = index
-    this.isHintRevealed = isHintRevealed
-  }
-
-  fun onRevealSolutionClicked(solutionIndex: Int?, isSolutionRevealed: Boolean?) {
-    this.solutionIndex = solutionIndex
-    this.isSolutionRevealed = isSolutionRevealed
   }
 }

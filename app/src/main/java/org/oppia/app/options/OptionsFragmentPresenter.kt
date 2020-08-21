@@ -69,7 +69,7 @@ class OptionsFragmentPresenter @Inject constructor(
     return BindableAdapter.MultiTypeBuilder
       .newBuilder<OptionsItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
-          is OptionsStoryTextSizeViewModel -> ViewType.VIEW_TYPE_STORY_TEXT_SIZE
+          is OptionsStoryTextViewViewModel -> ViewType.VIEW_TYPE_STORY_TEXT_SIZE
           is OptionsAppLanguageViewModel -> ViewType.VIEW_TYPE_APP_LANGUAGE
           is OptionsAudioLanguageViewModel -> ViewType.VIEW_TYPE_AUDIO_LANGUAGE
           else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
@@ -79,7 +79,7 @@ class OptionsFragmentPresenter @Inject constructor(
         viewType = ViewType.VIEW_TYPE_STORY_TEXT_SIZE,
         inflateDataBinding = OptionStoryTextSizeBinding::inflate,
         setViewModel = this::bindStoryTextSize,
-        transformViewModel = { it as OptionsStoryTextSizeViewModel }
+        transformViewModel = { it as OptionsStoryTextViewViewModel }
       )
       .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_APP_LANGUAGE,
@@ -98,7 +98,7 @@ class OptionsFragmentPresenter @Inject constructor(
 
   private fun bindStoryTextSize(
     binding: OptionStoryTextSizeBinding,
-    model: OptionsStoryTextSizeViewModel
+    model: OptionsStoryTextViewViewModel
   ) {
     binding.viewModel = model
   }

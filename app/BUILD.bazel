@@ -53,7 +53,7 @@ LISTENERS = [
     "src/main/java/org/oppia/app/home/RouteToRecentlyPlayedListener.kt",
     "src/main/java/org/oppia/app/home/RouteToTopicPlayStoryListener.kt",
     "src/main/java/org/oppia/app/home/topiclist/TopicSummaryClickListener.kt",
-    "src/main/java/org/oppia/app/onboarding/OnboardingNavigationListener.kt",
+    "src/main/java/org/oppia/app/onboarding/OnboardingListener.kt",
     "src/main/java/org/oppia/app/onboarding/RouteToProfileListListener.kt",
     "src/main/java/org/oppia/app/options/RouteToAppLanguageListListener.kt",
     "src/main/java/org/oppia/app/options/RouteToAudioLanguageListListener.kt",
@@ -165,7 +165,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/app/options/OptionsAppLanguageViewModel.kt",
     "src/main/java/org/oppia/app/options/OptionsAudioLanguageViewModel.kt",
     "src/main/java/org/oppia/app/options/OptionsItemViewModel.kt",
-    "src/main/java/org/oppia/app/options/OptionsStoryTextSizeViewModel.kt",
+    "src/main/java/org/oppia/app/options/OptionsStoryTextViewViewModel.kt",
     "src/main/java/org/oppia/app/player/audio/AudioViewModel.kt",
     "src/main/java/org/oppia/app/player/exploration/ExplorationViewModel.kt",
     "src/main/java/org/oppia/app/player/state/itemviewmodel/ContentViewModel.kt",
@@ -357,6 +357,17 @@ BINDING_ADAPTERS = [
 ]
 
 # TODO(#1617): Remove genrules post-gradle
+# Adapter files altered by genrules to be excluded in the app library.
+ALTERED_DATABINDING_ADAPTERS = [
+    "src/main/java/org/oppia/app/databinding/DrawableBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/ImageViewBindingAdapters.java",
+    "src/main/java/org/oppia/app/databinding/TextViewBindingAdapters.java",
+]
+
+[DATABINDING_ADAPTERS.append("update_" + altered_adapters[0:-5])
+for altered_adapters in ALTERED_DATABINDING_ADAPTERS]
+
+# TODO(#1617): Remove genrules post-gradle
 '''
 Genrule for source files in the binding_adapters library.
 
@@ -393,11 +404,8 @@ will be processed by the app library genrule regardless in order to avoid any im
 APP_FILES_WITH_RESOURCE_IMPORTS = glob(["src/main/java/org/oppia/app/**/*.kt"], exclude = EXCLUDED_APP_LIB_FILES)
 
 '''
-Genrule for source files in the app library.
-
-Because each databinding library must have a unique package name and manifest, resources must be
-imported using the proper package name when building with Bazel. This genrule alters those imports
-in order to keep Gradle building.
+Genrule that alters both resource import statements and class names for adapter files in order to
+account for altered package and file name.
 '''
 [genrule(
      name = "update_" + file[0:-3],
@@ -422,7 +430,7 @@ android_library(
     name = "resources",
     custom_package = "org.oppia.app",
     manifest = "src/main/AndroidManifest.xml",
-    resource_files = glob(["src/main/res/**",], exclude = DATABINDING_LAYOUTS),
+    resource_files = glob(["src/main/res/**",], exclude = LAYOUTS),
     exports_manifest = True,
     deps = [
         artifact("com.google.android.material:material"),
@@ -469,8 +477,8 @@ kt_android_library(
     custom_package = "org.oppia.app",
     srcs = LISTENERS,
     deps = [
-        ":dagger",
         "//model",
+        ":dagger",
         artifact("androidx.recyclerview:recyclerview:1.0.0"),
     ],
     visibility = ["//visibility:private"],
@@ -491,8 +499,6 @@ kt_android_library(
         "@circularimageview//circularimageview:circular_image_view",
         artifact("androidx.appcompat:appcompat"),
         artifact("androidx.core:core-ktx"),
-        artifact("androidx.databinding:databinding-common"),
-        artifact("androidx.databinding:databinding-runtime"),
     ],
     visibility = ["//visibility:private"],
 )
@@ -503,8 +509,8 @@ kt_android_library(
     custom_package = "org.oppia.app",
     srcs = ANNOTATIONS,
     deps = [
-        ":dagger",
         "//model",
+        ":dagger",
     ],
     visibility = ["//visibility:private"],
 )
@@ -514,7 +520,7 @@ kt_android_library(
     name = "view_models",
     custom_package = "org.oppia.app.view.models",
     srcs = VIEW_MODELS,
-    enable_data_binding = True,
+    enable_data_binding = 1,
     manifest = "src/main/ViewModelsManifest.xml",
     deps = [
         ":annotations",
@@ -524,8 +530,8 @@ kt_android_library(
         "//domain",
         "//model",
         "//utility",
-        artifact("androidx.databinding:databinding-common"),
         artifact("androidx.databinding:databinding-runtime"),
+        artifact("androidx.databinding:databinding-common"),
     ],
     visibility = ["//visibility:private"],
 )
@@ -567,8 +573,6 @@ kt_android_library(
         ":resources",
         ":view_models",
         ":views",
-        "//model",
-        "//utility",
         artifact("androidx.databinding:databinding-adapters"),
         artifact("androidx.databinding:databinding-common"),
         artifact("androidx.databinding:databinding-runtime"),
@@ -576,13 +580,13 @@ kt_android_library(
         artifact("androidx.lifecycle:lifecycle-livedata-core:2.2.0"),
         artifact("androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"),
         artifact("androidx.multidex:multidex:2.0.1"),
-        artifact("androidx.navigation:navigation-fragment-ktx:2.0.0"),
-        artifact("androidx.navigation:navigation-fragment:2.0.0"),
-        artifact("androidx.navigation:navigation-ui-ktx:2.0.0"),
-        artifact("androidx.navigation:navigation-ui:2.0.0"),
         artifact("androidx.viewpager:viewpager:1.0.0"),
         artifact("com.caverock:androidsvg-aar"),
         artifact("javax.annotation:javax.annotation-api:jar"),
+        artifact("androidx.navigation:navigation-fragment:2.0.0"),
+        artifact("androidx.navigation:navigation-fragment-ktx:2.0.0"),
+        artifact("androidx.navigation:navigation-ui:2.0.0"),
+        artifact("androidx.navigation:navigation-ui-ktx:2.0.0"),
     ],
     visibility = ["//visibility:public"],
 )
@@ -601,50 +605,50 @@ Place your file here if:
 kt_android_library(
     name = "test_deps",
     srcs = [
-        "src/sharedTest/java/org/oppia/app/parser/RichTextViewMatcher.kt",
+        "src/sharedTest/java/org/oppia/app/utility/OrientationChangeAction.kt",
         "src/sharedTest/java/org/oppia/app/recyclerview/RecyclerViewMatcher.kt",
-        "src/sharedTest/java/org/oppia/app/utility/ClickActions.kt",
-        "src/sharedTest/java/org/oppia/app/utility/DragViewAction.kt",
+        "src/sharedTest/java/org/oppia/app/utility/ProgressMatcher.kt",
+        "src/sharedTest/java/org/oppia/app/parser/RichTextViewMatcher.kt",
         "src/sharedTest/java/org/oppia/app/utility/DrawableMatcher.kt",
         "src/sharedTest/java/org/oppia/app/utility/EspressoTestsMatchers.kt",
+        "src/sharedTest/java/org/oppia/app/utility/TabMatcher.kt",
         "src/sharedTest/java/org/oppia/app/utility/FontSizeMatcher.kt",
         "src/sharedTest/java/org/oppia/app/utility/MockitoKotlinHelper.kt",
-        "src/sharedTest/java/org/oppia/app/utility/OrientationChangeAction.kt",
-        "src/sharedTest/java/org/oppia/app/utility/ProgressMatcher.kt",
-        "src/sharedTest/java/org/oppia/app/utility/TabMatcher.kt",
+        "src/sharedTest/java/org/oppia/app/utility/DragViewAction.kt",
+        "src/sharedTest/java/org/oppia/app/utility/ClickActions.kt",
     ],
     deps = [
         ":app",
         "//testing",
         artifact("org.mockito:mockito-core"),
-    ],
-    testonly = True,
+    ]
 )
 
 TEST_DEPS = [
     ":app",
     ":dagger",
+    "//utility",
+    "//testing",
+    "//domain",
+    "//data",
     ":resources",
     ":test_deps",
-    "//domain",
-    "//testing",
-    "//utility",
     "@robolectric//bazel:android-all",
-    artifact("androidx.annotation:annotation"),
+    artifact("org.jetbrains.kotlin:kotlin-reflect"),
+    artifact("com.google.truth:truth"),
+    artifact("androidx.test.ext:junit"),
+    artifact("androidx.databinding:databinding-runtime"),
     artifact("androidx.databinding:databinding-adapters"),
     artifact("androidx.databinding:databinding-common"),
+    artifact("androidx.annotation:annotation"),
     artifact("androidx.databinding:databinding-compiler"),
-    artifact("androidx.databinding:databinding-runtime"),
+    artifact("androidx.test:runner:1.2.0"),
+    artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2"),
+    artifact("org.robolectric:annotations:4.3"),
+    artifact("org.mockito:mockito-core"),
     artifact("androidx.test.espresso:espresso-contrib:3.1.0"),
     artifact("androidx.test.espresso:espresso-core:3.2.0"),
     artifact("androidx.test.espresso:espresso-intents:3.1.0"),
-    artifact("androidx.test.ext:junit"),
-    artifact("androidx.test:runner:1.2.0"),
-    artifact("com.google.truth:truth"),
-    artifact("org.jetbrains.kotlin:kotlin-reflect"),
-    artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2"),
-    artifact("org.mockito:mockito-core"),
-    artifact("org.robolectric:annotations:4.3"),
 ]
 
 # TODO(#973): Fix app module tests for Roboelectric.
@@ -657,7 +661,10 @@ test_with_resources().
 
 app_test(
     name = "HomeActivityLocalTest",
-    srcs = ["src/test/java/org/oppia/app/home/HomeActivityLocalTest.kt"],
+    srcs = [
+        "src/test/java/org/oppia/app/home/HomeActivityLocalTest.kt",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
     test_class = "org.oppia.app.home.HomeActivityLocalTest",
     deps = TEST_DEPS,
 )
@@ -665,7 +672,10 @@ app_test(
 # TODO(#973): Fix app module tests for Roboelectric.
 app_test(
     name = "ExplorationActivityLocalTest",
-    srcs = ["src/test/java/org/oppia/app/player/exploration/ExplorationActivityLocalTest.kt"],
+    srcs = [
+        "src/test/java/org/oppia/app/player/exploration/ExplorationActivityLocalTest.kt",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
     test_class = "org.oppia.app.player.exploration.ExplorationActivityLocalTest",
     deps = TEST_DEPS,
 )
@@ -679,14 +689,20 @@ app_test(
 
 app_test(
     name = "ProfileChooserFragmentLocalTest",
-    srcs = ["src/test/java/org/oppia/app/profile/ProfileChooserFragmentLocalTest.kt"],
+    srcs = [
+        "src/test/java/org/oppia/app/profile/ProfileChooserFragmentLocalTest.kt",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
     test_class = "org.oppia.app.profile.ProfileChooserFragmentLocalTest",
     deps = TEST_DEPS,
 )
 
 app_test(
     name = "StoryActivityLocalTest",
-    srcs = ["src/test/java/org/oppia/app/story/StoryActivityLocalTest.kt"],
+    srcs = [
+        "src/test/java/org/oppia/app/story/StoryActivityLocalTest.kt",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
     test_class = "org.oppia.app.story.StoryActivityLocalTest",
     deps = TEST_DEPS,
 )
@@ -707,7 +723,10 @@ app_test(
 
 app_test(
     name = "ProfileChooserSpanTest",
-    srcs = ["src/test/java/org/oppia/app/testing/ProfileChooserSpanTest.kt"],
+    srcs = [
+        "src/test/java/org/oppia/app/testing/ProfileChooserSpanTest.kt",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
     test_class = "org.oppia.app.testing.ProfileChooserSpanTest",
     deps = TEST_DEPS,
 )
@@ -721,7 +740,10 @@ app_test(
 
 app_test(
     name = "PlayerSplitScreenTesting",
-    srcs = ["src/test/java/org/oppia/app/testing/player/split/PlayerSplitScreenTesting.kt"],
+    srcs = [
+        "src/test/java/org/oppia/app/testing/player/split/PlayerSplitScreenTesting.kt",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
     test_class = "org.oppia.app.testing.player.split.PlayerSplitScreenTesting",
     deps = TEST_DEPS,
 )
@@ -735,21 +757,30 @@ app_test(
 
 app_test(
     name = "TopicInfoFragmentLocalTest",
-    srcs = ["src/test/java/org/oppia/app/topic/info/TopicInfoFragmentLocalTest.kt"],
+    srcs = [
+        "src/test/java/org/oppia/app/topic/info/TopicInfoFragmentLocalTest.kt",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
     test_class = "org.oppia.app.topic.info.TopicInfoFragmentLocalTest",
     deps = TEST_DEPS,
 )
 
 app_test(
     name = "TopicLessonsFragmentLocalTest",
-    srcs = ["src/test/java/org/oppia/app/topic/lessons/TopicLessonsFragmentLocalTest.kt"],
+    srcs = [
+        "src/test/java/org/oppia/app/topic/lessons/TopicLessonsFragmentLocalTest.kt",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
     test_class = "org.oppia.app.topic.lessons.TopicLessonsFragmentLocalTest",
     deps = TEST_DEPS,
 )
 
 app_test(
     name = "RevisionCardActivityLocalTest",
-    srcs = ["src/test/java/org/oppia/app/topic/revisioncard/RevisionCardActivityLocalTest.kt"],
+    srcs = [
+        "src/test/java/org/oppia/app/topic/revisioncard/RevisionCardActivityLocalTest.kt",
+        "src/test/java/DataBinderMapperImpl.java"
+    ],
     test_class = "org.oppia.app.topic.revisioncard.RevisionCardActivityLocalTest",
     deps = TEST_DEPS,
 )

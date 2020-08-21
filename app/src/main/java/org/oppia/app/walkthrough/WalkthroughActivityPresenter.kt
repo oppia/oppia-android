@@ -66,7 +66,7 @@ class WalkthroughActivityPresenter @Inject constructor(
     }
   }
 
-  override fun moveToPreviousPage(currentProgress: Int) {
+  override fun previousPage(currentProgress: Int) {
     if (currentProgress == 1)
       activity.finish()
     else {
@@ -132,7 +132,7 @@ class WalkthroughActivityPresenter @Inject constructor(
   }
 
   fun handleSystemBack() {
-    moveToPreviousPage(getWalkthroughViewModel().currentProgress.get() ?: 1)
+    previousPage(getWalkthroughViewModel().currentProgress.get() ?: 1)
   }
 
   fun setTopicId(topicId: String) {

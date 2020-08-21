@@ -4,10 +4,6 @@
 
   <data>
 
-    <import type="android.view.View" />
-
-    <import type="org.oppia.app.player.state.itemviewmodel.SelectionItemInputType" />
-
     <variable
       name="viewModel"
       type="org.oppia.app.player.state.itemviewmodel.SelectionInteractionViewModel" />
@@ -23,33 +19,20 @@
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
-    android:paddingTop="12dp"
-    android:paddingBottom="12dp"
+    android:padding="0dp"
     app:layoutMarginEnd="@{viewModel.hasConversationView ? @dimen/margin_48 : @dimen/margin_64}"
     app:layoutMarginStart="@{viewModel.hasConversationView ? @dimen/margin_80 : @dimen/margin_64}"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginStart="16dp"
-      android:layout_marginTop="4dp"
-      android:layout_marginEnd="16dp"
-      android:layout_marginBottom="4dp"
-      android:fontFamily="sans-serif-light"
-      android:text="@string/item_selection_text"
-      android:textColor="@color/oppiaPrimaryText"
-      android:textSize="14sp"
-      android:textStyle="italic"
-      android:visibility="@{viewModel.getSelectionItemInputType() == SelectionItemInputType.RADIO_BUTTONS ? View.GONE : View. VISIBLE}" />
-
     <org.oppia.app.player.state.SelectionInteractionView
       android:id="@+id/selection_interaction_recyclerview"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginStart="12dp"
-      android:layout_marginEnd="12dp"
+      android:layout_marginStart="20dp"
+      android:layout_marginTop="@dimen/divider_margin_top"
+      android:layout_marginEnd="20dp"
+      android:layout_marginBottom="@dimen/divider_margin_bottom"
       android:divider="@android:color/transparent"
       app:allOptionsItemInputType="@{viewModel.getSelectionItemInputType()}"
       app:data="@{viewModel.choiceItems}"

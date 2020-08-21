@@ -5,8 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
-import org.oppia.app.R
+import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.app.databinding.ProfileProgressFragmentBinding
 import org.oppia.app.databinding.ProfileProgressHeaderBinding
 import org.oppia.app.databinding.ProfileProgressRecentlyPlayedStoryCardBinding
@@ -38,27 +37,14 @@ class ProfileProgressFragmentPresenter @Inject constructor(
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
     binding.lifecycleOwner = fragment
-
-    val spanCount = activity.resources.getInteger(R.integer.profile_progress_span_count)
-    val profileProgressLayoutManager = GridLayoutManager(activity.applicationContext, spanCount)
-    profileProgressLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-      override fun getSpanSize(position: Int): Int {
-        return if (position == 0) {
-          /* number of spaces this item should occupy= */ spanCount
-        } else {
-          /* number of spaces this item should occupy= */ 1
-        }
-      }
-    }
-
     binding.profileProgressList.apply {
-      layoutManager = profileProgressLayoutManager
+      layoutManager = LinearLayoutManager(activity)
       adapter = createRecyclerViewAdapter()
     }
 
     val viewModel = getProfileProgressViewModel()
     viewModel.setProfileId(internalProfileId)
-    viewModel.handleOnConfigurationChange()
+
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
     binding.let {

@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
@@ -40,7 +39,6 @@ class ExplorationActivityPresenter @Inject constructor(
   private val logger: ConsoleLogger
 ) {
   private lateinit var explorationToolbar: Toolbar
-  private lateinit var explorationToolbarTitle: TextView
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
   private lateinit var storyId: String
@@ -75,12 +73,7 @@ class ExplorationActivityPresenter @Inject constructor(
     }
 
     explorationToolbar = binding.explorationToolbar
-    explorationToolbarTitle = binding.explorationToolbarTitle
     activity.setSupportActionBar(explorationToolbar)
-
-    binding.explorationToolbar.setOnClickListener {
-      binding.explorationToolbarTitle.isSelected = true
-    }
 
     binding.explorationToolbar.setNavigationOnClickListener {
       activity.onBackPressed()
@@ -235,7 +228,7 @@ class ExplorationActivityPresenter @Inject constructor(
     explorationLiveData.observe(
       activity,
       Observer<Exploration> {
-        explorationToolbarTitle.text = it.title
+        explorationToolbar.title = it.title
       }
     )
   }

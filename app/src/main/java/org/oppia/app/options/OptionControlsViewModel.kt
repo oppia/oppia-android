@@ -59,18 +59,18 @@ class OptionControlsViewModel @Inject constructor(
 
     itemViewModelList.clear()
 
-    val optionsStoryTextSizeViewModel =
-      OptionsStoryTextSizeViewModel(routeToStoryTextSizeListener)
+    val optionsStoryTextViewViewModel =
+      OptionsStoryTextViewViewModel(routeToStoryTextSizeListener)
     val optionsAppLanguageViewModel =
       OptionsAppLanguageViewModel(routeToAppLanguageListListener)
     val optionAudioViewViewModel =
       OptionsAudioLanguageViewModel(routeToAudioLanguageListListener)
 
-    optionsStoryTextSizeViewModel.storyTextSize.set(getStoryTextSize(profile.storyTextSize))
+    optionsStoryTextViewViewModel.storyTextSize.set(getStoryTextSize(profile.storyTextSize))
     optionsAppLanguageViewModel.appLanguage.set(getAppLanguage(profile.appLanguage))
     optionAudioViewViewModel.audioLanguage.set(getAudioLanguage(profile.audioLanguage))
 
-    itemViewModelList.add(optionsStoryTextSizeViewModel as OptionsItemViewModel)
+    itemViewModelList.add(optionsStoryTextViewViewModel as OptionsItemViewModel)
 
     itemViewModelList.add(optionsAppLanguageViewModel as OptionsItemViewModel)
 

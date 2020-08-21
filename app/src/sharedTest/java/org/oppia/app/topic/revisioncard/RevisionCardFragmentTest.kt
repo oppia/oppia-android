@@ -1,6 +1,7 @@
 package org.oppia.app.topic.revisioncard
 
 import android.content.Context
+import android.widget.TextView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -14,9 +15,12 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.firebase.FirebaseApp
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.instanceOf
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
@@ -122,8 +126,12 @@ class RevisionCardFragmentTest {
         SUBTOPIC_TOPIC_ID
       )
     ).use {
-      onView(withId(R.id.revision_card_toolbar_title))
-        .check(matches(withText("What is Fraction?")))
+      onView(
+        allOf(
+          instanceOf(TextView::class.java),
+          withParent(withId(R.id.revision_card_toolbar))
+        )
+      ).check(matches(withText("What is Fraction?")))
     }
   }
 
@@ -188,8 +196,12 @@ class RevisionCardFragmentTest {
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.revision_card_toolbar_title))
-        .check(matches(withText("What is Fraction?")))
+      onView(
+        allOf(
+          instanceOf(TextView::class.java),
+          withParent(withId(R.id.revision_card_toolbar))
+        )
+      ).check(matches(withText("What is Fraction?")))
     }
   }
 

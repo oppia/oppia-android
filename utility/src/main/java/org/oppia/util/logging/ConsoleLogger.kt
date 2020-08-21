@@ -69,7 +69,7 @@ class ConsoleLogger @Inject constructor(
   }
 
   /** Logs a error message with the specified tag, message and exception.*/
-  fun e(tag: String, msg: String, tr: Throwable?) {
+  fun e(tag: String, msg: String, tr: Throwable) {
     writeError(LogLevel.ERROR, tag, msg, tr)
   }
 
@@ -81,7 +81,7 @@ class ConsoleLogger @Inject constructor(
     writeInternal(logLevel, tag, log)
   }
 
-  private fun writeError(logLevel: LogLevel, tag: String, log: String, tr: Throwable?) {
+  private fun writeError(logLevel: LogLevel, tag: String, log: String, tr: Throwable) {
     writeInternal(logLevel, tag, "$log\n${Log.getStackTraceString(tr)}")
   }
 

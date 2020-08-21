@@ -143,14 +143,14 @@ class AudioViewModel @Inject constructor(
   }
 
   private fun processDurationResultLiveData(playProgressResult: AsyncResult<PlayProgress>): Int {
-    if (!playProgressResult.isSuccess()) {
+    if (playProgressResult.isPending()) {
       return 0
     }
     return playProgressResult.getOrThrow().duration
   }
 
   private fun processPositionResultLiveData(playProgressResult: AsyncResult<PlayProgress>): Int {
-    if (!playProgressResult.isSuccess()) {
+    if (playProgressResult.isPending()) {
       return 0
     }
     return playProgressResult.getOrThrow().position
@@ -159,22 +159,20 @@ class AudioViewModel @Inject constructor(
   private fun processPlayStatusResultLiveData(
     playProgressResult: AsyncResult<PlayProgress>
   ): UiAudioPlayStatus {
-    return when {
-      playProgressResult.isPending() -> UiAudioPlayStatus.LOADING
-      playProgressResult.isFailure() -> UiAudioPlayStatus.FAILED
-      else -> when (playProgressResult.getOrThrow().type) {
-        PlayStatus.PREPARED -> {
-          if (autoPlay) audioPlayerController.play()
-          autoPlay = false
-          UiAudioPlayStatus.PREPARED
-        }
-        PlayStatus.PLAYING -> UiAudioPlayStatus.PLAYING
-        PlayStatus.PAUSED -> UiAudioPlayStatus.PAUSED
-        PlayStatus.COMPLETED -> {
-          if (hasFeedback) loadAudio(null, false)
-          hasFeedback = false
-          UiAudioPlayStatus.COMPLETED
-        }
+    if (playProgressResult.isPending()) return UiAudioPlayStatus.LOADING
+    if (playProgressResult.isFailure()) return UiAudioPlayStatus.FAILED
+    return when (playProgressResult.getOrThrow().type) {
+      PlayStatus.PREPARED -> {
+        if (autoPlay) audioPlayerController.play()
+        autoPlay = false
+        UiAudioPlayStatus.PREPARED
+      }
+      PlayStatus.PLAYING -> UiAudioPlayStatus.PLAYING
+      PlayStatus.PAUSED -> UiAudioPlayStatus.PAUSED
+      PlayStatus.COMPLETED -> {
+        if (hasFeedback) loadAudio(null, false)
+        hasFeedback = false
+        UiAudioPlayStatus.COMPLETED
       }
     }
   }

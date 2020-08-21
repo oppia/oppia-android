@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.options.OptionsStoryTextSizeViewModel" />
+      type="org.oppia.app.options.OptionsStoryTextViewViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout

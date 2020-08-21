@@ -410,16 +410,37 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressActivity_changeConfiguration_recyclerViewItem1_storyNameIsCorrect() {
+  fun testProfileProgressActivity_recyclerViewItem1_chapterNameIsCorrect() {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      onView(withId(R.id.profile_progress_list)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      waitForTheView(withText("Prototype Exploration"))
+      onView(
+        atPositionOnView(
+          R.id.profile_progress_list,
+          1, R.id.chapter_name_text_view
+        )
+      ).check(
+        matches(withText(containsString("Prototype Exploration")))
+      )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "port-xxhdpi")
+  fun testProfileProgressActivity_changeConfiguration_recyclerViewItem1_chapterNameIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_progress_list))
         .perform(scrollToPosition<RecyclerView.ViewHolder>(1))
-      waitForTheView(withText("First Story"))
+      waitForTheView(withText("Prototype Exploration"))
       onView(
-        atPositionOnView(R.id.profile_progress_list, 1, R.id.story_name_text_view)
+        atPositionOnView(R.id.profile_progress_list, 1, R.id.chapter_name_text_view)
       ).check(
-        matches(withText(containsString("First Story")))
+        matches(withText(containsString("Prototype Exploration")))
       )
     }
   }

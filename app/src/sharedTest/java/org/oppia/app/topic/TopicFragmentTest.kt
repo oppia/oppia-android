@@ -3,6 +3,7 @@ package org.oppia.app.topic
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
@@ -18,6 +19,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
@@ -29,6 +31,7 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.CoreMatchers.instanceOf
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -60,7 +63,12 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_toolbarTitle_isDisplayedSuccessfully() {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      onView(withId(R.id.topic_toolbar_title)).check(matches(withText("Topic: Fractions")))
+      onView(
+        allOf(
+          instanceOf(TextView::class.java),
+          withParent(withId(R.id.topic_toolbar))
+        )
+      ).check(matches(withText("Topic: Fractions")))
     }
   }
 
