@@ -151,7 +151,7 @@ jobs:
           java-version: 9
       - name: Create tmp/android_tools
         run: |
-          mkdir -p tmp/android_tools
+          mkdir -p $GITHUB_WORKSPACE/tmp/android_tools
       - name: Extract Android Tools
         run: |
           cd $HOME/oppia-bazel
