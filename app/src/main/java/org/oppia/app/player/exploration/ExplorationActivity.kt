@@ -5,19 +5,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.app.hintsandsolution.HintsAndSolutionListener
 import org.oppia.app.hintsandsolution.RevealHintListener
 import org.oppia.app.hintsandsolution.RevealSolutionInterface
-import org.oppia.app.model.State
 import org.oppia.app.model.ReadingTextSize
+import org.oppia.app.model.State
 import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.app.player.stopplaying.StopExplorationDialogFragment
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
+import org.oppia.app.R
 import javax.inject.Inject
 
 private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"

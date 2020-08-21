@@ -41,7 +41,9 @@ class ExplorationManagerFragmentPresenter @Inject constructor(
     )
   }
 
-  private fun processReadingTextSizeResult(readingTextSizeResult: AsyncResult<Profile>): ReadingTextSize {
+  private fun processReadingTextSizeResult(
+    readingTextSizeResult: AsyncResult<Profile>
+  ): ReadingTextSize {
     if (readingTextSizeResult.isFailure()) {
       logger.e(
         "ExplorationManagerFragment",
