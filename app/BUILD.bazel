@@ -31,6 +31,7 @@ Place your file here if:
 ANNOTATIONS = [
     "src/main/java/org/oppia/app/activity/ActivityScope.kt",
     "src/main/java/org/oppia/app/fragment/FragmentScope.kt",
+    "src/main/java/org/oppia/app/utility/ContextExtensions.kt",
     "src/main/java/org/oppia/app/utility/KeyboardHelper.kt",
 ]
 
