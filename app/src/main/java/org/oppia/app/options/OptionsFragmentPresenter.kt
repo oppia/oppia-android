@@ -130,15 +130,24 @@ class OptionsFragmentPresenter @Inject constructor(
   fun updateReadingTextSize(textSize: String) {
     when (textSize) {
       getOptionControlsItemViewModel().getReadingTextSize(ReadingTextSize.SMALL_TEXT_SIZE) -> {
-        profileManagementController.updateReadingTextSize(profileId, ReadingTextSize.SMALL_TEXT_SIZE)
+        profileManagementController.updateReadingTextSize(
+          profileId,
+          ReadingTextSize.SMALL_TEXT_SIZE
+        )
         readingTextSize = ReadingTextSize.SMALL_TEXT_SIZE
       }
       getOptionControlsItemViewModel().getReadingTextSize(ReadingTextSize.MEDIUM_TEXT_SIZE) -> {
-        profileManagementController.updateReadingTextSize(profileId, ReadingTextSize.MEDIUM_TEXT_SIZE)
+        profileManagementController.updateReadingTextSize(
+          profileId,
+          ReadingTextSize.MEDIUM_TEXT_SIZE
+        )
         readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
       }
       getOptionControlsItemViewModel().getReadingTextSize(ReadingTextSize.LARGE_TEXT_SIZE) -> {
-        profileManagementController.updateReadingTextSize(profileId, ReadingTextSize.LARGE_TEXT_SIZE)
+        profileManagementController.updateReadingTextSize(
+          profileId,
+          ReadingTextSize.LARGE_TEXT_SIZE
+        )
         readingTextSize = ReadingTextSize.LARGE_TEXT_SIZE
       }
       getOptionControlsItemViewModel().getReadingTextSize(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE) -> {
