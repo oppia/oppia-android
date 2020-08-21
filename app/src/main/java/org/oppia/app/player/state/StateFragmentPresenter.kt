@@ -72,7 +72,6 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
-  private var currentStateNameOfVisibleHint: String? = null
 
   private val viewModel: StateViewModel by lazy {
     getStateViewModel()
@@ -190,12 +189,10 @@ class StateFragmentPresenter @Inject constructor(
           helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.SHOW_SOLUTION
         viewModel.setHintOpenedAndUnRevealedVisibility(true)
         viewModel.setHintBulbVisibility(true)
-        currentStateNameOfVisibleHint = currentStateName
       }
       HelpIndex.IndexTypeCase.EVERYTHING_REVEALED -> {
         viewModel.setHintOpenedAndUnRevealedVisibility(false)
         viewModel.setHintBulbVisibility(true)
-        currentStateNameOfVisibleHint = currentStateName
       }
       else -> {
         viewModel.setHintOpenedAndUnRevealedVisibility(false)
@@ -302,14 +299,6 @@ class StateFragmentPresenter @Inject constructor(
     val isInNewState =
       ::currentStateName.isInitialized && currentStateName != ephemeralState.state.name
 
-    if (currentStateNameOfVisibleHint != null &&
-      currentStateNameOfVisibleHint == ephemeralState.state.name
-    ) {
-      viewModel.setHintBulbVisibility(true)
-    } else {
-      viewModel.setHintBulbVisibility(false)
-    }
-
     currentState = ephemeralState.state
     currentStateName = ephemeralState.state.name
     showOrHideAudioByState(ephemeralState.state)
@@ -384,13 +373,11 @@ class StateFragmentPresenter @Inject constructor(
         // If the answer was submitted on behalf of the Continue interaction, automatically continue to the next state.
         if (result.state.interaction.id == "Continue") {
           recyclerViewAssembler.stopHintsFromShowing()
-          currentStateNameOfVisibleHint = null
           viewModel.setHintBulbVisibility(false)
           moveToNextState()
         } else {
           if (result.labelledAsCorrectAnswer) {
             recyclerViewAssembler.stopHintsFromShowing()
-            currentStateNameOfVisibleHint = null
             viewModel.setHintBulbVisibility(false)
             recyclerViewAssembler.showCongratulationMessageOnCorrectAnswer()
           } else {
