@@ -3,16 +3,16 @@ package org.oppia.app.options
 import androidx.databinding.ObservableField
 
 /** StoryText size settings view model for the recycler view in [OptionsFragment]. */
-class OptionsStoryTextSizeViewModel(
-  private val routeToStoryTextSizeListener: RouteToStoryTextSizeListener
+class OptionsReadingTextSizeViewModel(
+  private val routeToReadingTextSizeListener: RouteToReadingTextSizeListener
 ) : OptionsItemViewModel() {
-  val storyTextSize = ObservableField<String>("")
+  val readingTextSize = ObservableField<String>("")
 
-  fun setStoryTextSize(storyTextSizeValue: String) {
-    storyTextSize.set(storyTextSizeValue)
+  fun setReadingTextSize(readingTextSizeValue: String) {
+    readingTextSize.set(readingTextSizeValue)
   }
 
-  fun onStoryTextSizeClicked() {
-    routeToStoryTextSizeListener.routeStoryTextSize(storyTextSize.get())
+  fun onReadingTextSizeClicked() {
+    routeToReadingTextSizeListener.routeReadingTextSize(readingTextSize.get())
   }
 }

@@ -27,12 +27,12 @@ class ExplorationFragment : InjectableFragment() {
     internal const val EXPLORATION_ID_ARGUMENT_KEY =
       "ExplorationFragment.exploration_id"
 
-    /** Returns a new [ExplorationFragment] to pass the profileId, topicId, storyId, storyTextSize and explorationId. */
+    /** Returns a new [ExplorationFragment] to pass the profileId, topicId, storyId, readingTextSize and explorationId. */
     fun newInstance(
       internalProfileId: Int,
       topicId: String,
       storyId: String,
-      storyTextSize: String,
+      readingTextSize: String,
       explorationId: String
     ): ExplorationFragment {
       val explorationFragment = ExplorationFragment()
@@ -45,7 +45,7 @@ class ExplorationFragment : InjectableFragment() {
       args.putString(STORY_ID_ARGUMENT_KEY, storyId)
       args.putString(
         STORY_DEFAULT_FONT_SIZE_ARGUMENT_KEY,
-        storyTextSize
+        readingTextSize
       )
       args.putString(
         EXPLORATION_ID_ARGUMENT_KEY,
@@ -59,10 +59,10 @@ class ExplorationFragment : InjectableFragment() {
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
-    val storyTextSize =
+    val readingTextSize =
       arguments!!.getString(STORY_DEFAULT_FONT_SIZE_ARGUMENT_KEY)
-    checkNotNull(storyTextSize) { "ExplorationFragment must be created with a story text size" }
-    fontScaleConfigurationUtil.adjustFontScale(context, storyTextSize)
+    checkNotNull(readingTextSize) { "ExplorationFragment must be created with a story text size" }
+    fontScaleConfigurationUtil.adjustFontScale(context, readingTextSize)
   }
 
   override fun onCreateView(

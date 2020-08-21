@@ -1,6 +1,6 @@
 package org.oppia.app.player.exploration
 
-import org.oppia.app.model.StoryTextSize
+import org.oppia.app.model.ReadingTextSize
 
 /**
  * To set the font-size correctly we need to fetch it before loading the `ExplorationFragment` and
@@ -8,5 +8,5 @@ import org.oppia.app.model.StoryTextSize
  * passes the information to `ExplorationActivity` which eventually loads the `ExplorationFragment`.
  */
 interface DefaultFontSizeStateListener {
-  fun onDefaultFontSizeLoaded(storyTextSize: StoryTextSize)
+  fun onDefaultFontSizeLoaded(readingTextSize: ReadingTextSize)
 }

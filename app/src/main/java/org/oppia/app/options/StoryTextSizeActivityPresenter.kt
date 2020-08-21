@@ -5,35 +5,35 @@ import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import javax.inject.Inject
 
-/** The presenter for [StoryTextSizeActivity]. */
+/** The presenter for [ReadingTextSizeActivity]. */
 @ActivityScope
-class StoryTextSizeActivityPresenter @Inject constructor(
+class ReadingTextSizeActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
   private lateinit var fontSize: String
 
   fun handleOnCreate(prefSummaryValue: String) {
-    activity.setContentView(R.layout.story_text_size_activity)
+    activity.setContentView(R.layout.reading_text_size_activity)
     fontSize = prefSummaryValue
-    if (getStoryTextSizeFragment() == null) {
-      val storyTextSizeFragment = StoryTextSizeFragment.newInstance(prefSummaryValue)
+    if (getReadingTextSizeFragment() == null) {
+      val readingTextSizeFragment = ReadingTextSizeFragment.newInstance(prefSummaryValue)
       activity.supportFragmentManager.beginTransaction()
-        .add(R.id.story_text_size_container, storyTextSizeFragment).commitNow()
+        .add(R.id.reading_text_size_container, readingTextSizeFragment).commitNow()
     }
   }
 
-  fun setSelectedStoryTextSize(fontSize: String) {
+  fun setSelectedReadingTextSize(fontSize: String) {
     this.fontSize = fontSize
   }
 
-  fun getSelectedStoryTextSize(): String {
+  fun getSelectedReadingTextSize(): String {
     return fontSize
   }
 
-  private fun getStoryTextSizeFragment(): StoryTextSizeFragment? {
+  private fun getReadingTextSizeFragment(): ReadingTextSizeFragment? {
     return activity
       .supportFragmentManager
-      .findFragmentById(R.id.story_text_size_container)
-      as StoryTextSizeFragment?
+      .findFragmentById(R.id.reading_text_size_container)
+      as ReadingTextSizeFragment?
   }
 }

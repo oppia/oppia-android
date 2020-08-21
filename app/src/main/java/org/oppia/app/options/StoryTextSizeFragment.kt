@@ -8,19 +8,19 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-private const val KEY_STORY_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE =
-  "STORY_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE"
+private const val KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE =
+  "READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE"
 
 /** The fragment to change the text size of the story content in the app. */
-class StoryTextSizeFragment : InjectableFragment() {
+class ReadingTextSizeFragment : InjectableFragment() {
   @Inject
-  lateinit var storyTextSizeFragmentPresenter: StoryTextSizeFragmentPresenter
+  lateinit var readingTextSizeFragmentPresenter: ReadingTextSizeFragmentPresenter
 
   companion object {
-    fun newInstance(storyTextSize: String): StoryTextSizeFragment {
+    fun newInstance(readingTextSize: String): ReadingTextSizeFragment {
       val args = Bundle()
-      args.putString(KEY_STORY_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE, storyTextSize)
-      val fragment = StoryTextSizeFragment()
+      args.putString(KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE, readingTextSize)
+      val fragment = ReadingTextSizeFragment()
       fragment.arguments = args
       return fragment
     }
@@ -37,8 +37,8 @@ class StoryTextSizeFragment : InjectableFragment() {
     savedInstanceState: Bundle?
   ): View? {
     val args =
-      checkNotNull(arguments) { "Expected arguments to be passed to StoryTextSizeFragment" }
-    val storyTextSize = args.get(KEY_STORY_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE) as String
-    return storyTextSizeFragmentPresenter.handleOnCreateView(inflater, container, storyTextSize)
+      checkNotNull(arguments) { "Expected arguments to be passed to ReadingTextSizeFragment" }
+    val readingTextSize = args.get(KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE) as String
+    return readingTextSizeFragmentPresenter.handleOnCreateView(inflater, container, readingTextSize)
   }
 }
