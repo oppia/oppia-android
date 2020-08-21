@@ -46,9 +46,9 @@ kt_register_toolchains()
 '''
 The proto_compiler and proto_java_toolchain bindings load the protos rules needed for the model
 module while helping us avoid the unnecessary compilation of protoc. Referecences:
-https://docs.bazel.build/versions/master/be/workspace.html#bind,
-https://github.com/google/startup-os/blob/master/WORKSPACE#L215-L220,
-https://github.com/bazelbuild/bazel/issues/7095
+- https://docs.bazel.build/versions/master/be/workspace.html#bind
+- https://github.com/google/startup-os/blob/master/WORKSPACE#L215-L220
+- https://github.com/bazelbuild/bazel/issues/7095
 '''
 bind(
     name = "proto_compiler",
