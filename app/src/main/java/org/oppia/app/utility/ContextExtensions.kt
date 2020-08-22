@@ -4,7 +4,7 @@ import android.content.Context
 
 // Extension functions for Context that act as getters for PackageManager.
 
-/** Returns the current version name. */
+/** Returns the current app version name. */
 fun Context.getVersionName(): String {
   return this.packageManager.getPackageInfo(this.packageName, /* flags=*/ 0).versionName
 }
