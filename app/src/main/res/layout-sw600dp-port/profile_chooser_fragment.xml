@@ -10,7 +10,7 @@
       type="org.oppia.app.profile.ProfileChooserViewModel" />
 
     <variable
-      name="wasProfileEverBeenAddedValue"
+      name="hasProfileEverBeenAddedValue"
       type="androidx.databinding.ObservableField&lt;Boolean&gt;" />
   </data>
 
@@ -79,7 +79,7 @@
           android:fadingEdgeLength="72dp"
           android:orientation="vertical"
           android:overScrollMode="never"
-          android:paddingBottom="@{wasProfileEverBeenAddedValue ? @dimen/padding_224 : @dimen/bottom_white_space}"
+          android:paddingBottom="@{hasProfileEverBeenAddedValue ? @dimen/padding_224 : @dimen/bottom_white_space}"
           android:requiresFadingEdge="vertical"
           android:scrollbars="none"
           app:data="@{viewModel.profiles}"
@@ -87,9 +87,9 @@
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@id/profile_select_text"
-          app:layoutMarginTop="@{wasProfileEverBeenAddedValue ? @dimen/margin_24 : @dimen/margin_124}"
-          app:layoutMarginEnd="@{wasProfileEverBeenAddedValue ? @dimen/margin_72 : @dimen/margin_0}"
-          app:layoutMarginStart="@{wasProfileEverBeenAddedValue ? @dimen/margin_72 : @dimen/margin_0}" />
+          app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/margin_24 : @dimen/margin_124}"
+          app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/margin_72 : @dimen/margin_0}"
+          app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/margin_72 : @dimen/margin_0}" />
       </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
