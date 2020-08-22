@@ -24,31 +24,26 @@ import org.oppia.util.parser.HtmlParser
 // TODO(#1619): Remove file post-Gradle
 interface ViewBindingShim {
 
-  /**
-   * Handles binding inflation for [ProfileInputView] and returns the binding's label text.
-   */
+  /** Handles binding inflation for [ProfileInputView] */
+  fun inflateProfileInputView(
+      inflater: LayoutInflater,
+      parent: ViewGroup,
+      attachToParent: Boolean
+  ): View
+
+  /** Returns [ProfileInputView] binding's label text. */
   fun provideProfileInputViewBindingLabelText(
-    inflater: LayoutInflater,
-    parent: ViewGroup,
-    attachToParent: Boolean
+    profileInputView: View
   ): TextView
 
-  /**
-   * Handles binding inflation for [ProfileInputView] and returns the binding's input.
-   */
+  /** Returns [ProfileInputView] binding's input. */
   fun provideProfileInputViewBindingInput(
-    inflater: LayoutInflater,
-    parent: ViewGroup,
-    attachToParent: Boolean
+    profileInputView: View
   ): EditText
 
-  /**
-   * Handles binding inflation for [ProfileInputView] and returns the binding's error text.
-   */
+  /** Returns [ProfileInputView] binding's error text. */
   fun provideProfileInputViewBindingErrorText(
-    inflater: LayoutInflater,
-    parent: ViewGroup,
-    attachToParent: Boolean
+    profileInputView: View
   ): TextView
 
   /**

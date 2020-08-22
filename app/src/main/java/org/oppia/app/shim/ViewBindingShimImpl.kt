@@ -32,46 +32,31 @@ import javax.inject.Inject
 // TODO(#1619): Remove file post-Gradle
 class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
 
+  override fun inflateProfileInputView(inflater: LayoutInflater, parent: ViewGroup, attachToParent: Boolean): View {
+    return DataBindingUtil.inflate<ProfileInputViewBinding>(
+        inflater,
+        R.layout.profile_input_view,
+        parent,
+        attachToParent
+    ).root
+  }
+
   override fun provideProfileInputViewBindingLabelText(
-    inflater: LayoutInflater,
-    parent: ViewGroup,
-    attachToParent: Boolean
+      profileInputView: View
   ): TextView {
-    val binding = DataBindingUtil.inflate<ProfileInputViewBinding>(
-      inflater,
-      R.layout.profile_input_view,
-      parent,
-      attachToParent
-    )
-    return binding.labelText
+    return DataBindingUtil.findBinding<ProfileInputViewBinding>(profileInputView)!!.labelText
   }
 
   override fun provideProfileInputViewBindingInput(
-    inflater: LayoutInflater,
-    parent: ViewGroup,
-    attachToParent: Boolean
+      profileInputView: View
   ): EditText {
-    val binding = DataBindingUtil.inflate<ProfileInputViewBinding>(
-      inflater,
-      R.layout.profile_input_view,
-      parent,
-      attachToParent
-    )
-    return binding.input
+    return DataBindingUtil.findBinding<ProfileInputViewBinding>(profileInputView)!!.input
   }
 
   override fun provideProfileInputViewBindingErrorText(
-    inflater: LayoutInflater,
-    parent: ViewGroup,
-    attachToParent: Boolean
+      profileInputView: View
   ): TextView {
-    val binding = DataBindingUtil.inflate<ProfileInputViewBinding>(
-      inflater,
-      R.layout.profile_input_view,
-      parent,
-      attachToParent
-    )
-    return binding.errorText
+    return DataBindingUtil.findBinding<ProfileInputViewBinding>(profileInputView)!!.errorText
   }
 
   override fun provideSelectionInteractionViewInflatedView(
@@ -197,6 +182,7 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     ).root
   }
 
+  // TODO: don't cache binding since it leaks view context. Suggest using pattern above for retrieving the binding after inflation.
   private lateinit var dragDropSingleItemBinding: DragDropSingleItemBinding
 
   override fun setDragDropSingleItemBinding(

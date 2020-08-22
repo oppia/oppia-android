@@ -24,6 +24,5 @@ interface ViewComponent {
   fun inject(selectionInteractionView: SelectionInteractionView)
   fun inject(dragDropSortInteractionView: DragDropSortInteractionView)
   fun inject(imageRegionSelectionInteractionView: ImageRegionSelectionInteractionView)
-  fun inject(profileInputView: ProfileInputView)
   fun inject(lessonThumbnailImageView: LessonThumbnailImageView)
 }
