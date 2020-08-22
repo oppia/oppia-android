@@ -10,11 +10,9 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import org.oppia.app.R
+import org.oppia.app.application.ApplicationInjectorProvider
 import org.oppia.app.shim.ViewBindingShim
-import org.oppia.app.shim.ViewComponentFactory
 import javax.inject.Inject
 
 /** Custom view that is used for name or pin input with error messages. */
@@ -26,12 +24,6 @@ class ProfileInputView @JvmOverloads constructor(
 
   @Inject
   lateinit var bindingInterface: ViewBindingShim
-
-  override fun onAttachedToWindow() {
-    super.onAttachedToWindow()
-    (FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory)
-      .createViewComponent(this).inject(this)
-  }
 
   companion object {
     @JvmStatic
@@ -52,23 +44,19 @@ class ProfileInputView @JvmOverloads constructor(
   private var input: EditText
 
   init {
+    (context.applicationContext as ApplicationInjectorProvider).getApplicationInjector()
+      .inject(this)
+
+    val profileInputView = bindingInterface.inflateProfileInputView(
+      LayoutInflater.from(context),
+      parent = this,
+      attachToParent = true
+    )
     val attributes = context.obtainStyledAttributes(attrs, R.styleable.ProfileInputView)
-    label = bindingInterface.provideProfileInputViewBindingLabelText(
-      LayoutInflater.from(context),
-      this,
-      true
-    )
+    label = bindingInterface.provideProfileInputViewBindingLabelText(profileInputView)
     label.text = attributes.getString(R.styleable.ProfileInputView_label)
-    input = bindingInterface.provideProfileInputViewBindingInput(
-      LayoutInflater.from(context),
-      this,
-      true
-    )
-    errorText = bindingInterface.provideProfileInputViewBindingErrorText(
-      LayoutInflater.from(context),
-      this,
-      true
-    )
+    input = bindingInterface.provideProfileInputViewBindingInput(profileInputView)
+    errorText = bindingInterface.provideProfileInputViewBindingErrorText(profileInputView)
     orientation = VERTICAL
     if (
       attributes.getBoolean(

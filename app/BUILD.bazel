@@ -281,8 +281,11 @@ Source files for the views library that DO NOT import resources.
 Place your file here if:
  - It is a view file
  - It does not import resources
+ - It holds a circular dependency with a view (including views in VIEWS_WITH_RESOURCE_IMPORTS)
 '''
 VIEWS = [
+    "src/main/java/org/oppia/app/application/ApplicationInjector.kt",
+    "src/main/java/org/oppia/app/application/ApplicationInjectorProvider.kt",
     "src/main/java/org/oppia/app/customview/interaction/FractionInputInteractionView.kt",
     "src/main/java/org/oppia/app/customview/interaction/NumericInputInteractionView.kt",
     "src/main/java/org/oppia/app/customview/interaction/TextInputInteractionView.kt",
@@ -370,8 +373,46 @@ in order to keep Gradle building.
      sed 's/import org.oppia.app.R/import org.oppia.app.databinding.adapters.R/g' |
      sed 's/BindingAdapters {/BindingAdapters_updated {/g' > $(OUTS)
      ''',
+ ) for file in BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS]
+
+'''
+Files to be excluded from the source list for the app library. This list includes all the files
+built by the following libraries:
+- view_models
+- views
+- listeners
+- annotations
+- binding_adapters
+'''
+EXCLUDED_APP_LIB_FILES = VIEW_MODELS + VIEW_MODELS_WITH_RESOURCE_IMPORTS + VIEWS + VIEWS_WITH_RESOURCE_IMPORTS + BINDING_ADAPTERS + BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS + LISTENERS + ANNOTATIONS
+
+'''
+Files to be built by the app library. All of these files are assumed to have resource imports and
+will be processed by the app library genrule regardless in order to avoid any import issues.
+'''
+APP_FILES_WITH_RESOURCE_IMPORTS = glob(["src/main/java/org/oppia/app/**/*.kt"], exclude = EXCLUDED_APP_LIB_FILES)
+
+'''
+Genrule that alters both resource import statements and class names for adapter files in order to
+account for altered package and file name.
+'''
+[genrule(
+     name = "update_" + file[0:-3],
+     srcs = [file[0:-3] + ".kt"],
+     outs = [file[0:-3] + "_updated.kt"],
+     cmd = '''
+     cat $(SRCS) |
+     sed 's/import org.oppia.app.R/import org.oppia.app.ui.R/g' |
+     sed 's/import org.oppia.app.databinding./import org.oppia.app.databinding.databinding./g' > $(OUTS)
+     ''',
  )
-for file in BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS]
+for file in APP_FILES_WITH_RESOURCE_IMPORTS]
+
+# Files to be built by the app library.
+APP_FILES = [] + [
+    "update_" + app_files_with_resource_imports[0:-3]
+    for app_files_with_resource_imports in APP_FILES_WITH_RESOURCE_IMPORTS
+]
 
 # Library for non-layout resource files
 android_library(
@@ -486,6 +527,7 @@ kt_android_library(
     visibility = ["//visibility:private"],
 )
 
+# TODO(#1639): Translate binding adapters back to Kotlin post-Bazel modularization.
 # Library for all custom data-binding adapters under org/oppia/app/databinding
 android_library(
     name = "binding_adapters",
@@ -506,6 +548,35 @@ android_library(
         artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
     ],
     visibility = ["//visibility:private"],
+)
+
+kt_android_library(
+    name = "app",
+    custom_package = "org.oppia.app.ui",
+    srcs = APP_FILES,
+    enable_data_binding = 1,
+    manifest = "src/main/AppAndroidManifest.xml",
+    deps = [
+        ":binding_adapters",
+        ":dagger",
+        ":databinding_resources",
+        ":resources",
+        ":view_models",
+        ":views",
+        "//model",
+        "//utility",
+        artifact("androidx.databinding:databinding-adapters"),
+        artifact("androidx.databinding:databinding-common"),
+        artifact("androidx.databinding:databinding-runtime"),
+        artifact("androidx.lifecycle:lifecycle-extensions:2.2.0"),
+        artifact("androidx.lifecycle:lifecycle-livedata-core:2.2.0"),
+        artifact("androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"),
+        artifact("androidx.multidex:multidex:2.0.1"),
+        artifact("androidx.viewpager:viewpager:1.0.0"),
+        artifact("com.caverock:androidsvg-aar"),
+        artifact("javax.annotation:javax.annotation-api:jar"),
+    ],
+    visibility = ["//visibility:public"],
 )
 
 # TODO(#1566): Move Firebase rules to their own package & remove default visibility
