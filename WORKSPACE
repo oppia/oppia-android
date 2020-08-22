@@ -43,30 +43,20 @@ load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kotlin_repositories", "kt_reg
 kotlin_repositories()
 kt_register_toolchains()
 
-# rules_proto defines abstract rules for building Protocol Buffers.
-http_archive(
-    name = "rules_proto",
-    sha256 = "2490dca4f249b8a9a3ab07bd1ba6eca085aaf8e45a734af92aad0c42d9dc7aaf",
-    strip_prefix = "rules_proto-218ffa7dfa5408492dc86c01ee637614f8695c45",
-    urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/rules_proto/archive/218ffa7dfa5408492dc86c01ee637614f8695c45.tar.gz",
-        "https://github.com/bazelbuild/rules_proto/archive/218ffa7dfa5408492dc86c01ee637614f8695c45.tar.gz",
-    ],
+'''
+The proto_compiler and proto_java_toolchain bindings load the protos rules needed for the model
+module while helping us avoid the unnecessary compilation of protoc. Referecences:
+- https://github.com/google/startup-os/blob/5f30a62/WORKSPACE#L179-L187
+- https://github.com/bazelbuild/bazel/issues/7095
+'''
+bind(
+    name = "proto_compiler",
+    actual = "//tools:protoc"
 )
 
-load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
-rules_proto_dependencies()
-rules_proto_toolchains()
-
-# rules_java defines rules for generating Java code from Protocol Buffers.
-http_archive(
-    name = "rules_java",
-    sha256 = "ccf00372878d141f7d5568cedc4c42ad4811ba367ea3e26bc7c43445bbc52895",
-    strip_prefix = "rules_java-d7bf804c8731edd232cb061cb2a9fe003a85d8ee",
-    urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/rules_java/archive/d7bf804c8731edd232cb061cb2a9fe003a85d8ee.tar.gz",
-        "https://github.com/bazelbuild/rules_java/archive/d7bf804c8731edd232cb061cb2a9fe003a85d8ee.tar.gz",
-    ],
+bind(
+    name = "proto_java_toolchain",
+    actual = "//tools:java_toolchain"
 )
 
 load("@rules_java//java:repositories.bzl", "rules_java_dependencies", "rules_java_toolchains")
