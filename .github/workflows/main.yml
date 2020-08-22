@@ -162,7 +162,7 @@ jobs:
           cd $GITHUB_WORKSPACE
           chmod a+x $HOME/oppia-bazel/bazel
           $HOME/oppia-bazel/bazel build //:oppia --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx
-          cp $GITHUB_WORKSPACE/bazel-bin/oppia.apk home/runner/work/oppia-android/oppia-android/
+          cp $GITHUB_WORKSPACE/bazel-bin/oppia.apk /home/runner/work/oppia-android/oppia-android/
       - uses: actions/upload-artifact@v2
         with:
           name: oppia-bazel-apk
