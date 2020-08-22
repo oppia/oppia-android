@@ -4,7 +4,6 @@ import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
@@ -14,6 +13,7 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
+// TODO(#1633): Fix ViewModel to not depend on View
 /** The ViewModel for [ProfileEditActivity]. */
 @ActivityScope
 class ProfileEditViewModel @Inject constructor(
@@ -22,6 +22,7 @@ class ProfileEditViewModel @Inject constructor(
   private val profileManagementController: ProfileManagementController
 ) : ObservableViewModel() {
   private lateinit var profileId: ProfileId
+  private lateinit var switch: Switch
 
   lateinit var profileName: String
 
@@ -34,8 +35,9 @@ class ProfileEditViewModel @Inject constructor(
 
   var isAdmin = false
 
-  fun setProfileId(id: Int) {
+  fun setProfileId(id: Int, switch: Switch) {
     profileId = ProfileId.newBuilder().setInternalId(id).build()
+    this.switch = switch
   }
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
@@ -47,7 +49,6 @@ class ProfileEditViewModel @Inject constructor(
       )
     }
     val profile = profileResult.getOrDefault(Profile.getDefaultInstance())
-    val switch = activity.findViewById<Switch>(R.id.profile_edit_allow_download_switch)
     switch.isChecked = profile.allowDownloadAccess
     activity.title = profile.name
     profileName = profile.name

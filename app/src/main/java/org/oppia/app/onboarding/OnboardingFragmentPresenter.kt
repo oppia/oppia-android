@@ -22,7 +22,7 @@ class OnboardingFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<OnboardingViewModel>,
   private val viewModelProviderFinalSlide: ViewModelProvider<OnboardingSlideFinalViewModel>
-) {
+) : OnboardingNavigationListener {
   private val dotsList = ArrayList<ImageView>()
   private lateinit var onboardingPagerAdapter: OnboardingPagerAdapter
   private lateinit var binding: OnboardingFragmentBinding
@@ -108,11 +108,11 @@ class OnboardingFragmentPresenter @Inject constructor(
     }
   }
 
-  fun clickOnSkip() {
+  override fun clickOnSkip() {
     binding.onboardingSlideViewPager.currentItem = TOTAL_NUMBER_OF_SLIDES - 1
   }
 
-  fun clickOnNext() {
+  override fun clickOnNext() {
     val position: Int = binding.onboardingSlideViewPager.currentItem + 1
     binding.onboardingSlideViewPager.currentItem = position
     if (position != TOTAL_NUMBER_OF_SLIDES - 1) {

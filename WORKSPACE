@@ -43,30 +43,20 @@ load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kotlin_repositories", "kt_reg
 kotlin_repositories()
 kt_register_toolchains()
 
-# rules_proto defines abstract rules for building Protocol Buffers.
-http_archive(
-    name = "rules_proto",
-    sha256 = "2490dca4f249b8a9a3ab07bd1ba6eca085aaf8e45a734af92aad0c42d9dc7aaf",
-    strip_prefix = "rules_proto-218ffa7dfa5408492dc86c01ee637614f8695c45",
-    urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/rules_proto/archive/218ffa7dfa5408492dc86c01ee637614f8695c45.tar.gz",
-        "https://github.com/bazelbuild/rules_proto/archive/218ffa7dfa5408492dc86c01ee637614f8695c45.tar.gz",
-    ],
+'''
+The proto_compiler and proto_java_toolchain bindings load the protos rules needed for the model
+module while helping us avoid the unnecessary compilation of protoc. Referecences:
+- https://github.com/google/startup-os/blob/5f30a62/WORKSPACE#L179-L187
+- https://github.com/bazelbuild/bazel/issues/7095
+'''
+bind(
+    name = "proto_compiler",
+    actual = "//tools:protoc"
 )
 
-load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
-rules_proto_dependencies()
-rules_proto_toolchains()
-
-# rules_java defines rules for generating Java code from Protocol Buffers.
-http_archive(
-    name = "rules_java",
-    sha256 = "ccf00372878d141f7d5568cedc4c42ad4811ba367ea3e26bc7c43445bbc52895",
-    strip_prefix = "rules_java-d7bf804c8731edd232cb061cb2a9fe003a85d8ee",
-    urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/rules_java/archive/d7bf804c8731edd232cb061cb2a9fe003a85d8ee.tar.gz",
-        "https://github.com/bazelbuild/rules_java/archive/d7bf804c8731edd232cb061cb2a9fe003a85d8ee.tar.gz",
-    ],
+bind(
+    name = "proto_java_toolchain",
+    actual = "//tools:java_toolchain"
 )
 
 load("@rules_java//java:repositories.bzl", "rules_java_dependencies", "rules_java_toolchains")
@@ -104,30 +94,73 @@ git_repository(
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_workspace_dependencies")
 google_services_workspace_dependencies()
 
+git_repository(
+    name = "circularimageview",
+    commit = "8a65ba42b3fee21b5e19ca5c8690185f7c60f65d",
+    remote = "https://github.com/oppia/CircularImageview",
+)
+
+bind(
+  name = "databinding_annotation_processor",
+  actual = "//tools/android:compiler_annotation_processor",
+)
+
 load("@rules_jvm_external//:defs.bzl", "maven_install")
 
 maven_install(
     artifacts = DAGGER_ARTIFACTS + [
+        "android.arch.core:core-testing:1.1.1",
         "androidx.annotation:annotation:1.1.0",
         "androidx.appcompat:appcompat:1.0.2",
+        "androidx.arch.core:core-testing:2.1.0",
+        "androidx.constraintlayout:constraintlayout:1.1.3",
         "androidx.core:core-ktx:1.0.1",
-        "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03",
+        "androidx.core:core:1.0.1",
+        "androidx.databinding:databinding-adapters:3.4.2",
+        "androidx.databinding:databinding-common:3.4.2",
+        "androidx.databinding:databinding-compiler:3.4.2",
+        "androidx.databinding:databinding-runtime:3.4.2",
+        "androidx.lifecycle:lifecycle-extensions:2.2.0",
+        "androidx.lifecycle:lifecycle-livedata-core:2.2.0",
+        "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0",
+        "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0",
+        "androidx.multidex:multidex-instrumentation:2.0.0",
+        "androidx.multidex:multidex:2.0.1",
+        "androidx.navigation:navigation-fragment:2.0.0",
+        "androidx.navigation:navigation-fragment-ktx:2.0.0",
+        "androidx.navigation:navigation-ui:2.0.0",
+        "androidx.navigation:navigation-ui-ktx:2.0.0",
+        "androidx.recyclerview:recyclerview:1.0.0",
+        "androidx.test.espresso:espresso-contrib:3.1.0",
+        "androidx.test.espresso:espresso-core:3.2.0",
+        "androidx.test.espresso:espresso-intents:3.1.0",
         "androidx.test.ext:junit:1.1.1",
+        "androidx.test:runner:1.2.0",
+        "androidx.viewpager:viewpager:1.0.0",
         "com.android.support:support-annotations:28.0.0",
         "com.caverock:androidsvg-aar:1.4",
+        "com.chaos.view:pinview:1.4.3",
         "com.crashlytics.sdk.android:crashlytics:2.9.8",
         "com.github.bumptech.glide:glide:4.11.0",
+        "com.google.android.material:material:1.2.0-alpha02",
         "com.google.firebase:firebase-analytics:17.4.4",
         "com.google.firebase:firebase-crashlytics:17.1.1",
+        "com.google.gms:google-services:4.3.3",
         "com.google.truth:truth:0.43",
+        "com.squareup.retrofit2:converter-gson:2.5.0",
+        "com.squareup.retrofit2:retrofit:2.9.0",
+        "de.hdodenhof:circleimageview:3.0.1",
         "io.fabric.sdk.android:fabric:1.4.7",
+        "javax.annotation:javax.annotation-api:jar:1.3.2",
         "junit:junit:4.12",
         "org.jetbrains.kotlin:kotlin-reflect:1.3.41",
         "org.jetbrains.kotlin:kotlin-stdlib-jdk7:jar:1.3.72",
         "org.jetbrains.kotlin:kotlin-test-junit:1.3.72",
         "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.2",
         "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2",
+        "org.jetbrains:annotations:jar:13.0",
         "org.mockito:mockito-core:2.19.0",
+        "org.mockito:mockito-core:2.7.22",
         "org.robolectric:annotations:4.3",
         "org.robolectric:robolectric:4.3",
     ],
