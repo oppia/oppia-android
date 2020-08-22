@@ -1,8 +1,6 @@
 package org.oppia.app.application
 
-/**
- * Provides [ApplicationComponent] for [ProfileInputView].
- */
+/** Provider for [ApplicationInjector]. The application context will implement this interface. */
 interface ApplicationInjectorProvider {
   fun getApplicationInjector(): ApplicationInjector
 }
