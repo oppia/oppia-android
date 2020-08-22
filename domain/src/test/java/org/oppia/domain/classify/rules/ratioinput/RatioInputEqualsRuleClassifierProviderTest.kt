@@ -39,7 +39,7 @@ class RatioInputEqualsRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer_testRatio_ratio1_bothValuesMatch() {
+  fun testAnswer_testRatio_ratioSimplified_bothValuesMatch() {
     val inputs = mapOf("x" to createRatio(ITEM_RATIO_1))
 
     val matches =
@@ -49,7 +49,7 @@ class RatioInputEqualsRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer_testRatio_ratio1_ratio2_bothValuesDoNoMatch() {
+  fun testAnswer_testRatio_ratioNonSimplified_ratioSimplified_bothValuesDoNoMatch() {
     val inputs = mapOf("x" to createRatio(ITEM_RATIO_2))
 
     val matches =
@@ -59,7 +59,7 @@ class RatioInputEqualsRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer_testRatio_ratio1_ratio3_bothValuesDoNoMatch() {
+  fun testAnswer_testRatio_ratio4Terms_ratio3Terms_bothValuesDoNoMatch() {
     val inputs = mapOf("x" to createRatio(ITEM_RATIO_3))
 
     val matches =
