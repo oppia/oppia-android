@@ -27,10 +27,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import dagger.Module
-import dagger.Provides
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.InternalCoroutinesApi
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
@@ -44,6 +40,8 @@ import org.oppia.app.activity.ActivityComponent
 import org.oppia.app.application.ActivityComponentFactory
 import org.oppia.app.application.ApplicationComponent
 import org.oppia.app.application.ApplicationContext
+import org.oppia.app.application.ApplicationInjector
+import org.oppia.app.application.ApplicationInjectorProvider
 import org.oppia.app.application.ApplicationModule
 import org.oppia.app.hintsandsolution.TAG_REVEAL_SOLUTION_DIALOG
 import org.oppia.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
@@ -53,7 +51,7 @@ import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRAC
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
-import org.oppia.data.backends.gae.NetworkModule
+import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -64,17 +62,19 @@ import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputMo
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.domain.oppialogger.LogStorageModule
-import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_1
+import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.testing.TestAccessibilityModule
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
-import org.oppia.util.caching.CacheAssetsLocally
+import org.oppia.testing.profile.ProfileTestHelper
+import org.oppia.util.caching.testing.CachingTestModule
 import org.oppia.util.gcsresource.GcsResourceModule
 import org.oppia.util.logging.LoggerModule
 import org.oppia.util.parser.GlideImageLoaderModule
@@ -102,7 +102,7 @@ class StateFragmentLocalTest {
   private val audioDataSource1 = DataSource.toDataSource(AUDIO_URL_1, /* headers= */ null)
 
   @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @InternalCoroutinesApi @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject @field:ApplicationContext lateinit var context: Context
 
   private val internalProfileId: Int = 1
@@ -115,8 +115,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_loadExploration_explorationLoads() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -127,8 +125,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_advanceToNextState_loadsSecondState() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -146,8 +142,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_advanceToNextState_hintNotAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -159,8 +153,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_nextState_wait10seconds_noHintAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -173,8 +165,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_nextState_wait30seconds_noHintAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -187,8 +177,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_nextState_wait60seconds_hintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -201,8 +189,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_nextState_wait60seconds_canViewOneHint() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -216,8 +202,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_nextState_wait120seconds_canViewOneHint() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -231,8 +215,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_nextState_wait60seconds_submitTwoWrongAnswers_canViewOneHint() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -247,8 +229,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_nextState_submitInitialWrongAnswer_noHintAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -262,8 +242,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_nextState_submitInitialWrongAnswer_wait10seconds_noHintAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -278,8 +256,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_nextState_submitInitialWrongAnswer_wait30seconds_noHintAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -294,8 +270,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_nextState_submitTwoWrongAnswers_hintAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -309,8 +283,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_nextState_submitTwoWrongAnswersAndWait_canViewOneHint() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -324,8 +296,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_nextState_submitThreeWrongAnswers_canViewOneHint() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -340,8 +310,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_nextState_viewHint_newHintIsNoLongerAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -358,8 +326,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_nextState_viewHint_wait10seconds_noNewHintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -373,8 +339,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_nextState_viewHint_wait30seconds_newHintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -389,8 +353,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_nextState_viewHint_wait30seconds_canViewTwoHints() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -407,8 +369,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_nextState_viewHint_wait60seconds_canViewTwoHints() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -425,8 +385,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_nextState_viewHint_wait60seconds_submitWrongAnswer_canViewTwoHints() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -444,8 +402,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_nextState_viewHint_submitWrongAnswer_noNewHintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -460,8 +416,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_nextState_viewHint_submitWrongAnswer_wait10seconds_newHintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -477,8 +431,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_nextState_viewHint_submitWrongAnswer_wait10seconds_canViewTwoHints() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -495,8 +447,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_nextState_viewHint_submitWrongAnswer_wait30seconds_canViewTwoHints() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -514,8 +464,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_nextState_viewFourHints_wait10seconds_noNewHintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -529,8 +477,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_nextState_viewFourHints_wait30seconds_newHintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -545,8 +491,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_nextState_viewFourHints_wait30seconds_canViewSolution() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -567,8 +511,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_nextState_viewFourHints_submitWrongAnswer_noNewHintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -583,8 +525,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_nextState_viewFourHints_submitWrongAnswer_wait10s_newHintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -600,8 +540,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_nextState_viewFourHints_submitWrongAnswer_wait10s_canViewSolution() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -623,8 +561,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_nextState_viewSolution_noNewHintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
       startPlayingExploration()
@@ -639,8 +575,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_nextState_viewSolution_wait30seconds_noNewHintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
       startPlayingExploration()
@@ -656,8 +590,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_nextState_viewSolution_submitWrongAnswer_wait10s_noNewHintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
       startPlayingExploration()
@@ -674,8 +606,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_stateWithoutHints_wait60s_noHintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -688,8 +618,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_stateWithoutSolution_viewAllHints_wrongAnswerAndWait_noHintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -723,15 +651,11 @@ class StateFragmentLocalTest {
     )
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun startPlayingExploration() {
     onView(withId(R.id.play_test_exploration_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun playThroughState1() {
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SELECTION_INTERACTION))
     onView(withSubstring("the pieces must be the same size.")).perform(click())
@@ -739,96 +663,72 @@ class StateFragmentLocalTest {
     clickContinueButton()
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun playThroughState2() {
     // Correct answer to 'Matthew gets conned'
     submitFractionAnswer(answerText = "3/4")
     clickContinueButton()
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun playThroughState3() {
     // Correct answer to 'Question 1'
     submitFractionAnswer(answerText = "4/9")
     clickContinueButton()
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun playThroughState4() {
     // Correct answer to 'Question 2'
     submitFractionAnswer(answerText = "1/4")
     clickContinueButton()
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun playThroughState5() {
     // Correct answer to 'Question 3'
     submitFractionAnswer(answerText = "1/8")
     clickContinueButton()
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun playThroughState6() {
     // Correct answer to 'Question 4'
     submitFractionAnswer(answerText = "1/2")
     clickContinueButton()
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun playThroughState7() {
     // Correct answer to 'Question 5' which redirects the learner to 'Thinking in fractions Q1'
     submitFractionAnswer(answerText = "2/9")
     clickContinueButton()
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun playThroughState8() {
     // Correct answer to 'Thinking in fractions Q1'
     submitFractionAnswer(answerText = "7/9")
     clickContinueButton()
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun playThroughState9() {
     // Correct answer to 'Thinking in fractions Q2'
     submitFractionAnswer(answerText = "4/9")
     clickContinueButton()
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun playThroughState10() {
     // Correct answer to 'Thinking in fractions Q3'
     submitFractionAnswer(answerText = "5/8")
     clickContinueButton()
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun playThroughState11() {
     // Correct answer to 'Thinking in fractions Q4' which redirects the learner to 'Final Test A'
     submitFractionAnswer(answerText = "3/4")
     clickContinueButton()
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun playThroughState12WithWrongAnswer() {
     // Incorrect answer to 'Final Test A' redirects the learner to 'Final Test A second try'
     submitFractionAnswer(answerText = "1/9")
     clickContinueButton()
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun playUpToFinalTestSecondTry() {
     playThroughState1()
     playThroughState2()
@@ -844,8 +744,6 @@ class StateFragmentLocalTest {
     playThroughState12WithWrongAnswer()
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun clickContinueButton() {
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_NAVIGATION_BUTTON))
     testCoroutineDispatchers.runCurrent()
@@ -853,27 +751,19 @@ class StateFragmentLocalTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun openHintsAndSolutionsDialog() {
     onView(withId(R.id.hints_and_solution_fragment_container)).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun pressRevealHintButton(hintPosition: Int) {
     pressRevealHintOrSolutionButton(R.id.reveal_hint_button, hintPosition)
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun pressRevealSolutionButton(hintPosition: Int) {
     pressRevealHintOrSolutionButton(R.id.reveal_solution_button, hintPosition)
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun pressRevealHintOrSolutionButton(@IdRes buttonId: Int, hintPosition: Int) {
     // There should only ever be a single reveal button currently displayed; click that one.
     // However, it may need to be scrolled to in case many hints are showing.
@@ -886,15 +776,11 @@ class StateFragmentLocalTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun closeHintsAndSolutionsDialog() {
     pressBack()
     testCoroutineDispatchers.runCurrent()
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun submitFractionAnswer(answerText: String) {
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(FRACTION_INPUT_INTERACTION))
     onView(withId(R.id.fraction_input_interaction_view)).perform(appendText(answerText))
@@ -905,48 +791,34 @@ class StateFragmentLocalTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun submitWrongAnswerToState2() {
     submitFractionAnswer(answerText = "1/2")
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun submitWrongAnswerToState2AndWait() {
     submitWrongAnswerToState2()
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun submitWrongAnswerToState13() {
     submitFractionAnswer(answerText = "1/9")
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun submitWrongAnswerToState13AndWait() {
     submitWrongAnswerToState13()
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun submitTwoWrongAnswers() {
     submitWrongAnswerToState2()
     submitWrongAnswerToState2()
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun submitTwoWrongAnswersAndWait() {
     submitTwoWrongAnswers()
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun submitThreeWrongAnswersAndWait() {
     submitWrongAnswerToState2()
     submitWrongAnswerToState2()
@@ -954,8 +826,6 @@ class StateFragmentLocalTest {
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun produceAndViewFirstHint() {
     // Two wrong answers need to be submitted for the first hint to show up, so submit an extra one
     // in advance of the standard show & reveal hint flow.
@@ -967,8 +837,6 @@ class StateFragmentLocalTest {
    * Causes a hint after the first one to be shown (at approximately the specified recycler view
    * index for scrolling purposes), and then reveals it and closes the hints & solutions dialog.
    */
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun produceAndViewNextHint(hintPosition: Int, submitAnswer: () -> Unit) {
     submitAnswer()
     openHintsAndSolutionsDialog()
@@ -976,8 +844,6 @@ class StateFragmentLocalTest {
     closeHintsAndSolutionsDialog()
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun produceAndViewThreeHintsInState13() {
     submitWrongAnswerToState13()
     produceAndViewNextHint(hintPosition = 0, submitAnswer = this::submitWrongAnswerToState13AndWait)
@@ -985,8 +851,6 @@ class StateFragmentLocalTest {
     produceAndViewNextHint(hintPosition = 2, submitAnswer = this::submitWrongAnswerToState13AndWait)
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun produceAndViewFourHints() {
     // Cause three hints to show, and reveal each of them one at a time (to allow the later hints
     // to be shown).
@@ -996,8 +860,6 @@ class StateFragmentLocalTest {
     produceAndViewNextHint(hintPosition = 3, submitAnswer = this::submitWrongAnswerToState2AndWait)
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun produceAndViewSolution(
     activityScenario: ActivityScenario<StateFragmentTestActivity>,
     revealedHintCount: Int
@@ -1036,8 +898,6 @@ class StateFragmentLocalTest {
    * properly input digits for text views using 'android:digits'. See
    * https://github.com/robolectric/robolectric/issues/5110 for specifics.
    */
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun appendText(text: String): ViewAction {
     return object : ViewAction {
       override fun getDescription(): String {
@@ -1055,36 +915,31 @@ class StateFragmentLocalTest {
     }
   }
 
-  @Module
-  class TestModule {
-    // Do not use caching to ensure URLs are always used as the main data source when loading audio.
-    @Provides
-    @CacheAssetsLocally
-    fun provideCacheAssetsLocally(): Boolean = false
-  }
-
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
+  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestDispatcherModule::class, ApplicationModule::class,
-      NetworkModule::class, LoggerModule::class, ContinueModule::class, FractionInputModule::class,
+      TestDispatcherModule::class, ApplicationModule::class,
+      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      TestAccessibilityModule::class, LogStorageModule::class
+      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
+      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ViewBindingShimModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent {
+  interface TestApplicationComponent : ApplicationComponent, ApplicationInjector {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
     fun inject(stateFragmentLocalTest: StateFragmentLocalTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory {
+  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerStateFragmentLocalTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -1098,6 +953,8 @@ class StateFragmentLocalTest {
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
       return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
     }
+
+    override fun getApplicationInjector(): ApplicationInjector = component
   }
 
   private fun scrollToViewType(viewType: StateItemViewModel.ViewType): ViewAction {

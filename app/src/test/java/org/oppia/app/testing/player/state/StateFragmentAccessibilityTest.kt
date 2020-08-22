@@ -13,10 +13,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.firebase.FirebaseApp
 import dagger.Component
-import dagger.Module
-import dagger.Provides
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.InternalCoroutinesApi
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -29,7 +25,8 @@ import org.oppia.app.application.ApplicationModule
 import org.oppia.app.player.state.StateFragment
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher
-import org.oppia.data.backends.gae.NetworkModule
+import org.oppia.app.shim.IntentFactoryShimModule
+import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -40,9 +37,10 @@ import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputMo
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.domain.oppialogger.LogStorageModule
-import org.oppia.domain.profile.ProfileTestHelper
 import org.oppia.domain.question.QuestionModule
+import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.domain.topic.TEST_EXPLORATION_ID_4
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
@@ -50,26 +48,28 @@ import org.oppia.testing.TestAccessibilityModule
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
+import org.oppia.testing.profile.ProfileTestHelper
 import org.oppia.util.accessibility.FakeAccessibilityManager
-import org.oppia.util.caching.CacheAssetsLocally
+import org.oppia.util.caching.testing.CachingTestModule
 import org.oppia.util.gcsresource.GcsResourceModule
 import org.oppia.util.logging.LoggerModule
 import org.oppia.util.parser.GlideImageLoaderModule
 import org.oppia.util.parser.HtmlParserEntityTypeModule
 import org.oppia.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = StateFragmentAccessibilityTest.TestApplication::class)
 class StateFragmentAccessibilityTest {
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
 
-  @InternalCoroutinesApi
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
@@ -87,12 +87,11 @@ class StateFragmentAccessibilityTest {
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
     fakeAccessibilityManager.setTalkbackEnabled(true)
+
     FirebaseApp.initializeApp(context)
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_loadDragDropExp_moveDownWithAccessibility() {
     launchForExploration(TEST_EXPLORATION_ID_4).use {
       startPlayingExploration()
@@ -114,8 +113,6 @@ class StateFragmentAccessibilityTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testStateFragment_loadDragDropExp_moveUpWithAccessibility() {
     launchForExploration(TEST_EXPLORATION_ID_4).use {
       startPlayingExploration()
@@ -150,33 +147,26 @@ class StateFragmentAccessibilityTest {
     )
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   private fun startPlayingExploration() {
     onView(withId(R.id.play_test_exploration_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
 
-  @Module
-  class TestModule {
-    // Do not use caching to ensure URLs are always used as the main data source when loading audio.
-    @Provides
-    @CacheAssetsLocally
-    fun provideCacheAssetsLocally(): Boolean = false
-  }
-
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
+  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestDispatcherModule::class, ApplicationModule::class,
-      NetworkModule::class, LoggerModule::class, ContinueModule::class, FractionInputModule::class,
+      TestDispatcherModule::class, ApplicationModule::class,
+      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
       GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
       QuestionModule::class, TestLogReportingModule::class, TestAccessibilityModule::class,
-      ImageClickInputModule::class, LogStorageModule::class
+      ImageClickInputModule::class, LogStorageModule::class, IntentFactoryShimModule::class,
+      ViewBindingShimModule::class, CachingTestModule::class,
+      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

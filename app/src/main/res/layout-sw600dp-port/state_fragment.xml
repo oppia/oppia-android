@@ -6,9 +6,6 @@
   <data>
 
     <import type="android.view.View" />
-    <variable
-      name="presenter"
-      type="org.oppia.app.player.state.StateFragmentPresenter" />
 
     <variable
       name="viewModel"
@@ -36,14 +33,14 @@
         android:divider="@android:color/transparent"
         android:overScrollMode="never"
         android:paddingTop="@{viewModel.isAudioBarVisible ? @dimen/padding_48 : @dimen/padding_0}"
-        android:scrollbars="none"
         android:paddingBottom="112dp"
+        android:scrollbars="none"
         app:data="@{viewModel.itemList}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/center_guideline"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/extra_interaction_recycler_view"
@@ -52,34 +49,34 @@
         android:clipToPadding="false"
         android:divider="@android:color/transparent"
         android:overScrollMode="never"
-        android:scrollbars="none"
         android:paddingBottom="112dp"
+        android:scrollbars="none"
         android:visibility="@{viewModel.isSplitView ? View.VISIBLE : View.GONE}"
         app:data="@{viewModel.rightItemList}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintStart_toEndOf="@id/center_guideline"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/center_guideline"
+        app:layout_constraintTop_toTopOf="parent" />
 
       <androidx.constraintlayout.widget.Guideline
         android:id="@+id/center_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        tools:layout_constraintGuide_percent="0.5f"
-        app:layout_constraintGuide_percent="@{viewModel.centerGuidelinePercentage.floatValue()}" />
+        app:layout_constraintGuide_percent="@{viewModel.centerGuidelinePercentage.floatValue()}"
+        tools:layout_constraintGuide_percent="0.5f" />
 
       <FrameLayout
         android:id="@+id/audio_fragment_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
-        app:layoutMarginStart="@{viewModel.isSplitView() ? @dimen/margin_64 : @dimen/margin_128}"
-        app:layoutMarginEnd="@{viewModel.isSplitView() ? @dimen/margin_64 : @dimen/margin_128}"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layoutMarginEnd="@{viewModel.isSplitView() ? @dimen/margin_32 : @dimen/margin_128}"
+        app:layoutMarginStart="@{viewModel.isSplitView() ? @dimen/margin_32 : @dimen/margin_128}"
+        app:layout_constraintEnd_toStartOf="@id/center_guideline"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/center_guideline">
+        app:layout_constraintTop_toTopOf="parent">
 
         <FrameLayout
           android:id="@+id/audio_fragment_placeholder"
@@ -92,43 +89,31 @@
     <FrameLayout
       android:id="@+id/hints_and_solution_fragment_placeholder"
       android:layout_width="match_parent"
-      android:layout_height="match_parent">
-    </FrameLayout>
+      android:layout_height="match_parent"></FrameLayout>
 
     <FrameLayout
       android:id="@+id/hints_and_solution_fragment_container"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_gravity="bottom|start"
       android:background="@drawable/hints_background"
-      android:visibility="@{viewModel.isHintBulbVisible() ? View.VISIBLE : View.GONE}"
-      android:layout_gravity="bottom|start">
-
-      <ImageView
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_gravity="top|end"
-        android:layout_marginTop="3dp"
-        android:layout_marginEnd="4dp"
-        android:visibility="@{viewModel.isHintOpenedAndUnRevealed() ? View.VISIBLE : View.GONE}"
-        android:src="@drawable/radar_moving_circle"
-        app:flashingAnimation="@{viewModel.isHintOpenedAndUnRevealed()}" />
+      android:visibility="@{viewModel.isHintBulbVisible() ? View.VISIBLE : View.GONE}">
 
       <ImageView
         android:id="@+id/dot_hint"
         android:layout_width="8dp"
         android:layout_height="6dp"
-        android:layout_margin="8dp"
         android:layout_gravity="top|end"
-        android:visibility="@{viewModel.isHintOpenedAndUnRevealed() ? View.VISIBLE : View.GONE}"
+        android:layout_margin="8dp"
         android:src="@drawable/ic_dot_yellow_24dp"
-        />
+        android:visibility="@{viewModel.isHintOpenedAndUnRevealed() ? View.VISIBLE : View.GONE}" />
+
       <ImageView
         android:id="@+id/hint_bulb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
-        android:src="@drawable/ic_hintbulb_whilte_24dp"
-        />
+        android:src="@drawable/ic_hint_bulb_white_24dp" />
     </FrameLayout>
 
     <FrameLayout

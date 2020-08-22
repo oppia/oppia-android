@@ -16,10 +16,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.android.synthetic.main.image_region_selection_test_fragment.clickable_image_view
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matchers.allOf
@@ -34,6 +30,7 @@ import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import org.oppia.app.R
+import org.oppia.app.player.state.ImageRegionSelectionInteractionView
 import org.oppia.app.player.state.StateFragment
 import org.oppia.app.utility.DefaultRegionClickedEvent
 import org.oppia.app.utility.NamedRegionClickedEvent
@@ -41,19 +38,19 @@ import org.oppia.app.utility.OnClickableAreaClickedListener
 import org.oppia.app.utility.RegionClickedEvent
 import org.oppia.app.utility.capture
 import org.oppia.app.utility.clickPoint
+import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
-import org.oppia.util.threading.BackgroundDispatcher
-import org.oppia.util.threading.BlockingDispatcher
+import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
-import javax.inject.Qualifier
 import javax.inject.Singleton
 
 /** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class ImageRegionSelectionInteractionViewTest {
 
   @Inject
@@ -83,7 +80,8 @@ class ImageRegionSelectionInteractionViewTest {
   fun testImageRegionSelectionInteractionView_clickRegion3_region3Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
-        it.clickable_image_view.setListener(onClickableAreaClickedListener)
+        it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view)
+          .setListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
         clickPoint(0.3f, 0.3f)
@@ -101,7 +99,8 @@ class ImageRegionSelectionInteractionViewTest {
   fun testImageRegionSelectionInteractionView_clickRegion3_clickRegion2_region2Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
-        it.clickable_image_view.setListener(onClickableAreaClickedListener)
+        it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view)
+          .setListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
         clickPoint(0.3f, 0.3f)
@@ -135,7 +134,8 @@ class ImageRegionSelectionInteractionViewTest {
   fun testImageRegionSelectionInteractionView_clickOnDefaultRegion_defaultRegionClicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
-        it.clickable_image_view.setListener(onClickableAreaClickedListener)
+        it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view)
+          .setListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
         clickPoint(0.0f, 0.0f)
@@ -156,7 +156,8 @@ class ImageRegionSelectionInteractionViewTest {
   fun testView_withTalkbackEnabled_clickRegion3_clickRegion2_region2Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
-        it.clickable_image_view.setListener(onClickableAreaClickedListener)
+        it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view)
+          .setListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
         clickPoint(0.3f, 0.3f)
@@ -191,7 +192,8 @@ class ImageRegionSelectionInteractionViewTest {
   fun testImageRegionSelectionInteractionView_withTalkbackEnabled_clickRegion3_region3Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
-        it.clickable_image_view.setListener(onClickableAreaClickedListener)
+        it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view)
+          .setListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
         clickPoint(0.3f, 0.3f)
@@ -214,7 +216,8 @@ class ImageRegionSelectionInteractionViewTest {
   fun testView_withTalkbackEnabled_clickOnDefaultRegion_defaultRegionNotClicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use { scenario ->
       scenario.onActivity {
-        it.clickable_image_view.setListener(onClickableAreaClickedListener)
+        it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view)
+          .setListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
         clickPoint(0.0f, 0.0f)
@@ -227,41 +230,12 @@ class ImageRegionSelectionInteractionViewTest {
     }
   }
 
-  @Qualifier
-  annotation class TestDispatcher
-
   @Module
   class TestModule {
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
       return application
-    }
-
-    @ExperimentalCoroutinesApi
-    @Singleton
-    @Provides
-    @TestDispatcher
-    fun provideTestDispatcher(): CoroutineDispatcher {
-      return TestCoroutineDispatcher()
-    }
-
-    @Singleton
-    @Provides
-    @BackgroundDispatcher
-    fun provideBackgroundDispatcher(
-      @TestDispatcher testDispatcher: CoroutineDispatcher
-    ): CoroutineDispatcher {
-      return testDispatcher
-    }
-
-    @Singleton
-    @Provides
-    @BlockingDispatcher
-    fun provideBlockingDispatcher(
-      @TestDispatcher testDispatcher: CoroutineDispatcher
-    ): CoroutineDispatcher {
-      return testDispatcher
     }
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
@@ -280,7 +254,11 @@ class ImageRegionSelectionInteractionViewTest {
   }
 
   @Singleton
-  @Component(modules = [TestModule::class, TestLogReportingModule::class])
+  @Component(
+    modules = [
+      TestModule::class, TestLogReportingModule::class, TestDispatcherModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
