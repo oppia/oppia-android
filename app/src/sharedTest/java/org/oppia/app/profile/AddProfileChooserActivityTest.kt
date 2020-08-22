@@ -80,7 +80,7 @@ class AddProfileChooserActivityTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerAddProfileActivityTest_TestApplicationComponent.builder()
+    DaggerAddProfileChooserActivityTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
