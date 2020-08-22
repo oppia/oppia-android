@@ -114,7 +114,7 @@ class QuestionPlayerActivityLocalTest {
       onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
       onView(withId(R.id.question_recycler_view)).check(
         matches(
-          hasChildCount(/* childCount= */ 6)
+          hasChildCount(/* childCount= */ 5)
         )
       )
     }
