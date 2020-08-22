@@ -20,7 +20,8 @@ class CompletedStoryListActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-    internal const val COMPLETED_STORY_LIST_ACTIVITY_PROFILE_ID_KEY =
+    // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
+    const val COMPLETED_STORY_LIST_ACTIVITY_PROFILE_ID_KEY =
       "CompletedStoryListActivity.profile_id"
 
     /** Returns a new [Intent] to route to [CompletedStoryListActivity] for a specified profile ID. */

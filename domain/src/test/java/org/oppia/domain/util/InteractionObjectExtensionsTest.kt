@@ -13,6 +13,7 @@ import org.oppia.app.model.ImageWithRegions.LabeledRegion.Region.RegionType.RECT
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.ListOfSetsOfHtmlStrings
 import org.oppia.app.model.Point2d
+import org.oppia.app.model.RatioExpression
 import org.oppia.app.model.StringList
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -69,6 +70,19 @@ class InteractionObjectExtensionsTest {
 
     assertThat(interactionObject.toAnswerString())
       .isEqualTo("[(a, b, c), (0.3, 1.0)]")
+  }
+
+  @Test
+  fun testToAnswerStr_ratioExpression_correctlyFormatsElements() {
+    val ratioExpression = RatioExpression.newBuilder()
+      .addAllRatioComponent(listOf(1, 2, 3))
+      .build()
+
+    val interactionObject =
+      InteractionObject.newBuilder().setRatioExpression(ratioExpression).build()
+
+    assertThat(interactionObject.toAnswerString())
+      .isEqualTo("1:2:3")
   }
 
   private fun createPoint2d(x: Float, y: Float): Point2d {

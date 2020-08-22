@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.app.databinding.HintsDividerBinding
 import org.oppia.app.databinding.HintsSummaryBinding
 import org.oppia.app.databinding.SolutionSummaryBinding
 import org.oppia.util.parser.HtmlParser
@@ -14,6 +15,7 @@ import org.oppia.util.parser.HtmlParser
 const val TAG_REVEAL_SOLUTION_DIALOG = "REVEAL_SOLUTION_DIALOG"
 private const val VIEW_TYPE_HINT_ITEM = 1
 private const val VIEW_TYPE_SOLUTION_ITEM = 2
+private const val VIEW_TYPE_HINTS_DIVIDER_ITEM = 3
 
 /** Adapter to bind Hints to [RecyclerView] inside [HintsAndSolutionDialogFragment]. */
 class HintsAndSolutionAdapter(
@@ -55,6 +57,16 @@ class HintsAndSolutionAdapter(
           )
         SolutionSummaryViewHolder(binding)
       }
+      VIEW_TYPE_HINTS_DIVIDER_ITEM -> {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding =
+          HintsDividerBinding.inflate(
+            inflater,
+            parent,
+            /* attachToParent= */ false
+          )
+        HintsDividerViewHolder(binding)
+      }
       else -> throw IllegalArgumentException("Invalid view type: $viewType")
     }
   }
@@ -67,6 +79,9 @@ class HintsAndSolutionAdapter(
       VIEW_TYPE_SOLUTION_ITEM -> {
         (holder as SolutionSummaryViewHolder).bind(itemList[i] as SolutionViewModel, i)
       }
+      VIEW_TYPE_HINTS_DIVIDER_ITEM -> {
+        holder as HintsDividerViewHolder
+      }
       else -> throw IllegalArgumentException("Invalid item view type: ${holder.itemViewType}")
     }
   }
@@ -78,6 +93,9 @@ class HintsAndSolutionAdapter(
       }
       is SolutionViewModel -> {
         VIEW_TYPE_SOLUTION_ITEM
+      }
+      is HintsDividerViewModel -> {
+        VIEW_TYPE_HINTS_DIVIDER_ITEM
       }
       else -> throw IllegalArgumentException(
         "Invalid type of data " +
@@ -109,12 +127,6 @@ class HintsAndSolutionAdapter(
 
       binding.viewModel = hintsViewModel
 
-      if (hintsViewModel.isHintRevealed.get()!!) {
-        binding.root.visibility = View.VISIBLE
-      } else {
-        binding.root.visibility = View.GONE
-      }
-
       binding.hintTitle.text = hintsViewModel.title.get()!!.replace("_", " ").capitalize()
       binding.hintsAndSolutionSummary.text =
         htmlParserFactory.create(
@@ -128,7 +140,7 @@ class HintsAndSolutionAdapter(
         binding.revealHintButton.setOnClickListener {
           hintsViewModel.isHintRevealed.set(true)
           expandedHintListIndexListener.onRevealHintClicked(position, /* isHintRevealed= */ true)
-          (fragment.requireActivity() as? RevealHintListener)?.revealHint(true, position)
+          (fragment.requireActivity() as? RevealHintListener)?.revealHint(true, position / 2)
           val previousIndex: Int? = currentExpandedHintListIndex
           currentExpandedHintListIndex =
             if (currentExpandedHintListIndex != null && currentExpandedHintListIndex == position) {
@@ -189,7 +201,6 @@ class HintsAndSolutionAdapter(
       }
 
       binding.viewModel = solutionViewModel
-      binding.root.visibility = View.GONE
       binding.solutionTitle.text = solutionViewModel.title.get()!!.capitalize()
       // TODO(#1050): Update to display answers for any answer type.
       if (solutionViewModel.correctAnswer.get().isNullOrEmpty()) {
@@ -239,6 +250,9 @@ class HintsAndSolutionAdapter(
     }
   }
 
+  inner class HintsDividerViewHolder(private val binding: HintsDividerBinding) :
+    RecyclerView.ViewHolder(binding.root)
+
   private fun showRevealSolutionDialogFragment() {
     val previousFragment =
       fragment.childFragmentManager.findFragmentByTag(TAG_REVEAL_SOLUTION_DIALOG)
@@ -250,22 +264,22 @@ class HintsAndSolutionAdapter(
   }
 
   fun setRevealSolution(saveUserChoice: Boolean) {
-    if (itemList[itemList.size - 1] is SolutionViewModel) {
-      val solutionViewModel = itemList[itemList.size - 1] as SolutionViewModel
+    if (itemList[itemList.size - 2] is SolutionViewModel) {
+      val solutionViewModel = itemList[itemList.size - 2] as SolutionViewModel
       solutionViewModel.isSolutionRevealed.set(saveUserChoice)
       expandedHintListIndexListener.onRevealSolutionClicked(
-        /* solutionIndex= */ itemList.size - 1,
+        /* solutionIndex= */ itemList.size - 2,
         /* isSolutionRevealed= */ true
       )
       (fragment.requireActivity() as? RevealSolutionInterface)?.revealSolution(saveUserChoice)
       val previousIndex: Int? = currentExpandedHintListIndex
       currentExpandedHintListIndex =
         if (currentExpandedHintListIndex != null &&
-          currentExpandedHintListIndex == itemList.size - 1
+          currentExpandedHintListIndex == itemList.size - 2
         ) {
           null
         } else {
-          itemList.size - 1
+          itemList.size - 2
         }
       expandedHintListIndexListener.onExpandListIconClicked(currentExpandedHintListIndex)
       if (previousIndex != null && previousIndex != currentExpandedHintListIndex) {
@@ -275,18 +289,18 @@ class HintsAndSolutionAdapter(
   }
 
   fun setNewHintIsAvailable(hintIndex: Int) {
-    if (itemList[hintIndex] is HintsViewModel) {
-      val hintsViewModel = itemList[hintIndex] as HintsViewModel
+    if (itemList[hintIndex * 2] is HintsViewModel) {
+      val hintsViewModel = itemList[hintIndex * 2] as HintsViewModel
       hintsViewModel.hintCanBeRevealed.set(true)
-      notifyItemChanged(hintIndex)
+      notifyItemChanged(hintIndex * 2)
     }
   }
 
   fun setSolutionCanBeRevealed(allHintsExhausted: Boolean) {
-    if (itemList[itemList.size - 1] is SolutionViewModel) {
-      val solutionViewModel = itemList[itemList.size - 1] as SolutionViewModel
+    if (itemList[itemList.size - 2] is SolutionViewModel) {
+      val solutionViewModel = itemList[itemList.size - 2] as SolutionViewModel
       solutionViewModel.solutionCanBeRevealed.set(allHintsExhausted)
-      notifyItemChanged(itemList.size - 1)
+      notifyItemChanged(itemList.size - 2)
     }
   }
 }

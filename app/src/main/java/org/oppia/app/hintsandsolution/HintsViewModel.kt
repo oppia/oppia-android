@@ -34,15 +34,27 @@ class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
 
   fun processHintList(): List<HintsAndSolutionItemViewModel> {
     itemList.clear()
-    for (index in 0 until hintList.size) {
-      val hintsAndSolutionViewModel = HintsViewModel()
-      hintsAndSolutionViewModel.title.set(hintList[index].hintContent.contentId)
-      hintsAndSolutionViewModel.hintsAndSolutionSummary.set(hintList[index].hintContent.html)
-      hintsAndSolutionViewModel.isHintRevealed.set(hintList[index].hintIsRevealed)
-      itemList.add(hintsAndSolutionViewModel as HintsAndSolutionItemViewModel)
+    for (index in hintList.indices) {
+      if (itemList.isEmpty()) {
+        val hintsAndSolutionViewModel = HintsViewModel()
+        hintsAndSolutionViewModel.title.set(hintList[index].hintContent.contentId)
+        hintsAndSolutionViewModel.hintsAndSolutionSummary.set(hintList[index].hintContent.html)
+        hintsAndSolutionViewModel.isHintRevealed.set(hintList[index].hintIsRevealed)
+        itemList.add(hintsAndSolutionViewModel as HintsAndSolutionItemViewModel)
+      } else if (index == itemList.size) {
+        val isLastHintRevealed = (itemList[index - 1] as HintsViewModel).isHintRevealed.get()!!
+        if (isLastHintRevealed) {
+          val hintsAndSolutionViewModel = HintsViewModel()
+          hintsAndSolutionViewModel.title.set(hintList[index].hintContent.contentId)
+          hintsAndSolutionViewModel.hintsAndSolutionSummary.set(hintList[index].hintContent.html)
+          hintsAndSolutionViewModel.isHintRevealed.set(hintList[index].hintIsRevealed)
+          itemList.add(hintsAndSolutionViewModel as HintsAndSolutionItemViewModel)
+        }
+      }
     }
 
-    if (solution.hasExplanation()) {
+    val isLastHintRevealed = (itemList[itemList.size - 1] as HintsViewModel).isHintRevealed.get()!!
+    if (solution.hasExplanation() && hintList.size == itemList.size && isLastHintRevealed) {
       val solutionViewModel = SolutionViewModel()
       solutionViewModel.title.set(solution.explanation.contentId)
       solutionViewModel.correctAnswer.set(solution.correctAnswer.correctAnswer)
