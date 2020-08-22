@@ -15,6 +15,7 @@ def format_import_proto_library(name, src, deps):
   '''
 
   # TODO(#1543): Ensure this function works on Windows systems.
+  # TODO(#1617): Remove genrules post-gradle
   native.genrule(
     name = name,
     srcs = [src],

@@ -57,7 +57,8 @@ class ProfileProgressActivity :
   }
 
   companion object {
-    internal const val PROFILE_PROGRESS_ACTIVITY_PROFILE_ID_KEY =
+    // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
+    const val PROFILE_PROGRESS_ACTIVITY_PROFILE_ID_KEY =
       "ProfileProgressActivity.internal_profile_id"
 
     fun createProfileProgressActivityIntent(context: Context, internalProfileId: Int): Intent {

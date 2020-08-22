@@ -123,12 +123,49 @@ jobs:
       - name: Robolectric tests - FAQ, Help, Mydownloads, Parser, ProfileProgress, RecyclerView, Story, Utility tests
         # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
         run: |
-          sudo ./gradlew :app:testDebugUnitTest --tests org.oppia.app.faq* --tests org.oppia.app.help* --tests org.oppia.app.mydownloads* --tests org.oppia.app.parser* --tests org.oppia.app.profileprogress* --tests org.oppia.app.recyclerview* --tests org.oppia.app.story* --tests org.oppia.app.utility*
+          sudo ./gradlew :app:testDebugUnitTest --tests org.oppia.app.faq* --tests org.oppia.app.help* --tests org.oppia.app.mydownloads* --tests org.oppia.app.parser* --tests org.oppia.app.profileprogress* --tests org.oppia.app.recyclerview* --tests org.oppia.app.splash* --tests org.oppia.app.story* --tests org.oppia.app.utility*
       - name: Upload App Test Reports
         uses: actions/upload-artifact@v2
         if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
         with:
          name: app reports
          path: app/build/test-results
-      
+
+  bazel_build_app:
+    name: Build Binary with Bazel
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up bazel
+        uses: jwlawson/actions-setup-bazel@v1
+        with:
+          bazel-version: '3.4.1'
+      - name: Clone Oppia Bazel
+        run: git clone https://github.com/oppia/bazel.git $HOME/oppia-bazel
+      - name: Set up JDK 9
+        uses: actions/setup-java@v1
+        with:
+          java-version: 9
+      - name: Extract Android Tools
+        run: |
+          mkdir -p $GITHUB_WORKSPACE/tmp/android_tools
+          cd $HOME/oppia-bazel
+          unzip bazel-tools.zip
+          tar -xf $HOME/oppia-bazel/android_tools.tar.gz -C $GITHUB_WORKSPACE/tmp/android_tools
+      - name: Unzip Bazel Binary and Build Oppia
+        run: |
+          cd $HOME/oppia-bazel
+          unzip bazel-build.zip
+          cd $GITHUB_WORKSPACE
+          chmod a+x $HOME/oppia-bazel/bazel
+          $HOME/oppia-bazel/bazel build //:oppia --android_databinding_use_v3_4_args --experimental_android_databinding_v2 --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools --java_header_compilation=false --noincremental_dexing --define=android_standalone_dexing_tool=d8_compat_dx
+          cp $GITHUB_WORKSPACE/bazel-bin/oppia.apk /home/runner/work/oppia-android/oppia-android/
+      - uses: actions/upload-artifact@v2
+        with:
+          name: oppia-bazel-apk
+          path: /home/runner/work/oppia-android/oppia-android/oppia.apk
+      - uses: actions/checkout@v2
       
