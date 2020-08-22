@@ -14,7 +14,8 @@ import javax.inject.Inject
 /** Fragment that card for topic revision. */
 class TopicRevisionFragment : InjectableFragment(), RevisionSubtopicSelector {
   companion object {
-    internal const val TOPIC_REVISION_FRAGMENT_TAG = "TOPIC_REVISION_FRAGMENT_TAG"
+    // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
+    const val TOPIC_REVISION_FRAGMENT_TAG = "TOPIC_REVISION_FRAGMENT_TAG"
     /** Returns a new [TopicRevisionFragment]. */
     fun newInstance(internalProfileId: Int, topicId: String): TopicRevisionFragment {
       val topicRevisionFragment = TopicRevisionFragment()

@@ -45,7 +45,7 @@ import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-class ProfileListActivityTest {
+class ProfileListFragmentTest {
 
   @Inject
   lateinit var context: Context
@@ -66,14 +66,14 @@ class ProfileListActivityTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerProfileListActivityTest_TestApplicationComponent.builder()
+    DaggerProfileListFragmentTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
   }
 
   @Test
-  fun testProfileListActivity_initializeProfiles_checkProfilesAreShown() {
+  fun testProfileListFragment_initializeProfiles_checkProfilesAreShown() {
     profileTestHelper.initializeProfiles()
     launch(ProfileListActivity::class.java).use {
       onView(withId(R.id.profile_list_recycler_view)).perform(
@@ -110,7 +110,7 @@ class ProfileListActivityTest {
   }
 
   @Test
-  fun testProfileListActivity_initializeProfiles_changeConfiguration_checkProfilesAreShown() {
+  fun testProfileListFragment_initializeProfiles_changeConfiguration_checkProfilesAreShown() {
     profileTestHelper.initializeProfiles()
     launch(ProfileListActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -148,7 +148,7 @@ class ProfileListActivityTest {
   }
 
   @Test
-  fun testProfileListActivity_addManyProfiles_checkProfilesAreSorted() {
+  fun testProfileListFragment_addManyProfiles_checkProfilesAreSorted() {
     profileTestHelper.initializeProfiles()
     profileTestHelper.addMoreProfiles(5)
     launch(ProfileListActivity::class.java).use {
@@ -226,7 +226,7 @@ class ProfileListActivityTest {
   }
 
   @Test
-  fun testProfileListActivity_initializeProfile_clickProfile_checkOpensProfileEditActivity() {
+  fun testProfileListFragment_initializeProfile_clickProfile_checkOpensProfileEditActivity() {
     profileTestHelper.initializeProfiles()
     launch(ProfileListActivity::class.java).use {
       onView(atPosition(R.id.profile_list_recycler_view, 0)).perform(click())
@@ -273,6 +273,6 @@ class ProfileListActivityTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(profileListActivityTest: ProfileListActivityTest)
+    fun inject(profileListFragmentTest: ProfileListFragmentTest)
   }
 }

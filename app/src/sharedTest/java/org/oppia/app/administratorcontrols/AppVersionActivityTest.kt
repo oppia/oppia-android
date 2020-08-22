@@ -28,10 +28,11 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.BuildConfig
 import org.oppia.app.R
 import org.oppia.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.app.utility.getLastUpdateTime
+import org.oppia.app.utility.getVersionName
 import org.oppia.util.system.OppiaDateTimeFormatter
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
@@ -57,11 +58,7 @@ class AppVersionActivityTest {
     Intents.init()
     setUpTestApplicationComponent()
 
-    val lastUpdateDateTime =
-      context.packageManager.getPackageInfo(
-        context.packageName,
-        /* flags= */ 0
-      ).lastUpdateTime
+    val lastUpdateDateTime = context.getLastUpdateTime()
     lastUpdateDate = getDateTime(lastUpdateDateTime)!!
   }
 
@@ -79,7 +76,7 @@ class AppVersionActivityTest {
         withText(
           String.format(
             context.resources.getString(R.string.app_version_name),
-            BuildConfig.VERSION_NAME
+            context.getVersionName()
           )
         )
       ).check(matches(isDisplayed()))
@@ -109,7 +106,7 @@ class AppVersionActivityTest {
           withText(
             String.format(
               context.resources.getString(R.string.app_version_name),
-              BuildConfig.VERSION_NAME
+              context.getVersionName()
             )
           )
         )
