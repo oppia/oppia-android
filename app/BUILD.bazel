@@ -284,8 +284,8 @@ Place your file here if:
  - It holds a circular dependency with a view (including views in VIEWS_WITH_RESOURCE_IMPORTS)
 '''
 VIEWS = [
-    "src/main/java/org/oppia/app/application/ApplicationInjectorProvider.kt",
     "src/main/java/org/oppia/app/application/ApplicationInjector.kt",
+    "src/main/java/org/oppia/app/application/ApplicationInjectorProvider.kt",
     "src/main/java/org/oppia/app/customview/interaction/FractionInputInteractionView.kt",
     "src/main/java/org/oppia/app/customview/interaction/NumericInputInteractionView.kt",
     "src/main/java/org/oppia/app/customview/interaction/TextInputInteractionView.kt",
