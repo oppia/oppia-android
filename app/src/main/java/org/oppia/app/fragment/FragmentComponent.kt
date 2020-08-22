@@ -32,6 +32,7 @@ import org.oppia.app.profile.AdminSettingsDialogFragment
 import org.oppia.app.profile.ProfileChooserFragment
 import org.oppia.app.profile.ResetPinDialogFragment
 import org.oppia.app.profileprogress.ProfileProgressFragment
+import org.oppia.app.settings.profile.ProfileListFragment
 import org.oppia.app.shim.IntentFactoryShimModule
 import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.app.story.StoryFragment
@@ -97,6 +98,7 @@ interface FragmentComponent {
   fun inject(ongoingTopicListFragment: OngoingTopicListFragment)
   fun inject(optionFragment: OptionsFragment)
   fun inject(profileChooserFragment: ProfileChooserFragment)
+  fun inject(profileListFragment: ProfileListFragment)
   fun inject(profileProgressFragment: ProfileProgressFragment)
   fun inject(questionPlayerFragment: QuestionPlayerFragment)
   fun inject(recentlyPlayedFragment: RecentlyPlayedFragment)
