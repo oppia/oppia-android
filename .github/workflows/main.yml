@@ -144,7 +144,7 @@ jobs:
         with:
           bazel-version: '3.4.1'
       - name: Clone Oppia Bazel
-        run: git clone https://github.com/miaboloix/bazel.git $HOME/oppia-bazel
+        run: git clone https://github.com/oppia/bazel.git $HOME/oppia-bazel
       - name: Set up JDK 9
         uses: actions/setup-java@v1
         with:
