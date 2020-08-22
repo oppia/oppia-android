@@ -6,6 +6,6 @@ interface OnboardingNavigationListener {
   /** Skips onboarding slide. */
   fun clickOnSkip()
 
-  /** Moves user to next onboarding slide. */
+  /** Moves the user to the next onboarding slide. */
   fun clickOnNext()
 }
