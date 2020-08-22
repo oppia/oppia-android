@@ -11,7 +11,8 @@ import javax.inject.Inject
 /** Fragment for displaying completed stories. */
 class CompletedStoryListFragment : InjectableFragment() {
   companion object {
-    internal const val COMPLETED_STORY_LIST_FRAGMENT_TAG = "COMPLETED_STORY_LIST_FRAGMENT_TAG"
+    // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
+    const val COMPLETED_STORY_LIST_FRAGMENT_TAG = "COMPLETED_STORY_LIST_FRAGMENT_TAG"
     internal const val COMPLETED_STORY_LIST_FRAGMENT_PROFILE_ID_KEY =
       "CompletedStoryListFragment.profile_id"
 

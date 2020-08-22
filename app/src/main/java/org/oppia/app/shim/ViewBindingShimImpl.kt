@@ -186,7 +186,7 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     ).root
   }
 
-  // TODO(#1692): Fix implementation to not use cache binding. 
+  // TODO(#1692): Fix implementation to not use cache binding.
   private lateinit var dragDropSingleItemBinding: DragDropSingleItemBinding
 
   override fun setDragDropSingleItemBinding(
