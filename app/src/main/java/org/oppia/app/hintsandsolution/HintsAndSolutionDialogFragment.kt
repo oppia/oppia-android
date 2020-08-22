@@ -11,6 +11,11 @@ import org.oppia.app.model.State
 import javax.inject.Inject
 
 private const val CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY = "CURRENT_EXPANDED_LIST_INDEX"
+private const val STATE_SAVED_KEY = "STATE_SAVED_KEY"
+private const val HINT_INDEX_SAVED_KEY = "HINT_INDEX_SAVED_KEY"
+private const val IS_HINT_REVEALED_SAVED_KEY = "IS_HINT_REVEALED_SAVED_KEY"
+private const val SOLUTION_INDEX_SAVED_KEY = "SOLUTION_INDEX_SAVED_KEY"
+private const val IS_SOLUTION_REVEALED_SAVED_KEY = "IS_SOLUTION_REVEALED_SAVED_KEY"
 
 /* Fragment that displays a fullscreen dialog for Hints and Solutions. */
 class HintsAndSolutionDialogFragment :
@@ -24,6 +29,11 @@ class HintsAndSolutionDialogFragment :
   private lateinit var state: State
 
   private var currentExpandedHintListIndex: Int? = null
+
+  private var index: Int? = null
+  private var isHintRevealed: Boolean? = null
+  private var solutionIndex: Int? = null
+  private var isSolutionRevealed: Boolean? = null
 
   companion object {
 
@@ -74,6 +84,13 @@ class HintsAndSolutionDialogFragment :
       if (currentExpandedHintListIndex == -1) {
         currentExpandedHintListIndex = null
       }
+      state = State.parseFrom(savedInstanceState.getByteArray(STATE_SAVED_KEY)!!)
+      index = savedInstanceState.getInt(HINT_INDEX_SAVED_KEY, -1)
+      if (index == -1) index = null
+      isHintRevealed = savedInstanceState.getBoolean(IS_HINT_REVEALED_SAVED_KEY, false)
+      solutionIndex = savedInstanceState.getInt(SOLUTION_INDEX_SAVED_KEY, -1)
+      if (solutionIndex == -1) solutionIndex = null
+      isSolutionRevealed = savedInstanceState.getBoolean(IS_SOLUTION_REVEALED_SAVED_KEY, false)
     }
     val args =
       checkNotNull(
@@ -100,7 +117,11 @@ class HintsAndSolutionDialogFragment :
       currentExpandedHintListIndex,
       newAvailableHintIndex,
       allHintsExhausted,
-      this as ExpandedHintListIndexListener
+      this as ExpandedHintListIndexListener,
+      index,
+      isHintRevealed,
+      solutionIndex,
+      isSolutionRevealed
     )
   }
 
@@ -114,6 +135,19 @@ class HintsAndSolutionDialogFragment :
     if (currentExpandedHintListIndex != null) {
       outState.putInt(CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY, currentExpandedHintListIndex!!)
     }
+    if (index != null) {
+      outState.putInt(HINT_INDEX_SAVED_KEY, index!!)
+    }
+    if (isHintRevealed != null) {
+      outState.putBoolean(IS_HINT_REVEALED_SAVED_KEY, isHintRevealed!!)
+    }
+    if (solutionIndex != null) {
+      outState.putInt(SOLUTION_INDEX_SAVED_KEY, solutionIndex!!)
+    }
+    if (isSolutionRevealed != null) {
+      outState.putBoolean(IS_SOLUTION_REVEALED_SAVED_KEY, isSolutionRevealed!!)
+    }
+    outState.putByteArray(STATE_SAVED_KEY, state.toByteArray())
   }
 
   override fun onExpandListIconClicked(index: Int?) {
@@ -123,6 +157,21 @@ class HintsAndSolutionDialogFragment :
 
   override fun revealSolution(saveUserChoice: Boolean) {
     hintsAndSolutionDialogFragmentPresenter.handleRevealSolution(saveUserChoice)
+  }
+
+  override fun onRevealHintClicked(index: Int?, isHintRevealed: Boolean?) {
+    this.index = index
+    this.isHintRevealed = isHintRevealed
+    hintsAndSolutionDialogFragmentPresenter.onRevealHintClicked(index, isHintRevealed)
+  }
+
+  override fun onRevealSolutionClicked(solutionIndex: Int?, isSolutionRevealed: Boolean?) {
+    this.solutionIndex = solutionIndex
+    this.isSolutionRevealed = isSolutionRevealed
+    hintsAndSolutionDialogFragmentPresenter.onRevealSolutionClicked(
+      solutionIndex,
+      isSolutionRevealed
+    )
   }
 
   fun loadState(state: State) {

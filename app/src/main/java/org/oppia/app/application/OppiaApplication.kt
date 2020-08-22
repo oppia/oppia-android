@@ -6,7 +6,10 @@ import androidx.multidex.MultiDexApplication
 import org.oppia.app.activity.ActivityComponent
 
 /** The root [Application] of the Oppia app. */
-class OppiaApplication : MultiDexApplication(), ActivityComponentFactory {
+class OppiaApplication :
+  MultiDexApplication(),
+  ActivityComponentFactory,
+  ApplicationInjectorProvider {
   /** The root [ApplicationComponent]. */
   private val component: ApplicationComponent by lazy {
     DaggerApplicationComponent.builder()
@@ -17,4 +20,6 @@ class OppiaApplication : MultiDexApplication(), ActivityComponentFactory {
   override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
     return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
   }
+
+  override fun getApplicationInjector(): ApplicationInjector = component
 }
