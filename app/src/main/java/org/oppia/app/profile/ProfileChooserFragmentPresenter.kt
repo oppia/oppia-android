@@ -93,6 +93,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     }
     logProfileChooserEvent()
     binding.profileRecyclerView.isNestedScrollingEnabled = false
+    binding.hasProfileEverBeenAddedValue = hasProfileEverBeenAddedValue
     subscribeToWasProfileEverBeenAdded()
     binding.profileRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
@@ -203,6 +204,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     binding: ProfileChooserAddViewBinding,
     @Suppress("UNUSED_PARAMETER") model: ProfileChooserUiModel
   ) {
+    binding.hasProfileEverBeenAddedValue = hasProfileEverBeenAddedValue
     binding.addProfileItem.setOnClickListener {
       if (chooserViewModel.adminPin.isEmpty()) {
         activity.startActivity(

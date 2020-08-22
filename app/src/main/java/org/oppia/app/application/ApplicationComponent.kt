@@ -57,7 +57,7 @@ import javax.inject.Singleton
   ]
 )
 
-interface ApplicationComponent {
+interface ApplicationComponent : ApplicationInjector {
   @Component.Builder
   interface Builder {
     @BindsInstance

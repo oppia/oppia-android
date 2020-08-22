@@ -6,7 +6,11 @@ android_binary(
     enable_data_binding = True,
     manifest = "//app:src/main/AndroidManifest.xml",
     multidex = "legacy",
-    manifest_values = {"applicationId": "org.oppia.app"},
+    manifest_values = {
+        "applicationId": "org.oppia.app",
+        "versionCode": "0",
+        "versionName": "0.1-alpha"
+    },
     deps = [
       "//app",
     ],
