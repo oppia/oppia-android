@@ -149,11 +149,9 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 9
-      - name: Create tmp/android_tools
-        run: |
-          mkdir -p $GITHUB_WORKSPACE/tmp/android_tools
       - name: Extract Android Tools
         run: |
+          mkdir -p $GITHUB_WORKSPACE/tmp/android_tools
           cd $HOME/oppia-bazel
           unzip bazel-tools.zip
           tar -xf $HOME/oppia-bazel/android_tools.tar.gz -C $GITHUB_WORKSPACE/tmp/android_tools
