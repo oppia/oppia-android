@@ -96,7 +96,7 @@ google_services_workspace_dependencies()
 
 git_repository(
     name = "circularimageview",
-    commit = "6098dec76713b34eb8b10883cbe54189ddc08566",
+    commit = "8a65ba42b3fee21b5e19ca5c8690185f7c60f65d",
     remote = "https://github.com/oppia/CircularImageview",
 )
 

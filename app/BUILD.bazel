@@ -1,7 +1,6 @@
 # TODO(#1532): Rename file to 'BUILD' post-Gradle.
 '''
 This library contains the app's core source files and functionality.
-
 Note that:
  - Most files should be built inside of app library. However, listener files, annotation
 files, view files, view model files, and binding adapter files need to be manually added. The
@@ -21,7 +20,6 @@ load("//app:test_with_resources.bzl", "test_with_resources")
 '''
 Source files for the annotations library. The files inside the annotations library are dependencies
 for all other libraries in app module, except the listeners library.
-
 Place your file here if:
  - A view, view model, or layout file depends on it
  - It is an annotation or helper file of some kind
@@ -38,7 +36,6 @@ ANNOTATIONS = [
 '''
 Source files for the listeners library. The files inside the listeners library are dependencies for
 all other libraries in app module, except the annotations library.
-
 Place your file here if:
  - A view, view model, or layout file depends on it
  - It is either a listener, an interface, or a direct dependency of one in this list
@@ -91,7 +88,6 @@ LISTENERS = [
 
 '''
 Source files for the databinding_resources library.
-
 The files inside this list include all layout files. Please note that layouts MUST NOT depend on
 presenters or fragments. Instead, they should depend on a listener or interface as an abstraction.
 '''
@@ -102,7 +98,6 @@ DATABINDING_LAYOUTS = ["src/main/res/layout*/**"]
 # TODO(#1617): Remove genrules post-gradle
 '''
 Source files for the view_models library that import resources.
-
 Place your file here if:
  - It is a view model
  - It imports resources (ex: `import org.oppia.app.R`)
@@ -123,7 +118,6 @@ VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
 
 '''
 Source files for the view_models library that DO NOT import resources.
-
 Place your file here if:
  - It is a view model
  - It does not import resources
@@ -245,7 +239,6 @@ VIEW_MODELS = [
 # TODO(#1617): Remove genrules post-gradle
 '''
 Genrule for source files in the view_models library.
-
 Because each databinding library must have a unique package name and manifest, resources must be
 imported using the proper package name when building with Bazel. This genrule alters those imports
 in order to keep Gradle building.
@@ -266,7 +259,6 @@ for file in VIEW_MODELS_WITH_RESOURCE_IMPORTS]
 # TODO(#1617): Remove genrules post-gradle
 '''
 Source files for the views library that import resources.
-
 Place your file here if:
  - It is a view file
  - It imports resources (ex: `import org.oppia.app.R`)
@@ -280,12 +272,14 @@ VIEWS_WITH_RESOURCE_IMPORTS = [
 
 '''
 Source files for the views library that DO NOT import resources.
-
 Place your file here if:
  - It is a view file
  - It does not import resources
+ - It holds a circular dependency with a view (including views in VIEWS_WITH_RESOURCE_IMPORTS)
 '''
 VIEWS = [
+    "src/main/java/org/oppia/app/application/ApplicationInjector.kt",
+    "src/main/java/org/oppia/app/application/ApplicationInjectorProvider.kt",
     "src/main/java/org/oppia/app/customview/interaction/FractionInputInteractionView.kt",
     "src/main/java/org/oppia/app/customview/interaction/NumericInputInteractionView.kt",
     "src/main/java/org/oppia/app/customview/interaction/TextInputInteractionView.kt",
@@ -304,7 +298,6 @@ VIEWS = [
 # TODO(#1617): Remove genrules post-gradle
 '''
 Genrule for source files in the views library.
-
 Because each databinding library must have a unique package name and manifest, resources must be
 imported using the proper package name when building with Bazel. This genrule alters those imports
 in order to keep Gradle building.
@@ -325,7 +318,6 @@ for file in VIEWS_WITH_RESOURCE_IMPORTS]
 # TODO(#1617): Remove genrules post-gradle
 '''
 Binding adapter files that import resources.
-
 Place your file here if:
  - It is a binding adapter
  - It imports resources (ex: `import org.oppia.app.R`)
@@ -338,7 +330,6 @@ BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS = [
 
 '''
 Binding adapter files that DO NOT import resources.
-
 Place your file here if:
  - It is a binding adapter
  - It does not import resources
@@ -359,7 +350,6 @@ BINDING_ADAPTERS = [
 # TODO(#1617): Remove genrules post-gradle
 '''
 Genrule for source files in the binding_adapters library.
-
 Because each databinding library must have a unique package name and manifest, resources must be
 imported using the proper package name when building with Bazel. This genrule alters those imports
 in order to keep Gradle building.
@@ -387,14 +377,13 @@ built by the following libraries:
 EXCLUDED_APP_LIB_FILES = VIEW_MODELS + VIEW_MODELS_WITH_RESOURCE_IMPORTS + VIEWS + VIEWS_WITH_RESOURCE_IMPORTS + BINDING_ADAPTERS + BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS + LISTENERS + ANNOTATIONS
 
 '''
-Files to be built by the app library. All of these files are assumed to have resource import and
+Files to be built by the app library. All of these files are assumed to have resource imports and
 will be processed by the app library genrule regardless in order to avoid any import issues.
 '''
 APP_FILES_WITH_RESOURCE_IMPORTS = glob(["src/main/java/org/oppia/app/**/*.kt"], exclude = EXCLUDED_APP_LIB_FILES)
 
 '''
 Genrule for source files in the app library.
-
 Because each databinding library must have a unique package name and manifest, resources must be
 imported using the proper package name when building with Bazel. This genrule alters those imports
 in order to keep Gradle building.
@@ -576,10 +565,6 @@ kt_android_library(
         artifact("androidx.lifecycle:lifecycle-livedata-core:2.2.0"),
         artifact("androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"),
         artifact("androidx.multidex:multidex:2.0.1"),
-        artifact("androidx.navigation:navigation-fragment-ktx:2.0.0"),
-        artifact("androidx.navigation:navigation-fragment:2.0.0"),
-        artifact("androidx.navigation:navigation-ui-ktx:2.0.0"),
-        artifact("androidx.navigation:navigation-ui:2.0.0"),
         artifact("androidx.viewpager:viewpager:1.0.0"),
         artifact("com.caverock:androidsvg-aar"),
         artifact("javax.annotation:javax.annotation-api:jar"),
