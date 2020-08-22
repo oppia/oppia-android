@@ -5,7 +5,6 @@ import android.app.Application
 import dagger.BindsInstance
 import dagger.Component
 import org.oppia.app.activity.ActivityComponent
-import org.oppia.app.profile.ProfileInputView
 import org.oppia.app.shim.IntentFactoryShimModule
 import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.domain.classify.InteractionsModule
@@ -58,7 +57,7 @@ import javax.inject.Singleton
   ]
 )
 
-interface ApplicationComponent: ApplicationInjector {
+interface ApplicationComponent : ApplicationInjector {
   @Component.Builder
   interface Builder {
     @BindsInstance

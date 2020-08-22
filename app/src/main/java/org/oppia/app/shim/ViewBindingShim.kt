@@ -26,9 +26,9 @@ interface ViewBindingShim {
 
   /** Handles binding inflation for [ProfileInputView] */
   fun inflateProfileInputView(
-      inflater: LayoutInflater,
-      parent: ViewGroup,
-      attachToParent: Boolean
+    inflater: LayoutInflater,
+    parent: ViewGroup,
+    attachToParent: Boolean
   ): View
 
   /** Returns [ProfileInputView] binding's label text. */

@@ -32,29 +32,33 @@ import javax.inject.Inject
 // TODO(#1619): Remove file post-Gradle
 class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
 
-  override fun inflateProfileInputView(inflater: LayoutInflater, parent: ViewGroup, attachToParent: Boolean): View {
+  override fun inflateProfileInputView(
+    inflater: LayoutInflater,
+    parent: ViewGroup,
+    attachToParent: Boolean
+  ): View {
     return DataBindingUtil.inflate<ProfileInputViewBinding>(
-        inflater,
-        R.layout.profile_input_view,
-        parent,
-        attachToParent
+      inflater,
+      R.layout.profile_input_view,
+      parent,
+      attachToParent
     ).root
   }
 
   override fun provideProfileInputViewBindingLabelText(
-      profileInputView: View
+    profileInputView: View
   ): TextView {
     return DataBindingUtil.findBinding<ProfileInputViewBinding>(profileInputView)!!.labelText
   }
 
   override fun provideProfileInputViewBindingInput(
-      profileInputView: View
+    profileInputView: View
   ): EditText {
     return DataBindingUtil.findBinding<ProfileInputViewBinding>(profileInputView)!!.input
   }
 
   override fun provideProfileInputViewBindingErrorText(
-      profileInputView: View
+    profileInputView: View
   ): TextView {
     return DataBindingUtil.findBinding<ProfileInputViewBinding>(profileInputView)!!.errorText
   }
