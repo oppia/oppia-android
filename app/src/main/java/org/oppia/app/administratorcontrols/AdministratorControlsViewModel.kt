@@ -14,6 +14,7 @@ import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.Ad
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.DeviceSettings
 import org.oppia.app.model.ProfileId
+import org.oppia.app.shim.IntentFactoryShim
 import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
@@ -26,7 +27,8 @@ class AdministratorControlsViewModel @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val logger: ConsoleLogger,
-  private val profileManagementController: ProfileManagementController
+  private val profileManagementController: ProfileManagementController,
+  private val IntentFactoryShim: IntentFactoryShim
 ) : ObservableViewModel() {
   private val routeToProfileListListener = activity as RouteToProfileListListener
   private lateinit var userProfileId: ProfileId
@@ -72,7 +74,12 @@ class AdministratorControlsViewModel @Inject constructor(
       )
     )
     itemViewModelList.add(AdministratorControlsAppInformationViewModel(activity))
-    itemViewModelList.add(AdministratorControlsAccountActionsViewModel(fragment))
+    itemViewModelList.add(
+      AdministratorControlsAccountActionsViewModel(
+        fragment,
+        IntentFactoryShim
+      )
+    )
 
     return itemViewModelList
   }

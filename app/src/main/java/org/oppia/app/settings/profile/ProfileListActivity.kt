@@ -6,7 +6,7 @@ import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
-/** Activity that allows users to select a profile to edit from settings. */
+/** Activity to display all profiles to admin. */
 class ProfileListActivity : InjectableAppCompatActivity() {
   @Inject
   lateinit var profileListActivityPresenter: ProfileListActivityPresenter
