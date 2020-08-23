@@ -1,13 +1,16 @@
 package org.oppia.app.application
 
 import android.app.Application
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.multidex.MultiDexApplication
+import androidx.work.Configuration
+import androidx.work.WorkManager
 import org.oppia.app.activity.ActivityComponent
 import org.oppia.domain.oppialogger.OppiaLogUploadWorkRequest
 
 /** The root [Application] of the Oppia app. */
-class OppiaApplication : MultiDexApplication(), ActivityComponentFactory {
+class OppiaApplication : MultiDexApplication(), ActivityComponentFactory, Configuration.Provider {
   /** The root [ApplicationComponent]. */
   private val component: ApplicationComponent by lazy {
     DaggerApplicationComponent.builder()
@@ -21,7 +24,12 @@ class OppiaApplication : MultiDexApplication(), ActivityComponentFactory {
 
   override fun onCreate() {
     super.onCreate()
-    OppiaLogUploadWorkRequest().setWorkerRequestForEvents()
-    OppiaLogUploadWorkRequest().setWorkerRequestForExceptions()
+    val workManager = WorkManager.getInstance(applicationContext)
+    OppiaLogUploadWorkRequest().setWorkerRequestForEvents(workManager)
+    OppiaLogUploadWorkRequest().setWorkerRequestForExceptions(workManager)
+  }
+
+  override fun getWorkManagerConfiguration(): Configuration {
+    return Configuration.Builder().setMinimumLoggingLevel(Log.INFO).build()
   }
 }

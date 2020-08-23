@@ -1,6 +1,5 @@
 package org.oppia.domain.oppialogger
 
-import android.app.Application
 import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -20,8 +19,7 @@ class OppiaLogUploadWorkRequest() {
     .setRequiresStorageNotLow(true)
     .build()
 
-  fun setWorkerRequestForEvents() {
-    val workManager = WorkManager.getInstance(Application().applicationContext)
+  fun setWorkerRequestForEvents(workManager: WorkManager) {
     val workerCase =
       Data.Builder()
         .putString(
@@ -42,8 +40,7 @@ class OppiaLogUploadWorkRequest() {
     )
   }
 
-  fun setWorkerRequestForExceptions() {
-    val workManager = WorkManager.getInstance(Application().applicationContext)
+  fun setWorkerRequestForExceptions(workManager: WorkManager) {
     val workerCase =
       Data.Builder()
         .putString(
