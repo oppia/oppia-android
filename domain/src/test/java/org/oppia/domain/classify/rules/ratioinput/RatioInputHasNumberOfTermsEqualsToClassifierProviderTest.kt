@@ -19,7 +19,7 @@ import javax.inject.Singleton
 import kotlin.reflect.KClass
 import kotlin.reflect.full.cast
 import kotlin.test.fail
-o
+
 /** Tests for [RatioInputHasNumberOfTermsEqualsToClassifierProvider]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
