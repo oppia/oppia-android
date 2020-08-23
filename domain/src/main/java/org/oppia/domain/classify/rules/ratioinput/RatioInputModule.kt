@@ -26,7 +26,6 @@ class RatioInputModule {
     classifierProvider: RatioInputIsEquivalentRuleClassifierProvider
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
-
   @Provides
   @IntoMap
   @StringKey("IsEquivalent")

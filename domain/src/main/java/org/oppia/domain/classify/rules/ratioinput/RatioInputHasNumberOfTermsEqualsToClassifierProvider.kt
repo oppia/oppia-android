@@ -12,7 +12,8 @@ import javax.inject.Inject
  */
 internal class RatioInputHasNumberOfTermsEqualsToClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
-) : RuleClassifierProvider, GenericRuleClassifier.MultiTypeSingleInputMatcher<RatioExpression,Int> {
+) : RuleClassifierProvider,
+  GenericRuleClassifier.MultiTypeSingleInputMatcher<RatioExpression, Int> {
 
   override fun createRuleClassifier(): RuleClassifier {
     return classifierFactory.createMultiTypeSingleInputClassifier(

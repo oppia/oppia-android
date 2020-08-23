@@ -42,7 +42,10 @@ class RatioInputHasNumberOfTermsEqualsToClassifierProviderTest {
     val inputs = mapOf("y" to createRatio(ITEM_RATIO_3TERMS))
 
     val matches =
-      hasNumberOfTermsEqualsToClassifierProvider.matches(answer = NON_NEGATIVE_VALUE_3, inputs = inputs)
+      hasNumberOfTermsEqualsToClassifierProvider.matches(
+        answer = NON_NEGATIVE_VALUE_3,
+        inputs = inputs
+      )
 
     assertThat(matches).isTrue()
   }
@@ -52,11 +55,13 @@ class RatioInputHasNumberOfTermsEqualsToClassifierProviderTest {
     val inputs = mapOf("y" to createRatio(ITEM_RATIO_4TERMS))
 
     val matches =
-      hasNumberOfTermsEqualsToClassifierProvider.matches(answer = NON_NEGATIVE_VALUE_3, inputs = inputs)
+      hasNumberOfTermsEqualsToClassifierProvider.matches(
+        answer = NON_NEGATIVE_VALUE_3,
+        inputs = inputs
+      )
 
     assertThat(matches).isFalse()
   }
-
 
   @Test
   fun testAnswer_nonNegativeInput_inputWithIncorrectType_throwsException() {
