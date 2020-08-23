@@ -441,6 +441,34 @@ class AdministratorControlsActivityTest {
     }
   }
 
+  @Test
+  fun testAdministratorControlsFragment_changeConfiguration_clickLogout_displaysLogoutDialog() {
+    ActivityScenario.launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        0
+      )
+    ).use {
+      onView(withId(R.id.administrator_controls_list)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          4
+        )
+      )
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.administrator_controls_list)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          4
+        )
+      )
+      onView(withId(R.id.log_out_text_view)).perform(click())
+      onView(withText(R.string.log_out_dialog_message)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.log_out_dialog_okay_button)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.log_out_dialog_cancel_button)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
   // TODO(#762): Replace [ProfileChooserActivity] to [LoginActivity] once it is added.
   @Test
   fun testAdministratorControlsFragment_clickOkButtonInLogoutDialog_opensProfileActivity() {
