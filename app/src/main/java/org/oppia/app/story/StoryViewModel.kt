@@ -27,31 +27,32 @@ class StoryViewModel @Inject constructor(
   private val explorationDataController: ExplorationDataController,
   private val logger: ConsoleLogger,
   @StoryHtmlParserEntityType val entityType: String
-) : ViewModel() {
+) {
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
 
-  private lateinit var storyResultLiveData: LiveData<AsyncResult<StorySummary>>
-  private lateinit var storyLiveData: LiveData<StorySummary>
-  lateinit var storyNameLiveData: LiveData<String>
-  lateinit var storyChapterLiveData: LiveData<List<StoryItemViewModel>>
-
   /** [storyId] needs to be set before any of the live data members can be accessed. */
   private lateinit var storyId: String
-  private lateinit var explorationSelectionListener: ExplorationSelectionListener
-  private lateinit var newFragment: Fragment
+  private val explorationSelectionListener = fragment as ExplorationSelectionListener
 
-  fun setStoryResultLiveData(fragment: Fragment) {
-    newFragment = fragment
-    explorationSelectionListener = newFragment as ExplorationSelectionListener
-    storyResultLiveData = topicController.getStory(
+  private val storyResultLiveData: LiveData<AsyncResult<StorySummary>> by lazy {
+    topicController.getStory(
       ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       topicId,
       storyId
     )
-    storyLiveData = Transformations.map(storyResultLiveData, ::processStoryResult)
-    storyNameLiveData = Transformations.map(storyLiveData, StorySummary::getStoryName)
-    storyChapterLiveData = Transformations.map(storyLiveData, ::processStoryChapterList)
+  }
+
+  private val storyLiveData: LiveData<StorySummary> by lazy {
+    Transformations.map(storyResultLiveData, ::processStoryResult)
+  }
+
+  val storyNameLiveData: LiveData<String> by lazy {
+    Transformations.map(storyLiveData, StorySummary::getStoryName)
+  }
+
+  val storyChapterLiveData: LiveData<List<StoryItemViewModel>> by lazy {
+    Transformations.map(storyLiveData, ::processStoryChapterList)
   }
 
   fun setInternalProfileId(internalProfileId: Int) {
@@ -82,7 +83,7 @@ class StoryViewModel @Inject constructor(
     val chapterList: List<ChapterSummary> = storySummary.chapterList
     for (position in chapterList.indices) {
       if (storySummary.chapterList[position].chapterPlayState == ChapterPlayState.NOT_STARTED) {
-        (newFragment as StoryFragmentScroller).smoothScrollToPosition(position + 1)
+        (fragment as StoryFragmentScroller).smoothScrollToPosition(position + 1)
         break
       }
     }
@@ -100,7 +101,7 @@ class StoryViewModel @Inject constructor(
       chapterList.mapIndexed { index, chapter ->
         StoryChapterSummaryViewModel(
           index,
-          newFragment,
+          fragment,
           explorationSelectionListener,
           explorationDataController,
           logger,
