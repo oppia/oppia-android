@@ -5,7 +5,7 @@ import org.oppia.app.model.RatioExpression
 import org.oppia.domain.classify.RuleClassifier
 import org.oppia.domain.classify.rules.GenericRuleClassifier
 import org.oppia.domain.classify.rules.RuleClassifierProvider
-import org.oppia.domain.util.gcd
+import org.oppia.domain.util.toSimplestForm
 import javax.inject.Inject
 
 /**
@@ -25,11 +25,6 @@ internal class RatioInputIsEquivalentRuleClassifierProvider @Inject constructor(
   }
 
   override fun matches(answer: RatioExpression, input: RatioExpression): Boolean {
-    return getLowestForm(answer) == getLowestForm(input)
-  }
-
-  private fun getLowestForm(input: RatioExpression): List<Int> {
-    val gcdResult = input.ratioComponentList.reduce { x, y -> gcd(x, y) }
-    return input.ratioComponentList.map { x -> x / gcdResult }
+    return answer.toSimplestForm() == input.toSimplestForm()
   }
 }
