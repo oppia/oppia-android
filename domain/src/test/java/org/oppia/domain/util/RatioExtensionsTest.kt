@@ -18,14 +18,14 @@ class RatioExtensionsTest {
   fun testRatio_ratioReduced_returnOriginalList() {
     val ratioReduced = createRatio(listOf(1, 2, 3))
 
-    assertThat(ratioReduced.toSimplestForm()).isEqualTo(ratioReduced.ratioComponentCount)
+    assertThat(ratioReduced.toSimplestForm()).isEqualTo(ratioReduced.ratioComponentList)
   }
 
   @Test
   fun testRatio_ratioWithZero_returnOriginalList() {
     val ratioWithZeroes = createRatio(listOf(1, 0, 4))
 
-    assertThat(ratioWithZeroes.toSimplestForm()).isEqualTo(ratioWithZeroes)
+    assertThat(ratioWithZeroes.toSimplestForm()).isEqualTo(ratioWithZeroes.ratioComponentList)
   }
 
   @Test
