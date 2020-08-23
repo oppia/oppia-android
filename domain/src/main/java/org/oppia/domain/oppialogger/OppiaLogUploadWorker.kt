@@ -7,10 +7,13 @@ import org.oppia.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.domain.oppialogger.exceptions.toException
 import org.oppia.util.data.DataProviders
+import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.logging.firebase.FirebaseEventLogger
 import org.oppia.util.logging.firebase.FirebaseExceptionLogger
 import javax.inject.Inject
 import javax.inject.Singleton
+
+const val LOG_UPLOAD_WORKER = "log_upload_worker"
 
 @Singleton
 class OppiaLogUploadWorker @Inject constructor(
@@ -20,7 +23,8 @@ class OppiaLogUploadWorker @Inject constructor(
   private val exceptionsController: ExceptionsController,
   private val dataProviders: DataProviders,
   private val exceptionLogger: FirebaseExceptionLogger,
-  private val eventLogger: FirebaseEventLogger
+  private val eventLogger: FirebaseEventLogger,
+  private val consoleLogger: ConsoleLogger
 ) : Worker(context, params) {
 
   enum class WorkerCase {
@@ -57,7 +61,7 @@ class OppiaLogUploadWorker @Inject constructor(
       }
       Result.success()
     } catch (e: Exception) {
-      e.printStackTrace()
+      consoleLogger.e(LOG_UPLOAD_WORKER, e.toString(), e)
       Result.failure()
     }
   }
@@ -74,7 +78,7 @@ class OppiaLogUploadWorker @Inject constructor(
       }
       Result.success()
     } catch (e: Exception) {
-      e.printStackTrace()
+      consoleLogger.e(LOG_UPLOAD_WORKER, e.toString(), e)
       Result.failure()
     }
   }
