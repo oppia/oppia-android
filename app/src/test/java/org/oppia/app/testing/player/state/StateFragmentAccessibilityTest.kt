@@ -25,7 +25,8 @@ import org.oppia.app.application.ApplicationModule
 import org.oppia.app.player.state.StateFragment
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher
-import org.oppia.data.backends.gae.NetworkModule
+import org.oppia.app.shim.IntentFactoryShimModule
+import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -86,6 +87,7 @@ class StateFragmentAccessibilityTest {
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
     fakeAccessibilityManager.setTalkbackEnabled(true)
+
     FirebaseApp.initializeApp(context)
   }
 
@@ -151,17 +153,19 @@ class StateFragmentAccessibilityTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
+  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class, ApplicationModule::class, NetworkModule::class,
+      TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
       GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
       QuestionModule::class, TestLogReportingModule::class, TestAccessibilityModule::class,
-      ImageClickInputModule::class, LogStorageModule::class, CachingTestModule::class,
+      ImageClickInputModule::class, LogStorageModule::class, IntentFactoryShimModule::class,
+      ViewBindingShimModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class
     ]
   )

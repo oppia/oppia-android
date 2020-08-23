@@ -6,7 +6,7 @@
 
     <import type="android.view.View" />
 
-    <import type="org.oppia.app.player.state.SelectionItemInputType" />
+    <import type="org.oppia.app.player.state.itemviewmodel.SelectionItemInputType" />
 
     <variable
       name="viewModel"
