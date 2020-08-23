@@ -10,8 +10,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.InternalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -33,7 +31,6 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
-import org.oppia.util.logging.ExceptionLogger
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.networking.NetworkConnectionUtil
@@ -60,15 +57,11 @@ class OppiaUncaughtExceptionHandlerTest {
   lateinit var networkConnectionUtil: NetworkConnectionUtil
 
   @Inject
-  lateinit var fakeDefaultExceptionHandler: FakeDefaultExceptionHandler
-
-  @Inject
   lateinit var exceptionsController: ExceptionsController
 
   @Inject
   lateinit var fakeExceptionLogger: FakeExceptionLogger
 
-  @InternalCoroutinesApi
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
@@ -78,6 +71,8 @@ class OppiaUncaughtExceptionHandlerTest {
   @Captor
   lateinit var oppiaExceptionLogsResultCaptor: ArgumentCaptor<AsyncResult<OppiaExceptionLogs>>
 
+  private val fakeDefaultExceptionHandler = FakeDefaultExceptionHandler()
+
   @Before
   fun setUp() {
     networkConnectionUtil = NetworkConnectionUtil(ApplicationProvider.getApplicationContext())
@@ -85,8 +80,6 @@ class OppiaUncaughtExceptionHandlerTest {
     Thread.setDefaultUncaughtExceptionHandler(fakeDefaultExceptionHandler)
   }
 
-  @ExperimentalCoroutinesApi
-  @InternalCoroutinesApi
   @Test
   fun testHandler_throwException_withNoNetwork_verifyLogInCache() {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
@@ -116,13 +109,6 @@ class OppiaUncaughtExceptionHandlerTest {
     assertThat(exceptionCaught.cause).isEqualTo(Exception(exceptionThrown).cause)
   }
 
-  private fun setUpTestApplicationComponent() {
-    DaggerOppiaUncaughtExceptionHandlerTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
-  }
-
   @Test
   fun testHandler_throwException_verifyLogToDefaultHandler() {
     val exceptionThrown = Exception("TEST")
@@ -132,6 +118,13 @@ class OppiaUncaughtExceptionHandlerTest {
     assertThat(exceptionCaught).hasMessageThat().matches("java.lang.Exception: TEST")
     assertThat(exceptionCaught.cause).isEqualTo(Exception(exceptionThrown).cause)
     assertThat(Thread.getDefaultUncaughtExceptionHandler()).isEqualTo(fakeDefaultExceptionHandler)
+  }
+
+  private fun setUpTestApplicationComponent() {
+    DaggerOppiaUncaughtExceptionHandlerTest_TestApplicationComponent.builder()
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
   }
 
   @Qualifier
@@ -189,9 +182,7 @@ class OppiaUncaughtExceptionHandlerTest {
   }
 }
 
-class FakeDefaultExceptionHandler @Inject constructor(
-  private val fakeExceptionLogger: ExceptionLogger
-) : Thread.UncaughtExceptionHandler {
+class FakeDefaultExceptionHandler : Thread.UncaughtExceptionHandler {
 
   private val exceptionList = mutableListOf<Exception>()
 

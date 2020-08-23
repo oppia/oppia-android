@@ -1,14 +1,14 @@
 package org.oppia.domain.oppialogger.exceptions
 
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 
+/** Provides custom uncaught exception handler. */
 @Module
-class OppiaExceptionHandlerModule {
-  @Provides
-  fun provideHandler(
+interface OppiaExceptionHandlerModule {
+
+  @Binds
+  fun bindExceptionHandler(
     oppiaUncaughtExceptionHandler: OppiaUncaughtExceptionHandler
-  ): Thread.UncaughtExceptionHandler {
-    return oppiaUncaughtExceptionHandler
-  }
+  ): Thread.UncaughtExceptionHandler
 }
