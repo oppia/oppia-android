@@ -103,6 +103,7 @@ class AddProfileActivityTest {
     }
   }
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testAddProfileActivity_changeConfiguration_inputName_clickCreate_checkOpensProfileChooserActivity() {
     launch(AddProfileActivity::class.java).use {
@@ -593,6 +594,7 @@ class AddProfileActivityTest {
     }
   }
 
+  /* ktlint-disable max-line-length */
   @Test
   fun testProfileChooserActivity_changeConfiguration_inputShortPin_clickCreate_checkPinLengthError() {
     launch(AddProfileActivity::class.java).use {

@@ -634,7 +634,8 @@ class ProfileChooserFragmentTest {
   }
 
   private fun createProfileChooserActivityIntent(): Intent {
-    return ProfileChooserActivity.createProfileChooserActivity(ApplicationProvider.getApplicationContext())
+    return ProfileChooserActivity
+      .createProfileChooserActivity(ApplicationProvider.getApplicationContext())
   }
 
   private fun getResources(): Resources {

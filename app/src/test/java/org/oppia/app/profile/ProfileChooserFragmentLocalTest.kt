@@ -86,7 +86,8 @@ class ProfileChooserFragmentLocalTest {
   }
 
   private fun createProfileChooserActivityIntent(): Intent {
-    return ProfileChooserActivity.createProfileChooserActivity(ApplicationProvider.getApplicationContext())
+    return ProfileChooserActivity
+      .createProfileChooserActivity(ApplicationProvider.getApplicationContext())
   }
 
   private fun setUpTestApplicationComponent() {
