@@ -3,7 +3,6 @@ package org.oppia.app.shim
 import android.content.Context
 import android.content.Intent
 import androidx.fragment.app.FragmentActivity
-import org.oppia.app.topic.TopicActivity
 
 /**
  * Creates intents for ViewModels in order to avoid ViewModel files directly depending on Activites.
