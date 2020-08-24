@@ -10,12 +10,12 @@ import org.hamcrest.TypeSafeMatcher
 
 // https://github.com/dbottillo/Blog/blob/espresso_match_imageview/app/src/androidTest/java/com/danielebottillo/blog/config/DrawableMatcher.java
 /** This class mainly provides a custom matcher to test whether the drawable-image is correctly shown in ImageView. */
-class DrawableMatcher internal constructor(
+class DrawableMatcher constructor(
   private val expectedId: Int
 ) : TypeSafeMatcher<View>(View::class.java) {
   companion object {
-    internal const val NONE = -1
-    internal const val ANY = -2
+    const val NONE = -1
+    const val ANY = -2
   }
 
   private var resourceName: String? = null

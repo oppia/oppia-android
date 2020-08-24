@@ -22,14 +22,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 2
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -45,14 +44,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 0
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -68,14 +66,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 3
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -91,14 +88,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 1
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -115,11 +111,26 @@
           "customization_args": {
             "choices": {
               "value": [
-                "<p>14:2</p>\n",
-                "<p>4:1</p>\n",
-                "<p>7:1</p>\n",
-                "<p>1:1/7</p>",
-                "<p>28:4</p>"
+                {
+                  "html": "<p>14:2</p>\n",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>4:1</p>\n",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>7:1</p>\n",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>1:1/7</p>",
+                  "content_id": "ca_choices_3"
+                },
+                {
+                  "html": "<p>28:4</p>",
+                  "content_id": "ca_choices_4"
+                }
               ]
             }
           },
@@ -238,14 +249,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "4:9:6"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -261,26 +271,19 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "4:3:2"
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+                  },
+                  {
                     "x": "2:3:1"
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+                  },
+                  {
                     "x": "2:9:3"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -296,14 +299,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Contains",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Contains": [
+                  {
                     "x": "ml"
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -403,14 +405,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "1:1:4"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -426,14 +427,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "1:1:8"
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -525,14 +525,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 2
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -548,14 +547,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 0
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -572,10 +570,22 @@
           "customization_args": {
             "choices": {
               "value": [
-                "<p>2:4:5</p>\n",
-                "<p>5:13:21</p>\n",
-                "<p>6:12:18</p>\n",
-                "<p>10:20:25</p>\n"
+                {
+                  "html": "<p>2:4:5</p>\n",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>5:13:21</p>\n",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>6:12:18</p>\n",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>10:20:25</p>\n",
+                  "content_id": "ca_choices_3"
+                }
               ]
             }
           },
@@ -664,18 +674,17 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": [
                       "<p>2:3</p>\n",
                       "<p>4:6</p>\n",
                       "<p>8:12</p>\n"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -691,32 +700,25 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": [
                       "<p>2:3</p>\n"
                     ]
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+                  },
+                  {
                     "x": [
                       "<p>4:6</p>\n"
                     ]
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+                  },
+                  {
                     "x": [
                       "<p>8:12</p>\n"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -732,17 +734,16 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "ContainsAtLeastOneOf",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "ContainsAtLeastOneOf": [
+                  {
                     "x": [
                       "<p>1:3</p>\n",
                       "<p>12:15</p>\n"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -758,16 +759,15 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "DoesNotContainAtLeastOneOf",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "DoesNotContainAtLeastOneOf": [
+                  {
                     "x": [
                       "<p>2:3</p>\n"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -783,17 +783,16 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "DoesNotContainAtLeastOneOf",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "DoesNotContainAtLeastOneOf": [
+                  {
                     "x": [
                       "<p>4:6</p>\n",
                       "<p>8:12</p>\n"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -816,11 +815,26 @@
             },
             "choices": {
               "value": [
-                "<p>1:3</p>\n",
-                "<p>2:3</p>\n",
-                "<p>4:6</p>\n",
-                "<p>8:12</p>\n",
-                "<p>12:15</p>\n"
+                {
+                  "html": "<p>1:3</p>\n",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>2:3</p>\n",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>4:6</p>\n",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>8:12</p>\n",
+                  "content_id": "ca_choices_3"
+                },
+                {
+                  "html": "<p>12:15</p>\n",
+                  "content_id": "ca_choices_4"
+                }
               ]
             }
           },
@@ -940,14 +954,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "1:2"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -963,14 +976,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "2:4"
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -1185,17 +1197,16 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": [
                       "<p>1:2:6:3</p>\n",
                       "<p>3:6:18:9</p>\n"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1211,24 +1222,20 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": [
                       "<p>1:2:6:3</p>\n"
                     ]
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+                  },
+                  {
                     "x": [
                       "<p>3:6:18:9</p>\n"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -1251,10 +1258,22 @@
             },
             "choices": {
               "value": [
-                "<p>1:2:6:3</p>\n",
-                "<p>3:6:18:9</p>\n",
-                "<p>4:8:20:12</p>\n",
-                "<p>6:12:36:24</p>\n"
+                {
+                  "html": "<p>1:2:6:3</p>\n",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>3:6:18:9</p>\n",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>4:8:20:12</p>\n",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>6:12:36:24</p>\n",
+                  "content_id": "ca_choices_3"
+                }
               ]
             }
           },
@@ -1378,14 +1397,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 2
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1401,14 +1419,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 0
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1424,14 +1441,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 3
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1447,14 +1463,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 1
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -1471,10 +1486,22 @@
           "customization_args": {
             "choices": {
               "value": [
-                "<p>No, because we can't multiply 2:4 by a counting number to get 3:6.</p>",
-                "<p>No, because they have a different relative relationship.</p>",
-                "<p>Yes, because they have the same relative relationship. The number on the right-hand side is double the number on the left-hand side.</p>",
-                "<p>Yes, because if we add 1 to each side of the ratio, the ratio will become 3:6.</p>"
+                {
+                  "html": "<p>No, because we can't multiply 2:4 by a counting number to get 3:6.</p>",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>No, because they have a different relative relationship.</p>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>Yes, because they have the same relative relationship. The number on the right-hand side is double the number on the left-hand side.</p>",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>Yes, because if we add 1 to each side of the ratio, the ratio will become 3:6.</p>",
+                  "content_id": "ca_choices_3"
+                }
               ]
             }
           },
@@ -1564,14 +1591,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 1
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1587,14 +1613,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 0
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -1611,10 +1636,22 @@
           "customization_args": {
             "choices": {
               "value": [
-                "<p>1/2:1</p>\n",
-                "<p>1:2</p>\n",
-                "<p>2:4</p>\n",
-                "<p>3:6</p>\n"
+                {
+                  "html": "<p>1/2:1</p>\n",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>1:2</p>\n",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>2:4</p>\n",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>3:6</p>\n",
+                  "content_id": "ca_choices_3"
+                }
               ]
             }
           },
@@ -1688,14 +1725,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "5:2:4"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1711,14 +1747,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "10:4:8"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1734,14 +1769,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "5:1:2"
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -1831,7 +1865,6 @@
           "customization_args": {
             "recommendedExplorationIds": {
               "value": [
-                "nLmUS6lbmvnl"
               ]
             }
           },
@@ -1881,18 +1914,17 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": [
                       "<p>3:5</p>\n",
                       "<p>12:20</p>\n",
                       "<p>18:30</p>\n"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1908,32 +1940,25 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": [
                       "<p>3:5</p>\n"
                     ]
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+                  },
+                  {
                     "x": [
                       "<p>12:20</p>\n"
                     ]
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+                  },
+                  {
                     "x": [
                       "<p>18:30</p>\n"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -1956,12 +1981,30 @@
             },
             "choices": {
               "value": [
-                "<p>1:2</p>\n",
-                "<p>3:5</p>\n",
-                "<p>5:9</p>\n",
-                "<p>10:18</p>\n",
-                "<p>12:20</p>\n",
-                "<p>18:30</p>\n"
+                {
+                  "html": "<p>1:2</p>\n",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>3:5</p>\n",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>5:9</p>\n",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>10:18</p>\n",
+                  "content_id": "ca_choices_3"
+                },
+                {
+                  "html": "<p>12:20</p>\n",
+                  "content_id": "ca_choices_4"
+                },
+                {
+                  "html": "<p>18:30</p>\n",
+                  "content_id": "ca_choices_5"
+                }
               ]
             }
           },
@@ -2035,14 +2078,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "12:20"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -2058,14 +2100,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "12"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -2081,14 +2122,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "X:20"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -2104,14 +2144,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Contains",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Contains": [
+                  {
                     "x": ":20"
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -2319,17 +2358,16 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": [
                       "<p>6:9:15</p>\n",
                       "<p>8:12:20</p>\n"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -2345,24 +2383,16 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": [
-                      "<p>6:9:15</p>\n"
-                    ]
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": [
+                      "<p>6:9:15</p>\n",
                       "<p>8:12:20</p>\n"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -2385,10 +2415,22 @@
             },
             "choices": {
               "value": [
-                "<p>5:10:20</p>\n",
-                "<p>6:9:15</p>\n",
-                "<p>8:12:20</p>\n",
-                "<p>15:20:30</p>\n"
+                {
+                  "html": "<p>5:10:20</p>\n",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>6:9:15</p>\n",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>8:12:20</p>\n",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>15:20:30</p>\n",
+                  "content_id": "ca_choices_3"
+                }
               ]
             }
           },
@@ -2462,14 +2504,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 1
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -2486,10 +2527,22 @@
           "customization_args": {
             "choices": {
               "value": [
-                "<p>1:2</p>\n",
-                "<p>2:6</p>\n",
-                "<p>3:12</p>\n",
-                "<p>6:24</p>\n"
+                {
+                  "html": "<p>1:2</p>\n",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>2:6</p>\n",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>3:12</p>\n",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>6:24</p>\n",
+                  "content_id": "ca_choices_3"
+                }
               ]
             }
           },
@@ -2570,16 +2623,15 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": [
                       "<p>2:3</p>"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -2595,24 +2647,20 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "ContainsAtLeastOneOf",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "ContainsAtLeastOneOf": [
+                  {
                     "x": [
                       "<p>9:14</p>"
                     ]
-                  }
-                },
-                {
-                  "rule_type": "ContainsAtLeastOneOf",
-                  "inputs": {
+                  },
+                  {
                     "x": [
                       "<p>5:10</p>"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -2635,10 +2683,22 @@
             },
             "choices": {
               "value": [
-                "<p>1:2</p>",
-                "<p>2:3</p>",
-                "<p>5:10</p>",
-                "<p>9:14</p>"
+                {
+                  "html": "<p>1:2</p>",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>2:3</p>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>5:10</p>",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>9:14</p>",
+                  "content_id": "ca_choices_3"
+                }
               ]
             }
           },
@@ -2701,5 +2761,6 @@
     "title": "Writing Ratios in Simplest Form"
   },
   "exploration_id": "tIoSb3HZFN6e",
+  "states_schema_version": 39,
   "version": 46
 }

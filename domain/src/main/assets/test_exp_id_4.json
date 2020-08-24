@@ -44,10 +44,9 @@
           "answer_groups": [
             {
               "tagged_skill_misconception_id": null,
-              "rule_specs": [
-                {
-                  "rule_type": "IsEqualToOrdering",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsEqualToOrdering": [
+                  {
                     "x": [
                       [
                         "<p>yesterday</p>"
@@ -60,8 +59,8 @@
                       ]
                     ]
                   }
-                }
-              ],
+                ]
+              },
               "training_data": [],
               "outcome": {
                 "labelled_as_correct": false,
@@ -77,15 +76,14 @@
             },
             {
               "tagged_skill_misconception_id": null,
-              "rule_specs": [
-                {
-                  "rule_type": "HasElementXAtPositionY",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasElementXAtPositionY": [
+                  {
                     "y": 4,
                     "x": "<p>I bought</p>"
                   }
-                }
-              ],
+                ]
+              },
               "training_data": [],
               "outcome": {
                 "labelled_as_correct": false,
@@ -101,15 +99,14 @@
             },
             {
               "tagged_skill_misconception_id": null,
-              "rule_specs": [
-                {
-                  "rule_type": "HasElementXBeforeElementY",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasElementXBeforeElementY": [
+                  {
                     "y": "<p>to photograph the parade.</p>",
                     "x": "<p>I bought</p>"
                   }
-                }
-              ],
+                ]
+              },
               "training_data": [],
               "outcome": {
                 "labelled_as_correct": false,
@@ -125,10 +122,9 @@
             },
             {
               "tagged_skill_misconception_id": null,
-              "rule_specs": [
-                {
-                  "rule_type": "IsEqualToOrderingWithOneItemAtIncorrectPosition",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsEqualToOrderingWithOneItemAtIncorrectPosition": [
+                  {
                     "x": [
                       [
                         "<p>I bought</p>"
@@ -144,8 +140,8 @@
                       ]
                     ]
                   }
-                }
-              ],
+                ]
+              },
               "training_data": [],
               "outcome": {
                 "labelled_as_correct": false,
@@ -177,10 +173,22 @@
             },
             "choices": {
               "value": [
-                "<p>I bought</p>",
-                "<p>a camera at the store</p>",
-                "<p>yesterday</p>",
-                "<p>to photograph the parade.</p>"
+                {
+                  "html": "<p>I bought</p>",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>a camera at the store</p>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>yesterday</p>",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html":  "<p>to photograph the parade.</p>",
+                  "content_id": "ca_choices_3"
+                }
               ]
             }
           },
@@ -220,5 +228,6 @@
     "init_state_name": "DragDropSortInput"
   },
   "exploration_id": "test_exp_id_4",
+  "states_schema_version": 39,
   "version": 1
 }
