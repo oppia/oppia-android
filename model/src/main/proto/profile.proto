@@ -57,7 +57,7 @@ message Profile {
   // Represents the time the user's profile was created.
   int64 date_created_timestamp_ms = 9;
 
-  // Represents user selected story-text-size.
+  // Represents user selected reading-text-size.
   ReadingTextSize reading_text_size = 10;
 
   // Represents user selected audio-language.
@@ -97,7 +97,7 @@ message ProfileChooserUiModel {
   }
 }
 
-// Supported Story text sizes for user preference.
+// Supported reading text sizes for user preference.
 enum ReadingTextSize {
   TEXT_SIZE_UNSPECIFIED = 0;
   SMALL_TEXT_SIZE = 1;

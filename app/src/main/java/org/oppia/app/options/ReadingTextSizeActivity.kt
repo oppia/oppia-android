@@ -6,7 +6,7 @@ import android.os.Bundle
 import org.oppia.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
-/** The activity to change the Text size of the Story content in the app. */
+/** The activity to change the text size of the reading content in the app. */
 class ReadingTextSizeActivity : InjectableAppCompatActivity() {
 
   @Inject

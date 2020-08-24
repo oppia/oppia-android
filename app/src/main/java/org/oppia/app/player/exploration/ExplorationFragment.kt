@@ -61,7 +61,7 @@ class ExplorationFragment : InjectableFragment() {
     fragmentComponent.inject(this)
     val readingTextSize =
       arguments!!.getString(STORY_DEFAULT_FONT_SIZE_ARGUMENT_KEY)
-    checkNotNull(readingTextSize) { "ExplorationFragment must be created with a story text size" }
+    checkNotNull(readingTextSize) { "ExplorationFragment must be created with a reading text size" }
     fontScaleConfigurationUtil.adjustFontScale(context, readingTextSize)
   }
 
