@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.drag_drop_test_activity.*
 import org.oppia.app.R
 import org.oppia.app.recyclerview.BindableAdapter
 import javax.inject.Inject
@@ -17,7 +16,7 @@ class DragDropTestActivityPresenter @Inject constructor(private val activity: Ap
 
   fun handleOnCreate() {
     activity.setContentView(R.layout.drag_drop_test_activity)
-    activity.drag_drop_recycler_view.apply {
+    activity.findViewById<RecyclerView>(R.id.drag_drop_recycler_view).apply {
       adapter = createBindableAdapter()
       (adapter as BindableAdapter<*>).setDataUnchecked(dataList)
     }

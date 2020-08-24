@@ -44,7 +44,6 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
 
     binding.let {
       it.lifecycleOwner = fragment
-      it.presenter = this
     }
     val spanCount = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
       2
@@ -68,7 +67,6 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
 
     binding.let {
       it.lifecycleOwner = fragment
-      it.presenter = this
       it.viewModel = viewModel
     }
     return binding.root

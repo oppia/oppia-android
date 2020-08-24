@@ -97,8 +97,8 @@ class AudioFragment :
     audioFragmentPresenter.handleDisableAudio(saveUserChoice)
 
   /** Used in data binding to know if user is touching SeekBar */
-  fun getUserIsSeeking() = audioFragmentPresenter.userIsSeeking
+  override fun getUserIsSeeking() = audioFragmentPresenter.userIsSeeking
 
   /** Used in data binding to know position of user's touch */
-  fun getUserPosition() = audioFragmentPresenter.userProgress
+  override fun getUserPosition() = audioFragmentPresenter.userProgress
 }

@@ -4,6 +4,8 @@
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
   <uses-permission android:name="android.permission.INTERNET" />
   <!-- TODO(#56): Reenable landscape support. -->
+  <uses-sdk android:minSdkVersion="19"
+    android:maxSdkVersion="28" />
   <application
     android:name=".application.OppiaApplication"
     android:allowBackup="true"
@@ -30,7 +32,6 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".help.faq.faqsingle.FAQSingleActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".help.HelpActivity"

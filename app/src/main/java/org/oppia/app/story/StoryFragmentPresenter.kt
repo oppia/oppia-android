@@ -21,7 +21,6 @@ import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
 import org.oppia.app.story.storyitemviewmodel.StoryHeaderViewModel
 import org.oppia.app.story.storyitemviewmodel.StoryItemViewModel
-import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.oppialogger.OppiaLogger
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.parser.HtmlParser
@@ -35,7 +34,6 @@ class StoryFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val oppiaClock: OppiaClock,
-  private val viewModelProvider: ViewModelProvider<StoryViewModel>,
   private val htmlParserFactory: HtmlParser.Factory,
   @DefaultResourceBucketName private val resourceBucketName: String,
   @TopicHtmlParserEntityType private val entityType: String
@@ -46,6 +44,9 @@ class StoryFragmentPresenter @Inject constructor(
   private lateinit var linearLayoutManager: LinearLayoutManager
   private lateinit var linearSmoothScroller: RecyclerView.SmoothScroller
 
+  @Inject
+  lateinit var storyViewModel: StoryViewModel
+
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -53,15 +54,14 @@ class StoryFragmentPresenter @Inject constructor(
     topicId: String,
     storyId: String
   ): View? {
-    val viewModel = getStoryViewModel()
     binding = StoryFragmentBinding.inflate(
       inflater,
       container,
       /* attachToRoot= */ false
     )
-    viewModel.setInternalProfileId(internalProfileId)
-    viewModel.setTopicId(topicId)
-    viewModel.setStoryId(storyId)
+    storyViewModel.setInternalProfileId(internalProfileId)
+    storyViewModel.setTopicId(topicId)
+    storyViewModel.setStoryId(storyId)
     logStoryActivityEvent(topicId, storyId)
 
     binding.storyToolbar.setNavigationOnClickListener {
@@ -84,7 +84,7 @@ class StoryFragmentPresenter @Inject constructor(
     // data-bound view models.
     binding.let {
       it.lifecycleOwner = fragment
-      it.viewModel = viewModel
+      it.viewModel = storyViewModel
     }
     return binding.root
   }
@@ -145,10 +145,6 @@ class StoryFragmentPresenter @Inject constructor(
         }
       )
       .build()
-  }
-
-  private fun getStoryViewModel(): StoryViewModel {
-    return viewModelProvider.getForFragment(fragment, StoryViewModel::class.java)
   }
 
   private enum class ViewType {
