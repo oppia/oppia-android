@@ -1,5 +1,6 @@
 package org.oppia.app.ongoingtopiclist
 
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
@@ -15,6 +16,7 @@ import javax.inject.Inject
 /** The ViewModel for [OngoingTopicListFragment]. */
 @FragmentScope
 class OngoingTopicListViewModel @Inject constructor(
+  private val activity: AppCompatActivity,
   private val topicController: TopicController,
   private val logger: ConsoleLogger,
   @TopicHtmlParserEntityType private val entityType: String
@@ -59,7 +61,7 @@ class OngoingTopicListViewModel @Inject constructor(
     val itemViewModelList: MutableList<OngoingTopicItemViewModel> = mutableListOf()
     itemViewModelList.addAll(
       ongoingTopicList.topicList.map { topic ->
-        OngoingTopicItemViewModel(topic, entityType)
+        OngoingTopicItemViewModel(activity, internalProfileId, topic, entityType)
       }
     )
     return itemViewModelList
