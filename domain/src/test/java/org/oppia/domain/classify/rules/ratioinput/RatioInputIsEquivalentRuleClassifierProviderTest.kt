@@ -1,4 +1,4 @@
-package org.oppia.domain.classify.rules.ratioInput
+package org.oppia.domain.classify.rules.ratioinput
 
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider
