@@ -152,7 +152,6 @@ class OngoingTopicListActivityTest {
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId))
       intended(hasExtra(TopicActivity.getTopicIdKey(), RATIOS_TOPIC_ID))
-      intended(hasExtra(TopicActivity.getStoryIdKey(), RATIOS_STORY_ID_0))
     }
   }
 
