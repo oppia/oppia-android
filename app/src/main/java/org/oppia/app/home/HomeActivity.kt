@@ -43,7 +43,7 @@ class HomeActivity : InjectableAppCompatActivity(), RouteToTopicListener {
         dialog.dismiss()
       }
       .setPositiveButton(R.string.home_activity_back_dialog_exit) { _, _ ->
-        // TODO(#322): Need to start intent for ProfileActivity to get update. Change to finish when live data bug is fixed.
+        // TODO(#322): Need to start intent for ProfileChooserActivity to get update. Change to finish when live data bug is fixed.
         val intent = Intent(this, ProfileChooserActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(intent)

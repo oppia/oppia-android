@@ -76,7 +76,7 @@ class ProfileChooserFragmentLocalTest {
 
   @Test
   fun testProfileChooser_onLaunch_logsEvent() {
-    launch<ProfileChooserActivity>(createProfileActivityIntent()).use {
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       val event = fakeEventLogger.getMostRecentEvent()
 
       assertThat(event.priority).isEqualTo(Priority.ESSENTIAL)
@@ -85,8 +85,8 @@ class ProfileChooserFragmentLocalTest {
     }
   }
 
-  private fun createProfileActivityIntent(): Intent {
-    return ProfileChooserActivity.createProfileActivity(ApplicationProvider.getApplicationContext())
+  private fun createProfileChooserActivityIntent(): Intent {
+    return ProfileChooserActivity.createProfileChooserActivity(ApplicationProvider.getApplicationContext())
   }
 
   private fun setUpTestApplicationComponent() {

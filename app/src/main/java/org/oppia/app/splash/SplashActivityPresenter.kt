@@ -52,7 +52,7 @@ class SplashActivityPresenter @Inject constructor(
       Observer { startupMode ->
         when (startupMode) {
           StartupMode.USER_IS_ONBOARDED -> {
-            activity.startActivity(ProfileChooserActivity.createProfileActivity(activity))
+            activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
             activity.finish()
           }
           StartupMode.APP_IS_DEPRECATED -> {

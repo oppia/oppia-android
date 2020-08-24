@@ -118,7 +118,7 @@ class SplashActivityTest {
   }
 
   @Test
-  fun testSplashActivity_secondOpen_routesToChooseProfileActivity() {
+  fun testSplashActivity_secondOpen_routesToChooseProfileChooserActivity() {
     simulateAppAlreadyOnboarded()
     initializeTestApplication()
 

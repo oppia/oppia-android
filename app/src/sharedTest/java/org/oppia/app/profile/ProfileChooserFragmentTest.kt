@@ -171,7 +171,7 @@ class ProfileChooserFragmentTest {
   @Test
   fun testProfileChooserFragment_initializeProfiles_checkProfilesLastVisitedTimeIsShown() {
     profileTestHelper.initializeProfiles()
-    launch<ProfileChooserActivity>(createProfileActivityIntent()).use {
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       onView(atPosition(R.id.profile_recycler_view, 0)).perform(click())
       intended(hasComponent(PinPasswordActivity::class.java.name))
       onView(withId(R.id.input_pin)).perform(typeText("12345"))
@@ -210,7 +210,7 @@ class ProfileChooserFragmentTest {
   @Test
   fun testProfileChooserFragment_initializeProfiles_changeConfiguration_checkProfilesLastVisitedTimeIsShown() {
     profileTestHelper.initializeProfiles()
-    launch<ProfileChooserActivity>(createProfileActivityIntent()).use {
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       onView(
         atPosition(
           R.id.profile_recycler_view,
@@ -437,7 +437,7 @@ class ProfileChooserFragmentTest {
   @Test
   fun testProfileChooserFragment_clickAddProfile_checkOpensAdminAuthActivity_onBackButton_opensProfileChooserFragment() {
     profileTestHelper.initializeProfiles()
-    launch<ProfileChooserActivity>(createProfileActivityIntent()).use {
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       onView(atPosition(R.id.profile_recycler_view, 3)).perform(click())
       intended(hasComponent(AdminAuthActivity::class.java.name))
       intended(hasExtra(AdminAuthActivity.getIntentKey(), 1))
@@ -463,7 +463,7 @@ class ProfileChooserFragmentTest {
   @Test
   fun testProfileChooserFragment_clickAdminControls_checkOpensAdminAuthActivity_onBackButton_opensProfileChooserFragment() {
     profileTestHelper.initializeProfiles()
-    launch<ProfileChooserActivity>(createProfileActivityIntent()).use {
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       onView(withId(R.id.administrator_controls_linear_layout)).perform(click())
       intended(hasComponent(AdminAuthActivity::class.java.name))
       intended(hasExtra(AdminAuthActivity.getIntentKey(), 0))
@@ -493,7 +493,7 @@ class ProfileChooserFragmentTest {
       -10710042,
       true
     )
-    launch<ProfileChooserActivity>(createProfileActivityIntent()).use {
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       onView(
         atPositionOnView(
           R.id.profile_recycler_view,
@@ -516,7 +516,7 @@ class ProfileChooserFragmentTest {
       -10710042,
       true
     )
-    launch<ProfileChooserActivity>(createProfileActivityIntent()).use {
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       onView(withId(R.id.administrator_controls_linear_layout)).perform(click())
       intended(hasComponent(AdminPinActivity::class.java.name))
     }
@@ -525,7 +525,7 @@ class ProfileChooserFragmentTest {
   @Test
   fun testProfileChooserFragment_changeConfiguration_checkSpanCount_hasSpanCount2() {
     profileTestHelper.addOnlyAdminProfile()
-    launch<ProfileChooserActivity>(createProfileActivityIntent()).use {
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       onView(isRoot()).perform(orientationLandscape())
       it.onActivity { activity ->
         val profileRecyclerView = activity.findViewById<RecyclerView>(
@@ -542,7 +542,7 @@ class ProfileChooserFragmentTest {
   @Test
   fun testProfileChooserFragment_checkLayoutManager_isLinearLayoutManager() {
     profileTestHelper.addOnlyAdminProfile()
-    launch<ProfileChooserActivity>(createProfileActivityIntent()).use {
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       it.onActivity { activity ->
         val profileRecyclerView = activity.findViewById<RecyclerView>(
           R.id.profile_recycler_view
@@ -557,7 +557,7 @@ class ProfileChooserFragmentTest {
   @Test
   fun testProfileChooserFragment_onlyAdminProfile_checkText_setUpMultipleProfilesIsVisible() {
     profileTestHelper.addOnlyAdminProfile()
-    launch<ProfileChooserActivity>(createProfileActivityIntent()).use {
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       onView(atPositionOnView(R.id.profile_recycler_view, 1, R.id.add_profile_text)).check(
         matches(withText(R.string.set_up_multiple_profiles))
       )
@@ -567,7 +567,7 @@ class ProfileChooserFragmentTest {
   @Test
   fun testProfileChooserFragment_onlyAdminProfile_checkDescriptionText_isDisplayed() {
     profileTestHelper.addOnlyAdminProfile()
-    launch<ProfileChooserActivity>(createProfileActivityIntent()).use {
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       onView(
         atPositionOnView(
           R.id.profile_recycler_view,
@@ -581,7 +581,7 @@ class ProfileChooserFragmentTest {
   @Test
   fun testProfileChooserFragment_multipleProfiles_checkText_addProfileIsVisible() {
     profileTestHelper.initializeProfiles()
-    launch<ProfileChooserActivity>(createProfileActivityIntent()).use {
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       onView(atPositionOnView(R.id.profile_recycler_view, 3, R.id.add_profile_text))
         .check(matches(withText(R.string.profile_chooser_add)))
     }
@@ -590,7 +590,7 @@ class ProfileChooserFragmentTest {
   @Test
   fun testProfileChooserFragment_multipleProfiles_checkDescriptionText_isDisplayed() {
     profileTestHelper.initializeProfiles()
-    launch<ProfileChooserActivity>(createProfileActivityIntent()).use {
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       onView(
         atPositionOnView(
           R.id.profile_recycler_view,
@@ -633,8 +633,8 @@ class ProfileChooserFragmentTest {
     }
   }
 
-  private fun createProfileActivityIntent(): Intent {
-    return ProfileChooserActivity.createProfileActivity(ApplicationProvider.getApplicationContext())
+  private fun createProfileChooserActivityIntent(): Intent {
+    return ProfileChooserActivity.createProfileChooserActivity(ApplicationProvider.getApplicationContext())
   }
 
   private fun getResources(): Resources {

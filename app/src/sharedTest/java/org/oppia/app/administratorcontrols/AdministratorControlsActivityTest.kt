@@ -457,7 +457,7 @@ class AdministratorControlsActivityTest {
 
   // TODO(#762): Replace [ProfileChooserActivity] to [LoginActivity] once it is added.
   @Test
-  fun testAdministratorControlsFragment_clickOkButtonInLogoutDialog_opensProfileActivity() {
+  fun testAdministratorControlsFragment_clickOkButtonInLogoutDialog_opensProfileChooserActivity() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         0

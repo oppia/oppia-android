@@ -24,7 +24,7 @@ class IntentFactoryShimImpl @Inject constructor() : IntentFactoryShim {
   private val TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY = "TopicActivity.story_id"
 
   /** Returns [ProfileChooserActivity] intent for [AdministratorControlsAccountActionsViewModel]. */
-  override fun createProfileActivityIntent(fragment: FragmentActivity): Intent {
+  override fun createProfileChooserActivityIntent(fragment: FragmentActivity): Intent {
     return Intent(fragment, ProfileChooserActivity::class.java)
   }
 

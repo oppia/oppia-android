@@ -27,7 +27,7 @@ class OnboardingActivity : InjectableAppCompatActivity(), RouteToProfileListList
   }
 
   override fun routeToProfileList() {
-    startActivity(ProfileChooserActivity.createProfileActivity(this))
+    startActivity(ProfileChooserActivity.createProfileChooserActivity(this))
     finish()
   }
 }

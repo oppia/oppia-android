@@ -12,7 +12,7 @@ class ProfileChooserActivity : InjectableAppCompatActivity() {
   lateinit var profileChooserActivityPresenter: ProfileChooserActivityPresenter
 
   companion object {
-    fun createProfileActivity(context: Context): Intent {
+    fun createProfileChooserActivity(context: Context): Intent {
       val intent = Intent(context, ProfileChooserActivity::class.java)
       intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
       return intent

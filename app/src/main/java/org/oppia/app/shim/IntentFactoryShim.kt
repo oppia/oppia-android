@@ -16,7 +16,7 @@ import androidx.fragment.app.FragmentActivity
 interface IntentFactoryShim {
 
   /** Returns [ProfileActivity] intent for [AdministratorControlsAccountActionsViewModel]. */
-  fun createProfileActivityIntent(fragment: FragmentActivity): Intent
+  fun createProfileChooserActivityIntent(fragment: FragmentActivity): Intent
 
   /**
    * Creates a [TopicActivity] intent for [PromotedStoryViewModel] and passes necessary string

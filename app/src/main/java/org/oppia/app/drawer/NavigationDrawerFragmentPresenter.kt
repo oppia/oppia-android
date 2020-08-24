@@ -253,8 +253,8 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
               dialog.dismiss()
             }
             .setPositiveButton(R.string.home_activity_back_dialog_exit) { _, _ ->
-              // TODO(#322): Need to start intent for ProfileActivity to get update. Change to finish when live data bug is fixed.
-              val intent = ProfileChooserActivity.createProfileActivity(fragment.context!!)
+              // TODO(#322): Need to start intent for ProfileChooserActivity to get update. Change to finish when live data bug is fixed.
+              val intent = ProfileChooserActivity.createProfileChooserActivity(fragment.context!!)
               fragment.activity!!.startActivity(intent)
             }.create().show()
         }
