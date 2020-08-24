@@ -1,6 +1,5 @@
 package org.oppia.app.topic.questionplayer
 
-import androidx.databinding.ObservableArrayList
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
@@ -8,6 +7,7 @@ import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
+import org.oppia.app.viewmodel.ObservableArrayList
 import org.oppia.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
