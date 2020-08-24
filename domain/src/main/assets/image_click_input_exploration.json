@@ -49,7 +49,7 @@
                 "labeledRegions": [
                   {
                     "region": {
-                      "regionType": "RECTANGLE",
+                      "regionType": "Rectangle",
                       "area": [
                         [
                           0.2755102040816326,
@@ -65,7 +65,7 @@
                   },
                   {
                     "region": {
-                      "regionType": "RECTANGLE",
+                      "regionType": "Rectangle",
                       "area": [
                         [
                           0.07346938775510205,
@@ -81,7 +81,7 @@
                   },
                   {
                     "region": {
-                      "regionType": "RECTANGLE",
+                      "regionType": "Rectangle",
                       "area": [
                         [
                           0.6204081632653061,

@@ -671,7 +671,7 @@ class StateRetriever @Inject constructor(
 
   private fun parseRegionType(regionTypeStr: Any): RegionType {
     return when (regionTypeStr) {
-      RegionType.RECTANGLE.name -> RegionType.RECTANGLE
+      "Rectangle" -> RegionType.RECTANGLE
       else -> RegionType.UNRECOGNIZED
     }
   }
