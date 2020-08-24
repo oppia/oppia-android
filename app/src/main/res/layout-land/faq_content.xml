@@ -28,11 +28,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="76dp"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="76dp"
-        android:layout_marginBottom="16dp"
         android:fontFamily="sans-serif-medium"
         android:onClick="@{(v) -> viewModel.clickOnFAQQuestion()}"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
         android:text="@{viewModel.question}"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="14sp" />

@@ -52,14 +52,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsInRegion",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsInRegion": [
+                  {
                     "x": "Mercury"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -75,14 +74,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsInRegion",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsInRegion": [
+                  {
                     "x": "Venus"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -98,14 +96,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsInRegion",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsInRegion": [
+                  {
                     "x": "Earth"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -121,14 +118,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsInRegion",
-                  "inputs": {
-                    "x": "Mars"
+              "rule_types_to_inputs": {
+                "IsInRegion": [
+                  {
+                    "x": "Mars>"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -144,14 +140,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsInRegion",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsInRegion": [
+                  {
                     "x": "Jupiter"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -167,14 +162,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsInRegion",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsInRegion": [
+                  {
                     "x": "Saturn"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -190,14 +184,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsInRegion",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsInRegion": [
+                  {
                     "x": "Uranus"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -213,14 +206,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsInRegion",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsInRegion": [
+                  {
                     "x": "Neptune"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -236,14 +228,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsInRegion",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsInRegion": [
+                  {
                     "x": "Pluto"
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -463,5 +454,6 @@
     "init_state_name": "ImageClickInput"
   },
   "exploration_id": "13",
+  "states_schema_version": 39,
   "version": 1
 }

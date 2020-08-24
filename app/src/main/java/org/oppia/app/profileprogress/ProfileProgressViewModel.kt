@@ -14,6 +14,7 @@ import org.oppia.app.model.OngoingStoryList
 import org.oppia.app.model.OngoingTopicList
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
+import org.oppia.app.shim.IntentFactoryShim
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.topic.TopicController
 import org.oppia.domain.topic.TopicListController
@@ -25,8 +26,9 @@ import javax.inject.Inject
 /** The [ViewModel] for [ProfileProgressFragment]. */
 @FragmentScope
 class ProfileProgressViewModel @Inject constructor(
-  activity: AppCompatActivity,
+  private val activity: AppCompatActivity,
   private val fragment: Fragment,
+  private val intentFactoryShim: IntentFactoryShim,
   private val profileManagementController: ProfileManagementController,
   private val topicController: TopicController,
   private val topicListController: TopicListController,
@@ -126,7 +128,9 @@ class ProfileProgressViewModel @Inject constructor(
     itemViewModelList.add(headerViewModel as ProfileProgressItemViewModel)
     itemViewModelList.addAll(
       itemList.map { story ->
-        RecentlyPlayedStorySummaryViewModel(story, entityType)
+        RecentlyPlayedStorySummaryViewModel(
+          activity, internalProfileId, story, entityType, intentFactoryShim
+        )
       }
     )
     return itemViewModelList
