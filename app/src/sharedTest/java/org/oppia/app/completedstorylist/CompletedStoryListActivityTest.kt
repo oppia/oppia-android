@@ -187,6 +187,34 @@ class CompletedStoryListActivityTest {
   }
 
   @Test
+  fun testCompletedStoryList_configurationChange_clickOnItem0_intentIsCorrect() {
+    launch<CompletedStoryListActivity>(
+      createCompletedStoryListActivityIntent(
+        internalProfileId
+      )
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
+      waitForTheView(withText(containsString("Matthew Goes to the Bakery")))
+      onView(withId(R.id.completed_story_list)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          0
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.completed_story_list,
+          0,
+          R.id.completed_story_name_text_view
+        )
+      ).perform(click())
+      intended(hasComponent(TopicActivity::class.java.name))
+      intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId))
+      intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
+      intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
+    }
+  }
+
+  @Test
   fun testCompletedStoryList_checkItem0_titleIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
