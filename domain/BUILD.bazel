@@ -151,9 +151,9 @@ domain_test(
 )
 
 domain_test(
-    name = "OnboardingFlowControllerTest",
-    srcs = ["src/test/java/org/oppia/domain/onboarding/OnboardingFlowControllerTest.kt"],
-    test_class = "org.oppia.domain.onboarding.OnboardingFlowControllerTest",
+    name = "AppStartupStateControllerTest",
+    srcs = ["src/test/java/org/oppia/domain/onboarding/AppStartupStateControllerTest.kt"],
+    test_class = "org.oppia.domain.onboarding.AppStartupStateControllerTest",
     deps = TEST_DEPS,
 )
 

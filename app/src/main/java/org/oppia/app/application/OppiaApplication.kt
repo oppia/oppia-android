@@ -10,7 +10,11 @@ import org.oppia.app.activity.ActivityComponent
 import org.oppia.domain.oppialogger.OppiaLogUploadWorkRequest
 
 /** The root [Application] of the Oppia app. */
-class OppiaApplication : MultiDexApplication(), ActivityComponentFactory, Configuration.Provider {
+class OppiaApplication :
+  MultiDexApplication(),
+  ActivityComponentFactory,
+  ApplicationInjectorProvider,
+  Configuration.Provider {
   /** The root [ApplicationComponent]. */
   private val component: ApplicationComponent by lazy {
     DaggerApplicationComponent.builder()
@@ -21,6 +25,8 @@ class OppiaApplication : MultiDexApplication(), ActivityComponentFactory, Config
   override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
     return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
   }
+
+  override fun getApplicationInjector(): ApplicationInjector = component
 
   override fun onCreate() {
     super.onCreate()

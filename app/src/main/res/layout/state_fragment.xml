@@ -8,10 +8,6 @@
     <import type="android.view.View" />
 
     <variable
-      name="presenter"
-      type="org.oppia.app.player.state.StateFragmentPresenter" />
-
-    <variable
       name="viewModel"
       type="org.oppia.app.player.state.StateViewModel" />
   </data>
@@ -118,7 +114,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
-        android:src="@drawable/ic_hintbulb_whilte_24dp" />
+        android:src="@drawable/ic_hint_bulb_white_24dp" />
     </FrameLayout>
 
     <FrameLayout
