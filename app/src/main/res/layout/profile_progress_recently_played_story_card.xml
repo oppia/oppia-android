@@ -18,6 +18,7 @@
     android:layout_marginTop="12dp"
     android:layout_marginEnd="8dp"
     android:layout_marginBottom="12dp"
+    android:onClick="@{(v) -> viewModel.onStoryItemClicked()}"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp">

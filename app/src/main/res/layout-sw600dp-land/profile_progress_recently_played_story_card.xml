@@ -15,8 +15,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="32dp"
-    android:layout_marginEnd="32dp"
     android:layout_marginTop="28dp"
+    android:layout_marginEnd="32dp"
+    android:onClick="@{(v) -> viewModel.onStoryItemClicked()}"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp">
