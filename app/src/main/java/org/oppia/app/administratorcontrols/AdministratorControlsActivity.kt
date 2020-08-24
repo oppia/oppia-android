@@ -35,6 +35,7 @@ class AdministratorControlsActivity :
     lastLoadedFragment = if (savedInstanceState != null) {
       savedInstanceState.get(LAST_LOADED_FRAGMENT_KEY) as String
     } else {
+      // TODO(#661): Change the default fragment in the right hand side to be EditAccount fragment in the case of multipane controls.
       PROFILE_LIST_FRAGMENT
     }
     administratorControlsActivityPresenter.handleOnCreate(extraControlsTitle, lastLoadedFragment)
