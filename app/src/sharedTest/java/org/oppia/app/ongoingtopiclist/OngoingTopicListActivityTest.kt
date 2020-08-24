@@ -45,7 +45,6 @@ import org.oppia.app.model.ProfileId
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
-import org.oppia.domain.topic.RATIOS_STORY_ID_0
 import org.oppia.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.domain.topic.StoryProgressTestHelper
 import org.oppia.testing.TestDispatcherModule
