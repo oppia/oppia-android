@@ -1,6 +1,5 @@
 package org.oppia.app.profileprogress
 
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.home.RouteToTopicPlayStoryListener
 import org.oppia.app.model.PromotedStory
@@ -15,7 +14,6 @@ class RecentlyPlayedStorySummaryViewModel(
   private val IntentFactoryShim: IntentFactoryShim
 ) : ProfileProgressItemViewModel(), RouteToTopicPlayStoryListener {
   fun onStoryItemClicked() {
-    Log.d("TAG","onStoryItemClicked")
     routeToTopicPlayStory(internalProfileId, promotedStory.topicId, promotedStory.storyId)
   }
 
