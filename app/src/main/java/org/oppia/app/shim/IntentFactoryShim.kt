@@ -3,6 +3,7 @@ package org.oppia.app.shim
 import android.content.Context
 import android.content.Intent
 import androidx.fragment.app.FragmentActivity
+import org.oppia.app.topic.TopicActivity
 
 /**
  * Creates intents for ViewModels in order to avoid ViewModel files directly depending on Activites.
@@ -27,6 +28,15 @@ interface IntentFactoryShim {
     internalProfileId: Int,
     topicId: String,
     storyId: String
+  ): Intent
+
+  /**
+   * Creates a [TopicActivity] intent which opens info-tab.
+   * */
+  fun createTopicActivityIntent(
+    context: Context,
+    internalProfileId: Int,
+    topicId: String
   ): Intent
 
   /**

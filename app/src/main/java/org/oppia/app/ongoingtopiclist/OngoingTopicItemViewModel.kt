@@ -4,21 +4,22 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import org.oppia.app.home.RouteToTopicListener
 import org.oppia.app.model.Topic
-import org.oppia.app.topic.TopicActivity
+import org.oppia.app.shim.IntentFactoryShim
 
 /** [ViewModel] for displaying topic item in [OngoingTopicListActivity]. */
 class OngoingTopicItemViewModel(
   val activity: AppCompatActivity,
   val internalProfileId: Int,
   val topic: Topic,
-  val entityType: String
+  val entityType: String,
+  private val intentFactoryShim: IntentFactoryShim
 ) : ViewModel(), RouteToTopicListener {
   fun onTopicItemClicked() {
     routeToTopic(internalProfileId, topic.topicId)
   }
 
   override fun routeToTopic(internalProfileId: Int, topicId: String) {
-    val intent = TopicActivity.createTopicActivityIntent(
+    val intent = intentFactoryShim.createTopicActivityIntent(
       activity.applicationContext,
       internalProfileId,
       topicId
