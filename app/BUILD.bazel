@@ -1,7 +1,6 @@
 # TODO(#1532): Rename file to 'BUILD' post-Gradle.
 '''
 This library contains the app's core source files and functionality.
-
 Note that:
  - Most files should be built inside of app library. However, listener files, annotation
 files, view files, view model files, and binding adapter files need to be manually added. The
@@ -15,11 +14,12 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@tools_android//tools/crashlytics:defs.bzl", "crashlytics_android_library")
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("//app:app_test.bzl", "app_test")
+load("//app:test_with_resources.bzl", "test_with_resources")
 
 '''
 Source files for the annotations library. The files inside the annotations library are dependencies
 for all other libraries in app module, except the listeners library.
-
 Place your file here if:
  - A view, view model, or layout file depends on it
  - It is an annotation or helper file of some kind
@@ -29,13 +29,13 @@ Place your file here if:
 ANNOTATIONS = [
     "src/main/java/org/oppia/app/activity/ActivityScope.kt",
     "src/main/java/org/oppia/app/fragment/FragmentScope.kt",
+    "src/main/java/org/oppia/app/utility/ContextExtensions.kt",
     "src/main/java/org/oppia/app/utility/KeyboardHelper.kt",
 ]
 
 '''
 Source files for the listeners library. The files inside the listeners library are dependencies for
 all other libraries in app module, except the annotations library.
-
 Place your file here if:
  - A view, view model, or layout file depends on it
  - It is either a listener, an interface, or a direct dependency of one in this list
@@ -48,6 +48,7 @@ LISTENERS = [
     "src/main/java/org/oppia/app/help/RouteToFAQListListener.kt",
     "src/main/java/org/oppia/app/home/recentlyplayed/OngoingStoryClickListener.kt",
     "src/main/java/org/oppia/app/home/RouteToRecentlyPlayedListener.kt",
+    "src/main/java/org/oppia/app/home/RouteToTopicListener.kt",
     "src/main/java/org/oppia/app/home/RouteToTopicPlayStoryListener.kt",
     "src/main/java/org/oppia/app/home/topiclist/TopicSummaryClickListener.kt",
     "src/main/java/org/oppia/app/onboarding/OnboardingNavigationListener.kt",
@@ -88,7 +89,6 @@ LISTENERS = [
 
 '''
 Source files for the databinding_resources library.
-
 The files inside this list include all layout files. Please note that layouts MUST NOT depend on
 presenters or fragments. Instead, they should depend on a listener or interface as an abstraction.
 '''
@@ -99,7 +99,6 @@ DATABINDING_LAYOUTS = ["src/main/res/layout*/**"]
 # TODO(#1617): Remove genrules post-gradle
 '''
 Source files for the view_models library that import resources.
-
 Place your file here if:
  - It is a view model
  - It imports resources (ex: `import org.oppia.app.R`)
@@ -120,7 +119,6 @@ VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
 
 '''
 Source files for the view_models library that DO NOT import resources.
-
 Place your file here if:
  - It is a view model
  - It does not import resources
@@ -242,7 +240,6 @@ VIEW_MODELS = [
 # TODO(#1617): Remove genrules post-gradle
 '''
 Genrule for source files in the view_models library.
-
 Because each databinding library must have a unique package name and manifest, resources must be
 imported using the proper package name when building with Bazel. This genrule alters those imports
 in order to keep Gradle building.
@@ -263,7 +260,6 @@ for file in VIEW_MODELS_WITH_RESOURCE_IMPORTS]
 # TODO(#1617): Remove genrules post-gradle
 '''
 Source files for the views library that import resources.
-
 Place your file here if:
  - It is a view file
  - It imports resources (ex: `import org.oppia.app.R`)
@@ -277,12 +273,14 @@ VIEWS_WITH_RESOURCE_IMPORTS = [
 
 '''
 Source files for the views library that DO NOT import resources.
-
 Place your file here if:
  - It is a view file
  - It does not import resources
+ - It holds a circular dependency with a view (including views in VIEWS_WITH_RESOURCE_IMPORTS)
 '''
 VIEWS = [
+    "src/main/java/org/oppia/app/application/ApplicationInjector.kt",
+    "src/main/java/org/oppia/app/application/ApplicationInjectorProvider.kt",
     "src/main/java/org/oppia/app/customview/interaction/FractionInputInteractionView.kt",
     "src/main/java/org/oppia/app/customview/interaction/NumericInputInteractionView.kt",
     "src/main/java/org/oppia/app/customview/interaction/TextInputInteractionView.kt",
@@ -301,7 +299,6 @@ VIEWS = [
 # TODO(#1617): Remove genrules post-gradle
 '''
 Genrule for source files in the views library.
-
 Because each databinding library must have a unique package name and manifest, resources must be
 imported using the proper package name when building with Bazel. This genrule alters those imports
 in order to keep Gradle building.
@@ -322,7 +319,6 @@ for file in VIEWS_WITH_RESOURCE_IMPORTS]
 # TODO(#1617): Remove genrules post-gradle
 '''
 Binding adapter files that import resources.
-
 Place your file here if:
  - It is a binding adapter
  - It imports resources (ex: `import org.oppia.app.R`)
@@ -335,7 +331,6 @@ BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS = [
 
 '''
 Binding adapter files that DO NOT import resources.
-
 Place your file here if:
  - It is a binding adapter
  - It does not import resources
@@ -356,7 +351,6 @@ BINDING_ADAPTERS = [
 # TODO(#1617): Remove genrules post-gradle
 '''
 Genrule for source files in the binding_adapters library.
-
 Because each databinding library must have a unique package name and manifest, resources must be
 imported using the proper package name when building with Bazel. This genrule alters those imports
 in order to keep Gradle building.
@@ -370,10 +364,50 @@ in order to keep Gradle building.
      sed 's/import org.oppia.app.R/import org.oppia.app.databinding.adapters.R/g' |
      sed 's/BindingAdapters {/BindingAdapters_updated {/g' > $(OUTS)
      ''',
- )
-for file in BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS]
+ ) for file in BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS]
 
-# Library for non-layout resource files
+'''
+Files to be excluded from the source list for the app library. This list includes all the files
+built by the following libraries:
+- view_models
+- views
+- listeners
+- annotations
+- binding_adapters
+'''
+EXCLUDED_APP_LIB_FILES = VIEW_MODELS + VIEW_MODELS_WITH_RESOURCE_IMPORTS + VIEWS + VIEWS_WITH_RESOURCE_IMPORTS + BINDING_ADAPTERS + BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS + LISTENERS + ANNOTATIONS
+
+'''
+Files to be built by the app library. All of these files are assumed to have resource imports and
+will be processed by the app library genrule regardless in order to avoid any import issues.
+'''
+APP_FILES_WITH_RESOURCE_IMPORTS = glob(["src/main/java/org/oppia/app/**/*.kt"], exclude = EXCLUDED_APP_LIB_FILES)
+
+'''
+Genrule for source files in the app library.
+Because each databinding library must have a unique package name and manifest, resources must be
+imported using the proper package name when building with Bazel. This genrule alters those imports
+in order to keep Gradle building.
+'''
+[genrule(
+     name = "update_" + file[0:-3],
+     srcs = [file],
+     outs = [file[0:-3] + "_updated.kt"],
+     cmd = '''
+     cat $(SRCS) |
+     sed 's/import org.oppia.app.R/import org.oppia.app.ui.R/g' |
+     sed 's/import org.oppia.app.databinding./import org.oppia.app.databinding.databinding./g' > $(OUTS)
+     ''',
+ )
+for file in APP_FILES_WITH_RESOURCE_IMPORTS]
+
+# Files to be built by the app library.
+APP_FILES = [] + [
+    "update_" + app_files_with_resource_imports[0:-3]
+    for app_files_with_resource_imports in APP_FILES_WITH_RESOURCE_IMPORTS
+]
+
+# Library for non-layout resource files.
 android_library(
     name = "resources",
     custom_package = "org.oppia.app",
@@ -386,7 +420,7 @@ android_library(
     visibility = ["//visibility:private"],
 )
 
-# Library for layout resource files
+# Library for layout resource files.
 android_library(
     name = "databinding_resources",
     custom_package = "org.oppia.app.databinding",
@@ -419,7 +453,7 @@ android_library(
     ],
 )
 
-# Library for listener files required to build views and view_model libraries
+# Library for listener files required to build views and view_model libraries.
 kt_android_library(
     name = "listeners",
     custom_package = "org.oppia.app",
@@ -432,7 +466,7 @@ kt_android_library(
     visibility = ["//visibility:private"],
 )
 
-# Library for all view files required to build layout files
+# Library for all view files required to build layout files.
 kt_android_library(
     name = "views",
     custom_package = "org.oppia.app.views",
@@ -453,7 +487,7 @@ kt_android_library(
     visibility = ["//visibility:private"],
 )
 
-# Library for scope annotations required to build views and view_model libraries
+# Library for scope annotations required to build views and view_model libraries.
 kt_android_library(
     name = "annotations",
     custom_package = "org.oppia.app",
@@ -465,7 +499,7 @@ kt_android_library(
     visibility = ["//visibility:private"],
 )
 
-# Library for all view model files
+# Library for all view model files.
 kt_android_library(
     name = "view_models",
     custom_package = "org.oppia.app.view.models",
@@ -486,7 +520,8 @@ kt_android_library(
     visibility = ["//visibility:private"],
 )
 
-# Library for all custom data-binding adapters under org/oppia/app/databinding
+# TODO(#1639): Translate binding adapters back to Kotlin post-Bazel modularization.
+# Library for all custom data-binding adapters under org/oppia/app/databinding.
 android_library(
     name = "binding_adapters",
     custom_package = "org.oppia.app.databinding.adapters",
@@ -506,6 +541,582 @@ android_library(
         artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
     ],
     visibility = ["//visibility:private"],
+)
+
+# Library containing all activity, fragment, and view-based UI flows in the app.
+kt_android_library(
+    name = "app",
+    custom_package = "org.oppia.app.ui",
+    srcs = APP_FILES,
+    enable_data_binding = 1,
+    manifest = "src/main/AppAndroidManifest.xml",
+    deps = [
+        ":binding_adapters",
+        ":dagger",
+        ":databinding_resources",
+        ":resources",
+        ":view_models",
+        ":views",
+        "//model",
+        "//utility",
+        artifact("androidx.databinding:databinding-adapters"),
+        artifact("androidx.databinding:databinding-common"),
+        artifact("androidx.databinding:databinding-runtime"),
+        artifact("androidx.lifecycle:lifecycle-extensions:2.2.0"),
+        artifact("androidx.lifecycle:lifecycle-livedata-core:2.2.0"),
+        artifact("androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"),
+        artifact("androidx.multidex:multidex:2.0.1"),
+        artifact("androidx.viewpager:viewpager:1.0.0"),
+        artifact("com.caverock:androidsvg-aar"),
+        artifact("javax.annotation:javax.annotation-api:jar"),
+    ],
+    visibility = ["//visibility:public"],
+)
+
+'''
+Library that builds test-only source files.
+
+All app-specific files that are only used for testing
+purposes but are not tests should be included in this list. These files should not be included in
+the app library or the final binary but should be dependencies for tests.
+
+Place your file here if:
+ - It is not a test file
+ - Only test files depend on it
+'''
+kt_android_library(
+    name = "test_deps",
+    srcs = [
+        "src/sharedTest/java/org/oppia/app/parser/RichTextViewMatcher.kt",
+        "src/sharedTest/java/org/oppia/app/recyclerview/RecyclerViewMatcher.kt",
+        "src/sharedTest/java/org/oppia/app/utility/ClickActions.kt",
+        "src/sharedTest/java/org/oppia/app/utility/DragViewAction.kt",
+        "src/sharedTest/java/org/oppia/app/utility/DrawableMatcher.kt",
+        "src/sharedTest/java/org/oppia/app/utility/EspressoTestsMatchers.kt",
+        "src/sharedTest/java/org/oppia/app/utility/FontSizeMatcher.kt",
+        "src/sharedTest/java/org/oppia/app/utility/MockitoKotlinHelper.kt",
+        "src/sharedTest/java/org/oppia/app/utility/OrientationChangeAction.kt",
+        "src/sharedTest/java/org/oppia/app/utility/ProgressMatcher.kt",
+        "src/sharedTest/java/org/oppia/app/utility/TabMatcher.kt",
+    ],
+    deps = [
+        ":app",
+        "//testing",
+        artifact("org.mockito:mockito-core"),
+    ],
+    testonly = True,
+)
+
+TEST_DEPS = [
+    ":app",
+    ":dagger",
+    ":resources",
+    ":test_deps",
+    "//domain",
+    "//testing",
+    "//utility",
+    "@robolectric//bazel:android-all",
+    artifact("androidx.annotation:annotation"),
+    artifact("androidx.databinding:databinding-adapters"),
+    artifact("androidx.databinding:databinding-common"),
+    artifact("androidx.databinding:databinding-compiler"),
+    artifact("androidx.databinding:databinding-runtime"),
+    artifact("androidx.test.espresso:espresso-contrib:3.1.0"),
+    artifact("androidx.test.espresso:espresso-core:3.2.0"),
+    artifact("androidx.test.espresso:espresso-intents:3.1.0"),
+    artifact("androidx.test.ext:junit"),
+    artifact("androidx.test:runner:1.2.0"),
+    artifact("com.google.truth:truth"),
+    artifact("org.jetbrains.kotlin:kotlin-reflect"),
+    artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2"),
+    artifact("org.mockito:mockito-core"),
+    artifact("org.robolectric:annotations:4.3"),
+]
+
+# TODO(#973): Fix app module tests for Roboelectric.
+'''
+App module tests.
+
+Note that if a test file imports resources or binding files, it must be wrapped by
+test_with_resources().
+'''
+
+app_test(
+    name = "HomeActivityLocalTest",
+    srcs = ["src/test/java/org/oppia/app/home/HomeActivityLocalTest.kt"],
+    test_class = "org.oppia.app.home.HomeActivityLocalTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "ExplorationActivityLocalTest",
+    srcs = ["src/test/java/org/oppia/app/player/exploration/ExplorationActivityLocalTest.kt"],
+    test_class = "org.oppia.app.player.exploration.ExplorationActivityLocalTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "StateFragmentLocalTest",
+    srcs = [test_with_resources("src/test/java/org/oppia/app/player/state/StateFragmentLocalTest.kt")],
+    test_class = "org.oppia.app.player.state.StateFragmentLocalTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "ProfileChooserFragmentLocalTest",
+    srcs = ["src/test/java/org/oppia/app/profile/ProfileChooserFragmentLocalTest.kt"],
+    test_class = "org.oppia.app.profile.ProfileChooserFragmentLocalTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "StoryActivityLocalTest",
+    srcs = ["src/test/java/org/oppia/app/story/StoryActivityLocalTest.kt"],
+    test_class = "org.oppia.app.story.StoryActivityLocalTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "CompletedStoryListSpanTest",
+    srcs = [test_with_resources("src/test/java/org/oppia/app/testing/CompletedStoryListSpanTest.kt")],
+    test_class = "org.oppia.app.testing.CompletedStoryListSpanTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "OngoingTopicListSpanTest",
+    srcs = [test_with_resources("src/test/java/org/oppia/app/testing/OngoingTopicListSpanTest.kt")],
+    test_class = "org.oppia.app.testing.OngoingTopicListSpanTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "ProfileChooserSpanTest",
+    srcs = ["src/test/java/org/oppia/app/testing/ProfileChooserSpanTest.kt"],
+    test_class = "org.oppia.app.testing.ProfileChooserSpanTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "TopicRevisionSpanTest",
+    srcs = [test_with_resources("src/test/java/org/oppia/app/testing/TopicRevisionSpanTest.kt")],
+    test_class = "org.oppia.app.testing.TopicRevisionSpanTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "PlayerSplitScreenTesting",
+    srcs = ["src/test/java/org/oppia/app/testing/player/split/PlayerSplitScreenTesting.kt"],
+    test_class = "org.oppia.app.testing.player.split.PlayerSplitScreenTesting",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "StateFragmentAccessibilityTest",
+    srcs = [test_with_resources("src/test/java/org/oppia/app/testing/player/state/StateFragmentAccessibilityTest.kt")],
+    test_class = "org.oppia.app.testing.player.state.StateFragmentAccessibilityTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "TopicInfoFragmentLocalTest",
+    srcs = ["src/test/java/org/oppia/app/topic/info/TopicInfoFragmentLocalTest.kt"],
+    test_class = "org.oppia.app.topic.info.TopicInfoFragmentLocalTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "TopicLessonsFragmentLocalTest",
+    srcs = ["src/test/java/org/oppia/app/topic/lessons/TopicLessonsFragmentLocalTest.kt"],
+    test_class = "org.oppia.app.topic.lessons.TopicLessonsFragmentLocalTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "RevisionCardActivityLocalTest",
+    srcs = ["src/test/java/org/oppia/app/topic/revisioncard/RevisionCardActivityLocalTest.kt"],
+    test_class = "org.oppia.app.topic.revisioncard.RevisionCardActivityLocalTest",
+    deps = TEST_DEPS,
+)
+
+''' App Module Shared Tests '''
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "AdministratorControlsActivityTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/administratorcontrols/AdministratorControlsActivityTest.kt")],
+    test_class = "org.oppia.app.administratorcontrols.AdministratorControlsActivityTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "AppVersionActivityTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/administratorcontrols/AppVersionActivityTest.kt")],
+    test_class = "org.oppia.app.administratorcontrols.AppVersionActivityTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "CompletedStoryListActivityTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/completedstorylist/CompletedStoryListActivityTest.kt")],
+    test_class = "org.oppia.app.completedstorylist.CompletedStoryListActivityTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "FAQListFragmentTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/faq/FAQListFragmentTest.kt")],
+    test_class = "org.oppia.app.faq.FAQListFragmentTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "FAQSingleActivityTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/faq/FAQSingleActivityTest.kt")],
+    test_class = "org.oppia.app.faq.FAQSingleActivityTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "HelpFragmentTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/help/HelpFragmentTest.kt")],
+    test_class = "org.oppia.app.help.HelpFragmentTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "HomeActivityTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/home/HomeActivityTest.kt")],
+    test_class = "org.oppia.app.home.HomeActivityTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "RecentlyPlayedFragmentTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/home/RecentlyPlayedFragmentTest.kt")],
+    test_class = "org.oppia.app.home.RecentlyPlayedFragmentTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "MyDownloadsFragmentTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/mydownloads/MyDownloadsFragmentTest.kt")],
+    test_class = "org.oppia.app.mydownloads.MyDownloadsFragmentTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "OnboardingFragmentTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/onboarding/OnboardingFragmentTest.kt")],
+    test_class = "org.oppia.app.onboarding.OnboardingFragmentTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "OngoingTopicListActivityTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/ongoingtopiclist/OngoingTopicListActivityTest.kt")],
+    test_class = "org.oppia.app.ongoingtopiclist.OngoingTopicListActivityTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "OptionsFragmentTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/options/OptionsFragmentTest.kt")],
+    test_class = "org.oppia.app.options.OptionsFragmentTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "HtmlParserTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/parser/HtmlParserTest.kt")],
+    test_class = "org.oppia.app.parser.HtmlParserTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "AudioFragmentTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/player/audio/AudioFragmentTest.kt")],
+    test_class = "org.oppia.app.player.audio.AudioFragmentTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "ExplorationActivityTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/player/exploration/ExplorationActivityTest.kt")],
+    test_class = "org.oppia.app.player.exploration.ExplorationActivityTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "StateFragmentTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/player/state/StateFragmentTest.kt")],
+    test_class = "org.oppia.app.player.state.StateFragmentTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "AddProfileActivityTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/profile/AddProfileActivityTest.kt")],
+    test_class = "org.oppia.app.profile.AddProfileActivityTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "AdminAuthActivityTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/profile/AdminAuthActivityTest.kt")],
+    test_class = "org.oppia.app.profile.AdminAuthActivityTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "AdminPinActivityTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/profile/AdminPinActivityTest.kt")],
+    test_class = "org.oppia.app.profile.AdminPinActivityTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "PinPasswordActivityTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/profile/PinPasswordActivityTest.kt")],
+    test_class = "org.oppia.app.profile.PinPasswordActivityTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "ProfileChooserFragmentTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/profile/ProfileChooserFragmentTest.kt")],
+    test_class = "org.oppia.app.profile.ProfileChooserFragmentTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "ProfilePictureActivityTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/profileprogress/ProfilePictureActivityTest.kt")],
+    test_class = "org.oppia.app.profileprogress.ProfilePictureActivityTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "ProfileProgressFragmentTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/profileprogress/ProfileProgressFragmentTest.kt")],
+    test_class = "org.oppia.app.profileprogress.ProfileProgressFragmentTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "BindableAdapterTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/recyclerview/BindableAdapterTest.kt")],
+    test_class = "org.oppia.app.recyclerview.BindableAdapterTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "ProfileEditActivityTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/settings/profile/ProfileEditActivityTest.kt")],
+    test_class = "org.oppia.app.settings.profile.ProfileEditActivityTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "ProfileListActivityTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/settings/profile/ProfileListActivityTest.kt")],
+    test_class = "org.oppia.app.settings.profile.ProfileListActivityTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "ProfileRenameActivityTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/settings/profile/ProfileRenameActivityTest.kt")],
+    test_class = "org.oppia.app.settings.profile.ProfileRenameActivityTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "ProfileResetPinActivityTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/settings/profile/ProfileResetPinActivityTest.kt")],
+    test_class = "org.oppia.app.settings.profile.ProfileResetPinActivityTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "SplashActivityTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/splash/SplashActivityTest.kt")],
+    test_class = "org.oppia.app.splash.SplashActivityTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "StoryActivityTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/story/StoryActivityTest.kt")],
+    test_class = "org.oppia.app.story.StoryActivityTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "StoryFragmentTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/story/StoryFragmentTest.kt")],
+    test_class = "org.oppia.app.story.StoryFragmentTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "DragDropTestActivityTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/testing/DragDropTestActivityTest.kt")],
+    test_class = "org.oppia.app.testing.DragDropTestActivityTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "ImageRegionSelectionInteractionViewTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/testing/ImageRegionSelectionInteractionViewTest.kt")],
+    test_class = "org.oppia.app.testing.ImageRegionSelectionInteractionViewTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "InputInteractionViewTestActivityTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/testing/InputInteractionViewTestActivityTest.kt")],
+    test_class = "org.oppia.app.testing.InputInteractionViewTestActivityTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "NavigationDrawerTestActivityTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/testing/NavigationDrawerTestActivityTest.kt")],
+    test_class = "org.oppia.app.testing.NavigationDrawerTestActivityTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "TestFontScaleConfigurationUtilActivityTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/testing/TestFontScaleConfigurationUtilActivityTest.kt")],
+    test_class = "org.oppia.app.testing.TestFontScaleConfigurationUtilActivityTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "TopicTestActivityForStoryTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/testing/TopicTestActivityForStoryTest.kt")],
+    test_class = "org.oppia.app.testing.TopicTestActivityForStoryTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "TopicFragmentTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/topic/TopicFragmentTest.kt")],
+    test_class = "org.oppia.app.topic.TopicFragmentTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "ConceptCardFragmentTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/topic/conceptcard/ConceptCardFragmentTest.kt")],
+    test_class = "org.oppia.app.topic.conceptcard.ConceptCardFragmentTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "TopicInfoFragmentTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/topic/info/TopicInfoFragmentTest.kt")],
+    test_class = "org.oppia.app.topic.info.TopicInfoFragmentTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "TopicLessonsFragmentTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/topic/lessons/TopicLessonsFragmentTest.kt")],
+    test_class = "org.oppia.app.topic.lessons.TopicLessonsFragmentTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "TopicPracticeFragmentTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/topic/practice/TopicPracticeFragmentTest.kt")],
+    test_class = "org.oppia.app.topic.practice.TopicPracticeFragmentTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "QuestionPlayerActivityTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/topic/questionplayer/QuestionPlayerActivityTest.kt")],
+    test_class = "org.oppia.app.topic.questionplayer.QuestionPlayerActivityTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "TopicRevisionFragmentTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/topic/revision/TopicRevisionFragmentTest.kt")],
+    test_class = "org.oppia.app.topic.revision.TopicRevisionFragmentTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "RevisionCardFragmentTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/topic/revisioncard/RevisionCardFragmentTest.kt")],
+    test_class = "org.oppia.app.topic.revisioncard.RevisionCardFragmentTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "WalkthroughActivityTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/walkthrough/WalkthroughActivityTest.kt")],
+    test_class = "org.oppia.app.walkthrough.WalkthroughActivityTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "WalkthroughFinalFragmentTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/walkthrough/WalkthroughFinalFragmentTest.kt")],
+    test_class = "org.oppia.app.walkthrough.WalkthroughFinalFragmentTest",
+    deps = TEST_DEPS,
+)
+
+# TODO(#973): Fix app module tests for Roboelectric.
+app_test(
+    name = "WalkthroughTopicListFragmentTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/walkthrough/WalkthroughTopicListFragmentTest.kt")],
+    test_class = "org.oppia.app.walkthrough.WalkthroughTopicListFragmentTest",
+    deps = TEST_DEPS,
+)
+
+app_test(
+    name = "WalkthroughWelcomeFragmentTest",
+    srcs = [test_with_resources("src/sharedTest/java/org/oppia/app/walkthrough/WalkthroughWelcomeFragmentTest.kt")],
+    test_class = "org.oppia.app.walkthrough.WalkthroughWelcomeFragmentTest",
+    deps = TEST_DEPS,
 )
 
 # TODO(#1566): Move Firebase rules to their own package & remove default visibility
