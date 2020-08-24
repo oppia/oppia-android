@@ -12,7 +12,6 @@ import org.junit.runner.RunWith
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.RatioExpression
 import org.oppia.domain.classify.RuleClassifier
-import org.oppia.domain.classify.rules.ratioinput.RatioInputIsEquivalentRuleClassifierProvider
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
