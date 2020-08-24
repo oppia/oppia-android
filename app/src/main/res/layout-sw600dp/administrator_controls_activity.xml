@@ -1,0 +1,62 @@
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/administrator_controls_activity_drawer_layout"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+      android:id="@+id/administrator_controls_activity_toolbar"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      layout="@layout/toolbar" />
+
+    <FrameLayout
+      android:id="@+id/administrator_controls_fragment_placeholder"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toStartOf="@id/administrator_controls_guideline"
+      app:layout_constraintTop_toBottomOf="@id/administrator_controls_activity_toolbar"
+      app:layout_constraintBottom_toBottomOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/administrator_controls_guideline"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      app:layout_constraintGuide_percent="0.38" />
+
+    <TextView
+      android:id="@+id/extra_controls_title"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      app:layout_constraintTop_toBottomOf="@id/administrator_controls_activity_toolbar"
+      app:layout_constraintStart_toEndOf="@id/administrator_controls_guideline"
+      app:layout_constraintEnd_toEndOf="parent" />
+
+    <FrameLayout
+      android:id="@+id/administrator_controls_fragment_multipane_placeholder"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      app:layout_constraintStart_toEndOf="@id/administrator_controls_guideline"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/extra_controls_title"
+      app:layout_constraintBottom_toBottomOf="parent" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+
+  <fragment
+    android:id="@+id/administrator_controls_activity_fragment_navigation_drawer"
+    android:name="org.oppia.app.drawer.NavigationDrawerFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="start"
+    app:layout="@layout/drawer_fragment"
+    tools:layout="@layout/drawer_fragment" />
+</androidx.drawerlayout.widget.DrawerLayout>

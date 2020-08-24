@@ -31,6 +31,7 @@ class AdministratorControlsViewModel @Inject constructor(
   private val IntentFactoryShim: IntentFactoryShim
 ) : ObservableViewModel() {
   private val routeToProfileListListener = activity as RouteToProfileListListener
+  private val loadProfileListListener = activity as LoadProfileListListener
   private lateinit var userProfileId: ProfileId
 
   private val deviceSettingsLiveData: LiveData<DeviceSettings> by lazy {
@@ -63,7 +64,12 @@ class AdministratorControlsViewModel @Inject constructor(
     val itemViewModelList: MutableList<AdministratorControlsItemViewModel> = mutableListOf(
       AdministratorControlsGeneralViewModel()
     )
-    itemViewModelList.add(AdministratorControlsProfileViewModel(routeToProfileListListener))
+    itemViewModelList.add(
+      AdministratorControlsProfileViewModel(
+        routeToProfileListListener,
+        loadProfileListListener
+      )
+    )
     itemViewModelList.add(
       AdministratorControlsDownloadPermissionsViewModel(
         fragment,

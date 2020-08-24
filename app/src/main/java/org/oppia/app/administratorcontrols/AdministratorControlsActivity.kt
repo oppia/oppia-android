@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
+import android.widget.TextView
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.administratorcontrols.appversion.AppVersionActivity
@@ -11,18 +12,32 @@ import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.app.settings.profile.ProfileListActivity
 import javax.inject.Inject
 
+private const val SELECTED_CONTROLS_TITLE_KEY = "SELECTED_CONTROLS_TITLE_KEY"
+const val LAST_LOADED_FRAGMENT_KEY = "LAST_LOADED_FRAGMENT_KEY"
+const val PROFILE_LIST_FRAGMENT = "PROFILE_LIST_FRAGMENT"
+const val APP_VERSION_FRAGMENT = "APP_VERSION_FRAGMENT"
+
 /** Activity for Administrator Controls. */
 class AdministratorControlsActivity :
   InjectableAppCompatActivity(),
   RouteToProfileListListener,
-  RouteToAppVersionListener {
+  RouteToAppVersionListener,
+  LoadProfileListListener,
+  LoadAppVersionListener {
   @Inject
   lateinit var administratorControlsActivityPresenter: AdministratorControlsActivityPresenter
+  private lateinit var lastLoadedFragment: String
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    administratorControlsActivityPresenter.handleOnCreate()
+    val extraControlsTitle = savedInstanceState?.getString(SELECTED_CONTROLS_TITLE_KEY)
+    lastLoadedFragment = if (savedInstanceState != null) {
+      savedInstanceState.get(LAST_LOADED_FRAGMENT_KEY) as String
+    } else {
+      PROFILE_LIST_FRAGMENT
+    }
+    administratorControlsActivityPresenter.handleOnCreate(extraControlsTitle, lastLoadedFragment)
     title = getString(R.string.administrator_controls)
   }
 
@@ -49,5 +64,28 @@ class AdministratorControlsActivity :
     fun getIntentKey(): String {
       return KEY_NAVIGATION_PROFILE_ID
     }
+  }
+
+  override fun loadProfileList() {
+    lastLoadedFragment = PROFILE_LIST_FRAGMENT
+    administratorControlsActivityPresenter
+      .setExtraControlsTitle(getString(R.string.administrator_controls_edit_profiles))
+    administratorControlsActivityPresenter.loadProfileList()
+  }
+
+  override fun loadAppVersion() {
+    lastLoadedFragment = APP_VERSION_FRAGMENT
+    administratorControlsActivityPresenter
+      .setExtraControlsTitle(getString(R.string.administrator_controls_app_version))
+    administratorControlsActivityPresenter.loadAppVersion()
+  }
+
+  override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    val titleTextView = findViewById<TextView>(R.id.extra_controls_title)
+    if (titleTextView != null) {
+      outState.putString(SELECTED_CONTROLS_TITLE_KEY, titleTextView.text.toString())
+    }
+    outState.putString(LAST_LOADED_FRAGMENT_KEY, lastLoadedFragment)
   }
 }
