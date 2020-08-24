@@ -59,7 +59,7 @@ import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-class AddProfileChooserActivityTest {
+class AddProfileActivityTest {
 
   @Inject
   lateinit var context: Context
@@ -80,14 +80,14 @@ class AddProfileChooserActivityTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerAddProfileChooserActivityTest_TestApplicationComponent.builder()
+    DaggerAddProfileActivityTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
   }
 
   @Test
-  fun testAddProfileChooserActivity_inputName_clickCreate_checkOpensProfileChooserActivity() {
+  fun testAddProfileActivity_inputName_clickCreate_checkOpensProfileChooserActivity() {
     launch(AddProfileActivity::class.java).use {
       onView(
         allOf(
@@ -104,7 +104,7 @@ class AddProfileChooserActivityTest {
   }
 
   @Test
-  fun testAddProfileChooserActivity_changeConfiguration_inputName_clickCreate_checkOpensProfileChooserActivity() {
+  fun testAddProfileActivity_changeConfiguration_inputName_clickCreate_checkOpensProfileChooserActivity() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.add_profile_activity_pin_check_box))).perform(scrollTo())
@@ -123,7 +123,7 @@ class AddProfileChooserActivityTest {
   }
 
   @Test
-  fun testAddProfileChooserActivity_clickOnCheckbox_createPin_checkIsDisplayed() {
+  fun testAddProfileActivity_clickOnCheckbox_createPin_checkIsDisplayed() {
     launch(AddProfileActivity::class.java).use {
       onView(allOf(withId(R.id.add_profile_activity_pin_check_box))).perform(click())
       onView(withId(R.id.add_profile_activity_pin_profile_input_view)).check(
@@ -135,7 +135,7 @@ class AddProfileChooserActivityTest {
   }
 
   @Test
-  fun testAddProfileChooserActivity_changeConfiguration_clickOnCheckbox_createPin_checkIsDisplayed() {
+  fun testAddProfileActivity_changeConfiguration_clickOnCheckbox_createPin_checkIsDisplayed() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.add_profile_activity_pin_check_box))).perform(scrollTo())
@@ -1586,6 +1586,6 @@ class AddProfileChooserActivityTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(addProfileActivityTest: AddProfileChooserActivityTest)
+    fun inject(addProfileActivityTest: AddProfileActivityTest)
   }
 }

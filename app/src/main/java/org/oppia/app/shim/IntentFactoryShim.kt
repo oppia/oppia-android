@@ -15,7 +15,7 @@ import androidx.fragment.app.FragmentActivity
 // TODO(#1619): Remove file post-Gradle
 interface IntentFactoryShim {
 
-  /** Returns [ProfileActivity] intent for [AdministratorControlsAccountActionsViewModel]. */
+  /** Returns [ProfileChooserActivity] intent for [AdministratorControlsAccountActionsViewModel]. */
   fun createProfileChooserActivityIntent(fragment: FragmentActivity): Intent
 
   /**
