@@ -155,6 +155,32 @@ class OngoingTopicListActivityTest {
   }
 
   @Test
+  fun testOngoingTopicList_changeConfiguration_clickItem0_intentIsCorrect() {
+    launch<OngoingTopicListActivity>(
+      createOngoingTopicListActivityIntent(
+        internalProfileId
+      )
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
+      waitForTheView(withText("Ratios and Proportional Reasoning"))
+      onView(withId(R.id.ongoing_topic_list)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          0
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.ongoing_topic_list,
+          0, R.id.topic_name_text_view
+        )
+      ).perform(click())
+      intended(hasComponent(TopicActivity::class.java.name))
+      intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId))
+      intended(hasExtra(TopicActivity.getTopicIdKey(), RATIOS_TOPIC_ID))
+    }
+  }
+
+  @Test
   fun testOngoingTopicList_checkItem0_storyCountIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
