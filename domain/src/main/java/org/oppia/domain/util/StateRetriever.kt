@@ -17,6 +17,7 @@ import org.oppia.app.model.NumberUnit
 import org.oppia.app.model.NumberWithUnits
 import org.oppia.app.model.Outcome
 import org.oppia.app.model.Point2d
+import org.oppia.app.model.RatioExpression
 import org.oppia.app.model.RuleSpec
 import org.oppia.app.model.Solution
 import org.oppia.app.model.State
@@ -342,6 +343,7 @@ class StateRetriever @Inject constructor(
         InteractionObject.newBuilder()
           .setNormalizedString(inputJson.getString(keyName))
           .build()
+      "RatioExpression" -> createExactInputForRatioExpressionInput(inputJson, keyName, ruleType)
       else -> throw IllegalStateException("Encountered unexpected interaction ID: $interactionId")
     }
   }
@@ -378,6 +380,31 @@ class StateRetriever @Inject constructor(
       else ->
         InteractionObject.newBuilder()
           .setListOfSetsOfHtmlString(parseListOfSetsOfHtmlStrings(inputJson.getJSONArray(keyName)))
+          .build()
+    }
+  }
+
+  /**
+   * Returns a Ratio Expression Input specific [InteractionObject] parsed from the specified input [JSONObject]
+   * for the given key name.
+   * This method makes assumptions about how to interpret the input type represented by the [JSONObject].
+   */
+  private fun createExactInputForRatioExpressionInput(
+    inputJson: JSONObject?,
+    keyName: String,
+    ruleType: String
+  ): InteractionObject {
+    if (inputJson == null) {
+      return InteractionObject.getDefaultInstance()
+    }
+    return when (ruleType) {
+      "HasNumberOfTermsEqualTo" ->
+        InteractionObject.newBuilder()
+          .setNonNegativeInt(inputJson.getInt(keyName))
+          .build()
+      else ->
+        InteractionObject.newBuilder()
+          .setRatioExpression(parseRatio(inputJson.getJSONArray(keyName)))
           .build()
     }
   }
@@ -432,6 +459,14 @@ class StateRetriever @Inject constructor(
       .setNumerator(fractionAnswer.getInt("numerator"))
       .setIsNegative(fractionAnswer.getBoolean("isNegative"))
       .build()
+  }
+
+  private fun parseRatio(ratioAnswer: JSONArray): RatioExpression {
+    val ratioExpression = RatioExpression.newBuilder()
+    for (i in 0 until ratioAnswer.length()) {
+      ratioExpression.addRatioComponent(ratioAnswer.getInt(i))
+    }
+    return ratioExpression.build()
   }
 
   // Creates a customization arg mapping from JSON
