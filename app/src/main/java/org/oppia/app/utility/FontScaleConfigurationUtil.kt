@@ -24,7 +24,7 @@ class FontScaleConfigurationUtil @Inject constructor() {
     context.resources.displayMetrics.setTo(metrics)
   }
 
-  /** This method returns font scale by story text size. */
+  /** This method returns font scale by reading text size. */
   private fun getReadingTextSizeConfigurationUtil(readingTextSize: String): Float {
     return when (readingTextSize) {
       ReadingTextSize.SMALL_TEXT_SIZE.name -> .8f
