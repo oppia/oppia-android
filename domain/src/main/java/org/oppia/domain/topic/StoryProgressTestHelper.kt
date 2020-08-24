@@ -21,6 +21,93 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /** Creates a partial story progress for a particular profile. */
+  fun markAlphaDummyProgress(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
+    val timestamp = if (!timestampOlderThanAWeek) {
+      getCurrentTimestamp()
+    } else {
+      getOldTimestamp()
+    }
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      "iX9kYCjnouWN",
+      "RRVMHsZ5Mobh",
+      "K645IfRNzpKy",
+      timestamp
+    )
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      "iX9kYCjnouWN",
+      "RRVMHsZ5Mobh",
+      "Knvx24p24qPO",
+      timestamp
+    )
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      "iX9kYCjnouWN",
+      "RRVMHsZ5Mobh",
+      "aAkDKVDR53cG",
+      timestamp
+    )
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      "iX9kYCjnouWN",
+      "RRVMHsZ5Mobh",
+      "avwshGklKLJE",
+      timestamp
+    )
+
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      "C4fqwrvqWpRm",
+      "vfJDB3JAdwIx",
+      "R7WpsSfmDQPV",
+      timestamp
+    )
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      "C4fqwrvqWpRm",
+      "vfJDB3JAdwIx",
+      "zIBYaqfDJrJC",
+      timestamp
+    )
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      "C4fqwrvqWpRm",
+      "vfJDB3JAdwIx",
+      "1904tpP0CYwY",
+      timestamp
+    )
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      "C4fqwrvqWpRm",
+      "vfJDB3JAdwIx",
+      "cQDibOXQbpi7",
+      timestamp
+    )
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      "C4fqwrvqWpRm",
+      "vfJDB3JAdwIx",
+      "MRJeVrKafW6G",
+      timestamp
+    )
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      "C4fqwrvqWpRm",
+      "vfJDB3JAdwIx",
+      "hNOP3TwRJhsz",
+      timestamp
+    )
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      "C4fqwrvqWpRm",
+      "vfJDB3JAdwIx",
+      "zTg2hzTz37jP",
+      timestamp
+    )
+  }
+
+  /** Creates a partial story progress for a particular profile. */
   fun markPartialStoryProgressForFractions(profileId: ProfileId, timestampOlderThanAWeek: Boolean) {
     val timestamp = if (!timestampOlderThanAWeek) {
       getCurrentTimestamp()

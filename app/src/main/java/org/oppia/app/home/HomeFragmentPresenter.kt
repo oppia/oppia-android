@@ -28,6 +28,7 @@ import org.oppia.app.model.TopicSummary
 import org.oppia.app.shim.IntentFactoryShim
 import org.oppia.domain.oppialogger.OppiaLogger
 import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.domain.topic.StoryProgressTestHelper
 import org.oppia.domain.topic.TopicListController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.datetime.DateTimeUtil
@@ -47,6 +48,7 @@ class HomeFragmentPresenter @Inject constructor(
   private val oppiaClock: OppiaClock,
   private val logger: ConsoleLogger,
   private val oppiaLogger: OppiaLogger,
+  private val storyProgressTestHelper: StoryProgressTestHelper,
   private val intentFactoryShim: IntentFactoryShim,
   @TopicHtmlParserEntityType private val topicEntityType: String,
   @StoryHtmlParserEntityType private val storyEntityType: String
@@ -71,6 +73,8 @@ class HomeFragmentPresenter @Inject constructor(
     internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     logHomeActivityEvent()
+
+    storyProgressTestHelper.markAlphaDummyProgress(profileId, false)
 
     welcomeViewModel = WelcomeViewModel()
     promotedStoryListViewModel = PromotedStoryListViewModel(
