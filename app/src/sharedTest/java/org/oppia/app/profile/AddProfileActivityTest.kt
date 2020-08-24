@@ -103,9 +103,8 @@ class AddProfileActivityTest {
     }
   }
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testAddProfileActivity_changeConfiguration_inputName_clickCreate_checkOpensProfileChooserActivity() {
+  fun testAddProfileActivity_changeConfiguration_inputName_clickCreate_checkOpensProfileChooserActivity() { // ktlint-disable max-line-length
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.add_profile_activity_pin_check_box))).perform(scrollTo())
@@ -594,9 +593,8 @@ class AddProfileActivityTest {
     }
   }
 
-  /* ktlint-disable max-line-length */
   @Test
-  fun testProfileChooserActivity_changeConfiguration_inputShortPin_clickCreate_checkPinLengthError() {
+  fun testProfileChooserActivity_changeConfiguration_inputShortPin_clickCreate_checkPinLengthError() { // ktlint-disable max-line-length
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(
