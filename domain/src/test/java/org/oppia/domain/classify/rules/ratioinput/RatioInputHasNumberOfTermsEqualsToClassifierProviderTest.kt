@@ -26,8 +26,8 @@ import kotlin.test.fail
 @Config(manifest = Config.NONE)
 class RatioInputHasNumberOfTermsEqualsToClassifierProviderTest {
   private val NON_NEGATIVE_VALUE_3 = createNonNegativeInt(value = 3)
+  private val NON_NEGATIVE_VALUE_4 = createNonNegativeInt(value = 4)
   private val ITEM_RATIO_3TERMS = listOf(1, 2, 3)
-  private val ITEM_RATIO_4TERMS = listOf(2, 4, 6, 8)
 
   @Inject
   internal lateinit var ratioInputHasNumberOfTermsEqualsToClassifierProvider:
@@ -39,11 +39,11 @@ class RatioInputHasNumberOfTermsEqualsToClassifierProviderTest {
 
   @Test
   fun testAnswer_testRatio_ratio3Terms_bothValuesMatch() {
-    val inputs = mapOf("y" to createRatio(ITEM_RATIO_3TERMS))
+    val inputs = mapOf("y" to NON_NEGATIVE_VALUE_3)
 
     val matches =
       hasNumberOfTermsEqualsToClassifierProvider.matches(
-        answer = NON_NEGATIVE_VALUE_3,
+        answer = createRatio(ITEM_RATIO_3TERMS),
         inputs = inputs
       )
 
@@ -52,11 +52,11 @@ class RatioInputHasNumberOfTermsEqualsToClassifierProviderTest {
 
   @Test
   fun testAnswer_testRatio_ratio4Terms_bothValuesDoNoMatch() {
-    val inputs = mapOf("y" to createRatio(ITEM_RATIO_4TERMS))
+    val inputs = mapOf("y" to NON_NEGATIVE_VALUE_4)
 
     val matches =
       hasNumberOfTermsEqualsToClassifierProvider.matches(
-        answer = NON_NEGATIVE_VALUE_3,
+        answer = createRatio(ITEM_RATIO_3TERMS),
         inputs = inputs
       )
 
@@ -65,11 +65,11 @@ class RatioInputHasNumberOfTermsEqualsToClassifierProviderTest {
 
   @Test
   fun testAnswer_nonNegativeInput_inputWithIncorrectType_throwsException() {
-    val inputs = mapOf("y" to NON_NEGATIVE_VALUE_3)
+    val inputs = mapOf("y" to createRatio(ITEM_RATIO_3TERMS))
 
     val exception = assertThrows(IllegalStateException::class) {
       hasNumberOfTermsEqualsToClassifierProvider.matches(
-        answer = NON_NEGATIVE_VALUE_3,
+        answer = createRatio(ITEM_RATIO_3TERMS),
         inputs = inputs
       )
     }
@@ -77,17 +77,17 @@ class RatioInputHasNumberOfTermsEqualsToClassifierProviderTest {
     assertThat(exception)
       .hasMessageThat()
       .contains(
-        "Expected input value to be of type RATIO_EXPRESSION not NON_NEGATIVE_INT"
+        "Expected input value to be of type NON_NEGATIVE_INT not RATIO_EXPRESSION"
       )
   }
 
   @Test
   fun testAnswer_testRatio_missingInputY_throwsException() {
-    val inputs = mapOf("x" to createRatio(ITEM_RATIO_3TERMS))
+    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_4)
 
     val exception = assertThrows(IllegalStateException::class) {
       hasNumberOfTermsEqualsToClassifierProvider.matches(
-        answer = NON_NEGATIVE_VALUE_3,
+        answer = createRatio(ITEM_RATIO_3TERMS),
         inputs = inputs
       )
     }
