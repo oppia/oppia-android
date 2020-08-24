@@ -37,7 +37,7 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.ExplorationHtmlParserEntityType
-import java.util.Date
+import java.util.*
 import javax.inject.Inject
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY = "STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY"
@@ -177,6 +177,10 @@ class StateFragmentPresenter @Inject constructor(
   fun onResponsesHeaderClicked() {
     recyclerViewAssembler.togglePreviousAnswers(viewModel.itemList)
     recyclerViewAssembler.adapter.notifyDataSetChanged()
+  }
+
+  fun hintVisibilityBetweenState(hintVisibility: Boolean) {
+    viewModel.setHintBulbVisibility(hintVisibility)
   }
 
   fun onHintAvailable(helpIndex: HelpIndex) {

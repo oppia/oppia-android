@@ -117,6 +117,10 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     )
   }
 
+  fun hintVisibilityBetweenState(hintVisibility: Boolean) {
+    questionViewModel.setHintBulbVisibility(hintVisibility)
+  }
+
   fun onHintAvailable(helpIndex: HelpIndex) {
     when (helpIndex.indexTypeCase) {
       HelpIndex.IndexTypeCase.HINT_INDEX, HelpIndex.IndexTypeCase.SHOW_SOLUTION -> {

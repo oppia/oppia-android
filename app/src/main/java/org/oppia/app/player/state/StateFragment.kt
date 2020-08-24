@@ -106,6 +106,9 @@ class StateFragment :
   override fun onHintAvailable(helpIndex: HelpIndex) =
     stateFragmentPresenter.onHintAvailable(helpIndex)
 
+  override fun hintVisibilityBetweenState(hintVisibility: Boolean) =
+    stateFragmentPresenter.hintVisibilityBetweenState(hintVisibility)
+
   fun handlePlayAudio() = stateFragmentPresenter.handleAudioClick()
 
   fun handleKeyboardAction() = stateFragmentPresenter.handleKeyboardAction()

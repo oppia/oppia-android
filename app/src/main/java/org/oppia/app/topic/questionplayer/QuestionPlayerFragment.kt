@@ -84,4 +84,7 @@ class QuestionPlayerFragment :
 
   override fun onHintAvailable(helpIndex: HelpIndex) =
     questionPlayerFragmentPresenter.onHintAvailable(helpIndex)
+
+  override fun hintVisibilityBetweenState(hintVisibility: Boolean) =
+    questionPlayerFragmentPresenter.hintVisibilityBetweenState(hintVisibility)
 }
