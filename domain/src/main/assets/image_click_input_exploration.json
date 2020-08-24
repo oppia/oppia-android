@@ -20,14 +20,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsInRegion",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsInRegion": [
+                  {
                     "x": "Region1"
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -175,5 +174,6 @@
     "init_state_name": "ImageClickInput"
   },
   "exploration_id": "image_click_input_exploration",
+  "states_schema_version": 39,
   "version": 1
 }
