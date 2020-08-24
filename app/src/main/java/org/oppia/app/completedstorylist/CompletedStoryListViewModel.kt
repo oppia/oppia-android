@@ -63,7 +63,13 @@ class CompletedStoryListViewModel @Inject constructor(
     val itemViewModelList: MutableList<CompletedStoryItemViewModel> = mutableListOf()
     itemViewModelList.addAll(
       completedStoryList.completedStoryList.map { completedStory ->
-        CompletedStoryItemViewModel(activity, internalProfileId, completedStory, entityType, intentFactoryShim)
+        CompletedStoryItemViewModel(
+          activity,
+          internalProfileId,
+          completedStory,
+          entityType,
+          intentFactoryShim
+        )
       }
     )
     return itemViewModelList
