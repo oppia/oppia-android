@@ -12,6 +12,7 @@
   </data>
 
   <com.google.android.material.card.MaterialCardView
+    android:id="@+id/profile_progress_recently_played_story_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="32dp"

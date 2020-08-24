@@ -3,7 +3,6 @@ package org.oppia.app.profileprogress
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
@@ -40,7 +39,7 @@ class ProfileProgressViewModel @Inject constructor(
 
   private val headerViewModel = ProfileProgressHeaderViewModel(activity, fragment)
 
-  private val itemViewModelList: MutableList<ProfileProgressItemViewModel> = mutableListOf(
+  val itemViewModelList: MutableList<ProfileProgressItemViewModel> = mutableListOf(
     headerViewModel as ProfileProgressItemViewModel
   )
 
@@ -68,6 +67,22 @@ class ProfileProgressViewModel @Inject constructor(
     )
   }
 
+  private fun getStoryListResult(): LiveData<OngoingStoryList> {
+    return Transformations.map(
+      topicListController.getOngoingStoryList(profileId),
+      ::processOngoingStoryResult
+    )
+  }
+
+  private fun subscribeToOngoingStoryListResult() {
+    getStoryListResult().observe(
+      fragment,
+      Observer {
+        processOngoingStoryList(it)
+      }
+    )
+  }
+
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
     if (profileResult.isFailure()) {
       logger.e(
@@ -79,25 +94,13 @@ class ProfileProgressViewModel @Inject constructor(
     return profileResult.getOrDefault(Profile.getDefaultInstance())
   }
 
-  private val ongoingStoryListResultLiveData: LiveData<AsyncResult<OngoingStoryList>> by lazy {
-    topicListController.getOngoingStoryList(profileId)
-  }
-
-  private val ongoingStoryListLiveData: LiveData<OngoingStoryList> by lazy {
-    Transformations.map(ongoingStoryListResultLiveData, ::processOngoingStoryResult)
-  }
-
-  var refreshedOngoingStoryListViewModelLiveData =
-    MutableLiveData<List<ProfileProgressItemViewModel>>()
-
   /**
    * Reprocesses the data of the [refreshedOngoingStoryListViewModelLiveData] so that we have the
    * correct number of items on configuration changes
    */
   fun handleOnConfigurationChange() {
     limit = fragment.resources.getInteger(R.integer.profile_progress_limit)
-    refreshedOngoingStoryListViewModelLiveData =
-      Transformations.map(ongoingStoryListLiveData, ::processOngoingStoryList) as MutableLiveData
+    subscribeToOngoingStoryListResult()
   }
 
   private fun processOngoingStoryResult(

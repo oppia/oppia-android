@@ -30,8 +30,7 @@
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingBottom="112dp"
-        android:scrollbars="none"
-        app:data="@{viewModel.refreshedOngoingStoryListViewModelLiveData}" />
+        android:scrollbars="none" />
     </FrameLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
