@@ -135,11 +135,14 @@ message CompletedStory {
   // The name of the story being completed.
   string story_name = 2;
 
+  // The ID of the topic which contains this story.
+  string topic_id = 3;
+
   // The name of the topic this story is part of.
-  string topic_name = 3;
+  string topic_name = 4;
 
   // The thumbnail that should be displayed for this completed story.
-  LessonThumbnail lesson_thumbnail = 4;
+  LessonThumbnail lesson_thumbnail = 5;
 }
 
 // Corresponds to the list of stories the player is currently playing across all topics.

@@ -10,16 +10,18 @@
     <item>@string/faq_question_6</item>
     <item>@string/faq_question_7</item>
     <item>@string/faq_question_8</item>
+    <item>@string/faq_question_9</item>
   </string-array>
 
   <string-array name="faq_answers">
     <item>@string/faq_answer_1</item>
-    <item>@string/faq_answer_1</item>
-    <item>@string/faq_answer_1</item>
-    <item>@string/faq_answer_1</item>
-    <item>@string/faq_answer_1</item>
-    <item>@string/faq_answer_1</item>
-    <item>@string/faq_answer_1</item>
-    <item>@string/faq_answer_1</item>
+    <item>@string/faq_answer_2</item>
+    <item>@string/faq_answer_3</item>
+    <item>@string/faq_answer_4</item>
+    <item>@string/faq_answer_5</item>
+    <item>@string/faq_answer_6</item>
+    <item>@string/faq_answer_7</item>
+    <item>@string/faq_answer_8</item>
+    <item>@string/faq_answer_9</item>
   </string-array>
 </resources>
