@@ -114,7 +114,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_loadFragment_displayGeneralAndProfileManagement() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId = 0
       )
     ).use {
       onView(
@@ -169,7 +169,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_loadFragment_displayDownloadPermissionsAndSettings() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId = 0
       )
     ).use {
       onView(
@@ -216,7 +216,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_loadFragment_displayApplicationSettings() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId = 0
       )
     ).use {
       onView(withId(R.id.administrator_controls_list)).perform(
@@ -275,7 +275,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_loadFragment_topicUpdateOnWifiSwitchIsNotChecked_autoUpdateTopicSwitchIsNotChecked() { // ktlint-disable max-line-length
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId = 0
       )
     ).use {
       onView(
@@ -305,7 +305,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_topicUpdateOnWifiSwitchIsChecked_configurationChange_checkIfSwitchIsChecked() { // ktlint-disable max-line-length
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId = 0
       )
     )
     onView(withId(R.id.administrator_controls_list)).perform(
@@ -380,7 +380,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_loadFragment_onClickTopicUpdateOnWifiSwitch_checkSwitchRemainsChecked_onOpeningAdministratorControlsFragmentAgain() { // ktlint-disable max-line-length
     ActivityScenario
       .launch<NavigationDrawerTestActivity>(
-        createNavigationDrawerActivityIntent(0)
+        createNavigationDrawerActivityIntent(profileId = 0)
       )
       .use {
         onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
@@ -423,7 +423,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_clickLogoutButton_displaysLogoutDialog() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId = 0
       )
     ).use {
       onView(withId(R.id.administrator_controls_list)).perform(
@@ -445,7 +445,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_changeConfiguration_clickLogout_displaysLogoutDialog() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId = 0
       )
     ).use {
       onView(withId(R.id.administrator_controls_list)).perform(
@@ -474,7 +474,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_clickOkButtonInLogoutDialog_opensProfileActivity() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId = 0
       )
     ).use {
       onView(withId(R.id.administrator_controls_list)).perform(
@@ -494,7 +494,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_clickCancelButtonInLogoutDialog_dialogDismissed() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId = 0
       )
     ).use {
       onView(withId(R.id.administrator_controls_list)).perform(
