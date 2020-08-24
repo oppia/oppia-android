@@ -7,12 +7,13 @@ import org.oppia.app.shim.IntentFactoryShim
 
 /** Recently played item [ViewModel] for the recycler view in [ProfileProgressFragment]. */
 class RecentlyPlayedStorySummaryViewModel(
-  val activity: AppCompatActivity,
-  val internalProfileId: Int,
+  private val activity: AppCompatActivity,
+  private val internalProfileId: Int,
   val promotedStory: PromotedStory,
   val entityType: String,
   private val intentFactoryShim: IntentFactoryShim
 ) : ProfileProgressItemViewModel(), RouteToTopicPlayStoryListener {
+
   fun onStoryItemClicked() {
     routeToTopicPlayStory(internalProfileId, promotedStory.topicId, promotedStory.storyId)
   }
