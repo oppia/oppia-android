@@ -480,9 +480,7 @@ class ProfileProgressFragmentTest {
           R.id.profile_progress_list,
           1, R.id.topic_name_text_view
         )
-      ).check(
-        matches(withText(containsString("FIRST TEST TOPIC")))
-      )
+      ).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId))
       intended(hasExtra(TopicActivity.getTopicIdKey(), TEST_TOPIC_ID_0))
