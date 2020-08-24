@@ -51,7 +51,7 @@
         android:background="@color/oppiaGreyBackground"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        android:paddingBottom="80dp"
+        android:paddingBottom="108dp"
         android:scrollbars="none">
 
         <LinearLayout
@@ -59,9 +59,9 @@
           android:layout_height="wrap_content"
           android:background="@color/white"
           android:orientation="vertical"
-          android:paddingStart="24dp"
-          android:paddingTop="24dp"
-          android:paddingEnd="24dp"
+          android:paddingStart="72dp"
+          android:paddingTop="28dp"
+          android:paddingEnd="72dp"
           android:paddingBottom="56dp">
 
           <TextView
