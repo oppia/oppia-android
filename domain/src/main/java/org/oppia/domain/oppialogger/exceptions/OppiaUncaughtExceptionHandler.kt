@@ -11,6 +11,8 @@ class OppiaUncaughtExceptionHandler @Inject constructor(
   private val consoleLogger: ConsoleLogger
 ) : Thread.UncaughtExceptionHandler {
 
+  private lateinit var existingUncaughtExceptionHandler: Thread.UncaughtExceptionHandler
+
   /** Logs an uncaught exception to the [exceptionsController]. */
   override fun uncaughtException(thread: Thread?, throwable: Throwable?) {
     try {
@@ -21,7 +23,12 @@ class OppiaUncaughtExceptionHandler @Inject constructor(
     } catch (e: Exception) {
       consoleLogger.e("OPPIA_EXCEPTION_HANDLER", "Problem in logging exception", e)
     } finally {
-      Thread.getDefaultUncaughtExceptionHandler().uncaughtException(thread, throwable)
+      existingUncaughtExceptionHandler.uncaughtException(thread, throwable)
     }
+  }
+
+  /** Sets the [existingUncaughtExceptionHandler] equal to the [existingHandler] */
+  fun setExistingExceptionHandler(existingHandler: Thread.UncaughtExceptionHandler) {
+    this.existingUncaughtExceptionHandler = existingHandler
   }
 }
