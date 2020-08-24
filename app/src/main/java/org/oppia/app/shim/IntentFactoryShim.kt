@@ -30,6 +30,15 @@ interface IntentFactoryShim {
   ): Intent
 
   /**
+   * Creates a [TopicActivity] intent which opens info-tab.
+   * */
+  fun createTopicActivityIntent(
+    context: Context,
+    internalProfileId: Int,
+    topicId: String
+  ): Intent
+
+  /**
    * Creates a [RecentlyPlayedActivity] intent for [PromotedStoryListViewModel] and passes
    * necessary string data.
    * */

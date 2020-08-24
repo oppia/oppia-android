@@ -46,6 +46,20 @@ class IntentFactoryShimImpl @Inject constructor() : IntentFactoryShim {
   }
 
   /**
+   * Creates a [TopicActivity] intent which opens info-tab.
+   * */
+  override fun createTopicActivityIntent(
+    context: Context,
+    internalProfileId: Int,
+    topicId: String
+  ): Intent {
+    val intent = Intent(context, TopicActivity::class.java)
+    intent.putExtra(KEY_NAVIGATION_PROFILE_ID, internalProfileId)
+    intent.putExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
+    return intent
+  }
+
+  /**
    * Creates a [RecentlyPlayedActivity] intent for [PromotedStoryListViewModel] and passes
    * necessary string data.
    * */
