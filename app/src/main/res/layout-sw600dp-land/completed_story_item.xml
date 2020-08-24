@@ -18,14 +18,15 @@
     android:layout_marginStart="32dp"
     android:layout_marginTop="24dp"
     android:layout_marginEnd="32dp"
-    app:cardElevation="4dp"
-    app:cardCornerRadius="4dp">
+    android:clickable="true"
+    android:focusable="true"
+    android:onClick="@{(v) -> viewModel.onCompletedStoryItemClicked()}"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:clickable="true"
-      android:focusable="true">
+      android:layout_height="match_parent">
 
       <org.oppia.app.customview.LessonThumbnailImageView
         android:id="@+id/completed_story_lesson_thumbnail"
@@ -79,12 +80,12 @@
           android:layout_marginEnd="8dp"
           android:ellipsize="end"
           android:fontFamily="sans-serif-light"
+          android:lines="1"
           android:paddingBottom="12dp"
           android:text="@{viewModel.completedStory.topicName}"
           android:textAllCaps="true"
           android:textColor="@color/oppiaStrokeBlack"
           android:textSize="14sp"
-          android:lines="1"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/completed_story_name_text_view" />
       </androidx.constraintlayout.widget.ConstraintLayout>

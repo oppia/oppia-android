@@ -291,6 +291,7 @@ class TopicController @Inject constructor(
         val completedStoryBuilder = CompletedStory.newBuilder()
           .setStoryId(storySummary.storyId)
           .setStoryName(storySummary.storyName)
+          .setTopicId(topic.topicId)
           .setTopicName(topic.name)
           .setLessonThumbnail(storySummary.storyThumbnail)
         completedStoryList.add(completedStoryBuilder.build())
