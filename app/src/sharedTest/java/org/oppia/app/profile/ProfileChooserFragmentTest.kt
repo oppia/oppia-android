@@ -116,7 +116,7 @@ class ProfileChooserFragmentTest {
         )
       ).check(
         matches(
-          withText("Sean")
+          withText("Admin")
         )
       )
       onView(
@@ -283,7 +283,7 @@ class ProfileChooserFragmentTest {
         )
       ).check(
         matches(
-          withText("Sean")
+          withText("Admin")
         )
       )
       onView(withId(R.id.profile_recycler_view)).perform(
@@ -486,7 +486,7 @@ class ProfileChooserFragmentTest {
   @Test
   fun testProfileChooserFragment_clickAdminProfileWithNoPin_checkOpensAdminPinActivity() {
     profileManagementController.addProfile(
-      "Sean",
+      "Admin",
       "",
       null,
       true,
@@ -509,7 +509,7 @@ class ProfileChooserFragmentTest {
   @Test
   fun testProfileChooserFragment_clickAdminControlsWithNoPin_checkOpensAdminPinActivity() {
     profileManagementController.addProfile(
-      "Sean",
+      "Admin",
       "",
       null,
       true,
