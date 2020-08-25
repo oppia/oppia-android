@@ -68,6 +68,16 @@ java_lite_proto_library(
 )
 
 proto_library(
+    name = "subtitled_unicode_proto",
+    srcs = ["src/main/proto/subtitled_unicode.proto"],
+)
+
+java_lite_proto_library(
+    name = "subtitled_unicode_java_proto_lite",
+    deps = [":subtitled_unicode_proto"],
+)
+
+proto_library(
     name = "thumbnail_proto",
     srcs = ["src/main/proto/thumbnail.proto"],
 )

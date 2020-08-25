@@ -5,7 +5,10 @@ package model;
 option java_package = "org.oppia.app.model";
 option java_multiple_files = true;
 
+// Corresponds to a textual value that can be translated to voice.
 message SubtitledUnicode {
+  //Textual value which will be we used
   string unicode_str = 1;
+  //Id which will be used to convert text into voice translation
   string content_id = 2;
 }
