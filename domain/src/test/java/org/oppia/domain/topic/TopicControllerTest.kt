@@ -1025,6 +1025,7 @@ class TopicControllerTest {
     val completedStoryList = completedStoryListResultCaptor.value.getOrThrow()
     assertThat(completedStoryList.completedStoryCount).isEqualTo(1)
     assertThat(completedStoryList.completedStoryList[0].storyId).isEqualTo(FRACTIONS_STORY_ID_0)
+    assertThat(completedStoryList.completedStoryList[0].topicId).isEqualTo(FRACTIONS_TOPIC_ID)
   }
 
   @Test
@@ -1065,6 +1066,7 @@ class TopicControllerTest {
     val completedStoryList = completedStoryListResultCaptor.value.getOrThrow()
     assertThat(completedStoryList.completedStoryCount).isEqualTo(1)
     assertThat(completedStoryList.completedStoryList[0].storyId).isEqualTo(RATIOS_STORY_ID_0)
+    assertThat(completedStoryList.completedStoryList[0].topicId).isEqualTo(RATIOS_TOPIC_ID)
   }
 
   @Test

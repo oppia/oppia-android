@@ -103,10 +103,9 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 10,
                       "numerator": 3,
@@ -114,8 +113,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -131,10 +130,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 10,
                       "numerator": 6,
@@ -142,8 +140,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -159,10 +157,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 21,
                       "numerator": 12,
@@ -170,8 +167,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -187,10 +184,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 21,
                       "numerator": 9,
@@ -198,8 +194,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -215,10 +211,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 10,
                       "numerator": 4,
@@ -226,8 +221,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -243,10 +238,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 3,
                       "numerator": 7,
@@ -254,8 +248,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -271,10 +265,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 7,
                       "numerator": 3,
@@ -282,8 +275,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -299,10 +292,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 6,
                       "numerator": 3,
@@ -310,8 +302,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -327,14 +319,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 10
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -350,14 +341,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasNumeratorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasNumeratorEqualTo": [
+                  {
                     "x": 10
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -373,14 +363,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 12
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -396,14 +385,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasNumeratorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasNumeratorEqualTo": [
+                  {
                     "x": 3
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -986,10 +974,9 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsEquivalentTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsEquivalentTo": [
+                  {
                     "f": {
                       "denominator": 6,
                       "numerator": 4,
@@ -997,8 +984,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1014,10 +1001,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 6,
                       "numerator": 3,
@@ -1025,8 +1011,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1042,14 +1028,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 6
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1065,14 +1050,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasNumeratorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasNumeratorEqualTo": [
+                  {
                     "x": 4
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -1626,14 +1610,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 2
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -1650,11 +1633,26 @@
           "customization_args": {
             "choices": {
               "value": [
-                "<p>One fifth</p>",
-                "<p>Two fifths</p>",
-                "<p>Three fifths</p>",
-                "<p>Four fifths</p>",
-                "<p>Five fifths</p>"
+                {
+                  "html": "<p>One fifth</p>",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>Two fifths</p>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>Three fifths</p>",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>Four fifths</p>",
+                  "content_id": "ca_choices_3"
+                },
+                {
+                  "html": "<p>Five fifths</p>",
+                  "content_id": "ca_choices_4"
+                }
               ]
             }
           },
@@ -1949,14 +1947,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 2
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -1972,26 +1969,19 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 0
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+                  },
+                  {
                     "x": 1
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+                  },
+                  {
                     "x": 7
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -2007,20 +1997,16 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 3
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+                  },
+                  {
                     "x": 4
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -2036,14 +2022,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 6
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -2059,14 +2044,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 5
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -2083,14 +2067,38 @@
           "customization_args": {
             "choices": {
               "value": [
-                "<p>7/2<br></p>",
-                "<p>9/2</p>",
-                "<p>2/7</p>",
-                "<p>7/9<br></p>",
-                "<p>2/9<br></p>",
-                "<p>9/7<br></p>",
-                "<p>2/5</p>",
-                "<p>5/2</p>"
+                {
+                  "html": "<p>7/2<br></p>",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>9/2</p>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>2/7</p>",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>7/9<br></p>",
+                  "content_id": "ca_choices_3"
+                },
+                {
+                  "html": "<p>2/9<br></p>",
+                  "content_id": "ca_choices_4"
+                },
+                {
+                  "html": "<p>9/7<br></p>",
+                  "content_id": "ca_choices_5"
+                },
+                {
+                  "html": "<p>2/5</p>",
+                  "content_id": "ca_choices_6"
+                },
+                {
+                  "html": "<p>5/2</p>",
+                  "content_id": "ca_choices_7"
+                }
               ]
             }
           },
@@ -2478,10 +2486,9 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsEquivalentTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsEquivalentTo": [
+                  {
                     "f": {
                       "denominator": 6,
                       "numerator": 4,
@@ -2489,8 +2496,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -2506,10 +2513,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 6,
                       "numerator": 3,
@@ -2517,8 +2523,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -2534,14 +2540,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 6
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -2742,10 +2747,9 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 12,
                       "numerator": 5,
@@ -2753,8 +2757,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -2901,10 +2905,9 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 8,
                       "numerator": 3,
@@ -2912,8 +2915,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -2929,10 +2932,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 8,
                       "numerator": 4,
@@ -2940,8 +2942,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -2957,14 +2959,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasNumeratorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasNumeratorEqualTo": [
+                  {
                     "x": 8
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -3165,14 +3166,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 1
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -3188,14 +3188,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 2
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -3212,9 +3211,18 @@
           "customization_args": {
             "choices": {
               "value": [
-                "<p>The number of chosen parts.<br></p>",
-                "<p>The number of equal parts that the whole cake is divided into.<br></p>",
-                "<p>I can’t remember!<br></p>"
+                {
+                  "html": "<p>The number of chosen parts.<br></p>",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>The number of equal parts that the whole cake is divided into.<br></p>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>I can’t remember!<br></p>",
+                  "content_id": "ca_choices_2"
+                }
               ]
             }
           },
@@ -3364,14 +3372,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 1
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -3387,14 +3394,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 3
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -3410,14 +3416,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 0
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -3434,10 +3439,22 @@
           "customization_args": {
             "choices": {
               "value": [
-                "<p>Three sevenths<br></p>",
-                "<p>Four sevenths<br></p>",
-                "<p>Five sevenths<br></p>",
-                "<p>Seven fourths<br></p>"
+                {
+                  "html": "<p>Three sevenths<br></p>",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>Four sevenths<br></p>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>Five sevenths<br></p>",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>Seven fourths<br></p>",
+                  "content_id": "ca_choices_3"
+                }
               ]
             }
           },
@@ -3660,10 +3677,9 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 12,
                       "numerator": 5,
@@ -3671,8 +3687,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -3688,10 +3704,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 12,
                       "numerator": 7,
@@ -3699,8 +3714,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -3716,10 +3731,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 12,
                       "numerator": 12,
@@ -3727,8 +3741,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -3744,10 +3758,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 9,
                       "numerator": 5,
@@ -3755,8 +3768,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -3772,10 +3785,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 12,
                       "numerator": 9,
@@ -3783,8 +3795,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -3800,14 +3812,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 12
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -3823,21 +3834,17 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 7,
                       "numerator": 5,
                       "wholeNumber": 0,
                       "isNegative": false
                     }
-                  }
-                },
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+                  },
+                  {
                     "f": {
                       "denominator": 5,
                       "numerator": 7,
@@ -3845,14 +3852,13 @@
                       "isNegative": false
                     }
                   }
-                },
-                {
-                  "rule_type": "HasNumeratorEqualTo",
-                  "inputs": {
+                ],
+                "HasNumeratorEqualTo": [
+                  {
                     "x": 12
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -4354,14 +4360,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 1
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -4377,14 +4382,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 0
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -4400,14 +4404,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 2
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -4424,10 +4427,22 @@
           "customization_args": {
             "choices": {
               "value": [
-                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake divided into eight equal pieces, with 3 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_005823_g1asgsfffe_height_105_width_105.png&amp;quot;\"></oppia-noninteractive-image>",
-                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake divided into 6 equal pieces, with 3 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_005850_j227cn4ims_height_107_width_106.png&amp;quot;\"></oppia-noninteractive-image>",
-                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake divided into 6 equal pieces, with 4 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_005900_eyfj4jqnz0_height_105_width_104.png&amp;quot;\"></oppia-noninteractive-image>",
-                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake divided into 5 equal pieces, with 4 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_005920_u4qln0stnq_height_106_width_106.png&amp;quot;\"></oppia-noninteractive-image>"
+                {
+                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake divided into eight equal pieces, with 3 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_005823_g1asgsfffe_height_105_width_105.png&amp;quot;\"></oppia-noninteractive-image>",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake divided into 6 equal pieces, with 3 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_005850_j227cn4ims_height_107_width_106.png&amp;quot;\"></oppia-noninteractive-image>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake divided into 6 equal pieces, with 4 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_005900_eyfj4jqnz0_height_105_width_104.png&amp;quot;\"></oppia-noninteractive-image>",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake divided into 5 equal pieces, with 4 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_005920_u4qln0stnq_height_106_width_106.png&amp;quot;\"></oppia-noninteractive-image>",
+                  "content_id": "ca_choices_3"
+                }
               ]
             }
           },
@@ -4604,10 +4619,9 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 6,
                       "numerator": 5,
@@ -4615,8 +4629,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -4632,10 +4646,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 6,
                       "numerator": 1,
@@ -4643,8 +4656,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -4660,14 +4673,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 5
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -4683,14 +4695,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 1
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -4706,14 +4717,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 7
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -4729,14 +4739,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 6
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -5020,10 +5029,9 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 6,
                       "numerator": 1,
@@ -5031,8 +5039,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -5048,10 +5056,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 6,
                       "numerator": 5,
@@ -5059,8 +5066,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -5076,10 +5083,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 5,
                       "numerator": 2,
@@ -5087,8 +5093,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -5104,10 +5110,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 1,
                       "numerator": 0,
@@ -5115,8 +5120,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -5132,10 +5137,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 1,
                       "numerator": 0,
@@ -5143,8 +5147,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -5160,10 +5164,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 1,
                       "numerator": 0,
@@ -5171,8 +5174,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -5188,14 +5191,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 5
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -5211,14 +5213,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 1
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -5234,14 +5235,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 7
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -5257,14 +5257,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 2
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -5280,12 +5279,10 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasNoFractionalPart",
-                  "inputs": {}
-                }
-              ]
+              "rule_types_to_inputs": {
+                "HasNoFractionalPart": [
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -5797,10 +5794,9 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 9,
                       "numerator": 4,
@@ -5808,8 +5804,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -5825,14 +5821,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 8
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -5848,14 +5843,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 4
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -5871,14 +5865,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasDenominatorEqualTo": [
+                  {
                     "x": 5
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -5894,14 +5887,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasNumeratorEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasNumeratorEqualTo": [
+                  {
                     "x": 9
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -6156,14 +6148,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 1
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -6179,14 +6170,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 2
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -6202,14 +6192,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 0
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -6225,14 +6214,13 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 3
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -6249,10 +6237,22 @@
           "customization_args": {
             "choices": {
               "value": [
-                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Square with 2 parts out of 4 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_020906_5dizjtea2a_height_109_width_114.png&amp;quot;\"></oppia-noninteractive-image>",
-                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Hexagon with two parts out of three shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_020932_ljahkydugd_height_111_width_127.png&amp;quot;\"></oppia-noninteractive-image>",
-                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Pentagon with two parts out of 5 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_020945_ew72108wha_height_117_width_121.png&amp;quot;\"></oppia-noninteractive-image>",
-                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Circle with three parts out of five shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021046_66vaun0ucf_height_115_width_114.png&amp;quot;\"></oppia-noninteractive-image>"
+                {
+                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Square with 2 parts out of 4 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_020906_5dizjtea2a_height_109_width_114.png&amp;quot;\"></oppia-noninteractive-image>",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Hexagon with two parts out of three shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_020932_ljahkydugd_height_111_width_127.png&amp;quot;\"></oppia-noninteractive-image>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Pentagon with two parts out of 5 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_020945_ew72108wha_height_117_width_121.png&amp;quot;\"></oppia-noninteractive-image>",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Circle with three parts out of five shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021046_66vaun0ucf_height_115_width_114.png&amp;quot;\"></oppia-noninteractive-image>",
+                  "content_id": "ca_choices_3"
+                }
               ]
             }
           },
@@ -6490,17 +6490,16 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": [
                       "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake with two of three slices shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021701_lrik8u8ocs_height_131_width_108.png&amp;quot;\"></oppia-noninteractive-image><p> </p>",
                       "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1/3 of a cake.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021736_l9i7rnd1r3_height_130_width_109.png&amp;quot;\"></oppia-noninteractive-image>"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -6516,24 +6515,20 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": [
                       "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake with two of three slices shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021701_lrik8u8ocs_height_131_width_108.png&amp;quot;\"></oppia-noninteractive-image><p> </p>"
                     ]
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+                  },
+                  {
                     "x": [
                       "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1/3 of a cake.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021736_l9i7rnd1r3_height_130_width_109.png&amp;quot;\"></oppia-noninteractive-image>"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -6549,16 +6544,15 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": [
                       "<oppia-noninteractive-image alt-with-value=\"&amp;quot;3/7 of a cake.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021716_ktjv8g47pv_height_137_width_108.png&amp;quot;\"></oppia-noninteractive-image>"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -6574,16 +6568,15 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": [
                       "<oppia-noninteractive-image alt-with-value=\"&amp;quot;2/7 of a cake.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021746_mvwucxl1e8_height_132_width_105.png&amp;quot;\"></oppia-noninteractive-image>"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -6599,16 +6592,15 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "ContainsAtLeastOneOf",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "ContainsAtLeastOneOf": [
+                  {
                     "x": [
                       "<oppia-noninteractive-image alt-with-value=\"&amp;quot;3/7 of a cake.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021716_ktjv8g47pv_height_137_width_108.png&amp;quot;\"></oppia-noninteractive-image>"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -6624,16 +6616,15 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "ContainsAtLeastOneOf",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "ContainsAtLeastOneOf": [
+                  {
                     "x": [
                       "<oppia-noninteractive-image alt-with-value=\"&amp;quot;2/7 of a cake.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021746_mvwucxl1e8_height_132_width_105.png&amp;quot;\"></oppia-noninteractive-image>"
                     ]
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -6656,10 +6647,22 @@
             },
             "choices": {
               "value": [
-                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake with two of three slices shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021701_lrik8u8ocs_height_131_width_108.png&amp;quot;\"></oppia-noninteractive-image><p> </p>",
-                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;3/7 of a cake.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021716_ktjv8g47pv_height_137_width_108.png&amp;quot;\"></oppia-noninteractive-image>",
-                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1/3 of a cake.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021736_l9i7rnd1r3_height_130_width_109.png&amp;quot;\"></oppia-noninteractive-image>",
-                "<oppia-noninteractive-image alt-with-value=\"&amp;quot;2/7 of a cake.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021746_mvwucxl1e8_height_132_width_105.png&amp;quot;\"></oppia-noninteractive-image>"
+                {
+                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake with two of three slices shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021701_lrik8u8ocs_height_131_width_108.png&amp;quot;\"></oppia-noninteractive-image><p> </p>",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;3/7 of a cake.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021716_ktjv8g47pv_height_137_width_108.png&amp;quot;\"></oppia-noninteractive-image>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1/3 of a cake.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021736_l9i7rnd1r3_height_130_width_109.png&amp;quot;\"></oppia-noninteractive-image>",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;2/7 of a cake.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021746_mvwucxl1e8_height_132_width_105.png&amp;quot;\"></oppia-noninteractive-image>",
+                  "content_id": "ca_choices_3"
+                }
               ]
             }
           },
@@ -7017,14 +7020,13 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 9
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -7227,10 +7229,9 @@
                 "labelled_as_correct": true
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 1,
                       "numerator": 0,
@@ -7238,8 +7239,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -7255,21 +7256,17 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 1,
                       "numerator": 0,
                       "wholeNumber": 28,
                       "isNegative": false
                     }
-                  }
-                },
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+                  },
+                  {
                     "f": {
                       "denominator": 8,
                       "numerator": 2,
@@ -7277,8 +7274,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -7294,10 +7291,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 1,
                       "numerator": 0,
@@ -7305,8 +7301,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -7322,10 +7318,9 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "denominator": 1,
                       "numerator": 0,
@@ -7333,8 +7328,8 @@
                       "isNegative": false
                     }
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -7350,12 +7345,10 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasNoFractionalPart",
-                  "inputs": {}
-                }
-              ]
+              "rule_types_to_inputs": {
+                "HasNoFractionalPart": [
+                ]
+              }
             }
           ],
           "default_outcome": {
@@ -7634,5 +7627,6 @@
     "title": "What is a Fraction?"
   },
   "exploration_id": "umPkwp0L1M0-",
+  "states_schema_version": 39,
   "version": 85
 }
