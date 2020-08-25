@@ -356,7 +356,8 @@ class StateRetriever @Inject constructor(
         InteractionObject.newBuilder()
           .setNormalizedString(inputJson.getString(keyName))
           .build()
-      "RatioExpressionInput" -> createExactInputForRatioExpressionInput(inputJson, keyName, ruleType)
+      "RatioExpressionInput" ->
+        createExactInputForRatioExpressionInput(inputJson, keyName, ruleType)
       else -> throw IllegalStateException("Encountered unexpected interaction ID: $interactionId")
     }
   }
