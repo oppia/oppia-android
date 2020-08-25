@@ -27,7 +27,7 @@ import kotlin.test.fail
 class RatioInputHasNumberOfTermsEqualsToClassifierProviderTest {
   private val NON_NEGATIVE_VALUE_3 = createNonNegativeInt(value = 3)
   private val NON_NEGATIVE_VALUE_4 = createNonNegativeInt(value = 4)
-  private val ITEM_RATIO_3TERMS = listOf(1, 2, 3)
+  private val RATIO_WITH_THREE_TERMS = listOf(1, 2, 3)
 
   @Inject
   internal lateinit var ratioInputHasNumberOfTermsEqualsToClassifierProvider:
@@ -38,12 +38,12 @@ class RatioInputHasNumberOfTermsEqualsToClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer_testRatio_ratio3Terms_bothValuesMatch() {
+  fun testAnswer_withThreeTerms_expected3_matchesCorrectly() {
     val inputs = mapOf("y" to NON_NEGATIVE_VALUE_3)
 
     val matches =
       hasNumberOfTermsEqualsToClassifierProvider.matches(
-        answer = createRatio(ITEM_RATIO_3TERMS),
+        answer = createRatio(RATIO_WITH_THREE_TERMS),
         inputs = inputs
       )
 
@@ -51,12 +51,12 @@ class RatioInputHasNumberOfTermsEqualsToClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer_testRatio_ratio4Terms_bothValuesDoNoMatch() {
+  fun testAnswer_withThreeTerms_expectedFour_doesNotMatch() {
     val inputs = mapOf("y" to NON_NEGATIVE_VALUE_4)
 
     val matches =
       hasNumberOfTermsEqualsToClassifierProvider.matches(
-        answer = createRatio(ITEM_RATIO_3TERMS),
+        answer = createRatio(RATIO_WITH_THREE_TERMS),
         inputs = inputs
       )
 
@@ -65,11 +65,11 @@ class RatioInputHasNumberOfTermsEqualsToClassifierProviderTest {
 
   @Test
   fun testAnswer_nonNegativeInput_inputWithIncorrectType_throwsException() {
-    val inputs = mapOf("y" to createRatio(ITEM_RATIO_3TERMS))
+    val inputs = mapOf("y" to createRatio(RATIO_WITH_THREE_TERMS))
 
     val exception = assertThrows(IllegalStateException::class) {
       hasNumberOfTermsEqualsToClassifierProvider.matches(
-        answer = createRatio(ITEM_RATIO_3TERMS),
+        answer = createRatio(RATIO_WITH_THREE_TERMS),
         inputs = inputs
       )
     }
@@ -87,7 +87,7 @@ class RatioInputHasNumberOfTermsEqualsToClassifierProviderTest {
 
     val exception = assertThrows(IllegalStateException::class) {
       hasNumberOfTermsEqualsToClassifierProvider.matches(
-        answer = createRatio(ITEM_RATIO_3TERMS),
+        answer = createRatio(RATIO_WITH_THREE_TERMS),
         inputs = inputs
       )
     }

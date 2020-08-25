@@ -8,7 +8,7 @@ import org.oppia.domain.classify.rules.RuleClassifierProvider
 import javax.inject.Inject
 
 /**
- * Provider for a classifier that determines whether two object have equal no of terms.
+ * Provider for a classifier that determines whether two object have an equal number of terms.
  */
 internal class RatioInputHasNumberOfTermsEqualsToClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
