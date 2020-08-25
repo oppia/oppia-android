@@ -7,6 +7,13 @@ The java_lite_proto_library() rule takes in a proto_library target and generates
 '''
 load("//model:src/main/proto/format_import_proto_library.bzl", "format_import_proto_library")
 
+# NOTE TO DEVELOPERS: When adding new protos, each proto will need to have both a proto_library
+# and java_lite_proto_library. See the examples below for context. Further, once the proto lite
+# library is added, it should be included in the exports list in the model library at the
+# bottom of this file so that other parts of the app get access to it. If protos import other
+# protos, they need to use format_import_proto_library (again, see examples below for how to do
+# this).
+
 proto_library(
     name = "event_logger_proto",
     srcs = ["src/main/proto/oppia_logger.proto"],
