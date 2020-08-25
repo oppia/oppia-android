@@ -1,5 +1,6 @@
 package org.oppia.app.player.state
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AccelerateInterpolator
@@ -1228,8 +1229,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     /** Hide hint when moving to any previous state. */
     fun hideHint() {
-      (fragment as ShowHintAvailabilityListener).hintVisibilityBetweenState(
-        hintVisibility = false
+      (fragment as ShowHintAvailabilityListener).onHintAvailable(
+        HelpIndex.getDefaultInstance()
       )
     }
 
@@ -1244,9 +1245,15 @@ class StatePlayerRecyclerViewAssembler private constructor(
       }
 
       if (isHintVisible) {
-        (fragment as ShowHintAvailabilityListener).hintVisibilityBetweenState(
-          hintVisibility = true
-        )
+        if (state.interaction.hintList[previousHelpIndex.hintIndex].hintIsRevealed) {
+          (fragment as ShowHintAvailabilityListener).onHintAvailable(
+            HelpIndex.newBuilder().setEverythingRevealed(true).build()
+          )
+        } else {
+          (fragment as ShowHintAvailabilityListener).onHintAvailable(
+            previousHelpIndex
+          )
+        }
       }
 
       // Start showing hints after a wrong answer is submitted or if the user appears stuck (e.g.

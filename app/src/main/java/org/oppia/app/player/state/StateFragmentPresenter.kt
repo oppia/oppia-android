@@ -185,10 +185,6 @@ class StateFragmentPresenter @Inject constructor(
     recyclerViewAssembler.adapter.notifyDataSetChanged()
   }
 
-  fun hintVisibilityBetweenState(hintVisibility: Boolean) {
-    viewModel.setHintBulbVisibility(hintVisibility)
-  }
-
   fun onHintAvailable(helpIndex: HelpIndex) {
     when (helpIndex.indexTypeCase) {
       HelpIndex.IndexTypeCase.HINT_INDEX, HelpIndex.IndexTypeCase.SHOW_SOLUTION -> {
