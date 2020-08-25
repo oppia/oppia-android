@@ -15,10 +15,14 @@ import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewInteraction
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -40,7 +44,10 @@ import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.model.ProfileId
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.app.topic.TopicActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
+import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.domain.topic.StoryProgressTestHelper
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
@@ -149,6 +156,61 @@ class CompletedStoryListActivityTest {
           withText(containsString("Matthew Goes to the Bakery"))
         )
       )
+    }
+  }
+
+  @Test
+  fun testCompletedStoryList_clickOnItem0_intentIsCorrect() {
+    launch<CompletedStoryListActivity>(
+      createCompletedStoryListActivityIntent(
+        internalProfileId
+      )
+    ).use {
+      waitForTheView(withText(containsString("Matthew Goes to the Bakery")))
+      onView(withId(R.id.completed_story_list)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          0
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.completed_story_list,
+          0,
+          R.id.completed_story_name_text_view
+        )
+      ).perform(click())
+      intended(hasComponent(TopicActivity::class.java.name))
+      intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId))
+      intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
+      intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
+    }
+  }
+
+  @Test
+  fun testCompletedStoryList_configurationChange_clickOnItem0_intentIsCorrect() {
+    launch<CompletedStoryListActivity>(
+      createCompletedStoryListActivityIntent(
+        internalProfileId
+      )
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
+      waitForTheView(withText(containsString("Matthew Goes to the Bakery")))
+      onView(withId(R.id.completed_story_list)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          0
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.completed_story_list,
+          0,
+          R.id.completed_story_name_text_view
+        )
+      ).perform(click())
+      intended(hasComponent(TopicActivity::class.java.name))
+      intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId))
+      intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
+      intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
     }
   }
 
