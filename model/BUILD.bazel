@@ -168,6 +168,7 @@ android_library(
         ":exploration_java_proto_lite",
         ":question_java_proto_lite",
         ":topic_java_proto_lite",
+        ":subtitled_unicode_java_proto_lite",
     ],
     visibility = ["//visibility:public"],
 )
