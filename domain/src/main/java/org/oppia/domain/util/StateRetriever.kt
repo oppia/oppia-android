@@ -356,7 +356,7 @@ class StateRetriever @Inject constructor(
         InteractionObject.newBuilder()
           .setNormalizedString(inputJson.getString(keyName))
           .build()
-      "RatioExpression" -> createExactInputForRatioExpressionInput(inputJson, keyName, ruleType)
+      "RatioExpressionInput" -> createExactInputForRatioExpressionInput(inputJson, keyName, ruleType)
       else -> throw IllegalStateException("Encountered unexpected interaction ID: $interactionId")
     }
   }
@@ -512,8 +512,30 @@ class StateRetriever @Inject constructor(
       "TextInput" -> {
         createTextInputCustomizationArgsMap(customizationArgsJson)
       }
+      "RatioExpressionInput" -> {
+        createRatioExpressionInputCustomizationArgsMap(customizationArgsJson)
+      }
       else -> mutableMapOf()
     }
+  }
+
+  private fun createRatioExpressionInputCustomizationArgsMap(
+    customizationArgsJson: JSONObject
+  ): MutableMap<String, SchemaObject> {
+    val customizationArgsMap: MutableMap<String, SchemaObject> = mutableMapOf()
+    customizationArgsMap["placeholder"] =
+      parseNormalizedStringSchemaObject(
+        getJsonObject(
+          customizationArgsJson, "placeholder"
+        )!!.getString("value")
+      )
+    customizationArgsMap["numberOfTerms"] =
+      parseIntegerSchemaObject(
+        getJsonObject(
+          customizationArgsJson, "numberOfTerms"
+        )!!.getInt("value")
+      )
+    return customizationArgsMap
   }
 
   private fun createDragAndDropSortInputCustomizationArgsMap(

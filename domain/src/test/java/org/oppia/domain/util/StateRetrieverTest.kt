@@ -250,19 +250,19 @@ class StateRetrieverTest {
   }
 
   @Test
-  fun testParseState_withImageRegionSelectionInteraction_parsesRuleWithEqualsWithValueAtX() {
+  fun testParseState_withRatioInputSelectionInteraction_parsesRuleWithEqualsWithValueAtX() {
     val state = createStateFromJson(
       "RatioExpressionInput",
       RATIO_TEST_EXPLORATION_NAME
     )
     val ruleSpecMap = lookUpRuleSpec(state, "Equals")
 
-    val ratioList = listOf(4, 5)
+    val expectedInputRatio = createRatio(listOf(4, 5))
 
-    val ratioInputEqualsValue =
-      InteractionObject.newBuilder().setRatioExpression(createRatio(ratioList)).build()
+    val expectedInputInteractionObject =
+      InteractionObject.newBuilder().setRatioExpression(expectedInputRatio).build()
 
-    assertThat(ruleSpecMap.inputMap["x"]).isEqualTo(ratioInputEqualsValue)
+    assertThat(ruleSpecMap.inputMap["x"]).isEqualTo(expectedInputInteractionObject)
   }
 
   @Test
@@ -285,12 +285,12 @@ class StateRetrieverTest {
     )
     val ruleSpecMap = lookUpRuleSpec(state, "IsEquivalent")
 
-    val ratioList = listOf(8, 10)
+    val expectedInputRatio = createRatio(listOf(8, 10))
 
-    val ratioInputIsEquivalentValue =
-      InteractionObject.newBuilder().setRatioExpression(createRatio(ratioList)).build()
+    val expectedInputInteractionObject =
+      InteractionObject.newBuilder().setRatioExpression(expectedInputRatio).build()
 
-    assertThat(ruleSpecMap.inputMap["x"]).isEqualTo(ratioInputIsEquivalentValue)
+    assertThat(ruleSpecMap.inputMap["x"]).isEqualTo(expectedInputInteractionObject)
   }
 
   @Test
@@ -313,12 +313,12 @@ class StateRetrieverTest {
     )
     val ruleSpecMap = lookUpRuleSpec(state, "HasNumberOfTermsEqualTo")
 
-    val numberOfTerms = 3
+    val expectedNumberOfTerms = 3
 
-    val ratioInputHasNumberOfTermsEqualToValue =
-      InteractionObject.newBuilder().setNonNegativeInt(numberOfTerms).build()
+    val expectedInputInteractionObject =
+      InteractionObject.newBuilder().setNonNegativeInt(expectedNumberOfTerms).build()
 
-    assertThat(ruleSpecMap.inputMap["y"]).isEqualTo(ratioInputHasNumberOfTermsEqualToValue)
+    assertThat(ruleSpecMap.inputMap["y"]).isEqualTo(expectedInputInteractionObject)
   }
 
   private fun lookUpRuleSpec(state: State, ruleSpecName: String): RuleSpec {
