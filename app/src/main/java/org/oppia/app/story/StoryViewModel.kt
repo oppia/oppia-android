@@ -3,7 +3,6 @@ package org.oppia.app.story
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterSummary
@@ -27,7 +26,7 @@ class StoryViewModel @Inject constructor(
   private val explorationDataController: ExplorationDataController,
   private val logger: ConsoleLogger,
   @StoryHtmlParserEntityType val entityType: String
-) : ViewModel() {
+) {
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
 
