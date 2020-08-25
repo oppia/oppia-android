@@ -17,4 +17,12 @@ class RatioInputModule {
   internal fun provideRatioInputEqualsRuleClassifier(
     classifierProvider: RatioInputEqualsRuleClassifierProvider
   ): RuleClassifier = classifierProvider.createRuleClassifier()
+
+  @Provides
+  @IntoMap
+  @StringKey("IsEquivalent")
+  @RatioExpressionInputRules
+  internal fun provideRatioInputIsEquivalentRuleClassifier(
+    classifierProvider: RatioInputIsEquivalentRuleClassifierProvider
+  ): RuleClassifier = classifierProvider.createRuleClassifier()
 }
