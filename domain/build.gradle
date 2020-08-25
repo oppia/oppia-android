@@ -58,6 +58,7 @@ dependencies {
       'android.arch.core:core-testing:1.1.1',
       'androidx.test.espresso:espresso-core:3.2.0',
       'androidx.test.ext:junit:1.1.1',
+      'androidx.work:work-testing:2.4.0',
       'com.google.dagger:dagger:2.24',
       'com.google.truth:truth:0.43',
       'junit:junit:4.12',
@@ -68,6 +69,9 @@ dependencies {
       'org.mockito:mockito-core:2.19.0',
       'org.robolectric:robolectric:4.3',
       project(":testing"),
+  )
+  androidTestImplementation(
+      'androidx.work:work-testing:2.4.0'
   )
   kapt(
       'com.google.dagger:dagger-compiler:2.24',

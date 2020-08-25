@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit
 private const val OPPIA_EXCEPTION_WORK = "OPPIA_EXCEPTION_WORK_REQUEST"
 private const val OPPIA_EVENT_WORK = "OPPIA_EVENT_WORK_REQUEST"
 
-class OppiaLogUploadWorkRequest() {
+class OppiaLogUploadWorkRequest {
 
   private val workerConstraints = Constraints.Builder()
     .setRequiredNetworkType(NetworkType.CONNECTED)
