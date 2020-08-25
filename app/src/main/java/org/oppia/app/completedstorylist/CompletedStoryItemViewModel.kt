@@ -8,12 +8,13 @@ import org.oppia.app.shim.IntentFactoryShim
 
 /** Completed story view model for the recycler view in [CompletedStoryListFragment]. */
 class CompletedStoryItemViewModel(
-  val activity: AppCompatActivity,
-  val internalProfileId: Int,
+  private val activity: AppCompatActivity,
+  private val internalProfileId: Int,
   val completedStory: CompletedStory,
   val entityType: String,
   private val intentFactoryShim: IntentFactoryShim
 ) : ViewModel(), RouteToTopicPlayStoryListener {
+
   fun onCompletedStoryItemClicked() {
     routeToTopicPlayStory(internalProfileId, completedStory.topicId, completedStory.storyId)
   }

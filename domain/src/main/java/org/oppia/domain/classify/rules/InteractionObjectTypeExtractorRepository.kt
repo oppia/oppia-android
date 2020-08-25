@@ -82,6 +82,9 @@ class InteractionObjectTypeExtractorRepository @Inject constructor() {
         ),
         ObjectTypeCase.CLICK_ON_IMAGE to createMapping(
           InteractionObject::getClickOnImage
+        ),
+        ObjectTypeCase.RATIO_EXPRESSION to createMapping(
+          InteractionObject::getRatioExpression
         )
       )
     }
