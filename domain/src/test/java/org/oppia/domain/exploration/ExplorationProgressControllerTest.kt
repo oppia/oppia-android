@@ -41,6 +41,7 @@ import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModu
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.topic.TEST_EXPLORATION_ID_0
@@ -1577,7 +1578,8 @@ class ExplorationProgressControllerTest {
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, InteractionsModule::class, TestLogReportingModule::class,
-      ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class
+      ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
+      RatioInputModule::class
     ]
   )
   interface TestApplicationComponent {
