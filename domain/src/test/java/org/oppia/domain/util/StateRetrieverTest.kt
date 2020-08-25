@@ -306,6 +306,26 @@ class StateRetrieverTest {
   }
 
   @Test
+  fun testParseState_withRatioInputInteraction_parsesCustomizationArgPlaceholderText() {
+    val state = createStateFromJson(
+      "RatioExpressionInput",
+      RATIO_TEST_EXPLORATION_NAME
+    )
+    val customizationArgName = state.interaction.getCustomizationArgsOrThrow("placeholder")
+    assertThat(customizationArgName.subtitledUnicode.unicodeStr).isEqualTo("Enter in format of x:y")
+  }
+
+  @Test
+  fun testParseState_withRatioInputInteraction_parsesCustomizationArgNumberOfTerms() {
+    val state = createStateFromJson(
+      "RatioExpressionInput",
+      RATIO_TEST_EXPLORATION_NAME
+    )
+    val customizationArgName = state.interaction.getCustomizationArgsOrThrow("numberOfTerms")
+    assertThat(customizationArgName.signedInt).isEqualTo(0)
+  }
+
+  @Test
   fun testParseState_withImageRegionSelectionInteraction_parsesRuleWithHasNumberOfTermsEqualToWithValueAtY() { // ktlint-disable max-line-length
     val state = createStateFromJson(
       "RatioExpressionInput",

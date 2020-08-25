@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "org.oppia.app.model";
+option java_multiple_files = true;
+
+message SubtitledUnicode {
+  string unicode_str = 1;
+  string content_id = 2;
+}

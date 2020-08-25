@@ -26,6 +26,7 @@ import org.oppia.app.model.Solution
 import org.oppia.app.model.State
 import org.oppia.app.model.StringList
 import org.oppia.app.model.SubtitledHtml
+import org.oppia.app.model.SubtitledUnicode
 import org.oppia.app.model.Voiceover
 import org.oppia.app.model.VoiceoverMapping
 import javax.inject.Inject
@@ -525,10 +526,10 @@ class StateRetriever @Inject constructor(
   ): MutableMap<String, SchemaObject> {
     val customizationArgsMap: MutableMap<String, SchemaObject> = mutableMapOf()
     customizationArgsMap["placeholder"] =
-      parseNormalizedStringSchemaObject(
+      parseSubtitledUnicode(
         getJsonObject(
           customizationArgsJson, "placeholder"
-        )!!.getString("value")
+        )!!.getJSONObject("value")
       )
     customizationArgsMap["numberOfTerms"] =
       parseIntegerSchemaObject(
@@ -692,6 +693,15 @@ class StateRetriever @Inject constructor(
     return SchemaObject.newBuilder().setSchemaObjectList(
       schemaObjectListBuilder.build()
     ).build()
+  }
+
+  private fun parseSubtitledUnicode(jsonObject: JSONObject): SchemaObject {
+    val subtitledUnicodeBuilder = SubtitledUnicode.newBuilder()
+    subtitledUnicodeBuilder.contentId = jsonObject.getString("content_id")
+    subtitledUnicodeBuilder.unicodeStr = jsonObject.getString("unicode_str")
+    val schemaObjectBuilder = SchemaObject.newBuilder()
+    schemaObjectBuilder.setSubtitledUnicode(subtitledUnicodeBuilder)
+    return schemaObjectBuilder.build()
   }
 
   private fun parseImageWithRegions(jsonObject: JSONObject): SchemaObject {
