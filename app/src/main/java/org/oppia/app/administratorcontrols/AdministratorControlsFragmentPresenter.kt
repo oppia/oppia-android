@@ -22,7 +22,6 @@ import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.ProfileId
 import org.oppia.app.recyclerview.BindableAdapter
-import org.oppia.app.viewmodel.ViewModelProvider
 import java.security.InvalidParameterException
 import javax.inject.Inject
 
@@ -30,14 +29,15 @@ import javax.inject.Inject
 @FragmentScope
 class AdministratorControlsFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<AdministratorControlsViewModel>
+  private val fragment: Fragment
 ) {
   private lateinit var binding: AdministratorControlsFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
   private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
-  private val administratorControlsViewModel = getAdministratorControlsViewModel()
+
+  @Inject
+  lateinit var administratorControlsViewModel: AdministratorControlsViewModel
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -147,10 +147,6 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
   ) {
     binding.commonViewModel = administratorControlsViewModel
     binding.viewModel = model
-  }
-
-  private fun getAdministratorControlsViewModel(): AdministratorControlsViewModel {
-    return viewModelProvider.getForFragment(fragment, AdministratorControlsViewModel::class.java)
   }
 
   fun setSelectedFragment(selectedFragment: String) {

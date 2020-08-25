@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
-import android.widget.TextView
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.administratorcontrols.appversion.AppVersionActivity
@@ -12,7 +11,7 @@ import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.app.settings.profile.ProfileListActivity
 import javax.inject.Inject
 
-private const val SELECTED_CONTROLS_TITLE_KEY = "SELECTED_CONTROLS_TITLE_KEY"
+const val SELECTED_CONTROLS_TITLE_KEY = "SELECTED_CONTROLS_TITLE_KEY"
 const val LAST_LOADED_FRAGMENT_KEY = "LAST_LOADED_FRAGMENT_KEY"
 const val PROFILE_LIST_FRAGMENT = "PROFILE_LIST_FRAGMENT"
 const val APP_VERSION_FRAGMENT = "APP_VERSION_FRAGMENT"
@@ -82,11 +81,7 @@ class AdministratorControlsActivity :
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
+    administratorControlsActivityPresenter.handleOnSaveInstanceState(outState)
     super.onSaveInstanceState(outState)
-    val titleTextView = findViewById<TextView>(R.id.extra_controls_title)
-    if (titleTextView != null) {
-      outState.putString(SELECTED_CONTROLS_TITLE_KEY, titleTextView.text.toString())
-    }
-    outState.putString(LAST_LOADED_FRAGMENT_KEY, lastLoadedFragment)
   }
 }

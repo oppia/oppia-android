@@ -16,7 +16,6 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.DeviceSettings
 import org.oppia.app.model.ProfileId
 import org.oppia.app.shim.IntentFactoryShim
-import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.ConsoleLogger
@@ -30,7 +29,7 @@ class AdministratorControlsViewModel @Inject constructor(
   private val logger: ConsoleLogger,
   private val profileManagementController: ProfileManagementController,
   private val IntentFactoryShim: IntentFactoryShim
-) : ObservableViewModel() {
+) {
   private val routeToProfileListListener = activity as RouteToProfileListListener
   private val loadProfileListListener = activity as LoadProfileListListener
   private lateinit var userProfileId: ProfileId

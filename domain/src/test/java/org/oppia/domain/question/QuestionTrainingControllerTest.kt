@@ -31,6 +31,7 @@ import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModu
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.topic.TEST_QUESTION_ID_0
@@ -291,7 +292,7 @@ class QuestionTrainingControllerTest {
       DragDropSortInputModule::class, NumberWithUnitsRuleModule::class,
       NumericInputRuleModule::class, TextInputRuleModule::class, InteractionsModule::class,
       TestQuestionModule::class, TestLogReportingModule::class, ImageClickInputModule::class,
-      LogStorageModule::class, TestDispatcherModule::class
+      LogStorageModule::class, TestDispatcherModule::class, RatioInputModule::class
     ]
   )
   interface TestApplicationComponent {

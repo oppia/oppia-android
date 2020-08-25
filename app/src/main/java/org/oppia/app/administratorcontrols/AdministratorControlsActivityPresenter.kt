@@ -1,14 +1,13 @@
 package org.oppia.app.administratorcontrols
 
-import android.view.View
-import android.widget.FrameLayout
-import android.widget.TextView
+import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.drawerlayout.widget.DrawerLayout
+import androidx.databinding.DataBindingUtil
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.administratorcontrols.appversion.AppVersionFragment
+import org.oppia.app.databinding.AdministratorControlsActivityBinding
 import org.oppia.app.drawer.NavigationDrawerFragment
 import org.oppia.app.settings.profile.ProfileListFragment
 import javax.inject.Inject
@@ -20,20 +19,20 @@ class AdministratorControlsActivityPresenter @Inject constructor(
 ) {
   private lateinit var navigationDrawerFragment: NavigationDrawerFragment
   private var isMultipane = false
+  private lateinit var lastLoadedFragment: String
+  private lateinit var binding: AdministratorControlsActivityBinding
 
   fun handleOnCreate(extraControlsTitle: String?, lastLoadedFragment: String) {
-    activity.setContentView(R.layout.administrator_controls_activity)
+    binding = DataBindingUtil.setContentView(
+      activity,
+      R.layout.administrator_controls_activity
+    )
     setUpNavigationDrawer()
-    val titleTextView =
-      activity.findViewById<TextView>(R.id.extra_controls_title)
-    if (titleTextView != null) {
-      titleTextView.text = extraControlsTitle
+    this.lastLoadedFragment = lastLoadedFragment
+    binding.extraControlsTitle?.apply {
+      text = extraControlsTitle
     }
-    isMultipane =
-      activity
-      .findViewById<FrameLayout>(
-        R.id.administrator_controls_fragment_multipane_placeholder
-      ) != null
+    isMultipane = binding.administratorControlsFragmentMultipanePlaceholder != null
     val previousFragment = getAdministratorControlsFragment()
     if (previousFragment != null) {
       activity.supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
@@ -51,8 +50,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   }
 
   private fun setUpNavigationDrawer() {
-    val toolbar =
-      activity.findViewById<View>(R.id.administrator_controls_activity_toolbar) as Toolbar
+    val toolbar = binding.administratorControlsActivityToolbar as Toolbar
     activity.setSupportActionBar(toolbar)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     navigationDrawerFragment = activity
@@ -61,10 +59,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
         R.id.administrator_controls_activity_fragment_navigation_drawer
       ) as NavigationDrawerFragment
     navigationDrawerFragment.setUpDrawer(
-      activity
-        .findViewById<View>(
-          R.id.administrator_controls_activity_drawer_layout
-        ) as DrawerLayout,
+      binding.administratorControlsActivityDrawerLayout,
       toolbar, /* menuItemId= */ 0
     )
   }
@@ -78,7 +73,8 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   }
 
   fun loadProfileList() {
-    getAdministratorControlsFragment()!!.setSelectedFragment(PROFILE_LIST_FRAGMENT)
+    lastLoadedFragment = PROFILE_LIST_FRAGMENT
+    getAdministratorControlsFragment()!!.setSelectedFragment(lastLoadedFragment)
     activity.supportFragmentManager.beginTransaction().add(
       R.id.administrator_controls_fragment_multipane_placeholder,
       ProfileListFragment.newInstance(isMultipane)
@@ -86,7 +82,8 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   }
 
   fun loadAppVersion() {
-    getAdministratorControlsFragment()!!.setSelectedFragment(APP_VERSION_FRAGMENT)
+    lastLoadedFragment = APP_VERSION_FRAGMENT
+    getAdministratorControlsFragment()!!.setSelectedFragment(lastLoadedFragment)
     activity.supportFragmentManager.beginTransaction().add(
       R.id.administrator_controls_fragment_multipane_placeholder,
       AppVersionFragment()
@@ -94,6 +91,14 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   }
 
   fun setExtraControlsTitle(title: String) {
-    activity.findViewById<TextView>(R.id.extra_controls_title).text = title
+    binding.extraControlsTitle?.text = title
+  }
+
+  fun handleOnSaveInstanceState(outState: Bundle) {
+    val titleTextView = binding.extraControlsTitle
+    if (titleTextView != null) {
+      outState.putString(SELECTED_CONTROLS_TITLE_KEY, titleTextView.text.toString())
+    }
+    outState.putString(LAST_LOADED_FRAGMENT_KEY, lastLoadedFragment)
   }
 }
