@@ -1,6 +1,5 @@
 package org.oppia.app.player.state
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AccelerateInterpolator
