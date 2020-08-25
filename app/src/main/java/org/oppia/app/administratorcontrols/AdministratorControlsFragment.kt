@@ -8,14 +8,13 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-private const val IS_MULTIPANE_KEY = "IS_MULTIPANE_KEY"
-
 /** Fragment that contains Administrator Controls of the application. */
 class AdministratorControlsFragment : InjectableFragment() {
   @Inject
   lateinit var administratorControlsFragmentPresenter: AdministratorControlsFragmentPresenter
 
   companion object {
+    private const val IS_MULTIPANE_KEY = "IS_MULTIPANE_KEY"
     fun newInstance(isMultipane: Boolean): AdministratorControlsFragment {
       val args = Bundle()
       args.putBoolean(IS_MULTIPANE_KEY, isMultipane)
