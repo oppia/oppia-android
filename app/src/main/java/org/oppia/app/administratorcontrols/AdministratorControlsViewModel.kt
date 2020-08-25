@@ -1,6 +1,7 @@
 package org.oppia.app.administratorcontrols
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
@@ -33,6 +34,7 @@ class AdministratorControlsViewModel @Inject constructor(
   private val routeToProfileListListener = activity as RouteToProfileListListener
   private val loadProfileListListener = activity as LoadProfileListListener
   private lateinit var userProfileId: ProfileId
+  val selectedFragmentIndex = ObservableField<Int>(1)
 
   private val deviceSettingsLiveData: LiveData<DeviceSettings> by lazy {
     Transformations.map(

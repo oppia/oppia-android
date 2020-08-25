@@ -23,6 +23,7 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.ProfileId
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
+import java.security.InvalidParameterException
 import javax.inject.Inject
 
 /** The presenter for [AdministratorControlsFragment]. */
@@ -36,6 +37,7 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
   private lateinit var linearLayoutManager: LinearLayoutManager
   private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
+  private val administratorControlsViewModel = getAdministratorControlsViewModel()
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -50,10 +52,9 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
           /* attachToRoot= */ false
         )
 
-    val viewModel = getAdministratorControlsViewModel()
     internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    viewModel.setProfileId(profileId)
+    administratorControlsViewModel.setProfileId(profileId)
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
 
@@ -63,7 +64,7 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
     }
 
     binding.apply {
-      this.viewModel = viewModel
+      this.viewModel = administratorControlsViewModel
       this.lifecycleOwner = fragment
     }
 
@@ -76,16 +77,26 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
         .newBuilder<AdministratorControlsItemViewModel, ViewType> { viewModel ->
           viewModel.isMultipane.set(isMultipane)
           when (viewModel) {
-            is AdministratorControlsGeneralViewModel ->
+            is AdministratorControlsGeneralViewModel -> {
+              viewModel.itemIndex.set(0)
               ViewType.VIEW_TYPE_GENERAL
-            is AdministratorControlsProfileViewModel ->
+            }
+            is AdministratorControlsProfileViewModel -> {
+              viewModel.itemIndex.set(1)
               ViewType.VIEW_TYPE_PROFILE
-            is AdministratorControlsDownloadPermissionsViewModel ->
+            }
+            is AdministratorControlsDownloadPermissionsViewModel -> {
+              viewModel.itemIndex.set(2)
               ViewType.VIEW_TYPE_DOWNLOAD_PERMISSIONS
-            is AdministratorControlsAppInformationViewModel ->
+            }
+            is AdministratorControlsAppInformationViewModel -> {
+              viewModel.itemIndex.set(3)
               ViewType.VIEW_TYPE_APP_INFORMATION
-            is AdministratorControlsAccountActionsViewModel ->
+            }
+            is AdministratorControlsAccountActionsViewModel -> {
+              viewModel.itemIndex.set(4)
               ViewType.VIEW_TYPE_ACCOUNT_ACTIONS
+            }
             else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
           }
         }
@@ -98,7 +109,7 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
         .registerViewDataBinder(
           viewType = ViewType.VIEW_TYPE_PROFILE,
           inflateDataBinding = AdministratorControlsProfileViewBinding::inflate,
-          setViewModel = AdministratorControlsProfileViewBinding::setViewModel,
+          setViewModel = this::bindProfileList,
           transformViewModel = { it as AdministratorControlsProfileViewModel }
         )
         .registerViewDataBinder(
@@ -110,7 +121,7 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
         .registerViewDataBinder(
           viewType = ViewType.VIEW_TYPE_APP_INFORMATION,
           inflateDataBinding = AdministratorControlsAppInformationViewBinding::inflate,
-          setViewModel = AdministratorControlsAppInformationViewBinding::setViewModel,
+          setViewModel = this::bindAppVersion,
           transformViewModel = { it as AdministratorControlsAppInformationViewModel }
         )
         .registerViewDataBinder(
@@ -122,8 +133,40 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
         .build()
     }
 
+  private fun bindProfileList(
+    binding: AdministratorControlsProfileViewBinding,
+    model: AdministratorControlsProfileViewModel
+  ) {
+    binding.commonViewModel = administratorControlsViewModel
+    binding.viewModel = model
+  }
+
+  private fun bindAppVersion(
+    binding: AdministratorControlsAppInformationViewBinding,
+    model: AdministratorControlsAppInformationViewModel
+  ) {
+    binding.commonViewModel = administratorControlsViewModel
+    binding.viewModel = model
+  }
+
   private fun getAdministratorControlsViewModel(): AdministratorControlsViewModel {
     return viewModelProvider.getForFragment(fragment, AdministratorControlsViewModel::class.java)
+  }
+
+  fun setSelectedFragment(selectedFragment: String) {
+    administratorControlsViewModel.selectedFragmentIndex.set(
+      getSelectedFragmentIndex(
+        selectedFragment
+      )
+    )
+  }
+
+  private fun getSelectedFragmentIndex(selectedFragment: String): Int {
+    return when (selectedFragment) {
+      PROFILE_LIST_FRAGMENT -> 1
+      APP_VERSION_FRAGMENT -> 3
+      else -> throw InvalidParameterException()
+    }
   }
 
   private enum class ViewType {
