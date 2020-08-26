@@ -3,7 +3,9 @@ package org.oppia.app.application
 import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
 import androidx.multidex.MultiDexApplication
+import com.google.firebase.FirebaseApp
 import org.oppia.app.activity.ActivityComponent
+import org.oppia.domain.oppialogger.ApplicationStartupListener
 
 /** The root [Application] of the Oppia app. */
 class OppiaApplication :
@@ -22,4 +24,10 @@ class OppiaApplication :
   }
 
   override fun getApplicationInjector(): ApplicationInjector = component
+
+  override fun onCreate() {
+    super.onCreate()
+    FirebaseApp.initializeApp(applicationContext)
+    component.getApplicationStartupListeners().forEach(ApplicationStartupListener::onCreate)
+  }
 }

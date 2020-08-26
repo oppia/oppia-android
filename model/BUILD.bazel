@@ -113,6 +113,7 @@ format_import_proto_library(
     deps = [
         ":exploration_proto",
         ":subtitled_html_proto",
+        ":subtitled_unicode_proto",
     ],
 )
 
@@ -126,6 +127,7 @@ format_import_proto_library(
     src = "src/main/proto/topic.proto",
     deps = [
         ":subtitled_html_proto",
+        ":subtitled_unicode_proto",
         ":thumbnail_proto",
         ":translation_proto",
         ":voiceover_proto",
@@ -142,6 +144,7 @@ format_import_proto_library(
     src = "src/main/proto/exploration.proto",
     deps = [
         ":subtitled_html_proto",
+        ":subtitled_unicode_proto",
         ":interaction_object_proto",
         ":translation_proto",
         ":voiceover_proto",

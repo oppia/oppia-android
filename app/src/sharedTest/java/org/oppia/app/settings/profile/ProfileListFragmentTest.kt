@@ -84,7 +84,7 @@ class ProfileListFragmentTest {
       onView(
         atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)
       ).check(
-        matches(withText("Sean"))
+        matches(withText("Admin"))
       )
       onView(
         atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_admin_text)
@@ -122,7 +122,7 @@ class ProfileListFragmentTest {
       onView(
         atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)
       ).check(
-        matches(withText("Sean"))
+        matches(withText("Admin"))
       )
       onView(
         atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_admin_text)
@@ -160,7 +160,7 @@ class ProfileListFragmentTest {
       onView(
         atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)
       ).check(
-        matches(withText("Sean"))
+        matches(withText("Admin"))
       )
       onView(withId(R.id.profile_list_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(

@@ -301,14 +301,14 @@
   <string name="app_version_name">App Version %s</string>
   <string name="app_last_update_date">The last update was installed on %s. Use the above version number to send feedback about bugs.</string>
   <!-- OptionsActivity -->
-  <string name="title_story_text_size">Story Text Size</string>
+  <string name="title_reading_text_size">Reading Text Size</string>
   <string name="title_app_language">App Language</string>
   <string name="title_default_audio">Default Audio Language</string>
   <string name="story_text_will_look_like_this">Story text will look like this.</string>
   <string name="constant_string_for_text_size">A</string>
   <string name="audio_language">Default Audio</string>
   <string name="app_language">App Language</string>
-  <string name="story_text_size">Story Text Size</string>
+  <string name="reading_text_size">Reading Text Size</string>
   <string name="slide_seekbar_to_control_text_size">Slide seekbar to control the text size.</string>
   <string name="profile">Profile</string>
   <string name="story_count_text_view">2 Stories</string>
