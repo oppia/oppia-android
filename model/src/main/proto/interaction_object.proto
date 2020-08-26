@@ -22,12 +22,20 @@ message InteractionObject {
     ListOfSetsOfHtmlStrings list_of_sets_of_html_string = 9;
     ImageWithRegions image_with_regions = 10;
     ClickOnImage click_on_image = 11;
+    RatioExpression ratio_expression = 12;
   }
 }
 
 // Structure containing a string list.
 message StringList {
   repeated string html = 1;
+}
+
+// Structure containing a ratio object for eg - [1,2,3] for 1:2:3.
+message RatioExpression {
+  // List of components in a ratio. It's expected that list should have more than
+  // 1 element.
+  repeated uint32 ratio_component = 1;
 }
 
 // Structure for a number with units object.
@@ -95,7 +103,6 @@ message ImageWithRegions {
     }
 
     Region region = 2;
-
   }
   repeated LabeledRegion label_regions = 2;
 }

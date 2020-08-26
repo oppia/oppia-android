@@ -9,6 +9,10 @@
     <import type="org.oppia.app.model.ChapterPlayState" />
 
     <variable
+      name="htmlContent"
+      type="CharSequence" />
+
+    <variable
       name="viewModel"
       type="org.oppia.app.story.storyitemviewmodel.StoryChapterSummaryViewModel" />
   </data>
@@ -18,6 +22,7 @@
     android:layout_height="wrap_content">
 
     <com.google.android.material.card.MaterialCardView
+      android:id="@+id/story_chapter_card"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginStart="76dp"
@@ -74,7 +79,7 @@
             android:ellipsize="end"
             android:fontFamily="sans-serif"
             android:maxLines="3"
-            android:text="@{viewModel.summary}"
+            android:text="@{htmlContent}"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"

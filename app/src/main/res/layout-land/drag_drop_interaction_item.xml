@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.player.state.itemviewmodel.DragAndDropSortInteractionViewModel" />
+  </data>
+  <!--  Margins -->
+  <!--  Exploration Split View -> 32, 40, 32, 0 -->
+  <!--  Exploration View -> 80, 24, 48, 0 -->
+  <!--  Question Split View -> 32, 40, 32, 0 -->
+  <!--  Question View -> 64, 24, 64, 0 -->
+  <LinearLayout
+    android:id="@+id/interaction_container_linear_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/drag_drop_white_background"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    android:paddingStart="8dp"
+    android:paddingTop="16dp"
+    android:paddingEnd="8dp"
+    android:paddingBottom="20dp"
+    app:explorationSplitViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.splitView}"
+    app:explorationSplitViewMarginBottom="@{@dimen/margin_0}"
+    app:explorationSplitViewMarginEnd="@{@dimen/margin_32}"
+    app:explorationSplitViewMarginStart="@{@dimen/margin_32}"
+    app:explorationSplitViewMarginTop="@{@dimen/margin_40}"
+    app:explorationViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; !viewModel.splitView}"
+    app:explorationViewMarginBottom="@{@dimen/margin_0}"
+    app:explorationViewMarginEnd="@{@dimen/margin_48}"
+    app:explorationViewMarginStart="@{@dimen/margin_80}"
+    app:explorationViewMarginTop="@{@dimen/margin_24}"
+    app:questionSplitViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; viewModel.splitView}"
+    app:questionSplitViewMarginBottom="@{@dimen/margin_0}"
+    app:questionSplitViewMarginEnd="@{@dimen/margin_32}"
+    app:questionSplitViewMarginStart="@{@dimen/margin_32}"
+    app:questionSplitViewMarginTop="@{@dimen/margin_40}"
+    app:questionViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; !viewModel.splitView}"
+    app:questionViewMarginBottom="@{@dimen/margin_0}"
+    app:questionViewMarginEnd="@{@dimen/margin_64}"
+    app:questionViewMarginStart="@{@dimen/margin_64}"
+    app:questionViewMarginTop="@{@dimen/margin_24}">
+
+    <TextView
+      android:id="@+id/drag_drop_grouping_hint_text_view"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="16dp"
+      android:layout_marginEnd="16dp"
+      android:layout_marginBottom="8dp"
+      android:text="@string/drag_and_drop_interaction_group_merge_hint"
+      android:textSize="14sp"
+      android:textStyle="italic"
+      android:visibility="@{viewModel.getGroupingStatus()? View.VISIBLE : View.GONE}" />
+
+    <org.oppia.app.player.state.DragDropSortInteractionView
+      android:id="@+id/drag_drop_interaction_recycler_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:overScrollMode="never"
+      app:allowMultipleItemsInSamePosition="@{viewModel.getGroupingStatus()}"
+      app:entityId="@{viewModel.entityId}"
+      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+      app:list="@{viewModel.choiceItems}"
+      app:onDragEnded="@{(adapter) -> viewModel.onDragEnded(adapter)}"
+      app:onItemDrag="@{(indexFrom, indexTo, adapter) -> viewModel.onItemDragged(indexFrom, indexTo, adapter)}" />
+  </LinearLayout>
+</layout>

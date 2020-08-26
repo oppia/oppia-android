@@ -28,9 +28,11 @@ import org.oppia.app.help.faq.faqsingle.FAQSingleActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.robolectric.annotation.LooperMode
 
 /** Tests for [FAQListFragment]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class FAQListFragmentTest {
 
   @Before
@@ -44,7 +46,7 @@ class FAQListFragmentTest {
   }
 
   @Test
-  fun openFAQListActivity_scrollRecyclerViewToZeroPosition_checkFeaturedQuestionsDisplayedSuccessfully() { // ktlint-disable max-line-length
+  fun openFAQListActivity_scrollRVToZeroPosition_checkFeaturedQuestionsDisplayedSuccessfully() {
     launch(FAQListActivity::class.java).use {
       onView(withId(R.id.faq_fragment_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(0)

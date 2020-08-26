@@ -4,6 +4,8 @@
 
   <data>
 
+    <import type="android.view.View" />
+
     <variable
       name="buttonViewModel"
       type="org.oppia.app.player.state.itemviewmodel.ReplayButtonViewModel" />
@@ -12,20 +14,21 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="56dp"
+    android:layout_marginStart="28dp"
+    android:layout_marginTop="68dp"
+    android:layout_marginEnd="28dp"
+    android:layout_marginBottom="0dp"
     android:gravity="center_vertical"
-    android:paddingStart="24dp"
-    android:paddingEnd="24dp"
-    android:paddingBottom="12dp">
+    android:visibility="@{buttonViewModel.hasConversationView ? View.GONE : View.VISIBLE}">
 
     <Button
       android:id="@+id/replay_button"
       style="@style/StateButtonActive"
-      android:layout_height="48dp"
       android:layout_margin="4dp"
       android:background="@drawable/state_button_orange_background"
       android:drawableStart="@drawable/ic_refresh_white_24dp"
       android:drawablePadding="4dp"
+      android:minHeight="48dp"
       android:onClick="@{(v) -> buttonViewModel.replayButtonListener.onReplayButtonClicked()}"
       android:text="@string/lesson_replay_button_text"
       android:textColor="@color/white"

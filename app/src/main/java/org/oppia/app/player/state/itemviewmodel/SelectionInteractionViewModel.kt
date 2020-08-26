@@ -7,23 +7,34 @@ import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.StringList
 import org.oppia.app.model.UserAnswer
-import org.oppia.app.player.state.SelectionItemInputType
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.viewmodel.ObservableArrayList
 
+/** Corresponds to the type of input that should be used for an item selection interaction view. */
+enum class SelectionItemInputType {
+  CHECKBOXES,
+  RADIO_BUTTONS
+}
+
 /** [StateItemViewModel] for multiple or item-selection input choice list. */
 class SelectionInteractionViewModel(
   val entityId: String,
+  val hasConversationView: Boolean,
   interaction: Interaction,
   private val interactionAnswerReceiver: InteractionAnswerReceiver,
-  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver // ktlint-disable max-line-length
+  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
+  val isSplitView: Boolean
 ) : StateItemViewModel(ViewType.SELECTION_INTERACTION), InteractionAnswerHandler {
   private val interactionId: String = interaction.id
 
   private val choiceStrings: List<String> by lazy {
-    interaction.customizationArgsMap["choices"]?.setOfHtmlString?.htmlList ?: listOf()
+    interaction.customizationArgsMap["choices"]
+      ?.schemaObjectList
+      ?.schemaObjectList
+      ?.map { schemaObject -> schemaObject.subtitledHtml.html }
+      ?: listOf()
   }
   private val minAllowableSelectionCount: Int by lazy {
     interaction.customizationArgsMap["minAllowableSelectionCount"]?.signedInt ?: 1
@@ -36,7 +47,7 @@ class SelectionInteractionViewModel(
   }
   private val selectedItems: MutableList<Int> = mutableListOf()
   val choiceItems: ObservableList<SelectionInteractionContentViewModel> =
-    computeChoiceItems(choiceStrings, this)
+    computeChoiceItems(choiceStrings, hasConversationView, this)
 
   private val isAnswerAvailable = ObservableField<Boolean>(false)
 
@@ -138,12 +149,14 @@ class SelectionInteractionViewModel(
   companion object {
     private fun computeChoiceItems(
       choiceStrings: List<String>,
+      hasConversationView: Boolean,
       selectionInteractionViewModel: SelectionInteractionViewModel
     ): ObservableArrayList<SelectionInteractionContentViewModel> {
       val observableList = ObservableArrayList<SelectionInteractionContentViewModel>()
       observableList += choiceStrings.mapIndexed { index, choiceString ->
         SelectionInteractionContentViewModel(
           htmlContent = choiceString,
+          hasConversationView = hasConversationView,
           itemIndex = index,
           selectionInteractionViewModel = selectionInteractionViewModel
         )

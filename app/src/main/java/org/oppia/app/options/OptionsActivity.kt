@@ -13,14 +13,23 @@ class OptionsActivity :
   InjectableAppCompatActivity(),
   RouteToAppLanguageListListener,
   RouteToAudioLanguageListListener,
-  RouteToStoryTextSizeListener {
+  RouteToReadingTextSizeListener {
   @Inject
   lateinit var optionActivityPresenter: OptionsActivityPresenter
 
   companion object {
-    fun createOptionsActivity(context: Context, profileId: Int?): Intent {
+    // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
+    const val BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY =
+      "BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY"
+
+    fun createOptionsActivity(
+      context: Context,
+      profileId: Int?,
+      isFromNavigationDrawer: Boolean
+    ): Intent {
       val intent = Intent(context, OptionsActivity::class.java)
       intent.putExtra(KEY_NAVIGATION_PROFILE_ID, profileId)
+      intent.putExtra(BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, isFromNavigationDrawer)
       return intent
     }
   }
@@ -28,7 +37,11 @@ class OptionsActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    optionActivityPresenter.handleOnCreate()
+    val isFromNavigationDrawer = intent.getBooleanExtra(
+      BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
+      /* defaultValue= */ false
+    )
+    optionActivityPresenter.handleOnCreate(isFromNavigationDrawer)
     title = getString(R.string.menu_options)
   }
 
@@ -36,8 +49,8 @@ class OptionsActivity :
     super.onActivityResult(requestCode, resultCode, data)
     when (requestCode) {
       REQUEST_CODE_TEXT_SIZE -> {
-        val textSize = data!!.getStringExtra(KEY_MESSAGE_STORY_TEXT_SIZE) as String
-        optionActivityPresenter.updateStoryTextSize(textSize)
+        val textSize = data!!.getStringExtra(KEY_MESSAGE_READING_TEXT_SIZE) as String
+        optionActivityPresenter.updateReadingTextSize(textSize)
       }
       REQUEST_CODE_APP_LANGUAGE -> {
         val appLanguage = data!!.getStringExtra(KEY_MESSAGE_APP_LANGUAGE) as String
@@ -72,12 +85,12 @@ class OptionsActivity :
     )
   }
 
-  override fun routeStoryTextSize(storyTextSize: String?) {
+  override fun routeReadingTextSize(readingTextSize: String?) {
     startActivityForResult(
-      StoryTextSizeActivity.createStoryTextSizeActivityIntent(
+      ReadingTextSizeActivity.createReadingTextSizeActivityIntent(
         this,
-        STORY_TEXT_SIZE,
-        storyTextSize
+        READING_TEXT_SIZE,
+        readingTextSize
       ),
       REQUEST_CODE_TEXT_SIZE
     )

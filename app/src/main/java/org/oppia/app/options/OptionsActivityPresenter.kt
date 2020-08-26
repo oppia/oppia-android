@@ -15,10 +15,19 @@ class OptionsActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
   private var navigationDrawerFragment: NavigationDrawerFragment? = null
+  private lateinit var toolbar: Toolbar
 
-  fun handleOnCreate() {
+  fun handleOnCreate(isFromNavigationDrawer: Boolean) {
     activity.setContentView(R.layout.option_activity)
-    setUpNavigationDrawer()
+    setUpToolbar()
+    if (isFromNavigationDrawer) {
+      setUpNavigationDrawer()
+    } else {
+      activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+      toolbar.setNavigationOnClickListener {
+        activity.finish()
+      }
+    }
     if (getOptionFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.options_fragment_placeholder,
@@ -27,9 +36,12 @@ class OptionsActivityPresenter @Inject constructor(
     }
   }
 
-  private fun setUpNavigationDrawer() {
-    val toolbar = activity.findViewById<View>(R.id.options_activity_toolbar) as Toolbar
+  private fun setUpToolbar() {
+    toolbar = activity.findViewById<View>(R.id.options_activity_toolbar) as Toolbar
     activity.setSupportActionBar(toolbar)
+  }
+
+  private fun setUpNavigationDrawer() {
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     navigationDrawerFragment = activity
       .supportFragmentManager
@@ -50,8 +62,8 @@ class OptionsActivityPresenter @Inject constructor(
       ) as OptionsFragment?
   }
 
-  fun updateStoryTextSize(textSize: String) {
-    getOptionFragment()?.updateStoryTextSize(textSize)
+  fun updateReadingTextSize(textSize: String) {
+    getOptionFragment()?.updateReadingTextSize(textSize)
   }
 
   fun updateAppLanguage(appLanguage: String) {

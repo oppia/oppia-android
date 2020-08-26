@@ -1,19 +1,24 @@
 package org.oppia.app.topic.questionplayer
 
-import androidx.databinding.ObservableArrayList
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
 import org.oppia.app.model.UserAnswer
-import org.oppia.app.player.state.StatePlayerRecyclerViewAssembler
 import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
+import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
+import org.oppia.app.viewmodel.ObservableArrayList
 import org.oppia.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
 /** [ObservableViewModel] for the question player. */
 class QuestionPlayerViewModel @Inject constructor() : ObservableViewModel() {
   val itemList: ObservableList<StateItemViewModel> = ObservableArrayList<StateItemViewModel>()
+  val rightItemList: ObservableList<StateItemViewModel> = ObservableArrayList()
+
+  val isSplitView = ObservableField(false)
+  val centerGuidelinePercentage = ObservableField(0.5f)
+
   val questionCount = ObservableField(0)
   val currentQuestion = ObservableField(0)
   val progressPercentage = ObservableField(0)
@@ -38,20 +43,30 @@ class QuestionPlayerViewModel @Inject constructor() : ObservableViewModel() {
   fun getCanSubmitAnswer(): ObservableField<Boolean> = canSubmitAnswer
 
   fun getPendingAnswer(
-    recyclerViewAssembler: StatePlayerRecyclerViewAssembler
+    retrieveAnswerHandler: (List<StateItemViewModel>) -> InteractionAnswerHandler?
   ): UserAnswer {
-    return getPendingAnswerWithoutError(recyclerViewAssembler) ?: UserAnswer.getDefaultInstance()
+    return getPendingAnswerWithoutError(
+      retrieveAnswerHandler(
+        getAnswerItemList()
+      )
+    ) ?: UserAnswer.getDefaultInstance()
   }
 
   private fun getPendingAnswerWithoutError(
-    recyclerViewAssembler: StatePlayerRecyclerViewAssembler
+    answerHandler: InteractionAnswerHandler?
   ): UserAnswer? {
-    val answerHandler = recyclerViewAssembler
-      .getPendingAnswerHandler(itemList)
     return if (answerHandler?.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME) == null) {
       answerHandler?.getPendingAnswer()
     } else {
       null
+    }
+  }
+
+  private fun getAnswerItemList(): List<StateItemViewModel> {
+    return if (isSplitView.get() == true) {
+      rightItemList
+    } else {
+      itemList
     }
   }
 }

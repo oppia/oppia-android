@@ -2,7 +2,6 @@ package org.oppia.app.profile
 
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.databinding.Bindable
 import androidx.databinding.ObservableField
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.viewmodel.ObservableViewModel
@@ -15,7 +14,6 @@ class AdminAuthViewModel @Inject constructor() : ObservableViewModel() {
 
   var isSubmitButtonActive = ObservableField<Boolean>(false)
 
-  @Bindable
   fun getInputPinTextWatcher(): TextWatcher {
     return object : TextWatcher {
       override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {

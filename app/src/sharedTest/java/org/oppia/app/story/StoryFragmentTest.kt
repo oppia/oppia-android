@@ -7,7 +7,6 @@ import android.content.res.Resources
 import android.os.Handler
 import android.os.Looper
 import android.view.View
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -22,9 +21,10 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.espresso.util.TreeIterables
@@ -34,11 +34,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
@@ -46,32 +42,33 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.model.ProfileId
+import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.app.testing.StoryFragmentTestActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
-import org.oppia.domain.profile.ProfileTestHelper
+import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.domain.topic.StoryProgressTestHelper
+import org.oppia.testing.TestCoroutineDispatchers
+import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
+import org.oppia.testing.profile.ProfileTestHelper
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
-import org.oppia.util.threading.BackgroundDispatcher
-import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.LooperMode
 import java.util.concurrent.AbstractExecutorService
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
-import javax.inject.Qualifier
 import javax.inject.Singleton
 
 /** Tests for [StoryFragment]. */
-@LooperMode(LooperMode.Mode.PAUSED)
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class StoryFragmentTest {
 
   @Inject
@@ -83,12 +80,14 @@ class StoryFragmentTest {
   @Inject
   lateinit var context: Context
 
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   private val internalProfileId = 0
 
   private lateinit var profileId: ProfileId
 
   @Before
-  @ExperimentalCoroutinesApi
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
@@ -100,6 +99,7 @@ class StoryFragmentTest {
       profileId, /* timestampOlderThanAWeek= */
       false
     )
+    testCoroutineDispatchers.runCurrent()
   }
 
   @After
@@ -135,12 +135,8 @@ class StoryFragmentTest {
   fun testStoryFragment_toolbarTitle_isDisplayedSuccessfully() {
     launch<StoryFragmentTestActivity>(createStoryActivityIntent()).use {
       waitForTheView(withText("Chapter 1: What is a Fraction?"))
-      onView(
-        allOf(
-          instanceOf(TextView::class.java),
-          withParent(withId(R.id.story_toolbar))
-        )
-      ).check(matches(withText("Matthew Goes to the Bakery")))
+      onView(withId(R.id.story_toolbar_title))
+        .check(matches(withText("Matthew Goes to the Bakery")))
     }
   }
 
@@ -192,6 +188,59 @@ class StoryFragmentTest {
           withText("Chapter 1: What is a Fraction?")
         )
       )
+    }
+  }
+
+  @Test
+  fun testStoryFragment_chapterSummaryIsShownCorrectly() {
+    launch<StoryFragmentTestActivity>(createStoryActivityIntent()).use {
+      waitForTheView(withText("Chapter 1: What is a Fraction?"))
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(atPositionOnView(R.id.story_chapter_list, 1, R.id.chapter_summary)).check(
+        matches(
+          withText("This is outline/summary for What is a Fraction?")
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStoryFragment_changeConfiguration_chapterSummaryIsShownCorrectly() {
+    launch<StoryFragmentTestActivity>(createStoryActivityIntent()).use {
+      onView(isRoot()).perform(orientationLandscape())
+      waitForTheView(withText("Chapter 1: What is a Fraction?"))
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(atPositionOnView(R.id.story_chapter_list, 1, R.id.chapter_summary)).check(
+        matches(
+          withText("This is outline/summary for What is a Fraction?")
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStoryFragment_changeConfiguration_explorationStartCorrectly() {
+    launch<StoryFragmentTestActivity>(createStoryActivityIntent()).use {
+      waitForTheView(withText("Chapter 1: What is a Fraction?"))
+      onView(isRoot()).perform(orientationLandscape())
+      waitForTheView(withText("Chapter 1: What is a Fraction?"))
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(
+        atPositionOnView(R.id.story_chapter_list, 1, R.id.story_chapter_card)
+      ).perform(click())
+      intended(hasComponent(ExplorationActivity::class.java.name))
     }
   }
 
@@ -278,41 +327,12 @@ class StoryFragmentTest {
     }
   }
 
-  @Qualifier
-  annotation class TestDispatcher
-
   @Module
   class TestModule {
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
       return application
-    }
-
-    @ExperimentalCoroutinesApi
-    @Singleton
-    @Provides
-    @TestDispatcher
-    fun provideTestDispatcher(): CoroutineDispatcher {
-      return TestCoroutineDispatcher()
-    }
-
-    @Singleton
-    @Provides
-    @BackgroundDispatcher
-    fun provideBackgroundDispatcher(
-      @TestDispatcher testDispatcher: CoroutineDispatcher
-    ): CoroutineDispatcher {
-      return testDispatcher
-    }
-
-    @Singleton
-    @Provides
-    @BlockingDispatcher
-    fun provideBlockingDispatcher(
-      @TestDispatcher testDispatcher: CoroutineDispatcher
-    ): CoroutineDispatcher {
-      return testDispatcher
     }
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
@@ -331,7 +351,12 @@ class StoryFragmentTest {
   }
 
   @Singleton
-  @Component(modules = [TestModule::class, TestLogReportingModule::class])
+  @Component(
+    modules = [
+      TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
+      TestDispatcherModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

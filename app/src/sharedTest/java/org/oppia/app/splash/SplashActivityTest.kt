@@ -1,47 +1,77 @@
 package org.oppia.app.splash
 
 import android.app.Application
+import android.app.Instrumentation
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
-import androidx.test.core.app.ActivityScenario.launch
+import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onIdle
-import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.idling.CountingIdlingResource
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
+import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
-import dagger.Module
-import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.app.R
+import org.oppia.app.activity.ActivityComponent
+import org.oppia.app.application.ActivityComponentFactory
+import org.oppia.app.application.ApplicationComponent
+import org.oppia.app.application.ApplicationInjector
+import org.oppia.app.application.ApplicationInjectorProvider
+import org.oppia.app.application.ApplicationModule
+import org.oppia.app.application.ApplicationStartupListenerModule
 import org.oppia.app.onboarding.OnboardingActivity
 import org.oppia.app.profile.ProfileActivity
-import org.oppia.domain.onboarding.OnboardingFlowController
+import org.oppia.app.shim.ViewBindingShimModule
+import org.oppia.domain.classify.InteractionsModule
+import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
+import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.domain.classify.rules.imageClickInput.ImageClickInputModule
+import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
+import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.domain.classify.rules.ratioinput.RatioInputModule
+import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.domain.onboarding.AppStartupStateController
+import org.oppia.domain.onboarding.testing.ExpirationMetaDataRetrieverTestModule
+import org.oppia.domain.onboarding.testing.FakeExpirationMetaDataRetriever
+import org.oppia.domain.oppialogger.LogStorageModule
+import org.oppia.domain.question.QuestionModule
+import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.testing.TestAccessibilityModule
+import org.oppia.testing.TestCoroutineDispatchers
+import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
-import org.oppia.util.logging.EnableConsoleLog
-import org.oppia.util.logging.EnableFileLog
-import org.oppia.util.logging.GlobalLogLevel
-import org.oppia.util.logging.LogLevel
-import org.oppia.util.threading.BackgroundDispatcher
-import org.oppia.util.threading.BlockingDispatcher
-import java.util.concurrent.AbstractExecutorService
-import java.util.concurrent.TimeUnit
+import org.oppia.util.caching.testing.CachingTestModule
+import org.oppia.util.gcsresource.GcsResourceModule
+import org.oppia.util.logging.LoggerModule
+import org.oppia.util.parser.GlideImageLoaderModule
+import org.oppia.util.parser.HtmlParserEntityTypeModule
+import org.oppia.util.parser.ImageParsingModule
+import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
+import java.text.SimpleDateFormat
+import java.time.Duration
+import java.time.Instant
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
-import javax.inject.Qualifier
 import javax.inject.Singleton
 
 /**
@@ -49,21 +79,24 @@ import javax.inject.Singleton
  * https://jabknowsnothing.wordpress.com/2015/11/05/activitytestrule-espressos-test-lifecycle/.
  */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
+@Config(application = SplashActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class SplashActivityTest {
 
   @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var fakeMetaDataRetriever: FakeExpirationMetaDataRetriever
+
+  private val expirationDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
 
   @Before
   fun setUp() {
     Intents.init()
-    IdlingRegistry.getInstance().register(MainThreadExecutor.countingResource)
-    simulateNewAppInstance()
-    FirebaseApp.initializeApp(context)
   }
 
   @After
   fun tearDown() {
-    IdlingRegistry.getInstance().unregister(MainThreadExecutor.countingResource)
+    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
@@ -78,90 +111,178 @@ class SplashActivityTest {
 
   @Test
   fun testSplashActivity_initialOpen_routesToOnboardingActivity() {
+    initializeTestApplication()
+
     activityTestRule.launchActivity(null)
+    testCoroutineDispatchers.advanceUntilIdle()
+
     intended(hasComponent(OnboardingActivity::class.java.name))
   }
 
   @Test
   fun testSplashActivity_secondOpen_routesToChooseProfileActivity() {
     simulateAppAlreadyOnboarded()
-    launch(SplashActivity::class.java).use {
-      intended(hasComponent(ProfileActivity::class.java.name))
-    }
+    initializeTestApplication()
+
+    activityTestRule.launchActivity(null)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    intended(hasComponent(ProfileActivity::class.java.name))
   }
 
-  private fun simulateNewAppInstance() {
-    // Simulate a fresh app install by clearing any potential on-disk caches using an isolated onboarding flow controller.
-    createTestRootComponent()
-    onIdle()
+  @Test
+  fun testOpenApp_initial_expirationEnabled_beforeExpDate_intentsToOnboardingFlow() {
+    initializeTestApplication()
+    setAutoAppExpirationEnabled(enabled = true)
+    setAutoAppExpirationDate(dateStringAfterToday())
+
+    activityTestRule.launchActivity(null)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // App deprecation is enabled, but this app hasn't yet expired.
+    intended(hasComponent(OnboardingActivity::class.java.name))
+  }
+
+  @Test
+  fun testOpenApp_initial_expirationEnabled_afterExpDate_intentsToDeprecationDialog() {
+    initializeTestApplication()
+    setAutoAppExpirationEnabled(enabled = true)
+    setAutoAppExpirationDate(dateStringBeforeToday())
+
+    activityTestRule.launchActivity(null)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // The current app is expired.
+    onView(withText(R.string.unsupported_app_version_dialog_title))
+      .inRoot(isDialog())
+      .check(matches(isDisplayed()))
+  }
+
+  @Test
+  fun testOpenApp_initial_expirationEnabled_afterExpDate_clickOnCloseDialog_endsActivity() {
+    initializeTestApplication()
+    setAutoAppExpirationEnabled(enabled = true)
+    setAutoAppExpirationDate(dateStringBeforeToday())
+    activityTestRule.launchActivity(null)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    onView(withText(R.string.unsupported_app_version_dialog_close_button_text))
+      .inRoot(isDialog())
+      .perform(click())
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // Closing the dialog should close the activity (and thus, the app).
+    assertThat(activityTestRule.activity.isFinishing).isTrue()
+  }
+
+  @Test
+  fun testOpenApp_initial_expirationDisabled_afterExpDate_intentsToOnboardingFlow() {
+    initializeTestApplication()
+    setAutoAppExpirationEnabled(enabled = false)
+    setAutoAppExpirationDate(dateStringBeforeToday())
+
+    activityTestRule.launchActivity(null)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // The app is technically deprecated, but because the deprecation check is disabled the
+    // onboarding flow should be shown, instead.
+    intended(hasComponent(OnboardingActivity::class.java.name))
+  }
+
+  @Test
+  fun testOpenApp_reopen_onboarded_expirationEnabled_beforeExpDate_intentsToProfileChooser() {
+    simulateAppAlreadyOnboarded()
+    initializeTestApplication()
+    setAutoAppExpirationEnabled(enabled = true)
+    setAutoAppExpirationDate(dateStringAfterToday())
+
+    activityTestRule.launchActivity(null)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // Reopening the app before it's expired should result in the profile activity showing since the
+    // user has already been onboarded.
+    intended(hasComponent(ProfileActivity::class.java.name))
+  }
+
+  @Test
+  fun testOpenApp_reopen_onboarded_expirationEnabled_afterExpDate_intentsToDeprecationDialog() {
+    simulateAppAlreadyOnboarded()
+    initializeTestApplication()
+    setAutoAppExpirationEnabled(enabled = true)
+    setAutoAppExpirationDate(dateStringBeforeToday())
+
+    activityTestRule.launchActivity(null)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // Reopening the app after it expires should prevent further access.
+    onView(withText(R.string.unsupported_app_version_dialog_title))
+      .inRoot(isDialog())
+      .check(matches(isDisplayed()))
   }
 
   private fun simulateAppAlreadyOnboarded() {
-    // Simulate the app was already onboarded by creating an isolated onboarding flow controller and saving the onboarding status
-    // on the system before the activity is opened.
-    createTestRootComponent().getOnboardingFlowController().markOnboardingFlowCompleted()
-    onIdle()
+    // Simulate the app was already onboarded by creating an isolated onboarding flow controller and
+    // saving the onboarding status on the system before the activity is opened. Note that this has
+    // to be done in an isolated test application since the test application of this class shares
+    // state with production code under test. The isolated test application must be created through
+    // Instrumentation to ensure it's properly attached.
+    val testApplication = Instrumentation.newApplication(
+      TestApplication::class.java,
+      InstrumentationRegistry.getInstrumentation().targetContext
+    ) as TestApplication
+    testApplication.getAppStartupStateController().markOnboardingFlowCompleted()
+    testApplication.getTestCoroutineDispatchers().advanceUntilIdle()
   }
 
-  private fun createTestRootComponent(): TestApplicationComponent {
-    return DaggerSplashActivityTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
+  private fun initializeTestApplication() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    testCoroutineDispatchers.registerIdlingResource()
+    FirebaseApp.initializeApp(context)
+    setAutoAppExpirationEnabled(enabled = false) // Default to disabled.
   }
 
-  @Qualifier
-  annotation class TestDispatcher
+  private fun setAutoAppExpirationEnabled(enabled: Boolean) {
+    fakeMetaDataRetriever.putMetaDataBoolean("automatic_app_expiration_enabled", enabled)
+  }
 
-  @Module
-  class TestModule {
-    @Provides
-    @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+  private fun setAutoAppExpirationDate(dateString: String) {
+    fakeMetaDataRetriever.putMetaDataString("expiration_date", dateString)
+  }
 
-    @ExperimentalCoroutinesApi
-    @Singleton
-    @Provides
-    @TestDispatcher
-    fun provideTestDispatcher(): CoroutineDispatcher {
-      return TestCoroutineDispatcher()
-    }
+  /** Returns a date string occurring before today. */
+  private fun dateStringBeforeToday(): String {
+    return computeDateString(Instant.now() - Duration.ofDays(1))
+  }
 
-    @Singleton
-    @Provides
-    @BackgroundDispatcher
-    fun provideBackgroundDispatcher(
-      @TestDispatcher testDispatcher: CoroutineDispatcher
-    ): CoroutineDispatcher {
-      return testDispatcher
-    }
+  /** Returns a date string occurring after today. */
+  private fun dateStringAfterToday(): String {
+    return computeDateString(Instant.now() + Duration.ofDays(1))
+  }
 
-    // TODO(#59): Either isolate these to their own shared test module, or use the real logging
-    // module in tests to avoid needing to specify these settings for tests.
-    @EnableConsoleLog
-    @Provides
-    fun provideEnableConsoleLog(): Boolean = true
+  private fun computeDateString(instant: Instant): String {
+    return computeDateString(Date.from(instant))
+  }
 
-    @EnableFileLog
-    @Provides
-    fun provideEnableFileLog(): Boolean = false
-
-    @GlobalLogLevel
-    @Provides
-    fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-
-    @Singleton
-    @Provides
-    @BlockingDispatcher
-    fun provideBlockingDispatcher(): CoroutineDispatcher {
-      return MainThreadExecutor.asCoroutineDispatcher()
-    }
+  private fun computeDateString(date: Date): String {
+    return expirationDateFormat.format(date)
   }
 
   @Singleton
-  @Component(modules = [TestModule::class, TestLogReportingModule::class])
-  interface TestApplicationComponent {
+  @Component(
+    modules = [
+      TestDispatcherModule::class, ApplicationModule::class,
+      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
+      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
+      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
+      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
+      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
+      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
+      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverTestModule::class,
+      ViewBindingShimModule::class, RatioInputModule::class, ApplicationStartupListenerModule::class
+    ]
+  )
+  interface TestApplicationComponent : ApplicationComponent, ApplicationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -170,49 +291,32 @@ class SplashActivityTest {
       fun build(): TestApplicationComponent
     }
 
-    fun getOnboardingFlowController(): OnboardingFlowController
+    fun getAppStartupStateController(): AppStartupStateController
+
+    fun getTestCoroutineDispatchers(): TestCoroutineDispatchers
+
     fun inject(splashActivityTest: SplashActivityTest)
   }
 
-  // TODO(#59): Move this to a general-purpose testing library that replaces all CoroutineExecutors with an
-  //  Espresso-enabled executor service. This service should also allow for background threads to run in both Espresso
-  //  and Robolectric to help catch potential race conditions, rather than forcing parallel execution to be sequential
-  //  and immediate.
-  //  NB: This also blocks on #59 to be able to actually create a test-only library.
-  /**
-   * An executor service that schedules all [Runnable]s to run asynchronously on the main thread. This is based on:
-   * https://android.googlesource.com/platform/packages/apps/TV/+/android-live-tv/src/com/android/tv/util/MainThreadExecutor.java.
-   */
-  private object MainThreadExecutor : AbstractExecutorService() {
-    override fun isTerminated(): Boolean = false
-
-    private val handler = Handler(Looper.getMainLooper())
-    val countingResource =
-      CountingIdlingResource("main_thread_executor_counting_idling_resource")
-
-    override fun execute(command: Runnable?) {
-      countingResource.increment()
-      handler.post {
-        try {
-          command?.run()
-        } finally {
-          countingResource.decrement()
-        }
-      }
+  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerSplashActivityTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
     }
 
-    override fun shutdown() {
-      throw UnsupportedOperationException()
+    fun inject(splashActivityTest: SplashActivityTest) {
+      component.inject(splashActivityTest)
     }
 
-    override fun shutdownNow(): MutableList<Runnable> {
-      throw UnsupportedOperationException()
+    fun getAppStartupStateController() = component.getAppStartupStateController()
+
+    fun getTestCoroutineDispatchers() = component.getTestCoroutineDispatchers()
+
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
+      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
     }
 
-    override fun isShutdown(): Boolean = false
-
-    override fun awaitTermination(timeout: Long, unit: TimeUnit?): Boolean {
-      throw UnsupportedOperationException()
-    }
+    override fun getApplicationInjector(): ApplicationInjector = component
   }
 }

@@ -15,10 +15,14 @@ import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewInteraction
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -30,9 +34,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Matcher
 import org.junit.After
@@ -42,24 +43,26 @@ import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.model.ProfileId
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.app.topic.TopicActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.domain.topic.StoryProgressTestHelper
+import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
-import org.oppia.util.threading.BackgroundDispatcher
-import org.oppia.util.threading.BlockingDispatcher
+import org.robolectric.annotation.LooperMode
 import java.util.concurrent.AbstractExecutorService
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
-import javax.inject.Qualifier
 import javax.inject.Singleton
 
 /** Tests for [OngoingTopicListActivity]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class OngoingTopicListActivityTest {
 
   private val internalProfileId = 0
@@ -71,7 +74,6 @@ class OngoingTopicListActivityTest {
   lateinit var storyProfileTestHelper: StoryProgressTestHelper
 
   @Before
-  @ExperimentalCoroutinesApi
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
@@ -124,6 +126,57 @@ class OngoingTopicListActivityTest {
           withText(containsString("Ratios and Proportional Reasoning"))
         )
       )
+    }
+  }
+
+  @Test
+  fun testOngoingTopicList_clickItem0_intentIsCorrect() {
+    launch<OngoingTopicListActivity>(
+      createOngoingTopicListActivityIntent(
+        internalProfileId
+      )
+    ).use {
+      waitForTheView(withText("Ratios and Proportional Reasoning"))
+      onView(withId(R.id.ongoing_topic_list)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          0
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.ongoing_topic_list,
+          0, R.id.topic_name_text_view
+        )
+      ).perform(click())
+      intended(hasComponent(TopicActivity::class.java.name))
+      intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId))
+      intended(hasExtra(TopicActivity.getTopicIdKey(), RATIOS_TOPIC_ID))
+    }
+  }
+
+  @Test
+  fun testOngoingTopicList_changeConfiguration_clickItem0_intentIsCorrect() {
+    launch<OngoingTopicListActivity>(
+      createOngoingTopicListActivityIntent(
+        internalProfileId
+      )
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
+      waitForTheView(withText("Ratios and Proportional Reasoning"))
+      onView(withId(R.id.ongoing_topic_list)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          0
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.ongoing_topic_list,
+          0, R.id.topic_name_text_view
+        )
+      ).perform(click())
+      intended(hasComponent(TopicActivity::class.java.name))
+      intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId))
+      intended(hasExtra(TopicActivity.getTopicIdKey(), RATIOS_TOPIC_ID))
     }
   }
 
@@ -338,41 +391,12 @@ class OngoingTopicListActivityTest {
     }
   }
 
-  @Qualifier
-  annotation class TestDispatcher
-
   @Module
   class TestModule {
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
       return application
-    }
-
-    @ExperimentalCoroutinesApi
-    @Singleton
-    @Provides
-    @TestDispatcher
-    fun provideTestDispatcher(): CoroutineDispatcher {
-      return TestCoroutineDispatcher()
-    }
-
-    @Singleton
-    @Provides
-    @BackgroundDispatcher
-    fun provideBackgroundDispatcher(
-      @TestDispatcher testDispatcher: CoroutineDispatcher
-    ): CoroutineDispatcher {
-      return testDispatcher
-    }
-
-    @Singleton
-    @Provides
-    @BlockingDispatcher
-    fun provideBlockingDispatcher(
-      @TestDispatcher testDispatcher: CoroutineDispatcher
-    ): CoroutineDispatcher {
-      return testDispatcher
     }
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
@@ -391,7 +415,11 @@ class OngoingTopicListActivityTest {
   }
 
   @Singleton
-  @Component(modules = [TestModule::class, TestLogReportingModule::class])
+  @Component(
+    modules = [
+      TestModule::class, TestLogReportingModule::class, TestDispatcherModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

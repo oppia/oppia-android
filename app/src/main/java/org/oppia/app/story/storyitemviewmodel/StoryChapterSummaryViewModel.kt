@@ -5,7 +5,6 @@ import androidx.lifecycle.Observer
 import org.oppia.app.model.ChapterSummary
 import org.oppia.app.model.LessonThumbnail
 import org.oppia.app.story.ExplorationSelectionListener
-import org.oppia.app.story.StoryFragment
 import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.ConsoleLogger
@@ -22,7 +21,8 @@ class StoryChapterSummaryViewModel(
   val internalProfileId: Int,
   val topicId: String,
   val storyId: String,
-  val chapterSummary: ChapterSummary
+  val chapterSummary: ChapterSummary,
+  val entityType: String
 ) : StoryItemViewModel() {
   val explorationId: String = chapterSummary.explorationId
   val name: String = chapterSummary.name

@@ -11,6 +11,7 @@ import org.oppia.app.topic.revision.revisionitemviewmodel.TopicRevisionItemViewM
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.ConsoleLogger
+import org.oppia.util.parser.TopicHtmlParserEntityType
 import javax.inject.Inject
 
 /** [ViewModel] for [TopicRevisionFragment]. */
@@ -18,7 +19,8 @@ import javax.inject.Inject
 class TopicRevisionViewModel @Inject constructor(
   private val topicController: TopicController,
   private val logger: ConsoleLogger,
-  val fragment: Fragment
+  val fragment: Fragment,
+  @TopicHtmlParserEntityType private val entityType: String
 ) : ViewModel() {
   private lateinit var profileId: ProfileId
   private lateinit var topicId: String
@@ -37,9 +39,10 @@ class TopicRevisionViewModel @Inject constructor(
   }
 
   private fun processTopic(topic: Topic): List<TopicRevisionItemViewModel> {
+    subtopicList.clear()
     subtopicList.addAll(
       topic.subtopicList.map {
-        TopicRevisionItemViewModel(it, revisionSubtopicSelector)
+        TopicRevisionItemViewModel(topicId, it, entityType, revisionSubtopicSelector)
       }
     )
     return subtopicList

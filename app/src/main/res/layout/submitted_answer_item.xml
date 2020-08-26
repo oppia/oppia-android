@@ -4,6 +4,8 @@
 
   <data>
 
+    <import type="android.view.Gravity" />
+
     <import type="android.view.View" />
 
     <variable
@@ -13,37 +15,56 @@
     <variable
       name="submittedListAnswer"
       type="org.oppia.app.model.ListOfSetsOfHtmlStrings" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.player.state.itemviewmodel.SubmittedAnswerViewModel" />
   </data>
 
-  <androidx.constraintlayout.widget.ConstraintLayout
+  <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="68dp"
-    android:layout_marginTop="@dimen/divider_margin_top"
-    android:layout_marginEnd="18dp"
-    android:layout_marginBottom="@dimen/divider_margin_bottom">
+    android:orientation="horizontal"
+    android:gravity="@{viewModel.hasConversationView ? Gravity.END : Gravity.START}"
+    app:explorationSplitViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
+    app:explorationSplitViewMarginBottom="@{@dimen/margin_0}"
+    app:explorationSplitViewMarginEnd="@{@dimen/margin_24}"
+    app:explorationSplitViewMarginStart="@{@dimen/margin_40}"
+    app:explorationSplitViewMarginTop="@{@dimen/margin_24}"
+    app:explorationViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
+    app:explorationViewMarginBottom="@{@dimen/margin_0}"
+    app:explorationViewMarginEnd="@{@dimen/margin_24}"
+    app:explorationViewMarginStart="@{@dimen/margin_40}"
+    app:explorationViewMarginTop="@{@dimen/margin_24}"
+    app:questionSplitViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
+    app:questionSplitViewMarginBottom="@{@dimen/margin_0}"
+    app:questionSplitViewMarginEnd="@{@dimen/margin_32}"
+    app:questionSplitViewMarginStart="@{@dimen/margin_32}"
+    app:questionSplitViewMarginTop="@{@dimen/margin_24}"
+    app:questionViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
+    app:questionViewMarginBottom="@{@dimen/margin_0}"
+    app:questionViewMarginEnd="@{@dimen/margin_32}"
+    app:questionViewMarginStart="@{@dimen/margin_32}"
+    app:questionViewMarginTop="@{@dimen/margin_24}">
 
     <TextView
       android:id="@+id/submitted_answer_text_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:background="@drawable/submitted_answer_background"
-      android:fontFamily="sans-serif"
-      android:paddingStart="16dp"
-      android:paddingTop="8dp"
-      android:paddingEnd="16dp"
-      android:paddingBottom="8dp"
+      android:paddingStart="12dp"
+      android:paddingTop="@{viewModel.hasConversationView ? @dimen/padding_16 : @dimen/padding_8}"
+      android:paddingEnd="12dp"
+      android:paddingBottom="@{viewModel.hasConversationView ? @dimen/padding_16 : @dimen/padding_8}"
       android:text="@{submittedAnswer}"
+      android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp"
-      android:visibility="gone"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/submitted_answer_recycler_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_gravity="end"
       android:background="@drawable/submitted_answer_background"
       android:paddingStart="8dp"
       android:paddingEnd="8dp"
@@ -53,5 +74,19 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       app:list="@{submittedListAnswer.setOfHtmlStringsList}" />
-  </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+      android:id="@+id/answer_tick"
+      android:layout_width="24dp"
+      android:layout_height="24dp"
+      android:layout_gravity="center_vertical"
+      android:layout_marginStart="12dp"
+      android:src="@drawable/ic_check_primary"
+      android:visibility="@{viewModel.isCorrectAnswer &amp;&amp; !viewModel.hasConversationView ? View.VISIBLE : View.GONE}"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.0"
+      app:layout_constraintStart_toEndOf="@+id/submitted_answer_container"
+      app:layout_constraintTop_toTopOf="parent" />
+  </LinearLayout>
 </layout>

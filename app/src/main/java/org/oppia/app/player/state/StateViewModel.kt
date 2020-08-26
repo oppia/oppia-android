@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
+import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.app.viewmodel.ObservableArrayList
 import org.oppia.app.viewmodel.ObservableViewModel
@@ -15,6 +16,10 @@ import javax.inject.Inject
 @FragmentScope
 class StateViewModel @Inject constructor() : ObservableViewModel() {
   val itemList: ObservableList<StateItemViewModel> = ObservableArrayList()
+  val rightItemList: ObservableList<StateItemViewModel> = ObservableArrayList()
+
+  val isSplitView = ObservableField(false)
+  val centerGuidelinePercentage = ObservableField(0.5f)
 
   val isAudioBarVisible = ObservableField(false)
 
@@ -44,20 +49,30 @@ class StateViewModel @Inject constructor() : ObservableViewModel() {
   fun getCanSubmitAnswer(): ObservableField<Boolean> = canSubmitAnswer
 
   fun getPendingAnswer(
-    statePlayerRecyclerViewAssembler: StatePlayerRecyclerViewAssembler
+    retrieveAnswerHandler: (List<StateItemViewModel>) -> InteractionAnswerHandler?
   ): UserAnswer {
-    return getPendingAnswerWithoutError(statePlayerRecyclerViewAssembler)
-      ?: UserAnswer.getDefaultInstance()
+    return getPendingAnswerWithoutError(
+      retrieveAnswerHandler(
+        getAnswerItemList()
+      )
+    ) ?: UserAnswer.getDefaultInstance()
   }
 
   private fun getPendingAnswerWithoutError(
-    statePlayerRecyclerViewAssembler: StatePlayerRecyclerViewAssembler
+    answerHandler: InteractionAnswerHandler?
   ): UserAnswer? {
-    val answerHandler = statePlayerRecyclerViewAssembler.getPendingAnswerHandler(itemList)
     return if (answerHandler?.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME) == null) {
       answerHandler?.getPendingAnswer()
     } else {
       null
+    }
+  }
+
+  private fun getAnswerItemList(): List<StateItemViewModel> {
+    return if (isSplitView.get() == true) {
+      rightItemList
+    } else {
+      itemList
     }
   }
 }

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <import type="org.oppia.app.model.Topic" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.ongoingtopiclist.OngoingTopicItemViewModel" />
+  </data>
+
+  <com.google.android.material.card.MaterialCardView
+    android:id="@+id/topic_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="24dp"
+    android:layout_marginTop="36dp"
+    android:layout_marginEnd="24dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:onClick="@{(v) -> viewModel.onTopicItemClicked()}"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="@dimen/elevation_4dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+      <org.oppia.app.customview.LessonThumbnailImageView
+        android:id="@+id/topic_thumbnail"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:importantForAccessibility="no"
+        android:scaleType="centerInside"
+        app:entityId="@{viewModel.topic.topicId}"
+        app:entityType="@{viewModel.entityType}"
+        app:layout_constraintDimensionRatio="4:3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lessonThumbnail="@{viewModel.topic.topicThumbnail}" />
+
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/topicTitleBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topic_thumbnail">
+
+        <TextView
+          android:id="@+id/topic_name_text_view"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="8dp"
+          android:layout_marginTop="8dp"
+          android:layout_marginEnd="8dp"
+          android:ellipsize="end"
+          android:fontFamily="sans-serif"
+          android:gravity="top"
+          android:lines="2"
+          android:text="@{viewModel.topic.name}"
+          android:textColor="@color/white"
+          android:textSize="14sp"
+          android:textStyle="bold"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+          android:id="@+id/story_count_text_view"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="8dp"
+          android:layout_marginTop="4dp"
+          android:layout_marginEnd="8dp"
+          android:fontFamily="sans-serif-light"
+          android:paddingBottom="12dp"
+          android:text="@{@plurals/lesson_count(viewModel.topic.storyCount, viewModel.topic.storyCount)}"
+          android:textColor="@color/white_80"
+          android:textSize="14sp"
+          android:textStyle="italic"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/topic_name_text_view" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+  </com.google.android.material.card.MaterialCardView>
+</layout>

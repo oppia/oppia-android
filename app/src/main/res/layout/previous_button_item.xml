@@ -10,16 +10,36 @@
       name="buttonViewModel"
       type="org.oppia.app.player.state.itemviewmodel.PreviousButtonViewModel" />
   </data>
-
+  <!-- Margins -->
+  <!-- Exploration Split View: 24, 72, 32, 0 -->
+  <!-- Exploration View: 24, 24, 24, 0 -->
+  <!-- Question Split View: 32, 72, 32, 0 -->
+  <!-- Question View: 32, 24, 32, 0 -->
+  <!-- Note: Start/End margins are 4dp less which is getting adjusted in child views. -->
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="56dp"
-    android:layout_marginBottom="@dimen/divider_margin_bottom"
     android:gravity="center_vertical"
-    android:paddingStart="24dp"
-    android:paddingEnd="24dp"
-    android:paddingBottom="28dp">
+    app:explorationSplitViewMarginApplicable="@{buttonViewModel.hasConversationView &amp;&amp; buttonViewModel.isSplitView}"
+    app:explorationSplitViewMarginBottom="@{@dimen/margin_0}"
+    app:explorationSplitViewMarginEnd="@{@dimen/margin_28}"
+    app:explorationSplitViewMarginStart="@{@dimen/margin_20}"
+    app:explorationSplitViewMarginTop="@{@dimen/margin_72}"
+    app:explorationViewMarginApplicable="@{buttonViewModel.hasConversationView &amp;&amp; !buttonViewModel.isSplitView}"
+    app:explorationViewMarginBottom="@{@dimen/margin_0}"
+    app:explorationViewMarginEnd="@{@dimen/margin_20}"
+    app:explorationViewMarginStart="@{@dimen/margin_20}"
+    app:explorationViewMarginTop="@{@dimen/margin_24}"
+    app:questionSplitViewMarginApplicable="@{!buttonViewModel.hasConversationView &amp;&amp; buttonViewModel.isSplitView}"
+    app:questionSplitViewMarginBottom="@{@dimen/margin_0}"
+    app:questionSplitViewMarginEnd="@{@dimen/margin_28}"
+    app:questionSplitViewMarginStart="@{@dimen/margin_28}"
+    app:questionSplitViewMarginTop="@{@dimen/margin_72}"
+    app:questionViewMarginApplicable="@{!buttonViewModel.hasConversationView &amp;&amp; !buttonViewModel.isSplitView}"
+    app:questionViewMarginBottom="@{@dimen/margin_0}"
+    app:questionViewMarginEnd="@{@dimen/margin_28}"
+    app:questionViewMarginStart="@{@dimen/margin_28}"
+    app:questionViewMarginTop="@{@dimen/margin_24}">
 
     <ImageButton
       android:id="@+id/previous_state_navigation_button"
@@ -30,7 +50,7 @@
       android:contentDescription="@string/previous_state_description"
       android:elevation="2dp"
       android:onClick="@{(v) -> buttonViewModel.previousNavigationButtonListener.onPreviousButtonClicked()}"
-      android:padding="16dp"
+      android:padding="8dp"
       android:src="@drawable/ic_arrow_back_oppia_dark_blue_24dp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"

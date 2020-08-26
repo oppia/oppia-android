@@ -9,36 +9,34 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.model.AnswerGroup
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.ListOfSetsOfHtmlStrings
+import org.oppia.app.model.RatioExpression
 import org.oppia.app.model.RuleSpec
 import org.oppia.app.model.State
 import org.oppia.app.model.StringList
+import org.oppia.testing.TestDispatcherModule
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
-import org.oppia.util.threading.BackgroundDispatcher
-import org.oppia.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
-import javax.inject.Qualifier
 import javax.inject.Singleton
 
 const val DRAG_DROP_TEST_EXPLORATION_NAME = "test_exp_id_4.json"
-const val IMAGE_REGION_SELECTION_TEST_EXPLORATION_NAME =
-  "image_click_input_exploration.json"
+const val IMAGE_REGION_SELECTION_TEST_EXPLORATION_NAME = "image_click_input_exploration.json"
+const val RATIO_TEST_EXPLORATION_NAME = "ratio_input_exploration.json"
 
 /** Tests for [StateRetriever]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class StateRetrieverTest {
 
@@ -224,7 +222,7 @@ class StateRetrieverTest {
   }
 
   @Test
-  fun testParseState_withImageRegionSelectioInteraction_parsesRuleWithIsInRegionWithValueAtX() {
+  fun testParseState_withImageRegionSelectionInteraction_parsesRuleWithIsInRegionWithValueAtX() {
     val state = createStateFromJson(
       "ImageClickInput",
       IMAGE_REGION_SELECTION_TEST_EXPLORATION_NAME
@@ -239,6 +237,110 @@ class StateRetrieverTest {
     assertThat(ruleSpecMap.inputMap["x"]).isEqualTo(imageRegionSelectionIsInRegionValue)
   }
 
+  @Test
+  fun testParseState_withRatioInputInteraction_parsesRuleEqualsRuleSpec() {
+    val state = createStateFromJson(
+      "RatioExpressionInput",
+      RATIO_TEST_EXPLORATION_NAME
+    )
+    val ruleSpecMap = state.interaction.answerGroupsList
+      .flatMap(AnswerGroup::getRuleSpecsList)
+      .associateBy(RuleSpec::getRuleType)
+    assertThat(ruleSpecMap).containsKey("Equals")
+  }
+
+  @Test
+  fun testParseState_withRatioInputSelectionInteraction_parsesRuleWithEqualsWithValueAtX() {
+    val state = createStateFromJson(
+      "RatioExpressionInput",
+      RATIO_TEST_EXPLORATION_NAME
+    )
+    val ruleSpecMap = lookUpRuleSpec(state, "Equals")
+
+    val expectedInputRatio = createRatio(listOf(4, 5))
+
+    val expectedInputInteractionObject =
+      InteractionObject.newBuilder().setRatioExpression(expectedInputRatio).build()
+
+    assertThat(ruleSpecMap.inputMap["x"]).isEqualTo(expectedInputInteractionObject)
+  }
+
+  @Test
+  fun testParseState_withRatioInputInteraction_parsesRuleIsEquivalentRuleSpec() {
+    val state = createStateFromJson(
+      "RatioExpressionInput",
+      RATIO_TEST_EXPLORATION_NAME
+    )
+    val ruleSpecMap = state.interaction.answerGroupsList
+      .flatMap(AnswerGroup::getRuleSpecsList)
+      .associateBy(RuleSpec::getRuleType)
+    assertThat(ruleSpecMap).containsKey("IsEquivalent")
+  }
+
+  @Test
+  fun testParseState_withImageRegionSelectionInteraction_parsesRuleWithIsEquivalentWithValueAtX() {
+    val state = createStateFromJson(
+      "RatioExpressionInput",
+      RATIO_TEST_EXPLORATION_NAME
+    )
+    val ruleSpecMap = lookUpRuleSpec(state, "IsEquivalent")
+
+    val expectedInputRatio = createRatio(listOf(8, 10))
+
+    val expectedInputInteractionObject =
+      InteractionObject.newBuilder().setRatioExpression(expectedInputRatio).build()
+
+    assertThat(ruleSpecMap.inputMap["x"]).isEqualTo(expectedInputInteractionObject)
+  }
+
+  @Test
+  fun testParseState_withRatioInputInteraction_parsesRuleHasNumberOfTermsEqualToRuleSpec() {
+    val state = createStateFromJson(
+      "RatioExpressionInput",
+      RATIO_TEST_EXPLORATION_NAME
+    )
+    val ruleSpecMap = state.interaction.answerGroupsList
+      .flatMap(AnswerGroup::getRuleSpecsList)
+      .associateBy(RuleSpec::getRuleType)
+    assertThat(ruleSpecMap).containsKey("HasNumberOfTermsEqualTo")
+  }
+
+  @Test
+  fun testParseState_withRatioInputInteraction_parsesCustomizationArgPlaceholderText() {
+    val state = createStateFromJson(
+      "RatioExpressionInput",
+      RATIO_TEST_EXPLORATION_NAME
+    )
+    val customizationArgName = state.interaction.getCustomizationArgsOrThrow("placeholder")
+    assertThat(customizationArgName.subtitledUnicode.unicodeStr).isEqualTo("Enter in format of x:y")
+  }
+
+  @Test
+  fun testParseState_withRatioInputInteraction_parsesCustomizationArgNumberOfTerms() {
+    val state = createStateFromJson(
+      "RatioExpressionInput",
+      RATIO_TEST_EXPLORATION_NAME
+    )
+    val customizationArgName = state.interaction.getCustomizationArgsOrThrow("numberOfTerms")
+    assertThat(customizationArgName.signedInt).isEqualTo(0)
+  }
+
+  @Test
+  fun testParseState_withImageRegionSelectionInteraction_parsesRuleWithHasNumberOfTermsEqualToWithValueAtY() { // ktlint-disable max-line-length
+    val state = createStateFromJson(
+      "RatioExpressionInput",
+      RATIO_TEST_EXPLORATION_NAME
+    )
+    val ruleSpecMap = lookUpRuleSpec(state, "HasNumberOfTermsEqualTo")
+
+    val expectedNumberOfTerms = 3
+
+    val expectedInputInteractionObject =
+      InteractionObject.newBuilder().setNonNegativeInt(expectedNumberOfTerms).build()
+
+    assertThat(ruleSpecMap.inputMap["y"]).isEqualTo(expectedInputInteractionObject)
+  }
+
   private fun lookUpRuleSpec(state: State, ruleSpecName: String): RuleSpec {
     return state.interaction.answerGroupsList
       .flatMap(AnswerGroup::getRuleSpecsList)
@@ -247,6 +349,10 @@ class StateRetrieverTest {
 
   private fun createHtmlStringList(vararg items: String): StringList {
     return StringList.newBuilder().addAllHtml(items.toList()).build()
+  }
+
+  private fun createRatio(items: List<Int>): RatioExpression {
+    return RatioExpression.newBuilder().addAllRatioComponent(items).build()
   }
 
   private fun createStateFromJson(stateName: String, explorationName: String): State {
@@ -264,41 +370,12 @@ class StateRetrieverTest {
       .inject(this)
   }
 
-  @Qualifier
-  annotation class TestDispatcher
-
   @Module
   class TestModule {
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
       return application
-    }
-
-    @ExperimentalCoroutinesApi
-    @Singleton
-    @Provides
-    @TestDispatcher
-    fun provideTestDispatcher(): CoroutineDispatcher {
-      return TestCoroutineDispatcher()
-    }
-
-    @Singleton
-    @Provides
-    @BackgroundDispatcher
-    fun provideBackgroundDispatcher(
-      @TestDispatcher testDispatcher: CoroutineDispatcher
-    ): CoroutineDispatcher {
-      return testDispatcher
-    }
-
-    @Singleton
-    @Provides
-    @BlockingDispatcher
-    fun provideBlockingDispatcher(
-      @TestDispatcher testDispatcher: CoroutineDispatcher
-    ): CoroutineDispatcher {
-      return testDispatcher
     }
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
@@ -322,7 +399,7 @@ class StateRetrieverTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class])
+  @Component(modules = [TestModule::class, TestDispatcherModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

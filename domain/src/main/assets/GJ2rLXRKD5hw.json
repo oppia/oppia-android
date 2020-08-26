@@ -8,7 +8,7 @@
         "What is a Fraction?",
         "The Meaning of Equal Parts"
       ],
-      "thumbnail_filename": "img_20200521_034635_46gl425jp5_height_324_width_432.svg",
+      "thumbnail_filename": "",
       "id": "wANbh4oOClga",
       "published": false
     }
@@ -26,125 +26,45 @@
   },
   "subtopics": [
     {
-      "thumbnail_bg_color": "#FFFFFF",
+      "thumbnail_bg_color": "#FF72FF",
       "skill_ids": [
         "5RM9KPfQxobH",
-        "B39yK4cbHZYI",
-        "UxTGIJqaHMLa"
+        "B39yK4cbHZYI"
       ],
       "id": 1,
-      "thumbnail_filename": "img_20200521_034107_ngiwg3u9fc_height_324_width_432.svg",
+      "thumbnail_filename": "",
       "title": "What is a Fraction?"
     },
     {
-      "thumbnail_bg_color": "#FFFFFF",
+      "thumbnail_bg_color": "#FF72FF",
       "skill_ids": [
         "B39yK4cbHZYI",
         "UxTGIJqaHMLa"
       ],
       "id": 2,
-      "thumbnail_filename": "img_20200521_034107_ngiwg3u9fc_height_324_width_432.svg",
+      "thumbnail_filename": "",
       "title": "Fractions of a group"
     },
     {
-      "thumbnail_bg_color": "#FFFFFF",
+      "thumbnail_bg_color": "#FF72FF",
       "skill_ids": [
-        "B39yK4cbHZYI",
+        "5RM9KPfQxobH",
         "UxTGIJqaHMLa"
       ],
       "id": 3,
-      "thumbnail_filename": "img_20200521_034107_ngiwg3u9fc_height_324_width_432.svg",
+      "thumbnail_filename": "",
       "title": "Mixed Numbers"
     },
     {
-      "thumbnail_bg_color": "#FFFFFF",
-      "skill_ids": [],
+      "thumbnail_bg_color": "#FF72FF",
+      "skill_ids": [
+        "B39yK4cbHZYI",
+        "5RM9KPfQxobH",
+        "UxTGIJqaHMLa"
+      ],
       "id": 4,
-      "thumbnail_filename": "img_20200521_034107_ngiwg3u9fc_height_324_width_432.svg",
+      "thumbnail_filename": "",
       "title": "Adding Fractions"
-    },
-    {
-      "thumbnail_bg_color": "#FFFFFF",
-      "skill_ids": [
-        "5RM9KPfQxobH",
-        "B39yK4cbHZYI"
-      ],
-      "id": 5,
-      "thumbnail_filename": "img_20200521_034107_ngiwg3u9fc_height_324_width_432.svg",
-      "title": "Equivalent Fractions"
-    },
-    {
-      "thumbnail_bg_color": "#FFFFFF",
-      "skill_ids": [
-        "5RM9KPfQxobH",
-        "B39yK4cbHZYI",
-        "UxTGIJqaHMLa"
-      ],
-      "id": 5,
-      "thumbnail_filename": "img_20200521_034107_ngiwg3u9fc_height_324_width_432.svg",
-      "title": "The Number Line"
-    },
-    {
-      "thumbnail_bg_color": "#FFFFFF",
-      "skill_ids": [
-        "B39yK4cbHZYI",
-        "UxTGIJqaHMLa"
-      ],
-      "id": 6,
-      "thumbnail_filename": "img_20200521_034107_ngiwg3u9fc_height_324_width_432.svg",
-      "title": "Comparing Fractions"
-    },
-    {
-      "thumbnail_bg_color": "#FFFFFF",
-      "skill_ids": [
-        "5RM9KPfQxobH",
-        "B39yK4cbHZYI"
-      ],
-      "id": 7,
-      "thumbnail_filename": "img_20200521_034107_ngiwg3u9fc_height_324_width_432.svg",
-      "title": "Adding Fractions"
-    },
-    {
-      "thumbnail_bg_color": "#FFFFFF",
-      "skill_ids": [
-        "5RM9KPfQxobH",
-        "B39yK4cbHZYI",
-        "UxTGIJqaHMLa"
-      ],
-      "id": 8,
-      "thumbnail_filename": "img_20200521_034107_ngiwg3u9fc_height_324_width_432.svg",
-      "title": "Subtracting Fractions"
-    },
-    {
-      "thumbnail_bg_color": "#FFFFFF",
-      "skill_ids": [
-        "5RM9KPfQxobH",
-        "UxTGIJqaHMLa"
-      ],
-      "id": 9,
-      "thumbnail_filename": "img_20200521_034107_ngiwg3u9fc_height_324_width_432.svg",
-      "title": "Multiplying Fractions"
-    },
-    {
-      "thumbnail_bg_color": "#FFFFFF",
-      "skill_ids": [
-        "B39yK4cbHZYI",
-        "UxTGIJqaHMLa"
-      ],
-      "id": 10,
-      "thumbnail_filename": "img_20200521_034107_ngiwg3u9fc_height_324_width_432.svg",
-      "title": "Dividing Fractions"
-    },
-    {
-      "thumbnail_bg_color": "#FFFFFF",
-      "skill_ids": [
-        "5RM9KPfQxobH",
-        "B39yK4cbHZYI",
-        "UxTGIJqaHMLa"
-      ],
-      "id": 11,
-      "thumbnail_filename": "img_20200521_034107_ngiwg3u9fc_height_324_width_432.svg",
-      "title": "General Skills"
     }
   ]
 }

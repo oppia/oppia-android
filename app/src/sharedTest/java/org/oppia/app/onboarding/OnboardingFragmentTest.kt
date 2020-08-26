@@ -28,9 +28,11 @@ import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.robolectric.annotation.LooperMode
 
 /** Tests for [OnboardingFragment]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class OnboardingFragmentTest {
 
   @Before

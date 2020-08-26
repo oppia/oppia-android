@@ -15,7 +15,7 @@ android {
     versionCode 1
     versionName "1.0"
     multiDexEnabled true
-    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    testInstrumentationRunner "org.oppia.testing.OppiaTestRunner"
     // https://developer.android.com/training/testing/junit-runner#ato-gradle
     testInstrumentationRunnerArguments clearPackageData: 'true'
     javaCompileOptions {
@@ -61,6 +61,7 @@ android {
     test {
       java.srcDirs += "src/sharedTest/java"
       kotlin.srcDirs += "src/sharedTest/java"
+      java.exclude('**/DataBinderMapperImpl.java') // Bazel-specific file used to run tests
     }
   }
 }
@@ -117,7 +118,6 @@ dependencies {
       'androidx.test.espresso:espresso-core:3.2.0',
       'androidx.test.espresso:espresso-intents:3.1.0',
       'androidx.test.ext:junit:1.1.1',
-      'androidx.test:runner:1.2.0',
       'com.google.truth:truth:0.43',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
       'org.mockito:mockito-android:2.7.22',

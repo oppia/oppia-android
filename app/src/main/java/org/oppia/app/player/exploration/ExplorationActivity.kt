@@ -4,12 +4,14 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.app.hintsandsolution.HintsAndSolutionListener
 import org.oppia.app.hintsandsolution.RevealHintListener
 import org.oppia.app.hintsandsolution.RevealSolutionInterface
+import org.oppia.app.model.ReadingTextSize
 import org.oppia.app.model.State
 import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
@@ -31,6 +33,7 @@ class ExplorationActivity :
   RouteToHintsAndSolutionListener,
   RevealHintListener,
   RevealSolutionInterface,
+  DefaultFontSizeStateListener,
   HintsAndSolutionExplorationManagerListener {
 
   @Inject
@@ -60,16 +63,17 @@ class ExplorationActivity :
     )
   }
 
+  // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
   companion object {
     /** Returns a new [Intent] to route to [ExplorationActivity] for a specified exploration. */
 
-    internal const val EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY =
+    const val EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY =
       "ExplorationActivity.profile_id"
-    internal const val EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "ExplorationActivity.topic_id"
-    internal const val EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY = "ExplorationActivity.story_id"
-    internal const val EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY =
+    const val EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "ExplorationActivity.topic_id"
+    const val EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY = "ExplorationActivity.story_id"
+    const val EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY =
       "ExplorationActivity.exploration_id"
-    internal const val EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY =
+    const val EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY =
       "ExplorationActivity.backflow_screen"
 
     fun createExplorationActivityIntent(
@@ -108,8 +112,12 @@ class ExplorationActivity :
   }
 
   override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-    menuInflater.inflate(R.menu.menu_exploration_activity, menu)
+    menuInflater.inflate(R.menu.menu_reading_options, menu)
     return super.onCreateOptionsMenu(menu)
+  }
+
+  override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    return explorationActivityPresenter.handleOnOptionsItemSelected(item)
   }
 
   override fun showAudioButton() = explorationActivityPresenter.showAudioButton()
@@ -164,6 +172,10 @@ class ExplorationActivity :
 
   override fun dismiss() {
     getHintsAndSolution()?.dismiss()
+  }
+
+  override fun onDefaultFontSizeLoaded(readingTextSize: ReadingTextSize) {
+    explorationActivityPresenter.loadExplorationFragment(readingTextSize)
   }
 
   override fun onExplorationStateLoaded(state: State) {

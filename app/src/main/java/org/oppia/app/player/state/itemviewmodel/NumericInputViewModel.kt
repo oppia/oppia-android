@@ -3,7 +3,6 @@ package org.oppia.app.player.state.itemviewmodel
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.databinding.Bindable
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.app.model.InteractionObject
@@ -16,7 +15,9 @@ import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 /** [StateItemViewModel] for the numeric input interaction. */
 class NumericInputViewModel(
   private val context: Context,
-  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver // ktlint-disable max-line-length
+  val hasConversationView: Boolean,
+  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
+  val isSplitView: Boolean
 ) : StateItemViewModel(ViewType.NUMERIC_INPUT_INTERACTION), InteractionAnswerHandler {
   var answerText: CharSequence = ""
   private var pendingAnswerError: String? = null
@@ -54,7 +55,6 @@ class NumericInputViewModel(
     return pendingAnswerError
   }
 
-  @Bindable
   fun getAnswerTextWatcher(): TextWatcher {
     return object : TextWatcher {
       override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {

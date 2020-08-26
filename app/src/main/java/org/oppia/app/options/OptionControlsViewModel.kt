@@ -10,7 +10,7 @@ import org.oppia.app.model.AppLanguage
 import org.oppia.app.model.AudioLanguage
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
-import org.oppia.app.model.StoryTextSize
+import org.oppia.app.model.ReadingTextSize
 import org.oppia.app.viewmodel.ObservableArrayList
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
@@ -26,7 +26,7 @@ class OptionControlsViewModel @Inject constructor(
 ) : OptionsItemViewModel() {
   private val itemViewModelList: ObservableList<OptionsItemViewModel> = ObservableArrayList()
   private lateinit var profileId: ProfileId
-  private val routeToStoryTextSizeListener = activity as RouteToStoryTextSizeListener
+  private val routeToReadingTextSizeListener = activity as RouteToReadingTextSizeListener
   private val routeToAudioLanguageListListener = activity as RouteToAudioLanguageListListener
   private val routeToAppLanguageListListener = activity as RouteToAppLanguageListListener
 
@@ -59,18 +59,18 @@ class OptionControlsViewModel @Inject constructor(
 
     itemViewModelList.clear()
 
-    val optionsStoryTextViewViewModel =
-      OptionsStoryTextViewViewModel(routeToStoryTextSizeListener)
+    val optionsReadingTextSizeViewModel =
+      OptionsReadingTextSizeViewModel(routeToReadingTextSizeListener)
     val optionsAppLanguageViewModel =
       OptionsAppLanguageViewModel(routeToAppLanguageListListener)
     val optionAudioViewViewModel =
       OptionsAudioLanguageViewModel(routeToAudioLanguageListListener)
 
-    optionsStoryTextViewViewModel.storyTextSize.set(getStoryTextSize(profile.storyTextSize))
+    optionsReadingTextSizeViewModel.readingTextSize.set(getReadingTextSize(profile.readingTextSize))
     optionsAppLanguageViewModel.appLanguage.set(getAppLanguage(profile.appLanguage))
     optionAudioViewViewModel.audioLanguage.set(getAudioLanguage(profile.audioLanguage))
 
-    itemViewModelList.add(optionsStoryTextViewViewModel as OptionsItemViewModel)
+    itemViewModelList.add(optionsReadingTextSizeViewModel as OptionsItemViewModel)
 
     itemViewModelList.add(optionsAppLanguageViewModel as OptionsItemViewModel)
 
@@ -79,11 +79,11 @@ class OptionControlsViewModel @Inject constructor(
     return itemViewModelList
   }
 
-  fun getStoryTextSize(storyTextSize: StoryTextSize): String {
-    return when (storyTextSize) {
-      StoryTextSize.SMALL_TEXT_SIZE -> "Small"
-      StoryTextSize.MEDIUM_TEXT_SIZE -> "Medium"
-      StoryTextSize.LARGE_TEXT_SIZE -> "Large"
+  fun getReadingTextSize(readingTextSize: ReadingTextSize): String {
+    return when (readingTextSize) {
+      ReadingTextSize.SMALL_TEXT_SIZE -> "Small"
+      ReadingTextSize.MEDIUM_TEXT_SIZE -> "Medium"
+      ReadingTextSize.LARGE_TEXT_SIZE -> "Large"
       else -> "Extra Large"
     }
   }

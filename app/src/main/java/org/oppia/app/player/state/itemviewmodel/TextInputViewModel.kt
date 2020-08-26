@@ -2,7 +2,6 @@ package org.oppia.app.player.state.itemviewmodel
 
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.databinding.Bindable
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.app.model.Interaction
@@ -14,7 +13,9 @@ import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 /** [StateItemViewModel] for the text input interaction. */
 class TextInputViewModel(
   interaction: Interaction,
-  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver // ktlint-disable max-line-length
+  val hasConversationView: Boolean,
+  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
+  val isSplitView: Boolean
 ) : StateItemViewModel(ViewType.TEXT_INPUT_INTERACTION), InteractionAnswerHandler {
   var answerText: CharSequence = ""
   val hintText: CharSequence = deriveHintText(interaction)
@@ -34,7 +35,6 @@ class TextInputViewModel(
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
   }
 
-  @Bindable
   fun getAnswerTextWatcher(): TextWatcher {
     return object : TextWatcher {
       override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {

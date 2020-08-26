@@ -3,12 +3,14 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
-    <import type="android.view.View"/>
-    <import type="org.oppia.app.model.Subtopic"/>
+
+    <import type="android.view.View" />
+
+    <import type="org.oppia.app.model.Subtopic" />
+
     <variable
       name="viewModel"
       type="org.oppia.app.topic.revision.revisionitemviewmodel.TopicRevisionItemViewModel" />
-
   </data>
 
   <com.google.android.material.card.MaterialCardView
@@ -19,28 +21,29 @@
     android:layout_marginEnd="8dp"
     android:layout_marginBottom="12dp"
     android:clipToPadding="true"
+    android:onClick="@{(v) -> viewModel.onRevisionItemPressed.onTopicRevisionSummaryClicked(viewModel.subtopic)}"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp"
-    app:cardMaxElevation="4dp"
-    android:onClick="@{(v) -> viewModel.onRevisionItemPressed.onTopicRevisionSummaryClicked(viewModel.subtopic)}">
+    app:cardMaxElevation="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
 
-      <ImageView
+      <org.oppia.app.customview.LessonThumbnailImageView
         android:id="@+id/subtopic_image_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/white"
         android:importantForAccessibility="no"
         android:scaleType="centerInside"
-        android:src="@{viewModel.subtopic.subtopicThumbnail.thumbnailGraphic}"
+        app:entityId="@{viewModel.topicId}"
+        app:entityType="@{viewModel.entityType}"
         app:layout_constraintDimensionRatio="H,4:3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:lessonThumbnail="@{viewModel.subtopic.subtopicThumbnail}" />
 
       <TextView
         android:id="@+id/subtopic_title"
@@ -49,7 +52,6 @@
         android:background="@color/oppiaBrownDark"
         android:ellipsize="end"
         android:fontFamily="sans-serif"
-        android:textStyle="bold"
         android:maxLines="3"
         android:minLines="3"
         android:paddingStart="8dp"
@@ -59,6 +61,7 @@
         android:text="@{viewModel.subtopic.title}"
         android:textColor="@color/white"
         android:textSize="14sp"
+        android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/subtopic_image_view" />
     </androidx.constraintlayout.widget.ConstraintLayout>
   </com.google.android.material.card.MaterialCardView>

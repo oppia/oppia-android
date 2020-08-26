@@ -27,10 +27,12 @@ import org.oppia.app.R
 import org.oppia.app.utility.EspressoTestsMatchers.matchCurrentTabTitle
 import org.oppia.util.threading.BackgroundDispatcher
 import org.oppia.util.threading.BlockingDispatcher
+import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
 
 /** Tests for [MyDownloadsFragment]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class MyDownloadsFragmentTest {
 
   @Test

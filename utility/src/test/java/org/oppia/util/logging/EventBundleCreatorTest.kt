@@ -14,6 +14,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.model.EventLog
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
 
 const val TEST_TIMESTAMP = 1556094120000
@@ -23,9 +24,10 @@ const val TEST_EXPLORATION_ID = "test_explorationId"
 const val TEST_QUESTION_ID = "test_questionId"
 const val TEST_SKILL_ID_ONE = "test_skillId_one"
 const val TEST_SKILL_ID_TWO = "test_skillId_two"
-const val TEST_SUB_TOPIC_ID = "test_subTopicId"
+const val TEST_SUB_TOPIC_ID = 1
 
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class EventBundleCreatorTest {
 

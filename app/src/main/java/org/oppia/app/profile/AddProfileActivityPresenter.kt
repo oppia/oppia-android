@@ -24,22 +24,15 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.databinding.AddProfileActivityBinding
-import org.oppia.app.model.AppLanguage
-import org.oppia.app.model.AudioLanguage
-import org.oppia.app.model.StoryTextSize
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
 import javax.inject.Inject
 
 const val GALLERY_INTENT_RESULT_CODE = 1
-private val DEFAULT_STORY_TEXT_SIZE = StoryTextSize.SMALL_TEXT_SIZE
-private val DEFAULT_APP_LANGUAGE = AppLanguage.ENGLISH_APP_LANGUAGE
-private val DEFAULT_AUDIO_LANGUAGE = AudioLanguage.NO_AUDIO
 
 /** The presenter for [AddProfileActivity]. */
 @ActivityScope
@@ -59,7 +52,6 @@ class AddProfileActivityPresenter @Inject constructor(
   private var inputtedConfirmPin = false
   private lateinit var alertDialog: AlertDialog
 
-  @ExperimentalCoroutinesApi
   fun handleOnCreate() {
 
     val binding = DataBindingUtil.setContentView<AddProfileActivityBinding>(
@@ -221,10 +213,7 @@ class AddProfileActivityPresenter @Inject constructor(
           avatarImagePath = selectedImage,
           allowDownloadAccess = allowDownloadAccess,
           colorRgb = activity.intent.getIntExtra(KEY_ADD_PROFILE_COLOR_RGB, -10710042),
-          isAdmin = false,
-          storyTextSize = DEFAULT_STORY_TEXT_SIZE,
-          appLanguage = DEFAULT_APP_LANGUAGE,
-          audioLanguage = DEFAULT_AUDIO_LANGUAGE
+          isAdmin = false
         )
         .observe(
           activity,

@@ -1,11 +1,11 @@
 package org.oppia.app.topic.revisioncard
 
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import org.oppia.app.databinding.RevisionCardFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.RevisionCard
 import org.oppia.domain.topic.TopicController
@@ -13,9 +13,10 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.HtmlParser
-import org.oppia.util.parser.RevisionCardHtmlParserEntityType
+import org.oppia.util.parser.TopicHtmlParserEntityType
 import javax.inject.Inject
 
+// TODO(#1633): Fix ViewModel to not depend on View
 /** [ViewModel] for revision card, providing rich text and worked examples */
 @FragmentScope
 class RevisionCardViewModel @Inject constructor(
@@ -24,15 +25,14 @@ class RevisionCardViewModel @Inject constructor(
   private val logger: ConsoleLogger,
   private val htmlParserFactory: HtmlParser.Factory,
   @DefaultResourceBucketName private val resourceBucketName: String,
-  @RevisionCardHtmlParserEntityType private val entityType: String
+  @TopicHtmlParserEntityType private val entityType: String
 ) : ViewModel() {
   private lateinit var topicId: String
-  private lateinit var subtopicId: String
-  private lateinit var binding: RevisionCardFragmentBinding
+  private var subtopicId: Int = 0
+  private lateinit var view: TextView
+
   private val returnToTopicClickListener: ReturnToTopicClickListener =
     activity as ReturnToTopicClickListener
-
-  var subtopicTitle: String = ""
 
   val explanationLiveData: LiveData<CharSequence> by lazy {
     processExplanationLiveData()
@@ -42,11 +42,15 @@ class RevisionCardViewModel @Inject constructor(
     returnToTopicClickListener.onReturnToTopicClicked()
   }
 
-  /** Sets the value of subtopicId and binding. Must be called before setting ViewModel to binding. */
-  fun setSubtopicIdAndBinding(topicId: String, id: String, binding: RevisionCardFragmentBinding) {
-    subtopicId = id
+  /** Sets the value of topicId, subtopicId and binding before anything else. */
+  fun setSubtopicIdAndBinding(
+    topicId: String,
+    subtopicId: Int,
+    view: TextView
+  ) {
     this.topicId = topicId
-    this.binding = binding
+    this.subtopicId = subtopicId
+    this.view = view
   }
 
   private val revisionCardResultLiveData: LiveData<AsyncResult<RevisionCard>> by lazy {
@@ -70,9 +74,9 @@ class RevisionCardViewModel @Inject constructor(
     val revisionCard = revisionCardResult.getOrDefault(
       RevisionCard.getDefaultInstance()
     )
-    subtopicTitle = revisionCard.subtopicTitle
     return htmlParserFactory.create(
-      resourceBucketName, entityType, subtopicId, /* imageCenterAlign= */ true
-    ).parseOppiaHtml(revisionCard.pageContents.html, binding.revisionCardExplanationText)
+
+      resourceBucketName, entityType, topicId, /* imageCenterAlign= */ true
+    ).parseOppiaHtml(revisionCard.pageContents.html, view)
   }
 }

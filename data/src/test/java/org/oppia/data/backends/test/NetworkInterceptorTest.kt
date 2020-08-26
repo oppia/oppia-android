@@ -15,6 +15,7 @@ import org.oppia.data.backends.ApiUtils
 import org.oppia.data.backends.api.MockTopicService
 import org.oppia.data.backends.gae.NetworkInterceptor
 import org.oppia.data.backends.gae.NetworkModule
+import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
 import javax.inject.Inject
 import javax.inject.Qualifier
@@ -22,6 +23,7 @@ import javax.inject.Singleton
 
 /** Tests for [NetworkInterceptor] */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class NetworkInterceptorTest {
 
   @Inject

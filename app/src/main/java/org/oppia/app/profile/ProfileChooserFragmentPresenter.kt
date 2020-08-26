@@ -23,7 +23,7 @@ import org.oppia.app.model.EventLog
 import org.oppia.app.model.ProfileChooserUiModel
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
-import org.oppia.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.domain.oppialogger.OppiaLogger
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.ConsoleLogger
@@ -67,13 +67,13 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val logger: ConsoleLogger,
   private val viewModelProvider: ViewModelProvider<ProfileChooserViewModel>,
   private val profileManagementController: ProfileManagementController,
-  private val analyticsController: AnalyticsController,
+  private val oppiaLogger: OppiaLogger,
   private val oppiaClock: OppiaClock
 ) {
   private lateinit var binding: ProfileChooserFragmentBinding
   private val orientation = Resources.getSystem().configuration.orientation
 
-  val wasProfileEverBeenAddedValue = ObservableField<Boolean>(true)
+  val hasProfileEverBeenAddedValue = ObservableField<Boolean>(true)
 
   private val chooserViewModel: ProfileChooserViewModel by lazy {
     getProfileChooserViewModel()
@@ -90,10 +90,10 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     binding.apply {
       viewModel = chooserViewModel
       lifecycleOwner = fragment
-      presenter = this@ProfileChooserFragmentPresenter
     }
     logProfileChooserEvent()
     binding.profileRecyclerView.isNestedScrollingEnabled = false
+    binding.hasProfileEverBeenAddedValue = hasProfileEverBeenAddedValue
     subscribeToWasProfileEverBeenAdded()
     binding.profileRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
@@ -105,7 +105,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     wasProfileEverBeenAdded.observe(
       activity,
       Observer<Boolean> {
-        wasProfileEverBeenAddedValue.set(it)
+        hasProfileEverBeenAddedValue.set(it)
         val spanCount = if (it) {
           activity.resources.getInteger(R.integer.profile_chooser_span_count)
         } else {
@@ -171,7 +171,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     model: ProfileChooserUiModel
   ) {
     binding.viewModel = model
-    binding.presenter = this
+    binding.hasProfileEverBeenAddedValue = hasProfileEverBeenAddedValue
     binding.profileChooserItem.setOnClickListener {
       if (model.profile.pin.isEmpty()) {
         profileManagementController.loginToProfile(model.profile.id).observe(
@@ -204,7 +204,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     binding: ProfileChooserAddViewBinding,
     @Suppress("UNUSED_PARAMETER") model: ProfileChooserUiModel
   ) {
-    binding.presenter = this
+    binding.hasProfileEverBeenAddedValue = hasProfileEverBeenAddedValue
     binding.addProfileItem.setOnClickListener {
       if (chooserViewModel.adminPin.isEmpty()) {
         activity.startActivity(
@@ -253,7 +253,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   private fun logProfileChooserEvent() {
-    analyticsController.logTransitionEvent(
+    oppiaLogger.logTransitionEvent(
       oppiaClock.getCurrentCalendar().timeInMillis,
       EventLog.EventAction.OPEN_PROFILE_CHOOSER,
       /* Event Context */ null

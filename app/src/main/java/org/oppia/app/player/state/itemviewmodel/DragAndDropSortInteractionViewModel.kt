@@ -17,8 +17,10 @@ import org.oppia.app.recyclerview.OnItemDragListener
 /** [StateItemViewModel] for drag drop & sort choice list. */
 class DragAndDropSortInteractionViewModel(
   val entityId: String,
+  val hasConversationView: Boolean,
   interaction: Interaction,
-  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver // ktlint-disable max-line-length
+  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
+  val isSplitView: Boolean
 ) : StateItemViewModel(ViewType.DRAG_DROP_SORT_INTERACTION),
   InteractionAnswerHandler,
   OnItemDragListener,
@@ -27,7 +29,11 @@ class DragAndDropSortInteractionViewModel(
     interaction.customizationArgsMap["allowMultipleItemsInSamePosition"]?.boolValue ?: false
   }
   private val choiceStrings: List<String> by lazy {
-    interaction.customizationArgsMap["choices"]?.setOfHtmlString?.htmlList ?: listOf()
+    interaction.customizationArgsMap["choices"]
+      ?.schemaObjectList
+      ?.schemaObjectList
+      ?.map { schemaObject -> schemaObject.subtitledHtml.html }
+      ?: listOf()
   }
 
   val choiceItems: ArrayList<DragDropInteractionContentViewModel> =
