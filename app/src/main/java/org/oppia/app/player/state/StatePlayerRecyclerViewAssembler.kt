@@ -1213,7 +1213,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private var trackedWrongAnswerCount = 0
     private var previousHelpIndex: HelpIndex = HelpIndex.getDefaultInstance()
     private var hintSequenceNumber = 0
-    private var isHintVisible = false
+    private var isHintVisibleInLatestState = false
 
     /** Resets this handler to prepare it for a new state, cancelling any pending hints. */
     fun reset() {
@@ -1223,7 +1223,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       // reset to 0 to ensure that all previous hint tasks are cancelled, and new tasks can be
       // scheduled without overlapping with past sequence numbers.
       hintSequenceNumber++
-      isHintVisible = false
+      isHintVisibleInLatestState = false
     }
 
     /** Hide hint when moving to any previous state. */
@@ -1243,7 +1243,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         return
       }
 
-      if (isHintVisible) {
+      if (isHintVisibleInLatestState) {
         if (state.interaction.hintList[previousHelpIndex.hintIndex].hintIsRevealed) {
           (fragment as ShowHintAvailabilityListener).onHintAvailable(
             HelpIndex.newBuilder().setEverythingRevealed(true).build()
@@ -1347,7 +1347,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
           // becomes null such as in the case of the solution becoming available).
           (fragment as ShowHintAvailabilityListener).onHintAvailable(helpIndexToShow)
           previousHelpIndex = helpIndexToShow
-          isHintVisible = true
+          isHintVisibleInLatestState = true
         }
       }
     }
