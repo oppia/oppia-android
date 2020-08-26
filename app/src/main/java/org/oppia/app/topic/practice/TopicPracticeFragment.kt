@@ -13,8 +13,8 @@ import javax.inject.Inject
 /** Fragment that displays skills for topic practice mode. */
 class TopicPracticeFragment : InjectableFragment() {
   companion object {
-    internal const val SUBTOPIC_ID_LIST_ARGUMENT_KEY = "SUBTOPIC_ID_LIST_ARGUMENT_KEY"
-    internal const val SKILL_ID_LIST_ARGUMENT_KEY = "SKILL_ID_LIST_ARGUMENT_KEY"
+    internal const val SUBTOPIC_ID_LIST_ARGUMENT_KEY = "TopicPracticeFragment.subtopic_id_list"
+    internal const val SKILL_ID_LIST_ARGUMENT_KEY = "TopicPracticeFragment.skill_id_list"
 
     /** Returns a new [TopicPracticeFragment]. */
     fun newInstance(internalProfileId: Int, topicId: String): TopicPracticeFragment {

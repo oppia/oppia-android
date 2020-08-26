@@ -11,8 +11,8 @@ import javax.inject.Inject
 /* Fragment that displays revision card */
 class RevisionCardFragment : InjectableDialogFragment() {
   companion object {
-    internal const val TOPIC_ID_ARGUMENT_KEY = "TOPIC_ID_ARGUMENT_KEY"
-    internal const val SUBTOPIC_ID_ARGUMENT_KEY = "SUBOPIC_ID_ARGUMENT_KEY"
+    internal const val TOPIC_ID_ARGUMENT_KEY = "RevisionCardFragment.topic_id"
+    internal const val SUBTOPIC_ID_ARGUMENT_KEY = "RevisionCardFragment.subtopic_id"
 
     /** Returns a new [RevisionCardFragment] to display the subtopic content.. */
     fun newInstance(topicId: String, subtopicId: Int): RevisionCardFragment {

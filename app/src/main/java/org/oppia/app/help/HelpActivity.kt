@@ -28,7 +28,7 @@ class HelpActivity : InjectableAppCompatActivity(), RouteToFAQListListener {
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
     const val BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY =
-      "BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY"
+      "HelpActivity.bool_is_from_navigation_drawer"
 
     fun createHelpActivityIntent(
       context: Context,

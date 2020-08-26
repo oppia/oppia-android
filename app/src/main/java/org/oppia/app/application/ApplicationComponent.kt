@@ -19,9 +19,7 @@ import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
-import org.oppia.domain.oppialogger.ApplicationStartupListener
 import org.oppia.domain.oppialogger.LogStorageModule
-import org.oppia.domain.oppialogger.exceptions.UncaughtExceptionLoggerModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.util.accessibility.AccessibilityModule
@@ -56,8 +54,7 @@ import javax.inject.Singleton
     AccessibilityModule::class, ImageClickInputModule::class,
     LogStorageModule::class, IntentFactoryShimModule::class,
     ViewBindingShimModule::class, PrimeTopicAssetsControllerModule::class,
-    ExpirationMetaDataRetrieverModule::class, RatioInputModule::class,
-    UncaughtExceptionLoggerModule::class, ApplicationStartupListenerModule::class
+    ExpirationMetaDataRetrieverModule::class, RatioInputModule::class
   ]
 )
 
@@ -70,6 +67,4 @@ interface ApplicationComponent : ApplicationInjector {
   }
 
   fun getActivityComponentBuilderProvider(): Provider<ActivityComponent.Builder>
-
-  fun getApplicationStartupListeners(): Set<ApplicationStartupListener>
 }

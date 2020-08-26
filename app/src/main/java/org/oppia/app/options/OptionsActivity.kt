@@ -20,7 +20,7 @@ class OptionsActivity :
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
     const val BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY =
-      "BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY"
+      "OptionsActivity.bool_is_from_navigation_drawer"
 
     fun createOptionsActivity(
       context: Context,
