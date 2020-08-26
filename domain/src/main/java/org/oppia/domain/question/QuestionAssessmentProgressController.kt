@@ -23,8 +23,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
 
-private const val CURRENT_QUESTION_DATA_PROVIDER_ID = "CurrentQuestionDataProvider"
-private const val EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID = "EmptyQuestionsListDataProvider"
+private const val CURRENT_QUESTION_DATA_PROVIDER_ID = "current_question_data_provider_id"
+private const val EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID = "empty_questions_list_data_provider_id"
 
 /**
  * Controller that tracks and reports the learner's ephemeral/non-persisted progress through a practice training

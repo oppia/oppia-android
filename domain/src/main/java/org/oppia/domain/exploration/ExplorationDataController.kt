@@ -9,7 +9,7 @@ import org.oppia.util.data.DataProviders
 import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
 
-private const val EXPLORATION_DATA_PROVIDER_ID = "ExplorationDataProvider"
+private const val EXPLORATION_DATA_PROVIDER_ID = "exploration_data_provider_id"
 
 /**
  * Controller for loading explorations by ID, or beginning to play an exploration.

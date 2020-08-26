@@ -67,7 +67,7 @@ private const val FRACTIONS_SUBTOPIC_ID_3 = 3
 private const val FRACTIONS_SUBTOPIC_ID_4 = 4
 private const val SUBTOPIC_BG_COLOR = "#FFFFFF"
 
-private const val QUESTION_DATA_PROVIDER_ID = "QuestionDataProvider"
+private const val QUESTION_DATA_PROVIDER_ID = "question_data_provider_id"
 private const val TRANSFORMED_GET_COMPLETED_STORIES_PROVIDER_ID =
   "transformed_get_completed_stories_provider_id"
 private const val TRANSFORMED_GET_ONGOING_TOPICS_PROVIDER_ID =

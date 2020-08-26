@@ -14,7 +14,7 @@ import javax.inject.Singleton
 import kotlin.random.Random
 
 private const val TRAINING_QUESTIONS_PROVIDER = "TrainingQuestionsProvider"
-private const val RETRIEVE_QUESTIONS_RESULT_DATA_PROVIDER = "RetrieveQuestionsResultsProvider"
+private const val RETRIEVE_QUESTIONS_RESULT_DATA_PROVIDER = "retrieve_questions_results_provider"
 
 /** Controller for retrieving a set of questions. */
 @Singleton
