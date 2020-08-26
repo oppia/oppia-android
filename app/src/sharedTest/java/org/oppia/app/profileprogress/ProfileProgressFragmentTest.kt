@@ -194,7 +194,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileChooserActivity_imageSelectAvatar_checkGalleryIntent() {
+  fun testAddProfileActivity_imageSelectAvatar_checkGalleryIntent() {
     val expectedIntent: Matcher<Intent> = allOf(
       hasAction(Intent.ACTION_PICK),
       hasData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
