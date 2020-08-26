@@ -421,6 +421,22 @@ class StateFragmentLocalTest {
   }
 
   @Test
+  fun testStateFragment_nextState_viewHint_doNotWait_canViewTwoHints() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+      produceAndViewFirstHint()
+
+      //testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
+      openHintsAndSolutionsDialog()
+
+      // Two hints should now be available.
+      onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText("Hint 2")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
   fun testStateFragment_nextState_viewHint_wait30seconds_canViewTwoHints() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
