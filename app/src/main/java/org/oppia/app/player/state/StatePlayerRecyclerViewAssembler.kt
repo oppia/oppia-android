@@ -26,6 +26,7 @@ import org.oppia.app.databinding.NextButtonItemBinding
 import org.oppia.app.databinding.NumericInputInteractionItemBinding
 import org.oppia.app.databinding.PreviousButtonItemBinding
 import org.oppia.app.databinding.PreviousResponsesHeaderItemBinding
+import org.oppia.app.databinding.RatioInputInteractionItemBinding
 import org.oppia.app.databinding.ReplayButtonItemBinding
 import org.oppia.app.databinding.ReturnToTopicButtonItemBinding
 import org.oppia.app.databinding.SelectionInteractionItemBinding
@@ -61,6 +62,7 @@ import org.oppia.app.player.state.itemviewmodel.NextButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.app.player.state.itemviewmodel.PreviousButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.PreviousResponsesHeaderViewModel
+import org.oppia.app.player.state.itemviewmodel.RatioExpressionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.ReplayButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.ReturnToTopicButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionViewModel
@@ -830,6 +832,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
         inflateDataBinding = TextInputInteractionItemBinding::inflate,
         setViewModel = TextInputInteractionItemBinding::setViewModel,
         transformViewModel = { it as TextInputViewModel }
+      ).registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.RATIO_EXPRESSION_INPUT_INTERACTION,
+        inflateDataBinding = RatioInputInteractionItemBinding::inflate,
+        setViewModel = RatioInputInteractionItemBinding::setViewModel,
+        transformViewModel = { it as RatioExpressionInteractionViewModel }
       ).registerViewDataBinder(
         viewType = StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON,
         inflateDataBinding = SubmitButtonItemBinding::inflate,
