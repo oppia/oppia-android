@@ -83,4 +83,26 @@ class OppiaLogUploadWorker @Inject constructor(
       Result.failure()
     }
   }
+
+  class Factory @Inject constructor(
+    private val analyticsController: AnalyticsController,
+    private val exceptionsController: ExceptionsController,
+    private val dataProviders: DataProviders,
+    private val exceptionLogger: FirebaseExceptionLogger,
+    private val eventLogger: FirebaseEventLogger,
+    private val consoleLogger: ConsoleLogger
+  ): ChildWorkerFactory{
+    override fun create(context: Context, params: WorkerParameters): Worker {
+      return OppiaLogUploadWorker(
+        context,
+        params,
+        analyticsController,
+        exceptionsController,
+        dataProviders,
+        exceptionLogger,
+        eventLogger,
+        consoleLogger
+      )
+    }
+  }
 }
