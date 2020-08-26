@@ -12,6 +12,7 @@ import org.oppia.domain.classify.rules.ItemSelectionInputRules
 import org.oppia.domain.classify.rules.MultipleChoiceInputRules
 import org.oppia.domain.classify.rules.NumberWithUnitsRules
 import org.oppia.domain.classify.rules.NumericInputRules
+import org.oppia.domain.classify.rules.RatioExpressionInputRules
 import org.oppia.domain.classify.rules.TextInputRules
 
 /** Module that provides a map of [InteractionClassifier]s. */
@@ -94,6 +95,15 @@ class InteractionsModule {
   @StringKey("ImageClickInput")
   fun provideImageClickInputInteractionClassifier(
     @ImageClickInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>
+  ): InteractionClassifier {
+    return GenericInteractionClassifier(ruleClassifiers)
+  }
+
+  @Provides
+  @IntoMap
+  @StringKey("RatioExpressionInput")
+  fun provideRatioExpressionInputInteractionClassifier(
+    @RatioExpressionInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>
   ): InteractionClassifier {
     return GenericInteractionClassifier(ruleClassifiers)
   }

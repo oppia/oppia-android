@@ -9,7 +9,6 @@ import org.oppia.app.R
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.UserAnswer
-import org.oppia.app.parser.StringToFractionParser
 import org.oppia.app.parser.StringToRatioParser
 import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
@@ -30,7 +29,8 @@ class RatioExpressionInteractionViewModel(
 
   val hintText: CharSequence = deriveHintText(interaction)
   private val stringToRatioParser: StringToRatioParser = StringToRatioParser()
-
+  val numberOfTerms =
+    interaction.customizationArgsMap["numberOfTerms"]?.signedInt ?: 0
   init {
     val callback: Observable.OnPropertyChangedCallback =
       object : Observable.OnPropertyChangedCallback() {
@@ -57,7 +57,7 @@ class RatioExpressionInteractionViewModel(
     return userAnswerBuilder.build()
   }
 
-  /** It checks the pending error for the current fraction input, and correspondingly updates the error string based on the specified error category. */
+  /** It checks the pending error for the current ratio input, and correspondingly updates the error string based on the specified error category. */
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
     if (answerText.isNotEmpty()) {
       when (category) {
@@ -69,7 +69,7 @@ class RatioExpressionInteractionViewModel(
               )
         AnswerErrorCategory.SUBMIT_TIME ->
           pendingAnswerError =
-            stringToRatioParser.getSubmitTimeError(answerText.toString())
+            stringToRatioParser.getSubmitTimeError(answerText.toString(), numberOfTerms)
               .getErrorMessageFromStringRes(
                 context
               )
@@ -99,13 +99,10 @@ class RatioExpressionInteractionViewModel(
   }
 
   private fun deriveHintText(interaction: Interaction): CharSequence {
-    val customPlaceholder =
-      interaction.customizationArgsMap["customPlaceholder"]?.normalizedString ?: ""
-    val allowNonzeroIntegerPart =
-      interaction.customizationArgsMap["allowNonzeroIntegerPart"]?.boolValue ?: true
+    val placeholder =
+      interaction.customizationArgsMap["placeholder"]?.subtitledUnicode?.unicodeStr ?: ""
     return when {
-      customPlaceholder.isNotEmpty() -> customPlaceholder
-      !allowNonzeroIntegerPart -> context.getString(R.string.fractions_default_hint_text_no_integer)
+      placeholder.isNotEmpty() -> placeholder
       else -> context.getString(R.string.fractions_default_hint_text)
     }
   }

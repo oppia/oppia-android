@@ -500,7 +500,7 @@
               },
               "training_data": [],
               "rule_types_to_inputs": {
-                "IsEquals": [
+                "Equals": [
                   {
                     "x": [
                       8,

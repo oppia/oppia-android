@@ -102,7 +102,6 @@
   <string name="ratio_error_invalid_chars">Please write a ratio that consists of digits separated by colons (e.g. 1:2 or 1:2:3).</string>
   <string name="ratio_error_invalid_format">Please enter a valid ratio (e.g. 1:2 or 1:2:3).</string>
   <string name="ratio_error_invalid_colons">Your answer has two colons (:) next to each other.</string>
-  <string name="ratio_error_non_integer_ratio">For this question, each element in your ratio should be a whole number (not a fraction or a decimal).</string>
   <string name="unknown_size">Unknown size</string>
   <string name="size_bytes">%d Bytes</string>
   <string name="size_kb">%d KB</string>
