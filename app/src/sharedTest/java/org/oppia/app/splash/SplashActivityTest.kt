@@ -30,10 +30,12 @@ import org.oppia.app.R
 import org.oppia.app.activity.ActivityComponent
 import org.oppia.app.application.ActivityComponentFactory
 import org.oppia.app.application.ApplicationComponent
+import org.oppia.app.application.ApplicationInjector
+import org.oppia.app.application.ApplicationInjectorProvider
 import org.oppia.app.application.ApplicationModule
 import org.oppia.app.onboarding.OnboardingActivity
 import org.oppia.app.profile.ProfileActivity
-import org.oppia.data.backends.gae.NetworkModule
+import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -43,6 +45,7 @@ import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModu
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.onboarding.AppStartupStateController
 import org.oppia.domain.onboarding.testing.ExpirationMetaDataRetrieverTestModule
@@ -266,7 +269,7 @@ class SplashActivityTest {
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class, ApplicationModule::class, NetworkModule::class,
+      TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
@@ -274,10 +277,11 @@ class SplashActivityTest {
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverTestModule::class
+      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverTestModule::class,
+      ViewBindingShimModule::class, RatioInputModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent {
+  interface TestApplicationComponent : ApplicationComponent, ApplicationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -293,7 +297,7 @@ class SplashActivityTest {
     fun inject(splashActivityTest: SplashActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory {
+  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerSplashActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -311,5 +315,7 @@ class SplashActivityTest {
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
       return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
     }
+
+    override fun getApplicationInjector(): ApplicationInjector = component
   }
 }

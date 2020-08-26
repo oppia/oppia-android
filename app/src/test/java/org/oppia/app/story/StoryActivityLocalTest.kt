@@ -16,10 +16,12 @@ import org.junit.runner.RunWith
 import org.oppia.app.activity.ActivityComponent
 import org.oppia.app.application.ActivityComponentFactory
 import org.oppia.app.application.ApplicationComponent
+import org.oppia.app.application.ApplicationInjector
+import org.oppia.app.application.ApplicationInjectorProvider
 import org.oppia.app.application.ApplicationModule
 import org.oppia.app.model.EventLog
 import org.oppia.app.model.EventLog.Context.ActivityContextCase.STORY_CONTEXT
-import org.oppia.data.backends.gae.NetworkModule
+import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -29,6 +31,7 @@ import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModu
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.domain.oppialogger.LogStorageModule
@@ -109,10 +112,11 @@ class StoryActivityLocalTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
+  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class, ApplicationModule::class, NetworkModule::class,
+      TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
@@ -120,17 +124,18 @@ class StoryActivityLocalTest {
       GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
       QuestionModule::class, TestLogReportingModule::class, TestAccessibilityModule::class,
       ImageClickInputModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class
+      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ViewBindingShimModule::class, RatioInputModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent {
+  interface TestApplicationComponent : ApplicationComponent, ApplicationInjector {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
     fun inject(storyActivityLocalTest: StoryActivityLocalTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory {
+  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerStoryActivityLocalTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -144,5 +149,7 @@ class StoryActivityLocalTest {
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
       return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
     }
+
+    override fun getApplicationInjector(): ApplicationInjector = component
   }
 }

@@ -3,7 +3,6 @@ package org.oppia.app.options
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.databinding.library.baseAdapters.BR
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.R
 import org.oppia.app.databinding.LanguageItemsBinding
@@ -56,7 +55,7 @@ class LanguageSelectionAdapter(
   inner class LanguageViewHolder(val binding: LanguageItemsBinding) :
     RecyclerView.ViewHolder(binding.root) {
     internal fun bind(language: String, position: Int) {
-      binding.setVariable(BR.languageString, language)
+      binding.languageString = language
       binding.languageRadioButton.isChecked = position == selectedPosition
       binding.radioContainer.setOnClickListener {
         if (prefKey == APP_LANGUAGE || prefKey == AUDIO_LANGUAGE) {

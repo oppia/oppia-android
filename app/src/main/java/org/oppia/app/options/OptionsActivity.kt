@@ -13,13 +13,13 @@ class OptionsActivity :
   InjectableAppCompatActivity(),
   RouteToAppLanguageListListener,
   RouteToAudioLanguageListListener,
-  RouteToStoryTextSizeListener {
+  RouteToReadingTextSizeListener {
   @Inject
   lateinit var optionActivityPresenter: OptionsActivityPresenter
 
   companion object {
-
-    internal const val BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY =
+    // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
+    const val BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY =
       "BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY"
 
     fun createOptionsActivity(
@@ -49,8 +49,8 @@ class OptionsActivity :
     super.onActivityResult(requestCode, resultCode, data)
     when (requestCode) {
       REQUEST_CODE_TEXT_SIZE -> {
-        val textSize = data!!.getStringExtra(KEY_MESSAGE_STORY_TEXT_SIZE) as String
-        optionActivityPresenter.updateStoryTextSize(textSize)
+        val textSize = data!!.getStringExtra(KEY_MESSAGE_READING_TEXT_SIZE) as String
+        optionActivityPresenter.updateReadingTextSize(textSize)
       }
       REQUEST_CODE_APP_LANGUAGE -> {
         val appLanguage = data!!.getStringExtra(KEY_MESSAGE_APP_LANGUAGE) as String
@@ -85,12 +85,12 @@ class OptionsActivity :
     )
   }
 
-  override fun routeStoryTextSize(storyTextSize: String?) {
+  override fun routeReadingTextSize(readingTextSize: String?) {
     startActivityForResult(
-      StoryTextSizeActivity.createStoryTextSizeActivityIntent(
+      ReadingTextSizeActivity.createReadingTextSizeActivityIntent(
         this,
-        STORY_TEXT_SIZE,
-        storyTextSize
+        READING_TEXT_SIZE,
+        readingTextSize
       ),
       REQUEST_CODE_TEXT_SIZE
     )

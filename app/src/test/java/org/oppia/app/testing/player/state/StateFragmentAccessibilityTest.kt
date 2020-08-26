@@ -27,7 +27,6 @@ import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher
 import org.oppia.app.shim.IntentFactoryShimModule
 import org.oppia.app.shim.ViewBindingShimModule
-import org.oppia.data.backends.gae.NetworkModule
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -37,6 +36,7 @@ import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModu
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.domain.oppialogger.LogStorageModule
@@ -154,10 +154,11 @@ class StateFragmentAccessibilityTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
+  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class, ApplicationModule::class, NetworkModule::class,
+      TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
@@ -165,7 +166,7 @@ class StateFragmentAccessibilityTest {
       GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
       QuestionModule::class, TestLogReportingModule::class, TestAccessibilityModule::class,
       ImageClickInputModule::class, LogStorageModule::class, IntentFactoryShimModule::class,
-      ViewBindingShimModule::class, CachingTestModule::class,
+      ViewBindingShimModule::class, CachingTestModule::class, RatioInputModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class
     ]
   )

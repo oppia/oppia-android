@@ -5,9 +5,6 @@
 
     <import type="org.oppia.app.R" />
 
-    <variable
-      name="presenter"
-      type="org.oppia.app.home.HomeFragmentPresenter" />
   </data>
 
   <FrameLayout

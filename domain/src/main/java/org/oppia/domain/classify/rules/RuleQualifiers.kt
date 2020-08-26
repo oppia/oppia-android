@@ -37,3 +37,7 @@ annotation class DragDropSortInputRules
 /** Corresponds to [org.oppia.domain.classify.RuleClassifier]s that can be used by the image click input interaction. */
 @Qualifier
 annotation class ImageClickInputRules
+
+/** Corresponds to [org.oppia.domain.classify.RuleClassifier]s that can be used by the ratio input interaction. */
+@Qualifier
+annotation class RatioExpressionInputRules
