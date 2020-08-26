@@ -15,8 +15,8 @@ import androidx.fragment.app.FragmentActivity
 // TODO(#1619): Remove file post-Gradle
 interface IntentFactoryShim {
 
-  /** Returns [ProfileActivity] intent for [AdministratorControlsAccountActionsViewModel]. */
-  fun createProfileActivityIntent(fragment: FragmentActivity): Intent
+  /** Returns [ProfileChooserActivity] intent for [AdministratorControlsAccountActionsViewModel]. */
+  fun createProfileChooserActivityIntent(fragment: FragmentActivity): Intent
 
   /**
    * Creates a [TopicActivity] intent for [PromotedStoryViewModel] and passes necessary string
@@ -27,6 +27,15 @@ interface IntentFactoryShim {
     internalProfileId: Int,
     topicId: String,
     storyId: String
+  ): Intent
+
+  /**
+   * Creates a [TopicActivity] intent which opens info-tab.
+   * */
+  fun createTopicActivityIntent(
+    context: Context,
+    internalProfileId: Int,
+    topicId: String
   ): Intent
 
   /**

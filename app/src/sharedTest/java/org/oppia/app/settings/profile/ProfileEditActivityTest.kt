@@ -84,8 +84,8 @@ class ProfileEditActivityTest {
         0
       )
     ).use {
-      onView(withId(R.id.action_bar)).check(matches(hasDescendant(withText("Sean"))))
-      onView(withId(R.id.profile_edit_name)).check(matches(withText("Sean")))
+      onView(withId(R.id.action_bar)).check(matches(hasDescendant(withText("Admin"))))
+      onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
       onView(withId(R.id.profile_edit_allow_download_container)).check(matches(not(isDisplayed())))
       onView(withId(R.id.profile_delete_button)).check(matches(not(isDisplayed())))
     }
@@ -101,8 +101,8 @@ class ProfileEditActivityTest {
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.action_bar)).check(matches(hasDescendant(withText("Sean"))))
-      onView(withId(R.id.profile_edit_name)).check(matches(withText("Sean")))
+      onView(withId(R.id.action_bar)).check(matches(hasDescendant(withText("Admin"))))
+      onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
       onView(withId(R.id.profile_edit_allow_download_container)).check(matches(not(isDisplayed())))
       onView(withId(R.id.profile_delete_button)).check(matches(not(isDisplayed())))
     }

@@ -1,20 +1,17 @@
 package org.oppia.app.application
 
 import android.app.Application
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.multidex.MultiDexApplication
-import androidx.work.Configuration
-import androidx.work.WorkManager
+import com.google.firebase.FirebaseApp
 import org.oppia.app.activity.ActivityComponent
-import org.oppia.domain.oppialogger.OppiaLogUploadWorkRequest
+import org.oppia.domain.oppialogger.ApplicationStartupListener
 
 /** The root [Application] of the Oppia app. */
 class OppiaApplication :
   MultiDexApplication(),
   ActivityComponentFactory,
-  ApplicationInjectorProvider,
-  Configuration.Provider {
+  ApplicationInjectorProvider {
   /** The root [ApplicationComponent]. */
   private val component: ApplicationComponent by lazy {
     DaggerApplicationComponent.builder()
@@ -30,12 +27,7 @@ class OppiaApplication :
 
   override fun onCreate() {
     super.onCreate()
-    val workManager = WorkManager.getInstance(applicationContext)
-    OppiaLogUploadWorkRequest().setWorkerRequestForEvents(workManager)
-    OppiaLogUploadWorkRequest().setWorkerRequestForExceptions(workManager)
-  }
-
-  override fun getWorkManagerConfiguration(): Configuration {
-    return Configuration.Builder().setMinimumLoggingLevel(Log.INFO).build()
+    FirebaseApp.initializeApp(applicationContext)
+    component.getApplicationStartupListeners().forEach(ApplicationStartupListener::onCreate)
   }
 }

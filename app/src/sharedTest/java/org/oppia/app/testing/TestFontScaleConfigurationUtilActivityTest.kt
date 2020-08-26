@@ -14,7 +14,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.model.StoryTextSize
+import org.oppia.app.model.ReadingTextSize
 import org.oppia.app.utility.FontSizeMatcher.Companion.withFontSize
 import org.robolectric.annotation.LooperMode
 
@@ -35,17 +35,17 @@ class TestFontScaleConfigurationUtilActivityTest {
     Intents.release()
   }
 
-  private fun createFontScaleTestActivityIntent(storyTextSize: String): Intent {
+  private fun createFontScaleTestActivityIntent(readingTextSize: String): Intent {
     return TestFontScaleConfigurationUtilActivity.createFontScaleTestActivity(
       context,
-      storyTextSize
+      readingTextSize
     )
   }
 
   @Test
   fun testFontScaleConfigurationUtil_smallTextSize_hasCorrectDimension() {
     launch<TestFontScaleConfigurationUtilActivity>(
-      createFontScaleTestActivityIntent(StoryTextSize.SMALL_TEXT_SIZE.name)
+      createFontScaleTestActivityIntent(ReadingTextSize.SMALL_TEXT_SIZE.name)
     ).use {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
@@ -60,7 +60,7 @@ class TestFontScaleConfigurationUtilActivityTest {
   @Test
   fun testFontScaleConfigurationUtil_mediumTextSize_hasCorrectDimension() {
     launch<TestFontScaleConfigurationUtilActivity>(
-      createFontScaleTestActivityIntent(StoryTextSize.MEDIUM_TEXT_SIZE.name)
+      createFontScaleTestActivityIntent(ReadingTextSize.MEDIUM_TEXT_SIZE.name)
     ).use {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
@@ -75,7 +75,7 @@ class TestFontScaleConfigurationUtilActivityTest {
   @Test
   fun testFontScaleConfigurationUtil_largeTextSize_hasCorrectDimension() {
     launch<TestFontScaleConfigurationUtilActivity>(
-      createFontScaleTestActivityIntent(StoryTextSize.LARGE_TEXT_SIZE.name)
+      createFontScaleTestActivityIntent(ReadingTextSize.LARGE_TEXT_SIZE.name)
     ).use {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
@@ -90,7 +90,7 @@ class TestFontScaleConfigurationUtilActivityTest {
   @Test
   fun testFontScaleConfigurationUtil_extraLargeTextSize_hasCorrectDimension() {
     launch<TestFontScaleConfigurationUtilActivity>(
-      createFontScaleTestActivityIntent(StoryTextSize.EXTRA_LARGE_TEXT_SIZE.name)
+      createFontScaleTestActivityIntent(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE.name)
     ).use {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
