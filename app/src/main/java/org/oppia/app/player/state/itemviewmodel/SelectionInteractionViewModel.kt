@@ -11,7 +11,7 @@ import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailab
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.app.viewmodel.ObservableArrayList
-/**this is my change*/
+
 /** Corresponds to the type of input that should be used for an item selection interaction view. */
 enum class SelectionItemInputType {
   CHECKBOXES,
