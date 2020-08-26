@@ -50,6 +50,7 @@ import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.onboarding.AppStartupStateController
 import org.oppia.domain.onboarding.testing.ExpirationMetaDataRetrieverTestModule
 import org.oppia.domain.onboarding.testing.FakeExpirationMetaDataRetriever
+import org.oppia.domain.oppialogger.ApplicationStartupListenerModule
 import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
@@ -278,7 +279,7 @@ class SplashActivityTest {
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverTestModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class
+      ViewBindingShimModule::class, RatioInputModule::class, ApplicationStartupListenerModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent, ApplicationInjector {
