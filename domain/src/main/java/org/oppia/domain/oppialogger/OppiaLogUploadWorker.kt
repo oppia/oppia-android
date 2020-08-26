@@ -8,8 +8,8 @@ import org.oppia.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.domain.oppialogger.exceptions.toException
 import org.oppia.util.data.DataProviders
 import org.oppia.util.logging.ConsoleLogger
-import org.oppia.util.logging.firebase.FirebaseEventLogger
-import org.oppia.util.logging.firebase.FirebaseExceptionLogger
+import org.oppia.util.logging.EventLogger
+import org.oppia.util.logging.ExceptionLogger
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -22,8 +22,8 @@ class OppiaLogUploadWorker @Inject constructor(
   private val analyticsController: AnalyticsController,
   private val exceptionsController: ExceptionsController,
   private val dataProviders: DataProviders,
-  private val exceptionLogger: FirebaseExceptionLogger,
-  private val eventLogger: FirebaseEventLogger,
+  private val exceptionLogger: ExceptionLogger,
+  private val eventLogger: EventLogger,
   private val consoleLogger: ConsoleLogger
 ) : Worker(context, params) {
 
@@ -88,10 +88,10 @@ class OppiaLogUploadWorker @Inject constructor(
     private val analyticsController: AnalyticsController,
     private val exceptionsController: ExceptionsController,
     private val dataProviders: DataProviders,
-    private val exceptionLogger: FirebaseExceptionLogger,
-    private val eventLogger: FirebaseEventLogger,
+    private val exceptionLogger: ExceptionLogger,
+    private val eventLogger: EventLogger,
     private val consoleLogger: ConsoleLogger
-  ): ChildWorkerFactory{
+  ) : ChildWorkerFactory {
     override fun create(context: Context, params: WorkerParameters): Worker {
       return OppiaLogUploadWorker(
         context,

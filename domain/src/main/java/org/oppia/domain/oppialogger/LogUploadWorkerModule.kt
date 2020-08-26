@@ -1,6 +1,7 @@
 package org.oppia.domain.oppialogger
 
 import androidx.work.Worker
+import androidx.work.WorkerFactory
 import dagger.Binds
 import dagger.MapKey
 import dagger.Module
@@ -18,4 +19,7 @@ interface LogUploadWorkerModule {
   @WorkerKey(OppiaLogUploadWorker::class)
   @IntoMap
   fun bindLogUploadWorkerFactory(worker: OppiaLogUploadWorker.Factory): ChildWorkerFactory
+
+  @Binds
+  fun bindWorkerFactory(logUploadWorkerFactory: LogUploadWorkerFactory): WorkerFactory
 }

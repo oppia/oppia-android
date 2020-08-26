@@ -2,6 +2,7 @@ package org.oppia.app.application
 
 // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
 import android.app.Application
+import androidx.work.WorkerFactory
 import dagger.BindsInstance
 import dagger.Component
 import org.oppia.app.activity.ActivityComponent
@@ -21,6 +22,7 @@ import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.domain.oppialogger.ApplicationStartupListener
 import org.oppia.domain.oppialogger.LogStorageModule
+import org.oppia.domain.oppialogger.LogUploadWorkerModule
 import org.oppia.domain.oppialogger.exceptions.UncaughtExceptionLoggerModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
@@ -57,7 +59,8 @@ import javax.inject.Singleton
     LogStorageModule::class, IntentFactoryShimModule::class,
     ViewBindingShimModule::class, PrimeTopicAssetsControllerModule::class,
     ExpirationMetaDataRetrieverModule::class, RatioInputModule::class,
-    UncaughtExceptionLoggerModule::class, ApplicationStartupListenerModule::class
+    UncaughtExceptionLoggerModule::class, ApplicationStartupListenerModule::class,
+    LogUploadWorkerModule::class
   ]
 )
 
@@ -72,4 +75,6 @@ interface ApplicationComponent : ApplicationInjector {
   fun getActivityComponentBuilderProvider(): Provider<ActivityComponent.Builder>
 
   fun getApplicationStartupListeners(): Set<ApplicationStartupListener>
+
+  fun getLogUploadWorkerFactory(): WorkerFactory
 }
