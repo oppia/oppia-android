@@ -5,7 +5,7 @@ import dagger.Module
 import dagger.multibindings.IntoSet
 import org.oppia.domain.oppialogger.ApplicationStartupListener
 
-/** Returns an [ApplicationStartupListener] after binding [UncaughtExceptionLoggerStartupListener] into it. */
+/** Binds [UncaughtExceptionLoggerStartupListener] as an [ApplicationStartupListener] */
 @Module
 interface UncaughtExceptionLoggerModule {
 

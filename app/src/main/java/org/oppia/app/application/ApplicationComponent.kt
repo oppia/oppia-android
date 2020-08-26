@@ -20,7 +20,7 @@ import org.oppia.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.domain.oppialogger.ApplicationStartupListener
-import org.oppia.domain.oppialogger.ApplicationStartupListenerModule
+import org.oppia.app.application.ApplicationStartupListenerModule
 import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.oppialogger.exceptions.UncaughtExceptionLoggerModule
 import org.oppia.domain.question.QuestionModule
