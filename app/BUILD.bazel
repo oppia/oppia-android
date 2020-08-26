@@ -41,10 +41,10 @@ Place your file here if:
  - It is either a listener, an interface, or a direct dependency of one in this list
 '''
 LISTENERS = [
-    "src/main/java/org/oppia/app/administratorcontrols/RouteToAppVersionListener.kt",
-    "src/main/java/org/oppia/app/administratorcontrols/RouteToProfileListListener.kt",
     "src/main/java/org/oppia/app/administratorcontrols/LoadAppVersionListener.kt",
     "src/main/java/org/oppia/app/administratorcontrols/LoadProfileListListener.kt",
+    "src/main/java/org/oppia/app/administratorcontrols/RouteToAppVersionListener.kt",
+    "src/main/java/org/oppia/app/administratorcontrols/RouteToProfileListListener.kt",
     "src/main/java/org/oppia/app/drawer/RouteToProfileProgressListener.kt",
     "src/main/java/org/oppia/app/help/faq/RouteToFAQSingleListener.kt",
     "src/main/java/org/oppia/app/help/RouteToFAQListListener.kt",
