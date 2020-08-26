@@ -137,7 +137,7 @@ class InteractionViewModelModule {
   @StringKey("RatioExpressionInput")
   fun provideRatioExpressionInputViewModelFactory(context: Context): InteractionViewModelFactory {
     return { _, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _, isSplitView -> // ktlint-disable max-line-length
-      FractionInteractionViewModel(
+      RatioExpressionInteractionViewModel(
         interaction,
         context,
         hasConversationView,

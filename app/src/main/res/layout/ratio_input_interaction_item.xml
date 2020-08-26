@@ -32,7 +32,7 @@
       android:fontFamily="sans-serif"
       android:hint="@{viewModel.hintText}"
       android:imeOptions="actionDone"
-      android:inputType="date"
+      android:inputType="time"
       android:longClickable="false"
       android:maxLength="200"
       android:minHeight="48dp"

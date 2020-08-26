@@ -14,6 +14,7 @@ import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
+import org.oppia.app.player.state.itemviewmodel.RatioExpressionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.TextInputViewModel
 import org.oppia.app.player.state.listener.StateKeyboardButtonListener
 
@@ -30,6 +31,7 @@ class InputInteractionViewTestActivity :
 
   private lateinit var binding: ActivityInputInteractionViewTestBinding
   lateinit var fractionInteractionViewModel: FractionInteractionViewModel
+  lateinit var ratioExpressionInteractionViewModel: RatioExpressionInteractionViewModel
   val numericInputViewModel = NumericInputViewModel(
     context = this,
     hasConversationView = false,
@@ -51,6 +53,14 @@ class InputInteractionViewTestActivity :
     )
     fractionInteractionViewModel = FractionInteractionViewModel(
       interaction = Interaction.getDefaultInstance(),
+    context = this,
+    hasConversationView = false,
+    isSplitView = false,
+    interactionAnswerErrorOrAvailabilityCheckReceiver = this
+    )
+
+    ratioExpressionInteractionViewModel = RatioExpressionInteractionViewModel(
+      interaction = Interaction.getDefaultInstance(),
       context = this,
       hasConversationView = false,
       isSplitView = false,
@@ -59,11 +69,13 @@ class InputInteractionViewTestActivity :
     binding.numericInputViewModel = numericInputViewModel
     binding.textInputViewModel = textInputViewModel
     binding.fractionInteractionViewModel = fractionInteractionViewModel
+    binding.ratioInteractionInputViewModel = ratioExpressionInteractionViewModel
   }
 
   fun getPendingAnswerErrorOnSubmitClick(v: View) {
     fractionInteractionViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
     numericInputViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+    ratioExpressionInteractionViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
   }
 
   override fun onPendingAnswerErrorOrAvailabilityCheck(

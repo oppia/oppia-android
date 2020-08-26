@@ -8,13 +8,11 @@ import org.oppia.app.model.RatioExpression
 /** This class contains method that helps to parse string to ratio. */
 class StringToRatioParser {
   private val invalidCharsRegex =
-    """/[^\d^:^\.^\/^\s]/g""".toRegex()
+    """^[\d\s/\:\.]+$""".toRegex()
   private val invalidColonRegex =
-    """/(:{2})/g""".toRegex()
-  private val invalidRatioWithFractionRegex =
-    """/\d+[\.\/]{1,}\d*/g""".toRegex()
+    """:(:{2})""".toRegex()
   private val invalidRatioRegex =
-    """/^(\s)*(\d+((\s)*:(\s)*\d+)+)(\s)*${'$'}/""".toRegex()
+    """^(\s)*(\d+((\s)*:(\s)*\d+)+)(\s)*$""".toRegex()
 
   /**
    * Returns a [RatioParsingError] for the specified text input if it's an invalid ratio, or
@@ -38,10 +36,10 @@ class StringToRatioParser {
    */
   fun getRealTimeAnswerError(text: String): RatioParsingError {
     return when {
-      text.matches(invalidCharsRegex) -> RatioParsingError.INVALID_CHARS
+      !text.matches(invalidCharsRegex) -> RatioParsingError.INVALID_CHARS
+      text.contains('/') || text.contains('.') -> RatioParsingError.NON_INTEGER_ELEMENTS
+      text.contains("::") -> RatioParsingError.INVALID_COLORS
       text.matches(invalidRatioRegex) -> RatioParsingError.INVALID_FORMAT
-      text.matches(invalidColonRegex) -> RatioParsingError.INVALID_COLORS
-      text.matches(invalidRatioWithFractionRegex) -> RatioParsingError.NON_INTEGER_ELEMENTS
       else -> RatioParsingError.VALID
     }
   }

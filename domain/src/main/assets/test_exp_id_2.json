@@ -353,7 +353,7 @@
           "answer_groups": [
             {
               "outcome": {
-                "dest": "Text",
+                "dest": "RatioInput",
                 "labelled_as_correct": false,
                 "param_changes": [],
                 "feedback": {
@@ -455,6 +455,135 @@
         "content": {
           "content_id": "content",
           "html": "<p>What is 11 times 11?</p>"
+        }
+      },
+      "RatioInput": {
+        "param_changes": [],
+        "classifier_model_id": null,
+        "solicit_answer_details": false,
+        "interaction": {
+          "solution": null,
+          "answer_groups": [
+            {
+              "outcome": {
+                "dest": "RatioInput",
+                "labelled_as_correct": false,
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_1",
+                  "html": "<p>No this doesn't seem correct</p>"
+                },
+                "missing_prerequisite_skill_id": null,
+                "refresher_exploration_id": null
+              },
+              "training_data": [],
+              "rule_types_to_inputs": {
+                "HasNumberOfTermsEqualTo": [
+                  {
+                    "y": 3
+                  }
+                ]
+              },
+              "tagged_skill_misconception_id": null
+            },
+            {
+              "outcome": {
+                "dest": "Text",
+                "labelled_as_correct": false,
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_2",
+                  "html": "<p>Correct</p>"
+                },
+                "missing_prerequisite_skill_id": null,
+                "refresher_exploration_id": null
+              },
+              "training_data": [],
+              "rule_types_to_inputs": {
+                "IsEquals": [
+                  {
+                    "x": [
+                      8,
+                      10
+                    ]
+                  }
+                ]
+              },
+              "tagged_skill_misconception_id": null
+            },
+            {
+              "outcome": {
+                "dest": "Text",
+                "labelled_as_correct": false,
+                "param_changes": [],
+                "feedback": {
+                  "content_id": "feedback_3",
+                  "html": "<p>Correct</p>"
+                },
+                "missing_prerequisite_skill_id": null,
+                "refresher_exploration_id": null
+              },
+              "training_data": [],
+              "rule_types_to_inputs": {
+                "IsEquivalent": [
+                  {
+                    "x": [
+                      4,
+                      5
+                    ]
+                  }
+                ]
+              },
+              "tagged_skill_misconception_id": null
+            }
+          ],
+          "customization_args": {
+            "numberOfTerms": {
+              "value": 0
+            },
+            "placeholder": {
+              "value": {
+                "unicode_str": "Enter in format of x:y",
+                "content_id": "ca_placeholder_0"
+              }
+            }
+          },
+          "id": "RatioExpressionInput",
+          "hints": [],
+          "confirmed_unclassified_answers": [],
+          "default_outcome": {
+            "dest": "RatioInput",
+            "labelled_as_correct": false,
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>Not correct</p>"
+            },
+            "missing_prerequisite_skill_id": null,
+            "refresher_exploration_id": null
+          }
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "feedback_2": {},
+            "feedback_3": {},
+            "feedback_1": {},
+            "content": {},
+            "default_outcome": {}
+          }
+        },
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "feedback_2": {},
+            "feedback_3": {},
+            "feedback_1": {},
+            "content": {},
+            "default_outcome": {}
+          }
+        },
+        "content": {
+          "content_id": "content",
+          "html": "<p>Two numbers are respectively 20% and 50% more than a third number. The ratio of the two numbers is:</p>"
         }
       },
       "Text": {
