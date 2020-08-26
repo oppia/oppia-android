@@ -1,0 +1,189 @@
+{
+  "exploration": {
+    "states": {
+      "RatioExpressionInput": {
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "ca_placeholder_0": {},
+            "content": {},
+            "feedback_3": {},
+            "feedback_2": {},
+            "feedback_1": {},
+            "default_outcome": {}
+          }
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "ca_placeholder_0": {},
+            "content": {},
+            "feedback_3": {},
+            "feedback_2": {},
+            "feedback_1": {},
+            "default_outcome": {}
+          }
+        },
+        "solicit_answer_details": false,
+        "interaction": {
+          "solution": null,
+          "id": "RatioExpressionInput",
+          "confirmed_unclassified_answers": [],
+          "hints": [],
+          "customization_args": {
+            "numberOfTerms": {
+              "value": 0
+            },
+            "placeholder": {
+              "value": {
+                "unicode_str": "Enter in format of x:y",
+                "content_id": "ca_placeholder_0"
+              }
+            }
+          },
+          "answer_groups": [
+            {
+              "outcome": {
+                "param_changes": [],
+                "labelled_as_correct": false,
+                "feedback": {
+                  "content_id": "feedback_1",
+                  "html": "<p>No this doesn't seem correct</p>"
+                },
+                "missing_prerequisite_skill_id": null,
+                "dest": "RatioExpressionInput",
+                "refresher_exploration_id": null
+              },
+              "training_data": [],
+              "tagged_skill_misconception_id": null,
+              "rule_types_to_inputs": {
+                "HasNumberOfTermsEqualTo": [
+                  {
+                    "y": 3
+                  }
+                ]
+              },
+              "rule_input_translations": {}
+            },
+            {
+              "outcome": {
+                "param_changes": [],
+                "labelled_as_correct": false,
+                "feedback": {
+                  "content_id": "feedback_2",
+                  "html": "<p>Correct</p>"
+                },
+                "missing_prerequisite_skill_id": null,
+                "dest": "End",
+                "refresher_exploration_id": null
+              },
+              "training_data": [],
+              "tagged_skill_misconception_id": null,
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
+                    "x": [
+                      4,
+                      5
+                    ]
+                  }
+                ]
+              },
+              "rule_input_translations": {}
+            },
+            {
+              "outcome": {
+                "param_changes": [],
+                "labelled_as_correct": false,
+                "feedback": {
+                  "content_id": "feedback_3",
+                  "html": "<p>Correct</p>"
+                },
+                "missing_prerequisite_skill_id": null,
+                "dest": "End",
+                "refresher_exploration_id": null
+              },
+              "training_data": [],
+              "tagged_skill_misconception_id": null,
+              "rule_types_to_inputs": {
+                "IsEquivalent": [
+                  {
+                    "x": [
+                      8,
+                      10
+                    ]
+                  }
+                ]
+              },
+              "rule_input_translations": {}
+            }
+          ],
+          "default_outcome": {
+            "param_changes": [],
+            "labelled_as_correct": false,
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>Not correct</p>"
+            },
+            "missing_prerequisite_skill_id": null,
+            "dest": "RatioExpressionInput",
+            "refresher_exploration_id": null
+          }
+        },
+        "param_changes": [],
+        "next_content_id_index": 3,
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": "<p>Two numbers are respectively 20% and 50% more than a third number. The ratio of the two numbers is:</p>"
+        }
+      },
+      "End": {
+        "param_changes": [],
+        "interaction": {
+          "solution": null,
+          "answer_groups": [],
+          "default_outcome": {
+            "param_changes": [],
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": ""
+            },
+            "dest": "End",
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null,
+            "labelled_as_correct": false
+          },
+          "customization_args": {},
+          "confirmed_unclassified_answers": [],
+          "id": null,
+          "hints": []
+        },
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {},
+            "default_outcome": {}
+          }
+        },
+        "classifier_model_id": null,
+        "content": {
+          "content_id": "content",
+          "html": ""
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "content": {},
+            "default_outcome": {}
+          }
+        },
+        "solicit_answer_details": false
+      }
+    },
+    "title": "Ratio Input  Test Exploration",
+    "language_code": "en",
+    "param_changes": [],
+    "param_specs": {},
+    "objective": "learn how to play with ratio",
+    "init_state_name": "RatioExpressionInput"
+  },
+  "exploration_id": "ratio_input_exploration",
+  "version": 1
+}
