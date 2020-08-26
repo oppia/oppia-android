@@ -334,7 +334,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name_profile_input_view))
         )
       ).perform(
-        typeText("Sean"), closeSoftKeyboard()
+        typeText("Admin"), closeSoftKeyboard()
       )
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
@@ -359,7 +359,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name_profile_input_view))
         )
       ).perform(scrollTo()).perform(
-        typeText("Sean"), closeSoftKeyboard()
+        typeText("Admin"), closeSoftKeyboard()
       )
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
@@ -383,7 +383,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name_profile_input_view))
         )
       ).perform(
-        typeText("Sean"), closeSoftKeyboard()
+        typeText("Admin"), closeSoftKeyboard()
       )
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
@@ -417,7 +417,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name_profile_input_view))
         )
       ).perform(scrollTo()).perform(
-        typeText("Sean"), closeSoftKeyboard()
+        typeText("Admin"), closeSoftKeyboard()
       )
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
@@ -1326,7 +1326,7 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name_profile_input_view))
         )
       ).perform(
-        typeText("Sean"),
+        typeText("Admin"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())

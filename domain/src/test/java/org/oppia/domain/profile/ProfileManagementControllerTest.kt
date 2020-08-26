@@ -27,7 +27,7 @@ import org.oppia.app.model.DeviceSettings
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileDatabase
 import org.oppia.app.model.ProfileId
-import org.oppia.app.model.StoryTextSize
+import org.oppia.app.model.ReadingTextSize
 import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
@@ -136,7 +136,7 @@ class ProfileManagementControllerTest {
     assertThat(profile.pin).isEqualTo("123")
     assertThat(profile.allowDownloadAccess).isEqualTo(true)
     assertThat(profile.id.internalId).isEqualTo(0)
-    assertThat(profile.storyTextSize).isEqualTo(StoryTextSize.MEDIUM_TEXT_SIZE)
+    assertThat(profile.readingTextSize).isEqualTo(ReadingTextSize.MEDIUM_TEXT_SIZE)
     assertThat(profile.appLanguage).isEqualTo(AppLanguage.ENGLISH_APP_LANGUAGE)
     assertThat(profile.audioLanguage).isEqualTo(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
     assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
@@ -197,7 +197,7 @@ class ProfileManagementControllerTest {
     assertThat(profile.pin).isEqualTo("456")
     assertThat(profile.allowDownloadAccess).isEqualTo(false)
     assertThat(profile.id.internalId).isEqualTo(3)
-    assertThat(profile.storyTextSize).isEqualTo(StoryTextSize.MEDIUM_TEXT_SIZE)
+    assertThat(profile.readingTextSize).isEqualTo(ReadingTextSize.MEDIUM_TEXT_SIZE)
     assertThat(profile.appLanguage).isEqualTo(AppLanguage.ENGLISH_APP_LANGUAGE)
     assertThat(profile.audioLanguage).isEqualTo(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
   }
@@ -375,20 +375,20 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  fun testUpdateStoryTextSize_addProfiles_updateWithFontSize18_checkUpdateIsSuccessful() {
+  fun testUpdateReadingTextSize_addProfiles_updateWithFontSize18_checkUpdateIsSuccessful() {
     addTestProfiles()
     testCoroutineDispatchers.runCurrent()
 
     val profileId = ProfileId.newBuilder().setInternalId(2).build()
-    profileManagementController.updateStoryTextSize(profileId, StoryTextSize.MEDIUM_TEXT_SIZE)
+    profileManagementController.updateReadingTextSize(profileId, ReadingTextSize.MEDIUM_TEXT_SIZE)
       .observeForever(mockUpdateResultObserver)
     profileManagementController.getProfile(profileId).observeForever(mockProfileObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyUpdateSucceeded()
     verifyGetProfileSucceeded()
-    assertThat(profileResultCaptor.value.getOrThrow().storyTextSize)
-      .isEqualTo(StoryTextSize.MEDIUM_TEXT_SIZE)
+    assertThat(profileResultCaptor.value.getOrThrow().readingTextSize)
+      .isEqualTo(ReadingTextSize.MEDIUM_TEXT_SIZE)
   }
 
   @Test

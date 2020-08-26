@@ -149,7 +149,7 @@ class ProfileRenameActivityTest {
           withId(R.id.input),
           isDescendantOfA(withId(R.id.input_name))
         )
-      ).perform(typeText("Sean"))
+      ).perform(typeText("Admin"))
       onView(withId(R.id.profile_rename_save_button)).perform(click())
       onView(
         allOf(
@@ -173,7 +173,7 @@ class ProfileRenameActivityTest {
           withId(R.id.input),
           isDescendantOfA(withId(R.id.input_name))
         )
-      ).perform(typeText("Sean"))
+      ).perform(typeText("Admin"))
       onView(withId(R.id.profile_rename_save_button)).perform(click())
       onView(
         allOf(
@@ -274,7 +274,7 @@ class ProfileRenameActivityTest {
       )
     ).use {
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_name)))).perform(
-        typeText("Sean"),
+        typeText("Admin"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_rename_save_button)).perform(click())

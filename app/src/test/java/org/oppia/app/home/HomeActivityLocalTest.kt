@@ -30,6 +30,7 @@ import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModu
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.domain.oppialogger.LogStorageModule
@@ -106,7 +107,7 @@ class HomeActivityLocalTest {
       GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
       QuestionModule::class, TestLogReportingModule::class, TestAccessibilityModule::class,
       ImageClickInputModule::class, LogStorageModule::class, IntentFactoryShimModule::class,
-      ViewBindingShimModule::class, CachingTestModule::class,
+      ViewBindingShimModule::class, CachingTestModule::class, RatioInputModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class
     ]
   )

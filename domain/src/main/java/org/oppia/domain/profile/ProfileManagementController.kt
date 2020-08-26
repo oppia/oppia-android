@@ -17,7 +17,7 @@ import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileAvatar
 import org.oppia.app.model.ProfileDatabase
 import org.oppia.app.model.ProfileId
-import org.oppia.app.model.StoryTextSize
+import org.oppia.app.model.ReadingTextSize
 import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.util.data.AsyncResult
@@ -51,7 +51,8 @@ private const val UPDATE_DOWNLOAD_ACCESS_TRANSFORMED_PROVIDER_ID =
 private const val LOGIN_PROFILE_TRANSFORMED_PROVIDER_ID = "login_profile_transformed_id"
 private const val DELETE_PROFILE_TRANSFORMED_PROVIDER_ID = "delete_profile_transformed_id"
 private const val SET_PROFILE_TRANSFORMED_PROVIDER_ID = "set_profile_transformed_id"
-private const val UPDATE_STORY_TEXT_SIZE_TRANSFORMED_ID = "update_story_text_size_transformed_id"
+private const val UPDATE_READING_TEXT_SIZE_TRANSFORMED_ID =
+  "update_reading_text_size_transformed_id"
 private const val UPDATE_APP_LANGUAGE_TRANSFORMED_PROVIDER_ID = "update_app_language_transformed_id"
 private const val UPDATE_AUDIO_LANGUAGE_TRANSFORMED_PROVIDER_ID =
   "update_audio_language_transformed_id"
@@ -229,7 +230,7 @@ class ProfileManagementController @Inject constructor(
         .setAllowDownloadAccess(allowDownloadAccess)
         .setId(ProfileId.newBuilder().setInternalId(nextProfileId))
         .setDateCreatedTimestampMs(Date().time).setIsAdmin(isAdmin)
-        .setStoryTextSize(StoryTextSize.MEDIUM_TEXT_SIZE)
+        .setReadingTextSize(ReadingTextSize.MEDIUM_TEXT_SIZE)
         .setAppLanguage(AppLanguage.ENGLISH_APP_LANGUAGE)
         .setAudioLanguage(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
 
@@ -498,12 +499,12 @@ class ProfileManagementController @Inject constructor(
    * Updates the story text size of the profile.
    *
    * @param profileId the ID corresponding to the profile being updated.
-   * @param storyTextSize New text size for the profile being updated.
+   * @param readingTextSize New text size for the profile being updated.
    * @return a [LiveData] that indicates the success/failure of this update operation.
    */
-  fun updateStoryTextSize(
+  fun updateReadingTextSize(
     profileId: ProfileId,
-    storyTextSize: StoryTextSize
+    readingTextSize: ReadingTextSize
   ): LiveData<AsyncResult<Any?>> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
@@ -513,7 +514,7 @@ class ProfileManagementController @Inject constructor(
           it,
           ProfileActionStatus.PROFILE_NOT_FOUND
         )
-      val updatedProfile = profile.toBuilder().setStoryTextSize(storyTextSize).build()
+      val updatedProfile = profile.toBuilder().setReadingTextSize(readingTextSize).build()
       val profileDatabaseBuilder = it.toBuilder().putProfiles(
         profileId.internalId,
         updatedProfile
@@ -521,7 +522,7 @@ class ProfileManagementController @Inject constructor(
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
     return dataProviders.convertToLiveData(
-      dataProviders.createInMemoryDataProviderAsync(UPDATE_STORY_TEXT_SIZE_TRANSFORMED_ID) {
+      dataProviders.createInMemoryDataProviderAsync(UPDATE_READING_TEXT_SIZE_TRANSFORMED_ID) {
         return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
       }
     )

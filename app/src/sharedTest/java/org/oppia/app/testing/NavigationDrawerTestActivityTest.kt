@@ -145,7 +145,7 @@ class NavigationDrawerTestActivityTest {
         matches(isCompletelyDisplayed())
       ).perform(click())
       onView(withId(R.id.nav_header_profile_name))
-        .check(matches(withText("Sean")))
+        .check(matches(withText("Admin")))
     }
   }
 
@@ -164,7 +164,7 @@ class NavigationDrawerTestActivityTest {
         )
         .perform(click())
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.nav_header_profile_name)).check(matches(withText("Sean")))
+      onView(withId(R.id.nav_header_profile_name)).check(matches(withText("Admin")))
     }
   }
 

@@ -100,7 +100,7 @@ class WalkthroughWelcomeFragmentTest {
           withId(R.id.walkthrough_welcome_title_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText("Welcome Sean!")))
+      ).check(matches(withText("Welcome Admin!")))
     }
   }
 
@@ -112,14 +112,14 @@ class WalkthroughWelcomeFragmentTest {
           withId(R.id.walkthrough_welcome_title_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText("Welcome Sean!")))
+      ).check(matches(withText("Welcome Admin!")))
       onView(isRoot()).perform(orientationLandscape())
       onView(
         allOf(
           withId(R.id.walkthrough_welcome_title_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText("Welcome Sean!")))
+      ).check(matches(withText("Welcome Admin!")))
     }
   }
 
