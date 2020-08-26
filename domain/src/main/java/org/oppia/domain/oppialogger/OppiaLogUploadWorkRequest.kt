@@ -14,14 +14,14 @@ private const val OPPIA_EXCEPTION_WORK = "OPPIA_EXCEPTION_WORK_REQUEST"
 private const val OPPIA_EVENT_WORK = "OPPIA_EVENT_WORK_REQUEST"
 
 class OppiaLogUploadWorkRequest {
-/*
+
   private val workerConstraints = Constraints.Builder()
     .setRequiredNetworkType(NetworkType.CONNECTED)
     .setRequiresBatteryNotLow(true)
     .setRequiresStorageNotLow(true)
-    .build()*/
+    .build()
 
-  fun setWorkerRequestForEvents(workManager: WorkManager): OneTimeWorkRequest {
+  fun setWorkerRequestForEvents(workManager: WorkManager): PeriodicWorkRequest {
     val workerCase =
       Data.Builder()
         .putString(
@@ -30,15 +30,16 @@ class OppiaLogUploadWorkRequest {
         )
         .build()
     val eventWorkRequest =
-      OneTimeWorkRequest
-        .Builder(OppiaLogUploadWorker::class.java)//, 6, TimeUnit.HOURS)
+      PeriodicWorkRequest
+        .Builder(OppiaLogUploadWorker::class.java, 6, TimeUnit.HOURS)
         .setInputData(workerCase)
+        .setConstraints(workerConstraints)
         .build()
-        //.setConstraints(workerConstraints)
 
-    workManager.enqueueUniqueWork(
+
+    workManager.enqueueUniquePeriodicWork(
       OPPIA_EVENT_WORK,
-      ExistingWorkPolicy.KEEP,
+      ExistingPeriodicWorkPolicy.KEEP,
       eventWorkRequest
     )
     return eventWorkRequest
@@ -56,8 +57,8 @@ class OppiaLogUploadWorkRequest {
       PeriodicWorkRequest
         .Builder(OppiaLogUploadWorker::class.java, 6, TimeUnit.HOURS)
         .setInputData(workerCase)
+        .setConstraints(workerConstraints)
         .build()
-        //.setConstraints(workerConstraints)
     workManager.enqueueUniquePeriodicWork(
       OPPIA_EXCEPTION_WORK,
       ExistingPeriodicWorkPolicy.KEEP,

@@ -3,15 +3,11 @@ package org.oppia.domain.oppialogger
 import android.app.Application
 import android.content.Context
 import android.util.Log
-import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.work.Configuration
 import androidx.work.ListenableWorker
-import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import androidx.work.Worker
-import androidx.work.testing.TestListenableWorkerBuilder
 import androidx.work.testing.TestWorkerBuilder
 import androidx.work.testing.WorkManagerTestInitHelper
 import androidx.work.workDataOf
@@ -24,17 +20,13 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.app.model.EventLog
 import org.oppia.domain.oppialogger.analytics.AnalyticsController
-import org.oppia.domain.oppialogger.analytics.TEST_QUESTION_ID
-import org.oppia.domain.oppialogger.analytics.TEST_SKILL_LIST_ID
 import org.oppia.domain.oppialogger.analytics.TEST_TIMESTAMP
+import org.oppia.domain.oppialogger.analytics.TEST_TOPIC_ID
+import org.oppia.testing.FakeEventLogger
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.logging.EnableConsoleLog
@@ -50,11 +42,17 @@ import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
-class OppiaLogUploadWorkRequestTest : Configuration.Provider {
+class OppiaLogUploadWorkerTest : Configuration.Provider {
 
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
+  @Inject
+  lateinit var networkConnectionUtil: NetworkConnectionUtil
+
+  @Inject
+  lateinit var fakeEventLogger: FakeEventLogger
 
   @Inject
   lateinit var oppiaLogger: OppiaLogger
@@ -62,21 +60,9 @@ class OppiaLogUploadWorkRequestTest : Configuration.Provider {
   @Inject
   lateinit var analyticsController: AnalyticsController
 
-  @Inject
-  lateinit var networkConnectionUtil: NetworkConnectionUtil
-
-  private val oppiaLogUploadWorkRequest = OppiaLogUploadWorkRequest()
-
   private lateinit var context: Context
   private lateinit var executor: Executor
-
-  lateinit var workManager: WorkManager
-
-  @Mock
-  lateinit var mockObserver: Observer<WorkInfo>
-
-  @Captor
-  lateinit var captor: ArgumentCaptor<WorkInfo>
+  private lateinit var workManager: WorkManager
 
   @Before
   fun setUp() {
@@ -89,28 +75,29 @@ class OppiaLogUploadWorkRequestTest : Configuration.Provider {
   }
 
   @Test
-  fun testWorkRequest_logEvents_createWorkRequest_verifyRequestResult() {
-    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
-    oppiaLogger.logTransitionEvent(
+  fun testWorker_doWork_withEventsInputData_verifySuccess(){
+    analyticsController.logTransitionEvent(
       TEST_TIMESTAMP,
       EventLog.EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
-        TEST_QUESTION_ID,
-        listOf(
-          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
-        )
-      )
+      oppiaLogger.createTopicContext(TEST_TOPIC_ID)
     )
-    val request = oppiaLogUploadWorkRequest.setWorkerRequestForEvents(workManager)
 
-    workManager.getWorkInfoByIdLiveData(request.id).observeForever(mockObserver)
-    Mockito.verify(mockObserver, Mockito.atLeastOnce()).onChanged(captor.capture())
+    val worker = TestWorkerBuilder<OppiaLogUploadWorker>(
+      context, executor, workDataOf(
+        OppiaLogUploadWorker.WORKER_CASE_KEY
+          to OppiaLogUploadWorker.WorkerCase.EVENT_WORKER.toString()
+      )
+    ).build()
 
-    assertThat(captor.value.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    val result = worker.doWork()
+
+    val eventList = fakeEventLogger.noEventsPresent()
+    assertThat(result).isEqualTo(ListenableWorker.Result.success())
+    assertThat(eventList).isTrue()
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerOppiaLogUploadWorkRequestTest_TestApplicationComponent.builder()
+    DaggerOppiaLogUploadWorkerTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -166,7 +153,7 @@ class OppiaLogUploadWorkRequestTest : Configuration.Provider {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(oppiaLogUploadWorkRequestTest: OppiaLogUploadWorkRequestTest)
+    fun inject(oppiaLogUploadWorkerTest: OppiaLogUploadWorkerTest)
   }
 
   override fun getWorkManagerConfiguration(): Configuration {

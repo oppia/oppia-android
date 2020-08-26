@@ -44,7 +44,7 @@ class OppiaLogUploadWorker @Inject constructor(
       WorkerCase.EXCEPTION_WORKER.toString() -> {
         exceptionWork()
       }
-      else -> Result.success()
+      else -> Result.failure()
     }
   }
 
@@ -62,7 +62,7 @@ class OppiaLogUploadWorker @Inject constructor(
       Result.success()
     } catch (e: Exception) {
       consoleLogger.e(LOG_UPLOAD_WORKER, e.toString(), e)
-      Result.success()
+      Result.failure()
     }
   }
 
@@ -80,7 +80,7 @@ class OppiaLogUploadWorker @Inject constructor(
     } catch (e: Exception) {
       System.err.println(e)
       consoleLogger.e(LOG_UPLOAD_WORKER, e.toString(), e)
-      Result.success()
+      Result.failure()
     }
   }
 }
