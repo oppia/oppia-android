@@ -19,6 +19,7 @@ import org.oppia.app.application.ApplicationComponent
 import org.oppia.app.application.ApplicationInjector
 import org.oppia.app.application.ApplicationInjectorProvider
 import org.oppia.app.application.ApplicationModule
+import org.oppia.app.application.ApplicationStartupListenerModule
 import org.oppia.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
 import org.oppia.app.model.EventLog.EventAction
 import org.oppia.app.model.EventLog.Priority
@@ -108,7 +109,7 @@ class ProfileChooserFragmentLocalTest {
       QuestionModule::class, TestLogReportingModule::class, TestAccessibilityModule::class,
       ImageClickInputModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class
+      ViewBindingShimModule::class, RatioInputModule::class, ApplicationStartupListenerModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent, ApplicationInjector {
