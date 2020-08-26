@@ -20,27 +20,27 @@ import org.hamcrest.TypeSafeMatcher
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.options.STORY_TEXT_SIZE
-import org.oppia.app.options.StoryTextSizeActivity
+import org.oppia.app.options.READING_TEXT_SIZE
+import org.oppia.app.options.ReadingTextSizeActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 
 @RunWith(AndroidJUnit4::class)
-class StoryTextSizeFragmentTest {
+class ReadingTextSizeFragmentTest {
 
   @Test
   fun testTextSize_changeTextSizeToLarge_changeConfiguration_checkTextSizeLargeIsSelected() {
-    launch<StoryTextSizeActivity>(createStoryTextSizeActivityIntent("Small")).use {
-      onView(withId(R.id.story_text_size_seekBar)).check(matches(seekBarProgress(0)))
-      onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(10))
+    launch<ReadingTextSizeActivity>(createReadingTextSizeActivityIntent("Small")).use {
+      onView(withId(R.id.reading_text_size_seekBar)).check(matches(seekBarProgress(0)))
+      onView(withId(R.id.reading_text_size_seekBar)).perform(clickSeekBar(10))
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.story_text_size_seekBar)).check(matches(seekBarProgress(10)))
+      onView(withId(R.id.reading_text_size_seekBar)).check(matches(seekBarProgress(10)))
     }
   }
 
-  private fun createStoryTextSizeActivityIntent(summaryValue: String): Intent {
-    return StoryTextSizeActivity.createStoryTextSizeActivityIntent(
+  private fun createReadingTextSizeActivityIntent(summaryValue: String): Intent {
+    return ReadingTextSizeActivity.createReadingTextSizeActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      STORY_TEXT_SIZE,
+      READING_TEXT_SIZE,
       summaryValue
     )
   }

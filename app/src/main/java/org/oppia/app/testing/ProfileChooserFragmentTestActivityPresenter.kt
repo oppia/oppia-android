@@ -17,7 +17,7 @@ class ProfileChooserFragmentTestActivityPresenter @Inject constructor(
   fun handleOnCreate() {
     // TODO(#482): Ensures that an admin profile is present. Remove when there is proper admin account creation.
     profileManagementController.addProfile(
-      name = "Sean",
+      name = "Admin",
       pin = "",
       avatarImagePath = null,
       allowDownloadAccess = true,

@@ -18,7 +18,7 @@ import org.oppia.app.ongoingtopiclist.OngoingTopicListActivity
 import org.oppia.app.options.AppLanguageActivity
 import org.oppia.app.options.DefaultAudioActivity
 import org.oppia.app.options.OptionsActivity
-import org.oppia.app.options.StoryTextSizeActivity
+import org.oppia.app.options.ReadingTextSizeActivity
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.app.profile.AddProfileActivity
@@ -115,7 +115,7 @@ interface ActivityComponent {
   fun inject(splashActivity: SplashActivity)
   fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
   fun inject(storyActivity: StoryActivity)
-  fun inject(storyTextSizeActivity: StoryTextSizeActivity)
+  fun inject(readingTextSizeActivity: ReadingTextSizeActivity)
   fun inject(topicActivity: TopicActivity)
   fun inject(topicRevisionTestActivity: TopicRevisionTestActivity)
   fun inject(topicTestActivity: TopicTestActivity)
