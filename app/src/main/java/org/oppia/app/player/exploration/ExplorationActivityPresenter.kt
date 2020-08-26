@@ -16,7 +16,7 @@ import org.oppia.app.activity.ActivityScope
 import org.oppia.app.databinding.ExplorationActivityBinding
 import org.oppia.app.help.HelpActivity
 import org.oppia.app.model.Exploration
-import org.oppia.app.model.StoryTextSize
+import org.oppia.app.model.ReadingTextSize
 import org.oppia.app.options.OptionsActivity
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.utility.FontScaleConfigurationUtil
@@ -113,7 +113,7 @@ class ExplorationActivityPresenter @Inject constructor(
     }
   }
 
-  fun loadExplorationFragment(storyTextSize: StoryTextSize) {
+  fun loadExplorationFragment(readingTextSize: ReadingTextSize) {
     if (getExplorationFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_fragment_placeholder,
@@ -121,7 +121,7 @@ class ExplorationActivityPresenter @Inject constructor(
           topicId = topicId,
           internalProfileId = internalProfileId,
           storyId = storyId,
-          storyTextSize = storyTextSize.name,
+          readingTextSize = readingTextSize.name,
           explorationId = explorationId
         ),
         TAG_EXPLORATION_FRAGMENT
@@ -193,7 +193,7 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   fun stopExploration() {
-    fontScaleConfigurationUtil.adjustFontScale(activity, StoryTextSize.MEDIUM_TEXT_SIZE.name)
+    fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE.name)
     explorationDataController.stopPlayingExploration()
       .observe(
         activity,

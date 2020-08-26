@@ -21,8 +21,8 @@ import org.oppia.app.options.AUDIO_LANGUAGE
 import org.oppia.app.options.AppLanguageActivity
 import org.oppia.app.options.DefaultAudioActivity
 import org.oppia.app.options.OptionsActivity
-import org.oppia.app.options.STORY_TEXT_SIZE
-import org.oppia.app.options.StoryTextSizeActivity
+import org.oppia.app.options.READING_TEXT_SIZE
+import org.oppia.app.options.ReadingTextSizeActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 
 @RunWith(AndroidJUnit4::class)
@@ -40,22 +40,22 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun testStoryTextSize_clickStoryTextSize_checkSendingTheCorrectIntent() {
+  fun testReadingTextSize_clickReadingTextSize_checkSendingTheCorrectIntent() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
           0,
-          R.id.story_text_size_item_layout
+          R.id.reading_text_size_item_layout
         )
       ).perform(
         click()
       )
-      intended(hasComponent(StoryTextSizeActivity::class.java.name))
+      intended(hasComponent(ReadingTextSizeActivity::class.java.name))
       intended(
         hasExtra(
-          StoryTextSizeActivity.KEY_STORY_TEXT_SIZE_PREFERENCE_TITLE,
-          STORY_TEXT_SIZE
+          ReadingTextSizeActivity.KEY_READING_TEXT_SIZE_PREFERENCE_TITLE,
+          READING_TEXT_SIZE
         )
       )
     }

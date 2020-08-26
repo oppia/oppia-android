@@ -93,7 +93,7 @@ class ProfileTestHelperTest {
     assertThat(profilesResultCaptor.value.isSuccess()).isTrue()
     assertThat(updateResultCaptor.value.isSuccess()).isTrue()
     val profiles = profilesResultCaptor.value.getOrThrow()
-    assertThat(profiles[0].name).isEqualTo("Sean")
+    assertThat(profiles[0].name).isEqualTo("Admin")
     assertThat(profiles[0].isAdmin).isTrue()
     assertThat(profiles[1].name).isEqualTo("Ben")
     assertThat(profiles[1].isAdmin).isFalse()
@@ -112,7 +112,7 @@ class ProfileTestHelperTest {
     assertThat(updateResultCaptor.value.isSuccess()).isTrue()
     val profiles = profilesResultCaptor.value.getOrThrow()
     assertThat(profiles.size).isEqualTo(1)
-    assertThat(profiles[0].name).isEqualTo("Sean")
+    assertThat(profiles[0].name).isEqualTo("Admin")
     assertThat(profiles[0].isAdmin).isTrue()
     assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(0)
   }

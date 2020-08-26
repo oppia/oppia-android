@@ -18,14 +18,14 @@ import org.oppia.app.ongoingtopiclist.OngoingTopicListActivity
 import org.oppia.app.options.AppLanguageActivity
 import org.oppia.app.options.DefaultAudioActivity
 import org.oppia.app.options.OptionsActivity
-import org.oppia.app.options.StoryTextSizeActivity
+import org.oppia.app.options.ReadingTextSizeActivity
 import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.app.profile.AddProfileActivity
 import org.oppia.app.profile.AdminAuthActivity
 import org.oppia.app.profile.AdminPinActivity
 import org.oppia.app.profile.PinPasswordActivity
-import org.oppia.app.profile.ProfileActivity
+import org.oppia.app.profile.ProfileChooserActivity
 import org.oppia.app.profileprogress.ProfilePictureActivity
 import org.oppia.app.profileprogress.ProfileProgressActivity
 import org.oppia.app.settings.profile.ProfileEditActivity
@@ -101,7 +101,7 @@ interface ActivityComponent {
   fun inject(ongoingTopicListActivity: OngoingTopicListActivity)
   fun inject(optionActivity: OptionsActivity)
   fun inject(pinPasswordActivity: PinPasswordActivity)
-  fun inject(profileActivity: ProfileActivity)
+  fun inject(profileChooserActivity: ProfileChooserActivity)
   fun inject(questionPlayerActivity: QuestionPlayerActivity)
   fun inject(profileChooserFragmentTestActivity: ProfileChooserFragmentTestActivity)
   fun inject(profileEditActivity: ProfileEditActivity)
@@ -115,7 +115,7 @@ interface ActivityComponent {
   fun inject(splashActivity: SplashActivity)
   fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
   fun inject(storyActivity: StoryActivity)
-  fun inject(storyTextSizeActivity: StoryTextSizeActivity)
+  fun inject(readingTextSizeActivity: ReadingTextSizeActivity)
   fun inject(topicActivity: TopicActivity)
   fun inject(topicRevisionTestActivity: TopicRevisionTestActivity)
   fun inject(topicTestActivity: TopicTestActivity)

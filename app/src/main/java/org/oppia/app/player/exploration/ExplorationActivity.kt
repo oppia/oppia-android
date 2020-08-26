@@ -11,8 +11,8 @@ import org.oppia.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.app.hintsandsolution.HintsAndSolutionListener
 import org.oppia.app.hintsandsolution.RevealHintListener
 import org.oppia.app.hintsandsolution.RevealSolutionInterface
+import org.oppia.app.model.ReadingTextSize
 import org.oppia.app.model.State
-import org.oppia.app.model.StoryTextSize
 import org.oppia.app.player.audio.AudioButtonListener
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.state.listener.StateKeyboardButtonListener
@@ -174,8 +174,8 @@ class ExplorationActivity :
     getHintsAndSolution()?.dismiss()
   }
 
-  override fun onDefaultFontSizeLoaded(storyTextSize: StoryTextSize) {
-    explorationActivityPresenter.loadExplorationFragment(storyTextSize)
+  override fun onDefaultFontSizeLoaded(readingTextSize: ReadingTextSize) {
+    explorationActivityPresenter.loadExplorationFragment(readingTextSize)
   }
 
   override fun onExplorationStateLoaded(state: State) {

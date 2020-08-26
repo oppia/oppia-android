@@ -51,7 +51,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.home.recentlyplayed.RecentlyPlayedActivity
-import org.oppia.app.profile.ProfileActivity
+import org.oppia.app.profile.ProfileChooserActivity
 import org.oppia.app.profileprogress.ProfileProgressActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -156,7 +156,7 @@ class HomeActivityTest {
           0,
           R.id.profile_name_textview
         )
-      ).check(matches(withText("Sean!")))
+      ).check(matches(withText("Admin!")))
     }
   }
 
@@ -227,7 +227,7 @@ class HomeActivityTest {
           0,
           R.id.profile_name_textview
         )
-      ).check(matches(withText("Sean!")))
+      ).check(matches(withText("Admin!")))
     }
   }
 
@@ -469,7 +469,7 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       pressBack()
       onView(withText(R.string.home_activity_back_dialog_exit)).perform(click())
-      intended(hasComponent(ProfileActivity::class.java.name))
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
 
