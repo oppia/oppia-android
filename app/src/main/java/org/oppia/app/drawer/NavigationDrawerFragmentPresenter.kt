@@ -28,7 +28,7 @@ import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
 import org.oppia.app.mydownloads.MyDownloadsActivity
 import org.oppia.app.options.OptionsActivity
-import org.oppia.app.profile.ProfileActivity
+import org.oppia.app.profile.ProfileChooserActivity
 import org.oppia.app.profileprogress.ProfileProgressActivity
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.viewmodel.ViewModelProvider
@@ -253,8 +253,8 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
               dialog.dismiss()
             }
             .setPositiveButton(R.string.home_activity_back_dialog_exit) { _, _ ->
-              // TODO(#322): Need to start intent for ProfileActivity to get update. Change to finish when live data bug is fixed.
-              val intent = ProfileActivity.createProfileActivity(fragment.context!!)
+              // TODO(#322): Need to start intent for ProfileChooserActivity to get update. Change to finish when live data bug is fixed.
+              val intent = ProfileChooserActivity.createProfileChooserActivity(fragment.context!!)
               fragment.activity!!.startActivity(intent)
             }.create().show()
         }

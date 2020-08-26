@@ -11,7 +11,7 @@ import org.oppia.app.deprecation.AutomaticAppDeprecationNoticeDialogFragment
 import org.oppia.app.model.AppStartupState
 import org.oppia.app.model.AppStartupState.StartupMode
 import org.oppia.app.onboarding.OnboardingActivity
-import org.oppia.app.profile.ProfileActivity
+import org.oppia.app.profile.ProfileChooserActivity
 import org.oppia.domain.onboarding.AppStartupStateController
 import org.oppia.domain.topic.PrimeTopicAssetsController
 import org.oppia.util.data.AsyncResult
@@ -52,7 +52,7 @@ class SplashActivityPresenter @Inject constructor(
       Observer { startupMode ->
         when (startupMode) {
           StartupMode.USER_IS_ONBOARDED -> {
-            activity.startActivity(ProfileActivity.createProfileActivity(activity))
+            activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
             activity.finish()
           }
           StartupMode.APP_IS_DEPRECATED -> {

@@ -25,7 +25,7 @@ import org.oppia.app.profile.AddProfileActivity
 import org.oppia.app.profile.AdminAuthActivity
 import org.oppia.app.profile.AdminPinActivity
 import org.oppia.app.profile.PinPasswordActivity
-import org.oppia.app.profile.ProfileActivity
+import org.oppia.app.profile.ProfileChooserActivity
 import org.oppia.app.profileprogress.ProfilePictureActivity
 import org.oppia.app.profileprogress.ProfileProgressActivity
 import org.oppia.app.settings.profile.ProfileEditActivity
@@ -101,7 +101,7 @@ interface ActivityComponent {
   fun inject(ongoingTopicListActivity: OngoingTopicListActivity)
   fun inject(optionActivity: OptionsActivity)
   fun inject(pinPasswordActivity: PinPasswordActivity)
-  fun inject(profileActivity: ProfileActivity)
+  fun inject(profileChooserActivity: ProfileChooserActivity)
   fun inject(questionPlayerActivity: QuestionPlayerActivity)
   fun inject(profileChooserFragmentTestActivity: ProfileChooserFragmentTestActivity)
   fun inject(profileEditActivity: ProfileEditActivity)
