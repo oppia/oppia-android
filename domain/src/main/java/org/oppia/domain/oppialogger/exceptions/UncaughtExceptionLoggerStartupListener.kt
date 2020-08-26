@@ -14,6 +14,7 @@ class UncaughtExceptionLoggerStartupListener @Inject constructor(
 
   private lateinit var existingUncaughtExceptionHandler: Thread.UncaughtExceptionHandler
 
+  /** Sets up the uncaught exception handler to [UncaughtExceptionLoggerStartupListener]. */
   override fun onCreate() {
     existingUncaughtExceptionHandler = Thread.currentThread().uncaughtExceptionHandler
     Thread.currentThread().uncaughtExceptionHandler = this

@@ -5,7 +5,7 @@ import dagger.Module
 import dagger.multibindings.IntoSet
 import org.oppia.domain.oppialogger.ApplicationStartupListener
 
-/** Provides custom uncaught exception handler. */
+/** Returns an [ApplicationStartupListener] after binding [UncaughtExceptionLoggerStartupListener] into it. */
 @Module
 interface UncaughtExceptionLoggerModule {
 
