@@ -18,6 +18,7 @@ import org.oppia.app.model.NumberUnit
 import org.oppia.app.model.NumberWithUnits
 import org.oppia.app.model.Outcome
 import org.oppia.app.model.Point2d
+import org.oppia.app.model.RatioExpression
 import org.oppia.app.model.RuleSpec
 import org.oppia.app.model.SchemaObject
 import org.oppia.app.model.SchemaObjectList
@@ -25,6 +26,7 @@ import org.oppia.app.model.Solution
 import org.oppia.app.model.State
 import org.oppia.app.model.StringList
 import org.oppia.app.model.SubtitledHtml
+import org.oppia.app.model.SubtitledUnicode
 import org.oppia.app.model.Voiceover
 import org.oppia.app.model.VoiceoverMapping
 import javax.inject.Inject
@@ -355,6 +357,8 @@ class StateRetriever @Inject constructor(
         InteractionObject.newBuilder()
           .setNormalizedString(inputJson.getString(keyName))
           .build()
+      "RatioExpressionInput" ->
+        createExactInputForRatioExpressionInput(inputJson, keyName, ruleType)
       else -> throw IllegalStateException("Encountered unexpected interaction ID: $interactionId")
     }
   }
@@ -391,6 +395,31 @@ class StateRetriever @Inject constructor(
       else ->
         InteractionObject.newBuilder()
           .setListOfSetsOfHtmlString(parseListOfSetsOfHtmlStrings(inputJson.getJSONArray(keyName)))
+          .build()
+    }
+  }
+
+  /**
+   * Returns a Ratio Expression Input specific [InteractionObject] parsed from the specified input [JSONObject]
+   * for the given key name.
+   * This method makes assumptions about how to interpret the input type represented by the [JSONObject].
+   */
+  private fun createExactInputForRatioExpressionInput(
+    inputJson: JSONObject?,
+    keyName: String,
+    ruleType: String
+  ): InteractionObject {
+    if (inputJson == null) {
+      return InteractionObject.getDefaultInstance()
+    }
+    return when (ruleType) {
+      "HasNumberOfTermsEqualTo" ->
+        InteractionObject.newBuilder()
+          .setNonNegativeInt(inputJson.getInt(keyName))
+          .build()
+      else ->
+        InteractionObject.newBuilder()
+          .setRatioExpression(parseRatio(inputJson.getJSONArray(keyName)))
           .build()
     }
   }
@@ -447,6 +476,14 @@ class StateRetriever @Inject constructor(
       .build()
   }
 
+  private fun parseRatio(ratioAnswer: JSONArray): RatioExpression {
+    val ratioExpression = RatioExpression.newBuilder()
+    for (i in 0 until ratioAnswer.length()) {
+      ratioExpression.addRatioComponent(ratioAnswer.getInt(i))
+    }
+    return ratioExpression.build()
+  }
+
   // Creates a customization arg mapping from JSON
   private fun createCustomizationArgsMapFromJson(
     customizationArgsJson: JSONObject?,
@@ -477,8 +514,30 @@ class StateRetriever @Inject constructor(
       "TextInput" -> {
         createTextInputCustomizationArgsMap(customizationArgsJson)
       }
+      "RatioExpressionInput" -> {
+        createRatioExpressionInputCustomizationArgsMap(customizationArgsJson)
+      }
       else -> mutableMapOf()
     }
+  }
+
+  private fun createRatioExpressionInputCustomizationArgsMap(
+    customizationArgsJson: JSONObject
+  ): MutableMap<String, SchemaObject> {
+    val customizationArgsMap: MutableMap<String, SchemaObject> = mutableMapOf()
+    customizationArgsMap["placeholder"] =
+      parseSubtitledUnicode(
+        getJsonObject(
+          customizationArgsJson, "placeholder"
+        )!!.getJSONObject("value")
+      )
+    customizationArgsMap["numberOfTerms"] =
+      parseIntegerSchemaObject(
+        getJsonObject(
+          customizationArgsJson, "numberOfTerms"
+        )!!.getInt("value")
+      )
+    return customizationArgsMap
   }
 
   private fun createDragAndDropSortInputCustomizationArgsMap(
@@ -634,6 +693,15 @@ class StateRetriever @Inject constructor(
     return SchemaObject.newBuilder().setSchemaObjectList(
       schemaObjectListBuilder.build()
     ).build()
+  }
+
+  private fun parseSubtitledUnicode(jsonObject: JSONObject): SchemaObject {
+    val subtitledUnicodeBuilder = SubtitledUnicode.newBuilder()
+    subtitledUnicodeBuilder.contentId = jsonObject.getString("content_id")
+    subtitledUnicodeBuilder.unicodeStr = jsonObject.getString("unicode_str")
+    val schemaObjectBuilder = SchemaObject.newBuilder()
+    schemaObjectBuilder.setSubtitledUnicode(subtitledUnicodeBuilder)
+    return schemaObjectBuilder.build()
   }
 
   private fun parseImageWithRegions(jsonObject: JSONObject): SchemaObject {

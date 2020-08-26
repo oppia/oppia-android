@@ -19,6 +19,7 @@ import org.oppia.app.application.ApplicationComponent
 import org.oppia.app.application.ApplicationInjector
 import org.oppia.app.application.ApplicationInjectorProvider
 import org.oppia.app.application.ApplicationModule
+import org.oppia.app.application.ApplicationStartupListenerModule
 import org.oppia.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
 import org.oppia.app.model.EventLog.EventAction
 import org.oppia.app.model.EventLog.Priority
@@ -32,6 +33,7 @@ import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModu
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.domain.oppialogger.LogStorageModule
@@ -76,7 +78,7 @@ class ProfileChooserFragmentLocalTest {
 
   @Test
   fun testProfileChooser_onLaunch_logsEvent() {
-    launch<ProfileActivity>(createProfileActivityIntent()).use {
+    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       val event = fakeEventLogger.getMostRecentEvent()
 
       assertThat(event.priority).isEqualTo(Priority.ESSENTIAL)
@@ -85,8 +87,9 @@ class ProfileChooserFragmentLocalTest {
     }
   }
 
-  private fun createProfileActivityIntent(): Intent {
-    return ProfileActivity.createProfileActivity(ApplicationProvider.getApplicationContext())
+  private fun createProfileChooserActivityIntent(): Intent {
+    return ProfileChooserActivity
+      .createProfileChooserActivity(ApplicationProvider.getApplicationContext())
   }
 
   private fun setUpTestApplicationComponent() {
@@ -107,7 +110,7 @@ class ProfileChooserFragmentLocalTest {
       QuestionModule::class, TestLogReportingModule::class, TestAccessibilityModule::class,
       ImageClickInputModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class
+      ViewBindingShimModule::class, RatioInputModule::class, ApplicationStartupListenerModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent, ApplicationInjector {

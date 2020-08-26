@@ -33,9 +33,8 @@ message StringList {
 
 // Structure containing a ratio object for eg - [1,2,3] for 1:2:3.
 message RatioExpression {
-  // List of components in a ratio.
-  // It's also expected that list should have more than 1 elements with
-  // 0 and 1 elements are invalid states.
+  // List of components in a ratio. It's expected that list should have more than
+  // 1 element.
   repeated uint32 ratio_component = 1;
 }
 

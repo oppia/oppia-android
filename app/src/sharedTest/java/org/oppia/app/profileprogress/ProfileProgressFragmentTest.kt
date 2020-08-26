@@ -137,11 +137,11 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressFragment_checkProfileName_profileNameIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
-      waitForTheView(withText("Sean"))
+      waitForTheView(withText("Admin"))
       onView(
         atPositionOnView(R.id.profile_progress_list, 0, R.id.profile_name_text_view)
       ).check(
-        matches(withText("Sean"))
+        matches(withText("Admin"))
       )
     }
   }
@@ -150,11 +150,11 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragment_configurationChange_checkProfileName_profileNameIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       onView(isRoot()).perform(orientationLandscape())
-      waitForTheView(withText("Sean"))
+      waitForTheView(withText("Admin"))
       onView(
         atPositionOnView(R.id.profile_progress_list, 0, R.id.profile_name_text_view)
       ).check(
-        matches(withText("Sean"))
+        matches(withText("Admin"))
       )
     }
   }
@@ -162,7 +162,7 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressFragment_openProfilePictureEditDialog() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
-      waitForTheView(withText("Sean"))
+      waitForTheView(withText("Admin"))
       onView(
         atPositionOnView(
           R.id.profile_progress_list,
@@ -178,7 +178,7 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressFragment_openProfilePictureEditDialog_configurationChange_dialogIsStillOpen() { // ktlint-disable max-line-length
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
-      waitForTheView(withText("Sean"))
+      waitForTheView(withText("Admin"))
       onView(
         atPositionOnView(
           R.id.profile_progress_list,
@@ -202,7 +202,7 @@ class ProfileProgressFragmentTest {
     val activityResult = createGalleryPickActivityResultStub()
     intending(expectedIntent).respondWith(activityResult)
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
-      waitForTheView(withText("Sean"))
+      waitForTheView(withText("Admin"))
       onView(
         atPositionOnView(
           R.id.profile_progress_list,
@@ -491,7 +491,7 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressActivity_recyclerViewIndex0_clickViewAll_opensRecentlyPlayedActivity() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
-      waitForTheView(withText("Sean"))
+      waitForTheView(withText("Admin"))
       onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.view_all_text_view))
         .check(
           matches(withText("View All"))
