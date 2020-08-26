@@ -18,9 +18,10 @@ import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
+import org.oppia.domain.oppialogger.ApplicationStartupListener
+import org.oppia.domain.oppialogger.ApplicationStartupListenerModule
 import org.oppia.domain.oppialogger.LogStorageModule
-import org.oppia.domain.oppialogger.exceptions.OppiaExceptionHandlerModule
-import org.oppia.domain.oppialogger.exceptions.OppiaUncaughtExceptionHandler
+import org.oppia.domain.oppialogger.exceptions.UncaughtExceptionLoggerModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.util.accessibility.AccessibilityModule
@@ -51,7 +52,8 @@ import javax.inject.Singleton
     QuestionModule::class, LogReportingModule::class, AccessibilityModule::class,
     ImageClickInputModule::class, LogStorageModule::class, IntentFactoryShimModule::class,
     ViewBindingShimModule::class, PrimeTopicAssetsControllerModule::class,
-    ExpirationMetaDataRetrieverModule::class, OppiaExceptionHandlerModule::class
+    ExpirationMetaDataRetrieverModule::class, UncaughtExceptionLoggerModule::class,
+    ApplicationStartupListenerModule::class
   ]
 )
 
@@ -65,5 +67,5 @@ interface ApplicationComponent {
 
   fun getActivityComponentBuilderProvider(): Provider<ActivityComponent.Builder>
 
-  fun getOppiaExceptionHandler(): OppiaUncaughtExceptionHandler
+  fun getApplicationStartupListeners(): Set<ApplicationStartupListener>
 }

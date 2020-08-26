@@ -41,7 +41,7 @@ import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
-class OppiaUncaughtExceptionHandlerTest {
+class UncaughtExceptionLoggerStartupListenerTest {
 
   @Rule
   @JvmField
@@ -51,7 +51,7 @@ class OppiaUncaughtExceptionHandlerTest {
   lateinit var dataProviders: DataProviders
 
   @Inject
-  lateinit var oppiaUncaughtExceptionHandler: OppiaUncaughtExceptionHandler
+  lateinit var uncaughtExceptionLoggerStartupListener: UncaughtExceptionLoggerStartupListener
 
   @Inject
   lateinit var networkConnectionUtil: NetworkConnectionUtil
@@ -84,7 +84,10 @@ class OppiaUncaughtExceptionHandlerTest {
   fun testHandler_throwException_withNoNetwork_verifyLogInCache() {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
     val exceptionThrown = Exception("TEST")
-    oppiaUncaughtExceptionHandler.uncaughtException(Thread.currentThread(), exceptionThrown)
+    uncaughtExceptionLoggerStartupListener.uncaughtException(
+      Thread.currentThread(),
+      exceptionThrown
+    )
 
     val cachedExceptions = exceptionsController.getExceptionLogStore()
     dataProviders.convertToLiveData(cachedExceptions).observeForever(mockOppiaExceptionLogsObserver)
@@ -102,7 +105,10 @@ class OppiaUncaughtExceptionHandlerTest {
   @Test
   fun testHandler_throwException_withNetwork_verifyLogToRemoteService() {
     val exceptionThrown = Exception("TEST")
-    oppiaUncaughtExceptionHandler.uncaughtException(Thread.currentThread(), exceptionThrown)
+    uncaughtExceptionLoggerStartupListener.uncaughtException(
+      Thread.currentThread(),
+      exceptionThrown
+    )
 
     val exceptionCaught = fakeExceptionLogger.getMostRecentException()
     assertThat(exceptionCaught).hasMessageThat().matches("java.lang.Exception: TEST")
@@ -112,7 +118,10 @@ class OppiaUncaughtExceptionHandlerTest {
   @Test
   fun testHandler_throwException_verifyLogToDefaultHandler() {
     val exceptionThrown = Exception("TEST")
-    oppiaUncaughtExceptionHandler.uncaughtException(Thread.currentThread(), exceptionThrown)
+    uncaughtExceptionLoggerStartupListener.uncaughtException(
+      Thread.currentThread(),
+      exceptionThrown
+    )
 
     val exceptionCaught = fakeDefaultExceptionHandler.getMostRecentException()
     assertThat(exceptionCaught).hasMessageThat().matches("java.lang.Exception: TEST")
@@ -178,7 +187,9 @@ class OppiaUncaughtExceptionHandlerTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(oppiaUncaughtExceptionHandlerTest: OppiaUncaughtExceptionHandlerTest)
+    fun inject(
+      uncaughtExceptionLoggerStartupListenerTest: UncaughtExceptionLoggerStartupListenerTest
+    )
   }
 }
 
