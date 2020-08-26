@@ -33,6 +33,7 @@ import org.oppia.app.application.ApplicationComponent
 import org.oppia.app.application.ApplicationInjector
 import org.oppia.app.application.ApplicationInjectorProvider
 import org.oppia.app.application.ApplicationModule
+import org.oppia.app.application.ApplicationStartupListenerModule
 import org.oppia.app.onboarding.OnboardingActivity
 import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.shim.ViewBindingShimModule
@@ -278,7 +279,7 @@ class SplashActivityTest {
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverTestModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class
+      ViewBindingShimModule::class, RatioInputModule::class, ApplicationStartupListenerModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent, ApplicationInjector {

@@ -156,7 +156,7 @@ class HomeActivityTest {
           0,
           R.id.profile_name_textview
         )
-      ).check(matches(withText("Sean!")))
+      ).check(matches(withText("Admin!")))
     }
   }
 
@@ -227,7 +227,7 @@ class HomeActivityTest {
           0,
           R.id.profile_name_textview
         )
-      ).check(matches(withText("Sean!")))
+      ).check(matches(withText("Admin!")))
     }
   }
 
