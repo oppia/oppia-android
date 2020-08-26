@@ -41,6 +41,8 @@ Place your file here if:
  - It is either a listener, an interface, or a direct dependency of one in this list
 '''
 LISTENERS = [
+    "src/main/java/org/oppia/app/administratorcontrols/LoadAppVersionListener.kt",
+    "src/main/java/org/oppia/app/administratorcontrols/LoadProfileListListener.kt",
     "src/main/java/org/oppia/app/administratorcontrols/RouteToAppVersionListener.kt",
     "src/main/java/org/oppia/app/administratorcontrols/RouteToProfileListListener.kt",
     "src/main/java/org/oppia/app/administratorcontrols/LoadAppVersionListener.kt",
@@ -57,7 +59,7 @@ LISTENERS = [
     "src/main/java/org/oppia/app/onboarding/RouteToProfileListListener.kt",
     "src/main/java/org/oppia/app/options/RouteToAppLanguageListListener.kt",
     "src/main/java/org/oppia/app/options/RouteToAudioLanguageListListener.kt",
-    "src/main/java/org/oppia/app/options/RouteToStoryTextSizeListener.kt",
+    "src/main/java/org/oppia/app/options/RouteToReadingTextSizeListener.kt",
     "src/main/java/org/oppia/app/player/audio/LanguageInterface.kt",
     "src/main/java/org/oppia/app/player/state/answerhandling/InteractionAnswerErrorOrAvailabilityCheckReceiver.kt",
     "src/main/java/org/oppia/app/player/state/answerhandling/InteractionAnswerHandler.kt",
@@ -162,7 +164,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/app/options/OptionsAppLanguageViewModel.kt",
     "src/main/java/org/oppia/app/options/OptionsAudioLanguageViewModel.kt",
     "src/main/java/org/oppia/app/options/OptionsItemViewModel.kt",
-    "src/main/java/org/oppia/app/options/OptionsStoryTextSizeViewModel.kt",
+    "src/main/java/org/oppia/app/options/OptionsReadingTextSizeViewModel.kt",
     "src/main/java/org/oppia/app/player/audio/AudioViewModel.kt",
     "src/main/java/org/oppia/app/player/exploration/ExplorationViewModel.kt",
     "src/main/java/org/oppia/app/player/state/itemviewmodel/ContentViewModel.kt",
@@ -445,6 +447,7 @@ android_library(
         artifact("androidx.databinding:databinding-adapters"),
         artifact("androidx.databinding:databinding-common"),
         artifact("androidx.databinding:databinding-runtime"),
+        artifact("androidx.drawerlayout:drawerlayout:1.1.0"),
         artifact("androidx.lifecycle:lifecycle-livedata-core:jar:2.0.0-alpha1"),
         artifact("androidx.recyclerview:recyclerview:1.0.0"),
         artifact("androidx.viewpager:viewpager:1.0.0"),

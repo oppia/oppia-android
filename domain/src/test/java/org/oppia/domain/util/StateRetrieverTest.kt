@@ -15,6 +15,7 @@ import org.junit.runner.RunWith
 import org.oppia.app.model.AnswerGroup
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.ListOfSetsOfHtmlStrings
+import org.oppia.app.model.RatioExpression
 import org.oppia.app.model.RuleSpec
 import org.oppia.app.model.State
 import org.oppia.app.model.StringList
@@ -31,6 +32,7 @@ import javax.inject.Singleton
 
 const val DRAG_DROP_TEST_EXPLORATION_NAME = "test_exp_id_4.json"
 const val IMAGE_REGION_SELECTION_TEST_EXPLORATION_NAME = "image_click_input_exploration.json"
+const val RATIO_TEST_EXPLORATION_NAME = "ratio_input_exploration.json"
 
 /** Tests for [StateRetriever]. */
 @RunWith(AndroidJUnit4::class)
@@ -235,6 +237,110 @@ class StateRetrieverTest {
     assertThat(ruleSpecMap.inputMap["x"]).isEqualTo(imageRegionSelectionIsInRegionValue)
   }
 
+  @Test
+  fun testParseState_withRatioInputInteraction_parsesRuleEqualsRuleSpec() {
+    val state = createStateFromJson(
+      "RatioExpressionInput",
+      RATIO_TEST_EXPLORATION_NAME
+    )
+    val ruleSpecMap = state.interaction.answerGroupsList
+      .flatMap(AnswerGroup::getRuleSpecsList)
+      .associateBy(RuleSpec::getRuleType)
+    assertThat(ruleSpecMap).containsKey("Equals")
+  }
+
+  @Test
+  fun testParseState_withRatioInputSelectionInteraction_parsesRuleWithEqualsWithValueAtX() {
+    val state = createStateFromJson(
+      "RatioExpressionInput",
+      RATIO_TEST_EXPLORATION_NAME
+    )
+    val ruleSpecMap = lookUpRuleSpec(state, "Equals")
+
+    val expectedInputRatio = createRatio(listOf(4, 5))
+
+    val expectedInputInteractionObject =
+      InteractionObject.newBuilder().setRatioExpression(expectedInputRatio).build()
+
+    assertThat(ruleSpecMap.inputMap["x"]).isEqualTo(expectedInputInteractionObject)
+  }
+
+  @Test
+  fun testParseState_withRatioInputInteraction_parsesRuleIsEquivalentRuleSpec() {
+    val state = createStateFromJson(
+      "RatioExpressionInput",
+      RATIO_TEST_EXPLORATION_NAME
+    )
+    val ruleSpecMap = state.interaction.answerGroupsList
+      .flatMap(AnswerGroup::getRuleSpecsList)
+      .associateBy(RuleSpec::getRuleType)
+    assertThat(ruleSpecMap).containsKey("IsEquivalent")
+  }
+
+  @Test
+  fun testParseState_withImageRegionSelectionInteraction_parsesRuleWithIsEquivalentWithValueAtX() {
+    val state = createStateFromJson(
+      "RatioExpressionInput",
+      RATIO_TEST_EXPLORATION_NAME
+    )
+    val ruleSpecMap = lookUpRuleSpec(state, "IsEquivalent")
+
+    val expectedInputRatio = createRatio(listOf(8, 10))
+
+    val expectedInputInteractionObject =
+      InteractionObject.newBuilder().setRatioExpression(expectedInputRatio).build()
+
+    assertThat(ruleSpecMap.inputMap["x"]).isEqualTo(expectedInputInteractionObject)
+  }
+
+  @Test
+  fun testParseState_withRatioInputInteraction_parsesRuleHasNumberOfTermsEqualToRuleSpec() {
+    val state = createStateFromJson(
+      "RatioExpressionInput",
+      RATIO_TEST_EXPLORATION_NAME
+    )
+    val ruleSpecMap = state.interaction.answerGroupsList
+      .flatMap(AnswerGroup::getRuleSpecsList)
+      .associateBy(RuleSpec::getRuleType)
+    assertThat(ruleSpecMap).containsKey("HasNumberOfTermsEqualTo")
+  }
+
+  @Test
+  fun testParseState_withRatioInputInteraction_parsesCustomizationArgPlaceholderText() {
+    val state = createStateFromJson(
+      "RatioExpressionInput",
+      RATIO_TEST_EXPLORATION_NAME
+    )
+    val customizationArgName = state.interaction.getCustomizationArgsOrThrow("placeholder")
+    assertThat(customizationArgName.subtitledUnicode.unicodeStr).isEqualTo("Enter in format of x:y")
+  }
+
+  @Test
+  fun testParseState_withRatioInputInteraction_parsesCustomizationArgNumberOfTerms() {
+    val state = createStateFromJson(
+      "RatioExpressionInput",
+      RATIO_TEST_EXPLORATION_NAME
+    )
+    val customizationArgName = state.interaction.getCustomizationArgsOrThrow("numberOfTerms")
+    assertThat(customizationArgName.signedInt).isEqualTo(0)
+  }
+
+  @Test
+  fun testParseState_withImageRegionSelectionInteraction_parsesRuleWithHasNumberOfTermsEqualToWithValueAtY() { // ktlint-disable max-line-length
+    val state = createStateFromJson(
+      "RatioExpressionInput",
+      RATIO_TEST_EXPLORATION_NAME
+    )
+    val ruleSpecMap = lookUpRuleSpec(state, "HasNumberOfTermsEqualTo")
+
+    val expectedNumberOfTerms = 3
+
+    val expectedInputInteractionObject =
+      InteractionObject.newBuilder().setNonNegativeInt(expectedNumberOfTerms).build()
+
+    assertThat(ruleSpecMap.inputMap["y"]).isEqualTo(expectedInputInteractionObject)
+  }
+
   private fun lookUpRuleSpec(state: State, ruleSpecName: String): RuleSpec {
     return state.interaction.answerGroupsList
       .flatMap(AnswerGroup::getRuleSpecsList)
@@ -243,6 +349,10 @@ class StateRetrieverTest {
 
   private fun createHtmlStringList(vararg items: String): StringList {
     return StringList.newBuilder().addAllHtml(items.toList()).build()
+  }
+
+  private fun createRatio(items: List<Int>): RatioExpression {
+    return RatioExpression.newBuilder().addAllRatioComponent(items).build()
   }
 
   private fun createStateFromJson(stateName: String, explorationName: String): State {

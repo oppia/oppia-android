@@ -7,9 +7,9 @@ import org.oppia.app.testing.ProfileChooserFragmentTestActivity
 import org.oppia.domain.profile.ProfileManagementController
 import javax.inject.Inject
 
-/** The presenter for [ProfileActivity]. */
+/** The presenter for [ProfileChooserActivity]. */
 @ActivityScope
-class ProfileActivityPresenter @Inject constructor(
+class ProfileChooserActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController
 ) {
@@ -24,7 +24,7 @@ class ProfileActivityPresenter @Inject constructor(
       colorRgb = -10710042,
       isAdmin = true
     )
-    activity.setContentView(R.layout.profile_activity)
+    activity.setContentView(R.layout.profile_chooser_activity)
     if (getProfileChooserFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.profile_chooser_fragment_placeholder,
