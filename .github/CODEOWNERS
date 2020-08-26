@@ -1,0 +1,23 @@
+# Per-directory ownership and automatic assignment for pull requests.
+
+# IMPORTANT NOTES FOR CODEOWNERS:
+#
+# - If you will be unavailable for more than 24 hours, please replace your
+#   ownership with a delegate, file an issue, and add a todo above the owner
+#   line like so:
+#
+#     TODO(#ISSUE_NUMBER): Revert ownership to @USERNAME after YYYY-MM-DD.
+#
+#   (See oppia/#10250 for an example.) Please make sure to restore ownership after
+#   the above date passes.
+
+# Blanket codeowners
+# This is for the case when new files are created in any directories that aren't
+# covered as a whole, since in these cases, codeowners are not recognized for
+# those files when reviewing, even if the PR does add it. Unless new
+# files/folders are created in the following directories, these codeowners would
+# be superseded by the relevant codeowners mentioned elsewhere in this file.
+# (Reference: https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners)
+
+/WORKSPACE @BenHenning
+*.bazel @BenHenning
