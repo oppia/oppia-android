@@ -445,6 +445,7 @@ android_library(
         artifact("androidx.databinding:databinding-adapters"),
         artifact("androidx.databinding:databinding-common"),
         artifact("androidx.databinding:databinding-runtime"),
+        artifact("androidx.drawerlayout:drawerlayout:1.1.0"),
         artifact("androidx.lifecycle:lifecycle-livedata-core:jar:2.0.0-alpha1"),
         artifact("androidx.recyclerview:recyclerview:1.0.0"),
         artifact("androidx.viewpager:viewpager:1.0.0"),
