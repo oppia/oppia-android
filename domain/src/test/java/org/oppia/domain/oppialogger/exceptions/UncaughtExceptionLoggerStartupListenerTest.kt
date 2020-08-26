@@ -71,13 +71,10 @@ class UncaughtExceptionLoggerStartupListenerTest {
   @Captor
   lateinit var oppiaExceptionLogsResultCaptor: ArgumentCaptor<AsyncResult<OppiaExceptionLogs>>
 
-  private val fakeDefaultExceptionHandler = FakeDefaultExceptionHandler()
-
   @Before
   fun setUp() {
     networkConnectionUtil = NetworkConnectionUtil(ApplicationProvider.getApplicationContext())
     setUpTestApplicationComponent()
-    Thread.setDefaultUncaughtExceptionHandler(fakeDefaultExceptionHandler)
   }
 
   @Test
@@ -115,22 +112,8 @@ class UncaughtExceptionLoggerStartupListenerTest {
     assertThat(exceptionCaught.cause).isEqualTo(Exception(exceptionThrown).cause)
   }
 
-  @Test
-  fun testHandler_throwException_verifyLogToDefaultHandler() {
-    val exceptionThrown = Exception("TEST")
-    uncaughtExceptionLoggerStartupListener.uncaughtException(
-      Thread.currentThread(),
-      exceptionThrown
-    )
-
-    val exceptionCaught = fakeDefaultExceptionHandler.getMostRecentException()
-    assertThat(exceptionCaught).hasMessageThat().matches("java.lang.Exception: TEST")
-    assertThat(exceptionCaught.cause).isEqualTo(Exception(exceptionThrown).cause)
-    assertThat(Thread.getDefaultUncaughtExceptionHandler()).isEqualTo(fakeDefaultExceptionHandler)
-  }
-
   private fun setUpTestApplicationComponent() {
-    DaggerOppiaUncaughtExceptionHandlerTest_TestApplicationComponent.builder()
+    DaggerUncaughtExceptionLoggerStartupListenerTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -191,15 +174,4 @@ class UncaughtExceptionLoggerStartupListenerTest {
       uncaughtExceptionLoggerStartupListenerTest: UncaughtExceptionLoggerStartupListenerTest
     )
   }
-}
-
-class FakeDefaultExceptionHandler : Thread.UncaughtExceptionHandler {
-
-  private val exceptionList = mutableListOf<Exception>()
-
-  override fun uncaughtException(p0: Thread?, p1: Throwable?) {
-    exceptionList.add(Exception(p1))
-  }
-
-  fun getMostRecentException() = exceptionList.last()
 }

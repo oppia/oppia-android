@@ -12,7 +12,7 @@ class UncaughtExceptionLoggerStartupListener @Inject constructor(
   private val consoleLogger: ConsoleLogger
 ) : Thread.UncaughtExceptionHandler, ApplicationStartupListener {
 
-  private lateinit var existingUncaughtExceptionHandler: Thread.UncaughtExceptionHandler
+  private var existingUncaughtExceptionHandler: Thread.UncaughtExceptionHandler? = null
 
   /** Sets up the uncaught exception handler to [UncaughtExceptionLoggerStartupListener]. */
   override fun onCreate() {
@@ -30,7 +30,7 @@ class UncaughtExceptionLoggerStartupListener @Inject constructor(
     } catch (e: Exception) {
       consoleLogger.e("OPPIA_EXCEPTION_HANDLER", "Problem in logging exception", e)
     } finally {
-      existingUncaughtExceptionHandler.uncaughtException(thread, throwable)
+      existingUncaughtExceptionHandler?.uncaughtException(thread, throwable)
     }
   }
 }
