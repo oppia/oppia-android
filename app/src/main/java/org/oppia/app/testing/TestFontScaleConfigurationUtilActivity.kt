@@ -20,7 +20,8 @@ class TestFontScaleConfigurationUtilActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-    private const val FONT_SCALE_EXTRA_KEY = "FONT_SCALE_EXTRA_KEY"
+    private const val FONT_SCALE_EXTRA_KEY = 
+      "TestFontScaleConfigurationUtilActivity.font_scale"
 
     /** Returns a new [TestFontScaleConfigurationUtilActivity] for context and reading text size. */
     fun createFontScaleTestActivity(context: Context, readingTextSize: String): Intent {

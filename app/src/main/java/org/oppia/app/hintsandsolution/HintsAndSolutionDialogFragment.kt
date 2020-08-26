@@ -10,12 +10,18 @@ import org.oppia.app.fragment.InjectableDialogFragment
 import org.oppia.app.model.State
 import javax.inject.Inject
 
-private const val CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY = "CURRENT_EXPANDED_LIST_INDEX"
-private const val STATE_SAVED_KEY = "STATE_SAVED_KEY"
-private const val HINT_INDEX_SAVED_KEY = "HINT_INDEX_SAVED_KEY"
-private const val IS_HINT_REVEALED_SAVED_KEY = "IS_HINT_REVEALED_SAVED_KEY"
-private const val SOLUTION_INDEX_SAVED_KEY = "SOLUTION_INDEX_SAVED_KEY"
-private const val IS_SOLUTION_REVEALED_SAVED_KEY = "IS_SOLUTION_REVEALED_SAVED_KEY"
+private const val CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY =
+  "HintsAndSolutionDialogFragment.current_expanded_list_index"
+private const val STATE_SAVED_KEY =
+  "HintsAndSolutionDialogFragment.state"
+private const val HINT_INDEX_SAVED_KEY =
+  "HintsAndSolutionDialogFragment.hint_index"
+private const val IS_HINT_REVEALED_SAVED_KEY =
+  "HintsAndSolutionDialogFragment.is_hint_revealed"
+private const val SOLUTION_INDEX_SAVED_KEY =
+  "HintsAndSolutionDialogFragment.solution_index"
+private const val IS_SOLUTION_REVEALED_SAVED_KEY =
+  "HintsAndSolutionDialogFragment.is_solution_revealed"
 
 /* Fragment that displays a fullscreen dialog for Hints and Solutions. */
 class HintsAndSolutionDialogFragment :

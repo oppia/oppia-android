@@ -8,9 +8,9 @@ import org.oppia.app.model.ProfileId
 import javax.inject.Inject
 
 const val TOPIC_FRAGMENT_TAG = "TopicFragment"
-const val PROFILE_ID_ARGUMENT_KEY = "profile_id"
-const val TOPIC_ID_ARGUMENT_KEY = "topic_id"
-const val STORY_ID_ARGUMENT_KEY = "story_id"
+const val PROFILE_ID_ARGUMENT_KEY = "TopicActivityPresenter.profile_id"
+const val TOPIC_ID_ARGUMENT_KEY = "TopicActivityPresenter.topic_id"
+const val STORY_ID_ARGUMENT_KEY = "TopicActivityPresenter.story_id"
 
 /** The presenter for [TopicActivity]. */
 @ActivityScope
