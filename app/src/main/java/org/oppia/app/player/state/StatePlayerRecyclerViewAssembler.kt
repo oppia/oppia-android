@@ -62,7 +62,7 @@ import org.oppia.app.player.state.itemviewmodel.NextButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.app.player.state.itemviewmodel.PreviousButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.PreviousResponsesHeaderViewModel
-import org.oppia.app.player.state.itemviewmodel.RatioExpressionInteractionInputViewModel
+import org.oppia.app.player.state.itemviewmodel.RatioExpressionInputInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.ReplayButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.ReturnToTopicButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionViewModel
@@ -836,7 +836,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         viewType = StateItemViewModel.ViewType.RATIO_EXPRESSION_INPUT_INTERACTION,
         inflateDataBinding = RatioInputInteractionItemBinding::inflate,
         setViewModel = RatioInputInteractionItemBinding::setViewModel,
-        transformViewModel = { it as RatioExpressionInteractionInputViewModel }
+        transformViewModel = { it as RatioExpressionInputInteractionViewModel }
       ).registerViewDataBinder(
         viewType = StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON,
         inflateDataBinding = SubmitButtonItemBinding::inflate,

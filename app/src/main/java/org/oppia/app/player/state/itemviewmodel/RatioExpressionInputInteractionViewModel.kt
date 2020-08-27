@@ -18,7 +18,7 @@ import org.oppia.domain.util.toAccessibleAnswerString
 import org.oppia.domain.util.toAnswerString
 
 /** [StateItemViewModel] for the ratio express input interaction. */
-class RatioExpressionInteractionInputViewModel(
+class RatioExpressionInputInteractionViewModel(
   interaction: Interaction,
   private val context: Context,
   val hasConversationView: Boolean,
