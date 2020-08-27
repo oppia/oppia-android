@@ -14,6 +14,7 @@ import androidx.databinding.ObservableList
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.SavedStateHandle
 import kotlinx.coroutines.CoroutineDispatcher
 import org.oppia.app.databinding.ContentItemBinding
 import org.oppia.app.databinding.ContinueInteractionItemBinding
@@ -263,6 +264,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     gcsEntityId: String
   ) {
     val interactionViewModelFactory = interactionViewModelFactoryMap.getValue(interaction.id)
+    val state = SavedStateHandle()
     pendingItemList += interactionViewModelFactory(
       gcsEntityId,
       hasConversationView,
@@ -270,7 +272,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
       fragment as InteractionAnswerReceiver,
       fragment as InteractionAnswerErrorOrAvailabilityCheckReceiver,
       hasPreviousButton,
-      isSplitView.get()!!
+      isSplitView.get()!!,
+      state
     )
   }
 

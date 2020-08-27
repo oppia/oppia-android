@@ -1,5 +1,6 @@
 package org.oppia.app.player.state.itemviewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import org.oppia.app.model.Interaction
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
@@ -16,5 +17,6 @@ typealias InteractionViewModelFactory = (
   interactionAnswerReceiver: InteractionAnswerReceiver,
   interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
   hasPreviousButton: Boolean,
-  isSplitView: Boolean
+  isSplitView: Boolean,
+  savedState: SavedStateHandle
 ) -> StateItemViewModel

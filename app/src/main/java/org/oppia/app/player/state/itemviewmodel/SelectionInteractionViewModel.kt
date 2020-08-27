@@ -3,6 +3,7 @@ package org.oppia.app.player.state.itemviewmodel
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
+import androidx.lifecycle.SavedStateHandle
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.StringList
@@ -25,7 +26,8 @@ class SelectionInteractionViewModel(
   interaction: Interaction,
   private val interactionAnswerReceiver: InteractionAnswerReceiver,
   private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
-  val isSplitView: Boolean
+  val isSplitView: Boolean,
+  val savedState: SavedStateHandle
 ) : StateItemViewModel(ViewType.SELECTION_INTERACTION), InteractionAnswerHandler {
   private val interactionId: String = interaction.id
 
@@ -36,6 +38,7 @@ class SelectionInteractionViewModel(
       ?.map { schemaObject -> schemaObject.subtitledHtml.html }
       ?: listOf()
   }
+//  private val savedStateViewModel: SavedStateViewModel
   private val minAllowableSelectionCount: Int by lazy {
     interaction.customizationArgsMap["minAllowableSelectionCount"]?.signedInt ?: 1
   }
@@ -52,6 +55,7 @@ class SelectionInteractionViewModel(
   private val isAnswerAvailable = ObservableField<Boolean>(false)
 
   init {
+    getSelectedOptions()
     val callback: Observable.OnPropertyChangedCallback =
       object : Observable.OnPropertyChangedCallback() {
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
@@ -112,6 +116,7 @@ class SelectionInteractionViewModel(
         if (selectedItems.isNotEmpty() != wasSelectedItemListEmpty) {
           isAnswerAvailable.set(selectedItems.isNotEmpty())
         }
+        saveSelectedOptions(selectedItems)
         return false
       } else if (selectedItems.size < maxAllowableSelectionCount) {
         // TODO(#32): Add warning to user when they exceed the number of allowable selections or are under the minimum
@@ -121,6 +126,7 @@ class SelectionInteractionViewModel(
         if (selectedItems.isNotEmpty() != wasSelectedItemListEmpty) {
           isAnswerAvailable.set(selectedItems.isNotEmpty())
         }
+        saveSelectedOptions(selectedItems)
         return true
       }
     } else {
@@ -136,6 +142,7 @@ class SelectionInteractionViewModel(
       if (maxAllowableSelectionCount == 1) {
         interactionAnswerReceiver.onAnswerReadyForSubmission(getPendingAnswer())
       }
+      saveSelectedOptions(selectedItems)
       return true
     }
     // Do not change the current status if it isn't valid to do so.
@@ -144,6 +151,14 @@ class SelectionInteractionViewModel(
 
   private fun areCheckboxesBound(): Boolean {
     return interactionId == "ItemSelectionInput" && maxAllowableSelectionCount > 1
+  }
+
+  fun saveSelectedOptions(selectedItems: List<Int>) {
+    savedState.set("SELECTED_ITEMS", selectedItems)
+  }
+
+  fun getSelectedOptions(): List<String>? {
+    return savedState.get<List<String>>("SELECTED_ITEMS")
   }
 
   companion object {
