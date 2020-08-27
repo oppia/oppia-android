@@ -40,9 +40,9 @@ class RevisionCardActivity : InjectableAppCompatActivity(), ReturnToTopicClickLi
   companion object {
     internal const val INTERNAL_PROFILE_ID_EXTRA_KEY =
       "RevisionCardActivity.internal_profile_id"
-    internal const val TOPIC_ID_EXTRA_KEY = 
+    internal const val TOPIC_ID_EXTRA_KEY =
       "RevisionCardActivity.topic_id"
-    internal const val SUBTOPIC_ID_EXTRA_KEY = 
+    internal const val SUBTOPIC_ID_EXTRA_KEY =
       "RevisionCardActivity.subtopic_id"
 
     /** Returns a new [Intent] to route to [RevisionCardActivity]. */

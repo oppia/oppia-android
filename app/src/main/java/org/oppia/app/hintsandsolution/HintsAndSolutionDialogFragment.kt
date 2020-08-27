@@ -44,8 +44,10 @@ class HintsAndSolutionDialogFragment :
   companion object {
 
     internal const val ID_ARGUMENT_KEY = "ID"
-    internal const val NEW_AVAILABLE_HINT_INDEX_ARGUMENT_KEY = "NEW_AVAILABLE_HINT_INDEX"
-    internal const val ALL_HINTS_EXHAUSTED_ARGUMENT_KEY = "ALL_HINTS_EXHAUSTED"
+    internal const val NEW_AVAILABLE_HINT_INDEX_ARGUMENT_KEY =
+      "HintsAndSolutionDialogFragment.new_available_hint_index"
+    internal const val ALL_HINTS_EXHAUSTED_ARGUMENT_KEY =
+      "HintsAndSolutionDialogFragment.all_hints_exhausted"
 
     /**
      * Creates a new instance of a DialogFragment to display hints and solution
