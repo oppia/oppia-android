@@ -22,6 +22,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -66,6 +67,7 @@ import org.oppia.domain.topic.TEST_EXPLORATION_ID_0
 import org.oppia.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.domain.topic.TEST_EXPLORATION_ID_4
 import org.oppia.domain.topic.TEST_EXPLORATION_ID_5
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_6
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.testing.TestDispatcherModule
@@ -800,6 +802,20 @@ class StateFragmentTest {
           withText(htmlResult)
         )
       )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadRatioInput_checkRatioAnswer() {
+    launchForExploration(TEST_EXPLORATION_ID_6).use {
+      startPlayingExploration()
+      onView(withId(R.id.ratio_input_interaction_view)).perform(
+        typeText("4:5"),
+        closeSoftKeyboard()
+      )
+      onView(withId(R.id.submit_answer_button)).perform(click())
+      onView(withId(R.id.submitted_answer_text_view))
+        .check(matches(ViewMatchers.withContentDescription("4 to 5")))
     }
   }
 
