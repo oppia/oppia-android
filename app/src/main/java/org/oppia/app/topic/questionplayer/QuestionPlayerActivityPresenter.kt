@@ -12,7 +12,7 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
-const val TAG_QUESTION_PLAYER_FRAGMENT = "TAG_QUESTION_PLAYER_FRAGMENT"
+const val TAG_QUESTION_PLAYER_FRAGMENT = "QuestionPlayerFragment.tag"
 private const val TAG_HINTS_AND_SOLUTION_QUESTION_MANAGER = "HINTS_AND_SOLUTION_QUESTION_MANAGER"
 
 /** The presenter for [QuestionPlayerActivity]. */

@@ -18,7 +18,7 @@ private const val INTERNAL_PROFILE_ID = 0
 private const val TOPIC_ID = TEST_TOPIC_ID_0
 private const val STORY_ID = TEST_STORY_ID_0
 private const val EXPLORATION_ID = TEST_EXPLORATION_ID_2
-private const val TAG_EXPLORATION_TEST_ACTIVITY = "ExplorationTestActivity"
+private const val TAG_EXPLORATION_TEST_ACTIVITY = "ExplorationTestActivity.tag"
 
 /** The presenter for [ExplorationTestActivityPresenter]. */
 @ActivityScope

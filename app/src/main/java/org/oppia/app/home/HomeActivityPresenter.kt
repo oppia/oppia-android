@@ -9,7 +9,7 @@ import org.oppia.app.activity.ActivityScope
 import org.oppia.app.drawer.NavigationDrawerFragment
 import javax.inject.Inject
 
-const val TAG_HOME_FRAGMENT = "HOME_FRAGMENT"
+const val TAG_HOME_FRAGMENT = "HomeFragment.tag"
 
 /** The presenter for [HomeActivity]. */
 @ActivityScope

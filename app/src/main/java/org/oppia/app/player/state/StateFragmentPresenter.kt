@@ -45,7 +45,7 @@ const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY = "StateFragmentPresenter.profi
 const val STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY = "StateFragmentPresenter.topic_id"
 const val STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY = "StateFragmentPresenter.story_id"
 const val STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY = "StateFragmentPresenter.exploration_id"
-private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
+private const val TAG_AUDIO_FRAGMENT = "AudioFragment.tag"
 
 /** The presenter for [StateFragment]. */
 @FragmentScope

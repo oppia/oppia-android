@@ -15,7 +15,7 @@ private const val RECENTLY_PLAYED_FRAGMENT_INTERNAL_PROFILE_ID_KEY =
 /** Fragment that contains all recently played stories. */
 class RecentlyPlayedFragment : InjectableFragment(), OngoingStoryClickListener {
   companion object {
-    const val TAG_RECENTLY_PLAYED_FRAGMENT = "TAG_RECENTLY_PLAYED_FRAGMENT"
+    const val TAG_RECENTLY_PLAYED_FRAGMENT = "RecentlyPlayedFragment.tag"
 
     /** Returns a new [RecentlyPlayedFragment] to display recently played stories. */
     fun newInstance(internalProfileId: Int): RecentlyPlayedFragment {
