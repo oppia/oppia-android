@@ -36,25 +36,19 @@ class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
     itemList.clear()
     for (index in hintList.indices) {
       if (itemList.isEmpty()) {
-        val hintsAndSolutionViewModel = HintsViewModel()
-        hintsAndSolutionViewModel.title.set(hintList[index].hintContent.contentId)
-        hintsAndSolutionViewModel.hintsAndSolutionSummary.set(hintList[index].hintContent.html)
-        hintsAndSolutionViewModel.isHintRevealed.set(hintList[index].hintIsRevealed)
-        itemList.add(hintsAndSolutionViewModel as HintsAndSolutionItemViewModel)
-      } else if (index == itemList.size) {
-        val isLastHintRevealed = (itemList[index - 1] as HintsViewModel).isHintRevealed.get()!!
-        if (isLastHintRevealed) {
-          val hintsAndSolutionViewModel = HintsViewModel()
-          hintsAndSolutionViewModel.title.set(hintList[index].hintContent.contentId)
-          hintsAndSolutionViewModel.hintsAndSolutionSummary.set(hintList[index].hintContent.html)
-          hintsAndSolutionViewModel.isHintRevealed.set(hintList[index].hintIsRevealed)
-          itemList.add(hintsAndSolutionViewModel as HintsAndSolutionItemViewModel)
+        addHintToList(hintList[index])
+      } else {
+        val isLastHintRevealed = (itemList[itemList.size - 2] as HintsViewModel).isHintRevealed.get()!!
+        if (isLastHintRevealed && index <= newAvailableHintIndex.get()!!/2 ) {
+          addHintToList(hintList[index])
+        }
+        else {
+          break
         }
       }
     }
-
-    val isLastHintRevealed = (itemList[itemList.size - 1] as HintsViewModel).isHintRevealed.get()!!
-    if (solution.hasExplanation() && hintList.size == itemList.size && isLastHintRevealed) {
+    val isLastHintRevealed = (itemList[itemList.size - 2] as HintsViewModel).isHintRevealed.get()!!
+    if (solution.hasExplanation() && hintList.size * 2 == itemList.size && isLastHintRevealed && allHintsExhausted.get()!!) {
       val solutionViewModel = SolutionViewModel()
       solutionViewModel.title.set(solution.explanation.contentId)
       solutionViewModel.correctAnswer.set(solution.correctAnswer.correctAnswer)
@@ -65,7 +59,21 @@ class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
       solutionViewModel.solutionSummary.set(solution.explanation.html)
       solutionViewModel.isSolutionRevealed.set(solution.solutionIsRevealed)
       itemList.add(solutionViewModel)
+      addDividerItem()
     }
     return itemList
+  }
+
+  private fun addHintToList(hint: Hint) {
+    val hintsAndSolutionViewModel = HintsViewModel()
+    hintsAndSolutionViewModel.title.set(hint.hintContent.contentId)
+    hintsAndSolutionViewModel.hintsAndSolutionSummary.set(hint.hintContent.html)
+    hintsAndSolutionViewModel.isHintRevealed.set(hint.hintIsRevealed)
+    itemList.add(hintsAndSolutionViewModel as HintsAndSolutionItemViewModel)
+    addDividerItem()
+  }
+
+  private fun addDividerItem() {
+    itemList.add(HintsDividerViewModel())
   }
 }

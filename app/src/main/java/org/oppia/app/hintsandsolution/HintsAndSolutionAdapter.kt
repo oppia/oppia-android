@@ -1,5 +1,6 @@
 package org.oppia.app.hintsandsolution
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -140,7 +141,7 @@ class HintsAndSolutionAdapter(
         binding.revealHintButton.setOnClickListener {
           hintsViewModel.isHintRevealed.set(true)
           expandedHintListIndexListener.onRevealHintClicked(position, /* isHintRevealed= */ true)
-          (fragment.requireActivity() as? RevealHintListener)?.revealHint(true, position / 2)
+          (fragment.requireActivity() as? RevealHintListener)?.revealHint(true, ((position / 2)))
           val previousIndex: Int? = currentExpandedHintListIndex
           currentExpandedHintListIndex =
             if (currentExpandedHintListIndex != null && currentExpandedHintListIndex == position) {
@@ -216,8 +217,10 @@ class HintsAndSolutionAdapter(
       )
 
       if (solutionViewModel.solutionCanBeRevealed.get()!!) {
+        Log.d("TAG","revealSolutionButton: solutionCanBeRevealed: true")
         binding.root.visibility = View.VISIBLE
         binding.revealSolutionButton.setOnClickListener {
+          Log.d("TAG","revealSolutionButton: onClick")
           showRevealSolutionDialogFragment()
         }
       }
@@ -289,10 +292,10 @@ class HintsAndSolutionAdapter(
   }
 
   fun setNewHintIsAvailable(hintIndex: Int) {
-    if (itemList[hintIndex * 2] is HintsViewModel) {
-      val hintsViewModel = itemList[hintIndex * 2] as HintsViewModel
+    if (itemList[hintIndex] is HintsViewModel) {
+      val hintsViewModel = itemList[hintIndex] as HintsViewModel
       hintsViewModel.hintCanBeRevealed.set(true)
-      notifyItemChanged(hintIndex * 2)
+      notifyItemChanged(hintIndex)
     }
   }
 

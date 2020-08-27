@@ -1,5 +1,6 @@
 package org.oppia.app.hintsandsolution
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -75,7 +76,8 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     }
 
     this.state = state
-    viewModel.newAvailableHintIndex.set(newAvailableHintIndex)
+    Log.d("TAG","presenter: newAvailableHintIndex: $newAvailableHintIndex")
+    viewModel.newAvailableHintIndex.set((newAvailableHintIndex * 2))
     viewModel.allHintsExhausted.set(allHintsExhausted)
     viewModel.explorationId.set(id)
 
@@ -93,7 +95,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       hintsAndSolutionAdapter =
         HintsAndSolutionAdapter(
           fragment,
-          getHintListWithDividers(viewModel.processHintList()),
+          viewModel.processHintList(),
           expandedHintListIndexListener,
           currentExpandedHintListIndex,
           viewModel.explorationId.get(),
@@ -110,6 +112,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
         adapter = hintsAndSolutionAdapter
       }
       if (viewModel.newAvailableHintIndex.get() != -1) {
+        Log.d("TAG", "loadHintsAndSolution: " + viewModel.newAvailableHintIndex.get())
         handleNewAvailableHint(viewModel.newAvailableHintIndex.get())
       }
       if (viewModel.allHintsExhausted.get()!!) {
@@ -117,16 +120,6 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       }
     }
   }
-
-  private fun getHintListWithDividers(hintList: List<HintsAndSolutionItemViewModel>):
-    List<HintsAndSolutionItemViewModel> {
-      val newHintList = mutableListOf<HintsAndSolutionItemViewModel>()
-      hintList.forEach {
-        newHintList.add(it)
-        newHintList.add(HintsDividerViewModel())
-      }
-      return newHintList
-    }
 
   private fun handleAllHintsExhausted(allHintsExhausted: Boolean) {
     hintsAndSolutionAdapter.setSolutionCanBeRevealed(allHintsExhausted)
