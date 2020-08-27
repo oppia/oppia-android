@@ -21,8 +21,8 @@ class StringToRatioParser {
    * using [getRealTimeAnswerError], instead.
    */
   fun getSubmitTimeError(text: String, numberOfTerms: Int): RatioParsingError {
-    val ratio = parseRatio(text)
-    return if (ratio!!.serializedSize < numberOfTerms) {
+    val ratio = parseRatioOrThrow(text)
+    return if (ratio.ratioComponentCount < numberOfTerms) {
       RatioParsingError.INVALID_FORMAT
     } else
       RatioParsingError.VALID
@@ -39,23 +39,25 @@ class StringToRatioParser {
   fun getRealTimeAnswerError(text: String): RatioParsingError {
     return when {
       !text.matches(invalidCharsRegex) -> RatioParsingError.INVALID_CHARS
-      text.contains("::") -> RatioParsingError.INVALID_COLORS
+      text.contains("::") -> RatioParsingError.INVALID_COLONS
       !text.matches(invalidRatioRegex) -> RatioParsingError.INVALID_FORMAT
       else -> RatioParsingError.VALID
     }
   }
 
   /** Returns a [RatioExpression] parse from the specified raw text string. */
-  fun parseRatio(text: String): RatioExpression? {
-    val components: List<Int> = text.split(':').map { it.toInt() }
-    return RatioExpression.newBuilder()
-      .addAllRatioComponent(components)
-      .build()
+  fun parseRatioOrNull(text: String): RatioExpression? {
+    val normalizedText = text.removeWhitespace()
+    val rawComponents = normalizedText.split(':')
+    val components = rawComponents.mapNotNull { it.toIntOrNull() }
+    return if (rawComponents.size == components.size) {
+      RatioExpression.newBuilder().addAllRatioComponent(components).build()
+    } else null // Something is incorrect in the original formatting.
   }
 
   /** Returns a [RatioExpression] parse from the specified raw text string. */
-  fun parseRatioFromString(text: String): RatioExpression {
-    return parseRatio(text)
+  fun parseRatioOrThrow(text: String): RatioExpression {
+    return parseRatioOrNull(text)
       ?: throw IllegalArgumentException("Incorrectly formatted ratio: $text")
   }
 
@@ -64,11 +66,15 @@ class StringToRatioParser {
     VALID(error = null),
     INVALID_CHARS(error = R.string.ratio_error_invalid_chars),
     INVALID_FORMAT(error = R.string.ratio_error_invalid_format),
-    INVALID_COLORS(error = R.string.ratio_error_invalid_colons);
+    INVALID_COLONS(error = R.string.ratio_error_invalid_colons);
 
     /** Returns the string corresponding to this error's string resources, or null if there is none. */
     fun getErrorMessageFromStringRes(context: Context): String? {
       return error?.let(context::getString)
     }
   }
+}
+
+private fun String.removeWhitespace(): String {
+  return this.replace(" ","")
 }
