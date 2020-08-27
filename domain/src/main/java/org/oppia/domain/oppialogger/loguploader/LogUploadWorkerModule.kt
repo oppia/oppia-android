@@ -14,14 +14,15 @@ import kotlin.reflect.KClass
 @MapKey
 annotation class WorkerKey(val value: KClass<out Worker>)
 
+/** Provides [LogUploadWorker] related dependencies. */
 @Module
 interface LogUploadWorkerModule {
 
   @Binds
-  @WorkerKey(OppiaLogUploadWorker::class)
+  @WorkerKey(LogUploadWorker::class)
   @IntoMap
   fun bindLogUploadWorkerFactory(
-    worker: OppiaLogUploadWorker.FactoryLogUpload
+    worker: LogUploadWorker.FactoryLogUpload
   ): LogUploadChildWorkerFactory
 
   @Binds

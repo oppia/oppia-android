@@ -29,9 +29,9 @@ import org.oppia.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.domain.oppialogger.analytics.TEST_TIMESTAMP
 import org.oppia.domain.oppialogger.analytics.TEST_TOPIC_ID
 import org.oppia.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.domain.oppialogger.loguploader.LogUploadWorker
 import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerFactory
 import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
-import org.oppia.domain.oppialogger.loguploader.OppiaLogUploadWorker
 import org.oppia.testing.FakeEventLogger
 import org.oppia.testing.FakeExceptionLogger
 import org.oppia.testing.TestDispatcherModule
@@ -115,11 +115,11 @@ class LogUploadWorkerTest {
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
     val inputData = Data.Builder().putString(
-      OppiaLogUploadWorker.WORKER_CASE_KEY,
-      OppiaLogUploadWorker.WorkerCase.EVENT_WORKER.toString()
+      LogUploadWorker.WORKER_CASE_KEY,
+      LogUploadWorker.WorkerCase.EVENT_WORKER.toString()
     ).build()
 
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<OppiaLogUploadWorker>()
+    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
       .setInputData(inputData)
       .build()
 
@@ -140,11 +140,11 @@ class LogUploadWorkerTest {
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
     val inputData = Data.Builder().putString(
-      OppiaLogUploadWorker.WORKER_CASE_KEY,
-      OppiaLogUploadWorker.WorkerCase.EXCEPTION_WORKER.toString()
+      LogUploadWorker.WORKER_CASE_KEY,
+      LogUploadWorker.WorkerCase.EXCEPTION_WORKER.toString()
     ).build()
 
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<OppiaLogUploadWorker>()
+    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
       .setInputData(inputData)
       .build()
 

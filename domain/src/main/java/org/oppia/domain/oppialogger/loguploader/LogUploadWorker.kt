@@ -15,8 +15,9 @@ import javax.inject.Singleton
 
 const val LOG_UPLOAD_WORKER = "log_upload_worker"
 
+/** [Worker] class that extracts log reports from the cache store and logs them to the remote service. */
 @Singleton
-class OppiaLogUploadWorker @Inject constructor(
+class LogUploadWorker @Inject constructor(
   context: Context,
   params: WorkerParameters,
   private val analyticsController: AnalyticsController,
@@ -48,6 +49,7 @@ class OppiaLogUploadWorker @Inject constructor(
     }
   }
 
+  /** Extracts exception logs from the cache store and logs them to the remote service. */
   private fun exceptionWork(): Result {
     return try {
       val exceptionStore =
@@ -66,6 +68,7 @@ class OppiaLogUploadWorker @Inject constructor(
     }
   }
 
+  /** Extracts event logs from the cache store and logs them to the remote service. */
   private fun eventWork(): Result {
     return try {
       val eventStore = analyticsController.getEventLogs()
@@ -78,12 +81,12 @@ class OppiaLogUploadWorker @Inject constructor(
       }
       Result.success()
     } catch (e: Exception) {
-      System.err.println(e)
       consoleLogger.e(LOG_UPLOAD_WORKER, e.toString(), e)
       Result.failure()
     }
   }
 
+  /** Creates an instance of [LogUploadWorker] by properly injecting dependencies. */
   class FactoryLogUpload @Inject constructor(
     private val analyticsController: AnalyticsController,
     private val exceptionsController: ExceptionsController,
@@ -94,7 +97,7 @@ class OppiaLogUploadWorker @Inject constructor(
   ) : LogUploadChildWorkerFactory {
 
     override fun create(context: Context, params: WorkerParameters): Worker {
-      return OppiaLogUploadWorker(
+      return LogUploadWorker(
         context,
         params,
         analyticsController,
