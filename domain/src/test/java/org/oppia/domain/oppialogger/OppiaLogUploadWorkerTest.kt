@@ -2,21 +2,23 @@ package org.oppia.domain.oppialogger
 
 import android.app.Application
 import android.content.Context
-import android.util.Log
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.work.Configuration
-import androidx.work.ListenableWorker
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import androidx.work.testing.TestWorkerBuilder
+import androidx.work.testing.SynchronousExecutor
 import androidx.work.testing.WorkManagerTestInitHelper
-import androidx.work.workDataOf
+import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
-import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,7 +28,9 @@ import org.oppia.app.model.EventLog
 import org.oppia.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.domain.oppialogger.analytics.TEST_TIMESTAMP
 import org.oppia.domain.oppialogger.analytics.TEST_TOPIC_ID
+import org.oppia.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.testing.FakeEventLogger
+import org.oppia.testing.FakeExceptionLogger
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.logging.EnableConsoleLog
@@ -35,14 +39,12 @@ import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.networking.NetworkConnectionUtil
 import org.robolectric.annotation.Config
-import java.util.concurrent.Executor
-import java.util.concurrent.Executors
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
-class OppiaLogUploadWorkerTest : Configuration.Provider {
+class OppiaLogUploadWorkerTest {
 
   @Rule
   @JvmField
@@ -55,45 +57,100 @@ class OppiaLogUploadWorkerTest : Configuration.Provider {
   lateinit var fakeEventLogger: FakeEventLogger
 
   @Inject
+  lateinit var fakeExceptionLogger: FakeExceptionLogger
+
+  @Inject
   lateinit var oppiaLogger: OppiaLogger
 
   @Inject
   lateinit var analyticsController: AnalyticsController
 
+  @Inject
+  lateinit var exceptionsController: ExceptionsController
+
+  @Inject
+  lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
+
   private lateinit var context: Context
-  private lateinit var executor: Executor
-  private lateinit var workManager: WorkManager
 
   @Before
   fun setUp() {
-    context = ApplicationProvider.getApplicationContext()
-    executor = Executors.newSingleThreadExecutor()
-    WorkManagerTestInitHelper.initializeTestWorkManager(context, workManagerConfiguration)
     setUpTestApplicationComponent()
-    workManager = WorkManager.getInstance(context)
-    networkConnectionUtil = NetworkConnectionUtil(context)
+    context = InstrumentationRegistry.getInstrumentation().targetContext
+    val config = Configuration.Builder()
+      .setExecutor(SynchronousExecutor())
+      .setWorkerFactory(logUploadWorkerFactory)
+      .build()
+    WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
+    networkConnectionUtil = NetworkConnectionUtil(ApplicationProvider.getApplicationContext())
   }
 
   @Test
-  fun testWorker_doWork_withEventsInputData_verifySuccess(){
+  fun testWorker_logEvent_withoutNetwork_enqueueRequest_verifySuccess() {
+    val eventLogTopicContext = EventLog.newBuilder()
+      .setActionName(EventLog.EventAction.EVENT_ACTION_UNSPECIFIED)
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setTopicContext(
+            EventLog.TopicContext.newBuilder()
+              .setTopicId(TEST_TOPIC_ID)
+              .build()
+          )
+          .build()
+      )
+      .setPriority(EventLog.Priority.ESSENTIAL)
+      .setTimestamp(TEST_TIMESTAMP)
+      .build()
+
+    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
     analyticsController.logTransitionEvent(
-      TEST_TIMESTAMP,
-      EventLog.EventAction.EVENT_ACTION_UNSPECIFIED,
+      eventLogTopicContext.timestamp,
+      eventLogTopicContext.actionName,
       oppiaLogger.createTopicContext(TEST_TOPIC_ID)
     )
 
-    val worker = TestWorkerBuilder<OppiaLogUploadWorker>(
-      context, executor, workDataOf(
-        OppiaLogUploadWorker.WORKER_CASE_KEY
-          to OppiaLogUploadWorker.WorkerCase.EVENT_WORKER.toString()
-      )
+    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
+
+    val inputData = Data.Builder().putString(
+      OppiaLogUploadWorker.WORKER_CASE_KEY,
+      OppiaLogUploadWorker.WorkerCase.EVENT_WORKER.toString()
     ).build()
 
-    val result = worker.doWork()
+    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<OppiaLogUploadWorker>()
+      .setInputData(inputData)
+      .build()
 
-    val eventList = fakeEventLogger.noEventsPresent()
-    assertThat(result).isEqualTo(ListenableWorker.Result.success())
-    assertThat(eventList).isTrue()
+    workManager.enqueue(request).result.get()
+    val workInfo = workManager.getWorkInfoById(request.id).get()
+
+    val event = fakeEventLogger.getMostRecentEvent()
+    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(event).isEqualTo(eventLogTopicContext)
+  }
+
+  @Test
+  fun testWorker_logException_withoutNetwork_enqueueRequest_verifySuccess() {
+    val exception = Exception("TEST")
+    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
+    exceptionsController.logNonFatalException(exception, TEST_TIMESTAMP)
+
+    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
+
+    val inputData = Data.Builder().putString(
+      OppiaLogUploadWorker.WORKER_CASE_KEY,
+      OppiaLogUploadWorker.WorkerCase.EXCEPTION_WORKER.toString()
+    ).build()
+
+    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<OppiaLogUploadWorker>()
+      .setInputData(inputData)
+      .build()
+
+    workManager.enqueue(request).result.get()
+    val workInfo = workManager.getWorkInfoById(request.id).get()
+
+    val exceptionGot = fakeExceptionLogger.getMostRecentException()
+    assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(exceptionGot).isEqualTo(exception)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -133,6 +190,10 @@ class OppiaLogUploadWorkerTest : Configuration.Provider {
     @Provides
     @EventLogStorageCacheSize
     fun provideEventLogStorageCacheSize(): Int = 2
+
+    @Provides
+    @ExceptionLogStorageCacheSize
+    fun provideExceptionLogStorageSize(): Int = 2
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -142,7 +203,8 @@ class OppiaLogUploadWorkerTest : Configuration.Provider {
       TestModule::class,
       TestLogReportingModule::class,
       TestLogStorageModule::class,
-      TestDispatcherModule::class
+      TestDispatcherModule::class,
+      LogUploadWorkerModule::class
     ]
   )
   interface TestApplicationComponent {
@@ -154,11 +216,5 @@ class OppiaLogUploadWorkerTest : Configuration.Provider {
     }
 
     fun inject(oppiaLogUploadWorkerTest: OppiaLogUploadWorkerTest)
-  }
-
-  override fun getWorkManagerConfiguration(): Configuration {
-    return Configuration.Builder().setMinimumLoggingLevel(Log.INFO)
-      .setExecutor(executor)
-      .build()
   }
 }
