@@ -24,6 +24,7 @@ jobs:
     - uses: actions/checkout@v2
     
     - name: Prohibit synthetic view references
+      if: ${{ always() }}
       run: |
         if grep -q -r -i --include=\*.kt 'kotlinx.android.synthetic' ./; then
           echo "Synthetic Kotlin imports should not be used: they don't work in Bazel, and they pollute the global namespace. See https://old.reddit.com/r/androiddev/comments/ala9p2/why_kotlinx_synthetic_is_no_longer_a_recommended/efdvpkg/."
@@ -43,6 +44,7 @@ jobs:
     - uses: actions/checkout@v2
     
     - name: Ensure all activity classes have presenters
+      if: ${{ always() }}
       run: |
         files_to_check=$(find . -name *Activity.kt | rev | cut -c 4- | rev | xargs printf -- '%sPresenter.kt\n')
         files_found=$(echo "$files_to_check" | xargs -n 1 -- bash -c 'find . -wholename "$0"')
@@ -57,6 +59,7 @@ jobs:
         fi
     
     - name: Ensure all fragment classes have presenters
+      if: ${{ always() }}
       run: |
         files_to_check=$(find . -name *Fragment.kt | rev | cut -c 4- | rev | xargs printf -- '%sPresenter.kt\n')
         files_found=$(echo "$files_to_check" | xargs -n 1 -- bash -c 'find . -wholename "$0"')
