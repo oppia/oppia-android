@@ -1,0 +1,71 @@
+name: Check Patterns
+
+# Controls when the action will run. Triggers the workflow on pull request
+# events or push events in the develop branch.
+on: 
+  pull_request:
+  push:
+    branches:    
+      # Push events on develop branch
+      - develop
+
+# This workflow has the following jobs:
+# check_files: Verifies that files do not contain certain patterns.
+# check_file_names: Verifies patterns for file naming.
+jobs:
+  check_files:
+    name: Check Files for Prohibited Patterns
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04]
+        
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Prohibit synthetic view references
+      run: |
+        if grep -q -r -i --include=\*.kt 'kotlinx.android.synthetic' ./; then
+          echo "Synthetic Kotlin imports should not be used: they don't work in Bazel, and they pollute the global namespace. See https://old.reddit.com/r/androiddev/comments/ala9p2/why_kotlinx_synthetic_is_no_longer_a_recommended/efdvpkg/."
+          exit 1
+        else
+          exit 0
+        fi
+
+  check_file_names:
+    name: Check File Names for Prohibited Patterns
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04]
+        
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Ensure all activity classes have presenters
+      run: |
+        files_to_check=$(find . -name *Activity.kt | rev | cut -c 4- | rev | xargs printf -- '%sPresenter.kt\n')
+        files_found=$(echo "$files_to_check" | xargs -n 1 -- bash -c 'find . -wholename "$0"')
+        files_missing=$(comm -3 <(echo "$files_to_check" | sort) <(echo "$files_found" | sort) | sort -n)
+        missing_file_activities=$(echo "$files_missing" | rev | cut -c 13- | rev | xargs printf -- '%s.kt\n')
+        if [ -z "$missing_file_activities" ]; then
+          exit 0
+        else
+          echo "The following activities were found not to have matching presenters. All activities must have a presenter."
+          echo "$missing_file_activities"
+          exit 1
+        fi
+    
+    - name: Ensure all fragment classes have presenters
+      run: |
+        files_to_check=$(find . -name *Fragment.kt | rev | cut -c 4- | rev | xargs printf -- '%sPresenter.kt\n')
+        files_found=$(echo "$files_to_check" | xargs -n 1 -- bash -c 'find . -wholename "$0"')
+        files_missing=$(comm -3 <(echo "$files_to_check" | sort) <(echo "$files_found" | sort) | sort -n)
+        missing_file_fragments=$(echo "$files_missing" | rev | cut -c 13- | rev | xargs printf -- '%s.kt\n')
+        if [ -z "$missing_file_fragments" ]; then
+          exit 0
+        else
+          echo "The following fragments were found not to have matching presenters. All fragments must have a presenter."
+          echo "$missing_file_fragments"
+          exit 1
+        fi
