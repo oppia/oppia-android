@@ -13,6 +13,7 @@ import javax.inject.Singleton
 /** Provides Firebase-specific logging implementations. */
 @Module
 class LogReportingModule {
+  @Singleton
   @Provides
   fun provideCrashLogger(): ExceptionLogger {
     return FirebaseExceptionLogger(FirebaseCrashlytics.getInstance())
