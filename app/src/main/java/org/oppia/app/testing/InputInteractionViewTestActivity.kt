@@ -14,7 +14,7 @@ import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
-import org.oppia.app.player.state.itemviewmodel.RatioExpressionInteractionViewModel
+import org.oppia.app.player.state.itemviewmodel.RatioExpressionInteractionInputViewModel
 import org.oppia.app.player.state.itemviewmodel.TextInputViewModel
 import org.oppia.app.player.state.listener.StateKeyboardButtonListener
 
@@ -31,7 +31,7 @@ class InputInteractionViewTestActivity :
 
   private lateinit var binding: ActivityInputInteractionViewTestBinding
   lateinit var fractionInteractionViewModel: FractionInteractionViewModel
-  lateinit var ratioExpressionInteractionViewModel: RatioExpressionInteractionViewModel
+  lateinit var ratioExpressionInteractionViewModel: RatioExpressionInteractionInputViewModel
   val numericInputViewModel = NumericInputViewModel(
     context = this,
     hasConversationView = false,
@@ -59,7 +59,7 @@ class InputInteractionViewTestActivity :
       interactionAnswerErrorOrAvailabilityCheckReceiver = this
     )
 
-    ratioExpressionInteractionViewModel = RatioExpressionInteractionViewModel(
+    ratioExpressionInteractionViewModel = RatioExpressionInteractionInputViewModel(
       interaction = Interaction.getDefaultInstance(),
       context = this,
       hasConversationView = false,

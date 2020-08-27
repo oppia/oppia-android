@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.app.R
+import org.oppia.app.model.AccessibleAnswer
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.UserAnswer
@@ -13,9 +14,11 @@ import org.oppia.app.parser.StringToRatioParser
 import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
+import org.oppia.domain.util.toAccessibleAnswerString
+import org.oppia.domain.util.toAnswerString
 
 /** [StateItemViewModel] for the ratio express input interaction. */
-class RatioExpressionInteractionViewModel(
+class RatioExpressionInteractionInputViewModel(
   interaction: Interaction,
   private val context: Context,
   val hasConversationView: Boolean,
@@ -48,11 +51,14 @@ class RatioExpressionInteractionViewModel(
   override fun getPendingAnswer(): UserAnswer {
     val userAnswerBuilder = UserAnswer.newBuilder()
     if (answerText.isNotEmpty()) {
-      val answerTextString = answerText.toString()
+      val ratioAnswer = stringToRatioParser.parseRatioOrThrow(answerText.toString())
       userAnswerBuilder.answer = InteractionObject.newBuilder()
-        .setRatioExpression(stringToRatioParser.parseRatioFromString(answerTextString))
+        .setRatioExpression(ratioAnswer)
         .build()
-      userAnswerBuilder.plainAnswer = answerTextString
+      userAnswerBuilder.accessibleAnswer = AccessibleAnswer.newBuilder()
+        .setPlainAnswer(ratioAnswer.toAnswerString())
+        .setAccessibleAnswer(ratioAnswer.toAccessibleAnswerString())
+        .build()
     }
     return userAnswerBuilder.build()
   }

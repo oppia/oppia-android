@@ -77,10 +77,6 @@ private fun ListOfSetsOfHtmlStrings.toAnswerString(): String {
   return setOfHtmlStringsList.joinToString { "[${it.toAnswerString()}]" }
 }
 
-private fun RatioExpression.toAnswerString(): String {
-  return ratioComponentList.joinToString(separator = ":")
-}
-
 private fun ImageWithRegions.toAnswerString(): String =
   labelRegionsOrBuilderList.joinToString {
     "[${it.region.regionType} ${it.label} (${it.region.area.upperLeft.x}, " +

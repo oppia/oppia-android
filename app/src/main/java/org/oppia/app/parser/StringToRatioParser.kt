@@ -78,3 +78,7 @@ class StringToRatioParser {
 private fun String.removeWhitespace(): String {
   return this.replace(" ","")
 }
+
+private fun String.toRatioAnswer(): String {
+  return this.replace(" ","")
+}
