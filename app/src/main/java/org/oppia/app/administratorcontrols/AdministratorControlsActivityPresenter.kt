@@ -74,6 +74,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
 
   fun loadProfileList() {
     lastLoadedFragment = PROFILE_LIST_FRAGMENT
+    getAdministratorControlsFragment()!!.setSelectedFragment(lastLoadedFragment)
     activity.supportFragmentManager.beginTransaction().add(
       R.id.administrator_controls_fragment_multipane_placeholder,
       ProfileListFragment.newInstance(isMultipane)
@@ -82,6 +83,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
 
   fun loadAppVersion() {
     lastLoadedFragment = APP_VERSION_FRAGMENT
+    getAdministratorControlsFragment()!!.setSelectedFragment(lastLoadedFragment)
     activity.supportFragmentManager.beginTransaction().add(
       R.id.administrator_controls_fragment_multipane_placeholder,
       AppVersionFragment()
