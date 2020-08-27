@@ -1,4 +1,4 @@
-package org.oppia.domain.oppialogger
+package org.oppia.domain.oppialogger.loguploader
 
 import android.content.Context
 import androidx.work.Worker
@@ -84,14 +84,14 @@ class OppiaLogUploadWorker @Inject constructor(
     }
   }
 
-  class Factory @Inject constructor(
+  class FactoryLogUpload @Inject constructor(
     private val analyticsController: AnalyticsController,
     private val exceptionsController: ExceptionsController,
     private val dataProviders: DataProviders,
     private val exceptionLogger: ExceptionLogger,
     private val eventLogger: EventLogger,
     private val consoleLogger: ConsoleLogger
-  ) : ChildWorkerFactory {
+  ) : LogUploadChildWorkerFactory {
 
     override fun create(context: Context, params: WorkerParameters): Worker {
       return OppiaLogUploadWorker(

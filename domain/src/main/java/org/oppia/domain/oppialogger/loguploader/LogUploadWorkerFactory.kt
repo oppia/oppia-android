@@ -1,4 +1,4 @@
-package org.oppia.domain.oppialogger
+package org.oppia.domain.oppialogger.loguploader
 
 import android.content.Context
 import androidx.work.ListenableWorker
@@ -10,7 +10,7 @@ import javax.inject.Provider
 
 class LogUploadWorkerFactory @Inject constructor(
   private val workerFactories: Map<Class<out Worker>,
-    @JvmSuppressWildcards Provider<ChildWorkerFactory>>
+    @JvmSuppressWildcards Provider<LogUploadChildWorkerFactory>>
 ) : WorkerFactory() {
 
   override fun createWorker(

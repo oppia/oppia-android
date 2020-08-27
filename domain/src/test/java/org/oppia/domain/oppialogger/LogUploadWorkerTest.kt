@@ -29,6 +29,9 @@ import org.oppia.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.domain.oppialogger.analytics.TEST_TIMESTAMP
 import org.oppia.domain.oppialogger.analytics.TEST_TOPIC_ID
 import org.oppia.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerFactory
+import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.domain.oppialogger.loguploader.OppiaLogUploadWorker
 import org.oppia.testing.FakeEventLogger
 import org.oppia.testing.FakeExceptionLogger
 import org.oppia.testing.TestDispatcherModule
@@ -44,7 +47,7 @@ import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE)
-class OppiaLogUploadWorkerTest {
+class LogUploadWorkerTest {
 
   @Rule
   @JvmField
@@ -70,12 +73,6 @@ class OppiaLogUploadWorkerTest {
 
   @Inject
   lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
-
-/*  @Inject
-  lateinit var oppiaLogUploadWorker: OppiaLogUploadWorker
-
-  @Inject
-  lateinit var childWorkerFactory: ChildWorkerFactory*/
 
   private lateinit var context: Context
 
@@ -160,7 +157,7 @@ class OppiaLogUploadWorkerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerOppiaLogUploadWorkerTest_TestApplicationComponent.builder()
+    DaggerLogUploadWorkerTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -221,6 +218,6 @@ class OppiaLogUploadWorkerTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(oppiaLogUploadWorkerTest: OppiaLogUploadWorkerTest)
+    fun inject(logUploadWorkerTest: LogUploadWorkerTest)
   }
 }
