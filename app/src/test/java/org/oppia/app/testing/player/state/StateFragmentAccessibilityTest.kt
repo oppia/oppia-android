@@ -6,8 +6,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -44,6 +46,7 @@ import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.domain.topic.TEST_EXPLORATION_ID_4
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_6
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.testing.TestAccessibilityModule
@@ -115,8 +118,8 @@ class StateFragmentAccessibilityTest {
   }
 
   @Test
-  fun testStateFragment_loadDragDropExp_moveUpWithAccessibility() {
-    launchForExploration(TEST_EXPLORATION_ID_4).use {
+  fun testStateFragment_loadRatioInput_checkRatioAnswer() {
+    launchForExploration(TEST_EXPLORATION_ID_6).use {
       startPlayingExploration()
       onView(
         RecyclerViewMatcher.atPositionOnView(
@@ -132,6 +135,20 @@ class StateFragmentAccessibilityTest {
           targetViewId = R.id.drag_drop_content_text_view
         )
       ).check(matches(withText("a camera at the store")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_moveUpWithAccessibility() {
+    launchForExploration(TEST_EXPLORATION_ID_4).use {
+      startPlayingExploration()
+      onView(withId(R.id.ratio_input_interaction_view)).perform(
+        ViewActions.typeText("4:5"),
+        ViewActions.closeSoftKeyboard()
+      )
+      onView(withId(R.id.submit_answer_button)).perform(click())
+      onView(withId(R.id.submitted_answer_text_view))
+        .check(matches(withContentDescription("4 to 5")))
     }
   }
 
