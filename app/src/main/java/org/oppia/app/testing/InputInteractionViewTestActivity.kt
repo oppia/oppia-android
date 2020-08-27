@@ -53,10 +53,10 @@ class InputInteractionViewTestActivity :
     )
     fractionInteractionViewModel = FractionInteractionViewModel(
       interaction = Interaction.getDefaultInstance(),
-    context = this,
-    hasConversationView = false,
-    isSplitView = false,
-    interactionAnswerErrorOrAvailabilityCheckReceiver = this
+      context = this,
+      hasConversationView = false,
+      isSplitView = false,
+      interactionAnswerErrorOrAvailabilityCheckReceiver = this
     )
 
     ratioExpressionInteractionViewModel = RatioExpressionInteractionViewModel(
