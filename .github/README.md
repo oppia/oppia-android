@@ -1,4 +1,4 @@
-# [Oppia](https://www.oppia.org) ![CI Lint and Tests](https://github.com/oppia/oppia-android/workflows/CI%20Lint%20and%20Tests/badge.svg) [![Gitter](https://badges.gitter.im/oppia/oppia-android.svg)](https://gitter.im/oppia/oppia-android?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+# [Oppia Android](https://www.oppia.org) ![CI Lint and Tests](https://github.com/oppia/oppia-android/workflows/CI%20Lint%20and%20Tests/badge.svg) [![Gitter](https://badges.gitter.im/oppia/oppia-android.svg)](https://gitter.im/oppia/oppia-android?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 Oppia is an online learning tool that enables anyone to easily create and share interactive activities (called 'explorations'). These activities simulate a one-on-one conversation with a tutor, making it possible for students to learn by doing while getting feedback.
 
