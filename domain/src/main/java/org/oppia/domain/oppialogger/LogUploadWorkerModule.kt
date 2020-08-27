@@ -6,6 +6,7 @@ import dagger.Binds
 import dagger.MapKey
 import dagger.Module
 import dagger.multibindings.IntoMap
+import dagger.multibindings.IntoSet
 import kotlin.reflect.KClass
 
 @Retention(AnnotationRetention.RUNTIME)
@@ -22,4 +23,10 @@ interface LogUploadWorkerModule {
 
   @Binds
   fun bindWorkerFactory(logUploadWorkerFactory: LogUploadWorkerFactory): WorkerFactory
+
+  @Binds
+  @IntoSet
+  fun bindLogUploadWorkRequest(
+    logUploadWorkRequest: LogUploadWorkRequest
+  ): ApplicationStartupListener
 }

@@ -71,6 +71,12 @@ class OppiaLogUploadWorkerTest {
   @Inject
   lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
 
+/*  @Inject
+  lateinit var oppiaLogUploadWorker: OppiaLogUploadWorker
+
+  @Inject
+  lateinit var childWorkerFactory: ChildWorkerFactory*/
+
   private lateinit var context: Context
 
   @Before
