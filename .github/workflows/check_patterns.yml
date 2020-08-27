@@ -27,9 +27,9 @@ jobs:
       run: |
         if grep -q -r -i --include=\*.kt 'kotlinx.android.synthetic' ./; then
           echo "Synthetic Kotlin imports should not be used: they don't work in Bazel, and they pollute the global namespace. See https://old.reddit.com/r/androiddev/comments/ala9p2/why_kotlinx_synthetic_is_no_longer_a_recommended/efdvpkg/."
-          exit 1
+          (exit 1)
         else
-          exit 0
+          (exit 0)
         fi
 
   check_file_names:
@@ -49,11 +49,11 @@ jobs:
         files_missing=$(comm -3 <(echo "$files_to_check" | sort) <(echo "$files_found" | sort) | sort -n)
         missing_file_activities=$(echo "$files_missing" | rev | cut -c 13- | rev | xargs printf -- '%s.kt\n')
         if [ -z "$missing_file_activities" ]; then
-          exit 0
+          (exit 0)
         else
           echo "The following activities were found not to have matching presenters. All activities must have a presenter."
           echo "$missing_file_activities"
-          exit 1
+          (exit 1)
         fi
     
     - name: Ensure all fragment classes have presenters
@@ -63,9 +63,9 @@ jobs:
         files_missing=$(comm -3 <(echo "$files_to_check" | sort) <(echo "$files_found" | sort) | sort -n)
         missing_file_fragments=$(echo "$files_missing" | rev | cut -c 13- | rev | xargs printf -- '%s.kt\n')
         if [ -z "$missing_file_fragments" ]; then
-          exit 0
+          (exit 0)
         else
           echo "The following fragments were found not to have matching presenters. All fragments must have a presenter."
           echo "$missing_file_fragments"
-          exit 1
+          (exit 1)
         fi
