@@ -106,10 +106,7 @@
       android:name=".splash.SplashActivity"
       android:screenOrientation="portrait"
       android:theme="@style/SplashScreenTheme">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-        <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
+
       <intent-filter>
         <action android:name="android.intent.action.VIEW" />
         <category android:name="android.intent.category.DEFAULT" />
@@ -139,6 +136,9 @@
       android:name=".testing.ProfileChooserFragmentTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
+      android:name=".testing.StoryFragmentTestActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
       android:name=".testing.TopicTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
@@ -156,11 +156,11 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".walkthrough.WalkthroughActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
-    <provider
-      android:name="androidx.work.impl.WorkManagerInitializer"
-      android:authorities="${applicationId}.workmanager-init"
-      android:exported="false"
-      tools:node="remove"/>
+      android:theme="@style/OppiaThemeWithoutActionBar" >
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+    </activity>
   </application>
 </manifest>

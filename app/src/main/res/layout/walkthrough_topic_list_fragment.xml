@@ -7,9 +7,6 @@
     <variable
       name="viewModel"
       type="org.oppia.app.walkthrough.topiclist.WalkthroughTopicViewModel" />
-    <variable
-      name="headerViewModel"
-      type="org.oppia.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicHeaderViewModel" />
 
   </data>
 
