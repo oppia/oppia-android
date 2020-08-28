@@ -36,8 +36,8 @@ import org.oppia.app.application.ActivityComponentFactory
 import org.oppia.app.application.ApplicationComponent
 import org.oppia.app.application.ApplicationModule
 import org.oppia.app.options.OptionsActivity
-import org.oppia.app.options.STORY_TEXT_SIZE
-import org.oppia.app.options.StoryTextSizeActivity
+import org.oppia.app.options.READING_TEXT_SIZE
+import org.oppia.app.options.ReadingTextSizeActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -78,8 +78,8 @@ private const val LARGE_TEXT_SIZE = 10
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = StoryTextSizeFragmentTest.TestApplication::class)
-class StoryTextSizeFragmentTest {
+@Config(application = ReadingTextSizeFragmentTest.TestApplication::class)
+class ReadingTextSizeFragmentTest {
 
   @Inject
   lateinit var context: Context
@@ -105,7 +105,7 @@ class StoryTextSizeFragmentTest {
 
   @Test
   fun testTextSize_changeTextSizeToLarge_changeConfiguration_checkTextSizeLargeIsSelected() {
-    launch<StoryTextSizeActivity>(createStoryTextSizeActivityIntent("Small")).use {
+    launch<ReadingTextSizeActivity>(createStoryTextSizeActivityIntent("Small")).use {
       checkTextSize(SMALL_TEXT_SIZE)
       updateTextSize(LARGE_TEXT_SIZE)
       rotateToLandscape()
@@ -125,9 +125,9 @@ class StoryTextSizeFragmentTest {
   }
 
   private fun createStoryTextSizeActivityIntent(summaryValue: String): Intent {
-    return StoryTextSizeActivity.createStoryTextSizeActivityIntent(
+    return ReadingTextSizeActivity.createReadingTextSizeActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      STORY_TEXT_SIZE,
+      READING_TEXT_SIZE,
       summaryValue
     )
   }
@@ -235,7 +235,7 @@ class StoryTextSizeFragmentTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(storyTextSizeFragmentTest: StoryTextSizeFragmentTest)
+    fun inject(storyTextSizeFragmentTest: ReadingTextSizeFragmentTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory {
@@ -245,7 +245,7 @@ class StoryTextSizeFragmentTest {
         .build() as TestApplicationComponent
     }
 
-    fun inject(storyTextSizeFragmentTest: StoryTextSizeFragmentTest) {
+    fun inject(storyTextSizeFragmentTest: ReadingTextSizeFragmentTest) {
       component.inject(storyTextSizeFragmentTest)
     }
 

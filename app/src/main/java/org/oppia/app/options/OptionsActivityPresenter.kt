@@ -76,8 +76,8 @@ class OptionsActivityPresenter @Inject constructor(
       ) as OptionsFragment?
   }
 
-  fun updateStoryTextSize(textSize: String) {
-    getOptionFragment()?.updateStoryTextSize(textSize)
+  fun updateReadingTextSize(textSize: String) {
+    getOptionFragment()?.updateReadingTextSize(textSize)
   }
 
   fun updateAppLanguage(appLanguage: String) {
@@ -89,7 +89,7 @@ class OptionsActivityPresenter @Inject constructor(
   }
 
   fun loadStoryTextSizeFragment(textSize: String) {
-    val storyTextSizeFragment = StoryTextSizeFragment.newInstance(textSize)
+    val storyTextSizeFragment = ReadingTextSizeFragment.newInstance(textSize)
     activity.supportFragmentManager
       .beginTransaction()
       .add(R.id.multipane_options_container, storyTextSizeFragment)

@@ -22,7 +22,7 @@ import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
 import javax.inject.Inject
 
-const val STORY_TEXT_SIZE = "STORY_TEXT_SIZE"
+const val READING_TEXT_SIZE = "READING_TEXT_SIZE"
 const val APP_LANGUAGE = "APP_LANGUAGE"
 const val AUDIO_LANGUAGE = "AUDIO_LANGUAGE"
 
@@ -80,17 +80,17 @@ class OptionsFragmentPresenter @Inject constructor(
       .newBuilder<OptionsItemViewModel, ViewType> { viewModel ->
         viewModel.isMultipane.set(isMultipane)
         when (viewModel) {
-          is OptionsStoryTextSizeViewModel -> ViewType.VIEW_TYPE_STORY_TEXT_SIZE
+          is OptionsReadingTextSizeViewModel -> ViewType.VIEW_TYPE_READING_TEXT_SIZE
           is OptionsAppLanguageViewModel -> ViewType.VIEW_TYPE_APP_LANGUAGE
           is OptionsAudioLanguageViewModel -> ViewType.VIEW_TYPE_AUDIO_LANGUAGE
           else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
         }
       }
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_STORY_TEXT_SIZE,
+        viewType = ViewType.VIEW_TYPE_READING_TEXT_SIZE,
         inflateDataBinding = OptionStoryTextSizeBinding::inflate,
         setViewModel = this::bindStoryTextSize,
-        transformViewModel = { it as OptionsStoryTextSizeViewModel }
+        transformViewModel = { it as OptionsReadingTextSizeViewModel }
       )
       .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_APP_LANGUAGE,
@@ -109,7 +109,7 @@ class OptionsFragmentPresenter @Inject constructor(
 
   private fun bindStoryTextSize(
     binding: OptionStoryTextSizeBinding,
-    model: OptionsStoryTextSizeViewModel
+    model: OptionsReadingTextSizeViewModel
   ) {
     binding.viewModel = model
   }
@@ -133,26 +133,26 @@ class OptionsFragmentPresenter @Inject constructor(
   }
 
   private enum class ViewType {
-    VIEW_TYPE_STORY_TEXT_SIZE,
+    VIEW_TYPE_READING_TEXT_SIZE,
     VIEW_TYPE_APP_LANGUAGE,
     VIEW_TYPE_AUDIO_LANGUAGE
   }
 
-  fun updateStoryTextSize(textSize: String) {
+  fun updateReadingTextSize(textSize: String) {
     when (textSize) {
-      getOptionControlsItemViewModel().getStoryTextSize(StoryTextSize.SMALL_TEXT_SIZE) -> {
+      getOptionControlsItemViewModel().getReadingTextSize(StoryTextSize.SMALL_TEXT_SIZE) -> {
         profileManagementController.updateStoryTextSize(profileId, StoryTextSize.SMALL_TEXT_SIZE)
         storyTextSize = StoryTextSize.SMALL_TEXT_SIZE
       }
-      getOptionControlsItemViewModel().getStoryTextSize(StoryTextSize.MEDIUM_TEXT_SIZE) -> {
+      getOptionControlsItemViewModel().getReadingTextSize(StoryTextSize.MEDIUM_TEXT_SIZE) -> {
         profileManagementController.updateStoryTextSize(profileId, StoryTextSize.MEDIUM_TEXT_SIZE)
         storyTextSize = StoryTextSize.MEDIUM_TEXT_SIZE
       }
-      getOptionControlsItemViewModel().getStoryTextSize(StoryTextSize.LARGE_TEXT_SIZE) -> {
+      getOptionControlsItemViewModel().getReadingTextSize(StoryTextSize.LARGE_TEXT_SIZE) -> {
         profileManagementController.updateStoryTextSize(profileId, StoryTextSize.LARGE_TEXT_SIZE)
         storyTextSize = StoryTextSize.LARGE_TEXT_SIZE
       }
-      getOptionControlsItemViewModel().getStoryTextSize(StoryTextSize.EXTRA_LARGE_TEXT_SIZE) -> {
+      getOptionControlsItemViewModel().getReadingTextSize(StoryTextSize.EXTRA_LARGE_TEXT_SIZE) -> {
         profileManagementController.updateStoryTextSize(
           profileId,
           StoryTextSize.EXTRA_LARGE_TEXT_SIZE

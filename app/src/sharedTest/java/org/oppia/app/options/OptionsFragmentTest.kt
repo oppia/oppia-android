@@ -125,11 +125,11 @@ class OptionsFragmentTest {
   fun testOptionsFragment_storyTextSize_testOnActivityResult() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       val resultDataIntent = Intent()
-      resultDataIntent.putExtra(KEY_MESSAGE_STORY_TEXT_SIZE, "Large")
+      resultDataIntent.putExtra(KEY_MESSAGE_READING_TEXT_SIZE, "Large")
       val activityResult = ActivityResult(Activity.RESULT_OK, resultDataIntent)
 
       val activityMonitor = getInstrumentation().addMonitor(
-        StoryTextSizeActivity::class.java.name,
+        ReadingTextSizeActivity::class.java.name,
         activityResult,
         true
       )
@@ -223,9 +223,9 @@ class OptionsFragmentTest {
   }
 
   private fun createStoryTextSizeActivityIntent(summaryValue: String): Intent {
-    return StoryTextSizeActivity.createStoryTextSizeActivityIntent(
+    return ReadingTextSizeActivity.createReadingTextSizeActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      STORY_TEXT_SIZE,
+      READING_TEXT_SIZE,
       summaryValue
     )
   }

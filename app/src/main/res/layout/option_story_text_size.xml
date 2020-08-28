@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.options.OptionsStoryTextSizeViewModel" />
+      type="org.oppia.app.options.OptionsReadingTextSizeViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,7 +15,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/general_item_background_border"
     android:minHeight="48dp"
-    android:onClick="@{(v) -> viewModel.onStoryTextSizeClicked()}"
+    android:onClick="@{(v) -> viewModel.onReadingTextSizeClicked()}"
     android:paddingStart="16dp"
     android:paddingTop="20dp"
     android:paddingEnd="16dp"
@@ -39,7 +39,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:fontFamily="sans-serif"
-      android:text="@{viewModel.storyTextSize}"
+      android:text="@{viewModel.readingTextSize}"
       android:textColor="@color/black_54"
       android:textSize="14sp"
       app:layout_constraintEnd_toEndOf="parent"

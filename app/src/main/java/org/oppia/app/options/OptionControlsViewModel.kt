@@ -27,10 +27,10 @@ class OptionControlsViewModel @Inject constructor(
 ) : OptionsItemViewModel() {
   private val itemViewModelList: ObservableList<OptionsItemViewModel> = ObservableArrayList()
   private lateinit var profileId: ProfileId
-  private val routeToStoryTextSizeListener = activity as RouteToStoryTextSizeListener
+  private val routeToReadingTextSizeListener = activity as RouteToReadingTextSizeListener
   private val routeToAudioLanguageListListener = activity as RouteToAudioLanguageListListener
   private val routeToAppLanguageListListener = activity as RouteToAppLanguageListListener
-  private val loadStoryTextSizeListener = activity as LoadStoryTextSizeListener
+  private val loadReadingTextSizeListener = activity as LoadReadingTextSizeListener
   private val loadAudioLanguageListListener = activity as LoadAudioLanguageListListener
   private val loadAppLanguageListListener = activity as LoadAppLanguageListListener
   private var isFirstOpen = true
@@ -77,8 +77,8 @@ class OptionControlsViewModel @Inject constructor(
 
     itemViewModelList.clear()
 
-    val optionsStoryTextSizeViewModel =
-      OptionsStoryTextSizeViewModel(routeToStoryTextSizeListener, loadStoryTextSizeListener)
+    val optionsReadingTextSizeViewModel =
+      OptionsReadingTextSizeViewModel(routeToReadingTextSizeListener, loadReadingTextSizeListener)
     val optionsAppLanguageViewModel =
       OptionsAppLanguageViewModel(routeToAppLanguageListListener, loadAppLanguageListListener)
     val optionAudioViewViewModel =
@@ -87,11 +87,11 @@ class OptionControlsViewModel @Inject constructor(
         loadAudioLanguageListListener
       )
 
-    optionsStoryTextSizeViewModel.storyTextSize.set(getStoryTextSize(profile.storyTextSize))
+    optionsReadingTextSizeViewModel.readingTextSize.set(getReadingTextSize(profile.storyTextSize))
     optionsAppLanguageViewModel.appLanguage.set(getAppLanguage(profile.appLanguage))
     optionAudioViewViewModel.audioLanguage.set(getAudioLanguage(profile.audioLanguage))
 
-    itemViewModelList.add(optionsStoryTextSizeViewModel as OptionsItemViewModel)
+    itemViewModelList.add(optionsReadingTextSizeViewModel as OptionsItemViewModel)
 
     itemViewModelList.add(optionsAppLanguageViewModel as OptionsItemViewModel)
 
@@ -99,7 +99,7 @@ class OptionControlsViewModel @Inject constructor(
 
     // Loading the initial options in the sub-options container
     if (isMultipane.get()!! && isFirstOpen) {
-      optionsStoryTextSizeViewModel.loadStoryTextSizeFragment()
+      optionsReadingTextSizeViewModel.loadReadingTextSizeFragment()
       isFirstOpen = false
     }
 
@@ -114,8 +114,8 @@ class OptionControlsViewModel @Inject constructor(
     this.isFirstOpen = isFirstOpen
   }
 
-  fun getStoryTextSize(storyTextSize: StoryTextSize): String {
-    return when (storyTextSize) {
+  fun getReadingTextSize(readingTextSize: StoryTextSize): String {
+    return when (readingTextSize) {
       StoryTextSize.SMALL_TEXT_SIZE -> "Small"
       StoryTextSize.MEDIUM_TEXT_SIZE -> "Medium"
       StoryTextSize.LARGE_TEXT_SIZE -> "Large"

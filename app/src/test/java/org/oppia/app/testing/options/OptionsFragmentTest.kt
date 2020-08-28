@@ -24,9 +24,9 @@ import org.oppia.app.options.AppLanguageFragment
 import org.oppia.app.options.DefaultAudioActivity
 import org.oppia.app.options.DefaultAudioFragment
 import org.oppia.app.options.OptionsActivity
-import org.oppia.app.options.STORY_TEXT_SIZE
-import org.oppia.app.options.StoryTextSizeActivity
-import org.oppia.app.options.StoryTextSizeFragment
+import org.oppia.app.options.READING_TEXT_SIZE
+import org.oppia.app.options.ReadingTextSizeActivity
+import org.oppia.app.options.ReadingTextSizeFragment
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -57,11 +57,11 @@ class OptionsFragmentTest {
       ).perform(
         click()
       )
-      intended(hasComponent(StoryTextSizeActivity::class.java.name))
+      intended(hasComponent(ReadingTextSizeActivity::class.java.name))
       intended(
         hasExtra(
-          StoryTextSizeActivity.KEY_STORY_TEXT_SIZE_PREFERENCE_TITLE,
-          STORY_TEXT_SIZE
+          ReadingTextSizeActivity.KEY_READING_TEXT_SIZE_PREFERENCE_TITLE,
+          READING_TEXT_SIZE
         )
       )
     }
@@ -119,7 +119,7 @@ class OptionsFragmentTest {
       it.onActivity { activity ->
         val loadedFragment =
           activity.supportFragmentManager.findFragmentById(R.id.multipane_options_container)
-        assertThat(loadedFragment is StoryTextSizeFragment).isTrue()
+        assertThat(loadedFragment is ReadingTextSizeFragment).isTrue()
       }
     }
   }
@@ -141,7 +141,7 @@ class OptionsFragmentTest {
       it.onActivity { activity ->
         val loadedFragment =
           activity.supportFragmentManager.findFragmentById(R.id.multipane_options_container)
-        assertThat(loadedFragment is StoryTextSizeFragment).isTrue()
+        assertThat(loadedFragment is ReadingTextSizeFragment).isTrue()
       }
     }
   }
