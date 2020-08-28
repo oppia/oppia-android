@@ -19,7 +19,7 @@ class OptionsActivity :
   RouteToReadingTextSizeListener,
   LoadReadingTextSizeListener,
   LoadAppLanguageListListener,
-  LoadAudioLanguageListListener{
+  LoadAudioLanguageListListener {
   @Inject
   lateinit var optionActivityPresenter: OptionsActivityPresenter
   // used to initially load the suitable fragment in the case of multipane.
