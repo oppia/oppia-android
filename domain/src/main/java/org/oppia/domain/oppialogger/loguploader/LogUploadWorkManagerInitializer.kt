@@ -38,7 +38,6 @@ class LogUploadWorkManagerInitializer @Inject constructor(
 
   /** Enqueues a unique periodic work request for uploading events to the remote service. */
   private fun enqueueWorkRequestForEvents(workManager: WorkManager) {
-    Log.i("work manager", "Event request enqueued")
     val workerCase =
       Data.Builder()
         .putString(

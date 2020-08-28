@@ -7,7 +7,6 @@ import org.oppia.app.model.EventLog.Priority
 import org.oppia.app.model.OppiaEventLogs
 import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.domain.oppialogger.EventLogStorageCacheSize
-import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
 import org.oppia.util.logging.ConsoleLogger
