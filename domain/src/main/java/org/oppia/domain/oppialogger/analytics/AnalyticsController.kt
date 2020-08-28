@@ -8,6 +8,7 @@ import org.oppia.app.model.OppiaEventLogs
 import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
 import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.logging.EventLogger
@@ -154,11 +155,8 @@ class AnalyticsController @Inject constructor(
     oppiaEventLogs.eventLogList.withIndex()
       .minBy { it.value.timestamp }?.index
 
-  /**
-   * Returns a [LiveData] result which can be used to get [OppiaEventLogs]
-   * for the purpose of uploading in the presence of network connectivity.
-   */
-  fun getEventLogs(): LiveData<AsyncResult<OppiaEventLogs>> {
-    return dataProviders.convertToLiveData(eventLogStore)
+  /** Returns [eventLogStore] which can be later converted to [LiveData] to extract log reports from the store. */
+  fun getEventLogStore(): DataProvider<OppiaEventLogs> {
+    return eventLogStore
   }
 }

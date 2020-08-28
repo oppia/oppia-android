@@ -11,12 +11,10 @@ import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.logging.EventLogger
 import org.oppia.util.logging.ExceptionLogger
 import javax.inject.Inject
-import javax.inject.Singleton
 
 const val LOG_UPLOAD_WORKER = "log_upload_worker"
 
 /** [Worker] class that extracts log reports from the cache store and logs them to the remote service. */
-@Singleton
 class LogUploadWorker @Inject constructor(
   context: Context,
   params: WorkerParameters,
@@ -40,17 +38,17 @@ class LogUploadWorker @Inject constructor(
   override fun doWork(): Result {
     return when (inputData.getString(WORKER_CASE_KEY)) {
       WorkerCase.EVENT_WORKER.toString() -> {
-        eventWork()
+        uploadEvents()
       }
       WorkerCase.EXCEPTION_WORKER.toString() -> {
-        exceptionWork()
+        uploadExceptions()
       }
       else -> Result.failure()
     }
   }
 
   /** Extracts exception logs from the cache store and logs them to the remote service. */
-  private fun exceptionWork(): Result {
+  private fun uploadExceptions(): Result {
     return try {
       val exceptionStore =
         dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
@@ -69,9 +67,9 @@ class LogUploadWorker @Inject constructor(
   }
 
   /** Extracts event logs from the cache store and logs them to the remote service. */
-  private fun eventWork(): Result {
+  private fun uploadEvents(): Result {
     return try {
-      val eventStore = analyticsController.getEventLogs()
+      val eventStore = dataProviders.convertToLiveData(analyticsController.getEventLogStore())
       val eventLogs = eventStore.value?.getOrThrow()?.eventLogList
       eventLogs?.let {
         for (eventLog in it) {

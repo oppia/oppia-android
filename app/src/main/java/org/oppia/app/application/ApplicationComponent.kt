@@ -2,7 +2,6 @@ package org.oppia.app.application
 
 // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
 import android.app.Application
-import androidx.work.WorkerFactory
 import dagger.BindsInstance
 import dagger.Component
 import org.oppia.app.activity.ActivityComponent
@@ -75,6 +74,4 @@ interface ApplicationComponent : ApplicationInjector {
   fun getActivityComponentBuilderProvider(): Provider<ActivityComponent.Builder>
 
   fun getApplicationStartupListeners(): Set<ApplicationStartupListener>
-
-  fun getLogUploadWorkerFactory(): WorkerFactory
 }

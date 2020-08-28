@@ -70,9 +70,6 @@ dependencies {
       'org.robolectric:robolectric:4.3',
       project(":testing"),
   )
-  androidTestImplementation(
-      'androidx.work:work-testing:2.4.0'
-  )
   kapt(
       'com.google.dagger:dagger-compiler:2.24',
   )
