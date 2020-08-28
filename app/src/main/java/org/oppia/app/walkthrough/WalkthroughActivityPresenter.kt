@@ -1,6 +1,5 @@
 package org.oppia.app.walkthrough
 
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.app.R
