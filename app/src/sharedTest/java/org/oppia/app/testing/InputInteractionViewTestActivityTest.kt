@@ -710,7 +710,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testRatioInputInteractionView_withInputtedText_onConfigurationChange_hasCorrectPendingAnswer() { // ktlint-disable max-line-length
+  fun testRatioInputView_withInputtedText_onConfigurationChange_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -728,7 +728,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testRatioView_withInputtedTwoColonsTogether_colonsTogetherFormatErrorIsDisplayed() {
+  fun testRatioInputView_withInputtedTwoColonsTogether_colonsTogetherFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_ratio_input_interaction_view))
       .perform(
