@@ -36,14 +36,12 @@ public final class TextViewBindingAdapters {
         timestamp,
         textView.getContext()
     );
-    String format = "%1$s %2$s";
-    textView.setText(
-        String.format(
-            format,
-            profileLastUsed,
-            timeAgoTimeStamp
-        )
+    String profileLastVisited = textView.getContext().getString(
+        R.string.profile_last_visited,
+        profileLastUsed,
+        timeAgoTimeStamp
     );
+    textView.setText(profileLastVisited);
   }
 
   private static String getTimeAgo(long lastVisitedTimeStamp, Context context) {

@@ -345,6 +345,7 @@
   <string name="unlink_items">Unlink Items</string>
   <string name="move_item_down">Move Item Down</string>
   <string name="move_item_up">Move Item Up</string>
+  <string name="profile_last_visited">%1$s %2$s</string>
   <plurals name="minutes">
     <item quantity="one">a minute</item>
     <item quantity="other">%d minutes</item>
