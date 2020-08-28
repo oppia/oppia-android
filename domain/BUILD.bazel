@@ -18,6 +18,7 @@ kt_android_library(
     deps = [
         ":dagger",
         "//data:persistent_cache_store",
+        artifact("androidx.work:work-runtime-ktx:2.4.0"),
     ],
     visibility = ["//visibility:public"],
 )
@@ -34,6 +35,7 @@ TEST_DEPS = [
         artifact("com.google.truth:truth"),
         artifact("org.jetbrains.kotlin:kotlin-test-junit"),
         artifact("org.jetbrains.kotlin:kotlin-reflect"),
+        artifact("androidx.work:work-testing:2.4.0"),
 ]
 
 domain_test(
