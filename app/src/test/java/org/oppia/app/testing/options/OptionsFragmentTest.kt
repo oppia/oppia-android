@@ -46,13 +46,13 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun testStoryTextSize_clickStoryTextSize_checkSendingTheCorrectIntent() {
+  fun testOptionsFragment_clickReadingTextSize_checkSendingTheCorrectIntent() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
           0,
-          R.id.story_text_size_item_layout
+          R.id.reading_text_size_item_layout
         )
       ).perform(
         click()
@@ -68,7 +68,7 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun testAppLanguage_clickAppLanguage_checkSendingTheCorrectIntent() {
+  fun testOptionsFragment_clickAppLanguage_checkSendingTheCorrectIntent() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       onView(
         atPositionOnView(
@@ -90,7 +90,7 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun testAudioLanguage_clickDefaultAudioLanguage_checkSendingTheCorrectIntent() {
+  fun testOptionsFragment_clickDefaultAudioLanguage_checkSendingTheCorrectIntent() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       onView(
         atPositionOnView(
@@ -114,7 +114,7 @@ class OptionsFragmentTest {
   @Test
   @Config(qualifiers = "sw600dp")
   @LooperMode(LooperMode.Mode.PAUSED)
-  fun testStoryTextSize_checkInitiallyLoadedFragmentIsStoryTextSizeFragment() {
+  fun testOptionsFragment_checkInitiallyLoadedFragmentIsReadingTextSizeFragment() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       it.onActivity { activity ->
         val loadedFragment =
@@ -127,13 +127,13 @@ class OptionsFragmentTest {
   @Test
   @Config(qualifiers = "sw600dp")
   @LooperMode(LooperMode.Mode.PAUSED)
-  fun testStoryTextSize_clickStoryTextSize_checkLoadingTheCorrectFragment() {
+  fun testOptionsFragment_clickReadingTextSize_checkLoadingTheCorrectFragment() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       onView(
         atPositionOnView(
           R.id.options_recyclerview,
           0,
-          R.id.story_text_size_item_layout
+          R.id.reading_text_size_item_layout
         )
       ).perform(
         click()
@@ -149,7 +149,7 @@ class OptionsFragmentTest {
   @Test
   @Config(qualifiers = "sw600dp")
   @LooperMode(LooperMode.Mode.PAUSED)
-  fun testStoryTextSize_clickAppLanguage_checkLoadingTheCorrectFragment() {
+  fun testOptionsFragment_clickAppLanguage_checkLoadingTheCorrectFragment() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       onView(
         atPositionOnView(
@@ -171,7 +171,7 @@ class OptionsFragmentTest {
   @Test
   @Config(qualifiers = "sw600dp")
   @LooperMode(LooperMode.Mode.PAUSED)
-  fun testStoryTextSize_clickDefaultAudio_checkLoadingTheCorrectFragment() {
+  fun testOptionsFragment_clickDefaultAudio_checkLoadingTheCorrectFragment() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       onView(
         atPositionOnView(

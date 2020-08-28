@@ -27,6 +27,7 @@ import org.oppia.app.activity.ActivityComponent
 import org.oppia.app.application.ActivityComponentFactory
 import org.oppia.app.application.ApplicationComponent
 import org.oppia.app.application.ApplicationModule
+import org.oppia.app.application.ApplicationStartupListenerModule
 import org.oppia.app.options.AUDIO_LANGUAGE
 import org.oppia.app.options.DefaultAudioActivity
 import org.oppia.app.options.OptionsActivity
@@ -215,7 +216,7 @@ class DefaultAudioFragmentTest {
       QuestionModule::class, TestLogReportingModule::class, TestAccessibilityModule::class,
       ImageClickInputModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class
+      ViewBindingShimModule::class, ApplicationStartupListenerModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

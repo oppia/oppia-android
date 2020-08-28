@@ -35,6 +35,7 @@ import org.oppia.app.activity.ActivityComponent
 import org.oppia.app.application.ActivityComponentFactory
 import org.oppia.app.application.ApplicationComponent
 import org.oppia.app.application.ApplicationModule
+import org.oppia.app.application.ApplicationStartupListenerModule
 import org.oppia.app.options.OptionsActivity
 import org.oppia.app.options.READING_TEXT_SIZE
 import org.oppia.app.options.ReadingTextSizeActivity
@@ -105,7 +106,7 @@ class ReadingTextSizeFragmentTest {
 
   @Test
   fun testTextSize_changeTextSizeToLarge_changeConfiguration_checkTextSizeLargeIsSelected() {
-    launch<ReadingTextSizeActivity>(createStoryTextSizeActivityIntent("Small")).use {
+    launch<ReadingTextSizeActivity>(createReadingTextSizeActivityIntent("Small")).use {
       checkTextSize(SMALL_TEXT_SIZE)
       updateTextSize(LARGE_TEXT_SIZE)
       rotateToLandscape()
@@ -124,7 +125,7 @@ class ReadingTextSizeFragmentTest {
     }
   }
 
-  private fun createStoryTextSizeActivityIntent(summaryValue: String): Intent {
+  private fun createReadingTextSizeActivityIntent(summaryValue: String): Intent {
     return ReadingTextSizeActivity.createReadingTextSizeActivityIntent(
       ApplicationProvider.getApplicationContext(),
       READING_TEXT_SIZE,
@@ -177,12 +178,12 @@ class ReadingTextSizeFragmentTest {
   }
 
   private fun checkTextSize(value: Int) {
-    onView(withId(R.id.story_text_size_seekBar)).check(matches(seekBarProgress(value)))
+    onView(withId(R.id.reading_text_size_seekBar)).check(matches(seekBarProgress(value)))
     testCoroutineDispatchers.runCurrent()
   }
 
   private fun updateTextSize(value: Int) {
-    onView(withId(R.id.story_text_size_seekBar)).perform(clickSeekBar(value))
+    onView(withId(R.id.reading_text_size_seekBar)).perform(clickSeekBar(value))
     testCoroutineDispatchers.runCurrent()
   }
 
@@ -196,7 +197,7 @@ class ReadingTextSizeFragmentTest {
       atPositionOnView(
         R.id.options_recyclerview,
         0,
-        R.id.story_text_size_text_view
+        R.id.reading_text_size_text_view
       )
     ).check(
       matches(withText(label))
@@ -228,25 +229,25 @@ class ReadingTextSizeFragmentTest {
       QuestionModule::class, TestLogReportingModule::class, TestAccessibilityModule::class,
       ImageClickInputModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class
+      ViewBindingShimModule::class, ApplicationStartupListenerModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(storyTextSizeFragmentTest: ReadingTextSizeFragmentTest)
+    fun inject(readingTextSizeFragmentTest: ReadingTextSizeFragmentTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory {
     private val component: TestApplicationComponent by lazy {
-      DaggerStoryTextSizeFragmentTest_TestApplicationComponent.builder()
+      DaggerReadingTextSizeFragmentTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(storyTextSizeFragmentTest: ReadingTextSizeFragmentTest) {
-      component.inject(storyTextSizeFragmentTest)
+    fun inject(readingTextSizeFragmentTest: ReadingTextSizeFragmentTest) {
+      component.inject(readingTextSizeFragmentTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

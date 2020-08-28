@@ -25,18 +25,17 @@
                 "refresher_exploration_id": null
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": [
                       "<p>Red</p>",
                       "<p>Blue</p>",
                       "<p>Green</p>"
                     ]
-                  },
-                  "rule_type": "Equals"
-                }
-              ],
+                  }
+                ]
+              },
               "tagged_skill_misconception_id": null
             },
             {
@@ -52,28 +51,45 @@
                 "refresher_exploration_id": null
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "ContainsAtLeastOneOf": [
+                  {
                     "x": [
-                      "<p>Yellow</p>"
+                      "<p>Yellooooow</p>"
                     ]
-                  },
-                  "rule_type": "ContainsAtLeastOneOf"
-                }
-              ],
+                  }
+                ]
+              },
               "tagged_skill_misconception_id": null
             }
           ],
           "customization_args": {
             "choices": {
               "value": [
-                "<p>Red</p>",
-                "<p>Yellow</p>",
-                "<p>Green</p>",
-                "<p>Blue</p>",
-                "<p>Orange</p>",
-                "<p>Purple</p>"
+                {
+                  "html": "<p>Red</p>",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>Yellow</p>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>Green</p>",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>Blue</p>",
+                  "content_id": "ca_choices_3"
+                },
+                {
+                  "html": "<p>Orange</p>",
+                  "content_id": "ca_choices_4"
+                },
+                {
+                  "html": "<p>Purple</p>",
+                  "content_id": "ca_choices_5"
+                }
               ]
             },
             "minAllowableSelectionCount": {
@@ -139,23 +155,31 @@
                 "refresher_exploration_id": null
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 2
-                  },
-                  "rule_type": "Equals"
-                }
-              ],
+                  }
+                ]
+              },
               "tagged_skill_misconception_id": null
             }
           ],
           "customization_args": {
             "choices": {
               "value": [
-                "<p>Penguin</p>",
-                "<p>Chicken</p>",
-                "<p>Eagle</p>"
+                {
+                  "html": "<p>Penguin</p>",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>Chicken</p>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>Eagle</p>",
+                  "content_id": "ca_choices_2"
+                }
               ]
             }
           },
@@ -213,19 +237,18 @@
                 "refresher_exploration_id": null
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsExactlyEqualTo": [
+                  {
                     "f": {
                       "wholeNumber": 0,
                       "denominator": 2,
                       "numerator": 1,
                       "isNegative": false
                     }
-                  },
-                  "rule_type": "IsExactlyEqualTo"
-                }
-              ],
+                  }
+                ]
+              },
               "tagged_skill_misconception_id": null
             }
           ],
@@ -341,14 +364,13 @@
                 "refresher_exploration_id": null
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 121
-                  },
-                  "rule_type": "Equals"
-                }
-              ],
+                  }
+                ]
+              },
               "tagged_skill_misconception_id": null
             },
             {
@@ -364,14 +386,13 @@
                 "refresher_exploration_id": null
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "isLessThan": [
+                  {
                     "x": 121
-                  },
-                  "rule_type": "IsLessThan"
-                }
-              ],
+                  }
+                ]
+              },
               "tagged_skill_misconception_id": null
             },
             {
@@ -387,14 +408,13 @@
                 "refresher_exploration_id": null
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "isGreaterThan": [
+                  {
                     "x": 121
-                  },
-                  "rule_type": "IsGreaterThan"
-                }
-              ],
+                  }
+                ]
+              },
               "tagged_skill_misconception_id": null
             }
           ],
@@ -457,14 +477,13 @@
                 "refresher_exploration_id": null
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "finnish"
-                  },
-                  "rule_type": "Equals"
-                }
-              ],
+                  }
+                ]
+              },
               "tagged_skill_misconception_id": null
             }
           ],
@@ -530,25 +549,33 @@
                 "refresher_exploration_id": null
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": [
                       "<p><strong>Green</strong></p>"
                     ]
-                  },
-                  "rule_type": "Equals"
-                }
-              ],
+                  }
+                ]
+              },
               "tagged_skill_misconception_id": null
             }
           ],
           "customization_args": {
             "choices": {
               "value": [
-                "<p><strong>Green</strong></p>",
-                "<p><strong>Red</strong></p>",
-                "<p><strong>Blue</strong></p>"
+                {
+                  "html": "<p><strong>Green</strong></p>",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p><strong>Red</strong></p>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p><strong>Blue</strong></p>",
+                  "content_id": "ca_choices_2"
+                }
               ]
             },
             "minAllowableSelectionCount": {
@@ -612,10 +639,9 @@
                 "refresher_exploration_id": null
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsEqualToOrdering",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsEqualToOrdering": [
+                  {
                     "x": [
                       [
                         "<p>3/5</p>"
@@ -631,8 +657,8 @@
                       ]
                     ]
                   }
-                }
-              ],
+                ]
+              },
               "tagged_skill_misconception_id": null
             },
             {
@@ -649,15 +675,14 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasElementXAtPositionY",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasElementXAtPositionY": [
+                  {
                     "y": 1,
                     "x": "<p>0.5/p>"
                   }
-                }
-              ]
+                ]
+              }
             },
             {
               "tagged_skill_misconception_id": null,
@@ -673,15 +698,14 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasElementXBeforeElementY",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasElementXBeforeElementY": [
+                  {
                     "y": "<p>0.35</p>",
                     "x": "<p>0.46</p>"
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "customization_args": {
@@ -690,10 +714,22 @@
             },
             "choices": {
               "value": [
-                "<p>0.35</p>",
-                "<p>3/5</p>",
-                "<p>0.5</p>",
-                "<p>0.46</p>"
+                {
+                  "html": "<p>0.35</p>",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>3/5</p>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>0.5</p>",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>0.46</p>",
+                  "content_id": "ca_choices_3"
+                }
               ]
             }
           },
@@ -755,10 +791,9 @@
                 "refresher_exploration_id": null
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "IsEqualToOrdering",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsEqualToOrdering": [
+                  {
                     "x": [
                       [
                         "<p>3/5</p>",
@@ -772,8 +807,8 @@
                       ]
                     ]
                   }
-                }
-              ],
+                ]
+              },
               "tagged_skill_misconception_id": null
             },
             {
@@ -790,15 +825,14 @@
                 "labelled_as_correct": false
               },
               "training_data": [],
-              "rule_specs": [
-                {
-                  "rule_type": "HasElementXAtPositionY",
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "HasElementXAtPositionY": [
+                  {
                     "y": 1,
                     "x": "<p>0.6</p>"
                   }
-                }
-              ]
+                ]
+              }
             }
           ],
           "customization_args": {
@@ -807,10 +841,22 @@
             },
             "choices": {
               "value": [
-                "<p>3/5</p>",
-                "<p>0.6</p>",
-                "<p>0.35</p>",
-                "<p>0.46</p>"
+                {
+                  "html": "<p>3/5</p>",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "<p>0.6</p>",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html": "<p>0.35</p>",
+                  "content_id": "ca_choices_2"
+                },
+                {
+                  "html": "<p>0.46</p>",
+                  "content_id": "ca_choices_3"
+                }
               ]
             }
           },
@@ -889,5 +935,6 @@
     "init_state_name": "Continue"
   },
   "exploration_id": "test_exp_id_2",
+  "states_schema_version": 39,
   "version": 1
 }

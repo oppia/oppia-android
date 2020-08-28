@@ -111,14 +111,14 @@
             </LinearLayout>
 
             <SeekBar
-              android:id="@+id/story_text_size_seekBar"
-              style="@style/StoryTextSizeSeekBar"
+              android:id="@+id/reading_text_size_seekBar"
+              style="@style/ReadingTextSizeSeekBar"
               android:layout_width="match_parent"
               android:contentDescription="@string/slide_seekbar_to_control_text_size"
               android:layout_height="match_parent"
               android:paddingStart="8dp"
               android:paddingEnd="8dp"
-              android:thumb="@drawable/story_text_size_seekbar_thumb" />
+              android:thumb="@drawable/reading_text_size_seekbar_thumb" />
           </FrameLayout>
 
           <TextView

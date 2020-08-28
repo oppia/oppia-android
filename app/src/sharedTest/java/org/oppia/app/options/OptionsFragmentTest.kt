@@ -122,7 +122,7 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun testOptionsFragment_storyTextSize_testOnActivityResult() {
+  fun testOptionsFragment_readingTextSize_testOnActivityResult() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       val resultDataIntent = Intent()
       resultDataIntent.putExtra(KEY_MESSAGE_READING_TEXT_SIZE, "Large")
@@ -136,7 +136,7 @@ class OptionsFragmentTest {
 
       it.onActivity { activity ->
         activity.startActivityForResult(
-          createStoryTextSizeActivityIntent("Small"),
+          createReadingTextSizeActivityIntent("Small"),
           REQUEST_CODE_TEXT_SIZE
         )
       }
@@ -147,7 +147,7 @@ class OptionsFragmentTest {
         atPositionOnView(
           R.id.options_recyclerview,
           0,
-          R.id.story_text_size_text_view
+          R.id.reading_text_size_text_view
         )
       ).check(
         matches(withText("Large"))
@@ -222,7 +222,7 @@ class OptionsFragmentTest {
     }
   }
 
-  private fun createStoryTextSizeActivityIntent(summaryValue: String): Intent {
+  private fun createReadingTextSizeActivityIntent(summaryValue: String): Intent {
     return ReadingTextSizeActivity.createReadingTextSizeActivityIntent(
       ApplicationProvider.getApplicationContext(),
       READING_TEXT_SIZE,

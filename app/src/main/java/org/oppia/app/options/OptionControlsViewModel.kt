@@ -11,7 +11,7 @@ import org.oppia.app.model.AppLanguage
 import org.oppia.app.model.AudioLanguage
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
-import org.oppia.app.model.StoryTextSize
+import org.oppia.app.model.ReadingTextSize
 import org.oppia.app.viewmodel.ObservableArrayList
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
@@ -87,7 +87,7 @@ class OptionControlsViewModel @Inject constructor(
         loadAudioLanguageListListener
       )
 
-    optionsReadingTextSizeViewModel.readingTextSize.set(getReadingTextSize(profile.storyTextSize))
+    optionsReadingTextSizeViewModel.readingTextSize.set(getReadingTextSize(profile.readingTextSize))
     optionsAppLanguageViewModel.appLanguage.set(getAppLanguage(profile.appLanguage))
     optionAudioViewViewModel.audioLanguage.set(getAudioLanguage(profile.audioLanguage))
 
@@ -114,11 +114,11 @@ class OptionControlsViewModel @Inject constructor(
     this.isFirstOpen = isFirstOpen
   }
 
-  fun getReadingTextSize(readingTextSize: StoryTextSize): String {
+  fun getReadingTextSize(readingTextSize: ReadingTextSize): String {
     return when (readingTextSize) {
-      StoryTextSize.SMALL_TEXT_SIZE -> "Small"
-      StoryTextSize.MEDIUM_TEXT_SIZE -> "Medium"
-      StoryTextSize.LARGE_TEXT_SIZE -> "Large"
+      ReadingTextSize.SMALL_TEXT_SIZE -> "Small"
+      ReadingTextSize.MEDIUM_TEXT_SIZE -> "Medium"
+      ReadingTextSize.LARGE_TEXT_SIZE -> "Large"
       else -> "Extra Large"
     }
   }

@@ -7,12 +7,12 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.fragment.app.Fragment
 import org.oppia.app.databinding.ReadingTextSizeFragmentBinding
-import org.oppia.app.model.StoryTextSize
+import org.oppia.app.model.ReadingTextSize
 import javax.inject.Inject
 
 /** The presenter for [ReadingTextSizeFragment]. */
 class ReadingTextSizeFragmentPresenter @Inject constructor(private val fragment: Fragment) {
-  private var fontSize: String = getReadingTextSize(StoryTextSize.MEDIUM_TEXT_SIZE)
+  private var fontSize: String = getReadingTextSize(ReadingTextSize.MEDIUM_TEXT_SIZE)
 
   fun handleOnCreateView(
     inflater: LayoutInflater,
@@ -36,28 +36,31 @@ class ReadingTextSizeFragmentPresenter @Inject constructor(private val fragment:
     }
 
     when (readingTextSize) {
-      getReadingTextSize(StoryTextSize.SMALL_TEXT_SIZE) -> {
-        binding.storyTextSizeSeekBar.progress = 0
-        binding.previewTextview.textSize = getReadingTextSizeInFloat(StoryTextSize.SMALL_TEXT_SIZE)
-      }
-      getReadingTextSize(StoryTextSize.MEDIUM_TEXT_SIZE) -> {
-        binding.storyTextSizeSeekBar.progress = 5
-        binding.previewTextview.textSize = getReadingTextSizeInFloat(StoryTextSize.MEDIUM_TEXT_SIZE)
-      }
-      getReadingTextSize(StoryTextSize.LARGE_TEXT_SIZE) -> {
-        binding.storyTextSizeSeekBar.progress = 10
-        binding.previewTextview.textSize = getReadingTextSizeInFloat(StoryTextSize.LARGE_TEXT_SIZE)
-      }
-      getReadingTextSize(StoryTextSize.EXTRA_LARGE_TEXT_SIZE) -> {
-        binding.storyTextSizeSeekBar.progress = 15
+      getReadingTextSize(ReadingTextSize.SMALL_TEXT_SIZE) -> {
+        binding.readingTextSizeSeekBar.progress = 0
         binding.previewTextview.textSize =
-          getReadingTextSizeInFloat(StoryTextSize.EXTRA_LARGE_TEXT_SIZE)
+          getReadingTextSizeInFloat(ReadingTextSize.SMALL_TEXT_SIZE)
+      }
+      getReadingTextSize(ReadingTextSize.MEDIUM_TEXT_SIZE) -> {
+        binding.readingTextSizeSeekBar.progress = 5
+        binding.previewTextview.textSize =
+          getReadingTextSizeInFloat(ReadingTextSize.MEDIUM_TEXT_SIZE)
+      }
+      getReadingTextSize(ReadingTextSize.LARGE_TEXT_SIZE) -> {
+        binding.readingTextSizeSeekBar.progress = 10
+        binding.previewTextview.textSize =
+          getReadingTextSizeInFloat(ReadingTextSize.LARGE_TEXT_SIZE)
+      }
+      getReadingTextSize(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE) -> {
+        binding.readingTextSizeSeekBar.progress = 15
+        binding.previewTextview.textSize =
+          getReadingTextSizeInFloat(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
       }
     }
 
-    binding.storyTextSizeSeekBar.max = 15
+    binding.readingTextSizeSeekBar.max = 15
 
-    binding.storyTextSizeSeekBar.setOnSeekBarChangeListener(
+    binding.readingTextSizeSeekBar.setOnSeekBarChangeListener(
       object :
         SeekBar.OnSeekBarChangeListener {
         override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
@@ -67,24 +70,24 @@ class ReadingTextSizeFragmentPresenter @Inject constructor(private val fragment:
 
           when (progressValue) {
             0 -> {
-              fontSize = getReadingTextSize(StoryTextSize.SMALL_TEXT_SIZE)
+              fontSize = getReadingTextSize(ReadingTextSize.SMALL_TEXT_SIZE)
               binding.previewTextview.textSize =
-                getReadingTextSizeInFloat(StoryTextSize.SMALL_TEXT_SIZE)
+                getReadingTextSizeInFloat(ReadingTextSize.SMALL_TEXT_SIZE)
             }
             5 -> {
-              fontSize = getReadingTextSize(StoryTextSize.MEDIUM_TEXT_SIZE)
+              fontSize = getReadingTextSize(ReadingTextSize.MEDIUM_TEXT_SIZE)
               binding.previewTextview.textSize =
-                getReadingTextSizeInFloat(StoryTextSize.MEDIUM_TEXT_SIZE)
+                getReadingTextSizeInFloat(ReadingTextSize.MEDIUM_TEXT_SIZE)
             }
             10 -> {
-              fontSize = getReadingTextSize(StoryTextSize.LARGE_TEXT_SIZE)
+              fontSize = getReadingTextSize(ReadingTextSize.LARGE_TEXT_SIZE)
               binding.previewTextview.textSize =
-                getReadingTextSizeInFloat(StoryTextSize.LARGE_TEXT_SIZE)
+                getReadingTextSizeInFloat(ReadingTextSize.LARGE_TEXT_SIZE)
             }
             else -> {
-              fontSize = getReadingTextSize(StoryTextSize.EXTRA_LARGE_TEXT_SIZE)
+              fontSize = getReadingTextSize(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
               binding.previewTextview.textSize =
-                getReadingTextSizeInFloat(StoryTextSize.EXTRA_LARGE_TEXT_SIZE)
+                getReadingTextSizeInFloat(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
             }
           }
           seekBar.progress = progressValue
@@ -110,21 +113,21 @@ class ReadingTextSizeFragmentPresenter @Inject constructor(private val fragment:
     }
   }
 
-  fun getReadingTextSizeInFloat(readingTextSize: StoryTextSize): Float {
+  fun getReadingTextSizeInFloat(readingTextSize: ReadingTextSize): Float {
     return when (readingTextSize) {
-      StoryTextSize.SMALL_TEXT_SIZE -> 16f
-      StoryTextSize.MEDIUM_TEXT_SIZE -> 18f
-      StoryTextSize.LARGE_TEXT_SIZE -> 20f
+      ReadingTextSize.SMALL_TEXT_SIZE -> 16f
+      ReadingTextSize.MEDIUM_TEXT_SIZE -> 18f
+      ReadingTextSize.LARGE_TEXT_SIZE -> 20f
       else -> 22f
     }
   }
 
   // TODO(#1584): Update this function to use multiplier instead of direct font size.
-  fun getReadingTextSize(readingTextSize: StoryTextSize): String {
+  fun getReadingTextSize(readingTextSize: ReadingTextSize): String {
     return when (readingTextSize) {
-      StoryTextSize.SMALL_TEXT_SIZE -> "Small"
-      StoryTextSize.MEDIUM_TEXT_SIZE -> "Medium"
-      StoryTextSize.LARGE_TEXT_SIZE -> "Large"
+      ReadingTextSize.SMALL_TEXT_SIZE -> "Small"
+      ReadingTextSize.MEDIUM_TEXT_SIZE -> "Medium"
+      ReadingTextSize.LARGE_TEXT_SIZE -> "Large"
       else -> "Extra Large"
     }
   }

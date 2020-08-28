@@ -21,18 +21,21 @@ class ProfileListFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<ProfileListViewModel>
 ) {
 
+  private var isMultipane = false
+
   fun handleOnCreateView(
     inflater: LayoutInflater,
-    container: ViewGroup?
+    container: ViewGroup?,
+    isMultipane: Boolean
   ): View? {
+    this.isMultipane = isMultipane
     val binding = ProfileListFragmentBinding.inflate(
       inflater,
       container,
       /* attachToRoot= */ false
     )
 
-    // TODO(#1196): Stop the toolbar functionality in the multipane (add non-null receiver (?)).
-    binding.profileListToolbar.setNavigationOnClickListener {
+    binding.profileListToolbar?.setNavigationOnClickListener {
       (activity as ProfileListActivity).finish()
     }
     binding.apply {
@@ -65,7 +68,8 @@ class ProfileListFragmentPresenter @Inject constructor(
       activity.startActivity(
         ProfileEditActivity.createProfileEditActivity(
           activity,
-          profile.id.internalId
+          profile.id.internalId,
+          isMultipane
         )
       )
     }

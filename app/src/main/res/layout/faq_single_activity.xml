@@ -2,13 +2,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <data>
-
-    <variable
-      name="viewModel"
-      type="org.oppia.app.story.StoryViewModel" />
-  </data>
-
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -33,6 +26,7 @@
         android:textSize="20sp"
         app:navigationContentDescription="@string/go_to_previous_page"
         app:navigationIcon="?attr/homeAsUpIndicator"
+        app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -46,19 +40,27 @@
 
       <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:background="@color/oppiaGreyBackground"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:paddingBottom="80dp"
+        android:scrollbars="none">
 
         <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_margin="24dp"
-          android:orientation="vertical">
+          android:background="@color/white"
+          android:orientation="vertical"
+          android:paddingStart="24dp"
+          android:paddingTop="24dp"
+          android:paddingEnd="24dp"
+          android:paddingBottom="56dp">
 
           <TextView
             android:id="@+id/faq_question_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
             android:fontFamily="sans-serif-medium"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="18sp" />
@@ -67,9 +69,9 @@
             android:id="@+id/faq_answer_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
             android:fontFamily="sans-serif"
             android:textColor="@color/oppiaPrimaryText"
-            android:layout_marginBottom="16dp"
             android:textSize="16sp" />
         </LinearLayout>
       </ScrollView>
@@ -82,5 +84,3 @@
     </FrameLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
-
-

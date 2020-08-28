@@ -16,7 +16,7 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.AppLanguage
 import org.oppia.app.model.AudioLanguage
 import org.oppia.app.model.ProfileId
-import org.oppia.app.model.StoryTextSize
+import org.oppia.app.model.ReadingTextSize
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
@@ -38,7 +38,7 @@ class OptionsFragmentPresenter @Inject constructor(
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
   private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
-  private var storyTextSize = StoryTextSize.SMALL_TEXT_SIZE
+  private var readingTextSize = ReadingTextSize.SMALL_TEXT_SIZE
   private var appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
   private var audioLanguage = AudioLanguage.NO_AUDIO
   private val viewModel = getOptionControlsItemViewModel()
@@ -89,7 +89,7 @@ class OptionsFragmentPresenter @Inject constructor(
       .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_READING_TEXT_SIZE,
         inflateDataBinding = OptionStoryTextSizeBinding::inflate,
-        setViewModel = this::bindStoryTextSize,
+        setViewModel = this::bindReadingTextSize,
         transformViewModel = { it as OptionsReadingTextSizeViewModel }
       )
       .registerViewDataBinder(
@@ -107,7 +107,7 @@ class OptionsFragmentPresenter @Inject constructor(
       .build()
   }
 
-  private fun bindStoryTextSize(
+  private fun bindReadingTextSize(
     binding: OptionStoryTextSizeBinding,
     model: OptionsReadingTextSizeViewModel
   ) {
@@ -140,24 +140,34 @@ class OptionsFragmentPresenter @Inject constructor(
 
   fun updateReadingTextSize(textSize: String) {
     when (textSize) {
-      getOptionControlsItemViewModel().getReadingTextSize(StoryTextSize.SMALL_TEXT_SIZE) -> {
-        profileManagementController.updateStoryTextSize(profileId, StoryTextSize.SMALL_TEXT_SIZE)
-        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE
-      }
-      getOptionControlsItemViewModel().getReadingTextSize(StoryTextSize.MEDIUM_TEXT_SIZE) -> {
-        profileManagementController.updateStoryTextSize(profileId, StoryTextSize.MEDIUM_TEXT_SIZE)
-        storyTextSize = StoryTextSize.MEDIUM_TEXT_SIZE
-      }
-      getOptionControlsItemViewModel().getReadingTextSize(StoryTextSize.LARGE_TEXT_SIZE) -> {
-        profileManagementController.updateStoryTextSize(profileId, StoryTextSize.LARGE_TEXT_SIZE)
-        storyTextSize = StoryTextSize.LARGE_TEXT_SIZE
-      }
-      getOptionControlsItemViewModel().getReadingTextSize(StoryTextSize.EXTRA_LARGE_TEXT_SIZE) -> {
-        profileManagementController.updateStoryTextSize(
+      getOptionControlsItemViewModel().getReadingTextSize(ReadingTextSize.SMALL_TEXT_SIZE) -> {
+        profileManagementController.updateReadingTextSize(
           profileId,
-          StoryTextSize.EXTRA_LARGE_TEXT_SIZE
+          ReadingTextSize.SMALL_TEXT_SIZE
         )
-        storyTextSize = StoryTextSize.EXTRA_LARGE_TEXT_SIZE
+        readingTextSize = ReadingTextSize.SMALL_TEXT_SIZE
+      }
+      getOptionControlsItemViewModel().getReadingTextSize(ReadingTextSize.MEDIUM_TEXT_SIZE) -> {
+        profileManagementController.updateReadingTextSize(
+          profileId,
+          ReadingTextSize.MEDIUM_TEXT_SIZE
+        )
+        readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
+      }
+      getOptionControlsItemViewModel().getReadingTextSize(ReadingTextSize.LARGE_TEXT_SIZE) -> {
+        profileManagementController.updateReadingTextSize(
+          profileId,
+          ReadingTextSize.LARGE_TEXT_SIZE
+        )
+        readingTextSize = ReadingTextSize.LARGE_TEXT_SIZE
+      }
+      getOptionControlsItemViewModel()
+        .getReadingTextSize(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE) -> {
+        profileManagementController.updateReadingTextSize(
+          profileId,
+          ReadingTextSize.EXTRA_LARGE_TEXT_SIZE
+        )
+        readingTextSize = ReadingTextSize.EXTRA_LARGE_TEXT_SIZE
       }
     }
     recyclerViewAdapter.notifyItemChanged(0)

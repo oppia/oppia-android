@@ -19,7 +19,7 @@ class OptionsActivity :
   RouteToReadingTextSizeListener,
   LoadReadingTextSizeListener,
   LoadAppLanguageListListener,
-  LoadAudioLanguageListListener {
+  LoadAudioLanguageListListener{
   @Inject
   lateinit var optionActivityPresenter: OptionsActivityPresenter
   // used to initially load the suitable fragment in the case of multipane.
@@ -109,7 +109,7 @@ class OptionsActivity :
   }
 
   override fun loadReadingTextSizeFragment(textSize: String) {
-    optionActivityPresenter.setExtraOptionTitle(getString(R.string.story_text_size))
+    optionActivityPresenter.setExtraOptionTitle(getString(R.string.reading_text_size))
     optionActivityPresenter.loadStoryTextSizeFragment(textSize)
   }
 

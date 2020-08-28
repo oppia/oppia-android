@@ -60,14 +60,13 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 100
-                  },
-                  "rule_type": "Equals"
-                }
-              ]
+                  }
+                ]
+              }
             }
           ],
           "confirmed_unclassified_answers": [],
@@ -99,14 +98,13 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 121
-                  },
-                  "rule_type": "Equals"
-                }
-              ]
+                  }
+                ]
+              }
             },
             {
               "outcome": {
@@ -115,14 +113,13 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 121
-                  },
-                  "rule_type": "IsLessThan"
-                }
-              ]
+                  }
+                ]
+              }
             },
             {
               "outcome": {
@@ -131,15 +128,14 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsWithinTolerance": [
+                  {
                     "tol": 9,
                     "x": 121
-                  },
-                  "rule_type": "IsWithinTolerance"
-                }
-              ]
+                  }
+                ]
+              }
             },
             {
               "outcome": {
@@ -148,14 +144,13 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsGreaterThan": [
+                  {
                     "x": 121
-                  },
-                  "rule_type": "IsGreaterThan"
-                }
-              ]
+                  }
+                ]
+              }
             },
             {
               "outcome": {
@@ -164,14 +159,13 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "IsLessThan": [
+                  {
                     "x": 121
-                  },
-                  "rule_type": "IsLessThan"
-                }
-              ]
+                  }
+                ]
+              }
             }
           ],
           "confirmed_unclassified_answers": [],
@@ -229,14 +223,13 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 0
-                  },
-                  "rule_type": "Equals"
-                }
-              ]
+                  }
+                ]
+              }
             },
             {
               "outcome": {
@@ -245,23 +238,31 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": 2
-                  },
-                  "rule_type": "Equals"
-                }
-              ]
+                  }
+                ]
+              }
             }
           ],
           "confirmed_unclassified_answers": [],
           "customization_args": {
             "choices": {
               "value": [
-                "It's translated from a different language.",
-                "It's a nonsense word that someone made up.",
-                "It's the name of a popular cartoon character."
+                {
+                  "html": "It's translated from a different language.",
+                  "content_id": "ca_choices_0"
+                },
+                {
+                  "html": "It's a nonsense word that someone made up.",
+                  "content_id": "ca_choices_1"
+                },
+                {
+                  "html":  "It's the name of a popular cartoon character.",
+                  "content_id": "ca_choices_2"
+                }
               ]
             }
           },
@@ -292,14 +293,13 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "greek"
-                  },
-                  "rule_type": "Equals"
-                }
-              ]
+                  }
+                ]
+              }
             },
             {
               "outcome": {
@@ -308,14 +308,13 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Contains": [
+                  {
                     "x": "roman"
-                  },
-                  "rule_type": "Contains"
-                }
-              ]
+                  }
+                ]
+              }
             },
             {
               "outcome": {
@@ -324,14 +323,13 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Contains": [
+                  {
                     "x": "latin"
-                  },
-                  "rule_type": "Contains"
-                }
-              ]
+                  }
+                ]
+              }
             },
             {
               "outcome": {
@@ -340,14 +338,13 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "Swedish"
-                  },
-                  "rule_type": "Equals"
-                }
-              ]
+                  }
+                ]
+              }
             },
             {
               "outcome": {
@@ -356,14 +353,13 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Contains": [
+                  {
                     "x": "translate oppia"
-                  },
-                  "rule_type": "Contains"
-                }
-              ]
+                  }
+                ]
+              }
             },
             {
               "outcome": {
@@ -372,14 +368,13 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "finish"
-                  },
-                  "rule_type": "Equals"
-                }
-              ]
+                  }
+                ]
+              }
             },
             {
               "outcome": {
@@ -388,14 +383,13 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "finnish"
-                  },
-                  "rule_type": "Equals"
-                }
-              ]
+                  }
+                ]
+              }
             },
             {
               "outcome": {
@@ -404,14 +398,13 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "FuzzyEquals": [
+                  {
                     "x": "finnish"
-                  },
-                  "rule_type": "FuzzyEquals"
-                }
-              ]
+                  }
+                ]
+              }
             },
             {
               "outcome": {
@@ -420,14 +413,13 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "yes"
-                  },
-                  "rule_type": "Equals"
-                }
-              ]
+                  }
+                ]
+              }
             },
             {
               "outcome": {
@@ -436,14 +428,13 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
-                    "x": "German"
-                  },
-                  "rule_type": "Contains"
-                }
-              ]
+              "rule_types_to_inputs": {
+                "Contains": [
+                  {
+                    "x": "Contains"
+                  }
+                ]
+              }
             },
             {
               "outcome": {
@@ -452,14 +443,13 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Contains": [
+                  {
                     "x": "French"
-                  },
-                  "rule_type": "Contains"
-                }
-              ]
+                  }
+                ]
+              }
             },
             {
               "outcome": {
@@ -468,14 +458,13 @@
                 "param_changes": [],
                 "labelled_as_correct": false
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "suomi"
-                  },
-                  "rule_type": "Equals"
-                }
-              ]
+                  }
+                ]
+              }
             },
             {
               "outcome": {
@@ -484,14 +473,13 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Equals": [
+                  {
                     "x": "Finland"
-                  },
-                  "rule_type": "Equals"
-                }
-              ]
+                  }
+                ]
+              }
             },
             {
               "outcome": {
@@ -500,14 +488,13 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Contains": [
+                  {
                     "x": "Norway"
-                  },
-                  "rule_type": "Contains"
-                }
-              ]
+                  }
+                ]
+              }
             },
             {
               "outcome": {
@@ -516,14 +503,13 @@
                 "labelled_as_correct": false,
                 "param_changes": []
               },
-              "rule_specs": [
-                {
-                  "inputs": {
+              "rule_types_to_inputs": {
+                "Contains": [
+                  {
                     "x": "Sweden"
-                  },
-                  "rule_type": "Contains"
-                }
-              ]
+                  }
+                ]
+              }
             }
           ],
           "confirmed_unclassified_answers": [],
@@ -577,5 +563,6 @@
     "title": "Welcome to Oppia!"
   },
   "exploration_id": "test_exp_id_0",
+  "states_schema_version": 39,
   "version": 1
 }

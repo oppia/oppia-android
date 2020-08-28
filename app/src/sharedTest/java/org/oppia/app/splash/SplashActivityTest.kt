@@ -33,8 +33,9 @@ import org.oppia.app.application.ApplicationComponent
 import org.oppia.app.application.ApplicationInjector
 import org.oppia.app.application.ApplicationInjectorProvider
 import org.oppia.app.application.ApplicationModule
+import org.oppia.app.application.ApplicationStartupListenerModule
 import org.oppia.app.onboarding.OnboardingActivity
-import org.oppia.app.profile.ProfileActivity
+import org.oppia.app.profile.ProfileChooserActivity
 import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
@@ -45,6 +46,7 @@ import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModu
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.onboarding.AppStartupStateController
 import org.oppia.domain.onboarding.testing.ExpirationMetaDataRetrieverTestModule
@@ -118,14 +120,14 @@ class SplashActivityTest {
   }
 
   @Test
-  fun testSplashActivity_secondOpen_routesToChooseProfileActivity() {
+  fun testSplashActivity_secondOpen_routesToChooseProfileChooserActivity() {
     simulateAppAlreadyOnboarded()
     initializeTestApplication()
 
     activityTestRule.launchActivity(null)
     testCoroutineDispatchers.advanceUntilIdle()
 
-    intended(hasComponent(ProfileActivity::class.java.name))
+    intended(hasComponent(ProfileChooserActivity::class.java.name))
   }
 
   @Test
@@ -199,7 +201,7 @@ class SplashActivityTest {
 
     // Reopening the app before it's expired should result in the profile activity showing since the
     // user has already been onboarded.
-    intended(hasComponent(ProfileActivity::class.java.name))
+    intended(hasComponent(ProfileChooserActivity::class.java.name))
   }
 
   @Test
@@ -277,7 +279,7 @@ class SplashActivityTest {
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverTestModule::class,
-      ViewBindingShimModule::class
+      ViewBindingShimModule::class, RatioInputModule::class, ApplicationStartupListenerModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent, ApplicationInjector {

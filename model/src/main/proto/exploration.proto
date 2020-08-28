@@ -3,6 +3,7 @@ syntax = "proto3";
 package model;
 
 import "subtitled_html.proto";
+import "subtitled_unicode.proto";
 import "interaction_object.proto";
 import "translation.proto";
 import "voiceover.proto";
@@ -85,7 +86,34 @@ message Interaction {
   Outcome default_outcome = 6;
   // Mapping from the name of a customization arg to the default interaction
   // object of the customization arg
-  map<string, InteractionObject> customization_args = 7;
+  map<string, SchemaObject> customization_args = 7;
+}
+
+// Structure for schema objects. See https://github.com/oppia/oppia/blob/fcb44f8/schema_utils.py#L50 for context.
+message SchemaObject {
+  oneof object_type {
+    bool bool_value = 1;
+    CustomSchemaValue custom_schema_value = 2;
+    string normalized_string = 3;
+    int32 signed_int = 4;
+    SchemaObjectList schema_object_list = 5;
+    SubtitledHtml subtitled_html = 6;
+    SubtitledUnicode subtitled_unicode = 7;
+  }
+}
+
+// Structure for a list of schema object
+message SchemaObjectList {
+  repeated SchemaObject schema_object = 1;
+}
+
+// Structure which supports custom schemas
+message CustomSchemaValue {
+  oneof custom_type {
+    ImageWithRegions image_with_regions = 1;
+    SubtitledHtml subtitled_html = 2;
+    SubtitledUnicode subtitled_unicode = 3;
+  }
 }
 
 // Structure for a single answer group

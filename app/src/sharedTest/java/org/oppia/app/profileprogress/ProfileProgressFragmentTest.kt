@@ -60,9 +60,12 @@ import org.oppia.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.app.model.ProfileId
 import org.oppia.app.ongoingtopiclist.OngoingTopicListActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.app.topic.TopicActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.topic.StoryProgressTestHelper
+import org.oppia.domain.topic.TEST_STORY_ID_0
+import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
@@ -134,11 +137,11 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressFragment_checkProfileName_profileNameIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
-      waitForTheView(withText("Sean"))
+      waitForTheView(withText("Admin"))
       onView(
         atPositionOnView(R.id.profile_progress_list, 0, R.id.profile_name_text_view)
       ).check(
-        matches(withText("Sean"))
+        matches(withText("Admin"))
       )
     }
   }
@@ -147,11 +150,11 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragment_configurationChange_checkProfileName_profileNameIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       onView(isRoot()).perform(orientationLandscape())
-      waitForTheView(withText("Sean"))
+      waitForTheView(withText("Admin"))
       onView(
         atPositionOnView(R.id.profile_progress_list, 0, R.id.profile_name_text_view)
       ).check(
-        matches(withText("Sean"))
+        matches(withText("Admin"))
       )
     }
   }
@@ -159,7 +162,7 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressFragment_openProfilePictureEditDialog() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
-      waitForTheView(withText("Sean"))
+      waitForTheView(withText("Admin"))
       onView(
         atPositionOnView(
           R.id.profile_progress_list,
@@ -175,7 +178,7 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressFragment_openProfilePictureEditDialog_configurationChange_dialogIsStillOpen() { // ktlint-disable max-line-length
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
-      waitForTheView(withText("Sean"))
+      waitForTheView(withText("Admin"))
       onView(
         atPositionOnView(
           R.id.profile_progress_list,
@@ -199,7 +202,7 @@ class ProfileProgressFragmentTest {
     val activityResult = createGalleryPickActivityResultStub()
     intending(expectedIntent).respondWith(activityResult)
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
-      waitForTheView(withText("Sean"))
+      waitForTheView(withText("Admin"))
       onView(
         atPositionOnView(
           R.id.profile_progress_list,
@@ -249,7 +252,6 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  @Config(qualifiers = "port-xxhdpi")
   fun testProfileProgressFragmentWithProgress_change_configuration_recyclerViewItem0_checkOngoingTopicsCount_countIsTwo() { // ktlint-disable max-line-length
     storyProgressTestHelper.markPartialTopicProgressForFractions(
       profileId,
@@ -465,9 +467,31 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
+  fun testProfileProgressActivity_clickRecyclerViewItem1_intentIsCorrect() {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      onView(withId(R.id.profile_progress_list)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      waitForTheView(withText("FIRST TEST TOPIC"))
+      onView(
+        atPositionOnView(
+          R.id.profile_progress_list,
+          1, R.id.topic_name_text_view
+        )
+      ).perform(click())
+      intended(hasComponent(TopicActivity::class.java.name))
+      intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId))
+      intended(hasExtra(TopicActivity.getTopicIdKey(), TEST_TOPIC_ID_0))
+      intended(hasExtra(TopicActivity.getStoryIdKey(), TEST_STORY_ID_0))
+    }
+  }
+
+  @Test
   fun testProfileProgressActivity_recyclerViewIndex0_clickViewAll_opensRecentlyPlayedActivity() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
-      waitForTheView(withText("Sean"))
+      waitForTheView(withText("Admin"))
       onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.view_all_text_view))
         .check(
           matches(withText("View All"))

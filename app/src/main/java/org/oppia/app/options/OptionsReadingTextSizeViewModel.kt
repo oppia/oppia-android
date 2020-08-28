@@ -2,7 +2,7 @@ package org.oppia.app.options
 
 import androidx.databinding.ObservableField
 
-/** ReadingTextSize size settings view model for the recycler view in [OptionsFragment]. */
+/** ReadingTextSize settings view model for the recycler view in [OptionsFragment]. */
 class OptionsReadingTextSizeViewModel(
   private val routeToReadingTextSizeListener: RouteToReadingTextSizeListener,
   private val loadReadingTextSizeListener: LoadReadingTextSizeListener
