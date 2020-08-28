@@ -10,14 +10,7 @@ import android.widget.EditText
 import org.oppia.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.app.utility.KeyboardHelper
 
-// TODO(#249): These are the attributes which should be defined in XML, that are required for this interaction view to work correctly
-//  digits="0123456789:"
-//  hint="Write ratio here."
-//  inputType="time"
-//  background="@drawable/edit_text_background"
-//  maxLength="200".
-
-/** The custom EditText class for text input interaction view. */
+/** The custom EditText class for ratio input interaction view. */
 class RatioInputInteractionView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,

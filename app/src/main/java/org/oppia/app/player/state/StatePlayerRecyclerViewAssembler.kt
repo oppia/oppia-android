@@ -876,11 +876,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
                 binding.submittedAnswerTextView
               )
             }
-            UserAnswer.TextualAnswerCase.ACCESSIBLE_ANSWER -> {
-              showSingleAnswer(binding)
-              binding.submittedAnswer = userAnswer.accessibleAnswer.plainAnswer
-              binding.accessibleAnswer = userAnswer.accessibleAnswer.accessibleAnswer
-            }
             UserAnswer.TextualAnswerCase.LIST_OF_HTML_ANSWERS -> {
               showListOfAnswers(binding)
               binding.submittedListAnswer = userAnswer.listOfHtmlAnswers
@@ -890,6 +885,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
             else -> {
               showSingleAnswer(binding)
               binding.submittedAnswer = userAnswer.plainAnswer
+              binding.accessibleAnswer = userAnswer.contentDescription
             }
           }
         }

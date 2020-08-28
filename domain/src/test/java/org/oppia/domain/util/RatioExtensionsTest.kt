@@ -41,12 +41,6 @@ class RatioExtensionsTest {
     assertThat(ratio.toAnswerString()).isEqualTo("1:2:3")
   }
 
-  @Test
-  fun testRatio_ratio_returnAccessibleRatioString() {
-    val ratio = createRatio(listOf(1, 2, 3))
-    assertThat(ratio.toAccessibleAnswerString()).isEqualTo("1 to 2 to 3")
-  }
-
   private fun createRatio(element: List<Int>): RatioExpression {
     return RatioExpression.newBuilder().addAllRatioComponent(element).build()
   }

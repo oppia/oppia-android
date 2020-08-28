@@ -673,4 +673,146 @@ class InputInteractionViewTestActivityTest {
     onView(withId(R.id.test_text_input_interaction_view)).check(matches(isDisplayed()))
       .check(matches(withText("abc")))
   }
+
+  @Test
+  fun testRatioInputInteractionView_withNoInputText_hasCorrectPendingAnswerType() {
+    val activityScenario = ActivityScenario.launch(
+      InputInteractionViewTestActivity::class.java
+    )
+    activityScenario.onActivity { activity ->
+      val pendingAnswer = activity.ratioExpressionInputInteractionViewModel.getPendingAnswer()
+      assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
+      assertThat(pendingAnswer.answer.ratioExpression.ratioComponentCount).isEqualTo(0)
+    }
+  }
+
+  @Test
+  fun testRatioInputInteractionView_withInputtedText_hasCorrectPendingAnswer() {
+    val activityScenario = ActivityScenario.launch(
+      InputInteractionViewTestActivity::class.java
+    )
+    onView(withId(R.id.test_ratio_input_interaction_view))
+      .perform(
+        typeText(
+          "1:2:3"
+        )
+      )
+    activityScenario.onActivity { activity ->
+      val pendingAnswer = activity.ratioExpressionInputInteractionViewModel.getPendingAnswer()
+      assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
+      assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
+        InteractionObject.ObjectTypeCase.RATIO_EXPRESSION
+      )
+      assertThat(pendingAnswer.answer.ratioExpression.ratioComponentList)
+        .isEqualTo(listOf(1, 2, 3))
+    }
+  }
+
+  @Test
+  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
+  fun testRatioInputInteractionView_withInputtedText_onConfigurationChange_hasCorrectPendingAnswer() { // ktlint-disable max-line-length
+    val activityScenario = ActivityScenario.launch(
+      InputInteractionViewTestActivity::class.java
+    )
+    onView(withId(R.id.test_ratio_input_interaction_view))
+      .perform(
+        typeText(
+          "1:2"
+        )
+      )
+    activityScenario.onActivity { activity ->
+      activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
+    }
+    onView(withId(R.id.test_ratio_input_interaction_view)).check(matches(isDisplayed()))
+      .check(matches(withText("1:2")))
+  }
+
+  @Test
+  fun testratioInputInteractionView_withInputtedTwoColonsTogether_colonsTogetherFormatErrorIsDisplayed() { // ktlint-disable max-line-length
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_ratio_input_interaction_view))
+      .perform(
+        typeText(
+          "1::2"
+        )
+      )
+    onView(withId(R.id.ratio_input_error))
+      .check(
+        matches(
+          withText(
+            R.string.ratio_error_invalid_colons
+          )
+        )
+      )
+  }
+
+  @Test
+  fun testRatioInputInteractionView_withInputtedInvalidNumberOfColons_numberFormatErrorIsDisplayed() { // ktlint-disable max-line-length
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_ratio_input_interaction_view))
+      .perform(
+        typeText(
+          "1:2:3:4:"
+        )
+      )
+    onView(withId(R.id.ratio_input_error))
+      .check(
+        matches(
+          withText(
+            R.string.ratio_error_invalid_colons
+          )
+        )
+      )
+  }
+
+  @Test
+  fun testRatioInputInteractionView_withInputtedSpacesBetweenComponents_hasCorrectPendingAnswer() {
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_ratio_input_interaction_view))
+      .perform(
+        typeText(
+          "1   : 2 : 3 : 4 "
+        )
+      )
+    onView(withId(R.id.test_ratio_input_interaction_view)).check(matches(isDisplayed()))
+      .check(matches(withText("1:2:3:4")))
+  }
+
+  @Test
+  fun testRatioInputInteractionView_withInputtedSpacesBetweenNumbers_numberFormatErrorIsDisplayed() { // ktlint-disable max-line-length
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_ratio_input_interaction_view))
+      .perform(
+        typeText(
+          "1:2  3:4"
+        )
+      )
+    onView(withId(R.id.ratio_input_error))
+      .check(
+        matches(
+          withText(
+            R.string.ratio_error_invalid_format
+          )
+        )
+      )
+  }
+
+  @Test
+  fun testRatioInputInteractionView_withInputtedNegativeRatio_numberFormatErrorIsDisplayed() { // ktlint-disable max-line-length
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_ratio_input_interaction_view))
+      .perform(
+        typeText(
+          "-1:2:3:4"
+        )
+      )
+    onView(withId(R.id.ratio_input_error))
+      .check(
+        matches(
+          withText(
+            R.string.ratio_error_invalid_format
+          )
+        )
+      )
+  }
 }

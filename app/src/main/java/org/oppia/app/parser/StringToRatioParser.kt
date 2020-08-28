@@ -23,7 +23,7 @@ class StringToRatioParser {
   fun getSubmitTimeError(text: String, numberOfTerms: Int): RatioParsingError {
     val ratio = parseRatioOrThrow(text)
     return if (ratio.ratioComponentCount < numberOfTerms) {
-      RatioParsingError.INVALID_FORMAT
+      RatioParsingError.INVALID_SIZE
     } else
       RatioParsingError.VALID
   }
@@ -66,7 +66,8 @@ class StringToRatioParser {
     VALID(error = null),
     INVALID_CHARS(error = R.string.ratio_error_invalid_chars),
     INVALID_FORMAT(error = R.string.ratio_error_invalid_format),
-    INVALID_COLONS(error = R.string.ratio_error_invalid_colons);
+    INVALID_COLONS(error = R.string.ratio_error_invalid_colons),
+    INVALID_SIZE(error = R.string.ratio_error_invalid_format);
 
     /** Returns the string corresponding to this error's string resources, or null if there is none. */
     fun getErrorMessageFromStringRes(context: Context): String? {
@@ -77,4 +78,14 @@ class StringToRatioParser {
 
 private fun String.removeWhitespace(): String {
   return this.replace(" ", "")
+}
+
+/**
+ * Returns this Ratio in string format.
+ * E.g. [1, 2, 3] will yield to 1 to 2 to 3
+ */
+fun RatioExpression.toAccessibleAnswerString(context: Context): String {
+  return ratioComponentList.joinToString(
+    context.getString(R.string.ratio_content_description_separator)
+  )
 }

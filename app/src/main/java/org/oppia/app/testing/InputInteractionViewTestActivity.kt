@@ -64,7 +64,7 @@ class InputInteractionViewTestActivity :
       context = this,
       hasConversationView = false,
       isSplitView = false,
-      interactionAnswerErrorOrAvailabilityCheckReceiver = this
+      errorOrAvailabilityCheckReceiver = this
     )
     binding.numericInputViewModel = numericInputViewModel
     binding.textInputViewModel = textInputViewModel

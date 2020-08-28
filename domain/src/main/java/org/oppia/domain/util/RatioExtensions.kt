@@ -20,11 +20,3 @@ fun RatioExpression.toSimplestForm(): List<Int> {
 fun RatioExpression.toAnswerString(): String {
   return ratioComponentList.joinToString(separator = ":")
 }
-
-/**
- * Returns this Ratio in string format.
- * E.g. [1, 2, 3] will yield to 1 to 2 to 3
- */
-fun RatioExpression.toAccessibleAnswerString(): String {
-  return ratioComponentList.joinToString(separator = " to ")
-}

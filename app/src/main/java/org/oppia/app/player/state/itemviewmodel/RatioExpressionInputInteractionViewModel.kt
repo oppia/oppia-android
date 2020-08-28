@@ -6,24 +6,23 @@ import android.text.TextWatcher
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.app.R
-import org.oppia.app.model.AccessibleAnswer
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.parser.StringToRatioParser
+import org.oppia.app.parser.toAccessibleAnswerString
 import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
-import org.oppia.domain.util.toAccessibleAnswerString
 import org.oppia.domain.util.toAnswerString
 
-/** [StateItemViewModel] for the ratio express input interaction. */
+/** [StateItemViewModel] for the ratio expression input interaction. */
 class RatioExpressionInputInteractionViewModel(
   interaction: Interaction,
   private val context: Context,
   val hasConversationView: Boolean,
   val isSplitView: Boolean,
-  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver // ktlint-disable max-line-length
+  private val errorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver
 ) : StateItemViewModel(ViewType.RATIO_EXPRESSION_INPUT_INTERACTION), InteractionAnswerHandler {
   private var pendingAnswerError: String? = null
   var answerText: CharSequence = ""
@@ -32,13 +31,14 @@ class RatioExpressionInputInteractionViewModel(
 
   val hintText: CharSequence = deriveHintText(interaction)
   private val stringToRatioParser: StringToRatioParser = StringToRatioParser()
-  val numberOfTerms =
+  private val numberOfTerms =
     interaction.customizationArgsMap["numberOfTerms"]?.signedInt ?: 0
+
   init {
     val callback: Observable.OnPropertyChangedCallback =
       object : Observable.OnPropertyChangedCallback() {
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
-          interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
+          errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
             pendingAnswerError,
             answerText.isNotEmpty()
           )
@@ -55,10 +55,8 @@ class RatioExpressionInputInteractionViewModel(
       userAnswerBuilder.answer = InteractionObject.newBuilder()
         .setRatioExpression(ratioAnswer)
         .build()
-      userAnswerBuilder.accessibleAnswer = AccessibleAnswer.newBuilder()
-        .setPlainAnswer(ratioAnswer.toAnswerString())
-        .setAccessibleAnswer(ratioAnswer.toAccessibleAnswerString())
-        .build()
+      userAnswerBuilder.plainAnswer = ratioAnswer.toAnswerString()
+      userAnswerBuilder.contentDescription = ratioAnswer.toAccessibleAnswerString(context)
     }
     return userAnswerBuilder.build()
   }
@@ -109,7 +107,7 @@ class RatioExpressionInputInteractionViewModel(
       interaction.customizationArgsMap["placeholder"]?.subtitledUnicode?.unicodeStr ?: ""
     return when {
       placeholder.isNotEmpty() -> placeholder
-      else -> context.getString(R.string.fractions_default_hint_text)
+      else -> context.getString(R.string.ratio_default_hint_text)
     }
   }
 }

@@ -102,6 +102,7 @@
   <string name="ratio_error_invalid_chars">Please write a ratio that consists of digits separated by colons (e.g. 1:2 or 1:2:3).</string>
   <string name="ratio_error_invalid_format">Please enter a valid ratio (e.g. 1:2 or 1:2:3).</string>
   <string name="ratio_error_invalid_colons">Your answer has two colons (:) next to each other.</string>
+  <string name="ratio_error_invalid_size">Number of terms is less than required terms.</string>
   <string name="unknown_size">Unknown size</string>
   <string name="size_bytes">%d Bytes</string>
   <string name="size_kb">%d KB</string>
@@ -381,5 +382,16 @@
     description="The close button text of the dialog shown when a user's pre-release app has expired.">
     Close app
   </string>
+  <string
+    name="ratio_content_description_separator"
+    description="The separator that would be used to build content description for ratio interaction">
+    &#160;to&#160;
+  </string>
+  <string
+    name="ratio_default_hint_text"
+    description="The default hint text for the ratio interaction if the placeholder text is not available.">
+    Enter a ratio in the form x:y.
+  </string>
+
 
 </resources>
