@@ -8,6 +8,10 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.walkthrough_activity.*
+import kotlinx.android.synthetic.main.walkthrough_activity.view.*
+import org.oppia.app.databinding.WalkthroughActivityBinding
 import org.oppia.app.databinding.WalkthroughTopicHeaderViewBinding
 import org.oppia.app.databinding.WalkthroughTopicListFragmentBinding
 import org.oppia.app.databinding.WalkthroughTopicSummaryViewBinding
@@ -15,6 +19,7 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.TopicSummary
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
+import org.oppia.app.walkthrough.WalkthroughActivityPresenter
 import org.oppia.app.walkthrough.WalkthroughFragmentChangeListener
 import org.oppia.app.walkthrough.WalkthroughPages
 import org.oppia.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicHeaderViewModel
@@ -63,6 +68,24 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
     binding.walkthroughTopicRecyclerView.apply {
       layoutManager = walkthroughLayoutManager
       adapter = createRecyclerViewAdapter()
+      addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+          super.onScrolled(recyclerView, dx, dy)
+          val pos = walkthroughLayoutManager.findFirstVisibleItemPosition()
+          if (pos != 0) {
+            activity.walkthrough_progress_bar.visibility = View.GONE
+            activity.walkthrough_activity_topic_header_text_view.visibility = View.VISIBLE
+            binding.walkthroughTopicHeaderTextView.visibility = View.GONE
+//            activity.on
+
+          } else {
+            activity.walkthrough_progress_bar.visibility = View.VISIBLE
+            activity.walkthrough_activity_topic_header_text_view.visibility = View.GONE
+            binding.walkthroughTopicHeaderTextView.visibility = View.VISIBLE
+
+          }
+        }
+      })
     }
 
     binding.let {
@@ -76,17 +99,10 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
     return BindableAdapter.MultiTypeBuilder
       .newBuilder<WalkthroughTopicItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
-          is WalkthroughTopicHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
           is WalkthroughTopicSummaryViewModel -> ViewType.VIEW_TYPE_TOPIC
           else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
         }
       }
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_HEADER,
-        inflateDataBinding = WalkthroughTopicHeaderViewBinding::inflate,
-        setViewModel = WalkthroughTopicHeaderViewBinding::setViewModel,
-        transformViewModel = { it as WalkthroughTopicHeaderViewModel }
-      )
       .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_TOPIC,
         inflateDataBinding = WalkthroughTopicSummaryViewBinding::inflate,
@@ -101,7 +117,6 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
   }
 
   private enum class ViewType {
-    VIEW_TYPE_HEADER,
     VIEW_TYPE_TOPIC
   }
 

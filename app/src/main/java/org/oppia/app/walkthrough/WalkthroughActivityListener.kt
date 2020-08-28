@@ -9,4 +9,6 @@ interface WalkthroughActivityListener {
    * @param currentProgress Integer describing the current page a user is on.
    */
   fun moveToPreviousPage(currentProgress: Int)
+  fun hideProgressBar()
+  fun showProgressBar()
 }

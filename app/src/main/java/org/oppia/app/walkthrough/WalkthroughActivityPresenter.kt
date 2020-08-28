@@ -1,5 +1,6 @@
 package org.oppia.app.walkthrough
 
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.app.R
@@ -64,6 +65,14 @@ class WalkthroughActivityPresenter @Inject constructor(
           }
       }
     }
+  }
+
+  override fun hideProgressBar() {
+    binding.walkthroughProgressBar.visibility = View.GONE
+  }
+
+  override fun showProgressBar() {
+    binding.walkthroughProgressBar.visibility = View.VISIBLE
   }
 
   override fun moveToPreviousPage(currentProgress: Int) {
