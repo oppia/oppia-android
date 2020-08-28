@@ -20,11 +20,21 @@ import org.oppia.app.model.ReadingTextSize
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 const val READING_TEXT_SIZE = "READING_TEXT_SIZE"
 const val APP_LANGUAGE = "APP_LANGUAGE"
 const val AUDIO_LANGUAGE = "AUDIO_LANGUAGE"
+private const val READING_TEXT_SIZE_TAG = "ReadingTextSize"
+private const val APP_LANGUAGE_TAG = "AppLanguage"
+private const val AUDIO_LANGUAGE_TAG = "AudioLanguage"
+private const val READING_TEXT_SIZE_ERROR =
+  "Something went wrong while updating the reading text size"
+private const val APP_LANGUAGE_ERROR =
+  "Something went wrong while updating the app language"
+private const val AUDIO_LANGUAGE_ERROR =
+  "Something went wrong while updating the audio language"
 
 /** The presenter for [OptionsFragment]. */
 @FragmentScope
@@ -32,7 +42,8 @@ class OptionsFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
-  private val viewModelProvider: ViewModelProvider<OptionControlsViewModel>
+  private val viewModelProvider: ViewModelProvider<OptionControlsViewModel>,
+  private val consoleLogger: ConsoleLogger
 ) {
   private lateinit var binding: OptionsFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
@@ -149,6 +160,12 @@ class OptionsFragmentPresenter @Inject constructor(
           Observer {
             if (it.isSuccess()) {
               readingTextSize = ReadingTextSize.SMALL_TEXT_SIZE
+            } else {
+              consoleLogger.e(
+                READING_TEXT_SIZE_TAG,
+                READING_TEXT_SIZE_ERROR,
+                it.getErrorOrNull()
+              )
             }
           }
         )
@@ -162,6 +179,12 @@ class OptionsFragmentPresenter @Inject constructor(
           Observer {
             if (it.isSuccess()) {
               readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
+            } else {
+              consoleLogger.e(
+                READING_TEXT_SIZE_TAG,
+                READING_TEXT_SIZE_ERROR,
+                it.getErrorOrNull()
+              )
             }
           }
         )
@@ -175,6 +198,12 @@ class OptionsFragmentPresenter @Inject constructor(
           Observer {
             if (it.isSuccess()) {
               readingTextSize = ReadingTextSize.LARGE_TEXT_SIZE
+            } else {
+              consoleLogger.e(
+                READING_TEXT_SIZE_TAG,
+                READING_TEXT_SIZE_ERROR,
+                it.getErrorOrNull()
+              )
             }
           }
         )
@@ -189,6 +218,12 @@ class OptionsFragmentPresenter @Inject constructor(
           Observer {
             if (it.isSuccess()) {
               readingTextSize = ReadingTextSize.EXTRA_LARGE_TEXT_SIZE
+            } else {
+              consoleLogger.e(
+                READING_TEXT_SIZE_TAG,
+                READING_TEXT_SIZE_ERROR,
+                it.getErrorOrNull()
+              )
             }
           }
         )
@@ -208,6 +243,12 @@ class OptionsFragmentPresenter @Inject constructor(
           Observer {
             if (it.isSuccess()) {
               appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
+            } else {
+              consoleLogger.e(
+                APP_LANGUAGE_TAG,
+                APP_LANGUAGE_ERROR,
+                it.getErrorOrNull()
+              )
             }
           }
         )
@@ -221,6 +262,12 @@ class OptionsFragmentPresenter @Inject constructor(
           Observer {
             if (it.isSuccess()) {
               appLanguage = AppLanguage.HINDI_APP_LANGUAGE
+            } else {
+              consoleLogger.e(
+                APP_LANGUAGE_TAG,
+                APP_LANGUAGE_ERROR,
+                it.getErrorOrNull()
+              )
             }
           }
         )
@@ -234,6 +281,12 @@ class OptionsFragmentPresenter @Inject constructor(
           Observer {
             if (it.isSuccess()) {
               appLanguage = AppLanguage.CHINESE_APP_LANGUAGE
+            } else {
+              consoleLogger.e(
+                APP_LANGUAGE_TAG,
+                APP_LANGUAGE_ERROR,
+                it.getErrorOrNull()
+              )
             }
           }
         )
@@ -247,6 +300,12 @@ class OptionsFragmentPresenter @Inject constructor(
           Observer {
             if (it.isSuccess()) {
               appLanguage = AppLanguage.FRENCH_APP_LANGUAGE
+            } else {
+              consoleLogger.e(
+                APP_LANGUAGE_TAG,
+                APP_LANGUAGE_ERROR,
+                it.getErrorOrNull()
+              )
             }
           }
         )
@@ -267,6 +326,12 @@ class OptionsFragmentPresenter @Inject constructor(
           Observer {
             if (it.isSuccess()) {
               audioLanguage = AudioLanguage.NO_AUDIO
+            } else {
+              consoleLogger.e(
+                AUDIO_LANGUAGE_TAG,
+                AUDIO_LANGUAGE_ERROR,
+                it.getErrorOrNull()
+              )
             }
           }
         )
@@ -280,6 +345,12 @@ class OptionsFragmentPresenter @Inject constructor(
           Observer {
             if (it.isSuccess()) {
               audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+            } else {
+              consoleLogger.e(
+                AUDIO_LANGUAGE_TAG,
+                AUDIO_LANGUAGE_ERROR,
+                it.getErrorOrNull()
+              )
             }
           }
         )
@@ -293,6 +364,12 @@ class OptionsFragmentPresenter @Inject constructor(
           Observer {
             if (it.isSuccess()) {
               audioLanguage = AudioLanguage.HINDI_AUDIO_LANGUAGE
+            } else {
+              consoleLogger.e(
+                AUDIO_LANGUAGE_TAG,
+                AUDIO_LANGUAGE_ERROR,
+                it.getErrorOrNull()
+              )
             }
           }
         )
@@ -306,6 +383,12 @@ class OptionsFragmentPresenter @Inject constructor(
           Observer {
             if (it.isSuccess()) {
               audioLanguage = AudioLanguage.CHINESE_AUDIO_LANGUAGE
+            } else {
+              consoleLogger.e(
+                AUDIO_LANGUAGE_TAG,
+                AUDIO_LANGUAGE_ERROR,
+                it.getErrorOrNull()
+              )
             }
           }
         )
@@ -319,6 +402,12 @@ class OptionsFragmentPresenter @Inject constructor(
           Observer {
             if (it.isSuccess()) {
               audioLanguage = AudioLanguage.FRENCH_AUDIO_LANGUAGE
+            } else {
+              consoleLogger.e(
+                AUDIO_LANGUAGE_TAG,
+                AUDIO_LANGUAGE_ERROR,
+                it.getErrorOrNull()
+              )
             }
           }
         )
