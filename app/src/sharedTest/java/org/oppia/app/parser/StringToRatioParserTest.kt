@@ -101,5 +101,4 @@ class StringToRatioParserTest {
   private fun createRatio(element: List<Int>): RatioExpression {
     return RatioExpression.newBuilder().addAllRatioComponent(element).build()
   }
-
 }
