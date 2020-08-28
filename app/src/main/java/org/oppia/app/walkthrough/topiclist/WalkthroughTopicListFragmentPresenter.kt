@@ -5,6 +5,7 @@ import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -73,16 +74,16 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
           super.onScrolled(recyclerView, dx, dy)
           val pos = walkthroughLayoutManager.findFirstVisibleItemPosition()
           if (pos != 0) {
+            Toast.makeText(context, "$pos", Toast.LENGTH_SHORT).show()
+//            binding.walkthroughTopicHeaderTextView.visibility = View.GONE
             activity.walkthrough_progress_bar.visibility = View.GONE
             activity.walkthrough_activity_topic_header_text_view.visibility = View.VISIBLE
-            binding.walkthroughTopicHeaderTextView.visibility = View.GONE
-//            activity.on
-
-          } else {
+          }
+          if (pos == 0) {
+            Toast.makeText(context, "$pos", Toast.LENGTH_SHORT).show()
+//            binding.walkthroughTopicHeaderTextView.visibility = View.VISIBLE
             activity.walkthrough_progress_bar.visibility = View.VISIBLE
             activity.walkthrough_activity_topic_header_text_view.visibility = View.GONE
-            binding.walkthroughTopicHeaderTextView.visibility = View.VISIBLE
-
           }
         }
       })
@@ -99,10 +100,17 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
     return BindableAdapter.MultiTypeBuilder
       .newBuilder<WalkthroughTopicItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
+          is WalkthroughTopicHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
           is WalkthroughTopicSummaryViewModel -> ViewType.VIEW_TYPE_TOPIC
           else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
         }
       }
+      .registerViewDataBinder(
+        viewType = ViewType.VIEW_TYPE_HEADER,
+        inflateDataBinding = WalkthroughTopicHeaderViewBinding::inflate,
+        setViewModel = WalkthroughTopicHeaderViewBinding::setViewModel,
+        transformViewModel = { it as WalkthroughTopicHeaderViewModel }
+      )
       .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_TOPIC,
         inflateDataBinding = WalkthroughTopicSummaryViewBinding::inflate,
@@ -117,6 +125,7 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
   }
 
   private enum class ViewType {
+    VIEW_TYPE_HEADER,
     VIEW_TYPE_TOPIC
   }
 
