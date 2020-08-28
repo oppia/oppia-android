@@ -66,6 +66,7 @@ class StringToRatioParserTest {
   @Test
   fun testParser_submitTimeError_returnValid() {
     val error = stringToRatioParser.getSubmitTimeError("1:2:3:4", 4)
+      .getErrorMessageFromStringRes(context)
     assertThat(error).isEqualTo(null)
   }
 
