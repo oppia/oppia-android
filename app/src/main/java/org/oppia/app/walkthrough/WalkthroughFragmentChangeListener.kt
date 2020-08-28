@@ -5,6 +5,4 @@ interface WalkthroughFragmentChangeListener {
 
   fun currentPage(walkthroughPage: Int)
   fun pageWithTopicId(walkthroughPage: Int, topicId: String)
-  fun hideProgressBarInActivity()
-  fun showProgressBarInActivity()
 }
