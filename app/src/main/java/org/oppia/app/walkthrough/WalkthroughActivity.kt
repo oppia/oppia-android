@@ -30,14 +30,6 @@ class WalkthroughActivity : InjectableAppCompatActivity(), WalkthroughFragmentCh
     walkthroughActivityPresenter.handleSystemBack()
   }
 
-  override fun hideProgressBarInActivity() {
-    walkthroughActivityPresenter.hideProgressBar()
-  }
-
-  override fun showProgressBarInActivity() {
-    walkthroughActivityPresenter.showProgressBar()
-  }
-
   companion object {
     internal const val WALKTHROUGH_ACTIVITY_INTERNAL_PROFILE_ID_KEY =
       "WalkthroughActivity.internal_profile_id"

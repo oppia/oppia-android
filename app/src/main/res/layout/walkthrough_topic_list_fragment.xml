@@ -19,17 +19,6 @@
     android:background="@color/white"
     android:gravity="center"
     android:orientation="vertical">
-<!--    <TextView-->
-<!--      android:id="@+id/walkthrough_topic_header_text_view"-->
-<!--      android:layout_width="wrap_content"-->
-<!--      android:layout_height="wrap_content"-->
-<!--      android:layout_marginStart="28dp"-->
-<!--      android:layout_marginEnd="28dp"-->
-<!--      android:layout_marginBottom="16dp"-->
-<!--      android:fontFamily="sans-serif-medium"-->
-<!--      android:text="@string/what_do_you_want_to_learn"-->
-<!--      android:textColor="@color/oppiaPrimaryText"-->
-<!--      android:textSize="24sp" />-->
 
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/walkthrough_topic_recycler_view"
