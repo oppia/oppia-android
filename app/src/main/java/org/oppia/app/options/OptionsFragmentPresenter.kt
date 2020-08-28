@@ -144,42 +144,54 @@ class OptionsFragmentPresenter @Inject constructor(
         profileManagementController.updateReadingTextSize(
           profileId,
           ReadingTextSize.SMALL_TEXT_SIZE
-        ).observe(fragment, Observer {
-          if (it.isSuccess()) {
-            readingTextSize = ReadingTextSize.SMALL_TEXT_SIZE
+        ).observe(
+          fragment,
+          Observer {
+            if (it.isSuccess()) {
+              readingTextSize = ReadingTextSize.SMALL_TEXT_SIZE
+            }
           }
-        })
+        )
       }
       getOptionControlsItemViewModel().getReadingTextSize(ReadingTextSize.MEDIUM_TEXT_SIZE) -> {
         profileManagementController.updateReadingTextSize(
           profileId,
           ReadingTextSize.MEDIUM_TEXT_SIZE
-        ).observe(fragment, Observer {
-          if (it.isSuccess()) {
-            readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
+        ).observe(
+          fragment,
+          Observer {
+            if (it.isSuccess()) {
+              readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
+            }
           }
-        })
+        )
       }
       getOptionControlsItemViewModel().getReadingTextSize(ReadingTextSize.LARGE_TEXT_SIZE) -> {
         profileManagementController.updateReadingTextSize(
           profileId,
           ReadingTextSize.LARGE_TEXT_SIZE
-        ).observe(fragment, Observer {
-          if (it.isSuccess()) {
-            readingTextSize = ReadingTextSize.LARGE_TEXT_SIZE
+        ).observe(
+          fragment,
+          Observer {
+            if (it.isSuccess()) {
+              readingTextSize = ReadingTextSize.LARGE_TEXT_SIZE
+            }
           }
-        })
+        )
       }
       getOptionControlsItemViewModel()
         .getReadingTextSize(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE) -> {
         profileManagementController.updateReadingTextSize(
           profileId,
           ReadingTextSize.EXTRA_LARGE_TEXT_SIZE
-        ).observe(fragment, Observer {
-          if (it.isSuccess()) {
-            readingTextSize = ReadingTextSize.EXTRA_LARGE_TEXT_SIZE
+        ).observe(
+          fragment,
+          Observer {
+            if (it.isSuccess()) {
+              readingTextSize = ReadingTextSize.EXTRA_LARGE_TEXT_SIZE
+            }
           }
-        })
+        )
       }
     }
     recyclerViewAdapter.notifyItemChanged(0)
@@ -191,41 +203,53 @@ class OptionsFragmentPresenter @Inject constructor(
         profileManagementController.updateAppLanguage(
           profileId,
           AppLanguage.ENGLISH_APP_LANGUAGE
-        ).observe(fragment, Observer {
-          if (it.isSuccess()) {
-            appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
+        ).observe(
+          fragment,
+          Observer {
+            if (it.isSuccess()) {
+              appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
+            }
           }
-        })
+        )
       }
       getOptionControlsItemViewModel().getAppLanguage(AppLanguage.HINDI_APP_LANGUAGE) -> {
         profileManagementController.updateAppLanguage(
           profileId,
           AppLanguage.HINDI_APP_LANGUAGE
-        ).observe(fragment, Observer {
-          if (it.isSuccess()) {
-            appLanguage = AppLanguage.HINDI_APP_LANGUAGE
+        ).observe(
+          fragment,
+          Observer {
+            if (it.isSuccess()) {
+              appLanguage = AppLanguage.HINDI_APP_LANGUAGE
+            }
           }
-        })
+        )
       }
       getOptionControlsItemViewModel().getAppLanguage(AppLanguage.CHINESE_APP_LANGUAGE) -> {
         profileManagementController.updateAppLanguage(
           profileId,
           AppLanguage.CHINESE_APP_LANGUAGE
-        ).observe(fragment, Observer {
-          if (it.isSuccess()) {
-            appLanguage = AppLanguage.CHINESE_APP_LANGUAGE
+        ).observe(
+          fragment,
+          Observer {
+            if (it.isSuccess()) {
+              appLanguage = AppLanguage.CHINESE_APP_LANGUAGE
+            }
           }
-        })
+        )
       }
       getOptionControlsItemViewModel().getAppLanguage(AppLanguage.FRENCH_APP_LANGUAGE) -> {
         profileManagementController.updateAppLanguage(
           profileId,
           AppLanguage.FRENCH_APP_LANGUAGE
-        ).observe(fragment, Observer {
-          if (it.isSuccess()) {
-            appLanguage = AppLanguage.FRENCH_APP_LANGUAGE
+        ).observe(
+          fragment,
+          Observer {
+            if (it.isSuccess()) {
+              appLanguage = AppLanguage.FRENCH_APP_LANGUAGE
+            }
           }
-        })
+        )
       }
     }
 
@@ -238,51 +262,66 @@ class OptionsFragmentPresenter @Inject constructor(
         profileManagementController.updateAudioLanguage(
           profileId,
           AudioLanguage.NO_AUDIO
-        ).observe(fragment, Observer {
-          if (it.isSuccess()) {
-            audioLanguage = AudioLanguage.NO_AUDIO
+        ).observe(
+          fragment,
+          Observer {
+            if (it.isSuccess()) {
+              audioLanguage = AudioLanguage.NO_AUDIO
+            }
           }
-        })
+        )
       }
       getOptionControlsItemViewModel().getAudioLanguage(AudioLanguage.ENGLISH_AUDIO_LANGUAGE) -> {
         profileManagementController.updateAudioLanguage(
           profileId,
           AudioLanguage.ENGLISH_AUDIO_LANGUAGE
-        ).observe(fragment, Observer {
-          if (it.isSuccess()) {
-            audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        ).observe(
+          fragment,
+          Observer {
+            if (it.isSuccess()) {
+              audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+            }
           }
-        })
+        )
       }
       getOptionControlsItemViewModel().getAudioLanguage(AudioLanguage.HINDI_AUDIO_LANGUAGE) -> {
         profileManagementController.updateAudioLanguage(
           profileId,
           AudioLanguage.HINDI_AUDIO_LANGUAGE
-        ).observe(fragment, Observer {
-          if (it.isSuccess()) {
-            audioLanguage = AudioLanguage.HINDI_AUDIO_LANGUAGE
+        ).observe(
+          fragment,
+          Observer {
+            if (it.isSuccess()) {
+              audioLanguage = AudioLanguage.HINDI_AUDIO_LANGUAGE
+            }
           }
-        })
+        )
       }
       getOptionControlsItemViewModel().getAudioLanguage(AudioLanguage.CHINESE_AUDIO_LANGUAGE) -> {
         profileManagementController.updateAudioLanguage(
           profileId,
           AudioLanguage.CHINESE_AUDIO_LANGUAGE
-        ).observe(fragment, Observer {
-          if (it.isSuccess()) {
-            audioLanguage = AudioLanguage.CHINESE_AUDIO_LANGUAGE
+        ).observe(
+          fragment,
+          Observer {
+            if (it.isSuccess()) {
+              audioLanguage = AudioLanguage.CHINESE_AUDIO_LANGUAGE
+            }
           }
-        })
+        )
       }
       getOptionControlsItemViewModel().getAudioLanguage(AudioLanguage.FRENCH_AUDIO_LANGUAGE) -> {
         profileManagementController.updateAudioLanguage(
           profileId,
           AudioLanguage.FRENCH_AUDIO_LANGUAGE
-        ).observe(fragment, Observer {
-          if (it.isSuccess()) {
-            audioLanguage = AudioLanguage.FRENCH_AUDIO_LANGUAGE
+        ).observe(
+          fragment,
+          Observer {
+            if (it.isSuccess()) {
+              audioLanguage = AudioLanguage.FRENCH_AUDIO_LANGUAGE
+            }
           }
-        })
+        )
       }
     }
 
