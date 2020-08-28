@@ -31,13 +31,17 @@ public final class TextViewBindingAdapters {
 
   @BindingAdapter("profile:lastVisited")
   public static void setProfileLastVisitedText(@NonNull TextView textView, long timestamp) {
-    // TODO(#1672): Remove string concatenation in favor of multi-variable strings.
+    String profileLastUsed = textView.getContext().getString(R.string.profile_last_used);
+    String timeAgoTimeStamp = getTimeAgo(
+        timestamp,
+        textView.getContext()
+    );
+    String format = "%1$s %2$s";
     textView.setText(
         String.format(
-            textView.getContext().getString(R.string.profile_last_used) + " " + getTimeAgo(
-                timestamp,
-                textView.getContext()
-            )
+            format,
+            profileLastUsed,
+            timeAgoTimeStamp
         )
     );
   }
