@@ -10,10 +10,10 @@ import org.oppia.app.model.Interaction
 import org.oppia.app.model.InteractionObject
 import org.oppia.app.model.UserAnswer
 import org.oppia.app.parser.StringToRatioParser
-import org.oppia.app.parser.toAccessibleAnswerString
 import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
+import org.oppia.app.utility.toAccessibleAnswerString
 import org.oppia.domain.util.toAnswerString
 
 /** [StateItemViewModel] for the ratio expression input interaction. */

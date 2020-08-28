@@ -17,6 +17,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.model.InteractionObject
+import org.oppia.app.model.RatioExpression
 import org.robolectric.annotation.LooperMode
 
 /** Tests for [InputInteractionViewTestActivity]. */
@@ -681,7 +682,7 @@ class InputInteractionViewTestActivityTest {
     )
     activityScenario.onActivity { activity ->
       val pendingAnswer = activity.ratioExpressionInputInteractionViewModel.getPendingAnswer()
-      assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
+      assertThat(pendingAnswer.answer.ratioExpression).isInstanceOf(RatioExpression::class.java)
       assertThat(pendingAnswer.answer.ratioExpression.ratioComponentCount).isEqualTo(0)
     }
   }
@@ -709,7 +710,6 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testRatioInputInteractionView_withInputtedText_onConfigurationChange_hasCorrectPendingAnswer() { // ktlint-disable max-line-length
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
@@ -728,7 +728,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testratioInputInteractionView_withInputtedTwoColonsTogether_colonsTogetherFormatErrorIsDisplayed() { // ktlint-disable max-line-length
+  fun testRatioView_withInputtedTwoColonsTogether_colonsTogetherFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_ratio_input_interaction_view))
       .perform(
@@ -747,7 +747,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testRatioInputInteractionView_withInputtedInvalidNumberOfColons_numberFormatErrorIsDisplayed() { // ktlint-disable max-line-length
+  fun testRatioInputView_withInputtedInvalidNumberOfColons_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_ratio_input_interaction_view))
       .perform(
@@ -779,7 +779,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testRatioInputInteractionView_withInputtedSpacesBetweenNumbers_numberFormatErrorIsDisplayed() { // ktlint-disable max-line-length
+  fun testRatioInputView_withInputtedSpacesBetweenNumbers_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_ratio_input_interaction_view))
       .perform(
@@ -798,12 +798,31 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testRatioInputInteractionView_withInputtedNegativeRatio_numberFormatErrorIsDisplayed() { // ktlint-disable max-line-length
+  fun testRatioInputInteractionView_withInputtedNegativeRatio_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_ratio_input_interaction_view))
       .perform(
         typeText(
           "-1:2:3:4"
+        )
+      )
+    onView(withId(R.id.ratio_input_error))
+      .check(
+        matches(
+          withText(
+            R.string.ratio_error_invalid_format
+          )
+        )
+      )
+  }
+
+  @Test
+  fun testRatioInputInteractionView_withFractionRatio_numberFormatErrorIsDisplayed() {
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_ratio_input_interaction_view))
+      .perform(
+        typeText(
+          "1/2:3:4"
         )
       )
     onView(withId(R.id.ratio_input_error))

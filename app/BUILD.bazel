@@ -271,6 +271,7 @@ VIEWS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/app/customview/SegmentedCircularProgressView.kt",
     "src/main/java/org/oppia/app/profile/ProfileInputView.kt",
     "src/main/java/org/oppia/app/utility/ClickableAreasImage.kt",
+    "src/main/java/org/oppia/app/utility/RatioExtensions.kt",
 ]
 
 '''
