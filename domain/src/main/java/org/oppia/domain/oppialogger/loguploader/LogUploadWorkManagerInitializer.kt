@@ -1,7 +1,6 @@
 package org.oppia.domain.oppialogger.loguploader
 
 import android.content.Context
-import android.util.Log
 import androidx.work.Configuration
 import androidx.work.Constraints
 import androidx.work.Data
