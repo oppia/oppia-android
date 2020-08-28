@@ -1,6 +1,7 @@
 package org.oppia.app.testing.options
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
@@ -50,6 +51,7 @@ import org.oppia.testing.TestAccessibilityModule
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
+import org.oppia.testing.profile.ProfileTestHelper
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.caching.testing.CachingTestModule
 import org.oppia.util.gcsresource.GcsResourceModule
@@ -62,10 +64,21 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private const val ENGLISH = 0
+private const val FRENCH = 1
+private const val HINDI = 2
+private const val CHINESE = 3
+
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = AppLanguageFragmentTest.TestApplication::class)
 class AppLanguageFragmentTest {
+
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -74,7 +87,8 @@ class AppLanguageFragmentTest {
   fun setUp() {
     setUpTestApplicationComponent()
     Intents.init()
-    FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
+    FirebaseApp.initializeApp(context)
+    profileTestHelper.initializeProfiles()
   }
 
   @After
@@ -85,61 +99,75 @@ class AppLanguageFragmentTest {
   @Test
   fun testAppLanguage_changeAppLanguageToFrench_changeConfiguration_selectedLanguageIsFrench() {
     launch<AppLanguageActivity>(createAppLanguageActivityIntent("English")).use {
-      onView(
-        atPositionOnView(
-          R.id.language_recycler_view,
-          1,
-          R.id.language_radio_button
-        )
-      ).perform(
-        click()
-      )
-      onView(isRoot()).perform(orientationLandscape())
-      onView(
-        atPositionOnView(
-          R.id.language_recycler_view,
-          1,
-          R.id.language_radio_button
-        )
-      ).check(matches(isChecked()))
+      selectLanguage(FRENCH)
+      rotateToLandscape()
+      checkSelectedLanguage(FRENCH)
     }
   }
 
   @Test
   @Config(qualifiers = "sw600dp")
-  fun testAppLanguage_clickAppLanguage_changeAppLanguageToFrench_checkOptionsFragmentIsUpdatedCorrectly() { // ktlint-disable max-line-length
+  fun testAppLanguage_clickAppLanguage_changeAppLanguage_checkOptionsFragmentIsUpdatedCorrectly() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      testCoroutineDispatchers.advanceUntilIdle()
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          1,
-          R.id.app_language_item_layout
-        )
-      ).perform(
-        click()
-      )
-      testCoroutineDispatchers.advanceUntilIdle()
-      onView(
-        atPositionOnView(
-          R.id.language_recycler_view,
-          1,
-          R.id.language_radio_button
-        )
-      ).perform(
-        click()
-      )
-      testCoroutineDispatchers.advanceTimeBy(5000)
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          1,
-          R.id.app_language_text_view
-        )
-      ).check(
-        matches(withText("French"))
-      )
+      testCoroutineDispatchers.runCurrent()
+      selectChangeAppLanguage()
+      selectLanguage(HINDI)
+      checkAppLanguage("Hindi")
     }
+  }
+
+  private fun checkSelectedLanguage(index: Int) {
+    onView(
+      atPositionOnView(
+        R.id.language_recycler_view,
+        index,
+        R.id.language_radio_button
+      )
+    ).check(matches(isChecked()))
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun rotateToLandscape() {
+    onView(isRoot()).perform(orientationLandscape())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun selectChangeAppLanguage() {
+    onView(
+      atPositionOnView(
+        R.id.options_recyclerview,
+        1,
+        R.id.app_language_item_layout
+      )
+    ).perform(
+      click()
+    )
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun selectLanguage(index: Int) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.language_recycler_view,
+        position = index,
+        targetViewId = R.id.language_radio_button
+      )
+    ).perform(
+      click()
+    )
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun checkAppLanguage(appLanguage: String) {
+    onView(
+      atPositionOnView(
+        R.id.options_recyclerview,
+        1,
+        R.id.app_language_text_view
+      )
+    ).check(
+      matches(withText(appLanguage))
+    )
   }
 
   private fun createAppLanguageActivityIntent(summaryValue: String): Intent {
