@@ -39,7 +39,7 @@ class StringToRatioParserTest {
   fun testParser_realtimeError_returnInvalidFormatError() {
     val error =
       stringToRatioParser.getRealTimeAnswerError("1:2:3:").getErrorMessageFromStringRes(context)
-    assertThat(error).isEqualTo("Please enter a valid ratio (e.g. 1:2 or 1:2:3)")
+    assertThat(error).isEqualTo("Please enter a valid ratio (e.g. 1:2 or 1:2:3).")
   }
 
   @Test
@@ -83,7 +83,7 @@ class StringToRatioParserTest {
 
   @Test
   fun testParser_parseRatioOrThrow_ratioWithWhiteSpaces_returnRatioExpression() {
-    val parsedRatio = stringToRatioParser.parseRatioOrNull("1   :   2   : 3: 4 :")
+    val parsedRatio = stringToRatioParser.parseRatioOrNull("1   :   2   : 3: 4")
     val constructedRatio = createRatio(listOf(1, 2, 3, 4))
     assertThat(parsedRatio).isEqualTo(constructedRatio)
   }

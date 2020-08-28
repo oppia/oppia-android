@@ -67,7 +67,7 @@ class StringToRatioParser {
     INVALID_CHARS(error = R.string.ratio_error_invalid_chars),
     INVALID_FORMAT(error = R.string.ratio_error_invalid_format),
     INVALID_COLONS(error = R.string.ratio_error_invalid_colons),
-    INVALID_SIZE(error = R.string.ratio_error_invalid_format);
+    INVALID_SIZE(error = R.string.ratio_error_invalid_size);
 
     /** Returns the string corresponding to this error's string resources, or null if there is none. */
     fun getErrorMessageFromStringRes(context: Context): String? {
