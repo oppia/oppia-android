@@ -10,6 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      android:background="@color/oppiaGreyBackground"
       android:orientation="vertical">
 
       <include
@@ -35,10 +36,24 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.38" />
 
+      <View
+        android:id="@+id/administrator_controls_separator"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:background="@color/oppiaOnboardingDivider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/administrator_controls_guideline"
+        app:layout_constraintTop_toBottomOf="@id/administrator_controls_activity_toolbar" />
+
       <TextView
         android:id="@+id/extra_controls_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="24dp"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@color/oppiaPrimaryText"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/administrator_controls_guideline"
         app:layout_constraintTop_toBottomOf="@id/administrator_controls_activity_toolbar" />
@@ -47,10 +62,20 @@
         android:id="@+id/administrator_controls_fragment_multipane_placeholder"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/administrator_controls_guideline"
         app:layout_constraintTop_toBottomOf="@id/extra_controls_title" />
+
+      <View
+        android:id="@+id/administrator_controls_toolbar_shadow_view"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:background="@drawable/toolbar_drop_shadow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/administrator_controls_activity_toolbar" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <fragment
