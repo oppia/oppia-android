@@ -28,7 +28,7 @@ class ScreenshotManager {
     )
     val canvas = Canvas(bitmap)
     view.draw(canvas)
-    val fileName = "${activity.packageName}${activity::class.java.name}.jpg"
+    val fileName = "${activity::class.java.name}.jpg"
     val imageFile = File(activity.getExternalFilesDir(null), fileName)
     val outputStream = FileOutputStream(imageFile)
     val quality = 100
