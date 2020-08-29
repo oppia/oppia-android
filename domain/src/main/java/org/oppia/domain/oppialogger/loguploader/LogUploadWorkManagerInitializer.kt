@@ -18,8 +18,7 @@ private const val OPPIA_EVENT_WORK = "OPPIA_EVENT_WORK_REQUEST"
 /** Enqueues unique periodic work requests for uploading events and exceptions to the remote service on application creation. */
 @Singleton
 class LogUploadWorkManagerInitializer @Inject constructor(
-  private val context: Context,
-  private val logUploadWorkerFactory: LogUploadWorkerFactory
+  private val context: Context
 ) : ApplicationStartupListener {
 
   private val logUploadWorkerConstraints = Constraints.Builder()
@@ -39,7 +38,7 @@ class LogUploadWorkManagerInitializer @Inject constructor(
       Data.Builder()
         .putString(
           LogUploadWorker.WORKER_CASE_KEY,
-          LogUploadWorker.WorkerCase.EVENT_WORKER.toString()
+          LogUploadWorker.EVENT_WORKER
         )
         .build()
     val eventWorkRequest =
@@ -61,7 +60,7 @@ class LogUploadWorkManagerInitializer @Inject constructor(
       Data.Builder()
         .putString(
           LogUploadWorker.WORKER_CASE_KEY,
-          LogUploadWorker.WorkerCase.EXCEPTION_WORKER.toString()
+          LogUploadWorker.EXCEPTION_WORKER
         )
         .build()
     val exceptionWorkRequest =

@@ -12,8 +12,6 @@ import org.oppia.util.logging.EventLogger
 import org.oppia.util.logging.ExceptionLogger
 import javax.inject.Inject
 
-const val LOG_UPLOAD_WORKER = "log_upload_worker"
-
 /** [Worker] class that extracts log reports from the cache store and logs them to the remote service. */
 class LogUploadWorker @Inject constructor(
   context: Context,
@@ -26,21 +24,19 @@ class LogUploadWorker @Inject constructor(
   private val consoleLogger: ConsoleLogger
 ) : Worker(context, params) {
 
-  enum class WorkerCase {
-    EVENT_WORKER,
-    EXCEPTION_WORKER
-  }
-
   companion object {
     const val WORKER_CASE_KEY = "worker_case_key"
+    const val TAG = "LogUploadWorker.tag"
+    const val EVENT_WORKER = "event_worker"
+    const val EXCEPTION_WORKER = "exception_worker"
   }
 
   override fun doWork(): Result {
     return when (inputData.getString(WORKER_CASE_KEY)) {
-      WorkerCase.EVENT_WORKER.toString() -> {
+      EVENT_WORKER -> {
         uploadEvents()
       }
-      WorkerCase.EXCEPTION_WORKER.toString() -> {
+      EXCEPTION_WORKER -> {
         uploadExceptions()
       }
       else -> Result.failure()
@@ -61,7 +57,7 @@ class LogUploadWorker @Inject constructor(
       }
       Result.success()
     } catch (e: Exception) {
-      consoleLogger.e(LOG_UPLOAD_WORKER, e.toString(), e)
+      consoleLogger.e(TAG, e.toString(), e)
       Result.failure()
     }
   }
@@ -79,7 +75,7 @@ class LogUploadWorker @Inject constructor(
       }
       Result.success()
     } catch (e: Exception) {
-      consoleLogger.e(LOG_UPLOAD_WORKER, e.toString(), e)
+      consoleLogger.e(TAG, e.toString(), e)
       Result.failure()
     }
   }

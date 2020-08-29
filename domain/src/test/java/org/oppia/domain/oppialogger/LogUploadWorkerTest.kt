@@ -116,7 +116,7 @@ class LogUploadWorkerTest {
 
     val inputData = Data.Builder().putString(
       LogUploadWorker.WORKER_CASE_KEY,
-      LogUploadWorker.WorkerCase.EVENT_WORKER.toString()
+      LogUploadWorker.EVENT_WORKER
     ).build()
 
     val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
@@ -141,7 +141,7 @@ class LogUploadWorkerTest {
 
     val inputData = Data.Builder().putString(
       LogUploadWorker.WORKER_CASE_KEY,
-      LogUploadWorker.WorkerCase.EXCEPTION_WORKER.toString()
+      LogUploadWorker.EXCEPTION_WORKER
     ).build()
 
     val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()

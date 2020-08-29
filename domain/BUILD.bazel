@@ -32,10 +32,10 @@ TEST_DEPS = [
         "@robolectric//bazel:android-all",
         artifact("androidx.arch.core:core-testing"),
         artifact("androidx.test.ext:junit"),
+        artifact("androidx.work:work-testing:2.4.0"),
         artifact("com.google.truth:truth"),
         artifact("org.jetbrains.kotlin:kotlin-test-junit"),
         artifact("org.jetbrains.kotlin:kotlin-reflect"),
-        artifact("androidx.work:work-testing:2.4.0"),
 ]
 
 domain_test(
