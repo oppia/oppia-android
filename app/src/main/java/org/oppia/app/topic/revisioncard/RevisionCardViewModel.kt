@@ -5,9 +5,9 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.RevisionCard
+import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.DefaultResourceBucketName
@@ -26,7 +26,7 @@ class RevisionCardViewModel @Inject constructor(
   private val htmlParserFactory: HtmlParser.Factory,
   @DefaultResourceBucketName private val resourceBucketName: String,
   @TopicHtmlParserEntityType private val entityType: String
-) : ViewModel() {
+) : ObservableViewModel() {
   private lateinit var topicId: String
   private var subtopicId: Int = 0
   private lateinit var view: TextView

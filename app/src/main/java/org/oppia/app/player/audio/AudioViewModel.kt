@@ -4,11 +4,11 @@ import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.State
 import org.oppia.app.model.Voiceover
 import org.oppia.app.model.VoiceoverMapping
+import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.domain.audio.AudioPlayerController
 import org.oppia.domain.audio.AudioPlayerController.PlayProgress
 import org.oppia.domain.audio.AudioPlayerController.PlayStatus
@@ -23,7 +23,7 @@ class AudioViewModel @Inject constructor(
   private val audioPlayerController: AudioPlayerController,
   private val fragment: Fragment,
   @DefaultResourceBucketName private val gcsResource: String
-) : ViewModel() {
+) : ObservableViewModel() {
 
   private lateinit var state: State
   private lateinit var explorationId: String
