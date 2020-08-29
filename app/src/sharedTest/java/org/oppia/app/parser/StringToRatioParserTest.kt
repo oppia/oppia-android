@@ -10,6 +10,9 @@ import org.junit.runner.RunWith
 import org.oppia.app.model.RatioExpression
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import kotlin.reflect.KClass
+import kotlin.reflect.full.cast
+import kotlin.test.fail
 
 /** Tests for [StringToRatioParser]. */
 @RunWith(AndroidJUnit4::class)
@@ -36,13 +39,6 @@ class StringToRatioParserTest {
   }
 
   @Test
-  fun testParser_realtimeError_answerWithOneExtraColon_returnInvalidFormatError() {
-    val error =
-      stringToRatioParser.getRealTimeAnswerError("1:2:3:").getErrorMessageFromStringRes(context)
-    assertThat(error).isEqualTo("Please enter a valid ratio (e.g. 1:2 or 1:2:3).")
-  }
-
-  @Test
   fun testParser_realtimeError_answerWithTwoAdjacentColons_returnInvalidColonsError() {
     val error = stringToRatioParser.getRealTimeAnswerError("1::2")
       .getErrorMessageFromStringRes(context)
@@ -61,6 +57,20 @@ class StringToRatioParserTest {
     val error = stringToRatioParser.getSubmitTimeError("1:2:3:4", numberOfTerms = 5)
       .getErrorMessageFromStringRes(context)
     assertThat(error).isEqualTo("Number of terms is less than required terms.")
+  }
+
+  @Test
+  fun testParser_submitTimeError_answerWithOneExtraColon_returnInvalidFormatError() {
+    val error =
+      stringToRatioParser.getSubmitTimeError("1:2:3:", 3).getErrorMessageFromStringRes(context)
+    assertThat(error).isEqualTo("Please enter a valid ratio (e.g. 1:2 or 1:2:3).")
+  }
+
+  @Test
+  fun testParser_submitTimeError_answerWithZeroComponent_returnIncludesZero() {
+    val error =
+      stringToRatioParser.getSubmitTimeError("1:2:0", 3).getErrorMessageFromStringRes(context)
+    assertThat(error).isEqualTo("Ratios cannot have 0 as a element.")
   }
 
   @Test
@@ -93,12 +103,26 @@ class StringToRatioParserTest {
   @Test
   fun testParser_parseRatioOrThrow_ratioWithInvalidRatio_throwsException() {
 
-//    val exception = assertFailsWith<IllegalArgumentException>(IllegalStateException::class) {
-//      stringToRatioParser.parseRatioOrThrow("a:b:c")
-//    }
-//    assertThat(exception)
-//      .hasMessageThat()
-//      .contains("Incorrectly formatted ratio: a:b:c")
+    val exception = assertThrows(IllegalArgumentException::class) {
+      stringToRatioParser.parseRatioOrThrow("a:b:c")
+    }
+    assertThat(exception)
+      .hasMessageThat()
+      .contains("Incorrectly formatted ratio: a:b:c")
+  }
+
+  // TODO(#89): Move to a common test library.
+  private fun <T : Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
+    try {
+      operation()
+      fail("Expected to encounter exception of $type")
+    } catch (t: Throwable) {
+      if (type.isInstance(t)) {
+        return type.cast(t)
+      }
+      // Unexpected exception; throw it.
+      throw t
+    }
   }
 
   private fun createRatio(element: List<Int>): RatioExpression {

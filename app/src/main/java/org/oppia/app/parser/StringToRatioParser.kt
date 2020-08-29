@@ -8,7 +8,7 @@ import org.oppia.app.model.RatioExpression
 /** This class contains method that helps to parse string to ratio. */
 class StringToRatioParser {
   private val invalidCharsRegex =
-    """^[\d\s/\:\.]+$""".toRegex()
+    """^[\d\s/:]+$""".toRegex()
   private val invalidRatioRegex =
     """^(\s)*(\d+((\s)*:(\s)*\d+)+)(\s)*$""".toRegex()
 
@@ -21,9 +21,13 @@ class StringToRatioParser {
    * using [getRealTimeAnswerError], instead.
    */
   fun getSubmitTimeError(text: String, numberOfTerms: Int): RatioParsingError {
+    if (!text.matches(invalidRatioRegex))
+      return RatioParsingError.INVALID_FORMAT
     val ratio = parseRatioOrThrow(text)
     return if (ratio.ratioComponentCount < numberOfTerms) {
       RatioParsingError.INVALID_SIZE
+    } else if (ratio.ratioComponentList.contains(0)) {
+      RatioParsingError.INCLUDES_ZERO
     } else
       RatioParsingError.VALID
   }
@@ -40,7 +44,6 @@ class StringToRatioParser {
     return when {
       !text.matches(invalidCharsRegex) -> RatioParsingError.INVALID_CHARS
       text.contains("::") -> RatioParsingError.INVALID_COLONS
-      !text.matches(invalidRatioRegex) -> RatioParsingError.INVALID_FORMAT
       else -> RatioParsingError.VALID
     }
   }
@@ -67,7 +70,8 @@ class StringToRatioParser {
     INVALID_CHARS(error = R.string.ratio_error_invalid_chars),
     INVALID_FORMAT(error = R.string.ratio_error_invalid_format),
     INVALID_COLONS(error = R.string.ratio_error_invalid_colons),
-    INVALID_SIZE(error = R.string.ratio_error_invalid_size);
+    INVALID_SIZE(error = R.string.ratio_error_invalid_size),
+    INCLUDES_ZERO(error = R.string.ratio_error_includes_zero);
 
     /** Returns the string corresponding to this error's string resources, or null if there is none. */
     fun getErrorMessageFromStringRes(context: Context): String? {

@@ -746,24 +746,6 @@ class InputInteractionViewTestActivityTest {
       )
   }
 
-  @Test
-  fun testRatioInputView_withInputtedInvalidNumberOfColons_numberFormatErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    onView(withId(R.id.test_ratio_input_interaction_view))
-      .perform(
-        typeText(
-          "1:2:3:4:"
-        )
-      )
-    onView(withId(R.id.ratio_input_error))
-      .check(
-        matches(
-          withText(
-            R.string.ratio_error_invalid_colons
-          )
-        )
-      )
-  }
 
   @Test
   fun testRatioInputInteractionView_withInputtedSpacesBetweenComponents_hasCorrectPendingAnswer() {
@@ -776,25 +758,6 @@ class InputInteractionViewTestActivityTest {
       )
     onView(withId(R.id.test_ratio_input_interaction_view)).check(matches(isDisplayed()))
       .check(matches(withText("1:2:3:4")))
-  }
-
-  @Test
-  fun testRatioInputView_withInputtedSpacesBetweenNumbers_numberFormatErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    onView(withId(R.id.test_ratio_input_interaction_view))
-      .perform(
-        typeText(
-          "1:2  3:4"
-        )
-      )
-    onView(withId(R.id.ratio_input_error))
-      .check(
-        matches(
-          withText(
-            R.string.ratio_error_invalid_format
-          )
-        )
-      )
   }
 
   @Test
