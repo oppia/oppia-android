@@ -746,7 +746,6 @@ class InputInteractionViewTestActivityTest {
       )
   }
 
-
   @Test
   fun testRatioInputInteractionView_withInputtedSpacesBetweenComponents_hasCorrectPendingAnswer() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
