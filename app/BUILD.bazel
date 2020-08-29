@@ -115,6 +115,7 @@ VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/app/parser/StringToFractionParser.kt",
     "src/main/java/org/oppia/app/parser/StringToNumberParser.kt",
     "src/main/java/org/oppia/app/parser/StringToRatioParser.kt",
+    "src/main/java/org/oppia/app/utility/RatioExtensions.kt",
     "src/main/java/org/oppia/app/player/state/itemviewmodel/FractionInteractionViewModel.kt",
     "src/main/java/org/oppia/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel.kt",
     "src/main/java/org/oppia/app/topic/info/TopicInfoViewModel.kt",
@@ -273,7 +274,6 @@ VIEWS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/app/customview/SegmentedCircularProgressView.kt",
     "src/main/java/org/oppia/app/profile/ProfileInputView.kt",
     "src/main/java/org/oppia/app/utility/ClickableAreasImage.kt",
-    "src/main/java/org/oppia/app/utility/RatioExtensions.kt",
 ]
 
 '''
