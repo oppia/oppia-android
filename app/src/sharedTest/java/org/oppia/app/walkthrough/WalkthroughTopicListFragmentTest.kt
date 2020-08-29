@@ -10,11 +10,13 @@ import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -82,6 +84,42 @@ class WalkthroughTopicListFragmentTest {
       ).check(
         matches(
           withText(containsString("First Topic"))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicHeader_notOnTop_progressBarIsHidden() {
+    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
+      onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
+      onView(withId(R.id.walkthrough_topic_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(withId(R.id.walkthrough_progress_bar)).check(
+        matches(
+          not(
+            isDisplayed()
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicHeader_notOnTop_activityHeaderIsVisible() {
+    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
+      onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
+      onView(withId(R.id.walkthrough_topic_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(withId(R.id.walkthrough_activity_topic_header_text_view)).check(
+        matches(
+            isDisplayed()
         )
       )
     }
