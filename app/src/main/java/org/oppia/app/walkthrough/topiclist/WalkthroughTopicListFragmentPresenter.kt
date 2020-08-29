@@ -5,7 +5,6 @@ import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -70,7 +69,6 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
           super.onScrolled(recyclerView, dx, dy)
           val pos = walkthroughLayoutManager.findFirstVisibleItemPosition()
-          Toast.makeText(context, "$pos", Toast.LENGTH_SHORT).show()
           if (pos != 0) {
             activity.walkthrough_progress_bar.visibility = View.GONE
             activity.walkthrough_activity_topic_header_text_view.visibility = View.VISIBLE
