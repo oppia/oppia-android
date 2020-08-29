@@ -1,7 +1,6 @@
 package org.oppia.domain.oppialogger.loguploader
 
 import android.content.Context
-import androidx.work.Configuration
 import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -80,5 +79,4 @@ class LogUploadWorkManagerInitializer @Inject constructor(
 
   /** Returns the worker constraints set for the log uploading work requests. */
   fun getLogUploadWorkerConstraints(): Constraints = logUploadWorkerConstraints
-
 }
