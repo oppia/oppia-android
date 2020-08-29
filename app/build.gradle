@@ -134,7 +134,7 @@ dependencies {
       'com.google.truth:truth:0.43',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
       'org.mockito:mockito-android:2.7.22',
-      'org.robolectric:annotations:4.3'
+      'org.robolectric:annotations:4.3',
   )
   // Adding the testing module directly causes duplicates of the below groups so we need to
   // exclude them before adding the testing module to the androidTestImplementation dependencies
