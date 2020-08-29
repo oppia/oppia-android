@@ -53,6 +53,7 @@ import org.oppia.domain.onboarding.testing.ExpirationMetaDataRetrieverTestModule
 import org.oppia.domain.onboarding.testing.FakeExpirationMetaDataRetriever
 import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.testing.TestAccessibilityModule
@@ -281,7 +282,8 @@ class SplashActivityTest {
       TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverTestModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
-      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class
+      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+      WorkManagerConfigurationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent, ApplicationInjector {

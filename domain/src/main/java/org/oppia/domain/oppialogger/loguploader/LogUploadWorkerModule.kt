@@ -1,6 +1,5 @@
 package org.oppia.domain.oppialogger.loguploader
 
-import androidx.work.Configuration
 import androidx.work.Worker
 import androidx.work.WorkerFactory
 import dagger.Binds
@@ -34,9 +33,4 @@ interface LogUploadWorkerModule {
   fun bindLogUploadWorkRequest(
     logUploadWorkManagerInitializer: LogUploadWorkManagerInitializer
   ): ApplicationStartupListener
-
-  @Binds
-  fun bindWorkManagerConfiguration(
-    logUploadWorkManagerInitializer: LogUploadWorkManagerInitializer
-  ): Configuration.Provider
 }

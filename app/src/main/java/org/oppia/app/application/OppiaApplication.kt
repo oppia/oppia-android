@@ -3,6 +3,7 @@ package org.oppia.app.application
 import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
 import androidx.multidex.MultiDexApplication
+import androidx.work.Configuration
 import com.google.firebase.FirebaseApp
 import org.oppia.app.activity.ActivityComponent
 import org.oppia.domain.oppialogger.ApplicationStartupListener
@@ -11,7 +12,8 @@ import org.oppia.domain.oppialogger.ApplicationStartupListener
 class OppiaApplication :
   MultiDexApplication(),
   ActivityComponentFactory,
-  ApplicationInjectorProvider {
+  ApplicationInjectorProvider,
+  Configuration.Provider {
   /** The root [ApplicationComponent]. */
   private val component: ApplicationComponent by lazy {
     DaggerApplicationComponent.builder()
@@ -29,5 +31,9 @@ class OppiaApplication :
     super.onCreate()
     FirebaseApp.initializeApp(applicationContext)
     component.getApplicationStartupListeners().forEach(ApplicationStartupListener::onCreate)
+  }
+
+  override fun getWorkManagerConfiguration(): Configuration {
+    return component.getWorkManagerConfiguration()
   }
 }

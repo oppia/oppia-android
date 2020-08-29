@@ -29,7 +29,6 @@ class LogUploadWorkManagerInitializer @Inject constructor(
     .build()
 
   override fun onCreate() {
-    WorkManager.initialize(context, workManagerConfiguration)
     val workManager = WorkManager.getInstance(context)
     enqueueWorkRequestForEvents(workManager)
     enqueueWorkRequestForExceptions(workManager)
