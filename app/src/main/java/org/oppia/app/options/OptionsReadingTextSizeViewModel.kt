@@ -4,7 +4,8 @@ import androidx.databinding.ObservableField
 
 /** ReadingTextSize settings view model for the recycler view in [OptionsFragment]. */
 class OptionsReadingTextSizeViewModel(
-  private val routeToReadingTextSizeListener: RouteToReadingTextSizeListener
+  private val routeToReadingTextSizeListener: RouteToReadingTextSizeListener,
+  private val loadReadingTextSizeListener: LoadReadingTextSizeListener
 ) : OptionsItemViewModel() {
   val readingTextSize = ObservableField<String>("")
 
@@ -12,7 +13,15 @@ class OptionsReadingTextSizeViewModel(
     readingTextSize.set(readingTextSizeValue)
   }
 
+  fun loadReadingTextSizeFragment() {
+    loadReadingTextSizeListener.loadReadingTextSizeFragment(readingTextSize.get()!!)
+  }
+
   fun onReadingTextSizeClicked() {
-    routeToReadingTextSizeListener.routeReadingTextSize(readingTextSize.get())
+    if (isMultipane.get()!!) {
+      loadReadingTextSizeListener.loadReadingTextSizeFragment(readingTextSize.get()!!)
+    } else {
+      routeToReadingTextSizeListener.routeReadingTextSize(readingTextSize.get())
+    }
   }
 }
