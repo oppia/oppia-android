@@ -109,7 +109,7 @@ class WalkthroughTopicListFragmentTest {
   }
 
   @Test
-  fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicHeader_notOnTop_activityHeaderIsVisible() {
+  fun testWalkthroughWelcomeFragment_recyclerViewIndex1_topicHeader_notOnTop_activityHeaderIsVisible() { // ktlint-disable max-line-length
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       onView(withId(R.id.walkthrough_topic_recycler_view)).perform(
@@ -119,7 +119,7 @@ class WalkthroughTopicListFragmentTest {
       )
       onView(withId(R.id.walkthrough_activity_topic_header_text_view)).check(
         matches(
-            isDisplayed()
+          isDisplayed()
         )
       )
     }
