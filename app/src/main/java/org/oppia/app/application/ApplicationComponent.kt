@@ -23,8 +23,8 @@ import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.domain.oppialogger.ApplicationStartupListener
 import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.oppialogger.exceptions.UncaughtExceptionLoggerModule
-import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.util.accessibility.AccessibilityModule

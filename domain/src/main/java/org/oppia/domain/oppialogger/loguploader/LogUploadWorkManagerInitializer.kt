@@ -21,7 +21,7 @@ private const val OPPIA_EVENT_WORK = "OPPIA_EVENT_WORK_REQUEST"
 class LogUploadWorkManagerInitializer @Inject constructor(
   private val context: Context,
   private val logUploadWorkerFactory: LogUploadWorkerFactory
-) : ApplicationStartupListener, Configuration.Provider {
+) : ApplicationStartupListener {
 
   private val logUploadWorkerConstraints = Constraints.Builder()
     .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -81,10 +81,4 @@ class LogUploadWorkManagerInitializer @Inject constructor(
   /** Returns the worker constraints set for the log uploading work requests. */
   fun getLogUploadWorkerConstraints(): Constraints = logUploadWorkerConstraints
 
-  /** [Configuration] that sets the worker factory for the work manager to [LogUploadWorkerFactory]. */
-  override fun getWorkManagerConfiguration(): Configuration {
-    return Configuration.Builder()
-      .setWorkerFactory(logUploadWorkerFactory)
-      .build()
-  }
 }
