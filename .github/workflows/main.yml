@@ -52,7 +52,7 @@ jobs:
        run: ./buf check lint --input=model/src/main/proto --input-config buf.yaml && echo "Protobuf lint check completed successfully"
 
     - name: Bazle lint check
-      run: ./buildifier --lint=warn && echo "Bazle lint check completed successfully"
+      run: ./buildifier --lint=warn --mode=check --warnings=all app data domain model testing utility BUILD.bazel WORKSPACE oppia_android_test.bzl && echo "Bazle lint check completed successfully"
      
   robolectric_tests:
     name: Robolectric Tests (Non-App Modules)
