@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.annotation.StringRes
 import org.oppia.app.R
 import org.oppia.app.model.RatioExpression
+import org.oppia.domain.util.normalizeWhitespace
 import org.oppia.domain.util.removeWhitespace
 
 /**
@@ -25,11 +26,12 @@ class StringToRatioParser {
    * using [getRealTimeAnswerError], instead.
    */
   fun getSubmitTimeError(text: String, numberOfTerms: Int): RatioParsingError {
+    val normalized = text.normalizeWhitespace()
     // Check for invalid format before parsing otherwise it would throw an error instead.
-    if (!text.matches(invalidRatioRegex)) {
+    if (!normalized.matches(invalidRatioRegex)) {
       return RatioParsingError.INVALID_FORMAT
     }
-    val ratio = parseRatioOrThrow(text)
+    val ratio = parseRatioOrThrow(normalized)
     return when {
       ratio == null -> RatioParsingError.INVALID_FORMAT
       numberOfTerms != 0 && ratio.ratioComponentCount != numberOfTerms -> {
