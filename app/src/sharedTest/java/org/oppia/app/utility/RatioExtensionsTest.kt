@@ -8,8 +8,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.model.RatioExpression
-import org.robolectric.annotation.Config
-import org.robolectric.annotation.LooperMode
 
 /** Tests for [RatioExtensions]. */
 @RunWith(AndroidJUnit4::class)
