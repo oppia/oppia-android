@@ -4,6 +4,7 @@ support. Note that this creates an additional, internal library.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@rules_android//android:rules.bzl", "android_local_test")
 
 def oppia_android_test(
         name,
@@ -38,7 +39,7 @@ def oppia_android_test(
         assets_dir = assets_dir,
         enable_data_binding = enable_data_binding,
     )
-    native.android_local_test(
+    android_local_test(
         name = name,
         custom_package = custom_package,
         test_class = test_class,
