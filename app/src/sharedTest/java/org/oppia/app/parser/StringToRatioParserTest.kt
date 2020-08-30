@@ -8,12 +8,14 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.model.RatioExpression
+import org.robolectric.annotation.LooperMode
 import kotlin.reflect.KClass
 import kotlin.reflect.full.cast
 import kotlin.test.fail
 
 /** Tests for [StringToRatioParser]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class StringToRatioParserTest {
 
   private lateinit var stringToRatioParser: StringToRatioParser
@@ -26,7 +28,7 @@ class StringToRatioParserTest {
   }
 
   @Test
-  fun testParser_realtimeError_answerWithAlphabets_returnInvalidCharsError() {
+  fun testParser_realtimeError_answerWithAlphabets_returnsInvalidCharsError() {
     val error =
       stringToRatioParser.getRealTimeAnswerError("abc").getErrorMessageFromStringRes(context)
     assertThat(error).isEqualTo(
@@ -35,42 +37,42 @@ class StringToRatioParserTest {
   }
 
   @Test
-  fun testParser_realtimeError_answerWithTwoAdjacentColons_returnInvalidColonsError() {
+  fun testParser_realtimeError_answerWithTwoAdjacentColons_returnsInvalidColonsError() {
     val error = stringToRatioParser.getRealTimeAnswerError("1::2")
       .getErrorMessageFromStringRes(context)
     assertThat(error).isEqualTo("Your answer has two colons (:) next to each other.")
   }
 
   @Test
-  fun testParser_realtimeError_answerWithCorrectRatio_returnValid() {
+  fun testParser_realtimeError_answerWithCorrectRatio_returnsValid() {
     val error = stringToRatioParser.getRealTimeAnswerError("1:2:3")
       .getErrorMessageFromStringRes(context)
     assertThat(error).isEqualTo(null)
   }
 
   @Test
-  fun testParser_submitTimeError_numberOfTermsZero_returnValid() {
+  fun testParser_submitTimeError_numberOfTermsZero_returnsValid() {
     val error = stringToRatioParser.getSubmitTimeError("1:2:3:4", numberOfTerms = 0)
       .getErrorMessageFromStringRes(context)
     assertThat(error).isEqualTo(null)
   }
 
   @Test
-  fun testParser_submitTimeError_numberOfTermsThree_returnInvalidSizeError() {
+  fun testParser_submitTimeError_numberOfTermsThree_returnsInvalidSizeError() {
     val error = stringToRatioParser.getSubmitTimeError("1:2:3:4", numberOfTerms = 3)
       .getErrorMessageFromStringRes(context)
     assertThat(error).isEqualTo("Number of terms is not equal to the required terms.")
   }
 
   @Test
-  fun testParser_submitTimeError_numberOfTermsFour_returnInvalidSizeError() {
+  fun testParser_submitTimeError_numberOfTermsFour_returnsValid() {
     val error = stringToRatioParser.getSubmitTimeError("1:2:3:4", numberOfTerms = 4)
       .getErrorMessageFromStringRes(context)
     assertThat(error).isEqualTo(null)
   }
 
   @Test
-  fun testParser_submitTimeError_numberOfTermsFive_returnInvalidSizeError() {
+  fun testParser_submitTimeError_numberOfTermsFive_returnsInvalidSizeError() {
     val error = stringToRatioParser.getSubmitTimeError("1:2:3:4", numberOfTerms = 5)
       .getErrorMessageFromStringRes(context)
     assertThat(error).isEqualTo("Number of terms is not equal to the required terms.")
@@ -85,7 +87,7 @@ class StringToRatioParserTest {
   }
 
   @Test
-  fun testParser_submitTimeError_answerWithZeroComponent_returnIncludesZero() {
+  fun testParser_submitTimeError_answerWithZeroComponent_returnsIncludesZero() {
     val error =
       stringToRatioParser.getSubmitTimeError("1:2:0", numberOfTerms = 3)
         .getErrorMessageFromStringRes(context)
@@ -93,14 +95,14 @@ class StringToRatioParserTest {
   }
 
   @Test
-  fun testParser_submitTimeError_returnValid() {
+  fun testParser_submitTimeError_returnsValid() {
     val error = stringToRatioParser.getSubmitTimeError("1:2:3:4", numberOfTerms = 4)
       .getErrorMessageFromStringRes(context)
     assertThat(error).isEqualTo(null)
   }
 
   @Test
-  fun testParser_parseRatioOrNull_returnRatioExpression() {
+  fun testParser_parseRatioOrNull_returnsRatioExpression() {
     val parsedRatio = stringToRatioParser.parseRatioOrNull("1:2:3:4")
     val constructedRatio = createRatio(listOf(1, 2, 3, 4))
     assertThat(parsedRatio).isEqualTo(constructedRatio)

@@ -10,6 +10,7 @@ import org.oppia.app.customview.interaction.NumericInputInteractionView
 import org.oppia.app.customview.interaction.TextInputInteractionView
 import org.oppia.app.databinding.ActivityInputInteractionViewTestBinding
 import org.oppia.app.model.Interaction
+import org.oppia.app.model.SchemaObject
 import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
@@ -60,7 +61,10 @@ class InputInteractionViewTestActivity :
     )
 
     ratioExpressionInputInteractionViewModel = RatioExpressionInputInteractionViewModel(
-      interaction = Interaction.getDefaultInstance(),
+      interaction = Interaction.newBuilder().putCustomizationArgs(
+        "numberOfTerms",
+        SchemaObject.newBuilder().setSignedInt(3).build()
+      ).build(),
       context = this,
       hasConversationView = false,
       isSplitView = false,

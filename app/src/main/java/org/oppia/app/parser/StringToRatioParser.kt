@@ -25,15 +25,14 @@ class StringToRatioParser {
    * using [getRealTimeAnswerError], instead.
    */
   fun getSubmitTimeError(text: String, numberOfTerms: Int): RatioParsingError {
-    if (!text.matches(invalidRatioRegex))
-      return RatioParsingError.INVALID_FORMAT
     val ratio = parseRatioOrThrow(text)
-    return if (numberOfTerms != 0 && ratio.ratioComponentCount != numberOfTerms) {
-      RatioParsingError.INVALID_SIZE
-    } else if (ratio.ratioComponentList.contains(0)) {
-      RatioParsingError.INCLUDES_ZERO
-    } else {
-      RatioParsingError.VALID
+    return when {
+      !text.matches(invalidRatioRegex) || ratio == null -> RatioParsingError.INVALID_FORMAT
+      numberOfTerms != 0 && ratio.ratioComponentCount != numberOfTerms -> {
+        RatioParsingError.INVALID_SIZE
+      }
+      ratio.ratioComponentList.contains(0) -> RatioParsingError.INCLUDES_ZERO
+      else -> RatioParsingError.VALID
     }
   }
 
@@ -64,7 +63,7 @@ class StringToRatioParser {
   }
 
   /** Returns a [RatioExpression] parse from the specified raw text string. */
-  fun parseRatioOrThrow(text: String): RatioExpression {
+  fun parseRatioOrThrow(text: String): RatioExpression? {
     return parseRatioOrNull(text)
       ?: throw IllegalArgumentException("Incorrectly formatted ratio: $text")
   }

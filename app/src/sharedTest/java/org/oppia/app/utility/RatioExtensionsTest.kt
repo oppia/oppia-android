@@ -8,9 +8,11 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.model.RatioExpression
+import org.robolectric.annotation.LooperMode
 
 /** Tests for [RatioExtensions]. */
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class RatioExtensionsTest {
 
   private lateinit var context: Context
@@ -21,7 +23,7 @@ class RatioExtensionsTest {
   }
 
   @Test
-  fun testRatio_ratioLengthThree_returnAccessibleRatioString() {
+  fun testRatio_ratioLengthThree_returnsAccessibleRatioString() {
     val ratio = createRatio(listOf(1, 2, 3))
     assertThat(
       ratio.toAccessibleAnswerString(
@@ -31,7 +33,7 @@ class RatioExtensionsTest {
   }
 
   @Test
-  fun testRatio_ratioLengthTwoF_returnAccessibleRatioString() {
+  fun testRatio_ratioLengthTwo_returnsAccessibleRatioString() {
     val ratio = createRatio(listOf(1, 2))
     assertThat(
       ratio.toAccessibleAnswerString(

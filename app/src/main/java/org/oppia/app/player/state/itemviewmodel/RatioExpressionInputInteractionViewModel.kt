@@ -55,8 +55,8 @@ class RatioExpressionInputInteractionViewModel(
       userAnswerBuilder.answer = InteractionObject.newBuilder()
         .setRatioExpression(ratioAnswer)
         .build()
-      userAnswerBuilder.plainAnswer = ratioAnswer.toAnswerString()
-      userAnswerBuilder.contentDescription = ratioAnswer.toAccessibleAnswerString(context)
+      userAnswerBuilder.plainAnswer = ratioAnswer?.toAnswerString()
+      userAnswerBuilder.contentDescription = ratioAnswer?.toAccessibleAnswerString(context)
     }
     return userAnswerBuilder.build()
   }
@@ -76,10 +76,9 @@ class RatioExpressionInputInteractionViewModel(
             stringToRatioParser.getSubmitTimeError(
               answerText.toString(),
               numberOfTerms = numberOfTerms
+            ).getErrorMessageFromStringRes(
+              context
             )
-              .getErrorMessageFromStringRes(
-                context
-              )
       }
       errorMessage.set(pendingAnswerError)
     }

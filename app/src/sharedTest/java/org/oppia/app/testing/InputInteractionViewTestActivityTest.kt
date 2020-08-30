@@ -839,4 +839,60 @@ class InputInteractionViewTestActivityTest {
         )
       )
   }
+
+  @Test
+  fun testRatioInputView_withRatioHaving4Terms_clickSubmitButton_invalidSizeErrorIsDisplayed() {
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_ratio_input_interaction_view))
+      .perform(
+        typeText(
+          "1:2:3:4"
+        )
+      )
+    closeSoftKeyboard()
+    onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
+    onView(withId(R.id.ratio_input_error))
+      .check(
+        matches(
+          withText(
+            R.string.ratio_error_invalid_size
+          )
+        )
+      )
+  }
+
+  @Test
+  fun testRatioInputView_withRatioHaving2Terms_clickSubmitButton_invalidSizeErrorIsDisplayed() {
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_ratio_input_interaction_view))
+      .perform(
+        typeText(
+          "1:2"
+        )
+      )
+    closeSoftKeyboard()
+    onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
+    onView(withId(R.id.ratio_input_error))
+      .check(
+        matches(
+          withText(
+            R.string.ratio_error_invalid_size
+          )
+        )
+      )
+  }
+
+  @Test
+  fun testRatioInputView_withRatioHaving3Terms_clickSubmitButton_errorNotDisplayed() {
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_ratio_input_interaction_view))
+      .perform(
+        typeText(
+          "1:2:3"
+        )
+      )
+    closeSoftKeyboard()
+    onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
+    onView(withId(R.id.ratio_input_error)).check(matches(isDisplayed()))
+  }
 }
