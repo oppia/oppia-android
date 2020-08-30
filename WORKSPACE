@@ -19,7 +19,7 @@ RULES_ANDROIDL_SHA = "cd06d15dd8bb59926e4d65f9003bfc20f9da4b2519985c27e190cddc8b
 
 http_archive(
     name = "rules_android",
-    sha256 = "cd06d15dd8bb59926e4d65f9003bfc20f9da4b2519985c27e190cddc8b7a7806",
+    sha256 = RULES_ANDROIDL_SHA,
     strip_prefix = "rules_android-%s" % RULES_ANDROID_TAG,
     urls = ["https://github.com/bazelbuild/rules_android/archive/v0.1.1.zip"],
 )
