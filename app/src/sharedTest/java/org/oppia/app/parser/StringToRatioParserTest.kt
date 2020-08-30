@@ -89,7 +89,7 @@ class StringToRatioParserTest {
     val error =
       stringToRatioParser.getSubmitTimeError("1:2:0", numberOfTerms = 3)
         .getErrorMessageFromStringRes(context)
-    assertThat(error).isEqualTo("Ratios cannot have 0 as a element.")
+    assertThat(error).isEqualTo("Ratios cannot have 0 as an element.")
   }
 
   @Test
