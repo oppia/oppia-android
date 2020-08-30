@@ -136,13 +136,13 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("RatioExpressionInput")
   fun provideRatioExpressionInputViewModelFactory(context: Context): InteractionViewModelFactory {
-    return { _, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _, isSplitView -> // ktlint-disable max-line-length
+    return { _, hasConversationView, interaction, _, answerErrorReceiver, _, isSplitView ->
       RatioExpressionInputInteractionViewModel(
         interaction,
         context,
         hasConversationView,
         isSplitView,
-        interactionAnswerErrorReceiver
+        answerErrorReceiver
       )
     }
   }

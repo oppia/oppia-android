@@ -797,4 +797,46 @@ class InputInteractionViewTestActivityTest {
         )
       )
   }
+
+  @Test
+  fun testRatioInputView_withZeroRatio_clickSubmitButton_numberWithZerosErrorIsDisplayed() {
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_ratio_input_interaction_view))
+      .perform(
+        typeText(
+          "1:0:4"
+        )
+      )
+    closeSoftKeyboard()
+    onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
+    onView(withId(R.id.ratio_input_error))
+      .check(
+        matches(
+          withText(
+            R.string.ratio_error_includes_zero
+          )
+        )
+      )
+  }
+
+  @Test
+  fun testRatioInputView_withInvalidRatioFormat_clickSubmitButton_numberFormatErrorIsDisplayed() {
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_ratio_input_interaction_view))
+      .perform(
+        typeText(
+          "1: 1 2 :4"
+        )
+      )
+    closeSoftKeyboard()
+    onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
+    onView(withId(R.id.ratio_input_error))
+      .check(
+        matches(
+          withText(
+            R.string.fraction_error_invalid_format
+          )
+        )
+      )
+  }
 }

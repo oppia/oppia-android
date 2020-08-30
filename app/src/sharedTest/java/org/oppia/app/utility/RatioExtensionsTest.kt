@@ -13,8 +13,6 @@ import org.robolectric.annotation.LooperMode
 
 /** Tests for [RatioExtensions]. */
 @RunWith(AndroidJUnit4::class)
-@LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
 class RatioExtensionsTest {
 
   private lateinit var context: Context

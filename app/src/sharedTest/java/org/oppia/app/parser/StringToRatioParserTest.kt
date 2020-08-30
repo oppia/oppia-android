@@ -8,16 +8,12 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.model.RatioExpression
-import org.robolectric.annotation.Config
-import org.robolectric.annotation.LooperMode
 import kotlin.reflect.KClass
 import kotlin.reflect.full.cast
 import kotlin.test.fail
 
 /** Tests for [StringToRatioParser]. */
 @RunWith(AndroidJUnit4::class)
-@LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
 class StringToRatioParserTest {
 
   private lateinit var stringToRatioParser: StringToRatioParser
