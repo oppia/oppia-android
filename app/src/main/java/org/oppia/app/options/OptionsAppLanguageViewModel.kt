@@ -4,7 +4,8 @@ import androidx.databinding.ObservableField
 
 /** App language settings view model for the recycler view in [OptionsFragment]. */
 class OptionsAppLanguageViewModel(
-  private val routeToAppLanguageListListener: RouteToAppLanguageListListener
+  private val routeToAppLanguageListListener: RouteToAppLanguageListListener,
+  private var loadAppLanguageListListener: LoadAppLanguageListListener
 ) : OptionsItemViewModel() {
   val appLanguage = ObservableField<String>("")
 
@@ -13,6 +14,10 @@ class OptionsAppLanguageViewModel(
   }
 
   fun onAppLanguageClicked() {
-    routeToAppLanguageListListener.routeAppLanguageList(appLanguage.get())
+    if (isMultipane.get()!!) {
+      loadAppLanguageListListener.loadAppLanguageFragment(appLanguage.get()!!)
+    } else {
+      routeToAppLanguageListListener.routeAppLanguageList(appLanguage.get())
+    }
   }
 }
