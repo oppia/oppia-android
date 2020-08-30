@@ -883,7 +883,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testRatioInputView_withRatioHaving3Terms_clickSubmitButton_errorNotDisplayed() {
+  fun testRatioInputView_withRatioHaving3Terms_clickSubmitButton_noErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_ratio_input_interaction_view))
       .perform(
@@ -893,6 +893,6 @@ class InputInteractionViewTestActivityTest {
       )
     closeSoftKeyboard()
     onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
-    onView(withId(R.id.ratio_input_error)).check(matches(isDisplayed()))
+    onView(withId(R.id.ratio_input_error)).check(matches(withText("")))
   }
 }
