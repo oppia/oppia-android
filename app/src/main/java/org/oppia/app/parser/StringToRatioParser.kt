@@ -25,9 +25,13 @@ class StringToRatioParser {
    * using [getRealTimeAnswerError], instead.
    */
   fun getSubmitTimeError(text: String, numberOfTerms: Int): RatioParsingError {
+    //Check for invalid format before parsing otherwise it would throw an error instead.
+    if (!text.matches(invalidRatioRegex)) {
+      return RatioParsingError.INVALID_FORMAT
+    }
     val ratio = parseRatioOrThrow(text)
     return when {
-      !text.matches(invalidRatioRegex) || ratio == null -> RatioParsingError.INVALID_FORMAT
+      ratio == null -> RatioParsingError.INVALID_FORMAT
       numberOfTerms != 0 && ratio.ratioComponentCount != numberOfTerms -> {
         RatioParsingError.INVALID_SIZE
       }

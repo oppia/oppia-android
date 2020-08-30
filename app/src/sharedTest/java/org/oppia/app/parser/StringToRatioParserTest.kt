@@ -79,7 +79,7 @@ class StringToRatioParserTest {
   }
 
   @Test
-  fun testParser_submitTimeError_answerWithOneExtraColon_returnInvalidFormatError() {
+  fun testParser_realTimeError_answerWithOneExtraColon_returnInvalidFormatError() {
     val error =
       stringToRatioParser.getSubmitTimeError("1:2:3:", numberOfTerms = 3)
         .getErrorMessageFromStringRes(context)
