@@ -117,12 +117,12 @@
   <string
     name="ratio_error_invalid_size"
     description="The error message for ratio when there is less number of terms than the creator has specified in customization arg.">
-    Number of terms is less than required terms.
+    Number of terms is not equal to the required terms.
   </string>
   <string
     name="ratio_error_includes_zero"
     description="The error message for ratio when there is 0 term in the ratio.">
-    Ratios cannot have 0 as a element.
+    Ratios cannot have 0 as an element.
   </string>
   <string name="unknown_size">Unknown size</string>
   <string name="size_bytes">%d Bytes</string>

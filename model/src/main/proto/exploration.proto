@@ -247,7 +247,8 @@ message UserAnswer {
     // A list of HTML textual representation of the answer.
     ListOfSetsOfHtmlStrings list_of_html_answers = 4;
   }
-  // A accessible version of the corresponding plain answer. It will be used to read out the text when there is screen-reader enabled.
+  // A accessible version of the corresponding plain answer. It will be used to read out the
+  // text when there is a screen-reader enabled.
   string content_description = 5;
 }
 

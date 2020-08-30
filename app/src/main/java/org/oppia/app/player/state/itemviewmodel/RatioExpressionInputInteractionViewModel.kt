@@ -73,7 +73,10 @@ class RatioExpressionInputInteractionViewModel(
               )
         AnswerErrorCategory.SUBMIT_TIME ->
           pendingAnswerError =
-            stringToRatioParser.getSubmitTimeError(answerText.toString(), numberOfTerms)
+            stringToRatioParser.getSubmitTimeError(
+              answerText.toString(),
+              numberOfTerms = numberOfTerms
+            )
               .getErrorMessageFromStringRes(
                 context
               )

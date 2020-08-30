@@ -17,7 +17,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.model.InteractionObject
-import org.oppia.app.model.RatioExpression
 import org.robolectric.annotation.LooperMode
 
 /** Tests for [InputInteractionViewTestActivity]. */
@@ -682,7 +681,9 @@ class InputInteractionViewTestActivityTest {
     )
     activityScenario.onActivity { activity ->
       val pendingAnswer = activity.ratioExpressionInputInteractionViewModel.getPendingAnswer()
-      assertThat(pendingAnswer.answer.ratioExpression).isInstanceOf(RatioExpression::class.java)
+      assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
+        InteractionObject.ObjectTypeCase.RATIO_EXPRESSION
+      )
       assertThat(pendingAnswer.answer.ratioExpression.ratioComponentCount).isEqualTo(0)
     }
   }

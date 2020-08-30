@@ -4,8 +4,12 @@ import android.content.Context
 import androidx.annotation.StringRes
 import org.oppia.app.R
 import org.oppia.app.model.RatioExpression
+import org.oppia.domain.util.removeWhitespace
 
-/** This class contains method that helps to parse string to ratio. */
+/**
+ * Utility for parsing [RatioExpression]s from strings and validating strings can be parsed
+ * into a [RatioExpression].
+ */
 class StringToRatioParser {
   private val invalidCharsRegex =
     """^[\d\s/:]+$""".toRegex()
@@ -15,7 +19,7 @@ class StringToRatioParser {
   /**
    * Returns a [RatioParsingError] for the specified text input if it's an invalid ratio, or
    * [RatioParsingError.VALID] if no issues are found. Note that a valid ratio returned by this method is guaranteed
-   * to be parsed correctly by [parseRatioFromString].
+   * to be parsed correctly by [parseRatioOrNull].
    *
    * This method should only be used when a user tries submitting an answer. Real-time error detection should be done
    * using [getRealTimeAnswerError], instead.
@@ -24,12 +28,13 @@ class StringToRatioParser {
     if (!text.matches(invalidRatioRegex))
       return RatioParsingError.INVALID_FORMAT
     val ratio = parseRatioOrThrow(text)
-    return if (ratio.ratioComponentCount < numberOfTerms) {
+    return if (numberOfTerms != 0 && ratio.ratioComponentCount != numberOfTerms) {
       RatioParsingError.INVALID_SIZE
     } else if (ratio.ratioComponentList.contains(0)) {
       RatioParsingError.INCLUDES_ZERO
-    } else
+    } else {
       RatioParsingError.VALID
+    }
   }
 
   /**
@@ -78,8 +83,4 @@ class StringToRatioParser {
       return error?.let(context::getString)
     }
   }
-}
-
-private fun String.removeWhitespace(): String {
-  return this.replace(" ", "")
 }

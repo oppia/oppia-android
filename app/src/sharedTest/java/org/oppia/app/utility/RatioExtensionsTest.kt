@@ -25,13 +25,23 @@ class RatioExtensionsTest {
   }
 
   @Test
-  fun testRatio_ratio_returnAccessibleRatioString() {
+  fun testRatio_ratioLengthThree_returnAccessibleRatioString() {
     val ratio = createRatio(listOf(1, 2, 3))
     assertThat(
       ratio.toAccessibleAnswerString(
         context
       )
     ).isEqualTo("1 to 2 to 3")
+  }
+
+  @Test
+  fun testRatio_ratioLengthTwoF_returnAccessibleRatioString() {
+    val ratio = createRatio(listOf(1, 2))
+    assertThat(
+      ratio.toAccessibleAnswerString(
+        context
+      )
+    ).isEqualTo("1 to 2")
   }
 
   private fun createRatio(element: List<Int>): RatioExpression {

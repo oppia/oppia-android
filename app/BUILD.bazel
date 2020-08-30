@@ -634,6 +634,7 @@ TEST_DEPS = [
     artifact("androidx.test.ext:junit"),
     artifact("androidx.test:runner:1.2.0"),
     artifact("com.google.truth:truth"),
+    artifact("org.jetbrains.kotlin:kotlin-test-junit"),
     artifact("org.jetbrains.kotlin:kotlin-reflect"),
     artifact("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2"),
     artifact("org.mockito:mockito-core"),

@@ -53,29 +53,52 @@ class StringToRatioParserTest {
   }
 
   @Test
-  fun testParser_submitTimeError_returnInvalidSizeError() {
+  fun testParser_submitTimeError_numberOfTermsZero_returnValid() {
+    val error = stringToRatioParser.getSubmitTimeError("1:2:3:4", numberOfTerms = 0)
+      .getErrorMessageFromStringRes(context)
+    assertThat(error).isEqualTo(null)
+  }
+
+  @Test
+  fun testParser_submitTimeError_numberOfTermsThree_returnInvalidSizeError() {
+    val error = stringToRatioParser.getSubmitTimeError("1:2:3:4", numberOfTerms = 3)
+      .getErrorMessageFromStringRes(context)
+    assertThat(error).isEqualTo("Number of terms is not equal to the required terms.")
+  }
+
+  @Test
+  fun testParser_submitTimeError_numberOfTermsFour_returnInvalidSizeError() {
+    val error = stringToRatioParser.getSubmitTimeError("1:2:3:4", numberOfTerms = 4)
+      .getErrorMessageFromStringRes(context)
+    assertThat(error).isEqualTo(null)
+  }
+
+  @Test
+  fun testParser_submitTimeError_numberOfTermsFive_returnInvalidSizeError() {
     val error = stringToRatioParser.getSubmitTimeError("1:2:3:4", numberOfTerms = 5)
       .getErrorMessageFromStringRes(context)
-    assertThat(error).isEqualTo("Number of terms is less than required terms.")
+    assertThat(error).isEqualTo("Number of terms is not equal to the required terms.")
   }
 
   @Test
   fun testParser_submitTimeError_answerWithOneExtraColon_returnInvalidFormatError() {
     val error =
-      stringToRatioParser.getSubmitTimeError("1:2:3:", 3).getErrorMessageFromStringRes(context)
+      stringToRatioParser.getSubmitTimeError("1:2:3:", numberOfTerms = 3)
+        .getErrorMessageFromStringRes(context)
     assertThat(error).isEqualTo("Please enter a valid ratio (e.g. 1:2 or 1:2:3).")
   }
 
   @Test
   fun testParser_submitTimeError_answerWithZeroComponent_returnIncludesZero() {
     val error =
-      stringToRatioParser.getSubmitTimeError("1:2:0", 3).getErrorMessageFromStringRes(context)
+      stringToRatioParser.getSubmitTimeError("1:2:0", numberOfTerms = 3)
+        .getErrorMessageFromStringRes(context)
     assertThat(error).isEqualTo("Ratios cannot have 0 as a element.")
   }
 
   @Test
   fun testParser_submitTimeError_returnValid() {
-    val error = stringToRatioParser.getSubmitTimeError("1:2:3:4", 4)
+    val error = stringToRatioParser.getSubmitTimeError("1:2:3:4", numberOfTerms = 4)
       .getErrorMessageFromStringRes(context)
     assertThat(error).isEqualTo(null)
   }
@@ -102,7 +125,6 @@ class StringToRatioParserTest {
 
   @Test
   fun testParser_parseRatioOrThrow_ratioWithInvalidRatio_throwsException() {
-
     val exception = assertThrows(IllegalArgumentException::class) {
       stringToRatioParser.parseRatioOrThrow("a:b:c")
     }

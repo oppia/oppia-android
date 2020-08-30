@@ -806,7 +806,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadRatioInput_checkRatioAnswer() {
+  fun testStateFragment_inputRatio_submit_correctAnswerDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_6).use {
       startPlayingExploration()
       onView(withId(R.id.ratio_input_interaction_view)).perform(
