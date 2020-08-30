@@ -3,19 +3,27 @@ package org.oppia.app.options
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.TextView
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import javax.inject.Inject
+
+private const val SELECTED_OPTIONS_TITLE_KEY = "SELECTED_OPTIONS_TITLE_KEY"
 
 /** The activity for setting user preferences. */
 class OptionsActivity :
   InjectableAppCompatActivity(),
   RouteToAppLanguageListListener,
   RouteToAudioLanguageListListener,
-  RouteToReadingTextSizeListener {
+  RouteToReadingTextSizeListener,
+  LoadReadingTextSizeListener,
+  LoadAppLanguageListListener,
+  LoadAudioLanguageListListener {
   @Inject
   lateinit var optionActivityPresenter: OptionsActivityPresenter
+  // used to initially load the suitable fragment in the case of multipane.
+  private var isFirstOpen = true
 
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
@@ -41,7 +49,11 @@ class OptionsActivity :
       BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
       /* defaultValue= */ false
     )
-    optionActivityPresenter.handleOnCreate(isFromNavigationDrawer)
+    if (savedInstanceState != null) {
+      isFirstOpen = false
+    }
+    val extraOptionsTitle = savedInstanceState?.getString(SELECTED_OPTIONS_TITLE_KEY)
+    optionActivityPresenter.handleOnCreate(isFromNavigationDrawer, extraOptionsTitle, isFirstOpen)
     title = getString(R.string.menu_options)
   }
 
@@ -94,5 +106,28 @@ class OptionsActivity :
       ),
       REQUEST_CODE_TEXT_SIZE
     )
+  }
+
+  override fun loadReadingTextSizeFragment(textSize: String) {
+    optionActivityPresenter.setExtraOptionTitle(getString(R.string.reading_text_size))
+    optionActivityPresenter.loadStoryTextSizeFragment(textSize)
+  }
+
+  override fun loadAppLanguageFragment(appLanguage: String) {
+    optionActivityPresenter.setExtraOptionTitle(getString(R.string.app_language))
+    optionActivityPresenter.loadAppLanguageFragment(appLanguage)
+  }
+
+  override fun loadAudioLanguageFragment(audioLanguage: String) {
+    optionActivityPresenter.setExtraOptionTitle(getString(R.string.audio_language))
+    optionActivityPresenter.loadAudioLanguageFragment(audioLanguage)
+  }
+
+  override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    val titleTextView = findViewById<TextView>(R.id.options_activity_selected_options_title)
+    if (titleTextView != null) {
+      outState.putString(SELECTED_OPTIONS_TITLE_KEY, titleTextView.text.toString())
+    }
   }
 }

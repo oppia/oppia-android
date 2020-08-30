@@ -8,7 +8,7 @@
     android:background="@color/white">
 
     <com.google.android.material.appbar.AppBarLayout
-      android:id="@+id/story_list_app_bar_layout"
+      android:id="@+id/reading_list_app_bar_layout"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
@@ -37,7 +37,7 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/story_list_app_bar_layout">
+      app:layout_constraintTop_toBottomOf="@id/reading_list_app_bar_layout">
 
       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/ongoing_story_recycler_view"
