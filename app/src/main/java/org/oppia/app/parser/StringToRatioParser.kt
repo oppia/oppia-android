@@ -14,7 +14,7 @@ class StringToRatioParser {
   private val invalidCharsRegex =
     """^[\d\s/:]+$""".toRegex()
   private val invalidRatioRegex =
-    """^(\s)*(\d+((\s)*:(\s)*\d+)+)(\s)*$""".toRegex()
+    """^(\s)?\d+(\s)?(:(\s)?\d+(\s)?)+(\s)?$""".toRegex()
 
   /**
    * Returns a [RatioParsingError] for the specified text input if it's an invalid ratio, or
@@ -25,7 +25,7 @@ class StringToRatioParser {
    * using [getRealTimeAnswerError], instead.
    */
   fun getSubmitTimeError(text: String, numberOfTerms: Int): RatioParsingError {
-    //Check for invalid format before parsing otherwise it would throw an error instead.
+    // Check for invalid format before parsing otherwise it would throw an error instead.
     if (!text.matches(invalidRatioRegex)) {
       return RatioParsingError.INVALID_FORMAT
     }
