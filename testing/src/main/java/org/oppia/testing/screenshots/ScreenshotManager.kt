@@ -30,21 +30,9 @@ class ScreenshotManager {
    */
   fun takeScreenshot(activity: Activity): Bitmap {
     val view = activity.window.decorView.rootView
-    val bitmap = Bitmap.createBitmap(
-      view.width,
-      view.height, Bitmap.Config.ARGB_8888
-    )
-    val canvas = Canvas(bitmap)
-    view.draw(canvas)
-    val fileName = "${activity::class.java.name}.png"
-    val outputFolder = File(getOutputPath())
-    val imageFile =
-      File(outputFolder, fileName)
-    val outputStream = FileOutputStream(imageFile)
-    val quality = 100
-    bitmap.compress(Bitmap.CompressFormat.PNG, quality, outputStream)
-    outputStream.flush()
-    outputStream.close()
+    val bitmap = getViewBitmap(view)
+    val fileName = activity::class.java.name
+    exportImageFile(fileName, bitmap)
     return bitmap
   }
 
@@ -55,22 +43,41 @@ class ScreenshotManager {
    * @return a bitmap representing the screenshot of the activity.
    */
   fun takeScreenshot(view: View): Bitmap {
+    val bitmap = getViewBitmap(view)
+    val viewStringId = view.context.resources.getResourceEntryName(view.id)
+    val fileName = "${view.context::class.java.name}_$viewStringId"
+    exportImageFile(fileName, bitmap)
+    return bitmap
+  }
+
+  /**
+   * Takes a view and returns a bitmap object representing it.
+   * @param view the target view
+   * @return the desired bitmap
+   */
+  private fun getViewBitmap(view: View): Bitmap {
     val bitmap = Bitmap.createBitmap(
       view.width,
       view.height, Bitmap.Config.ARGB_8888
     )
     val canvas = Canvas(bitmap)
     view.draw(canvas)
-    val viewName = view.context.resources.getResourceEntryName(view.id)
-    val fileName = "${view.context::class.java.name}_$viewName.png"
+    return bitmap
+  }
+
+  /**
+   * Writes a png file to the external storage.
+   * @param fileName the output file name without the extension
+   * @param sourceBitmap the desired image to be exported
+   */
+  private fun exportImageFile(fileName: String, sourceBitmap: Bitmap) {
     val outputFolder = File(getOutputPath())
     val imageFile =
-      File(outputFolder, fileName)
+      File(outputFolder, "$fileName.png")
     val outputStream = FileOutputStream(imageFile)
     val quality = 100
-    bitmap.compress(Bitmap.CompressFormat.PNG, quality, outputStream)
+    sourceBitmap.compress(Bitmap.CompressFormat.PNG, quality, outputStream)
     outputStream.flush()
     outputStream.close()
-    return bitmap
   }
 }
