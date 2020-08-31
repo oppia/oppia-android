@@ -10,7 +10,7 @@ import org.oppia.app.onboarding.OnboardingActivity
 import org.oppia.testing.screenshots.ScreenshotManager
 import java.io.File
 
-/** A test class that is used to take screenshots of the [OnboardingActivity].*/
+/** A test class that is used to take screenshots of the [OnboardingActivity]. */
 @RunWith(AndroidJUnit4::class)
 class OnboardingActivityScreenshotTest {
 

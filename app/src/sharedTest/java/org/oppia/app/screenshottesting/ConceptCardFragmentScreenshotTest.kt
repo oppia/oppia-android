@@ -2,7 +2,7 @@ package org.oppia.app.screenshottesting
 
 import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -10,7 +10,7 @@ import org.oppia.app.testing.ConceptCardFragmentTestActivity
 import org.oppia.testing.screenshots.ScreenshotManager
 import java.io.File
 
-/** A test class that is used to take screenshots of the [ConceptCardFragmentTestActivity].*/
+/** A test class that is used to take screenshots of the [ConceptCardFragmentTestActivity]. */
 @RunWith(AndroidJUnit4::class)
 class ConceptCardFragmentScreenshotTest {
 
@@ -28,7 +28,7 @@ class ConceptCardFragmentScreenshotTest {
         screenshotManager.takeScreenshot(activity)
         val fileName = "org.oppia.app.testing.ConceptCardFragmentTestActivity.png"
         val screenshotFile = File("${ScreenshotManager.getOutputPath()}/$fileName")
-        Truth.assertThat(screenshotFile.exists()).isTrue()
+        assertThat(screenshotFile.exists()).isTrue()
       }
     }
   }
