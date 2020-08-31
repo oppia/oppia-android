@@ -1,39 +1,39 @@
 # TODO(#1532): Rename file to 'BUILD' post-Gradle.
-'''
+"""
 This library contains the frontend controller and business service logic for the application.
-'''
+"""
 
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//domain:domain_test.bzl", "domain_test")
 
 kt_android_library(
     name = "domain",
-    custom_package = "org.oppia.domain",
     srcs = glob(["src/main/java/org/oppia/domain/**/*.kt"]),
     assets = glob(["src/main/assets/**"]),
     assets_dir = "src/main/assets/",
+    custom_package = "org.oppia.domain",
     manifest = "src/main/AndroidManifest.xml",
+    visibility = ["//visibility:public"],
     deps = [
         ":dagger",
         "//data:persistent_cache_store",
     ],
-    visibility = ["//visibility:public"],
 )
 
 TEST_DEPS = [
-        ":dagger",
-        ":domain",
-        "//data:persistent_cache_store",
-        "//model",
-        "//testing",
-        "@robolectric//bazel:android-all",
-        artifact("androidx.arch.core:core-testing"),
-        artifact("androidx.test.ext:junit"),
-        artifact("com.google.truth:truth"),
-        artifact("org.jetbrains.kotlin:kotlin-test-junit"),
-        artifact("org.jetbrains.kotlin:kotlin-reflect"),
+    ":dagger",
+    ":domain",
+    "//data:persistent_cache_store",
+    "//model",
+    "//testing",
+    "@robolectric//bazel:android-all",
+    artifact("androidx.arch.core:core-testing"),
+    artifact("androidx.test.ext:junit"),
+    artifact("com.google.truth:truth"),
+    artifact("org.jetbrains.kotlin:kotlin-test-junit"),
+    artifact("org.jetbrains.kotlin:kotlin-reflect"),
 ]
 
 domain_test(
@@ -67,7 +67,7 @@ domain_test(
 domain_test(
     name = "DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest",
     srcs = [
-        "src/test/java/org/oppia/domain/classify/rules/dragAndDropSortInput/DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest.kt"
+        "src/test/java/org/oppia/domain/classify/rules/dragAndDropSortInput/DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest.kt",
     ],
     test_class = "org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest",
     deps = TEST_DEPS,
@@ -76,7 +76,7 @@ domain_test(
 domain_test(
     name = "DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest",
     srcs = [
-        "src/test/java/org/oppia/domain/classify/rules/dragAndDropSortInput/DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest.kt"
+        "src/test/java/org/oppia/domain/classify/rules/dragAndDropSortInput/DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest.kt",
     ],
     test_class = "org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest",
     deps = TEST_DEPS,
@@ -85,7 +85,7 @@ domain_test(
 domain_test(
     name = "DragDropSortInputIsEqualToOrderingClassifierProviderTest",
     srcs = [
-        "src/test/java/org/oppia/domain/classify/rules/dragAndDropSortInput/DragDropSortInputIsEqualToOrderingClassifierProviderTest.kt"
+        "src/test/java/org/oppia/domain/classify/rules/dragAndDropSortInput/DragDropSortInputIsEqualToOrderingClassifierProviderTest.kt",
     ],
     test_class = "org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputIsEqualToOrderingClassifierProviderTest",
     deps = TEST_DEPS,
@@ -94,7 +94,7 @@ domain_test(
 domain_test(
     name = "DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProviderTest",
     srcs = [
-        "src/test/java/org/oppia/domain/classify/rules/dragAndDropSortInput/DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProviderTest.kt"
+        "src/test/java/org/oppia/domain/classify/rules/dragAndDropSortInput/DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProviderTest.kt",
     ],
     test_class = "org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProviderTest",
     deps = TEST_DEPS,
@@ -103,7 +103,7 @@ domain_test(
 domain_test(
     name = "ImageClickInputIsInRegionRuleClassifierProviderTest",
     srcs = [
-        "src/test/java/org/oppia/domain/classify/rules/imageClickInput/ImageClickInputIsInRegionRuleClassifierProviderTest.kt"
+        "src/test/java/org/oppia/domain/classify/rules/imageClickInput/ImageClickInputIsInRegionRuleClassifierProviderTest.kt",
     ],
     test_class = "org.oppia.domain.classify.rules.imageClickInput.ImageClickInputIsInRegionRuleClassifierProviderTest",
     deps = TEST_DEPS,
@@ -112,7 +112,7 @@ domain_test(
 domain_test(
     name = "MultipleChoiceInputEqualsRuleClassifierProviderTest",
     srcs = [
-        "src/test/java/org/oppia/domain/classify/rules/multiplechoiceinput/MultipleChoiceInputEqualsRuleClassifierProviderTest.kt"
+        "src/test/java/org/oppia/domain/classify/rules/multiplechoiceinput/MultipleChoiceInputEqualsRuleClassifierProviderTest.kt",
     ],
     test_class = "org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputEqualsRuleClassifierProviderTest",
     deps = TEST_DEPS,
@@ -121,7 +121,7 @@ domain_test(
 domain_test(
     name = "TextInputContainsRuleClassifierProviderTest",
     srcs = [
-        "src/test/java/org/oppia/domain/classify/rules/textinput/TextInputContainsRuleClassifierProviderTest.kt"
+        "src/test/java/org/oppia/domain/classify/rules/textinput/TextInputContainsRuleClassifierProviderTest.kt",
     ],
     test_class = "org.oppia.domain.classify.rules.textinput.TextInputContainsRuleClassifierProviderTest",
     deps = TEST_DEPS,
@@ -130,7 +130,7 @@ domain_test(
 domain_test(
     name = "TextInputEqualsRuleClassifierProviderTest",
     srcs = [
-        "src/test/java/org/oppia/domain/classify/rules/textinput/TextInputEqualsRuleClassifierProviderTest.kt"
+        "src/test/java/org/oppia/domain/classify/rules/textinput/TextInputEqualsRuleClassifierProviderTest.kt",
     ],
     test_class = "org.oppia.domain.classify.rules.textinput.TextInputEqualsRuleClassifierProviderTest",
     deps = TEST_DEPS,
