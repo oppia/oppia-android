@@ -15,7 +15,7 @@ class StringToRatioParser {
   private val invalidCharsRegex =
     """^[\d\s/:]+$""".toRegex()
   private val invalidRatioRegex =
-    """^(\s)?\d+(\s)?(:(\s)?\d+(\s)?)+(\s)?$""".toRegex()
+    """^\d+\s?(:\s?\d+\s?)+$""".toRegex()
 
   /**
    * Returns a [RatioParsingError] for the specified text input if it's an invalid ratio, or
@@ -27,13 +27,9 @@ class StringToRatioParser {
    */
   fun getSubmitTimeError(text: String, numberOfTerms: Int): RatioParsingError {
     val normalized = text.normalizeWhitespace()
-    // Check for invalid format before parsing otherwise it would throw an error instead.
-    if (!normalized.matches(invalidRatioRegex)) {
-      return RatioParsingError.INVALID_FORMAT
-    }
-    val ratio = parseRatioOrThrow(normalized)
+    val ratio = parseRatioOrNull(normalized)
     return when {
-      ratio == null -> RatioParsingError.INVALID_FORMAT
+      !normalized.matches(invalidRatioRegex) || ratio == null -> RatioParsingError.INVALID_FORMAT
       numberOfTerms != 0 && ratio.ratioComponentCount != numberOfTerms -> {
         RatioParsingError.INVALID_SIZE
       }
@@ -69,7 +65,7 @@ class StringToRatioParser {
   }
 
   /** Returns a [RatioExpression] parse from the specified raw text string. */
-  fun parseRatioOrThrow(text: String): RatioExpression? {
+  fun parseRatioOrThrow(text: String): RatioExpression {
     return parseRatioOrNull(text)
       ?: throw IllegalArgumentException("Incorrectly formatted ratio: $text")
   }

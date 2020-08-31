@@ -55,8 +55,8 @@ class RatioExpressionInputInteractionViewModel(
       userAnswerBuilder.answer = InteractionObject.newBuilder()
         .setRatioExpression(ratioAnswer)
         .build()
-      userAnswerBuilder.plainAnswer = ratioAnswer?.toAnswerString()
-      userAnswerBuilder.contentDescription = ratioAnswer?.toAccessibleAnswerString(context)
+      userAnswerBuilder.plainAnswer = ratioAnswer.toAnswerString()
+      userAnswerBuilder.contentDescription = ratioAnswer.toAccessibleAnswerString(context)
     }
     return userAnswerBuilder.build()
   }
