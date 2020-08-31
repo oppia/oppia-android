@@ -65,9 +65,9 @@ class NumericInputIsGreaterThanOrEqualTosRuleClassifierProviderTest {
     Truth.assertThat(matches).isTrue()
   }
 
-  // both +ve but answer greater (out of float_equality_range) should return true
+  // both +ve but answer greater should return true
   @Test
-  fun testPositiveRealAnswer_positiveRealInput_valueOutOfRange_answerGreaterOrEqual() {
+  fun testPositiveRealAnswer_positiveRealInput_answerValueGreater_answerGreaterOrEqual() {
     val inputs = mapOf("x" to POSITIVE_REAL_VALUE_1_5)
 
     val matches =
@@ -76,9 +76,9 @@ class NumericInputIsGreaterThanOrEqualTosRuleClassifierProviderTest {
     Truth.assertThat(matches).isTrue()
   }
 
-  // both +ve but answer smaller (out of float_equality_range) should return false
+  // both +ve but answer smaller should return false
   @Test
-  fun testPositiveRealAnswer_positiveRealInput_valueOutOfRange_answerNotGreaterOrEqual() {
+  fun testPositiveRealAnswer_positiveRealInput_answerValueSmaller_answerNotGreaterOrEqual() {
     val inputs = mapOf("x" to POSITIVE_REAL_VALUE_3_5)
 
     val matches =
@@ -87,7 +87,7 @@ class NumericInputIsGreaterThanOrEqualTosRuleClassifierProviderTest {
     Truth.assertThat(matches).isFalse()
   }
 
-  // both -ve but answer greater (out of float_equality_range) should return true
+  // both -ve but answer greater should return true
   @Test
   fun testNegativeRealAnswer_negativeRealInput_answerValueGreater_answerGreaterOrEqual() {
     val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_3_5)
@@ -98,7 +98,7 @@ class NumericInputIsGreaterThanOrEqualTosRuleClassifierProviderTest {
     Truth.assertThat(matches).isTrue()
   }
 
-  // both +ve but answer smaller (out of float_equality_range) should return false
+  // both -ve but answer smaller should return false
   @Test
   fun testNegativeRealAnswer_negativeRealInput_answerValueSmaller_answerNotGreaterOrEqual() {
     val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_1_5)
@@ -109,10 +109,10 @@ class NumericInputIsGreaterThanOrEqualTosRuleClassifierProviderTest {
     Truth.assertThat(matches).isFalse()
   }
 
-  // answer +ve but answer smaller (out of float_equality_range) should return false
+  // answer -ve and input +ve should return true
   @Test
-  fun testNegativeRealAnswer_negativeRealInput_answerValueSmaller_answerNotGreaterOrEqual() {
-    val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_1_5)
+  fun testNegativeRealAnswer_positiveRealInput_answerValueSmaller_answerNotGreaterOrEqual() {
+    val inputs = mapOf("x" to POSITIVE_REAL_VALUE_1_5)
 
     val matches =
       inputIsGreaterThanOrEqualToRuleClassifier.matches(answer = NEGATIVE_REAL_VALUE_3_5, inputs = inputs)
@@ -120,6 +120,18 @@ class NumericInputIsGreaterThanOrEqualTosRuleClassifierProviderTest {
     Truth.assertThat(matches).isFalse()
   }
 
+  // answer +ve and input -ve should return true
+  @Test
+  fun testPositiveRealAnswer_negativeRealInput_answerValueGreater_answerGreaterOrEqual() {
+    val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_1_5)
+
+    val matches =
+      inputIsGreaterThanOrEqualToRuleClassifier.matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
+
+    Truth.assertThat(matches).isTrue()
+  }
+
+  // If input is missing or parameter is not 'x' throw exception
   @Test
   fun testRealAnswer_missingInput_throwsException() {
     val inputs = mapOf("y" to POSITIVE_REAL_VALUE_1_5)
@@ -133,6 +145,7 @@ class NumericInputIsGreaterThanOrEqualTosRuleClassifierProviderTest {
       .contains("Expected classifier inputs to contain parameter with name 'x'")
   }
 
+  // If input is a string throw exception
   @Test
   fun testRealAnswer_stringInput_throwsException() {
     val inputs = mapOf("x" to STRING_VALUE)
