@@ -10,6 +10,11 @@ import org.oppia.app.databinding.ReadingTextSizeFragmentBinding
 import org.oppia.app.model.ReadingTextSize
 import javax.inject.Inject
 
+const val SMALL_TEXT_SIZE_SCALE = 0.8f
+const val MEDIUM_TEXT_SIZE_SCALE = 1.0f
+const val LARGE_TEXT_SIZE_SCALE = 1.2f
+const val EXTRA_LARGE_TEXT_SIZE_SCALE = 1.4f
+
 /** The presenter for [ReadingTextSizeFragment]. */
 class ReadingTextSizeFragmentPresenter @Inject constructor(private val fragment: Fragment) {
   private var fontSize: String = getReadingTextSize(ReadingTextSize.MEDIUM_TEXT_SIZE)
@@ -114,11 +119,12 @@ class ReadingTextSizeFragmentPresenter @Inject constructor(private val fragment:
   }
 
   fun getReadingTextSizeInFloat(readingTextSize: ReadingTextSize): Float {
+    val defaultReadingTextSizeInFloat = 18f
     return when (readingTextSize) {
-      ReadingTextSize.SMALL_TEXT_SIZE -> 16f
-      ReadingTextSize.MEDIUM_TEXT_SIZE -> 18f
-      ReadingTextSize.LARGE_TEXT_SIZE -> 20f
-      else -> 22f
+      ReadingTextSize.SMALL_TEXT_SIZE -> defaultReadingTextSizeInFloat * SMALL_TEXT_SIZE_SCALE
+      ReadingTextSize.MEDIUM_TEXT_SIZE -> 18f * MEDIUM_TEXT_SIZE_SCALE
+      ReadingTextSize.LARGE_TEXT_SIZE -> 20f * LARGE_TEXT_SIZE_SCALE
+      else -> 22f * EXTRA_LARGE_TEXT_SIZE_SCALE
     }
   }
 
