@@ -122,9 +122,9 @@ class ReadingTextSizeFragmentPresenter @Inject constructor(private val fragment:
     val defaultReadingTextSizeInFloat = 18f
     return when (readingTextSize) {
       ReadingTextSize.SMALL_TEXT_SIZE -> defaultReadingTextSizeInFloat * SMALL_TEXT_SIZE_SCALE
-      ReadingTextSize.MEDIUM_TEXT_SIZE -> 18f * MEDIUM_TEXT_SIZE_SCALE
-      ReadingTextSize.LARGE_TEXT_SIZE -> 20f * LARGE_TEXT_SIZE_SCALE
-      else -> 22f * EXTRA_LARGE_TEXT_SIZE_SCALE
+      ReadingTextSize.MEDIUM_TEXT_SIZE -> defaultReadingTextSizeInFloat * MEDIUM_TEXT_SIZE_SCALE
+      ReadingTextSize.LARGE_TEXT_SIZE -> defaultReadingTextSizeInFloat * LARGE_TEXT_SIZE_SCALE
+      else -> defaultReadingTextSizeInFloat * EXTRA_LARGE_TEXT_SIZE_SCALE
     }
   }
 
