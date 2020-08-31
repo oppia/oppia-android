@@ -1,6 +1,5 @@
 package org.oppia.app.hintsandsolution
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -217,10 +216,8 @@ class HintsAndSolutionAdapter(
       )
 
       if (solutionViewModel.solutionCanBeRevealed.get()!!) {
-        Log.d("TAG","revealSolutionButton: solutionCanBeRevealed: true")
         binding.root.visibility = View.VISIBLE
         binding.revealSolutionButton.setOnClickListener {
-          Log.d("TAG","revealSolutionButton: onClick")
           showRevealSolutionDialogFragment()
         }
       }

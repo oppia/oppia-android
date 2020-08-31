@@ -38,17 +38,21 @@ class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
       if (itemList.isEmpty()) {
         addHintToList(hintList[index])
       } else {
-        val isLastHintRevealed = (itemList[itemList.size - 2] as HintsViewModel).isHintRevealed.get()!!
-        if (isLastHintRevealed && index <= newAvailableHintIndex.get()!!/2 ) {
+        val isLastHintRevealed =
+          (itemList[itemList.size - 2] as HintsViewModel).isHintRevealed.get()!!
+        if (isLastHintRevealed && index <= newAvailableHintIndex.get()!! / 2) {
           addHintToList(hintList[index])
-        }
-        else {
+        } else {
           break
         }
       }
     }
     val isLastHintRevealed = (itemList[itemList.size - 2] as HintsViewModel).isHintRevealed.get()!!
-    if (solution.hasExplanation() && hintList.size * 2 == itemList.size && isLastHintRevealed && allHintsExhausted.get()!!) {
+    if (solution.hasExplanation() &&
+      hintList.size * 2 == itemList.size &&
+      isLastHintRevealed &&
+      allHintsExhausted.get()!!
+    ) {
       val solutionViewModel = SolutionViewModel()
       solutionViewModel.title.set(solution.explanation.contentId)
       solutionViewModel.correctAnswer.set(solution.correctAnswer.correctAnswer)

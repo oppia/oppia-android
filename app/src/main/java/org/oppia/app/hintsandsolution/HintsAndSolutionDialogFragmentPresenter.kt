@@ -1,6 +1,5 @@
 package org.oppia.app.hintsandsolution
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -76,7 +75,6 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     }
 
     this.state = state
-    Log.d("TAG","presenter: newAvailableHintIndex: $newAvailableHintIndex")
     viewModel.newAvailableHintIndex.set((newAvailableHintIndex * 2))
     viewModel.allHintsExhausted.set(allHintsExhausted)
     viewModel.explorationId.set(id)
@@ -112,7 +110,6 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
         adapter = hintsAndSolutionAdapter
       }
       if (viewModel.newAvailableHintIndex.get() != -1) {
-        Log.d("TAG", "loadHintsAndSolution: " + viewModel.newAvailableHintIndex.get())
         handleNewAvailableHint(viewModel.newAvailableHintIndex.get())
       }
       if (viewModel.allHintsExhausted.get()!!) {
