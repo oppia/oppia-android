@@ -14,7 +14,7 @@ import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.TopicHtmlParserEntityType
 import javax.inject.Inject
 
-/** The ViewModel for [OngoingTopicListFragment]. */
+/** The ObservableViewModel for [OngoingTopicListFragment]. */
 @FragmentScope
 class OngoingTopicListViewModel @Inject constructor(
   private val activity: AppCompatActivity,

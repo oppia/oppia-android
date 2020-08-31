@@ -17,7 +17,7 @@ import org.oppia.util.gcsresource.DefaultResourceBucketName
 import java.util.Locale
 import javax.inject.Inject
 
-/** [ViewModel] for audio-player state. */
+/** [ObservableViewModel] for audio-player state. */
 @FragmentScope
 class AudioViewModel @Inject constructor(
   private val audioPlayerController: AudioPlayerController,

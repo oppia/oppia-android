@@ -11,7 +11,7 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
-/** The ViewModel for [TopicFragment]. */
+/** The ObservableViewModel for [TopicFragment]. */
 @FragmentScope
 class TopicViewModel @Inject constructor(
   private val topicController: TopicController,

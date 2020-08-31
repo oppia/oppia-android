@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import org.oppia.app.R
 import org.oppia.app.viewmodel.ObservableViewModel
 
-/** [ViewModel] for the recycler view of HelpActivity. */
+/** [ObservableViewModel] for the recycler view of HelpActivity. */
 class HelpItemViewModel(
   val activity: AppCompatActivity,
   val title: String

@@ -7,7 +7,7 @@ import org.oppia.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
 // TODO(#59): Make this view model only included in relevant tests instead of all prod builds.
-/** A [ViewModel] for testing the bindable RecyclerView adapter. */
+/** A [ObservableViewModel] for testing the bindable RecyclerView adapter. */
 @FragmentScope
 class BindableAdapterTestViewModel @Inject constructor() : ObservableViewModel() {
   val dataListLiveData = MutableLiveData<List<TestModel>>()

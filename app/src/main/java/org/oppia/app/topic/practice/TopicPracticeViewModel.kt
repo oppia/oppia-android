@@ -15,7 +15,7 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
-/** [ViewModel] for [TopicPracticeFragment]. */
+/** [ObservableViewModel] for [TopicPracticeFragment]. */
 @FragmentScope
 class TopicPracticeViewModel @Inject constructor(
   private val logger: ConsoleLogger,

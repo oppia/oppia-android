@@ -23,7 +23,7 @@ import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.StoryHtmlParserEntityType
 import javax.inject.Inject
 
-/** The [ViewModel] for [ProfileProgressFragment]. */
+/** The [ObservableViewModel] for [ProfileProgressFragment]. */
 @FragmentScope
 class ProfileProgressViewModel @Inject constructor(
   private val activity: AppCompatActivity,

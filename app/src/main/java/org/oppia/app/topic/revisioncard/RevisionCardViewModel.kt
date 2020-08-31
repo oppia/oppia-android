@@ -17,7 +17,7 @@ import org.oppia.util.parser.TopicHtmlParserEntityType
 import javax.inject.Inject
 
 // TODO(#1633): Fix ViewModel to not depend on View
-/** [ViewModel] for revision card, providing rich text and worked examples */
+/** [ObservableViewModel] for revision card, providing rich text and worked examples */
 @FragmentScope
 class RevisionCardViewModel @Inject constructor(
   activity: AppCompatActivity,

@@ -14,7 +14,7 @@ import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.TopicHtmlParserEntityType
 import javax.inject.Inject
 
-/** [ViewModel] for [TopicRevisionFragment]. */
+/** [ObservableViewModel] for [TopicRevisionFragment]. */
 @FragmentScope
 class TopicRevisionViewModel @Inject constructor(
   private val topicController: TopicController,

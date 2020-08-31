@@ -13,7 +13,7 @@ import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
-/** The ViewModel for [WalkthroughTopicListFragment]. */
+/** The ObservableViewModel for [WalkthroughTopicListFragment]. */
 class WalkthroughTopicViewModel @Inject constructor(
   private val fragment: Fragment,
   private val topicListController: TopicListController,

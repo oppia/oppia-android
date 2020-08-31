@@ -14,7 +14,7 @@ import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.StoryHtmlParserEntityType
 import javax.inject.Inject
 
-/** The ViewModel for [CompletedStoryListFragment]. */
+/** The ObservableViewModel for [CompletedStoryListFragment]. */
 @FragmentScope
 class CompletedStoryListViewModel @Inject constructor(
   private val activity: AppCompatActivity,
