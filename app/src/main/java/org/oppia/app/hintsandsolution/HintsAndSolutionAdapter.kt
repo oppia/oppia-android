@@ -141,8 +141,8 @@ class HintsAndSolutionAdapter(
           hintsViewModel.isHintRevealed.set(true)
           expandedHintListIndexListener.onRevealHintClicked(position, /* isHintRevealed= */ true)
           (fragment.requireActivity() as? RevealHintListener)?.revealHint(
-            /* saveUserChoice = */ true,
-            /* hintIndex = */ position / 2
+            saveUserChoice = true,
+            hintIndex = position / 2
           )
           val previousIndex: Int? = currentExpandedHintListIndex
           currentExpandedHintListIndex =
