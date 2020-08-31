@@ -1,4 +1,4 @@
-package org.oppia.domain.oppialogger
+package org.oppia.domain.oppialogger.loguploader
 
 import android.app.Application
 import android.content.Context
@@ -25,27 +25,31 @@ import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.app.model.EventLog
+import org.oppia.domain.oppialogger.EventLogStorageCacheSize
+import org.oppia.domain.oppialogger.ExceptionLogStorageCacheSize
+import org.oppia.domain.oppialogger.OppiaLogger
 import org.oppia.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.domain.oppialogger.analytics.TEST_TIMESTAMP
 import org.oppia.domain.oppialogger.analytics.TEST_TOPIC_ID
 import org.oppia.domain.oppialogger.exceptions.ExceptionsController
-import org.oppia.domain.oppialogger.loguploader.LogUploadWorker
-import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerFactory
-import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.testing.FakeEventLogger
 import org.oppia.testing.FakeExceptionLogger
+import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
+import org.oppia.util.data.DataProviders
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.networking.NetworkConnectionUtil
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class LogUploadWorkerTest {
 
@@ -74,10 +78,17 @@ class LogUploadWorkerTest {
   @Inject
   lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
 
+  @Inject
+  lateinit var dataProviders: DataProviders
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   private lateinit var context: Context
 
   @Before
   fun setUp() {
+    networkConnectionUtil = NetworkConnectionUtil(ApplicationProvider.getApplicationContext())
     setUpTestApplicationComponent()
     context = InstrumentationRegistry.getInstrumentation().targetContext
     val config = Configuration.Builder()
@@ -85,7 +96,6 @@ class LogUploadWorkerTest {
       .setWorkerFactory(logUploadWorkerFactory)
       .build()
     WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
-    networkConnectionUtil = NetworkConnectionUtil(ApplicationProvider.getApplicationContext())
   }
 
   @Test
@@ -126,16 +136,16 @@ class LogUploadWorkerTest {
     workManager.enqueue(request).result.get()
     val workInfo = workManager.getWorkInfoById(request.id).get()
 
-    val event = fakeEventLogger.getMostRecentEvent()
+    testCoroutineDispatchers.runCurrent()
     assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
-    assertThat(event).isEqualTo(eventLogTopicContext)
   }
 
   @Test
+  @Throws(Exception::class)
   fun testWorker_logException_withoutNetwork_enqueueRequest_verifySuccess() {
-    val exception = Exception("TEST")
+    val exceptionThrown = Exception("TEST", Throwable("TEST THROWABLE"))
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
-    exceptionsController.logNonFatalException(exception, TEST_TIMESTAMP)
+    exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP)
 
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
@@ -147,13 +157,11 @@ class LogUploadWorkerTest {
     val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
       .setInputData(inputData)
       .build()
-
     workManager.enqueue(request).result.get()
     val workInfo = workManager.getWorkInfoById(request.id).get()
 
-    val exceptionGot = fakeExceptionLogger.getMostRecentException()
+    testCoroutineDispatchers.advanceUntilIdle()
     assertThat(workInfo.state).isEqualTo(WorkInfo.State.SUCCEEDED)
-    assertThat(exceptionGot).isEqualTo(exception)
   }
 
   private fun setUpTestApplicationComponent() {

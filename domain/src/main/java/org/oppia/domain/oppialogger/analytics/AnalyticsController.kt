@@ -1,6 +1,5 @@
 package org.oppia.domain.oppialogger.analytics
 
-import androidx.lifecycle.LiveData
 import org.oppia.app.model.EventLog
 import org.oppia.app.model.EventLog.EventAction
 import org.oppia.app.model.EventLog.Priority
@@ -8,7 +7,6 @@ import org.oppia.app.model.OppiaEventLogs
 import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.util.data.DataProvider
-import org.oppia.util.data.DataProviders
 import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.logging.EventLogger
 import org.oppia.util.logging.ExceptionLogger
@@ -23,7 +21,6 @@ import javax.inject.Inject
 class AnalyticsController @Inject constructor(
   private val eventLogger: EventLogger,
   cacheStoreFactory: PersistentCacheStore.Factory,
-  private val dataProviders: DataProviders,
   private val consoleLogger: ConsoleLogger,
   private val networkConnectionUtil: NetworkConnectionUtil,
   private val exceptionLogger: ExceptionLogger,
@@ -154,7 +151,7 @@ class AnalyticsController @Inject constructor(
     oppiaEventLogs.eventLogList.withIndex()
       .minBy { it.value.timestamp }?.index
 
-  /** Returns [eventLogStore] which can be later converted to [LiveData] to extract log reports from the store. */
+  /** Returns a data provider for log reports that have been recorded for upload. */
   fun getEventLogStore(): DataProvider<OppiaEventLogs> {
     return eventLogStore
   }

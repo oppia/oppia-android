@@ -88,6 +88,7 @@ class LogUploadWorkManagerInitializerTest {
 
   @Before
   fun setUp() {
+    networkConnectionUtil = NetworkConnectionUtil(ApplicationProvider.getApplicationContext())
     setUpTestApplicationComponent()
     context = InstrumentationRegistry.getInstrumentation().targetContext
     val config = Configuration.Builder()
@@ -95,7 +96,6 @@ class LogUploadWorkManagerInitializerTest {
       .setWorkerFactory(logUploadWorkerFactory)
       .build()
     WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
-    networkConnectionUtil = NetworkConnectionUtil(context)
   }
 
   @Test
