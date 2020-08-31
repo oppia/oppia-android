@@ -3,6 +3,7 @@ package org.oppia.app.options
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ObservableList
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
@@ -29,6 +30,19 @@ class OptionControlsViewModel @Inject constructor(
   private val routeToReadingTextSizeListener = activity as RouteToReadingTextSizeListener
   private val routeToAudioLanguageListListener = activity as RouteToAudioLanguageListListener
   private val routeToAppLanguageListListener = activity as RouteToAppLanguageListListener
+  private val loadReadingTextSizeListener = activity as LoadReadingTextSizeListener
+  private val loadAudioLanguageListListener = activity as LoadAudioLanguageListListener
+  private val loadAppLanguageListListener = activity as LoadAppLanguageListListener
+  private var isFirstOpen = true
+  val uiLiveData = MutableLiveData<Boolean>()
+
+  /**
+   * Should be called with `false` when the UI starts to load, then with `true` after the UI
+   * finishes loading.
+   */
+  fun isUIInitialized(isInitialized: Boolean) {
+    uiLiveData.value = isInitialized
+  }
 
   private val profileResultLiveData: LiveData<AsyncResult<Profile>> by lazy {
     profileManagementController.getProfile(profileId)
@@ -48,6 +62,10 @@ class OptionControlsViewModel @Inject constructor(
     this.profileId = profileId
   }
 
+  fun getProfileId(): ProfileId {
+    return this.profileId
+  }
+
   private fun processProfileResult(profile: AsyncResult<Profile>): Profile {
     if (profile.isFailure()) {
       logger.e("OptionsFragment", "Failed to retrieve profile", profile.getErrorOrNull()!!)
@@ -60,11 +78,14 @@ class OptionControlsViewModel @Inject constructor(
     itemViewModelList.clear()
 
     val optionsReadingTextSizeViewModel =
-      OptionsReadingTextSizeViewModel(routeToReadingTextSizeListener)
+      OptionsReadingTextSizeViewModel(routeToReadingTextSizeListener, loadReadingTextSizeListener)
     val optionsAppLanguageViewModel =
-      OptionsAppLanguageViewModel(routeToAppLanguageListListener)
+      OptionsAppLanguageViewModel(routeToAppLanguageListListener, loadAppLanguageListListener)
     val optionAudioViewViewModel =
-      OptionsAudioLanguageViewModel(routeToAudioLanguageListListener)
+      OptionsAudioLanguageViewModel(
+        routeToAudioLanguageListListener,
+        loadAudioLanguageListListener
+      )
 
     optionsReadingTextSizeViewModel.readingTextSize.set(getReadingTextSize(profile.readingTextSize))
     optionsAppLanguageViewModel.appLanguage.set(getAppLanguage(profile.appLanguage))
@@ -76,7 +97,21 @@ class OptionControlsViewModel @Inject constructor(
 
     itemViewModelList.add(optionAudioViewViewModel as OptionsItemViewModel)
 
+    // Loading the initial options in the sub-options container
+    if (isMultipane.get()!! && isFirstOpen) {
+      optionsReadingTextSizeViewModel.loadReadingTextSizeFragment()
+      isFirstOpen = false
+    }
+
     return itemViewModelList
+  }
+
+  /**
+   * Used to set [isFirstOpen] value which controls the loading of the initial extra-option fragment
+   * in the case of multipane.
+   */
+  fun isFirstOpen(isFirstOpen: Boolean) {
+    this.isFirstOpen = isFirstOpen
   }
 
   fun getReadingTextSize(readingTextSize: ReadingTextSize): String {

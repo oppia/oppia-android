@@ -41,6 +41,8 @@ Place your file here if:
  - It is either a listener, an interface, or a direct dependency of one in this list
 '''
 LISTENERS = [
+    "src/main/java/org/oppia/app/administratorcontrols/LoadAppVersionListener.kt",
+    "src/main/java/org/oppia/app/administratorcontrols/LoadProfileListListener.kt",
     "src/main/java/org/oppia/app/administratorcontrols/RouteToAppVersionListener.kt",
     "src/main/java/org/oppia/app/administratorcontrols/RouteToProfileListListener.kt",
     "src/main/java/org/oppia/app/drawer/RouteToProfileProgressListener.kt",
@@ -53,6 +55,9 @@ LISTENERS = [
     "src/main/java/org/oppia/app/home/topiclist/TopicSummaryClickListener.kt",
     "src/main/java/org/oppia/app/onboarding/OnboardingNavigationListener.kt",
     "src/main/java/org/oppia/app/onboarding/RouteToProfileListListener.kt",
+    "src/main/java/org/oppia/app/options/LoadAppLanguageListListener.kt",
+    "src/main/java/org/oppia/app/options/LoadAudioLanguageListListener.kt",
+    "src/main/java/org/oppia/app/options/LoadReadingTextSizeListener.kt",
     "src/main/java/org/oppia/app/options/RouteToAppLanguageListListener.kt",
     "src/main/java/org/oppia/app/options/RouteToAudioLanguageListListener.kt",
     "src/main/java/org/oppia/app/options/RouteToReadingTextSizeListener.kt",
@@ -443,6 +448,7 @@ android_library(
         artifact("androidx.databinding:databinding-adapters"),
         artifact("androidx.databinding:databinding-common"),
         artifact("androidx.databinding:databinding-runtime"),
+        artifact("androidx.drawerlayout:drawerlayout:1.1.0"),
         artifact("androidx.lifecycle:lifecycle-livedata-core:jar:2.0.0-alpha1"),
         artifact("androidx.recyclerview:recyclerview:1.0.0"),
         artifact("androidx.viewpager:viewpager:1.0.0"),

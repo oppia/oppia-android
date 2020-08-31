@@ -20,7 +20,7 @@ class AdministratorControlsAccountActionsViewModel(
       }
       .setPositiveButton(R.string.log_out_dialog_okay_button) { _, _ ->
         // TODO(#762): Replace [ProfileChooserActivity] to [LoginActivity] once it is added.
-        val intent = intentFactoryShim.createProfileActivityIntent(fragment.activity!!)
+        val intent = intentFactoryShim.createProfileChooserActivityIntent(fragment.activity!!)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         fragment.activity!!.startActivity(intent)
         fragment.activity!!.finish()

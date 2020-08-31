@@ -22,6 +22,7 @@ import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.ProfileId
 import org.oppia.app.recyclerview.BindableAdapter
+import java.security.InvalidParameterException
 import javax.inject.Inject
 
 /** The presenter for [AdministratorControlsFragment]. */
@@ -38,7 +39,11 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
   @Inject
   lateinit var administratorControlsViewModel: AdministratorControlsViewModel
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    isMultipane: Boolean
+  ): View? {
     binding =
       AdministratorControlsFragmentBinding
         .inflate(
@@ -55,7 +60,7 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
 
     binding.administratorControlsList.apply {
       layoutManager = linearLayoutManager
-      adapter = createRecyclerViewAdapter()
+      adapter = createRecyclerViewAdapter(isMultipane)
     }
 
     binding.apply {
@@ -66,54 +71,98 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  private fun createRecyclerViewAdapter(): BindableAdapter<AdministratorControlsItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .newBuilder<AdministratorControlsItemViewModel, ViewType> { viewModel ->
-        when (viewModel) {
-          is AdministratorControlsGeneralViewModel ->
-            ViewType.VIEW_TYPE_GENERAL
-          is AdministratorControlsProfileViewModel ->
-            ViewType.VIEW_TYPE_PROFILE
-          is AdministratorControlsDownloadPermissionsViewModel ->
-            ViewType.VIEW_TYPE_DOWNLOAD_PERMISSIONS
-          is AdministratorControlsAppInformationViewModel ->
-            ViewType.VIEW_TYPE_APP_INFORMATION
-          is AdministratorControlsAccountActionsViewModel ->
-            ViewType.VIEW_TYPE_ACCOUNT_ACTIONS
-          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
+  private fun createRecyclerViewAdapter(isMultipane: Boolean):
+    BindableAdapter<AdministratorControlsItemViewModel> {
+      return BindableAdapter.MultiTypeBuilder
+        .newBuilder<AdministratorControlsItemViewModel, ViewType> { viewModel ->
+          viewModel.isMultipane.set(isMultipane)
+          when (viewModel) {
+            is AdministratorControlsGeneralViewModel -> {
+              viewModel.itemIndex.set(0)
+              ViewType.VIEW_TYPE_GENERAL
+            }
+            is AdministratorControlsProfileViewModel -> {
+              viewModel.itemIndex.set(1)
+              ViewType.VIEW_TYPE_PROFILE
+            }
+            is AdministratorControlsDownloadPermissionsViewModel -> {
+              viewModel.itemIndex.set(2)
+              ViewType.VIEW_TYPE_DOWNLOAD_PERMISSIONS
+            }
+            is AdministratorControlsAppInformationViewModel -> {
+              viewModel.itemIndex.set(3)
+              ViewType.VIEW_TYPE_APP_INFORMATION
+            }
+            is AdministratorControlsAccountActionsViewModel -> {
+              viewModel.itemIndex.set(4)
+              ViewType.VIEW_TYPE_ACCOUNT_ACTIONS
+            }
+            else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
+          }
         }
-      }
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_GENERAL,
-        inflateDataBinding = AdministratorControlsGeneralViewBinding::inflate,
-        setViewModel = AdministratorControlsGeneralViewBinding::setViewModel,
-        transformViewModel = { it as AdministratorControlsGeneralViewModel }
+        .registerViewDataBinder(
+          viewType = ViewType.VIEW_TYPE_GENERAL,
+          inflateDataBinding = AdministratorControlsGeneralViewBinding::inflate,
+          setViewModel = AdministratorControlsGeneralViewBinding::setViewModel,
+          transformViewModel = { it as AdministratorControlsGeneralViewModel }
+        )
+        .registerViewDataBinder(
+          viewType = ViewType.VIEW_TYPE_PROFILE,
+          inflateDataBinding = AdministratorControlsProfileViewBinding::inflate,
+          setViewModel = this::bindProfileList,
+          transformViewModel = { it as AdministratorControlsProfileViewModel }
+        )
+        .registerViewDataBinder(
+          viewType = ViewType.VIEW_TYPE_DOWNLOAD_PERMISSIONS,
+          inflateDataBinding = AdministratorControlsDownloadPermissionsViewBinding::inflate,
+          setViewModel = AdministratorControlsDownloadPermissionsViewBinding::setViewModel,
+          transformViewModel = { it as AdministratorControlsDownloadPermissionsViewModel }
+        )
+        .registerViewDataBinder(
+          viewType = ViewType.VIEW_TYPE_APP_INFORMATION,
+          inflateDataBinding = AdministratorControlsAppInformationViewBinding::inflate,
+          setViewModel = this::bindAppVersion,
+          transformViewModel = { it as AdministratorControlsAppInformationViewModel }
+        )
+        .registerViewDataBinder(
+          viewType = ViewType.VIEW_TYPE_ACCOUNT_ACTIONS,
+          inflateDataBinding = AdministratorControlsAccountActionsViewBinding::inflate,
+          setViewModel = AdministratorControlsAccountActionsViewBinding::setViewModel,
+          transformViewModel = { it as AdministratorControlsAccountActionsViewModel }
+        )
+        .build()
+    }
+
+  private fun bindProfileList(
+    binding: AdministratorControlsProfileViewBinding,
+    model: AdministratorControlsProfileViewModel
+  ) {
+    binding.commonViewModel = administratorControlsViewModel
+    binding.viewModel = model
+  }
+
+  private fun bindAppVersion(
+    binding: AdministratorControlsAppInformationViewBinding,
+    model: AdministratorControlsAppInformationViewModel
+  ) {
+    binding.commonViewModel = administratorControlsViewModel
+    binding.viewModel = model
+  }
+
+  fun setSelectedFragment(selectedFragment: String) {
+    administratorControlsViewModel.selectedFragmentIndex.set(
+      getSelectedFragmentIndex(
+        selectedFragment
       )
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_PROFILE,
-        inflateDataBinding = AdministratorControlsProfileViewBinding::inflate,
-        setViewModel = AdministratorControlsProfileViewBinding::setViewModel,
-        transformViewModel = { it as AdministratorControlsProfileViewModel }
-      )
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_DOWNLOAD_PERMISSIONS,
-        inflateDataBinding = AdministratorControlsDownloadPermissionsViewBinding::inflate,
-        setViewModel = AdministratorControlsDownloadPermissionsViewBinding::setViewModel,
-        transformViewModel = { it as AdministratorControlsDownloadPermissionsViewModel }
-      )
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_APP_INFORMATION,
-        inflateDataBinding = AdministratorControlsAppInformationViewBinding::inflate,
-        setViewModel = AdministratorControlsAppInformationViewBinding::setViewModel,
-        transformViewModel = { it as AdministratorControlsAppInformationViewModel }
-      )
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_ACCOUNT_ACTIONS,
-        inflateDataBinding = AdministratorControlsAccountActionsViewBinding::inflate,
-        setViewModel = AdministratorControlsAccountActionsViewBinding::setViewModel,
-        transformViewModel = { it as AdministratorControlsAccountActionsViewModel }
-      )
-      .build()
+    )
+  }
+
+  private fun getSelectedFragmentIndex(selectedFragment: String): Int {
+    return when (selectedFragment) {
+      PROFILE_LIST_FRAGMENT -> 1
+      APP_VERSION_FRAGMENT -> 3
+      else -> throw InvalidParameterException()
+    }
   }
 
   private enum class ViewType {
