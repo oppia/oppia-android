@@ -22,6 +22,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -66,6 +67,7 @@ import org.oppia.domain.topic.TEST_EXPLORATION_ID_0
 import org.oppia.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.domain.topic.TEST_EXPLORATION_ID_4
 import org.oppia.domain.topic.TEST_EXPLORATION_ID_5
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_6
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.testing.TestDispatcherModule
@@ -803,6 +805,20 @@ class StateFragmentTest {
     }
   }
 
+  @Test
+  fun testStateFragment_inputRatio_submit_correctAnswerDisplayed() {
+    launchForExploration(TEST_EXPLORATION_ID_6).use {
+      startPlayingExploration()
+      onView(withId(R.id.ratio_input_interaction_view)).perform(
+        typeText("4:5"),
+        closeSoftKeyboard()
+      )
+      onView(withId(R.id.submit_answer_button)).perform(click())
+      onView(withId(R.id.submitted_answer_text_view))
+        .check(matches(ViewMatchers.withContentDescription("4 to 5")))
+    }
+  }
+
   private fun launchForExploration(
     explorationId: String
   ): ActivityScenario<StateFragmentTestActivity> {
@@ -892,7 +908,15 @@ class StateFragmentTest {
     onView(withId(R.id.submit_answer_button)).perform(click())
     onView(withId(R.id.continue_navigation_button)).perform(click())
 
-    // Sixth state: Text input. Correct answer: finnish.
+    // Sixth state: Ratio input. Correct answer: 4:5.
+    onView(withId(R.id.ratio_input_interaction_view)).perform(
+      typeText("4:5"),
+      closeSoftKeyboard()
+    )
+    onView(withId(R.id.submit_answer_button)).perform(click())
+    onView(withId(R.id.continue_navigation_button)).perform(click())
+
+    // Seventh state: Text input. Correct answer: finnish.
     onView(withId(R.id.text_input_interaction_view)).perform(
       typeText("finnish"),
       closeSoftKeyboard()
@@ -900,7 +924,7 @@ class StateFragmentTest {
     onView(withId(R.id.submit_answer_button)).perform(click())
     onView(withId(R.id.continue_navigation_button)).perform(click())
 
-    // Seventh state: Drag Drop Sort. Correct answer: Move 1st item to 4th position.
+    // Eighth state: Drag Drop Sort. Correct answer: Move 1st item to 4th position.
     onView(withId(R.id.drag_drop_interaction_recycler_view)).perform(
       DragViewAction(
         RecyclerViewCoordinatesProvider(
@@ -924,7 +948,7 @@ class StateFragmentTest {
     ).check(matches(withText("3/5")))
     onView(withId(R.id.continue_navigation_button)).perform(click())
 
-    // Eighth state: Drag Drop Sort with grouping. Correct answer: Merge First Two and after merging move 2nd item to 3rd position .
+    // Ninth state: Drag Drop Sort with grouping. Correct answer: Merge First Two and after merging move 2nd item to 3rd position .
     onView(
       atPositionOnView(
         recyclerViewId = R.id.drag_drop_interaction_recycler_view,

@@ -28,9 +28,9 @@ class RatioInputModule {
 
   @Provides
   @IntoMap
-  @StringKey("HasNumberOfTermsEqualsTo")
+  @StringKey("HasNumberOfTermsEqualTo")
   @RatioExpressionInputRules
-  internal fun provideRatioInputHasNumberOfTermsEqualsToRuleClassifier(
-    classifierProvider: RatioInputHasNumberOfTermsEqualsToClassifierProvider
+  internal fun provideRatioInputHasNumberOfTermsEqualToRuleClassifier(
+    classifierProvider: RatioInputHasNumberOfTermsEqualToClassifierProvider
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 }
