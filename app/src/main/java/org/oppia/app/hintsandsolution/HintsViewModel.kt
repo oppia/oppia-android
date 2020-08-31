@@ -53,17 +53,7 @@ class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
       isLastHintRevealed &&
       allHintsExhausted.get()!!
     ) {
-      val solutionViewModel = SolutionViewModel()
-      solutionViewModel.title.set(solution.explanation.contentId)
-      solutionViewModel.correctAnswer.set(solution.correctAnswer.correctAnswer)
-      solutionViewModel.numerator.set(solution.correctAnswer.numerator)
-      solutionViewModel.denominator.set(solution.correctAnswer.denominator)
-      solutionViewModel.wholeNumber.set(solution.correctAnswer.wholeNumber)
-      solutionViewModel.isNegative.set(solution.correctAnswer.isNegative)
-      solutionViewModel.solutionSummary.set(solution.explanation.html)
-      solutionViewModel.isSolutionRevealed.set(solution.solutionIsRevealed)
-      itemList.add(solutionViewModel)
-      addDividerItem()
+      addSolutionToList(solution)
     }
     return itemList
   }
@@ -74,6 +64,20 @@ class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
     hintsAndSolutionViewModel.hintsAndSolutionSummary.set(hint.hintContent.html)
     hintsAndSolutionViewModel.isHintRevealed.set(hint.hintIsRevealed)
     itemList.add(hintsAndSolutionViewModel as HintsAndSolutionItemViewModel)
+    addDividerItem()
+  }
+
+  private fun addSolutionToList(solution: Solution) {
+    val solutionViewModel = SolutionViewModel()
+    solutionViewModel.title.set(solution.explanation.contentId)
+    solutionViewModel.correctAnswer.set(solution.correctAnswer.correctAnswer)
+    solutionViewModel.numerator.set(solution.correctAnswer.numerator)
+    solutionViewModel.denominator.set(solution.correctAnswer.denominator)
+    solutionViewModel.wholeNumber.set(solution.correctAnswer.wholeNumber)
+    solutionViewModel.isNegative.set(solution.correctAnswer.isNegative)
+    solutionViewModel.solutionSummary.set(solution.explanation.html)
+    solutionViewModel.isSolutionRevealed.set(solution.solutionIsRevealed)
+    itemList.add(solutionViewModel)
     addDividerItem()
   }
 

@@ -75,6 +75,9 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     }
 
     this.state = state
+    // The newAvailableHintIndex received here is coming from state player but in this implementation
+    // hints/solutions are shown on every even index and on every odd index we show a divider.
+    // Therefore multiplying the original index by 2.
     viewModel.newAvailableHintIndex.set((newAvailableHintIndex * 2))
     viewModel.allHintsExhausted.set(allHintsExhausted)
     viewModel.explorationId.set(id)
