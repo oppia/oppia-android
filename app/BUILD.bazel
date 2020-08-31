@@ -145,6 +145,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/app/help/faq/faqItemViewModel/FAQItemViewModel.kt",
     "src/main/java/org/oppia/app/help/HelpItems.kt",
     "src/main/java/org/oppia/app/hintsandsolution/HintsAndSolutionItemViewModel.kt",
+    "src/main/java/org/oppia/app/hintsandsolution/HintsDividerViewModel.kt",
     "src/main/java/org/oppia/app/hintsandsolution/HintsViewModel.kt",
     "src/main/java/org/oppia/app/hintsandsolution/SolutionViewModel.kt",
     "src/main/java/org/oppia/app/home/HomeItemViewModel.kt",
