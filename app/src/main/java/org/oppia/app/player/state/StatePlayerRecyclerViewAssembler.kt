@@ -1243,6 +1243,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
         return
       }
 
+      // If hint was visibile in the current state show all previous hints
+      // coming back to current state.
+      // If any hint was revealed and user move between current and completed states then
+      // show those relevead hints back by making icon visible
+      // else use the previous help index
       if (isHintVisibleInLatestState) {
         if (state.interaction.hintList[previousHelpIndex.hintIndex].hintIsRevealed) {
           (fragment as ShowHintAvailabilityListener).onHintAvailable(
