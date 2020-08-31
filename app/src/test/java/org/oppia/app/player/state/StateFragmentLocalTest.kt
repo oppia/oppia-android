@@ -22,6 +22,7 @@ import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -428,12 +429,11 @@ class StateFragmentLocalTest {
       playThroughState1()
       produceAndViewFirstHint()
 
-      //testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
       openHintsAndSolutionsDialog()
-
-      // Two hints should now be available.
       onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
-      onView(withText("Hint 2")).inRoot(isDialog()).check(matches(isDisplayed()))
+      closeHintsAndSolutionsDialog()
+
+      onView(isRoot()).check(matches(not(withText("Hint 2"))))
     }
   }
 
