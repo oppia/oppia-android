@@ -21,6 +21,7 @@ import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.logging.ConsoleLogger
+import java.security.InvalidParameterException
 import javax.inject.Inject
 
 const val READING_TEXT_SIZE = "READING_TEXT_SIZE"
@@ -58,7 +59,8 @@ class OptionsFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     isMultipane: Boolean,
-    isFirstOpen: Boolean
+    isFirstOpen: Boolean,
+    selectedFragment: String
   ): View? {
     viewModel.isUIInitialized(false)
     viewModel.isFirstOpen(isFirstOpen)
@@ -82,6 +84,7 @@ class OptionsFragmentPresenter @Inject constructor(
       it.lifecycleOwner = fragment
       it.viewModel = viewModel
     }
+    setSelectedFragment(selectedFragment)
     viewModel.isUIInitialized(true)
     return binding.root
   }
@@ -91,9 +94,18 @@ class OptionsFragmentPresenter @Inject constructor(
       .newBuilder<OptionsItemViewModel, ViewType> { viewModel ->
         viewModel.isMultipane.set(isMultipane)
         when (viewModel) {
-          is OptionsReadingTextSizeViewModel -> ViewType.VIEW_TYPE_READING_TEXT_SIZE
-          is OptionsAppLanguageViewModel -> ViewType.VIEW_TYPE_APP_LANGUAGE
-          is OptionsAudioLanguageViewModel -> ViewType.VIEW_TYPE_AUDIO_LANGUAGE
+          is OptionsReadingTextSizeViewModel -> {
+            viewModel.itemIndex.set(0)
+            ViewType.VIEW_TYPE_READING_TEXT_SIZE
+          }
+          is OptionsAppLanguageViewModel -> {
+            viewModel.itemIndex.set(1)
+            ViewType.VIEW_TYPE_APP_LANGUAGE
+          }
+          is OptionsAudioLanguageViewModel -> {
+            viewModel.itemIndex.set(2)
+            ViewType.VIEW_TYPE_AUDIO_LANGUAGE
+          }
           else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
         }
       }
@@ -122,6 +134,7 @@ class OptionsFragmentPresenter @Inject constructor(
     binding: OptionStoryTextSizeBinding,
     model: OptionsReadingTextSizeViewModel
   ) {
+    binding.commonViewModel = viewModel
     binding.viewModel = model
   }
 
@@ -129,6 +142,7 @@ class OptionsFragmentPresenter @Inject constructor(
     binding: OptionAppLanguageBinding,
     model: OptionsAppLanguageViewModel
   ) {
+    binding.commonViewModel = viewModel
     binding.viewModel = model
   }
 
@@ -136,7 +150,25 @@ class OptionsFragmentPresenter @Inject constructor(
     binding: OptionAudioLanguageBinding,
     model: OptionsAudioLanguageViewModel
   ) {
+    binding.commonViewModel = viewModel
     binding.viewModel = model
+  }
+
+  fun setSelectedFragment(selectedFragment: String) {
+    viewModel.selectedFragmentIndex.set(
+      getSelectedFragmentIndex(
+        selectedFragment
+      )
+    )
+  }
+
+  private fun getSelectedFragmentIndex(selectedFragment: String): Int {
+    return when (selectedFragment) {
+      READING_TEXT_SIZE_FRAGMENT -> 0
+      APP_LANGUAGE_FRAGMENT -> 1
+      DEFAULT_AUDIO_FRAGMENT -> 2
+      else -> throw InvalidParameterException("Not a valid fragment in getSelectedFragmentIndex.")
+    }
   }
 
   private fun getOptionControlsItemViewModel(): OptionControlsViewModel {
