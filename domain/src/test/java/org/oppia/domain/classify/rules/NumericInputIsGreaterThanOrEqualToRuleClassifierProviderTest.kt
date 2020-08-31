@@ -23,7 +23,8 @@ import kotlin.test.fail
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
-class NumericInputIsGreaterThanOrEqualTosRuleClassifierProviderTest {
+class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
+
   private val POSITIVE_REAL_VALUE_1_5 = createReal(value = 1.5)
   private val POSITIVE_REAL_VALUE_3_5 = createReal(value = 3.5)
   private val NEGATIVE_REAL_VALUE_1_5 = createReal(value = -1.5)
@@ -43,51 +44,50 @@ class NumericInputIsGreaterThanOrEqualTosRuleClassifierProviderTest {
     setUpTestApplicationComponent()
   }
 
-  // both +ve and exactly same should return true
   @Test
   fun testPositiveRealAnswer_positiveRealInput_sameExactValues_answerGreaterOrEqual() {
     val inputs = mapOf("x" to POSITIVE_REAL_VALUE_1_5)
 
     val matches =
-      inputIsGreaterThanOrEqualToRuleClassifier.matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
+      inputIsGreaterThanOrEqualToRuleClassifier
+        .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
 
     Truth.assertThat(matches).isTrue()
   }
 
-  // both -ve and exactly same should return true
   @Test
   fun testNegativeRealAnswer_negativeRealInput_sameExactValues_answerGreaterOrEqual() {
     val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_1_5)
 
     val matches =
-      inputIsGreaterThanOrEqualToRuleClassifier.matches(answer = NEGATIVE_REAL_VALUE_1_5, inputs = inputs)
+      inputIsGreaterThanOrEqualToRuleClassifier
+        .matches(answer = NEGATIVE_REAL_VALUE_1_5, inputs = inputs)
 
     Truth.assertThat(matches).isTrue()
   }
 
-  // both +ve but answer greater should return true
   @Test
   fun testPositiveRealAnswer_positiveRealInput_answerValueGreater_answerGreaterOrEqual() {
     val inputs = mapOf("x" to POSITIVE_REAL_VALUE_1_5)
 
     val matches =
-      inputIsGreaterThanOrEqualToRuleClassifier.matches(answer = POSITIVE_REAL_VALUE_3_5, inputs = inputs)
+      inputIsGreaterThanOrEqualToRuleClassifier
+        .matches(answer = POSITIVE_REAL_VALUE_3_5, inputs = inputs)
 
     Truth.assertThat(matches).isTrue()
   }
 
-  // both +ve but answer smaller should return false
   @Test
   fun testPositiveRealAnswer_positiveRealInput_answerValueSmaller_answerNotGreaterOrEqual() {
     val inputs = mapOf("x" to POSITIVE_REAL_VALUE_3_5)
 
     val matches =
-      inputIsGreaterThanOrEqualToRuleClassifier.matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
+      inputIsGreaterThanOrEqualToRuleClassifier
+        .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
 
     Truth.assertThat(matches).isFalse()
   }
 
-  // both -ve but answer greater should return true
   @Test
   fun testNegativeRealAnswer_negativeRealInput_answerValueGreater_answerGreaterOrEqual() {
     val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_3_5)
@@ -98,46 +98,46 @@ class NumericInputIsGreaterThanOrEqualTosRuleClassifierProviderTest {
     Truth.assertThat(matches).isTrue()
   }
 
-  // both -ve but answer smaller should return false
   @Test
   fun testNegativeRealAnswer_negativeRealInput_answerValueSmaller_answerNotGreaterOrEqual() {
     val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_1_5)
 
     val matches =
-      inputIsGreaterThanOrEqualToRuleClassifier.matches(answer = NEGATIVE_REAL_VALUE_3_5, inputs = inputs)
+      inputIsGreaterThanOrEqualToRuleClassifier
+        .matches(answer = NEGATIVE_REAL_VALUE_3_5, inputs = inputs)
 
     Truth.assertThat(matches).isFalse()
   }
 
-  // answer -ve and input +ve should return true
   @Test
   fun testNegativeRealAnswer_positiveRealInput_answerValueSmaller_answerNotGreaterOrEqual() {
     val inputs = mapOf("x" to POSITIVE_REAL_VALUE_1_5)
 
     val matches =
-      inputIsGreaterThanOrEqualToRuleClassifier.matches(answer = NEGATIVE_REAL_VALUE_3_5, inputs = inputs)
+      inputIsGreaterThanOrEqualToRuleClassifier
+        .matches(answer = NEGATIVE_REAL_VALUE_3_5, inputs = inputs)
 
     Truth.assertThat(matches).isFalse()
   }
 
-  // answer +ve and input -ve should return true
   @Test
   fun testPositiveRealAnswer_negativeRealInput_answerValueGreater_answerGreaterOrEqual() {
     val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_1_5)
 
     val matches =
-      inputIsGreaterThanOrEqualToRuleClassifier.matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
+      inputIsGreaterThanOrEqualToRuleClassifier
+        .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
 
     Truth.assertThat(matches).isTrue()
   }
 
-  // If input is missing or parameter is not 'x' throw exception
   @Test
   fun testRealAnswer_missingInput_throwsException() {
     val inputs = mapOf("y" to POSITIVE_REAL_VALUE_1_5)
 
     val exception = assertThrows(IllegalStateException::class) {
-      inputIsGreaterThanOrEqualToRuleClassifier.matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
+      inputIsGreaterThanOrEqualToRuleClassifier
+        .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
     }
 
     Truth.assertThat(exception)
@@ -145,13 +145,13 @@ class NumericInputIsGreaterThanOrEqualTosRuleClassifierProviderTest {
       .contains("Expected classifier inputs to contain parameter with name 'x'")
   }
 
-  // If input is a string throw exception
   @Test
   fun testRealAnswer_stringInput_throwsException() {
     val inputs = mapOf("x" to STRING_VALUE)
 
     val exception = assertThrows(IllegalStateException::class) {
-      inputIsGreaterThanOrEqualToRuleClassifier.matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
+      inputIsGreaterThanOrEqualToRuleClassifier
+        .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
     }
 
     Truth.assertThat(exception)
@@ -167,9 +167,9 @@ class NumericInputIsGreaterThanOrEqualTosRuleClassifierProviderTest {
     return InteractionObject.newBuilder().setNormalizedString(value).build()
   }
 
-
   private fun setUpTestApplicationComponent() {
-    DaggerNumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest_TestApplicationComponent.builder()
+    DaggerNumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -201,6 +201,6 @@ class NumericInputIsGreaterThanOrEqualTosRuleClassifierProviderTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: NumericInputIsGreaterThanOrEqualTosRuleClassifierProviderTest)
+    fun inject(test: NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest)
   }
 }
