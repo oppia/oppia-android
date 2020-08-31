@@ -376,7 +376,6 @@ class StateFragmentLocalTest {
       openHintsAndSolutionsDialog()
 
       onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
-      //onView(withText("Hint 2")).inRoot(isDialog()).check(matches(not(isDisplayed())))
       onView(isRoot()).check(matches(not(withText("Hint 2"))))
     }
   }
