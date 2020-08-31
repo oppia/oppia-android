@@ -8,10 +8,19 @@ import android.view.View
 import java.io.File
 import java.io.FileOutputStream
 
-const val OUTPUT_FOLDER_NAME = "OppiaScreenshots"
-
-/**A class that is used to take screenshots from some activity.*/
+/** A class that is used to take screenshots for a UI. */
 class ScreenshotManager {
+
+  companion object {
+    private const val SCREENSHOT_TEST_RESULT_DIRECTORY_NAME = "oppiascreenshots"
+    /**
+     * @return the path of the directory containing the output screenshots
+     */
+    fun getOutputPath(): String {
+      val path = Environment.getExternalStorageDirectory().path
+      return "$path/$SCREENSHOT_TEST_RESULT_DIRECTORY_NAME"
+    }
+  }
 
   /**
    * A function that takes a screenshot of a given activity and stores it in the
@@ -28,8 +37,7 @@ class ScreenshotManager {
     val canvas = Canvas(bitmap)
     view.draw(canvas)
     val fileName = "${activity::class.java.name}.png"
-    val outputFolder =
-      File("${Environment.getExternalStorageDirectory().path}/$OUTPUT_FOLDER_NAME")
+    val outputFolder = File(getOutputPath())
     val imageFile =
       File(outputFolder, fileName)
     val outputStream = FileOutputStream(imageFile)
@@ -55,8 +63,7 @@ class ScreenshotManager {
     view.draw(canvas)
     val viewName = view.context.resources.getResourceEntryName(view.id)
     val fileName = "${view.context::class.java.name}_$viewName.png"
-    val outputFolder =
-      File("${Environment.getExternalStorageDirectory().path}/$OUTPUT_FOLDER_NAME")
+    val outputFolder = File(getOutputPath())
     val imageFile =
       File(outputFolder, fileName)
     val outputStream = FileOutputStream(imageFile)

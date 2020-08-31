@@ -1,16 +1,16 @@
 package org.oppia.app.screenshottesting
 
-import android.os.Environment
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.onboarding.OnboardingActivity
-import org.oppia.testing.screenshots.OUTPUT_FOLDER_NAME
 import org.oppia.testing.screenshots.ScreenshotManager
 import java.io.File
 
+/** A test class that is used to take screenshots of the [OnboardingActivity].*/
 @RunWith(AndroidJUnit4::class)
 class OnboardingActivityScreenshotTest {
 
@@ -18,7 +18,7 @@ class OnboardingActivityScreenshotTest {
 
   @Before
   fun setup() {
-    createOutputFolder()
+    createScreenshotTestResultDirectory()
   }
 
   @Test
@@ -26,13 +26,15 @@ class OnboardingActivityScreenshotTest {
     launch(OnboardingActivity::class.java).use {
       it.onActivity { activity ->
         screenshotManager.takeScreenshot(activity)
+        val fileName = "org.oppia.app.onboarding.OnboardingActivity.png"
+        val screenshotFile = File("${ScreenshotManager.getOutputPath()}/$fileName")
+        assertThat(screenshotFile.exists()).isTrue()
       }
     }
   }
 
-  private fun createOutputFolder() {
-    val outputFolder =
-      File("${Environment.getExternalStorageDirectory().path}/$OUTPUT_FOLDER_NAME")
+  private fun createScreenshotTestResultDirectory() {
+    val outputFolder = File(ScreenshotManager.getOutputPath())
     if (!outputFolder.exists()) {
       outputFolder.mkdir()
     }
