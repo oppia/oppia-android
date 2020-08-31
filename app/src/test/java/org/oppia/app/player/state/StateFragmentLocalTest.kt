@@ -370,11 +370,7 @@ class StateFragmentLocalTest {
       playThroughState1()
       submitTwoWrongAnswers()
       onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
-      onView(withId(R.id.previous_state_navigation_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(NEXT_NAVIGATION_BUTTON))
-      onView(withId(R.id.next_state_navigation_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
+      moveToPreviousAndBackToCurrentState()
       onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
     }
   }
@@ -391,11 +387,7 @@ class StateFragmentLocalTest {
       onView(withText("Reveal Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
       closeHintsAndSolutionsDialog()
 
-      onView(withId(R.id.previous_state_navigation_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(NEXT_NAVIGATION_BUTTON))
-      onView(withId(R.id.next_state_navigation_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
+      moveToPreviousAndBackToCurrentState()
 
       openHintsAndSolutionsDialog()
       onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
@@ -1012,6 +1004,15 @@ class StateFragmentLocalTest {
           ?.findViewById<View>(android.R.id.button1)
       assertThat(checkNotNull(positiveButton).performClick()).isTrue()
     }
+  }
+
+  // Go to previous state and then come back to current state
+  private fun moveToPreviousAndBackToCurrentState() {
+    onView(withId(R.id.previous_state_navigation_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+    onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(NEXT_NAVIGATION_BUTTON))
+    onView(withId(R.id.next_state_navigation_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
   }
 
   /**
