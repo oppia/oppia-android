@@ -161,7 +161,7 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
     return when (selectedFragment) {
       PROFILE_LIST_FRAGMENT -> 1
       APP_VERSION_FRAGMENT -> 3
-      else -> throw InvalidParameterException()
+      else -> throw InvalidParameterException("Not a valid fragment in getSelectedFragmentIndex.")
     }
   }
 
