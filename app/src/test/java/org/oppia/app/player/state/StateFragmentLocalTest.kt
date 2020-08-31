@@ -364,17 +364,42 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  fun testStateFragment_submitTwoWrongAnswers_prevState_nextState_hintAvailable() {
+  fun testStateFragment_submitTwoWrongAnswers_prevState_currentState_checkDotIconVisible() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
       submitTwoWrongAnswers()
+      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
       onView(withId(R.id.previous_state_navigation_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(NEXT_NAVIGATION_BUTTON))
       onView(withId(R.id.next_state_navigation_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.hint_bulb)).check(matches(isDisplayed()))
+      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_oneUnrevealedHint_prevState_currentState_checkOneUnrevealedHintVisible() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+      submitTwoWrongAnswers()
+
+      openHintsAndSolutionsDialog()
+      onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText("Reveal Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
+      closeHintsAndSolutionsDialog()
+
+      onView(withId(R.id.previous_state_navigation_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(NEXT_NAVIGATION_BUTTON))
+      onView(withId(R.id.next_state_navigation_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      openHintsAndSolutionsDialog()
+      onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText("Reveal Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
     }
   }
 
