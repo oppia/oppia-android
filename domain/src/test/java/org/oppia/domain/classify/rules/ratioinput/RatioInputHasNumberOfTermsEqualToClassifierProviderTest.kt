@@ -20,21 +20,21 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.cast
 import kotlin.test.fail
 
-/** Tests for [RatioInputHasNumberOfTermsEqualsToClassifierProvider]. */
+/** Tests for [RatioInputHasNumberOfTermsEqualToClassifierProvider]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
-class RatioInputHasNumberOfTermsEqualsToClassifierProviderTest {
+class RatioInputHasNumberOfTermsEqualToClassifierProviderTest {
   private val NON_NEGATIVE_VALUE_3 = createNonNegativeInt(value = 3)
   private val NON_NEGATIVE_VALUE_4 = createNonNegativeInt(value = 4)
   private val RATIO_WITH_THREE_TERMS = listOf(1, 2, 3)
 
   @Inject
-  internal lateinit var ratioInputHasNumberOfTermsEqualsToClassifierProvider:
-    RatioInputHasNumberOfTermsEqualsToClassifierProvider
+  internal lateinit var ratioInputHasNumberOfTermsEqualToClassifierProvider:
+    RatioInputHasNumberOfTermsEqualToClassifierProvider
 
-  private val hasNumberOfTermsEqualsToClassifierProvider: RuleClassifier by lazy {
-    ratioInputHasNumberOfTermsEqualsToClassifierProvider.createRuleClassifier()
+  private val hasNumberOfTermsEqualToClassifierProvider: RuleClassifier by lazy {
+    ratioInputHasNumberOfTermsEqualToClassifierProvider.createRuleClassifier()
   }
 
   @Test
@@ -42,7 +42,7 @@ class RatioInputHasNumberOfTermsEqualsToClassifierProviderTest {
     val inputs = mapOf("y" to NON_NEGATIVE_VALUE_3)
 
     val matches =
-      hasNumberOfTermsEqualsToClassifierProvider.matches(
+      hasNumberOfTermsEqualToClassifierProvider.matches(
         answer = createRatio(RATIO_WITH_THREE_TERMS),
         inputs = inputs
       )
@@ -55,7 +55,7 @@ class RatioInputHasNumberOfTermsEqualsToClassifierProviderTest {
     val inputs = mapOf("y" to NON_NEGATIVE_VALUE_4)
 
     val matches =
-      hasNumberOfTermsEqualsToClassifierProvider.matches(
+      hasNumberOfTermsEqualToClassifierProvider.matches(
         answer = createRatio(RATIO_WITH_THREE_TERMS),
         inputs = inputs
       )
@@ -68,7 +68,7 @@ class RatioInputHasNumberOfTermsEqualsToClassifierProviderTest {
     val inputs = mapOf("y" to createRatio(RATIO_WITH_THREE_TERMS))
 
     val exception = assertThrows(IllegalStateException::class) {
-      hasNumberOfTermsEqualsToClassifierProvider.matches(
+      hasNumberOfTermsEqualToClassifierProvider.matches(
         answer = createRatio(RATIO_WITH_THREE_TERMS),
         inputs = inputs
       )
@@ -86,7 +86,7 @@ class RatioInputHasNumberOfTermsEqualsToClassifierProviderTest {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_4)
 
     val exception = assertThrows(IllegalStateException::class) {
-      hasNumberOfTermsEqualsToClassifierProvider.matches(
+      hasNumberOfTermsEqualToClassifierProvider.matches(
         answer = createRatio(RATIO_WITH_THREE_TERMS),
         inputs = inputs
       )
@@ -113,7 +113,7 @@ class RatioInputHasNumberOfTermsEqualsToClassifierProviderTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerRatioInputHasNumberOfTermsEqualsToClassifierProviderTest_TestApplicationComponent
+    DaggerRatioInputHasNumberOfTermsEqualToClassifierProviderTest_TestApplicationComponent
       .builder()
       .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
   }
@@ -144,6 +144,6 @@ class RatioInputHasNumberOfTermsEqualsToClassifierProviderTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: RatioInputHasNumberOfTermsEqualsToClassifierProviderTest)
+    fun inject(test: RatioInputHasNumberOfTermsEqualToClassifierProviderTest)
   }
 }

@@ -10,10 +10,12 @@ import org.oppia.app.customview.interaction.NumericInputInteractionView
 import org.oppia.app.customview.interaction.TextInputInteractionView
 import org.oppia.app.databinding.ActivityInputInteractionViewTestBinding
 import org.oppia.app.model.Interaction
+import org.oppia.app.model.SchemaObject
 import org.oppia.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
+import org.oppia.app.player.state.itemviewmodel.RatioExpressionInputInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.TextInputViewModel
 import org.oppia.app.player.state.listener.StateKeyboardButtonListener
 
@@ -30,6 +32,7 @@ class InputInteractionViewTestActivity :
 
   private lateinit var binding: ActivityInputInteractionViewTestBinding
   lateinit var fractionInteractionViewModel: FractionInteractionViewModel
+  lateinit var ratioExpressionInputInteractionViewModel: RatioExpressionInputInteractionViewModel
   val numericInputViewModel = NumericInputViewModel(
     context = this,
     hasConversationView = false,
@@ -56,14 +59,28 @@ class InputInteractionViewTestActivity :
       isSplitView = false,
       interactionAnswerErrorOrAvailabilityCheckReceiver = this
     )
+
+    ratioExpressionInputInteractionViewModel = RatioExpressionInputInteractionViewModel(
+      interaction = Interaction.newBuilder().putCustomizationArgs(
+        "numberOfTerms",
+        SchemaObject.newBuilder().setSignedInt(3).build()
+      ).build(),
+      context = this,
+      hasConversationView = false,
+      isSplitView = false,
+      errorOrAvailabilityCheckReceiver = this
+    )
     binding.numericInputViewModel = numericInputViewModel
     binding.textInputViewModel = textInputViewModel
     binding.fractionInteractionViewModel = fractionInteractionViewModel
+    binding.ratioInteractionInputViewModel = ratioExpressionInputInteractionViewModel
   }
 
   fun getPendingAnswerErrorOnSubmitClick(v: View) {
     fractionInteractionViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
     numericInputViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+    ratioExpressionInputInteractionViewModel
+      .checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
   }
 
   override fun onPendingAnswerErrorOrAvailabilityCheck(
