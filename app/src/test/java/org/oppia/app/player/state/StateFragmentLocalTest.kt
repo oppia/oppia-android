@@ -421,7 +421,13 @@ class StateFragmentLocalTest {
         )
       ).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).check(matches(not(withText("In a fraction, the pieces representing the denominator must be equal"))))
+      onView(isRoot()).check(
+        matches(
+          not(
+            withText("In a fraction, the pieces representing the denominator must be equal")
+          )
+        )
+      )
     }
   }
 
