@@ -19,7 +19,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.cast
 import kotlin.test.fail
 
-/** Tests for [NumericInputIsGreaterThanOrEqualTosRuleClassifierProviderTest]. */
+/** Tests for [NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
@@ -93,7 +93,8 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
     val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_3_5)
 
     val matches =
-      inputIsGreaterThanOrEqualToRuleClassifier.matches(answer = NEGATIVE_REAL_VALUE_1_5, inputs = inputs)
+      inputIsGreaterThanOrEqualToRuleClassifier
+        .matches(answer = NEGATIVE_REAL_VALUE_1_5, inputs = inputs)
 
     Truth.assertThat(matches).isTrue()
   }
