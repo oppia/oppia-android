@@ -109,6 +109,8 @@ dependencies {
       'org.robolectric:annotations:4.3',
       'org.robolectric:robolectric:4.3',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
+      "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version",
+      "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version",
       'org.mockito:mockito-core:2.7.22',
       project(":testing"),
   )
