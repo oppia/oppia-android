@@ -30,7 +30,7 @@ class FirebaseEventLogger(
     firebaseAnalytics.logEvent(eventLog.actionName.toString(), bundle)
     firebaseAnalytics.setUserProperty(COUNTRY_USER_PROPERTY, Locale.getDefault().displayCountry)
     firebaseAnalytics.setUserProperty(
-      NETWORK_USER_PROPERTY, connectivityManager.activeNetworkInfo.type.toString()
+      NETWORK_USER_PROPERTY, connectivityManager.activeNetworkInfo.typeName
     )
   }
 }

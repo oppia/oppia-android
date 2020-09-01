@@ -1,6 +1,7 @@
 package org.oppia.util.logging.firebase
 
 import android.app.Application
+import android.content.Context
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.Module
@@ -21,10 +22,11 @@ class LogReportingModule {
 
   @Singleton
   @Provides
-  fun provideEventLogger(): EventLogger {
+  fun provideEventLogger(context: Context): EventLogger {
     return FirebaseEventLogger(
       FirebaseAnalytics.getInstance(Application()),
-      EventBundleCreator()
+      EventBundleCreator(),
+      context
     )
   }
 }
