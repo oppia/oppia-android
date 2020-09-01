@@ -3,7 +3,7 @@ package org.oppia.domain.classify.rules
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import org.junit.Before
@@ -19,7 +19,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.cast
 import kotlin.test.fail
 
-/** Tests for [NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest]. */
+/** Tests for [NumericInputIsGreaterThanOrEqualToRuleClassifierProvider]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
@@ -52,7 +52,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
       inputIsGreaterThanOrEqualToRuleClassifier
         .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
 
-    Truth.assertThat(matches).isTrue()
+    assertThat(matches).isTrue()
   }
 
   @Test
@@ -63,7 +63,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
       inputIsGreaterThanOrEqualToRuleClassifier
         .matches(answer = NEGATIVE_REAL_VALUE_1_5, inputs = inputs)
 
-    Truth.assertThat(matches).isTrue()
+    assertThat(matches).isTrue()
   }
 
   @Test
@@ -74,7 +74,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
       inputIsGreaterThanOrEqualToRuleClassifier
         .matches(answer = POSITIVE_REAL_VALUE_3_5, inputs = inputs)
 
-    Truth.assertThat(matches).isTrue()
+    assertThat(matches).isTrue()
   }
 
   @Test
@@ -85,7 +85,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
       inputIsGreaterThanOrEqualToRuleClassifier
         .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
 
-    Truth.assertThat(matches).isFalse()
+    assertThat(matches).isFalse()
   }
 
   @Test
@@ -96,7 +96,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
       inputIsGreaterThanOrEqualToRuleClassifier
         .matches(answer = NEGATIVE_REAL_VALUE_1_5, inputs = inputs)
 
-    Truth.assertThat(matches).isTrue()
+    assertThat(matches).isTrue()
   }
 
   @Test
@@ -107,7 +107,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
       inputIsGreaterThanOrEqualToRuleClassifier
         .matches(answer = NEGATIVE_REAL_VALUE_3_5, inputs = inputs)
 
-    Truth.assertThat(matches).isFalse()
+    assertThat(matches).isFalse()
   }
 
   @Test
@@ -118,7 +118,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
       inputIsGreaterThanOrEqualToRuleClassifier
         .matches(answer = NEGATIVE_REAL_VALUE_3_5, inputs = inputs)
 
-    Truth.assertThat(matches).isFalse()
+    assertThat(matches).isFalse()
   }
 
   @Test
@@ -129,7 +129,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
       inputIsGreaterThanOrEqualToRuleClassifier
         .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
 
-    Truth.assertThat(matches).isTrue()
+    assertThat(matches).isTrue()
   }
 
   @Test
@@ -141,7 +141,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
         .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
     }
 
-    Truth.assertThat(exception)
+    assertThat(exception)
       .hasMessageThat()
       .contains("Expected classifier inputs to contain parameter with name 'x'")
   }
@@ -155,7 +155,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
         .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
     }
 
-    Truth.assertThat(exception)
+    assertThat(exception)
       .hasMessageThat()
       .contains("Expected input value to be of type REAL not NORMALIZED_STRING")
   }
