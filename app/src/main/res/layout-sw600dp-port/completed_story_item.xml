@@ -41,7 +41,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:lessonThumbnail="@{viewModel.completedStory.lessonThumbnail}" />
+        app:lessonThumbnail="@{viewModel.completedStory.lessonThumbnail}"
+        app:topRoundedRectDrawableWithColor="@{viewModel.completedStory.lessonThumbnail.backgroundColorRgb}" />
 
       <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"

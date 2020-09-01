@@ -1,6 +1,7 @@
 package org.oppia.app.options
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -35,6 +36,7 @@ class OptionControlsViewModel @Inject constructor(
   private val loadAppLanguageListListener = activity as LoadAppLanguageListListener
   private var isFirstOpen = true
   val uiLiveData = MutableLiveData<Boolean>()
+  val selectedFragmentIndex = ObservableField<Int>()
 
   /**
    * Should be called with `false` when the UI starts to load, then with `true` after the UI
