@@ -7,7 +7,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import org.oppia.app.model.EventLog
 import org.oppia.util.logging.EventBundleCreator
 import org.oppia.util.logging.EventLogger
-import java.util.*
+import java.util.Locale
 import javax.inject.Singleton
 
 const val NETWORK_USER_PROPERTY = "NETWORK"
@@ -18,7 +18,7 @@ const val COUNTRY_USER_PROPERTY = "COUNTRY"
 class FirebaseEventLogger(
   private val firebaseAnalytics: FirebaseAnalytics,
   private val eventBundleCreator: EventBundleCreator,
-  private val context: Context
+  context: Context
 ) : EventLogger {
   private var bundle = Bundle()
   private val connectivityManager: ConnectivityManager =
