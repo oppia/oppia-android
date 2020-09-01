@@ -30,6 +30,10 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
   private val NEGATIVE_REAL_VALUE_1_5 = createReal(value = -1.5)
   private val NEGATIVE_REAL_VALUE_3_5 = createReal(value = -3.5)
   private val STRING_VALUE = createString(value = "test")
+  private val POSITIVE_INT_VALUE_3 = createInt(value = 3)
+  private val POSITIVE_INT_VALUE_1 = createInt(value = 1)
+  private val NEGATIVE_INT_VALUE_1 = createInt(value = -1)
+  private val NEGATIVE_INT_VALUE_3 = createInt(value = -3)
 
   @Inject
   internal lateinit var numericInputIsGreaterThanOrEqualToRuleClassifierProvider:
@@ -133,6 +137,28 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
   }
 
   @Test
+  fun testPositiveIntAnswer_negativeIntInput_answerValueGreater_answerGreaterOrEqual() {
+    val inputs = mapOf("x" to NEGATIVE_INT_VALUE_3)
+
+    val matches =
+      inputIsGreaterThanOrEqualToRuleClassifier
+        .matches(answer = POSITIVE_INT_VALUE_1, inputs = inputs)
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testNegativeIntAnswer_positiveIntInput_answerValueSmaller_answerNotGreaterOrEqual() {
+    val inputs = mapOf("x" to POSITIVE_INT_VALUE_3)
+
+    val matches =
+      inputIsGreaterThanOrEqualToRuleClassifier
+        .matches(answer = NEGATIVE_INT_VALUE_3, inputs = inputs)
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
   fun testRealAnswer_missingInput_throwsException() {
     val inputs = mapOf("y" to POSITIVE_REAL_VALUE_1_5)
 
@@ -166,6 +192,10 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
 
   private fun createString(value: String): InteractionObject {
     return InteractionObject.newBuilder().setNormalizedString(value).build()
+  }
+
+  private fun createInt(value: Int): InteractionObject {
+    return InteractionObject.newBuilder().setReal(value.toDouble()).build()
   }
 
   private fun setUpTestApplicationComponent() {
