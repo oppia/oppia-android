@@ -10,6 +10,10 @@ import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import javax.inject.Inject
 
 private const val SELECTED_OPTIONS_TITLE_KEY = "SELECTED_OPTIONS_TITLE_KEY"
+private const val SELECTED_FRAGMENT_KEY = "SELECTED_FRAGMENT_KEY"
+const val READING_TEXT_SIZE_FRAGMENT = "READING_TEXT_SIZE_FRAGMENT"
+const val APP_LANGUAGE_FRAGMENT = "APP_LANGUAGE_FRAGMENT"
+const val DEFAULT_AUDIO_FRAGMENT = "DEFAULT_AUDIO_FRAGMENT"
 
 /** The activity for setting user preferences. */
 class OptionsActivity :
@@ -24,6 +28,7 @@ class OptionsActivity :
   lateinit var optionActivityPresenter: OptionsActivityPresenter
   // used to initially load the suitable fragment in the case of multipane.
   private var isFirstOpen = true
+  private lateinit var selectedFragment: String
 
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
@@ -52,8 +57,18 @@ class OptionsActivity :
     if (savedInstanceState != null) {
       isFirstOpen = false
     }
+    selectedFragment = if (savedInstanceState == null) {
+      READING_TEXT_SIZE_FRAGMENT
+    } else {
+      savedInstanceState.get(SELECTED_FRAGMENT_KEY) as String
+    }
     val extraOptionsTitle = savedInstanceState?.getString(SELECTED_OPTIONS_TITLE_KEY)
-    optionActivityPresenter.handleOnCreate(isFromNavigationDrawer, extraOptionsTitle, isFirstOpen)
+    optionActivityPresenter.handleOnCreate(
+      isFromNavigationDrawer,
+      extraOptionsTitle,
+      isFirstOpen,
+      selectedFragment
+    )
     title = getString(R.string.menu_options)
   }
 
@@ -109,16 +124,19 @@ class OptionsActivity :
   }
 
   override fun loadReadingTextSizeFragment(textSize: String) {
+    selectedFragment = READING_TEXT_SIZE_FRAGMENT
     optionActivityPresenter.setExtraOptionTitle(getString(R.string.reading_text_size))
-    optionActivityPresenter.loadStoryTextSizeFragment(textSize)
+    optionActivityPresenter.loadReadingTextSizeFragment(textSize)
   }
 
   override fun loadAppLanguageFragment(appLanguage: String) {
+    selectedFragment = APP_LANGUAGE_FRAGMENT
     optionActivityPresenter.setExtraOptionTitle(getString(R.string.app_language))
     optionActivityPresenter.loadAppLanguageFragment(appLanguage)
   }
 
   override fun loadAudioLanguageFragment(audioLanguage: String) {
+    selectedFragment = DEFAULT_AUDIO_FRAGMENT
     optionActivityPresenter.setExtraOptionTitle(getString(R.string.audio_language))
     optionActivityPresenter.loadAudioLanguageFragment(audioLanguage)
   }
@@ -129,5 +147,6 @@ class OptionsActivity :
     if (titleTextView != null) {
       outState.putString(SELECTED_OPTIONS_TITLE_KEY, titleTextView.text.toString())
     }
+    outState.putString(SELECTED_FRAGMENT_KEY, selectedFragment)
   }
 }

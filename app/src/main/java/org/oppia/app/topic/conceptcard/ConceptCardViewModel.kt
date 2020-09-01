@@ -3,9 +3,9 @@ package org.oppia.app.topic.conceptcard
 import android.widget.TextView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.ConceptCard
+import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.DefaultResourceBucketName
@@ -15,7 +15,7 @@ import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
 
 // TODO(#1633): Fix ViewModel to not depend on View
-/** [ViewModel] for concept card, providing rich text and worked examples */
+/** [ObservableViewModel] for concept card, providing rich text and worked examples */
 @FragmentScope
 class ConceptCardViewModel @Inject constructor(
   private val topicController: TopicController,
@@ -23,7 +23,7 @@ class ConceptCardViewModel @Inject constructor(
   private val htmlParserFactory: HtmlParser.Factory,
   @ConceptCardHtmlParserEntityType private val entityType: String,
   @DefaultResourceBucketName private val resourceBucketName: String
-) : ViewModel() {
+) : ObservableViewModel() {
   private lateinit var skillId: String
   private lateinit var view: TextView
 
