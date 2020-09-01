@@ -87,4 +87,5 @@
   <dimen name="recently_played_margin_min">8dp</dimen>
   <dimen name="recently_played_tablet_land_outer_margin">96dp</dimen>
   <dimen name="recently_played_tablet_port_outer_margin">120dp</dimen>
+  <dimen name="defaultReadingTextSize">18sp</dimen>
 </resources>
