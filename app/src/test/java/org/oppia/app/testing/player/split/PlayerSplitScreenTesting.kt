@@ -18,7 +18,6 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 class PlayerSplitScreenTesting {
 
-  // TODO(#1512): Add test cases for ImageClickInput interaction for split-view screen.
   @Before
   fun setUp() {
     Intents.init()
@@ -76,6 +75,36 @@ class PlayerSplitScreenTesting {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
         assertThat(SplitScreenManager(activity).shouldSplitScreen("DragAndDropSortInput")).isFalse()
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "w540dp-h960dp-xhdpi") // 5.5 (inch)
+  fun testSplitScreen_540x960_xhdpi_imageClickInput_NoSplit() {
+    launch(ExplorationTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        assertThat(SplitScreenManager(activity).shouldSplitScreen("ImageClickInput")).isFalse()
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "w800dp-h1280dp-xhdpi") // 8.4 (inch)
+  fun testSplitScreen_800x1280_xhdpi_imageClickInput_Split() {
+    launch(ExplorationTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        assertThat(SplitScreenManager(activity).shouldSplitScreen("ImageClickInput")).isTrue()
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "w411dp-h731dp-xxxhdpi") // 5.5 (inch)
+  fun testSplitScreen_411x731_xxxhdpi_imageClickInput_NoSplit() {
+    launch(ExplorationTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        assertThat(SplitScreenManager(activity).shouldSplitScreen("ImageClickInput")).isFalse()
       }
     }
   }
