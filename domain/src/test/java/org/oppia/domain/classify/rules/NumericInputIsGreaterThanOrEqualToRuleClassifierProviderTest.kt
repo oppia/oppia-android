@@ -153,7 +153,7 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
 
     val matches =
       inputIsGreaterThanOrEqualToRuleClassifier
-        .matches(answer = NEGATIVE_INT_VALUE_3, inputs = inputs)
+        .matches(answer = NEGATIVE_INT_VALUE_1, inputs = inputs)
 
     assertThat(matches).isFalse()
   }
