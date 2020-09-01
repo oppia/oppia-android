@@ -107,7 +107,7 @@ class LogUploadWorkManagerInitializerTest {
       oppiaLogger.createTopicContext(TEST_TOPIC_ID)
     )
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
-
+    setUp()
     logUploadWorkManagerInitializer.onCreate()
     val eventLog = fakeEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEqualTo(eventLogTopicContext)
@@ -119,6 +119,7 @@ class LogUploadWorkManagerInitializerTest {
     exceptionsController.logNonFatalException(exception, TEST_TIMESTAMP)
 
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
+    setUp()
     logUploadWorkManagerInitializer.onCreate()
 
     val exceptionLogged = fakeExceptionLogger.getMostRecentException()
@@ -136,6 +137,7 @@ class LogUploadWorkManagerInitializerTest {
     exceptionsController.logNonFatalException(exception, TEST_TIMESTAMP)
 
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
+    setUp()
     logUploadWorkManagerInitializer.onCreate()
 
     val eventLog = fakeEventLogger.getMostRecentEvent()

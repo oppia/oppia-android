@@ -3,15 +3,17 @@ package org.oppia.domain.oppialogger.loguploader
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import org.oppia.app.model.OppiaEventLogs
+import org.oppia.app.model.OppiaExceptionLogs
 import org.oppia.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.domain.oppialogger.exceptions.toException
 import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.logging.EventLogger
 import org.oppia.util.logging.ExceptionLogger
+import org.oppia.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 
 /** Worker class that extracts log reports from the cache store and logs them to the remote service. */
@@ -22,7 +24,8 @@ class LogUploadWorker private constructor(
   private val exceptionsController: ExceptionsController,
   private val exceptionLogger: ExceptionLogger,
   private val eventLogger: EventLogger,
-  private val consoleLogger: ConsoleLogger
+  private val consoleLogger: ConsoleLogger,
+  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
 ) : CoroutineWorker(context, params) {
 
   companion object {
@@ -33,16 +36,14 @@ class LogUploadWorker private constructor(
   }
 
   override suspend fun doWork(): Result {
-    return coroutineScope {
-      when (inputData.getString(WORKER_CASE_KEY)) {
-        EVENT_WORKER -> {
-          withContext(Dispatchers.Default) { uploadEvents() }
-        }
-        EXCEPTION_WORKER -> {
-          withContext(Dispatchers.Default) { uploadExceptions() }
-        }
-        else -> Result.failure()
+    return when (inputData.getString(WORKER_CASE_KEY)) {
+      EVENT_WORKER -> {
+        withContext(backgroundDispatcher) { uploadEvents() }
       }
+      EXCEPTION_WORKER -> {
+        withContext(backgroundDispatcher) { uploadExceptions() }
+      }
+      else -> Result.failure()
     }
   }
 
@@ -50,7 +51,8 @@ class LogUploadWorker private constructor(
   private suspend fun uploadExceptions(): Result {
     return try {
       val exceptionLogs =
-        exceptionsController.getExceptionLogStore().retrieveData().getOrThrow().exceptionLogList
+        exceptionsController.getExceptionLogStore().retrieveData()
+          .getOrDefault(OppiaExceptionLogs.getDefaultInstance()).exceptionLogList
       exceptionLogs?.let {
         for (exceptionLog in it) {
           exceptionLogger.logException(exceptionLog.toException())
@@ -69,7 +71,8 @@ class LogUploadWorker private constructor(
   private suspend fun uploadEvents(): Result {
     return try {
       val eventLogs =
-        analyticsController.getEventLogStore().retrieveData().getOrThrow().eventLogList
+        analyticsController.getEventLogStore().retrieveData()
+          .getOrDefault(OppiaEventLogs.getDefaultInstance()).eventLogList
       eventLogs?.let {
         for (eventLog in it) {
           eventLogger.logEvent(eventLog)
@@ -89,7 +92,8 @@ class LogUploadWorker private constructor(
     private val exceptionsController: ExceptionsController,
     private val exceptionLogger: ExceptionLogger,
     private val eventLogger: EventLogger,
-    private val consoleLogger: ConsoleLogger
+    private val consoleLogger: ConsoleLogger,
+    @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
   ) : LogUploadChildWorkerFactory {
 
     override fun create(context: Context, params: WorkerParameters): CoroutineWorker {
@@ -100,7 +104,8 @@ class LogUploadWorker private constructor(
         exceptionsController,
         exceptionLogger,
         eventLogger,
-        consoleLogger
+        consoleLogger,
+        backgroundDispatcher
       )
     }
   }
