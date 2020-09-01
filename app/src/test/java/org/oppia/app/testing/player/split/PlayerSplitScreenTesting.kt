@@ -31,7 +31,7 @@ class PlayerSplitScreenTesting {
 
   @Test
   @Config(qualifiers = "w540dp-h960dp-xhdpi") // 5.5 (inch)
-  fun testSplitScreen_540x960_xhdpi_continueInteraction_NoSplit() {
+  fun testSplitScreen_540x960_xhdpi_continueInteraction_noSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
         assertThat(SplitScreenManager(activity).shouldSplitScreen("Continue")).isFalse()
@@ -41,7 +41,7 @@ class PlayerSplitScreenTesting {
 
   @Test
   @Config(qualifiers = "w540dp-h960dp-xhdpi") // 5.5 (inch)
-  fun testSplitScreen_540x960_xhdpi_dragInteraction_NoSplit() {
+  fun testSplitScreen_540x960_xhdpi_dragInteraction_noSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
         assertThat(SplitScreenManager(activity).shouldSplitScreen("DragAndDropSortInput")).isFalse()
@@ -51,7 +51,7 @@ class PlayerSplitScreenTesting {
 
   @Test
   @Config(qualifiers = "w800dp-h1280dp-xhdpi") // 8.4 (inch)
-  fun testSplitScreen_800x1280_xhdpi_continueInteraction_NoSplit() {
+  fun testSplitScreen_800x1280_xhdpi_continueInteraction_noSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
         assertThat(SplitScreenManager(activity).shouldSplitScreen("Continue")).isFalse()
@@ -61,7 +61,7 @@ class PlayerSplitScreenTesting {
 
   @Test
   @Config(qualifiers = "w800dp-h1280dp-xhdpi") // 8.4 (inch)
-  fun testSplitScreen_800x1280_xhdpi_dragInteraction_Split() {
+  fun testSplitScreen_800x1280_xhdpi_dragInteraction_split() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
         assertThat(SplitScreenManager(activity).shouldSplitScreen("DragAndDropSortInput")).isTrue()
@@ -71,7 +71,7 @@ class PlayerSplitScreenTesting {
 
   @Test
   @Config(qualifiers = "w411dp-h731dp-xxxhdpi") // 5.5 (inch)
-  fun testSplitScreen_411x731_xxxhdpi_dragInteraction_NoSplit() {
+  fun testSplitScreen_411x731_xxxhdpi_dragInteraction_noSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
         assertThat(SplitScreenManager(activity).shouldSplitScreen("DragAndDropSortInput")).isFalse()
@@ -81,7 +81,7 @@ class PlayerSplitScreenTesting {
 
   @Test
   @Config(qualifiers = "w540dp-h960dp-xhdpi") // 5.5 (inch)
-  fun testSplitScreen_540x960_xhdpi_imageClickInput_NoSplit() {
+  fun testSplitScreen_540x960_xhdpi_imageClickInput_noSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
         assertThat(SplitScreenManager(activity).shouldSplitScreen("ImageClickInput")).isFalse()
@@ -91,7 +91,7 @@ class PlayerSplitScreenTesting {
 
   @Test
   @Config(qualifiers = "w800dp-h1280dp-xhdpi") // 8.4 (inch)
-  fun testSplitScreen_800x1280_xhdpi_imageClickInput_Split() {
+  fun testSplitScreen_800x1280_xhdpi_imageClickInput_split() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
         assertThat(SplitScreenManager(activity).shouldSplitScreen("ImageClickInput")).isTrue()
@@ -101,7 +101,7 @@ class PlayerSplitScreenTesting {
 
   @Test
   @Config(qualifiers = "w411dp-h731dp-xxxhdpi") // 5.5 (inch)
-  fun testSplitScreen_411x731_xxxhdpi_imageClickInput_NoSplit() {
+  fun testSplitScreen_411x731_xxxhdpi_imageClickInput_noSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
         assertThat(SplitScreenManager(activity).shouldSplitScreen("ImageClickInput")).isFalse()
