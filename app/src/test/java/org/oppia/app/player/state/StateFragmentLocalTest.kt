@@ -22,6 +22,7 @@ import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -50,10 +51,12 @@ import org.oppia.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NEXT_NAVIGATION_BUTTON
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.PREVIOUS_RESPONSES_HEADER
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
+import org.oppia.app.recyclerview.RecyclerViewMatcher
 import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
@@ -348,6 +351,85 @@ class StateFragmentLocalTest {
 
       // Submitting two wrong answers should make the hint immediately available.
       onView(withId(R.id.hint_bulb)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_submitTwoWrongAnswers_hintAvailable_prevState_hintNotAvailable() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+      submitTwoWrongAnswers()
+      onView(withId(R.id.hint_bulb)).check(matches(isDisplayed()))
+      onView(withId(R.id.previous_state_navigation_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.hint_bulb)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testStateFragment_submitTwoWrongAnswers_prevState_currentState_checkDotIconVisible() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+      submitTwoWrongAnswers()
+      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
+      moveToPreviousAndBackToCurrentState()
+      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_oneUnrevealedHint_prevState_currentState_checkOneUnrevealedHintVisible() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+      submitTwoWrongAnswers()
+
+      openHintsAndSolutionsDialog()
+      onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText("Reveal Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
+      closeHintsAndSolutionsDialog()
+
+      moveToPreviousAndBackToCurrentState()
+
+      openHintsAndSolutionsDialog()
+      onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText("Reveal Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_revealFirstHint_prevState_currentState_checkFirstHintRevealed() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+
+      produceAndViewFirstHint()
+
+      onView(withId(R.id.previous_state_navigation_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(NEXT_NAVIGATION_BUTTON))
+      onView(withId(R.id.next_state_navigation_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      openHintsAndSolutionsDialog()
+      onView(withId(R.id.hints_and_solution_recycler_view))
+        .inRoot(isDialog())
+        .perform(scrollToPosition<ViewHolder>(0))
+      onView(
+        RecyclerViewMatcher.atPositionOnView(
+          R.id.hints_and_solution_recycler_view, 0, R.id.hint_summary_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).check(
+        matches(
+          not(
+            withText("In a fraction, the pieces representing the denominator must be equal")
+          )
+        )
+      )
     }
   }
 
@@ -960,6 +1042,15 @@ class StateFragmentLocalTest {
           ?.findViewById<View>(android.R.id.button1)
       assertThat(checkNotNull(positiveButton).performClick()).isTrue()
     }
+  }
+
+  // Go to previous state and then come back to current state
+  private fun moveToPreviousAndBackToCurrentState() {
+    onView(withId(R.id.previous_state_navigation_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+    onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(NEXT_NAVIGATION_BUTTON))
+    onView(withId(R.id.next_state_navigation_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
   }
 
   /**
