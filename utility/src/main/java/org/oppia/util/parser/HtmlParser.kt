@@ -87,7 +87,8 @@ class HtmlParser private constructor(
       htmlContentTextView, gcsResourceName, entityType, entityId, imageCenterAlign
     )
     val htmlSpannable = CustomHtmlContentHandler.fromHtml(
-      htmlContent, imageGetter, mapOf(
+      htmlContent, imageGetter,
+      mapOf(
         CUSTOM_CONCEPT_CARD_TAG to conceptCardTagHandler,
         CUSTOM_BULLET_LIST_TAG to bulletTagHandler
       )

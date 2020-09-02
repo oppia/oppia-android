@@ -160,7 +160,9 @@ class StateFragmentTest {
     // Only initialize the Robolectric shadows when running on Robolectric (and use reflection since
     // Espresso can't load Robolectric into its classpath).
     if (isOnRobolectric()) {
-      val dataSource = createAudioDataSource(explorationId = "MjZzEVOG47_1", audioFileName = "content-en-ouqm7j21vt8.mp3")
+      val dataSource = createAudioDataSource(
+        explorationId = "MjZzEVOG47_1", audioFileName = "content-en-ouqm7j21vt8.mp3"
+      )
       addShadowMediaPlayerException(dataSource, IOException("Test does not have networking"))
     }
   }
