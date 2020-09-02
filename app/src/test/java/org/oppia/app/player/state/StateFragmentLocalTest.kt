@@ -25,10 +25,14 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.bumptech.glide.Glide
+import com.bumptech.glide.GlideBuilder
+import com.bumptech.glide.load.engine.executor.MockGlideExecutor
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
@@ -67,6 +71,7 @@ import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.testing.CoroutineExecutorService
 import org.oppia.testing.TestAccessibilityModule
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
@@ -78,6 +83,7 @@ import org.oppia.util.logging.LoggerModule
 import org.oppia.util.parser.GlideImageLoaderModule
 import org.oppia.util.parser.HtmlParserEntityTypeModule
 import org.oppia.util.parser.ImageParsingModule
+import org.oppia.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowMediaPlayer
@@ -102,12 +108,29 @@ class StateFragmentLocalTest {
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject @field:ApplicationContext lateinit var context: Context
+  @Inject
+  @field:BackgroundDispatcher
+  lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
 
   private val internalProfileId: Int = 1
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+
+    // Initialize Glide such that all of its executors use the same shared dispatcher pool as the
+    // rest of Oppia so that thread execution can be synchronized via Oppia's test coroutine
+    // dispatchers.
+    val executorService = MockGlideExecutor.newTestExecutor(
+      CoroutineExecutorService(backgroundCoroutineDispatcher)
+    )
+    Glide.init(
+      context,
+      GlideBuilder().setDiskCacheExecutor(executorService)
+        .setAnimationExecutor(executorService)
+        .setSourceExecutor(executorService)
+    )
+
     profileTestHelper.initializeProfiles()
     ShadowMediaPlayer.addException(audioDataSource1, IOException("Test does not have networking"))
   }
@@ -129,11 +152,11 @@ class StateFragmentLocalTest {
 
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SELECTION_INTERACTION))
       onView(withSubstring("the pieces must be the same size.")).perform(click())
-      testCoroutineDispatchers.advanceUntilIdle()
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_NAVIGATION_BUTTON))
-      testCoroutineDispatchers.advanceUntilIdle()
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.continue_navigation_button)).perform(click())
-      testCoroutineDispatchers.advanceUntilIdle()
+      testCoroutineDispatchers.runCurrent()
 
       onView(withSubstring("of the above circle is red?")).check(matches(isDisplayed()))
     }
