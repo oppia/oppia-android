@@ -119,6 +119,7 @@ class StateFragmentLocalTest {
   lateinit var context: Context
 
   private val internalProfileId: Int = 1
+  private val solutionIndex: Int = 4
 
   @Before
   fun setUp() {
@@ -456,7 +457,7 @@ class StateFragmentLocalTest {
       openHintsAndSolutionsDialog()
 
       onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
-      onView(withText("Hint 2")).inRoot(isDialog()).check(matches(not(isDisplayed())))
+      onView(isRoot()).check(matches(not(withText("Hint 2"))))
     }
   }
 
@@ -500,6 +501,21 @@ class StateFragmentLocalTest {
 
       // After the first hint, waiting 30 more seconds is sufficient for displaying another hint.
       onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_nextState_viewHint_doNotWait_canViewTwoHints() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+      produceAndViewFirstHint()
+
+      openHintsAndSolutionsDialog()
+      onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
+      closeHintsAndSolutionsDialog()
+
+      onView(isRoot()).check(matches(not(withText("Hint 2"))))
     }
   }
 
@@ -652,9 +668,11 @@ class StateFragmentLocalTest {
       openHintsAndSolutionsDialog()
 
       // The reveal solution button should now be visible.
+      // NOTE: solutionIndex is multiplied by 2, because the implementation of hints and solution
+      // introduces divider in UI as a separate item.
       onView(withId(R.id.hints_and_solution_recycler_view))
         .inRoot(isDialog())
-        .perform(scrollToPosition<ViewHolder>(/* position= */ 4))
+        .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex * 2))
       onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
@@ -702,9 +720,11 @@ class StateFragmentLocalTest {
       openHintsAndSolutionsDialog()
 
       // The reveal solution button should now be visible.
+      // NOTE: solutionIndex is multiplied by 2, because the implementation of hints and solution
+      // introduces divider in UI as a separate item.
       onView(withId(R.id.hints_and_solution_recycler_view))
         .inRoot(isDialog())
-        .perform(scrollToPosition<ViewHolder>(/* position= */ 4))
+        .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex * 2))
       onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
@@ -918,9 +938,11 @@ class StateFragmentLocalTest {
   private fun pressRevealHintOrSolutionButton(@IdRes buttonId: Int, hintPosition: Int) {
     // There should only ever be a single reveal button currently displayed; click that one.
     // However, it may need to be scrolled to in case many hints are showing.
+    // NOTE: hintPosition is multiplied by 2, because the implementation of hints and solution
+    // introduces divider in UI as a separate item.
     onView(withId(R.id.hints_and_solution_recycler_view))
       .inRoot(isDialog())
-      .perform(scrollToPosition<ViewHolder>(hintPosition))
+      .perform(scrollToPosition<ViewHolder>(hintPosition * 2))
     onView(allOf(withId(buttonId), isDisplayed()))
       .inRoot(isDialog())
       .perform(click())
