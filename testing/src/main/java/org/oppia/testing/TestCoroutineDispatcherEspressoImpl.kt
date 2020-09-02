@@ -10,6 +10,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.test.DelayController
 import kotlinx.coroutines.test.UncompletedCoroutinesError
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -130,8 +131,15 @@ class TestCoroutineDispatcherEspressoImpl private constructor(
     throw UnsupportedOperationException("Real-time dispatchers cannot be paused/resumed")
   }
 
-  @ExperimentalCoroutinesApi
   override fun runCurrent() {
+    // Nothing to do; the queue is always continuously running.
+  }
+
+  override fun runCurrent(timeout: Long, timeoutUnit: TimeUnit) {
+    // Nothing to do; the queue is always continuously running.
+  }
+
+  override fun runUntilIdle(timeout: Long, timeoutUnit: TimeUnit) {
     // Nothing to do; the queue is always continuously running.
   }
 

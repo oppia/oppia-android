@@ -34,6 +34,10 @@ class TestCoroutineDispatchersEspressoImpl @Inject constructor(
     advanceUntilIdle()
   }
 
+  override fun runCurrentWith(vararg additionalDispatchers: TestCoroutineDispatcher) {
+    throw UnsupportedOperationException("This function is not supported in Espresso-enabled tests")
+  }
+
   override fun advanceTimeBy(delayTimeMillis: Long) {
     // No actual sleep is needed since Espresso will automatically run until all tasks are
     // completed since idleness ties to all tasks, even future ones.
@@ -43,6 +47,13 @@ class TestCoroutineDispatchersEspressoImpl @Inject constructor(
   override fun advanceUntilIdle() {
     // Test coroutine dispatchers run in real-time, so let Espresso run until it idles.
     onIdle()
+  }
+
+  override fun advanceUntilIdleWith(vararg additionalDispatchers: TestCoroutineDispatcher) {
+    // This functionality could be added in the future, but it's a bit complex since it requires
+    // temporarily coordinating this class's idling resource with the new dispatchers, then
+    // triggering an onIdle call.
+    throw UnsupportedOperationException("This function is not supported in Espresso-enabled tests")
   }
 
   /** Returns whether any of the dispatchers have tasks that can be run now. */
