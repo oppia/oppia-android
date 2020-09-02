@@ -10,8 +10,8 @@ import org.oppia.util.logging.EventLogger
 import java.util.Locale
 import javax.inject.Singleton
 
-const val NETWORK_USER_PROPERTY = "NETWORK"
-const val COUNTRY_USER_PROPERTY = "COUNTRY"
+private const val NETWORK_USER_PROPERTY = "NETWORK"
+private const val COUNTRY_USER_PROPERTY = "COUNTRY"
 
 /** Logger for event logging to Firebase Analytics. */
 @Singleton
