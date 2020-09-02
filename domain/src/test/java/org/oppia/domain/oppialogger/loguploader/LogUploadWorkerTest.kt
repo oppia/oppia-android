@@ -99,6 +99,23 @@ class LogUploadWorkerTest {
   @Captor
   lateinit var oppiaEventLogsResultCaptor: ArgumentCaptor<AsyncResult<OppiaEventLogs>>
 
+  private val eventLogTopicContext = EventLog.newBuilder()
+    .setActionName(EventLog.EventAction.EVENT_ACTION_UNSPECIFIED)
+    .setContext(
+      EventLog.Context.newBuilder()
+        .setTopicContext(
+          EventLog.TopicContext.newBuilder()
+            .setTopicId(TEST_TOPIC_ID)
+            .build()
+        )
+        .build()
+    )
+    .setPriority(EventLog.Priority.ESSENTIAL)
+    .setTimestamp(TEST_TIMESTAMP)
+    .build()
+
+  private val exception = Exception("TEST")
+
   @Before
   fun setUp() {
     networkConnectionUtil = NetworkConnectionUtil(ApplicationProvider.getApplicationContext())
@@ -113,21 +130,6 @@ class LogUploadWorkerTest {
 
   @Test
   fun testWorker_logEvent_withoutNetwork_enqueueRequest_verifySuccess() {
-    val eventLogTopicContext = EventLog.newBuilder()
-      .setActionName(EventLog.EventAction.EVENT_ACTION_UNSPECIFIED)
-      .setContext(
-        EventLog.Context.newBuilder()
-          .setTopicContext(
-            EventLog.TopicContext.newBuilder()
-              .setTopicId(TEST_TOPIC_ID)
-              .build()
-          )
-          .build()
-      )
-      .setPriority(EventLog.Priority.ESSENTIAL)
-      .setTimestamp(TEST_TIMESTAMP)
-      .build()
-
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
     analyticsController.logTransitionEvent(
       eventLogTopicContext.timestamp,
@@ -159,13 +161,13 @@ class LogUploadWorkerTest {
     val workInfo = workManager.getWorkInfoById(request.id)
 
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(fakeEventLogger.getMostRecentEvent()).isEqualTo(eventLogTopicContext)
   }
 
   @Test
   fun testWorker_logException_withoutNetwork_enqueueRequest_verifySuccess() {
-    val exceptionThrown = Exception("TEST", Throwable("TEST THROWABLE"))
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
-    exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP)
+    exceptionsController.logNonFatalException(exception, TEST_TIMESTAMP)
 
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
@@ -180,8 +182,12 @@ class LogUploadWorkerTest {
     workManager.enqueue(request)
     testCoroutineDispatchers.runCurrent()
     val workInfo = workManager.getWorkInfoById(request.id)
+    val exceptionGot = fakeExceptionLogger.getMostRecentException()
 
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(exceptionGot.message).isEqualTo("TEST")
+    assertThat(exceptionGot.stackTrace).isEqualTo(exception.stackTrace)
+    assertThat(exceptionGot.cause).isEqualTo(null)
   }
 
   private fun setUpTestApplicationComponent() {

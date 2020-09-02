@@ -5,8 +5,6 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import org.oppia.app.model.OppiaEventLogs
-import org.oppia.app.model.OppiaExceptionLogs
 import org.oppia.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.domain.oppialogger.exceptions.toException
@@ -50,19 +48,16 @@ class LogUploadWorker private constructor(
   /** Extracts exception logs from the cache store and logs them to the remote service. */
   private suspend fun uploadExceptions(): Result {
     return try {
-      val exceptionLogs =
-        exceptionsController.getExceptionLogStore().retrieveData()
-          .getOrDefault(OppiaExceptionLogs.getDefaultInstance()).exceptionLogList
-      exceptionLogs?.let {
+      val exceptionLogs = exceptionsController.getExceptionLogStoreList()
+      exceptionLogs.let {
         for (exceptionLog in it) {
           exceptionLogger.logException(exceptionLog.toException())
-          it.remove(exceptionLog)
+          exceptionsController.removeFirstExceptionLogFromStore()
         }
       }
       Result.success()
     } catch (e: Exception) {
       consoleLogger.e(TAG, e.toString(), e)
-      System.err.println(e)
       Result.failure()
     }
   }
@@ -70,13 +65,11 @@ class LogUploadWorker private constructor(
   /** Extracts event logs from the cache store and logs them to the remote service. */
   private suspend fun uploadEvents(): Result {
     return try {
-      val eventLogs =
-        analyticsController.getEventLogStore().retrieveData()
-          .getOrDefault(OppiaEventLogs.getDefaultInstance()).eventLogList
-      eventLogs?.let {
+      val eventLogs = analyticsController.getEventLogStoreList()
+      eventLogs.let {
         for (eventLog in it) {
           eventLogger.logEvent(eventLog)
-          it.remove(eventLog)
+          analyticsController.removeFirstEventLogFromStore()
         }
       }
       Result.success()

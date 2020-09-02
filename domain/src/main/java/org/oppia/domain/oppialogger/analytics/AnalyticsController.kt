@@ -155,4 +155,24 @@ class AnalyticsController @Inject constructor(
   fun getEventLogStore(): DataProvider<OppiaEventLogs> {
     return eventLogStore
   }
+
+  /** Returns a list of [EventLog] after reading from [eventLogStore]. */
+  suspend fun getEventLogStoreList(): MutableList<EventLog> {
+    return eventLogStore.readDataAsync().await().eventLogList
+  }
+
+  /** Removes the first [EventLog] from the [eventLogStore]. */
+  fun removeFirstEventLogFromStore(){
+    eventLogStore.storeDataAsync(true){oppiaEventLogs ->
+      return@storeDataAsync oppiaEventLogs.toBuilder().removeEventLog(0).build()
+    }.invokeOnCompletion {
+      it?.let {
+        consoleLogger.e(
+          "Analytics Controller",
+          "Failed to remove event log",
+          it
+        )
+      }
+    }
+  }
 }
