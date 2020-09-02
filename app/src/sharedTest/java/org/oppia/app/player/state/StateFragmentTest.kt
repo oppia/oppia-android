@@ -64,6 +64,7 @@ import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FEED
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NEXT_NAVIGATION_BUTTON
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.RATIO_EXPRESSION_INPUT_INTERACTION
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.RETURN_TO_TOPIC_NAVIGATION_BUTTON
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMITTED_ANSWER
@@ -860,11 +861,10 @@ class StateFragmentTest {
   fun testStateFragment_inputRatio_submit_correctAnswerDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_6).use {
       startPlayingExploration()
-      onView(withId(R.id.ratio_input_interaction_view)).perform(
-        typeText("4:5"),
-        closeSoftKeyboard()
-      )
-      onView(withId(R.id.submit_answer_button)).perform(click())
+      typeRatioExpression("4:5")
+
+      clickSubmitAnswerButton()
+
       onView(withId(R.id.submitted_answer_text_view))
         .check(matches(ViewMatchers.withContentDescription("4 to 5")))
     }
@@ -915,12 +915,9 @@ class StateFragmentTest {
     clickContinueNavigationButton()
 
     // Sixth state: Ratio input. Correct answer: 4:5.
-    onView(withId(R.id.ratio_input_interaction_view)).perform(
-      typeText("4:5"),
-      closeSoftKeyboard()
-    )
-    onView(withId(R.id.submit_answer_button)).perform(click())
-    onView(withId(R.id.continue_navigation_button)).perform(click())
+    typeRatioExpression("4:5")
+    clickSubmitAnswerButton()
+    clickContinueNavigationButton()
 
     // Seventh state: Text input. Correct answer: finnish.
     typeTextInput("finnish")
@@ -982,6 +979,12 @@ class StateFragmentTest {
   private fun typeTextInput(text: String) {
     scrollToViewType(TEXT_INPUT_INTERACTION)
     typeTextIntoInteraction(text, interactionViewId = R.id.text_input_interaction_view)
+  }
+
+  @Suppress("SameParameterValue")
+  private fun typeRatioExpression(text: String) {
+    scrollToViewType(RATIO_EXPRESSION_INPUT_INTERACTION)
+    typeTextIntoInteraction(text, interactionViewId = R.id.ratio_input_interaction_view)
   }
 
   private fun selectMultipleChoiceOption(optionPosition: Int) {

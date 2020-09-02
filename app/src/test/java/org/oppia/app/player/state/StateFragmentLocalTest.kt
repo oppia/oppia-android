@@ -131,6 +131,7 @@ class StateFragmentLocalTest {
     // Initialize Glide such that all of its executors use the same shared dispatcher pool as the
     // rest of Oppia so that thread execution can be synchronized via Oppia's test coroutine
     // dispatchers.
+    // TODO(#1765): Improve the s
     val executorService = MockGlideExecutor.newTestExecutor(
       CoroutineExecutorService(backgroundCoroutineDispatcher)
     )
