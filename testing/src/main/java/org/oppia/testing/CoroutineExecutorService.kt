@@ -55,16 +55,14 @@ class CoroutineExecutorService(
   private var isShutdown = false
   private val pendingTasks = mutableMapOf<Int, Task<*>>()
   private val cachedThreadPool by lazy { Executors.newCachedThreadPool() }
-  private val cachedThreadCoroutineDispatcher by lazy { cachedThreadPool.asCoroutineDispatcher() }
-  private var priorToBlockingCallback: PriorToBlockingCallback? = null
-  private var afterSelectionSetup: AfterSelectionSetup? = null
-
   /**
-   * Coroutine scope for executing consecutive tasks for blocking the calling thread and without
+   * Coroutine dispatcher for executing consecutive tasks for blocking the calling thread and without
    * interfering with other potentially blocked operations leveraging this scope. This is done using
    * a cached thread pool that creates new threads as others become blocked.
    */
-  private val cachedThreadCoroutineScope by lazy { CoroutineScope(cachedThreadCoroutineDispatcher) }
+  private val cachedThreadCoroutineDispatcher by lazy { cachedThreadPool.asCoroutineDispatcher() }
+  private var priorToBlockingCallback: PriorToBlockingCallback? = null
+  private var afterSelectionSetup: AfterSelectionSetup? = null
 
   override fun shutdown() {
     serviceLock.withLock { isShutdown = true }
@@ -104,6 +102,10 @@ class CoroutineExecutorService(
     val incompleteTasks = serviceLock.withLock { pendingTasks.values }
     val timeoutMillis = unit?.toMillis(timeout) ?: 0
 
+    // Create a separate scope in case one of the operation fails--it shouldn't cause later
+    // operations to fail.
+    val cachedThreadCoroutineScope = CoroutineScope(cachedThreadCoroutineDispatcher)
+
     // Wait for each task to complete within the specified time. Note that this behaves similarly to
     // invokeAll() below.
     val futureTasks = cachedThreadCoroutineScope.async {
@@ -137,7 +139,9 @@ class CoroutineExecutorService(
     val taskDeferreds = tasks.map { dispatchAsync(it) }
     taskDeferreds.forEach { deferred ->
       @Suppress("DeferredResultUnused") // Intentionally silence failures (including the service's).
-      cachedThreadCoroutineScope.async {
+      // Create a separate scope in case one of the operation fails--it shouldn't cause later
+      // operations to fail.
+      CoroutineScope(cachedThreadCoroutineDispatcher).async {
         try {
           val result = deferred.await()
           resultChannel.send(result)
@@ -152,12 +156,23 @@ class CoroutineExecutorService(
     // than the expected behavior of this function: it can exit before all tasks are completed.
     priorToBlockingCallback?.invoke()
     return runBlocking {
-      maybeWithTimeout(unit?.toMillis(timeout) ?: 0) {
-        select<T> {
-          resultChannel.onReceive { it }
-          afterSelectionSetup?.invoke()
-        } ?: throw ExecutionException(IllegalStateException("All tasks failed to run"))
-      }
+      select<T> {
+        // Use a timeout here instead of wrapping the select since select does not support
+        // cooperative cancellation. That approach leads to a race between the timeout and the
+        // selection actually completing in time whereas this ensures early cancellation from
+        // timeout due to cooperation.
+        val timeoutMillis = unit?.toMillis(timeout) ?: 0
+        if (timeoutMillis > 0) {
+          @Suppress("EXPERIMENTAL_API_USAGE")
+          onTimeout(timeoutMillis) {
+            throw TimeoutException("Timed out after $timeoutMillis")
+          }
+        }
+        resultChannel.onReceive {
+          it
+        }
+        afterSelectionSetup?.invoke()
+      } ?: throw ExecutionException(IllegalStateException("All tasks failed to run"))
     }
   }
 
@@ -179,6 +194,11 @@ class CoroutineExecutorService(
     }
     val timeoutMillis = unit?.toMillis(timeout) ?: 0
     val deferredTasks = tasks.map { dispatchAsync(it) }
+
+    // Create a separate scope in case one of the operation fails--it shouldn't cause later
+    // operations to fail.
+    val cachedThreadCoroutineScope = CoroutineScope(cachedThreadCoroutineDispatcher)
+
     // Wait for each task to complete within the specified time, otherwise cancel the task.
     val futureTasks = cachedThreadCoroutineScope.async {
       deferredTasks.map { task ->

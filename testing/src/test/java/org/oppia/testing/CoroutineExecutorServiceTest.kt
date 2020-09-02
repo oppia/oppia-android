@@ -799,15 +799,19 @@ class CoroutineExecutorServiceTest {
   @ExperimentalCoroutinesApi
   fun testInvokeAll_withTimeout_doNotFinishTasksOnTime_timesOut() {
     val executorService = createExecutorService()
-    val delayMs = 10L
+    // Note that a longer delay is used here since testing for timeouts is inherently flaky: slower
+    // machines are more likely to trigger a flake since this relies on a real dispatcher. To guard
+    // against flakes, a long timeout is picked.
     val callable1 = lateFinishingCallableWithDispatcher2(
-      Callable { "Test 1" }, timeToWaitMillis = delayMs * 10
+      Callable { "Test 1" }, timeToWaitMillis = 2500L
     )
     val callable2 = Callable { "Test 2" }
     autoSettleServiceBeforeBlocking(executorService)
 
     val deferred = realDispatcherScope.async {
-      executorService.invokeAll(listOf(callable1, callable2), delayMs, TimeUnit.MILLISECONDS)
+      executorService.invokeAll(
+        listOf(callable1, callable2), /* timeout= */ 1, TimeUnit.MILLISECONDS
+      )
     }
     // Note that this must be different than the dispatcher used to block callable1 to prevent
     // deadlocking.
@@ -817,6 +821,7 @@ class CoroutineExecutorServiceTest {
     val (future1, future2) = deferred.getCompleted()
     assertThat(future1.isCancelled).isTrue()
     assertThat(future2.isDone).isTrue()
+    assertThat(future2.isCancelled).isFalse()
     assertThat(future2.get()).isEqualTo("Test 2")
   }
 
@@ -946,14 +951,16 @@ class CoroutineExecutorServiceTest {
   @ExperimentalCoroutinesApi
   fun testInvokeAny_noTaskCompletesOnTime_throwsTimeoutException() {
     val executorService = createExecutorService()
-    val delayMs = 10L
+    // Note that a longer delay is used here since testing for timeouts is inherently flaky: slower
+    // machines are more likely to trigger a flake since this relies on a real dispatcher. To guard
+    // against flakes, a long timeout is picked.
     val callable = lateFinishingCallableWithDispatcher2(
-      Callable { "Long task" }, timeToWaitMillis = delayMs * 10
+      Callable { "Long task" }, timeToWaitMillis = 2500L
     )
     autoSettleServiceAfterSelection(executorService)
 
     val deferred = realDispatcherScope.async {
-      executorService.invokeAny(listOf(callable), delayMs, TimeUnit.MILLISECONDS)
+      executorService.invokeAny(listOf(callable), /* timeout= */ 1, TimeUnit.MILLISECONDS)
     }
     // Note that this must be different than the dispatcher used to block callable1 to prevent
     // deadlocking.
