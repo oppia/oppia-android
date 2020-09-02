@@ -1,5 +1,6 @@
 package org.oppia.testing
 
+import android.annotation.SuppressLint
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -13,7 +14,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.DelayController
 import kotlinx.coroutines.test.UncompletedCoroutinesError
 import kotlinx.coroutines.withTimeout
-import java.lang.IllegalStateException
 import java.util.TreeSet
 import java.util.concurrent.CopyOnWriteArraySet
 import java.util.concurrent.Executors
@@ -270,6 +270,7 @@ class TestCoroutineDispatcherRobolectricImpl private constructor(
     }
   }
 
+  @SuppressLint("NewApi") // Robolectric-only code that's not bound by SDK.
   private fun createSortedTaskSet(): Set<Task> {
     val sortedSet = TreeSet(
       Comparator.comparingLong(Task::timeMillis)
