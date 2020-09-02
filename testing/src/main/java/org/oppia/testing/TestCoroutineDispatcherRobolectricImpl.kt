@@ -6,12 +6,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Delay
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.DelayController
 import kotlinx.coroutines.test.UncompletedCoroutinesError
 import kotlinx.coroutines.withTimeout
+import java.lang.IllegalStateException
 import java.util.TreeSet
 import java.util.concurrent.CopyOnWriteArraySet
 import java.util.concurrent.Executors
@@ -148,8 +150,13 @@ class TestCoroutineDispatcherRobolectricImpl private constructor(
       } while (nextTaskTimeMillis != null)
     }
     runBlocking {
-      withTimeout(timeoutUnit.toMillis(timeout)) {
-        runUntilIdleDeferred.await()
+      val timeoutMillis = timeoutUnit.toMillis(timeout)
+      try {
+        withTimeout(timeoutMillis) {
+          runUntilIdleDeferred.await()
+        }
+      } catch (e: TimeoutCancellationException) {
+        throw IllegalStateException("Dispatcher failed to idle in ${timeoutMillis}ms", e)
       }
     }
   }
@@ -187,8 +194,14 @@ class TestCoroutineDispatcherRobolectricImpl private constructor(
       flushTaskQueueNonBlocking(currentTimeMillis)
     }
     runBlocking {
-      withTimeout(timeoutMillis) {
-        flushTaskDeferred.await()
+      try {
+        withTimeout(timeoutMillis) {
+          flushTaskDeferred.await()
+        }
+      } catch (e: TimeoutCancellationException) {
+        throw IllegalStateException(
+          "Dispatcher failed to finish flush queue in ${timeoutMillis}ms", e
+        )
       }
     }
   }

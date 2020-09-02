@@ -108,14 +108,12 @@ class CoroutineExecutorService(
     val incompleteTasks = serviceLock.withLock { pendingTasks.values }
     val timeoutMillis = unit?.toMillis(timeout) ?: 0
 
-    // Create a separate scope in case one of the operations fails--it shouldn't cause later
-    // operations to fail.
-    val cachedThreadCoroutineScope = CoroutineScope(cachedThreadCoroutineDispatcher)
-
     // Wait for each task to complete within the specified time. Note that this behaves similarly to
     // invokeAll() below.
     val futureTasks = incompleteTasks.map { task ->
-      cachedThreadCoroutineScope.async {
+      // Create a separate scope in case one of the operations fails--it shouldn't cause later
+      // operations to fail.
+      CoroutineScope(cachedThreadCoroutineDispatcher).async {
         maybeWithTimeoutOrNull(timeoutMillis) {
           // Wait for the task to be completed.
           task.deferred.await()
@@ -123,7 +121,7 @@ class CoroutineExecutorService(
       }
     }
     priorToBlockingCallback?.invoke()
-    return runBlocking { futureTasks.awaitAll() }.mapNotNull { it }.isEmpty() // Null = timed out.
+    return runBlocking { futureTasks.awaitAll() }.none { it == null } // Null = timed out.
   }
 
   override fun <T : Any?> invokeAny(tasks: MutableCollection<out Callable<T>>?): T =
