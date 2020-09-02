@@ -14,7 +14,7 @@ import javax.inject.Inject
 class HomeFragment : InjectableFragment(), TopicSummaryClickListener {
   @Inject lateinit var homeFragmentPresenter: HomeFragmentPresenter
 
-  companion object{
+  companion object {
     internal const val TAG = "HomeFragment.tag"
   }
 
