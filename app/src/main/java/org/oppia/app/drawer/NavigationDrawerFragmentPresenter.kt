@@ -234,16 +234,12 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         }
         NavigationDrawerItem.SWITCH_PROFILE -> {
           val previousFragment =
-            activity.supportFragmentManager.findFragmentByTag(TAG_SWITCH_PROFILE_DIALOG)
+            fragment.childFragmentManager.findFragmentByTag(TAG_SWITCH_PROFILE_DIALOG)
           if (previousFragment != null) {
-            activity.supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
+            fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
           }
-          val dialogFragment =
-            NavigationDrawerSwitchProfileDialogFragment.newInstance(
-              binding.fragmentDrawerNavView.menu,
-              drawerLayout
-            )
-          dialogFragment.showNow(activity.supportFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
+          val dialogFragment = ExitProfileDialogFragment.newInstance()
+          dialogFragment.showNow(fragment.childFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
         }
       }
     } else {
@@ -258,6 +254,14 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         profileId
       )
     )
+  }
+
+  fun markHomeMenuCloseDrawer() {
+    binding.fragmentDrawerNavView.menu.getItem(
+      NavigationDrawerItem.HOME.ordinal
+    ).isChecked =
+      true
+    drawerLayout.closeDrawers()
   }
 
   /**
