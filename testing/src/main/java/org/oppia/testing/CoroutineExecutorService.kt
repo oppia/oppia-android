@@ -114,16 +114,16 @@ class CoroutineExecutorService(
 
     // Wait for each task to complete within the specified time. Note that this behaves similarly to
     // invokeAll() below.
-    val futureTasks = cachedThreadCoroutineScope.async {
-      maybeWithTimeoutOrNull(timeoutMillis) {
-        incompleteTasks.forEach { task ->
+    val futureTasks = incompleteTasks.map { task ->
+      cachedThreadCoroutineScope.async {
+        maybeWithTimeoutOrNull(timeoutMillis) {
           // Wait for the task to be completed.
           task.deferred.await()
         }
       }
     }
     priorToBlockingCallback?.invoke()
-    return runBlocking { futureTasks.await() } != null // All tasks completed without timing out.
+    return runBlocking { futureTasks.awaitAll() }.mapNotNull { it }.isEmpty() // Null = timed out.
   }
 
   override fun <T : Any?> invokeAny(tasks: MutableCollection<out Callable<T>>?): T =
