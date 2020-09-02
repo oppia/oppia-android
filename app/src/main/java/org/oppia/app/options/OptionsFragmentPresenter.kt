@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.app.databinding.OptionAppLanguageBinding
 import org.oppia.app.databinding.OptionAudioLanguageBinding
@@ -15,15 +16,26 @@ import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.AppLanguage
 import org.oppia.app.model.AudioLanguage
 import org.oppia.app.model.ProfileId
-import org.oppia.app.model.StoryTextSize
+import org.oppia.app.model.ReadingTextSize
 import org.oppia.app.recyclerview.BindableAdapter
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.util.logging.ConsoleLogger
+import java.security.InvalidParameterException
 import javax.inject.Inject
 
-const val STORY_TEXT_SIZE = "STORY_TEXT_SIZE"
+const val READING_TEXT_SIZE = "READING_TEXT_SIZE"
 const val APP_LANGUAGE = "APP_LANGUAGE"
 const val AUDIO_LANGUAGE = "AUDIO_LANGUAGE"
+private const val READING_TEXT_SIZE_TAG = "ReadingTextSize"
+private const val APP_LANGUAGE_TAG = "AppLanguage"
+private const val AUDIO_LANGUAGE_TAG = "AudioLanguage"
+private const val READING_TEXT_SIZE_ERROR =
+  "Something went wrong while updating the reading text size"
+private const val APP_LANGUAGE_ERROR =
+  "Something went wrong while updating the app language"
+private const val AUDIO_LANGUAGE_ERROR =
+  "Something went wrong while updating the audio language"
 
 /** The presenter for [OptionsFragment]. */
 @FragmentScope
@@ -31,29 +43,39 @@ class OptionsFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
-  private val viewModelProvider: ViewModelProvider<OptionControlsViewModel>
+  private val viewModelProvider: ViewModelProvider<OptionControlsViewModel>,
+  private val consoleLogger: ConsoleLogger
 ) {
   private lateinit var binding: OptionsFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
   private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
-  private var storyTextSize = StoryTextSize.SMALL_TEXT_SIZE
+  private var readingTextSize = ReadingTextSize.SMALL_TEXT_SIZE
   private var appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
   private var audioLanguage = AudioLanguage.NO_AUDIO
+  private val viewModel = getOptionControlsItemViewModel()
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    isMultipane: Boolean,
+    isFirstOpen: Boolean,
+    selectedFragment: String
+  ): View? {
+    viewModel.isUIInitialized(false)
+    viewModel.isFirstOpen(isFirstOpen)
+    viewModel.isMultipane.set(isMultipane)
     binding = OptionsFragmentBinding.inflate(
       inflater,
       container,
       /* attachToRoot= */ false
     )
-    val viewModel = getOptionControlsItemViewModel()
 
     internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     viewModel.setProfileId(profileId)
 
-    val optionsRecyclerViewAdapter = createRecyclerViewAdapter()
+    val optionsRecyclerViewAdapter = createRecyclerViewAdapter(isMultipane)
     binding.optionsRecyclerview.apply {
       adapter = optionsRecyclerViewAdapter
     }
@@ -62,24 +84,36 @@ class OptionsFragmentPresenter @Inject constructor(
       it.lifecycleOwner = fragment
       it.viewModel = viewModel
     }
+    setSelectedFragment(selectedFragment)
+    viewModel.isUIInitialized(true)
     return binding.root
   }
 
-  private fun createRecyclerViewAdapter(): BindableAdapter<OptionsItemViewModel> {
+  private fun createRecyclerViewAdapter(isMultipane: Boolean): BindableAdapter<OptionsItemViewModel> { // ktlint-disable max-line-length
     return BindableAdapter.MultiTypeBuilder
       .newBuilder<OptionsItemViewModel, ViewType> { viewModel ->
+        viewModel.isMultipane.set(isMultipane)
         when (viewModel) {
-          is OptionsStoryTextViewViewModel -> ViewType.VIEW_TYPE_STORY_TEXT_SIZE
-          is OptionsAppLanguageViewModel -> ViewType.VIEW_TYPE_APP_LANGUAGE
-          is OptionsAudioLanguageViewModel -> ViewType.VIEW_TYPE_AUDIO_LANGUAGE
+          is OptionsReadingTextSizeViewModel -> {
+            viewModel.itemIndex.set(0)
+            ViewType.VIEW_TYPE_READING_TEXT_SIZE
+          }
+          is OptionsAppLanguageViewModel -> {
+            viewModel.itemIndex.set(1)
+            ViewType.VIEW_TYPE_APP_LANGUAGE
+          }
+          is OptionsAudioLanguageViewModel -> {
+            viewModel.itemIndex.set(2)
+            ViewType.VIEW_TYPE_AUDIO_LANGUAGE
+          }
           else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
         }
       }
       .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_STORY_TEXT_SIZE,
+        viewType = ViewType.VIEW_TYPE_READING_TEXT_SIZE,
         inflateDataBinding = OptionStoryTextSizeBinding::inflate,
-        setViewModel = this::bindStoryTextSize,
-        transformViewModel = { it as OptionsStoryTextViewViewModel }
+        setViewModel = this::bindReadingTextSize,
+        transformViewModel = { it as OptionsReadingTextSizeViewModel }
       )
       .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_APP_LANGUAGE,
@@ -96,10 +130,11 @@ class OptionsFragmentPresenter @Inject constructor(
       .build()
   }
 
-  private fun bindStoryTextSize(
+  private fun bindReadingTextSize(
     binding: OptionStoryTextSizeBinding,
-    model: OptionsStoryTextViewViewModel
+    model: OptionsReadingTextSizeViewModel
   ) {
+    binding.commonViewModel = viewModel
     binding.viewModel = model
   }
 
@@ -107,6 +142,7 @@ class OptionsFragmentPresenter @Inject constructor(
     binding: OptionAppLanguageBinding,
     model: OptionsAppLanguageViewModel
   ) {
+    binding.commonViewModel = viewModel
     binding.viewModel = model
   }
 
@@ -114,7 +150,25 @@ class OptionsFragmentPresenter @Inject constructor(
     binding: OptionAudioLanguageBinding,
     model: OptionsAudioLanguageViewModel
   ) {
+    binding.commonViewModel = viewModel
     binding.viewModel = model
+  }
+
+  fun setSelectedFragment(selectedFragment: String) {
+    viewModel.selectedFragmentIndex.set(
+      getSelectedFragmentIndex(
+        selectedFragment
+      )
+    )
+  }
+
+  private fun getSelectedFragmentIndex(selectedFragment: String): Int {
+    return when (selectedFragment) {
+      READING_TEXT_SIZE_FRAGMENT -> 0
+      APP_LANGUAGE_FRAGMENT -> 1
+      DEFAULT_AUDIO_FRAGMENT -> 2
+      else -> throw InvalidParameterException("Not a valid fragment in getSelectedFragmentIndex.")
+    }
   }
 
   private fun getOptionControlsItemViewModel(): OptionControlsViewModel {
@@ -122,31 +176,89 @@ class OptionsFragmentPresenter @Inject constructor(
   }
 
   private enum class ViewType {
-    VIEW_TYPE_STORY_TEXT_SIZE,
+    VIEW_TYPE_READING_TEXT_SIZE,
     VIEW_TYPE_APP_LANGUAGE,
     VIEW_TYPE_AUDIO_LANGUAGE
   }
 
-  fun updateStoryTextSize(textSize: String) {
+  fun updateReadingTextSize(textSize: String) {
     when (textSize) {
-      getOptionControlsItemViewModel().getStoryTextSize(StoryTextSize.SMALL_TEXT_SIZE) -> {
-        profileManagementController.updateStoryTextSize(profileId, StoryTextSize.SMALL_TEXT_SIZE)
-        storyTextSize = StoryTextSize.SMALL_TEXT_SIZE
-      }
-      getOptionControlsItemViewModel().getStoryTextSize(StoryTextSize.MEDIUM_TEXT_SIZE) -> {
-        profileManagementController.updateStoryTextSize(profileId, StoryTextSize.MEDIUM_TEXT_SIZE)
-        storyTextSize = StoryTextSize.MEDIUM_TEXT_SIZE
-      }
-      getOptionControlsItemViewModel().getStoryTextSize(StoryTextSize.LARGE_TEXT_SIZE) -> {
-        profileManagementController.updateStoryTextSize(profileId, StoryTextSize.LARGE_TEXT_SIZE)
-        storyTextSize = StoryTextSize.LARGE_TEXT_SIZE
-      }
-      getOptionControlsItemViewModel().getStoryTextSize(StoryTextSize.EXTRA_LARGE_TEXT_SIZE) -> {
-        profileManagementController.updateStoryTextSize(
+      getOptionControlsItemViewModel().getReadingTextSize(ReadingTextSize.SMALL_TEXT_SIZE) -> {
+        profileManagementController.updateReadingTextSize(
           profileId,
-          StoryTextSize.EXTRA_LARGE_TEXT_SIZE
+          ReadingTextSize.SMALL_TEXT_SIZE
+        ).observe(
+          fragment,
+          Observer {
+            if (it.isSuccess()) {
+              readingTextSize = ReadingTextSize.SMALL_TEXT_SIZE
+            } else {
+              consoleLogger.e(
+                READING_TEXT_SIZE_TAG,
+                "$READING_TEXT_SIZE_ERROR: small text size",
+                it.getErrorOrNull()
+              )
+            }
+          }
         )
-        storyTextSize = StoryTextSize.EXTRA_LARGE_TEXT_SIZE
+      }
+      getOptionControlsItemViewModel().getReadingTextSize(ReadingTextSize.MEDIUM_TEXT_SIZE) -> {
+        profileManagementController.updateReadingTextSize(
+          profileId,
+          ReadingTextSize.MEDIUM_TEXT_SIZE
+        ).observe(
+          fragment,
+          Observer {
+            if (it.isSuccess()) {
+              readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
+            } else {
+              consoleLogger.e(
+                READING_TEXT_SIZE_TAG,
+                "$READING_TEXT_SIZE_ERROR: medium text size",
+                it.getErrorOrNull()
+              )
+            }
+          }
+        )
+      }
+      getOptionControlsItemViewModel().getReadingTextSize(ReadingTextSize.LARGE_TEXT_SIZE) -> {
+        profileManagementController.updateReadingTextSize(
+          profileId,
+          ReadingTextSize.LARGE_TEXT_SIZE
+        ).observe(
+          fragment,
+          Observer {
+            if (it.isSuccess()) {
+              readingTextSize = ReadingTextSize.LARGE_TEXT_SIZE
+            } else {
+              consoleLogger.e(
+                READING_TEXT_SIZE_TAG,
+                "$READING_TEXT_SIZE_ERROR: large text size",
+                it.getErrorOrNull()
+              )
+            }
+          }
+        )
+      }
+      getOptionControlsItemViewModel()
+        .getReadingTextSize(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE) -> {
+        profileManagementController.updateReadingTextSize(
+          profileId,
+          ReadingTextSize.EXTRA_LARGE_TEXT_SIZE
+        ).observe(
+          fragment,
+          Observer {
+            if (it.isSuccess()) {
+              readingTextSize = ReadingTextSize.EXTRA_LARGE_TEXT_SIZE
+            } else {
+              consoleLogger.e(
+                READING_TEXT_SIZE_TAG,
+                "$READING_TEXT_SIZE_ERROR: extra large text size",
+                it.getErrorOrNull()
+              )
+            }
+          }
+        )
       }
     }
     recyclerViewAdapter.notifyItemChanged(0)
@@ -158,29 +270,77 @@ class OptionsFragmentPresenter @Inject constructor(
         profileManagementController.updateAppLanguage(
           profileId,
           AppLanguage.ENGLISH_APP_LANGUAGE
+        ).observe(
+          fragment,
+          Observer {
+            if (it.isSuccess()) {
+              appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
+            } else {
+              consoleLogger.e(
+                APP_LANGUAGE_TAG,
+                "$APP_LANGUAGE_ERROR: English",
+                it.getErrorOrNull()
+              )
+            }
+          }
         )
-        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
       }
       getOptionControlsItemViewModel().getAppLanguage(AppLanguage.HINDI_APP_LANGUAGE) -> {
         profileManagementController.updateAppLanguage(
           profileId,
           AppLanguage.HINDI_APP_LANGUAGE
+        ).observe(
+          fragment,
+          Observer {
+            if (it.isSuccess()) {
+              appLanguage = AppLanguage.HINDI_APP_LANGUAGE
+            } else {
+              consoleLogger.e(
+                APP_LANGUAGE_TAG,
+                "$APP_LANGUAGE_ERROR: Hindi",
+                it.getErrorOrNull()
+              )
+            }
+          }
         )
-        appLanguage = AppLanguage.HINDI_APP_LANGUAGE
       }
       getOptionControlsItemViewModel().getAppLanguage(AppLanguage.CHINESE_APP_LANGUAGE) -> {
         profileManagementController.updateAppLanguage(
           profileId,
           AppLanguage.CHINESE_APP_LANGUAGE
+        ).observe(
+          fragment,
+          Observer {
+            if (it.isSuccess()) {
+              appLanguage = AppLanguage.CHINESE_APP_LANGUAGE
+            } else {
+              consoleLogger.e(
+                APP_LANGUAGE_TAG,
+                "$APP_LANGUAGE_ERROR: Chinese",
+                it.getErrorOrNull()
+              )
+            }
+          }
         )
-        appLanguage = AppLanguage.CHINESE_APP_LANGUAGE
       }
       getOptionControlsItemViewModel().getAppLanguage(AppLanguage.FRENCH_APP_LANGUAGE) -> {
         profileManagementController.updateAppLanguage(
           profileId,
           AppLanguage.FRENCH_APP_LANGUAGE
+        ).observe(
+          fragment,
+          Observer {
+            if (it.isSuccess()) {
+              appLanguage = AppLanguage.FRENCH_APP_LANGUAGE
+            } else {
+              consoleLogger.e(
+                APP_LANGUAGE_TAG,
+                "$APP_LANGUAGE_ERROR: French",
+                it.getErrorOrNull()
+              )
+            }
+          }
         )
-        appLanguage = AppLanguage.FRENCH_APP_LANGUAGE
       }
     }
 
@@ -193,39 +353,115 @@ class OptionsFragmentPresenter @Inject constructor(
         profileManagementController.updateAudioLanguage(
           profileId,
           AudioLanguage.NO_AUDIO
+        ).observe(
+          fragment,
+          Observer {
+            if (it.isSuccess()) {
+              audioLanguage = AudioLanguage.NO_AUDIO
+            } else {
+              consoleLogger.e(
+                AUDIO_LANGUAGE_TAG,
+                "$AUDIO_LANGUAGE_ERROR: No Audio",
+                it.getErrorOrNull()
+              )
+            }
+          }
         )
-        audioLanguage = AudioLanguage.NO_AUDIO
       }
       getOptionControlsItemViewModel().getAudioLanguage(AudioLanguage.ENGLISH_AUDIO_LANGUAGE) -> {
         profileManagementController.updateAudioLanguage(
           profileId,
           AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        ).observe(
+          fragment,
+          Observer {
+            if (it.isSuccess()) {
+              audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+            } else {
+              consoleLogger.e(
+                AUDIO_LANGUAGE_TAG,
+                "$AUDIO_LANGUAGE_ERROR: English",
+                it.getErrorOrNull()
+              )
+            }
+          }
         )
-        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
       }
       getOptionControlsItemViewModel().getAudioLanguage(AudioLanguage.HINDI_AUDIO_LANGUAGE) -> {
         profileManagementController.updateAudioLanguage(
           profileId,
           AudioLanguage.HINDI_AUDIO_LANGUAGE
+        ).observe(
+          fragment,
+          Observer {
+            if (it.isSuccess()) {
+              audioLanguage = AudioLanguage.HINDI_AUDIO_LANGUAGE
+            } else {
+              consoleLogger.e(
+                AUDIO_LANGUAGE_TAG,
+                "$AUDIO_LANGUAGE_ERROR: Hindi",
+                it.getErrorOrNull()
+              )
+            }
+          }
         )
-        audioLanguage = AudioLanguage.HINDI_AUDIO_LANGUAGE
       }
       getOptionControlsItemViewModel().getAudioLanguage(AudioLanguage.CHINESE_AUDIO_LANGUAGE) -> {
         profileManagementController.updateAudioLanguage(
           profileId,
           AudioLanguage.CHINESE_AUDIO_LANGUAGE
+        ).observe(
+          fragment,
+          Observer {
+            if (it.isSuccess()) {
+              audioLanguage = AudioLanguage.CHINESE_AUDIO_LANGUAGE
+            } else {
+              consoleLogger.e(
+                AUDIO_LANGUAGE_TAG,
+                "$AUDIO_LANGUAGE_ERROR: Chinese",
+                it.getErrorOrNull()
+              )
+            }
+          }
         )
-        audioLanguage = AudioLanguage.CHINESE_AUDIO_LANGUAGE
       }
       getOptionControlsItemViewModel().getAudioLanguage(AudioLanguage.FRENCH_AUDIO_LANGUAGE) -> {
         profileManagementController.updateAudioLanguage(
           profileId,
           AudioLanguage.FRENCH_AUDIO_LANGUAGE
+        ).observe(
+          fragment,
+          Observer {
+            if (it.isSuccess()) {
+              audioLanguage = AudioLanguage.FRENCH_AUDIO_LANGUAGE
+            } else {
+              consoleLogger.e(
+                AUDIO_LANGUAGE_TAG,
+                "$AUDIO_LANGUAGE_ERROR: French",
+                it.getErrorOrNull()
+              )
+            }
+          }
         )
-        audioLanguage = AudioLanguage.FRENCH_AUDIO_LANGUAGE
       }
     }
 
     recyclerViewAdapter.notifyItemChanged(2)
+  }
+
+  /**
+   * Used to fix the race condition that happens when the presenter tries to call a function before
+   * [handleCreateView] is completely executed.
+   * @param action what to execute after the UI is initialized.
+   */
+  fun runAfterUIInitialization(action: () -> Unit) {
+    viewModel.uiLiveData.observe(
+      fragment,
+      Observer {
+        if (it) {
+          action.invoke()
+        }
+      }
+    )
   }
 }

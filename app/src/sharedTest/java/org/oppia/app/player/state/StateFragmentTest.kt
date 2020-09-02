@@ -24,6 +24,7 @@ import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -94,6 +95,7 @@ import org.oppia.domain.topic.TEST_EXPLORATION_ID_0
 import org.oppia.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.domain.topic.TEST_EXPLORATION_ID_4
 import org.oppia.domain.topic.TEST_EXPLORATION_ID_5
+import org.oppia.domain.topic.TEST_EXPLORATION_ID_6
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.testing.OppiaTestRule
@@ -169,7 +171,8 @@ class StateFragmentTest {
   //  10. Testing interactions with custom Oppia tags (including images) render correctly (when
   //      manually inspected) and are correctly functional.
   //  11. Add tests for hints & solutions.
-  //  12. Add tests for audio states.
+  //  13. Add tests for audio states, including: audio playing & having an error, or no-network
+  //      connectivity scenarios. See the PR introducing this comment & #1340 / #1341 for context.
   // TODO(#56): Add support for testing that previous/next button states are properly retained on
   //  config changes.
 
@@ -850,6 +853,20 @@ class StateFragmentTest {
     }
   }
 
+  @Test
+  fun testStateFragment_inputRatio_submit_correctAnswerDisplayed() {
+    launchForExploration(TEST_EXPLORATION_ID_6).use {
+      startPlayingExploration()
+      onView(withId(R.id.ratio_input_interaction_view)).perform(
+        typeText("4:5"),
+        closeSoftKeyboard()
+      )
+      onView(withId(R.id.submit_answer_button)).perform(click())
+      onView(withId(R.id.submitted_answer_text_view))
+        .check(matches(ViewMatchers.withContentDescription("4 to 5")))
+    }
+  }
+
   private fun launchForExploration(
     explorationId: String
   ): ActivityScenario<StateFragmentTestActivity> {
@@ -894,12 +911,20 @@ class StateFragmentTest {
     clickSubmitAnswerButton()
     clickContinueNavigationButton()
 
-    // Sixth state: Text input. Correct answer: finnish.
+    // Sixth state: Ratio input. Correct answer: 4:5.
+    onView(withId(R.id.ratio_input_interaction_view)).perform(
+      typeText("4:5"),
+      closeSoftKeyboard()
+    )
+    onView(withId(R.id.submit_answer_button)).perform(click())
+    onView(withId(R.id.continue_navigation_button)).perform(click())
+
+    // Seventh state: Text input. Correct answer: finnish.
     typeTextInput("finnish")
     clickSubmitAnswerButton()
     clickContinueNavigationButton()
 
-    // Seventh state: Drag Drop Sort. Correct answer: Move 1st item to 4th position.
+    // Eighth state: Drag Drop Sort. Correct answer: Move 1st item to 4th position.
     dragAndDropItem(fromPosition = 0, toPosition = 3)
     clickSubmitAnswerButton()
     onView(
@@ -911,7 +936,7 @@ class StateFragmentTest {
     ).check(matches(withText("3/5")))
     clickContinueNavigationButton()
 
-    // Eighth state: Drag Drop Sort with grouping. Correct answer: Merge First Two and after merging
+    // Ninth state: Drag Drop Sort with grouping. Correct answer: Merge First Two and after merging
     // move 2nd item to 3rd position.
     mergeDragAndDropItems(position = 1)
     unlinkDragAndDropItems(position = 1)

@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
@@ -15,7 +16,7 @@ import org.oppia.app.activity.ActivityScope
 import org.oppia.app.databinding.ExplorationActivityBinding
 import org.oppia.app.help.HelpActivity
 import org.oppia.app.model.Exploration
-import org.oppia.app.model.StoryTextSize
+import org.oppia.app.model.ReadingTextSize
 import org.oppia.app.options.OptionsActivity
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.utility.FontScaleConfigurationUtil
@@ -39,6 +40,7 @@ class ExplorationActivityPresenter @Inject constructor(
   private val logger: ConsoleLogger
 ) {
   private lateinit var explorationToolbar: Toolbar
+  private lateinit var explorationToolbarTitle: TextView
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
   private lateinit var storyId: String
@@ -73,7 +75,12 @@ class ExplorationActivityPresenter @Inject constructor(
     }
 
     explorationToolbar = binding.explorationToolbar
+    explorationToolbarTitle = binding.explorationToolbarTitle
     activity.setSupportActionBar(explorationToolbar)
+
+    binding.explorationToolbar.setOnClickListener {
+      binding.explorationToolbarTitle.isSelected = true
+    }
 
     binding.explorationToolbar.setNavigationOnClickListener {
       activity.onBackPressed()
@@ -106,7 +113,7 @@ class ExplorationActivityPresenter @Inject constructor(
     }
   }
 
-  fun loadExplorationFragment(storyTextSize: StoryTextSize) {
+  fun loadExplorationFragment(readingTextSize: ReadingTextSize) {
     if (getExplorationFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_fragment_placeholder,
@@ -114,7 +121,7 @@ class ExplorationActivityPresenter @Inject constructor(
           topicId = topicId,
           internalProfileId = internalProfileId,
           storyId = storyId,
-          storyTextSize = storyTextSize.name,
+          readingTextSize = readingTextSize.name,
           explorationId = explorationId
         ),
         TAG_EXPLORATION_FRAGMENT
@@ -186,7 +193,7 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   fun stopExploration() {
-    fontScaleConfigurationUtil.adjustFontScale(activity, StoryTextSize.MEDIUM_TEXT_SIZE.name)
+    fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE.name)
     explorationDataController.stopPlayingExploration()
       .observe(
         activity,
@@ -228,7 +235,7 @@ class ExplorationActivityPresenter @Inject constructor(
     explorationLiveData.observe(
       activity,
       Observer<Exploration> {
-        explorationToolbar.title = it.title
+        explorationToolbarTitle.text = it.title
       }
     )
   }

@@ -1,24 +1,28 @@
 package org.oppia.app.completedstorylist
 
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.CompletedStoryList
 import org.oppia.app.model.ProfileId
+import org.oppia.app.shim.IntentFactoryShim
+import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.StoryHtmlParserEntityType
 import javax.inject.Inject
 
-/** The ViewModel for [CompletedStoryListFragment]. */
+/** The ObservableViewModel for [CompletedStoryListFragment]. */
 @FragmentScope
 class CompletedStoryListViewModel @Inject constructor(
+  private val activity: AppCompatActivity,
+  private val intentFactoryShim: IntentFactoryShim,
   private val topicController: TopicController,
   private val logger: ConsoleLogger,
   @StoryHtmlParserEntityType private val entityType: String
-) : ViewModel() {
+) : ObservableViewModel() {
   /** [internalProfileId] needs to be set before any of the live data members can be accessed. */
   private var internalProfileId: Int = -1
 
@@ -59,7 +63,13 @@ class CompletedStoryListViewModel @Inject constructor(
     val itemViewModelList: MutableList<CompletedStoryItemViewModel> = mutableListOf()
     itemViewModelList.addAll(
       completedStoryList.completedStoryList.map { completedStory ->
-        CompletedStoryItemViewModel(completedStory, entityType)
+        CompletedStoryItemViewModel(
+          activity,
+          internalProfileId,
+          completedStory,
+          entityType,
+          intentFactoryShim
+        )
       }
     )
     return itemViewModelList

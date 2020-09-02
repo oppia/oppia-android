@@ -17,7 +17,7 @@ import javax.inject.Inject
 class WalkthroughActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val viewModelProvider: ViewModelProvider<WalkthroughViewModel>
-) {
+) : WalkthroughActivityListener {
   private lateinit var topicId: String
   private lateinit var binding: WalkthroughActivityBinding
 
@@ -66,7 +66,7 @@ class WalkthroughActivityPresenter @Inject constructor(
     }
   }
 
-  fun previousPage(currentProgress: Int) {
+  override fun moveToPreviousPage(currentProgress: Int) {
     if (currentProgress == 1)
       activity.finish()
     else {
@@ -132,7 +132,7 @@ class WalkthroughActivityPresenter @Inject constructor(
   }
 
   fun handleSystemBack() {
-    previousPage(getWalkthroughViewModel().currentProgress.get() ?: 1)
+    moveToPreviousPage(getWalkthroughViewModel().currentProgress.get() ?: 1)
   }
 
   fun setTopicId(topicId: String) {

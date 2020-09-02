@@ -13,6 +13,17 @@ class AdministratorControlsFragment : InjectableFragment() {
   @Inject
   lateinit var administratorControlsFragmentPresenter: AdministratorControlsFragmentPresenter
 
+  companion object {
+    private const val IS_MULTIPANE_KEY = "IS_MULTIPANE_KEY"
+    fun newInstance(isMultipane: Boolean): AdministratorControlsFragment {
+      val args = Bundle()
+      args.putBoolean(IS_MULTIPANE_KEY, isMultipane)
+      val fragment = AdministratorControlsFragment()
+      fragment.arguments = args
+      return fragment
+    }
+  }
+
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
@@ -23,6 +34,16 @@ class AdministratorControlsFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    return administratorControlsFragmentPresenter.handleCreateView(inflater, container)
+    val args =
+      checkNotNull(arguments) {
+        "Expected arguments to be passed to AdministratorControlsFragment"
+      }
+    val isMultipane = args.getBoolean(IS_MULTIPANE_KEY)
+    return administratorControlsFragmentPresenter
+      .handleCreateView(inflater, container, isMultipane)
+  }
+
+  fun setSelectedFragment(selectedFragment: String) {
+    administratorControlsFragmentPresenter.setSelectedFragment(selectedFragment)
   }
 }

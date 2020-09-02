@@ -15,7 +15,7 @@ class ProfileTestHelper @Inject constructor(
   /** Creates one admin profile and one user profile. Logs in to admin profile. */
   fun initializeProfiles(): LiveData<AsyncResult<Any?>> {
     profileManagementController.addProfile(
-      name = "Sean",
+      name = "Admin",
       pin = "12345",
       avatarImagePath = null,
       allowDownloadAccess = true,
@@ -49,7 +49,7 @@ class ProfileTestHelper @Inject constructor(
   /** Creates one admin profile and logs in to admin profile. */
   fun addOnlyAdminProfile(): LiveData<AsyncResult<Any?>> {
     profileManagementController.addProfile(
-      name = "Sean",
+      name = "Admin",
       pin = "12345",
       avatarImagePath = null,
       allowDownloadAccess = true,

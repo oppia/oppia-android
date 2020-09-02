@@ -55,10 +55,12 @@
         android:id="@+id/question_recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:clipToPadding="false"
         android:divider="@android:color/transparent"
         android:dividerHeight="8dp"
         android:overScrollMode="never"
         android:paddingTop="24dp"
+        android:paddingBottom="112dp"
         app:data="@{viewModel.itemList}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@id/question_progress_bar"
@@ -70,10 +72,12 @@
         android:id="@+id/extra_interaction_recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:clipToPadding="false"
         android:divider="@android:color/transparent"
         android:dividerHeight="8dp"
         android:overScrollMode="never"
         android:paddingTop="24dp"
+        android:paddingBottom="112dp"
         android:visibility="@{viewModel.isSplitView ? View.VISIBLE : View.GONE}"
         app:data="@{viewModel.rightItemList}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -147,7 +151,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
-        android:src="@drawable/ic_hintbulb_whilte_24dp" />
+        android:src="@drawable/ic_hint_bulb_white_24dp" />
     </FrameLayout>
 
     <FrameLayout

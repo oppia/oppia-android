@@ -7,8 +7,8 @@
     <import type="android.view.View" />
 
     <variable
-      name="presenter"
-      type="org.oppia.app.profile.ProfileChooserFragmentPresenter" />
+      name="hasProfileEverBeenAddedValue"
+      type="androidx.databinding.ObservableField&lt;Boolean&gt;" />
   </data>
 
   <LinearLayout
@@ -21,7 +21,7 @@
       android:layout_width="0.5dp"
       android:layout_height="match_parent"
       android:background="@color/oppiaProfileChooserDivider"
-      android:visibility="@{presenter.wasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
+      android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
 
     <LinearLayout
       android:id="@+id/add_profile_item"
@@ -32,8 +32,8 @@
       android:layout_marginBottom="24dp"
       android:gravity="center_horizontal"
       android:orientation="vertical"
-      app:layoutMarginBottom="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_20 : @dimen/margin_28}"
-      app:layoutMarginTop="@{presenter.wasProfileEverBeenAddedValue ? @dimen/margin_16 : @dimen/margin_24}">
+      app:layoutMarginBottom="@{hasProfileEverBeenAddedValue ? @dimen/margin_20 : @dimen/margin_28}"
+      app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/margin_16 : @dimen/margin_24}">
 
       <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_add_button"
@@ -51,7 +51,7 @@
         android:layout_gravity="center"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
-        android:text="@{presenter.wasProfileEverBeenAddedValue ? @string/profile_chooser_add : @string/set_up_multiple_profiles}"
+        android:text="@{hasProfileEverBeenAddedValue ? @string/profile_chooser_add : @string/set_up_multiple_profiles}"
         android:textColor="@color/white"
         android:textSize="14sp" />
 
@@ -65,7 +65,7 @@
         android:text="@string/set_up_multiple_profiles_description"
         android:textColor="@color/white"
         android:textSize="12sp"
-        android:visibility="@{presenter.wasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
+        android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
     </LinearLayout>
   </LinearLayout>
 </layout>
