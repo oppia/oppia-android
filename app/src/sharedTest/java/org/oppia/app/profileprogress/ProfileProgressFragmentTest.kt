@@ -194,7 +194,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testAddProfileActivity_imageSelectAvatar_checkGalleryIntent() {
+  fun testProfileProgressFragment_imageSelectAvatar_checkGalleryIntent() {
     val expectedIntent: Matcher<Intent> = allOf(
       hasAction(Intent.ACTION_PICK),
       hasData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -215,6 +215,42 @@ class ProfileProgressFragmentTest {
       onView(withText(R.string.profile_picture_edit_alert_dialog_choose_from_library))
         .perform(click())
       intended(expectedIntent)
+    }
+  }
+
+  @Test
+  fun testProfileProgressFragment_imageSelectAvatar_changeOrientation_checkGalleryIntent() {
+    val expectedIntent: Matcher<Intent> = allOf(
+      hasAction(Intent.ACTION_PICK),
+      hasData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+    )
+    val activityResult = createGalleryPickActivityResultStub()
+    intending(expectedIntent).respondWith(activityResult)
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      waitForTheView(withText("Admin"))
+      onView(
+        atPositionOnView(
+          R.id.profile_progress_list,
+          0,
+          R.id.profile_edit_image
+        )
+      ).perform(click())
+      onView(withText(R.string.profile_progress_edit_dialog_title)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.profile_picture_edit_alert_dialog_choose_from_library))
+        .perform(click())
+      intended(expectedIntent)
+      onView(isRoot()).perform(orientationLandscape())
+      intended(expectedIntent)
+      onView(
+        atPositionOnView(
+          R.id.profile_progress_list,
+          0,
+          R.id.profile_edit_image
+        )
+      ).perform(click())
+      onView(withText(R.string.profile_progress_edit_dialog_title)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
   }
 
@@ -715,7 +751,6 @@ class ProfileProgressFragmentTest {
     fun inject(optionsFragmentTest: ProfileProgressFragmentTest)
   }
 
-  /* ktlint-disable max-line-length */
   // TODO(#59): Move this to a general-purpose testing library that replaces all CoroutineExecutors with an
   //  Espresso-enabled executor service. This service should also allow for background threads to run in both Espresso
   //  and Robolectric to help catch potential race conditions, rather than forcing parallel execution to be sequential
@@ -725,7 +760,6 @@ class ProfileProgressFragmentTest {
    * An executor service that schedules all [Runnable]s to run asynchronously on the main thread. This is based on:
    * https://android.googlesource.com/platform/packages/apps/TV/+/android-live-tv/src/com/android/tv/util/MainThreadExecutor.java.
    */
-  /* ktlint-enable max-line-length */
   private object MainThreadExecutor : AbstractExecutorService() {
     override fun isTerminated(): Boolean = false
 
