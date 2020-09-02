@@ -1047,7 +1047,8 @@ class CoroutineExecutorServiceTest {
   }
 
   private fun <T> wrapCallableWithOneSecondDelay(
-    callable: Callable<T>, coroutineScope: CoroutineScope
+    callable: Callable<T>,
+    coroutineScope: CoroutineScope
   ): Callable<T> {
     return Callable {
       val deferred = coroutineScope.async { delay(TimeUnit.SECONDS.toMillis(1)) }

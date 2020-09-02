@@ -201,7 +201,7 @@ class TestCoroutineDispatcherRobolectricImpl private constructor(
       }
     }
     while (executingTaskCount.get() > 0)
-    notifyIfIdle()
+      notifyIfIdle()
   }
 
   /** Flushes the current task queue and returns whether any tasks were executed. */
