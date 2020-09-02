@@ -11,9 +11,8 @@ import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.app.settings.profile.ProfileListActivity
 import javax.inject.Inject
 
-const val SELECTED_CONTROLS_TITLE_KEY = "SELECTED_CONTROLS_TITLE_KEY"
-const val LAST_LOADED_FRAGMENT_SAVED_KEY =
-  "AdministratorControlsActivity.last_loaded_fragment"
+const val SELECTED_CONTROLS_TITLE_SAVED_KEY =
+  "AdministratorControlsActivity.selected_controls_title"
 const val PROFILE_LIST_FRAGMENT = "PROFILE_LIST_FRAGMENT"
 const val APP_VERSION_FRAGMENT = "APP_VERSION_FRAGMENT"
 
@@ -31,7 +30,7 @@ class AdministratorControlsActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    val extraControlsTitle = savedInstanceState?.getString(SELECTED_CONTROLS_TITLE_KEY)
+    val extraControlsTitle = savedInstanceState?.getString(SELECTED_CONTROLS_TITLE_SAVED_KEY)
     lastLoadedFragment = if (savedInstanceState != null) {
       savedInstanceState.get(LAST_LOADED_FRAGMENT_SAVED_KEY) as String
     } else {
@@ -56,6 +55,8 @@ class AdministratorControlsActivity :
   }
 
   companion object {
+    internal const val LAST_LOADED_FRAGMENT_SAVED_KEY =
+      "AdministratorControlsActivity.last_loaded_fragment"
     fun createAdministratorControlsActivityIntent(context: Context, profileId: Int?): Intent {
       val intent = Intent(context, AdministratorControlsActivity::class.java)
       intent.putExtra(KEY_NAVIGATION_PROFILE_ID, profileId)

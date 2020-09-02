@@ -18,7 +18,7 @@ class HelpActivity : InjectableAppCompatActivity(), RouteToFAQListListener {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     val isFromNavigationDrawer = intent.getBooleanExtra(
-      BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
+      IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
       /* defaultValue= */ false
     )
     helpActivityPresenter.handleOnCreate(isFromNavigationDrawer)
@@ -27,8 +27,8 @@ class HelpActivity : InjectableAppCompatActivity(), RouteToFAQListListener {
 
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
-    const val BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY =
-      "HelpActivity.bool_is_from_navigation_drawer"
+    const val IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY =
+      "HelpActivity.is_from_navigation_drawer"
 
     fun createHelpActivityIntent(
       context: Context,
@@ -37,7 +37,7 @@ class HelpActivity : InjectableAppCompatActivity(), RouteToFAQListListener {
     ): Intent {
       val intent = Intent(context, HelpActivity::class.java)
       intent.putExtra(KEY_NAVIGATION_PROFILE_ID, profileId)
-      intent.putExtra(BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, isFromNavigationDrawer)
+      intent.putExtra(IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, isFromNavigationDrawer)
       return intent
     }
   }

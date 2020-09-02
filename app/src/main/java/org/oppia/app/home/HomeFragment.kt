@@ -14,6 +14,10 @@ import javax.inject.Inject
 class HomeFragment : InjectableFragment(), TopicSummaryClickListener {
   @Inject lateinit var homeFragmentPresenter: HomeFragmentPresenter
 
+  companion object{
+    internal const val TAG = "HomeFragment.tag"
+  }
+
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)

@@ -9,8 +9,6 @@ import org.oppia.app.activity.ActivityScope
 import org.oppia.app.drawer.NavigationDrawerFragment
 import javax.inject.Inject
 
-const val TAG_HOME_FRAGMENT = "HomeFragment.tag"
-
 /** The presenter for [HomeActivity]. */
 @ActivityScope
 class HomeActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
@@ -23,7 +21,7 @@ class HomeActivityPresenter @Inject constructor(private val activity: AppCompatA
       activity.supportFragmentManager.beginTransaction().add(
         R.id.home_fragment_placeholder,
         HomeFragment(),
-        TAG_HOME_FRAGMENT
+        HomeFragment.TAG
       ).commitNow()
     }
   }

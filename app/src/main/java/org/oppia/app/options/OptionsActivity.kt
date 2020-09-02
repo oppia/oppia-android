@@ -19,8 +19,8 @@ class OptionsActivity :
 
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
-    const val BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY =
-      "OptionsActivity.bool_is_from_navigation_drawer"
+    const val IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY =
+      "OptionsActivity.is_from_navigation_drawer"
 
     fun createOptionsActivity(
       context: Context,
@@ -29,7 +29,7 @@ class OptionsActivity :
     ): Intent {
       val intent = Intent(context, OptionsActivity::class.java)
       intent.putExtra(KEY_NAVIGATION_PROFILE_ID, profileId)
-      intent.putExtra(BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, isFromNavigationDrawer)
+      intent.putExtra(IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, isFromNavigationDrawer)
       return intent
     }
   }
@@ -38,7 +38,7 @@ class OptionsActivity :
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     val isFromNavigationDrawer = intent.getBooleanExtra(
-      BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
+      IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
       /* defaultValue= */ false
     )
     optionActivityPresenter.handleOnCreate(isFromNavigationDrawer)

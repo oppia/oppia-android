@@ -13,7 +13,7 @@ class OngoingTopicListFragment : InjectableFragment() {
 
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
-    const val ONGOING_TOPIC_LIST_FRAGMENT_TAG = "OngoingTopicListFragment.tag"
+    internal const val TAG = "OngoingTopicListFragment.tag"
     internal const val ONGOING_TOPIC_LIST_FRAGMENT_PROFILE_ID_KEY =
       "OngoingTopicListFragment.profile_id"
 
