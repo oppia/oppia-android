@@ -52,7 +52,7 @@ class OngoingTopicListSpanTest {
     return activity
       .supportFragmentManager
       .findFragmentByTag(
-        OngoingTopicListFragment.ONGOING_TOPIC_LIST_FRAGMENT_TAG
+        OngoingTopicListFragment.TAG
       ) as OngoingTopicListFragment
   }
 
