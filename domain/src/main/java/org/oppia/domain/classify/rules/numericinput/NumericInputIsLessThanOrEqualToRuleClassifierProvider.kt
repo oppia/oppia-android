@@ -23,7 +23,6 @@ internal class NumericInputIsLessThanOrEqualToRuleClassifierProvider @Inject con
     )
   }
 
-  // TODO(#210): Add tests for this classifier.
   override fun matches(answer: Double, input: Double): Boolean {
     return answer <= input
   }
