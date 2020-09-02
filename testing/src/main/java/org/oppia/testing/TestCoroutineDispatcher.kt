@@ -72,7 +72,8 @@ abstract class TestCoroutineDispatcher : CoroutineDispatcher() {
    *     when trying to execute tasks before giving up
    */
   abstract fun runCurrent(
-    timeout: Long = DEFAULT_TIMEOUT_SECONDS, timeoutUnit: TimeUnit = DEFAULT_TIMEOUT_UNIT
+    timeout: Long = DEFAULT_TIMEOUT_SECONDS,
+    timeoutUnit: TimeUnit = DEFAULT_TIMEOUT_UNIT
   )
 
   /**
@@ -81,7 +82,8 @@ abstract class TestCoroutineDispatcher : CoroutineDispatcher() {
    * isolated test dispatchers).
    */
   abstract fun runUntilIdle(
-    timeout: Long = DEFAULT_TIMEOUT_SECONDS, timeoutUnit: TimeUnit = DEFAULT_TIMEOUT_UNIT
+    timeout: Long = DEFAULT_TIMEOUT_SECONDS,
+    timeoutUnit: TimeUnit = DEFAULT_TIMEOUT_UNIT
   )
 
   /** A listener for whether the test coroutine dispatcher has become idle. */

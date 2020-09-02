@@ -313,7 +313,8 @@ class CoroutineExecutorService(
      * Wraps the specified block in a withTimeout() only if the specified timeout is larger than 0.
      */
     private suspend fun <T> maybeWithTimeout(
-      timeoutMillis: Long, block: suspend CoroutineScope.() -> T
+      timeoutMillis: Long,
+      block: suspend CoroutineScope.() -> T
     ): T {
       return coroutineScope {
         if (timeoutMillis > 0) {

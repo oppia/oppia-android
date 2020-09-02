@@ -200,7 +200,7 @@ class TestCoroutineDispatcherRobolectricImpl private constructor(
         break
       }
     }
-    while (executingTaskCount.get() > 0);
+    while (executingTaskCount.get() > 0)
     notifyIfIdle()
   }
 
