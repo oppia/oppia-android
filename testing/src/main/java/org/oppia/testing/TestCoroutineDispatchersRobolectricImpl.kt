@@ -28,12 +28,8 @@ class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
   }
 
   override fun runCurrent() {
-    runCurrentWith(/* no extra dispatchers */)
-  }
-
-  override fun runCurrentWith(vararg additionalDispatchers: TestCoroutineDispatcher) {
     do {
-      flushNextTasks(additionalDispatchers)
+      flushNextTasks()
     } while (hasPendingCompletableTasks())
   }
 
@@ -53,12 +49,8 @@ class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
   }
 
   override fun advanceUntilIdle() {
-    advanceUntilIdleWith(/* no extra dispatchers */)
-  }
-
-  override fun advanceUntilIdleWith(vararg additionalDispatchers: TestCoroutineDispatcher) {
     // First, run through all tasks that are currently pending and can be run immediately.
-    runCurrentWith(*additionalDispatchers)
+    runCurrent()
 
     // Now, the dispatchers can't proceed until time moves forward. Execute the next most recent
     // task schedule, and everything subsequently scheduled until the dispatchers are in a waiting
@@ -70,7 +62,7 @@ class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
         "Expected to find task with delay for waiting dispatchers with non-empty task queues"
       }
       fakeSystemClock.advanceTime(taskDelayMillis)
-      runCurrentWith(*additionalDispatchers)
+      runCurrent()
     }
   }
 
@@ -88,7 +80,7 @@ class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
     }
   }
 
-  private fun flushNextTasks(additionalDispatchers: Array<out TestCoroutineDispatcher>) {
+  private fun flushNextTasks() {
     if (backgroundTestDispatcher.hasPendingCompletableTasks()) {
       backgroundTestDispatcher.runCurrent()
     }
@@ -97,15 +89,6 @@ class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
     }
     if (!uiTaskCoordinator.isIdle()) {
       uiTaskCoordinator.idle()
-    }
-
-    // Flush the additional dispatchers last. While there are some obscure inconsistencies that can
-    // occur due to the order of task flushing, it's unlikely to introduce real issues since this
-    // function is run in a loop.
-    additionalDispatchers.forEach {
-      if (it.hasPendingCompletableTasks()) {
-        it.runCurrent()
-      }
     }
   }
 

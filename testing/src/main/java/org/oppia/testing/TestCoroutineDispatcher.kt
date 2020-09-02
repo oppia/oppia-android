@@ -84,20 +84,6 @@ abstract class TestCoroutineDispatcher : CoroutineDispatcher() {
     timeout: Long = DEFAULT_TIMEOUT_SECONDS, timeoutUnit: TimeUnit = DEFAULT_TIMEOUT_UNIT
   )
 
-  /**
-   * Resumes the dispatcher, resulting in it running all tasks in real-time rather than requiring
-   * explicit synchronization. The default sate of a test dispatcher is paused. Calling
-   * [pauseDispatcher] will restore the default pause behavior.
-   */
-  abstract fun resumeDispatcher()
-
-  /**
-   * Pauses the dispatcher, resulting in it running all tasks only when synchronized using
-   * [runCurrent] or [runUntilIdle]. The default sate of a test dispatcher is paused. Calling
-   * [resumeDispatcher] will change this state.
-   */
-  abstract fun pauseDispatcher()
-
   /** A listener for whether the test coroutine dispatcher has become idle. */
   interface TaskIdleListener {
     /**

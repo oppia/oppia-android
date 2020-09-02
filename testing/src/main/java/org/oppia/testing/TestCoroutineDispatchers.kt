@@ -65,12 +65,6 @@ interface TestCoroutineDispatchers {
   fun runCurrent()
 
   /**
-   * Same as [runCurrent] except additional dispatchers are considered. See [advanceUntilIdleWith]
-   * for more details.
-   */
-  fun runCurrentWith(vararg additionalDispatchers: TestCoroutineDispatcher)
-
-  /**
    * Advances the system clock by the specified time in milliseconds and then ensures any new tasks
    * that were scheduled are fully executed before proceeding. This does not guarantee the
    * dispatchers enter an idle state, but it should guarantee that any tasks previously not executed
@@ -97,16 +91,4 @@ interface TestCoroutineDispatchers {
    * unintentional side effect of executing future tasks before the test anticipates it.
    */
   fun advanceUntilIdle()
-
-  /**
-   * Same as [advanceUntilIdle] except this coordinates both the internal coroutine dispatchers of
-   * this class with the additional, optional dispatchers specified. This is only expected to be
-   * used in cases when blocking calls need to be verified when there are bidirectional blocks
-   * between the blocking thread and an internal dispatcher of this class. This function helps
-   * prevent deadlocking in such situations.
-   *
-   * @param additionalDispatchers a list of [TestCoroutineDispatcher]s whose internal task queue
-   *     will be synchronized with the internal dispatchers of this class
-   */
-  fun advanceUntilIdleWith(vararg additionalDispatchers: TestCoroutineDispatcher)
 }

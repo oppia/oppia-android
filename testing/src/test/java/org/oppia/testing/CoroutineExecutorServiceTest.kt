@@ -911,7 +911,7 @@ class CoroutineExecutorServiceTest {
     // task is guaranteed to be finished before selection happens (invalidating the selection
     // behavior). This is highly dependent on an implementation detail, but there's no other way to
     // force execution order to verify the service is doing the right thing for invokeAny.
-    autoSettleServiceAfterSelection(executorService)
+    autoSettleServiceBeforeBlocking(executorService)
 
     val deferred = realDispatcherScope.async {
       executorService.invokeAny(listOf(callable1, callable2))
@@ -957,7 +957,7 @@ class CoroutineExecutorServiceTest {
     val callable = lateFinishingCallableWithDispatcher2(
       Callable { "Long task" }, timeToWaitMillis = 2500L
     )
-    autoSettleServiceAfterSelection(executorService)
+    autoSettleServiceBeforeBlocking(executorService)
 
     val deferred = realDispatcherScope.async {
       executorService.invokeAny(listOf(callable), /* timeout= */ 1, TimeUnit.MILLISECONDS)
@@ -987,13 +987,7 @@ class CoroutineExecutorServiceTest {
 
   private fun autoSettleServiceBeforeBlocking(executorService: ExecutorService) {
     (executorService as CoroutineExecutorService).setPriorToBlockingCallback {
-      testCoroutineDispatchers.advanceUntilIdle()
-    }
-  }
-
-  private fun autoSettleServiceAfterSelection(executorService: ExecutorService) {
-    (executorService as CoroutineExecutorService).setAfterSelectionSetup {
-      testCoroutineDispatchers.advanceUntilIdle()
+      testCoroutineDispatchers.runCurrent()
     }
   }
 

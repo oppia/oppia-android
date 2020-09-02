@@ -7,17 +7,12 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.select
-import kotlinx.coroutines.supervisorScope
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.withTimeoutOrNull
-import java.lang.IllegalStateException
-import java.lang.NullPointerException
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.ExecutorService
@@ -29,7 +24,6 @@ import java.util.concurrent.TimeoutException
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
-import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * Listener for being notified when [CoroutineExecutorService] has arranged state and is immediately
@@ -39,14 +33,24 @@ import kotlin.coroutines.EmptyCoroutineContext
  */
 typealias PriorToBlockingCallback = () -> Unit
 
-// TODO: doc
-typealias AfterSelectionSetup = () -> Unit
-
-private typealias TimeoutBlock<T> = suspend CoroutineScope.() -> T
-
 // https://github.com/Kotlin/kotlinx.coroutines/issues/1450 for reference on using a coroutine
 // dispatcher an an executor service.
-// TODO: doc
+/**
+ * An [ExecutorService] that uses Oppia's [CoroutineDispatcher]s for interop with tests.
+ *
+ * Note while this service is being thoroughly tested, both the implementation and tests are based
+ * on a specific interpretation of the [ExecutorService] API. As a result, This class is
+ * **NOT PRODUCTION READY**. It should _only_ be used for testing purposes. This class should be
+ * used for APIs that rely on a Java executor for background activity that must be synchronized with
+ * other Oppia operations in tests. Uses of this class will automatically be compatible with
+ * [TestCoroutineDispatchers] and its idling resource.
+ *
+ * Note also that the built-in executor service (as suggested by
+ * https://github.com/Kotlin/kotlinx.coroutines/issues/1450) is not used because that assumes the
+ * underlying dispatcher is an ExecutorService which may not necessarily be the case, and it doesn't
+ * allow cooperation with Oppia's test coroutine dispatchers utility (which is the purpose of this
+ * class).
+ */
 class CoroutineExecutorService(
   private val backgroundDispatcher: CoroutineDispatcher
 ) : ExecutorService {
@@ -62,7 +66,6 @@ class CoroutineExecutorService(
    */
   private val cachedThreadCoroutineDispatcher by lazy { cachedThreadPool.asCoroutineDispatcher() }
   private var priorToBlockingCallback: PriorToBlockingCallback? = null
-  private var afterSelectionSetup: AfterSelectionSetup? = null
 
   override fun shutdown() {
     serviceLock.withLock { isShutdown = true }
@@ -164,14 +167,9 @@ class CoroutineExecutorService(
         val timeoutMillis = unit?.toMillis(timeout) ?: 0
         if (timeoutMillis > 0) {
           @Suppress("EXPERIMENTAL_API_USAGE")
-          onTimeout(timeoutMillis) {
-            throw TimeoutException("Timed out after $timeoutMillis")
-          }
+          onTimeout(timeoutMillis) { throw TimeoutException("Timed out after $timeoutMillis") }
         }
-        resultChannel.onReceive {
-          it
-        }
-        afterSelectionSetup?.invoke()
+        resultChannel.onReceive { it }
       } ?: throw ExecutionException(IllegalStateException("All tasks failed to run"))
     }
   }
@@ -224,19 +222,13 @@ class CoroutineExecutorService(
   }
 
   /**
-   * Sets a [PriorToBlockingListener] to observe this service's internal state. Note that since this
+   * Sets a [PriorToBlockingCallback] to observe this service's internal state. Note that since this
    * is an intentional backdoor built into the service, it should only be used for very specific
    * circumstances (such as testing blocking operations of this service).
    */
   @VisibleForTesting
   fun setPriorToBlockingCallback(priorToBlockingCallback: PriorToBlockingCallback) {
     this.priorToBlockingCallback = priorToBlockingCallback
-  }
-
-  // TODO: doc
-  @VisibleForTesting
-  fun setAfterSelectionSetup(afterSelectionSetup: AfterSelectionSetup) {
-    this.afterSelectionSetup = afterSelectionSetup
   }
 
   private fun dispatchAsync(command: Runnable): Deferred<*> {
@@ -279,6 +271,10 @@ class CoroutineExecutorService(
 
   private data class Task<T>(val runnable: Runnable, val deferred: Deferred<T>)
 
+  /**
+   * Returns a new [Future] based on a [Deferred]. Note that the APIs between these two async
+   * constructs are different, so there may be some subtle inconsistencies in practice.
+   */
   private fun <T> Deferred<T>.toFuture(): Future<T> {
     val deferred: Deferred<T> = this
     return object : Future<T> {
@@ -313,27 +309,16 @@ class CoroutineExecutorService(
   }
 
   private companion object {
+    /**
+     * Wraps the specified block in a withTimeout() only if the specified timeout is larger than 0.
+     */
     private suspend fun <T> maybeWithTimeout(
-      timeoutMillis: Long, block: TimeoutBlock<T>
+      timeoutMillis: Long, block: suspend CoroutineScope.() -> T
     ): T {
-      return maybeWithTimeoutDelegated(timeoutMillis, block, ::withTimeout)
-    }
-
-    private suspend fun <T> maybeWithTimeoutOrNull(
-      timeoutMillis: Long, block: TimeoutBlock<T>
-    ): T? {
-      return maybeWithTimeoutDelegated<T, T?>(timeoutMillis, block, ::withTimeoutOrNull)
-    }
-
-    private suspend fun <T : R, R> maybeWithTimeoutDelegated(
-      timeoutMillis: Long,
-      block: TimeoutBlock<T>,
-      withTimeoutDelegate: suspend (Long, TimeoutBlock<T>) -> R
-    ): R {
       return coroutineScope {
         if (timeoutMillis > 0) {
           try {
-            withTimeoutDelegate(timeoutMillis, block)
+            withTimeout(timeoutMillis, block)
           } catch (e: TimeoutCancellationException) {
             // Treat timeouts in this service as a standard TimeoutException (which should result in
             // the coroutine being completed with a failure).
