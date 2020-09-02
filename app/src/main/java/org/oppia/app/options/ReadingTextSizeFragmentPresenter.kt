@@ -122,7 +122,7 @@ class ReadingTextSizeFragmentPresenter @Inject constructor(private val fragment:
   }
 
   fun getReadingTextSizeInFloat(readingTextSize: ReadingTextSize): Float {
-    val defaultReadingTextSizeInFloat = fragment.context?.resources?.getDimension(R.dimen.defaultReadingTextSize)
+    val defaultReadingTextSizeInFloat = fragment.context?.resources!!.getDimension(R.dimen.default_reading_text_size)
     return when (readingTextSize) {
       ReadingTextSize.SMALL_TEXT_SIZE -> defaultReadingTextSizeInFloat * SMALL_TEXT_SIZE_SCALE
       ReadingTextSize.MEDIUM_TEXT_SIZE -> defaultReadingTextSizeInFloat * MEDIUM_TEXT_SIZE_SCALE
@@ -131,7 +131,6 @@ class ReadingTextSizeFragmentPresenter @Inject constructor(private val fragment:
     }
   }
 
-  // TODO(#1584): Update this function to use multiplier instead of direct font size.
   fun getReadingTextSize(readingTextSize: ReadingTextSize): String {
     return when (readingTextSize) {
       ReadingTextSize.SMALL_TEXT_SIZE -> "Small"
