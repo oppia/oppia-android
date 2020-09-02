@@ -1,6 +1,5 @@
 package org.oppia.app.options
 
-import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +10,6 @@ import org.oppia.app.R
 import org.oppia.app.databinding.ReadingTextSizeFragmentBinding
 import org.oppia.app.model.ReadingTextSize
 import javax.inject.Inject
-import kotlin.coroutines.coroutineContext
 
 private const val SMALL_TEXT_SIZE_SCALE = 0.8f
 private const val MEDIUM_TEXT_SIZE_SCALE = 1.0f
@@ -122,7 +120,9 @@ class ReadingTextSizeFragmentPresenter @Inject constructor(private val fragment:
   }
 
   fun getReadingTextSizeInFloat(readingTextSize: ReadingTextSize): Float {
-    val defaultReadingTextSizeInFloat = fragment.context?.resources!!.getDimension(R.dimen.default_reading_text_size)
+    val defaultReadingTextSizeInFloat = fragment.context?.resources!!.getDimension(
+      R.dimen.default_reading_text_size
+    )
     return when (readingTextSize) {
       ReadingTextSize.SMALL_TEXT_SIZE -> defaultReadingTextSizeInFloat * SMALL_TEXT_SIZE_SCALE
       ReadingTextSize.MEDIUM_TEXT_SIZE -> defaultReadingTextSizeInFloat * MEDIUM_TEXT_SIZE_SCALE
