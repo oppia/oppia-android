@@ -1,1 +1,1 @@
-adb pull "/sdcard/oppiascreenshots/" ./golden_screenshots
+adb pull "/sdcard/oppiascreenshots" ./golden_screenshots
