@@ -655,17 +655,19 @@ class CoroutineExecutorServiceTest {
   @ExperimentalCoroutinesApi
   fun testAwaitTermination_afterShutdown_withLongTask_exceedTimeout_returnsFalse() {
     val executorService = createExecutorService()
-    val delayMs = 10L
+    // Note that a longer delay is used here since testing for timeouts is inherently flaky: slower
+    // machines are more likely to trigger a flake since this relies on a real dispatcher. To guard
+    // against flakes, a long timeout is picked.
     executorService.submit(
       lateFinishingCallableWithDispatcher2(
-        Callable { "Task 1" }, timeToWaitMillis = delayMs * 10
+        Callable { "Task 1" }, timeToWaitMillis = 1000L
       )
     )
     executorService.shutdown()
     autoSettleServiceBeforeBlocking(executorService)
 
     val terminationDeferred = realDispatcherScope.async {
-      executorService.awaitTermination(delayMs, TimeUnit.MILLISECONDS)
+      executorService.awaitTermination(/* timeout= */ 1, TimeUnit.MILLISECONDS)
     }
     waitForDeferredWithDispatcher1(terminationDeferred)
 
