@@ -38,6 +38,7 @@ import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -131,7 +132,6 @@ class StateFragmentLocalTest {
     // Initialize Glide such that all of its executors use the same shared dispatcher pool as the
     // rest of Oppia so that thread execution can be synchronized via Oppia's test coroutine
     // dispatchers.
-    // TODO(#1765): Improve the s
     val executorService = MockGlideExecutor.newTestExecutor(
       CoroutineExecutorService(backgroundCoroutineDispatcher)
     )
@@ -144,6 +144,13 @@ class StateFragmentLocalTest {
 
     profileTestHelper.initializeProfiles()
     ShadowMediaPlayer.addException(audioDataSource1, IOException("Test does not have networking"))
+  }
+
+  @After
+  fun tearDown() {
+    // Ensure lingering tasks are completed (otherwise Glide can enter a permanently broken state
+    // during initialization for the next test).
+    testCoroutineDispatchers.advanceUntilIdle()
   }
 
   @Test
