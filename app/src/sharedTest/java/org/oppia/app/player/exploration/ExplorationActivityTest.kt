@@ -192,7 +192,7 @@ class ExplorationActivityTest {
       openActionBarOverflowOrOptionsMenu(context)
       onView(withText(context.getString(R.string.help))).perform(click())
       intended(hasComponent(HelpActivity::class.java.name))
-      intended(hasExtra(HelpActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, /* value= */ false))
+      intended(hasExtra(HelpActivity.IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, /* value= */ false))
     }
     explorationDataController.stopPlayingExploration()
   }
@@ -213,7 +213,7 @@ class ExplorationActivityTest {
       intended(hasComponent(OptionsActivity::class.java.name))
       intended(
         hasExtra(
-          OptionsActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
+          OptionsActivity.IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
           /* value= */ false
         )
       )
