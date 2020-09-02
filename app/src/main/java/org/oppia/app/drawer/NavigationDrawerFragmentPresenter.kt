@@ -234,6 +234,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           drawerLayout.closeDrawers()
         }
         NavigationDrawerItem.SWITCH_PROFILE -> {
+          val lastCheckedItem = binding.fragmentDrawerNavView.checkedItem
           AlertDialog.Builder(fragment.context!!, R.style.AlertDialogTheme)
             .setMessage(R.string.home_activity_back_dialog_message)
             .setOnCancelListener { dialog ->
@@ -245,10 +246,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
               dialog.dismiss()
             }
             .setNegativeButton(R.string.home_activity_back_dialog_cancel) { dialog, _ ->
-              binding.fragmentDrawerNavView.menu.getItem(
-                NavigationDrawerItem.HOME.ordinal
-              ).isChecked =
-                true
+              lastCheckedItem?.isChecked = true
               drawerLayout.closeDrawers()
               dialog.dismiss()
             }
