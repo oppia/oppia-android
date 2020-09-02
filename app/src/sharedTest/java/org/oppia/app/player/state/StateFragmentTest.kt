@@ -3,8 +3,11 @@ package org.oppia.app.player.state
 import android.app.Application
 import android.content.Context
 import android.os.Build
+import android.text.Spannable
+import android.text.style.ClickableSpan
 import android.view.View
 import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
@@ -24,6 +27,7 @@ import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
@@ -95,6 +99,7 @@ import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.question.QuestionModule
+import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.domain.topic.TEST_EXPLORATION_ID_0
 import org.oppia.domain.topic.TEST_EXPLORATION_ID_2
@@ -103,6 +108,7 @@ import org.oppia.domain.topic.TEST_EXPLORATION_ID_5
 import org.oppia.domain.topic.TEST_EXPLORATION_ID_6
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.testing.IsOnRobolectric
 import org.oppia.testing.OppiaTestRule
 import org.oppia.testing.RunOn
 import org.oppia.testing.TestAccessibilityModule
@@ -119,6 +125,7 @@ import org.oppia.util.parser.HtmlParserEntityTypeModule
 import org.oppia.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.io.IOException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -149,6 +156,13 @@ class StateFragmentTest {
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
     FirebaseApp.initializeApp(context)
+
+    // Only initialize the Robolectric shadows when running on Robolectric (and use reflection since
+    // Espresso can't load Robolectric into its classpath).
+    if (isOnRobolectric()) {
+      val dataSource = createAudioDataSource(explorationId = "MjZzEVOG47_1", audioFileName = "content-en-ouqm7j21vt8.mp3")
+      addShadowMediaPlayerException(dataSource, IOException("Test does not have networking"))
+    }
   }
 
   @After
@@ -873,6 +887,74 @@ class StateFragmentTest {
     }
   }
 
+  // TODO(BenHenning): Get these tests passing on Espresso.
+
+  @Test
+  fun testStateFragment_forMisconception_showsLinkTextForConceptCard() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      selectMultipleChoiceOption(optionPosition = 3) // No, pieces must be the same size.
+      clickContinueNavigationButton()
+
+      // This answer is incorrect and a detected misconception.
+      typeFractionText("3/2")
+      clickSubmitAnswerButton()
+      scrollToViewType(FEEDBACK)
+
+      onView(withId(R.id.feedback_text_view)).check(
+        matches(
+          withText(containsString("Take a look at the short refresher lesson"))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_forMisconception_clickLinkText_opensConceptCard() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      selectMultipleChoiceOption(optionPosition = 3) // No, pieces must be the same size.
+      clickContinueNavigationButton()
+      typeFractionText("3/2") // Misconception.
+      clickSubmitAnswerButton()
+
+      onView(withId(R.id.feedback_text_view)).perform(openClickableSpan("refresher lesson"))
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withId(R.id.concept_card_heading_text))
+        .inRoot(isDialog())
+        .check(matches(withText(containsString("Identify the numerator and denominator"))))
+    }
+  }
+
+  private fun addShadowMediaPlayerException(dataSource: Any, exception: Exception) {
+    val classLoader = StateFragmentTest::class.java.classLoader!!
+    val shadowMediaPlayerClass = classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer")
+    val addException =
+      shadowMediaPlayerClass.getDeclaredMethod(
+        "addException", dataSource.javaClass, IOException::class.java
+      )
+    addException.invoke(/* obj= */ null, dataSource, exception)
+  }
+
+  @Suppress("SameParameterValue")
+  private fun createAudioDataSource(explorationId: String, audioFileName: String): Any {
+    val audioUrl = createAudioUrl(explorationId, audioFileName)
+    val classLoader = StateFragmentTest::class.java.classLoader!!
+    val dataSourceClass = classLoader.loadClass("org.robolectric.shadows.util.DataSource")
+    val toDataSource =
+      dataSourceClass.getDeclaredMethod(
+        "toDataSource", String::class.java, Map::class.java
+      )
+    return toDataSource.invoke(/* obj= */ null, audioUrl, /* headers= */ null)
+  }
+
+  private fun createAudioUrl(explorationId: String, audioFileName: String): String {
+    return "https://storage.googleapis.com/oppiaserver-resources/" +
+      "exploration/$explorationId/assets/audio/$audioFileName"
+  }
+
   private fun launchForExploration(
     explorationId: String
   ): ActivityScenario<StateFragmentTestActivity> {
@@ -1118,6 +1200,10 @@ class StateFragmentTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  private fun isOnRobolectric(): Boolean {
+    return ApplicationProvider.getApplicationContext<TestApplication>().isOnRobolectric()
+  }
+
   // TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.
   //  Sleeping is really bad practice in Espresso tests, and can lead to test flakiness. It shouldn't be necessary if we
   //  use a test executor service with a counting idle resource, but right now Gradle mixes dependencies such that both
@@ -1216,6 +1302,56 @@ class StateFragmentTest {
     }
   }
 
+  /**
+   * Returns an action that finds a TextView containing the specific text, finds a ClickableSpan
+   * within that text view that contains the specified text, then clicks it. The need for this was
+   * inspired by https://stackoverflow.com/q/38314077.
+   */
+  @Suppress("SameParameterValue")
+  private fun openClickableSpan(text: String): ViewAction {
+    return object : ViewAction {
+      override fun getDescription(): String = "openClickableSpan"
+
+      override fun getConstraints(): Matcher<View> = hasClickableSpanWithText(text)
+
+      override fun perform(uiController: UiController?, view: View?) {
+        // The view shouldn't be null if the constraints are being met.
+        (view as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text)?.onClick(view)
+      }
+    }
+  }
+
+  /**
+   * Returns a matcher that matches against text views with clickable spans that contain the
+   * specified text.
+   */
+  private fun hasClickableSpanWithText(text: String): Matcher<View> {
+    return object : TypeSafeMatcher<View>(TextView::class.java) {
+      override fun describeTo(description: Description?) {
+        description?.appendText("has ClickableSpan with text")?.appendValue(text)
+      }
+
+      override fun matchesSafely(item: View?): Boolean {
+        return (item as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text) != null
+      }
+    }
+  }
+
+  private fun TextView.getClickableSpans(): List<Pair<String, ClickableSpan>> {
+    val viewText = text
+    return (viewText as Spannable).getSpans(
+      /* start= */ 0, /* end= */ text.length, ClickableSpan::class.java
+    ).map {
+      viewText.subSequence(viewText.getSpanStart(it), viewText.getSpanEnd(it)).toString() to it
+    }
+  }
+
+  private fun List<Pair<String, ClickableSpan>>.findMatchingTextOrNull(
+    text: String
+  ): ClickableSpan? {
+    return find { text in it.first }?.second
+  }
+
   @Singleton
   @Component(
     modules = [
@@ -1241,6 +1377,8 @@ class StateFragmentTest {
     }
 
     fun inject(stateFragmentTest: StateFragmentTest)
+
+    @IsOnRobolectric fun isOnRobolectric(): Boolean
   }
 
   class TestApplication : Application(), ActivityComponentFactory {
@@ -1250,9 +1388,9 @@ class StateFragmentTest {
         .build()
     }
 
-    fun inject(stateFragmentTest: StateFragmentTest) {
-      component.inject(stateFragmentTest)
-    }
+    fun inject(stateFragmentTest: StateFragmentTest) = component.inject(stateFragmentTest)
+
+    fun isOnRobolectric(): Boolean = component.isOnRobolectric()
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
       return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()

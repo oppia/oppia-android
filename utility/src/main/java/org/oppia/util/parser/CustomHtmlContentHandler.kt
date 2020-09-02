@@ -8,6 +8,7 @@ import org.xml.sax.Attributes
 import org.xml.sax.ContentHandler
 import org.xml.sax.Locator
 import org.xml.sax.XMLReader
+import java.util.*
 
 /**
  * A custom [ContentHandler] and [Html.TagHandler] for processing custom HTML tags. This class must
@@ -20,7 +21,7 @@ class CustomHtmlContentHandler private constructor(
 ) : ContentHandler, Html.TagHandler {
   private var originalContentHandler: ContentHandler? = null
   private var currentTrackedTag: TrackedTag? = null
-  private var currentTrackedCustomTag: TrackedCustomTag? = null
+  private val currentTrackedCustomTags = ArrayDeque<TrackedCustomTag>()
 
   override fun endElement(uri: String?, localName: String?, qName: String?) {
     originalContentHandler?.endElement(uri, localName, qName)
@@ -90,23 +91,20 @@ class CustomHtmlContentHandler private constructor(
           check(localCurrentTrackedTag.tag == tag) {
             "Expected tracked tag $currentTrackedTag to match custom tag: $tag"
           }
-          check(currentTrackedCustomTag == null) {
-            "Custom content handler does not support nested custom tags."
-          }
-          currentTrackedCustomTag = TrackedCustomTag(
+          currentTrackedCustomTags += TrackedCustomTag(
             localCurrentTrackedTag.tag, localCurrentTrackedTag.attributes, output.length
           )
         }
       }
       tag in customTagHandlers -> {
-        val localCurrentTrackedCustomTag = currentTrackedCustomTag
-        check(localCurrentTrackedCustomTag != null) {
-          "Expected custom tag to be initialized tracked."
+        check(currentTrackedCustomTags.isNotEmpty()) {
+          "Expected tracked custom tag to be initialized."
         }
-        check(localCurrentTrackedCustomTag.tag == tag) {
+        val currentTrackedCustomTag = currentTrackedCustomTags.removeLast()
+        check(currentTrackedCustomTag.tag == tag) {
           "Expected tracked tag $currentTrackedTag to match custom tag: $tag"
         }
-        val (_, attributes, openTagIndex) = localCurrentTrackedCustomTag
+        val (_, attributes, openTagIndex) = currentTrackedCustomTag
         customTagHandlers.getValue(tag).handleTag(attributes, openTagIndex, output.length, output)
       }
     }

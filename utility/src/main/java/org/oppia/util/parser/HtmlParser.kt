@@ -18,6 +18,7 @@ private const val CUSTOM_IMG_FILE_PATH_ATTRIBUTE = "filepath-with-value"
 private const val REPLACE_IMG_FILE_PATH_ATTRIBUTE = "src"
 
 private const val CUSTOM_CONCEPT_CARD_TAG = "oppia-noninteractive-skillreview"
+private const val CUSTOM_BULLET_LIST_TAG = "oppia-li"
 
 /** Html Parser to parse custom Oppia tags with Android-compatible versions. */
 class HtmlParser private constructor(
@@ -29,6 +30,7 @@ class HtmlParser private constructor(
   customOppiaTagActionListener: CustomOppiaTagActionListener?
 ) {
   private val conceptCardTagHandler = ConceptCardTagHandler(customOppiaTagActionListener)
+  private val bulletTagHandler = BulletTagHandler()
 
   /**
    * Parses a raw HTML string with support for custom Oppia tags.
@@ -46,15 +48,18 @@ class HtmlParser private constructor(
     supportsLinks: Boolean = false
   ): Spannable {
     var htmlContent = rawString
-    if (htmlContent.contains("\n\t")) {
+    if ("\n\t" in htmlContent) {
       htmlContent = htmlContent.replace("\n\t", "")
     }
-    if (htmlContent.contains("\n\n")) {
+    if ("\n\n" in htmlContent) {
       htmlContent = htmlContent.replace("\n\n", "")
     }
+    if ("<li>" in htmlContent) {
+      htmlContent = htmlContent.replace("<li>", "<$CUSTOM_BULLET_LIST_TAG>")
+        .replace("</li>", "</$CUSTOM_BULLET_LIST_TAG>")
+    }
 
-    // TODO: support for imageCenterAlign & other fixes to HtmlParser since #422 (consider #731).
-    if (htmlContent.contains(CUSTOM_IMG_TAG)) {
+    if (CUSTOM_IMG_TAG in htmlContent) {
       htmlContent = htmlContent.replace(CUSTOM_IMG_TAG, REPLACE_IMG_TAG)
       htmlContent =
         htmlContent.replace(CUSTOM_IMG_FILE_PATH_ATTRIBUTE, REPLACE_IMG_FILE_PATH_ATTRIBUTE)
@@ -66,7 +71,6 @@ class HtmlParser private constructor(
       htmlContentTextView.movementMethod = LinkMovementMethod.getInstance()
     }
 
-    // TODO: simplify and/or consolidate this logic with the new custom content handler.
     htmlContent = htmlContent.replace(
       CUSTOM_IMG_TAG,
       REPLACE_IMG_TAG,
@@ -83,15 +87,11 @@ class HtmlParser private constructor(
       htmlContentTextView, gcsResourceName, entityType, entityId, imageCenterAlign
     )
     val htmlSpannable = CustomHtmlContentHandler.fromHtml(
-      htmlContent, imageGetter, mapOf(CUSTOM_CONCEPT_CARD_TAG to conceptCardTagHandler)
+      htmlContent, imageGetter, mapOf(
+        CUSTOM_CONCEPT_CARD_TAG to conceptCardTagHandler,
+        CUSTOM_BULLET_LIST_TAG to bulletTagHandler
+      )
     )
-
-//    val htmlSpannable = HtmlCompat.fromHtml(
-//      htmlContent,
-//      HtmlCompat.FROM_HTML_MODE_LEGACY,
-//      imageGetter,
-//      LiTagHandler()
-//    ) as Spannable
 
     val spannableBuilder = SpannableStringBuilder(htmlSpannable)
     val bulletSpans = spannableBuilder.getSpans(
@@ -140,23 +140,26 @@ class HtmlParser private constructor(
     }
   }
 
+  private class BulletTagHandler() : CustomHtmlContentHandler.CustomTagHandler {
+    override fun handleTag(
+      attributes: Attributes,
+      openIndex: Int,
+      closeIndex: Int,
+      output: Editable
+    ) {
+      output.append("\n")
+      val spannableBuilder = SpannableStringBuilder(output.subSequence(openIndex, closeIndex))
+      spannableBuilder.setSpan(
+        BulletSpan(), 0, spannableBuilder.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+      )
+      output.replace(openIndex, closeIndex, spannableBuilder)
+    }
+  }
+
   private fun trimSpannable(spannable: SpannableStringBuilder): SpannableStringBuilder {
-    // TODO: simplify.
-    var trimStart = 0
-    var trimEnd = 0
-
-    var text = spannable.toString()
-
-    if (text.startsWith("\n")) {
-      text = text.substring(1)
-      trimStart += 1
-    }
-
-    if (text.endsWith("\n")) {
-      text = text.substring(0, text.length - 1)
-      trimEnd += 2
-    }
-
+    val trimmedText = spannable.toString()
+    val trimStart = if (trimmedText.startsWith("\n")) 1 else 0
+    val trimEnd = if (trimmedText.length > 1 && trimmedText.endsWith("\n")) 2 else 0
     return spannable.delete(0, trimStart).delete(spannable.length - trimEnd, spannable.length)
   }
 
