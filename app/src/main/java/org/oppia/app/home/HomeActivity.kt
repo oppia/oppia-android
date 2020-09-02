@@ -3,19 +3,18 @@ package org.oppia.app.home
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AlertDialog
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
 import org.oppia.app.drawer.ExitProfileDialogFragment
 import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.app.drawer.TAG_SWITCH_PROFILE_DIALOG
-import org.oppia.app.profile.ProfileChooserActivity
 import org.oppia.app.topic.TopicActivity
 import javax.inject.Inject
 
 /** The central activity for all users entering the app. */
 class HomeActivity : InjectableAppCompatActivity(), RouteToTopicListener {
-  @Inject lateinit var homeActivityPresenter: HomeActivityPresenter
+  @Inject
+  lateinit var homeActivityPresenter: HomeActivityPresenter
   private var internalProfileId: Int = -1
 
   companion object {
