@@ -137,7 +137,7 @@
   <color name="avatar_background_22">#AB29CC</color>
   <color name="avatar_background_23">#CC29B1</color>
   <color name="avatar_background_24">#CC2970</color>
-  <!-- StoryTextSizeActivity -->
+  <!-- ReadingTextSizeActivity -->
   <color name="seekbarDivider">#707070</color>
   <color name="topicThumbnailBackground">#C6DCDA</color>
   <color name="topicTitleBackground">#2F6687</color>
@@ -156,4 +156,6 @@
   <!-- ICON COLORS -->
   <color name="mergeIconEnabled">#FF000000</color>
   <color name="mergeIconDisabled">#999999</color>
+  <!-- HIGHLIGHTED COLORS -->
+  <color name="adminHighlighted">#A5D3EC</color>
 </resources>

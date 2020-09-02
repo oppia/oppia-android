@@ -1,14 +1,14 @@
 package org.oppia.app.help
 
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModel
 import org.oppia.app.R
+import org.oppia.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
 /** View model in [HelpFragment]. */
 class HelpListViewModel @Inject constructor(
   val activity: AppCompatActivity
-) : ViewModel() {
+) : ObservableViewModel() {
   private val arrayList = ArrayList<HelpItemViewModel>()
 
   val helpItemList: List<HelpItemViewModel> by lazy {

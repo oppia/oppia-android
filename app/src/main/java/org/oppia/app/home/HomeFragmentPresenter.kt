@@ -25,6 +25,7 @@ import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.TopicList
 import org.oppia.app.model.TopicSummary
+import org.oppia.app.shim.IntentFactoryShim
 import org.oppia.domain.oppialogger.OppiaLogger
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.topic.TopicListController
@@ -46,6 +47,7 @@ class HomeFragmentPresenter @Inject constructor(
   private val oppiaClock: OppiaClock,
   private val logger: ConsoleLogger,
   private val oppiaLogger: OppiaLogger,
+  private val intentFactoryShim: IntentFactoryShim,
   @TopicHtmlParserEntityType private val topicEntityType: String,
   @StoryHtmlParserEntityType private val storyEntityType: String
 ) {
@@ -71,7 +73,11 @@ class HomeFragmentPresenter @Inject constructor(
     logHomeActivityEvent()
 
     welcomeViewModel = WelcomeViewModel()
-    promotedStoryListViewModel = PromotedStoryListViewModel(activity, internalProfileId)
+    promotedStoryListViewModel = PromotedStoryListViewModel(
+      activity,
+      internalProfileId,
+      intentFactoryShim
+    )
     allTopicsViewModel = AllTopicsViewModel()
     itemList.add(welcomeViewModel)
     itemList.add(promotedStoryListViewModel)
@@ -98,7 +104,6 @@ class HomeFragmentPresenter @Inject constructor(
       layoutManager = homeLayoutManager
     }
     binding.let {
-      it.presenter = this
       it.lifecycleOwner = fragment
     }
 
@@ -191,14 +196,24 @@ class HomeFragmentPresenter @Inject constructor(
         promotedStoryList.clear()
         if (it.recentStoryCount != 0) {
           it.recentStoryList.take(limit).forEach { promotedStory ->
-            val recentStory = PromotedStoryViewModel(activity, internalProfileId, storyEntityType)
+            val recentStory = PromotedStoryViewModel(
+              activity,
+              internalProfileId,
+              storyEntityType,
+              intentFactoryShim
+            )
             recentStory.setPromotedStory(promotedStory)
             promotedStoryList.add(recentStory)
           }
         } else {
           // TODO(#936): Optimise this as part of recommended stories.
           it.olderStoryList.take(limit).forEach { promotedStory ->
-            val oldStory = PromotedStoryViewModel(activity, internalProfileId, storyEntityType)
+            val oldStory = PromotedStoryViewModel(
+              activity,
+              internalProfileId,
+              storyEntityType,
+              intentFactoryShim
+            )
             oldStory.setPromotedStory(promotedStory)
             promotedStoryList.add(oldStory)
           }

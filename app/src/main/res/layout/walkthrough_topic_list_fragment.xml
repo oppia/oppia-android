@@ -7,9 +7,7 @@
     <variable
       name="viewModel"
       type="org.oppia.app.walkthrough.topiclist.WalkthroughTopicViewModel" />
-    <variable
-      name="presenter"
-      type="org.oppia.app.walkthrough.topiclist.WalkthroughTopicListFragmentPresenter" />
+
   </data>
 
   <LinearLayout

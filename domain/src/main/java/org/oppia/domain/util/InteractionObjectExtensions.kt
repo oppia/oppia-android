@@ -13,6 +13,7 @@ import org.oppia.app.model.InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT
 import org.oppia.app.model.InteractionObject.ObjectTypeCase.NORMALIZED_STRING
 import org.oppia.app.model.InteractionObject.ObjectTypeCase.NUMBER_WITH_UNITS
 import org.oppia.app.model.InteractionObject.ObjectTypeCase.OBJECTTYPE_NOT_SET
+import org.oppia.app.model.InteractionObject.ObjectTypeCase.RATIO_EXPRESSION
 import org.oppia.app.model.InteractionObject.ObjectTypeCase.REAL
 import org.oppia.app.model.InteractionObject.ObjectTypeCase.SET_OF_HTML_STRING
 import org.oppia.app.model.InteractionObject.ObjectTypeCase.SIGNED_INT
@@ -35,6 +36,7 @@ fun InteractionObject.toAnswerString(): String {
     LIST_OF_SETS_OF_HTML_STRING -> listOfSetsOfHtmlString.toAnswerString()
     IMAGE_WITH_REGIONS -> imageWithRegions.toAnswerString()
     CLICK_ON_IMAGE -> clickOnImage.toAnswerString()
+    RATIO_EXPRESSION -> ratioExpression.toAnswerString()
     OBJECTTYPE_NOT_SET -> "" // The default InteractionObject should be an empty string.
   }
 }

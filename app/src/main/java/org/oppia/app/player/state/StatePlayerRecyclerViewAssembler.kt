@@ -26,6 +26,7 @@ import org.oppia.app.databinding.NextButtonItemBinding
 import org.oppia.app.databinding.NumericInputInteractionItemBinding
 import org.oppia.app.databinding.PreviousButtonItemBinding
 import org.oppia.app.databinding.PreviousResponsesHeaderItemBinding
+import org.oppia.app.databinding.RatioInputInteractionItemBinding
 import org.oppia.app.databinding.ReplayButtonItemBinding
 import org.oppia.app.databinding.ReturnToTopicButtonItemBinding
 import org.oppia.app.databinding.SelectionInteractionItemBinding
@@ -61,6 +62,7 @@ import org.oppia.app.player.state.itemviewmodel.NextButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.app.player.state.itemviewmodel.PreviousButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.PreviousResponsesHeaderViewModel
+import org.oppia.app.player.state.itemviewmodel.RatioExpressionInputInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.ReplayButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.ReturnToTopicButtonViewModel
 import org.oppia.app.player.state.itemviewmodel.SelectionInteractionViewModel
@@ -224,6 +226,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         /* isCorrectAnswer= */ true,
         gcsEntityId
       )
+      hintHandler.hideHint()
     }
 
     var canContinueToNextState = false
@@ -849,6 +852,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
         setViewModel = TextInputInteractionItemBinding::setViewModel,
         transformViewModel = { it as TextInputViewModel }
       ).registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.RATIO_EXPRESSION_INPUT_INTERACTION,
+        inflateDataBinding = RatioInputInteractionItemBinding::inflate,
+        setViewModel = RatioInputInteractionItemBinding::setViewModel,
+        transformViewModel = { it as RatioExpressionInputInteractionViewModel }
+      ).registerViewDataBinder(
         viewType = StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON,
         inflateDataBinding = SubmitButtonItemBinding::inflate,
         setViewModel = SubmitButtonItemBinding::setButtonViewModel,
@@ -897,6 +905,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
             else -> {
               showSingleAnswer(binding)
               binding.submittedAnswer = userAnswer.plainAnswer
+              binding.accessibleAnswer = userAnswer.contentDescription
             }
           }
         }
@@ -1244,6 +1253,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private var trackedWrongAnswerCount = 0
     private var previousHelpIndex: HelpIndex = HelpIndex.getDefaultInstance()
     private var hintSequenceNumber = 0
+    private var isHintVisibleInLatestState = false
 
     /** Resets this handler to prepare it for a new state, cancelling any pending hints. */
     fun reset() {
@@ -1253,6 +1263,14 @@ class StatePlayerRecyclerViewAssembler private constructor(
       // reset to 0 to ensure that all previous hint tasks are cancelled, and new tasks can be
       // scheduled without overlapping with past sequence numbers.
       hintSequenceNumber++
+      isHintVisibleInLatestState = false
+    }
+
+    /** Hide hint when moving to any previous state. */
+    fun hideHint() {
+      (fragment as ShowHintAvailabilityListener).onHintAvailable(
+        HelpIndex.getDefaultInstance()
+      )
     }
 
     /**
@@ -1263,6 +1281,23 @@ class StatePlayerRecyclerViewAssembler private constructor(
       if (state.interaction.hintList.isEmpty()) {
         // If this state has no hints to show, do nothing.
         return
+      }
+
+      // If hint was visibile in the current state show all previous hints
+      // coming back to current state.
+      // If any hint was revealed and user move between current and completed states then
+      // show those relevead hints back by making icon visible
+      // else use the previous help index
+      if (isHintVisibleInLatestState) {
+        if (state.interaction.hintList[previousHelpIndex.hintIndex].hintIsRevealed) {
+          (fragment as ShowHintAvailabilityListener).onHintAvailable(
+            HelpIndex.newBuilder().setEverythingRevealed(true).build()
+          )
+        } else {
+          (fragment as ShowHintAvailabilityListener).onHintAvailable(
+            previousHelpIndex
+          )
+        }
       }
 
       // Start showing hints after a wrong answer is submitted or if the user appears stuck (e.g.
@@ -1357,6 +1392,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
           // becomes null such as in the case of the solution becoming available).
           (fragment as ShowHintAvailabilityListener).onHintAvailable(helpIndexToShow)
           previousHelpIndex = helpIndexToShow
+          isHintVisibleInLatestState = true
         }
       }
     }

@@ -13,6 +13,10 @@
       type="CharSequence" />
 
     <variable
+      name="accessibleAnswer"
+      type="CharSequence" />
+
+    <variable
       name="submittedListAnswer"
       type="org.oppia.app.model.ListOfSetsOfHtmlStrings" />
 
@@ -24,8 +28,8 @@
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
     android:gravity="@{viewModel.hasConversationView ? Gravity.END : Gravity.START}"
+    android:orientation="horizontal"
     app:explorationSplitViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
     app:explorationSplitViewMarginBottom="@{@dimen/margin_0}"
     app:explorationSplitViewMarginEnd="@{@dimen/margin_24}"
@@ -52,6 +56,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:background="@drawable/submitted_answer_background"
+      android:contentDescription="@{accessibleAnswer ?? submittedAnswer}"
       android:paddingStart="12dp"
       android:paddingTop="@{viewModel.hasConversationView ? @dimen/padding_16 : @dimen/padding_8}"
       android:paddingEnd="12dp"

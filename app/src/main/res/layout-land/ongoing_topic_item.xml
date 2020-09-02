@@ -21,14 +21,15 @@
     android:layout_marginTop="12dp"
     android:layout_marginEnd="16dp"
     android:layout_marginBottom="12dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:onClick="@{(v) -> viewModel.onTopicItemClicked()}"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:clickable="true"
-      android:focusable="true">
+      android:layout_height="match_parent">
 
       <org.oppia.app.customview.LessonThumbnailImageView
         android:id="@+id/topic_thumbnail"

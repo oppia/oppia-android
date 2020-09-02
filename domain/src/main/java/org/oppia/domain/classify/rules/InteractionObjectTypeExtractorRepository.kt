@@ -12,9 +12,10 @@ import kotlin.reflect.KClass
  * single source of truth that allows code requiring an extraction method to rely only on the type enum rather than
  * managing the enum->method relationship directly.
  */
+// TODO(#1580): Re-restrict access using Bazel visibilities
 @Singleton // Avoid recomputing the mapping multiple times.
-internal class InteractionObjectTypeExtractorRepository @Inject constructor() {
-  private val extractors: Map<ObjectTypeCase, ExtractorMapping<*>> by lazy {
+class InteractionObjectTypeExtractorRepository @Inject constructor() {
+  val extractors: Map<ObjectTypeCase, ExtractorMapping<*>> by lazy {
     computeExtractorMap()
   }
 
@@ -40,7 +41,8 @@ internal class InteractionObjectTypeExtractorRepository @Inject constructor() {
     }
   }
 
-  internal data class ExtractorMapping<T : Any>(
+  // TODO(#1580): Re-restrict access using Bazel visibilities
+  data class ExtractorMapping<T : Any>(
     val extractionType: KClass<T>,
     val genericExtractor: (InteractionObject) -> T
   )
@@ -80,6 +82,9 @@ internal class InteractionObjectTypeExtractorRepository @Inject constructor() {
         ),
         ObjectTypeCase.CLICK_ON_IMAGE to createMapping(
           InteractionObject::getClickOnImage
+        ),
+        ObjectTypeCase.RATIO_EXPRESSION to createMapping(
+          InteractionObject::getRatioExpression
         )
       )
     }

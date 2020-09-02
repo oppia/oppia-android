@@ -3,15 +3,18 @@ package org.oppia.app.profileprogress
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import org.oppia.app.R
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.CompletedStoryList
 import org.oppia.app.model.OngoingStoryList
 import org.oppia.app.model.OngoingTopicList
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
+import org.oppia.app.shim.IntentFactoryShim
+import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.domain.topic.TopicController
 import org.oppia.domain.topic.TopicListController
@@ -20,20 +23,22 @@ import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.StoryHtmlParserEntityType
 import javax.inject.Inject
 
-/** The [ViewModel] for [ProfileProgressFragment]. */
+/** The [ObservableViewModel] for [ProfileProgressFragment]. */
 @FragmentScope
 class ProfileProgressViewModel @Inject constructor(
-  activity: AppCompatActivity,
+  private val activity: AppCompatActivity,
   private val fragment: Fragment,
+  private val intentFactoryShim: IntentFactoryShim,
   private val profileManagementController: ProfileManagementController,
   private val topicController: TopicController,
   private val topicListController: TopicListController,
   private val logger: ConsoleLogger,
   @StoryHtmlParserEntityType private val entityType: String
-) : ViewModel() {
+) : ObservableViewModel() {
   /** [internalProfileId] needs to be set before any of the live data members can be accessed. */
   private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
+  private var limit: Int = 0
 
   private val headerViewModel = ProfileProgressHeaderViewModel(activity, fragment)
 
@@ -84,8 +89,17 @@ class ProfileProgressViewModel @Inject constructor(
     Transformations.map(ongoingStoryListResultLiveData, ::processOngoingStoryResult)
   }
 
-  val ongoingStoryListViewModelLiveData: LiveData<List<ProfileProgressItemViewModel>> by lazy {
-    Transformations.map(ongoingStoryListLiveData, ::processOngoingStoryList)
+  var refreshedOngoingStoryListViewModelLiveData =
+    MutableLiveData<List<ProfileProgressItemViewModel>>()
+
+  /**
+   * Reprocesses the data of the [refreshedOngoingStoryListViewModelLiveData] so that we have the
+   * correct number of items on configuration changes
+   */
+  fun handleOnConfigurationChange() {
+    limit = fragment.resources.getInteger(R.integer.profile_progress_limit)
+    refreshedOngoingStoryListViewModelLiveData =
+      Transformations.map(ongoingStoryListLiveData, ::processOngoingStoryList) as MutableLiveData
   }
 
   private fun processOngoingStoryResult(
@@ -104,14 +118,19 @@ class ProfileProgressViewModel @Inject constructor(
   private fun processOngoingStoryList(
     ongoingStoryList: OngoingStoryList
   ): List<ProfileProgressItemViewModel> {
-    val itemList = if (ongoingStoryList.recentStoryList.size > 3) {
-      ongoingStoryList.recentStoryList.subList(0, 2)
+    limit = fragment.resources.getInteger(R.integer.profile_progress_limit)
+    val itemList = if (ongoingStoryList.recentStoryList.size > limit) {
+      ongoingStoryList.recentStoryList.subList(0, limit)
     } else {
       ongoingStoryList.recentStoryList
     }
+    itemViewModelList.clear()
+    itemViewModelList.add(headerViewModel as ProfileProgressItemViewModel)
     itemViewModelList.addAll(
       itemList.map { story ->
-        RecentlyPlayedStorySummaryViewModel(story, entityType)
+        RecentlyPlayedStorySummaryViewModel(
+          activity, internalProfileId, story, entityType, intentFactoryShim
+        )
       }
     )
     return itemViewModelList

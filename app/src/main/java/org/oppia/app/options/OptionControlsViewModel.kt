@@ -1,8 +1,10 @@
 package org.oppia.app.options
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
@@ -10,7 +12,7 @@ import org.oppia.app.model.AppLanguage
 import org.oppia.app.model.AudioLanguage
 import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
-import org.oppia.app.model.StoryTextSize
+import org.oppia.app.model.ReadingTextSize
 import org.oppia.app.viewmodel.ObservableArrayList
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
@@ -26,9 +28,23 @@ class OptionControlsViewModel @Inject constructor(
 ) : OptionsItemViewModel() {
   private val itemViewModelList: ObservableList<OptionsItemViewModel> = ObservableArrayList()
   private lateinit var profileId: ProfileId
-  private val routeToStoryTextSizeListener = activity as RouteToStoryTextSizeListener
+  private val routeToReadingTextSizeListener = activity as RouteToReadingTextSizeListener
   private val routeToAudioLanguageListListener = activity as RouteToAudioLanguageListListener
   private val routeToAppLanguageListListener = activity as RouteToAppLanguageListListener
+  private val loadReadingTextSizeListener = activity as LoadReadingTextSizeListener
+  private val loadAudioLanguageListListener = activity as LoadAudioLanguageListListener
+  private val loadAppLanguageListListener = activity as LoadAppLanguageListListener
+  private var isFirstOpen = true
+  val uiLiveData = MutableLiveData<Boolean>()
+  val selectedFragmentIndex = ObservableField<Int>()
+
+  /**
+   * Should be called with `false` when the UI starts to load, then with `true` after the UI
+   * finishes loading.
+   */
+  fun isUIInitialized(isInitialized: Boolean) {
+    uiLiveData.value = isInitialized
+  }
 
   private val profileResultLiveData: LiveData<AsyncResult<Profile>> by lazy {
     profileManagementController.getProfile(profileId)
@@ -48,6 +64,10 @@ class OptionControlsViewModel @Inject constructor(
     this.profileId = profileId
   }
 
+  fun getProfileId(): ProfileId {
+    return this.profileId
+  }
+
   private fun processProfileResult(profile: AsyncResult<Profile>): Profile {
     if (profile.isFailure()) {
       logger.e("OptionsFragment", "Failed to retrieve profile", profile.getErrorOrNull()!!)
@@ -59,31 +79,48 @@ class OptionControlsViewModel @Inject constructor(
 
     itemViewModelList.clear()
 
-    val optionsStoryTextViewViewModel =
-      OptionsStoryTextViewViewModel(routeToStoryTextSizeListener)
+    val optionsReadingTextSizeViewModel =
+      OptionsReadingTextSizeViewModel(routeToReadingTextSizeListener, loadReadingTextSizeListener)
     val optionsAppLanguageViewModel =
-      OptionsAppLanguageViewModel(routeToAppLanguageListListener)
+      OptionsAppLanguageViewModel(routeToAppLanguageListListener, loadAppLanguageListListener)
     val optionAudioViewViewModel =
-      OptionsAudioLanguageViewModel(routeToAudioLanguageListListener)
+      OptionsAudioLanguageViewModel(
+        routeToAudioLanguageListListener,
+        loadAudioLanguageListListener
+      )
 
-    optionsStoryTextViewViewModel.storyTextSize.set(getStoryTextSize(profile.storyTextSize))
+    optionsReadingTextSizeViewModel.readingTextSize.set(getReadingTextSize(profile.readingTextSize))
     optionsAppLanguageViewModel.appLanguage.set(getAppLanguage(profile.appLanguage))
     optionAudioViewViewModel.audioLanguage.set(getAudioLanguage(profile.audioLanguage))
 
-    itemViewModelList.add(optionsStoryTextViewViewModel as OptionsItemViewModel)
+    itemViewModelList.add(optionsReadingTextSizeViewModel as OptionsItemViewModel)
 
     itemViewModelList.add(optionsAppLanguageViewModel as OptionsItemViewModel)
 
     itemViewModelList.add(optionAudioViewViewModel as OptionsItemViewModel)
 
+    // Loading the initial options in the sub-options container
+    if (isMultipane.get()!! && isFirstOpen) {
+      optionsReadingTextSizeViewModel.loadReadingTextSizeFragment()
+      isFirstOpen = false
+    }
+
     return itemViewModelList
   }
 
-  fun getStoryTextSize(storyTextSize: StoryTextSize): String {
-    return when (storyTextSize) {
-      StoryTextSize.SMALL_TEXT_SIZE -> "Small"
-      StoryTextSize.MEDIUM_TEXT_SIZE -> "Medium"
-      StoryTextSize.LARGE_TEXT_SIZE -> "Large"
+  /**
+   * Used to set [isFirstOpen] value which controls the loading of the initial extra-option fragment
+   * in the case of multipane.
+   */
+  fun isFirstOpen(isFirstOpen: Boolean) {
+    this.isFirstOpen = isFirstOpen
+  }
+
+  fun getReadingTextSize(readingTextSize: ReadingTextSize): String {
+    return when (readingTextSize) {
+      ReadingTextSize.SMALL_TEXT_SIZE -> "Small"
+      ReadingTextSize.MEDIUM_TEXT_SIZE -> "Medium"
+      ReadingTextSize.LARGE_TEXT_SIZE -> "Large"
       else -> "Extra Large"
     }
   }

@@ -2,21 +2,21 @@ package org.oppia.app.topic
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Topic
+import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
-/** The ViewModel for [TopicFragment]. */
+/** The ObservableViewModel for [TopicFragment]. */
 @FragmentScope
 class TopicViewModel @Inject constructor(
   private val topicController: TopicController,
   private val logger: ConsoleLogger
-) : ViewModel() {
+) : ObservableViewModel() {
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
 

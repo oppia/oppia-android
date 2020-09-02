@@ -1,6 +1,7 @@
 package org.oppia.app.administratorcontrols
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
@@ -14,7 +15,7 @@ import org.oppia.app.administratorcontrols.administratorcontrolsitemviewmodel.Ad
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.DeviceSettings
 import org.oppia.app.model.ProfileId
-import org.oppia.app.viewmodel.ObservableViewModel
+import org.oppia.app.shim.IntentFactoryShim
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.ConsoleLogger
@@ -26,10 +27,13 @@ class AdministratorControlsViewModel @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val logger: ConsoleLogger,
-  private val profileManagementController: ProfileManagementController
-) : ObservableViewModel() {
+  private val profileManagementController: ProfileManagementController,
+  private val IntentFactoryShim: IntentFactoryShim
+) {
   private val routeToProfileListListener = activity as RouteToProfileListListener
+  private val loadProfileListListener = activity as LoadProfileListListener
   private lateinit var userProfileId: ProfileId
+  val selectedFragmentIndex = ObservableField<Int>(1)
 
   private val deviceSettingsLiveData: LiveData<DeviceSettings> by lazy {
     Transformations.map(
@@ -61,7 +65,12 @@ class AdministratorControlsViewModel @Inject constructor(
     val itemViewModelList: MutableList<AdministratorControlsItemViewModel> = mutableListOf(
       AdministratorControlsGeneralViewModel()
     )
-    itemViewModelList.add(AdministratorControlsProfileViewModel(routeToProfileListListener))
+    itemViewModelList.add(
+      AdministratorControlsProfileViewModel(
+        routeToProfileListListener,
+        loadProfileListListener
+      )
+    )
     itemViewModelList.add(
       AdministratorControlsDownloadPermissionsViewModel(
         fragment,
@@ -72,7 +81,12 @@ class AdministratorControlsViewModel @Inject constructor(
       )
     )
     itemViewModelList.add(AdministratorControlsAppInformationViewModel(activity))
-    itemViewModelList.add(AdministratorControlsAccountActionsViewModel(fragment))
+    itemViewModelList.add(
+      AdministratorControlsAccountActionsViewModel(
+        fragment,
+        IntentFactoryShim
+      )
+    )
 
     return itemViewModelList
   }

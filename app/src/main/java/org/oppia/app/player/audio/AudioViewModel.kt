@@ -4,11 +4,11 @@ import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.State
 import org.oppia.app.model.Voiceover
 import org.oppia.app.model.VoiceoverMapping
+import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.domain.audio.AudioPlayerController
 import org.oppia.domain.audio.AudioPlayerController.PlayProgress
 import org.oppia.domain.audio.AudioPlayerController.PlayStatus
@@ -17,13 +17,13 @@ import org.oppia.util.gcsresource.DefaultResourceBucketName
 import java.util.Locale
 import javax.inject.Inject
 
-/** [ViewModel] for audio-player state. */
+/** [ObservableViewModel] for audio-player state. */
 @FragmentScope
 class AudioViewModel @Inject constructor(
   private val audioPlayerController: AudioPlayerController,
   private val fragment: Fragment,
   @DefaultResourceBucketName private val gcsResource: String
-) : ViewModel() {
+) : ObservableViewModel() {
 
   private lateinit var state: State
   private lateinit var explorationId: String
@@ -143,14 +143,14 @@ class AudioViewModel @Inject constructor(
   }
 
   private fun processDurationResultLiveData(playProgressResult: AsyncResult<PlayProgress>): Int {
-    if (playProgressResult.isPending()) {
+    if (!playProgressResult.isSuccess()) {
       return 0
     }
     return playProgressResult.getOrThrow().duration
   }
 
   private fun processPositionResultLiveData(playProgressResult: AsyncResult<PlayProgress>): Int {
-    if (playProgressResult.isPending()) {
+    if (!playProgressResult.isSuccess()) {
       return 0
     }
     return playProgressResult.getOrThrow().position
@@ -159,20 +159,22 @@ class AudioViewModel @Inject constructor(
   private fun processPlayStatusResultLiveData(
     playProgressResult: AsyncResult<PlayProgress>
   ): UiAudioPlayStatus {
-    if (playProgressResult.isPending()) return UiAudioPlayStatus.LOADING
-    if (playProgressResult.isFailure()) return UiAudioPlayStatus.FAILED
-    return when (playProgressResult.getOrThrow().type) {
-      PlayStatus.PREPARED -> {
-        if (autoPlay) audioPlayerController.play()
-        autoPlay = false
-        UiAudioPlayStatus.PREPARED
-      }
-      PlayStatus.PLAYING -> UiAudioPlayStatus.PLAYING
-      PlayStatus.PAUSED -> UiAudioPlayStatus.PAUSED
-      PlayStatus.COMPLETED -> {
-        if (hasFeedback) loadAudio(null, false)
-        hasFeedback = false
-        UiAudioPlayStatus.COMPLETED
+    return when {
+      playProgressResult.isPending() -> UiAudioPlayStatus.LOADING
+      playProgressResult.isFailure() -> UiAudioPlayStatus.FAILED
+      else -> when (playProgressResult.getOrThrow().type) {
+        PlayStatus.PREPARED -> {
+          if (autoPlay) audioPlayerController.play()
+          autoPlay = false
+          UiAudioPlayStatus.PREPARED
+        }
+        PlayStatus.PLAYING -> UiAudioPlayStatus.PLAYING
+        PlayStatus.PAUSED -> UiAudioPlayStatus.PAUSED
+        PlayStatus.COMPLETED -> {
+          if (hasFeedback) loadAudio(null, false)
+          hasFeedback = false
+          UiAudioPlayStatus.COMPLETED
+        }
       }
     }
   }
