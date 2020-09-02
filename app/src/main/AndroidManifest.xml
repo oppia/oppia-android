@@ -4,6 +4,8 @@
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
   <uses-permission android:name="android.permission.INTERNET" />
   <!-- TODO(#56): Reenable landscape support. -->
+  <uses-sdk android:minSdkVersion="19"
+    android:maxSdkVersion="28" />
   <application
     android:name=".application.OppiaApplication"
     android:allowBackup="true"
@@ -14,6 +16,8 @@
     android:theme="@style/OppiaTheme">
     <meta-data android:name="firebase_analytics_collection_deactivated" android:value="true" />
     <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="false" />
+    <meta-data android:name="automatic_app_expiration_enabled" android:value="false" />
+    <meta-data android:name="expiration_date" android:value="2020-09-01" />
     <activity
       android:name=".administratorcontrols.AdministratorControlsActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
@@ -28,7 +32,6 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".help.faq.faqsingle.FAQSingleActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".help.HelpActivity"
@@ -59,7 +62,7 @@
       android:name=".options.OptionsActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
-      android:name=".options.StoryTextSizeActivity"
+      android:name=".options.ReadingTextSizeActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".player.exploration.ExplorationActivity"
@@ -81,7 +84,7 @@
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustResize" />
     <activity
-      android:name=".profile.ProfileActivity"
+      android:name=".profile.ProfileChooserActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".profileprogress.ProfilePictureActivity"

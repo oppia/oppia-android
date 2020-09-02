@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <variable
+      name="commonViewModel"
+      type="org.oppia.app.options.OptionControlsViewModel" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.options.OptionsAppLanguageViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/app_language_item_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="48dp"
+    android:background="@{commonViewModel.selectedFragmentIndex == viewModel.itemIndex ? @drawable/general_item_background_border_cyan : @drawable/general_item_background_border}"
+    android:onClick="@{(v) -> viewModel.onAppLanguageClicked()}"
+    android:paddingStart="16dp"
+    android:paddingTop="20dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="20dp">
+
+    <TextView
+      android:id="@+id/app_language_label_text_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:fontFamily="sans-serif"
+      android:text="@string/app_language"
+      android:textColor="@color/oppiaPrimaryTextDark"
+      android:textSize="16sp"
+      app:layout_constraintBottom_toTopOf="@id/app_language_text_view"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+      android:id="@+id/app_language_text_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:fontFamily="sans-serif"
+      android:text="@{viewModel.appLanguage}"
+      android:textColor="@color/black_54"
+      android:textSize="14sp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/app_language_label_text_view" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -87,8 +87,9 @@ class UrlImageParser private constructor(
             drawableHeight = (drawableHeight.toDouble() * multipleFactor).toInt()
             drawableWidth = (drawableWidth.toDouble() * multipleFactor).toInt()
           }
-          val maximumImageSize = it
-          if (drawableHeight >= maximumImageSize || drawableWidth >= maximumImageSize) {
+          val maximumImageSize =
+            it - context.resources.getDimensionPixelSize(R.dimen.maximum_content_item_padding)
+          if (drawableWidth >= maximumImageSize) {
             // The multipleFactor value is used to make sure that the aspect ratio of the image remains the same.
             // Example: Height is 420, width is 440 and maximumImageSize is 200.
             // Then multipleFactor will be (200/440).

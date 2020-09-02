@@ -3,7 +3,6 @@ package org.oppia.app.story
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.ChapterPlayState
 import org.oppia.app.model.ChapterSummary
@@ -19,7 +18,7 @@ import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.StoryHtmlParserEntityType
 import javax.inject.Inject
 
-/** The ViewModel for [StoryFragment]. */
+/** The ViewModel for StoryFragment. */
 @FragmentScope
 class StoryViewModel @Inject constructor(
   private val fragment: Fragment,
@@ -27,7 +26,7 @@ class StoryViewModel @Inject constructor(
   private val explorationDataController: ExplorationDataController,
   private val logger: ConsoleLogger,
   @StoryHtmlParserEntityType val entityType: String
-) : ViewModel() {
+) {
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
 
@@ -83,7 +82,7 @@ class StoryViewModel @Inject constructor(
     val chapterList: List<ChapterSummary> = storySummary.chapterList
     for (position in chapterList.indices) {
       if (storySummary.chapterList[position].chapterPlayState == ChapterPlayState.NOT_STARTED) {
-        (fragment as StoryFragment).smoothScrollToPosition(position + 1)
+        (fragment as StoryFragmentScroller).smoothScrollToPosition(position + 1)
         break
       }
     }

@@ -5,9 +5,6 @@ In Bazel, proto files are built using the proto_library() and java_lite_proto_li
 The proto_library() rule creates a proto file library to be used in multiple languages.
 The java_lite_proto_library() rule takes in a proto_library target and generates java code.
 '''
-
-load("@rules_proto//proto:defs.bzl", "proto_library")
-load("@rules_java//java:defs.bzl", "java_lite_proto_library")
 load("//model:src/main/proto/format_import_proto_library.bzl", "format_import_proto_library")
 
 proto_library(
@@ -71,6 +68,16 @@ java_lite_proto_library(
 )
 
 proto_library(
+    name = "subtitled_unicode_proto",
+    srcs = ["src/main/proto/subtitled_unicode.proto"],
+)
+
+java_lite_proto_library(
+    name = "subtitled_unicode_java_proto_lite",
+    deps = [":subtitled_unicode_proto"],
+)
+
+proto_library(
     name = "thumbnail_proto",
     srcs = ["src/main/proto/thumbnail.proto"],
 )
@@ -106,6 +113,7 @@ format_import_proto_library(
     deps = [
         ":exploration_proto",
         ":subtitled_html_proto",
+        ":subtitled_unicode_proto",
     ],
 )
 
@@ -119,6 +127,7 @@ format_import_proto_library(
     src = "src/main/proto/topic.proto",
     deps = [
         ":subtitled_html_proto",
+        ":subtitled_unicode_proto",
         ":thumbnail_proto",
         ":translation_proto",
         ":voiceover_proto",
@@ -135,6 +144,7 @@ format_import_proto_library(
     src = "src/main/proto/exploration.proto",
     deps = [
         ":subtitled_html_proto",
+        ":subtitled_unicode_proto",
         ":interaction_object_proto",
         ":translation_proto",
         ":voiceover_proto",
@@ -161,6 +171,7 @@ android_library(
         ":exploration_java_proto_lite",
         ":question_java_proto_lite",
         ":topic_java_proto_lite",
+        ":subtitled_unicode_java_proto_lite",
     ],
     visibility = ["//visibility:public"],
 )

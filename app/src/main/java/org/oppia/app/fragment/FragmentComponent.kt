@@ -6,6 +6,7 @@ import dagger.Subcomponent
 import org.oppia.app.administratorcontrols.AdministratorControlsFragment
 import org.oppia.app.administratorcontrols.appversion.AppVersionFragment
 import org.oppia.app.completedstorylist.CompletedStoryListFragment
+import org.oppia.app.deprecation.AutomaticAppDeprecationNoticeDialogFragment
 import org.oppia.app.drawer.NavigationDrawerFragment
 import org.oppia.app.help.HelpFragment
 import org.oppia.app.help.faq.FAQListFragment
@@ -20,7 +21,7 @@ import org.oppia.app.ongoingtopiclist.OngoingTopicListFragment
 import org.oppia.app.options.AppLanguageFragment
 import org.oppia.app.options.DefaultAudioFragment
 import org.oppia.app.options.OptionsFragment
-import org.oppia.app.options.StoryTextSizeFragment
+import org.oppia.app.options.ReadingTextSizeFragment
 import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.exploration.ExplorationFragment
 import org.oppia.app.player.exploration.ExplorationManagerFragment
@@ -31,6 +32,9 @@ import org.oppia.app.profile.AdminSettingsDialogFragment
 import org.oppia.app.profile.ProfileChooserFragment
 import org.oppia.app.profile.ResetPinDialogFragment
 import org.oppia.app.profileprogress.ProfileProgressFragment
+import org.oppia.app.settings.profile.ProfileListFragment
+import org.oppia.app.shim.IntentFactoryShimModule
+import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.app.story.StoryFragment
 import org.oppia.app.testing.BindableAdapterTestFragment
 import org.oppia.app.testing.ImageRegionSelectionTestFragment
@@ -50,7 +54,12 @@ import org.oppia.app.walkthrough.welcome.WalkthroughWelcomeFragment
 import javax.inject.Provider
 
 /** Root subcomponent for all fragments. */
-@Subcomponent(modules = [FragmentModule::class, InteractionViewModelModule::class])
+@Subcomponent(
+  modules = [
+    FragmentModule::class, InteractionViewModelModule::class, IntentFactoryShimModule::class,
+    ViewBindingShimModule::class
+  ]
+)
 @FragmentScope
 interface FragmentComponent {
   @Subcomponent.Builder
@@ -68,6 +77,7 @@ interface FragmentComponent {
   fun inject(appLanguageFragment: AppLanguageFragment)
   fun inject(appVersionFragment: AppVersionFragment)
   fun inject(audioFragment: AudioFragment)
+  fun inject(autoAppDeprecationNoticeDialogFragment: AutomaticAppDeprecationNoticeDialogFragment)
   fun inject(bindableAdapterTestFragment: BindableAdapterTestFragment)
   fun inject(completedStoryListFragment: CompletedStoryListFragment)
   fun inject(conceptCardFragment: ConceptCardFragment)
@@ -88,6 +98,7 @@ interface FragmentComponent {
   fun inject(ongoingTopicListFragment: OngoingTopicListFragment)
   fun inject(optionFragment: OptionsFragment)
   fun inject(profileChooserFragment: ProfileChooserFragment)
+  fun inject(profileListFragment: ProfileListFragment)
   fun inject(profileProgressFragment: ProfileProgressFragment)
   fun inject(questionPlayerFragment: QuestionPlayerFragment)
   fun inject(recentlyPlayedFragment: RecentlyPlayedFragment)
@@ -95,7 +106,7 @@ interface FragmentComponent {
   fun inject(revisionCardFragment: RevisionCardFragment)
   fun inject(stateFragment: StateFragment)
   fun inject(storyFragment: StoryFragment)
-  fun inject(storyTextSizeFragment: StoryTextSizeFragment)
+  fun inject(readingTextSizeFragment: ReadingTextSizeFragment)
   fun inject(topicFragment: TopicFragment)
   fun inject(topicInfoFragment: TopicInfoFragment)
   fun inject(topicLessonsFragment: TopicLessonsFragment)

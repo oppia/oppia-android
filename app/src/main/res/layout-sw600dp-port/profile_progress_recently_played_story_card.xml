@@ -14,15 +14,19 @@
   <com.google.android.material.card.MaterialCardView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginStart="24dp"
+    android:layout_marginTop="28dp"
+    android:layout_marginEnd="24dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:onClick="@{(v) -> viewModel.onStoryItemClicked()}"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:clickable="true"
-      android:focusable="true">
+      android:layout_height="match_parent">
 
       <org.oppia.app.customview.LessonThumbnailImageView
         android:id="@+id/lesson_thumbnail"
@@ -38,7 +42,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:lessonThumbnail="@{viewModel.promotedStory.lessonThumbnail}"
-        app:roundedRectDrawableWithColor="@{viewModel.promotedStory.lessonThumbnail.backgroundColorRgb}" />
+        app:topRoundedRectDrawableWithColor="@{viewModel.promotedStory.lessonThumbnail.backgroundColorRgb}" />
 
       <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

@@ -21,6 +21,8 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -40,6 +42,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.model.ProfileId
+import org.oppia.app.player.exploration.ExplorationActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.app.testing.StoryFragmentTestActivity
@@ -220,6 +223,24 @@ class StoryFragmentTest {
           withText("This is outline/summary for What is a Fraction?")
         )
       )
+    }
+  }
+
+  @Test
+  fun testStoryFragment_changeConfiguration_explorationStartCorrectly() {
+    launch<StoryFragmentTestActivity>(createStoryActivityIntent()).use {
+      waitForTheView(withText("Chapter 1: What is a Fraction?"))
+      onView(isRoot()).perform(orientationLandscape())
+      waitForTheView(withText("Chapter 1: What is a Fraction?"))
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(
+        atPositionOnView(R.id.story_chapter_list, 1, R.id.story_chapter_card)
+      ).perform(click())
+      intended(hasComponent(ExplorationActivity::class.java.name))
     }
   }
 

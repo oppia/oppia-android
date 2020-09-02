@@ -46,7 +46,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.administratorcontrols.appversion.AppVersionActivity
-import org.oppia.app.profile.ProfileActivity
+import org.oppia.app.profile.ProfileChooserActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.settings.profile.ProfileListActivity
 import org.oppia.app.testing.NavigationDrawerTestActivity
@@ -116,7 +116,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_loadFragment_displayGeneralAndProfileManagement() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId = 0
       )
     ).use {
       onView(
@@ -171,7 +171,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_loadFragment_displayDownloadPermissionsAndSettings() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId = 0
       )
     ).use {
       onView(
@@ -218,7 +218,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_loadFragment_displayApplicationSettings() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId = 0
       )
     ).use {
       onView(withId(R.id.administrator_controls_list)).perform(
@@ -277,7 +277,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_loadFragment_topicUpdateOnWifiSwitchIsNotChecked_autoUpdateTopicSwitchIsNotChecked() { // ktlint-disable max-line-length
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId = 0
       )
     ).use {
       onView(
@@ -307,7 +307,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_topicUpdateOnWifiSwitchIsChecked_configurationChange_checkIfSwitchIsChecked() { // ktlint-disable max-line-length
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId = 0
       )
     )
     onView(withId(R.id.administrator_controls_list)).perform(
@@ -382,7 +382,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_loadFragment_onClickTopicUpdateOnWifiSwitch_checkSwitchRemainsChecked_onOpeningAdministratorControlsFragmentAgain() { // ktlint-disable max-line-length
     ActivityScenario
       .launch<NavigationDrawerTestActivity>(
-        createNavigationDrawerActivityIntent(0)
+        createNavigationDrawerActivityIntent(profileId = 0)
       )
       .use {
         onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
@@ -437,7 +437,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_clickLogoutButton_displaysLogoutDialog() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId = 0
       )
     ).use {
       onView(withId(R.id.administrator_controls_list)).perform(
@@ -455,12 +455,40 @@ class AdministratorControlsActivityTest {
     }
   }
 
-  // TODO(#762): Replace [ProfileChooserActivity] to [LoginActivity] once it is added.
   @Test
-  fun testAdministratorControlsFragment_clickOkButtonInLogoutDialog_opensProfileActivity() {
+  fun testAdministratorControlsFragment_changeConfiguration_clickLogout_displaysLogoutDialog() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId = 0
+      )
+    ).use {
+      onView(withId(R.id.administrator_controls_list)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          4
+        )
+      )
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.administrator_controls_list)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          4
+        )
+      )
+      onView(withId(R.id.log_out_text_view)).perform(click())
+      onView(withText(R.string.log_out_dialog_message)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.log_out_dialog_okay_button)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.log_out_dialog_cancel_button)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  // TODO(#762): Replace [ProfileChooserActivity] to [LoginActivity] once it is added.
+  @Test
+  fun testAdministratorControlsFragment_clickOkButtonInLogoutDialog_opensProfileChooserActivity() {
+    ActivityScenario.launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = 0
       )
     ).use {
       onView(withId(R.id.administrator_controls_list)).perform(
@@ -472,7 +500,7 @@ class AdministratorControlsActivityTest {
       onView(withText(R.string.log_out_dialog_message)).inRoot(isDialog())
         .check(matches(isDisplayed()))
       onView(withText(R.string.log_out_dialog_okay_button)).perform(click())
-      intended(hasComponent(ProfileActivity::class.java.name))
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
 
@@ -480,7 +508,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_clickCancelButtonInLogoutDialog_dialogDismissed() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId = 0
       )
     ).use {
       onView(withId(R.id.administrator_controls_list)).perform(

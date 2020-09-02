@@ -1,13 +1,13 @@
 package org.oppia.app.topic.revisioncard
 
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
-import org.oppia.app.databinding.RevisionCardFragmentBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.RevisionCard
+import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.gcsresource.DefaultResourceBucketName
@@ -16,7 +16,8 @@ import org.oppia.util.parser.HtmlParser
 import org.oppia.util.parser.TopicHtmlParserEntityType
 import javax.inject.Inject
 
-/** [ViewModel] for revision card, providing rich text and worked examples */
+// TODO(#1633): Fix ViewModel to not depend on View
+/** [ObservableViewModel] for revision card, providing rich text and worked examples */
 @FragmentScope
 class RevisionCardViewModel @Inject constructor(
   activity: AppCompatActivity,
@@ -25,10 +26,11 @@ class RevisionCardViewModel @Inject constructor(
   private val htmlParserFactory: HtmlParser.Factory,
   @DefaultResourceBucketName private val resourceBucketName: String,
   @TopicHtmlParserEntityType private val entityType: String
-) : ViewModel() {
+) : ObservableViewModel() {
   private lateinit var topicId: String
   private var subtopicId: Int = 0
-  private lateinit var binding: RevisionCardFragmentBinding
+  private lateinit var view: TextView
+
   private val returnToTopicClickListener: ReturnToTopicClickListener =
     activity as ReturnToTopicClickListener
 
@@ -44,11 +46,11 @@ class RevisionCardViewModel @Inject constructor(
   fun setSubtopicIdAndBinding(
     topicId: String,
     subtopicId: Int,
-    binding: RevisionCardFragmentBinding
+    view: TextView
   ) {
     this.topicId = topicId
     this.subtopicId = subtopicId
-    this.binding = binding
+    this.view = view
   }
 
   private val revisionCardResultLiveData: LiveData<AsyncResult<RevisionCard>> by lazy {
@@ -73,7 +75,8 @@ class RevisionCardViewModel @Inject constructor(
       RevisionCard.getDefaultInstance()
     )
     return htmlParserFactory.create(
+
       resourceBucketName, entityType, topicId, /* imageCenterAlign= */ true
-    ).parseOppiaHtml(revisionCard.pageContents.html, binding.revisionCardExplanationText)
+    ).parseOppiaHtml(revisionCard.pageContents.html, view)
   }
 }

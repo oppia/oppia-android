@@ -19,8 +19,10 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -40,16 +42,22 @@ import org.oppia.app.activity.ActivityComponent
 import org.oppia.app.application.ActivityComponentFactory
 import org.oppia.app.application.ApplicationComponent
 import org.oppia.app.application.ApplicationContext
+import org.oppia.app.application.ApplicationInjector
+import org.oppia.app.application.ApplicationInjectorProvider
 import org.oppia.app.application.ApplicationModule
+import org.oppia.app.application.ApplicationStartupListenerModule
 import org.oppia.app.hintsandsolution.TAG_REVEAL_SOLUTION_DIALOG
 import org.oppia.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NEXT_NAVIGATION_BUTTON
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.PREVIOUS_RESPONSES_HEADER
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
-import org.oppia.data.backends.gae.NetworkModule
+import org.oppia.app.recyclerview.RecyclerViewMatcher
+import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -59,7 +67,9 @@ import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModu
 import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_1
@@ -98,9 +108,15 @@ class StateFragmentLocalTest {
     createAudioUrl(explorationId = "MjZzEVOG47_1", audioFileName = "content-en-ouqm7j21vt8.mp3")
   private val audioDataSource1 = DataSource.toDataSource(AUDIO_URL_1, /* headers= */ null)
 
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject @field:ApplicationContext lateinit var context: Context
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  @field:ApplicationContext
+  lateinit var context: Context
 
   private val internalProfileId: Int = 1
 
@@ -226,6 +242,65 @@ class StateFragmentLocalTest {
   }
 
   @Test
+  fun testStateFragment_submitTwoWrongAnswers_checkPreviousHeaderVisible() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+
+      submitTwoWrongAnswers()
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_submitTwoWrongAnswers_checkPreviousHeaderCollapsed() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+
+      submitTwoWrongAnswers()
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
+      onView(withId(R.id.state_recycler_view)).check(matches(hasChildCount(/* childCount= */ 5)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_submitTwoWrongAnswers_expandResponse_checkPreviousHeaderExpanded() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+
+      submitTwoWrongAnswers()
+
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      onView(withId(R.id.previous_response_header)).perform(click())
+      onView(withId(R.id.state_recycler_view)).check(matches(hasChildCount(/* childCount= */ 6)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_expandCollapseResponse_checkPreviousHeaderCollapsed() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+
+      submitTwoWrongAnswers()
+
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
+      onView(withId(R.id.state_recycler_view)).check(matches(hasChildCount(/* childCount= */ 5)))
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      onView(withSubstring("Previous Responses")).perform(click())
+      onView(withId(R.id.state_recycler_view)).check(matches(hasChildCount(/* childCount= */ 6)))
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      onView(withSubstring("Previous Responses")).perform(click())
+      onView(withId(R.id.state_recycler_view)).check(matches(hasChildCount(/* childCount= */ 5)))
+    }
+  }
+
+  @Test
   fun testStateFragment_nextState_submitInitialWrongAnswer_noHintAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -276,6 +351,85 @@ class StateFragmentLocalTest {
 
       // Submitting two wrong answers should make the hint immediately available.
       onView(withId(R.id.hint_bulb)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_submitTwoWrongAnswers_hintAvailable_prevState_hintNotAvailable() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+      submitTwoWrongAnswers()
+      onView(withId(R.id.hint_bulb)).check(matches(isDisplayed()))
+      onView(withId(R.id.previous_state_navigation_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.hint_bulb)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testStateFragment_submitTwoWrongAnswers_prevState_currentState_checkDotIconVisible() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+      submitTwoWrongAnswers()
+      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
+      moveToPreviousAndBackToCurrentState()
+      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_oneUnrevealedHint_prevState_currentState_checkOneUnrevealedHintVisible() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+      submitTwoWrongAnswers()
+
+      openHintsAndSolutionsDialog()
+      onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText("Reveal Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
+      closeHintsAndSolutionsDialog()
+
+      moveToPreviousAndBackToCurrentState()
+
+      openHintsAndSolutionsDialog()
+      onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText("Reveal Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_revealFirstHint_prevState_currentState_checkFirstHintRevealed() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+
+      produceAndViewFirstHint()
+
+      onView(withId(R.id.previous_state_navigation_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(NEXT_NAVIGATION_BUTTON))
+      onView(withId(R.id.next_state_navigation_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      openHintsAndSolutionsDialog()
+      onView(withId(R.id.hints_and_solution_recycler_view))
+        .inRoot(isDialog())
+        .perform(scrollToPosition<ViewHolder>(0))
+      onView(
+        RecyclerViewMatcher.atPositionOnView(
+          R.id.hints_and_solution_recycler_view, 0, R.id.hint_summary_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).check(
+        matches(
+          not(
+            withText("In a fraction, the pieces representing the denominator must be equal")
+          )
+        )
+      )
     }
   }
 
@@ -890,6 +1044,15 @@ class StateFragmentLocalTest {
     }
   }
 
+  // Go to previous state and then come back to current state
+  private fun moveToPreviousAndBackToCurrentState() {
+    onView(withId(R.id.previous_state_navigation_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+    onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(NEXT_NAVIGATION_BUTTON))
+    onView(withId(R.id.next_state_navigation_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
   /**
    * Appends the specified text to a view. This is needed because Robolectric doesn't seem to
    * properly input digits for text views using 'android:digits'. See
@@ -913,10 +1076,11 @@ class StateFragmentLocalTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
+  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class, ApplicationModule::class, NetworkModule::class,
+      TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
@@ -924,17 +1088,18 @@ class StateFragmentLocalTest {
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class
+      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ViewBindingShimModule::class, RatioInputModule::class, ApplicationStartupListenerModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent {
+  interface TestApplicationComponent : ApplicationComponent, ApplicationInjector {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
     fun inject(stateFragmentLocalTest: StateFragmentLocalTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory {
+  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerStateFragmentLocalTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -948,6 +1113,8 @@ class StateFragmentLocalTest {
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
       return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
     }
+
+    override fun getApplicationInjector(): ApplicationInjector = component
   }
 
   private fun scrollToViewType(viewType: StateItemViewModel.ViewType): ViewAction {
