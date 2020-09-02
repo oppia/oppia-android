@@ -7,6 +7,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.runBlocking
@@ -27,16 +28,17 @@ import kotlin.concurrent.withLock
 
 /**
  * Listener for being notified when [CoroutineExecutorService] has arranged state and is immediately
- * about to block the current thread on that operation completed. This can be used by tests to
- * synchronize background threads to prevent deadlocking in cases when blocking operations are being
- * tested.
+ * about to block some sort of thread that requires the calling test to coordinate to avoid a
+ * deadlock.
  */
-typealias PriorToBlockingCallback = () -> Unit
+typealias BlockingCallback = () -> Unit
+
+private typealias TimeoutBlock<T> = suspend CoroutineScope.() -> T
 
 // https://github.com/Kotlin/kotlinx.coroutines/issues/1450 for reference on using a coroutine
 // dispatcher an an executor service.
 /**
- * An [ExecutorService] that uses Oppia's [CoroutineDispatcher]s for interop with tests.
+ * An [ExecutorService] that uses Oppia's [CoroutineDispatcher]s for interoperability with tests.
  *
  * Note while this service is being thoroughly tested, both the implementation and tests are based
  * on a specific interpretation of the [ExecutorService] API. As a result, This class is
@@ -65,7 +67,8 @@ class CoroutineExecutorService(
    * a cached thread pool that creates new threads as others become blocked.
    */
   private val cachedThreadCoroutineDispatcher by lazy { cachedThreadPool.asCoroutineDispatcher() }
-  private var priorToBlockingCallback: PriorToBlockingCallback? = null
+  private var priorToBlockingCallback: BlockingCallback? = null
+  private var afterSelectionSetupCallback: BlockingCallback? = null
 
   override fun shutdown() {
     serviceLock.withLock { isShutdown = true }
@@ -105,14 +108,14 @@ class CoroutineExecutorService(
     val incompleteTasks = serviceLock.withLock { pendingTasks.values }
     val timeoutMillis = unit?.toMillis(timeout) ?: 0
 
-    // Create a separate scope in case one of the operation fails--it shouldn't cause later
+    // Create a separate scope in case one of the operations fails--it shouldn't cause later
     // operations to fail.
     val cachedThreadCoroutineScope = CoroutineScope(cachedThreadCoroutineDispatcher)
 
     // Wait for each task to complete within the specified time. Note that this behaves similarly to
     // invokeAll() below.
     val futureTasks = cachedThreadCoroutineScope.async {
-      withTimeoutOrNull(timeoutMillis) {
+      maybeWithTimeoutOrNull(timeoutMillis) {
         incompleteTasks.forEach { task ->
           // Wait for the task to be completed.
           task.deferred.await()
@@ -142,7 +145,7 @@ class CoroutineExecutorService(
     val taskDeferreds = tasks.map { dispatchAsync(it) }
     taskDeferreds.forEach { deferred ->
       @Suppress("DeferredResultUnused") // Intentionally silence failures (including the service's).
-      // Create a separate scope in case one of the operation fails--it shouldn't cause later
+      // Create a separate scope in case one of the operations fails--it shouldn't cause later
       // operations to fail.
       CoroutineScope(cachedThreadCoroutineDispatcher).async {
         try {
@@ -170,6 +173,7 @@ class CoroutineExecutorService(
           onTimeout(timeoutMillis) { throw TimeoutException("Timed out after $timeoutMillis") }
         }
         resultChannel.onReceive { it }
+        afterSelectionSetupCallback?.invoke()
       } ?: throw ExecutionException(IllegalStateException("All tasks failed to run"))
     }
   }
@@ -193,27 +197,35 @@ class CoroutineExecutorService(
     val timeoutMillis = unit?.toMillis(timeout) ?: 0
     val deferredTasks = tasks.map { dispatchAsync(it) }
 
-    // Create a separate scope in case one of the operation fails--it shouldn't cause later
-    // operations to fail.
-    val cachedThreadCoroutineScope = CoroutineScope(cachedThreadCoroutineDispatcher)
-
-    // Wait for each task to complete within the specified time, otherwise cancel the task.
-    val futureTasks = cachedThreadCoroutineScope.async {
-      deferredTasks.map { task ->
-        // Wait for each task to complete within the selected time
-        val result = withTimeoutOrNull(timeoutMillis) {
-          task.await()
+    // Wait for each task to complete within the specified time, otherwise cancel the task. Note
+    // that the timeout needs to be set up for each task in parallel to avoid a sequentialization of
+    // the tasks being executed (potentially causing tasks later in the list to not time out).
+    val futureTasks = deferredTasks.map { task ->
+      // Create a separate scope in case one of the operations fails--it shouldn't cause later
+      // operations to fail.
+      CoroutineScope(cachedThreadCoroutineDispatcher).async {
+        // Note that the 'or null' part may unfortunately interfere with a legitimate null return
+        // for the underlying callable.
+        val result = maybeWithTimeoutOrNull(timeoutMillis) {
+          return@maybeWithTimeoutOrNull try {
+            task.await()
+          } catch (e: Exception) {
+            // Do not allow failures to cause the coroutine scope to fail.
+            null
+          }
         }
         val future = task.toFuture()
         if (result == null && timeoutMillis > 0) {
-          // Cancel the operation if it's taking too long, but only if there's a timeout set.
-          future.cancel(/* mayInterruptIfRunning= */ true)
+          // Cancel the operation if it's taking too long, but only if there's a timeout set. This
+          // won't cancel the future if the deferred is completed with a failure, or passing with a
+          // null result.
+          check(future.cancel(/* mayInterruptIfRunning= */ true)) { "Failed to cancel task." }
         }
-        return@map future
+        return@async future
       }
     }
     priorToBlockingCallback?.invoke()
-    return runBlocking { futureTasks.await() }.toMutableList()
+    return runBlocking { futureTasks.awaitAll() }.toMutableList()
   }
 
   @Suppress("DeferredResultUnused") // Cleanup is handled in dispatchAsync.
@@ -222,13 +234,30 @@ class CoroutineExecutorService(
   }
 
   /**
-   * Sets a [PriorToBlockingCallback] to observe this service's internal state. Note that since this
-   * is an intentional backdoor built into the service, it should only be used for very specific
+   * Sets a [BlockingCallback] to observe this service's internal state. Note that since this is an
+   * intentional backdoor built into the service, it should only be used for very specific
    * circumstances (such as testing blocking operations of this service).
+   *
+   * Tracks when the service is about to immediately block the calling thread.
    */
   @VisibleForTesting
-  fun setPriorToBlockingCallback(priorToBlockingCallback: PriorToBlockingCallback) {
+  fun setPriorToBlockingCallback(priorToBlockingCallback: BlockingCallback) {
     this.priorToBlockingCallback = priorToBlockingCallback
+  }
+
+  /**
+   * Sets a [BlockingCallback] to observe this service's internal state. Note that since this is an
+   * intentional backdoor built into the service, it should only be used for very specific
+   * circumstances (such as testing blocking operations of this service).
+   *
+   * Tracks when the service has finished setting up a Kotlin select block. This should be used in
+   * relevant cases instead of [setPriorToBlockingCallback] to avoid the selection automatically
+   * completing for relevant tasks (which will happen if blocking tasks are fully resolved before
+   * setting up the select block).
+   */
+  @VisibleForTesting
+  fun setAfterSelectionSetupCallback(afterSelectionSetupCallback: BlockingCallback) {
+    this.afterSelectionSetupCallback = afterSelectionSetupCallback
   }
 
   private fun dispatchAsync(command: Runnable): Deferred<*> {
@@ -313,13 +342,30 @@ class CoroutineExecutorService(
      * Wraps the specified block in a withTimeout() only if the specified timeout is larger than 0.
      */
     private suspend fun <T> maybeWithTimeout(
-      timeoutMillis: Long,
-      block: suspend CoroutineScope.() -> T
+      timeoutMillis: Long, block: TimeoutBlock<T>
     ): T {
+      return maybeWithTimeoutDelegated(timeoutMillis, block, ::withTimeout)
+    }
+
+    /**
+     * Wraps the specified block in a withTimeoutOrNull() only if the specified timeout is larger
+     * than 0.
+     */
+    private suspend fun <T> maybeWithTimeoutOrNull(
+      timeoutMillis: Long, block: TimeoutBlock<T>
+    ): T? {
+      return maybeWithTimeoutDelegated<T, T?>(timeoutMillis, block, ::withTimeoutOrNull)
+    }
+
+    private suspend fun <T : R, R> maybeWithTimeoutDelegated(
+      timeoutMillis: Long,
+      block: TimeoutBlock<T>,
+      withTimeoutDelegate: suspend (Long, TimeoutBlock<T>) -> R
+    ): R {
       return coroutineScope {
         if (timeoutMillis > 0) {
           try {
-            withTimeout(timeoutMillis, block)
+            withTimeoutDelegate(timeoutMillis, block)
           } catch (e: TimeoutCancellationException) {
             // Treat timeouts in this service as a standard TimeoutException (which should result in
             // the coroutine being completed with a failure).
