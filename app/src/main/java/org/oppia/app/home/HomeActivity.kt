@@ -6,7 +6,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import org.oppia.app.R
 import org.oppia.app.activity.InjectableAppCompatActivity
+import org.oppia.app.drawer.ExitProfileDialogFragment
 import org.oppia.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import org.oppia.app.drawer.TAG_SWITCH_PROFILE_DIALOG
 import org.oppia.app.profile.ProfileChooserActivity
 import org.oppia.app.topic.TopicActivity
 import javax.inject.Inject
@@ -37,16 +39,13 @@ class HomeActivity : InjectableAppCompatActivity(), RouteToTopicListener {
   }
 
   override fun onBackPressed() {
-    AlertDialog.Builder(this, R.style.AlertDialogTheme)
-      .setMessage(R.string.home_activity_back_dialog_message)
-      .setNegativeButton(R.string.home_activity_back_dialog_cancel) { dialog, _ ->
-        dialog.dismiss()
-      }
-      .setPositiveButton(R.string.home_activity_back_dialog_exit) { _, _ ->
-        // TODO(#322): Need to start intent for ProfileChooserActivity to get update. Change to finish when live data bug is fixed.
-        val intent = Intent(this, ProfileChooserActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(intent)
-      }.create().show()
+    val previousFragment =
+      supportFragmentManager.findFragmentByTag(TAG_SWITCH_PROFILE_DIALOG)
+    if (previousFragment != null) {
+      supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
+    }
+    val dialogFragment = ExitProfileDialogFragment
+      .newInstance(isFromNavigationDrawer = false)
+    dialogFragment.showNow(supportFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
   }
 }

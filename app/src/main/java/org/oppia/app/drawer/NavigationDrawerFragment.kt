@@ -11,7 +11,8 @@ import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
 /** [NavigationDrawerFragment] to show navigation drawer. */
-class NavigationDrawerFragment : InjectableFragment(),
+class NavigationDrawerFragment :
+  InjectableFragment(),
   RouteToProfileProgressListener,
   ExitProfileDialogInterface {
 
