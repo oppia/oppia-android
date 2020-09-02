@@ -75,7 +75,10 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     }
 
     this.state = state
-    viewModel.newAvailableHintIndex.set(newAvailableHintIndex)
+    // The newAvailableHintIndex received here is coming from state player but in this implementation
+    // hints/solutions are shown on every even index and on every odd index we show a divider.
+    // Therefore multiplying the original index by 2.
+    viewModel.newAvailableHintIndex.set(newAvailableHintIndex * 2)
     viewModel.allHintsExhausted.set(allHintsExhausted)
     viewModel.explorationId.set(id)
 
@@ -93,7 +96,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       hintsAndSolutionAdapter =
         HintsAndSolutionAdapter(
           fragment,
-          getHintListWithDividers(viewModel.processHintList()),
+          viewModel.processHintList(),
           expandedHintListIndexListener,
           currentExpandedHintListIndex,
           viewModel.explorationId.get(),
@@ -117,16 +120,6 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       }
     }
   }
-
-  private fun getHintListWithDividers(hintList: List<HintsAndSolutionItemViewModel>):
-    List<HintsAndSolutionItemViewModel> {
-      val newHintList = mutableListOf<HintsAndSolutionItemViewModel>()
-      hintList.forEach {
-        newHintList.add(it)
-        newHintList.add(HintsDividerViewModel())
-      }
-      return newHintList
-    }
 
   private fun handleAllHintsExhausted(allHintsExhausted: Boolean) {
     hintsAndSolutionAdapter.setSolutionCanBeRevealed(allHintsExhausted)

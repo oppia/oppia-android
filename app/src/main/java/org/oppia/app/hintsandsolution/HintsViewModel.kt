@@ -36,36 +36,57 @@ class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
     itemList.clear()
     for (index in hintList.indices) {
       if (itemList.isEmpty()) {
-        val hintsAndSolutionViewModel = HintsViewModel()
-        hintsAndSolutionViewModel.title.set(hintList[index].hintContent.contentId)
-        hintsAndSolutionViewModel.hintsAndSolutionSummary.set(hintList[index].hintContent.html)
-        hintsAndSolutionViewModel.isHintRevealed.set(hintList[index].hintIsRevealed)
-        itemList.add(hintsAndSolutionViewModel as HintsAndSolutionItemViewModel)
-      } else if (index == itemList.size) {
-        val isLastHintRevealed = (itemList[index - 1] as HintsViewModel).isHintRevealed.get()!!
-        if (isLastHintRevealed) {
-          val hintsAndSolutionViewModel = HintsViewModel()
-          hintsAndSolutionViewModel.title.set(hintList[index].hintContent.contentId)
-          hintsAndSolutionViewModel.hintsAndSolutionSummary.set(hintList[index].hintContent.html)
-          hintsAndSolutionViewModel.isHintRevealed.set(hintList[index].hintIsRevealed)
-          itemList.add(hintsAndSolutionViewModel as HintsAndSolutionItemViewModel)
+        addHintToList(hintList[index])
+      } else if (itemList.size > 1) {
+        val isLastHintRevealed =
+          (itemList[itemList.size - 2] as HintsViewModel).isHintRevealed.get() ?: false
+        val availableHintIndex = newAvailableHintIndex.get() ?: 0
+        if (isLastHintRevealed && index <= availableHintIndex / 2) {
+          addHintToList(hintList[index])
+        } else {
+          break
         }
       }
     }
-
-    val isLastHintRevealed = (itemList[itemList.size - 1] as HintsViewModel).isHintRevealed.get()!!
-    if (solution.hasExplanation() && hintList.size == itemList.size && isLastHintRevealed) {
-      val solutionViewModel = SolutionViewModel()
-      solutionViewModel.title.set(solution.explanation.contentId)
-      solutionViewModel.correctAnswer.set(solution.correctAnswer.correctAnswer)
-      solutionViewModel.numerator.set(solution.correctAnswer.numerator)
-      solutionViewModel.denominator.set(solution.correctAnswer.denominator)
-      solutionViewModel.wholeNumber.set(solution.correctAnswer.wholeNumber)
-      solutionViewModel.isNegative.set(solution.correctAnswer.isNegative)
-      solutionViewModel.solutionSummary.set(solution.explanation.html)
-      solutionViewModel.isSolutionRevealed.set(solution.solutionIsRevealed)
-      itemList.add(solutionViewModel)
+    if (itemList.size > 1) {
+      val isLastHintRevealed =
+        (itemList[itemList.size - 2] as HintsViewModel).isHintRevealed.get() ?: false
+      val areAllHintsExhausted = allHintsExhausted.get() ?: false
+      if (solution.hasExplanation() &&
+        hintList.size * 2 == itemList.size &&
+        isLastHintRevealed &&
+        areAllHintsExhausted
+      ) {
+        addSolutionToList(solution)
+      }
     }
     return itemList
+  }
+
+  private fun addHintToList(hint: Hint) {
+    val hintsViewModel = HintsViewModel()
+    hintsViewModel.title.set(hint.hintContent.contentId)
+    hintsViewModel.hintsAndSolutionSummary.set(hint.hintContent.html)
+    hintsViewModel.isHintRevealed.set(hint.hintIsRevealed)
+    itemList.add(hintsViewModel)
+    addDividerItem()
+  }
+
+  private fun addSolutionToList(solution: Solution) {
+    val solutionViewModel = SolutionViewModel()
+    solutionViewModel.title.set(solution.explanation.contentId)
+    solutionViewModel.correctAnswer.set(solution.correctAnswer.correctAnswer)
+    solutionViewModel.numerator.set(solution.correctAnswer.numerator)
+    solutionViewModel.denominator.set(solution.correctAnswer.denominator)
+    solutionViewModel.wholeNumber.set(solution.correctAnswer.wholeNumber)
+    solutionViewModel.isNegative.set(solution.correctAnswer.isNegative)
+    solutionViewModel.solutionSummary.set(solution.explanation.html)
+    solutionViewModel.isSolutionRevealed.set(solution.solutionIsRevealed)
+    itemList.add(solutionViewModel)
+    addDividerItem()
+  }
+
+  private fun addDividerItem() {
+    itemList.add(HintsDividerViewModel())
   }
 }
