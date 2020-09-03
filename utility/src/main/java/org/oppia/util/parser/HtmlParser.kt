@@ -18,7 +18,6 @@ private const val CUSTOM_IMG_FILE_PATH_ATTRIBUTE = "filepath-with-value"
 private const val REPLACE_IMG_FILE_PATH_ATTRIBUTE = "src"
 
 private const val CUSTOM_CONCEPT_CARD_TAG = "oppia-noninteractive-skillreview"
-private const val CUSTOM_BULLET_LIST_TAG = "oppia-li"
 
 /** Html Parser to parse custom Oppia tags with Android-compatible versions. */
 class HtmlParser private constructor(
@@ -71,18 +70,6 @@ class HtmlParser private constructor(
     if (supportsLinks) {
       htmlContentTextView.movementMethod = LinkMovementMethod.getInstance()
     }
-
-    htmlContent = htmlContent.replace(
-      CUSTOM_IMG_TAG,
-      REPLACE_IMG_TAG,
-      /* ignoreCase= */ false
-    )
-    htmlContent = htmlContent.replace(
-      CUSTOM_IMG_FILE_PATH_ATTRIBUTE,
-      REPLACE_IMG_FILE_PATH_ATTRIBUTE,
-      /* ignoreCase= */ false
-    )
-    htmlContent = htmlContent.replace("&amp;quot;", "")
 
     val imageGetter = urlImageParserFactory.create(
       htmlContentTextView, gcsResourceName, entityType, entityId, imageCenterAlign
@@ -144,22 +131,6 @@ class HtmlParser private constructor(
           }
         },
         0, text.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
-      )
-      output.replace(openIndex, closeIndex, spannableBuilder)
-    }
-  }
-
-  private class BulletTagHandler() : CustomHtmlContentHandler.CustomTagHandler {
-    override fun handleTag(
-      attributes: Attributes,
-      openIndex: Int,
-      closeIndex: Int,
-      output: Editable
-    ) {
-      output.append("\n")
-      val spannableBuilder = SpannableStringBuilder(output.subSequence(openIndex, closeIndex))
-      spannableBuilder.setSpan(
-        BulletSpan(), 0, spannableBuilder.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
       )
       output.replace(openIndex, closeIndex, spannableBuilder)
     }
