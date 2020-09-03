@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.min
+import kotlinx.coroutines.delay as delayInScope // Needed to avoid conflict with Delay.delay().
 
 /**
  * Espresso-specific implementation of [TestCoroutineDispatcher].
@@ -78,7 +79,7 @@ class TestCoroutineDispatcherEspressoImpl private constructor(
     executingTaskCount.incrementAndGet()
     notifyIfRunning()
     val delayResult = realCoroutineScope.async {
-      delay(timeMillis)
+      delayInScope(timeMillis)
     }
     delayResult.invokeOnCompletion {
       try {

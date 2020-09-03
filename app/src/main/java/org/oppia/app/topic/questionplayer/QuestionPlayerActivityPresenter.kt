@@ -170,4 +170,6 @@ class QuestionPlayerActivityPresenter @Inject constructor(
       ) as QuestionPlayerFragment
     questionPlayerFragment.revealSolution(saveUserChoice)
   }
+
+  fun dismissConceptCard() = getQuestionPlayerFragment()?.dismissConceptCard()
 }
