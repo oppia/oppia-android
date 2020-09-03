@@ -339,6 +339,15 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
       }
     }
 
+    for (subtopic in topic.subtopicList) {
+      val subtopicThumbnail = subtopic.subtopicThumbnail
+      if (subtopicThumbnail.thumbnailFilename.isNotBlank()) {
+        thumbnailUrls += getUriForThumbnail(
+          topic.topicId, topicEntityType, subtopicThumbnail.thumbnailFilename
+        )
+      }
+    }
+
     return thumbnailUrls
   }
 

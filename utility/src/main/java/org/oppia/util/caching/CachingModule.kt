@@ -11,7 +11,7 @@ private const val RATIOS_TOPIC = "omzF4oqgeTXd"
 class CachingModule {
   @Provides
   @CacheAssetsLocally
-  fun provideCacheAssetsLocally(): Boolean = true
+  fun provideCacheAssetsLocally(): Boolean = false
 
   @Provides
   @TopicListToCache
