@@ -15,6 +15,7 @@ import org.oppia.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.app.player.stopplaying.RestartPlayingSessionListener
 import org.oppia.app.player.stopplaying.StopExplorationDialogFragment
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
+import org.oppia.app.topic.conceptcard.ConceptCardListener
 import javax.inject.Inject
 
 const val QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY =
@@ -31,7 +32,8 @@ class QuestionPlayerActivity :
   RouteToHintsAndSolutionListener,
   RevealHintListener,
   RevealSolutionInterface,
-  HintsAndSolutionQuestionManagerListener {
+  HintsAndSolutionQuestionManagerListener,
+  ConceptCardListener {
 
   @Inject
   lateinit var questionPlayerActivityPresenter: QuestionPlayerActivityPresenter
@@ -118,5 +120,9 @@ class QuestionPlayerActivity :
 
   override fun onQuestionStateLoaded(state: State) {
     this.state = state
+  }
+
+  override fun dismissConceptCard() {
+    questionPlayerActivityPresenter.dismissConceptCard()
   }
 }
