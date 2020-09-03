@@ -621,7 +621,10 @@
               "value": 1
             },
             "placeholder": {
-              "value": "Enter a language"
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Enter a language"
+              }
             }
           },
           "id": "TextInput",

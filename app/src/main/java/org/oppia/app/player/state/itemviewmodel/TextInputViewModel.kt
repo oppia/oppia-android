@@ -66,6 +66,6 @@ class TextInputViewModel(
 
   private fun deriveHintText(interaction: Interaction): CharSequence {
     // The default placeholder for text input is empty.
-    return interaction.customizationArgsMap["placeholder"]?.normalizedString ?: ""
+    return interaction.customizationArgsMap["placeholder"]?.subtitledUnicode?.unicodeStr.toString()
   }
 }

@@ -103,7 +103,10 @@
               "value": 1
             },
             "placeholder": {
-              "value": "Enter a fraction, e.g. 1/9."
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Enter a fraction, e.g. 1/9."
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -250,7 +253,10 @@
               "value": 1
             },
             "placeholder": {
-              "value": "Enter a fraction here, e.g. 1/8."
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Enter a fraction here, e.g. 1/8."
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -403,7 +409,10 @@
               "value": 1
             },
             "placeholder": {
-              "value": "Enter a fraction here, e.g. 1/8."
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Enter a fraction here, e.g. 1/8."
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -1850,7 +1859,10 @@
           "confirmedUnclassifiedAnswers": [],
           "customizationArgs": {
             "placeholder": {
-              "value": "Write your fraction as x/y"
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Write your fraction as x/y"
+              }
             },
             "rows": {
               "value": 1
@@ -2099,7 +2111,10 @@
           "confirmedUnclassifiedAnswers": [],
           "customizationArgs": {
             "placeholder": {
-              "value": "Write your fraction as x/y"
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Write your fraction as x/y"
+              }
             },
             "rows": {
               "value": 1
