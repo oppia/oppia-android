@@ -37,6 +37,7 @@ import org.oppia.domain.exploration.ExplorationDataController
 import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.domain.oppialogger.loguploader.LogUploaderModule
 import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
@@ -151,7 +152,8 @@ class ExplorationActivityLocalTest {
       ViewBindingShimModule::class, CachingTestModule::class, RatioInputModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
-      WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class
+      WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
+      LogUploaderModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
