@@ -162,8 +162,8 @@ class AnalyticsController @Inject constructor(
   }
 
   /** Removes the first [EventLog] from the [eventLogStore]. */
-  fun removeFirstEventLogFromStore(){
-    eventLogStore.storeDataAsync(true){oppiaEventLogs ->
+  fun removeFirstEventLogFromStore() {
+    eventLogStore.storeDataAsync(true) { oppiaEventLogs ->
       return@storeDataAsync oppiaEventLogs.toBuilder().removeEventLog(0).build()
     }.invokeOnCompletion {
       it?.let {

@@ -169,8 +169,8 @@ class ExceptionsController @Inject constructor(
   }
 
   /** Removes the first [ExceptionLog] from the [exceptionLogStore]. */
-  fun removeFirstExceptionLogFromStore(){
-    exceptionLogStore.storeDataAsync(true){oppiaExceptionLogs ->
+  fun removeFirstExceptionLogFromStore() {
+    exceptionLogStore.storeDataAsync(true) { oppiaExceptionLogs ->
       return@storeDataAsync oppiaExceptionLogs.toBuilder().removeExceptionLog(0).build()
     }.invokeOnCompletion {
       it?.let {

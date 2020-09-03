@@ -43,9 +43,11 @@ import org.oppia.util.logging.LogLevel
 import org.oppia.util.networking.NetworkConnectionUtil
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.collections.ArrayList
+import kotlin.collections.last
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
