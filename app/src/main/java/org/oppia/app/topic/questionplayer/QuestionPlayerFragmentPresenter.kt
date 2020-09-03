@@ -22,6 +22,7 @@ import org.oppia.app.model.Hint
 import org.oppia.app.model.Solution
 import org.oppia.app.model.State
 import org.oppia.app.model.UserAnswer
+import org.oppia.app.player.state.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
 import org.oppia.app.player.state.StatePlayerRecyclerViewAssembler
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.stopplaying.RestartPlayingSessionListener
@@ -115,6 +116,14 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
         saveUserChoice
       )
     )
+  }
+
+  fun dismissConceptCard() {
+    fragment.childFragmentManager.findFragmentByTag(
+      CONCEPT_CARD_DIALOG_FRAGMENT_TAG
+    )?.let { dialogFragment ->
+      fragment.childFragmentManager.beginTransaction().remove(dialogFragment).commitNow()
+    }
   }
 
   fun onHintAvailable(helpIndex: HelpIndex) {
@@ -407,6 +416,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       .addReturnToTopicSupport()
       .addHintsAndSolutionsSupport()
       .addCongratulationsForCorrectAnswers(congratulationsTextView)
+      .addConceptCardSupport()
       .build()
   }
 

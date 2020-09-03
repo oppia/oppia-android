@@ -235,7 +235,9 @@ class StateFragmentPresenter @Inject constructor(
       .addAudioVoiceoverSupport(
         explorationId, viewModel.currentStateName, viewModel.isAudioBarVisible,
         this::getAudioUiManager
-      ).build()
+      )
+      .addConceptCardSupport()
+      .build()
   }
 
   fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
@@ -461,6 +463,14 @@ class StateFragmentPresenter @Inject constructor(
     subscribeToAnswerOutcome(explorationProgressController.submitAnswer(answer))
   }
 
+  fun dismissConceptCard() {
+    fragment.childFragmentManager.findFragmentByTag(
+      CONCEPT_CARD_DIALOG_FRAGMENT_TAG
+    )?.let { dialogFragment ->
+      fragment.childFragmentManager.beginTransaction().remove(dialogFragment).commitNow()
+    }
+  }
+
   private fun moveToNextState() {
     viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
     explorationProgressController.moveToNextState().observe(
@@ -486,8 +496,6 @@ class StateFragmentPresenter @Inject constructor(
   fun scrollToTop() {
     binding.stateRecyclerView.smoothScrollToPosition(0)
   }
-
-  private fun isAudioShowing(): Boolean = viewModel.isAudioBarVisible.get()!!
 
   /** Updates submit button UI as active if pendingAnswerError null else inactive. */
   fun updateSubmitButton(pendingAnswerError: String?, inputAnswerAvailable: Boolean) {

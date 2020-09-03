@@ -45,7 +45,7 @@ class ConceptCardFragmentPresenter @Inject constructor(
       R.string.concept_card_close_icon_description
     )
     binding.conceptCardToolbar.setNavigationOnClickListener {
-      (fragment.requireActivity() as? ConceptCardListener)?.dismiss()
+      (fragment.requireActivity() as? ConceptCardListener)?.dismissConceptCard()
     }
 
     binding.let {
