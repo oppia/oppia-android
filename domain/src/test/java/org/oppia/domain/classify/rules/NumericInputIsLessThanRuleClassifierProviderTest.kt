@@ -186,6 +186,34 @@ class NumericInputIsLessThanRuleClassifierProviderTest {
       .contains("Expected input value to be of type REAL not NORMALIZED_STRING")
   }
 
+  @Test
+  fun testIntAnswer_missingInput_throwsException() {
+    val inputs = mapOf("y" to POSITIVE_INT_VALUE_1)
+
+    val exception = assertThrows(IllegalStateException::class) {
+      inputIsLessThanRuleClassifier
+        .matches(answer = POSITIVE_INT_VALUE_3, inputs = inputs)
+    }
+
+    assertThat(exception)
+      .hasMessageThat()
+      .contains("Expected classifier inputs to contain parameter with name 'x'")
+  }
+
+  @Test
+  fun testIntAnswer_stringInput_throwsException() {
+    val inputs = mapOf("x" to STRING_VALUE)
+
+    val exception = assertThrows(IllegalStateException::class) {
+      inputIsLessThanRuleClassifier
+        .matches(answer = NEGATIVE_INT_VALUE_1, inputs = inputs)
+    }
+
+    assertThat(exception)
+      .hasMessageThat()
+      .contains("Expected input value to be of type REAL not NORMALIZED_STRING")
+  }
+
   private fun createReal(value: Double): InteractionObject {
     return InteractionObject.newBuilder().setReal(value).build()
   }
