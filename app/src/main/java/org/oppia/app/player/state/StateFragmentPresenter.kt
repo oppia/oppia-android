@@ -236,7 +236,8 @@ class StateFragmentPresenter @Inject constructor(
         explorationId, viewModel.currentStateName, viewModel.isAudioBarVisible,
         this::getAudioUiManager
       )
-      .addConceptCardSupport().build()
+      .addConceptCardSupport()
+      .build()
   }
 
   fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {

@@ -38,9 +38,13 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.bumptech.glide.Glide
+import com.bumptech.glide.GlideBuilder
+import com.bumptech.glide.load.engine.executor.MockGlideExecutor
 import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
+import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
@@ -60,6 +64,7 @@ import org.oppia.app.application.ActivityComponentFactory
 import org.oppia.app.application.ApplicationComponent
 import org.oppia.app.application.ApplicationModule
 import org.oppia.app.application.ApplicationStartupListenerModule
+import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionConfigFastShowTestModule
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTENT
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_INTERACTION
@@ -108,6 +113,7 @@ import org.oppia.domain.topic.TEST_EXPLORATION_ID_5
 import org.oppia.domain.topic.TEST_EXPLORATION_ID_6
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.testing.CoroutineExecutorService
 import org.oppia.testing.IsOnRobolectric
 import org.oppia.testing.OppiaTestRule
 import org.oppia.testing.RunOn
@@ -123,6 +129,7 @@ import org.oppia.util.logging.LoggerModule
 import org.oppia.util.parser.GlideImageLoaderModule
 import org.oppia.util.parser.HtmlParserEntityTypeModule
 import org.oppia.util.parser.ImageParsingModule
+import org.oppia.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.IOException
@@ -147,6 +154,10 @@ class StateFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @Inject
+  @field:BackgroundDispatcher
+  lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
+
   private val internalProfileId: Int = 1
 
   @Before
@@ -157,11 +168,24 @@ class StateFragmentTest {
     profileTestHelper.initializeProfiles()
     FirebaseApp.initializeApp(context)
 
+    // Initialize Glide such that all of its executors use the same shared dispatcher pool as the
+    // rest of Oppia so that thread execution can be synchronized via Oppia's test coroutine
+    // dispatchers.
+    val executorService = MockGlideExecutor.newTestExecutor(
+      CoroutineExecutorService(backgroundCoroutineDispatcher)
+    )
+    Glide.init(
+      context,
+      GlideBuilder().setDiskCacheExecutor(executorService)
+        .setAnimationExecutor(executorService)
+        .setSourceExecutor(executorService)
+    )
+
     // Only initialize the Robolectric shadows when running on Robolectric (and use reflection since
     // Espresso can't load Robolectric into its classpath).
     if (isOnRobolectric()) {
       val dataSource = createAudioDataSource(
-        explorationId = "MjZzEVOG47_1", audioFileName = "content-en-ouqm7j21vt8.mp3"
+        explorationId = FRACTIONS_EXPLORATION_ID_1, audioFileName = "content-en-ouqm7j21vt8.mp3"
       )
       addShadowMediaPlayerException(dataSource, IOException("Test does not have networking"))
     }
@@ -889,8 +913,6 @@ class StateFragmentTest {
     }
   }
 
-  // TODO(BenHenning): Get these tests passing on Espresso.
-
   @Test
   fun testStateFragment_forMisconception_showsLinkTextForConceptCard() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
@@ -912,8 +934,49 @@ class StateFragmentTest {
   }
 
   @Test
+  fun testStateFragment_landscape_forMisconception_showsLinkTextForConceptCard() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      rotateToLandscape()
+      startPlayingExploration()
+      selectMultipleChoiceOption(optionPosition = 3) // No, pieces must be the same size.
+      clickContinueNavigationButton()
+
+      // This answer is incorrect and a detected misconception.
+      typeFractionText("3/2")
+      clickSubmitAnswerButton()
+      scrollToViewType(FEEDBACK)
+
+      onView(withId(R.id.feedback_text_view)).check(
+        matches(
+          withText(containsString("Take a look at the short refresher lesson"))
+        )
+      )
+    }
+  }
+
+  @Test
   fun testStateFragment_forMisconception_clickLinkText_opensConceptCard() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      selectMultipleChoiceOption(optionPosition = 3) // No, pieces must be the same size.
+      clickContinueNavigationButton()
+      typeFractionText("3/2") // Misconception.
+      clickSubmitAnswerButton()
+
+      onView(withId(R.id.feedback_text_view)).perform(openClickableSpan("refresher lesson"))
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withId(R.id.concept_card_heading_text))
+        .inRoot(isDialog())
+        .check(matches(withText(containsString("Identify the numerator and denominator"))))
+    }
+  }
+
+  @Test
+  fun testStateFragment_landscape_forMisconception_clickLinkText_opensConceptCard() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      rotateToLandscape()
       startPlayingExploration()
       selectMultipleChoiceOption(optionPosition = 3) // No, pieces must be the same size.
       clickContinueNavigationButton()
@@ -1366,7 +1429,8 @@ class StateFragmentTest {
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class, ApplicationStartupListenerModule::class
+      ViewBindingShimModule::class, RatioInputModule::class,
+      ApplicationStartupListenerModule::class, HintsAndSolutionConfigFastShowTestModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

@@ -45,7 +45,8 @@ class HtmlParser private constructor(
   fun parseOppiaHtml(
     rawString: String,
     htmlContentTextView: TextView,
-    supportsLinks: Boolean = false
+    supportsLinks: Boolean = false,
+    supportsConceptCards: Boolean = false
   ): Spannable {
     var htmlContent = rawString
     if ("\n\t" in htmlContent) {
@@ -87,11 +88,7 @@ class HtmlParser private constructor(
       htmlContentTextView, gcsResourceName, entityType, entityId, imageCenterAlign
     )
     val htmlSpannable = CustomHtmlContentHandler.fromHtml(
-      htmlContent, imageGetter,
-      mapOf(
-        CUSTOM_CONCEPT_CARD_TAG to conceptCardTagHandler,
-        CUSTOM_BULLET_LIST_TAG to bulletTagHandler
-      )
+      htmlContent, imageGetter, computeCustomTagHandlers(supportsConceptCards)
     )
 
     val spannableBuilder = SpannableStringBuilder(htmlSpannable)
@@ -113,6 +110,17 @@ class HtmlParser private constructor(
     }
 
     return trimSpannable(spannableBuilder)
+  }
+
+  private fun computeCustomTagHandlers(
+    supportsConceptCards: Boolean
+  ): Map<String, CustomHtmlContentHandler.CustomTagHandler> {
+    val handlersMap = mutableMapOf<String, CustomHtmlContentHandler.CustomTagHandler>()
+    handlersMap[CUSTOM_BULLET_LIST_TAG] = bulletTagHandler
+    if (supportsConceptCards) {
+      handlersMap[CUSTOM_CONCEPT_CARD_TAG] = conceptCardTagHandler
+    }
+    return handlersMap
   }
 
   // https://mohammedlakkadshaw.com/blog/handling-custom-tags-in-android-using-html-taghandler.html/

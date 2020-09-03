@@ -50,6 +50,9 @@ import org.oppia.app.player.state.StatePlayerRecyclerViewAssembler.Builder.Facto
 import org.oppia.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.app.player.state.answerhandling.InteractionAnswerReceiver
+import org.oppia.app.player.state.hintsandsolution.DelayShowAdditionalHintsFromWrongAnswerMillis
+import org.oppia.app.player.state.hintsandsolution.DelayShowAdditionalHintsMillis
+import org.oppia.app.player.state.hintsandsolution.DelayShowInitialHintMillis
 import org.oppia.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.app.player.state.itemviewmodel.ContinueInteractionViewModel
 import org.oppia.app.player.state.itemviewmodel.ContinueNavigationButtonViewModel
@@ -85,9 +88,6 @@ import org.oppia.util.parser.HtmlParser
 import org.oppia.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 
-private const val DELAY_SHOW_INITIAL_HINT_MS = 60_000L
-private const val DELAY_SHOW_ADDITIONAL_HINTS_MS = 30_000L
-private const val DELAY_SHOW_ADDITIONAL_HINTS_FROM_WRONG_ANSWER_MS = 10_000L
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 
 /** The fragment tag corresponding to the concept card dialog fragment. */
@@ -129,7 +129,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private val interactionViewModelFactoryMap: Map<
     String, @JvmSuppressWildcards InteractionViewModelFactory>,
   backgroundCoroutineDispatcher: CoroutineDispatcher,
-  private val hasConversationView: Boolean
+  private val hasConversationView: Boolean,
+  delayShowInitialHintMs: Long,
+  delayShowAdditionalHintsMs: Long,
+  delayShowAdditionalHintsFromWrongAnswerMs: Long
 ) : HtmlParser.CustomOppiaTagActionListener {
   /**
    * A list of view models corresponding to past view models that are hidden by default. These are
@@ -149,7 +152,13 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
   private val lifecycleSafeTimerFactory = LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
 
-  private val hintHandler = HintHandler(lifecycleSafeTimerFactory, fragment)
+  private val hintHandler = HintHandler(
+    lifecycleSafeTimerFactory,
+    fragment,
+    delayShowInitialHintMs,
+    delayShowAdditionalHintsMs,
+    delayShowAdditionalHintsFromWrongAnswerMs
+  )
 
   /** The most recent content ID read by the audio system. */
   private var audioPlaybackContentId: String? = null
@@ -297,7 +306,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
       contentSubtitledHtml.html,
       gcsEntityId,
       hasConversationView,
-      isSplitView.get()!!
+      isSplitView.get()!!,
+      playerFeatureSet.conceptCardSupport
     )
   }
 
@@ -499,7 +509,13 @@ class StatePlayerRecyclerViewAssembler private constructor(
     isAnswerCorrect: Boolean
   ): SubmittedAnswerViewModel {
     val submittedAnswerViewModel =
-      SubmittedAnswerViewModel(userAnswer, gcsEntityId, hasConversationView, isSplitView.get()!!)
+      SubmittedAnswerViewModel(
+        userAnswer,
+        gcsEntityId,
+        hasConversationView,
+        isSplitView.get()!!,
+        playerFeatureSet.conceptCardSupport
+      )
     submittedAnswerViewModel.isCorrectAnswer.set(isAnswerCorrect)
     submittedAnswerViewModel.isExtraInteractionAnswerCorrect.set(isAnswerCorrect)
     return submittedAnswerViewModel
@@ -511,7 +527,13 @@ class StatePlayerRecyclerViewAssembler private constructor(
   ): FeedbackViewModel? {
     // Only show feedback if there's some to show.
     if (feedback.html.isNotEmpty()) {
-      return FeedbackViewModel(feedback.html, gcsEntityId, hasConversationView, isSplitView.get()!!)
+      return FeedbackViewModel(
+        feedback.html,
+        gcsEntityId,
+        hasConversationView,
+        isSplitView.get()!!,
+        playerFeatureSet.conceptCardSupport
+      )
     }
     return null
   }
@@ -725,11 +747,15 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val entityType: String,
     private val fragment: Fragment,
     private val interactionViewModelFactoryMap: Map<String, InteractionViewModelFactory>,
-    private val backgroundCoroutineDispatcher: CoroutineDispatcher
+    private val backgroundCoroutineDispatcher: CoroutineDispatcher,
+    private val delayShowInitialHintMs: Long,
+    private val delayShowAdditionalHintsMs: Long,
+    private val delayShowAdditionalHintsFromWrongAnswerMs: Long
   ) {
     private val adapterBuilder = BindableAdapter.MultiTypeBuilder.newBuilder(
       StateItemViewModel::viewType
     )
+
     /**
      * Tracks features individually enabled for the assembler. No features are enabled by default.
      */
@@ -772,7 +798,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
               imageCenterAlign = true,
               customOppiaTagActionListener = customTagListener
             ).parseOppiaHtml(
-              contentViewModel.htmlContent.toString(), binding.contentTextView, supportsLinks = true
+              contentViewModel.htmlContent.toString(),
+              binding.contentTextView,
+              supportsLinks = true,
+              supportsConceptCards = contentViewModel.supportsConceptCards
             )
         }
       )
@@ -804,7 +833,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
               customOppiaTagActionListener = customTagListener
             ).parseOppiaHtml(
               feedbackViewModel.htmlContent.toString(),
-              binding.feedbackTextView, supportsLinks = true
+              binding.feedbackTextView,
+              supportsLinks = true,
+              supportsConceptCards = feedbackViewModel.supportsConceptCards
             )
         }
       )
@@ -893,14 +924,18 @@ class StatePlayerRecyclerViewAssembler private constructor(
               )
               binding.submittedAnswer = htmlParser.parseOppiaHtml(
                 userAnswer.htmlAnswer,
-                binding.submittedAnswerTextView
+                binding.submittedAnswerTextView,
+                supportsConceptCards = submittedAnswerViewModel.supportsConceptCards
               )
             }
             UserAnswer.TextualAnswerCase.LIST_OF_HTML_ANSWERS -> {
               showListOfAnswers(binding)
               binding.submittedListAnswer = userAnswer.listOfHtmlAnswers
               binding.submittedAnswerRecyclerView.adapter =
-                createListAnswerAdapter(submittedAnswerViewModel.gcsEntityId)
+                createListAnswerAdapter(
+                  submittedAnswerViewModel.gcsEntityId,
+                  submittedAnswerViewModel.supportsConceptCards
+                )
             }
             else -> {
               showSingleAnswer(binding)
@@ -914,7 +949,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
       return this
     }
 
-    private fun createListAnswerAdapter(gcsEntityId: String): BindableAdapter<StringList> {
+    private fun createListAnswerAdapter(
+      gcsEntityId: String, supportsConceptCards: Boolean
+    ): BindableAdapter<StringList> {
       return BindableAdapter.SingleTypeBuilder
         .newBuilder<StringList>()
         .registerViewBinder(
@@ -926,13 +963,16 @@ class StatePlayerRecyclerViewAssembler private constructor(
           bindView = { view, viewModel ->
             val binding = DataBindingUtil.findBinding<SubmittedAnswerListItemBinding>(view)!!
             binding.answerItem = viewModel
-            binding.submittedHtmlAnswerRecyclerView.adapter = createNestedAdapter(gcsEntityId)
+            binding.submittedHtmlAnswerRecyclerView.adapter =
+              createNestedAdapter(gcsEntityId, supportsConceptCards)
           }
         )
         .build()
     }
 
-    private fun createNestedAdapter(gcsEntityId: String): BindableAdapter<String> {
+    private fun createNestedAdapter(
+      gcsEntityId: String, supportsConceptCards: Boolean
+    ): BindableAdapter<String> {
       return BindableAdapter.SingleTypeBuilder
         .newBuilder<String>()
         .registerViewBinder(
@@ -951,7 +991,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
                 imageCenterAlign = false,
                 customOppiaTagActionListener = customTagListener
               ).parseOppiaHtml(
-                viewModel, binding.submittedAnswerContentTextView
+                viewModel,
+                binding.submittedAnswerContentTextView,
+                supportsConceptCards = supportsConceptCards
               )
           }
         )
@@ -1136,7 +1178,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
         audioUiManagerRetriever,
         interactionViewModelFactoryMap,
         backgroundCoroutineDispatcher,
-        hasConversationView
+        hasConversationView,
+        delayShowInitialHintMs,
+        delayShowAdditionalHintsMs,
+        delayShowAdditionalHintsFromWrongAnswerMs
       )
       if (playerFeatureSet.conceptCardSupport) {
         customTagListener.proxyListener = assembler
@@ -1150,7 +1195,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
       private val fragment: Fragment,
       private val interactionViewModelFactoryMap: Map<
         String, @JvmSuppressWildcards InteractionViewModelFactory>,
-      @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
+      @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
+      @DelayShowInitialHintMillis private val delayShowInitialHintMs: Long,
+      @DelayShowAdditionalHintsMillis private val delayShowAdditionalHintsMs: Long,
+      @DelayShowAdditionalHintsFromWrongAnswerMillis private val additionalAnswerHintDelayMs: Long
     ) {
       /**
        * Returns a new [Builder] for the specified GCS resource bucket information for loading
@@ -1163,7 +1211,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
           entityType,
           fragment,
           interactionViewModelFactoryMap,
-          backgroundCoroutineDispatcher
+          backgroundCoroutineDispatcher,
+          delayShowInitialHintMs,
+          delayShowAdditionalHintsMs,
+          additionalAnswerHintDelayMs
         )
       }
     }
@@ -1248,7 +1299,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
    */
   private class HintHandler(
     private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
-    private val fragment: Fragment
+    private val fragment: Fragment,
+    private val delayShowInitialHintMs: Long,
+    private val delayShowAdditionalHintsMs: Long,
+    private val delayShowAdditionalHintsFromWrongAnswerMs: Long
   ) {
     private var trackedWrongAnswerCount = 0
     private var previousHelpIndex: HelpIndex = HelpIndex.getDefaultInstance()
@@ -1283,11 +1337,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
         return
       }
 
-      // If hint was visibile in the current state show all previous hints
-      // coming back to current state.
-      // If any hint was revealed and user move between current and completed states then
-      // show those relevead hints back by making icon visible
-      // else use the previous help index
+      // If hint was visible in the current state show all previous hints coming back to the current
+      // state. If any hint was revealed and user move between current and completed states, then
+      // show those revealed hints back by making icon visible else use the previous help index.
       if (isHintVisibleInLatestState) {
         if (state.interaction.hintList[previousHelpIndex.hintIndex].hintIsRevealed) {
           (fragment as ShowHintAvailabilityListener).onHintAvailable(
@@ -1313,9 +1365,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
         if (isFirstHint) {
           // The learner needs to wait longer for the initial hint to show since they need some time
           // to read through and consider the question.
-          scheduleShowHint(DELAY_SHOW_INITIAL_HINT_MS, nextUnrevealedHintIndex)
+          scheduleShowHint(delayShowInitialHintMs, nextUnrevealedHintIndex)
         } else {
-          scheduleShowHint(DELAY_SHOW_ADDITIONAL_HINTS_MS, nextUnrevealedHintIndex)
+          scheduleShowHint(delayShowAdditionalHintsMs, nextUnrevealedHintIndex)
         }
       } else {
         // See if the learner's new wrong answer justifies showing a hint.
@@ -1328,7 +1380,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         } else {
           // Otherwise, always schedule to show a hint on a new wrong answer for subsequent hints.
           scheduleShowHint(
-            DELAY_SHOW_ADDITIONAL_HINTS_FROM_WRONG_ANSWER_MS,
+            delayShowAdditionalHintsFromWrongAnswerMs,
             nextUnrevealedHintIndex
           )
         }

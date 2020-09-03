@@ -7,6 +7,7 @@ import kotlinx.coroutines.Delay
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay as delayInScope // Needed to avoid conflict with Delay.delay().
 import kotlinx.coroutines.test.DelayController
 import kotlinx.coroutines.test.UncompletedCoroutinesError
 import java.util.concurrent.ConcurrentHashMap
@@ -78,7 +79,7 @@ class TestCoroutineDispatcherEspressoImpl private constructor(
     executingTaskCount.incrementAndGet()
     notifyIfRunning()
     val delayResult = realCoroutineScope.async {
-      delay(timeMillis)
+      delayInScope(timeMillis)
     }
     delayResult.invokeOnCompletion {
       try {

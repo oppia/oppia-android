@@ -31,6 +31,7 @@ import org.oppia.app.application.ApplicationStartupListenerModule
 import org.oppia.app.options.APP_LANGUAGE
 import org.oppia.app.options.AppLanguageActivity
 import org.oppia.app.options.OptionsActivity
+import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -217,7 +218,7 @@ class AppLanguageFragmentTest {
       ImageClickInputModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, ApplicationStartupListenerModule::class,
-      RatioInputModule::class
+      RatioInputModule::class, HintsAndSolutionConfigModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
