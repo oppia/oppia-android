@@ -950,7 +950,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
 
     private fun createListAnswerAdapter(
-      gcsEntityId: String, supportsConceptCards: Boolean
+      gcsEntityId: String,
+      supportsConceptCards: Boolean
     ): BindableAdapter<StringList> {
       return BindableAdapter.SingleTypeBuilder
         .newBuilder<StringList>()
@@ -971,7 +972,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
 
     private fun createNestedAdapter(
-      gcsEntityId: String, supportsConceptCards: Boolean
+      gcsEntityId: String,
+      supportsConceptCards: Boolean
     ): BindableAdapter<String> {
       return BindableAdapter.SingleTypeBuilder
         .newBuilder<String>()

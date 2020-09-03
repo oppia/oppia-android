@@ -7,7 +7,6 @@ import kotlinx.coroutines.Delay
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay as delayInScope // Needed to avoid conflict with Delay.delay().
 import kotlinx.coroutines.test.DelayController
 import kotlinx.coroutines.test.UncompletedCoroutinesError
 import java.util.concurrent.ConcurrentHashMap
@@ -16,6 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.min
+import kotlinx.coroutines.delay as delayInScope // Needed to avoid conflict with Delay.delay().
 
 /**
  * Espresso-specific implementation of [TestCoroutineDispatcher].

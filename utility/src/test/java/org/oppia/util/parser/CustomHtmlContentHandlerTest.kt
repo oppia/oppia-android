@@ -131,7 +131,8 @@ class CustomHtmlContentHandlerTest {
 
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        html = htmlString, imageGetter = mockImageGetter, customTagHandlers = mapOf(
+        html = htmlString, imageGetter = mockImageGetter,
+        customTagHandlers = mapOf(
           CUSTOM_BULLET_LIST_TAG to BulletTagHandler()
         )
       )
@@ -140,10 +141,10 @@ class CustomHtmlContentHandlerTest {
     assertThat(parsedHtml.getSpansFromWholeString(BulletSpan::class)).hasLength(1)
   }
 
-  private fun <T: Any> Spannable.getSpansFromWholeString(spanClass: KClass<T>): Array<T> =
+  private fun <T : Any> Spannable.getSpansFromWholeString(spanClass: KClass<T>): Array<T> =
     getSpans(/* start= */ 0, /* end= */ length, spanClass.javaObjectType)
 
-  private class FakeTagHandler: CustomHtmlContentHandler.CustomTagHandler {
+  private class FakeTagHandler : CustomHtmlContentHandler.CustomTagHandler {
     var handleTagCalled = false
     lateinit var attributes: Attributes
 
@@ -160,7 +161,7 @@ class CustomHtmlContentHandlerTest {
 
   private class ReplacingTagHandler(
     private val attributeTextToReplaceWith: String
-  ): CustomHtmlContentHandler.CustomTagHandler {
+  ) : CustomHtmlContentHandler.CustomTagHandler {
     override fun handleTag(
       attributes: Attributes,
       openIndex: Int,
