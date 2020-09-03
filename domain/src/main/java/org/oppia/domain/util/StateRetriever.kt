@@ -583,10 +583,10 @@ class StateRetriever @Inject constructor(
         )!!.getBoolean("value")
       )
     customizationArgsMap["customPlaceholder"] =
-      parseNormalizedStringSchemaObject(
+      parseSubtitledUnicode(
         getJsonObject(
           customizationArgsJson, "customPlaceholder"
-        )!!.getString("value")
+        )!!.getJSONObject("value")
       )
     return customizationArgsMap
   }
