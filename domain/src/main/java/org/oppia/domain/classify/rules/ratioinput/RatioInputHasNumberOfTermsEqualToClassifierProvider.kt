@@ -10,7 +10,7 @@ import javax.inject.Inject
 /**
  * Provider for a classifier that determines whether two object have an equal number of terms.
  */
-internal class RatioInputHasNumberOfTermsEqualsToClassifierProvider @Inject constructor(
+internal class RatioInputHasNumberOfTermsEqualToClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
 ) : RuleClassifierProvider,
   GenericRuleClassifier.MultiTypeSingleInputMatcher<RatioExpression, Int> {

@@ -28,8 +28,7 @@ class ReadingTextSizeFragmentPresenter @Inject constructor(private val fragment:
     fontSize = readingTextSize
     updateTextSize(fontSize)
 
-    // TODO(#1200): Stop the toolbar functionality in the multipane (add non-null receiver (?)).
-    binding.readingTextSizeToolbar.setNavigationOnClickListener {
+    binding.readingTextSizeToolbar?.setNavigationOnClickListener {
       val intent = Intent()
       intent.putExtra(KEY_MESSAGE_READING_TEXT_SIZE, fontSize)
       (fragment.activity as ReadingTextSizeActivity).setResult(REQUEST_CODE_TEXT_SIZE, intent)

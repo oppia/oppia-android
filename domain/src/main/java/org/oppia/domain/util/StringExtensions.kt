@@ -7,3 +7,10 @@ package org.oppia.domain.util
 fun String.normalizeWhitespace(): String {
   return trim().replace("\\s{2,}".toRegex(), " ")
 }
+/**
+ * Removes whitespace in the specified string after [nomralizeWhitespace] has removed extra spaces
+ * from the string.
+ */
+fun String.removeWhitespace(): String {
+  return this.normalizeWhitespace().replace(" ", "")
+}

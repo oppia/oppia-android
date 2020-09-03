@@ -42,4 +42,8 @@ class AdministratorControlsFragment : InjectableFragment() {
     return administratorControlsFragmentPresenter
       .handleCreateView(inflater, container, isMultipane)
   }
+
+  fun setSelectedFragment(selectedFragment: String) {
+    administratorControlsFragmentPresenter.setSelectedFragment(selectedFragment)
+  }
 }

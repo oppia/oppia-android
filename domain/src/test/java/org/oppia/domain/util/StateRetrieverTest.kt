@@ -326,7 +326,7 @@ class StateRetrieverTest {
   }
 
   @Test
-  fun testParseState_withImageRegionSelectionInteraction_parsesRuleWithHasNumberOfTermsEqualToWithValueAtY() { // ktlint-disable max-line-length
+  fun testParseState_withRatioInputInteraction_parsesRuleWithHasNumberOfTermsEqualToWithValueAtY() {
     val state = createStateFromJson(
       "RatioExpressionInput",
       RATIO_TEST_EXPLORATION_NAME

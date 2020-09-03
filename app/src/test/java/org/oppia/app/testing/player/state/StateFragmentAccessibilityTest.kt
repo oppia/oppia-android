@@ -24,6 +24,7 @@ import org.oppia.app.application.ApplicationContext
 import org.oppia.app.application.ApplicationModule
 import org.oppia.app.application.ApplicationStartupListenerModule
 import org.oppia.app.player.state.StateFragment
+import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher
 import org.oppia.app.shim.IntentFactoryShimModule
@@ -172,7 +173,7 @@ class StateFragmentAccessibilityTest {
       ViewBindingShimModule::class, CachingTestModule::class, RatioInputModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
-      WorkManagerConfigurationModule::class
+      WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

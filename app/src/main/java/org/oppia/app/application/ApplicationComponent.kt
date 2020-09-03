@@ -6,6 +6,7 @@ import androidx.work.Configuration
 import dagger.BindsInstance
 import dagger.Component
 import org.oppia.app.activity.ActivityComponent
+import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.app.shim.IntentFactoryShimModule
 import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.domain.classify.InteractionsModule
@@ -61,7 +62,8 @@ import javax.inject.Singleton
     ViewBindingShimModule::class, PrimeTopicAssetsControllerModule::class,
     ExpirationMetaDataRetrieverModule::class, RatioInputModule::class,
     UncaughtExceptionLoggerModule::class, ApplicationStartupListenerModule::class,
-    LogUploadWorkerModule::class, WorkManagerConfigurationModule::class
+    LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
+    HintsAndSolutionConfigModule::class
   ]
 )
 

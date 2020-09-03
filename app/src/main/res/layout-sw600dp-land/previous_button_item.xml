@@ -10,36 +10,51 @@
       name="buttonViewModel"
       type="org.oppia.app.player.state.itemviewmodel.PreviousButtonViewModel" />
   </data>
-  <!-- Margins -->
-  <!-- Exploration Split View: 24, 72, 64, 0 -->
-  <!-- Exploration View: 176, 24, 176, 0 -->
-  <!-- Question Split View: 24, 72, 64, 0 -->
-  <!-- Question View: 192, 24, 192, 0 -->
-  <!-- Note: Start/End margins are 4dp less which is getting adjusted in child views. -->
+
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     app:explorationSplitViewMarginApplicable="@{buttonViewModel.hasConversationView &amp;&amp; buttonViewModel.isSplitView}"
     app:explorationSplitViewMarginBottom="@{@dimen/margin_0}"
-    app:explorationSplitViewMarginEnd="@{@dimen/margin_60}"
-    app:explorationSplitViewMarginStart="@{@dimen/margin_20}"
+    app:explorationSplitViewMarginEnd="@{@dimen/margin_0}"
+    app:explorationSplitViewMarginStart="@{@dimen/margin_48}"
     app:explorationSplitViewMarginTop="@{@dimen/margin_72}"
+    app:explorationSplitViewPaddingApplicable="@{buttonViewModel.hasConversationView &amp;&amp; buttonViewModel.isSplitView}"
+    app:explorationSplitViewPaddingBottom="@{@dimen/padding_0}"
+    app:explorationSplitViewPaddingEnd="@{@dimen/padding_0}"
+    app:explorationSplitViewPaddingStart="@{@dimen/padding_0}"
+    app:explorationSplitViewPaddingTop="@{@dimen/padding_0}"
     app:explorationViewMarginApplicable="@{buttonViewModel.hasConversationView &amp;&amp; !buttonViewModel.isSplitView}"
     app:explorationViewMarginBottom="@{@dimen/margin_0}"
-    app:explorationViewMarginEnd="@{@dimen/margin_172}"
-    app:explorationViewMarginStart="@{@dimen/margin_172}"
-    app:explorationViewMarginTop="@{@dimen/margin_24}"
+    app:explorationViewMarginEnd="@{@dimen/margin_0}"
+    app:explorationViewMarginStart="@{@dimen/margin_176}"
+    app:explorationViewMarginTop="@{@dimen/margin_72}"
+    app:explorationViewPaddingApplicable="@{buttonViewModel.hasConversationView &amp;&amp; !buttonViewModel.isSplitView}"
+    app:explorationViewPaddingBottom="@{@dimen/padding_0}"
+    app:explorationViewPaddingEnd="@{@dimen/padding_0}"
+    app:explorationViewPaddingStart="@{@dimen/padding_0}"
+    app:explorationViewPaddingTop="@{@dimen/padding_0}"
     app:questionSplitViewMarginApplicable="@{!buttonViewModel.hasConversationView &amp;&amp; buttonViewModel.isSplitView}"
     app:questionSplitViewMarginBottom="@{@dimen/margin_0}"
-    app:questionSplitViewMarginEnd="@{@dimen/margin_60}"
-    app:questionSplitViewMarginStart="@{@dimen/margin_20}"
+    app:questionSplitViewMarginEnd="@{@dimen/margin_0}"
+    app:questionSplitViewMarginStart="@{@dimen/margin_48}"
     app:questionSplitViewMarginTop="@{@dimen/margin_72}"
+    app:questionSplitViewPaddingApplicable="@{!buttonViewModel.hasConversationView &amp;&amp; buttonViewModel.isSplitView}"
+    app:questionSplitViewPaddingBottom="@{@dimen/padding_0}"
+    app:questionSplitViewPaddingEnd="@{@dimen/padding_0}"
+    app:questionSplitViewPaddingStart="@{@dimen/padding_0}"
+    app:questionSplitViewPaddingTop="@{@dimen/padding_0}"
     app:questionViewMarginApplicable="@{!buttonViewModel.hasConversationView &amp;&amp; !buttonViewModel.isSplitView}"
     app:questionViewMarginBottom="@{@dimen/margin_0}"
-    app:questionViewMarginEnd="@{@dimen/margin_188}"
-    app:questionViewMarginStart="@{@dimen/margin_188}"
-    app:questionViewMarginTop="@{@dimen/margin_24}">
+    app:questionViewMarginEnd="@{@dimen/margin_0}"
+    app:questionViewMarginStart="@{@dimen/margin_192}"
+    app:questionViewMarginTop="@{@dimen/margin_72}"
+    app:questionViewPaddingApplicable="@{!buttonViewModel.hasConversationView &amp;&amp; !buttonViewModel.isSplitView}"
+    app:questionViewPaddingBottom="@{@dimen/padding_0}"
+    app:questionViewPaddingEnd="@{@dimen/padding_0}"
+    app:questionViewPaddingStart="@{@dimen/padding_0}"
+    app:questionViewPaddingTop="@{@dimen/padding_0}">
 
     <ImageButton
       android:id="@+id/previous_state_navigation_button"
@@ -50,7 +65,7 @@
       android:contentDescription="@string/previous_state_description"
       android:elevation="2dp"
       android:onClick="@{(v) -> buttonViewModel.previousNavigationButtonListener.onPreviousButtonClicked()}"
-      android:padding="8dp"
+      android:padding="16dp"
       android:src="@drawable/ic_arrow_back_oppia_dark_blue_24dp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"

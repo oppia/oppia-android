@@ -131,4 +131,19 @@ class InteractionViewModelModule {
       )
     }
   }
+
+  @Provides
+  @IntoMap
+  @StringKey("RatioExpressionInput")
+  fun provideRatioExpressionInputViewModelFactory(context: Context): InteractionViewModelFactory {
+    return { _, hasConversationView, interaction, _, answerErrorReceiver, _, isSplitView ->
+      RatioExpressionInputInteractionViewModel(
+        interaction,
+        context,
+        hasConversationView,
+        isSplitView,
+        answerErrorReceiver
+      )
+    }
+  }
 }

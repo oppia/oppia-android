@@ -62,7 +62,8 @@ val EXPLORATION_THUMBNAILS = mapOf(
   TEST_EXPLORATION_ID_2 to createChapterThumbnail8(),
   TEST_EXPLORATION_ID_3 to createChapterThumbnail9(),
   TEST_EXPLORATION_ID_4 to createChapterThumbnail0(),
-  TEST_EXPLORATION_ID_5 to createChapterThumbnail0()
+  TEST_EXPLORATION_ID_5 to createChapterThumbnail0(),
+  TEST_EXPLORATION_ID_6 to createChapterThumbnail0()
 )
 
 private const val TRANSFORMED_GET_ONGOING_STORY_LIST_PROVIDER_ID =

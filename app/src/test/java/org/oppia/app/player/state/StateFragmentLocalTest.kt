@@ -22,17 +22,23 @@ import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.bumptech.glide.Glide
+import com.bumptech.glide.GlideBuilder
+import com.bumptech.glide.load.engine.executor.MockGlideExecutor
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -47,13 +53,16 @@ import org.oppia.app.application.ApplicationModule
 import org.oppia.app.application.ApplicationStartupListenerModule
 import org.oppia.app.hintsandsolution.TAG_REVEAL_SOLUTION_DIALOG
 import org.oppia.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
+import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
+import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NEXT_NAVIGATION_BUTTON
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.PREVIOUS_RESPONSES_HEADER
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
 import org.oppia.app.player.state.testing.StateFragmentTestActivity
+import org.oppia.app.recyclerview.RecyclerViewMatcher
 import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.domain.classify.InteractionsModule
 import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
@@ -75,6 +84,7 @@ import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.testing.CoroutineExecutorService
 import org.oppia.testing.TestAccessibilityModule
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
@@ -86,6 +96,7 @@ import org.oppia.util.logging.LoggerModule
 import org.oppia.util.parser.GlideImageLoaderModule
 import org.oppia.util.parser.HtmlParserEntityTypeModule
 import org.oppia.util.parser.ImageParsingModule
+import org.oppia.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowMediaPlayer
@@ -107,23 +118,42 @@ class StateFragmentLocalTest {
     createAudioUrl(explorationId = "MjZzEVOG47_1", audioFileName = "content-en-ouqm7j21vt8.mp3")
   private val audioDataSource1 = DataSource.toDataSource(AUDIO_URL_1, /* headers= */ null)
 
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject @field:ApplicationContext lateinit var context: Context
   @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  @field:ApplicationContext
-  lateinit var context: Context
+  @field:BackgroundDispatcher
+  lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
 
   private val internalProfileId: Int = 1
+  private val solutionIndex: Int = 4
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+
+    // Initialize Glide such that all of its executors use the same shared dispatcher pool as the
+    // rest of Oppia so that thread execution can be synchronized via Oppia's test coroutine
+    // dispatchers.
+    val executorService = MockGlideExecutor.newTestExecutor(
+      CoroutineExecutorService(backgroundCoroutineDispatcher)
+    )
+    Glide.init(
+      context,
+      GlideBuilder().setDiskCacheExecutor(executorService)
+        .setAnimationExecutor(executorService)
+        .setSourceExecutor(executorService)
+    )
+
     profileTestHelper.initializeProfiles()
     ShadowMediaPlayer.addException(audioDataSource1, IOException("Test does not have networking"))
+  }
+
+  @After
+  fun tearDown() {
+    // Ensure lingering tasks are completed (otherwise Glide can enter a permanently broken state
+    // during initialization for the next test).
+    testCoroutineDispatchers.advanceUntilIdle()
   }
 
   @Test
@@ -143,11 +173,11 @@ class StateFragmentLocalTest {
 
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SELECTION_INTERACTION))
       onView(withSubstring("the pieces must be the same size.")).perform(click())
-      testCoroutineDispatchers.advanceUntilIdle()
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_NAVIGATION_BUTTON))
-      testCoroutineDispatchers.advanceUntilIdle()
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.continue_navigation_button)).perform(click())
-      testCoroutineDispatchers.advanceUntilIdle()
+      testCoroutineDispatchers.runCurrent()
 
       onView(withSubstring("of the above circle is red?")).check(matches(isDisplayed()))
     }
@@ -354,6 +384,85 @@ class StateFragmentLocalTest {
   }
 
   @Test
+  fun testStateFragment_submitTwoWrongAnswers_hintAvailable_prevState_hintNotAvailable() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+      submitTwoWrongAnswers()
+      onView(withId(R.id.hint_bulb)).check(matches(isDisplayed()))
+      onView(withId(R.id.previous_state_navigation_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.hint_bulb)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testStateFragment_submitTwoWrongAnswers_prevState_currentState_checkDotIconVisible() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+      submitTwoWrongAnswers()
+      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
+      moveToPreviousAndBackToCurrentState()
+      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_oneUnrevealedHint_prevState_currentState_checkOneUnrevealedHintVisible() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+      submitTwoWrongAnswers()
+
+      openHintsAndSolutionsDialog()
+      onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText("Reveal Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
+      closeHintsAndSolutionsDialog()
+
+      moveToPreviousAndBackToCurrentState()
+
+      openHintsAndSolutionsDialog()
+      onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText("Reveal Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_revealFirstHint_prevState_currentState_checkFirstHintRevealed() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+
+      produceAndViewFirstHint()
+
+      onView(withId(R.id.previous_state_navigation_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(NEXT_NAVIGATION_BUTTON))
+      onView(withId(R.id.next_state_navigation_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      openHintsAndSolutionsDialog()
+      onView(withId(R.id.hints_and_solution_recycler_view))
+        .inRoot(isDialog())
+        .perform(scrollToPosition<ViewHolder>(0))
+      onView(
+        RecyclerViewMatcher.atPositionOnView(
+          R.id.hints_and_solution_recycler_view, 0, R.id.hint_summary_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).check(
+        matches(
+          not(
+            withText("In a fraction, the pieces representing the denominator must be equal")
+          )
+        )
+      )
+    }
+  }
+
+  @Test
   fun testStateFragment_nextState_submitTwoWrongAnswersAndWait_canViewOneHint() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -376,7 +485,7 @@ class StateFragmentLocalTest {
       openHintsAndSolutionsDialog()
 
       onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
-      onView(withText("Hint 2")).inRoot(isDialog()).check(matches(not(isDisplayed())))
+      onView(isRoot()).check(matches(not(withText("Hint 2"))))
     }
   }
 
@@ -420,6 +529,21 @@ class StateFragmentLocalTest {
 
       // After the first hint, waiting 30 more seconds is sufficient for displaying another hint.
       onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_nextState_viewHint_doNotWait_canViewTwoHints() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+      produceAndViewFirstHint()
+
+      openHintsAndSolutionsDialog()
+      onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
+      closeHintsAndSolutionsDialog()
+
+      onView(isRoot()).check(matches(not(withText("Hint 2"))))
     }
   }
 
@@ -572,9 +696,11 @@ class StateFragmentLocalTest {
       openHintsAndSolutionsDialog()
 
       // The reveal solution button should now be visible.
+      // NOTE: solutionIndex is multiplied by 2, because the implementation of hints and solution
+      // introduces divider in UI as a separate item.
       onView(withId(R.id.hints_and_solution_recycler_view))
         .inRoot(isDialog())
-        .perform(scrollToPosition<ViewHolder>(/* position= */ 4))
+        .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex * 2))
       onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
@@ -622,9 +748,11 @@ class StateFragmentLocalTest {
       openHintsAndSolutionsDialog()
 
       // The reveal solution button should now be visible.
+      // NOTE: solutionIndex is multiplied by 2, because the implementation of hints and solution
+      // introduces divider in UI as a separate item.
       onView(withId(R.id.hints_and_solution_recycler_view))
         .inRoot(isDialog())
-        .perform(scrollToPosition<ViewHolder>(/* position= */ 4))
+        .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex * 2))
       onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
@@ -838,9 +966,11 @@ class StateFragmentLocalTest {
   private fun pressRevealHintOrSolutionButton(@IdRes buttonId: Int, hintPosition: Int) {
     // There should only ever be a single reveal button currently displayed; click that one.
     // However, it may need to be scrolled to in case many hints are showing.
+    // NOTE: hintPosition is multiplied by 2, because the implementation of hints and solution
+    // introduces divider in UI as a separate item.
     onView(withId(R.id.hints_and_solution_recycler_view))
       .inRoot(isDialog())
-      .perform(scrollToPosition<ViewHolder>(hintPosition))
+      .perform(scrollToPosition<ViewHolder>(hintPosition * 2))
     onView(allOf(withId(buttonId), isDisplayed()))
       .inRoot(isDialog())
       .perform(click())
@@ -964,6 +1094,15 @@ class StateFragmentLocalTest {
     }
   }
 
+  // Go to previous state and then come back to current state
+  private fun moveToPreviousAndBackToCurrentState() {
+    onView(withId(R.id.previous_state_navigation_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+    onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(NEXT_NAVIGATION_BUTTON))
+    onView(withId(R.id.next_state_navigation_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
   /**
    * Appends the specified text to a view. This is needed because Robolectric doesn't seem to
    * properly input digits for text views using 'android:digits'. See
@@ -1002,7 +1141,7 @@ class StateFragmentLocalTest {
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
-      WorkManagerConfigurationModule::class
+      WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent, ApplicationInjector {

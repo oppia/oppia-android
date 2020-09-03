@@ -62,6 +62,8 @@ class ExplorationFragmentPresenter @Inject constructor(
     getStateFragment()?.revealSolution(saveUserChoice)
   }
 
+  fun dismissConceptCard() = getStateFragment()?.dismissConceptCard()
+
   private fun getStateFragment(): StateFragment? {
     return fragment
       .childFragmentManager

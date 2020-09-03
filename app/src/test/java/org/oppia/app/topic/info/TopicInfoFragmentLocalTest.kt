@@ -19,6 +19,7 @@ import org.oppia.app.application.ApplicationModule
 import org.oppia.app.application.ApplicationStartupListenerModule
 import org.oppia.app.model.EventLog
 import org.oppia.app.model.EventLog.Context.ActivityContextCase.TOPIC_CONTEXT
+import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.app.topic.TopicActivity
 import org.oppia.domain.classify.InteractionsModule
@@ -118,7 +119,7 @@ class TopicInfoFragmentLocalTest {
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
-      WorkManagerConfigurationModule::class
+      WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent, ApplicationInjector {

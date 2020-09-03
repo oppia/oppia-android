@@ -10,35 +10,12 @@
       name="viewModel"
       type="org.oppia.app.player.state.itemviewmodel.ContinueInteractionViewModel" />
   </data>
-  <!-- Margins -->
-  <!-- Exploration Split View: 24, 72, 64, 0 -->
-  <!-- Exploration View: 48, 24, 48, 0 -->
-  <!-- Question Split View: 24, 72, 64, 0 -->
-  <!-- Question View: 64, 24, 64, 0 -->
-  <!-- Note: Start/End margins are 4dp less which is getting adjusted in child views. -->
+
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:explorationSplitViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
-    app:explorationSplitViewMarginBottom="@{@dimen/margin_0}"
-    app:explorationSplitViewMarginEnd="@{@dimen/margin_60}"
-    app:explorationSplitViewMarginStart="@{@dimen/margin_20}"
-    app:explorationSplitViewMarginTop="@{@dimen/margin_72}"
-    app:explorationViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
-    app:explorationViewMarginBottom="@{@dimen/margin_0}"
-    app:explorationViewMarginEnd="@{@dimen/margin_44}"
-    app:explorationViewMarginStart="@{@dimen/margin_44}"
-    app:explorationViewMarginTop="@{@dimen/margin_24}"
-    app:questionSplitViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
-    app:questionSplitViewMarginBottom="@{@dimen/margin_0}"
-    app:questionSplitViewMarginEnd="@{@dimen/margin_60}"
-    app:questionSplitViewMarginStart="@{@dimen/margin_20}"
-    app:questionSplitViewMarginTop="@{@dimen/margin_72}"
-    app:questionViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
-    app:questionViewMarginBottom="@{@dimen/margin_0}"
-    app:questionViewMarginEnd="@{@dimen/margin_60}"
-    app:questionViewMarginStart="@{@dimen/margin_60}"
-    app:questionViewMarginTop="@{@dimen/margin_24}">
+    android:layout_marginTop="16dp"
+    android:padding="16dp">
 
     <ImageButton
       android:id="@+id/previous_state_navigation_button"
@@ -50,7 +27,7 @@
       android:contentDescription="@string/previous_state_description"
       android:elevation="2dp"
       android:onClick="@{(v) -> viewModel.previousNavigationButtonListener.onPreviousButtonClicked()}"
-      android:padding="8dp"
+      android:padding="16dp"
       android:src="@drawable/ic_arrow_back_oppia_dark_blue_24dp"
       android:visibility="@{viewModel.hasPreviousButton ? View.VISIBLE: View.GONE, default=gone}"
       app:layout_constraintBottom_toBottomOf="parent"
@@ -61,7 +38,6 @@
       android:id="@+id/continue_button"
       style="@style/StateButtonActive"
       android:layout_height="0dp"
-      android:layout_margin="4dp"
       android:button="@drawable/state_button_primary_background"
       android:clickable="true"
       android:elevation="2dp"

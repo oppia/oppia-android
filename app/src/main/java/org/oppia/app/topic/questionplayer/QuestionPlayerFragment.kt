@@ -82,6 +82,8 @@ class QuestionPlayerFragment :
     questionPlayerFragmentPresenter.revealSolution(saveUserChoice)
   }
 
+  fun dismissConceptCard() = questionPlayerFragmentPresenter.dismissConceptCard()
+
   override fun onHintAvailable(helpIndex: HelpIndex) =
     questionPlayerFragmentPresenter.onHintAvailable(helpIndex)
 }

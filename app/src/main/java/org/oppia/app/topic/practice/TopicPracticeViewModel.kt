@@ -2,7 +2,6 @@ package org.oppia.app.topic.practice
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.Topic
@@ -10,17 +9,18 @@ import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeFooterVie
 import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeHeaderViewModel
 import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeItemViewModel
 import org.oppia.app.topic.practice.practiceitemviewmodel.TopicPracticeSubtopicViewModel
+import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
-/** [ViewModel] for [TopicPracticeFragment]. */
+/** [ObservableViewModel] for [TopicPracticeFragment]. */
 @FragmentScope
 class TopicPracticeViewModel @Inject constructor(
   private val logger: ConsoleLogger,
   private val topicController: TopicController
-) : ViewModel() {
+) : ObservableViewModel() {
   private val itemViewModelList: MutableList<TopicPracticeItemViewModel> = ArrayList()
   private lateinit var topicId: String
   private var internalProfileId: Int = -1
