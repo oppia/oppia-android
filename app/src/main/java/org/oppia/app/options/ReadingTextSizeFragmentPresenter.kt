@@ -120,7 +120,7 @@ class ReadingTextSizeFragmentPresenter @Inject constructor(private val fragment:
   }
 
   fun getReadingTextSizeInFloat(readingTextSize: ReadingTextSize): Float {
-    val defaultReadingTextSizeInFloat = fragment.context?.resources!!.getDimension(
+    val defaultReadingTextSizeInFloat = fragment.requireContext().resources.getDimension(
       R.dimen.default_reading_text_size
     )
     return when (readingTextSize) {
