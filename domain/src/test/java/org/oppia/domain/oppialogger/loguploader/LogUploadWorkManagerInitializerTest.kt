@@ -7,41 +7,54 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.work.Configuration
 import androidx.work.Constraints
+import androidx.work.Data
 import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequest
+import androidx.work.WorkManager
 import androidx.work.testing.SynchronousExecutor
 import androidx.work.testing.WorkManagerTestInitHelper
 import com.google.common.truth.Truth.assertThat
+import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.app.model.EventLog
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 import org.oppia.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.domain.oppialogger.OppiaLogger
 import org.oppia.domain.oppialogger.analytics.AnalyticsController
-import org.oppia.domain.oppialogger.analytics.TEST_TIMESTAMP
-import org.oppia.domain.oppialogger.analytics.TEST_TOPIC_ID
 import org.oppia.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.testing.FakeEventLogger
 import org.oppia.testing.FakeExceptionLogger
+import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
+import org.oppia.util.data.DataProviders
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
 import org.oppia.util.networking.NetworkConnectionUtil
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class LogUploadWorkManagerInitializerTest {
+
+  @Rule
+  @JvmField
+  val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Inject
   lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
@@ -65,26 +78,18 @@ class LogUploadWorkManagerInitializerTest {
   lateinit var fakeExceptionLogger: FakeExceptionLogger
 
   @Inject
+  lateinit var dataProviders: DataProviders
+
+  @Inject
   lateinit var oppiaLogger: OppiaLogger
 
+  @Inject
+  lateinit var fakeLogUploader: FakeLogUploader
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   private lateinit var context: Context
-
-  private val eventLogTopicContext = EventLog.newBuilder()
-    .setActionName(EventLog.EventAction.EVENT_ACTION_UNSPECIFIED)
-    .setContext(
-      EventLog.Context.newBuilder()
-        .setTopicContext(
-          EventLog.TopicContext.newBuilder()
-            .setTopicId(TEST_TOPIC_ID)
-            .build()
-        )
-        .build()
-    )
-    .setPriority(EventLog.Priority.ESSENTIAL)
-    .setTimestamp(TEST_TIMESTAMP)
-    .build()
-
-  private val exception = Exception("TEST")
 
   @Before
   fun setUp() {
@@ -99,52 +104,18 @@ class LogUploadWorkManagerInitializerTest {
   }
 
   @Test
-  fun testWorkRequest_logEvent_withoutNetwork_callOnCreate_verifyLogToRemoteService() {
-    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
-    analyticsController.logTransitionEvent(
-      eventLogTopicContext.timestamp,
-      eventLogTopicContext.actionName,
-      oppiaLogger.createTopicContext(TEST_TOPIC_ID)
+  fun testWorkRequest_onCreate_enqueuesRequest_verifyRequestId() {
+    logUploadWorkManagerInitializer.onCreate()
+    testCoroutineDispatchers.runCurrent()
+
+    val enqueuedEventWorkRequestId = logUploadWorkManagerInitializer.getWorkRequestForEventsId()
+    val enqueuedExceptionWorkRequestId =
+      logUploadWorkManagerInitializer.getWorkRequestForExceptionsId()
+
+    assertThat(fakeLogUploader.getMostRecentEventRequestId()).isEqualTo(enqueuedEventWorkRequestId)
+    assertThat(fakeLogUploader.getMostRecentExceptionRequestId()).isEqualTo(
+      enqueuedExceptionWorkRequestId
     )
-    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
-    setUp()
-    logUploadWorkManagerInitializer.onCreate()
-    val eventLog = fakeEventLogger.getMostRecentEvent()
-    assertThat(eventLog).isEqualTo(eventLogTopicContext)
-  }
-
-  @Test
-  fun testWorkRequest_logExcepton_withoutNetwork_callOnCreate_verifyLogToRemoteService() {
-    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
-    exceptionsController.logNonFatalException(exception, TEST_TIMESTAMP)
-
-    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
-    setUp()
-    logUploadWorkManagerInitializer.onCreate()
-
-    val exceptionLogged = fakeExceptionLogger.getMostRecentException()
-    assertThat(exceptionLogged).isEqualTo(exception)
-  }
-
-  @Test
-  fun testWorkRequest_logExceptionAndEvent_withoutNetwork_callOnCreate_verifyLogToRemoteService() {
-    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
-    analyticsController.logTransitionEvent(
-      eventLogTopicContext.timestamp,
-      eventLogTopicContext.actionName,
-      oppiaLogger.createTopicContext(TEST_TOPIC_ID)
-    )
-    exceptionsController.logNonFatalException(exception, TEST_TIMESTAMP)
-
-    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
-    setUp()
-    logUploadWorkManagerInitializer.onCreate()
-
-    val eventLog = fakeEventLogger.getMostRecentEvent()
-    val exceptionLogged = fakeExceptionLogger.getMostRecentException()
-
-    assertThat(eventLog).isEqualTo(eventLogTopicContext)
-    assertThat(exceptionLogged).isEqualTo(exception)
   }
 
   @Test
@@ -158,6 +129,34 @@ class LogUploadWorkManagerInitializerTest {
       logUploadWorkManagerInitializer.getLogUploadWorkerConstraints()
 
     assertThat(logUploadingWorkRequestConstraints).isEqualTo(workerConstraints)
+  }
+
+  @Test
+  fun testWorkRequest_verifyWorkRequestDataForEvents() {
+    val workerCaseForUploadingEvents: Data = Data.Builder()
+      .putString(
+        LogUploadWorker.WORKER_CASE_KEY,
+        LogUploadWorker.EVENT_WORKER
+      )
+      .build()
+
+    assertThat(logUploadWorkManagerInitializer.getWorkRequestDataForEvents()).isEqualTo(
+      workerCaseForUploadingEvents
+    )
+  }
+
+  @Test
+  fun testWorkRequest_verifyWorkRequestDataForExceptions() {
+    val workerCaseForUploadingExceptions: Data = Data.Builder()
+      .putString(
+        LogUploadWorker.WORKER_CASE_KEY,
+        LogUploadWorker.EXCEPTION_WORKER
+      )
+      .build()
+
+    assertThat(logUploadWorkManagerInitializer.getWorkRequestDataForExceptions()).isEqualTo(
+      workerCaseForUploadingExceptions
+    )
   }
 
   private fun setUpTestApplicationComponent() {
@@ -203,6 +202,13 @@ class LogUploadWorkManagerInitializerTest {
     fun provideExceptionLogStorageSize(): Int = 2
   }
 
+  @Module
+  interface TestLogUploaderModule {
+
+    @Binds
+    fun bindsFakeLogUploader(fakeLogUploader: FakeLogUploader): LogUploader
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
@@ -211,7 +217,8 @@ class LogUploadWorkManagerInitializerTest {
       TestLogReportingModule::class,
       TestLogStorageModule::class,
       TestDispatcherModule::class,
-      LogUploadWorkerModule::class
+      LogUploadWorkerModule::class,
+      TestLogUploaderModule::class
     ]
   )
   interface TestApplicationComponent {
@@ -224,4 +231,32 @@ class LogUploadWorkManagerInitializerTest {
 
     fun inject(logUploadWorkRequestTest: LogUploadWorkManagerInitializerTest)
   }
+}
+
+/**  A test specific fake for the log uploader. */
+@Singleton
+class FakeLogUploader @Inject constructor() : LogUploader {
+
+  private val eventRequestIdList = ArrayList<UUID>()
+  private val exceptionRequestIdList = ArrayList<UUID>()
+
+  override fun enqueueWorkRequestForEvents(
+    workManager: WorkManager,
+    workRequest: PeriodicWorkRequest
+  ) {
+    eventRequestIdList.add(workRequest.id)
+  }
+
+  override fun enqueueWorkRequestForExceptions(
+    workManager: WorkManager,
+    workRequest: PeriodicWorkRequest
+  ) {
+    exceptionRequestIdList.add(workRequest.id)
+  }
+
+  /** Returns the most recent work request id that's stored in the [eventRequestIdList]. */
+  fun getMostRecentEventRequestId() = eventRequestIdList.last()
+
+  /** Returns the most recent work request id that's stored in the [exceptionRequestIdList]. */
+  fun getMostRecentExceptionRequestId() = exceptionRequestIdList.last()
 }

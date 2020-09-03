@@ -2,7 +2,6 @@ package org.oppia.domain.oppialogger.loguploader
 
 import android.app.Application
 import android.content.Context
-import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -15,6 +14,7 @@ import androidx.work.WorkManager
 import androidx.work.testing.SynchronousExecutor
 import androidx.work.testing.WorkManagerTestInitHelper
 import com.google.common.truth.Truth.assertThat
+import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -23,14 +23,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.app.model.EventLog
-import org.oppia.app.model.OppiaEventLogs
 import org.oppia.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.domain.oppialogger.OppiaLogger
@@ -43,7 +38,6 @@ import org.oppia.testing.FakeExceptionLogger
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
-import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -93,12 +87,6 @@ class LogUploadWorkerTest {
 
   private lateinit var context: Context
 
-  @Mock
-  lateinit var mockOppiaEventLogsObserver: Observer<AsyncResult<OppiaEventLogs>>
-
-  @Captor
-  lateinit var oppiaEventLogsResultCaptor: ArgumentCaptor<AsyncResult<OppiaEventLogs>>
-
   private val eventLogTopicContext = EventLog.newBuilder()
     .setActionName(EventLog.EventAction.EVENT_ACTION_UNSPECIFIED)
     .setContext(
@@ -136,14 +124,6 @@ class LogUploadWorkerTest {
       eventLogTopicContext.actionName,
       oppiaLogger.createTopicContext(TEST_TOPIC_ID)
     )
-
-    val eventLogs = dataProviders.convertToLiveData(analyticsController.getEventLogStore())
-    eventLogs.observeForever(mockOppiaEventLogsObserver)
-    testCoroutineDispatchers.advanceUntilIdle()
-    Mockito.verify(
-      mockOppiaEventLogsObserver,
-      Mockito.atLeastOnce()
-    ).onChanged(oppiaEventLogsResultCaptor.capture())
 
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
@@ -233,6 +213,13 @@ class LogUploadWorkerTest {
     fun provideExceptionLogStorageSize(): Int = 2
   }
 
+  @Module
+  interface TestLogUploaderModule {
+
+    @Binds
+    fun bindsFakeLogUploader(fakeLogUploader: FakeLogUploader): LogUploader
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
@@ -241,7 +228,8 @@ class LogUploadWorkerTest {
       TestLogReportingModule::class,
       TestLogStorageModule::class,
       TestDispatcherModule::class,
-      LogUploadWorkerModule::class
+      LogUploadWorkerModule::class,
+      TestLogUploaderModule::class
     ]
   )
   interface TestApplicationComponent {
