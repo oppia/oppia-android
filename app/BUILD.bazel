@@ -578,6 +578,7 @@ kt_android_library(
         artifact("androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"),
         artifact("androidx.multidex:multidex:2.0.1"),
         artifact("androidx.viewpager:viewpager:1.0.0"),
+        artifact("androidx.work:work-runtime-ktx:2.4.0"),
         artifact("com.caverock:androidsvg-aar"),
         artifact("javax.annotation:javax.annotation-api:jar"),
     ],

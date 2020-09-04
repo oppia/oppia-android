@@ -137,6 +137,7 @@ maven_install(
         "androidx.test.ext:junit:1.1.1",
         "androidx.test:runner:1.2.0",
         "androidx.viewpager:viewpager:1.0.0",
+        "androidx.work:work-runtime-ktx:2.4.0",
         "com.android.support:support-annotations:28.0.0",
         "com.caverock:androidsvg-aar:1.4",
         "com.chaos.view:pinview:1.4.3",

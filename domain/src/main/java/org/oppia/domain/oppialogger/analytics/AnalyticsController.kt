@@ -1,14 +1,12 @@
 package org.oppia.domain.oppialogger.analytics
 
-import androidx.lifecycle.LiveData
 import org.oppia.app.model.EventLog
 import org.oppia.app.model.EventLog.EventAction
 import org.oppia.app.model.EventLog.Priority
 import org.oppia.app.model.OppiaEventLogs
 import org.oppia.data.persistence.PersistentCacheStore
 import org.oppia.domain.oppialogger.EventLogStorageCacheSize
-import org.oppia.util.data.AsyncResult
-import org.oppia.util.data.DataProviders
+import org.oppia.util.data.DataProvider
 import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.logging.EventLogger
 import org.oppia.util.logging.ExceptionLogger
@@ -23,7 +21,6 @@ import javax.inject.Inject
 class AnalyticsController @Inject constructor(
   private val eventLogger: EventLogger,
   cacheStoreFactory: PersistentCacheStore.Factory,
-  private val dataProviders: DataProviders,
   private val consoleLogger: ConsoleLogger,
   private val networkConnectionUtil: NetworkConnectionUtil,
   private val exceptionLogger: ExceptionLogger,
@@ -154,11 +151,32 @@ class AnalyticsController @Inject constructor(
     oppiaEventLogs.eventLogList.withIndex()
       .minBy { it.value.timestamp }?.index
 
+  /** Returns a data provider for log reports that have been recorded for upload. */
+  fun getEventLogStore(): DataProvider<OppiaEventLogs> {
+    return eventLogStore
+  }
+
   /**
-   * Returns a [LiveData] result which can be used to get [OppiaEventLogs]
-   * for the purpose of uploading in the presence of network connectivity.
+   * Returns a list of event log reports that have been recorded for upload.
+   *
+   * As we are using the await call on the deferred output of readDataAsync, the failure case would be caught and it'll throw an error.
    */
-  fun getEventLogs(): LiveData<AsyncResult<OppiaEventLogs>> {
-    return dataProviders.convertToLiveData(eventLogStore)
+  suspend fun getEventLogStoreList(): MutableList<EventLog> {
+    return eventLogStore.readDataAsync().await().eventLogList
+  }
+
+  /** Removes the first event log report that had been recorded for upload. */
+  fun removeFirstEventLogFromStore() {
+    eventLogStore.storeDataAsync(updateInMemoryCache = true) { oppiaEventLogs ->
+      return@storeDataAsync oppiaEventLogs.toBuilder().removeEventLog(0).build()
+    }.invokeOnCompletion {
+      it?.let {
+        consoleLogger.e(
+          "Analytics Controller",
+          "Failed to remove event log",
+          it
+        )
+      }
+    }
   }
 }
