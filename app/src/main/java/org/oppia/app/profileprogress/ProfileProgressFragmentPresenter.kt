@@ -12,7 +12,6 @@ import org.oppia.app.databinding.ProfileProgressHeaderBinding
 import org.oppia.app.databinding.ProfileProgressRecentlyPlayedStoryCardBinding
 import org.oppia.app.fragment.FragmentScope
 import org.oppia.app.recyclerview.BindableAdapter
-import org.oppia.app.viewmodel.ViewModelProvider
 import javax.inject.Inject
 
 private const val TAG_PROFILE_PICTURE_EDIT_DIALOG = "PROFILE_PICTURE_EDIT_DIALOG"
@@ -21,9 +20,12 @@ private const val TAG_PROFILE_PICTURE_EDIT_DIALOG = "PROFILE_PICTURE_EDIT_DIALOG
 @FragmentScope
 class ProfileProgressFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<ProfileProgressViewModel>
+  private val fragment: Fragment
 ) {
+
+  @Inject
+  lateinit var viewModel: ProfileProgressViewModel
+
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -56,7 +58,6 @@ class ProfileProgressFragmentPresenter @Inject constructor(
       adapter = createRecyclerViewAdapter()
     }
 
-    val viewModel = getProfileProgressViewModel()
     viewModel.setProfileId(internalProfileId)
     viewModel.handleOnConfigurationChange()
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
@@ -90,10 +91,6 @@ class ProfileProgressFragmentPresenter @Inject constructor(
         transformViewModel = { it as RecentlyPlayedStorySummaryViewModel }
       )
       .build()
-  }
-
-  private fun getProfileProgressViewModel(): ProfileProgressViewModel {
-    return viewModelProvider.getForFragment(fragment, ProfileProgressViewModel::class.java)
   }
 
   private enum class ViewType {

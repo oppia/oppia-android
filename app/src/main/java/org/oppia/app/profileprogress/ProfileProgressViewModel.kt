@@ -34,7 +34,7 @@ class ProfileProgressViewModel @Inject constructor(
   private val topicListController: TopicListController,
   private val logger: ConsoleLogger,
   @StoryHtmlParserEntityType private val entityType: String
-) : ObservableViewModel() {
+) {
   /** [internalProfileId] needs to be set before any of the live data members can be accessed. */
   private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
