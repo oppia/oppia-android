@@ -1,6 +1,5 @@
 """
-Creates an Oppia test target for running the specified test as an Android local test with Kotlin
-support. Note that this creates an additional, internal library.
+Root leve macro file
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
@@ -16,6 +15,8 @@ def oppia_android_test(
         enable_data_binding = False,
         assets = None,
         assets_dir = None):
+    # Creates an Oppia test target for running the specified test as an Android local test with Kotlin
+    # support. Note that this creates an additional, internal library.
     # Args:
     #   name: str. The name of the Kotlin test file without the '.kt' suffix.
     #   srcs: list of str. The name of the Kotlin test files to be run.

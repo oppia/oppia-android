@@ -1,11 +1,12 @@
 """
-Creates individual tests for test files in the domain module.
+Domain Module macro file
 """
 
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
 # TODO(#1620): Remove module-specific test macros once Gradle is removed
 def domain_test(name, srcs, test_class, deps):
+    # Creates individual tests for test files in the domain module.
     # Args:
     #   name: str. The name of the Kotlin test file without the '.kt' suffix.
     #   srcs: list of str. The list of test files to be run.

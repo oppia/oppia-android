@@ -1,13 +1,14 @@
 """
-This macro exists as a way to build proto files that contain import statements in both Gradle
-and Bazel.
-This macro formats the src file's import statements to contain a full path to the file in order
-for Bazel to properly locate file.
+Model Module macro file
 """
 
 load("@rules_proto//proto:defs.bzl", "proto_library")
 
 def format_import_proto_library(name, src, deps):
+    # This macro exists as a way to build proto files that contain import statements in both Gradle
+    #       and Bazel.
+    # This macro formats the src file's import statements to contain a full path to the file in order
+    #       for Bazel to properly locate file.
     # Args:
     #   name: str. The name of the .proto file without the '.proto' suffix. This will be the root for
     #       the name of the proto library created. Ex: If name = 'topic', then the src file is

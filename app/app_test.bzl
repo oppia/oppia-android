@@ -1,11 +1,12 @@
 """
-Creates individual tests for test files in the app module.
+App Module macro file
 """
 
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
 # TODO(#1620): Remove module-specific test macros once Gradle is removed
 def app_test(name, srcs, test_class, deps):
+    # Creates individual tests for test files in the app module.
     # Args:
     #   name: str. The name of the Kotlin test file without the '.kt' suffix.
     #   src: list of str. The list of test files to be run.

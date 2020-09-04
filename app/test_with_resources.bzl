@@ -1,8 +1,9 @@
 """
-Genrule for test files.
+App module macro file for resource
 """
 
 def test_with_resources(name):
+    # Genrule for test files.
     # Because each databinding library must have a unique package name and manifest, resources must be
     # imported using the proper package name when building with Bazel. This genrule alters those imports
     # in order to keep Gradle building.
