@@ -11,7 +11,7 @@ class LogUploadWorkerFactory @Inject constructor(
   private val workerFactory: LogUploadChildWorkerFactory
 ) : WorkerFactory() {
 
-  /** Returns a [LogUploadWorker] after injecting [appContext] and [workerParameters] into [LogUploadChildWorkerFactory]. */
+  /** Returns a new [LogUploadWorker] for the given context and parameters. */
   override fun createWorker(
     appContext: Context,
     workerClassName: String,

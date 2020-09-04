@@ -5,7 +5,7 @@ import dagger.Module
 
 /** Provides Log Uploader related dependencies. */
 @Module
-interface LogUploaderModule {
+interface FirebaseLogUploaderModule {
   @Binds
   fun bindFirebaseLogUploader(firebaseLogUploader: FirebaseLogUploader): LogUploader
 }

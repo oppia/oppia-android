@@ -54,10 +54,6 @@ import javax.inject.Singleton
 @Config(manifest = Config.NONE)
 class LogUploadWorkerTest {
 
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
   @Inject
   lateinit var networkConnectionUtil: NetworkConnectionUtil
 
@@ -214,7 +210,7 @@ class LogUploadWorkerTest {
   }
 
   @Module
-  interface TestLogUploaderModule {
+  interface TestFirebaseLogUploaderModule {
 
     @Binds
     fun bindsFakeLogUploader(fakeLogUploader: FakeLogUploader): LogUploader
@@ -224,12 +220,9 @@ class LogUploadWorkerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class,
-      TestLogReportingModule::class,
-      TestLogStorageModule::class,
-      TestDispatcherModule::class,
-      LogUploadWorkerModule::class,
-      TestLogUploaderModule::class
+      TestModule::class, TestLogReportingModule::class,
+      TestLogStorageModule::class, TestDispatcherModule::class,
+      LogUploadWorkerModule::class, TestFirebaseLogUploaderModule::class
     ]
   )
   interface TestApplicationComponent {

@@ -49,7 +49,7 @@ import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
-import org.oppia.domain.oppialogger.loguploader.LogUploaderModule
+import org.oppia.domain.oppialogger.loguploader.FirebaseLogUploaderModule
 import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
@@ -223,7 +223,8 @@ class DefaultAudioFragmentTest {
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, ApplicationStartupListenerModule::class,
       RatioInputModule::class, HintsAndSolutionConfigModule::class,
-      WorkManagerConfigurationModule::class, LogUploadWorkerModule::class, LogUploaderModule::class
+      WorkManagerConfigurationModule::class, LogUploadWorkerModule::class,
+      FirebaseLogUploaderModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

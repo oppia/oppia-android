@@ -10,10 +10,8 @@ private const val OPPIA_EVENT_WORK = "OPPIA_EVENT_WORK_REQUEST"
 private const val OPPIA_EXCEPTION_WORK = "OPPIA_EXCEPTION_WORK_REQUEST"
 
 /** Enqueues work requests for uploading stored event/exception logs to the remote service. */
-@Singleton
 class FirebaseLogUploader @Inject constructor() : LogUploader {
 
-  /** Enqueues a unique periodic work request for uploading exceptions to the remote service. */
   override fun enqueueWorkRequestForEvents(
     workManager: WorkManager,
     workRequest: PeriodicWorkRequest
@@ -25,7 +23,6 @@ class FirebaseLogUploader @Inject constructor() : LogUploader {
     )
   }
 
-  /** Enqueues a unique periodic work request for uploading exceptions to the remote service. */
   override fun enqueueWorkRequestForExceptions(
     workManager: WorkManager,
     workRequest: PeriodicWorkRequest

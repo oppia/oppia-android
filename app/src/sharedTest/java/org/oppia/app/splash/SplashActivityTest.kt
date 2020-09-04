@@ -54,7 +54,7 @@ import org.oppia.domain.onboarding.testing.ExpirationMetaDataRetrieverTestModule
 import org.oppia.domain.onboarding.testing.FakeExpirationMetaDataRetriever
 import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
-import org.oppia.domain.oppialogger.loguploader.LogUploaderModule
+import org.oppia.domain.oppialogger.loguploader.FirebaseLogUploaderModule
 import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
@@ -286,7 +286,7 @@ class SplashActivityTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, HintsAndSolutionConfigModule::class,
       LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
-      LogUploaderModule::class
+      FirebaseLogUploaderModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent, ApplicationInjector {

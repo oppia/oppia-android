@@ -156,14 +156,14 @@ class AnalyticsController @Inject constructor(
     return eventLogStore
   }
 
-  /** Returns a list of [EventLog] after reading from [eventLogStore]. */
+  /** Returns a list of event log reports that have been recorded for upload. */
   suspend fun getEventLogStoreList(): MutableList<EventLog> {
     return eventLogStore.readDataAsync().await().eventLogList
   }
 
-  /** Removes the first [EventLog] from the [eventLogStore]. */
+  /** Removes the first event log report that had been recorded for upload. */
   fun removeFirstEventLogFromStore() {
-    eventLogStore.storeDataAsync(true) { oppiaEventLogs ->
+    eventLogStore.storeDataAsync(/* updateInMemoryCache= */true) { oppiaEventLogs ->
       return@storeDataAsync oppiaEventLogs.toBuilder().removeEventLog(0).build()
     }.invokeOnCompletion {
       it?.let {

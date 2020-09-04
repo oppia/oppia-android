@@ -25,7 +25,7 @@ import org.oppia.domain.oppialogger.ApplicationStartupListener
 import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.oppialogger.exceptions.UncaughtExceptionLoggerModule
 import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
-import org.oppia.domain.oppialogger.loguploader.LogUploaderModule
+import org.oppia.domain.oppialogger.loguploader.FirebaseLogUploaderModule
 import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
@@ -64,7 +64,7 @@ import javax.inject.Singleton
     ExpirationMetaDataRetrieverModule::class, RatioInputModule::class,
     UncaughtExceptionLoggerModule::class, ApplicationStartupListenerModule::class,
     LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
-    HintsAndSolutionConfigModule::class, LogUploaderModule::class
+    HintsAndSolutionConfigModule::class, FirebaseLogUploaderModule::class
   ]
 )
 

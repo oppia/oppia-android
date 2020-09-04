@@ -12,7 +12,7 @@ interface LogUploadWorkerModule {
 
   @Binds
   fun bindLogUploadWorkerFactory(
-    worker: LogUploadWorker.FactoryLogUpload
+    worker: LogUploadWorker.Factory
   ): LogUploadChildWorkerFactory
 
   @Binds

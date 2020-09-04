@@ -74,13 +74,13 @@ class LogUploadWorker private constructor(
       }
       Result.success()
     } catch (e: Exception) {
-      consoleLogger.e(TAG, e.toString(), e)
+      consoleLogger.e(TAG, "Failed to upload events", e)
       Result.failure()
     }
   }
 
   /** Creates an instance of [LogUploadWorker] by properly injecting dependencies. */
-  class FactoryLogUpload @Inject constructor(
+  class Factory @Inject constructor(
     private val analyticsController: AnalyticsController,
     private val exceptionsController: ExceptionsController,
     private val exceptionLogger: ExceptionLogger,

@@ -104,7 +104,7 @@ import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
-import org.oppia.domain.oppialogger.loguploader.LogUploaderModule
+import org.oppia.domain.oppialogger.loguploader.FirebaseLogUploaderModule
 import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_1
@@ -1434,7 +1434,8 @@ class StateFragmentTest {
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, HintsAndSolutionConfigFastShowTestModule::class,
-      WorkManagerConfigurationModule::class, LogUploadWorkerModule::class, LogUploaderModule::class
+      WorkManagerConfigurationModule::class, LogUploadWorkerModule::class,
+      FirebaseLogUploaderModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

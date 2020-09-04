@@ -205,7 +205,7 @@ class LogUploadWorkManagerInitializerTest {
   }
 
   @Module
-  interface TestLogUploaderModule {
+  interface TestFirebaseLogUploaderModule {
 
     @Binds
     fun bindsFakeLogUploader(fakeLogUploader: FakeLogUploader): LogUploader
@@ -215,12 +215,9 @@ class LogUploadWorkManagerInitializerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class,
-      TestLogReportingModule::class,
-      TestLogStorageModule::class,
-      TestDispatcherModule::class,
-      LogUploadWorkerModule::class,
-      TestLogUploaderModule::class
+      TestModule::class, TestLogReportingModule::class,
+      TestLogStorageModule::class, TestDispatcherModule::class,
+      LogUploadWorkerModule::class, TestFirebaseLogUploaderModule::class
     ]
   )
   interface TestApplicationComponent {
@@ -239,8 +236,8 @@ class LogUploadWorkManagerInitializerTest {
 @Singleton
 class FakeLogUploader @Inject constructor() : LogUploader {
 
-  private val eventRequestIdList = ArrayList<UUID>()
-  private val exceptionRequestIdList = ArrayList<UUID>()
+  private val eventRequestIdList = mutableListOf<UUID>()
+  private val exceptionRequestIdList = mutableListOf<UUID>()
 
   override fun enqueueWorkRequestForEvents(
     workManager: WorkManager,

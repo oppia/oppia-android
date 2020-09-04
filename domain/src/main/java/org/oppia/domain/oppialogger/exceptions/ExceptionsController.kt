@@ -163,14 +163,15 @@ class ExceptionsController @Inject constructor(
     return exceptionLogStore
   }
 
-  /** Returns a list of [ExceptionLog] after reading from [exceptionLogStore]. */
+  /** Returns a list of exception log reports which have been recorded for upload. */
   suspend fun getExceptionLogStoreList(): MutableList<ExceptionLog> {
     return exceptionLogStore.readDataAsync().await().exceptionLogList
   }
 
-  /** Removes the first [ExceptionLog] from the [exceptionLogStore]. */
+  /** Removes the first exception log report that had been recorded for upload. */
   fun removeFirstExceptionLogFromStore() {
-    exceptionLogStore.storeDataAsync(true) { oppiaExceptionLogs ->
+    exceptionLogStore.storeDataAsync(/* updateInMemoryCache = */true)
+    { oppiaExceptionLogs ->
       return@storeDataAsync oppiaExceptionLogs.toBuilder().removeExceptionLog(0).build()
     }.invokeOnCompletion {
       it?.let {
