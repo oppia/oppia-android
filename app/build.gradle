@@ -33,8 +33,15 @@ android {
   }
   buildTypes {
     release {
-      minifyEnabled false
+      minifyEnabled true
+      shrinkResources true
       proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    }
+  }
+  splits {
+    // See: https://developer.android.com/studio/build/configure-apk-splits
+    density {
+      enable true
     }
   }
   dataBinding {
