@@ -18,7 +18,8 @@
     <item
       android:id="@+id/nav_my_downloads"
       android:icon="@drawable/ic_folder_open_24dp"
-      android:title="@string/menu_my_downloads" />
+      android:title="@string/menu_my_downloads"
+      android:visible="false" />
     <item
       android:id="@+id/nav_switch_profile"
       android:icon="@drawable/ic_profile_exit"
