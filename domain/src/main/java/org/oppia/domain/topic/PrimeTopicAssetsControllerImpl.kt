@@ -149,11 +149,11 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
       val conceptCardImageUrls = conceptCards.flatMap(::collectImageUrls)
       val revisionCardImageUrls = revisionCards.flatMap(::collectImageUrls)
       val imageUrls = (
-        thumbnailUrls
-          + explorationImageUrls
-          + questionImageUrls
-          + conceptCardImageUrls
-          + revisionCardImageUrls
+        thumbnailUrls +
+          explorationImageUrls +
+          questionImageUrls +
+          conceptCardImageUrls +
+          revisionCardImageUrls
         ).toSet()
       logger.d("AssetRepo", "Downloading up to ${imageUrls.size} images")
       val startTime = SystemClock.elapsedRealtime()
@@ -352,7 +352,7 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
   }
 
   private fun collectImageUrls(exploration: Exploration): Collection<String> {
-    return collectImageUrls(exploration, exploration.id, explorationEntityType,::getUriForImage) {
+    return collectImageUrls(exploration, exploration.id, explorationEntityType, ::getUriForImage) {
       collectSubtitledHtmls(it.statesMap.values)
     }
   }
@@ -456,7 +456,9 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
   }
 
   private fun getUriForQuestionImage(
-    entityId: String, entityType: String, imageFileName: String
+    entityId: String,
+    entityType: String,
+    imageFileName: String
   ): String {
     return computeUrlForImageDownloads(
       imageDownloadUrlTemplate, questionGcsResource, entityType, entityId, imageFileName
@@ -464,7 +466,9 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
   }
 
   private fun getUriForThumbnail(
-    entityId: String, entityType: String, imageFileName: String
+    entityId: String,
+    entityType: String,
+    imageFileName: String
   ): String {
     return computeUrlForImageDownloads(
       thumbnailDownloadUrlTemplate, gcsResource, entityType, entityId, imageFileName
