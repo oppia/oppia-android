@@ -94,6 +94,7 @@ class CustomHtmlContentHandler private constructor(
           currentTrackedCustomTags += TrackedCustomTag(
             localCurrentTrackedTag.tag, localCurrentTrackedTag.attributes, output.length
           )
+          customTagHandlers.getValue(tag).handleOpeningTag(output)
         }
       }
       tag in customTagHandlers -> {
@@ -105,6 +106,7 @@ class CustomHtmlContentHandler private constructor(
           "Expected tracked tag $currentTrackedTag to match custom tag: $tag"
         }
         val (_, attributes, openTagIndex) = currentTrackedCustomTag
+        customTagHandlers.getValue(tag).handleClosingTag(output)
         customTagHandlers.getValue(tag).handleTag(attributes, openTagIndex, output.length, output)
       }
     }
@@ -122,12 +124,32 @@ class CustomHtmlContentHandler private constructor(
     /**
      * Called when a custom tag is encountered. This is always called after the closing tag.
      *
-     * @param attributes The tag's attributes
-     * @param openIndex The index in the output [Editable] at which this tag begins
-     * @param closeIndex The index in the output [Editable] at which this tag ends
-     * @param output The destination [Editable] to which spans can be added
+     * @param attributes the tag's attributes
+     * @param openIndex the index in the output [Editable] at which this tag begins
+     * @param closeIndex the index in the output [Editable] at which this tag ends
+     * @param output the destination [Editable] to which spans can be added
      */
-    fun handleTag(attributes: Attributes, openIndex: Int, closeIndex: Int, output: Editable)
+    fun handleTag(attributes: Attributes, openIndex: Int, closeIndex: Int, output: Editable) {}
+
+    /**
+     * Called when the opening of a custom tag is encountered. This does not support processing
+     * attributes of the tag--[handleTag] should be used, instead.
+     *
+     * This function will always be called before [handleClosingTag].
+     *
+     * @param output the destination [Editable] to which spans can be added
+     */
+    fun handleOpeningTag(output: Editable) {}
+
+    /**
+     * Called when the closing of a custom tag is encountered. This does not support processing
+     * attributes of the tag--[handleTag] should be used, instead.
+     *
+     * This function will always be called before [handleClosingTag].
+     *
+     * @param output the destination [Editable] to which spans can be added
+     */
+    fun handleClosingTag(output: Editable) {}
   }
 
   companion object {
