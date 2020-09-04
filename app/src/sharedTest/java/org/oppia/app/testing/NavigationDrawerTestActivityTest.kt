@@ -49,6 +49,7 @@ import org.hamcrest.Matchers.instanceOf
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
@@ -326,7 +327,9 @@ class NavigationDrawerTestActivityTest {
     }
   }
 
+  // TODO(#1806): Enable this once lowfi implementation is done.
   @Test
+  @Ignore("My Downloads is removed until we have full download support.")
   fun testNavigationDrawerTestActivity_openNavigationDrawer_selectMyDownloadsMenuInNavigationDrawer_showsMyDownloadsFragmentSuccessfully() { // ktlint-disable max-line-length
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
