@@ -70,7 +70,6 @@ class UrlImageParser private constructor(
 
     override fun onResourceReady(resource: T, transition: Transition<in T>?) {
       val drawable = drawableFactory(resource)
-      val viewMaxWidth = htmlContentTextView.maxWidth.takeIf { it != -1 && it != Int.MAX_VALUE} ?: 0
       htmlContentTextView.post {
         htmlContentTextView.width { viewWidth ->
           val layoutParams = htmlContentTextView.layoutParams
