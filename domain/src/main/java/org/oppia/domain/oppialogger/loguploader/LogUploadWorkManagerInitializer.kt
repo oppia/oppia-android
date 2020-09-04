@@ -7,6 +7,7 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import org.oppia.domain.oppialogger.ApplicationStartupListener
+import org.oppia.util.logging.LogUploader
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject

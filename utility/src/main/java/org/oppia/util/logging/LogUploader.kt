@@ -1,4 +1,4 @@
-package org.oppia.domain.oppialogger.loguploader
+package org.oppia.util.logging
 
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager

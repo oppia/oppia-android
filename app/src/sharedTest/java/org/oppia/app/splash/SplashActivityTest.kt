@@ -53,7 +53,7 @@ import org.oppia.domain.onboarding.AppStartupStateController
 import org.oppia.domain.onboarding.testing.ExpirationMetaDataRetrieverTestModule
 import org.oppia.domain.onboarding.testing.FakeExpirationMetaDataRetriever
 import org.oppia.domain.oppialogger.LogStorageModule
-import org.oppia.domain.oppialogger.loguploader.FirebaseLogUploaderModule
+import org.oppia.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.domain.question.QuestionModule

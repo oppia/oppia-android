@@ -1,7 +1,8 @@
-package org.oppia.domain.oppialogger.loguploader
+package org.oppia.util.logging.firebase
 
 import dagger.Binds
 import dagger.Module
+import org.oppia.util.logging.LogUploader
 
 /** Provides Log Uploader related dependencies. */
 @Module

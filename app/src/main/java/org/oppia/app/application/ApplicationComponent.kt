@@ -24,7 +24,6 @@ import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.domain.oppialogger.ApplicationStartupListener
 import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.oppialogger.exceptions.UncaughtExceptionLoggerModule
-import org.oppia.domain.oppialogger.loguploader.FirebaseLogUploaderModule
 import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.domain.question.QuestionModule
@@ -33,6 +32,7 @@ import org.oppia.util.accessibility.AccessibilityModule
 import org.oppia.util.caching.CachingModule
 import org.oppia.util.gcsresource.GcsResourceModule
 import org.oppia.util.logging.LoggerModule
+import org.oppia.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.util.logging.firebase.LogReportingModule
 import org.oppia.util.parser.GlideImageLoaderModule
 import org.oppia.util.parser.HtmlParserEntityTypeModule

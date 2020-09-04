@@ -40,6 +40,7 @@ import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
+import org.oppia.util.logging.LogUploader
 import org.oppia.util.networking.NetworkConnectionUtil
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -233,7 +234,8 @@ class LogUploadWorkManagerInitializerTest {
 
 /**  A test specific fake for the log uploader. */
 @Singleton
-class FakeLogUploader @Inject constructor() : LogUploader {
+class FakeLogUploader @Inject constructor() :
+  LogUploader {
 
   private val eventRequestIdList = mutableListOf<UUID>()
   private val exceptionRequestIdList = mutableListOf<UUID>()

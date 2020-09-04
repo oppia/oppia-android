@@ -1,15 +1,17 @@
-package org.oppia.domain.oppialogger.loguploader
+package org.oppia.util.logging.firebase
 
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
+import org.oppia.util.logging.LogUploader
 import javax.inject.Inject
 
 private const val OPPIA_EVENT_WORK = "OPPIA_EVENT_WORK_REQUEST"
 private const val OPPIA_EXCEPTION_WORK = "OPPIA_EXCEPTION_WORK_REQUEST"
 
 /** Enqueues work requests for uploading stored event/exception logs to the remote service. */
-class FirebaseLogUploader @Inject constructor() : LogUploader {
+class FirebaseLogUploader @Inject constructor() :
+  LogUploader {
 
   override fun enqueueWorkRequestForEvents(
     workManager: WorkManager,
