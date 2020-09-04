@@ -465,6 +465,15 @@ class HomeActivityTest {
   }
 
   @Test
+  fun testHomeActivity_onBackPressed_orientationChange_showsExitToProfileChooserDialog() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      pressBack()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withText(R.string.home_activity_back_dialog_message)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
   fun testHomeActivity_onBackPressed_clickExit_checkOpensProfileActivity() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       pressBack()

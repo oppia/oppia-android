@@ -129,4 +129,6 @@ class StateFragment :
   fun revealSolution(saveUserChoice: Boolean) {
     stateFragmentPresenter.revealSolution(saveUserChoice)
   }
+
+  fun dismissConceptCard() = stateFragmentPresenter.dismissConceptCard()
 }

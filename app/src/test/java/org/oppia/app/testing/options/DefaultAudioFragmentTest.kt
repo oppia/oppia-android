@@ -31,6 +31,7 @@ import org.oppia.app.application.ApplicationStartupListenerModule
 import org.oppia.app.options.AUDIO_LANGUAGE
 import org.oppia.app.options.DefaultAudioActivity
 import org.oppia.app.options.OptionsActivity
+import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -47,6 +48,8 @@ import org.oppia.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.domain.oppialogger.LogStorageModule
+import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.testing.TestAccessibilityModule
@@ -58,6 +61,7 @@ import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.caching.testing.CachingTestModule
 import org.oppia.util.gcsresource.GcsResourceModule
 import org.oppia.util.logging.LoggerModule
+import org.oppia.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.util.parser.GlideImageLoaderModule
 import org.oppia.util.parser.HtmlParserEntityTypeModule
 import org.oppia.util.parser.ImageParsingModule
@@ -218,7 +222,9 @@ class DefaultAudioFragmentTest {
       ImageClickInputModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, ApplicationStartupListenerModule::class,
-      RatioInputModule::class
+      RatioInputModule::class, HintsAndSolutionConfigModule::class,
+      WorkManagerConfigurationModule::class, LogUploadWorkerModule::class,
+      FirebaseLogUploaderModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

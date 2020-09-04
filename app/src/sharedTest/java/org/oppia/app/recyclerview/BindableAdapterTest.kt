@@ -4,6 +4,7 @@ import android.app.Application
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
@@ -14,25 +15,60 @@ import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import dagger.BindsInstance
 import dagger.Component
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.activity.ActivityComponent
+import org.oppia.app.application.ActivityComponentFactory
+import org.oppia.app.application.ApplicationComponent
+import org.oppia.app.application.ApplicationInjector
+import org.oppia.app.application.ApplicationInjectorProvider
+import org.oppia.app.application.ApplicationModule
+import org.oppia.app.application.ApplicationStartupListenerModule
 import org.oppia.app.databinding.TestTextViewForIntWithDataBindingBinding
 import org.oppia.app.databinding.TestTextViewForStringWithDataBindingBinding
 import org.oppia.app.model.TestModel
 import org.oppia.app.model.TestModel.ModelTypeCase
+import org.oppia.app.parser.HtmlParserTest
+import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
+import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.app.testing.BINDABLE_TEST_FRAGMENT_TAG
 import org.oppia.app.testing.BindableAdapterTestActivity
 import org.oppia.app.testing.BindableAdapterTestFragment
 import org.oppia.app.testing.BindableAdapterTestFragmentPresenter
 import org.oppia.app.testing.BindableAdapterTestViewModel
+import org.oppia.domain.classify.InteractionsModule
+import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
+import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.domain.classify.rules.imageClickInput.ImageClickInputModule
+import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
+import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.domain.classify.rules.ratioinput.RatioInputModule
+import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
+import org.oppia.domain.oppialogger.LogStorageModule
+import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
+import org.oppia.domain.question.QuestionModule
+import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.testing.TestAccessibilityModule
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
+import org.oppia.testing.TestLogReportingModule
+import org.oppia.util.caching.testing.CachingTestModule
+import org.oppia.util.gcsresource.GcsResourceModule
+import org.oppia.util.logging.LoggerModule
+import org.oppia.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.util.parser.HtmlParserEntityTypeModule
+import org.oppia.util.parser.ImageParsingModule
+import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -40,6 +76,7 @@ import javax.inject.Singleton
 /** Tests for [BindableAdapter]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
+@Config(application = BindableAdapterTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class BindableAdapterTest {
   companion object {
     private val STR_VALUE_0 = TestModel.newBuilder().setStrValue("Item 0").build()
@@ -54,7 +91,8 @@ class BindableAdapterTest {
 
   @Before
   fun setUp() {
-    setUpTestApplication()
+    setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
 
     // Ensure that the bindable fragment's test state is properly reset each time.
     BindableAdapterTestFragmentPresenter.testBindableAdapter = null
@@ -62,6 +100,8 @@ class BindableAdapterTest {
 
   @After
   fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
+
     // Ensure that the bindable fragment's test state is properly cleaned up.
     BindableAdapterTestFragmentPresenter.testBindableAdapter = null
   }
@@ -264,11 +304,8 @@ class BindableAdapterTest {
     }
   }
 
-  private fun setUpTestApplication() {
-    DaggerBindableAdapterTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   private fun createSingleViewTypeNoDataBindingBindableAdapter(): BindableAdapter<TestModel> {
@@ -361,22 +398,48 @@ class BindableAdapterTest {
     return activity.supportFragmentManager.findFragmentByTag(BINDABLE_TEST_FRAGMENT_TAG) as BindableAdapterTestFragment // ktlint-disable max-line-length
   }
 
-  // TODO(#89): Move this to a common test application component.
+  // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
+  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class
+      TestDispatcherModule::class, ApplicationModule::class,
+      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
+      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
+      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
+      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
+      GcsResourceModule::class, HtmlParserTest.ImageTestModule::class, ImageParsingModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
+      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
+      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ViewBindingShimModule::class, RatioInputModule::class,
+      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+      WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
+      FirebaseLogUploaderModule::class
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent : ApplicationComponent, ApplicationInjector {
     @Component.Builder
-    interface Builder {
-      @BindsInstance
-      fun setApplication(application: Application): Builder
-
-      fun build(): TestApplicationComponent
-    }
+    interface Builder : ApplicationComponent.Builder
 
     fun inject(bindableAdapterTest: BindableAdapterTest)
+  }
+
+  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerBindableAdapterTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build() as TestApplicationComponent
+    }
+
+    fun inject(bindableAdapterTest: BindableAdapterTest) {
+      component.inject(bindableAdapterTest)
+    }
+
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
+      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
+    }
+
+    override fun getApplicationInjector(): ApplicationInjector = component
   }
 }

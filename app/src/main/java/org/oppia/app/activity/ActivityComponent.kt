@@ -46,7 +46,6 @@ import org.oppia.app.testing.HtmlParserTestActivity
 import org.oppia.app.testing.ImageRegionSelectionTestActivity
 import org.oppia.app.testing.NavigationDrawerTestActivity
 import org.oppia.app.testing.ProfileChooserFragmentTestActivity
-import org.oppia.app.testing.StoryFragmentTestActivity
 import org.oppia.app.testing.TestFontScaleConfigurationUtilActivity
 import org.oppia.app.testing.TopicRevisionTestActivity
 import org.oppia.app.testing.TopicTestActivity
@@ -120,6 +119,5 @@ interface ActivityComponent {
   fun inject(topicRevisionTestActivity: TopicRevisionTestActivity)
   fun inject(topicTestActivity: TopicTestActivity)
   fun inject(topicTestActivityForStory: TopicTestActivityForStory)
-  fun inject(storyFragmentTestActivity: StoryFragmentTestActivity)
   fun inject(walkthroughActivity: WalkthroughActivity)
 }

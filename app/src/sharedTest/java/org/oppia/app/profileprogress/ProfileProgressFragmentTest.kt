@@ -8,15 +8,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.net.Uri
-import android.os.Handler
-import android.os.Looper
 import android.provider.MediaStore
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
@@ -24,7 +22,6 @@ import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
-import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
@@ -42,7 +39,6 @@ import androidx.test.espresso.util.HumanReadables
 import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.firebase.FirebaseApp
-import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -55,37 +51,70 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.activity.ActivityComponent
+import org.oppia.app.application.ActivityComponentFactory
+import org.oppia.app.application.ApplicationComponent
+import org.oppia.app.application.ApplicationInjector
+import org.oppia.app.application.ApplicationInjectorProvider
+import org.oppia.app.application.ApplicationModule
+import org.oppia.app.application.ApplicationStartupListenerModule
 import org.oppia.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.app.model.ProfileId
 import org.oppia.app.ongoingtopiclist.OngoingTopicListActivity
+import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.domain.classify.InteractionsModule
+import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
+import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.domain.classify.rules.imageClickInput.ImageClickInputModule
+import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
+import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.domain.classify.rules.ratioinput.RatioInputModule
+import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.domain.oppialogger.LogStorageModule
+import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
+import org.oppia.domain.question.QuestionModule
+import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.domain.topic.StoryProgressTestHelper
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.testing.TestAccessibilityModule
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.testing.profile.ProfileTestHelper
+import org.oppia.util.caching.testing.CachingTestModule
+import org.oppia.util.gcsresource.GcsResourceModule
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
 import org.oppia.util.logging.LogLevel
+import org.oppia.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.util.parser.GlideImageLoaderModule
+import org.oppia.util.parser.HtmlParserEntityTypeModule
+import org.oppia.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.concurrent.AbstractExecutorService
-import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [ProfileProgressFragment]. */
-@Config(qualifiers = "port-xxhdpi")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
+@Config(
+  application = ProfileProgressFragmentTest.TestApplication::class,
+  qualifiers = "port-xxhdpi"
+)
 class ProfileProgressFragmentTest {
 
   @Inject
@@ -108,7 +137,7 @@ class ProfileProgressFragmentTest {
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
-    IdlingRegistry.getInstance().register(MainThreadExecutor.countingResource)
+    testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     FirebaseApp.initializeApp(context)
@@ -116,15 +145,8 @@ class ProfileProgressFragmentTest {
 
   @After
   fun tearDown() {
-    IdlingRegistry.getInstance().unregister(MainThreadExecutor.countingResource)
+    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
-  }
-
-  private fun setUpTestApplicationComponent() {
-    DaggerProfileProgressFragmentTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
   }
 
   private fun createProfileProgressActivityIntent(profileId: Int): Intent {
@@ -137,6 +159,7 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressFragment_checkProfileName_profileNameIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       waitForTheView(withText("Admin"))
       onView(
         atPositionOnView(R.id.profile_progress_list, 0, R.id.profile_name_text_view)
@@ -149,6 +172,7 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressFragment_configurationChange_checkProfileName_profileNameIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       waitForTheView(withText("Admin"))
       onView(
@@ -162,6 +186,7 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressFragment_openProfilePictureEditDialog() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       waitForTheView(withText("Admin"))
       onView(
         atPositionOnView(
@@ -170,6 +195,7 @@ class ProfileProgressFragmentTest {
           R.id.profile_edit_image
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.profile_progress_edit_dialog_title)).inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -178,6 +204,7 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressFragment_openProfilePictureEditDialog_configurationChange_dialogIsStillOpen() { // ktlint-disable max-line-length
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       waitForTheView(withText("Admin"))
       onView(
         atPositionOnView(
@@ -186,6 +213,7 @@ class ProfileProgressFragmentTest {
           R.id.profile_edit_image
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.profile_progress_edit_dialog_title)).inRoot(isDialog())
         .check(matches(isDisplayed()))
       onView(isRoot()).perform(orientationLandscape())
@@ -202,6 +230,7 @@ class ProfileProgressFragmentTest {
     val activityResult = createGalleryPickActivityResultStub()
     intending(expectedIntent).respondWith(activityResult)
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       waitForTheView(withText("Admin"))
       onView(
         atPositionOnView(
@@ -210,6 +239,7 @@ class ProfileProgressFragmentTest {
           R.id.profile_edit_image
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.profile_progress_edit_dialog_title)).inRoot(isDialog())
         .check(matches(isDisplayed()))
       onView(withText(R.string.profile_picture_edit_alert_dialog_choose_from_library))
@@ -258,6 +288,7 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkOngoingTopicsCount_countIsZero() { // ktlint-disable max-line-length
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       waitForTheView(withText("0"))
       onView(
         atPositionOnView(R.id.profile_progress_list, 0, R.id.ongoing_topics_count)
@@ -279,6 +310,7 @@ class ProfileProgressFragmentTest {
     )
     testCoroutineDispatchers.runCurrent()
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       waitForTheView(withText("2"))
       onView(
         atPositionOnView(R.id.profile_progress_list, 0, R.id.ongoing_topics_count)
@@ -300,7 +332,9 @@ class ProfileProgressFragmentTest {
     )
     testCoroutineDispatchers.runCurrent()
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       waitForTheView(withText("2"))
       onView(
         atPositionOnView(R.id.profile_progress_list, 0, R.id.ongoing_topics_count)
@@ -313,6 +347,7 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkOngoingTopicsString_descriptionIsCorrect() { // ktlint-disable max-line-length
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       waitForTheView(withText(R.string.topics_in_progress))
       onView(
         atPositionOnView(
@@ -337,6 +372,7 @@ class ProfileProgressFragmentTest {
     )
     testCoroutineDispatchers.runCurrent()
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       waitForTheView(withText(R.string.topics_in_progress))
       onView(
         atPositionOnView(
@@ -361,7 +397,9 @@ class ProfileProgressFragmentTest {
     )
     testCoroutineDispatchers.runCurrent()
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       waitForTheView(withText(R.string.topics_in_progress))
       onView(
         atPositionOnView(
@@ -377,6 +415,7 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkCompletedStoriesCount_countIsZero() { // ktlint-disable max-line-length
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       waitForTheView(withText("0"))
       onView(
         atPositionOnView(R.id.profile_progress_list, 0, R.id.completed_stories_count)
@@ -398,6 +437,7 @@ class ProfileProgressFragmentTest {
     )
     testCoroutineDispatchers.runCurrent()
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       waitForTheView(withText("2"))
       onView(
         atPositionOnView(R.id.profile_progress_list, 0, R.id.completed_stories_count)
@@ -410,6 +450,7 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressFragmentNoProgress_recyclerViewItem0_checkCompletedStoriesString_descriptionIsCorrect() { // ktlint-disable max-line-length
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       waitForTheView(withText(R.string.stories_completed))
       onView(
         atPositionOnView(
@@ -435,6 +476,7 @@ class ProfileProgressFragmentTest {
     )
     testCoroutineDispatchers.runCurrent()
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       waitForTheView(withText(R.string.stories_completed))
       onView(
         atPositionOnView(
@@ -451,7 +493,9 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressActivity_changeConfiguration_recyclerViewItem1_storyNameIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_progress_list))
         .perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       waitForTheView(withText("First Story"))
@@ -466,6 +510,7 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressActivity_recyclerViewItem1_storyNameIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_progress_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -486,6 +531,7 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressActivity_recyclerViewItem1_topicNameIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_progress_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -506,6 +552,7 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressActivity_clickRecyclerViewItem1_intentIsCorrect() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_progress_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -518,6 +565,7 @@ class ProfileProgressFragmentTest {
           1, R.id.topic_name_text_view
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId))
       intended(hasExtra(TopicActivity.getTopicIdKey(), TEST_TOPIC_ID_0))
@@ -528,12 +576,14 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressActivity_recyclerViewIndex0_clickViewAll_opensRecentlyPlayedActivity() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       waitForTheView(withText("Admin"))
       onView(atPositionOnView(R.id.profile_progress_list, 0, R.id.view_all_text_view))
         .check(
           matches(withText("View All"))
         )
         .perform(click())
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(RecentlyPlayedActivity::class.java.name))
       intended(
         hasExtra(
@@ -547,6 +597,7 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressActivityNoProgress_recyclerViewIndex0_clickTopicCount_isNotClickable() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       waitForTheView(withText(R.string.topics_in_progress))
       onView(
         atPositionOnView(
@@ -562,6 +613,7 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressActivityNoProgress_recyclerViewIndex0_clickStoryCount_isNotClickable() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       waitForTheView(withText(R.string.stories_completed))
       onView(
         atPositionOnView(
@@ -577,7 +629,9 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressActivityNoProgress_recyclerViewIndex0_changeConfiguration_clickStoryCount_isNotClickable() { // ktlint-disable max-line-length
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       waitForTheView(withText(R.string.stories_completed))
       onView(
         atPositionOnView(
@@ -602,6 +656,7 @@ class ProfileProgressFragmentTest {
     )
     testCoroutineDispatchers.runCurrent()
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       waitForTheView(withText(R.string.topics_in_progress))
       onView(
         atPositionOnView(
@@ -610,6 +665,7 @@ class ProfileProgressFragmentTest {
           R.id.ongoing_topics_container
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(OngoingTopicListActivity::class.java.name))
       intended(
         hasExtra(
@@ -632,6 +688,7 @@ class ProfileProgressFragmentTest {
     )
     testCoroutineDispatchers.runCurrent()
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       waitForTheView(withText(R.string.stories_completed))
       onView(
         atPositionOnView(
@@ -640,6 +697,7 @@ class ProfileProgressFragmentTest {
           R.id.completed_stories_container
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(CompletedStoryListActivity::class.java.name))
       intended(
         hasExtra(
@@ -712,12 +770,6 @@ class ProfileProgressFragmentTest {
 
   @Module
   class TestModule {
-    @Provides
-    @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
-
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
     @EnableConsoleLog
@@ -733,64 +785,51 @@ class ProfileProgressFragmentTest {
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
   }
 
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
+  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      TestDispatcherModule::class
+      TestModule::class, TestDispatcherModule::class, ApplicationModule::class,
+      ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
+      MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
+      NumericInputRuleModule::class, TextInputRuleModule::class, DragDropSortInputModule::class,
+      ImageClickInputModule::class, InteractionsModule::class, GcsResourceModule::class,
+      GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
+      QuestionModule::class, TestLogReportingModule::class, TestAccessibilityModule::class,
+      LogStorageModule::class, CachingTestModule::class, PrimeTopicAssetsControllerModule::class,
+      ExpirationMetaDataRetrieverModule::class, ViewBindingShimModule::class,
+      RatioInputModule::class, ApplicationStartupListenerModule::class,
+      LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
+      HintsAndSolutionConfigModule::class, FirebaseLogUploaderModule::class
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent : ApplicationComponent, ApplicationInjector {
     @Component.Builder
-    interface Builder {
-      @BindsInstance
-      fun setApplication(application: Application): Builder
-
-      fun build(): TestApplicationComponent
-    }
+    interface Builder : ApplicationComponent.Builder
 
     fun inject(optionsFragmentTest: ProfileProgressFragmentTest)
   }
 
-  // TODO(#59): Move this to a general-purpose testing library that replaces all CoroutineExecutors with an
-  //  Espresso-enabled executor service. This service should also allow for background threads to run in both Espresso
-  //  and Robolectric to help catch potential race conditions, rather than forcing parallel execution to be sequential
-  //  and immediate.
-  //  NB: This also blocks on #59 to be able to actually create a test-only library.
-  /**
-   * An executor service that schedules all [Runnable]s to run asynchronously on the main thread. This is based on:
-   * https://android.googlesource.com/platform/packages/apps/TV/+/android-live-tv/src/com/android/tv/util/MainThreadExecutor.java.
-   */
-  private object MainThreadExecutor : AbstractExecutorService() {
-    override fun isTerminated(): Boolean = false
-
-    private val handler = Handler(Looper.getMainLooper())
-    val countingResource =
-      CountingIdlingResource("main_thread_executor_counting_idling_resource")
-
-    override fun execute(command: Runnable?) {
-      countingResource.increment()
-      handler.post {
-        try {
-          command?.run()
-        } finally {
-          countingResource.decrement()
-        }
-      }
+  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerProfileProgressFragmentTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build() as TestApplicationComponent
     }
 
-    override fun shutdown() {
-      throw UnsupportedOperationException()
+    fun inject(optionsFragmentTest: ProfileProgressFragmentTest) {
+      component.inject(optionsFragmentTest)
     }
 
-    override fun shutdownNow(): MutableList<Runnable> {
-      throw UnsupportedOperationException()
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
+      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
     }
 
-    override fun isShutdown(): Boolean = false
-
-    override fun awaitTermination(timeout: Long, unit: TimeUnit?): Boolean {
-      throw UnsupportedOperationException()
-    }
+    override fun getApplicationInjector(): ApplicationInjector = component
   }
 }

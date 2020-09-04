@@ -27,13 +27,18 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.bumptech.glide.Glide
+import com.bumptech.glide.GlideBuilder
+import com.bumptech.glide.load.engine.executor.MockGlideExecutor
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -48,6 +53,7 @@ import org.oppia.app.application.ApplicationModule
 import org.oppia.app.application.ApplicationStartupListenerModule
 import org.oppia.app.hintsandsolution.TAG_REVEAL_SOLUTION_DIALOG
 import org.oppia.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
+import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
@@ -71,11 +77,14 @@ import org.oppia.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.domain.oppialogger.LogStorageModule
+import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.testing.CoroutineExecutorService
 import org.oppia.testing.TestAccessibilityModule
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
@@ -84,9 +93,11 @@ import org.oppia.testing.profile.ProfileTestHelper
 import org.oppia.util.caching.testing.CachingTestModule
 import org.oppia.util.gcsresource.GcsResourceModule
 import org.oppia.util.logging.LoggerModule
+import org.oppia.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.util.parser.GlideImageLoaderModule
 import org.oppia.util.parser.HtmlParserEntityTypeModule
 import org.oppia.util.parser.ImageParsingModule
+import org.oppia.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowMediaPlayer
@@ -108,15 +119,12 @@ class StateFragmentLocalTest {
     createAudioUrl(explorationId = "MjZzEVOG47_1", audioFileName = "content-en-ouqm7j21vt8.mp3")
   private val audioDataSource1 = DataSource.toDataSource(AUDIO_URL_1, /* headers= */ null)
 
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject @field:ApplicationContext lateinit var context: Context
   @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  @field:ApplicationContext
-  lateinit var context: Context
+  @field:BackgroundDispatcher
+  lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
 
   private val internalProfileId: Int = 1
   private val solutionIndex: Int = 4
@@ -124,8 +132,29 @@ class StateFragmentLocalTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+
+    // Initialize Glide such that all of its executors use the same shared dispatcher pool as the
+    // rest of Oppia so that thread execution can be synchronized via Oppia's test coroutine
+    // dispatchers.
+    val executorService = MockGlideExecutor.newTestExecutor(
+      CoroutineExecutorService(backgroundCoroutineDispatcher)
+    )
+    Glide.init(
+      context,
+      GlideBuilder().setDiskCacheExecutor(executorService)
+        .setAnimationExecutor(executorService)
+        .setSourceExecutor(executorService)
+    )
+
     profileTestHelper.initializeProfiles()
     ShadowMediaPlayer.addException(audioDataSource1, IOException("Test does not have networking"))
+  }
+
+  @After
+  fun tearDown() {
+    // Ensure lingering tasks are completed (otherwise Glide can enter a permanently broken state
+    // during initialization for the next test).
+    testCoroutineDispatchers.advanceUntilIdle()
   }
 
   @Test
@@ -145,11 +174,11 @@ class StateFragmentLocalTest {
 
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SELECTION_INTERACTION))
       onView(withSubstring("the pieces must be the same size.")).perform(click())
-      testCoroutineDispatchers.advanceUntilIdle()
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_NAVIGATION_BUTTON))
-      testCoroutineDispatchers.advanceUntilIdle()
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.continue_navigation_button)).perform(click())
-      testCoroutineDispatchers.advanceUntilIdle()
+      testCoroutineDispatchers.runCurrent()
 
       onView(withSubstring("of the above circle is red?")).check(matches(isDisplayed()))
     }
@@ -1111,7 +1140,10 @@ class StateFragmentLocalTest {
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class, ApplicationStartupListenerModule::class
+      ViewBindingShimModule::class, RatioInputModule::class,
+      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+      WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
+      FirebaseLogUploaderModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent, ApplicationInjector {

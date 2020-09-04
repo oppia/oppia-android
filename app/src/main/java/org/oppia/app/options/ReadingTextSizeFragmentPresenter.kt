@@ -6,9 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.fragment.app.Fragment
+import org.oppia.app.R
 import org.oppia.app.databinding.ReadingTextSizeFragmentBinding
 import org.oppia.app.model.ReadingTextSize
 import javax.inject.Inject
+
+private const val SMALL_TEXT_SIZE_SCALE = 0.8f
+private const val MEDIUM_TEXT_SIZE_SCALE = 1.0f
+private const val LARGE_TEXT_SIZE_SCALE = 1.2f
+private const val EXTRA_LARGE_TEXT_SIZE_SCALE = 1.4f
 
 /** The presenter for [ReadingTextSizeFragment]. */
 class ReadingTextSizeFragmentPresenter @Inject constructor(private val fragment: Fragment) {
@@ -114,15 +120,17 @@ class ReadingTextSizeFragmentPresenter @Inject constructor(private val fragment:
   }
 
   fun getReadingTextSizeInFloat(readingTextSize: ReadingTextSize): Float {
+    val defaultReadingTextSizeInFloat = fragment.requireContext().resources.getDimension(
+      R.dimen.default_reading_text_size
+    )
     return when (readingTextSize) {
-      ReadingTextSize.SMALL_TEXT_SIZE -> 16f
-      ReadingTextSize.MEDIUM_TEXT_SIZE -> 18f
-      ReadingTextSize.LARGE_TEXT_SIZE -> 20f
-      else -> 22f
+      ReadingTextSize.SMALL_TEXT_SIZE -> defaultReadingTextSizeInFloat * SMALL_TEXT_SIZE_SCALE
+      ReadingTextSize.MEDIUM_TEXT_SIZE -> defaultReadingTextSizeInFloat * MEDIUM_TEXT_SIZE_SCALE
+      ReadingTextSize.LARGE_TEXT_SIZE -> defaultReadingTextSizeInFloat * LARGE_TEXT_SIZE_SCALE
+      else -> defaultReadingTextSizeInFloat * EXTRA_LARGE_TEXT_SIZE_SCALE
     }
   }
 
-  // TODO(#1584): Update this function to use multiplier instead of direct font size.
   fun getReadingTextSize(readingTextSize: ReadingTextSize): String {
     return when (readingTextSize) {
       ReadingTextSize.SMALL_TEXT_SIZE -> "Small"

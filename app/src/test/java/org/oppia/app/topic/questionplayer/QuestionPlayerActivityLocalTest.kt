@@ -36,6 +36,7 @@ import org.oppia.app.application.ApplicationInjector
 import org.oppia.app.application.ApplicationInjectorProvider
 import org.oppia.app.application.ApplicationModule
 import org.oppia.app.application.ApplicationStartupListenerModule
+import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.domain.classify.InteractionsModule
@@ -51,6 +52,8 @@ import org.oppia.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.domain.oppialogger.LogStorageModule
+import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.domain.topic.TEST_SKILL_ID_1
@@ -62,6 +65,7 @@ import org.oppia.testing.profile.ProfileTestHelper
 import org.oppia.util.caching.testing.CachingTestModule
 import org.oppia.util.gcsresource.GcsResourceModule
 import org.oppia.util.logging.LoggerModule
+import org.oppia.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.util.parser.GlideImageLoaderModule
 import org.oppia.util.parser.HtmlParserEntityTypeModule
 import org.oppia.util.parser.ImageParsingModule
@@ -270,7 +274,9 @@ class QuestionPlayerActivityLocalTest {
       TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, ApplicationStartupListenerModule::class,
-      RatioInputModule::class
+      RatioInputModule::class, HintsAndSolutionConfigModule::class,
+      LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
+      FirebaseLogUploaderModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent, ApplicationInjector {
