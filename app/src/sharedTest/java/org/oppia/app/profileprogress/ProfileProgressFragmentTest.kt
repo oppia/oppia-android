@@ -249,6 +249,7 @@ class ProfileProgressFragmentTest {
           R.id.profile_edit_image
         )
       ).perform(click())
+      // The dialog should still be open after a configuration change.
       onView(withText(R.string.profile_progress_edit_dialog_title)).inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
