@@ -31,6 +31,9 @@ import org.oppia.app.model.Interaction
 import org.oppia.app.model.Outcome
 import org.oppia.app.model.Question
 import org.oppia.app.model.RevisionCard
+import org.oppia.app.model.SchemaObject
+import org.oppia.app.model.SchemaObject.ObjectTypeCase.SUBTITLED_HTML
+import org.oppia.app.model.SchemaObjectList
 import org.oppia.app.model.Solution
 import org.oppia.app.model.State
 import org.oppia.app.model.StorySummary
@@ -405,6 +408,15 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
     val stateContents = states.map(State::getContent)
     val stateInteractions = states.map(State::getInteraction)
 
+    // Retrieve choice options for multiple choice, item selection, and drag & drop sort.
+    val customizationArgsMapList = stateInteractions.map(Interaction::getCustomizationArgsMap)
+    val argsMapValues = customizationArgsMapList.mapNotNull { it["choices"] }
+    // Defaults to empty lists if the type of customization argument is not an object list.
+    val schemaObjectLists = argsMapValues.map(SchemaObject::getSchemaObjectList)
+    val schemaObjects = schemaObjectLists.flatMap(SchemaObjectList::getSchemaObjectList)
+    val subtitledHtmlObjects = schemaObjects.filter { it.objectTypeCase == SUBTITLED_HTML }
+    val customizationSubtitledHtmls = subtitledHtmlObjects.map(SchemaObject::getSubtitledHtml)
+
     val stateSolutions =
       stateInteractions.map(Interaction::getSolution).map(Solution::getExplanation)
     val stateHints = stateInteractions.flatMap(
@@ -417,7 +429,12 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
     val outcomeFeedbacks = (answerGroupOutcomes + defaultOutcomes)
       .map(Outcome::getFeedback)
 
-    val allSubtitledHtmls = stateContents + stateSolutions + stateHints + outcomeFeedbacks
+    val allSubtitledHtmls =
+      stateContents +
+        customizationSubtitledHtmls +
+        stateSolutions +
+        stateHints +
+        outcomeFeedbacks
     return allSubtitledHtmls.filter { it != SubtitledHtml.getDefaultInstance() }
   }
 
