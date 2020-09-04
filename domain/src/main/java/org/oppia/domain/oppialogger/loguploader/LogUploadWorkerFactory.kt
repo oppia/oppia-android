@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 /** Custom [WorkerFactory] for the [LogUploadWorker]. */
 class LogUploadWorkerFactory @Inject constructor(
-  private val workerFactory: LogUploadChildWorkerFactory
+  private val workerFactory: LogUploadWorker.Factory
 ) : WorkerFactory() {
 
   /** Returns a new [LogUploadWorker] for the given context and parameters. */
