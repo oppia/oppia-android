@@ -222,7 +222,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testAddProfileActivity_imageSelectAvatar_checkGalleryIntent() {
+  fun testProfileProgressFragment_imageSelectAvatar_checkGalleryIntent() {
     val expectedIntent: Matcher<Intent> = allOf(
       hasAction(Intent.ACTION_PICK),
       hasData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -245,6 +245,48 @@ class ProfileProgressFragmentTest {
       onView(withText(R.string.profile_picture_edit_alert_dialog_choose_from_library))
         .perform(click())
       intended(expectedIntent)
+    }
+  }
+
+  @Test
+  fun testProfileProgressFragment_imageSelectAvatar_changeOrientation_checkGalleryIntent() {
+    val expectedIntent: Matcher<Intent> = allOf(
+      hasAction(Intent.ACTION_PICK),
+      hasData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+    )
+    val activityResult = createGalleryPickActivityResultStub()
+    intending(expectedIntent).respondWith(activityResult)
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      waitForTheView(withText("Admin"))
+      onView(
+        atPositionOnView(
+          R.id.profile_progress_list,
+          0,
+          R.id.profile_edit_image
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.profile_progress_edit_dialog_title)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.profile_picture_edit_alert_dialog_choose_from_library))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(expectedIntent)
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      intended(expectedIntent)
+      onView(
+        atPositionOnView(
+          R.id.profile_progress_list,
+          0,
+          R.id.profile_edit_image
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      // The dialog should still be open after a configuration change.
+      onView(withText(R.string.profile_progress_edit_dialog_title)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
   }
 
