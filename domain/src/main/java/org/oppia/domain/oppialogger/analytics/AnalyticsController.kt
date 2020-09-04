@@ -163,7 +163,7 @@ class AnalyticsController @Inject constructor(
 
   /** Removes the first event log report that had been recorded for upload. */
   fun removeFirstEventLogFromStore() {
-    eventLogStore.storeDataAsync(/* updateInMemoryCache= */true) { oppiaEventLogs ->
+    eventLogStore.storeDataAsync(updateInMemoryCache = true) { oppiaEventLogs ->
       return@storeDataAsync oppiaEventLogs.toBuilder().removeEventLog(0).build()
     }.invokeOnCompletion {
       it?.let {
