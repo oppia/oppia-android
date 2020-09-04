@@ -99,7 +99,7 @@ class FractionInteractionViewModel(
 
   private fun deriveHintText(interaction: Interaction): CharSequence {
     val customPlaceholder =
-      interaction.customizationArgsMap["customPlaceholder"]?.normalizedString ?: ""
+      interaction.customizationArgsMap["customPlaceholder"]?.subtitledUnicode?.unicodeStr ?: ""
     val allowNonzeroIntegerPart =
       interaction.customizationArgsMap["allowNonzeroIntegerPart"]?.boolValue ?: true
     return when {
