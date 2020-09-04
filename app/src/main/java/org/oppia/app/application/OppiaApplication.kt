@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
 import androidx.multidex.MultiDexApplication
 import androidx.work.Configuration
+import androidx.work.WorkManager
 import com.google.firebase.FirebaseApp
 import org.oppia.app.activity.ActivityComponent
 import org.oppia.domain.oppialogger.ApplicationStartupListener
@@ -30,6 +31,7 @@ class OppiaApplication :
   override fun onCreate() {
     super.onCreate()
     FirebaseApp.initializeApp(applicationContext)
+    WorkManager.initialize(applicationContext, workManagerConfiguration)
     component.getApplicationStartupListeners().forEach(ApplicationStartupListener::onCreate)
   }
 

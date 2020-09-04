@@ -54,10 +54,6 @@ import kotlin.collections.last
 @Config(manifest = Config.NONE)
 class LogUploadWorkManagerInitializerTest {
 
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
   @Inject
   lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
 

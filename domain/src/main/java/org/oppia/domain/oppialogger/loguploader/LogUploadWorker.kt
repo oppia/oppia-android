@@ -87,7 +87,7 @@ class LogUploadWorker private constructor(
     private val eventLogger: EventLogger,
     private val consoleLogger: ConsoleLogger,
     @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
-  ) : LogUploadChildWorkerFactory {
+  ): LogUploadChildWorkerFactory {
 
     override fun create(context: Context, params: WorkerParameters): CoroutineWorker {
       return LogUploadWorker(

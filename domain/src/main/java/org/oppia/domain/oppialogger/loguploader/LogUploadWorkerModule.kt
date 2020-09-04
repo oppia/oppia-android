@@ -16,7 +16,9 @@ interface LogUploadWorkerModule {
   ): LogUploadChildWorkerFactory
 
   @Binds
-  fun bindWorkerFactory(logUploadWorkerFactory: LogUploadWorkerFactory): WorkerFactory
+  fun bindWorkerFactory(
+    logUploadWorkerFactory: LogUploadWorkerFactory
+  ): WorkerFactory
 
   @Binds
   @IntoSet
