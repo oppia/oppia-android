@@ -2,9 +2,8 @@ package org.oppia.util.parser
 
 import android.text.Editable
 import android.text.Spannable
-import android.text.SpannableStringBuilder
+import android.text.Spanned
 import android.text.style.BulletSpan
-import org.xml.sax.Attributes
 
 /** The custom tag corresponding to [BulletTagHandler]. */
 const val CUSTOM_BULLET_LIST_TAG = "oppia-li"
@@ -14,24 +13,21 @@ const val CUSTOM_BULLET_LIST_TAG = "oppia-li"
  * [CustomHtmlContentHandler].
  */
 class BulletTagHandler : CustomHtmlContentHandler.CustomTagHandler {
-  override fun handleTag(
-    attributes: Attributes,
-    openIndex: Int,
-    closeIndex: Int,
-    output: Editable
-  ) {
-    val spannableBuilder = SpannableStringBuilder(
-      output.subSequence(
-        openIndex,
-        closeIndex
-      )
-    )
-    spannableBuilder.append("\n")
-    if (openIndex != closeIndex) {
-      spannableBuilder.setSpan(
-        BulletSpan(), 0, spannableBuilder.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
-      )
+  /** Helper marker class. */
+  private class Bullet
+
+  override fun handleOpeningTag(output: Editable) {
+    output.setSpan(Bullet(), output.length, output.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+  }
+
+  override fun handleClosingTag(output: Editable) {
+    output.append("\n")
+    output.getSpans(0, output.length, Bullet::class.java).lastOrNull()?.let {
+      val start = output.getSpanStart(it)
+      output.removeSpan(it)
+      if (start != output.length) {
+        output.setSpan(BulletSpan(), start, output.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+      }
     }
-    output.replace(openIndex, closeIndex, spannableBuilder)
   }
 }
