@@ -163,7 +163,11 @@ class ExceptionsController @Inject constructor(
     return exceptionLogStore
   }
 
-  /** Returns a list of exception log reports which have been recorded for upload. */
+  /**
+   * Returns a list of exception log reports which have been recorded for upload.
+   *
+   *  As we are using the await call on the deferred output of readDataAsync, the failure case would be caught and it'll throw an error.
+   */
   suspend fun getExceptionLogStoreList(): MutableList<ExceptionLog> {
     return exceptionLogStore.readDataAsync().await().exceptionLogList
   }

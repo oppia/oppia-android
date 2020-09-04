@@ -156,7 +156,11 @@ class AnalyticsController @Inject constructor(
     return eventLogStore
   }
 
-  /** Returns a list of event log reports that have been recorded for upload. */
+  /**
+   * Returns a list of event log reports that have been recorded for upload.
+   *
+   * As we are using the await call on the deferred output of readDataAsync, the failure case would be caught and it'll throw an error.
+   */
   suspend fun getEventLogStoreList(): MutableList<EventLog> {
     return eventLogStore.readDataAsync().await().eventLogList
   }
