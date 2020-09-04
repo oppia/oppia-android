@@ -1,3 +1,4 @@
+This document is made as a guide for viewing and customising the firebase project(s) of Oppia-Android. It is recommended to fully read this doc before making any changes to the Firebase project. If you only want to view the firebase console then this doc can help you in viewing exactly the thing that you want to see. It must also be noted that appropriate permissions are required for viewing/editing anything in the console. For permissions, please contact Ben Henning at henning.benmax@gmail.com. 
 ## Table of Contents 
 * [Viewing the Console](#viewing-the-console) 
   * [Crashlytics](#crashlytics)
