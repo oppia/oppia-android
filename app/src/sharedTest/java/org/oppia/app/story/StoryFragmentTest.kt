@@ -4,14 +4,12 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
-import android.os.Handler
-import android.os.Looper
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
@@ -19,7 +17,6 @@ import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
-import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
@@ -29,39 +26,65 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
-import dagger.BindsInstance
 import dagger.Component
-import dagger.Module
-import dagger.Provides
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.activity.ActivityComponent
+import org.oppia.app.application.ActivityComponentFactory
+import org.oppia.app.application.ApplicationComponent
+import org.oppia.app.application.ApplicationInjector
+import org.oppia.app.application.ApplicationInjectorProvider
+import org.oppia.app.application.ApplicationModule
+import org.oppia.app.application.ApplicationStartupListenerModule
 import org.oppia.app.model.ProfileId
 import org.oppia.app.player.exploration.ExplorationActivity
+import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
-import org.oppia.app.testing.StoryFragmentTestActivity
+import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.domain.classify.InteractionsModule
+import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
+import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.domain.classify.rules.imageClickInput.ImageClickInputModule
+import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
+import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.domain.classify.rules.ratioinput.RatioInputModule
+import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.domain.oppialogger.LogStorageModule
+import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
+import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.domain.topic.FRACTIONS_TOPIC_ID
+import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.domain.topic.StoryProgressTestHelper
+import org.oppia.testing.TestAccessibilityModule
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.testing.profile.ProfileTestHelper
-import org.oppia.util.logging.EnableConsoleLog
-import org.oppia.util.logging.EnableFileLog
-import org.oppia.util.logging.GlobalLogLevel
-import org.oppia.util.logging.LogLevel
+import org.oppia.util.caching.testing.CachingTestModule
+import org.oppia.util.gcsresource.GcsResourceModule
+import org.oppia.util.logging.LoggerModule
+import org.oppia.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.util.parser.GlideImageLoaderModule
+import org.oppia.util.parser.HtmlParserEntityTypeModule
+import org.oppia.util.parser.ImageParsingModule
+import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.concurrent.AbstractExecutorService
-import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -69,6 +92,7 @@ import javax.inject.Singleton
 /** Tests for [StoryFragment]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
+@Config(application = StoryFragmentTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class StoryFragmentTest {
 
   @Inject
@@ -91,7 +115,7 @@ class StoryFragmentTest {
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
-    IdlingRegistry.getInstance().register(MainThreadExecutor.countingResource)
+    testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
     FirebaseApp.initializeApp(context)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
@@ -104,15 +128,8 @@ class StoryFragmentTest {
 
   @After
   fun tearDown() {
-    IdlingRegistry.getInstance().unregister(MainThreadExecutor.countingResource)
+    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
-  }
-
-  private fun setUpTestApplicationComponent() {
-    DaggerStoryFragmentTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
   }
 
   private fun createStoryActivityIntent(): Intent {
@@ -125,15 +142,22 @@ class StoryFragmentTest {
   }
 
   @Test
+  @Ignore("Test wasn't correct originally") // TODO(#1804): Fix this test & re-enable.
   fun testStoryFragment_clickOnToolbarNavigationButton_closeActivity() {
-    launch<StoryFragmentTestActivity>(createStoryActivityIntent()).use {
+    launch<StoryActivity>(createStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.story_toolbar)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      it.onActivity { activity -> assertThat(activity.isFinishing).isTrue() }
     }
   }
 
   @Test
   fun testStoryFragment_toolbarTitle_isDisplayedSuccessfully() {
-    launch<StoryFragmentTestActivity>(createStoryActivityIntent()).use {
+    launch<StoryActivity>(createStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
       waitForTheView(withText("Chapter 1: What is a Fraction?"))
       onView(withId(R.id.story_toolbar_title))
         .check(matches(withText("Matthew Goes to the Bakery")))
@@ -142,7 +166,8 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_correctStoryCountLoadedInHeader() {
-    launch<StoryFragmentTestActivity>(createStoryActivityIntent()).use {
+    launch<StoryActivity>(createStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
       val headerString: String =
         getResources().getQuantityString(R.plurals.story_total_chapters, 2, 1, 2)
       waitForTheView(withText("Chapter 1: What is a Fraction?"))
@@ -167,7 +192,8 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_correctNumberOfStoriesLoadedInRecyclerView() {
-    launch<StoryFragmentTestActivity>(createStoryActivityIntent()).use {
+    launch<StoryActivity>(createStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
       waitForTheView(withText("Chapter 1: What is a Fraction?"))
       onView(withId(R.id.story_chapter_list)).check(hasItemCount(3))
     }
@@ -175,8 +201,10 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_changeConfiguration_textViewIsShownCorrectly() {
-    launch<StoryFragmentTestActivity>(createStoryActivityIntent()).use {
+    launch<StoryActivity>(createStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       waitForTheView(withText("Chapter 1: What is a Fraction?"))
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
@@ -193,8 +221,10 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_chapterSummaryIsShownCorrectly() {
-    launch<StoryFragmentTestActivity>(createStoryActivityIntent()).use {
+    launch<StoryActivity>(createStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
       waitForTheView(withText("Chapter 1: What is a Fraction?"))
+      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -210,8 +240,10 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_changeConfiguration_chapterSummaryIsShownCorrectly() {
-    launch<StoryFragmentTestActivity>(createStoryActivityIntent()).use {
+    launch<StoryActivity>(createStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       waitForTheView(withText("Chapter 1: What is a Fraction?"))
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
@@ -228,9 +260,11 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_changeConfiguration_explorationStartCorrectly() {
-    launch<StoryFragmentTestActivity>(createStoryActivityIntent()).use {
+    launch<StoryActivity>(createStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
       waitForTheView(withText("Chapter 1: What is a Fraction?"))
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       waitForTheView(withText("Chapter 1: What is a Fraction?"))
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
@@ -240,14 +274,17 @@ class StoryFragmentTest {
       onView(
         atPositionOnView(R.id.story_chapter_list, 1, R.id.story_chapter_card)
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ExplorationActivity::class.java.name))
     }
   }
 
   @Test
   fun testStoryFragment_changeConfiguration_correctStoryCountInHeader() {
-    launch<StoryFragmentTestActivity>(createStoryActivityIntent()).use {
+    launch<StoryActivity>(createStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       val headerString: String =
         getResources().getQuantityString(R.plurals.story_total_chapters, 2, 1, 2)
       onView(withId(R.id.story_chapter_list)).perform(
@@ -273,6 +310,10 @@ class StoryFragmentTest {
         )
       )
     }
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   private fun getResources(): Resources {
@@ -327,88 +368,48 @@ class StoryFragmentTest {
     }
   }
 
-  @Module
-  class TestModule {
-    @Provides
-    @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
-
-    // TODO(#59): Either isolate these to their own shared test module, or use the real logging
-    //  module in tests to avoid needing to specify these settings for tests.
-    @EnableConsoleLog
-    @Provides
-    fun provideEnableConsoleLog(): Boolean = true
-
-    @EnableFileLog
-    @Provides
-    fun provideEnableFileLog(): Boolean = false
-
-    @GlobalLogLevel
-    @Provides
-    fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-  }
-
+  // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
+  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      TestDispatcherModule::class
+      TestDispatcherModule::class, ApplicationModule::class,
+      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
+      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
+      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
+      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
+      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
+      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
+      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ViewBindingShimModule::class, RatioInputModule::class,
+      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+      WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
+      FirebaseLogUploaderModule::class
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent : ApplicationComponent, ApplicationInjector {
     @Component.Builder
-    interface Builder {
-      @BindsInstance
-      fun setApplication(application: Application): Builder
-
-      fun build(): TestApplicationComponent
-    }
+    interface Builder : ApplicationComponent.Builder
 
     fun inject(storyFragmentTest: StoryFragmentTest)
   }
 
-  // TODO(#59): Move this to a general-purpose testing library that replaces all CoroutineExecutors with an
-  //  Espresso-enabled executor service. This service should also allow for background threads to run in both Espresso
-  //  and Robolectric to help catch potential race conditions, rather than forcing parallel execution to be sequential
-  //  and immediate.
-  //  NB: This also blocks on #59 to be able to actually create a test-only library.
-
-  /**
-   * An executor service that schedules all [Runnable]s to run asynchronously on the main thread. This is based on:
-   * https://android.googlesource.com/platform/packages/apps/TV/+/android-live-tv/src/com/android/tv/util/MainThreadExecutor.java.
-   */
-  private object MainThreadExecutor : AbstractExecutorService() {
-    override fun isTerminated(): Boolean = false
-
-    private val handler = Handler(Looper.getMainLooper())
-    val countingResource =
-      CountingIdlingResource("main_thread_executor_counting_idling_resource")
-
-    override fun execute(command: Runnable?) {
-      countingResource.increment()
-      handler.post {
-        try {
-          command?.run()
-        } finally {
-          countingResource.decrement()
-        }
-      }
+  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerStoryFragmentTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build() as TestApplicationComponent
     }
 
-    override fun shutdown() {
-      throw UnsupportedOperationException()
+    fun inject(storyFragmentTest: StoryFragmentTest) {
+      component.inject(storyFragmentTest)
     }
 
-    override fun shutdownNow(): MutableList<Runnable> {
-      throw UnsupportedOperationException()
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
+      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
     }
 
-    override fun isShutdown(): Boolean = false
-
-    override fun awaitTermination(timeout: Long, unit: TimeUnit?): Boolean {
-      throw UnsupportedOperationException()
-    }
+    override fun getApplicationInjector(): ApplicationInjector = component
   }
 }
