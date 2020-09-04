@@ -8,12 +8,15 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.PictureDrawable
 import android.text.Html
+import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.TextView
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import org.oppia.util.R
 import javax.inject.Inject
+import kotlin.math.max
 
 // TODO(#169): Replace this with exploration asset downloader.
 // TODO(#277): Add test cases for loading image.
@@ -68,7 +71,19 @@ class UrlImageParser private constructor(
     override fun onResourceReady(resource: T, transition: Transition<in T>?) {
       val drawable = drawableFactory(resource)
       htmlContentTextView.post {
-        htmlContentTextView.width {
+        htmlContentTextView.width { viewWidth ->
+          val layoutParams = htmlContentTextView.layoutParams
+          val maxAvailableWidth = if (layoutParams.width == ViewGroup.LayoutParams.WRAP_CONTENT) {
+            // Assume that wrap_content cases means that the view cannot exceed its parent's width
+            // minus margins.
+            val parent = htmlContentTextView.parent
+            if (parent is View && layoutParams is ViewGroup.MarginLayoutParams) {
+              // Only pick the computed space if it allows the view to expand to accommodate larger
+              // images.
+              max(viewWidth, parent.width - (layoutParams.leftMargin + layoutParams.rightMargin))
+            } else viewWidth
+          } else viewWidth
+
           var drawableHeight = drawable.intrinsicHeight
           var drawableWidth = drawable.intrinsicWidth
           val minimumImageSize = context.resources.getDimensionPixelSize(R.dimen.minimum_image_size)
@@ -87,8 +102,9 @@ class UrlImageParser private constructor(
             drawableHeight = (drawableHeight.toDouble() * multipleFactor).toInt()
             drawableWidth = (drawableWidth.toDouble() * multipleFactor).toInt()
           }
-          val maximumImageSize =
-            it - context.resources.getDimensionPixelSize(R.dimen.maximum_content_item_padding)
+          val maxContentItemPadding =
+            context.resources.getDimensionPixelSize(R.dimen.maximum_content_item_padding)
+          val maximumImageSize = maxAvailableWidth - maxContentItemPadding
           if (drawableWidth >= maximumImageSize) {
             // The multipleFactor value is used to make sure that the aspect ratio of the image remains the same.
             // Example: Height is 420, width is 440 and maximumImageSize is 200.
@@ -105,7 +121,7 @@ class UrlImageParser private constructor(
             drawableWidth = (drawableWidth.toDouble() * multipleFactor).toInt()
           }
           val initialDrawableMargin = if (imageCenterAlign) {
-            calculateInitialMargin(it, drawableWidth)
+            calculateInitialMargin(maxAvailableWidth, drawableWidth)
           } else {
             0
           }
