@@ -78,26 +78,6 @@ class CustomHtmlContentHandlerTest {
   }
 
   @Test
-  fun testParseHtml_withOneCustomTag_nonAttributeHandlersAreCalledBeforeAttributeAndInOrder() {
-    val fakeTagHandler = FakeTagHandler()
-
-    CustomHtmlContentHandler.fromHtml(
-      html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
-      imageGetter = mockImageGetter,
-      customTagHandlers = mapOf("custom-tag" to fakeTagHandler)
-    )
-
-    assertThat(fakeTagHandler.handleOpeningTagCalled).isTrue()
-    assertThat(fakeTagHandler.handleClosingTagCalled).isTrue()
-    assertThat(fakeTagHandler.handleTagCalled).isTrue()
-    // Call order: opening tag -> close tag -> handle tag.
-    assertThat(fakeTagHandler.handleOpeningTagCallIndex)
-      .isLessThan(fakeTagHandler.handleClosingTagCallIndex)
-    assertThat(fakeTagHandler.handleClosingTagCallIndex)
-      .isLessThan(fakeTagHandler.handleTagCallIndex)
-  }
-
-  @Test
   fun testParseHtml_withOneCustomTag_missingHandler_keepsContent() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
@@ -166,13 +146,7 @@ class CustomHtmlContentHandlerTest {
 
   private class FakeTagHandler : CustomHtmlContentHandler.CustomTagHandler {
     var handleTagCalled = false
-    var handleTagCallIndex = -1
-    var handleOpeningTagCalled = false
-    var handleOpeningTagCallIndex = -1
-    var handleClosingTagCalled = false
-    var handleClosingTagCallIndex = -1
     lateinit var attributes: Attributes
-    private var methodCallCount = 0
 
     override fun handleTag(
       attributes: Attributes,
@@ -181,18 +155,7 @@ class CustomHtmlContentHandlerTest {
       output: Editable
     ) {
       handleTagCalled = true
-      handleTagCallIndex = methodCallCount++
       this.attributes = attributes
-    }
-
-    override fun handleOpeningTag(output: Editable) {
-      handleOpeningTagCalled = true
-      handleOpeningTagCallIndex = methodCallCount++
-    }
-
-    override fun handleClosingTag(output: Editable) {
-      handleClosingTagCalled = true
-      handleClosingTagCallIndex = methodCallCount++
     }
   }
 
