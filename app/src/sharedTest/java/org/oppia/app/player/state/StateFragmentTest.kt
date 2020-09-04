@@ -221,6 +221,7 @@ class StateFragmentTest {
   //  11. Add tests for hints & solutions.
   //  13. Add tests for audio states, including: audio playing & having an error, or no-network
   //      connectivity scenarios. See the PR introducing this comment & #1340 / #1341 for context.
+  //  14. Add tests to check the placeholder in FractionInput, TextInput and NumericInput.
   // TODO(#56): Add support for testing that previous/next button states are properly retained on
   //  config changes.
 
@@ -1449,7 +1450,8 @@ class StateFragmentTest {
 
     fun inject(stateFragmentTest: StateFragmentTest)
 
-    @IsOnRobolectric fun isOnRobolectric(): Boolean
+    @IsOnRobolectric
+    fun isOnRobolectric(): Boolean
   }
 
   class TestApplication : Application(), ActivityComponentFactory {

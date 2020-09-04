@@ -96,7 +96,7 @@ class HtmlParser private constructor(
       )
     }
 
-    return trimSpannable(spannableBuilder)
+    return ensureNonEmpty(trimSpannable(spannableBuilder))
   }
 
   private fun computeCustomTagHandlers(
@@ -141,6 +141,19 @@ class HtmlParser private constructor(
     val trimStart = if (trimmedText.startsWith("\n")) 1 else 0
     val trimEnd = if (trimmedText.length > 1 && trimmedText.endsWith("\n")) 2 else 0
     return spannable.delete(0, trimStart).delete(spannable.length - trimEnd, spannable.length)
+  }
+
+  private fun ensureNonEmpty(spannable: SpannableStringBuilder): SpannableStringBuilder {
+    // Per AOSP, ImageSpans are prefixed by a control character. If the string only contains this
+    // control character and no other text, the ImageSpan isn't actually considered in the
+    // dimensions of the image. This is likely a bug in AOSP. One hacky workaround is to add
+    // whitespace around the drawable to give Android something to "draw" (or at least measure to
+    // ensure the image's dimensions are measured). Note that this needs to be a visible character
+    // to remedy the bug.
+    // TODO(#1796): Find a better workaround for this bug.
+    return if (spannable.toString().all { it == '\uFFFC' }) {
+      spannable.insert(/* where= */ 0, " ").append(" ")
+    } else spannable
   }
 
   /** Listener that's called when a custom tag triggers an event. */

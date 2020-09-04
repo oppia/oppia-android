@@ -285,7 +285,10 @@
               "value": 1
             },
             "placeholder": {
-              "value": "Enter the ratio as 1:X (without spaces), where X is a number."
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Enter the ratio as 1:X (without spaces), where X is a number."
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -435,7 +438,10 @@
               "value": 1
             },
             "placeholder": {
-              "value": "Enter the ratio as X:2 (without spaces), where X is a number."
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Enter the ratio as X:2 (without spaces), where X is a number."
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -642,7 +648,10 @@
               "value": 1
             },
             "placeholder": {
-              "value": "Enter the correct ratio, without spaces."
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Enter the correct ratio, without spaces."
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -799,7 +808,10 @@
               "value": 1
             },
             "placeholder": {
-              "value": "Enter a ratio in the form X:Y, without spaces."
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Enter a ratio in the form X:Y, without spaces."
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -1367,7 +1379,10 @@
               "value": 1
             },
             "placeholder": {
-              "value": "Enter your answer as X:Y"
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Enter your answer as X:Y"
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -1465,7 +1480,10 @@
               "value": 1
             },
             "placeholder": {
-              "value": "Enter your answer in the form X:Y:Z, with no spaces."
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Enter your answer in the form X:Y:Z, with no spaces."
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -2383,7 +2401,10 @@
               "value": 1
             },
             "placeholder": {
-              "value": "Enter your answer in the form X:Y, without spaces."
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Enter your answer in the form X:Y, without spaces."
+              }
             }
           },
           "confirmed_unclassified_answers": [],

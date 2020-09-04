@@ -145,7 +145,7 @@ maven_install(
         "com.github.bumptech.glide:glide:4.11.0",
         "com.github.bumptech.glide:mocks:4.11.0",
         "com.google.android.material:material:1.2.0-alpha02",
-        "com.google.firebase:firebase-analytics:17.4.4",
+        "com.google.firebase:firebase-analytics:17.5.0",
         "com.google.firebase:firebase-crashlytics:17.1.1",
         "com.google.gms:google-services:4.3.3",
         "com.google.truth:truth:0.43",

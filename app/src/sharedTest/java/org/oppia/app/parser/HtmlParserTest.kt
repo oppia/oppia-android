@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.text.Spannable
+import android.text.style.ImageSpan
 import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -175,6 +176,60 @@ class HtmlParserTest {
 
     val bulletSpan1 = bulletSpans[1] as CustomBulletSpan
     assertThat(bulletSpan1).isNotNull()
+  }
+
+  @Test
+  fun testHtmlContent_onlyWithImage_additionalSpacesAdded() {
+    val textView =
+      activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      /* entityType= */ "",
+      /* entityId= */ "",
+      /* imageCenterAlign= */ true
+    )
+    val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+      "<oppia-noninteractive-image filepath-with-value=\"test.png\"></oppia-noninteractive-image>",
+      textView
+    )
+
+    // Verify that the image span was parsed correctly.
+    val imageSpans =
+      htmlResult.getSpans(
+        /* start= */ 0, /* end= */ htmlResult.length, ImageSpan::class.java
+      ).toList()
+    assertThat(imageSpans).hasSize(1)
+    assertThat(imageSpans.first().source).isEqualTo("test.png")
+    // Verify that the image span is prefixed & suffixed with a space to work around an AOSP bug.
+    assertThat(htmlResult.toString()).startsWith(" ")
+    assertThat(htmlResult.toString()).endsWith(" ")
+  }
+
+  @Test
+  fun testHtmlContent_imageWithText_noAdditionalSpacesAdded() {
+    val textView =
+      activityTestRule.activity.findViewById(R.id.test_html_content_text_view) as TextView
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      /* entityType= */ "",
+      /* entityId= */ "",
+      /* imageCenterAlign= */ true
+    )
+    val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+      "A<oppia-noninteractive-image filepath-with-value=\"test.png\"></oppia-noninteractive-image>",
+      textView
+    )
+
+    // Verify that the image span was parsed correctly.
+    val imageSpans =
+      htmlResult.getSpans(
+        /* start= */ 0, /* end= */ htmlResult.length, ImageSpan::class.java
+      ).toList()
+    assertThat(imageSpans).hasSize(1)
+    assertThat(imageSpans.first().source).isEqualTo("test.png")
+    // Verify that the image span does not start/end with a space since there is other text present.
+    assertThat(htmlResult.toString()).startsWith("A")
+    assertThat(htmlResult.toString()).doesNotContain(" ")
   }
 
   // TODO(#89): Move this to a common test application component.

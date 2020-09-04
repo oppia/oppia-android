@@ -583,10 +583,10 @@ class StateRetriever @Inject constructor(
         )!!.getBoolean("value")
       )
     customizationArgsMap["customPlaceholder"] =
-      parseNormalizedStringSchemaObject(
+      parseSubtitledUnicode(
         getJsonObject(
           customizationArgsJson, "customPlaceholder"
-        )!!.getString("value")
+        )!!.getJSONObject("value")
       )
     return customizationArgsMap
   }
@@ -653,10 +653,10 @@ class StateRetriever @Inject constructor(
   ): MutableMap<String, SchemaObject> {
     val customizationArgsMap: MutableMap<String, SchemaObject> = mutableMapOf()
     customizationArgsMap["placeholder"] =
-      parseNormalizedStringSchemaObject(
+      parseSubtitledUnicode(
         getJsonObject(
           customizationArgsJson, "placeholder"
-        )!!.getString("value")
+        )!!.getJSONObject("value")
       )
     customizationArgsMap["rows"] =
       parseIntegerSchemaObject(

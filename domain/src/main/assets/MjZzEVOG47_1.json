@@ -104,7 +104,10 @@
               "value": true
             },
             "customPlaceholder": {
-              "value": ""
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": ""
+              }
             },
             "requireSimplestForm": {
               "value": false
@@ -427,7 +430,10 @@
               "value": true
             },
             "customPlaceholder": {
-              "value": ""
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": ""
+              }
             },
             "requireSimplestForm": {
               "value": false
@@ -810,7 +816,10 @@
               "value": true
             },
             "customPlaceholder": {
-              "value": ""
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": ""
+              }
             },
             "requireSimplestForm": {
               "value": false
@@ -1207,7 +1216,10 @@
               "value": true
             },
             "customPlaceholder": {
-              "value": ""
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": ""
+              }
             },
             "requireSimplestForm": {
               "value": false
@@ -1560,7 +1572,10 @@
               "value": true
             },
             "customPlaceholder": {
-              "value": ""
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": ""
+              }
             },
             "requireSimplestForm": {
               "value": false
@@ -2088,7 +2103,10 @@
               "value": true
             },
             "customPlaceholder": {
-              "value": ""
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": ""
+              }
             },
             "requireSimplestForm": {
               "value": false
@@ -2969,7 +2987,10 @@
               "value": true
             },
             "customPlaceholder": {
-              "value": ""
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": ""
+              }
             },
             "requireSimplestForm": {
               "value": false
@@ -3531,7 +3552,10 @@
               "value": true
             },
             "customPlaceholder": {
-              "value": ""
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": ""
+              }
             },
             "requireSimplestForm": {
               "value": false
@@ -3961,7 +3985,10 @@
               "value": true
             },
             "customPlaceholder": {
-              "value": ""
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": ""
+              }
             },
             "requireSimplestForm": {
               "value": false
@@ -4598,7 +4625,10 @@
               "value": true
             },
             "customPlaceholder": {
-              "value": ""
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": ""
+              }
             },
             "requireSimplestForm": {
               "value": false
@@ -5256,7 +5286,10 @@
               "value": true
             },
             "customPlaceholder": {
-              "value": ""
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": ""
+              }
             },
             "requireSimplestForm": {
               "value": true
@@ -5779,7 +5812,10 @@
               "value": true
             },
             "customPlaceholder": {
-              "value": ""
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": ""
+              }
             },
             "requireSimplestForm": {
               "value": false
@@ -5950,7 +5986,10 @@
               "value": true
             },
             "customPlaceholder": {
-              "value": ""
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": ""
+              }
             },
             "requireSimplestForm": {
               "value": false
@@ -6121,7 +6160,10 @@
               "value": true
             },
             "customPlaceholder": {
-              "value": ""
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": ""
+              }
             },
             "requireSimplestForm": {
               "value": false
@@ -6292,7 +6334,10 @@
               "value": true
             },
             "customPlaceholder": {
-              "value": ""
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": ""
+              }
             },
             "requireSimplestForm": {
               "value": false

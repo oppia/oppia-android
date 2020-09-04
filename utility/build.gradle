@@ -4,12 +4,12 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-  compileSdkVersion 28
-  buildToolsVersion "29.0.1"
+  compileSdkVersion 29
+  buildToolsVersion "29.0.2"
 
   defaultConfig {
     minSdkVersion 19
-    targetSdkVersion 28
+    targetSdkVersion 29
     versionCode 1
     versionName "1.0"
     javaCompileOptions {
@@ -36,7 +36,7 @@ android {
 
   buildTypes {
     release {
-      minifyEnabled false
+      minifyEnabled true
       proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
     }
   }
@@ -51,8 +51,8 @@ dependencies {
       'com.caverock:androidsvg-aar:1.4',
       'com.github.bumptech.glide:glide:4.11.0',
       'com.google.dagger:dagger:2.24',
-      'com.google.firebase:firebase-analytics-ktx:17.4.2',
-      'com.google.firebase:firebase-core:17.4.2',
+      'com.google.firebase:firebase-analytics-ktx:17.5.0',
+      'com.google.firebase:firebase-core:17.5.0',
       'com.google.firebase:firebase-crashlytics:17.0.0',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
   )

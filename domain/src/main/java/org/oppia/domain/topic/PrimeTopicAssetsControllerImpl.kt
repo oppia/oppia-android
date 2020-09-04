@@ -23,23 +23,38 @@ import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.oppia.app.model.AnswerGroup
+import org.oppia.app.model.ChapterSummary
+import org.oppia.app.model.ConceptCard
 import org.oppia.app.model.Exploration
 import org.oppia.app.model.Hint
 import org.oppia.app.model.Interaction
 import org.oppia.app.model.Outcome
+import org.oppia.app.model.Question
+import org.oppia.app.model.RevisionCard
+import org.oppia.app.model.SchemaObject
+import org.oppia.app.model.SchemaObject.ObjectTypeCase.SUBTITLED_HTML
+import org.oppia.app.model.SchemaObjectList
 import org.oppia.app.model.Solution
 import org.oppia.app.model.State
+import org.oppia.app.model.StorySummary
 import org.oppia.app.model.SubtitledHtml
-import org.oppia.app.model.Voiceover
-import org.oppia.app.model.VoiceoverMapping
+import org.oppia.app.model.Subtopic
+import org.oppia.app.model.Topic
 import org.oppia.domain.exploration.ExplorationRetriever
+import org.oppia.domain.question.QuestionRetriever
 import org.oppia.domain.util.JsonAssetRetriever
 import org.oppia.util.caching.AssetRepository
 import org.oppia.util.caching.TopicListToCache
 import org.oppia.util.gcsresource.DefaultResourceBucketName
+import org.oppia.util.gcsresource.QuestionResourceBucketName
 import org.oppia.util.logging.ConsoleLogger
+import org.oppia.util.parser.ConceptCardHtmlParserEntityType
 import org.oppia.util.parser.DefaultGcsPrefix
+import org.oppia.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.util.parser.ImageDownloadUrlTemplate
+import org.oppia.util.parser.StoryHtmlParserEntityType
+import org.oppia.util.parser.ThumbnailDownloadUrlTemplate
+import org.oppia.util.parser.TopicHtmlParserEntityType
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
@@ -63,10 +78,19 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
   private val topicController: TopicController,
   private val jsonAssetRetriever: JsonAssetRetriever,
   private val explorationRetriever: ExplorationRetriever,
+  private val questionRetriever: QuestionRetriever,
+  private val conceptCardRetriever: ConceptCardRetriever,
+  private val revisionCardRetriever: RevisionCardRetriever,
   @DefaultGcsPrefix private val gcsPrefix: String,
   @DefaultResourceBucketName private val gcsResource: String,
+  @QuestionResourceBucketName private val questionGcsResource: String,
   @ImageDownloadUrlTemplate private val imageDownloadUrlTemplate: String,
-  @TopicListToCache private val topicListToCache: List<String>
+  @ThumbnailDownloadUrlTemplate private val thumbnailDownloadUrlTemplate: String,
+  @TopicListToCache private val topicListToCache: List<String>,
+  @ExplorationHtmlParserEntityType private val explorationEntityType: String,
+  @ConceptCardHtmlParserEntityType private val conceptCardEntityType: String,
+  @TopicHtmlParserEntityType private val topicEntityType: String,
+  @StoryHtmlParserEntityType private val storyEntityType: String
 ) : PrimeTopicAssetsController {
 
   // NOTE TO DEVELOPERS: Don't ever do this. The application should use shared dispatchers to
@@ -112,18 +136,31 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
     extraDispatcherScope.launch {
       primeAssetJobs.forEach { it.await() }
 
-      // Only download binary assets for one fractions lesson. The others can still be streamed.
-      val explorations = loadExplorations(topicListToCache)
-      val voiceoverUrls = listOf<String>()
-      val imageUrls = collectAllImageUrls(explorations).toSet()
-      logger.d(
-        "AssetRepo",
-        "Downloading up to ${voiceoverUrls.size} voiceovers and ${imageUrls.size} images"
-      )
+      // Only download binary assets for configured topics. The others can still be streamed.
+      val topics = loadTopics(topicListToCache)
+      val explorationIds = topics.flatMap(::extractExplorationIds).toSet()
+      val skillIds = topics.flatMap(::extractSkillIds).toSet()
+
+      val explorations = loadExplorations(explorationIds)
+      val questions = loadQuestions(skillIds)
+      val conceptCards = loadConceptCards(skillIds)
+      val revisionCards = loadRevisionCards(topics)
+
+      val thumbnailUrls = topics.flatMap(::collectThumbnailUrls)
+      val explorationImageUrls = explorations.flatMap(::collectImageUrls)
+      val questionImageUrls = questions.flatMap(::collectImageUrls)
+      val conceptCardImageUrls = conceptCards.flatMap(::collectImageUrls)
+      val revisionCardImageUrls = revisionCards.flatMap(::collectImageUrls)
+      val imageUrls = (
+        thumbnailUrls +
+          explorationImageUrls +
+          questionImageUrls +
+          conceptCardImageUrls +
+          revisionCardImageUrls
+        ).toSet()
+      logger.d("AssetRepo", "Downloading up to ${imageUrls.size} images")
       val startTime = SystemClock.elapsedRealtime()
-      val downloadUrls = (voiceoverUrls + imageUrls).filterNot(
-        assetRepository::isRemoteBinarAssetDownloaded
-      )
+      val downloadUrls = imageUrls.filterNot(assetRepository::isRemoteBinarAssetDownloaded)
       val assetDownloadCount = downloadUrls.size
       primeDownloadStatus.postValue(
         PrimeAssetsStatus(currentDownloadCount.get(), assetDownloadCount)
@@ -171,12 +208,10 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
             val appCompatActivity = it as AppCompatActivity
             primeDownloadStatus.observe(
               appCompatActivity,
-              object : Observer<PrimeAssetsStatus> {
-                override fun onChanged(primeAssetsStatus: PrimeAssetsStatus?) {
-                  primeAssetsStatus?.let { status ->
-                    if (status.totalDownloadCount > 0 && !dialogShown.get()) {
-                      showProgressDialog(appCompatActivity, dialogStyleResId)
-                    }
+              Observer<PrimeAssetsStatus> { primeAssetsStatus ->
+                primeAssetsStatus?.let { status ->
+                  if (status.totalDownloadCount > 0 && !dialogShown.get()) {
+                    showProgressDialog(appCompatActivity, dialogStyleResId)
                   }
                 }
               }
@@ -240,78 +275,175 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
     })
   }
 
+  private fun loadTopics(topicIds: Collection<String>): Collection<Topic> {
+    return topicIds.map(topicController::retrieveTopic)
+  }
+
   private fun loadExplorations(explorationIds: Collection<String>): Collection<Exploration> {
     return explorationIds.map(explorationRetriever::loadExploration)
   }
 
-  @Suppress("unused") // Voiceovers can't be played while offline, so don't cache them for now.
-  private fun collectAllDesiredVoiceoverUrls(
-    explorations: Collection<Exploration>
-  ): Collection<String> {
-    return explorations.flatMap(::collectDesiredVoiceoverUrls)
+  private fun loadQuestions(skillIds: Collection<String>): Collection<Question> {
+    return questionRetriever.loadQuestions(skillIds.toList())
   }
 
-  private fun collectDesiredVoiceoverUrls(exploration: Exploration): Collection<String> {
-    return extractDesiredVoiceovers(exploration).map { voiceover ->
-      getUriForVoiceover(
-        exploration.id,
-        voiceover
-      )
+  private fun loadConceptCards(skillIds: Collection<String>): Collection<ConceptCard> {
+    return skillIds.map(conceptCardRetriever::loadConceptCard)
+  }
+
+  private fun loadRevisionCards(topics: Collection<Topic>): List<Pair<String, RevisionCard>> {
+    return topics.flatMap {
+      loadRevisionCards(it.topicId to it.subtopicList.map(Subtopic::getSubtopicId))
     }
   }
 
-  private fun extractDesiredVoiceovers(exploration: Exploration): Collection<Voiceover> {
-    val states = exploration.statesMap.values
-    val mappings = states.flatMap(::getDesiredVoiceoverMapping)
-    return mappings.flatMap { it.voiceoverMappingMap.values }
+  private fun loadRevisionCards(
+    topicIdToSubtopicIds: Pair<String, Iterable<Int>>
+  ): Collection<Pair<String, RevisionCard>> {
+    val topicId = topicIdToSubtopicIds.first
+    return topicIdToSubtopicIds.second.map {
+      topicId to revisionCardRetriever.loadRevisionCard(topicId, it)
+    }
   }
 
-  private fun getDesiredVoiceoverMapping(state: State): Collection<VoiceoverMapping> {
-    val voiceoverMappings = state.recordedVoiceoversMap
-    val contentIds = extractDesiredContentIds(state).filter(String::isNotEmpty)
-    return voiceoverMappings.filterKeys(contentIds::contains).values
+  private fun extractExplorationIds(topic: Topic): List<String> {
+    val chapters = topic.storyList.flatMap(StorySummary::getChapterList)
+    return chapters.map(ChapterSummary::getExplorationId)
   }
 
-  /** Returns all collection IDs from the specified [State] that can actually be played by a user. */
-  private fun extractDesiredContentIds(state: State): Collection<String> {
-    val stateContentSubtitledHtml = state.content
-    val defaultFeedbackSubtitledHtml = state.interaction.defaultOutcome.feedback
-    val answerGroupOutcomes = state.interaction.answerGroupsList
-      .map(AnswerGroup::getOutcome)
-    val answerGroupsSubtitledHtml = answerGroupOutcomes.map(Outcome::getFeedback)
-    val targetedSubtitledHtmls =
-      answerGroupsSubtitledHtml + stateContentSubtitledHtml + defaultFeedbackSubtitledHtml
-    return targetedSubtitledHtmls.map(SubtitledHtml::getContentId)
+  private fun extractSkillIds(topic: Topic): List<String> {
+    return topic.subtopicList.flatMap(Subtopic::getSkillIdsList)
   }
 
-  private fun collectAllImageUrls(explorations: Collection<Exploration>): Collection<String> {
-    return explorations.flatMap(::collectImageUrls)
+  private fun collectThumbnailUrls(topic: Topic): Collection<String> {
+    val thumbnailUrls = mutableListOf<String>()
+    val topicThumbnail = topic.topicThumbnail
+    if (topicThumbnail.thumbnailFilename.isNotBlank()) {
+      thumbnailUrls += getUriForThumbnail(
+        topic.topicId, topicEntityType, topicThumbnail.thumbnailFilename
+      )
+    }
+
+    for (storySummary in topic.storyList) {
+      val storyThumbnail = storySummary.storyThumbnail
+      if (storyThumbnail.thumbnailFilename.isNotBlank()) {
+        thumbnailUrls += getUriForThumbnail(
+          storySummary.storyId, storyEntityType, storyThumbnail.thumbnailFilename
+        )
+      }
+
+      for (chapterSummary in storySummary.chapterList) {
+        val chapterThumbnail = chapterSummary.chapterThumbnail
+        if (chapterThumbnail.thumbnailFilename.isNotBlank()) {
+          thumbnailUrls += getUriForThumbnail(
+            storySummary.storyId, storyEntityType, chapterThumbnail.thumbnailFilename
+          )
+        }
+      }
+    }
+
+    for (subtopic in topic.subtopicList) {
+      val subtopicThumbnail = subtopic.subtopicThumbnail
+      if (subtopicThumbnail.thumbnailFilename.isNotBlank()) {
+        thumbnailUrls += getUriForThumbnail(
+          topic.topicId, topicEntityType, subtopicThumbnail.thumbnailFilename
+        )
+      }
+    }
+
+    return thumbnailUrls
   }
 
   private fun collectImageUrls(exploration: Exploration): Collection<String> {
-    val subtitledHtmls = collectSubtitledHtmls(exploration)
-    val imageSources = subtitledHtmls.flatMap(::getImageSourcesFromHtml)
-    return imageSources.toSet().map { imageSource ->
-      getUriForImage(exploration.id, imageSource)
+    return collectImageUrls(exploration, exploration.id, explorationEntityType, ::getUriForImage) {
+      collectSubtitledHtmls(it.statesMap.values)
     }
   }
 
-  private fun collectSubtitledHtmls(exploration: Exploration): Collection<SubtitledHtml> {
-    val states = exploration.statesMap.values
+  private fun collectImageUrls(question: Question): Collection<String> {
+    // TODO(#497): Update this to properly link to question assets.
+    val skillId = question.linkedSkillIdsList.firstOrNull() ?: ""
+    return collectImageUrls(question, skillId, "skill", ::getUriForQuestionImage) {
+      collectSubtitledHtmls(listOf(question.questionState))
+    }
+  }
+
+  private fun collectImageUrls(conceptCard: ConceptCard): Collection<String> {
+    return collectImageUrls(
+      conceptCard,
+      conceptCard.skillId,
+      conceptCardEntityType,
+      ::getUriForImage,
+      ::collectSubtitledHtmls
+    )
+  }
+
+  private fun collectImageUrls(
+    topicIdToRevisionCard: Pair<String, RevisionCard>
+  ): Collection<String> {
+    return collectImageUrls(
+      topicIdToRevisionCard.second,
+      topicIdToRevisionCard.first,
+      topicEntityType,
+      ::getUriForImage,
+      ::collectSubtitledHtmls
+    )
+  }
+
+  private fun <T> collectImageUrls(
+    entity: T,
+    entityId: String,
+    entityType: String,
+    computeUriForImage: (String, String, String) -> String,
+    collectSubtitledHtmls: (T) -> Collection<SubtitledHtml>
+  ): Collection<String> {
+    val subtitledHtmls = collectSubtitledHtmls(entity)
+    val imageSources = subtitledHtmls.flatMap(::getImageSourcesFromHtml)
+    return imageSources.toSet().map { imageSource ->
+      computeUriForImage(entityId, entityType, imageSource)
+    }
+  }
+
+  private fun collectSubtitledHtmls(states: Iterable<State>): Collection<SubtitledHtml> {
     val stateContents = states.map(State::getContent)
     val stateInteractions = states.map(State::getInteraction)
+
+    // Retrieve choice options for multiple choice, item selection, and drag & drop sort.
+    val customizationArgsMapList = stateInteractions.map(Interaction::getCustomizationArgsMap)
+    val argsMapValues = customizationArgsMapList.mapNotNull { it["choices"] }
+    // Defaults to empty lists if the type of customization argument is not an object list.
+    val schemaObjectLists = argsMapValues.map(SchemaObject::getSchemaObjectList)
+    val schemaObjects = schemaObjectLists.flatMap(SchemaObjectList::getSchemaObjectList)
+    val subtitledHtmlObjects = schemaObjects.filter { it.objectTypeCase == SUBTITLED_HTML }
+    val customizationSubtitledHtmls = subtitledHtmlObjects.map(SchemaObject::getSubtitledHtml)
+
     val stateSolutions =
       stateInteractions.map(Interaction::getSolution).map(Solution::getExplanation)
     val stateHints = stateInteractions.flatMap(
       Interaction::getHintList
     ).map(Hint::getHintContent)
+
     val answerGroupOutcomes =
       stateInteractions.flatMap(Interaction::getAnswerGroupsList).map(AnswerGroup::getOutcome)
     val defaultOutcomes = stateInteractions.map(Interaction::getDefaultOutcome)
     val outcomeFeedbacks = (answerGroupOutcomes + defaultOutcomes)
       .map(Outcome::getFeedback)
-    val allSubtitledHtmls = stateContents + stateSolutions + stateHints + outcomeFeedbacks
+
+    val allSubtitledHtmls =
+      stateContents +
+        customizationSubtitledHtmls +
+        stateSolutions +
+        stateHints +
+        outcomeFeedbacks
     return allSubtitledHtmls.filter { it != SubtitledHtml.getDefaultInstance() }
+  }
+
+  private fun collectSubtitledHtmls(conceptCard: ConceptCard): Collection<SubtitledHtml> {
+    return conceptCard.workedExampleList + conceptCard.explanation
+  }
+
+  private fun collectSubtitledHtmls(revisionCard: RevisionCard): Collection<SubtitledHtml> {
+    return listOf(revisionCard.pageContents)
   }
 
   private fun getImageSourcesFromHtml(subtitledHtml: SubtitledHtml): Collection<String> {
@@ -321,7 +453,7 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
       parsedHtml.length,
       ImageSpan::class.java
     )
-    return imageSpans.toList().map(ImageSpan::getSource)
+    return imageSpans.toList().mapNotNull(ImageSpan::getSource)
   }
 
   private fun parseHtml(html: String): Spannable {
@@ -334,16 +466,41 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
       .replace("&amp;quot;", "")
   }
 
-  private fun getUriForVoiceover(explorationId: String, voiceover: Voiceover): String {
-    return "https://storage.googleapis.com/$gcsResource/exploration" +
-      "/$explorationId/assets/audio/${voiceover.fileName}"
+  private fun getUriForImage(entityId: String, entityType: String, imageFileName: String): String {
+    return computeUrlForImageDownloads(
+      imageDownloadUrlTemplate, gcsResource, entityType, entityId, imageFileName
+    )
   }
 
-  private fun getUriForImage(explorationId: String, imageFileName: String): String {
-    val downloadUrlFile = String.format(
-      imageDownloadUrlTemplate, "exploration", explorationId, imageFileName
+  private fun getUriForQuestionImage(
+    entityId: String,
+    entityType: String,
+    imageFileName: String
+  ): String {
+    return computeUrlForImageDownloads(
+      imageDownloadUrlTemplate, questionGcsResource, entityType, entityId, imageFileName
     )
-    return "$gcsPrefix/$gcsResource/$downloadUrlFile"
+  }
+
+  private fun getUriForThumbnail(
+    entityId: String,
+    entityType: String,
+    imageFileName: String
+  ): String {
+    return computeUrlForImageDownloads(
+      thumbnailDownloadUrlTemplate, gcsResource, entityType, entityId, imageFileName
+    )
+  }
+
+  private fun computeUrlForImageDownloads(
+    template: String,
+    gcsBucket: String,
+    entityType: String,
+    entityId: String,
+    imageFileName: String
+  ): String {
+    val downloadUrlFile = String.format(template, entityType, entityId, imageFileName)
+    return "$gcsPrefix/$gcsBucket/$downloadUrlFile"
   }
 
   private data class PrimeAssetsStatus(

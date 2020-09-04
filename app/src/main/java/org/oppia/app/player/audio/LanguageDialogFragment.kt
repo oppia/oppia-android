@@ -44,7 +44,9 @@ class LanguageDialogFragment : DialogFragment() {
     val args = checkNotNull(arguments) { "Expected arguments to be pass to LanguageDialogFragment" }
 
     var selectedIndex = args.getInt(KEY_SELECTED_INDEX, 0)
-    val languageCodeArrayList: ArrayList<String> = args.getStringArrayList(KEY_LANGUAGE_LIST)
+    val languageCodeArrayList: ArrayList<String> = checkNotNull(
+      args.getStringArrayList(KEY_LANGUAGE_LIST)
+    )
     val languageNameArrayList = ArrayList<String>()
 
     for (languageCode in languageCodeArrayList) {
