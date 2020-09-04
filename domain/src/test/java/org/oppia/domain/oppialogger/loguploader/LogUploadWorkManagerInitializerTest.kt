@@ -20,11 +20,8 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
 import org.oppia.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.domain.oppialogger.OppiaLogger
