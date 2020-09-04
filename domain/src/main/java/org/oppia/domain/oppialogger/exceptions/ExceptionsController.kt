@@ -170,8 +170,7 @@ class ExceptionsController @Inject constructor(
 
   /** Removes the first exception log report that had been recorded for upload. */
   fun removeFirstExceptionLogFromStore() {
-    exceptionLogStore.storeDataAsync(/* updateInMemoryCache = */true)
-    { oppiaExceptionLogs ->
+    exceptionLogStore.storeDataAsync(/* updateInMemoryCache = */true) { oppiaExceptionLogs ->
       return@storeDataAsync oppiaExceptionLogs.toBuilder().removeExceptionLog(0).build()
     }.invokeOnCompletion {
       it?.let {

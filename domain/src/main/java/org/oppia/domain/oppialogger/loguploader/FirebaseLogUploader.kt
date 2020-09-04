@@ -4,7 +4,6 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val OPPIA_EVENT_WORK = "OPPIA_EVENT_WORK_REQUEST"
 private const val OPPIA_EXCEPTION_WORK = "OPPIA_EXCEPTION_WORK_REQUEST"

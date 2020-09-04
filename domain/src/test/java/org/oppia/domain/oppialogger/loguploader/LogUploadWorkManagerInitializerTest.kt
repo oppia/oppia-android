@@ -46,7 +46,6 @@ import org.robolectric.annotation.LooperMode
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.collections.ArrayList
 import kotlin.collections.last
 
 @RunWith(AndroidJUnit4::class)

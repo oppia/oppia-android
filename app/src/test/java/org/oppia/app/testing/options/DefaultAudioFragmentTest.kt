@@ -48,8 +48,8 @@ import org.oppia.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.domain.oppialogger.LogStorageModule
-import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.domain.oppialogger.loguploader.FirebaseLogUploaderModule
+import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
