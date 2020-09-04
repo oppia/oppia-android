@@ -54,7 +54,7 @@ class OptionsFragment : InjectableFragment() {
       checkNotNull(arguments) { "Expected arguments to be passed to OptionsFragment" }
     val isMultipane = args.getBoolean(IS_MULTIPANE_EXTRA)
     val isFirstOpen = args.getBoolean(IS_FIRST_OPEN_EXTRA)
-    val selectedFragment = args.getString(SELECTED_FRAGMENT_EXTRA)
+    val selectedFragment = checkNotNull(args.getString(SELECTED_FRAGMENT_EXTRA))
     return optionsFragmentPresenter.handleCreateView(
       inflater,
       container,

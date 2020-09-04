@@ -436,7 +436,7 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
       parsedHtml.length,
       ImageSpan::class.java
     )
-    return imageSpans.toList().map(ImageSpan::getSource)
+    return imageSpans.toList().mapNotNull(ImageSpan::getSource)
   }
 
   private fun parseHtml(html: String): Spannable {

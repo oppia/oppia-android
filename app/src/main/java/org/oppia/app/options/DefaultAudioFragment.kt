@@ -43,10 +43,13 @@ class DefaultAudioFragment : InjectableFragment() {
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to DefaultAudioFragment" }
     val prefsKey = args.getString(KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE)
-    val prefsSummaryValue = if (savedInstanceState == null) {
+    val audioLanguageDefaultSummary = checkNotNull(
       args.getString(KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE)
+    )
+    val prefsSummaryValue = if (savedInstanceState == null) {
+      audioLanguageDefaultSummary
     } else {
-      savedInstanceState.get(KEY_SELECTED_AUDIO_LANGUAGE) as String
+      savedInstanceState.get(KEY_SELECTED_AUDIO_LANGUAGE) as? String ?: audioLanguageDefaultSummary
     }
     return defaultAudioFragmentPresenter.handleOnCreateView(
       inflater,
