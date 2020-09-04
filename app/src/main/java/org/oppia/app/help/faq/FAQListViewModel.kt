@@ -1,17 +1,17 @@
 package org.oppia.app.help.faq
 
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModel
 import org.oppia.app.R
 import org.oppia.app.help.faq.faqItemViewModel.FAQContentViewModel
 import org.oppia.app.help.faq.faqItemViewModel.FAQHeaderViewModel
 import org.oppia.app.help.faq.faqItemViewModel.FAQItemViewModel
+import org.oppia.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
 /** View model in [FAQListFragment]. */
 class FAQListViewModel @Inject constructor(
   val activity: AppCompatActivity
-) : ViewModel() {
+) : ObservableViewModel() {
   private val arrayList = ArrayList<FAQItemViewModel>()
 
   val faqItemList: List<FAQItemViewModel> by lazy {

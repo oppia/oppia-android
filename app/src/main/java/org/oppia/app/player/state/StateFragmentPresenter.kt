@@ -29,7 +29,6 @@ import org.oppia.app.player.audio.AudioFragment
 import org.oppia.app.player.audio.AudioUiManager
 import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
-import org.oppia.app.utility.LifecycleSafeTimerFactory
 import org.oppia.app.utility.SplitScreenManager
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.exploration.ExplorationProgressController
@@ -59,7 +58,6 @@ class StateFragmentPresenter @Inject constructor(
   private val logger: ConsoleLogger,
   @DefaultResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
-  private var lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
   private val splitScreenManager: SplitScreenManager
 ) {
 
@@ -237,7 +235,9 @@ class StateFragmentPresenter @Inject constructor(
       .addAudioVoiceoverSupport(
         explorationId, viewModel.currentStateName, viewModel.isAudioBarVisible,
         this::getAudioUiManager
-      ).build()
+      )
+      .addConceptCardSupport()
+      .build()
   }
 
   fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
@@ -463,6 +463,14 @@ class StateFragmentPresenter @Inject constructor(
     subscribeToAnswerOutcome(explorationProgressController.submitAnswer(answer))
   }
 
+  fun dismissConceptCard() {
+    fragment.childFragmentManager.findFragmentByTag(
+      CONCEPT_CARD_DIALOG_FRAGMENT_TAG
+    )?.let { dialogFragment ->
+      fragment.childFragmentManager.beginTransaction().remove(dialogFragment).commitNow()
+    }
+  }
+
   private fun moveToNextState() {
     viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
     explorationProgressController.moveToNextState().observe(
@@ -488,8 +496,6 @@ class StateFragmentPresenter @Inject constructor(
   fun scrollToTop() {
     binding.stateRecyclerView.smoothScrollToPosition(0)
   }
-
-  private fun isAudioShowing(): Boolean = viewModel.isAudioBarVisible.get()!!
 
   /** Updates submit button UI as active if pendingAnswerError null else inactive. */
   fun updateSubmitButton(pendingAnswerError: String?, inputAnswerAvailable: Boolean) {

@@ -22,7 +22,8 @@ class OptionsActivityPresenter @Inject constructor(
   fun handleOnCreate(
     isFromNavigationDrawer: Boolean,
     extraOptionsTitle: String?,
-    isFirstOpen: Boolean
+    isFirstOpen: Boolean,
+    selectedFragment: String
   ) {
     activity.setContentView(R.layout.option_activity)
     val titleTextView =
@@ -46,7 +47,7 @@ class OptionsActivityPresenter @Inject constructor(
     }
     activity.supportFragmentManager.beginTransaction().add(
       R.id.options_fragment_placeholder,
-      OptionsFragment.newInstance(isMultipane, isFirstOpen)
+      OptionsFragment.newInstance(isMultipane, isFirstOpen, selectedFragment)
     ).commitNow()
   }
 
@@ -88,12 +89,13 @@ class OptionsActivityPresenter @Inject constructor(
     getOptionFragment()?.updateAudioLanguage(audioLanguage)
   }
 
-  fun loadStoryTextSizeFragment(textSize: String) {
-    val storyTextSizeFragment = ReadingTextSizeFragment.newInstance(textSize)
+  fun loadReadingTextSizeFragment(textSize: String) {
+    val readingTextSizeFragment = ReadingTextSizeFragment.newInstance(textSize)
     activity.supportFragmentManager
       .beginTransaction()
-      .add(R.id.multipane_options_container, storyTextSizeFragment)
+      .add(R.id.multipane_options_container, readingTextSizeFragment)
       .commitNow()
+    getOptionFragment()?.setSelectedFragment(READING_TEXT_SIZE_FRAGMENT)
   }
 
   fun loadAppLanguageFragment(appLanguage: String) {
@@ -103,6 +105,7 @@ class OptionsActivityPresenter @Inject constructor(
       .beginTransaction()
       .add(R.id.multipane_options_container, appLanguageFragment)
       .commitNow()
+    getOptionFragment()?.setSelectedFragment(APP_LANGUAGE_FRAGMENT)
   }
 
   fun loadAudioLanguageFragment(audioLanguage: String) {
@@ -112,6 +115,7 @@ class OptionsActivityPresenter @Inject constructor(
       .beginTransaction()
       .add(R.id.multipane_options_container, defaultAudioFragment)
       .commitNow()
+    getOptionFragment()?.setSelectedFragment(DEFAULT_AUDIO_FRAGMENT)
   }
 
   fun setExtraOptionTitle(title: String) {

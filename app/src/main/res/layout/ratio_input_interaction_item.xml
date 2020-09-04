@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.player.state.itemviewmodel.RatioExpressionInputInteractionViewModel" />
+  </data>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="24dp"
+    android:layout_marginBottom="0dp"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    android:padding="0dp"
+    app:layoutMarginEnd="@{viewModel.hasConversationView ? @dimen/margin_24 : @dimen/margin_32}"
+    app:layoutMarginStart="@{viewModel.hasConversationView ? @dimen/margin_40 : @dimen/margin_32}">
+
+    <org.oppia.app.customview.interaction.RatioInputInteractionView
+      android:id="@+id/ratio_input_interaction_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@drawable/edit_text_background"
+      android:digits="0123456789: "
+      android:fontFamily="sans-serif"
+      android:hint="@{viewModel.hintText}"
+      android:imeOptions="actionDone"
+      android:inputType="time"
+      android:longClickable="false"
+      android:maxLength="200"
+      android:minHeight="48dp"
+      android:paddingStart="16dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="8dp"
+      android:singleLine="true"
+      android:text="@={viewModel.answerText}"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textColorHint="@color/editTextHint"
+      android:textSize="14sp"
+      android:textStyle="italic"
+      app:textChangedListener="@{viewModel.answerTextWatcher}" />
+
+    <TextView
+      android:id="@+id/ratio_input_error"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:fontFamily="sans-serif"
+      android:minHeight="32dp"
+      android:text="@{viewModel.errorMessage}"
+      android:textColor="@color/editTextError"
+      android:textSize="12sp"
+      android:visibility="@{viewModel.errorMessage.length()>0? View.VISIBLE : View.INVISIBLE}" />
+  </LinearLayout>
+</layout>

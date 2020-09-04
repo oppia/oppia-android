@@ -16,14 +16,15 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
-      android:layout_height="match_parent">
+      android:layout_height="match_parent"
+      android:background="@color/oppiaGreyBackground">
 
       <FrameLayout
         android:id="@+id/options_fragment_placeholder"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/multipane_guideline"
+        app:layout_constraintEnd_toStartOf="@+id/options_separator"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -31,6 +32,12 @@
         android:id="@+id/options_activity_selected_options_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="24dp"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@color/oppiaPrimaryText"
+        android:textSize="18sp"
+        android:background="@color/transparent"
         app:layout_constraintStart_toEndOf="@id/multipane_guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -39,6 +46,7 @@
         android:id="@+id/multipane_options_container"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/multipane_guideline"
@@ -50,6 +58,15 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.38" />
+
+      <View
+        android:id="@+id/options_separator"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:background="@color/oppiaOnboardingDivider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/multipane_guideline"
+        app:layout_constraintTop_toTopOf="parent" />
 
       <View
         android:layout_width="match_parent"
@@ -64,7 +81,7 @@
   <fragment
     android:id="@+id/options_activity_fragment_navigation_drawer"
     android:name="org.oppia.app.drawer.NavigationDrawerFragment"
-    android:layout_width="match_parent"
+    android:layout_width="304dp"
     android:layout_height="match_parent"
     android:layout_gravity="start"
     app:layout="@layout/drawer_fragment"

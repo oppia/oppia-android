@@ -53,6 +53,13 @@ TEST_DEPS = [
 ]
 
 testing_test(
+    name = "CoroutineExecutorServiceTest",
+    srcs = ["src/test/java/org/oppia/testing/CoroutineExecutorServiceTest.kt"],
+    test_class = "org.oppia.testing.CoroutineExecutorServiceTest",
+    deps = TEST_DEPS,
+)
+
+testing_test(
     name = "FakeEventLoggerTest",
     srcs = ["src/test/java/org/oppia/testing/FakeEventLoggerTest.kt"],
     test_class = "org.oppia.testing.FakeEventLoggerTest",

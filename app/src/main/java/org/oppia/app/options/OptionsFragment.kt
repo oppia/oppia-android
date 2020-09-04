@@ -15,8 +15,9 @@ const val REQUEST_CODE_TEXT_SIZE = 1
 const val REQUEST_CODE_APP_LANGUAGE = 2
 const val REQUEST_CODE_AUDIO_LANGUAGE = 3
 
-private const val IS_MULTIPANE_EXTRA = "IS_MULTIPANE"
+private const val IS_MULTIPANE_EXTRA = "IS_MULTIPANE_EXTRA"
 private const val IS_FIRST_OPEN_EXTRA = "IS_FIRST_OPEN_EXTRA"
+private const val SELECTED_FRAGMENT_EXTRA = "SELECTED_FRAGMENT_EXTRA"
 
 /** Fragment that contains an introduction to the app. */
 class OptionsFragment : InjectableFragment() {
@@ -24,10 +25,15 @@ class OptionsFragment : InjectableFragment() {
   lateinit var optionsFragmentPresenter: OptionsFragmentPresenter
 
   companion object {
-    fun newInstance(isMultipane: Boolean, isFirstOpen: Boolean): OptionsFragment {
+    fun newInstance(
+      isMultipane: Boolean,
+      isFirstOpen: Boolean,
+      selectedFragment: String
+    ): OptionsFragment {
       val args = Bundle()
       args.putBoolean(IS_MULTIPANE_EXTRA, isMultipane)
       args.putBoolean(IS_FIRST_OPEN_EXTRA, isFirstOpen)
+      args.putString(SELECTED_FRAGMENT_EXTRA, selectedFragment)
       val fragment = OptionsFragment()
       fragment.arguments = args
       return fragment
@@ -48,7 +54,14 @@ class OptionsFragment : InjectableFragment() {
       checkNotNull(arguments) { "Expected arguments to be passed to OptionsFragment" }
     val isMultipane = args.getBoolean(IS_MULTIPANE_EXTRA)
     val isFirstOpen = args.getBoolean(IS_FIRST_OPEN_EXTRA)
-    return optionsFragmentPresenter.handleCreateView(inflater, container, isMultipane, isFirstOpen)
+    val selectedFragment = checkNotNull(args.getString(SELECTED_FRAGMENT_EXTRA))
+    return optionsFragmentPresenter.handleCreateView(
+      inflater,
+      container,
+      isMultipane,
+      isFirstOpen,
+      selectedFragment
+    )
   }
 
   fun updateReadingTextSize(textSize: String) {
@@ -66,6 +79,12 @@ class OptionsFragment : InjectableFragment() {
   fun updateAudioLanguage(audioLanguage: String) {
     optionsFragmentPresenter.runAfterUIInitialization {
       optionsFragmentPresenter.updateAudioLanguage(audioLanguage)
+    }
+  }
+
+  fun setSelectedFragment(selectedLanguage: String) {
+    optionsFragmentPresenter.runAfterUIInitialization {
+      optionsFragmentPresenter.setSelectedFragment(selectedLanguage)
     }
   }
 }

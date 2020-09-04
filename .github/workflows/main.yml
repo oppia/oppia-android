@@ -130,10 +130,10 @@ jobs:
         with:
           java-version: 1.9
       
-      - name: Robolectric tests - FAQ, Help, Mydownloads, Parser, ProfileProgress, RecyclerView, Story, Utility tests
+      - name: Robolectric tests - FAQ, Help, Mydownloads, Parser, ProfileProgress, RecyclerView, State, Story, Utility tests
         # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
         run: |
-          sudo ./gradlew :app:testDebugUnitTest --tests org.oppia.app.faq* --tests org.oppia.app.help* --tests org.oppia.app.mydownloads* --tests org.oppia.app.parser* --tests org.oppia.app.profileprogress* --tests org.oppia.app.recyclerview* --tests org.oppia.app.splash* --tests org.oppia.app.story* --tests org.oppia.app.utility* --tests org.oppia.app.topic.questionplayer*
+          sudo ./gradlew :app:testDebugUnitTest --tests org.oppia.app.faq* --tests org.oppia.app.help* --tests org.oppia.app.mydownloads* --tests org.oppia.app.parser* --tests org.oppia.app.player.state* --tests org.oppia.app.profileprogress* --tests org.oppia.app.recyclerview* --tests org.oppia.app.splash* --tests org.oppia.app.story* --tests org.oppia.app.utility* --tests org.oppia.app.topic.questionplayer*
       - name: Upload App Test Reports
         uses: actions/upload-artifact@v2
         if: ${{ always() }} # IMPORTANT: Upload reports regardless of status

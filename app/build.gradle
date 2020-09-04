@@ -6,12 +6,12 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-  compileSdkVersion 28
-  buildToolsVersion "29.0.1"
+  compileSdkVersion 29
+  buildToolsVersion "29.0.2"
   defaultConfig {
     applicationId "org.oppia.app"
     minSdkVersion 19
-    targetSdkVersion 28
+    targetSdkVersion 29
     versionCode 1
     versionName "1.0"
     multiDexEnabled true
@@ -33,8 +33,15 @@ android {
   }
   buildTypes {
     release {
-      minifyEnabled false
+      minifyEnabled true
+      shrinkResources true
       proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    }
+  }
+  splits {
+    // See: https://developer.android.com/studio/build/configure-apk-splits
+    density {
+      enable true
     }
   }
   dataBinding {
@@ -85,11 +92,12 @@ dependencies {
       'androidx.multidex:multidex:2.0.1',
       'androidx.recyclerview:recyclerview:1.0.0',
       'com.chaos.view:pinview:1.4.3',
-      'com.github.bumptech.glide:glide:4.9.0',
+      'com.github.bumptech.glide:glide:4.11.0',
       'com.google.android.material:material:1.2.0-alpha02',
       'com.google.dagger:dagger:2.24',
-      'com.google.firebase:firebase-analytics-ktx:17.4.2',
-      'com.google.firebase:firebase-core:17.4.2',
+      'com.google.firebase:firebase-analytics:17.5.0',
+      'com.google.firebase:firebase-analytics-ktx:17.5.0',
+      'com.google.firebase:firebase-core:17.5.0',
       'com.google.firebase:firebase-crashlytics:17.0.0',
       'com.google.guava:guava:28.1-android',
       'com.jackandphantom.android:circularimageview:1.2.0',
@@ -105,10 +113,13 @@ dependencies {
       'androidx.test.espresso:espresso-core:3.2.0',
       'androidx.test.espresso:espresso-intents:3.1.0',
       'androidx.test.ext:junit:1.1.1',
+      'com.github.bumptech.glide:mocks:4.11.0',
       'com.google.truth:truth:0.43',
       'org.robolectric:annotations:4.3',
       'org.robolectric:robolectric:4.3',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
+      "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version",
+      "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version",
       'org.mockito:mockito-core:2.7.22',
       project(":testing"),
   )
@@ -118,6 +129,7 @@ dependencies {
       'androidx.test.espresso:espresso-core:3.2.0',
       'androidx.test.espresso:espresso-intents:3.1.0',
       'androidx.test.ext:junit:1.1.1',
+      'com.github.bumptech.glide:mocks:4.11.0',
       'com.google.truth:truth:0.43',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
       'org.mockito:mockito-android:2.7.22',

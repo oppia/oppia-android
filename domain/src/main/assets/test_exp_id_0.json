@@ -515,7 +515,10 @@
           "confirmed_unclassified_answers": [],
           "customization_args": {
             "placeholder": {
-              "value": ""
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": ""
+              }
             },
             "rows": {
               "value": 1
