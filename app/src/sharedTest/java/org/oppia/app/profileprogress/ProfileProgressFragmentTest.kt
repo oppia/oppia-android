@@ -257,6 +257,7 @@ class ProfileProgressFragmentTest {
     val activityResult = createGalleryPickActivityResultStub()
     intending(expectedIntent).respondWith(activityResult)
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
       waitForTheView(withText("Admin"))
       onView(
         atPositionOnView(
@@ -265,12 +266,15 @@ class ProfileProgressFragmentTest {
           R.id.profile_edit_image
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.profile_progress_edit_dialog_title)).inRoot(isDialog())
         .check(matches(isDisplayed()))
       onView(withText(R.string.profile_picture_edit_alert_dialog_choose_from_library))
         .perform(click())
+      testCoroutineDispatchers.runCurrent()
       intended(expectedIntent)
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       intended(expectedIntent)
       onView(
         atPositionOnView(
@@ -279,6 +283,7 @@ class ProfileProgressFragmentTest {
           R.id.profile_edit_image
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       // The dialog should still be open after a configuration change.
       onView(withText(R.string.profile_progress_edit_dialog_title)).inRoot(isDialog())
         .check(matches(isDisplayed()))
