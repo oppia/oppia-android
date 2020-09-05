@@ -1,5 +1,6 @@
 package org.oppia.app.drawer
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -57,6 +58,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private lateinit var profileId: ProfileId
   private var previousMenuItemId: Int? = null
   private var internalProfileId: Int = -1
+  private var lastCheckedItem: MenuItem? = null
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = DrawerFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -77,7 +79,6 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     subscribeToProfileLiveData()
     subscribeToCompletedStoryListLiveData()
     subscribeToOngoingTopicListLiveData()
-
     binding.fragmentDrawerNavView.addHeaderView(headerBinding.root)
     binding.footerViewModel = getFooterViewModel()
     binding.executePendingBindings()
@@ -193,7 +194,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   }
 
   private fun openActivityByMenuItemId(menuItemId: Int) {
-    getFooterViewModel().isAdministratorControlsSelected.set(false)
+//    getFooterViewModel().isAdministratorControlsSelected.set(false)
     if (previousMenuItemId != menuItemId) {
       when (NavigationDrawerItem.valueFromNavId(menuItemId)) {
         NavigationDrawerItem.HOME -> {
@@ -233,13 +234,20 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           drawerLayout.closeDrawers()
         }
         NavigationDrawerItem.SWITCH_PROFILE -> {
+          val isAdminSelected = getFooterViewModel().isAdministratorControlsSelected.get() ?: false
+          lastCheckedItem = binding.fragmentDrawerNavView.checkedItem
+          val id: Int = lastCheckedItem?.itemId ?: -1
           val previousFragment =
             fragment.childFragmentManager.findFragmentByTag(TAG_SWITCH_PROFILE_DIALOG)
           if (previousFragment != null) {
             fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
           }
           val dialogFragment = ExitProfileDialogFragment
-            .newInstance(isFromNavigationDrawer = true)
+            .newInstance(
+              isFromNavigationDrawer = true,
+              isAdministratorControlsSelected = isAdminSelected,
+              lastCheckedItemId = id
+            )
           dialogFragment.showNow(fragment.childFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
         }
       }
@@ -262,6 +270,36 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       NavigationDrawerItem.HOME.ordinal
     ).isChecked =
       true
+    drawerLayout.closeDrawers()
+  }
+
+  fun markLastCheckedItemCloseDrawer(lastCheckedItemId: Int, isAdminSelected: Boolean) {
+    if (isAdminSelected) {
+      getFooterViewModel().isAdministratorControlsSelected.set(true)
+    } else {
+      if(lastCheckedItemId != -1) {
+        Log.d("final", "markLastCheckedItemCloseDrawer: $lastCheckedItemId")
+        binding.fragmentDrawerNavView.menu.getItem(
+          when(lastCheckedItemId) {
+            NavigationDrawerItem.HOME.value -> 0
+            NavigationDrawerItem.OPTIONS.value -> 1
+            NavigationDrawerItem.HELP.value -> 2
+            NavigationDrawerItem.DOWNLOADS.value -> 3
+            NavigationDrawerItem.SWITCH_PROFILE.value -> 4
+            else -> 0
+          }
+        ).isChecked = true
+      }
+    }
+    drawerLayout.closeDrawers()
+  }
+
+  fun unmarkSwitchProfileItemCloseDrawer() {
+    Log.d("final", "unmarkSwitchProfileItemCloseDrawer: unmark done")
+    binding.fragmentDrawerNavView.menu.getItem(
+      NavigationDrawerItem.SWITCH_PROFILE.ordinal
+    ).isChecked =
+      false
     drawerLayout.closeDrawers()
   }
 
@@ -302,7 +340,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           binding.fragmentDrawerNavView.menu.getItem(
             NavigationDrawerItem.SWITCH_PROFILE.ordinal
           ).isChecked =
-            true
+            false
         }
       }
       this.drawerLayout = drawerLayout
@@ -336,6 +374,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       drawerLayout.setDrawerListener(drawerToggle)
       /* Synchronize the state of the drawer indicator/affordance with the linked [drawerLayout]. */
       drawerLayout.post { drawerToggle.syncState() }
+      unmarkSwitchProfileItemCloseDrawer()
     } else {
       // For showing navigation drawer in AdministratorControlsActivity
       getFooterViewModel().isAdministratorControlsSelected.set(true)
@@ -355,6 +394,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
             activity,
             false
           )
+//          unmarkSwitchProfileItemCloseDrawer()
         }
 
         override fun onDrawerClosed(drawerView: View) {
@@ -365,6 +405,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
             activity,
             false
           )
+//          unmarkSwitchProfileItemCloseDrawer()
         }
       }
       drawerLayout.setDrawerListener(drawerToggle)
