@@ -2,7 +2,8 @@ name: CI Lint and Tests
 
 # Controls when the action will run. Triggers the workflow on pull request
 # events or push events in the develop branch.
-on: 
+on:
+  workflow_dispatch:
   pull_request:
   push:
     branches:    
