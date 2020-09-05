@@ -44,7 +44,11 @@ class HomeActivity : InjectableAppCompatActivity(), RouteToTopicListener {
       supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
     val dialogFragment = ExitProfileDialogFragment
-      .newInstance(isFromNavigationDrawer = false, isAdministratorControlsSelected = false, lastCheckedItemId = -1)
+      .newInstance(
+        isFromNavigationDrawer = false,
+        isAdministratorControlsSelected = false,
+        lastCheckedItemId = -1
+      )
     dialogFragment.showNow(supportFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
   }
 }

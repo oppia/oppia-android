@@ -9,7 +9,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.forEach
-import androidx.core.view.get
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -80,6 +79,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     subscribeToProfileLiveData()
     subscribeToCompletedStoryListLiveData()
     subscribeToOngoingTopicListLiveData()
+
     binding.fragmentDrawerNavView.addHeaderView(headerBinding.root)
     binding.footerViewModel = getFooterViewModel()
     binding.executePendingBindings()
@@ -119,7 +119,6 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           ) {
             fragment.activity!!.finish()
           }
-          unmarkSwitchProfileItemCloseDrawer()
           drawerLayout.closeDrawers()
         }
       }
@@ -400,7 +399,6 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       drawerLayout.setDrawerListener(drawerToggle)
       /* Synchronize the state of the drawer indicator/affordance with the linked [drawerLayout]. */
       drawerLayout.post { drawerToggle.syncState() }
-      binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.SWITCH_PROFILE.ordinal).isChecked = false
       if (previousMenuItemId != NavigationDrawerItem.HOME.ordinal) {
         fragment.activity!!.finish()
       }

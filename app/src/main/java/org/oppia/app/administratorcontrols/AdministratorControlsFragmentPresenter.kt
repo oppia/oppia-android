@@ -67,6 +67,7 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
       this.viewModel = administratorControlsViewModel
       this.lifecycleOwner = fragment
     }
+
     return binding.root
   }
 
