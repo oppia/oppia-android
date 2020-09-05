@@ -9,6 +9,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.forEach
+import androidx.core.view.get
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -118,6 +119,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           ) {
             fragment.activity!!.finish()
           }
+          unmarkSwitchProfileItemCloseDrawer()
           drawerLayout.closeDrawers()
         }
       }
@@ -194,7 +196,6 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   }
 
   private fun openActivityByMenuItemId(menuItemId: Int) {
-//    getFooterViewModel().isAdministratorControlsSelected.set(false)
     if (previousMenuItemId != menuItemId) {
       when (NavigationDrawerItem.valueFromNavId(menuItemId)) {
         NavigationDrawerItem.HOME -> {
@@ -265,20 +266,11 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     )
   }
 
-  fun markHomeMenuCloseDrawer() {
-    binding.fragmentDrawerNavView.menu.getItem(
-      NavigationDrawerItem.HOME.ordinal
-    ).isChecked =
-      true
-    drawerLayout.closeDrawers()
-  }
-
   fun markLastCheckedItemCloseDrawer(lastCheckedItemId: Int, isAdminSelected: Boolean) {
     if (isAdminSelected) {
       getFooterViewModel().isAdministratorControlsSelected.set(true)
     } else {
       if(lastCheckedItemId != -1) {
-        Log.d("final", "markLastCheckedItemCloseDrawer: $lastCheckedItemId")
         binding.fragmentDrawerNavView.menu.getItem(
           when(lastCheckedItemId) {
             NavigationDrawerItem.HOME.value -> 0
@@ -300,7 +292,6 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       NavigationDrawerItem.SWITCH_PROFILE.ordinal
     ).isChecked =
       false
-    drawerLayout.closeDrawers()
   }
 
   /**
@@ -340,7 +331,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           binding.fragmentDrawerNavView.menu.getItem(
             NavigationDrawerItem.SWITCH_PROFILE.ordinal
           ).isChecked =
-            false
+            true
         }
       }
       this.drawerLayout = drawerLayout
@@ -374,7 +365,6 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       drawerLayout.setDrawerListener(drawerToggle)
       /* Synchronize the state of the drawer indicator/affordance with the linked [drawerLayout]. */
       drawerLayout.post { drawerToggle.syncState() }
-      unmarkSwitchProfileItemCloseDrawer()
     } else {
       // For showing navigation drawer in AdministratorControlsActivity
       getFooterViewModel().isAdministratorControlsSelected.set(true)
@@ -387,6 +377,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         R.string.drawer_close_content_description
       ) {
         override fun onDrawerOpened(drawerView: View) {
+          binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.SWITCH_PROFILE.ordinal).isChecked = false
           super.onDrawerOpened(drawerView)
           fragment.activity!!.invalidateOptionsMenu()
           StatusBarColor.statusBarColorUpdate(
@@ -394,7 +385,6 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
             activity,
             false
           )
-//          unmarkSwitchProfileItemCloseDrawer()
         }
 
         override fun onDrawerClosed(drawerView: View) {
@@ -405,12 +395,12 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
             activity,
             false
           )
-//          unmarkSwitchProfileItemCloseDrawer()
         }
       }
       drawerLayout.setDrawerListener(drawerToggle)
       /* Synchronize the state of the drawer indicator/affordance with the linked [drawerLayout]. */
       drawerLayout.post { drawerToggle.syncState() }
+      binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.SWITCH_PROFILE.ordinal).isChecked = false
       if (previousMenuItemId != NavigationDrawerItem.HOME.ordinal) {
         fragment.activity!!.finish()
       }
