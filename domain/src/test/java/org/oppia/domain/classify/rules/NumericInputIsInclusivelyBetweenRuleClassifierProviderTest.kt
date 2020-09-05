@@ -80,7 +80,7 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
   }
 
   @Test
-  fun testPositiveRealAnswer_oneNegativeRealInput_secondPositiveRealInput_answerInclusivelyBetween() { // ktlint-disable max-line-length
+  fun testPositiveRealAnswer_negativeRealInput_positiveRealInput_answerInclusivelyBetween() {
     val inputs = mapOf(
       "a" to NEGATIVE_REAL_VALUE_1_5,
       "b" to POSITIVE_REAL_VALUE_3_5
@@ -93,7 +93,7 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
   }
 
   @Test
-  fun testPositiveRealAnswer_onePositiveRealInput_secondNegativeRealInput_answerInclusivelyBetween() { // ktlint-disable max-line-length
+  fun testPositiveRealAnswer_positiveRealInput_negativeRealInput_answerInclusivelyBetween() {
     val inputs = mapOf(
       "a" to POSITIVE_REAL_VALUE_3_5,
       "b" to NEGATIVE_REAL_VALUE_3_5
@@ -106,7 +106,7 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
   }
 
   @Test
-  fun testNegativeRealAnswer_oneNegativeRealInput_secondPositiveRealInput_answerInclusivelyBetween() { // ktlint-disable max-line-length
+  fun testNegativeRealAnswer_negativeRealInput_positiveRealInput_answerInclusivelyBetween() {
     val inputs = mapOf(
       "a" to NEGATIVE_REAL_VALUE_3_5,
       "b" to POSITIVE_REAL_VALUE_1_5
@@ -119,7 +119,7 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
   }
 
   @Test
-  fun testNegativeRealAnswer_onePositiveRealInput_secondNegativeRealInput_answerInclusivelyBetween() { // ktlint-disable max-line-length
+  fun testNegativeRealAnswer_positiveRealInput_negativeRealInput_answerInclusivelyBetween() {
     val inputs = mapOf(
       "a" to POSITIVE_REAL_VALUE_3_5,
       "b" to NEGATIVE_REAL_VALUE_3_5
@@ -132,7 +132,7 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
   }
 
   @Test
-  fun testPositiveIntAnswer_oneNegativeInput_secondPositiveIntInput_answerInclusivelyBetween() {
+  fun testPositiveIntAnswer_negativeInput_positiveIntInput_answerInclusivelyBetween() {
     val inputs = mapOf(
       "a" to NEGATIVE_INT_VALUE_1,
       "b" to POSITIVE_INT_VALUE_3
@@ -145,7 +145,7 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
   }
 
   @Test
-  fun testPositiveIntAnswer_onePositiveIntInput_secondNegativeIntInput_answerNotInclusivelyBetween() { // ktlint-disable max-line-length
+  fun testPositiveIntAnswer_positiveIntInput_segativeIntInput_answerNotInclusivelyBetween() {
     val inputs = mapOf(
       "a" to POSITIVE_INT_VALUE_3,
       "b" to NEGATIVE_INT_VALUE_1
@@ -158,7 +158,7 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
   }
 
   @Test
-  fun testNegativeIntAnswer_oneNegativeIntInput_secondPositiveIntInput_answerInclusivelyBetween() {
+  fun testNegativeIntAnswer_negativeIntInput_positiveIntInput_answerInclusivelyBetween() {
     val inputs = mapOf(
       "a" to NEGATIVE_INT_VALUE_3,
       "b" to POSITIVE_INT_VALUE_1
@@ -171,7 +171,7 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
   }
 
   @Test
-  fun testNegativeIntAnswer_onePositiveIntInput_secondNegativeIntInput_answerNotInclusivelyBetween() { // ktlint-disable max-line-length
+  fun testNegativeIntAnswer_positiveIntInput_negativeIntInput_answerNotInclusivelyBetween() {
     val inputs = mapOf(
       "a" to POSITIVE_REAL_VALUE_3_5,
       "b" to NEGATIVE_REAL_VALUE_3_5
