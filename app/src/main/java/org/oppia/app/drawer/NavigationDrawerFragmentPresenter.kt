@@ -269,9 +269,9 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     if (isAdminSelected) {
       getFooterViewModel().isAdministratorControlsSelected.set(true)
     } else {
-      if(lastCheckedItemId != -1) {
+      if (lastCheckedItemId != -1) {
         binding.fragmentDrawerNavView.menu.getItem(
-          when(lastCheckedItemId) {
+          when (lastCheckedItemId) {
             NavigationDrawerItem.HOME.value -> 0
             NavigationDrawerItem.OPTIONS.value -> 1
             NavigationDrawerItem.HELP.value -> 2
@@ -376,7 +376,9 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         R.string.drawer_close_content_description
       ) {
         override fun onDrawerOpened(drawerView: View) {
-          binding.fragmentDrawerNavView.menu.getItem(NavigationDrawerItem.SWITCH_PROFILE.ordinal).isChecked = false
+          binding.fragmentDrawerNavView.menu.getItem(
+            NavigationDrawerItem.SWITCH_PROFILE.ordinal
+          ).isChecked = false
           super.onDrawerOpened(drawerView)
           fragment.activity!!.invalidateOptionsMenu()
           StatusBarColor.statusBarColorUpdate(

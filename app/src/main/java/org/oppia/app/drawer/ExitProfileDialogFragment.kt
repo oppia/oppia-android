@@ -4,11 +4,9 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.DialogFragment
-import com.google.protobuf.LazyStringArrayList
 import org.oppia.app.R
 import org.oppia.app.profile.ProfileChooserActivity
 
@@ -57,7 +55,7 @@ class ExitProfileDialogFragment : DialogFragment() {
 
     val isAdminSelected = args.getBoolean(
       BOOL_IS_ADMINISTRATOR_CONTROLS_SELECTED_KEY,
-        false
+      false
     )
 
     val lastCheckedItemId = args.getInt(

@@ -41,7 +41,10 @@ class NavigationDrawerFragment :
   }
 
   override fun markLastCheckedItemCloseDrawer(lastCheckedItemId: Int, isAdminSelected: Boolean) {
-    navigationDrawerFragmentPresenter.markLastCheckedItemCloseDrawer(lastCheckedItemId, isAdminSelected)
+    navigationDrawerFragmentPresenter.markLastCheckedItemCloseDrawer(
+      lastCheckedItemId,
+      isAdminSelected
+    )
   }
 
   override fun unmarkSwitchProfileItemCloseDrawer() {
