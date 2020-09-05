@@ -145,7 +145,7 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
   }
 
   @Test
-  fun testPositiveIntAnswer_positiveIntInput_segativeIntInput_answerNotInclusivelyBetween() {
+  fun testPositiveIntAnswer_positiveIntInput_negativeIntInput_answerNotInclusivelyBetween() {
     val inputs = mapOf(
       "a" to POSITIVE_INT_VALUE_3,
       "b" to NEGATIVE_INT_VALUE_1
