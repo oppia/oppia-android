@@ -54,7 +54,7 @@ class ReadingTextSizeFragmentPresenter @Inject constructor(private val fragment:
         binding.readingTextSizeSeekBar.progress = 5
         binding.previewTextview.setTextSize(
           TypedValue.COMPLEX_UNIT_PX,
-          getReadingTextSizeInFloat(ReadingTextSize.SMALL_TEXT_SIZE)
+          getReadingTextSizeInFloat(ReadingTextSize.MEDIUM_TEXT_SIZE)
         )
       }
       getReadingTextSize(ReadingTextSize.MEDIUM_TEXT_SIZE) -> {
