@@ -1,5 +1,6 @@
 Thanks for your interest in contributing to the Oppia Android project, and making it easier for students to learn online in an effective and enjoyable way!
 
+## Onboarding instructions
 We're still working on setting up the basics of the Android project, but we are starting to welcome new contributors who'd like to help out. For now, if you're interested in contributing, please follow the following steps:
 
 1. Sign the CLA, so that we can accept your contributions. If you're contributing as an individual, use the [individual CLA](https://goo.gl/forms/AttNH80OV0). If your company owns the copyright to your contributions, a company representative should sign the [corporate CLA](https://goo.gl/forms/xDq9gK3Zcv).
@@ -7,6 +8,7 @@ We're still working on setting up the basics of the Android project, but we are 
 3. Check out the oppia-android codebase to become familiar with the project!
 4. Check out a copy of the [Oppia web app repository](https://github.com/oppia/oppia) and get it running locally, so that you can connect to a local instance of the web app when developing locally.
 5. Read the Oppia Android coding style guide: https://github.com/oppia/oppia-android/wiki/Coding-style-guide
+
 
 ## Prerequisites
 1. Good internet connectivity is required as this project uses third party libraries which will be needed to build the app.
