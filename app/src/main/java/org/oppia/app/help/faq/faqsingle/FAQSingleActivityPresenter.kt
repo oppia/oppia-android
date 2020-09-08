@@ -1,7 +1,5 @@
 package org.oppia.app.help.faq.faqsingle
 
-import android.os.Build
-import android.text.Html
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -9,13 +7,18 @@ import androidx.databinding.DataBindingUtil
 import org.oppia.app.R
 import org.oppia.app.activity.ActivityScope
 import org.oppia.app.databinding.FaqSingleActivityBinding
+import org.oppia.util.gcsresource.DefaultResourceBucketName
+import org.oppia.util.parser.HtmlParser
 import javax.inject.Inject
 
 /** The presenter for [FAQSingleActivity]. */
 @ActivityScope
 class FAQSingleActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity
+  private val activity: AppCompatActivity,
+  private val htmlParserFactory: HtmlParser.Factory,
+  @DefaultResourceBucketName private val resourceBucketName: String
 ) {
+
   private lateinit var faqSingleActivityToolbar: Toolbar
 
   fun handleOnCreate(question: String, answer: String) {
@@ -37,12 +40,19 @@ class FAQSingleActivityPresenter @Inject constructor(
       (activity as FAQSingleActivity).finish()
     }
     activity.findViewById<TextView>(R.id.faq_question_text_view).text = question
-    activity.findViewById<TextView>(R.id.faq_answer_text_view).text = if (
-      Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
-    ) {
-      Html.fromHtml(answer, Html.FROM_HTML_MODE_COMPACT)
-    } else {
-      Html.fromHtml(answer)
-    }
+
+    // NOTE: Here entityType and entityId can be anything as it will actually not get used.
+    // They are needed only for cases where rich-text contains images from server and in faq
+    // we do not have images.
+    val answerTextView = activity.findViewById<TextView>(R.id.faq_answer_text_view)
+    answerTextView.text = htmlParserFactory.create(
+      resourceBucketName,
+      /* entityType= */ "faq",
+      /* entityId= */ "oppia",
+      /* imageCenterAlign= */ false
+    ).parseOppiaHtml(
+      answer,
+      answerTextView
+    )
   }
 }

@@ -1,20 +1,27 @@
 package org.oppia.app.faq
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
+import android.text.Spannable
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
@@ -50,10 +57,12 @@ import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.caching.testing.CachingTestModule
+import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.gcsresource.GcsResourceModule
 import org.oppia.util.logging.LoggerModule
 import org.oppia.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.util.parser.GlideImageLoaderModule
+import org.oppia.util.parser.HtmlParser
 import org.oppia.util.parser.HtmlParserEntityTypeModule
 import org.oppia.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
@@ -67,18 +76,36 @@ import javax.inject.Singleton
 @Config(application = FAQSingleActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class FAQSingleActivityTest {
 
+  private lateinit var launchedActivity: Activity
+
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var htmlParserFactory: HtmlParser.Factory
+
+  @Inject
+  @field:DefaultResourceBucketName
+  lateinit var resourceBucketName: String
+
+  @get:Rule
+  var activityTestRule: ActivityTestRule<FAQSingleActivity> = ActivityTestRule(
+    FAQSingleActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  )
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
+    Intents.init()
+    val intent = createFAQSingleActivity()
+    launchedActivity = activityTestRule.launchActivity(intent)
   }
 
   @After
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
+    Intents.release()
   }
 
   @Test
@@ -93,6 +120,24 @@ class FAQSingleActivityTest {
     launch<FAQSingleActivity>(createFAQSingleActivity()).use {
       onView(withId(R.id.faq_answer_text_view)).check(matches(isDisplayed()))
     }
+  }
+
+  @Test
+  fun openFAQSingleActivity_checkAnswer_isCorrectlyParsed() {
+    val answerTextView = activityTestRule.activity.findViewById(
+      R.id.faq_answer_text_view
+    ) as TextView
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      /* entityType= */ "",
+      /* entityId= */ "",
+      /* imageCenterAlign= */ false
+    )
+    val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+      getResources().getString(R.string.faq_answer_1),
+      answerTextView
+    )
+    assertThat(answerTextView.text.toString()).isEqualTo(htmlResult.toString())
   }
 
   private fun setUpTestApplicationComponent() {
