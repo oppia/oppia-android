@@ -121,8 +121,10 @@ class StateFragmentLocalTest {
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
+
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject
   @field:ApplicationContext
   lateinit var context: Context
@@ -794,7 +796,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewRevealSolutionDialog_clickReveal_solutionIsRevealed() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {scenario ->
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -814,7 +816,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewRevealSolutionDialog_clickReveal_cannotViewRevealSolution() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {scenario ->
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -834,7 +836,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewRevealSolutionDialog_clickCancel_solutionIsNotRevealed() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {scenario ->
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -854,7 +856,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewRevealSolutionDialog_clickCancel_canViewRevealSolution() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {scenario ->
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -1068,7 +1070,7 @@ class StateFragmentLocalTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun showRevealSolutionDialog(){
+  private fun showRevealSolutionDialog() {
     // The reveal solution button should now be visible.
     // NOTE: solutionIndex is multiplied by 2, because the implementation of hints and solution
     // introduces divider in UI as a separate item.
