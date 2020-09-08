@@ -119,9 +119,14 @@ class StateFragmentLocalTest {
     createAudioUrl(explorationId = "MjZzEVOG47_1", audioFileName = "content-en-ouqm7j21vt8.mp3")
   private val audioDataSource1 = DataSource.toDataSource(AUDIO_URL_1, /* headers= */ null)
 
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject @field:ApplicationContext lateinit var context: Context
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  @field:ApplicationContext
+  lateinit var context: Context
+
   @Inject
   @field:BackgroundDispatcher
   lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
@@ -755,6 +760,64 @@ class StateFragmentLocalTest {
         .inRoot(isDialog())
         .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex * 2))
       onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_nextState_viewSolution_clickReveal_showsDialog() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+      produceAndViewFourHints()
+
+      submitWrongAnswerToState2()
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+      openHintsAndSolutionsDialog()
+
+      // The reveal solution button should now be visible.
+      // NOTE: solutionIndex is multiplied by 2, because the implementation of hints and solution
+      // introduces divider in UI as a separate item.
+      onView(withId(R.id.hints_and_solution_recycler_view))
+        .inRoot(isDialog())
+        .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex * 2))
+      onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
+        .inRoot(isDialog())
+        .perform(click())
+
+      onView(withText("This will reveal the solution. Are you sure?"))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_nextState_viewRevealSolutionDialog_clickReveal_solutionIsRevealed() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+      produceAndViewFourHints()
+
+      submitWrongAnswerToState2()
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+      openHintsAndSolutionsDialog()
+
+      // The reveal solution button should now be visible.
+      // NOTE: solutionIndex is multiplied by 2, because the implementation of hints and solution
+      // introduces divider in UI as a separate item.
+      onView(withId(R.id.hints_and_solution_recycler_view))
+        .inRoot(isDialog())
+        .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex * 2))
+      onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
+        .inRoot(isDialog())
+        .perform(click())
+
+      onView(withText("CANCEL"))
+        .inRoot(isDialog())
+        .perform(click())
+
+      onView(withText("This will reveal the solution. Are you sure?"))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
