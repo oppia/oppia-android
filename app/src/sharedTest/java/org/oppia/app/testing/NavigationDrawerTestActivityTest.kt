@@ -49,13 +49,14 @@ import org.hamcrest.Matchers.instanceOf
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.app.model.ProfileId
 import org.oppia.app.mydownloads.MyDownloadsActivity
-import org.oppia.app.profile.ProfileActivity
+import org.oppia.app.profile.ProfileChooserActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.domain.oppialogger.LogStorageModule
@@ -326,7 +327,9 @@ class NavigationDrawerTestActivityTest {
     }
   }
 
+  // TODO(#1806): Enable this once lowfi implementation is done.
   @Test
+  @Ignore("My Downloads is removed until we have full download support.")
   fun testNavigationDrawerTestActivity_openNavigationDrawer_selectMyDownloadsMenuInNavigationDrawer_showsMyDownloadsFragmentSuccessfully() { // ktlint-disable max-line-length
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
@@ -345,13 +348,13 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
-  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectSwitchProfileMenu_showsExitToProfileChooserDialog_clickExit_checkOpensProfileActivity() { // ktlint-disable max-line-length
+  fun testNavigationDrawerTestActivity_openNavigationDrawer_selectSwitchProfileMenu_showsExitToProfileChooserDialog_clickExit_checkOpensProfileChooserActivity() { // ktlint-disable max-line-length
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
       onView(withText(R.string.menu_switch_profile)).perform(click())
       onView(withText(R.string.home_activity_back_dialog_message)).check(matches(isDisplayed()))
       onView(withText(R.string.home_activity_back_dialog_exit)).perform(click())
-      intended(hasComponent(ProfileActivity::class.java.name))
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
 
@@ -370,6 +373,17 @@ class NavigationDrawerTestActivityTest {
           withParent(withId(R.id.home_activity_toolbar))
         )
       ).check(matches(withText(R.string.menu_home)))
+    }
+  }
+
+  @Test
+  fun testNavigationDrawerTestActivity_selectSwitchProfile_orientationChange_checkDialogVisible() {
+    launch(NavigationDrawerTestActivity::class.java).use {
+      onView(withId(R.id.home_activity_drawer_layout)).perform(open())
+      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_message)).check(matches(isDisplayed()))
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withText(R.string.home_activity_back_dialog_message)).check(matches(isDisplayed()))
     }
   }
 

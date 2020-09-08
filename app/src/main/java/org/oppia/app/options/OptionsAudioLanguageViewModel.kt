@@ -4,7 +4,8 @@ import androidx.databinding.ObservableField
 
 /** Audio language settings view model for the recycler view in [OptionsFragment]. */
 class OptionsAudioLanguageViewModel(
-  private val routeToAudioLanguageListListener: RouteToAudioLanguageListListener
+  private val routeToAudioLanguageListListener: RouteToAudioLanguageListListener,
+  private val loadAudioLanguageListListener: LoadAudioLanguageListListener
 ) : OptionsItemViewModel() {
   val audioLanguage = ObservableField<String>("")
 
@@ -13,6 +14,10 @@ class OptionsAudioLanguageViewModel(
   }
 
   fun onAudioLanguageClicked() {
-    routeToAudioLanguageListListener.routeAudioLanguageList(audioLanguage.get())
+    if (isMultipane.get()!!) {
+      loadAudioLanguageListListener.loadAudioLanguageFragment(audioLanguage.get()!!)
+    } else {
+      routeToAudioLanguageListListener.routeAudioLanguageList(audioLanguage.get())
+    }
   }
 }

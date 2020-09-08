@@ -38,6 +38,7 @@ import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -81,6 +82,9 @@ class AnalyticsControllerTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var dataProviders: DataProviders
 
   @Mock
   lateinit var mockOppiaEventLogsObserver: Observer<AsyncResult<OppiaEventLogs>>
@@ -366,7 +370,7 @@ class AnalyticsControllerTest {
       )
     )
 
-    val eventLogs = analyticsController.getEventLogs()
+    val eventLogs = dataProviders.convertToLiveData(analyticsController.getEventLogStore())
     eventLogs.observeForever(this.mockOppiaEventLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
     verify(
@@ -396,7 +400,7 @@ class AnalyticsControllerTest {
       )
     )
 
-    val eventLogs = analyticsController.getEventLogs()
+    val eventLogs = dataProviders.convertToLiveData(analyticsController.getEventLogStore())
     eventLogs.observeForever(this.mockOppiaEventLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
     verify(
@@ -417,7 +421,7 @@ class AnalyticsControllerTest {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     logMultipleEvents()
 
-    val eventLogs = analyticsController.getEventLogs()
+    val eventLogs = dataProviders.convertToLiveData(analyticsController.getEventLogStore())
     eventLogs.observeForever(this.mockOppiaEventLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
     verify(
@@ -453,7 +457,7 @@ class AnalyticsControllerTest {
       )
     )
 
-    val eventLogs = analyticsController.getEventLogs()
+    val eventLogs = dataProviders.convertToLiveData(analyticsController.getEventLogStore())
     eventLogs.observeForever(this.mockOppiaEventLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
     verify(
@@ -494,7 +498,7 @@ class AnalyticsControllerTest {
       )
     )
 
-    val cachedEventLogs = analyticsController.getEventLogs()
+    val cachedEventLogs = dataProviders.convertToLiveData(analyticsController.getEventLogStore())
     cachedEventLogs.observeForever(this.mockOppiaEventLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
     verify(
@@ -523,7 +527,7 @@ class AnalyticsControllerTest {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     logMultipleEvents()
 
-    val cachedEventLogs = analyticsController.getEventLogs()
+    val cachedEventLogs = dataProviders.convertToLiveData(analyticsController.getEventLogStore())
     cachedEventLogs.observeForever(this.mockOppiaEventLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
     verify(

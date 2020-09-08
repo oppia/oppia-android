@@ -5,7 +5,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.forEach
@@ -28,7 +27,6 @@ import org.oppia.app.model.Profile
 import org.oppia.app.model.ProfileId
 import org.oppia.app.mydownloads.MyDownloadsActivity
 import org.oppia.app.options.OptionsActivity
-import org.oppia.app.profile.ProfileActivity
 import org.oppia.app.profileprogress.ProfileProgressActivity
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.viewmodel.ViewModelProvider
@@ -40,6 +38,7 @@ import org.oppia.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
 const val KEY_NAVIGATION_PROFILE_ID = "KEY_NAVIGATION_PROFILE_ID"
+const val TAG_SWITCH_PROFILE_DIALOG = "SWITCH_PROFILE_DIALOG"
 
 /** The presenter for [NavigationDrawerFragment]. */
 @FragmentScope
@@ -234,29 +233,14 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           drawerLayout.closeDrawers()
         }
         NavigationDrawerItem.SWITCH_PROFILE -> {
-          AlertDialog.Builder(fragment.context!!, R.style.AlertDialogTheme)
-            .setMessage(R.string.home_activity_back_dialog_message)
-            .setOnCancelListener { dialog ->
-              binding.fragmentDrawerNavView.menu.getItem(
-                NavigationDrawerItem.HOME.ordinal
-              ).isChecked =
-                true
-              drawerLayout.closeDrawers()
-              dialog.dismiss()
-            }
-            .setNegativeButton(R.string.home_activity_back_dialog_cancel) { dialog, _ ->
-              binding.fragmentDrawerNavView.menu.getItem(
-                NavigationDrawerItem.HOME.ordinal
-              ).isChecked =
-                true
-              drawerLayout.closeDrawers()
-              dialog.dismiss()
-            }
-            .setPositiveButton(R.string.home_activity_back_dialog_exit) { _, _ ->
-              // TODO(#322): Need to start intent for ProfileActivity to get update. Change to finish when live data bug is fixed.
-              val intent = ProfileActivity.createProfileActivity(fragment.context!!)
-              fragment.activity!!.startActivity(intent)
-            }.create().show()
+          val previousFragment =
+            fragment.childFragmentManager.findFragmentByTag(TAG_SWITCH_PROFILE_DIALOG)
+          if (previousFragment != null) {
+            fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
+          }
+          val dialogFragment = ExitProfileDialogFragment
+            .newInstance(isFromNavigationDrawer = true)
+          dialogFragment.showNow(fragment.childFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
         }
       }
     } else {
@@ -271,6 +255,14 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         profileId
       )
     )
+  }
+
+  fun markHomeMenuCloseDrawer() {
+    binding.fragmentDrawerNavView.menu.getItem(
+      NavigationDrawerItem.HOME.ordinal
+    ).isChecked =
+      true
+    drawerLayout.closeDrawers()
   }
 
   /**

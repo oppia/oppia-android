@@ -1,6 +1,5 @@
 package org.oppia.domain.oppialogger.exceptions
 
-import androidx.lifecycle.LiveData
 import org.oppia.app.model.ExceptionLog
 import org.oppia.app.model.ExceptionLog.ExceptionType
 import org.oppia.app.model.OppiaExceptionLogs
@@ -159,12 +158,33 @@ class ExceptionsController @Inject constructor(
     oppiaExceptionLogs.exceptionLogList.withIndex()
       .minBy { it.value.timestampInMillis }?.index
 
-  /**
-   * Returns a [LiveData] result which can be used to get [OppiaExceptionLogs]
-   * for the purpose of uploading in the presence of network connectivity.
-   */
+  /** Returns a data provider for exception log reports that have been recorded for upload. */
   fun getExceptionLogStore(): DataProvider<OppiaExceptionLogs> {
     return exceptionLogStore
+  }
+
+  /**
+   * Returns a list of exception log reports which have been recorded for upload.
+   *
+   *  As we are using the await call on the deferred output of readDataAsync, the failure case would be caught and it'll throw an error.
+   */
+  suspend fun getExceptionLogStoreList(): MutableList<ExceptionLog> {
+    return exceptionLogStore.readDataAsync().await().exceptionLogList
+  }
+
+  /** Removes the first exception log report that had been recorded for upload. */
+  fun removeFirstExceptionLogFromStore() {
+    exceptionLogStore.storeDataAsync(updateInMemoryCache = true) { oppiaExceptionLogs ->
+      return@storeDataAsync oppiaExceptionLogs.toBuilder().removeExceptionLog(0).build()
+    }.invokeOnCompletion {
+      it?.let {
+        consoleLogger.e(
+          "Analytics Controller",
+          "Failed to remove event log",
+          it
+        )
+      }
+    }
   }
 }
 

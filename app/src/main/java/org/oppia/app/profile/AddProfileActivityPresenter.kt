@@ -263,7 +263,7 @@ class AddProfileActivityPresenter @Inject constructor(
     binding: AddProfileActivityBinding
   ) {
     if (result.isSuccess()) {
-      val intent = Intent(activity, ProfileActivity::class.java)
+      val intent = Intent(activity, ProfileChooserActivity::class.java)
       intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
       activity.startActivity(intent)
     } else if (result.isFailure()) {

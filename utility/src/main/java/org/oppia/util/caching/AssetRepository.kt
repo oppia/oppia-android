@@ -55,6 +55,7 @@ class AssetRepository @Inject constructor(
    */
   fun loadRemoteBinaryAsset(url: String): () -> ByteArray {
     return {
+      logger.d("AssetRepo", "Loading binary asset: $url")
       val stream = openLocalCacheFileForRead(url) ?: openCachingStreamToRemoteFile(url)
       stream.use { it.readBytes() }
     }

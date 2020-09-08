@@ -51,7 +51,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
 import org.oppia.app.home.recentlyplayed.RecentlyPlayedActivity
-import org.oppia.app.profile.ProfileActivity
+import org.oppia.app.profile.ProfileChooserActivity
 import org.oppia.app.profileprogress.ProfileProgressActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -465,11 +465,20 @@ class HomeActivityTest {
   }
 
   @Test
+  fun testHomeActivity_onBackPressed_orientationChange_showsExitToProfileChooserDialog() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      pressBack()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withText(R.string.home_activity_back_dialog_message)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
   fun testHomeActivity_onBackPressed_clickExit_checkOpensProfileActivity() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       pressBack()
       onView(withText(R.string.home_activity_back_dialog_exit)).perform(click())
-      intended(hasComponent(ProfileActivity::class.java.name))
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
 

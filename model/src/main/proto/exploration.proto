@@ -247,6 +247,10 @@ message UserAnswer {
     // A list of HTML textual representation of the answer.
     ListOfSetsOfHtmlStrings list_of_html_answers = 4;
   }
+  // An accessible version of the corresponding plain answer. It will be used to read out the
+  // answer when there is a screen-reader enabled. Also when this is value is not initialized and
+  // if the screen-reader is enabled in that case the plain answer/html answer would be read out.
+  string content_description = 5;
 }
 
 message AnswerAndResponse {

@@ -25,7 +25,7 @@ import org.oppia.app.profile.AddProfileActivity
 import org.oppia.app.profile.AdminAuthActivity
 import org.oppia.app.profile.AdminPinActivity
 import org.oppia.app.profile.PinPasswordActivity
-import org.oppia.app.profile.ProfileActivity
+import org.oppia.app.profile.ProfileChooserActivity
 import org.oppia.app.profileprogress.ProfilePictureActivity
 import org.oppia.app.profileprogress.ProfileProgressActivity
 import org.oppia.app.settings.profile.ProfileEditActivity
@@ -46,7 +46,6 @@ import org.oppia.app.testing.HtmlParserTestActivity
 import org.oppia.app.testing.ImageRegionSelectionTestActivity
 import org.oppia.app.testing.NavigationDrawerTestActivity
 import org.oppia.app.testing.ProfileChooserFragmentTestActivity
-import org.oppia.app.testing.StoryFragmentTestActivity
 import org.oppia.app.testing.TestFontScaleConfigurationUtilActivity
 import org.oppia.app.testing.TopicRevisionTestActivity
 import org.oppia.app.testing.TopicTestActivity
@@ -101,7 +100,7 @@ interface ActivityComponent {
   fun inject(ongoingTopicListActivity: OngoingTopicListActivity)
   fun inject(optionActivity: OptionsActivity)
   fun inject(pinPasswordActivity: PinPasswordActivity)
-  fun inject(profileActivity: ProfileActivity)
+  fun inject(profileChooserActivity: ProfileChooserActivity)
   fun inject(questionPlayerActivity: QuestionPlayerActivity)
   fun inject(profileChooserFragmentTestActivity: ProfileChooserFragmentTestActivity)
   fun inject(profileEditActivity: ProfileEditActivity)
@@ -120,6 +119,5 @@ interface ActivityComponent {
   fun inject(topicRevisionTestActivity: TopicRevisionTestActivity)
   fun inject(topicTestActivity: TopicTestActivity)
   fun inject(topicTestActivityForStory: TopicTestActivityForStory)
-  fun inject(storyFragmentTestActivity: StoryFragmentTestActivity)
   fun inject(walkthroughActivity: WalkthroughActivity)
 }

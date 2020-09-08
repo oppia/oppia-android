@@ -45,8 +45,10 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
-import org.oppia.app.profile.ProfileActivity
+import org.oppia.app.administratorcontrols.appversion.AppVersionActivity
+import org.oppia.app.profile.ProfileChooserActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.app.settings.profile.ProfileListActivity
 import org.oppia.app.testing.NavigationDrawerTestActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationPortrait
@@ -420,6 +422,18 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
+  fun testAdministratorControlsFragment_loadFragment_clickEditProfile_checkOpensProfileListActivity() { // ktlint-disable max-line-length
+    ActivityScenario.launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        0
+      )
+    ).use {
+      onView(withId(R.id.edit_profiles_text_view)).perform(click())
+      intended(hasComponent(ProfileListActivity::class.java.name))
+    }
+  }
+
+  @Test
   fun testAdministratorControlsFragment_clickLogoutButton_displaysLogoutDialog() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
@@ -471,7 +485,7 @@ class AdministratorControlsActivityTest {
 
   // TODO(#762): Replace [ProfileChooserActivity] to [LoginActivity] once it is added.
   @Test
-  fun testAdministratorControlsFragment_clickOkButtonInLogoutDialog_opensProfileActivity() {
+  fun testAdministratorControlsFragment_clickOkButtonInLogoutDialog_opensProfileChooserActivity() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = 0
@@ -486,7 +500,7 @@ class AdministratorControlsActivityTest {
       onView(withText(R.string.log_out_dialog_message)).inRoot(isDialog())
         .check(matches(isDisplayed()))
       onView(withText(R.string.log_out_dialog_okay_button)).perform(click())
-      intended(hasComponent(ProfileActivity::class.java.name))
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
 
@@ -507,6 +521,23 @@ class AdministratorControlsActivityTest {
         .check(matches(isDisplayed()))
       onView(withText(R.string.log_out_dialog_cancel_button)).perform(click())
       onView(withId(R.id.log_out_text_view)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_clickAppVersion_opensAppVersionActivity() {
+    ActivityScenario.launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        0
+      )
+    ).use {
+      onView(withId(R.id.administrator_controls_list)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          3
+        )
+      )
+      onView(withId(R.id.app_version_text_view)).perform(click())
+      intended(hasComponent(AppVersionActivity::class.java.name))
     }
   }
 

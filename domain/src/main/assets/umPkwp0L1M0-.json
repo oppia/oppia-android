@@ -416,7 +416,10 @@
               "value": true
             },
             "customPlaceholder": {
-              "value": ""
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": ""
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -1081,7 +1084,10 @@
               "value": true
             },
             "customPlaceholder": {
-              "value": ""
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": ""
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -2571,7 +2577,10 @@
               "value": true
             },
             "customPlaceholder": {
-              "value": ""
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": ""
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -2783,7 +2792,10 @@
               "value": true
             },
             "customPlaceholder": {
-              "value": ""
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": ""
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -2990,7 +3002,10 @@
               "value": true
             },
             "customPlaceholder": {
-              "value": ""
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": ""
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -3883,7 +3898,10 @@
               "value": true
             },
             "customPlaceholder": {
-              "value": ""
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": ""
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -4770,7 +4788,10 @@
               "value": true
             },
             "customPlaceholder": {
-              "value": ""
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": ""
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -5307,7 +5328,10 @@
               "value": true
             },
             "customPlaceholder": {
-              "value": "Enter a fraction in the form x/x."
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Enter a fraction in the form x/x."
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -5918,7 +5942,10 @@
               "value": true
             },
             "customPlaceholder": {
-              "value": ""
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": ""
+              }
             }
           },
           "confirmed_unclassified_answers": [],
@@ -7373,7 +7400,10 @@
               "value": true
             },
             "customPlaceholder": {
-              "value": "Type a number (example: 1)."
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Type a number (example: 1)."
+              }
             }
           },
           "confirmed_unclassified_answers": [],

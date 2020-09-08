@@ -673,4 +673,226 @@ class InputInteractionViewTestActivityTest {
     onView(withId(R.id.test_text_input_interaction_view)).check(matches(isDisplayed()))
       .check(matches(withText("abc")))
   }
+
+  @Test
+  fun testRatioInputInteractionView_withNoInputText_hasCorrectPendingAnswerType() {
+    val activityScenario = ActivityScenario.launch(
+      InputInteractionViewTestActivity::class.java
+    )
+    activityScenario.onActivity { activity ->
+      val pendingAnswer = activity.ratioExpressionInputInteractionViewModel.getPendingAnswer()
+      assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
+        InteractionObject.ObjectTypeCase.RATIO_EXPRESSION
+      )
+      assertThat(pendingAnswer.answer.ratioExpression.ratioComponentCount).isEqualTo(0)
+    }
+  }
+
+  @Test
+  fun testRatioInputInteractionView_withInputtedText_hasCorrectPendingAnswer() {
+    val activityScenario = ActivityScenario.launch(
+      InputInteractionViewTestActivity::class.java
+    )
+    onView(withId(R.id.test_ratio_input_interaction_view))
+      .perform(
+        typeText(
+          "1:2:3"
+        )
+      )
+    activityScenario.onActivity { activity ->
+      val pendingAnswer = activity.ratioExpressionInputInteractionViewModel.getPendingAnswer()
+      assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
+      assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
+        InteractionObject.ObjectTypeCase.RATIO_EXPRESSION
+      )
+      assertThat(pendingAnswer.answer.ratioExpression.ratioComponentList)
+        .isEqualTo(listOf(1, 2, 3))
+    }
+  }
+
+  @Test
+  fun testRatioInputView_withInputtedText_onConfigurationChange_hasCorrectPendingAnswer() {
+    val activityScenario = ActivityScenario.launch(
+      InputInteractionViewTestActivity::class.java
+    )
+    onView(withId(R.id.test_ratio_input_interaction_view))
+      .perform(
+        typeText(
+          "1:2"
+        )
+      )
+    activityScenario.onActivity { activity ->
+      activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
+    }
+    onView(withId(R.id.test_ratio_input_interaction_view)).check(matches(isDisplayed()))
+      .check(matches(withText("1:2")))
+  }
+
+  @Test
+  fun testRatioInputView_withInputtedTwoColonsTogether_colonsTogetherFormatErrorIsDisplayed() {
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_ratio_input_interaction_view))
+      .perform(
+        typeText(
+          "1::2"
+        )
+      )
+    onView(withId(R.id.ratio_input_error))
+      .check(
+        matches(
+          withText(
+            R.string.ratio_error_invalid_colons
+          )
+        )
+      )
+  }
+
+  @Test
+  fun testRatioInputInteractionView_withInputtedSpacesBetweenComponents_hasCorrectPendingAnswer() {
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_ratio_input_interaction_view))
+      .perform(
+        typeText(
+          "1   : 2 : 3 : 4 "
+        )
+      )
+    onView(withId(R.id.test_ratio_input_interaction_view)).check(matches(isDisplayed()))
+      .check(matches(withText("1:2:3:4")))
+  }
+
+  @Test
+  fun testRatioInputInteractionView_withInputtedNegativeRatio_numberFormatErrorIsDisplayed() {
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_ratio_input_interaction_view))
+      .perform(
+        typeText(
+          "-1:2:3:4"
+        )
+      )
+    onView(withId(R.id.ratio_input_error))
+      .check(
+        matches(
+          withText(
+            R.string.ratio_error_invalid_format
+          )
+        )
+      )
+  }
+
+  @Test
+  fun testRatioInputInteractionView_withFractionRatio_numberFormatErrorIsDisplayed() {
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_ratio_input_interaction_view))
+      .perform(
+        typeText(
+          "1/2:3:4"
+        )
+      )
+    onView(withId(R.id.ratio_input_error))
+      .check(
+        matches(
+          withText(
+            R.string.ratio_error_invalid_format
+          )
+        )
+      )
+  }
+
+  @Test
+  fun testRatioInputView_withZeroRatio_clickSubmitButton_numberWithZerosErrorIsDisplayed() {
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_ratio_input_interaction_view))
+      .perform(
+        typeText(
+          "1:0:4"
+        )
+      )
+    closeSoftKeyboard()
+    onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
+    onView(withId(R.id.ratio_input_error))
+      .check(
+        matches(
+          withText(
+            R.string.ratio_error_includes_zero
+          )
+        )
+      )
+  }
+
+  @Test
+  fun testRatioInputView_withInvalidRatioFormat_clickSubmitButton_numberFormatErrorIsDisplayed() {
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_ratio_input_interaction_view))
+      .perform(
+        typeText(
+          "1: 1 2 :4"
+        )
+      )
+    closeSoftKeyboard()
+    onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
+    onView(withId(R.id.ratio_input_error))
+      .check(
+        matches(
+          withText(
+            R.string.fraction_error_invalid_format
+          )
+        )
+      )
+  }
+
+  @Test
+  fun testRatioInputView_withRatioHaving4Terms_clickSubmitButton_invalidSizeErrorIsDisplayed() {
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_ratio_input_interaction_view))
+      .perform(
+        typeText(
+          "1:2:3:4"
+        )
+      )
+    closeSoftKeyboard()
+    onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
+    onView(withId(R.id.ratio_input_error))
+      .check(
+        matches(
+          withText(
+            R.string.ratio_error_invalid_size
+          )
+        )
+      )
+  }
+
+  @Test
+  fun testRatioInputView_withRatioHaving2Terms_clickSubmitButton_invalidSizeErrorIsDisplayed() {
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_ratio_input_interaction_view))
+      .perform(
+        typeText(
+          "1:2"
+        )
+      )
+    closeSoftKeyboard()
+    onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
+    onView(withId(R.id.ratio_input_error))
+      .check(
+        matches(
+          withText(
+            R.string.ratio_error_invalid_size
+          )
+        )
+      )
+  }
+
+  @Test
+  fun testRatioInputView_withRatioHaving3Terms_clickSubmitButton_noErrorIsDisplayed() {
+    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_ratio_input_interaction_view))
+      .perform(
+        typeText(
+          "1:2:3"
+        )
+      )
+    closeSoftKeyboard()
+    onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
+    onView(withId(R.id.ratio_input_error)).check(matches(withText("")))
+  }
 }

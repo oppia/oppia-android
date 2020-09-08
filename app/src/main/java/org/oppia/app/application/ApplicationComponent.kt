@@ -2,9 +2,11 @@ package org.oppia.app.application
 
 // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
 import android.app.Application
+import androidx.work.Configuration
 import dagger.BindsInstance
 import dagger.Component
 import org.oppia.app.activity.ActivityComponent
+import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.app.shim.IntentFactoryShimModule
 import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.domain.classify.InteractionsModule
@@ -22,12 +24,15 @@ import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.domain.oppialogger.ApplicationStartupListener
 import org.oppia.domain.oppialogger.LogStorageModule
 import org.oppia.domain.oppialogger.exceptions.UncaughtExceptionLoggerModule
+import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.util.accessibility.AccessibilityModule
 import org.oppia.util.caching.CachingModule
 import org.oppia.util.gcsresource.GcsResourceModule
 import org.oppia.util.logging.LoggerModule
+import org.oppia.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.util.logging.firebase.LogReportingModule
 import org.oppia.util.parser.GlideImageLoaderModule
 import org.oppia.util.parser.HtmlParserEntityTypeModule
@@ -57,7 +62,9 @@ import javax.inject.Singleton
     LogStorageModule::class, IntentFactoryShimModule::class,
     ViewBindingShimModule::class, PrimeTopicAssetsControllerModule::class,
     ExpirationMetaDataRetrieverModule::class, RatioInputModule::class,
-    UncaughtExceptionLoggerModule::class, ApplicationStartupListenerModule::class
+    UncaughtExceptionLoggerModule::class, ApplicationStartupListenerModule::class,
+    LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
+    HintsAndSolutionConfigModule::class, FirebaseLogUploaderModule::class
   ]
 )
 
@@ -72,4 +79,6 @@ interface ApplicationComponent : ApplicationInjector {
   fun getActivityComponentBuilderProvider(): Provider<ActivityComponent.Builder>
 
   fun getApplicationStartupListeners(): Set<ApplicationStartupListener>
+
+  fun getWorkManagerConfiguration(): Configuration
 }

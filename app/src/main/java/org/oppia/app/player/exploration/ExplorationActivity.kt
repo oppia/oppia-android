@@ -18,6 +18,7 @@ import org.oppia.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.app.player.stopplaying.StopExplorationDialogFragment
 import org.oppia.app.player.stopplaying.StopStatePlayingSessionListener
+import org.oppia.app.topic.conceptcard.ConceptCardListener
 import javax.inject.Inject
 
 private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
@@ -34,7 +35,8 @@ class ExplorationActivity :
   RevealHintListener,
   RevealSolutionInterface,
   DefaultFontSizeStateListener,
-  HintsAndSolutionExplorationManagerListener {
+  HintsAndSolutionExplorationManagerListener,
+  ConceptCardListener {
 
   @Inject
   lateinit var explorationActivityPresenter: ExplorationActivityPresenter
@@ -181,4 +183,6 @@ class ExplorationActivity :
   override fun onExplorationStateLoaded(state: State) {
     this.state = state
   }
+
+  override fun dismissConceptCard() = explorationActivityPresenter.dismissConceptCard()
 }

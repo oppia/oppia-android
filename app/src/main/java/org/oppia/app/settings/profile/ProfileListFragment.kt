@@ -8,14 +8,20 @@ import android.view.ViewGroup
 import org.oppia.app.fragment.InjectableFragment
 import javax.inject.Inject
 
+private const val IS_MULTIPANE_KEY = "IS_MULTIPANE_KEY"
+
 /** Fragment to display all profiles to admin. */
 class ProfileListFragment : InjectableFragment() {
   @Inject
   lateinit var profileListFragmentPresenter: ProfileListFragmentPresenter
 
   companion object {
-    fun newInstance(): ProfileListFragment {
-      return ProfileListFragment()
+    fun newInstance(isMultipane: Boolean = false): ProfileListFragment {
+      val args = Bundle()
+      args.putBoolean(IS_MULTIPANE_KEY, isMultipane)
+      val fragment = ProfileListFragment()
+      fragment.arguments = args
+      return fragment
     }
   }
 
@@ -29,6 +35,10 @@ class ProfileListFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    return profileListFragmentPresenter.handleOnCreateView(inflater, container)
+    val args = checkNotNull(arguments) {
+      "Expected variables to be passed to ProfileListFragment"
+    }
+    val isMultipane = args.getBoolean(IS_MULTIPANE_KEY)
+    return profileListFragmentPresenter.handleOnCreateView(inflater, container, isMultipane)
   }
 }

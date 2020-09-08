@@ -5,13 +5,15 @@ android_binary(
     custom_package = "org.oppia.app",
     enable_data_binding = True,
     manifest = "//app:src/main/AndroidManifest.xml",
-    multidex = "legacy",
     manifest_values = {
         "applicationId": "org.oppia.app",
         "versionCode": "0",
-        "versionName": "0.1-alpha"
+        "versionName": "0.1-alpha",
+        "minSdkVersion": "19",
+        "targetSdkVersion": "29",
     },
+    multidex = "legacy",
     deps = [
-      "//app",
+        "//app",
     ],
 )

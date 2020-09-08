@@ -39,7 +39,6 @@ class ProfileProgressFragment :
     container: ViewGroup?,
     ProfileProgressFragment: Bundle?
   ): View? {
-    this.retainInstance = true
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to ProfileProgressFragment" }
     val internalProfileId = args.getInt(PROFILE_PROGRESS_FRAGMENT_PROFILE_ID_KEY, -1)

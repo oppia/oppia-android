@@ -1,10 +1,10 @@
 package org.oppia.app.completedstorylist
 
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModel
 import org.oppia.app.home.RouteToTopicPlayStoryListener
 import org.oppia.app.model.CompletedStory
 import org.oppia.app.shim.IntentFactoryShim
+import org.oppia.app.viewmodel.ObservableViewModel
 
 /** Completed story view model for the recycler view in [CompletedStoryListFragment]. */
 class CompletedStoryItemViewModel(
@@ -13,7 +13,7 @@ class CompletedStoryItemViewModel(
   val completedStory: CompletedStory,
   val entityType: String,
   private val intentFactoryShim: IntentFactoryShim
-) : ViewModel(), RouteToTopicPlayStoryListener {
+) : ObservableViewModel(), RouteToTopicPlayStoryListener {
 
   fun onCompletedStoryItemClicked() {
     routeToTopicPlayStory(internalProfileId, completedStory.topicId, completedStory.storyId)
