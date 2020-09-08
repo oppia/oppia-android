@@ -57,7 +57,10 @@ class AppVersionActivityTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    var injector = ApplicationProvider.getApplicationContext<TestApplication>().getApplicationInjector()
+    injector.also {
+      injector.inject(this)
+    }
   }
 
   @Test

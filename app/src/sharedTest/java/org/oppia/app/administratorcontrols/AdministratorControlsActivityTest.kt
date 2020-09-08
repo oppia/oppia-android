@@ -1,10 +1,12 @@
 package org.oppia.app.administratorcontrols
 
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.view.View
 import android.view.ViewParent
 import android.widget.FrameLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
@@ -33,6 +35,10 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.firebase.FirebaseApp
+import dagger.BindsInstance
+import dagger.Component
+import dagger.Module
+import dagger.Provides
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.not
 import org.junit.After
@@ -40,18 +46,32 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.activity.ActivityComponent
 import org.oppia.app.administratorcontrols.appversion.AppVersionActivity
+import org.oppia.app.application.ActivityComponentFactory
+import org.oppia.app.application.ApplicationComponent
+import org.oppia.app.application.ApplicationInjector
+import org.oppia.app.application.ApplicationInjectorProvider
 import org.oppia.app.profile.ProfileChooserActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.app.settings.profile.ProfileListActivity
+import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.app.testing.NavigationDrawerTestActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationPortrait
 import org.oppia.app.utility.TestApplication
+import org.oppia.domain.oppialogger.LogStorageModule
+import org.oppia.testing.TestDispatcherModule
+import org.oppia.testing.TestLogReportingModule
 import org.oppia.testing.profile.ProfileTestHelper
+import org.oppia.util.logging.EnableConsoleLog
+import org.oppia.util.logging.EnableFileLog
+import org.oppia.util.logging.GlobalLogLevel
+import org.oppia.util.logging.LogLevel
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [AdministratorControlsActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -79,8 +99,12 @@ class AdministratorControlsActivityTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    var injector = ApplicationProvider.getApplicationContext<TestApplication>().getApplicationInjector()
+    injector.also {
+      injector.inject(this)
+    }
   }
+
 
   @Test
   fun testAdministratorControlsActivity_withAdminProfile_openAdministratorControlsActivityFromNavigationDrawer_onBackPressed_showsHomeActivity() { // ktlint-disable max-line-length

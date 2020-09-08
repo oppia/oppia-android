@@ -81,13 +81,5 @@ class TestApplication : Application(), ActivityComponentFactory, ApplicationInje
     return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
   }
 
-  override fun getApplicationInjector(): ApplicationInjector = component
-
-  fun inject(administratorControlsActivityTest: AdministratorControlsActivityTest) {
-    component.inject(administratorControlsActivityTest)
-  }
-
-  fun inject(appVersionActivityTest: AppVersionActivityTest) {
-    component.inject(appVersionActivityTest)
-  }
+  override fun getApplicationInjector(): TestApplicationComponent = component
 }
