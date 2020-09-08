@@ -126,9 +126,7 @@ class StateFragment :
     stateFragmentPresenter.revealHint(saveUserChoice, hintIndex)
   }
 
-  fun revealSolution(saveUserChoice: Boolean) {
-    stateFragmentPresenter.revealSolution(saveUserChoice)
-  }
+  fun revealSolution() = stateFragmentPresenter.revealSolution()
 
   fun dismissConceptCard() = stateFragmentPresenter.dismissConceptCard()
 }

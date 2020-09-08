@@ -289,11 +289,11 @@ class ExplorationActivityPresenter @Inject constructor(
     explorationFragment.revealHint(saveUserChoice, hintIndex)
   }
 
-  fun revealSolution(saveUserChoice: Boolean) {
+  fun revealSolution() {
     val explorationFragment =
       activity.supportFragmentManager.findFragmentByTag(
         TAG_EXPLORATION_FRAGMENT
       ) as ExplorationFragment
-    explorationFragment.revealSolution(saveUserChoice)
+    explorationFragment.revealSolution()
   }
 }

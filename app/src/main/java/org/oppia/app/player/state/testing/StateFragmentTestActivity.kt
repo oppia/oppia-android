@@ -100,8 +100,8 @@ class StateFragmentTestActivity :
     stateFragmentTestActivityPresenter.revealHint(saveUserChoice, hintIndex)
   }
 
-  override fun revealSolution(saveUserChoice: Boolean) {
-    stateFragmentTestActivityPresenter.revealSolution(saveUserChoice)
+  override fun revealSolution() {
+    stateFragmentTestActivityPresenter.revealSolution()
   }
 
   override fun onExplorationStateLoaded(state: State) {

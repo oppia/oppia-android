@@ -163,9 +163,9 @@ internal class StateDeck internal constructor(
       .build()
   }
 
-  internal fun submitSolutionRevealed(state: State, solutionIsRevealed: Boolean) {
+  internal fun submitSolutionRevealed(state: State) {
     solution = Solution.newBuilder()
-      .setSolutionIsRevealed(solutionIsRevealed)
+      .setSolutionIsRevealed(true)
       .setAnswerIsExclusive(state.interaction.solution.answerIsExclusive)
       .setCorrectAnswer(state.interaction.solution.correctAnswer)
       .setExplanation(state.interaction.solution.explanation)

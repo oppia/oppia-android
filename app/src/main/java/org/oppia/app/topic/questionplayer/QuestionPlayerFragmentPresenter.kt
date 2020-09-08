@@ -109,12 +109,9 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     )
   }
 
-  fun revealSolution(saveUserChoice: Boolean) {
+  fun revealSolution() {
     subscribeToSolution(
-      questionAssessmentProgressController.submitSolutionIsRevealed(
-        currentQuestionState,
-        saveUserChoice
-      )
+      questionAssessmentProgressController.submitSolutionIsRevealed(currentQuestionState)
     )
   }
 

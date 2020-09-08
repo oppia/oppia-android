@@ -52,11 +52,10 @@ internal class StateList(
 
   /** Returns an [Solution] based on the current state and revealed [Solution] from the learner's answer. */
   internal fun computeSolutionForResult(
-    currentState: State,
-    solutionIsRevealed: Boolean
+    currentState: State
   ): Solution {
     return Solution.newBuilder()
-      .setSolutionIsRevealed(solutionIsRevealed)
+      .setSolutionIsRevealed(true)
       .setAnswerIsExclusive(currentState.interaction.solution.answerIsExclusive)
       .setCorrectAnswer(currentState.interaction.solution.correctAnswer)
       .setExplanation(currentState.interaction.solution.explanation).build()

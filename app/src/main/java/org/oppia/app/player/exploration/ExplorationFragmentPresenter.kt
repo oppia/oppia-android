@@ -58,8 +58,8 @@ class ExplorationFragmentPresenter @Inject constructor(
     getStateFragment()?.revealHint(saveUserChoice, hintIndex)
   }
 
-  fun revealSolution(saveUserChoice: Boolean) {
-    getStateFragment()?.revealSolution(saveUserChoice)
+  fun revealSolution() {
+    getStateFragment()?.revealSolution()
   }
 
   fun dismissConceptCard() = getStateFragment()?.dismissConceptCard()

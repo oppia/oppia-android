@@ -214,8 +214,7 @@ class ExplorationProgressController @Inject constructor(
   }
 
   fun submitSolutionIsRevealed(
-    state: State,
-    solutionIsRevealed: Boolean
+    state: State
   ): LiveData<AsyncResult<Solution>> {
     try {
       explorationProgressLock.withLock {
@@ -240,11 +239,8 @@ class ExplorationProgressController @Inject constructor(
         lateinit var solution: Solution
         try {
 
-          explorationProgress.stateDeck.submitSolutionRevealed(state, solutionIsRevealed)
-          solution = explorationProgress.stateGraph.computeSolutionForResult(
-            state,
-            solutionIsRevealed
-          )
+          explorationProgress.stateDeck.submitSolutionRevealed(state)
+          solution = explorationProgress.stateGraph.computeSolutionForResult(state)
           explorationProgress.stateDeck.pushStateForSolution(state)
         } finally {
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always

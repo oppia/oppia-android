@@ -163,12 +163,12 @@ class QuestionPlayerActivityPresenter @Inject constructor(
     questionPlayerFragment.revealHint(saveUserChoice, hintIndex)
   }
 
-  fun revealSolution(saveUserChoice: Boolean) {
+  fun revealSolution() {
     val questionPlayerFragment =
       activity.supportFragmentManager.findFragmentByTag(
         TAG_QUESTION_PLAYER_FRAGMENT
       ) as QuestionPlayerFragment
-    questionPlayerFragment.revealSolution(saveUserChoice)
+    questionPlayerFragment.revealSolution()
   }
 
   fun dismissConceptCard() = getQuestionPlayerFragment()?.dismissConceptCard()
