@@ -47,9 +47,9 @@ class FAQSingleActivityPresenter @Inject constructor(
     val answerTextView = activity.findViewById<TextView>(R.id.faq_answer_text_view)
     answerTextView.text = htmlParserFactory.create(
       resourceBucketName,
-      /* entityType= */ "faq",
-      /* entityId= */ "oppia",
-      /* imageCenterAlign= */ false
+      entityType = "faq",
+      entityId = "oppia",
+      imageCenterAlign = false
     ).parseOppiaHtml(
       answer,
       answerTextView

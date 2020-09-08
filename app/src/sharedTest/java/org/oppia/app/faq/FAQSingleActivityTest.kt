@@ -129,9 +129,9 @@ class FAQSingleActivityTest {
     ) as TextView
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
-      /* entityType= */ "",
-      /* entityId= */ "",
-      /* imageCenterAlign= */ false
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false
     )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
       getResources().getString(R.string.faq_answer_1),
