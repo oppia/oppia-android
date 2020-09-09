@@ -972,8 +972,7 @@ class QuestionAssessmentProgressControllerTest {
       .contains("<p>The number of pieces of cake I want.</p>")
 
     val result = questionAssessmentProgressController.submitSolutionIsRevealed(
-      ephemeralQuestion.ephemeralState.state,
-      true
+      ephemeralQuestion.ephemeralState.state
     )
     result.observeForever(mockAsyncSolutionObserver)
     testCoroutineDispatchers.runCurrent()

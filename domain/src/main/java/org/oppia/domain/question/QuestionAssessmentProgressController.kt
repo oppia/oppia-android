@@ -196,7 +196,7 @@ class QuestionAssessmentProgressController @Inject constructor(
   }
 
   /* ktlint-disable max-line-length */
-  fun submitSolutionIsRevealed(state: State, solutionIsRevealed: Boolean): LiveData<AsyncResult<Solution>> {
+  fun submitSolutionIsRevealed(state: State): LiveData<AsyncResult<Solution>> {
     try {
       progressLock.withLock {
         check(progress.trainStage != TrainStage.NOT_IN_TRAINING_SESSION) {
@@ -211,11 +211,8 @@ class QuestionAssessmentProgressController @Inject constructor(
         lateinit var solution: Solution
         try {
 
-          progress.stateDeck.submitSolutionRevealed(state, solutionIsRevealed)
-          solution = progress.stateList.computeSolutionForResult(
-            state,
-            solutionIsRevealed
-          )
+          progress.stateDeck.submitSolutionRevealed(state)
+          solution = progress.stateList.computeSolutionForResult(state)
           progress.stateDeck.pushStateForSolution(state)
         } finally {
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck in an 'always

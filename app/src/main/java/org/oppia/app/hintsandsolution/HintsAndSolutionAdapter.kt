@@ -266,15 +266,15 @@ class HintsAndSolutionAdapter(
     dialogFragment.showNow(fragment.childFragmentManager, TAG_REVEAL_SOLUTION_DIALOG)
   }
 
-  fun setRevealSolution(saveUserChoice: Boolean) {
+  fun setRevealSolution() {
     if (itemList[itemList.size - 2] is SolutionViewModel) {
       val solutionViewModel = itemList[itemList.size - 2] as SolutionViewModel
-      solutionViewModel.isSolutionRevealed.set(saveUserChoice)
+      solutionViewModel.isSolutionRevealed.set(true)
       expandedHintListIndexListener.onRevealSolutionClicked(
         /* solutionIndex= */ itemList.size - 2,
         /* isSolutionRevealed= */ true
       )
-      (fragment.requireActivity() as? RevealSolutionInterface)?.revealSolution(saveUserChoice)
+      (fragment.requireActivity() as? RevealSolutionInterface)?.revealSolution()
       val previousIndex: Int? = currentExpandedHintListIndex
       currentExpandedHintListIndex =
         if (currentExpandedHintListIndex != null &&

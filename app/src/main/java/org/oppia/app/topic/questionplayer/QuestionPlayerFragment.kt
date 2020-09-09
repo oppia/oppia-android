@@ -78,8 +78,8 @@ class QuestionPlayerFragment :
     questionPlayerFragmentPresenter.revealHint(saveUserChoice, hintIndex)
   }
 
-  fun revealSolution(saveUserChoice: Boolean) {
-    questionPlayerFragmentPresenter.revealSolution(saveUserChoice)
+  fun revealSolution() {
+    questionPlayerFragmentPresenter.revealSolution()
   }
 
   fun dismissConceptCard() = questionPlayerFragmentPresenter.dismissConceptCard()
