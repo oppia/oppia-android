@@ -130,7 +130,7 @@ jobs:
         if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
         with:
          name: app reports
-         path: app/build/test-results
+         path: app/build/reports
 
   bazel_build_app:
     name: Build Binary with Bazel
