@@ -9,6 +9,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.activity.ActivityComponent
@@ -84,6 +85,8 @@ class ExplorationActivityLocalTest {
   }
 
   @Test
+  // TODO(#973): Fix ExplorationActivityLocalTest
+  @Ignore
   fun testExploration_onLaunch_logsEvent() {
     getApplicationDependencies(TEST_EXPLORATION_ID_2)
     launch<ExplorationActivity>(

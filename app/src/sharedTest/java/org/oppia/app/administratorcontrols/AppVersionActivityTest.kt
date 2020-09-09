@@ -70,7 +70,7 @@ import org.oppia.util.parser.ImageParsingModule
 import org.oppia.util.system.OppiaDateTimeFormatter
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
