@@ -1,6 +1,7 @@
 package org.oppia.app.options
 
 import android.content.Intent
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,23 +45,31 @@ class ReadingTextSizeFragmentPresenter @Inject constructor(private val fragment:
     when (readingTextSize) {
       getReadingTextSize(ReadingTextSize.SMALL_TEXT_SIZE) -> {
         binding.readingTextSizeSeekBar.progress = 0
-        binding.previewTextview.textSize =
+        binding.previewTextview.setTextSize(
+          TypedValue.COMPLEX_UNIT_PX,
           getReadingTextSizeInFloat(ReadingTextSize.SMALL_TEXT_SIZE)
+        )
       }
       getReadingTextSize(ReadingTextSize.MEDIUM_TEXT_SIZE) -> {
         binding.readingTextSizeSeekBar.progress = 5
-        binding.previewTextview.textSize =
+        binding.previewTextview.setTextSize(
+          TypedValue.COMPLEX_UNIT_PX,
           getReadingTextSizeInFloat(ReadingTextSize.MEDIUM_TEXT_SIZE)
+        )
       }
       getReadingTextSize(ReadingTextSize.LARGE_TEXT_SIZE) -> {
         binding.readingTextSizeSeekBar.progress = 10
-        binding.previewTextview.textSize =
+        binding.previewTextview.setTextSize(
+          TypedValue.COMPLEX_UNIT_PX,
           getReadingTextSizeInFloat(ReadingTextSize.LARGE_TEXT_SIZE)
+        )
       }
       getReadingTextSize(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE) -> {
         binding.readingTextSizeSeekBar.progress = 15
-        binding.previewTextview.textSize =
+        binding.previewTextview.setTextSize(
+          TypedValue.COMPLEX_UNIT_PX,
           getReadingTextSizeInFloat(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
+        )
       }
     }
 
@@ -77,23 +86,31 @@ class ReadingTextSizeFragmentPresenter @Inject constructor(private val fragment:
           when (progressValue) {
             0 -> {
               fontSize = getReadingTextSize(ReadingTextSize.SMALL_TEXT_SIZE)
-              binding.previewTextview.textSize =
+              binding.previewTextview.setTextSize(
+                TypedValue.COMPLEX_UNIT_PX,
                 getReadingTextSizeInFloat(ReadingTextSize.SMALL_TEXT_SIZE)
+              )
             }
             5 -> {
               fontSize = getReadingTextSize(ReadingTextSize.MEDIUM_TEXT_SIZE)
-              binding.previewTextview.textSize =
+              binding.previewTextview.setTextSize(
+                TypedValue.COMPLEX_UNIT_PX,
                 getReadingTextSizeInFloat(ReadingTextSize.MEDIUM_TEXT_SIZE)
+              )
             }
             10 -> {
               fontSize = getReadingTextSize(ReadingTextSize.LARGE_TEXT_SIZE)
-              binding.previewTextview.textSize =
+              binding.previewTextview.setTextSize(
+                TypedValue.COMPLEX_UNIT_PX,
                 getReadingTextSizeInFloat(ReadingTextSize.LARGE_TEXT_SIZE)
+              )
             }
             else -> {
               fontSize = getReadingTextSize(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
-              binding.previewTextview.textSize =
+              binding.previewTextview.setTextSize(
+                TypedValue.COMPLEX_UNIT_PX,
                 getReadingTextSizeInFloat(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
+              )
             }
           }
           seekBar.progress = progressValue
