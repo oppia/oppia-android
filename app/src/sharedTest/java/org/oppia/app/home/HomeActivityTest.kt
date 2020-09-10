@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
@@ -36,10 +37,7 @@ import androidx.test.espresso.util.HumanReadables
 import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.firebase.FirebaseApp
-import dagger.BindsInstance
 import dagger.Component
-import dagger.Module
-import dagger.Provides
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.equalTo
@@ -50,26 +48,55 @@ import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
+import org.oppia.app.activity.ActivityComponent
+import org.oppia.app.application.ActivityComponentFactory
+import org.oppia.app.application.ApplicationComponent
+import org.oppia.app.application.ApplicationInjector
+import org.oppia.app.application.ApplicationInjectorProvider
+import org.oppia.app.application.ApplicationModule
+import org.oppia.app.application.ApplicationStartupListenerModule
 import org.oppia.app.home.recentlyplayed.RecentlyPlayedActivity
+import org.oppia.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.app.profile.ProfileChooserActivity
 import org.oppia.app.profileprogress.ProfileProgressActivity
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.app.shim.ViewBindingShimModule
 import org.oppia.app.testing.HomeInjectionActivity
 import org.oppia.app.topic.TopicActivity
 import org.oppia.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.domain.classify.InteractionsModule
+import org.oppia.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
+import org.oppia.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.domain.classify.rules.imageClickInput.ImageClickInputModule
+import org.oppia.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
+import org.oppia.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.domain.classify.rules.ratioinput.RatioInputModule
+import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.domain.oppialogger.LogStorageModule
-import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
+import org.oppia.domain.question.QuestionModule
+import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.domain.topic.TEST_STORY_ID_0
 import org.oppia.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.testing.TestAccessibilityModule
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.testing.profile.ProfileTestHelper
-import org.oppia.util.logging.EnableConsoleLog
-import org.oppia.util.logging.EnableFileLog
-import org.oppia.util.logging.GlobalLogLevel
-import org.oppia.util.logging.LogLevel
+import org.oppia.util.caching.testing.CachingTestModule
+import org.oppia.util.gcsresource.GcsResourceModule
+import org.oppia.util.logging.LoggerModule
+import org.oppia.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.util.parser.GlideImageLoaderModule
+import org.oppia.util.parser.HtmlParserEntityTypeModule
+import org.oppia.util.parser.ImageParsingModule
 import org.oppia.util.system.OppiaClock
+import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
@@ -87,6 +114,10 @@ private const val AFTERNOON_TIMESTAMP = 1556029320000
 /** Tests for [HomeActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
+@Config(
+  application = HomeActivityTest.TestApplication::class,
+  qualifiers = "port-xxhdpi"
+)
 class HomeActivityTest {
 
   @Inject
@@ -120,13 +151,12 @@ class HomeActivityTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerHomeActivityTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   @Test
+  // TODO (#973): Fix HomeActivityTest
+  @Ignore
   fun testHomeActivity_clickNavigationDrawerHamburger_clickOnHeader_opensProfileProgressActivity() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).check(
@@ -161,6 +191,8 @@ class HomeActivityTest {
   }
 
   @Test
+  // TODO(#973): Fix HomeActivityTest
+  @Ignore
   fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodMorningMessageDisplayedSuccessful() { // ktlint-disable max-line-length
     getApplicationDependencies()
     oppiaClock.setCurrentTimeMs(MORNING_TIMESTAMP)
@@ -179,6 +211,8 @@ class HomeActivityTest {
   }
 
   @Test
+  // TODO (#973): Fix HomeActivityTest
+  @Ignore
   fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodAfternoonMessageDisplayedSuccessful() { // ktlint-disable max-line-length
     getApplicationDependencies()
     oppiaClock.setCurrentTimeMs(AFTERNOON_TIMESTAMP)
@@ -197,6 +231,8 @@ class HomeActivityTest {
   }
 
   @Test
+  // TODO (#973): Fix HomeActivityTest
+  @Ignore
   fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodEveningMessageDisplayedSuccessful() { // ktlint-disable max-line-length
     getApplicationDependencies()
     oppiaClock.setCurrentTimeMs(EVENING_TIMESTAMP)
@@ -215,6 +251,8 @@ class HomeActivityTest {
   }
 
   @Test
+  // TODO (#973): Fix HomeActivityTest
+  @Ignore
   fun testHomeActivity_recyclerViewIndex0_configurationChange_displaysWelcomeMessageCorrectly() {
     launch<HomeActivity>(createHomeActivityIntent(0)).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -281,6 +319,8 @@ class HomeActivityTest {
   }
 
   @Test
+  // TODO (#973): Fix HomeActivityTest
+  @Ignore
   fun testHomeActivity_recyclerViewIndex1_promotedCard_chapterNameIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       onView(
@@ -295,6 +335,8 @@ class HomeActivityTest {
   }
 
   @Test
+  // TODO (#973): Fix HomeActivityTest
+  @Ignore
   fun testHomeActivity_recyclerViewIndex1_promotedCard_storyNameIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       onView(withId(R.id.home_recycler_view)).perform(
@@ -309,6 +351,8 @@ class HomeActivityTest {
   }
 
   @Test
+  // TODO (#973): Fix HomeActivityTest
+  @Ignore
   fun testHomeActivity_recyclerViewIndex1_configurationChange_promotedCard_storyNameIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       onView(withId(R.id.home_recycler_view)).perform(
@@ -324,6 +368,8 @@ class HomeActivityTest {
   }
 
   @Test
+  // TODO (#973): Fix HomeActivityTest
+  @Ignore
   fun testHomeActivity_recyclerViewIndex1_clickPromotedStory_opensTopicActivity() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       onView(withId(R.id.home_recycler_view)).perform(
@@ -345,6 +391,8 @@ class HomeActivityTest {
   }
 
   @Test
+  // TODO (#973): Fix HomeActivityTest
+  @Ignore
   fun testHomeActivity_recyclerViewIndex1_promotedCard_topicNameIsCorrect() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       onView(withId(R.id.home_recycler_view)).perform(
@@ -457,6 +505,8 @@ class HomeActivityTest {
   }
 
   @Test
+  // TODO (#973): Fix HomeActivityTest
+  @Ignore
   fun testHomeActivity_onBackPressed_showsExitToProfileChooserDialog() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       pressBack()
@@ -465,6 +515,19 @@ class HomeActivityTest {
   }
 
   @Test
+  // TODO (#973): Fix HomeActivityTest
+  @Ignore
+  fun testHomeActivity_onBackPressed_orientationChange_showsExitToProfileChooserDialog() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      pressBack()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withText(R.string.home_activity_back_dialog_message)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  // TODO (#973): Fix HomeActivityTest
+  @Ignore
   fun testHomeActivity_onBackPressed_clickExit_checkOpensProfileActivity() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       pressBack()
@@ -492,6 +555,8 @@ class HomeActivityTest {
   }
 
   @Test
+  // TODO (#973): Fix HomeActivityTest
+  @Ignore
   fun testHomeActivity_configurationChange_checkSpanForItem0_spanSizeIsThreeOrFour() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -567,47 +632,49 @@ class HomeActivityTest {
     }
   }
 
-  @Module
-  class TestModule {
-    @Provides
-    @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
-
-    // TODO(#59): Either isolate these to their own shared test module, or use the real logging
-    // module in tests to avoid needing to specify these settings for tests.
-    @EnableConsoleLog
-    @Provides
-    fun provideEnableConsoleLog(): Boolean = true
-
-    @EnableFileLog
-    @Provides
-    fun provideEnableFileLog(): Boolean = false
-
-    @GlobalLogLevel
-    @Provides
-    fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-  }
-
+  // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
+  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      TestDispatcherModule::class
+      TestDispatcherModule::class, ApplicationModule::class,
+      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
+      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
+      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
+      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
+      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
+      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
+      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ViewBindingShimModule::class, RatioInputModule::class,
+      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+      WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
+      FirebaseLogUploaderModule::class
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent : ApplicationComponent, ApplicationInjector {
     @Component.Builder
-    interface Builder {
-      @BindsInstance
-      fun setApplication(application: Application): Builder
+    interface Builder : ApplicationComponent.Builder
 
-      fun build(): TestApplicationComponent
+    fun inject(homeActivityTest: HomeActivityTest)
+  }
+
+  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerHomeActivityTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build() as TestApplicationComponent
     }
 
-    fun getProfileManagementController(): ProfileManagementController
-    fun inject(homeActivityTest: HomeActivityTest)
+    fun inject(homeActivityTest: HomeActivityTest) {
+      component.inject(homeActivityTest)
+    }
+
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
+      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
+    }
+
+    override fun getApplicationInjector(): ApplicationInjector = component
   }
 
   /** Custom class to check number of spans occupied by an item at a given position. */

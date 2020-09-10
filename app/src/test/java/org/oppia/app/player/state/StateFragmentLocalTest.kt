@@ -77,6 +77,8 @@ import org.oppia.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.domain.oppialogger.LogStorageModule
+import org.oppia.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
@@ -91,6 +93,7 @@ import org.oppia.testing.profile.ProfileTestHelper
 import org.oppia.util.caching.testing.CachingTestModule
 import org.oppia.util.gcsresource.GcsResourceModule
 import org.oppia.util.logging.LoggerModule
+import org.oppia.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.util.parser.GlideImageLoaderModule
 import org.oppia.util.parser.HtmlParserEntityTypeModule
 import org.oppia.util.parser.ImageParsingModule
@@ -116,9 +119,16 @@ class StateFragmentLocalTest {
     createAudioUrl(explorationId = "MjZzEVOG47_1", audioFileName = "content-en-ouqm7j21vt8.mp3")
   private val audioDataSource1 = DataSource.toDataSource(AUDIO_URL_1, /* headers= */ null)
 
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject @field:ApplicationContext lateinit var context: Context
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  @field:ApplicationContext
+  lateinit var context: Context
+
   @Inject
   @field:BackgroundDispatcher
   lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
@@ -758,6 +768,113 @@ class StateFragmentLocalTest {
   }
 
   @Test
+  fun testStateFragment_nextState_viewSolution_clickRevealSolutionButton_showsDialog() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+      produceAndViewFourHints()
+
+      submitWrongAnswerToState2()
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+      openHintsAndSolutionsDialog()
+
+      // The reveal solution button should now be visible.
+      // NOTE: solutionIndex is multiplied by 2, because the implementation of hints and solution
+      // introduces divider in UI as a separate item.
+      onView(withId(R.id.hints_and_solution_recycler_view))
+        .inRoot(isDialog())
+        .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex * 2))
+      onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
+        .inRoot(isDialog())
+        .perform(click())
+
+      onView(withText("This will reveal the solution. Are you sure?"))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_nextState_viewRevealSolutionDialog_clickReveal_solutionIsRevealed() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
+      startPlayingExploration()
+      playThroughState1()
+      produceAndViewFourHints()
+
+      submitWrongAnswerToState2()
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+
+      openHintsAndSolutionsDialog()
+      showRevealSolutionDialog()
+      clickConfirmRevealSolutionButton(scenario)
+
+      onView(withSubstring("Explanation"))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_nextState_viewRevealSolutionDialog_clickReveal_cannotViewRevealSolution() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
+      startPlayingExploration()
+      playThroughState1()
+      produceAndViewFourHints()
+
+      submitWrongAnswerToState2()
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+
+      openHintsAndSolutionsDialog()
+      showRevealSolutionDialog()
+      clickConfirmRevealSolutionButton(scenario)
+
+      onView(withId(R.id.reveal_solution_button))
+        .inRoot(isDialog())
+        .check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testStateFragment_nextState_viewRevealSolutionDialog_clickCancel_solutionIsNotRevealed() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
+      startPlayingExploration()
+      playThroughState1()
+      produceAndViewFourHints()
+
+      submitWrongAnswerToState2()
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+
+      openHintsAndSolutionsDialog()
+      showRevealSolutionDialog()
+      clickCancelInRevealSolutionDialog(scenario)
+
+      onView(withSubstring("Explanation"))
+        .inRoot(isDialog())
+        .check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testStateFragment_nextState_viewRevealSolutionDialog_clickCancel_canViewRevealSolution() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
+      startPlayingExploration()
+      playThroughState1()
+      produceAndViewFourHints()
+
+      submitWrongAnswerToState2()
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+
+      openHintsAndSolutionsDialog()
+      showRevealSolutionDialog()
+      clickCancelInRevealSolutionDialog(scenario)
+
+      onView(withSubstring("Reveal Solution"))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
   fun testStateFragment_nextState_viewSolution_noNewHintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
       startPlayingExploration()
@@ -953,6 +1070,18 @@ class StateFragmentLocalTest {
     testCoroutineDispatchers.runCurrent()
   }
 
+  private fun showRevealSolutionDialog() {
+    // The reveal solution button should now be visible.
+    // NOTE: solutionIndex is multiplied by 2, because the implementation of hints and solution
+    // introduces divider in UI as a separate item.
+    onView(withId(R.id.hints_and_solution_recycler_view))
+      .inRoot(isDialog())
+      .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex * 2))
+    onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
+      .inRoot(isDialog())
+      .perform(click())
+  }
+
   private fun pressRevealHintButton(hintPosition: Int) {
     pressRevealHintOrSolutionButton(R.id.reveal_hint_button, hintPosition)
   }
@@ -1092,6 +1221,28 @@ class StateFragmentLocalTest {
     }
   }
 
+  private fun clickCancelInRevealSolutionDialog(
+    activityScenario: ActivityScenario<StateFragmentTestActivity>
+  ) {
+    // See https://github.com/robolectric/robolectric/issues/5158 for context. It seems Robolectric
+    // has some issues interacting with alert dialogs. In this case, it finds and presses the button
+    // with Espresso view actions, but that button click doesn't actually lead to the click listener
+    // being called.
+    activityScenario.onActivity { activity ->
+      val hintAndSolutionDialogFragment = activity.supportFragmentManager.findFragmentByTag(
+        TAG_HINTS_AND_SOLUTION_DIALOG
+      )
+      val revealSolutionDialogFragment =
+        hintAndSolutionDialogFragment?.childFragmentManager?.findFragmentByTag(
+          TAG_REVEAL_SOLUTION_DIALOG
+        ) as? DialogFragment
+      val negativeButton =
+        revealSolutionDialogFragment?.dialog
+          ?.findViewById<View>(android.R.id.button2)
+      assertThat(checkNotNull(negativeButton).performClick()).isTrue()
+    }
+  }
+
   // Go to previous state and then come back to current state
   private fun moveToPreviousAndBackToCurrentState() {
     onView(withId(R.id.previous_state_navigation_button)).perform(click())
@@ -1138,7 +1289,9 @@ class StateFragmentLocalTest {
       TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
-      ApplicationStartupListenerModule::class, HintsAndSolutionConfigModule::class
+      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+      WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
+      FirebaseLogUploaderModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent, ApplicationInjector {

@@ -146,9 +146,7 @@ class ExplorationActivity :
     explorationActivityPresenter.revealHint(saveUserChoice, hintIndex)
   }
 
-  override fun revealSolution(saveUserChoice: Boolean) {
-    explorationActivityPresenter.revealSolution(saveUserChoice)
-  }
+  override fun revealSolution() = explorationActivityPresenter.revealSolution()
 
   private fun getHintsAndSolution(): HintsAndSolutionDialogFragment? {
     return supportFragmentManager.findFragmentByTag(

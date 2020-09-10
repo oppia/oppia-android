@@ -35,11 +35,10 @@ class RevealSolutionDialogFragment : DialogFragment() {
       .setView(view)
       .setMessage(getString(R.string.this_will_reveal_the_solution))
       .setPositiveButton(getString(R.string.reveal)) { _, _ ->
-        revealSolutionInterface.revealSolution(true)
+        revealSolutionInterface.revealSolution()
         dismiss()
       }
       .setNegativeButton(R.string.cellular_data_alert_dialog_cancel_button) { _, _ ->
-        revealSolutionInterface.revealSolution(false)
         dismiss()
       }
       .create()

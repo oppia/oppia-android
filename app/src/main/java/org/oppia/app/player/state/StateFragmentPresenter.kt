@@ -250,13 +250,8 @@ class StateFragmentPresenter @Inject constructor(
     )
   }
 
-  fun revealSolution(saveUserChoice: Boolean) {
-    subscribeToSolution(
-      explorationProgressController.submitSolutionIsRevealed(
-        currentState,
-        saveUserChoice
-      )
-    )
+  fun revealSolution() {
+    subscribeToSolution(explorationProgressController.submitSolutionIsRevealed(currentState))
   }
 
   private fun getStateViewModel(): StateViewModel {

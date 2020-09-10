@@ -129,8 +129,8 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     return viewModelProvider.getForFragment(fragment, HintsViewModel::class.java)
   }
 
-  fun handleRevealSolution(saveUserChoice: Boolean) {
-    hintsAndSolutionAdapter.setRevealSolution(saveUserChoice)
+  fun handleRevealSolution() {
+    hintsAndSolutionAdapter.setRevealSolution()
   }
 
   private fun handleNewAvailableHint(hintIndex: Int?) {

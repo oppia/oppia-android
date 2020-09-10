@@ -104,8 +104,8 @@ class ExplorationFragment : InjectableFragment() {
     explorationFragmentPresenter.revealHint(saveUserChoice, hintIndex)
   }
 
-  fun revealSolution(saveUserChoice: Boolean) {
-    explorationFragmentPresenter.revealSolution(saveUserChoice)
+  fun revealSolution() {
+    explorationFragmentPresenter.revealSolution()
   }
 
   fun dismissConceptCard() = explorationFragmentPresenter.dismissConceptCard()

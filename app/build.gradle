@@ -91,6 +91,7 @@ dependencies {
       'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-alpha03',
       'androidx.multidex:multidex:2.0.1',
       'androidx.recyclerview:recyclerview:1.0.0',
+      'androidx.work:work-runtime-ktx:2.4.0',
       'com.chaos.view:pinview:1.4.3',
       'com.github.bumptech.glide:glide:4.11.0',
       'com.google.android.material:material:1.2.0-alpha02',

@@ -87,8 +87,8 @@ class QuestionPlayerActivity :
     questionPlayerActivityPresenter.revealHint(saveUserChoice, hintIndex)
   }
 
-  override fun revealSolution(saveUserChoice: Boolean) {
-    questionPlayerActivityPresenter.revealSolution(saveUserChoice)
+  override fun revealSolution() {
+    questionPlayerActivityPresenter.revealSolution()
   }
 
   private fun getHintsAndSolution(): HintsAndSolutionDialogFragment? {
