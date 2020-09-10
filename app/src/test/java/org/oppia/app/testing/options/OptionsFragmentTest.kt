@@ -72,8 +72,6 @@ import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @Config(application = OptionsFragmentTest.TestApplication::class)
-// TODO(#973): Fix OptionsFragmentTest
-@Ignore
 class OptionsFragmentTest {
 
   @Before
@@ -88,6 +86,8 @@ class OptionsFragmentTest {
   }
 
   @Test
+  // TODO(#973): Fix OptionsFragmentTest
+  @Ignore
   fun testOptionsFragment_clickReadingTextSize_checkSendingTheCorrectIntent() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       onView(
@@ -110,6 +110,8 @@ class OptionsFragmentTest {
   }
 
   @Test
+  // TODO(#973): Fix OptionsFragmentTest
+  @Ignore
   fun testOptionsFragment_clickAppLanguage_checkSendingTheCorrectIntent() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       onView(
@@ -132,6 +134,8 @@ class OptionsFragmentTest {
   }
 
   @Test
+  // TODO(#973): Fix OptionsFragmentTest
+  @Ignore
   fun testOptionsFragment_clickDefaultAudioLanguage_checkSendingTheCorrectIntent() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       onView(
@@ -156,6 +160,8 @@ class OptionsFragmentTest {
   @Test
   @Config(qualifiers = "sw600dp")
   @LooperMode(LooperMode.Mode.PAUSED)
+  // TODO(#973): Fix OptionsFragmentTest
+  @Ignore
   fun testOptionsFragment_checkInitiallyLoadedFragmentIsReadingTextSizeFragment() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       it.onActivity { activity ->
@@ -169,6 +175,8 @@ class OptionsFragmentTest {
   @Test
   @Config(qualifiers = "sw600dp")
   @LooperMode(LooperMode.Mode.PAUSED)
+  // TODO(#973): Fix OptionsFragmentTest
+  @Ignore
   fun testOptionsFragment_clickReadingTextSize_checkLoadingTheCorrectFragment() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       onView(
@@ -191,6 +199,8 @@ class OptionsFragmentTest {
   @Test
   @Config(qualifiers = "sw600dp")
   @LooperMode(LooperMode.Mode.PAUSED)
+  // TODO(#973): Fix OptionsFragmentTest
+  @Ignore
   fun testOptionsFragment_clickAppLanguage_checkLoadingTheCorrectFragment() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       onView(
@@ -213,6 +223,8 @@ class OptionsFragmentTest {
   @Test
   @Config(qualifiers = "sw600dp")
   @LooperMode(LooperMode.Mode.PAUSED)
+  // TODO(#973): Fix OptionsFragmentTest
+  @Ignore
   fun testOptionsFragment_clickDefaultAudio_checkLoadingTheCorrectFragment() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       onView(

@@ -117,8 +117,6 @@ private const val MORNING_TIMESTAMP = 1556094120000
   application = NavigationDrawerTestActivityTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-// TODO(#973): Fix NavigationDrawerTestActivityTest
-@Ignore
 class NavigationDrawerTestActivityTest {
 
   @Inject
@@ -173,6 +171,8 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
+  // TODO(#973): Fix NavigationDrawerTestActivityTest
+  @Ignore
   fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_defaultProfileNameAtIndex0_displayProfileNameSuccessfully() { // ktlint-disable max-line-length
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
@@ -188,6 +188,8 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
+  // TODO(#973): Fix NavigationDrawerTestActivityTest
+  @Ignore
   fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_changeConfiguration_defaultProfileNameAtIndex0_displayProfileNameSuccessfully() { // ktlint-disable max-line-length
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
@@ -207,6 +209,8 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
+  // TODO(#973): Fix NavigationDrawerTestActivityTest
+  @Ignore
   fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_checkProfileProgress_displayProfileProgressSuccessfully() { // ktlint-disable max-line-length
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
@@ -232,6 +236,8 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
+  // TODO(#973): Fix NavigationDrawerTestActivityTest
+  @Ignore
   fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_defaultProfileNameAtIndex1_displayProfileNameSuccessfully() { // ktlint-disable max-line-length
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
@@ -250,6 +256,8 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
+  // TODO(#973): Fix NavigationDrawerTestActivityTest
+  @Ignore
   fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_navigationDrawerIsOpenedSuccessfully() { // ktlint-disable max-line-length
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withContentDescription(R.string.drawer_open_content_description))
@@ -265,6 +273,8 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
+  // TODO(#973): Fix NavigationDrawerTestActivityTest
+  @Ignore
   fun testNavigationDrawerTestActivity_clickNavigationDrawerHamburger_changeConfiguration_navigationDrawerIsOpenedSuccessfully() { // ktlint-disable max-line-length
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withContentDescription(R.string.drawer_open_content_description))
@@ -281,6 +291,8 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
+  // TODO(#973): Fix NavigationDrawerTestActivityTest
+  @Ignore
   fun testNavigationDrawerTestActivity_openNavigationDrawerAndRotate_navigationDrawerIsNotClosedAfterRotationIsVerifiedSuccessfully() { // ktlint-disable max-line-length
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
@@ -290,6 +302,8 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
+  // TODO(#973): Fix NavigationDrawerTestActivityTest
+  @Ignore
   fun testNavigationDrawerTestActivity_openNavigationDrawerAndClose_closingOfNavigationDrawerIsVerifiedSuccessfully() { // ktlint-disable max-line-length
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
@@ -299,6 +313,8 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
+  // TODO(#973): Fix NavigationDrawerTestActivityTest
+  @Ignore
   fun testNavigationDrawerTestActivity_withAdminProfile_openNavigationDrawer_checkAdministratorControlsDisplayed() { // ktlint-disable max-line-length
     launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(0)).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
@@ -307,6 +323,8 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
+  // TODO(#973): Fix NavigationDrawerTestActivityTest
+  @Ignore
   fun testNavigationDrawerTestActivity_withAdminProfile_openNavigationDrawer_changeConfiguration_checkAdministratorControlsDisplayed() { // ktlint-disable max-line-length
     launch<NavigationDrawerTestActivity>(createNavigationDrawerActivityIntent(0)).use {
       onView(withContentDescription(R.string.drawer_open_content_description)).perform(click())
@@ -317,6 +335,8 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
+  // TODO(#973): Fix NavigationDrawerTestActivityTest
+  @Ignore
   fun testNavigationDrawerTestActivity_withAdminProfile_openNavigationDrawer_clickAdministratorControls_checkOpensAdministratorControlsActivity() { // ktlint-disable max-line-length
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
@@ -332,6 +352,8 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
+  // TODO(#973): Fix NavigationDrawerTestActivityTest
+  @Ignore
   fun testNavigationDrawerTestActivity_withUserProfile_openNavigationDrawer_checkAdministratorControlsNotDisplayed() { // ktlint-disable max-line-length
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
@@ -351,6 +373,8 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
+  // TODO(#973): Fix NavigationDrawerTestActivityTest
+  @Ignore
   fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_showsHelpFragmentSuccessfully() { // ktlint-disable max-line-length
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
@@ -376,6 +400,8 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
+  // TODO(#973): Fix NavigationDrawerTestActivityTest
+  @Ignore
   fun testNavigationDrawerTestActivity_openNavigationDrawer_selectSwitchProfileMenu_showsExitToProfileChooserDialog() { // ktlint-disable max-line-length
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
@@ -385,6 +411,8 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
+  // TODO(#973): Fix NavigationDrawerTestActivityTest
+  @Ignore
   fun testNavigationDrawerTestActivity_openNavigationDrawer_selectSwitchProfileMenu_showsExitToProfileChooserDialog_clickExit_checkOpensProfileChooserActivity() { // ktlint-disable max-line-length
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
@@ -396,6 +424,8 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
+  // TODO(#973): Fix NavigationDrawerTestActivityTest
+  @Ignore
   fun testNavigationDrawerTestActivity_openNavigationDrawer_selectSwitchProfileMenu_showsExitToProfileChooserDialog_clickCancel_checkDrawerIsClosed() { // ktlint-disable max-line-length
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
@@ -414,6 +444,8 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
+  // TODO(#973): Fix NavigationDrawerTestActivityTest
+  @Ignore
   fun testNavigationDrawerTestActivity_selectSwitchProfile_orientationChange_checkDialogVisible() {
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
@@ -425,6 +457,8 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
+  // TODO(#973): Fix NavigationDrawerTestActivityTest
+  @Ignore
   fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_clickNavigationDrawerHamburger_navigationDrawerIsOpenedAndVerifiedSuccessfully() { // ktlint-disable max-line-length
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
@@ -444,6 +478,8 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
+  // TODO(#973): Fix NavigationDrawerTestActivityTest
+  @Ignore
   fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_openingAndClosingOfDrawerIsVerifiedSuccessfully() { // ktlint-disable max-line-length
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
@@ -463,6 +499,8 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
+  // TODO(#973): Fix NavigationDrawerTestActivityTest
+  @Ignore
   fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_navigationDrawerClosingIsVerifiedSuccessfully() { // ktlint-disable max-line-length
     launch(NavigationDrawerTestActivity::class.java).use {
       onView(withId(R.id.home_activity_drawer_layout)).perform(open())
@@ -480,6 +518,8 @@ class NavigationDrawerTestActivityTest {
   }
 
   @Test
+  // TODO(#973): Fix NavigationDrawerTestActivityTest
+  @Ignore
   fun testNavigationDrawerTestActivity_openNavigationDrawer_selectHelpMenuInNavigationDrawer_selectHomeMenuInNavigationDrawer_showsHomeFragmentSuccessfully() { // ktlint-disable max-line-length
     getApplicationDependencies()
     oppiaClock.setCurrentTimeMs(MORNING_TIMESTAMP)

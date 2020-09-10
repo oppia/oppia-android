@@ -66,8 +66,6 @@ private const val TAG_PROFILE_CHOOSER_FRAGMENT_RECYCLER_VIEW = "profile_recycler
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ProfileChooserSpanTest.TestApplication::class, manifest = Config.NONE)
-// TODO(#973): Fix ProfileChooserSpanTest
-@Ignore
 class ProfileChooserSpanTest {
 
   @Before
@@ -94,6 +92,8 @@ class ProfileChooserSpanTest {
   }
 
   @Test
+  // TODO(#973): Fix ProfileChooserSpanTest
+  @Ignore
   fun testProfileChooserFragmentRecyclerView_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
@@ -105,6 +105,8 @@ class ProfileChooserSpanTest {
 
   @Test
   @Config(qualifiers = "port-ldpi")
+  // TODO(#973): Fix ProfileChooserSpanTest
+  @Ignore
   fun testProfileChooserFragmentRecyclerView_ldpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
@@ -116,6 +118,8 @@ class ProfileChooserSpanTest {
 
   @Test
   @Config(qualifiers = "port-mdpi")
+  // TODO(#973): Fix ProfileChooserSpanTest
+  @Ignore
   fun testProfileChooserFragmentRecyclerView_mdpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
@@ -127,6 +131,8 @@ class ProfileChooserSpanTest {
 
   @Test
   @Config(qualifiers = "port-hdpi")
+  // TODO(#973): Fix ProfileChooserSpanTest
+  @Ignore
   fun testProfileChooserFragmentRecyclerView_hdpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
@@ -138,6 +144,8 @@ class ProfileChooserSpanTest {
 
   @Test
   @Config(qualifiers = "port-xhdpi")
+  // TODO(#973): Fix ProfileChooserSpanTest
+  @Ignore
   fun testProfileChooserFragmentRecyclerView_xhdpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
@@ -149,6 +157,8 @@ class ProfileChooserSpanTest {
 
   @Test
   @Config(qualifiers = "port-xxhdpi")
+  // TODO(#973): Fix ProfileChooserSpanTest
+  @Ignore
   fun testProfileChooserFragmentRecyclerView_xxhdpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
@@ -160,6 +170,8 @@ class ProfileChooserSpanTest {
 
   @Test
   @Config(qualifiers = "port-xxxhdpi")
+  // TODO(#973): Fix ProfileChooserSpanTest
+  @Ignore
   fun testProfileChooserFragmentRecyclerView_xxxhdpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
@@ -171,6 +183,8 @@ class ProfileChooserSpanTest {
 
   @Test
   @Config(qualifiers = "land-ldpi")
+  // TODO(#973): Fix ProfileChooserSpanTest
+  @Ignore
   fun testProfileChooserFragmentRecyclerView_landscape_ldpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
@@ -182,6 +196,8 @@ class ProfileChooserSpanTest {
 
   @Test
   @Config(qualifiers = "land-mdpi")
+  // TODO(#973): Fix ProfileChooserSpanTest
+  @Ignore
   fun testProfileChooserFragmentRecyclerView_landscape_mdpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
@@ -193,6 +209,8 @@ class ProfileChooserSpanTest {
 
   @Test
   @Config(qualifiers = "land-hdpi")
+  // TODO(#973): Fix ProfileChooserSpanTest
+  @Ignore
   fun testProfileChooserFragmentRecyclerView_landscape_hdpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
@@ -204,6 +222,8 @@ class ProfileChooserSpanTest {
 
   @Test
   @Config(qualifiers = "land-xhdpi")
+  // TODO(#973): Fix ProfileChooserSpanTest
+  @Ignore
   fun testProfileChooserFragmentRecyclerView_landscape_xhdpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
@@ -215,6 +235,8 @@ class ProfileChooserSpanTest {
 
   @Test
   @Config(qualifiers = "land-xxhdpi")
+  // TODO(#973): Fix ProfileChooserSpanTest
+  @Ignore
   fun testProfileChooserFragmentRecyclerView_landscape_xxhdpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
@@ -226,6 +248,8 @@ class ProfileChooserSpanTest {
 
   @Test
   @Config(qualifiers = "land-xxxhdpi")
+  // TODO(#973): Fix ProfileChooserSpanTest
+  @Ignore
   fun testProfileChooserFragmentRecyclerView_landscape_xxxhdpi_hasCorrectSpanCount() {
     launch(ProfileChooserFragmentTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->

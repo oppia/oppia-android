@@ -84,8 +84,6 @@ import javax.inject.Singleton
   application = ImageRegionSelectionInteractionViewTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-// TODO(#973): Fix ImageRegionSelectionInteractionViewTest
-@Ignore
 class ImageRegionSelectionInteractionViewTest {
 
   @Inject
@@ -109,6 +107,8 @@ class ImageRegionSelectionInteractionViewTest {
   }
 
   @Test
+  // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
+  @Ignore
   fun testImageRegionSelectionInteractionView_clickRegion3_region3Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
@@ -128,6 +128,8 @@ class ImageRegionSelectionInteractionViewTest {
   }
 
   @Test
+  // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
+  @Ignore
   fun testImageRegionSelectionInteractionView_clickRegion3_clickRegion2_region2Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
@@ -163,6 +165,8 @@ class ImageRegionSelectionInteractionViewTest {
   }
 
   @Test
+  // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
+  @Ignore
   fun testImageRegionSelectionInteractionView_clickOnDefaultRegion_defaultRegionClicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {

@@ -72,8 +72,6 @@ import javax.inject.Singleton
   application = AdministratorControlsFragmentTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-// TODO(#973): Fix AdministratorControlsFragmentTest
-@Ignore
 class AdministratorControlsFragmentTest {
 
   @Before
@@ -88,6 +86,8 @@ class AdministratorControlsFragmentTest {
   }
 
   @Test
+  // TODO(#973): Fix AdministratorControlsFragmentTest
+  @Ignore
   fun testAdministratorControlsFragment_clickEditProfile_checkSendingTheCorrectIntent() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
@@ -101,6 +101,8 @@ class AdministratorControlsFragmentTest {
   }
 
   @Test
+  // TODO(#973): Fix AdministratorControlsFragmentTest
+  @Ignore
   fun testAdministratorControlsFragment_clickAppVersion_checkSendingTheCorrectIntent() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
@@ -119,6 +121,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   @Config(qualifiers = "sw600dp")
+  // TODO(#973): Fix AdministratorControlsFragmentTest
+  @Ignore
   fun testAdministratorControlsFragment_clickEditProfile_checkLoadingTheCorrectFragment() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
@@ -138,6 +142,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   @Config(qualifiers = "sw600dp")
+  // TODO(#973): Fix AdministratorControlsFragmentTest
+  @Ignore
   fun testAdministratorControlsFragment_clickAppVersion_checkLoadingTheCorrectFragment() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
