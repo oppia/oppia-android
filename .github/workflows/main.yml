@@ -80,7 +80,7 @@ jobs:
        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
        with:
          name: utility reports
-         path: utility/build/test-results
+         path: utility/build/reports
      
      - name: Domain tests
        # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
@@ -90,7 +90,7 @@ jobs:
        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
        with:
          name: domain reports
-         path: domain/build/test-results
+         path: domain/build/reports
 
      - name: Testing tests
        # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
@@ -100,7 +100,7 @@ jobs:
        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
        with:
          name: testing reports
-         path: testing/build/test-results
+         path: testing/build/reports
   
   app_tests:
     name: Robolectric Tests - App Module (Non-Flaky)
@@ -130,7 +130,7 @@ jobs:
         if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
         with:
          name: app reports
-         path: app/build/test-results
+         path: app/build/reports
 
   bazel_build_app:
     name: Build Binary with Bazel
