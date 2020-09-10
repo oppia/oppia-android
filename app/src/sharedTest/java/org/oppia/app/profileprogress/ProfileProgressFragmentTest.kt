@@ -817,7 +817,7 @@ class ProfileProgressFragmentTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(optionsFragmentTest: ProfileProgressFragmentTest)
+    fun inject(profileProgressFragmentTest: ProfileProgressFragmentTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
@@ -827,8 +827,8 @@ class ProfileProgressFragmentTest {
         .build() as TestApplicationComponent
     }
 
-    fun inject(optionsFragmentTest: ProfileProgressFragmentTest) {
-      component.inject(optionsFragmentTest)
+    fun inject(profileProgressFragmentTest: ProfileProgressFragmentTest) {
+      component.inject(profileProgressFragmentTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
