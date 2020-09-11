@@ -163,7 +163,8 @@ class DataProviders @Inject constructor(
     }
 
     private fun <T> DataProvider<T>.getDataProviders(): DataProviders {
-      return (context as DataProvidersInjector).getDataProviders()
+      val injectorProvider = context.applicationContext as DataProvidersInjectorProvider
+      return injectorProvider.getDataProvidersInjector().getDataProviders()
     }
   }
 
