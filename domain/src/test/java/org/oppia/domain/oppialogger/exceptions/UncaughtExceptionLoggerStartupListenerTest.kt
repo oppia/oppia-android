@@ -164,7 +164,7 @@ class UncaughtExceptionLoggerStartupListenerTest {
       TestDispatcherModule::class, TestLogStorageModule::class
     ]
   )
-  interface TestApplicationComponent: DataProvidersInjector {
+  interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance

@@ -360,7 +360,7 @@ class AppStartupStateControllerTest {
       ExpirationMetaDataRetrieverModule::class // Use real implementation to test closer to prod.
     ]
   )
-  interface TestApplicationComponent: DataProvidersInjector {
+  interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance

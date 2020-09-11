@@ -23,8 +23,6 @@ import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.app.model.ProfileId
 import org.oppia.domain.oppialogger.LogStorageModule
-import org.oppia.domain.question.DaggerQuestionTrainingControllerTest_TestApplicationComponent
-import org.oppia.domain.question.QuestionTrainingControllerTest
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
@@ -158,7 +156,7 @@ class StoryProgressControllerTest {
       TestDispatcherModule::class
     ]
   )
-  interface TestApplicationComponent: DataProvidersInjector {
+  interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance

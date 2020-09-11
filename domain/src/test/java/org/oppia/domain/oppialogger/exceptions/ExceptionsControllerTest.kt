@@ -24,8 +24,6 @@ import org.mockito.junit.MockitoRule
 import org.oppia.app.model.ExceptionLog.ExceptionType
 import org.oppia.app.model.OppiaExceptionLogs
 import org.oppia.domain.oppialogger.ExceptionLogStorageCacheSize
-import org.oppia.domain.oppialogger.analytics.AnalyticsControllerTest
-import org.oppia.domain.oppialogger.analytics.DaggerAnalyticsControllerTest_TestApplicationComponent
 import org.oppia.testing.FakeExceptionLogger
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
@@ -364,7 +362,7 @@ class ExceptionsControllerTest {
       TestLogStorageModule::class
     ]
   )
-  interface TestApplicationComponent: DataProvidersInjector {
+  interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance

@@ -29,8 +29,6 @@ import org.oppia.app.model.ProfileDatabase
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.ReadingTextSize
 import org.oppia.domain.oppialogger.LogStorageModule
-import org.oppia.domain.oppialogger.exceptions.DaggerUncaughtExceptionLoggerStartupListenerTest_TestApplicationComponent
-import org.oppia.domain.oppialogger.exceptions.UncaughtExceptionLoggerStartupListenerTest
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
@@ -1033,7 +1031,7 @@ class ProfileManagementControllerTest {
       TestDispatcherModule::class
     ]
   )
-  interface TestApplicationComponent: DataProvidersInjector {
+  interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance

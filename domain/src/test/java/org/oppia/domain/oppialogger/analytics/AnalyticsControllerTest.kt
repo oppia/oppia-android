@@ -31,8 +31,6 @@ import org.oppia.app.model.EventLog.Context.ActivityContextCase.TOPIC_CONTEXT
 import org.oppia.app.model.EventLog.EventAction
 import org.oppia.app.model.EventLog.Priority
 import org.oppia.app.model.OppiaEventLogs
-import org.oppia.domain.onboarding.AppStartupStateControllerTest
-import org.oppia.domain.onboarding.DaggerAppStartupStateControllerTest_TestApplicationComponent
 import org.oppia.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.domain.oppialogger.OppiaLogger
 import org.oppia.testing.FakeEventLogger
@@ -646,7 +644,7 @@ class AnalyticsControllerTest {
 
     ]
   )
-  interface TestApplicationComponent: DataProvidersInjector {
+  interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
