@@ -29,6 +29,8 @@ import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.data.DataProvidersInjector
+import org.oppia.util.data.DataProvidersInjectorProvider
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -41,7 +43,7 @@ import javax.inject.Singleton
 /** Tests for [ProfileTestHelperTest]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
+@Config(application = ProfileTestHelperTest.TestApplication::class)
 class ProfileTestHelperTest {
   @Rule
   @JvmField
@@ -77,10 +79,7 @@ class ProfileTestHelperTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerProfileTestHelperTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   @Test
@@ -186,7 +185,7 @@ class ProfileTestHelperTest {
       TestDispatcherModule::class
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent: DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -196,5 +195,19 @@ class ProfileTestHelperTest {
     }
 
     fun inject(profileTestHelperTest: ProfileTestHelperTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerProfileTestHelperTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(profileTestHelperTest: ProfileTestHelperTest) {
+      component.inject(profileTestHelperTest)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }
