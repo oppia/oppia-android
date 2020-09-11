@@ -61,7 +61,7 @@ private const val COMBINED_STR_VALUE_02 = "I used to be indecisive. At least I t
 /** Tests for [DataProviders], [DataProvider]s, and [AsyncDataSubscriptionManager]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
+@Config(application = DataProvidersTest.TestApplication::class)
 class DataProvidersTest {
 
   @Rule
@@ -2882,10 +2882,7 @@ class DataProvidersTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerDataProvidersTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -2906,7 +2903,7 @@ class DataProvidersTest {
       TestLogReportingModule::class
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent: DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -2915,5 +2912,19 @@ class DataProvidersTest {
     }
 
     fun inject(dataProvidersTest: DataProvidersTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerDataProvidersTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(dataProvidersTest: DataProvidersTest) {
+      component.inject(dataProvidersTest)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }
