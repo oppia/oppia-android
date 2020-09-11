@@ -52,6 +52,7 @@ import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -134,7 +135,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_noExploration_isPending() {
     val currentStateLiveData =
-      explorationProgressController.getCurrentState()
+      explorationProgressController.getCurrentState().toLiveData()
 
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
@@ -161,7 +162,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_playInvalidExploration_returnsFailure() {
     val currentStateLiveData =
-      explorationProgressController.getCurrentState()
+      explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
 
     playExploration("invalid_exp_id")
@@ -190,7 +191,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_playExploration_returnsPendingResultFromLoadingExploration() {
     val currentStateLiveData =
-      explorationProgressController.getCurrentState()
+      explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -212,7 +213,7 @@ class ExplorationProgressControllerTest {
     playExploration(TEST_EXPLORATION_ID_0)
 
     val currentStateLiveData =
-      explorationProgressController.getCurrentState()
+      explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -240,7 +241,7 @@ class ExplorationProgressControllerTest {
     // Then a valid one.
     playExploration(TEST_EXPLORATION_ID_0)
     val currentStateLiveData =
-      explorationProgressController.getCurrentState()
+      explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -293,7 +294,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_playSecondExploration_afterFinishingPrev_loaded_returnsInitialState() {
     val currentStateLiveData =
-      explorationProgressController.getCurrentState()
+      explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
     // Start with playing a valid exploration, then stop.
     playExploration(TEST_EXPLORATION_ID_0)
@@ -436,7 +437,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_afterSubmittingCorrectMultiChoiceAnswer_becomesCompletedState() {
     val currentStateLiveData =
-      explorationProgressController.getCurrentState()
+      explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
     playExploration(TEST_EXPLORATION_ID_0)
 
@@ -462,7 +463,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_afterSubmittingWrongMultiChoiceAnswer_updatesPendingState() {
     val currentStateLiveData =
-      explorationProgressController.getCurrentState()
+      explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
     playExploration(TEST_EXPLORATION_ID_0)
 
@@ -578,7 +579,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testMoveToNext_forCompletedState_movesToNextState() {
     val currentStateLiveData =
-      explorationProgressController.getCurrentState()
+      explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
     playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswer(0)
@@ -704,7 +705,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testMoveToPrevious_forCompletedState_movesToPreviousState() {
     val currentStateLiveData =
-      explorationProgressController.getCurrentState()
+      explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
     playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
@@ -1003,7 +1004,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_afterMovePreviousAndNext_returnsCurrentState() {
     val currentStateLiveData =
-      explorationProgressController.getCurrentState()
+      explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
     playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
@@ -1025,7 +1026,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_afterMoveNextAndPrevious_returnsCurrentState() {
     val currentStateLiveData =
-      explorationProgressController.getCurrentState()
+      explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
     playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
@@ -1055,7 +1056,7 @@ class ExplorationProgressControllerTest {
     // Move to the previous state and register a new observer.
     moveToPreviousState() // Third state -> second
     val currentStateLiveData =
-      explorationProgressController.getCurrentState()
+      explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver2)
     testCoroutineDispatchers.runCurrent()
 
@@ -1073,7 +1074,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_forFirstState_doesNotHaveNextState() {
     val currentStateLiveData =
-      explorationProgressController.getCurrentState()
+      explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
 
     playExploration(TEST_EXPLORATION_ID_0)
@@ -1090,7 +1091,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_forFirstState_afterAnswerSubmission_doesNotHaveNextState() {
     val currentStateLiveData =
-      explorationProgressController.getCurrentState()
+      explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
     playExploration(TEST_EXPLORATION_ID_0)
 
@@ -1109,7 +1110,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_forSecondState_doesNotHaveNextState() {
     val currentStateLiveData =
-      explorationProgressController.getCurrentState()
+      explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
     playExploration(TEST_EXPLORATION_ID_0)
 
@@ -1127,7 +1128,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_forSecondState_navigateBackward_hasNextState() {
     val currentStateLiveData =
-      explorationProgressController.getCurrentState()
+      explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
     playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
@@ -1146,7 +1147,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_forSecondState_navigateBackwardThenForward_doesNotHaveNextState() {
     val currentStateLiveData =
-      explorationProgressController.getCurrentState()
+      explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
     playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
@@ -1236,7 +1237,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_fifthState_isTerminalState() {
     val currentStateLiveData =
-      explorationProgressController.getCurrentState()
+      explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
     playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
@@ -1258,7 +1259,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_afterMoveToPrevious_onThirdState_updatesToCompletedSecondState() {
     val currentStateLiveData =
-      explorationProgressController.getCurrentState()
+      explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
     playExploration(TEST_EXPLORATION_ID_0)
     submitMultipleChoiceAnswerAndMoveToNextState(0)
@@ -1306,7 +1307,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_afterPlayingFullSecondExploration_returnsTerminalState() {
     val currentStateLiveData =
-      explorationProgressController.getCurrentState()
+      explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
 
     playExploration(TEST_EXPLORATION_ID_1)
@@ -1327,7 +1328,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_afterPlayingFullSecondExploration_diffPath_returnsTerminalState() {
     val currentStateLiveData =
-      explorationProgressController.getCurrentState()
+      explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
 
     playExploration(TEST_EXPLORATION_ID_1)
@@ -1351,7 +1352,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_afterPlayingThroughPreviousExplorations_returnsStateFromSecondExp() {
     val currentStateLiveData =
-      explorationProgressController.getCurrentState()
+      explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
     playThroughExploration5()
 
@@ -1419,7 +1420,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_playInvalidExploration_returnsFailure_logsException() {
     val currentStateLiveData =
-      explorationProgressController.getCurrentState()
+      explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
 
     playExploration("invalid_exp_id")
@@ -1450,7 +1451,9 @@ class ExplorationProgressControllerTest {
    * implementation will only lazily load data based on whether there's an active subscription.
    */
   private fun subscribeToCurrentStateToAllowExplorationToLoad() {
-    explorationProgressController.getCurrentState().observeForever(mockCurrentStateLiveDataObserver)
+    explorationProgressController.getCurrentState()
+      .toLiveData()
+      .observeForever(mockCurrentStateLiveDataObserver)
   }
 
   private fun playExploration(explorationId: String) {

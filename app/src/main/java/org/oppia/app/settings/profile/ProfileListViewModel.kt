@@ -7,6 +7,7 @@ import org.oppia.app.model.Profile
 import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.ConsoleLogger
 import java.util.Locale
 import javax.inject.Inject
@@ -18,7 +19,9 @@ class ProfileListViewModel @Inject constructor(
   private val profileManagementController: ProfileManagementController
 ) : ObservableViewModel() {
   val profiles: LiveData<List<Profile>> by lazy {
-    Transformations.map(profileManagementController.getProfiles(), ::processGetProfilesResult)
+    Transformations.map(
+      profileManagementController.getProfiles().toLiveData(), ::processGetProfilesResult
+    )
   }
 
   private fun processGetProfilesResult(profilesResult: AsyncResult<List<Profile>>): List<Profile> {

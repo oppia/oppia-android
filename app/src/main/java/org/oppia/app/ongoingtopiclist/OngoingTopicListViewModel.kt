@@ -10,6 +10,7 @@ import org.oppia.app.shim.IntentFactoryShim
 import org.oppia.app.viewmodel.ObservableViewModel
 import org.oppia.domain.topic.TopicController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.parser.TopicHtmlParserEntityType
 import javax.inject.Inject
@@ -29,7 +30,7 @@ class OngoingTopicListViewModel @Inject constructor(
   private val ongoingTopicListResultLiveData: LiveData<AsyncResult<OngoingTopicList>> by lazy {
     topicController.getOngoingTopicList(
       ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    )
+    ).toLiveData()
   }
 
   private val ongoingTopicListLiveData: LiveData<OngoingTopicList> by lazy {

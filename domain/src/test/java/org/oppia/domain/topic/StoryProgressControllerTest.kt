@@ -92,7 +92,8 @@ class StoryProgressControllerTest {
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
       timestamp
-    ).observeForever(mockRecordProgressObserver)
+    )
+    Unit.observeForever(mockRecordProgressObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyRecordProgressSucceeded()
@@ -106,7 +107,8 @@ class StoryProgressControllerTest {
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
       timestamp
-    ).observeForever(mockRecordProgressObserver)
+    )
+    Unit.observeForever(mockRecordProgressObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyRecordProgressSucceeded()

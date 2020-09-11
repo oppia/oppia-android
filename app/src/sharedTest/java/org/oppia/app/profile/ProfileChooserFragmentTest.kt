@@ -83,6 +83,7 @@ import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.testing.profile.ProfileTestHelper
 import org.oppia.util.caching.testing.CachingTestModule
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.gcsresource.GcsResourceModule
 import org.oppia.util.logging.LoggerModule
 import org.oppia.util.logging.firebase.FirebaseLogUploaderModule
@@ -532,7 +533,7 @@ class ProfileChooserFragmentTest {
       true,
       -10710042,
       true
-    )
+    ).toLiveData()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       onView(
         atPositionOnView(
@@ -557,7 +558,7 @@ class ProfileChooserFragmentTest {
       true,
       -10710042,
       true
-    )
+    ).toLiveData()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       onView(withId(R.id.administrator_controls_linear_layout)).perform(click())
       intended(hasComponent(AdminPinActivity::class.java.name))

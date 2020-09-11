@@ -30,6 +30,7 @@ import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -110,7 +111,7 @@ class ExceptionsControllerTest {
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
     val cachedExceptions =
-      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
+      exceptionsController.getExceptionLogStore().toLiveData()
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -135,7 +136,7 @@ class ExceptionsControllerTest {
     exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
     val cachedExceptions =
-      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
+      exceptionsController.getExceptionLogStore().toLiveData()
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -173,7 +174,7 @@ class ExceptionsControllerTest {
     )
 
     val cachedExceptions =
-      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
+      exceptionsController.getExceptionLogStore().toLiveData()
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -215,7 +216,7 @@ class ExceptionsControllerTest {
     )
 
     val cachedExceptions =
-      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
+      exceptionsController.getExceptionLogStore().toLiveData()
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -234,7 +235,7 @@ class ExceptionsControllerTest {
     exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
     val cachedExceptions =
-      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
+      exceptionsController.getExceptionLogStore().toLiveData()
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -261,7 +262,7 @@ class ExceptionsControllerTest {
     exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
     val cachedExceptions =
-      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
+      exceptionsController.getExceptionLogStore().toLiveData()
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -280,7 +281,7 @@ class ExceptionsControllerTest {
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
     val cachedExceptions =
-      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
+      exceptionsController.getExceptionLogStore().toLiveData()
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -301,7 +302,7 @@ class ExceptionsControllerTest {
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
     val cachedExceptions =
-      dataProviders.convertToLiveData(exceptionsController.getExceptionLogStore())
+      exceptionsController.getExceptionLogStore().toLiveData()
     cachedExceptions.observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 

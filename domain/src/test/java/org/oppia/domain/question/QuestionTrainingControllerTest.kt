@@ -45,6 +45,7 @@ import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -123,7 +124,7 @@ class QuestionTrainingControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val resultLiveData =
-      questionAssessmentProgressController.getCurrentQuestion()
+      questionAssessmentProgressController.getCurrentQuestion().toLiveData()
     resultLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -161,7 +162,7 @@ class QuestionTrainingControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val resultLiveData =
-      questionAssessmentProgressController.getCurrentQuestion()
+      questionAssessmentProgressController.getCurrentQuestion().toLiveData()
     resultLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -195,7 +196,7 @@ class QuestionTrainingControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val resultLiveData =
-      questionAssessmentProgressController.getCurrentQuestion()
+      questionAssessmentProgressController.getCurrentQuestion().toLiveData()
     resultLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 

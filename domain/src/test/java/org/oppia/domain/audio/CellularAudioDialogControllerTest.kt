@@ -26,6 +26,7 @@ import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -70,7 +71,7 @@ class CellularAudioDialogControllerTest {
   @Test
   fun testController_providesInitialLiveData_indicatesToNotHideDialogAndNotUseCellularData() {
     val cellularDataPreference =
-      cellularAudioDialogController.getCellularDataPreference()
+      cellularAudioDialogController.getCellularDataPreference().toLiveData()
     cellularDataPreference.observeForever(mockCellularDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -83,7 +84,7 @@ class CellularAudioDialogControllerTest {
   @Test
   fun testController_setNeverUseCellularDataPref_providesLiveData_indicatesToHideDialogAndNotUseCellularData() { // ktlint-disable max-line-length
     val appHistory =
-      cellularAudioDialogController.getCellularDataPreference()
+      cellularAudioDialogController.getCellularDataPreference().toLiveData()
 
     appHistory.observeForever(mockCellularDataObserver)
     cellularAudioDialogController.setNeverUseCellularDataPreference()
@@ -98,7 +99,7 @@ class CellularAudioDialogControllerTest {
   @Test
   fun testController_setAlwaysUseCellularDataPref_providesLiveData_indicatesToHideDialogAndUseCellularData() { // ktlint-disable max-line-length
     val appHistory =
-      cellularAudioDialogController.getCellularDataPreference()
+      cellularAudioDialogController.getCellularDataPreference().toLiveData()
 
     appHistory.observeForever(mockCellularDataObserver)
     cellularAudioDialogController.setAlwaysUseCellularDataPreference()
@@ -117,7 +118,7 @@ class CellularAudioDialogControllerTest {
 
     setUpTestApplicationComponent()
     val appHistory =
-      cellularAudioDialogController.getCellularDataPreference()
+      cellularAudioDialogController.getCellularDataPreference().toLiveData()
     appHistory.observeForever(mockCellularDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -134,7 +135,7 @@ class CellularAudioDialogControllerTest {
 
     setUpTestApplicationComponent()
     val appHistory =
-      cellularAudioDialogController.getCellularDataPreference()
+      cellularAudioDialogController.getCellularDataPreference().toLiveData()
     appHistory.observeForever(mockCellularDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 

@@ -39,6 +39,7 @@ import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -128,7 +129,9 @@ class TopicControllerTest {
 
   @Test
   fun testRetrieveTopic_validSecondTopic_returnsCorrectTopic() {
-    topicController.getTopic(profileId1, TEST_TOPIC_ID_1).observeForever(mockTopicObserver)
+    topicController.getTopic(
+      profileId1, TEST_TOPIC_ID_1
+    ).toLiveData().observeForever(mockTopicObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetTopicSucceeded()
@@ -138,7 +141,9 @@ class TopicControllerTest {
 
   @Test
   fun testRetrieveTopic_validSecondTopic_returnsTopicWithThumbnail() {
-    topicController.getTopic(profileId1, TEST_TOPIC_ID_1).observeForever(mockTopicObserver)
+    topicController.getTopic(
+      profileId1, TEST_TOPIC_ID_1
+    ).toLiveData().observeForever(mockTopicObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetTopicSucceeded()
@@ -149,7 +154,9 @@ class TopicControllerTest {
 
   @Test
   fun testRetrieveTopic_fractionsTopic_returnsCorrectTopic() {
-    topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID).observeForever(mockTopicObserver)
+    topicController.getTopic(
+      profileId1, FRACTIONS_TOPIC_ID
+    ).toLiveData().observeForever(mockTopicObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetTopicSucceeded()
@@ -160,7 +167,9 @@ class TopicControllerTest {
 
   @Test
   fun testRetrieveTopic_fractionsTopic_hasCorrectDescription() {
-    topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID).observeForever(mockTopicObserver)
+    topicController.getTopic(
+      profileId1, FRACTIONS_TOPIC_ID
+    ).toLiveData().observeForever(mockTopicObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetTopicSucceeded()
@@ -171,7 +180,9 @@ class TopicControllerTest {
 
   @Test
   fun testRetrieveTopic_ratiosTopic_returnsCorrectTopic() {
-    topicController.getTopic(profileId1, RATIOS_TOPIC_ID).observeForever(mockTopicObserver)
+    topicController.getTopic(
+      profileId1, RATIOS_TOPIC_ID
+    ).toLiveData().observeForever(mockTopicObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetTopicSucceeded()
@@ -182,7 +193,9 @@ class TopicControllerTest {
 
   @Test
   fun testRetrieveTopic_ratiosTopic_hasCorrectDescription() {
-    topicController.getTopic(profileId1, RATIOS_TOPIC_ID).observeForever(mockTopicObserver)
+    topicController.getTopic(
+      profileId1, RATIOS_TOPIC_ID
+    ).toLiveData().observeForever(mockTopicObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetTopicSucceeded()
@@ -195,7 +208,9 @@ class TopicControllerTest {
 
   @Test
   fun testRetrieveTopic_invalidTopic_returnsFailure() {
-    topicController.getTopic(profileId1, INVALID_TOPIC_ID_1).observeForever(mockTopicObserver)
+    topicController.getTopic(
+      profileId1, INVALID_TOPIC_ID_1
+    ).toLiveData().observeForever(mockTopicObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetTopicFailed()
@@ -204,7 +219,7 @@ class TopicControllerTest {
 
   @Test
   fun testRetrieveStory_validStory_isSuccessful() {
-    topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2)
+    topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -216,7 +231,7 @@ class TopicControllerTest {
 
   @Test
   fun testRetrieveStory_validStory_returnsCorrectStory() {
-    topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2)
+    topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -227,7 +242,7 @@ class TopicControllerTest {
 
   @Test
   fun testRetrieveStory_validStory_returnsStoryWithName() {
-    topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2)
+    topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -238,7 +253,7 @@ class TopicControllerTest {
 
   @Test
   fun testRetrieveStory_fractionsStory_returnsCorrectStory() {
-    topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0)
+    topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -249,7 +264,7 @@ class TopicControllerTest {
 
   @Test
   fun testRetrieveStory_fractionsStory_returnsStoryWithName() {
-    topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0)
+    topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -260,7 +275,7 @@ class TopicControllerTest {
 
   @Test
   fun testRetrieveStory_ratiosFirstStory_returnsCorrectStory() {
-    topicController.getStory(profileId1, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)
+    topicController.getStory(profileId1, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -272,7 +287,7 @@ class TopicControllerTest {
 
   @Test
   fun testRetrieveStory_ratiosFirstStory_returnsStoryWithMultipleChapters() {
-    topicController.getStory(profileId1, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)
+    topicController.getStory(profileId1, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -286,7 +301,7 @@ class TopicControllerTest {
 
   @Test
   fun testRetrieveStory_ratiosSecondStory_returnsCorrectStory() {
-    topicController.getStory(profileId1, RATIOS_TOPIC_ID, RATIOS_STORY_ID_1)
+    topicController.getStory(profileId1, RATIOS_TOPIC_ID, RATIOS_STORY_ID_1).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -298,7 +313,7 @@ class TopicControllerTest {
 
   @Test
   fun testRetrieveStory_ratiosSecondStory_returnsStoryWithMultipleChapters() {
-    topicController.getStory(profileId1, RATIOS_TOPIC_ID, RATIOS_STORY_ID_1)
+    topicController.getStory(profileId1, RATIOS_TOPIC_ID, RATIOS_STORY_ID_1).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -312,7 +327,7 @@ class TopicControllerTest {
 
   @Test
   fun testRetrieveStory_validStory_returnsStoryWithChapter() {
-    topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2)
+    topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -323,7 +338,7 @@ class TopicControllerTest {
 
   @Test
   fun testRetrieveStory_validStory_returnsStoryWithChapterName() {
-    topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2)
+    topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -334,7 +349,7 @@ class TopicControllerTest {
 
   @Test
   fun testRetrieveStory_validStory_returnsStoryWithChapterSummary() {
-    topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0)
+    topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -346,7 +361,7 @@ class TopicControllerTest {
 
   @Test
   fun testRetrieveStory_validStory_returnsStoryWithChapterThumbnail() {
-    topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2)
+    topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -359,7 +374,7 @@ class TopicControllerTest {
 
   @Test
   fun testRetrieveStory_validSecondStory_isSuccessful() {
-    topicController.getStory(profileId1, TEST_TOPIC_ID_0, TEST_STORY_ID_1)
+    topicController.getStory(profileId1, TEST_TOPIC_ID_0, TEST_STORY_ID_1).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -371,7 +386,7 @@ class TopicControllerTest {
 
   @Test
   fun testRetrieveStory_validSecondStory_returnsCorrectStory() {
-    topicController.getStory(profileId1, TEST_TOPIC_ID_0, TEST_STORY_ID_1)
+    topicController.getStory(profileId1, TEST_TOPIC_ID_0, TEST_STORY_ID_1).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -382,7 +397,7 @@ class TopicControllerTest {
 
   @Test
   fun testRetrieveStory_validSecondStory_returnsStoryWithMultipleChapters() {
-    topicController.getStory(profileId1, TEST_TOPIC_ID_0, TEST_STORY_ID_1)
+    topicController.getStory(profileId1, TEST_TOPIC_ID_0, TEST_STORY_ID_1).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -397,7 +412,7 @@ class TopicControllerTest {
 
   @Test
   fun testRetrieveStory_validSecondStory_returnsStoryWithProgress() {
-    topicController.getStory(profileId1, TEST_TOPIC_ID_0, TEST_STORY_ID_1)
+    topicController.getStory(profileId1, TEST_TOPIC_ID_0, TEST_STORY_ID_1).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -413,7 +428,7 @@ class TopicControllerTest {
 
   @Test
   fun testRetrieveStory_invalidStory_returnsFailure() {
-    topicController.getStory(profileId1, INVALID_TOPIC_ID_1, INVALID_STORY_ID_1)
+    topicController.getStory(profileId1, INVALID_TOPIC_ID_1, INVALID_STORY_ID_1).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -703,7 +718,9 @@ class TopicControllerTest {
 
   @Test
   fun testRetrieveSubtopicTopic_validSubtopic_returnsSubtopicWithThumbnail() {
-    topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID).observeForever(mockTopicObserver)
+    topicController.getTopic(
+      profileId1, FRACTIONS_TOPIC_ID
+    ).toLiveData().observeForever(mockTopicObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetTopicSucceeded()
@@ -719,7 +736,7 @@ class TopicControllerTest {
       .retrieveQuestionsForSkillIds(
         listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
       )
-    dataProviders.convertToLiveData(questionsListProvider).observeForever(mockQuestionListObserver)
+    questionsListProvider.toLiveData().observeForever(mockQuestionListObserver)
     testCoroutineDispatchers.runCurrent()
     verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
 
@@ -741,7 +758,7 @@ class TopicControllerTest {
       .retrieveQuestionsForSkillIds(
         listOf(FRACTIONS_SKILL_ID_0)
       )
-    dataProviders.convertToLiveData(questionsListProvider)
+    questionsListProvider.toLiveData()
       .observeForever(mockQuestionListObserver)
     testCoroutineDispatchers.runCurrent()
     verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
@@ -764,7 +781,7 @@ class TopicControllerTest {
       .retrieveQuestionsForSkillIds(
         listOf(FRACTIONS_SKILL_ID_1)
       )
-    dataProviders.convertToLiveData(questionsListProvider)
+    questionsListProvider.toLiveData()
       .observeForever(mockQuestionListObserver)
     testCoroutineDispatchers.runCurrent()
     verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
@@ -786,7 +803,7 @@ class TopicControllerTest {
       .retrieveQuestionsForSkillIds(
         listOf(FRACTIONS_SKILL_ID_2)
       )
-    dataProviders.convertToLiveData(questionsListProvider)
+    questionsListProvider.toLiveData()
       .observeForever(mockQuestionListObserver)
     testCoroutineDispatchers.runCurrent()
     verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
@@ -809,7 +826,7 @@ class TopicControllerTest {
       .retrieveQuestionsForSkillIds(
         listOf(RATIOS_SKILL_ID_0)
       )
-    dataProviders.convertToLiveData(questionsListProvider)
+    questionsListProvider.toLiveData()
       .observeForever(mockQuestionListObserver)
     testCoroutineDispatchers.runCurrent()
     verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
@@ -831,7 +848,7 @@ class TopicControllerTest {
       .retrieveQuestionsForSkillIds(
         listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, "NON_EXISTENT_SKILL_ID")
       )
-    dataProviders.convertToLiveData(questionsListProvider)
+    questionsListProvider.toLiveData()
       .observeForever(mockQuestionListObserver)
     testCoroutineDispatchers.runCurrent()
     verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
@@ -843,7 +860,9 @@ class TopicControllerTest {
 
   @Test
   fun testGetTopic_invalidTopicId_getTopic_noResultFound() {
-    topicController.getTopic(profileId1, INVALID_TOPIC_ID_1).observeForever(mockTopicObserver)
+    topicController.getTopic(
+      profileId1, INVALID_TOPIC_ID_1
+    ).toLiveData().observeForever(mockTopicObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetTopicFailed()
@@ -851,7 +870,9 @@ class TopicControllerTest {
 
   @Test
   fun testGetTopic_validTopicId_withoutAnyProgress_getTopicSucceedsWithCorrectProgress() {
-    topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID).observeForever(mockTopicObserver)
+    topicController.getTopic(
+      profileId1, FRACTIONS_TOPIC_ID
+    ).toLiveData().observeForever(mockTopicObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetTopicSucceeded()
@@ -868,7 +889,9 @@ class TopicControllerTest {
     markFractionsStory0Chapter0AsCompleted()
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID).observeForever(mockTopicObserver)
+    topicController.getTopic(
+      profileId1, FRACTIONS_TOPIC_ID
+    ).toLiveData().observeForever(mockTopicObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetTopicSucceeded()
@@ -882,7 +905,7 @@ class TopicControllerTest {
 
   @Test
   fun testGetStory_invalidData_getStory_noResultFound() {
-    topicController.getStory(profileId1, INVALID_TOPIC_ID_1, INVALID_STORY_ID_1)
+    topicController.getStory(profileId1, INVALID_TOPIC_ID_1, INVALID_STORY_ID_1).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -891,7 +914,7 @@ class TopicControllerTest {
 
   @Test
   fun testGetStory_validData_withoutAnyProgress_getStorySucceedsWithCorrectProgress() {
-    topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0)
+    topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -909,7 +932,9 @@ class TopicControllerTest {
     markFractionsStory0Chapter0AsCompleted()
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID).observeForever(mockTopicObserver)
+    topicController.getTopic(
+      profileId1, FRACTIONS_TOPIC_ID
+    ).toLiveData().observeForever(mockTopicObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyRecordProgressSucceeded()
@@ -924,7 +949,9 @@ class TopicControllerTest {
 
   @Test
   fun testOngoingTopicList_validData_withoutAnyProgress_ongoingTopicListIsEmpty() {
-    topicController.getOngoingTopicList(profileId1).observeForever(mockOngoingTopicListObserver)
+    topicController.getOngoingTopicList(
+      profileId1
+    ).toLiveData().observeForever(mockOngoingTopicListObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetOngoingTopicListSucceeded()
@@ -937,7 +964,9 @@ class TopicControllerTest {
     markFractionsStory0Chapter0AsCompleted()
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getOngoingTopicList(profileId1).observeForever(mockOngoingTopicListObserver)
+    topicController.getOngoingTopicList(
+      profileId1
+    ).toLiveData().observeForever(mockOngoingTopicListObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetOngoingTopicListSucceeded()
@@ -954,7 +983,9 @@ class TopicControllerTest {
     markFractionsStory0Chapter1AsCompleted()
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getOngoingTopicList(profileId1).observeForever(mockOngoingTopicListObserver)
+    topicController.getOngoingTopicList(
+      profileId1
+    ).toLiveData().observeForever(mockOngoingTopicListObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetOngoingTopicListSucceeded()
@@ -975,7 +1006,9 @@ class TopicControllerTest {
     markRatiosStory0Chapter0AsCompleted()
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getOngoingTopicList(profileId1).observeForever(mockOngoingTopicListObserver)
+    topicController.getOngoingTopicList(
+      profileId1
+    ).toLiveData().observeForever(mockOngoingTopicListObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetOngoingTopicListSucceeded()
@@ -986,7 +1019,7 @@ class TopicControllerTest {
 
   @Test
   fun testCompletedStoryList_validData_withoutAnyProgress_completedStoryListIsEmpty() {
-    topicController.getCompletedStoryList(profileId1)
+    topicController.getCompletedStoryList(profileId1).toLiveData()
       .observeForever(mockCompletedStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1000,7 +1033,7 @@ class TopicControllerTest {
     markFractionsStory0Chapter0AsCompleted()
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getCompletedStoryList(profileId1)
+    topicController.getCompletedStoryList(profileId1).toLiveData()
       .observeForever(mockCompletedStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1017,7 +1050,7 @@ class TopicControllerTest {
     markFractionsStory0Chapter1AsCompleted()
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getCompletedStoryList(profileId1)
+    topicController.getCompletedStoryList(profileId1).toLiveData()
       .observeForever(mockCompletedStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1036,7 +1069,7 @@ class TopicControllerTest {
     markFractionsStory0Chapter1AsCompleted()
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0)
+    topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1058,7 +1091,7 @@ class TopicControllerTest {
     markRatiosStory0Chapter1AsCompleted()
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getCompletedStoryList(profileId1)
+    topicController.getCompletedStoryList(profileId1).toLiveData()
       .observeForever(mockCompletedStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1083,7 +1116,7 @@ class TopicControllerTest {
     markRatiosStory0Chapter1AsCompleted()
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getCompletedStoryList(profileId1)
+    topicController.getCompletedStoryList(profileId1).toLiveData()
       .observeForever(mockCompletedStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1117,7 +1150,8 @@ class TopicControllerTest {
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
       currentTimestamp
-    ).observeForever(mockRecordProgressObserver)
+    )
+    Unit.observeForever(mockRecordProgressObserver)
   }
 
   private fun markFractionsStory0Chapter1AsCompleted() {
@@ -1127,7 +1161,8 @@ class TopicControllerTest {
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_1,
       currentTimestamp
-    ).observeForever(mockRecordProgressObserver)
+    )
+    Unit.observeForever(mockRecordProgressObserver)
   }
 
   private fun markRatiosStory0Chapter0AsCompleted() {
@@ -1137,7 +1172,8 @@ class TopicControllerTest {
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_0,
       currentTimestamp
-    ).observeForever(mockRecordProgressObserver)
+    )
+    Unit.observeForever(mockRecordProgressObserver)
   }
 
   private fun markRatiosStory0Chapter1AsCompleted() {
@@ -1147,7 +1183,8 @@ class TopicControllerTest {
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_1,
       currentTimestamp
-    ).observeForever(mockRecordProgressObserver)
+    )
+    Unit.observeForever(mockRecordProgressObserver)
   }
 
   private fun verifyRecordProgressSucceeded() {

@@ -28,6 +28,7 @@ import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -85,7 +86,7 @@ class ProfileTestHelperTest {
   @Test
   fun testInitializeProfiles_initializeProfiles_checkProfilesAreAddedAndCurrentIsSet() {
     profileTestHelper.initializeProfiles().observeForever(mockUpdateResultObserver)
-    profileManagementController.getProfiles().observeForever(mockProfilesObserver)
+    profileManagementController.getProfiles().toLiveData().observeForever(mockProfilesObserver)
     testCoroutineDispatchers.runCurrent()
 
     verify(mockProfilesObserver, atLeastOnce()).onChanged(profilesResultCaptor.capture())
@@ -103,7 +104,7 @@ class ProfileTestHelperTest {
   @Test
   fun testInitializeProfiles_addOnlyAdminProfile_checkProfileIsAddedAndCurrentIsSet() {
     profileTestHelper.addOnlyAdminProfile().observeForever(mockUpdateResultObserver)
-    profileManagementController.getProfiles().observeForever(mockProfilesObserver)
+    profileManagementController.getProfiles().toLiveData().observeForever(mockProfilesObserver)
     testCoroutineDispatchers.runCurrent()
 
     verify(mockProfilesObserver, atLeastOnce()).onChanged(profilesResultCaptor.capture())
@@ -121,7 +122,7 @@ class ProfileTestHelperTest {
   fun testAddMoreProfiles_addMoreProfiles_checkProfilesAreAdded() {
     profileTestHelper.addMoreProfiles(10)
     testCoroutineDispatchers.runCurrent()
-    profileManagementController.getProfiles().observeForever(mockProfilesObserver)
+    profileManagementController.getProfiles().toLiveData().observeForever(mockProfilesObserver)
     testCoroutineDispatchers.runCurrent()
 
     verify(mockProfilesObserver, atLeastOnce()).onChanged(profilesResultCaptor.capture())

@@ -12,6 +12,7 @@ import org.oppia.app.databinding.ProfileEditActivityBinding
 import org.oppia.app.model.ProfileId
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.ConsoleLogger
 import javax.inject.Inject
 
@@ -68,7 +69,7 @@ class ProfileEditActivityPresenter @Inject constructor(
         profileManagementController.updateAllowDownloadAccess(
           ProfileId.newBuilder().setInternalId(profileId).build(),
           checked
-        ).observe(
+        ).toLiveData().observe(
           activity,
           Observer {
             if (it.isFailure()) {
@@ -97,7 +98,7 @@ class ProfileEditActivityPresenter @Inject constructor(
       }
       .setPositiveButton(R.string.profile_edit_delete_dialog_positive) { dialog, _ ->
         profileManagementController
-          .deleteProfile(ProfileId.newBuilder().setInternalId(profileId).build())
+          .deleteProfile(ProfileId.newBuilder().setInternalId(profileId).build()).toLiveData()
           .observe(
             activity,
             Observer {

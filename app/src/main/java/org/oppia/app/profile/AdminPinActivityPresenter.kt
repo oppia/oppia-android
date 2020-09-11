@@ -15,6 +15,7 @@ import org.oppia.app.databinding.AdminPinActivityBinding
 import org.oppia.app.model.ProfileId
 import org.oppia.app.viewmodel.ViewModelProvider
 import org.oppia.domain.profile.ProfileManagementController
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
 /** The presenter for [AdminPinActivity]. */
@@ -109,7 +110,7 @@ class AdminPinActivityPresenter @Inject constructor(
           .setInternalId(activity.intent.getIntExtra(KEY_ADMIN_PIN_PROFILE_ID, -1))
           .build()
 
-      profileManagementController.updatePin(profileId, inputPin).observe(
+      profileManagementController.updatePin(profileId, inputPin).toLiveData().observe(
         activity,
         Observer {
           if (it.isSuccess()) {

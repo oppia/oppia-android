@@ -34,6 +34,7 @@ import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.testing.profile.ProfileTestHelper
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -125,7 +126,7 @@ class ProfileManagementControllerTest {
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = true
-    ).observeForever(mockUpdateResultObserver)
+    ).toLiveData().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
     val profileDatabase = readProfileDatabase()
@@ -154,7 +155,7 @@ class ProfileManagementControllerTest {
       allowDownloadAccess = false,
       colorRgb = -10710042,
       isAdmin = true
-    ).observeForever(mockUpdateResultObserver)
+    ).toLiveData().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyUpdateFailed()
@@ -174,7 +175,7 @@ class ProfileManagementControllerTest {
       allowDownloadAccess = false,
       colorRgb = -10710042,
       isAdmin = true
-    ).observeForever(mockUpdateResultObserver)
+    ).toLiveData().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyUpdateFailed()
@@ -188,6 +189,7 @@ class ProfileManagementControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     profileManagementController.getProfile(ProfileId.newBuilder().setInternalId(3).build())
+      .toLiveData()
       .observeForever(mockProfileObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -207,7 +209,7 @@ class ProfileManagementControllerTest {
     addTestProfiles()
     testCoroutineDispatchers.runCurrent()
 
-    profileManagementController.getProfiles().observeForever(mockProfilesObserver)
+    profileManagementController.getProfiles().toLiveData().observeForever(mockProfilesObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetMultipleProfilesSucceeded()
@@ -231,8 +233,8 @@ class ProfileManagementControllerTest {
       allowDownloadAccess = false,
       colorRgb = -10710042,
       isAdmin = false
-    )
-    profileManagementController.getProfiles().observeForever(mockProfilesObserver)
+    ).toLiveData()
+    profileManagementController.getProfiles().toLiveData().observeForever(mockProfilesObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetMultipleProfilesSucceeded()
@@ -249,9 +251,11 @@ class ProfileManagementControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val profileId = ProfileId.newBuilder().setInternalId(2).build()
-    profileManagementController.updateName(profileId, "John")
+    profileManagementController.updateName(profileId, "John").toLiveData()
       .observeForever(mockUpdateResultObserver)
-    profileManagementController.getProfile(profileId).observeForever(mockProfileObserver)
+    profileManagementController.getProfile(
+      profileId
+    ).toLiveData().observeForever(mockProfileObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyUpdateSucceeded()
@@ -265,7 +269,7 @@ class ProfileManagementControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val profileId = ProfileId.newBuilder().setInternalId(2).build()
-    profileManagementController.updateName(profileId, "James")
+    profileManagementController.updateName(profileId, "James").toLiveData()
       .observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -280,7 +284,7 @@ class ProfileManagementControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val profileId = ProfileId.newBuilder().setInternalId(6).build()
-    profileManagementController.updateName(profileId, "John")
+    profileManagementController.updateName(profileId, "John").toLiveData()
       .observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -300,9 +304,11 @@ class ProfileManagementControllerTest {
         profileId,
         /* avatarImagePath = */ null,
         colorRgb = -10710042
-      )
+      ).toLiveData()
       .observeForever(mockUpdateResultObserver)
-    profileManagementController.getProfile(profileId).observeForever(mockProfileObserver)
+    profileManagementController.getProfile(
+      profileId
+    ).toLiveData().observeForever(mockProfileObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyUpdateSucceeded()
@@ -317,9 +323,11 @@ class ProfileManagementControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val profileId = ProfileId.newBuilder().setInternalId(2).build()
-    profileManagementController.updatePin(profileId, "321")
+    profileManagementController.updatePin(profileId, "321").toLiveData()
       .observeForever(mockUpdateResultObserver)
-    profileManagementController.getProfile(profileId).observeForever(mockProfileObserver)
+    profileManagementController.getProfile(
+      profileId
+    ).toLiveData().observeForever(mockProfileObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyUpdateSucceeded()
@@ -333,7 +341,7 @@ class ProfileManagementControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val profileId = ProfileId.newBuilder().setInternalId(6).build()
-    profileManagementController.updatePin(profileId, "321")
+    profileManagementController.updatePin(profileId, "321").toLiveData()
       .observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -348,9 +356,11 @@ class ProfileManagementControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val profileId = ProfileId.newBuilder().setInternalId(2).build()
-    profileManagementController.updateAllowDownloadAccess(profileId, false)
+    profileManagementController.updateAllowDownloadAccess(profileId, false).toLiveData()
       .observeForever(mockUpdateResultObserver)
-    profileManagementController.getProfile(profileId).observeForever(mockProfileObserver)
+    profileManagementController.getProfile(
+      profileId
+    ).toLiveData().observeForever(mockProfileObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyUpdateSucceeded()
@@ -365,7 +375,7 @@ class ProfileManagementControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val profileId = ProfileId.newBuilder().setInternalId(6).build()
-    profileManagementController.updateAllowDownloadAccess(profileId, false)
+    profileManagementController.updateAllowDownloadAccess(profileId, false).toLiveData()
       .observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -381,8 +391,11 @@ class ProfileManagementControllerTest {
 
     val profileId = ProfileId.newBuilder().setInternalId(2).build()
     profileManagementController.updateReadingTextSize(profileId, ReadingTextSize.MEDIUM_TEXT_SIZE)
+      .toLiveData()
       .observeForever(mockUpdateResultObserver)
-    profileManagementController.getProfile(profileId).observeForever(mockProfileObserver)
+    profileManagementController.getProfile(
+      profileId
+    ).toLiveData().observeForever(mockProfileObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyUpdateSucceeded()
@@ -398,8 +411,11 @@ class ProfileManagementControllerTest {
 
     val profileId = ProfileId.newBuilder().setInternalId(2).build()
     profileManagementController.updateAppLanguage(profileId, AppLanguage.CHINESE_APP_LANGUAGE)
+      .toLiveData()
       .observeForever(mockUpdateResultObserver)
-    profileManagementController.getProfile(profileId).observeForever(mockProfileObserver)
+    profileManagementController.getProfile(
+      profileId
+    ).toLiveData().observeForever(mockProfileObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyUpdateSucceeded()
@@ -415,9 +431,11 @@ class ProfileManagementControllerTest {
 
     val profileId = ProfileId.newBuilder().setInternalId(2).build()
     profileManagementController
-      .updateAudioLanguage(profileId, AudioLanguage.FRENCH_AUDIO_LANGUAGE)
+      .updateAudioLanguage(profileId, AudioLanguage.FRENCH_AUDIO_LANGUAGE).toLiveData()
       .observeForever(mockUpdateResultObserver)
-    profileManagementController.getProfile(profileId).observeForever(mockProfileObserver)
+    profileManagementController.getProfile(
+      profileId
+    ).toLiveData().observeForever(mockProfileObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyUpdateSucceeded()
@@ -432,8 +450,12 @@ class ProfileManagementControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val profileId = ProfileId.newBuilder().setInternalId(2).build()
-    profileManagementController.deleteProfile(profileId).observeForever(mockUpdateResultObserver)
-    profileManagementController.getProfile(profileId).observeForever(mockProfileObserver)
+    profileManagementController.deleteProfile(
+      profileId
+    ).toLiveData().observeForever(mockUpdateResultObserver)
+    profileManagementController.getProfile(
+      profileId
+    ).toLiveData().observeForever(mockProfileObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyUpdateSucceeded()
@@ -449,8 +471,8 @@ class ProfileManagementControllerTest {
 
     val profileId3 = ProfileId.newBuilder().setInternalId(3).build()
     val profileId4 = ProfileId.newBuilder().setInternalId(4).build()
-    profileManagementController.deleteProfile(profileId3)
-    profileManagementController.deleteProfile(profileId4)
+    profileManagementController.deleteProfile(profileId3).toLiveData()
+    profileManagementController.deleteProfile(profileId4).toLiveData()
     profileManagementController.addProfile(
       name = "John",
       pin = "321",
@@ -458,8 +480,8 @@ class ProfileManagementControllerTest {
       allowDownloadAccess = false,
       colorRgb = -10710042,
       isAdmin = true
-    )
-    profileManagementController.getProfiles().observeForever(mockProfilesObserver)
+    ).toLiveData()
+    profileManagementController.getProfiles().toLiveData().observeForever(mockProfilesObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetMultipleProfilesSucceeded()
@@ -482,12 +504,12 @@ class ProfileManagementControllerTest {
     val profileId1 = ProfileId.newBuilder().setInternalId(1).build()
     val profileId2 = ProfileId.newBuilder().setInternalId(2).build()
     val profileId3 = ProfileId.newBuilder().setInternalId(3).build()
-    profileManagementController.deleteProfile(profileId1)
-    profileManagementController.deleteProfile(profileId2)
-    profileManagementController.deleteProfile(profileId3)
+    profileManagementController.deleteProfile(profileId1).toLiveData()
+    profileManagementController.deleteProfile(profileId2).toLiveData()
+    profileManagementController.deleteProfile(profileId3).toLiveData()
     testCoroutineDispatchers.runCurrent()
     setUpTestApplicationComponent()
-    profileManagementController.getProfiles().observeForever(mockProfilesObserver)
+    profileManagementController.getProfiles().toLiveData().observeForever(mockProfilesObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetMultipleProfilesSucceeded()
@@ -506,8 +528,12 @@ class ProfileManagementControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val profileId = ProfileId.newBuilder().setInternalId(2).build()
-    profileManagementController.loginToProfile(profileId).observeForever(mockUpdateResultObserver)
-    profileManagementController.getProfile(profileId).observeForever(mockProfileObserver)
+    profileManagementController.loginToProfile(
+      profileId
+    ).toLiveData().observeForever(mockUpdateResultObserver)
+    profileManagementController.getProfile(
+      profileId
+    ).toLiveData().observeForever(mockProfileObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyUpdateSucceeded()
@@ -524,7 +550,9 @@ class ProfileManagementControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val profileId = ProfileId.newBuilder().setInternalId(6).build()
-    profileManagementController.loginToProfile(profileId).observeForever(mockUpdateResultObserver)
+    profileManagementController.loginToProfile(
+      profileId
+    ).toLiveData().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyUpdateFailed()
@@ -544,7 +572,7 @@ class ProfileManagementControllerTest {
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = true
-    ).observeForever(mockUpdateResultObserver)
+    ).toLiveData().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
     val profileDatabase = readProfileDatabase()
@@ -562,10 +590,10 @@ class ProfileManagementControllerTest {
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = true
-    ).observeForever(mockUpdateResultObserver)
+    ).toLiveData().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
-    profileManagementController.getWasProfileEverAdded()
+    profileManagementController.getWasProfileEverAdded().toLiveData()
       .observeForever(mockWasProfileAddedResultObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -583,7 +611,7 @@ class ProfileManagementControllerTest {
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = true
-    ).observeForever(mockUpdateResultObserver)
+    ).toLiveData().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
     profileManagementController.addProfile(
@@ -593,7 +621,7 @@ class ProfileManagementControllerTest {
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = false
-    ).observeForever(mockUpdateResultObserver)
+    ).toLiveData().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
     val profileDatabase = readProfileDatabase()
@@ -612,7 +640,7 @@ class ProfileManagementControllerTest {
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = true
-    ).observeForever(mockUpdateResultObserver)
+    ).toLiveData().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
     profileManagementController.addProfile(
@@ -622,10 +650,10 @@ class ProfileManagementControllerTest {
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = false
-    ).observeForever(mockUpdateResultObserver)
+    ).toLiveData().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
-    profileManagementController.getWasProfileEverAdded()
+    profileManagementController.getWasProfileEverAdded().toLiveData()
       .observeForever(mockWasProfileAddedResultObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -644,7 +672,7 @@ class ProfileManagementControllerTest {
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = true
-    ).observeForever(mockUpdateResultObserver)
+    ).toLiveData().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
     profileManagementController.addProfile(
@@ -654,11 +682,11 @@ class ProfileManagementControllerTest {
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = false
-    ).observeForever(mockUpdateResultObserver)
+    ).toLiveData().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
     val profileId1 = ProfileId.newBuilder().setInternalId(1).build()
-    profileManagementController.deleteProfile(profileId1)
+    profileManagementController.deleteProfile(profileId1).toLiveData()
     testCoroutineDispatchers.runCurrent()
 
     val profileDatabase = readProfileDatabase()
@@ -676,7 +704,7 @@ class ProfileManagementControllerTest {
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = true
-    ).observeForever(mockUpdateResultObserver)
+    ).toLiveData().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
     profileManagementController.addProfile(
@@ -686,14 +714,14 @@ class ProfileManagementControllerTest {
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = false
-    ).observeForever(mockUpdateResultObserver)
+    ).toLiveData().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
     val profileId1 = ProfileId.newBuilder().setInternalId(1).build()
-    profileManagementController.deleteProfile(profileId1)
+    profileManagementController.deleteProfile(profileId1).toLiveData()
     testCoroutineDispatchers.runCurrent()
 
-    profileManagementController.getWasProfileEverAdded()
+    profileManagementController.getWasProfileEverAdded().toLiveData()
       .observeForever(mockWasProfileAddedResultObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -711,10 +739,12 @@ class ProfileManagementControllerTest {
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = true
-    ).observeForever(mockUpdateResultObserver)
+    ).toLiveData().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
-    profileManagementController.getDeviceSettings().observeForever(mockDeviceSettingsObserver)
+    profileManagementController.getDeviceSettings()
+      .toLiveData()
+      .observeForever(mockDeviceSettingsObserver)
     testCoroutineDispatchers.runCurrent()
     verifyGetDeviceSettingsSucceeded()
 
@@ -732,19 +762,21 @@ class ProfileManagementControllerTest {
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = true
-    ).observeForever(mockUpdateResultObserver)
+    ).toLiveData().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
     val adminProfileId = ProfileId.newBuilder().setInternalId(0).build()
     profileManagementController.updateWifiPermissionDeviceSettings(
       adminProfileId,
       /* downloadAndUpdateOnWifiOnly = */ true
-    ).observeForever(mockUpdateResultObserver)
+    ).toLiveData().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyUpdateSucceeded()
 
-    profileManagementController.getDeviceSettings().observeForever(mockDeviceSettingsObserver)
+    profileManagementController.getDeviceSettings()
+      .toLiveData()
+      .observeForever(mockDeviceSettingsObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetDeviceSettingsSucceeded()
@@ -762,7 +794,7 @@ class ProfileManagementControllerTest {
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = true
-    ).observeForever(mockUpdateResultObserver)
+    ).toLiveData().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
     val adminProfileId = ProfileId.newBuilder().setInternalId(0).build()
@@ -770,13 +802,15 @@ class ProfileManagementControllerTest {
       .updateTopicAutomaticallyPermissionDeviceSettings(
         adminProfileId,
         /* automaticallyUpdateTopics = */ true
-      )
+      ).toLiveData()
       .observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyUpdateSucceeded()
 
-    profileManagementController.getDeviceSettings().observeForever(mockDeviceSettingsObserver)
+    profileManagementController.getDeviceSettings()
+      .toLiveData()
+      .observeForever(mockDeviceSettingsObserver)
     testCoroutineDispatchers.runCurrent()
 
     verify(
@@ -799,25 +833,27 @@ class ProfileManagementControllerTest {
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = true
-    ).observeForever(mockUpdateResultObserver)
+    ).toLiveData().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
     val adminProfileId = ProfileId.newBuilder().setInternalId(0).build()
     profileManagementController.updateWifiPermissionDeviceSettings(
       adminProfileId,
       /* downloadAndUpdateOnWifiOnly = */ true
-    ).observeForever(mockUpdateResultObserver)
+    ).toLiveData().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
     verifyUpdateSucceeded()
 
     profileManagementController.updateTopicAutomaticallyPermissionDeviceSettings(
       adminProfileId,
       /* automaticallyUpdateTopics = */ true
-    ).observeForever(mockUpdateResultObserver)
+    ).toLiveData().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
     verifyUpdateSucceeded()
 
-    profileManagementController.getDeviceSettings().observeForever(mockDeviceSettingsObserver)
+    profileManagementController.getDeviceSettings()
+      .toLiveData()
+      .observeForever(mockDeviceSettingsObserver)
     testCoroutineDispatchers.runCurrent()
     verifyGetDeviceSettingsSucceeded()
 
@@ -835,7 +871,7 @@ class ProfileManagementControllerTest {
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = true
-    ).observeForever(mockUpdateResultObserver)
+    ).toLiveData().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
     profileManagementController.addProfile(
@@ -845,14 +881,14 @@ class ProfileManagementControllerTest {
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = false
-    ).observeForever(mockUpdateResultObserver)
+    ).toLiveData().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
     val userProfileId = ProfileId.newBuilder().setInternalId(1).build()
     profileManagementController.updateWifiPermissionDeviceSettings(
       userProfileId,
       /* downloadAndUpdateOnWifiOnly = */ true
-    ).observeForever(mockUpdateResultObserver)
+    ).toLiveData().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
     verifyUpdateFailed()
   }
@@ -866,7 +902,7 @@ class ProfileManagementControllerTest {
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = true
-    ).observeForever(mockUpdateResultObserver)
+    ).toLiveData().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
     profileManagementController.addProfile(
@@ -876,14 +912,14 @@ class ProfileManagementControllerTest {
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = false
-    ).observeForever(mockUpdateResultObserver)
+    ).toLiveData().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
     val userProfileId = ProfileId.newBuilder().setInternalId(1).build()
     profileManagementController.updateTopicAutomaticallyPermissionDeviceSettings(
       userProfileId,
       /* automaticallyUpdateTopics = */ true
-    ).observeForever(mockUpdateResultObserver)
+    ).toLiveData().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
     verifyUpdateFailed()
   }
@@ -933,7 +969,7 @@ class ProfileManagementControllerTest {
         allowDownloadAccess = it.allowDownloadAccess,
         colorRgb = -10710042,
         isAdmin = false
-      )
+      ).toLiveData()
     }
   }
 

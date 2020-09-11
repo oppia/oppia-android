@@ -49,6 +49,7 @@ import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -98,7 +99,7 @@ class ExplorationDataControllerTest {
   @Test
   fun testController_providesInitialLiveDataForTheWelcomeExploration() {
     val explorationLiveData =
-      explorationDataController.getExplorationById(TEST_EXPLORATION_ID_0)
+      explorationDataController.getExplorationById(TEST_EXPLORATION_ID_0).toLiveData()
     explorationLiveData.observeForever(mockExplorationObserver)
     testCoroutineDispatchers.runCurrent()
     val expectedExplorationStateSet = listOf(
@@ -119,7 +120,7 @@ class ExplorationDataControllerTest {
   @Test
   fun testController_providesInitialLiveDataForTheAboutOppiaExploration() {
     val explorationLiveData =
-      explorationDataController.getExplorationById(TEST_EXPLORATION_ID_1)
+      explorationDataController.getExplorationById(TEST_EXPLORATION_ID_1).toLiveData()
     explorationLiveData.observeForever(mockExplorationObserver)
     testCoroutineDispatchers.runCurrent()
     val expectedExplorationStateSet = listOf(
@@ -140,7 +141,7 @@ class ExplorationDataControllerTest {
   @Test
   fun testController_providesInitialLiveDataForFractions0Exploration() {
     val explorationLiveData =
-      explorationDataController.getExplorationById(FRACTIONS_EXPLORATION_ID_0)
+      explorationDataController.getExplorationById(FRACTIONS_EXPLORATION_ID_0).toLiveData()
     explorationLiveData.observeForever(mockExplorationObserver)
     testCoroutineDispatchers.runCurrent()
     verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
@@ -156,7 +157,7 @@ class ExplorationDataControllerTest {
   @Test
   fun testController_providesInitialLiveDataForFractions1Exploration() {
     val explorationLiveData =
-      explorationDataController.getExplorationById(FRACTIONS_EXPLORATION_ID_1)
+      explorationDataController.getExplorationById(FRACTIONS_EXPLORATION_ID_1).toLiveData()
     explorationLiveData.observeForever(mockExplorationObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -172,7 +173,7 @@ class ExplorationDataControllerTest {
   @Test
   fun testController_providesInitialLiveDataForRatios0Exploration() {
     val explorationLiveData =
-      explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_0)
+      explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_0).toLiveData()
     explorationLiveData.observeForever(mockExplorationObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -188,7 +189,7 @@ class ExplorationDataControllerTest {
   @Test
   fun testController_providesInitialLiveDataForRatios1Exploration() {
     val explorationLiveData =
-      explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_1)
+      explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_1).toLiveData()
     explorationLiveData.observeForever(mockExplorationObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -204,7 +205,7 @@ class ExplorationDataControllerTest {
   @Test
   fun testController_providesInitialLiveDataForRatios2Exploration() {
     val explorationLiveData =
-      explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_2)
+      explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_2).toLiveData()
     explorationLiveData.observeForever(mockExplorationObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -220,7 +221,7 @@ class ExplorationDataControllerTest {
   @Test
   fun testController_providesInitialLiveDataForRatios3Exploration() {
     val explorationLiveData =
-      explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_3)
+      explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_3).toLiveData()
     explorationLiveData.observeForever(mockExplorationObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -236,7 +237,7 @@ class ExplorationDataControllerTest {
   @Test
   fun testController_returnsNullForNonExistentExploration() {
     val explorationLiveData =
-      explorationDataController.getExplorationById("NON_EXISTENT_TEST")
+      explorationDataController.getExplorationById("NON_EXISTENT_TEST").toLiveData()
     explorationLiveData.observeForever(mockExplorationObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -248,7 +249,7 @@ class ExplorationDataControllerTest {
   @Test
   fun testController_returnsNull_logsException() {
     val explorationLiveData =
-      explorationDataController.getExplorationById("NON_EXISTENT_TEST")
+      explorationDataController.getExplorationById("NON_EXISTENT_TEST").toLiveData()
     explorationLiveData.observeForever(mockExplorationObserver)
     testCoroutineDispatchers.runCurrent()
 

@@ -13,6 +13,7 @@ import org.oppia.app.model.ProfileAvatar
 import org.oppia.app.model.ProfileId
 import org.oppia.domain.profile.ProfileManagementController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.ConsoleLogger
 import org.oppia.util.statusbar.StatusBarColor
 import javax.inject.Inject
@@ -51,7 +52,7 @@ class ProfilePictureActivityPresenter @Inject constructor(
 
   private fun getProfileData(): LiveData<Profile> {
     return Transformations.map(
-      profileManagementController.getProfile(profileId),
+      profileManagementController.getProfile(profileId).toLiveData(),
       ::processGetProfileResult
     )
   }

@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import org.oppia.app.model.Exploration
 import org.oppia.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProvider
 import org.oppia.util.data.DataProviders
 import org.oppia.util.system.OppiaClock
 import javax.inject.Inject
@@ -25,13 +26,12 @@ class ExplorationDataController @Inject constructor(
   private val oppiaClock: OppiaClock
 ) {
   /** Returns an [Exploration] given an ID. */
-  fun getExplorationById(id: String): LiveData<AsyncResult<Exploration>> {
-    val dataProvider = dataProviders.createInMemoryDataProviderAsync(
+  fun getExplorationById(id: String): DataProvider<Exploration> {
+    return dataProviders.createInMemoryDataProviderAsync(
       EXPLORATION_DATA_PROVIDER_ID
     ) {
       retrieveExplorationById(id)
     }
-    return dataProviders.convertToLiveData(dataProvider)
   }
 
   /**

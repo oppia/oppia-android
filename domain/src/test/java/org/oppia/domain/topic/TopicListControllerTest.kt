@@ -32,6 +32,7 @@ import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -229,7 +230,7 @@ class TopicListControllerTest {
 
   @Test
   fun testRetrieveOngoingStoryList_defaultLesson_hasCorrectInfo() {
-    topicListController.getOngoingStoryList(profileId0)
+    topicListController.getOngoingStoryList(profileId0).toLiveData()
       .observeForever(mockOngoingStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -249,7 +250,7 @@ class TopicListControllerTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId0)
+    topicListController.getOngoingStoryList(profileId0).toLiveData()
       .observeForever(mockOngoingStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -271,7 +272,7 @@ class TopicListControllerTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId0)
+    topicListController.getOngoingStoryList(profileId0).toLiveData()
       .observeForever(mockOngoingStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -302,7 +303,7 @@ class TopicListControllerTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId0)
+    topicListController.getOngoingStoryList(profileId0).toLiveData()
       .observeForever(mockOngoingStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -334,7 +335,7 @@ class TopicListControllerTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId0)
+    topicListController.getOngoingStoryList(profileId0).toLiveData()
       .observeForever(mockOngoingStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -365,7 +366,7 @@ class TopicListControllerTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId0)
+    topicListController.getOngoingStoryList(profileId0).toLiveData()
       .observeForever(mockOngoingStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -397,7 +398,7 @@ class TopicListControllerTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId0)
+    topicListController.getOngoingStoryList(profileId0).toLiveData()
       .observeForever(mockOngoingStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -438,7 +439,7 @@ class TopicListControllerTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId0)
+    topicListController.getOngoingStoryList(profileId0).toLiveData()
       .observeForever(mockOngoingStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -480,7 +481,7 @@ class TopicListControllerTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId0)
+    topicListController.getOngoingStoryList(profileId0).toLiveData()
       .observeForever(mockOngoingStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 

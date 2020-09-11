@@ -36,6 +36,7 @@ import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -103,7 +104,7 @@ class AppStartupStateControllerTest {
 
   @Test
   fun testController_providesInitialLiveData_indicatesUserHasNotOnboardedTheApp() {
-    val appStartupState = appStartupStateController.getAppStartupState()
+    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
     appStartupState.observeForever(mockOnboardingObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -114,7 +115,7 @@ class AppStartupStateControllerTest {
 
   @Test
   fun testControllerObserver_observedAfterSettingAppOnboarded_providesLiveData_userDidNotOnboardApp() { // ktlint-disable max-line-length
-    val appStartupState = appStartupStateController.getAppStartupState()
+    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
 
     appStartupState.observeForever(mockOnboardingObserver)
     appStartupStateController.markOnboardingFlowCompleted()
@@ -135,7 +136,7 @@ class AppStartupStateControllerTest {
     // Create the controller by creating another singleton graph and injecting it (simulating the
     // app being recreated).
     simulateAppRestart()
-    val appStartupState = appStartupStateController.getAppStartupState()
+    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
     appStartupState.observeForever(mockOnboardingObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -160,7 +161,7 @@ class AppStartupStateControllerTest {
     testCoroutineDispatchers.runCurrent()
     simulateAppRestart()
 
-    val appStartupState = appStartupStateController.getAppStartupState()
+    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
     appStartupState.observeForever(mockOnboardingObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -174,7 +175,7 @@ class AppStartupStateControllerTest {
   fun testInitialAppOpen_appDeprecationEnabled_beforeDeprecationDate_appNotDeprecated() {
     setUpOppiaApplication(expirationEnabled = true, expDate = dateStringAfterToday())
 
-    val appStartupState = appStartupStateController.getAppStartupState()
+    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
     appStartupState.observeForever(mockOnboardingObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -187,7 +188,7 @@ class AppStartupStateControllerTest {
   fun testInitialAppOpen_appDeprecationEnabled_onDeprecationDate_appIsDeprecated() {
     setUpOppiaApplication(expirationEnabled = true, expDate = dateStringForToday())
 
-    val appStartupState = appStartupStateController.getAppStartupState()
+    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
     appStartupState.observeForever(mockOnboardingObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -200,7 +201,7 @@ class AppStartupStateControllerTest {
   fun testInitialAppOpen_appDeprecationEnabled_afterDeprecationDate_appIsDeprecated() {
     setUpOppiaApplication(expirationEnabled = true, expDate = dateStringBeforeToday())
 
-    val appStartupState = appStartupStateController.getAppStartupState()
+    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
     appStartupState.observeForever(mockOnboardingObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -213,7 +214,7 @@ class AppStartupStateControllerTest {
   fun testInitialAppOpen_appDeprecationDisabled_afterDeprecationDate_appIsNotDeprecated() {
     setUpOppiaApplication(expirationEnabled = false, expDate = dateStringBeforeToday())
 
-    val appStartupState = appStartupStateController.getAppStartupState()
+    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
     appStartupState.observeForever(mockOnboardingObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -227,7 +228,7 @@ class AppStartupStateControllerTest {
     setUpOppiaApplication(expirationEnabled = true, expDate = dateStringAfterToday())
     simulateAppRestart()
 
-    val appStartupState = appStartupStateController.getAppStartupState()
+    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
     appStartupState.observeForever(mockOnboardingObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -241,7 +242,7 @@ class AppStartupStateControllerTest {
     setUpOppiaApplication(expirationEnabled = true, expDate = dateStringBeforeToday())
     simulateAppRestart()
 
-    val appStartupState = appStartupStateController.getAppStartupState()
+    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
     appStartupState.observeForever(mockOnboardingObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -257,7 +258,7 @@ class AppStartupStateControllerTest {
     testCoroutineDispatchers.runCurrent()
     simulateAppRestart()
 
-    val appStartupState = appStartupStateController.getAppStartupState()
+    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
     appStartupState.observeForever(mockOnboardingObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -274,7 +275,7 @@ class AppStartupStateControllerTest {
     testCoroutineDispatchers.runCurrent()
     simulateAppRestart()
 
-    val appStartupState = appStartupStateController.getAppStartupState()
+    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
     appStartupState.observeForever(mockOnboardingObserver)
     testCoroutineDispatchers.runCurrent()
 

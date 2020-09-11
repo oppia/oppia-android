@@ -33,6 +33,7 @@ import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -582,7 +583,7 @@ class PersistentCacheStoreTest {
     cacheStore: PersistentCacheStore<T>,
     observer: Observer<AsyncResult<T>>
   ) {
-    dataProviders.convertToLiveData(cacheStore).observeForever(observer)
+    cacheStore.toLiveData().observeForever(observer)
     testCoroutineDispatchers.advanceUntilIdle()
   }
 

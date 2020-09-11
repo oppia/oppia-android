@@ -29,6 +29,7 @@ import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -87,7 +88,7 @@ class UncaughtExceptionLoggerStartupListenerTest {
     )
 
     val cachedExceptions = exceptionsController.getExceptionLogStore()
-    dataProviders.convertToLiveData(cachedExceptions).observeForever(mockOppiaExceptionLogsObserver)
+    cachedExceptions.toLiveData().observeForever(mockOppiaExceptionLogsObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockOppiaExceptionLogsObserver, atLeastOnce())

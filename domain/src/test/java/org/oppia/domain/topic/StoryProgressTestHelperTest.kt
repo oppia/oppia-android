@@ -34,6 +34,7 @@ import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -123,7 +124,9 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getTopic(profileId, FRACTIONS_TOPIC_ID).observeForever(mockTopicObserver)
+    topicController.getTopic(
+      profileId, FRACTIONS_TOPIC_ID
+    ).toLiveData().observeForever(mockTopicObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetTopicSucceeded()
@@ -144,7 +147,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getStory(profileId, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0)
+    topicController.getStory(profileId, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -166,7 +169,9 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getOngoingTopicList(profileId).observeForever(mockOngoingTopicListObserver)
+    topicController.getOngoingTopicList(
+      profileId
+    ).toLiveData().observeForever(mockOngoingTopicListObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetOngoingTopicListSucceeded()
@@ -184,7 +189,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getCompletedStoryList(profileId)
+    topicController.getCompletedStoryList(profileId).toLiveData()
       .observeForever(mockCompletedStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -202,7 +207,9 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getTopic(profileId, FRACTIONS_TOPIC_ID).observeForever(mockTopicObserver)
+    topicController.getTopic(
+      profileId, FRACTIONS_TOPIC_ID
+    ).toLiveData().observeForever(mockTopicObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetTopicSucceeded()
@@ -223,7 +230,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getStory(profileId, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0)
+    topicController.getStory(profileId, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -245,7 +252,9 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getOngoingTopicList(profileId).observeForever(mockOngoingTopicListObserver)
+    topicController.getOngoingTopicList(
+      profileId
+    ).toLiveData().observeForever(mockOngoingTopicListObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetOngoingTopicListSucceeded()
@@ -263,7 +272,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getCompletedStoryList(profileId)
+    topicController.getCompletedStoryList(profileId).toLiveData()
       .observeForever(mockCompletedStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -281,7 +290,9 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getTopic(profileId, FRACTIONS_TOPIC_ID).observeForever(mockTopicObserver)
+    topicController.getTopic(
+      profileId, FRACTIONS_TOPIC_ID
+    ).toLiveData().observeForever(mockTopicObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetTopicSucceeded()
@@ -302,7 +313,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getStory(profileId, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0)
+    topicController.getStory(profileId, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -322,7 +333,9 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getOngoingTopicList(profileId).observeForever(mockOngoingTopicListObserver)
+    topicController.getOngoingTopicList(
+      profileId
+    ).toLiveData().observeForever(mockOngoingTopicListObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetOngoingTopicListSucceeded()
@@ -339,7 +352,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getCompletedStoryList(profileId)
+    topicController.getCompletedStoryList(profileId).toLiveData()
       .observeForever(mockCompletedStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -358,7 +371,9 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getTopic(profileId, FRACTIONS_TOPIC_ID).observeForever(mockTopicObserver)
+    topicController.getTopic(
+      profileId, FRACTIONS_TOPIC_ID
+    ).toLiveData().observeForever(mockTopicObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetTopicSucceeded()
@@ -379,7 +394,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getStory(profileId, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0)
+    topicController.getStory(profileId, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -399,7 +414,9 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getOngoingTopicList(profileId).observeForever(mockOngoingTopicListObserver)
+    topicController.getOngoingTopicList(
+      profileId
+    ).toLiveData().observeForever(mockOngoingTopicListObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetOngoingTopicListSucceeded()
@@ -416,7 +433,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getCompletedStoryList(profileId)
+    topicController.getCompletedStoryList(profileId).toLiveData()
       .observeForever(mockCompletedStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -435,7 +452,9 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getTopic(profileId, RATIOS_TOPIC_ID).observeForever(mockTopicObserver)
+    topicController.getTopic(
+      profileId, RATIOS_TOPIC_ID
+    ).toLiveData().observeForever(mockTopicObserver)
 
     testCoroutineDispatchers.runCurrent()
 
@@ -461,7 +480,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getStory(profileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)
+    topicController.getStory(profileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -481,7 +500,9 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getOngoingTopicList(profileId).observeForever(mockOngoingTopicListObserver)
+    topicController.getOngoingTopicList(
+      profileId
+    ).toLiveData().observeForever(mockOngoingTopicListObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetOngoingTopicListSucceeded()
@@ -499,7 +520,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getCompletedStoryList(profileId)
+    topicController.getCompletedStoryList(profileId).toLiveData()
       .observeForever(mockCompletedStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -518,7 +539,9 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getTopic(profileId, RATIOS_TOPIC_ID).observeForever(mockTopicObserver)
+    topicController.getTopic(
+      profileId, RATIOS_TOPIC_ID
+    ).toLiveData().observeForever(mockTopicObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetTopicSucceeded()
@@ -543,7 +566,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getStory(profileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)
+    topicController.getStory(profileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0).toLiveData()
       .observeForever(mockStorySummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -566,7 +589,9 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getOngoingTopicList(profileId).observeForever(mockOngoingTopicListObserver)
+    topicController.getOngoingTopicList(
+      profileId
+    ).toLiveData().observeForever(mockOngoingTopicListObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyGetOngoingTopicListSucceeded()
@@ -584,7 +609,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicController.getCompletedStoryList(profileId)
+    topicController.getCompletedStoryList(profileId).toLiveData()
       .observeForever(mockCompletedStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -602,7 +627,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId)
+    topicListController.getOngoingStoryList(profileId).toLiveData()
       .observeForever(mockOngoingStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -625,7 +650,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId)
+    topicListController.getOngoingStoryList(profileId).toLiveData()
       .observeForever(mockOngoingStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -648,7 +673,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId)
+    topicListController.getOngoingStoryList(profileId).toLiveData()
       .observeForever(mockOngoingStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -676,7 +701,7 @@ class StoryProgressTestHelperTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    topicListController.getOngoingStoryList(profileId)
+    topicListController.getOngoingStoryList(profileId).toLiveData()
       .observeForever(mockOngoingStoryListObserver)
     testCoroutineDispatchers.runCurrent()
 
