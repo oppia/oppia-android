@@ -31,6 +31,8 @@ import org.oppia.app.model.EventLog.Context.ActivityContextCase.TOPIC_CONTEXT
 import org.oppia.app.model.EventLog.EventAction
 import org.oppia.app.model.EventLog.Priority
 import org.oppia.app.model.OppiaEventLogs
+import org.oppia.domain.onboarding.AppStartupStateControllerTest
+import org.oppia.domain.onboarding.DaggerAppStartupStateControllerTest_TestApplicationComponent
 import org.oppia.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.domain.oppialogger.OppiaLogger
 import org.oppia.testing.FakeEventLogger
@@ -40,6 +42,8 @@ import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
 import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.data.DataProvidersInjector
+import org.oppia.util.data.DataProvidersInjectorProvider
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -62,7 +66,7 @@ const val TEST_SUB_TOPIC_ID = 1
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
+@Config(application = AnalyticsControllerTest.TestApplication::class)
 class AnalyticsControllerTest {
 
   @Rule
@@ -552,10 +556,7 @@ class AnalyticsControllerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerAnalyticsControllerTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   private fun logMultipleEvents() {
@@ -645,7 +646,7 @@ class AnalyticsControllerTest {
 
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent: DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -654,5 +655,19 @@ class AnalyticsControllerTest {
     }
 
     fun inject(analyticsControllerTest: AnalyticsControllerTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerAnalyticsControllerTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(analyticsControllerTest: AnalyticsControllerTest) {
+      component.inject(analyticsControllerTest)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }

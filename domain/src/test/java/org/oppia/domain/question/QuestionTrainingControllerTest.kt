@@ -46,6 +46,8 @@ import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.data.DataProvidersInjector
+import org.oppia.util.data.DataProvidersInjectorProvider
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -58,7 +60,7 @@ import javax.inject.Singleton
 /** Tests for [QuestionTrainingController]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
+@Config(application = QuestionTrainingControllerTest.TestApplication::class)
 class QuestionTrainingControllerTest {
   @Rule
   @JvmField
@@ -95,10 +97,7 @@ class QuestionTrainingControllerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerQuestionTrainingControllerTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   @Test
@@ -296,7 +295,7 @@ class QuestionTrainingControllerTest {
       LogStorageModule::class, TestDispatcherModule::class, RatioInputModule::class
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent: DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -306,5 +305,19 @@ class QuestionTrainingControllerTest {
     }
 
     fun inject(questionTrainingControllerTest: QuestionTrainingControllerTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerQuestionTrainingControllerTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(questionTrainingControllerTest: QuestionTrainingControllerTest) {
+      component.inject(questionTrainingControllerTest)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }

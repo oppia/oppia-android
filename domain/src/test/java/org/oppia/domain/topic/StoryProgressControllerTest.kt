@@ -23,12 +23,17 @@ import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.app.model.ProfileId
 import org.oppia.domain.oppialogger.LogStorageModule
+import org.oppia.domain.question.DaggerQuestionTrainingControllerTest_TestApplicationComponent
+import org.oppia.domain.question.QuestionTrainingControllerTest
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.testing.profile.ProfileTestHelper
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.data.AsyncResult
+import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.data.DataProvidersInjector
+import org.oppia.util.data.DataProvidersInjectorProvider
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -42,7 +47,7 @@ import javax.inject.Singleton
 /** Tests for [StoryProgressController]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
+@Config(application = StoryProgressControllerTest.TestApplication::class)
 class StoryProgressControllerTest {
 
   @Rule
@@ -78,10 +83,7 @@ class StoryProgressControllerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerStoryProgressControllerTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   @Test
@@ -92,8 +94,7 @@ class StoryProgressControllerTest {
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
       timestamp
-    )
-    Unit.observeForever(mockRecordProgressObserver)
+    ).toLiveData().observeForever(mockRecordProgressObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyRecordProgressSucceeded()
@@ -107,8 +108,7 @@ class StoryProgressControllerTest {
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
       timestamp
-    )
-    Unit.observeForever(mockRecordProgressObserver)
+    ).toLiveData().observeForever(mockRecordProgressObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyRecordProgressSucceeded()
@@ -158,7 +158,7 @@ class StoryProgressControllerTest {
       TestDispatcherModule::class
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent: DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -168,5 +168,19 @@ class StoryProgressControllerTest {
     }
 
     fun inject(storyProgressControllerTest: StoryProgressControllerTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerStoryProgressControllerTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(storyProgressControllerTest: StoryProgressControllerTest) {
+      component.inject(storyProgressControllerTest)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }

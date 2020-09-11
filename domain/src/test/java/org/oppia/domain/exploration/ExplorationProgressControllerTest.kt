@@ -53,6 +53,8 @@ import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.data.DataProvidersInjector
+import org.oppia.util.data.DataProvidersInjectorProvider
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -70,7 +72,7 @@ private const val DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER = "Please continue."
 /** Tests for [ExplorationProgressController]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
+@Config(application = ExplorationProgressControllerTest.TestApplication::class)
 class ExplorationProgressControllerTest {
   // TODO(#114): Add much more thorough tests for the integration pathway.
 
@@ -1439,10 +1441,7 @@ class ExplorationProgressControllerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerExplorationProgressControllerTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   /**
@@ -1582,7 +1581,7 @@ class ExplorationProgressControllerTest {
       RatioInputModule::class
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent: DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -1592,5 +1591,19 @@ class ExplorationProgressControllerTest {
     }
 
     fun inject(explorationProgressControllerTest: ExplorationProgressControllerTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerExplorationProgressControllerTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(explorationProgressControllerTest: ExplorationProgressControllerTest) {
+      component.inject(explorationProgressControllerTest)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }

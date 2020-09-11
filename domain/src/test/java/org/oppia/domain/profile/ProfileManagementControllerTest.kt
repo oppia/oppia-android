@@ -29,12 +29,16 @@ import org.oppia.app.model.ProfileDatabase
 import org.oppia.app.model.ProfileId
 import org.oppia.app.model.ReadingTextSize
 import org.oppia.domain.oppialogger.LogStorageModule
+import org.oppia.domain.oppialogger.exceptions.DaggerUncaughtExceptionLoggerStartupListenerTest_TestApplicationComponent
+import org.oppia.domain.oppialogger.exceptions.UncaughtExceptionLoggerStartupListenerTest
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.testing.profile.ProfileTestHelper
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.data.DataProvidersInjector
+import org.oppia.util.data.DataProvidersInjectorProvider
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -49,7 +53,7 @@ import javax.inject.Singleton
 /** Tests for [ProfileManagementControllerTest]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
+@Config(application = ProfileManagementControllerTest.TestApplication::class)
 class ProfileManagementControllerTest {
   @Rule
   @JvmField
@@ -111,10 +115,7 @@ class ProfileManagementControllerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerProfileManagementControllerTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   @Test
@@ -1032,7 +1033,7 @@ class ProfileManagementControllerTest {
       TestDispatcherModule::class
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent: DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -1042,5 +1043,19 @@ class ProfileManagementControllerTest {
     }
 
     fun inject(profileManagementControllerTest: ProfileManagementControllerTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerProfileManagementControllerTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(profileManagementControllerTest: ProfileManagementControllerTest) {
+      component.inject(profileManagementControllerTest)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }

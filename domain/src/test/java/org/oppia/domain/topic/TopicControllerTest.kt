@@ -40,6 +40,8 @@ import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders
 import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.data.DataProvidersInjector
+import org.oppia.util.data.DataProvidersInjectorProvider
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -57,7 +59,7 @@ private const val INVALID_TOPIC_ID_1 = "INVALID_TOPIC_ID_1"
 /** Tests for [TopicController]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
+@Config(application = TopicControllerTest.TestApplication::class)
 class TopicControllerTest {
 
   @Inject
@@ -1137,10 +1139,7 @@ class TopicControllerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerTopicControllerTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   private fun markFractionsStory0Chapter0AsCompleted() {
@@ -1150,8 +1149,7 @@ class TopicControllerTest {
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
       currentTimestamp
-    )
-    Unit.observeForever(mockRecordProgressObserver)
+    ).toLiveData().observeForever(mockRecordProgressObserver)
   }
 
   private fun markFractionsStory0Chapter1AsCompleted() {
@@ -1161,8 +1159,7 @@ class TopicControllerTest {
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_1,
       currentTimestamp
-    )
-    Unit.observeForever(mockRecordProgressObserver)
+    ).toLiveData().observeForever(mockRecordProgressObserver)
   }
 
   private fun markRatiosStory0Chapter0AsCompleted() {
@@ -1172,8 +1169,7 @@ class TopicControllerTest {
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_0,
       currentTimestamp
-    )
-    Unit.observeForever(mockRecordProgressObserver)
+    ).toLiveData().observeForever(mockRecordProgressObserver)
   }
 
   private fun markRatiosStory0Chapter1AsCompleted() {
@@ -1183,8 +1179,7 @@ class TopicControllerTest {
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_1,
       currentTimestamp
-    )
-    Unit.observeForever(mockRecordProgressObserver)
+    ).toLiveData().observeForever(mockRecordProgressObserver)
   }
 
   private fun verifyRecordProgressSucceeded() {
@@ -1271,7 +1266,7 @@ class TopicControllerTest {
       TestDispatcherModule::class
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent: DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -1281,5 +1276,19 @@ class TopicControllerTest {
     }
 
     fun inject(topicControllerTest: TopicControllerTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerTopicControllerTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(topicControllerTest: TopicControllerTest) {
+      component.inject(topicControllerTest)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }

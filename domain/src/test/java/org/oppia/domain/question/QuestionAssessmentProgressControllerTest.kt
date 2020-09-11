@@ -43,6 +43,8 @@ import org.oppia.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.domain.oppialogger.LogStorageModule
+import org.oppia.domain.profile.DaggerProfileManagementControllerTest_TestApplicationComponent
+import org.oppia.domain.profile.ProfileManagementControllerTest
 import org.oppia.domain.topic.TEST_SKILL_ID_0
 import org.oppia.domain.topic.TEST_SKILL_ID_1
 import org.oppia.domain.topic.TEST_SKILL_ID_2
@@ -52,6 +54,8 @@ import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.data.DataProvidersInjector
+import org.oppia.util.data.DataProvidersInjectorProvider
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -64,7 +68,7 @@ import javax.inject.Singleton
 /** Tests for [QuestionAssessmentProgressController]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
+@Config(application = QuestionAssessmentProgressControllerTest.TestApplication::class)
 class QuestionAssessmentProgressControllerTest {
   private val TEST_SKILL_ID_LIST_012 =
     listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, TEST_SKILL_ID_2) // questions 0, 1, 2, 3, 4, 5
@@ -990,10 +994,7 @@ class QuestionAssessmentProgressControllerTest {
 
   private fun setUpTestApplicationWithSeed(questionSeed: Long) {
     TestQuestionModule.questionSeed = questionSeed
-    DaggerQuestionAssessmentProgressControllerTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   /**
@@ -1131,7 +1132,7 @@ class QuestionAssessmentProgressControllerTest {
       RatioInputModule::class
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent: DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -1140,6 +1141,20 @@ class QuestionAssessmentProgressControllerTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(questionAssessmentProgressControllerTest: QuestionAssessmentProgressControllerTest)
+    fun inject(controllerTest: QuestionAssessmentProgressControllerTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerQuestionAssessmentProgressControllerTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(controllerTest: QuestionAssessmentProgressControllerTest) {
+      component.inject(controllerTest)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }

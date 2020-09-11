@@ -37,6 +37,8 @@ import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.data.DataProvidersInjector
+import org.oppia.util.data.DataProvidersInjectorProvider
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -53,7 +55,7 @@ import javax.inject.Singleton
 
 /** Tests for [AppStartupStateController]. */
 @RunWith(AndroidJUnit4::class)
-@Config(manifest = Config.NONE)
+@Config(application = AppStartupStateControllerTest.TestApplication::class)
 class AppStartupStateControllerTest {
   @Rule
   @JvmField
@@ -92,10 +94,7 @@ class AppStartupStateControllerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerAppStartupStateControllerTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   private fun simulateAppRestart() {
@@ -361,7 +360,7 @@ class AppStartupStateControllerTest {
       ExpirationMetaDataRetrieverModule::class // Use real implementation to test closer to prod.
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent: DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -371,5 +370,19 @@ class AppStartupStateControllerTest {
     }
 
     fun inject(appStartupStateControllerTest: AppStartupStateControllerTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerAppStartupStateControllerTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(appStartupStateControllerTest: AppStartupStateControllerTest) {
+      component.inject(appStartupStateControllerTest)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }

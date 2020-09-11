@@ -35,6 +35,8 @@ import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.caching.CacheAssetsLocally
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.data.DataProvidersInjector
+import org.oppia.util.data.DataProvidersInjectorProvider
 import org.oppia.util.gcsresource.DefaultResourceBucketName
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
@@ -50,7 +52,7 @@ import javax.inject.Singleton
 /** Tests for [StoryProgressTestHelper]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
+@Config(application = StoryProgressTestHelperTest.TestApplication::class)
 class StoryProgressTestHelperTest {
   @Rule
   @JvmField
@@ -110,10 +112,7 @@ class StoryProgressTestHelperTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerStoryProgressTestHelperTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   @Test
@@ -819,7 +818,7 @@ class StoryProgressTestHelperTest {
       TestDispatcherModule::class
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent: DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -829,5 +828,19 @@ class StoryProgressTestHelperTest {
     }
 
     fun inject(storyProgressTestHelperTest: StoryProgressTestHelperTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerStoryProgressTestHelperTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(storyProgressTestHelperTest: StoryProgressTestHelperTest) {
+      component.inject(storyProgressTestHelperTest)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }

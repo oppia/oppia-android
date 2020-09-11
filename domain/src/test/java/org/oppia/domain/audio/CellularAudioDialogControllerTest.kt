@@ -27,6 +27,8 @@ import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.data.AsyncResult
 import org.oppia.util.data.DataProviders.Companion.toLiveData
+import org.oppia.util.data.DataProvidersInjector
+import org.oppia.util.data.DataProvidersInjectorProvider
 import org.oppia.util.logging.EnableConsoleLog
 import org.oppia.util.logging.EnableFileLog
 import org.oppia.util.logging.GlobalLogLevel
@@ -38,7 +40,7 @@ import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
+@Config(application = CellularAudioDialogControllerTest.TestApplication::class)
 class CellularAudioDialogControllerTest {
   @Rule
   @JvmField
@@ -62,10 +64,7 @@ class CellularAudioDialogControllerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerCellularAudioDialogControllerTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   @Test
@@ -178,7 +177,7 @@ class CellularAudioDialogControllerTest {
       TestLogReportingModule::class
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent: DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -187,5 +186,19 @@ class CellularAudioDialogControllerTest {
     }
 
     fun inject(cellularDataControllerTest: CellularAudioDialogControllerTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerCellularAudioDialogControllerTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(cellularDataControllerTest: CellularAudioDialogControllerTest) {
+      component.inject(cellularDataControllerTest)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }
