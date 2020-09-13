@@ -53,7 +53,7 @@ jobs:
        run: ./buf check lint --input=model/src/main/proto --input-config buf.yaml && echo "Protobuf lint check completed successfully"
 
     - name: Bazel lint check
-      run: sudo ./scripts/run-bazel-buildifier.sh
+      run: sudo sh ./scripts/run-bazel-buildifier.sh
 
   robolectric_tests:
     name: Robolectric Tests (Non-App Modules)
