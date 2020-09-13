@@ -1,5 +1,5 @@
 """
-Skylark rules (Macros) to setup the WORKSPACE in the Oppia-Android codebase.
+Starlark rules (Macros) to setup the WORKSPACE in the Oppia-Android codebase.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
