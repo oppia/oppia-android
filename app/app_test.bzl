@@ -1,5 +1,5 @@
 """
-App Module macro file
+Macros for app module tests.
 """
 
 load("//:oppia_android_test.bzl", "oppia_android_test")

@@ -1,5 +1,5 @@
 """
-Root leve macro file
+Skylark rules (Macros) to setup the WORKSPACE in the opensource bazel world.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")

@@ -1,5 +1,5 @@
 """
-App module macro file for resource
+Macros for app module resources tests.
 """
 
 def test_with_resources(name):

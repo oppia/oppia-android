@@ -1,5 +1,5 @@
 """
-Domain Module macro file
+Macros for domain module tests.
 """
 
 load("//:oppia_android_test.bzl", "oppia_android_test")

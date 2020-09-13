@@ -1,5 +1,5 @@
 """
-Model Module macro file
+Macros for model module tests.
 """
 
 load("@rules_proto//proto:defs.bzl", "proto_library")
