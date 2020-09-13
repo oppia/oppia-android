@@ -19,7 +19,7 @@ load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
 load("//app:app_test.bzl", "app_test")
 load("//app:test_with_resources.bzl", "test_with_resources")
 
-package(default_visibility = ["//utility:__subpackages__"])
+package(default_visibility = ["//src:__subpackages__"])
 
 # Source files for the annotations library. The files inside the annotations library are dependencies
 # for all other libraries in app module, except the listeners library.
