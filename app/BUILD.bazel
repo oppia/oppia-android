@@ -19,8 +19,6 @@ load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
 load("//app:app_test.bzl", "app_test")
 load("//app:test_with_resources.bzl", "test_with_resources")
 
-package(default_visibility = ["//src:__subpackages__"])
-
 # Source files for the annotations library. The files inside the annotations library are dependencies
 # for all other libraries in app module, except the listeners library.
 # Place your file here if:
@@ -1150,6 +1148,7 @@ crashlytics_android_library(
 
 android_library(
     name = "crashlytics_deps",
+    visibility = ["//visibility:public"],
     exports = [
         artifact("com.crashlytics.sdk.android:crashlytics"),
         artifact("io.fabric.sdk.android:fabric"),
