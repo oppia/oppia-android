@@ -27,7 +27,7 @@ load("//app:test_with_resources.bzl", "test_with_resources")
 #  - It is not considered a listener
 #  - It does not depend on any other file not included in this list
 
-package(default_visibility=["//:__subpackages__"])
+package(default_visibility = ["//:__subpackages__"])
 
 ANNOTATIONS = [
     "src/main/java/org/oppia/app/activity/ActivityScope.kt",
