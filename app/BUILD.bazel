@@ -27,6 +27,8 @@ load("//app:test_with_resources.bzl", "test_with_resources")
 #  - It is not considered a listener
 #  - It does not depend on any other file not included in this list
 
+package(default_visibility=["//:__subpackages__"])
+
 ANNOTATIONS = [
     "src/main/java/org/oppia/app/activity/ActivityScope.kt",
     "src/main/java/org/oppia/app/fragment/FragmentScope.kt",
@@ -1138,8 +1140,6 @@ GOOGLE_SERVICES_RESOURCES = google_services_xml(
     package_name = "org.oppia.app",
     google_services_json = "google-services.json",
 )
-
-package(default_visibility=["//:__subpackages__"])
 
 crashlytics_android_library(
     name = "crashlytics",
