@@ -1139,6 +1139,8 @@ GOOGLE_SERVICES_RESOURCES = google_services_xml(
     google_services_json = "google-services.json",
 )
 
+package(default_visibility=["//:__subpackages__"])
+
 crashlytics_android_library(
     name = "crashlytics",
     package_name = "org.oppia.app",
@@ -1148,7 +1150,6 @@ crashlytics_android_library(
 
 android_library(
     name = "crashlytics_deps",
-    visibility = ["//visibility:public"],
     exports = [
         artifact("com.crashlytics.sdk.android:crashlytics"),
         artifact("io.fabric.sdk.android:fabric"),
