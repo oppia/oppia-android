@@ -344,6 +344,22 @@ class StateFragmentTest {
   }
 
   @Test
+  fun testStateFragment_loadExp_secondState_submitAnswer_clickSubmit_isToolbarTitleSelected() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+      typeFractionText("1/2")
+
+      clickSubmitAnswerButton()
+
+      scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
+      onView(withId(R.id.exploration_toolbar_title)).check(
+        matches(ViewMatchers.isSelected())
+      )
+    }
+  }
+
+  @Test
   fun testStateFragment_loadExp_land_secondState_submitAnswer_clickSubmit_continueIsVisible() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
