@@ -23,7 +23,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.app.R
@@ -58,6 +57,7 @@ import org.oppia.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.domain.question.QuestionModule
 import org.oppia.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.testing.TestAccessibilityModule
+import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.util.caching.testing.CachingTestModule
@@ -90,13 +90,22 @@ class AppVersionActivityTest {
   lateinit var oppiaDateTimeFormatter: OppiaDateTimeFormatter
   private lateinit var lastUpdateDate: String
 
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
-
+    testCoroutineDispatchers.registerIdlingResource()
     val lastUpdateDateTime = context.getLastUpdateTime()
     lastUpdateDate = getDateTime(lastUpdateDateTime)!!
+  }
+
+  @After
+  fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
+    Intents.release()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -163,14 +172,13 @@ class AppVersionActivityTest {
   }
 
   @Test
-  // TODO(#973): Fix AppVersionActivityTest
-  @Ignore
   fun testAppVersionActivity_loadFragment_onBackPressed_displaysAdministratorControlsActivity() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       launchAdministratorControlsActivityIntent(
         0
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.administrator_controls_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           3
@@ -203,11 +211,6 @@ class AppVersionActivityTest {
       ApplicationProvider.getApplicationContext(),
       profileId
     )
-  }
-
-  @After
-  fun tearDown() {
-    Intents.release()
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
