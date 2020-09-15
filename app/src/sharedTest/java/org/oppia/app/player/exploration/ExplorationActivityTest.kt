@@ -29,6 +29,7 @@ import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.isSelected
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -625,6 +626,38 @@ class ExplorationActivityTest {
 
       onView(withId(R.id.ivPlayPauseAudio))
         .check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
+  fun testMarquee_openRatioExploration_continueToInteraction_submitAnswer_checkToolBarTitleIsSelected() { // ktlint-disable max-line-length
+    getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
+    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId, RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0
+      )
+    ).use {
+      waitForTheView(withText("What is a Ratio?"))
+      // Clicks continue until we reach the first interaction.
+      onView(withId(R.id.continue_button)).perform(click())
+      onView(withId(R.id.continue_button)).perform(click())
+      onView(withId(R.id.continue_button)).perform(click())
+      onView(withId(R.id.continue_button)).perform(click())
+      onView(withId(R.id.continue_button)).perform(click())
+
+      onView(withId(R.id.text_input_interaction_view)).perform(
+        ViewActions.typeText("123"),
+        closeSoftKeyboard()
+      )
+      onView(withId(R.id.submit_answer_button)).perform(click())
+      Thread.sleep(1000)
+
+      onView(withId(R.id.exploration_toolbar_title)).check(
+        matches(isSelected())
+      )
     }
     explorationDataController.stopPlayingExploration()
   }
