@@ -154,6 +154,9 @@ jobs:
         with:
           java-version: 1.9
 
+      - name: Set up Android SDK tools
+        uses: android-actions/setup-android@v2.0.1
+
       - name: Run emulator tests
         uses: ReactiveCircus/android-emulator-runner@v2.11.0
         with:
