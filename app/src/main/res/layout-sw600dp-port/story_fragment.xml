@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.app.story.StoryViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <com.google.android.material.appbar.AppBarLayout
+      android:id="@+id/topic_app_bar_layout"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+
+      <androidx.appcompat.widget.Toolbar
+        android:id="@+id/story_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:fontFamily="sans-serif"
+        android:minHeight="?attr/actionBarSize"
+        app:navigationContentDescription="@string/go_to_previous_page"
+        app:navigationIcon="?attr/homeAsUpIndicator">
+
+        <TextView
+          android:id="@+id/story_toolbar_title"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="20dp"
+          android:ellipsize="marquee"
+          android:fadingEdge="horizontal"
+          android:fadingEdgeLength="20dp"
+          android:focusable="true"
+          android:focusableInTouchMode="true"
+          android:fontFamily="sans-serif"
+          android:marqueeRepeatLimit="1"
+          android:requiresFadingEdge="horizontal"
+          android:scrollHorizontally="true"
+          android:singleLine="true"
+          android:text="@{viewModel.storyNameLiveData}"
+          android:textColor="@color/white"
+          android:textSize="20sp" />
+      </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <FrameLayout
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/topic_app_bar_layout">
+
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/story_chapter_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:clipToPadding="false"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="100dp"
+        android:overScrollMode="never"
+        android:paddingBottom="@dimen/bottom_white_space"
+        android:scrollbars="none"
+        app:data="@{viewModel.storyChapterLiveData}" />
+
+      <View
+        android:id="@+id/story_shadow_view"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:background="@drawable/toolbar_drop_shadow" />
+    </FrameLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
