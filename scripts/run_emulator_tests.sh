@@ -1,9 +1,3 @@
 #!/bin/bash
-echo "Java Home:"
-echo $JAVA_HOME
-echo "Android Home:"
-echo $ANDROID_HOME
-echo "Android SDK Home:"
-echo $ANDROID_SDK_HOME
-export ANDROID_HOME=/tmp
+echo "Using Android Home: $ANDROID_HOME"
 ./gradlew --info --full-stacktrace connectedCheck
