@@ -6,4 +6,4 @@ echo $ANDROID_HOME
 echo "Android SDK Home:"
 echo $ANDROID_SDK_HOME
 export ANDROID_HOME=/tmp
-../gradlew --info --full-stacktrace connectedCheck
+./gradlew --info --full-stacktrace connectedCheck
