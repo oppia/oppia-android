@@ -17,7 +17,7 @@ on:
 jobs:
   app_emulator_tests:
     name: Espresso Emulator Tests - App Module (Non-Flaky)
-    runs-on: macos-latest
+    runs-on: macos-10.15
     strategy:
       matrix:
         api-level: [29]
@@ -51,19 +51,22 @@ jobs:
 
       - name: Debug ANDROID SDK HOME
         run: echo $ANDROID_SDK_HOME
+      
+      - name: Debug run emulator tests directly
+        run: sudo scripts/run_emulator_tests.sh
 
       #- name: Set up Android SDK tools
       #  uses: android-actions/setup-android@v2.0.1
 
-      - name: Run emulator tests
-        uses: ReactiveCircus/android-emulator-runner@v2.11.0
-        with:
-          api-level: ${{ matrix.api-level }}
-          target: ${{ matrix.target }}
-          profile: ${{ matrix.profile }}
-          arch: x86_64
+      #- name: Run emulator tests
+      #  uses: ReactiveCircus/android-emulator-runner@v2.11.0
+      #  with:
+      #    api-level: ${{ matrix.api-level }}
+      #    target: ${{ matrix.target }}
+      #    profile: ${{ matrix.profile }}
+      #    arch: x86_64
           # For reference: https://stackoverflow.com/a/42518783.
-          script: sudo scripts/run_emulator_tests.sh
+      #    script: sudo scripts/run_emulator_tests.sh
           #script: sudo ./gradlew :app:connectedDevAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=org.oppia.app.splash.SplashActivityTest
 
       
