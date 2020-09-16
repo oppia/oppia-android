@@ -40,6 +40,9 @@ jobs:
       - name: Set up Android SDK
         uses: malinskiy/action-android/install-sdk@release/0.0.7
 
+      - name: Set up platform tools
+        run: sdkmanager platform-tools
+
       - name: Debug adb devices
         run: adb devices
 
