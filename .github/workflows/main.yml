@@ -37,6 +37,18 @@ jobs:
         with:
           java-version: 1.9
 
+      - name: Set up Android SDK
+        uses: malinskiy/action-android/install-sdk@release/0.0.7
+
+      - name: Debug adb devices
+        run: adb devices
+
+      - name: Debug ANDROID HOME
+        run: echo $ANDROID_HOME
+
+      - name: Debug ANDROID SDK HOME
+        run: echo $ANDROID_SDK_HOME
+
       - name: Set up Android SDK tools
         uses: android-actions/setup-android@v2.0.1
 
