@@ -101,38 +101,7 @@ jobs:
        with:
          name: testing reports
          path: testing/build/reports
-  
-  app_emulator_tests:
-    name: Espresso Emulator Tests - App Module (Non-Flaky)
-    runs-on: macos-latest
-    strategy:
-      matrix:
-        api-level: [29]
-        target: [default]
-        profile: [Pixel XL]
-    steps:
-      - uses: actions/checkout@v2
-      
-      - uses: actions/cache@v2
-        with:
-         path: ~/.gradle/caches
-         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}-jars-{{ checksum "build.gradle" }}
-         
-      - name: Set up JDK 1.9
-        uses: actions/setup-java@v1
-        with:
-          java-version: 1.9
 
-      - name: Set up Emulator
-        uses: ReactiveCircus/android-emulator-runner@v2.11.0
-        with:
-          api-level: ${{ matrix.api-level }}
-          target: ${{ matrix.target }}
-          profile: ${{ matrix.profile }}
-          arch: x86_64
-          # For reference: https://stackoverflow.com/a/42518783.
-          script: sudo ./gradlew :app:connectedDevAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=org.oppia.app.splash.SplashActivityTest
-  
   app_robolectric_tests:
     name: Robolectric Tests - App Module (Non-Flaky)
     runs-on:  ${{ matrix.os }}
@@ -162,6 +131,39 @@ jobs:
         with:
          name: app reports
          path: app/build/reports
+
+  app_emulator_tests:
+    name: Espresso Emulator Tests - App Module (Non-Flaky)
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        api-level: [29]
+        target: [default]
+        profile: [Nexus 6]
+        #profile: [Pixel XL]
+    steps:
+      - uses: actions/checkout@v2
+      
+      - uses: actions/cache@v2
+        with:
+         path: ~/.gradle/caches
+         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}-jars-{{ checksum "build.gradle" }}
+         
+      - name: Set up JDK 1.9
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.9
+
+      - name: Run emulator tests
+        uses: ReactiveCircus/android-emulator-runner@v2.11.0
+        with:
+          api-level: ${{ matrix.api-level }}
+          target: ${{ matrix.target }}
+          profile: ${{ matrix.profile }}
+          arch: x86_64
+          # For reference: https://stackoverflow.com/a/42518783.
+          script: sudo ./gradlew connectedCheck
+          #script: sudo ./gradlew :app:connectedDevAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=org.oppia.app.splash.SplashActivityTest
 
   bazel_build_app:
     name: Build Binary with Bazel
