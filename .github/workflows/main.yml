@@ -52,8 +52,8 @@ jobs:
       - name: Debug ANDROID SDK HOME
         run: echo $ANDROID_SDK_HOME
 
-      - name: Set up Android SDK tools
-        uses: android-actions/setup-android@v2.0.1
+      #- name: Set up Android SDK tools
+      #  uses: android-actions/setup-android@v2.0.1
 
       - name: Run emulator tests
         uses: ReactiveCircus/android-emulator-runner@v2.11.0
