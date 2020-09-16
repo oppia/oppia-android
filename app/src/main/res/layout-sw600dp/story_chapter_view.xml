@@ -19,9 +19,11 @@
 
   <FrameLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingStart="100dp"
+    android:paddingEnd="100dp">
 
-    <com.google.android.material.card.MaterialCardView
+  <com.google.android.material.card.MaterialCardView
       android:id="@+id/story_chapter_card"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
