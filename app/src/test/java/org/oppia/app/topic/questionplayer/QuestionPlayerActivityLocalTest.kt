@@ -61,6 +61,7 @@ import org.oppia.testing.TestAccessibilityModule
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
+import org.oppia.testing.appendText
 import org.oppia.testing.profile.ProfileTestHelper
 import org.oppia.util.caching.testing.CachingTestModule
 import org.oppia.util.gcsresource.GcsResourceModule
@@ -218,22 +219,22 @@ class QuestionPlayerActivityLocalTest {
    * properly input digits for text views using 'android:digits'. See
    * https://github.com/robolectric/robolectric/issues/5110 for specifics.
    */
-  private fun appendText(text: String): ViewAction {
-    return object : ViewAction {
-      override fun getDescription(): String {
-        return "appendText($text)"
-      }
-
-      override fun getConstraints(): Matcher<View> {
-        return CoreMatchers.allOf(isEnabled())
-      }
-
-      override fun perform(uiController: UiController?, view: View?) {
-        (view as? EditText)?.append(text)
-        testCoroutineDispatchers.runCurrent()
-      }
-    }
-  }
+//  private fun appendText(text: String): ViewAction {
+//    return object : ViewAction {
+//      override fun getDescription(): String {
+//        return "appendText($text)"
+//      }
+//
+//      override fun getConstraints(): Matcher<View> {
+//        return CoreMatchers.allOf(isEnabled())
+//      }
+//
+//      override fun perform(uiController: UiController?, view: View?) {
+//        (view as? EditText)?.append(text)
+//        testCoroutineDispatchers.runCurrent()
+//      }
+//    }
+//  }
 
   private fun scrollToViewType(viewType: StateItemViewModel.ViewType): ViewAction {
     return scrollToHolder(StateViewHolderTypeMatcher(viewType))

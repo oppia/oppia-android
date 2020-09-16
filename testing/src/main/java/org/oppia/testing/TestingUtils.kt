@@ -7,8 +7,12 @@ import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.ViewMatchers
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
+import javax.inject.Inject
 
-fun appendText(text: String, testCoroutineDispatchers: TestCoroutineDispatchers): ViewAction {
+@Inject
+lateinit var testCoroutineDispatchers : TestCoroutineDispatchers
+
+fun appendText(text: String): ViewAction {
   return object : ViewAction {
     override fun getDescription(): String {
       return "appendText($text)"
