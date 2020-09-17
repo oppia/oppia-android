@@ -55,6 +55,8 @@ jobs:
 
       - name: Run emulator tests
         uses: ReactiveCircus/android-emulator-runner@v2.11.0
+        env:
+          TEST_WHITELIST: "org.oppia.app.splash.SplashActivityTest"
         with:
           api-level: ${{ matrix.api-level }}
           target: ${{ matrix.target }}
