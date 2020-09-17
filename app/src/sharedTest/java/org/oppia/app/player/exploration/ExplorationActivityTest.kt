@@ -333,7 +333,9 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingExploration(RATIOS_EXPLORATION_ID_0)
-      networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
+      networkConnectionUtil.setCurrentConnectionStatus(
+        NetworkConnectionUtil.ConnectionStatus.CELLULAR
+      )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title)))
@@ -353,7 +355,9 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingExploration(RATIOS_EXPLORATION_ID_0)
-      networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
+      networkConnectionUtil.setCurrentConnectionStatus(
+        NetworkConnectionUtil.ConnectionStatus.CELLULAR
+      )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
@@ -374,7 +378,9 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingExploration(RATIOS_EXPLORATION_ID_0)
-      networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
+      networkConnectionUtil.setCurrentConnectionStatus(
+        NetworkConnectionUtil.ConnectionStatus.CELLULAR
+      )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(
@@ -406,7 +412,9 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingExploration(RATIOS_EXPLORATION_ID_0)
-      networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
+      networkConnectionUtil.setCurrentConnectionStatus(
+        NetworkConnectionUtil.ConnectionStatus.CELLULAR
+      )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(
@@ -443,7 +451,9 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingExploration(RATIOS_EXPLORATION_ID_0)
-      networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
+      networkConnectionUtil.setCurrentConnectionStatus(
+        NetworkConnectionUtil.ConnectionStatus.CELLULAR
+      )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title)))
@@ -477,7 +487,9 @@ class ExplorationActivityTest {
       )
     ).use {
       explorationDataController.startPlayingExploration(RATIOS_EXPLORATION_ID_0)
-      networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.CELLULAR)
+      networkConnectionUtil.setCurrentConnectionStatus(
+        NetworkConnectionUtil.ConnectionStatus.CELLULAR
+      )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title)))
