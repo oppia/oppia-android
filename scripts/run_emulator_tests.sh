@@ -1,105 +1,97 @@
 #!/bin/bash
-
-# Enable job control (https://stackoverflow.com/a/46829294 for more).
-set -m
-
-#set -x
-
-# Ensure all processes spawned by this task end at the end. See:
-# https://spin.atomicobject.com/2017/08/24/start-stop-bash-background-process/.
-#trap "exit" INT TERM ERR
-#trap "kill 0" EXIT
+#
+# Runs all whitelisted Espresso-enabled tests, relying on the environmental
+# variable TEST_WHITELIST to be defined (where the variable is a string with
+# space-separated fully qualified test suite names that should be run). This
+# script will run each test in sequence, noisily skipping ignored tests, and
+# save both output logs and a video recording of the test.
+#
+# While this script is meant for Continuous Integration use, it can also be used
+# locally for a specific test like so:
+#   TEST_WHITELIST="org.oppia.app.splash.SplashActivityTest" bash ./scripts/run_emulator_tests.sh
+#
+# As the name implies, this is intended to be used with an emulator. However, it
+# may also work with a real device as it just relies on ADB. The script does not
+# expose a way to select which ADB device to use, so if multiple devices are
+# present then this script will not work.
 
 echo "Using Android Home: $ANDROID_HOME"
 echo "Building all instrumentation tests (debug)"
-#./gradlew --full-stacktrace :app:compileDebugAndroidTestJavaWithJavac
-echo "Running emulator tests"
+./gradlew --full-stacktrace :app:compileDebugAndroidTestJavaWithJavac
 
 # Establish directory for emulator test artifacts.
-mkdir -pv ./emulator_tests
+EMULATOR_TESTS_DIRECTORY=../emulator_tests
+mkdir -pv $EMULATOR_TESTS_DIRECTORY
 
-# TODO: update comment
-# Output a list of all tests that are compatible with running on an Android
-# emulator, with returned tests in fully qualified format (e.g
-# org.oppia.app...) and separated by newlines.
-#for test in $(find app/src/sharedTest -name "*Test.kt" | cut -d'/' -f5- | cut -d'.' -f1 | sed -e 's/\//./g') do
+# Iterate over all tests that are compatible with running on an emulator.
 # Reference: https://stackoverflow.com/a/9612232
 shopt -s globstar
-echo "Using test whitelist: $TEST_WHITELIST"
+echo "Running emulator tests using test whitelist: $TEST_WHITELIST"
 for file_name in app/src/sharedTest/**/*Test.kt; do
-  # https://stackoverflow.com/a/10987027
+  # First, remove the shared test directory reference. See:
+  # https://stackoverflow.com/a/10987027.
   stripped_file_name="${file_name#app/src/sharedTest/java/}"
 
-  # https://stackoverflow.com/a/965072
+  # Second, remove the .kt extension. See: https://stackoverflow.com/a/965072.
   stripped_file_name_no_ext="${stripped_file_name%.*}"
 
-  # https://stackoverflow.com/a/2871187
+  # Third, compute the qualified test name (e.g.
+  # org.oppia.app.splash.SplashActivityTest) and the test directory name for
+  # test artifacts (e.g. org_oppia_app_splash_SplashActivityTest). See:
+  # https://stackoverflow.com/a/2871187.
   qualified_test_name=${stripped_file_name_no_ext//\//.}
   test_directory_name=${stripped_file_name_no_ext//\//_}
 
-  # https://stackoverflow.com/a/3162500
+  # Finally, extract the test name (e.g. SplashActivityTest). See:
+  # https://stackoverflow.com/a/3162500.
   test_name=${qualified_test_name##*.}
 
-  # https://stackoverflow.com/a/20473191
+  # Check if this test is in the whitelist. See:
+  # https://stackoverflow.com/a/20473191.
   if [[ $TEST_WHITELIST =~ (^|[[:space:]])"$qualified_test_name"($|[[:space:]]) ]] ; then
+    # If it's in the whitelist, start execution.
     echo "Running $test_name"
 
-    # Ensure any previous recordings are removed.
+    # Ensure any previous video recordings for this test are removed.
     adb shell rm "/sdcard/$test_name.mp4" &> /dev/null
 
-    # https://unix.stackexchange.com/a/166486 (for stty -tostop).
-    # stty -tostop; bash -m
-    #$(./scripts/capture_screen_recording.sh "/sdcard/$test_name.mp4" < /dev/null) &
+    # Start the video recording in the background and track its PID along with
+    # the PID of the screen recording process running on Android. Both will be
+    # used after the test completes.
     (adb shell screenrecord "/sdcard/$test_name.mp4") &
     screen_record_pid=$!
     screen_record_android_pid=$(adb shell ps -A | grep record | awk '{print $2}')
 
-    # Ensures that Gradle doesn't immediately stop after being backgrounded:
+    # Start the actual test. Note that the stdin redirection is needed to ensure
+    # that Gradle doesn't immediately pause after being backgrounded. See:
     # https://stackoverflow.com/a/17626350.
     (./gradlew --full-stacktrace :app:connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class="$qualified_test_name" < /dev/null) &
+
+    # Capture the test command and wait for it to complete.
     test_command_pid=$!
-    # Wait a few seconds to make sure the Gradle command actually starts.
-    sleep 2
-    echo "Start waiting for $test_command_pid"
     wait $test_command_pid
-    echo "Stop waiting for $test_command_pid"
-    test_result=$?
 
-    # Use interrupt to stop the recording to ensure the file is flushed and not
-    # corrupted.
-    echo "Killing task $screen_record_pid"
-    #trap '' INT
-    #(sleep 10; kill $screen_record_pid) &
-    #kill -INT $screen_record_pid
-    #wait $screen_record_pid
-    #sleep 5
-    #screen_record_job_id=$(jobs | grep capture_screen_recording | sed -r "s/^\[([0-9]+)\].+?$/\1/g")
-    #jobs
-    #fg $screen_record_pid
-    #jobs -l
-    #echo "fg $screen_record_job_id"
-    #fg $screen_record_job_id
-    #wait $screen_record_pid
-    #sleep 5
-    #trap
-
+    # Send an interrupt signal to the Android screen record process (if it's
+    # still running) to signal that recording should stop. Note that an
+    # interrupt can't be sent to the Unix process blocking on adb since there's
+    # no way in Bash to send an interrupt to a background process, and
+    # foregrounding it first will trigger the interrupt to be passed to its
+    # parent (this script), killing it. Workarounds are challenging, and this
+    # approach is much simpler.
     adb shell kill -INT $screen_record_android_pid
+
+    # Wait for the screen record proces to finish writing the file before
+    # downloading it.
     wait $screen_record_pid
 
-    # Record artifacts to upload.
-    mkdir -pv "./emulator_tests/$test_directory_name"
-    echo "Checking test result: $test_result"
-    if [ $test_result -eq 0 ]; then
-      echo "Downloading"
-      adb pull "/sdcard/$test_name.mp4" "./emulator_tests/$test_directory_name/"
-    fi
-
-    # Always download the test result reports.
-    cp app/build/reports/androidTests/connected/index.html "./emulator_tests/$test_directory_name/"
-    cp "app/build/reports/androidTests/connected/$qualified_test_name.html" "./emulator_tests/$test_directory_name/"
+    # Record artifacts to upload: an overview index of tests run for this test
+    # suite, the specific suite's results, and a video (up to 3 minutes long) of
+    # the test run.
+    mkdir -pv "$EMULATOR_TESTS_DIRECTORY/$test_directory_name"
+    adb pull "/sdcard/$test_name.mp4" "$EMULATOR_TESTS_DIRECTORY/$test_directory_name/"
+    cp app/build/reports/androidTests/connected/index.html "$EMULATOR_TESTS_DIRECTORY/$test_directory_name/"
+    cp "app/build/reports/androidTests/connected/$qualified_test_name.html" "$EMULATOR_TESTS_DIRECTORY/$test_directory_name/"
   else
     echo "Skipping disabled test $test_name"
   fi
 done
-
-#./gradlew --full-stacktrace :app:connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=org.oppia.app.splash.SplashActivityTest
