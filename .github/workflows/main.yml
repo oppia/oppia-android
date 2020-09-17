@@ -65,6 +65,6 @@ jobs:
       # Upload all test results to GitHub (including detailed reports and videos, if any).
       - uses: actions/upload-artifact@v2
         with:
-          name: oppia-bazel-apk
+          name: emulator-test-output
           path: emulator_test_output/
 
