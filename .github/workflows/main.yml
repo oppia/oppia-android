@@ -32,6 +32,7 @@ jobs:
          path: ~/.gradle/caches
          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}-jars-{{ checksum "build.gradle" }}
 
+      # Set up Java 8 since it's required for building binaries dependent on the Android SDK.
       - name: Set up JDK 1.8
         uses: actions/setup-java@v1
         with:
@@ -46,33 +47,27 @@ jobs:
       - name: Debug adb devices
         run: adb devices
 
-      - name: Debug ANDROID HOME
-        run: echo $ANDROID_HOME
+      #- name: Debug run emulator tests directly
+      #  run: scripts/run_emulator_tests.sh
 
-      - name: Debug ANDROID SDK HOME
-        run: echo $ANDROID_SDK_HOME
+      #- name: Set up Android SDK tools
+      #  uses: android-actions/setup-android@v2.0.1
 
-      - name: Debug run emulator tests directly
-        run: scripts/run_emulator_tests.sh
+      - name: Run emulator tests
+        uses: ReactiveCircus/android-emulator-runner@v2.11.0
+        with:
+          api-level: ${{ matrix.api-level }}
+          target: ${{ matrix.target }}
+          profile: ${{ matrix.profile }}
+          arch: x86_64
+          # Note that 'sudo' is not run here since it will drop necessary
+          # environmental variables that were overwritten above to ensure
+          # correct access to the Android SDK & home directories.
+          script: scripts/run_emulator_tests.sh
 
       # Upload all test results to GitHub (including detailed reports and videos, if any).
       - uses: actions/upload-artifact@v2
         with:
           name: oppia-bazel-apk
           path: /home/runner/work/oppia-android/emulator-tests
-
-      #- name: Set up Android SDK tools
-      #  uses: android-actions/setup-android@v2.0.1
-
-      #- name: Run emulator tests
-      #  uses: ReactiveCircus/android-emulator-runner@v2.11.0
-      #  with:
-      #    api-level: ${{ matrix.api-level }}
-      #    target: ${{ matrix.target }}
-      #    profile: ${{ matrix.profile }}
-      #    arch: x86_64
-          # For reference: https://stackoverflow.com/a/42518783.
-      #    script: sudo scripts/run_emulator_tests.sh
-          #script: sudo ./gradlew :app:connectedDevAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=org.oppia.app.splash.SplashActivityTest
-
 

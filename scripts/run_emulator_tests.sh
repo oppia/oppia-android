@@ -64,7 +64,8 @@ for file_name in app/src/sharedTest/**/*Test.kt; do
 
     # Start the actual test. Note that the stdin redirection is needed to ensure
     # that Gradle doesn't immediately pause after being backgrounded. See:
-    # https://stackoverflow.com/a/17626350.
+    # https://stackoverflow.com/a/17626350. Also for reference on running a
+    # specific test: https://stackoverflow.com/a/42518783.
     (./gradlew --full-stacktrace :app:connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class="$qualified_test_name" < /dev/null) &
 
     # Capture the test command and wait for it to complete.
