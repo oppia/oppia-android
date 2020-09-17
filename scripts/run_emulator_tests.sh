@@ -24,10 +24,11 @@ EMULATOR_TESTS_DIRECTORY=../emulator_tests
 mkdir -pv $EMULATOR_TESTS_DIRECTORY
 
 # Iterate over all tests that are compatible with running on an emulator.
-# Reference: https://stackoverflow.com/a/9612232
-shopt -s globstar
+# Reference: https://stackoverflow.com/a/5247919. Note that the Bash 4.0
+# globstar option isn't used here since the OSX version running on GitHub
+# actions does not support this setting.
 echo "Running emulator tests using test whitelist: $TEST_WHITELIST"
-for file_name in app/src/sharedTest/**/*Test.kt; do
+for file_name in $(find app/src/sharedTest -name "*Test.kt"); do
   # First, remove the shared test directory reference. See:
   # https://stackoverflow.com/a/10987027.
   stripped_file_name="${file_name#app/src/sharedTest/java/}"
