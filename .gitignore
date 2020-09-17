@@ -21,3 +21,4 @@ utility/build
 gradle
 gradlew
 gradlew.bat
+emulator_tests
