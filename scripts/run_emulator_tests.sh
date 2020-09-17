@@ -20,8 +20,10 @@ echo "Building all instrumentation tests (debug)"
 ./gradlew --full-stacktrace :app:compileDebugAndroidTestJavaWithJavac
 
 # Establish directory for emulator test artifacts.
-EMULATOR_TESTS_DIRECTORY=../emulator_tests
+EMULATOR_TESTS_DIRECTORY=./emulator_test_output
 mkdir -pv $EMULATOR_TESTS_DIRECTORY
+
+test_suite_status=0
 
 # Iterate over all tests that are compatible with running on an emulator.
 # Reference: https://stackoverflow.com/a/5247919. Note that the Bash 4.0
@@ -67,11 +69,12 @@ for file_name in $(find app/src/sharedTest -name "*Test.kt"); do
     # that Gradle doesn't immediately pause after being backgrounded. See:
     # https://stackoverflow.com/a/17626350. Also for reference on running a
     # specific test: https://stackoverflow.com/a/42518783.
-    (./gradlew --full-stacktrace :app:connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class="$qualified_test_name" < /dev/null) &
+    (./gradlew --full-stacktrace :app:connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class="$qualified_test_name"#testSplashActivity_initialOpen_routesToOnboardingActivity < /dev/null) &
 
     # Capture the test command and wait for it to complete.
     test_command_pid=$!
     wait $test_command_pid
+    test_result=$?
 
     # Send an interrupt signal to the Android screen record process (if it's
     # still running) to signal that recording should stop. Note that an
@@ -93,7 +96,14 @@ for file_name in $(find app/src/sharedTest -name "*Test.kt"); do
     adb pull "/sdcard/$test_name.mp4" "$EMULATOR_TESTS_DIRECTORY/$test_directory_name/"
     cp app/build/reports/androidTests/connected/index.html "$EMULATOR_TESTS_DIRECTORY/$test_directory_name/"
     cp "app/build/reports/androidTests/connected/$qualified_test_name.html" "$EMULATOR_TESTS_DIRECTORY/$test_directory_name/"
+
+    if [ $test_result -ne 0 ]; then
+      # If any tests fail, make sure the overall test suite fails.
+      test_suite_status=1
+    fi
   else
     echo "Skipping disabled test $test_name"
   fi
 done
+
+exit $test_suite_status

@@ -44,9 +44,6 @@ jobs:
       - name: Set up platform tools
         run: sdkmanager platform-tools
 
-      - name: Debug adb devices
-        run: adb devices
-
       #- name: Debug run emulator tests directly
       #  run: scripts/run_emulator_tests.sh
 
@@ -69,5 +66,5 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: oppia-bazel-apk
-          path: /home/runner/work/oppia-android/emulator-tests
+          path: emulator_test_output/
 
