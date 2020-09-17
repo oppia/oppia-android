@@ -53,7 +53,7 @@ jobs:
         run: echo $ANDROID_SDK_HOME
       
       - name: Debug run emulator tests directly
-        run: sudo scripts/run_emulator_tests.sh
+        run: scripts/run_emulator_tests.sh
 
       #- name: Set up Android SDK tools
       #  uses: android-actions/setup-android@v2.0.1
