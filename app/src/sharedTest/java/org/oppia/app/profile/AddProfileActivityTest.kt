@@ -1631,6 +1631,7 @@ class AddProfileActivityTest {
     return ActivityResult(RESULT_OK, resultIntent)
   }
 
+  // TODO(#1840): Introduce central utility file for appendText in Testing
   /**
    * Appends the specified text to a view. This is needed because Robolectric doesn't seem to
    * properly input digits for text views using 'android:digits'. See
