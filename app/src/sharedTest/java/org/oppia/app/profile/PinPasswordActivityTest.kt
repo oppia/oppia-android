@@ -705,6 +705,7 @@ class PinPasswordActivityTest {
     }
   }
 
+  // TODO(#1840)
   /**
    * Appends the specified text to a view. This is needed because Robolectric doesn't seem to
    * properly input digits for text views using 'android:digits'. See
