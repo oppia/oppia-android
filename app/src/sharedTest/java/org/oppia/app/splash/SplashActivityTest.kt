@@ -3,6 +3,7 @@ package org.oppia.app.splash
 import android.app.Application
 import android.app.Instrumentation
 import android.content.Context
+import android.os.Environment
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -70,11 +71,14 @@ import org.oppia.util.parser.HtmlParserEntityTypeModule
 import org.oppia.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.io.File
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.time.Duration
 import java.time.Instant
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -93,15 +97,59 @@ class SplashActivityTest {
 
   private val expirationDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
 
+  private var pid = 0
+  private lateinit var process: Process
+
   @Before
   fun setUp() {
     Intents.init()
+
+    try {
+      val filesDir = ApplicationProvider.getApplicationContext<Context>().filesDir
+      val externalFiles = ApplicationProvider.getApplicationContext<Context>().getExternalFilesDir(Environment.DIRECTORY_MOVIES)
+      println("@@@@@ Saving video to $externalFiles")
+//      val process = executeSuperUserCommand("ls")
+      process = executeCommand("screenrecord --time-limit 10 $externalFiles/test2.mp4")
+      // Hacky way to get PID to send SIGINT: https://stackoverflow.com/a/2951193.
+      pid = process.javaClass.getDeclaredField("pid").let { field ->
+        field.isAccessible = true
+        return@let checkNotNull(field.get(process) as? Int) { "Invalid pid field in process" }
+      }
+    } catch (t: Throwable) {
+      t.printStackTrace()
+    }
+  }
+
+  private fun executeCommand(command: String): Process {
+    return Runtime.getRuntime().exec(command)
   }
 
   @After
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
+
+    println("Finishing screen recording by interrupting process $pid")
+//    check(executeCommand("kill -INT $pid").waitFor(10, TimeUnit.SECONDS)) {
+//      "Failed to kill screenrecord process"
+//    }
+    check(process.waitFor(10, TimeUnit.SECONDS)) {
+      "Failed to wait for screenrecord process to end"
+    }
+    check(!process.isAlive) { "Expected screenrecord process to be finished" }
+    val errorLines = process.errorStream.bufferedReader().use { it.readLines() }
+    val outputLines = process.inputStream.bufferedReader().use { it.readLines() }
+    println("Successfully finished screen recording. Errors: $errorLines, output: $outputLines")
+  }
+
+  private fun executeSuperUserCommand(command: String): Process {
+    // Reference: https://stackoverflow.com/a/20932225.
+    val process = Runtime.getRuntime().exec("su")
+    process.outputStream.bufferedWriter().apply {
+      appendln(command)
+      flush()
+    }
+    return process
   }
 
   // The initialTouchMode enables the activity to be launched in touch mode. The launchActivity is
@@ -122,7 +170,7 @@ class SplashActivityTest {
 
     intended(hasComponent(OnboardingActivity::class.java.name))
   }
-
+/*
   @Test
   fun testSplashActivity_secondOpen_routesToChooseProfileChooserActivity() {
     simulateAppAlreadyOnboarded()
@@ -223,7 +271,7 @@ class SplashActivityTest {
       .inRoot(isDialog())
       .check(matches(isDisplayed()))
   }
-
+*/
   private fun simulateAppAlreadyOnboarded() {
     // Simulate the app was already onboarded by creating an isolated onboarding flow controller and
     // saving the onboarding status on the system before the activity is opened. Note that this has
