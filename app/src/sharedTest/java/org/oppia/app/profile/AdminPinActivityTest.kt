@@ -63,7 +63,7 @@ import org.oppia.testing.TestAccessibilityModule
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
-import org.oppia.testing.appendText
+import org.oppia.testing.TestingUtils
 import org.oppia.testing.profile.ProfileTestHelper
 import org.oppia.util.caching.testing.CachingTestModule
 import org.oppia.util.gcsresource.GcsResourceModule
@@ -94,6 +94,9 @@ class AdminPinActivityTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @Inject
+  lateinit var testingUtils: TestingUtils
+
   @Before
   fun setUp() {
     Intents.init()
@@ -121,12 +124,12 @@ class AdminPinActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        appendText("12345", testCoroutineDispatchers),
+        testingUtils.appendText("12345"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
         scrollTo(),
-        appendText("12345", testCoroutineDispatchers),
+        testingUtils.appendText("12345"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -174,13 +177,13 @@ class AdminPinActivityTest {
       .use {
         testCoroutineDispatchers.runCurrent()
         onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-          appendText("12345", testCoroutineDispatchers),
+          testingUtils.appendText("12345"),
           closeSoftKeyboard()
         )
         testCoroutineDispatchers.runCurrent()
         onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
           scrollTo(),
-          appendText("12345", testCoroutineDispatchers),
+          testingUtils.appendText("12345"),
           closeSoftKeyboard()
         )
         testCoroutineDispatchers.runCurrent()
@@ -274,12 +277,12 @@ class AdminPinActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        appendText("12345", testCoroutineDispatchers),
+        testingUtils.appendText("12345"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        appendText("1234", testCoroutineDispatchers),
+        testingUtils.appendText("1234"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -403,12 +406,12 @@ class AdminPinActivityTest {
       closeSoftKeyboard()
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        appendText("12345", testCoroutineDispatchers),
+        testingUtils.appendText("12345"),
         closeSoftKeyboard()
       )
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
         scrollTo(),
-        appendText("12345", testCoroutineDispatchers),
+        testingUtils.appendText("12345"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -459,13 +462,13 @@ class AdminPinActivityTest {
       closeSoftKeyboard()
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        appendText("12345", testCoroutineDispatchers),
+        testingUtils.appendText("12345"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
         scrollTo(),
-        appendText("12345", testCoroutineDispatchers),
+        testingUtils.appendText("12345"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -564,13 +567,13 @@ class AdminPinActivityTest {
       closeSoftKeyboard()
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        appendText("12345", testCoroutineDispatchers),
+        testingUtils.appendText("12345"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
         scrollTo(),
-        appendText("1234", testCoroutineDispatchers),
+        testingUtils.appendText("1234"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
@@ -704,13 +707,13 @@ class AdminPinActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
-        appendText("12345", testCoroutineDispatchers),
+        testingUtils.appendText("12345"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
         scrollTo(),
-        appendText("54321", testCoroutineDispatchers),
+        testingUtils.appendText("54321"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()

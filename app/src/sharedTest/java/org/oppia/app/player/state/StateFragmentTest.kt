@@ -121,7 +121,7 @@ import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
 import org.oppia.testing.TestPlatform
-import org.oppia.testing.appendText
+import org.oppia.testing.TestingUtils
 import org.oppia.testing.profile.ProfileTestHelper
 import org.oppia.util.caching.testing.CachingTestModule
 import org.oppia.util.gcsresource.GcsResourceModule
@@ -154,6 +154,9 @@ class StateFragmentTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var testingUtils: TestingUtils
 
   @Inject
   @field:BackgroundDispatcher
@@ -1222,7 +1225,7 @@ class StateFragmentTest {
 
   private fun typeTextIntoInteraction(text: String, interactionViewId: Int) {
     onView(withId(interactionViewId)).perform(
-      appendText(text, testCoroutineDispatchers),
+      testingUtils.appendText(text),
       closeSoftKeyboard()
     )
     testCoroutineDispatchers.runCurrent()

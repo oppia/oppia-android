@@ -60,7 +60,7 @@ import org.oppia.testing.TestAccessibilityModule
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
-import org.oppia.testing.appendText
+import org.oppia.testing.TestingUtils
 import org.oppia.util.caching.testing.CachingTestModule
 import org.oppia.util.gcsresource.GcsResourceModule
 import org.oppia.util.logging.LoggerModule
@@ -86,6 +86,9 @@ class AdminAuthActivityTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var testingUtils: TestingUtils
 
   private val internalProfileId: Int = 0
 
@@ -119,7 +122,7 @@ class AdminAuthActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        appendText("12345", testCoroutineDispatchers),
+        testingUtils.appendText("12345"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
@@ -162,7 +165,7 @@ class AdminAuthActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        appendText("12345", testCoroutineDispatchers),
+        testingUtils.appendText("12345"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
@@ -205,7 +208,7 @@ class AdminAuthActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        appendText("12354", testCoroutineDispatchers),
+        testingUtils.appendText("12354"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
@@ -440,7 +443,7 @@ class AdminAuthActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        appendText("12345", testCoroutineDispatchers),
+        testingUtils.appendText("12345"),
         closeSoftKeyboard()
       )
       onView(isRoot()).perform(orientationLandscape())
@@ -465,7 +468,7 @@ class AdminAuthActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.admin_auth_input_pin)))).perform(
-        appendText("12354", testCoroutineDispatchers),
+        testingUtils.appendText("12354"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())

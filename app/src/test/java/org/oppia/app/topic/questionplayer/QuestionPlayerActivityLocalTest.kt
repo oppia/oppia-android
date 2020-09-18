@@ -55,7 +55,7 @@ import org.oppia.testing.TestAccessibilityModule
 import org.oppia.testing.TestCoroutineDispatchers
 import org.oppia.testing.TestDispatcherModule
 import org.oppia.testing.TestLogReportingModule
-import org.oppia.testing.appendText
+import org.oppia.testing.TestingUtils
 import org.oppia.testing.profile.ProfileTestHelper
 import org.oppia.util.caching.testing.CachingTestModule
 import org.oppia.util.gcsresource.GcsResourceModule
@@ -90,6 +90,9 @@ class QuestionPlayerActivityLocalTest {
   @Inject
   @field:ApplicationContext
   lateinit var context: Context
+
+  @Inject
+  lateinit var testingUtils: TestingUtils
 
   private val SKILL_ID_LIST = arrayListOf(TEST_SKILL_ID_1)
 
@@ -199,7 +202,7 @@ class QuestionPlayerActivityLocalTest {
   private fun submitWrongAnswerToQuestionPlayerFractionInput() {
     onView(withId(R.id.question_recycler_view))
       .perform(scrollToViewType(StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION))
-    onView(withId(R.id.text_input_interaction_view)).perform(appendText("1", testCoroutineDispatchers))
+    onView(withId(R.id.text_input_interaction_view)).perform(testingUtils.appendText("1"))
     testCoroutineDispatchers.runCurrent()
 
     onView(withId(R.id.question_recycler_view))
