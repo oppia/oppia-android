@@ -200,9 +200,6 @@ jobs:
       - name: Install ffmpeg
         run: brew install ffmpeg
 
-      - name: Check ffmpeg
-        run: ffmpeg -version
-
       - name: Set up Android SDK
         uses: malinskiy/action-android/install-sdk@release/0.0.7
 
