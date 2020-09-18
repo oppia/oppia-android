@@ -7,13 +7,15 @@
 #
 # While this script is meant for Continuous Integration use, it can also be used locally for a
 # specific test like so:
-#   bash ./scripts/run_emulator_tests.sh "org.oppia.app.splash.SplashActivityTest other.test..."
+#   bash ./scripts/run_emulator_tests.sh org.oppia.app.splash.SplashActivityTest other.test...
 #
 # As the name implies, this is intended to be used with an emulator. However, it may also work with
 # a real device as it just relies on ADB. The script does not expose a way to select which ADB
 # device to use, so if multiple devices are present then this script will not work.
 
-test_whitelist="$1"
+# Combine all arguments into a single whitelist variable for simplicity. See:
+# https://unix.stackexchange.com/a/197794.
+test_whitelist="'$*'"
 
 echo "Using Android Home: $ANDROID_HOME"
 echo "Running emulator tests using test whitelist: $test_whitelist"
@@ -48,8 +50,8 @@ for file_name in $(find app/src/sharedTest -name "*Test.kt"); do
   test_name=${qualified_test_name##*.}
 
   # Check if this test is in the whitelist. Note that a regex approach (like
-  # https://stackoverflow.com/a/20473191) can't be used due to a potential bug in Regex matching on
-  # OSX (see https://stackoverflow.com/q/50884800). Instead, wildcards are more reliable:
+  # https://stackoverflow.com/a/20473191) might result in a a potential bug in Regex matching on OSX
+  # (see https://stackoverflow.com/q/50884800). Instead, wildcards are more reliable:
   # https://linuxize.com/post/how-to-check-if-string-contains-substring-in-bash/. Note that wildcard
   # matching works because qualified test names are guaranteed to be unique in this setting since
   # they're derived from the directory structure.
