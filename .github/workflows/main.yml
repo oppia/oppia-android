@@ -212,6 +212,12 @@ jobs:
       - name: Set up platform tools
         run: sdkmanager platform-tools
 
+      - name: Export environment variable
+        run: export TEST_WHITELIST_CONFIG=${TEST_WHITELIST}
+
+      - name: Test env variable
+        run: echo "Test exported variable $TEST_WHITELIST_CONFIG"
+
       - name: Run emulator tests
         uses: ReactiveCircus/android-emulator-runner@v2.11.0
         with:
@@ -222,7 +228,8 @@ jobs:
           # Note that 'sudo' is not run here since it will drop necessary
           # environmental variables that were overwritten above to ensure
           # correct access to the Android SDK & home directories.
-          script: ./scripts/run_emulator_tests.sh ${TEST_WHITELIST}
+          # TODO: figure out how to make GitHub env variables work with android-emulator-runner
+          script: echo $TEST_WHITELIST_CONFIG; ./scripts/run_emulator_tests.sh $TEST_WHITELIST_CONFIG
 
       # Upload all test results to GitHub (including detailed reports and videos, if any).
       - uses: actions/upload-artifact@v2
